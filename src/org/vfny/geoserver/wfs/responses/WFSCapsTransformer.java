@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.geotools.filter.FunctionExpression;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.Request;
@@ -137,7 +138,7 @@ public class WFSCapsTransformer extends TransformerBase {
 
             String locationAtt = XSI_PREFIX + ":schemaLocation";
             String locationDef = WFS_URI + " " + request.getSchemaBaseUrl()
-                + "wfs/1.0.0/" + "WFS-capabilities.xsd";
+                + "wfs/" + "WFS-capabilities.xsd"; //djb: this was pointing to the wrong location
             attributes.addAttribute("", locationAtt, locationAtt, "",
                 locationDef);
 
@@ -469,9 +470,37 @@ public class WFSCapsTransformer extends TransformerBase {
             end(ogc + "Comparison_Operators");
             start(ogc + "Arithmetic_Operators");
             element(ogc + "Simple_Arithmetic", null);
+            
+            handleFunctions(ogc);  //djb: list functions
+            
             end(ogc + "Arithmetic_Operators");
             end(ogc + "Scalar_Capabilities");
             end(ogc + "Filter_Capabilities");
         }
+        
+        public  void handleFunctions(String prefix)
+        {
+        	 start(prefix +"Functions");
+        	 start(prefix +"FunctionNames");
+        	 java.util.Iterator it = org.geotools.factory.FactoryFinder.factories(FunctionExpression.class);
+             FunctionExpression exp = null;
+             while (  it.hasNext()   )
+             {
+                 FunctionExpression fe = (FunctionExpression) it.next();
+                 String funName = fe.getName();
+                 int    funNArgs= fe.getArgCount();
+                 
+                 AttributesImpl atts = new AttributesImpl();
+                 atts.addAttribute("", "nArgs", "nArgs", "", funNArgs+"");
+                 
+                 element(prefix +"FunctionName",funName,atts);              
+             }
+             
+             end(prefix +"FunctionNames");
+             end(prefix +"Functions");
+        }
+        
     }
+    
+ 
 }
