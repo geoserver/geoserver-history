@@ -11,6 +11,7 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.PixelGrabber;
 import java.awt.image.WritableRaster;
 import java.io.*;
+import java.util.Hashtable;
 import java.util.Vector;
 
 //==============================================================================
@@ -173,75 +174,92 @@ public class Gif89Encoder {
   {
   	    image = prepareImage(image,transparentColor);  //make BGR and put in background colour where its 100% transparent.
   
-		byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();  //list of rgb bytes (3*#of pixels)
-    
-		//do color reduction
-		
-		boolean[] usedEntry = new boolean[256];
-		
-		 // colour reduction
-		
-		int len = pixels.length;
-		int nPix = len / 3;
-		byte[] indexedPixels = new byte[nPix];
-		NeuQuant nq = new NeuQuant(pixels, len, 10);  //10 is recommended value
-		// initialize quantizer
-		byte[] colorTab = nq.process(); // create reduced palette
-		// convert map from BGR to RGB
-		for (int i = 0; i < colorTab.length; i += 3) {
-			byte temp = colorTab[i];
-			colorTab[i] = colorTab[i + 2];
-			colorTab[i + 2] = temp;
-			usedEntry[i / 3] = false;
-		}
-    
-		//we have a color table now!  its a list of rgb values (3*256 usually)
-		
-		// next step, convert the image to a list of color index values.
-    
-//		 map image pixels to new palette
-		int k = 0;
-		for (int i = 0; i < nPix; i++) {
-			int index =
-				nq.map(pixels[k++] & 0xff,
-					   pixels[k++] & 0xff,
-					   pixels[k++] & 0xff);
-			usedEntry[index] = true;
-			indexedPixels[i] = (byte) index;
-		}
+	   byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();  //list of bgr bytes (3*#of pixels)
+	   
+	   Color[] tempColorTable = new Color[256];
+	   for (int t=0;t<256;t++)
+	   	tempColorTable[t] = new Color(0,255,0); // prefill with green
+	   byte[] pixels_indexed = simpleColorReducer( tempColorTable,  pixels);
+	   
+	   
     
 	   int trans_index = -1;
        //find tranparent index
 	   if(transparentColor != null)
 	   {
-	   		trans_index = findClosest(transparentColor, colorTab,  usedEntry);
+	   		trans_index = findClosest2( tempColorTable,transparentColor);
 	   }
 	   
-	   //make colour table
-       Color[] colors = new Color[256];
-       for (int t=0;t<256;t++)
-       {
-	       	int r = colorTab[t*3];
-	    	int g = colorTab[t*3+1];
-	    	int b = colorTab[t*3+2];
-	    	
-	    	if (r<0)
-	    		r = 256+r;
-	    	if (g<0)
-	    		g = 256+g;
-	    	if (b<0)
-	    		b = 256+b;
-    	
-       	   colors[t] = new Color(r,g,b);
-       }
+	 
 	    
        //normal gif stuff
-	    colorTable = new GifColorTable(colors); 
-	    addFrame(image.getWidth(), image.getHeight(), indexedPixels);
+	    colorTable = new GifColorTable(tempColorTable); 
+	    addFrame(image.getWidth(), image.getHeight(), pixels_indexed);
 	    if (trans_index != -1)
 	    	this.setTransparentIndex(trans_index);
 	  }
+  
+  
+  byte findClosest2(Color[] colors, Color color)
+  {
+  	for (int t=0;t<colors.length;t++)
+  	{
+  	    if (color.equals(colors[t]))
+  	    	return (byte) (t & 0xFF);
+  	}
+  	return 0;
+  }
+  
+  /**
+   * THere's a problem with the complex colour reduction method, so here' a simple replacement.
+   *  1. assume there's exactly 256 colors (this is okay if there are <=256 colors, but bad if there's more than 256)
+   *  2. for each pixel
+   *  3.      in colour table?
+   *  4.           yes - index it
+   *  5.           no  - add to color table
+   * 
+   * @param colorTable 
+   * @param pixels  3 bytes in bgr order (one for each pixel)
+   * @return new items in colorTable, and fill in colour table
+   */
+  public byte[] simpleColorReducer(Color[] colorTable, byte[] pixels)
+  {
+  	 int npix = pixels.length/3;
+  	 int nextcolorind=0;
+  	 Hashtable colorHash = new Hashtable(1024);
+  	 byte[] result = new byte[npix];
+  	 for (int t=0;t<npix;t++)  //for each pixel
+  	 {
+       	int b = pixels[t*3]    & 0xFF;
+    	int g = pixels[t*3+1]  & 0xFF;
+    	int r = pixels[t*3+2]  & 0xFF;
+    	
+    	int c = (r<<16)+(g<<8)+(b);  //note - rgb
+    	Integer cc = new Integer(c);
+    	Integer idx = (Integer) colorHash.get(cc);
+    	if (idx == null)
+    	{
+    		//add 
+    		idx = new Integer(nextcolorind);
+    		colorHash.put(cc, idx );
+    		colorTable[nextcolorind] = new Color(r,g,b);
+    		nextcolorind++;    		
+    	}
+    	result[t] = (byte) (idx.intValue() & 0xff);    
+  	 }
+  	 return result;
+  }
 
+  public void printColourTable(Color[] colors,boolean[] used)
+  {
+    for (int t=0;t<256;t++)
+    {
+    	if (used[t])
+    	{
+    	     System.out.println("t="+t+"  - color("+colors[t].getRed()+","+colors[t].getGreen()+","+colors[t].getBlue()+")");
+    	}
+    }
+  }
   
   /**
 	 * Returns index of palette color closest to c
