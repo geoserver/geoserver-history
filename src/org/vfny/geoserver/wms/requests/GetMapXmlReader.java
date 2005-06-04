@@ -610,7 +610,10 @@ public class GetMapXmlReader extends XmlRequestReader
 	{
 		
 		String queryString = request.getQueryString(); // ie.   FORMAT=image/png&TRANSPARENT=TRUE&HEIGHT=480&REQUEST=GetMap&BBOX=-73.94896388053894,40.77323718492597,-73.94105110168456,40.77796711500081&WIDTH=803&SRS=EPSG:4326&VERSION=1.1.1	
-
+      
+		if (queryString==null)
+        	return false; // pure POST without any query
+        
 		queryString = queryString.toLowerCase();
 		
 		if  (   queryString.startsWith("validateschema") 
