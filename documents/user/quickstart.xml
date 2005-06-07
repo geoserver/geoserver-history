@@ -61,11 +61,13 @@
   <para>Congratulations now have a working GeoServer installation!</para>
 
   <para>The User Guides provide a series of walkthroughs using your new
-  GeoServer installation. If you want to make use of the WMS then you should
+  GeoServer installation, the <ulink url="config.html">Configuration</ulink>
+  page is a good place to start. If you want to make use of the WMS then you should
   install <ulink
   url="http://java.sun.com/products/java-media/jai/">JAI</ulink> and the
   <ulink url="http://java.sun.com/developer/earlyAccess/jai_imageio/">Image
-  I/O extension</ulink>, see the WMS documentation page for more information.
+  I/O extension</ulink>, see the see the <ulink
+  url="installation.html">installation</ulink> page for more information.
   For additional support an active user community is available by joining the
   GeoServer <ulink url="https://sourceforge.net/mail/?group_id=25086">mailing
   list</ulink>. We also strongly encourage you to submit bugs and improvements
