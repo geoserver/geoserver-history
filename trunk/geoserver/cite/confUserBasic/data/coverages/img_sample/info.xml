@@ -1,24 +1,73 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<coverage format="worldImageSample">
-	<name>Img_Sample</name>
-	<label>World Image</label>
-	<description>A sample Image World Grid Coverage.</description>
-	<metadataLink about="http://localhost:8080/geoserver" type="undef" metadataType="other">
-		NONE
-	</metadataLink>
-	<keywords>Image,WCS</keywords>
-		<envelope crs = "GEOGCS['WGS 84', DATUM['WGS_1984', SPHEROID['WGS 84', 6378137.0, 298.257223563, AUTHORITY['EPSG','7030']], AUTHORITY['EPSG','6326']], PRIMEM['Greenwich', 0.0, AUTHORITY['EPSG','8901']], UNIT['degree', 0.017453292519943295], AXIS['Lon', EAST], AXIS['Lat', NORTH], AUTHORITY['EPSG','4326']]" srsName = "WGS 84" >
-		<pos>-130.85168 20.7052</pos>
-		<pos>-62.0054 54.1141</pos>
-	</envelope>
-	<supportedCRSs>
-		<requestCRSs codeSpace="0">WGS84</requestCRSs>
-		<responseCRSs codeSpace="0">WGS84</responseCRSs>
-	</supportedCRSs>
-	<supportedFormats nativeFormat="WorldImage">
-		<formats codeSpace="0">JPEG,PNG,TIFF,ArcGrid,ArcGrid-GZIP</formats>
-	</supportedFormats>
-	<supportedInterpolations default="nearest neighbor">
-		<interpolationMethods>nearest neighbor</interpolationMethods>
-	</supportedInterpolations>
+<coverage format = "worldImageSample" >
+<name>Img_Sample</name>
+<label>A Raster with a World File</label>
+<description>Generated from worldImageSample</description>
+<metadataLink about = "http://www.geotools.org/WorldImageReader+formats" metadataType = "other" >
+null
+</metadataLink>
+<keywords>WCS,worldImageSample,worldImageSample_Coverage</keywords>
+<envelope crs = "GEOGCS['WGS 84', 
+  DATUM['WGS_1984', 
+    SPHEROID['WGS 84', 6378137.0, 298.257223563, AUTHORITY['EPSG','7030']], 
+    AUTHORITY['EPSG','6326']], 
+  PRIMEM['Greenwich', 0.0, AUTHORITY['EPSG','8901']], 
+  UNIT['degree', 0.017453292519943295], 
+  AXIS['Lon', EAST], 
+  AXIS['Lat', NORTH], 
+  AUTHORITY['EPSG','4326']]" srsName = "EPSG:WGS 84" >
+<pos>-130.85168 20.7052</pos>
+<pos>-62.0054 54.1141</pos>
+</envelope>
+<grid dimension = "2" >
+<low>0 0 </low>
+<high>983 598 </high>
+<axisName>Lon</axisName>
+<axisName>Lat</axisName>
+</grid>
+<CoverageDimension>
+<name>dim_0</name>
+<description>GridSampleDimension[0.0,255.0]</description>
+<Category>
+<name>values</name>
+<label>Category("values":[0.0 .. 255.0])</label>
+<interval>
+<min>0.0</min>
+<max>255.0</max>
+</interval>
+</Category>
+</CoverageDimension>
+<CoverageDimension>
+<name>dim_1</name>
+<description>GridSampleDimension[0.0,255.0]</description>
+<Category>
+<name>values</name>
+<label>Category("values":[0.0 .. 255.0])</label>
+<interval>
+<min>0.0</min>
+<max>255.0</max>
+</interval>
+</Category>
+</CoverageDimension>
+<CoverageDimension>
+<name>dim_2</name>
+<description>GridSampleDimension[0.0,255.0]</description>
+<Category>
+<name>values</name>
+<label>Category("values":[0.0 .. 255.0])</label>
+<interval>
+<min>0.0</min>
+<max>255.0</max>
+</interval>
+</Category>
+</CoverageDimension>
+<supportedCRSs>
+<requestCRSs>EPSG:4326</requestCRSs>
+<responseCRSs>EPSG:4326</responseCRSs>
+</supportedCRSs>
+<supportedFormats nativeFormat = "WorldImage" >
+<formats>GeoTIFF,PNG,GIF,TIFF</formats>
+</supportedFormats>
+<supportedInterpolations default = "nearest neighbor" >
+<interpolationMethods>nearest neighbor</interpolationMethods>
+</supportedInterpolations>
 </coverage>

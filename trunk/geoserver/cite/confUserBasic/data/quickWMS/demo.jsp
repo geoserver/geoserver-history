@@ -38,7 +38,7 @@
 <script language='Javascript'>
 // WMS servers - list here other OGC compliant map servers
 // Changes:	2003-10-24 : Added http:// to the DEMIS and ESRIN server urls
-	var geoserverWMS = "http://localhost:8080/geoserver/wms?";
+	var geoserverWMS = "<%="http://" + request.getServerName() + ":" + request.getServerPort() + "/geoserver/wms?"%>";
 	var esaWMS = "http://mapserv2.esrin.esa.it/cubestor/cubeserv/cubeserv.cgi";
 
 	// dynamische Kartengroesse
