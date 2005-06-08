@@ -14,10 +14,12 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureListener;
 import org.geotools.data.FeatureLocking;
-import org.geotools.data.FeatureResults;
+
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
+
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.Filter;
@@ -285,7 +287,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.data.Query)
      */
-    public FeatureResults getFeatures(Query query) throws IOException {
+    public FeatureCollection getFeatures(Query query) throws IOException {
         Query newQuery = makeDefinitionQuery(query);
         
         // see if the CRS got xfered over
@@ -323,7 +325,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.filter.Filter)
      */
-    public FeatureResults getFeatures(Filter filter) throws IOException {
+    public FeatureCollection getFeatures(Filter filter) throws IOException {
         filter = makeDefinitionFilter(filter);
 
         return source.getFeatures(filter);
@@ -342,7 +344,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @see org.geotools.data.FeatureSource#getFeatures()
      */
-    public FeatureResults getFeatures() throws IOException {
+    public FeatureCollection getFeatures() throws IOException {
         if (definitionQuery == Filter.NONE) {
             return source.getFeatures();
         } else {
