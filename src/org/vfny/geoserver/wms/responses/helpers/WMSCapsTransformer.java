@@ -100,7 +100,7 @@ public class WMSCapsTransformer extends TransformerBase {
     public Transformer createTransformer() throws TransformerException {
         Transformer transformer = super.createTransformer();
         String dtdUrl = this.schemaBaseUrl
-            + "wms/WMS_MS_Capabilities.dtd";  //DJB: fixed this to point to correct location
+            + "wms/1.1.1/WMS_MS_Capabilities.dtd";  //DJB: fixed this to point to correct location
         transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
 
         return transformer;
@@ -340,8 +340,11 @@ public class WMSCapsTransformer extends TransformerBase {
                 supportsUserStyle);
             sldAtts.addAttribute("", "RemoteWFS", "RemoteWFS", "",
                 supportsRemoteWFS);
+            
+            
             start("UserDefinedSymbolization",sldAtts);
-                  element("SupportedSLDVersion","1.0.0");  //djb: added that we support this.  We support partial 1.1
+//          djb: this was removed, even though they are correct - the CITE tests have an incorrect DTD
+           //       element("SupportedSLDVersion","1.0.0");  //djb: added that we support this.  We support partial 1.1
             end ("UserDefinedSymbolization");
             //element("UserDefinedSymbolization", null, sldAtts);
         }
