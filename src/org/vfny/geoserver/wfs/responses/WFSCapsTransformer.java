@@ -138,7 +138,7 @@ public class WFSCapsTransformer extends TransformerBase {
 
             String locationAtt = XSI_PREFIX + ":schemaLocation";
             String locationDef = WFS_URI + " " + request.getSchemaBaseUrl()
-                + "wfs/" + "WFS-capabilities.xsd"; //djb: this was pointing to the wrong location
+                + "wfs/1.0.0/" + "WFS-capabilities.xsd"; //djb: this was pointing to the wrong location
             attributes.addAttribute("", locationAtt, locationAtt, "",
                 locationDef);
 
