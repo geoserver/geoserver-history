@@ -728,6 +728,7 @@
 		<exclude name="**/*CVS*/*" />
 	</fileset>
 </copy>
+	<!--
 <copy todir="${dir.build}/cite/">
 	<fileset dir="${basedir}/cite">
 		<include name="**/*" />
@@ -735,6 +736,7 @@
 		<exclude name="**/*CVS*/*" />
 	</fileset>
 </copy>
+ -->
 
 
 <zip destfile="${basedir}/geoserver-${name.release}-src.zip">
@@ -798,6 +800,7 @@
 		</fileset>
 	</copy>
 	
+	
 <copy todir="${dir.build}/documents">
 	<fileset dir="${basedir}/documents">
 		<include name="jetty.xml" />
@@ -822,12 +825,14 @@
 <gzip src="${basedir}/geoserver-${name.release}-bin.tar" zipfile="${basedir}/geoserver-${name.release}-bin.tar.gz" />
 
 <copy file="${basedir}/geoserver-${name.release}-bin.tar.gz" todir="${dir.release}" />
+	
 	<delete file="${basedir}/geoserver-${name.release}-bin.tar.gz" failonerror="true" />
 	<delete file="${basedir}/geoserver-${name.release}-bin.tar" failonerror="true" />
 
 	
-<delete dir="${dir.build}" failonerror="false" />
+
 	<!--
+	<delete dir="${dir.build}" failonerror="false" />
 <delete file="${basedir}/geoserver-${name.release}-bin.zip" failonerror="true" />
  -->
 
