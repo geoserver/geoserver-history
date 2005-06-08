@@ -1,3 +1,25 @@
+GeoServer 1.3.0-RC1 README file
+--------------------------------
+0.  No longer relies on JAI!
+
+1.  Moved to Geotools 2.1.x branch
+2.  GetCapabilities (WFS and WMS) better reflect the added functionality + other fixes
+3.  Better SLD support and error reporting
+4.  Better handling of CRS xformations
+5.  Support for Min/MaxScaleDenominator in SLD
+6.  Better type system for <Filter>
+7.  Documentation updates
+8.  FeatureReader/FeatureCollection merge
+9.  New PNG writer (Jai-independent)
+10. GIF writer improvements
+11. Transparency support improvements
+12. non-JAI JPEG writer
+13. Memory leak fixed
+14. WMS speed improvements
+15. Data/Time problem fixed
+16. Other bug fixes, improvements, and testing
+
+
 GeoServer 1.3.0-beta4 README file
 --------------------------------
 
