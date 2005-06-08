@@ -481,7 +481,7 @@ public class WFSCapsTransformer extends TransformerBase {
         public  void handleFunctions(String prefix)
         {
         	 start(prefix +"Functions");
-        	 start(prefix +"FunctionNames");
+        	 start(prefix +"Function_Names");
         	 java.util.Iterator it = org.geotools.factory.FactoryFinder.factories(FunctionExpression.class);
              FunctionExpression exp = null;
              while (  it.hasNext()   )
@@ -493,10 +493,10 @@ public class WFSCapsTransformer extends TransformerBase {
                  AttributesImpl atts = new AttributesImpl();
                  atts.addAttribute("", "nArgs", "nArgs", "", funNArgs+"");
                  
-                 element(prefix +"FunctionName",funName,atts);              
+                 element(prefix +"Function_Name",funName,atts);              
              }
              
-             end(prefix +"FunctionNames");
+             end(prefix +"Function_Names");
              end(prefix +"Functions");
         }
         
