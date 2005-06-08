@@ -1,0 +1,17 @@
+<featureType datastore = "world_countries" >
+<name>World_countries_shp</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>4326</SRS>
+<title>World_countries_shp_Type</title>
+<abstract>Generated from world_countries</abstract>
+<numDecimals value = "8" />
+<keywords>World_countries_shp world_countries</keywords>
+<latLonBoundingBox dynamic = "false" miny = "-89.901447" maxy = "84.929365" maxx = "181.795516" minx = "-179.999169"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "world_country"  />
+</featureType>

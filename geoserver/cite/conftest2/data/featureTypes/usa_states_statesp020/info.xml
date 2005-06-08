@@ -1,0 +1,17 @@
+<featureType datastore = "usa_states" >
+<name>statesp020</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>4326</SRS>
+<title>statesp020_Type</title>
+<abstract>Generated from usa_states</abstract>
+<numDecimals value = "8" />
+<keywords>usa_states statesp020</keywords>
+<latLonBoundingBox dynamic = "false" miny = "17.674692153930664" maxy = "71.3980484008789" maxx = "179.7882080078125" minx = "-179.13339233398438"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "usa_states"  />
+</featureType>

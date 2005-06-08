@@ -1,0 +1,98 @@
+<?config.xml version="1.0" encoding="UTF-8"?>
+<catalog>
+<datastores>
+<!--
+a datastore configuration element serves as a common data source connection
+parameters repository for all featuretypes it holds.
+-->
+<datastore namespace = "topp" enabled = "true" id = "usa_counties" >
+<connectionParams>
+<parameter value = "topp" name = "namespace"  />
+<parameter value = "file:data/actual_datasets/countyp020.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "tiger" enabled = "true" id = "tiger_ny" >
+<connectionParams>
+<parameter value = "tiger" name = "namespace"  />
+<parameter value = "true" name = "loose bbox"  />
+<parameter value = "cite" name = "user"  />
+<parameter value = "cite" name = "passwd"  />
+<parameter value = "true" name = "wkb enabled"  />
+<parameter value = "localhost" name = "host"  />
+<parameter value = "5432" name = "port"  />
+<parameter value = "tiger_ny" name = "database"  />
+<parameter value = "postgis" name = "dbtype"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "topp" enabled = "true" id = "states_shapefile" >
+<connectionParams>
+<parameter value = "file:data/featureTypes/states/states.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "topp" enabled = "true" id = "usa_states" >
+<connectionParams>
+<parameter value = "topp" name = "namespace"  />
+<parameter value = "file:data/actual_datasets/statesp020.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "topp" enabled = "true" id = "postgis_test" >
+<connectionParams>
+<parameter value = "topp" name = "namespace"  />
+<parameter value = "false" name = "loose bbox"  />
+<parameter value = "cite" name = "user"  />
+<parameter value = "cite" name = "passwd"  />
+<parameter value = "true" name = "wkb enabled"  />
+<parameter value = "localhost" name = "host"  />
+<parameter value = "5432" name = "port"  />
+<parameter value = "geo1" name = "database"  />
+<parameter value = "postgis" name = "dbtype"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "topp" enabled = "true" id = "world_cities" >
+<connectionParams>
+<parameter value = "topp" name = "namespace"  />
+<parameter value = "file:data/actual_datasets/cities.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "topp" enabled = "true" id = "world_countries" >
+<connectionParams>
+<parameter value = "topp" name = "namespace"  />
+<parameter value = "file:data/actual_datasets/World_countries_shp.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "topp" enabled = "true" id = "usa_cities" >
+<connectionParams>
+<parameter value = "topp" name = "namespace"  />
+<parameter value = "file:data/actual_datasets/citiesx020.shp" name = "url"  />
+</connectionParams>
+</datastore>
+</datastores>
+<!--
+Defines namespaces to be used by the datastores.
+-->
+<namespaces>
+<namespace uri = "http://www.openplans.org/topp" prefix = "topp" default = "true"  />
+<namespace uri = "http://geoserver.sf.net" prefix = "sde"  />
+<namespace uri = "http://www.refractions.net/lakes" prefix = "lake"  />
+<namespace uri = "http://www.census.gov" prefix = "tiger"  />
+<namespace uri = "http://www.opengeospatial.net/cite" prefix = "cite"  />
+</namespaces>
+<styles>
+<!--
+Defines the style ids to be used by the wms.  The files must be
+contained in geoserver/misc/wms/styles.  We're working on finding
+a better place for them, but for now that's where you must put them
+if you want them on the server.
+-->
+<style filename = "poi2.sld" id = "poi2"  />
+<style filename = "point_landmark.sld" id = "point_landmark"  />
+<style filename = "giant_polygon.sld" id = "giant_polygon"  />
+<style filename = "usa_states.sld" id = "usa_states"  />
+<style filename = "poi.sld" id = "poiStyle"  />
+<style filename = "poly_landmark.sld" id = "poly_landmark"  />
+<style filename = "world_countries.sld" id = "world_country"  />
+<style filename = "tiger_roads.sld" id = "tiger_roads"  />
+<style filename = "world_cities.sld" id = "world_cities"  />
+<style filename = "usa_cities.sld" id = "usa_city"  />
+</styles>
+</catalog>
