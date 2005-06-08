@@ -23,7 +23,7 @@
 	<!--These should be defined in the build.properties file, which will -->
 	<!-- override these values -->
 
-	<property name="version.geotools" value="2.1.x" />
+	<property name="version.geotools" value="2.1.RC1" />
 
 
 	<!-- If you don't have your own conf directory then define one of -->
@@ -903,11 +903,11 @@
 
 
 	
-<copy failonerror="false" file="${dir.geotools}/plugin/oraclespatial/target/oracle-spatial-${version.geotools}.jar" toFile="${dir.lib}/gt2-oracle-spatial.jar" />
-<copy failonerror="false" file="${dir.geotools}/plugin/postgis/target/postgis-${version.geotools}.jar" toFile="${dir.lib}/gt2-postgis.jar" />
-<copy failonerror="false" file="${dir.geotools}/plugin/shapefile/target/shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-shapefile.jar" />
-<copy failonerror="false" file="${dir.geotools}/ext/validation/target/validation-${version.geotools}.jar" toFile="${dir.lib}/gt2-validation.jar" />
-<copy failonerror="false" file="${dir.geotools}/demo/property/target/property-${version.geotools}.jar" toFile="${dir.lib}/gt2-property.jar" />
+<copy failonerror="false" file="${dir.maven}/gt2/jars/oracle-spatial-${version.geotools}.jar" toFile="${dir.lib}/gt2-oracle-spatial.jar" />
+<copy failonerror="false" file="${dir.maven}/gt2/jars/postgis-${version.geotools}.jar" toFile="${dir.lib}/gt2-postgis.jar" />
+<copy failonerror="false" file="${dir.maven}/gt2/jars/shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-shapefile.jar" />
+<copy failonerror="false" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" toFile="${dir.lib}/gt2-validation.jar" />
+<copy failonerror="false" file="${dir.maven}/gt2/jars/property-${version.geotools}.jar" toFile="${dir.lib}/gt2-property.jar" />
 </target>
 
 <target name="gt2-validation" depends="init" description="Generate gt2-validation.jar for quick testing (use maven for jars you commit)">
