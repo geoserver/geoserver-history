@@ -585,7 +585,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
             String authority = "";
             if( coverage.getCrs() != null && !coverage.getCrs().getIdentifiers().isEmpty() ) {
-            	Identifier[] idents = (Identifier[]) coverage.getCrs().getIdentifiers().toArray(); 
+            	Identifier[] idents = (Identifier[]) coverage.getCrs().getIdentifiers().toArray(new Identifier[coverage.getCrs().getIdentifiers().size()]); 
             	authority = idents[0].toString();
             	element("SRS", authority);
             }
