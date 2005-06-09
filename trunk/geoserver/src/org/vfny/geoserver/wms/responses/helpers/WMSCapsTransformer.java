@@ -342,7 +342,12 @@ public class WMSCapsTransformer extends TransformerBase {
             sldAtts.addAttribute("", "RemoteWFS", "RemoteWFS", "",
                 supportsRemoteWFS);
 
-            element("UserDefinedSymbolization", null, sldAtts);
+            
+            start("UserDefinedSymbolization",sldAtts);
+//          djb: this was removed, even though they are correct - the CITE tests have an incorrect DTD
+           //       element("SupportedSLDVersion","1.0.0");  //djb: added that we support this.  We support partial 1.1
+            end ("UserDefinedSymbolization");
+            //element("UserDefinedSymbolization", null, sldAtts);
         }
 
         /**

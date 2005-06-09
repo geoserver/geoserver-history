@@ -144,7 +144,7 @@ public class WMS extends Service {
      * @return false
      */
     public boolean supportsSLD() {
-        return false;
+        return true; //djb: we support it now
     }
 
     /**
@@ -153,7 +153,7 @@ public class WMS extends Service {
      * @return false
      */
     public boolean supportsUserLayer() {
-        return false;
+        return true; //djb we support this partially - we support inlinefeatures.  Soon we'll support remote wfs
     }
 
     /**
@@ -162,7 +162,7 @@ public class WMS extends Service {
      * @return false
      */
     public boolean supportsUserStyle() {
-        return false;
+        return true; //djb: we support this now!
     }
 
     /**

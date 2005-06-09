@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.coverage.grid.GridCoverage2D;

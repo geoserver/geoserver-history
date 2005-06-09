@@ -27,15 +27,15 @@
 ;General
 
   ;Name and file
-  Name "GeoServer 1.3.0-beta4"
-  OutFile "geoserver-1.3.0-beta4.exe"
+  Name "GeoServer 1.3.0-RC1 WCS Experiment"
+  OutFile "geoserver-1.3.0-RC1-WCS.exe"
 
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\GeoServer 1.3"
+  InstallDir "$PROGRAMFILES\GeoServer 1.3.WCS"
   
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\GeoServer-1.3" ""
+  InstallDirRegKey HKCU "Software\GeoServer-1.3.WCS" ""
 
 ;--------------------------------
 ;Variables
@@ -51,7 +51,7 @@
   
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
-      installation of GeoServer 1.3 \r\n \r\nNote that this is the first \
+      installation of GeoServer 1.3 WCS Experiment \r\n \r\nNote that this is the first \
       attempt by the GeoServer project to create \
       a Windows executable installer.  \
       Please report any problems or suggestions for improvement to \
@@ -95,13 +95,13 @@ Section "GeoServer Section" SecGeoServer
   SetOutPath "$INSTDIR"
   
   ;ADD YOUR OWN FILES HERE...
-  File /r bin
-  File /r documents
-  File /r server
-  File /a README.txt
-  File /r lib
-  File /a RUNNING.txt
-  File /a license.txt
+  File /r D:\Java\__TMP\geoserver\bin
+  File /r D:\Java\__TMP\geoserver\documents
+  File /r D:\Java\__TMP\geoserver\server
+  File /a D:\Java\__TMP\geoserver\README.txt
+  File /r D:\Java\__TMP\geoserver\lib
+  File /a D:\Java\__TMP\geoserver\RUNNING.txt
+  File /a D:\Java\__TMP\geoserver\license.txt
 
   ;Store installation folderh
   WriteRegStr HKCU "Software\GeoServer" "" $INSTDIR
@@ -230,7 +230,7 @@ Section "Uninstall"
   
   IfFileExists "$INSTDIR" 0 Removed
      MessageBox MB_YESNO|MB_ICONQUESTION \
-          "Remove all files in your GeoServer 1.3 directory? (If you have anything you created that you want to keep, click No)" IDNO Removed
+          "Remove all files in your GeoServer 1.3 WCS Experiment directory? (If you have anything you created that you want to keep, click No)" IDNO Removed
      Delete "$INSTDIR\*.*" ;
      RMDIR /r "$INSTDIR"
      Sleep 500

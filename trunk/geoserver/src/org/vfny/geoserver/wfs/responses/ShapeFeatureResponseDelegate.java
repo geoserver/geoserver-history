@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,6 +22,7 @@ import java.util.zip.ZipOutputStream;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureStore;
+import org.geotools.data.Transaction;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -72,6 +75,7 @@ import org.vfny.geoserver.wfs.requests.FeatureRequest;
  * </p>
  *
  * @author Chris Holmes
+ * @author Simone Giannecchini
  * @version $Id: ShapeFeatureResponseDelegate.java 3270 2005-03-18 15:33:17Z groldan $
  *
  * @task TODO: lots of cleanup.  Get working with more than one feature result,
@@ -188,63 +192,98 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
                 + " or has not succeed");
         }
 
-        File tempZip = new File(System.getProperty("java.io.tmpdir"),
+        final File tempZip = new File(System.getProperty("java.io.tmpdir"),
                 "shape.zip");
-        FileOutputStream tempFileOS = new FileOutputStream(tempZip);
-        ZipOutputStream zipOut = null;
+        final BufferedOutputStream tempFileOS =new BufferedOutputStream(new FileOutputStream(tempZip),4096);
+        final ZipOutputStream zipOut = new ZipOutputStream(output);
         LOGGER.info("zip out location is: " + tempZip);
-        zipOut = new ZipOutputStream(output);
         output = zipOut;
 
-        List resultsList = results.getFeatures();
-        FeatureResults[] featureResults = (FeatureResults[]) resultsList
+        final List resultsList = results.getFeatures();
+        final FeatureResults[] featureResults = (FeatureResults[]) resultsList
             .toArray(new FeatureResults[resultsList.size()]);
-        FeatureReader reader = featureResults[0].reader();
-        String name = featureResults[0].getSchema().getTypeName();
-        File file = new File(System.getProperty("java.io.tmpdir"), name);
-        ShapefileDataStore sfds = new ShapefileDataStore(file.toURL());
-        sfds.createSchema(featureResults[0].getSchema());
+		final int numResults=featureResults.length;
+		
+		//decalring variables I will need later
+		FeatureReader reader=null;
+		String name = null;
+		File file =null;
+		ShapefileDataStore sfds=null;
+		FeatureStore store = null;
+		ZipEntry entry =null;
+		InputStream is =null;
+		InputStream shx = null;
+		InputStream dbf = null;
+		Transaction transaction=null;
+		//looping through all the results
+		for(int i=0;i<numResults;i++){
+	        reader = featureResults[i].reader();
+	        name = featureResults[i].getSchema().getTypeName();
+	        file = new File(System.getProperty("java.io.tmpdir"), name);
+			//making it destroy after exiting
+			file.deleteOnExit();
+	        sfds = new ShapefileDataStore(file.toURL());
+	        sfds.createSchema(featureResults[i].getSchema());
+	
+	        store = (FeatureStore) sfds.getFeatureSource(name);
+			transaction=store.getTransaction();
+			
+			store.setTransaction(transaction);
+	        store.addFeatures(reader);
+			
+			transaction.commit();
+			transaction.close();
+			
 
-        FeatureStore store = (FeatureStore) sfds.getFeatureSource(name);
-        store.addFeatures(reader);
-
-        //zipOut.
-        ZipEntry entry = new ZipEntry(name + ".shp");
-        zipOut.putNextEntry(entry);
-
-        try {
-            LOGGER.info("first feature is: "
-                + store.getFeatures().reader().next());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        //put this junk in a real method, get rid of silly code duplication.
-        InputStream is = new FileInputStream(file.getAbsolutePath() + ".shp");
-        int c;
-
-        while (-1 != (c = is.read())) {
-            output.write(c);
-        }
-
-        zipOut.closeEntry();
-        entry = new ZipEntry(name + ".dbf");
-        zipOut.putNextEntry(entry);
-
-        InputStream dbf = new FileInputStream(file.getAbsolutePath() + ".dbf");
-        c = 0;
-
-        while (-1 != (c = dbf.read())) {
-            output.write(c);
-        }
-
-        zipOut.closeEntry();
-
-        if (zipOut != null) {
+	        //zipOut.
+	        entry = new ZipEntry(name + ".shp");
+	        zipOut.putNextEntry(entry);
+	
+	        try {
+	            LOGGER.info("first feature is: "
+	                + store.getFeatures().reader().next());
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	
+	        //put this junk in a real method, get rid of silly code duplication.
+	        is = new BufferedInputStream(new FileInputStream(file.getAbsolutePath() + ".shp"));
+	        int c;
+	
+	        while (-1 != (c = is.read())) {
+	            output.write(c);
+	        }
+	
+	        zipOut.closeEntry();
+	        entry = new ZipEntry(name + ".dbf");
+	        zipOut.putNextEntry(entry);
+	
+	        dbf = new BufferedInputStream(new FileInputStream(file.getAbsolutePath() + ".dbf"));
+	        c = 0;
+	
+	        while (-1 != (c = dbf.read())) {
+	            output.write(c);
+	        }
+	
+	        zipOut.closeEntry();
+	
+			
+			entry = new ZipEntry(name + ".shx");
+	        zipOut.putNextEntry(entry);
+	        shx = new BufferedInputStream(new FileInputStream(file.getAbsolutePath() + ".shx"));
+	        c = 0;
+	
+	        while (-1 != (c = shx.read())) {
+	            output.write(c);
+	        }
+	
+	        zipOut.closeEntry();		
+	        
+		}
+		if (zipOut != null) {
             zipOut.finish();
             zipOut.flush();
-        }
-
+        }		
         //don't think we actually want this here...
         zipOut.close();
     }

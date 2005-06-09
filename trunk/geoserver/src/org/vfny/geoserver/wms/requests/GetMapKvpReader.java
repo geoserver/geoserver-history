@@ -898,8 +898,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 * @param layer
 	 * @param layers
 	 * @param styles
+	 * @throws WmsException
 	 */
-	public static void addStyles(GetMapRequest request, MapLayerInfo currLayer, StyledLayer layer, List layers, List styles) 
+	public static void addStyles(GetMapRequest request, MapLayerInfo currLayer, StyledLayer layer, List layers, List styles) throws WmsException 
 	{
 		if (currLayer == null)
 			return; // protection
@@ -955,7 +956,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 				if (layerStyles[t] instanceof NamedStyle)
 				{
 					layers.add(currLayer);
-					styles.add(findStyle( request, ((NamedStyle) layerStyles[t]).getName() ));
+					Style s = findStyle( request, ((NamedStyle) layerStyles[t]).getName() );
+					if (s == null)
+						throw new WmsException("couldnt find style named '"+((NamedStyle) layerStyles[t]).getName()+"'");
+					styles.add(s);
 				}
 				else 
 				{

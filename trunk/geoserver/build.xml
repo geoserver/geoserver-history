@@ -23,7 +23,7 @@
 	<!--These should be defined in the build.properties file, which will -->
 	<!-- override these values -->
 
-	<property name="version.geotools" value="2.1.x" />
+	<property name="version.geotools" value="2.1.RC1" />
 
 
 	<!-- If you don't have your own conf directory then define one of -->
@@ -38,7 +38,7 @@
 	<!-- ====================================================================== -->
 
 	<!-- release version -->
-	<property name="name.release" value="1.3.0-beta4" />
+	<property name="name.release" value="1.3.0-RC1-WCS" />
 
 	<!-- primary directories -->
 	<property name="dir.bin" value="${basedir}/bin" />
@@ -566,17 +566,17 @@
 
 			<!-- libraries -->
 			<lib dir="${dir.lib}">
-				<exclude name="**/junit.jar" />
-				<exclude name="**/servlet.jar" />
+				<!--exclude name="**/junit.jar" />
+				<exclude name="**/servlet.jar" /-->
 				<!--exclude name="**/gt2-oracle-spatial.jar"/-->
-				<exclude name="**/xalan.jar" />
+				<!--exclude name="**/xalan.jar" />
 				<exclude name="**/ki*.jar" />
-				<exclude name="**/a2jruntime.jar" />
+				<exclude name="**/a2jruntime.jar" /-->
 				<!--exclude name="**/log4j-1.2.5.jar" /-->
-				<exclude name="**/lucene.jar" />
+				<!--exclude name="**/lucene.jar" />
 				<exclude name="**/xml-apis.jar" />
 				<exclude name="**/xercesImpl.jar" />
-				<exclude name="*jetty*/**/*" />
+				<exclude name="*jetty*/**/*" /-->
 			</lib>
 
 			<!-- directories -->
@@ -782,6 +782,7 @@
 		<exclude name="**/*CVS*/*" />
 	</fileset>
 </copy>
+	<!--
 <copy todir="${dir.build}/cite/">
 	<fileset dir="${basedir}/cite">
 		<include name="**/*" />
@@ -789,6 +790,7 @@
 		<exclude name="**/*CVS*/*" />
 	</fileset>
 </copy>
+ -->
 
 
 <zip destfile="${basedir}/geoserver-${name.release}-src.zip">
@@ -880,8 +882,9 @@
 	<delete file="${basedir}/geoserver-${name.release}-bin.tar" failonerror="true" />
 
 	
-<delete dir="${dir.build}" failonerror="false" />
+
 	<!--
+	<delete dir="${dir.build}" failonerror="false" />
 <delete file="${basedir}/geoserver-${name.release}-bin.zip" failonerror="true" />
  -->
 
@@ -932,7 +935,7 @@
      Building with maven is required before commit changed jar files.
 -->
 <target name="geotools" depends="init" description="Generate geotools2 jars for quick testing (use maven for jars you commit)">
-<copy failonerror="false" toFile="${dir.lib}/geoapi.jar" file="${dir.maven}/geoapi/jars/geoapi-SNAPSHOT.jar" />
+<copy failonerror="false" toFile="${dir.lib}/geoapi.jar" file="${dir.maven}/geoapi/jars/geoapi-20050403.jar" />
 <copy failonerror="false" toFile="${dir.lib}/opengis-css-0.1.jar" file="${dir.maven}/opengis/jars/opengis-css-0.1.jar" />
 <copy failonerror="false" toFile="${dir.lib}/opengis-legacy-0.1.jar" file="${dir.maven}/opengis/jars/opengis-legacy-0.1.jar" />
 <copy failonerror="false" toFile="${dir.lib}/units-0.01.jar" file="${dir.maven}/units/jars/units-0.01.jar" />
@@ -972,11 +975,11 @@
 
 
 	
-<copy failonerror="false" file="${dir.geotools}/plugin/oraclespatial/target/oracle-spatial-${version.geotools}.jar" toFile="${dir.lib}/gt2-oracle-spatial.jar" />
-<copy failonerror="false" file="${dir.geotools}/plugin/postgis/target/postgis-${version.geotools}.jar" toFile="${dir.lib}/gt2-postgis.jar" />
-<copy failonerror="false" file="${dir.geotools}/plugin/shapefile/target/shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-shapefile.jar" />
-<copy failonerror="false" file="${dir.geotools}/ext/validation/target/validation-${version.geotools}.jar" toFile="${dir.lib}/gt2-validation.jar" />
-<copy failonerror="false" file="${dir.geotools}/demo/property/target/property-${version.geotools}.jar" toFile="${dir.lib}/gt2-property.jar" />
+<copy failonerror="false" file="${dir.maven}/gt2/jars/oracle-spatial-${version.geotools}.jar" toFile="${dir.lib}/gt2-oracle-spatial.jar" />
+<copy failonerror="false" file="${dir.maven}/gt2/jars/postgis-${version.geotools}.jar" toFile="${dir.lib}/gt2-postgis.jar" />
+<copy failonerror="false" file="${dir.maven}/gt2/jars/shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-shapefile.jar" />
+<copy failonerror="false" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" toFile="${dir.lib}/gt2-validation.jar" />
+<copy failonerror="false" file="${dir.maven}/gt2/jars/property-${version.geotools}.jar" toFile="${dir.lib}/gt2-property.jar" />
 </target>
 
 <target name="gt2-validation" depends="init" description="Generate gt2-validation.jar for quick testing (use maven for jars you commit)">
