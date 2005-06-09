@@ -288,7 +288,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.data.Query)
      */
-    public FeatureResults getFeatures(Query query) throws IOException {
+    public FeatureCollection getFeatures(Query query) throws IOException {
         Query newQuery = makeDefinitionQuery(query);
         
         // see if the CRS got xfered over
@@ -326,7 +326,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.filter.Filter)
      */
-    public FeatureResults getFeatures(Filter filter) throws IOException {
+    public FeatureCollection getFeatures(Filter filter) throws IOException {
         filter = makeDefinitionFilter(filter);
 
         return source.getFeatures(filter);
@@ -345,7 +345,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @see org.geotools.data.FeatureSource#getFeatures()
      */
-    public FeatureResults getFeatures() throws IOException {
+    public FeatureCollection getFeatures() throws IOException {
         if (definitionQuery == Filter.NONE) {
             return source.getFeatures();
         } else {

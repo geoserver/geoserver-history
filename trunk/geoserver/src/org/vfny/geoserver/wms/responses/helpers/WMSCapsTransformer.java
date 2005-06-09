@@ -21,6 +21,7 @@ import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.metadata.Identifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
@@ -583,8 +584,9 @@ public class WMSCapsTransformer extends TransformerBase {
             Envelope bbox = coverage.getEnvelope();
 
             String authority = "";
-            if( coverage.getCrs() != null && coverage.getCrs().getIdentifiers().length > 0 ) {
-            	authority = coverage.getCrs().getIdentifiers()[0].toString();
+            if( coverage.getCrs() != null && !coverage.getCrs().getIdentifiers().isEmpty() ) {
+            	Identifier[] idents = (Identifier[]) coverage.getCrs().getIdentifiers().toArray(); 
+            	authority = idents[0].toString();
             	element("SRS", authority);
             }
 

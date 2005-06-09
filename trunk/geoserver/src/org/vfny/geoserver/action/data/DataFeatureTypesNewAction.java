@@ -6,6 +6,8 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -98,10 +100,10 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         // attempt to get a better SRS
         try {
         	CoordinateReferenceSystem crs = featureType.getDefaultGeometry().getCoordinateSystem();
-        	Identifier[] idents = crs.getIdentifiers();
-        	for (int t=0;t<idents.length;t++) //for each ident
+        	Set idents = crs.getIdentifiers();
+        	for (Iterator t=idents.iterator();t.hasNext();) //for each ident
         	{
-        		Identifier id = idents[t];
+        		Identifier id = (Identifier) t.next();
         		if (id.toString().indexOf("EPSG:") != -1)    // this should probably use the Citation, but this is easier!
         		{
         			//we have an EPSG #, so lets use it!
