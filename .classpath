@@ -11,7 +11,6 @@
 	<classpathentry kind="lib" path="lib/commons-lang.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/commons-validator.jar"/>
-	<classpathentry kind="lib" path="lib/geoapi-20050213.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-arcsde.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-epsg.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-experiment.jar"/>
@@ -52,5 +51,8 @@
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry sourcepath="/home/gabriel/workspace/gt/module/main" kind="lib" path="lib/gt2-main.jar"/>
 	<classpathentry kind="lib" path="lib/commons-httpclient-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/geoapi-20050403.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-arcgrid.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-image.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
