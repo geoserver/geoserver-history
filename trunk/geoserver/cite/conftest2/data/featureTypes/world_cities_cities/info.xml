@@ -1,0 +1,17 @@
+<featureType datastore = "world_cities" >
+<name>cities</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>4326</SRS>
+<title>cities_Type</title>
+<abstract>Generated from world_cities</abstract>
+<numDecimals value = "8" />
+<keywords>cities world_cities</keywords>
+<latLonBoundingBox dynamic = "false" miny = "-54.79199981689453" maxy = "78.19999694824219" maxx = "179.22189331054688" minx = "-176.1515655517578"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "world_cities"  />
+</featureType>

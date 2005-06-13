@@ -121,12 +121,17 @@ public class SLDValidator
 						{
 							String head = "---------------------".substring(0,header.length()-1);
 							String body = "--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
+							
 							int colNum = sax.getColumnNumber();  //protect against col 0 problems
 							if (colNum <1)
 								colNum = 1;
 							if (colNum > body.length())
-								colNum = body.length();
-							result.append(head+body.substring(0,sax.getColumnNumber()-1)+"^\n");
+							{
+								body = body+body+body+body+body+body; // make it longer (not usually required, but might be for SLD_BODY=... which is all one line)
+								if (colNum > body.length())
+									colNum = body.length();
+							}
+							result.append(head+body.substring(0,colNum-1)+"^\n");
 							result.append("       (line "+sax.getLineNumber()+", column "+sax.getColumnNumber()+")"+sax.getLocalizedMessage()+"\n");
 							exceptionNum++;
 						}
