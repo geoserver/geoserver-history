@@ -700,6 +700,9 @@ public class WMSCapsTransformer extends TransformerBase {
                     "xlink:type", "", "simple");
                 attrs.addAttribute(XLINK_NS, "href",
                     "xlink:href", "", onlineResource.toString());
+                
+                attrs.getValue("xlink:href");
+                
                 element("OnlineResource", null, attrs);
 
                 end("LegendURL");
