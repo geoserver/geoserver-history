@@ -24,6 +24,7 @@
 	<!-- override these values -->
 
 	<property name="version.geotools" value="2.1.RC1" />
+	<!--property name="version.geotools" value="2.2.x" /-->
 
 
 	<!-- If you don't have your own conf directory then define one of -->
