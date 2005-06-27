@@ -6,6 +6,7 @@ package org.vfny.geoserver.wfs.requests;
 
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,8 +53,18 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     private boolean insideFeature = false;
     private boolean insideInsert = false;
 
-    /** Stores current feature attributes. */
+    /** 
+     * Stores current feature attributes.
+     * Its value is parsed from the string representation built on
+     * <code>processingAttributeValue</code>, once we get the end
+     * of the element's content (aka, at endElement())
+     */
     private Object tempValue = null;
+	/** actual attribute value is built here since multiple calls to
+	 * {@linkplain #characters(char[], int, int)} may occur until the
+	 * whole attribute value gets completely parsed. 
+	 */
+	private StringBuffer processingAttributeValue;
     private String attName = "";
 
     //private FeatureSchema metadata = new FeatureSchema();
@@ -99,6 +110,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
         }
 
         LOGGER.finest("checking out " + namespaceURI + ", " + localName);
+		processingAttributeValue = new StringBuffer();
 
         // if it ends with Member we'll assume it's a feature for the time being
         if (insideInsert && !(localName.equals("Insert"))) {
@@ -209,23 +221,26 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      */
     public void characters(char[] ch, int start, int length)
         throws SAXException {
-        String rawAttribute = new String(ch, start, length);
-        LOGGER.fine("we are inside attribute: " + insideAttribute
-            + ", curAttType is " + curAttributeType + " curFeatureT: "
-            + curFeatureType + " attName " + attName);
+		if(LOGGER.isLoggable(Level.FINE)){
+	        LOGGER.fine("we are inside attribute: " + insideAttribute
+	            + ", curAttType is " + curAttributeType + " curFeatureT: "
+	            + curFeatureType + " attName " + attName);
+		}
 
-        if (insideAttribute && !rawAttribute.trim().equals("")) {
-            tempValue = curAttributeType.parse(rawAttribute);
-
-            //try {
-            //    tempValue = new Integer(rawAttribute);
-            //} catch (NumberFormatException e1) {
-            //    try {
-            //        tempValue = new Double(rawAttribute);
-            //    } catch (NumberFormatException e2) {
-            //        tempValue = new String(rawAttribute);
-            //    }
-            //}
+        if (insideAttribute && length > 0) {
+			//GR: parsing tempValue here wrong, att value parsing should be
+			//done in endElement, since we don't have the full string 
+			//representation until then
+            
+			//tempValue = curAttributeType.parse(rawAttribute);
+			
+			//processingAttributeValue is null when we're outside
+			//an xml element, so junk spaces need not to be treated
+			if(processingAttributeValue != null){
+				//so we incrementally build the value on this StringBuffer and parse
+				//on endElement
+				processingAttributeValue.append(ch, start, length);
+			}
         } else {
             parent.characters(ch, start, length);
         }
@@ -299,9 +314,13 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
                 && !(localName.equals("lineStringMember")
                 || localName.equals("polygonMember")
                 || localName.equals("pointMember"))) {
-            LOGGER.finest("end - inside attribute [" + tempValue + "]");
+			
+			if(LOGGER.isLoggable(Level.FINEST))
+				LOGGER.finest("end - inside attribute [" + processingAttributeValue + "]");
 
-            if ((tempValue != null) && !tempValue.toString().trim().equals("")) {
+            //if ((tempValue != null) && !tempValue.toString().trim().equals("")) {
+			if(processingAttributeValue != null && processingAttributeValue.length() > 0){
+				tempValue = curAttributeType.parse(processingAttributeValue.toString());
                 int insertPosition = curFeatureType.find(curAttributeType);
                 Object curAtt = attributes[insertPosition];
 
@@ -337,6 +356,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
 
             //insideFeature = false;
         }
+		processingAttributeValue = null;
     }
 
     /**
