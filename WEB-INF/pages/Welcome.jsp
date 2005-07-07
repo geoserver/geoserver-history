@@ -57,7 +57,7 @@
 </code></pre>
 <ul>
   <li>
-    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs/GetCapabilities">
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs?request=GetCapabilities&service=WFS">
       getCapabilities
     </a>
   </li>
@@ -76,7 +76,7 @@
 
 <ul>
   <li>
-    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms/GetCapabilities">
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms?request=GetCapabilities&service=WMS">
       getCapabilities
     </a>
   </li>
