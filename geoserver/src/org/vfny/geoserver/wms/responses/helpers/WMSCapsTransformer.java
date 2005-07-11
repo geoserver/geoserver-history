@@ -609,6 +609,17 @@ public class WMSCapsTransformer extends TransformerBase {
                 AttributesImpl attrs = new AttributesImpl();
                 attrs.addAttribute("", "width", "width", "",
                     String.valueOf(GetLegendGraphicRequest.DEFAULT_WIDTH));
+                
+                //DJB: problem here is that we do not know the size of the legend apriori - we need
+                //     to make one and find its height.  Not the best way, but it would work quite well.
+                //     This was advertising a 20*20 icon, but actually producing ones of a different size.
+                //     An alternative is to just scale the resulting icon to what the server requested, but this isnt
+                //     the nicest thing since warped images dont look nice.  The client should do the warping.
+                
+                //however, to actually estimate the size is a bit difficult.  I'm going to do the scaling 
+                //so it obeys the what the request says.  For people with a problem with that should consider
+                //changing the default size here so that the request is for the correct size.
+                
                 attrs.addAttribute("", "height", "height", "",
                     String.valueOf(GetLegendGraphicRequest.DEFAULT_HEIGHT));
 
