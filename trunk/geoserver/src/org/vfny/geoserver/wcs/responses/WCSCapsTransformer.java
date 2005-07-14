@@ -8,8 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.geotools.factory.Hints;
 import org.geotools.geometry.JTS;
 import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.referencing.FactoryException;
@@ -419,7 +421,7 @@ public class WCSCapsTransformer extends TransformerBase {
         private void handleEnvelope(CoordinateReferenceSystem crs, Envelope envelope) {
 			try {
 				if( !crs.getName().getCode().equalsIgnoreCase("WGS 84") ) {
-					final CRSFactory crsFactory = FactoryFinder.getCRSFactory(null);
+					final CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
 					final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(null);
 					final CoordinateReferenceSystem targetCRS = crsFactory.createFromWKT(
 				    		"GEOGCS[\"WGS 84\",\n" 								 + 

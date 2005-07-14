@@ -6,6 +6,8 @@
  */
 package org.vfny.geoserver.action.data;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -22,6 +24,7 @@ import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
 import org.vfny.geoserver.form.data.DataNamespacesSelectForm;
 import org.vfny.geoserver.global.UserContainer;
@@ -61,7 +64,16 @@ public class DataNamespacesSelectAction extends ConfigAction {
         }
         getUserContainer(request).setNamespaceConfig(config);
         
-        if (action.equals(delete)) {
+        if (action.equals(delete)) 
+        {
+        	if (dataStoresUseNamespace(dataConfig,nsSelected))
+        	{
+        		//dont delete a namespace thats in use!
+        		    ActionErrors errors = new ActionErrors();
+        	        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.namespace.namespaceInUse" ));            
+        	        request.setAttribute(Globals.ERROR_KEY, errors); 
+        	        return mapping.findForward("config.data.namespace");
+        	}
             dataConfig.removeNameSpace(nsSelected);
             getApplicationState().notifyConfigChanged();
             
@@ -90,4 +102,26 @@ public class DataNamespacesSelectAction extends ConfigAction {
         request.setAttribute(Globals.ERROR_KEY, errors);        
         return mapping.findForward("config.data.style");        
     }
+
+	/**
+	 *  return true if the namespace is being used by a datastore.
+	 *  You dont want to delete a namespace thats actually being used.
+	 * 
+	 * @param dataConfig
+	 * @param nsSelected
+	 * @return
+	 */
+	private boolean dataStoresUseNamespace(DataConfig dataConfig, String nsSelected) 
+	{
+          List stores =  dataConfig.getDataStoreIds();
+          
+          Iterator it = stores.iterator();
+          while (it.hasNext())
+          {
+              DataStoreConfig dsc = dataConfig.getDataStore( (String) it.next() );
+              if (dsc.getNameSpaceId().equals(nsSelected) )
+              	return true;              
+          }
+          return false;
+	}
 }

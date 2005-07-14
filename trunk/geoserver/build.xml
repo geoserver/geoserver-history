@@ -23,8 +23,8 @@
 	<!--These should be defined in the build.properties file, which will -->
 	<!-- override these values -->
 
-	<property name="version.geotools" value="2.1.RC1" />
-	<!--property name="version.geotools" value="2.2.x" /-->
+	<!--property name="version.geotools" value="2.1.RC1" /-->
+	<property name="version.geotools" value="2.2.x" />
 
 
 	<!-- If you don't have your own conf directory then define one of -->
@@ -567,17 +567,17 @@
 
 			<!-- libraries -->
 			<lib dir="${dir.lib}">
-				<!--exclude name="**/junit.jar" />
-				<exclude name="**/servlet.jar" /-->
+				<exclude name="**/junit.jar" />
+				<exclude name="**/servlet.jar" />
 				<!--exclude name="**/gt2-oracle-spatial.jar"/-->
-				<!--exclude name="**/xalan.jar" />
+				<exclude name="**/xalan.jar" />
 				<exclude name="**/ki*.jar" />
-				<exclude name="**/a2jruntime.jar" /-->
+				<exclude name="**/a2jruntime.jar" />
 				<!--exclude name="**/log4j-1.2.5.jar" /-->
-				<!--exclude name="**/lucene.jar" />
+				<exclude name="**/lucene.jar" />
 				<exclude name="**/xml-apis.jar" />
 				<exclude name="**/xercesImpl.jar" />
-				<exclude name="*jetty*/**/*" /-->
+				<exclude name="*jetty*/**/*" />
 			</lib>
 
 			<!-- directories -->
@@ -938,7 +938,9 @@
 <target name="geotools" depends="init" description="Generate geotools2 jars for quick testing (use maven for jars you commit)">
 <copy failonerror="false" toFile="${dir.lib}/geoapi.jar" file="${dir.maven}/geoapi/jars/geoapi-2.0.jar" />
 <copy failonerror="false" toFile="${dir.lib}/opengis-css-0.1.jar" file="${dir.maven}/opengis/jars/opengis-css-0.1.jar" />
-<copy failonerror="false" toFile="${dir.lib}/opengis-legacy-0.1.jar" file="${dir.maven}/opengis/jars/opengis-legacy-0.1.jar" />
+<!--
+ <copy failonerror="false" toFile="${dir.lib}/opengis-legacy-0.1.jar" file="${dir.maven}/opengis/jars/opengis-legacy-0.1.jar" />
+  -->
 <copy failonerror="false" toFile="${dir.lib}/units-0.01.jar" file="${dir.maven}/units/jars/units-0.01.jar" />
 <copy failonerror="false" toFile="${dir.lib}/jsde_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_sdk-9.0.jar" />
 <copy failonerror="false" toFile="${dir.lib}/jsde_jpe_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_jpe_sdk-9.0.jar" />
@@ -954,16 +956,17 @@
 	<copy failonerror="false" toFile="${dir.lib}/gt2-main.jar" file="${dir.maven}/gt2/jars/main-${version.geotools}.jar" />
 	
 	<!-- added by Alex -->
-	<!--copy failonerror="false" toFile="${dir.lib}/gt2-arcgrid.jar" file="${dir.maven}/gt2/jars/arcgrid-${version.geotools}.jar" />
+	<copy failonerror="false" toFile="${dir.lib}/gt2-arcgrid.jar" file="${dir.maven}/gt2/jars/arcgrid-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-gtopo30.jar" file="${dir.maven}/gt2/jars/gtopo30-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-image.jar" file="${dir.maven}/gt2/jars/image-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-grib.jar" file="${dir.maven}/gt2/jars/GriB1-${version.geotools}.jar" />
-	<copy failonerror="false" toFile="${dir.lib}/gt2-geotiff.jar" file="${dir.maven}/gt2/jars/geotiff-${version.geotools}.jar" /-->
+	<copy failonerror="false" toFile="${dir.lib}/gt2-geotiff.jar" file="${dir.maven}/gt2/jars/geotiff-${version.geotools}.jar" />
 	
 	<copy failonerror="false" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2/jars/arcsde-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />
 	<copy failonerror="false" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-wkt-${version.geotools}.jar" />
-	<!--copy failonerror="false" toFile="${dir.lib}/gt2-epsg-a.jar" file="${dir.maven}/gt2/jars/epsg-access-${version.geotools}.jar" /-->
+	<copy failonerror="false" toFile="${dir.lib}/gt2-epsg-h.jar" file="${dir.maven}/gt2/jars/epsg-hsql-${version.geotools}.jar" />
+	<!--copy failonerror="false" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-access-${version.geotools}.jar" /-->
 	<copy failonerror="false" toFile="${dir.lib}/gt2-experiment.jar" file="${dir.maven}/gt2/jars/experiment-${version.geotools}.jar" />
 
 <copy failonerror="false" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />

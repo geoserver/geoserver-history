@@ -240,10 +240,34 @@ public abstract class DefaultRasterLegendProducer
             legendsStack.add(image);
         }
 
-        this.legendGraphic = mergeLegends(legendsStack);
+        this.legendGraphic = scaleImage(mergeLegends(legendsStack),request);
     }
 
     /**
+     *   Scales the image so that its the size specified in the request.
+     *   @hack -- there should be a much better way to do this.  See handleLegendURL() in WMSCapsTransformer.
+	 * @param image
+	 * @return
+	 */
+	private BufferedImage scaleImage(BufferedImage image,GetLegendGraphicRequest request) 
+	{
+        final int w = request.getWidth();
+        final int h = request.getHeight();
+        
+        BufferedImage scaledImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics = scaledImage.createGraphics();
+        graphics.setColor(BG_COLOR);
+        graphics.fillRect(0, 0, w, h);
+        
+        AffineTransform xform = new AffineTransform();
+        xform.setToScale( ((double)w)/image.getWidth(), ((double)h)/image.getHeight()  );
+        
+        graphics.drawImage(image,xform,null   );
+        
+        return scaledImage;        
+	}
+
+	/**
      * Recieves a list of <code>BufferedImages</code> and produces a new one
      * which holds all  the images in <code>imageStack</code> one above the
      * other.

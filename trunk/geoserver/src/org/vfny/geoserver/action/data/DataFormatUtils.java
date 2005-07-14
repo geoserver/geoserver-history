@@ -190,7 +190,21 @@ public abstract class DataFormatUtils {
 		
 		return Collections.synchronizedList(list);
 	}
-	
+
+	public  static List listDataFormats() {
+		List list = new ArrayList();
+		Format[] formats = GridFormatFinder.getFormatArray();
+		Format format = null;
+		
+		for( int i = 0; i < formats.length; i++ ) {
+			if( !list.contains(formats[i]) ) {
+				list.add(formats[i]);
+			}
+		}
+		
+		return Collections.synchronizedList(list);
+	}
+
 	public  static Map defaultParams(String description) {
 		return Collections.synchronizedMap(defaultParams(aquireFactory(description)));
 	}

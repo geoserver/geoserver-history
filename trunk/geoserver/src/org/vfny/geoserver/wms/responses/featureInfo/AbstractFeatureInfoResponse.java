@@ -216,10 +216,12 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 Query q = new DefaultQuery( finfo.getTypeName(), null, getFInfoFilter,request.getFeatureCount(), Query.ALL_NAMES, null ); 
                 FeatureResults match = finfo.getFeatureSource().getFeatures(q);
 
-                if (match.getCount() > 0) {
+                //this was crashing Gml2FeatureResponseDelegate due to not setting
+                //the featureresults, thus not being able of querying the SRS
+                //if (match.getCount() > 0) {
                     results.add(match);
                     metas.add(finfo);
-                }
+                //}
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();

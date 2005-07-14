@@ -68,7 +68,7 @@ goto run
 goto end
 
 :execJava
-  java -jar start.jar
+  java -jar %GEOSERVER_HOME%/bin/start.jar
   goto end  
 
 :end

@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import org.geotools.factory.Hints;
 import org.geotools.geometry.JTS;
 import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.datum.DatumFactory;
@@ -73,7 +76,7 @@ public class DescribeResponse implements Response {
     /**
      * The default coordinate reference system factory.
      */
-    protected  final static CRSFactory crsFactory = FactoryFinder.getCRSFactory(null);
+    protected  final static CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
 
     /**
      * The default math transform factory.

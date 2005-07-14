@@ -255,9 +255,19 @@
              value="config.data.store:config.data.namespace:config.data.style:config.data.type"/>
   -->
         <put name="menuForwards"
-             value="config.data.namespace:config.data.format:config.data.store:config.data.style:config.data.type:config.data.coverage"/>
+             value="config.data.namespace:config.data.coverageplugins:config.data.format:config.data.store:config.data.style:config.data.type:config.data.coverage"/>
    	</definition>
 
+	<!-- coverageplugins -->
+   	<definition name="config.data.coverageplugins" extends=".mainLayout">
+   		<put name="key" value="config.data.coverageplugins"/>
+		<put name="body" value="/WEB-INF/pages/data/DataConfigCoveragePlugins.jsp"/>
+		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
+   		<put name="layer" value="data"/>   				
+        <put name="locationForwards" value="welcome:config:config.data"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+   	</definition>
+	
 	<!-- dataformats -->
    	<definition name="config.data.format" extends=".mainLayout">
    		<put name="key" value="config.data.format"/>

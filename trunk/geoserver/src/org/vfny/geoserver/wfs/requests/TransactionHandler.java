@@ -285,10 +285,17 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
             LOGGER.finest("found property name: " + s);
             curPropertyName = s.trim();
 
+		/*
+		 * GR: this was wrong. It prevents String attribute values that have
+		 * \n or \n\r characters from being parsed correctly.
             //if curProperty is not null then there is a geometry there.
         } else if ((state == VALUE) && (curPropertyValue == null)) {
+        */
+         //if curProperty is not null then there is a geometry there.
+		} else if (state == VALUE) {
             String s = new String(ch, start, length);
-            curPropertyValue = s.trim();
+			//GR:also doing s.trim() is wrong. We can't force spaces not to be part of the data
+            curPropertyValue = curPropertyValue == null? s : curPropertyValue + s;
         } else if (state == LOCKID) {
             String s = new String(ch, start, length);
             curLockId = s.trim();

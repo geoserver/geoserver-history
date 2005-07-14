@@ -20,13 +20,16 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.opengis.coverage.grid.Format;
 import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.data.DataFormatUtils;
@@ -66,6 +69,8 @@ public class DataFormatsEditorForm extends ActionForm {
     //private String namespaceId;
     private String type;
     private String url;
+
+    private FormFile formatFile= null;
 
     /* Description of DataStore (abstract?) */
     private String description;
@@ -122,6 +127,7 @@ public class DataFormatsEditorForm extends ActionForm {
         description = dfConfig.getAbstract();
         enabled = dfConfig.isEnabled();
         url = dfConfig.getUrl();
+        formatFile = null;
 //        namespaceId = dfConfig.getNameSpaceId();
 //        if (namespaceId.equals("")) {
 //        	namespaceId = config.getDefaultNameSpace().getPrefix();
@@ -192,7 +198,12 @@ public class DataFormatsEditorForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping,
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
-        
+
+        if (this.getFormatFile().getFileSize()==0) {// filename not filed or file does not exist
+            errors.add("Format", new ActionError("error.file.required")) ;
+            return errors;
+        }
+
         // Selected DataStoreConfig is in session
         //
         UserContainer user = Requests.getUserContainer( request );
@@ -200,7 +211,7 @@ public class DataFormatsEditorForm extends ActionForm {
         //
         // dsConfig is the only way to get a factory
         Format factory = dfConfig.getFactory();
-         ParameterValueGroup info = factory.getReadParameters();
+        ParameterValueGroup info = factory.getReadParameters();
 
         Map connectionParams = new HashMap();
 
@@ -225,11 +236,12 @@ public class DataFormatsEditorForm extends ActionForm {
                 try {
     				if( key.equalsIgnoreCase("crs") ) {
 						if( getParamValue(i) != null && ((String) getParamValue(i)).length() > 0 ) {
-							CRSFactory crsFactory = FactoryFinder.getCRSFactory(null);
+							CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
 							CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) getParamValue(i));
 							value = crs;
 						} else {
-							CoordinateReferenceSystem crs = CRS.decode("EPSG:4326");
+							CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+							CoordinateReferenceSystem crs=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:4326");
 							value = crs;
 						}
 					} else if( key.equalsIgnoreCase("envelope") ) {
@@ -593,5 +605,11 @@ public class DataFormatsEditorForm extends ActionForm {
 	 */
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	public FormFile getFormatFile() {
+		return formatFile;
+	}
+	public void setFormatFile(FormFile formatFile) {
+		this.formatFile = formatFile;
 	}
 }

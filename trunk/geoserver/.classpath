@@ -24,10 +24,7 @@
 	<classpathentry kind="var" path="GEOSERVER/gt2-grib.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-gtopo30.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-image.jar"/>
-	<classpathentry sourcepath="/MAIN" kind="var" path="GEOSERVER/gt2-main.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
+	<classpathentry sourcepath="/MAIN" kind="var" path="GEOSERVER/gt2-main.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-mysql.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-oracle-spatial.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-postgis.jar"/>
@@ -63,5 +60,20 @@
 	<classpathentry kind="var" path="GEOSERVER/xalan.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/xercesImpl.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/xml-apis.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-1.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-awt-util-1.1.1.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-bridge-1.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-bridge-1.5.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-css-1.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-dom-1.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-gvt-1.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-rasterizer-1.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-svg-dom-1.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-svg-dom-1.5.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-svggen-1.1.1.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-transcoder-1.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-util-1.1.1.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-xml-1.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN/batik/jars/batik-xml-1.5.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

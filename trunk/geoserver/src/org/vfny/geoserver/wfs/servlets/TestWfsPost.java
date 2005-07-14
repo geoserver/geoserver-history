@@ -198,6 +198,15 @@ public class TestWfsPost extends HttpServlet {
                 acon.setDoInput(true);
                 acon.setUseCaches(false);
 
+                
+                //SISfixed - if there was authentication info in the request,
+                //           Pass it along the way to the target URL
+                //DJB: applied patch in GEOS-335
+              String authHeader = request.getHeader("Authorization");
+              if( authHeader != null )
+              		acon.setRequestProperty("Authorization",authHeader);
+              
+              
                 //acon.setRequestProperty("Content-Type", "application/xml");
                 if (!doGet) {
                     xmlOut = new PrintWriter(new BufferedWriter(

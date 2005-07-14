@@ -12,10 +12,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geotools.data.DataSourceException;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.FactoryFinder;
+import org.geotools.feature.DefaultFeatureType;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
@@ -160,12 +162,20 @@ public class GetMapResponse implements Response {
 
                 map.addLayer(layer);
             } else if( layers[i].getType() == MapLayerInfo.TYPE_RASTER ) {
-				map.addLayer(layers[i].getCoverageToLayer(req.getHttpServletRequest()), style);    			
+            	//layers[i].getCoverageToLayer(req.getHttpServletRequest());
+            	layer = new DefaultMapLayer(layers[i].getCoverageToFeatures(req.getHttpServletRequest()), style);
+				map.addLayer(layer);    			
             }
         }
 
         this.delegate.produceMap(map);
-        }
+        } catch (DataSourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassCastException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         finally
 		{
         	//clean

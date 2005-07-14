@@ -42,9 +42,11 @@ import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.operation.Resampler2D;
 import org.geotools.coverage.processing.GridCoverageProcessor2D;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.geotools.referencing.operation.transform.LinearTransform1D;
 import org.geotools.resources.GCSUtilities;
 import org.geotools.util.NumberRange;
@@ -55,6 +57,7 @@ import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.spatialschema.geometry.Envelope;
@@ -226,11 +229,12 @@ public class CoverageResponse implements Response {
 					try {
 	    				if( key.equalsIgnoreCase("crs") ) {
 							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
-								CRSFactory crsFactory = FactoryFinder.getCRSFactory(null);
+								CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
 								CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) dfConfig.getParameters().get(key));
 								value = crs;
 							} else {
-								CoordinateReferenceSystem crs = CRS.decode("EPSG:4326");
+								CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+								CoordinateReferenceSystem crs=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:4326");
 								value = crs;
 							}
 						} else if( key.equalsIgnoreCase("envelope") ) {

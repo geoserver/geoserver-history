@@ -4,9 +4,9 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
@@ -14,15 +14,16 @@ import org.vfny.geoserver.wms.responses.helpers.JAISupport;
 
 
 /**
- * Factory of legend graphic producers for the <code>"image/png"</code> format.
+ * WMS GetLegendGraphic image producer for the formats supported by the
+ * available JAI library.
  *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id$
+ * @version $Id: PNGLegendGraphicProducerFactory.java 3669 2005-07-11 16:19:44Z dblasby $
  */
 public class PNGLegendGraphicProducerFactory
     implements GetLegendGraphicProducerSpi {
     /**
-     * Empty constructor, as required by the factory strategy.
+     *
      */
     public PNGLegendGraphicProducerFactory() {
         super();
@@ -32,50 +33,34 @@ public class PNGLegendGraphicProducerFactory
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#getName()
      */
     public String getName() {
-        return "Portable Network Graphics (PNG) legend graphics producer";
+        return "Legend graphic producer factory for PNG format";
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return a singleton Set with the supported mime type.
-     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#getSupportedFormats()
      */
-    public Set getSupportedFormats() {
-        return Collections.singleton(PNGLegendGraphicProducer.MIME_TYPE);
+    public Set getSupportedFormats() 
+    {
+    	Set s = new TreeSet();
+    	s.add("image/png");
+        return s;
     }
 
     /**
-     * Returns wether the gif legend producer is available to be used.
-     *
-     * @return <code>true</code> iif JAI is available, since the actual image generation
-     * depends on JAI availability.
-     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#isAvailable()
      */
     public boolean isAvailable() {
-        return JAISupport.isJaiAvailable();
+        return true;
     }
 
     /**
-     * Evaluates if the prioducer this factory serves can create images in
-     * <code>mimeType</code> format.
-     *
-     * @param mimeType DOCUMENT ME!
-     *
-     * @return true iif <code>mimeType == "image/png"</code>
-     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#canProduce(java.lang.String)
      */
     public boolean canProduce(String mimeType) {
-        return PNGLegendGraphicProducer.MIME_TYPE.equals(mimeType);
+        return mimeType.equalsIgnoreCase("image/png");
     }
 
     /**
-     * Creates a legend graphics producer for the given format, which in this
-     * case must be <code>"image/gif"</code>
-     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#createLegendProducer(java.lang.String)
      */
     public GetLegendGraphicProducer createLegendProducer(String format)
@@ -85,7 +70,7 @@ public class PNGLegendGraphicProducerFactory
                 + " not supported by this legend producer");
         }
 
-        return new GifLegendGraphicProducer();
+        return new PNGLegendGraphicProducer();
     }
     
     /* (non-Javadoc)

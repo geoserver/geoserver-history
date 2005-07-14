@@ -30,15 +30,19 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.factory.Hints;
 import org.geotools.filter.FilterDOMParser;
 import org.geotools.geometry.GeneralDirectPosition;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.geotools.util.NameFactory;
 import org.geotools.util.NumberRange;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageCategory;
@@ -1303,7 +1307,7 @@ public class XMLConfigReader {
 		Element envelope = ReaderUtils.getChildElement(coverageRoot, "envelope");
 		cv.setSrsName(ReaderUtils.getAttribute(envelope, "srsName", true));
 		
-		CRSFactory crsFactory = FactoryFinder.getCRSFactory(null);
+		CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
 		try {
 			cv.setCrs(
 					crsFactory.createFromWKT(

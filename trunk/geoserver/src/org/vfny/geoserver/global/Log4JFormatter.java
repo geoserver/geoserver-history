@@ -247,6 +247,20 @@ public class Log4JFormatter extends Formatter {
             }
         }
 
+        //Artie Konin suggested fix (see GEOS-366)
+        if (0 == logger.getHandlers().length) // seems that getHandlers() cannot return null
+        { 
+
+        	log4j = new Log4JFormatter(base);
+
+        	Handler handler = new Stdout();
+        	            handler.setFormatter(log4j);
+        	            handler.setLevel(filterLevel);
+
+        	logger.addHandler(handler);
+        }
+        
+        
         logger.setUseParentHandlers(false);
     }
 
@@ -295,6 +309,12 @@ public class Log4JFormatter extends Formatter {
      *       overriden.
      */
     private static final class Stdout extends StreamHandler {
+    	
+    	 public Stdout() {
+            super();
+        }
+
+    	 
         /**
          * Construct a handler.
          *

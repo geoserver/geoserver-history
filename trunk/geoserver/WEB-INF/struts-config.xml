@@ -71,6 +71,10 @@
     		type="org.vfny.geoserver.form.wms.WMSContentForm"/>
 
     	<form-bean
+    		name="dataCoveragePluginsForm"
+    		type="org.vfny.geoserver.form.data.DataCoveragePluginsForm"/>
+
+    	<form-bean
     		name="dataFormatsSelectForm"
     		type="org.vfny.geoserver.form.data.DataFormatsSelectForm"/>
     	<form-bean
@@ -315,6 +319,11 @@
        	<forward
        		name="config.data"
        		path="/config/data/index.do"/>
+
+        <!-- CONFIG data coverage plugins -->
+       	<forward
+       		name="config.data.coverageplugins"
+       		path="/config/data/coverageplugins.do"/>
 
         <!-- CONFIG data formats -->
        	<forward
@@ -574,7 +583,13 @@
         	path="/config/data"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.data"/>      
-        	
+
+       <!-- DATA COVERAGE PLUGINS -->
+        <action
+        	path="/config/data/coverageplugins"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.data.coverageplugins"/>
+
        <!-- DATA FORMATS -->
         <action
         	path="/config/data/format"
@@ -754,6 +769,15 @@
         	scope="request"
         	validate="true"
         	input="/config/wms/content.do"/>
+
+       	<!-- DATA Coverage Plugins Actions -->
+        <action
+        	path="/config/data/coveragePlugins"
+        	type="org.vfny.geoserver.action.data.DataCoveragePluginsAction"
+        	name="dataCoveragePluginsForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/data/coverageplugins.do"/>        	
 
        	<!-- DATA Formats Actions -->
         <action

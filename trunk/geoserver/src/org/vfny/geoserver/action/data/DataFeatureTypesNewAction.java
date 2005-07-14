@@ -101,9 +101,10 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         try {
         	CoordinateReferenceSystem crs = featureType.getDefaultGeometry().getCoordinateSystem();
         	Set idents = crs.getIdentifiers();
-        	for (Iterator t=idents.iterator();t.hasNext();) //for each ident
+        	Iterator it = idents.iterator();
+        	while (it.hasNext())
         	{
-        		Identifier id = (Identifier) t.next();
+        		Identifier id = (Identifier) it.next();
         		if (id.toString().indexOf("EPSG:") != -1)    // this should probably use the Citation, but this is easier!
         		{
         			//we have an EPSG #, so lets use it!

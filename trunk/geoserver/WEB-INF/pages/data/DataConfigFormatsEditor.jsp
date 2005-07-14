@@ -43,7 +43,8 @@
 		</span>
       </td>
 	  <td class="datum">
-          <html:text property="url" size="60"/>
+          <!--html:text property="url" size="60"/-->
+          <html:file size="60" property="formatFile"/>
 	  </td>
 	</tr>	
 	<tr>

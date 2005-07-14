@@ -17,18 +17,21 @@ import javax.servlet.http.HttpServletRequest;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.FeatureTypeBuilder;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
@@ -39,6 +42,7 @@ import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.config.DataConfig;
@@ -232,13 +236,13 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		Polygon bounds = new Polygon(ring, null, gf);
 		
 		// create the feature type
-		AttributeType geom = AttributeTypeFactory.newAttributeType("geom", Polygon.class);
+		AttributeType geom = AttributeTypeFactory.newAttributeType("geom", Polygon.class, true, 1, null, gridCoverage.getCoordinateReferenceSystem());
 		AttributeType grid = AttributeTypeFactory.newAttributeType("grid", GridCoverage.class);
 		
 		FeatureType schema = null;
 		AttributeType[] attTypes = {geom, grid};
 		
-		schema = FeatureTypeFactory.newFeatureType(attTypes, this.name);
+		schema = FeatureTypeFactory.newFeatureType(attTypes, this.name);  
 		
 		// create the feature
 		Feature feature = schema.create(new Object[] {bounds, gridCoverage});
@@ -284,11 +288,12 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 					try {
 	    				if( key.equalsIgnoreCase("crs") ) {
 							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
-								CRSFactory crsFactory = FactoryFinder.getCRSFactory(null);
+								CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
 								CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) dfConfig.getParameters().get(key));
 								value = crs;
 							} else {
-								CoordinateReferenceSystem crs = CRS.decode("EPSG:4326");
+								CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+								CoordinateReferenceSystem crs=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:4326");
 								value = crs;
 							}
 						} else if( key.equalsIgnoreCase("envelope") ) {
