@@ -1,0 +1,47 @@
+ <?config.xml version="1.0" encoding="UTF-8"?>
+<catalog>
+	<datastores>
+		<!--
+			a datastore configuration element serves as a common data source connection
+			parameters repository for all featuretypes it holds.
+		-->
+		<datastore namespace="sco" enabled="true" id="pg_xy">
+			<abstract>Postgres (not POSTGIS)</abstract>
+			<connectionParams>
+				<parameter name="user" value="postgres" />
+				<parameter name="passwd" value="postgres" />
+				<parameter name="host" value="localhost" />
+				<parameter name="port" value="5432" />
+				<parameter name="database" value="sco" />
+				<parameter name="driver" value="org.geotools.data.geometryless.wrapper.PGConnectionPool"/>
+				<parameter name="urlprefix" value="jdbc:postgresql://localhost:5432/test"/>
+				<parameter name="geom_name" value="location" />
+				<parameter name="dbtype" value="locationsxy" />
+				<parameter name="xcolumn" value="x" />
+				<parameter name="ycolumn" value="y" />
+			</connectionParams>
+		</datastore>
+
+	</datastores>
+	<!--
+		Defines namespaces to be used by the datastores.
+	-->
+	<namespaces>
+		<namespace prefix="sco" uri="http://online.socialchange.net.au" default="true" />
+	</namespaces>
+	<!--
+		Defines the style ids to be used by the wms.  The files must be
+		contained in geoserver/misc/wms/styles.  We're working on finding
+		a better place for them, but for now that's where you must put them
+		if you want them on the server.
+	-->
+	<styles>
+		<style filename="green.sld" id="green" />
+		<style filename="usa_math.sld" id="manualVsWorkers" />
+		<style filename="popshade.sld" id="population" />
+		<style filename="normal.sld" id="normal" />
+		<style filename="blue.sld" id="blue" />
+		<style filename="funkypolyshp.sld" id="dotty" />
+		<style filename="usa_ratio.sld" id="maleVsFemale" />
+	</styles>
+</catalog>

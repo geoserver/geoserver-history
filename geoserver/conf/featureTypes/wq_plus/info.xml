@@ -1,0 +1,22 @@
+<featureType datastore="pg_xy">
+	<name>wq_plus</name>
+	<!-- native EPGS code for the FeatureTypeInfoDTO : for Oracle, all geometries must use an equivalent SRID -->
+	<SRS>4283</SRS>
+	<title>wq_testing</title>
+	<abstract>testing</abstract>
+	<numDecimals value="0" />
+	<keywords>testing</keywords>
+	<latLonBoundingBox dynamic="false" miny="-90" maxy="90" maxx="180" minx="-180" />
+	<!-- note we force a WHERE clause to exist so we can add to it if need be! -->
+	<bypassSQL>
+		SELECT station_no, station_name as sitename,anzlic_no,
+		project_no, sample_collection_date || determinand_code as id,
+		sample_collection_date, determinand_description, results_value,
+		longitude as x, -latitude as y FROM wq_ir_results WHERE 1=1
+	</bypassSQL>
+	<!--
+		the default style this FeatureTypeInfoDTO can be represented by.
+		at least must contain the "default" attribute 
+	-->
+	<styles default="normal" />
+</featureType>
