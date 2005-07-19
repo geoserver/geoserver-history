@@ -10,6 +10,8 @@ import org.vfny.geoserver.config.DataConfig;
 import java.util.LinkedList;
 import java.util.List;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Data Transfer Object used for GeoServer FeatureTypeInfo information.
@@ -37,7 +39,11 @@ import java.util.List;
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
-    private String dataStoreId;
+     /** Used internally to create log information to detect errors. */
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.global");
+
+   private String dataStoreId;
 
     /** A bounding box for this featuretype */
     private Envelope latLongBBox;
@@ -595,6 +601,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     
     public void setBypassSQL(String SQL) {
     	// should check this can only select ?
+    	LOGGER.fine("SQL recipe found");
+    	LOGGER.fine("SQL = " + SQL);
+
         bypassSQL = SQL;
     }
 

@@ -466,6 +466,8 @@ public class ReaderUtils {
             throw new ConfigurationException("Argument element can't be null");
         }
 
+        LOGGER.finer("got " + value);
+
         return value;
     }
 
