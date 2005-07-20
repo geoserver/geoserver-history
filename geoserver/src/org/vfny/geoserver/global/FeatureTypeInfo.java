@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
@@ -35,19 +36,7 @@ import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-<<<<<<< .working
-=======
-import java.net.URI;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
->>>>>>> .merge-right.r3001
-import java.util.logging.Logger;
 
-<<<<<<< .working
 import com.vividsolutions.jts.geom.Envelope;
 
 /**
