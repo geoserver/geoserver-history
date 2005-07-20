@@ -4,7 +4,16 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.jdbc.JDBCDataStore;
@@ -15,13 +24,19 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
+import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.filter.Filter;
+import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
+<<<<<<< .working
+=======
 import java.net.URI;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,20 +44,29 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+>>>>>>> .merge-right.r3001
 import java.util.logging.Logger;
+
+<<<<<<< .working
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Represents a FeatureTypeInfo, its user config and autodefined information.
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @author Chris Holmes
  * @author dzwiers
+ * @Charles Kolbowicz
  * @version $Id: FeatureTypeInfo.java,v 1.41 2004/06/26 19:51:24 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype {
 	
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+	/** hash table that takes a epsg# to its definition**/
+	private static Hashtable SRSLookup = new Hashtable();
 	
+	
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+
     /** Default constant */
     private static final int DEFAULT_NUM_DECIMALS = 8;
     /**
@@ -150,6 +174,24 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     private FeatureType ft = null;
 
+    // Modif C. Kolbowicz - 07/10/2004
+    /**
+     * Holds value of property legendURL.
+     */
+    private LegendURL legendURL;
+    //-- Modif C. Kolbowicz - 07/10/2004
+
+    /** Holds the location of the file that contains schema information. */
+    private File schemaFile;
+    
+    /** 
+     * dont use this unless you know what you're doing.  its for TemporaryFeatureTypeInfo.
+     *
+     */
+    public FeatureTypeInfo()
+    {
+    	
+    }
     /**
      * pass through SQL - use this SQL, instead of, or augmented by SQL
      * generation from a WFS filter (the filter as parameter passing mechanism)
@@ -181,14 +223,19 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         this.data = data;
         _abstract = dto.getAbstract();
         dataStoreId = dto.getDataStoreId();
-        defaultStyle = dto.getDefaultStyle();
+        defaultStyle = dto.getDefaultStyle();        
+        
+        // Modif C. Kolbowicz - 07/10/2004
+        if (dto.getLegendURL() != null) {
+            legendURL = new LegendURL(dto.getLegendURL());
+        } //-- Modif C. Kolbowicz - 07/10/2004   
+        
         definitionQuery = dto.getDefinitionQuery();
         dirName = dto.getDirName();
         keywords = dto.getKeywords();
         latLongBBox = dto.getLatLongBBox();
         typeName = dto.getName();
         numDecimals = dto.getNumDecimals();
-
         bypassSQL = dto.getBypassSQL();
         List tmp = dto.getSchemaAttributes();
         schema = new LinkedList();
@@ -235,6 +282,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
         schemaBase = dto.getSchemaBase();
         schemaName = dto.getSchemaName();
+        schemaFile = dto.getSchemaFile();
         SRS = dto.getSRS();
         title = dto.getTitle();
     }
@@ -255,6 +303,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         dto.setAbstract(_abstract);
         dto.setDataStoreId(dataStoreId);
         dto.setDefaultStyle(defaultStyle);
+        
+        // Modif C. Kolbowicz - 07/10/2004
+        if (legendURL != null) {
+            dto.setLegendURL((LegendURLDTO)legendURL.toDTO());
+        } //-- Modif C. Kolbowicz - 07/10/2004
+        
         dto.setDefinitionQuery(definitionQuery);
         dto.setDirName(dirName);
         dto.setKeywords(keywords);
@@ -905,6 +959,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         if (ft == null) {
             int count = 0;
             ft = fs.getSchema();
+	    URI namespace = ft.getNamespace();  //DJB:: change to #getNamespace() due to API change
 
             String[] baseNames = DataTransferObjectFactory
                 .getRequiredBaseAttributes(schemaBase);
@@ -940,6 +995,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     AttributeTypeInfo ati = (AttributeTypeInfo) i.next();
                     String attName = ati.getName();
                     attributes[count] = ft.getAttributeType(attName);
+                    
+                    if (attributes[count].isGeometry())  //DJB: added this to set SRS
+                    {
+                    	GeometricAttributeType old = (GeometricAttributeType) attributes[count];
+                    	try {
+                    		attributes[count] = new GeometricAttributeType(old,getSRS(SRS)) ;
+                    	}
+                    	catch (Exception e)
+						{
+                    		e.printStackTrace(); //DJB: this is okay to ignore since (a) it should never happen (b) we'll use the default one (crs=null)
+						}
+                    }
 
                     if (attributes[count] == null) {
                         throw new IOException("the FeatureType " + getName()
@@ -951,7 +1018,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 }
 
                 try {
-                    ft = FeatureTypeFactory.newFeatureType(attributes, typeName);
+                    ft = FeatureTypeFactory.newFeatureType(attributes, typeName, namespace);
                 } catch (SchemaException ex) {
                 } catch (FactoryConfigurationError ex) {
                 }
@@ -1009,8 +1076,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         List list = new ArrayList();
 
         try {
-            FeatureType schema = getFeatureType();
-            AttributeType[] types = schema.getAttributeTypes();
+            FeatureType ftype = getFeatureType();
+            AttributeType[] types = ftype.getAttributeTypes();
             list = new ArrayList(types.length);
 
             for (int i = 0; i < types.length; i++) {
@@ -1059,8 +1126,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                                       .getDataStore();
 
             try {
-                FeatureType schema = dataStore.getSchema(typeName);
-                info.sync(schema.getAttributeType(attributeName));
+                FeatureType ftype = dataStore.getSchema(typeName);
+                info.sync(ftype.getAttributeType(attributeName));
             } catch (IOException e) {
             }
         } else {
@@ -1069,8 +1136,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                                       .getDataStore();
 
             try {
-                FeatureType schema = dataStore.getSchema(typeName);
-                info = new AttributeTypeInfo(schema.getAttributeType(
+                FeatureType ftype = dataStore.getSchema(typeName);
+                info = new AttributeTypeInfo(ftype.getAttributeType(
                             attributeName));
             } catch (IOException e) {
             }
@@ -1119,6 +1186,54 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
     
     /**
+     * getLegendURL purpose.
+     * 
+     * <p>
+     * returns the FeatureTypeInfo legendURL
+     * </p>
+     *
+     * @return String the FeatureTypeInfo legendURL
+     */
+    // Modif C. Kolbowicz - 07/10/2004
+    public LegendURL getLegendURL() {
+        return this.legendURL;
+    }        
+    //-- Modif C. Kolbowicz - 07/10/2004
+
+    /**
+     * Gets the schema.xml file associated with this FeatureType.  This is set
+     * during the reading of configuration, it is not persisted as an element
+     * of the FeatureTypeInfoDTO, since it is just whether the schema.xml file
+     * was persisted, and its location.  If there is no schema.xml file then
+     * this method will return a File object with the location where the schema
+     * file would be located, but the file will return false for exists().
+     */
+    public File getSchemaFile() {
+	return this.schemaFile;
+    }
+    
+    /**
+     *  simple way of getting epsg #.
+     *  We cache them so that we dont have to keep reading the DB or the epsg.properties file.
+     *   I cannot image a system with more than a dozen CRSs in it...
+     * 
+     * @param epsg
+     * @return
+     */
+    private CoordinateReferenceSystem getSRS(int epsg) throws Exception
+    {
+    	CoordinateReferenceSystem result = (CoordinateReferenceSystem) SRSLookup.get(  new Integer(epsg) );
+    	if (result == null)
+    	{
+    		//make and add to hash
+    		result = CRS.decode("EPSG:"+epsg);
+    		SRSLookup.put( new Integer(epsg)  , result);
+    	}
+    	return result;
+    }
+
+    
+    /**
      * pass through SQL - use this SQL, instead of, or augmented by SQL
      * generation from a WFS filter (the filter as parameter passing mechanism)
      *
@@ -1140,3 +1255,4 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
     
 }
+ 
