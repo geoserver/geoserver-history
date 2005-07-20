@@ -1,7 +1,3 @@
-/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
 /* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -10,10 +6,11 @@ package org.vfny.geoserver.global;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.geotools.feature.AttributeType;
+import org.geotools.feature.AttributeTypeFactory;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
-
 
 /**
  * AttributeTypeInfo represents AttributeTypeMetaData for GeoServer.
@@ -27,33 +24,66 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  * @version $Id: AttributeTypeInfo.java,v 1.12 2004/06/26 19:51:24 jive Exp $
  */
 public class AttributeTypeInfo {
+	
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+	
 	private String name;
 	private int minOccurs;
 	private int maxOccurs;
 	private boolean nillable;
 	private String typeName;
 	private boolean isComplex;
-
+	private String xpath;
+	private String dbJavaType;
+	
     /** Readl GeoTools2 AttributeType */
     private AttributeType type;
     private Map meta;
 
     public AttributeTypeInfo(AttributeTypeInfoDTO dto) {
+    	
+    	// this should really throw a SchemaException, supporting the use case
+    	// where a Geotools AttributeType is constructed from extended attributes
+    	// in schema.xml supporting pass through SQL -pb
+    	
         type = null;
-        meta = new HashMap();
+    	meta = new HashMap();
         name = dto.getName();
         minOccurs = dto.getMinOccurs();
         maxOccurs = dto.getMaxOccurs();
         nillable = dto.isNillable();
         isComplex = dto.isComplex();
         typeName = dto.getType();
+        xpath = dto.getXpath();
+        dbJavaType = dto.getDbJavaType();
+    	
+        if (dbJavaType != null ) {
+    		// make a GeoTools AttributeType so we can build a GeoTools 
+    		// FeatureType schema in the geoserver FeatureTypeInfo; need to do this
+    		// cause must be doing pass through SQL and GeoTools can't construct a 
+    		// FeatureType in its usual way from table metadata
+    		try {
+	        	type = AttributeTypeFactory.newAttributeType(
+	        			name, Class.forName(dbJavaType), nillable);
+    			// LOGGER.fine("Created AttributeType for attribute " + name + " Class " + dbJavaType);	        	
+    		} catch (ClassNotFoundException e) {
+    			type = null;	// this is not really good enough
+    			LOGGER.warning("Error creating geotools AttributeType - No such class " +
+    	                dbJavaType + " for attribute " + name);
+    		}
+    	}
     }
-
+    
     public AttributeTypeInfo(AttributeType type) {
         this.type = type;
         meta = new HashMap();
     }
     
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */    
     public String getName(){
     	return name;
     }
@@ -140,6 +170,17 @@ public class AttributeTypeInfo {
             return null;
         }
     }
+
+    /**
+     * xpath element/attribute associated with database attribute in schema.xml,
+     * eg used when doing bypass SQL and requiring GML2-AS (application schema) output
+     *
+     * @return the xpath fragment for this attribute
+     */    
+    public String getXpath(){
+    	return xpath;
+    }
+    
     
     /**
      * Implement containsMetaData.
@@ -188,6 +229,8 @@ public class AttributeTypeInfo {
     	dto.setName(name);
     	dto.setNillable(nillable);
     	dto.setType(typeName);
+    	dto.setXpath(xpath);
+    	dto.setDbJavaType(dbJavaType);
 		return dto;
     }
 	/**
