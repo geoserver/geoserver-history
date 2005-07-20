@@ -17,7 +17,7 @@
 
 // current package is a converience location - will be shifted to org.geotools.filter
 
-package org.vfny.geoserver.responses.wfs;
+package org.vfny.geoserver.wfs.responses;
 
 import org.geotools.filter.*;	// this won't be required when shifted
 
