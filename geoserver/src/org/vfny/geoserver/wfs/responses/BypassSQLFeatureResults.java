@@ -456,7 +456,7 @@ public class BypassSQLFeatureResults implements FeatureResults {
      *
      * @see org.geotools.data.FeatureResults#getBounds()
      */
-    public Envelope getBounds() throws IOException {
+    public Envelope getBounds() {
         
     	LOGGER.fine("computing bounds for query (executing query)");
     	
@@ -482,9 +482,11 @@ public class BypassSQLFeatureResults implements FeatureResults {
 
             return bounds;
         } catch (IllegalAttributeException e) {
-            throw new DataSourceException("Could not read feature : info.xml and schema.xml probably mismatch ", e);
+            throw new RuntimeException("Could not read feature : info.xml and schema.xml probably mismatch ", e);
+        }catch(IOException e){
+        	LOGGER.log(Level.WARNING, "computing request envelope", e);
         }
-        
+        return null;
     }
 
     /**
