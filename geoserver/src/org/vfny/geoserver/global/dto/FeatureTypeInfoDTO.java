@@ -4,14 +4,12 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import java.io.File;
+import com.vividsolutions.jts.geom.Envelope;
+import org.geotools.filter.Filter;
+import org.vfny.geoserver.config.DataConfig;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.geotools.filter.Filter;
-import org.vfny.geoserver.config.DataConfig;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Data Transfer Object used for GeoServer FeatureTypeInfo information.
@@ -53,9 +51,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The schema name. */
     private String schemaName;
 
-    /**
-     * The schemaBase name.
-     * 
+    /** The schemaBase name.
      * <p>
      * Example NullType, or PointPropertyType.
      * </p>
@@ -64,7 +60,6 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * The featuretype name.
-     * 
      * <p>
      * Often related to the title - like bc_roads_Type
      * </p>
@@ -87,7 +82,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** A list of keywords to associate with this featuretype. */
     private List keywords;
 
-    /** Used to limit the number of decimals used in GML representations. */
+    /**
+     * Used to limit the number of decimals used in GML representations.
+     */
     private int numDecimals;
 
     /**
@@ -96,19 +93,16 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * only those oattributes in this list will be exposed by the services
      */
     private Filter definitionQuery = null;
-
+    
+    /**
+     * bypass SQL select statement for jdbc datastore; executed as a
+     * prepared statement with parameters supplied via filter properties.
+     */
+    private String bypassSQL = null;
+    
+ 
     /** The default style name. */
     private String defaultStyle;
-
-    // Modif C. Kolbowicz - 06/10/2004 
-
-    /** The legend icon description. */
-    private LegendURLDTO legendURL;
-
-    //-- Modif C. Kolbowicz - 06/10/2004 
-
-    /** Holds the location of the file that contains schema information.*/
-    private File schemaFile;
 
     /**
      * FeatureTypeInfo constructor.
@@ -149,10 +143,6 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         numDecimals = dto.getNumDecimals();
         definitionQuery = dto.getDefinitionQuery();
 
-        // Modif C. Kolbowicz - 06/10/2004
-        legendURL = dto.getLegendURL();
-
-        //-- Modif C. Kolbowicz - 06/10/2004 
         try {
             keywords = CloneLibrary.clone(dto.getKeywords()); //clone?
         } catch (Exception e) {
@@ -164,6 +154,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
         schemaBase = dto.getSchemaBase();
+        bypassSQL = dto.getBypassSQL();
     }
 
     /**
@@ -214,14 +205,6 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
             return false;
         }
 
-        // Modif C. Kolbowicz - 06/10/2004
-        if (legendURL != null) {
-            r = r && schema.equals(f.getLegendURL());
-        } else if (f.getLegendURL() != null) {
-            return false;
-        }
-
-        //-- Modif C. Kolbowicz - 06/10/2004 
         r = r && (defaultStyle == f.getDefaultStyle());
         r = r && (name == f.getName());
         r = r && (title == f.getTitle());
@@ -243,6 +226,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         r = r && (dirName == f.getDirName());
         r = r && (schemaName == f.getSchemaName());
         r = r && (schemaBase == f.getSchemaBase());
+        r = r && (bypassSQL == f.getBypassSQL());
 
         return r;
     }
@@ -265,12 +249,6 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
             r *= dataStoreId.hashCode();
         }
 
-        // Modif C. Kolbowicz - 06/10/2004
-        if (legendURL != null) {
-            r *= legendURL.hashCode();
-        }
-
-        //-- Modif C. Kolbowicz - 06/10/2004 
         if (title != null) {
             r *= title.hashCode();
         }
@@ -608,6 +586,30 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
+     * bypassSQL - specify to bypass SQL generation from filter;
+     * use filter as parameter passing mechanism
+     *
+     * <p>
+     * @param adhocSQL - a string containing an SQL select statement with placeholders
+     */
+    
+    public void setBypassSQL(String SQL) {
+    	// should check this can only select ?
+        bypassSQL = SQL;
+    }
+
+    /**
+     * bypassSQL - use this SQL in bypassing SQL generation from filter;
+     * use filter as parameter passing mechanism
+     *
+     * <p>
+     * @return String adhocSQL
+     */
+    public String getBypassSQL() {
+        return bypassSQL;
+    }    
+    
+     /**
      * getDirName purpose.
      * 
      * <p>
@@ -620,6 +622,8 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         return dirName;
     }
 
+
+    
     /**
      * setDirName purpose.
      * 
@@ -685,55 +689,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         schemaBase = string;
     }
 
-    // Modif C. Kolbowicz - 06/10/2004
-
-    /**
-     * Gets a reference to an optional legend icon.
-     *
-     * @return Value of property legendURL.
-     */
-    public LegendURLDTO getLegendURL() {
-        return this.legendURL;
-    }
-
-    //-- Modif C. Kolbowicz - 06/10/2004
-    // Modif C. Kolbowicz - 06/10/2004
-
-    /**
-     * Returns a reference to an optional legend icon.
-     *
-     * @param legendURL New value of property legendURL.
-     */
-    public void setLegendURL(LegendURLDTO legendURL) {
-        this.legendURL = legendURL;
-    }
-
-    /**
-     * Gets the schema.xml file associated with this FeatureType.  This is set
-     * during the reading of configuration, it is not persisted as an element
-     * of the FeatureTypeInfoDTO, since it is just whether the schema.xml file
-     * was persisted, and its location.  If there is no schema.xml file then
-     * this method will return a File object with the location where the schema
-     * file would be located, but the file will return false for exists().
-     */
-    public File getSchemaFile() {
-	return this.schemaFile;
-    }
-
-    /**
-     * Sets the schema file.  Note that a non-exisiting file can be set here,
-     * to indicate that no schema.xml file is present.
-     */
-    public void setSchemaFile(File schemaFile) {
-        this.schemaFile = schemaFile;
-    }
-
-    //-- Modif C. Kolbowicz - 06/10/2004
     public String toString() {
         return "[FeatureTypeInfoDTO: " + name + ", datastoreId: " + dataStoreId
         + ", latLongBBOX: " + latLongBBox + "\n  SRS: " + SRS + ", schema:"
         + schema + ", schemaName: " + schemaName + ", dirName: " + dirName
         + ", title: " + title + "\n  definitionQuery: " + definitionQuery
-        + ", defaultStyle: " + defaultStyle + ", legend icon: " + legendURL;
+        + ", defaultStyle: " + defaultStyle;
     }
 }

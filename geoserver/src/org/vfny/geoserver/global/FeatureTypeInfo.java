@@ -4,50 +4,44 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.jdbc.JDBCDataStore;
+import org.geotools.data.jdbc.JDBCFeatureSource;
+import org.geotools.data.jdbc.fidmapper.NullFIDMapper;
 import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
-import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.filter.Filter;
-import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.net.URI;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Represents a FeatureTypeInfo, its user config and autodefined information.
  *
- * @author Gabriel Rold?n
+ * @author Gabriel Roldán
  * @author Chris Holmes
  * @author dzwiers
- * @Charles Kolbowicz
  * @version $Id: FeatureTypeInfo.java,v 1.41 2004/06/26 19:51:24 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype {
 	
-	/** hash table that takes a epsg# to its definition**/
-	private static Hashtable SRSLookup = new Hashtable();
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 	
     /** Default constant */
     private static final int DEFAULT_NUM_DECIMALS = 8;
@@ -150,29 +144,25 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     /**
      * The real geotools2 featureType cached for sanity checks.
      * <p>
-     * This will be lazily created so use the accessors
+     * This will be lazily created so use the accessors, except when doing
+     * pass through SQL and schema.xml is not exmpty
      * </p>
      */
-    private FeatureType ft;
+    private FeatureType ft = null;
 
-    // Modif C. Kolbowicz - 07/10/2004
     /**
-     * Holds value of property legendURL.
+     * pass through SQL - use this SQL, instead of, or augmented by SQL
+     * generation from a WFS filter (the filter as parameter passing mechanism)
      */
-    private LegendURL legendURL;
-    //-- Modif C. Kolbowicz - 07/10/2004
-
-    /** Holds the location of the file that contains schema information. */
-    private File schemaFile;
+    private String bypassSQL = null; 
     
-    /** 
-     * dont use this unless you know what you're doing.  its for TemporaryFeatureTypeInfo.
-     *
+    
+    /**
+     * Tree representation of XML elements given by xpath attributes in schema.xml
      */
-    public FeatureTypeInfo()
-    {
-    	
-    }
+    private XMLelementStructure elementTree = null; 
+
+    
     /**
      * FeatureTypeInfo constructor.
      * 
@@ -191,33 +181,60 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         this.data = data;
         _abstract = dto.getAbstract();
         dataStoreId = dto.getDataStoreId();
-        defaultStyle = dto.getDefaultStyle();        
-        
-        // Modif C. Kolbowicz - 07/10/2004
-        if (dto.getLegendURL() != null) {
-            legendURL = new LegendURL(dto.getLegendURL());
-        } //-- Modif C. Kolbowicz - 07/10/2004   
-        
+        defaultStyle = dto.getDefaultStyle();
         definitionQuery = dto.getDefinitionQuery();
         dirName = dto.getDirName();
         keywords = dto.getKeywords();
         latLongBBox = dto.getLatLongBBox();
         typeName = dto.getName();
         numDecimals = dto.getNumDecimals();
+
+        bypassSQL = dto.getBypassSQL();
         List tmp = dto.getSchemaAttributes();
         schema = new LinkedList();
-
+        
         if ((tmp != null) && !tmp.isEmpty()) {
             Iterator i = tmp.iterator();
 
             while (i.hasNext())
                 schema.add(new AttributeTypeInfo(
                         (AttributeTypeInfoDTO) i.next()));
+            
+            if (bypassSQL != null && !schema.isEmpty()) {
+            	
+            	// need to build a geotools feature type corresponding to the
+            	// bypassSQL, as described by schema. 
+            	ft = buildGeotoolsFeatureType(schema);
+            	
+            	// then need to stick this and a fid mapper into the cache
+            	// maintained by Geotools FeatureTypeHamdler
+            	DataStore datastore = data.getDataStoreInfo(dataStoreId).getDataStore();
+            	
+            	if ( ft != null && datastore instanceof JDBCDataStore ) {
+            	
+            		// the NullFIDMapper is just placeholder, FID mapping happens
+            		// in the schema.xml (xpath attribute)
+            		try {
+	            		org.geotools.data.jdbc.FeatureTypeInfo fti = 
+	            			new org.geotools.data.jdbc.FeatureTypeInfo(
+	            				typeName, ft, new NullFIDMapper(), false);
+	            		((JDBCDataStore) datastore).getFeatureTypeHandler().setFeatureTypeInfo(fti);
+            		} catch (IOException e) {
+            			LOGGER.severe("Could not set FeatureType schema " + typeName + 
+            				" in data store");
+            		}
+            	} else if ( ft == null && datastore instanceof JDBCDataStore ) {
+        			LOGGER.severe("Failed making FeatureType for " + typeName);
+            	}	
+            }
+            
+            // build a tree of XML elements if xpath atts can be found in schema
+            elementTree = XMLelementStructure.createXMLelementStructure(this, this.data); 
+            
         }
 
         schemaBase = dto.getSchemaBase();
         schemaName = dto.getSchemaName();
-        schemaFile = dto.getSchemaFile();
         SRS = dto.getSRS();
         title = dto.getTitle();
     }
@@ -238,12 +255,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         dto.setAbstract(_abstract);
         dto.setDataStoreId(dataStoreId);
         dto.setDefaultStyle(defaultStyle);
-        
-        // Modif C. Kolbowicz - 07/10/2004
-        if (legendURL != null) {
-            dto.setLegendURL((LegendURLDTO)legendURL.toDTO());
-        } //-- Modif C. Kolbowicz - 07/10/2004
-        
         dto.setDefinitionQuery(definitionQuery);
         dto.setDirName(dirName);
         dto.setKeywords(keywords);
@@ -263,10 +274,65 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         dto.setSchemaName( getSchemaName() );        
         dto.setSRS(SRS);
         dto.setTitle(title);
+        dto.setBypassSQL(bypassSQL);        
 
         return dto;
     }
 
+    
+    /**
+     * buildFeatureType purpose.
+     * 
+     * <p>
+     * Create a Geotools FeatureType for this feature; this should only be called
+     * if the AttributeTypeInfo constructor was able to create Geotools a 
+     * AttributeType(s), typically when a schema.xml with extended attributes 
+     * (dbJavaType) is associated with non null bypassSQL (feature type uses pass 
+     * through SQL operation).  
+     * </p>
+     *
+     * @param schema - a List of Geoserver AttributeTypeInfo 
+     * @return the FeatureType or null if failed
+     */
+    public FeatureType buildGeotoolsFeatureType(List schema) {
+
+    	List attributeTypes = new ArrayList();
+    	
+        Iterator i = schema.iterator();
+        while (i.hasNext()) {
+        	attributeTypes.add( ((AttributeTypeInfo) i.next()).getAttributeType() );
+        } 
+        AttributeType[] types = (AttributeType[]) attributeTypes.toArray(new AttributeType[0]);
+
+    	// should check datastore is assignable to JDBCDataStore
+
+        FeatureType featuretype = null;
+    	if (types.length > 0) {
+    		try {
+    			LOGGER.fine("Building geotools feature type " + typeName
+    					+ " with namespace " + getNameSpace().getURI()
+						+ " from schema.xml");
+//    			featuretype = FeatureTypeFactory.newFeatureType(types, typeName, 
+//	        			((JDBCDataStore)(data.getDataStoreInfo(dataStoreId).getDataStore())).getNameSpaceURI());
+
+    			featuretype = FeatureTypeFactory.newFeatureType(types, typeName, new URI(getNameSpace().getURI()));
+    		
+    		}
+    		catch (SchemaException e) {
+    			LOGGER.severe("Could not create geotools feature type " +  typeName);
+				return null;
+    		}
+    		catch (java.net.URISyntaxException e) {
+    			LOGGER.severe("Could not create URI for namespace " +  getNameSpace().getURI());
+    			LOGGER.severe("Could not create geotools feature type " +  typeName);
+    			return null;
+    		}
+    	}
+    	
+    	return featuretype;
+    }
+    
+    
     /**
      * getNumDecimals purpose.
      * 
@@ -375,6 +441,19 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }    
 
     /**
+     * GT2 Feature Type name
+     * 
+     * type name withOUT the namespace prefix
+     *
+     * @return String the FeatureTypeInfo name - should be unique for the
+     *         parent Data instance.
+     */
+    public String getGT2FeatureTypeName() {        
+        return typeName;
+    }    
+   
+    
+    /**
      * getFeatureSource purpose.
      * 
      * <p>
@@ -392,6 +471,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         }
 
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
+        if (dataStore instanceof JDBCDataStore && bypassSQL != null &&
+        		!schema.isEmpty() ) {
+        	// for pass through SQL, use the FetaureType built here 
+        	return new JDBCFeatureSource((JDBCDataStore)dataStore, ft);
+        }
+        
         FeatureSource realSource = dataStore.getFeatureSource(typeName);
 
         if (((schema == null) || schema.isEmpty())) { // &&
@@ -403,7 +488,40 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 getFeatureType(realSource), getDefinitionQuery());
         }
     }
+    
+    /**
+     * getFeatureSource purpose.
+     * 
+     * <p>
+     * Returns a real FeatureSource.
+     * </p>
+     *
+     * @return FeatureSource the feature source represented by this info class
+     *
+     * @throws IOException when an error occurs.
+     */
+    public FeatureSource getRealFeatureSource() throws IOException {
+    	
+        if (!isEnabled() || (getDataStoreInfo().getDataStore() == null)) {
+            throw new IOException("featureType: " + getName()
+                + " does not have a properly configured " + "datastore");
+        }
 
+        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
+//        if (dataStore instanceof JDBCDataStore && bypassSQL != null &&
+//        		!schema.isEmpty() ) {
+        if ( dataStore instanceof JDBCDataStore && (bypassSQL != null ||
+        		!schema.isEmpty()) ) {        	
+        	// for pass through SQL, use the FetaureType built here
+        	// which may have been supplied by a schema.xml or generated from
+        	// resultset metadata
+        	return new JDBCFeatureSource((JDBCDataStore)dataStore, ft);
+        } else {
+        	return dataStore.getFeatureSource(typeName);
+        }
+    }    
+    
+    
     /*public static FeatureSource reTypeSource(FeatureSource source,
        FeatureTypeInfoDTO ftc) throws SchemaException {
        AttributeType[] attributes = new AttributeType[ftc.getSchemaAttributes()
@@ -787,7 +905,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         if (ft == null) {
             int count = 0;
             ft = fs.getSchema();
-	    URI namespace = ft.getNamespace();  //DJB:: change to #getNamespace() due to API change
 
             String[] baseNames = DataTransferObjectFactory
                 .getRequiredBaseAttributes(schemaBase);
@@ -823,18 +940,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     AttributeTypeInfo ati = (AttributeTypeInfo) i.next();
                     String attName = ati.getName();
                     attributes[count] = ft.getAttributeType(attName);
-                    
-                    if (attributes[count].isGeometry())  //DJB: added this to set SRS
-                    {
-                    	GeometricAttributeType old = (GeometricAttributeType) attributes[count];
-                    	try {
-                    		attributes[count] = new GeometricAttributeType(old,getSRS(SRS)) ;
-                    	}
-                    	catch (Exception e)
-						{
-                    		e.printStackTrace(); //DJB: this is okay to ignore since (a) it should never happen (b) we'll use the default one (crs=null)
-						}
-                    }
 
                     if (attributes[count] == null) {
                         throw new IOException("the FeatureType " + getName()
@@ -846,7 +951,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 }
 
                 try {
-                    ft = FeatureTypeFactory.newFeatureType(attributes, typeName, namespace);
+                    ft = FeatureTypeFactory.newFeatureType(attributes, typeName);
                 } catch (SchemaException ex) {
                 } catch (FactoryConfigurationError ex) {
                 }
@@ -904,8 +1009,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         List list = new ArrayList();
 
         try {
-            FeatureType ftype = getFeatureType();
-            AttributeType[] types = ftype.getAttributeTypes();
+            FeatureType schema = getFeatureType();
+            AttributeType[] types = schema.getAttributeTypes();
             list = new ArrayList(types.length);
 
             for (int i = 0; i < types.length; i++) {
@@ -954,8 +1059,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                                       .getDataStore();
 
             try {
-                FeatureType ftype = dataStore.getSchema(typeName);
-                info.sync(ftype.getAttributeType(attributeName));
+                FeatureType schema = dataStore.getSchema(typeName);
+                info.sync(schema.getAttributeType(attributeName));
             } catch (IOException e) {
             }
         } else {
@@ -964,8 +1069,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                                       .getDataStore();
 
             try {
-                FeatureType ftype = dataStore.getSchema(typeName);
-                info = new AttributeTypeInfo(ftype.getAttributeType(
+                FeatureType schema = dataStore.getSchema(typeName);
+                info = new AttributeTypeInfo(schema.getAttributeType(
                             attributeName));
             } catch (IOException e) {
             }
@@ -1014,51 +1119,24 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
     
     /**
-     * getLegendURL purpose.
-     * 
-     * <p>
-     * returns the FeatureTypeInfo legendURL
-     * </p>
+     * pass through SQL - use this SQL, instead of, or augmented by SQL
+     * generation from a WFS filter (the filter as parameter passing mechanism)
      *
-     * @return String the FeatureTypeInfo legendURL
+     * <p>
+     * @return String adhocSQL
      */
-    // Modif C. Kolbowicz - 07/10/2004
-    public LegendURL getLegendURL() {
-        return this.legendURL;
-    }        
-    //-- Modif C. Kolbowicz - 07/10/2004
+    public String getBypassSQL() {
+        return bypassSQL;
+    }    
 
     /**
-     * Gets the schema.xml file associated with this FeatureType.  This is set
-     * during the reading of configuration, it is not persisted as an element
-     * of the FeatureTypeInfoDTO, since it is just whether the schema.xml file
-     * was persisted, and its location.  If there is no schema.xml file then
-     * this method will return a File object with the location where the schema
-     * file would be located, but the file will return false for exists().
+     * Retrieve a value indicating an override (null otherwise) for WFS getFeature processing
+     *
+     * <p>
+     * @return String executionPattern
      */
-    public File getSchemaFile() {
-	return this.schemaFile;
+    public XMLelementStructure getXMLelementStructure() {
+        return elementTree;
     }
     
-    /**
-     *  simple way of getting epsg #.
-     *  We cache them so that we dont have to keep reading the DB or the epsg.properties file.
-     *   I cannot image a system with more than a dozen CRSs in it...
-     * 
-     * @param epsg
-     * @return
-     */
-    private CoordinateReferenceSystem getSRS(int epsg) throws Exception
-    {
-    	CoordinateReferenceSystem result = (CoordinateReferenceSystem) SRSLookup.get(  new Integer(epsg) );
-    	if (result == null)
-    	{
-    		//make and add to hash
-    		result = CRS.decode("EPSG:"+epsg);
-    		SRSLookup.put( new Integer(epsg)  , result);
-    	}
-    	return result;
-    }
-
 }
- 
