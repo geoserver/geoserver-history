@@ -246,19 +246,27 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             	// maintained by Geotools FeatureTypeHamdler
             	DataStore datastore = data.getDataStoreInfo(dataStoreId).getDataStore();
             	
-            	if ( ft != null && datastore instanceof JDBCDataStore ) {
+            	if ( ft != null && datastore instanceof org.geotools.data.geometryless.JDBCDataStore ) {
             	
             		// the NullFIDMapper is just placeholder, FID mapping happens
             		// in the schema.xml (xpath attribute)
-            		try {
+            		//try {
+            			
+            			/*
+            			 * REVISIT: constructor no longer receives a boolean?
 	            		org.geotools.data.jdbc.FeatureTypeInfo fti = 
 	            			new org.geotools.data.jdbc.FeatureTypeInfo(
 	            				typeName, ft, new NullFIDMapper(), false);
-	            		((JDBCDataStore) datastore).getFeatureTypeHandler().setFeatureTypeInfo(fti);
-            		} catch (IOException e) {
-            			LOGGER.severe("Could not set FeatureType schema " + typeName + 
-            				" in data store");
-            		}
+	            		*/
+            			org.geotools.data.jdbc.FeatureTypeInfo fti = 
+	            			new org.geotools.data.jdbc.FeatureTypeInfo(
+	            				typeName, ft, new NullFIDMapper());
+	            		
+	            		((JDBCDataStore) datastore).getFeatureTypeHandler().setFeatureTypeInfo(typeName, fti);
+            		//} catch (IOException e) {
+            		//	LOGGER.severe("Could not set FeatureType schema " + typeName + 
+            		//		" in data store");
+            		//}
             	} else if ( ft == null && datastore instanceof JDBCDataStore ) {
         			LOGGER.severe("Failed making FeatureType for " + typeName);
             	}	
