@@ -275,8 +275,9 @@ public class BypassSQLFeatureResults implements FeatureResults {
         try {
         	// requires JDBCDataStore.getConnection to be made public - not a probem if locate
         	// in same package, else investigate other methods of getting a connection
-        	
-            conn = featureSource.getJDBCDataStore().getConnection(transaction);
+        	org.geotools.data.geometryless.JDBCDataStore ds;
+        	ds = (org.geotools.data.geometryless.JDBCDataStore)featureSource.getJDBCDataStore();
+            conn = ds.getJdbcConnection(transaction);
             
             if (!forWrite) {
                //for postgis streaming, but I don't believe it hurts anyone.
@@ -406,7 +407,7 @@ public class BypassSQLFeatureResults implements FeatureResults {
                 // AttributeType attributeType = buildAttributeType(tableInfo);
 
                 int dataType = rsmd.getColumnType(i);
-                Class type = (Class) JDBCDataStore.TYPE_MAPPINGS.get(new Integer(dataType));
+                Class type = org.geotools.data.geometryless.JDBCDataStore.getTypeMapping(new Integer(dataType));
                 
                 if (type == null) {
                 	// wild & exciting guess !!! I'm tired - really have to fix this up in the datastores
@@ -426,7 +427,7 @@ public class BypassSQLFeatureResults implements FeatureResults {
         	
             AttributeType[] types = (AttributeType[]) attributeTypes.toArray(new AttributeType[0]);
 
-            return FeatureTypeFactory.newFeatureType(types, typeName, dataStore.getNameSpaceURI());
+            return FeatureTypeFactory.newFeatureType(types, typeName, dataStore.getNameSpace());
             
         } catch (SQLException sqlException) {
             throw new DataSourceException(
