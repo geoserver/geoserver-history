@@ -52,6 +52,7 @@ public class FeatureResponse implements Response {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
+    
     FeatureResponseDelegate delegate;
 
     /**
@@ -144,6 +145,172 @@ public class FeatureResponse implements Response {
     }
 
     /**
+     * Switch to an appropriate execute handler based on optional feature type
+     * metadata indicating that a request requires special
+     * processing, eg overriding the standard sql encoders and output writers.
+     * Alternately just invoke the standard execute method. 
+     * as indicated by a patteren associated with a feature type in the request.
+     * <p>
+     *
+     * @param request
+     *
+     * @throws ServiceException
+     * @throws WfsException DOCUMENT ME!
+     *
+     */
+    public void execute(FeatureRequest request) throws ServiceException {
+
+    	// look see if first query is SQL pass through - only support
+    	// one query in this case - or all must do SQL pass through *and*
+    	// the feature types are accompanied by an extended schema XML - or -
+    	// the features correspond with a view or table in the database.
+    	
+    	boolean passThroughSQL = false; 
+    	boolean hasNestedElementMappings = false;
+    	
+    	Iterator it = request.getQueries().iterator();
+    	if ( it.hasNext()) {
+    		Data catalog = request.getWFS().getData();
+    		Query query = (Query) it.next();
+            // LOGGER.fine("setting FeatureTypeInfo meta");
+    		FeatureTypeInfo meta = catalog.getFeatureTypeInfo(query.getTypeName());
+
+    		// assumes that if the first query uses bypass sql, any subsequent queries
+    		//  must also use bypass sql.
+    		passThroughSQL = (meta.getBypassSQL() != null);
+    		
+    		// Similarly, assumes that if the first query has an extended schema.xml
+    		// for outputting nested XML elements, any subsequent queries must also
+    		// have an extended schema.xml for the corresponding feature type
+    		hasNestedElementMappings = (meta.getXMLelementStructure() != null);
+    	}
+    	
+    	String outputFormat = request.getOutputFormat();
+    	
+        try {
+            delegate = FeatureResponseDelegateFactory.encoderFor(outputFormat, hasNestedElementMappings);
+            {
+    	        Class c = delegate.getClass();
+    	        LOGGER.finer("delegate = " + c.getName());
+            }            
+        } catch (NoSuchElementException ex) {
+            throw new WfsException("output format: " + outputFormat + " not "
+                + "supported by geoserver", ex);
+        }
+    	
+    	if (!passThroughSQL) {
+    		standardExecute(request);
+    	} else {
+            LOGGER.finer("doing pass through SQL");    	
+    		passThroughSQLExecute(request);
+    	}
+    }   
+    
+    /**
+     * Performs a getFeatures overriding the standard query builder / sqlencoder
+     * <p>
+     *
+     * @param request
+     *
+     * @throws ServiceException
+     * @throws WfsException DOCUMENT ME!
+     *
+     */
+    public void passThroughSQLExecute(FeatureRequest request) throws ServiceException {
+        LOGGER.fine("passThroughSQLExecute() : performing custom query processing");
+        this.request = request;
+
+        String outputFormat = request.getOutputFormat();
+        LOGGER.fine("outputFormat = " + outputFormat);
+
+        GetFeatureResults results = new GetFeatureResults(request);
+        {
+	        Class c = results.getClass();
+	        LOGGER.fine("created results container " + c.getName());
+        }
+        
+        // results.setFeatureLock(null);
+
+        GeoServer config = request.getWFS().getGeoServer();
+        Data catalog = request.getWFS().getData();
+        FeatureTypeInfo meta = null;
+        NameSpaceInfo namespace;
+        Query query;
+        int maxFeatures = request.getMaxFeatures();
+        int serverMaxFeatures = config.getMaxFeatures();
+
+        if (maxFeatures > serverMaxFeatures) {
+            maxFeatures = serverMaxFeatures;
+        }
+
+        // should be FeatureSource at this level 
+        // need to sort out casting in BypassSQLFeatureResults
+        org.geotools.data.jdbc.JDBCFeatureSource source;
+/*        
+        Feature feature;
+        String fid;
+        FilterFactory filterFactory = FilterFactory.createFilterFactory();
+        FidFilter fidFilter;
+        int numberLocked;
+*/
+  
+        LOGGER.fine("creating FeatureResults containers for each query");  
+        
+        try {
+            for (Iterator it = request.getQueries().iterator();
+                    it.hasNext() && (maxFeatures > 0);) {
+                LOGGER.fine("setting query");            	
+                query = (Query) it.next();
+                LOGGER.fine("setting meta");                
+                meta = catalog.getFeatureTypeInfo(query.getTypeName());
+                LOGGER.fine("setting namespace");
+                namespace = meta.getDataStoreInfo().getNameSpace();
+
+                // check that can assign a geotools JDBCfeatureSource, otherwise cannot use
+                // this SQL bypass
+                
+                LOGGER.fine("getting JDBCFeatureSource" );
+                Class c = meta.getRealFeatureSource().getClass();
+                LOGGER.fine("assigning " + c.getName() + " to source" );
+                
+                source = (org.geotools.data.jdbc.JDBCFeatureSource) meta.getRealFeatureSource();
+
+                LOGGER.fine("Query is " + query + "\n To gt2: "
+                    + query.toDataQuery(maxFeatures));
+
+                FeatureResults features = new BypassSQLFeatureResults(
+                		source, query.toDataQuery(maxFeatures),
+						meta.getBypassSQL());
+                
+                LOGGER.fine("created FeatureResults for query");
+                
+                /*
+                FeatureResults features = source.getFeatures(query.toDataQuery(
+                            maxFeatures));
+                */
+                
+                // shouldn't be doing this - this should happen in feature enumeration!!
+                // maxFeatures -= features.getCount();
+               
+                results.addFeatures(meta, features);
+                LOGGER.fine("added query features to results container");
+            }
+
+            //prepare to encode in the desired output format
+            delegate.prepare(outputFormat, results);
+
+        } catch (IOException e) {
+            throw new ServiceException(e, "problem with FeatureResults",
+                request.getHandle());
+        } catch (NoSuchElementException e) {
+            throw new ServiceException(e, "problem with FeatureResults",
+                request.getHandle());
+        }
+    }
+
+    	
+    	
+    /**
      * Performs a getFeatures, or getFeaturesWithLock (using gt2 locking ).
      * 
      * <p>
@@ -164,19 +331,12 @@ public class FeatureResponse implements Response {
      *       able to, we just need to get the reporting right, use the
      *       AllSameType function as  Describe does.
      */
-    public void execute(FeatureRequest request) throws ServiceException {
+    public void standardExecute(FeatureRequest request) throws ServiceException {
         LOGGER.finest("execute FeatureRequest response. Called request is: "
             + request);
         this.request = request;
 
         String outputFormat = request.getOutputFormat();
-
-        try {
-            delegate = FeatureResponseDelegateFactory.encoderFor(outputFormat);
-        } catch (NoSuchElementException ex) {
-            throw new WfsException("output format: " + outputFormat + " not "
-                + "supported by geoserver", ex);
-        }
 
         if (request instanceof FeatureWithLockRequest) {
             featureLock = ((FeatureWithLockRequest) request).toFeatureLock();

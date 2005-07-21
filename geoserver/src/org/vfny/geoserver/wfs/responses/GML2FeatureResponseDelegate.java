@@ -36,7 +36,7 @@ import org.vfny.geoserver.wfs.requests.FeatureRequest;
  * </p>
  *
  * @author Gabriel Rold?n
- * @version $Id: GML2FeatureResponseDelegate.java,v 1.10 2004/09/09 16:48:54 cholmesny Exp $
+ * @version $Id: GML2FeatureResponseDelegate.java,v 1.9 2004/07/23 16:56:48 cholmesny Exp $
  */
 public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private static final int NO_FORMATTING = -1;
@@ -94,15 +94,32 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
      * @param results DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
+     */    
+    public void prepare(String outputFormat, GetFeatureResults results) 
+    	throws IOException  {
+    	prepare(outputFormat, results, new FeatureTransformer());
+    }
+    
+    /**
+     * prepares for encoding into GML2 format, optionally compressing its
+     * output in gzip, if outputFormat is equal to GML2-GZIP
+     *
+     * @param outputFormat DOCUMENT ME!
+     * @param results DOCUMENT ME!
+     * @param featureTransformer - FeatureTranformer or subclass for different output style
+     *
+     * @throws IOException DOCUMENT ME!
      */
-    public void prepare(String outputFormat, GetFeatureResults results)
+    public void prepare(String outputFormat, GetFeatureResults results,
+    		FeatureTransformer featureTransformer)
         throws IOException {
         this.compressOutput = "GML2-GZIP".equalsIgnoreCase(outputFormat);
         this.results = results;
 
         FeatureRequest request = results.getRequest();
         GeoServer config = request.getWFS().getGeoServer();
-        transformer = new FeatureTransformer();
+        // transformer = new FeatureTransformer();
+        transformer = featureTransformer;        
 
         FeatureTypeNamespaces ftNames = transformer.getFeatureTypeNamespaces();
         int maxFeatures = request.getMaxFeatures();
@@ -144,7 +161,7 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         transformer.setIndentation(config.isVerbose() ? INDENT_SIZE
                                                       : (NO_FORMATTING));
         transformer.setNumDecimals(config.getNumDecimals());
-	transformer.setEncoding(request.getWFS().getGeoServer().getCharSet());
+	// transformer.setEncoding(request.getWFS().getGeoServer().getCharSet());
         String wfsSchemaLoc = request.getSchemaBaseUrl()
             + "wfs/1.0.0/WFS-basic.xsd";
 
@@ -162,7 +179,9 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         if (featureLock != null) {
             transformer.setLockId(featureLock.getAuthorization());
         }
-		transformer.setSrsName(request.getWFS().getSrsPrefix() + meta.getSRS());
+
+        transformer.setSrsName("http://www.opengis.net/gml/srs/epsg.xml#"
+            + meta.getSRS());
     }
 
     /**
