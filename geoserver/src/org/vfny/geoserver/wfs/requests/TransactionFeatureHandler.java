@@ -20,9 +20,9 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.util.Requests;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import java.net.URI;
 
 import com.vividsolutions.jts.geom.Geometry;
-
 
 /**
  * Uses SAX to extact a Transactional request from and incoming XML stream. It
@@ -288,8 +288,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
                 //working.  This should be good enough, it'd just be nice to be cleaner.
                 //FeatureTypeFactory ftFactory = FeatureTypeFactory
 		//   .createTemplate(curFeatureType);
-                //ftFactory.setNamespace(namespaceURI);
-
+            	//ftFactory.setNamespace(namespaceURI);
                 //FeatureType schema = ftFactory.getFeatureType();
                 
 		//removing hack, as this wasn't compiling, and we should not
