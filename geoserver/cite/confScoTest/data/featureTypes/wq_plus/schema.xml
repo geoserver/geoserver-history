@@ -1,0 +1,72 @@
+<xs:complexType name="wq_plus_Type">
+	<xs:complexContent>
+		<xs:extension base="gml:AbstractFeatureType">
+			<xs:sequence>
+
+				<xs:element name="station_no" 
+							type="xs:string"
+							dbJavaType="java.lang.String" 
+							nillable="false" 
+							minOccurs="1"
+							maxOccurs="1" 
+							xpath="/sco:wq_plus@gml:id" />
+							
+				<xs:element name="station_name" 
+							type="xs:string"
+							dbJavaType="java.lang.String" 
+							nillable="true" 
+							minOccurs="0"
+							maxOccurs="1" 
+							xpath="/sco:wq_plus/sitename" />
+							
+				<xs:element name="anzlic_no" 
+							type="xs:string"
+							dbJavaType="java.lang.String" 
+							nillable="true" 
+							minOccurs="0"
+							maxOccurs="1" 
+							xpath="/sco:wq_plus/anzlic_no" />
+
+				<xs:element name="project_no" 
+							type="xs:string"
+							dbJavaType="java.lang.String" 
+							nillable="true" 
+							minOccurs="0"
+							maxOccurs="1" 
+							xpath="/sco:wq_plus/project_no" />
+
+				<xs:element name="measurement" 
+							type="xs:string"
+							dbJavaType="java.lang.String" 
+							nillable="true" 
+							minOccurs="0"
+							maxOccurs="1" 
+							xpath="/sco:wq_plus/measurement@gml:id" />
+
+				<xs:element name="determinand_description"
+							type="xs:string" 
+							dbJavaType="java.lang.String" 
+							nillable="true"
+							minOccurs="0" 
+							maxOccurs="1"
+							xpath="/sco:wq_plus/measurement/determinand_description" />
+
+				<xs:element name="result" 
+							type="xs:string"
+							dbJavaType="java.lang.String" 
+							nillable="true" 
+							minOccurs="0"
+							maxOccurs="1" 
+							xpath="/sco:wq_plus/measurement/result" />
+
+				<xs:element name="location"
+							dbJavaType="com.vividsolutions.jts.geom.Geometry"
+							type="gml:PointPropertyType" 
+							nillable="true" 
+							minOccurs="0"
+							maxOccurs="1" 
+							xpath="/sco:wq_plus/gml:location" />
+			</xs:sequence>
+		</xs:extension>
+	</xs:complexContent>
+</xs:complexType>

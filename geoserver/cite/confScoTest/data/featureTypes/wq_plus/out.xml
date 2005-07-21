@@ -1,0 +1,738 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"
+	xmlns:topp="http://www.openplans.org/topp"
+	xmlns:gml="http://www.opengis.net/gml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openplans.org/topp http://localhost:8881/geoserver/wfs/DescribeFeatureType?typeName=topp:wq_plus http://www.opengis.net/wfs http://localhost:8881/geoserver/data/capabilitieswfs/1.0.0/WFS-basic.xsd">
+	<gml:boundedBy>
+		<gml:Box
+			srsName="http://www.opengis.net/gml/srs/epsg.xml#4283">
+			<gml:coordinates decimal="." cs="," ts=" ">
+				8.89999962,143.53399658 200,143.53399658
+			</gml:coordinates>
+		</gml:Box>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<topp:wq_plus gml:id="41010901">
+			<topp:sitename>BALRANALD WEIR</topp:sitename>
+			<topp:anzlic_no>ANZNS0359100023</topp:anzlic_no>
+			<topp:project_no>RWWQ0004</topp:project_no>
+			<gml:location>
+				<gml:Point
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#4283">
+					<gml:coordinates decimal="." cs="," ts=" ">
+						22,143.53399658
+					</gml:coordinates>
+				</gml:Point>
+			</gml:location>
+			<topp:measurement gml:id="24/JAN/94002001002003000000">
+				<topp:determinand_description>
+					24/JAN/94
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="16/JAN/94002001002003000000">
+				<topp:determinand_description>
+					16/JAN/94
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="10/JAN/94002001002003000000">
+				<topp:determinand_description>
+					10/JAN/94
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="04/JAN/94002001002003000000">
+				<topp:determinand_description>
+					04/JAN/94
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="29/DEC/93002001002003000000">
+				<topp:determinand_description>
+					29/DEC/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="21/DEC/93002001002003000000">
+				<topp:determinand_description>
+					21/DEC/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="13/DEC/93002001002003000000">
+				<topp:determinand_description>
+					13/DEC/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="06/DEC/93002001002003000000">
+				<topp:determinand_description>
+					06/DEC/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="29/NOV/93002001002003000000">
+				<topp:determinand_description>
+					29/NOV/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="22/NOV/93002001002003000000">
+				<topp:determinand_description>
+					22/NOV/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="16/NOV/93002001002003000000">
+				<topp:determinand_description>
+					16/NOV/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="08/NOV/93002001002003000000">
+				<topp:determinand_description>
+					08/NOV/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="01/NOV/93002001002003000000">
+				<topp:determinand_description>
+					01/NOV/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="25/OCT/93002001002003000000">
+				<topp:determinand_description>
+					25/OCT/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="19/OCT/93002001002003000000">
+				<topp:determinand_description>
+					19/OCT/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="12/OCT/93002001002003000000">
+				<topp:determinand_description>
+					12/OCT/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="05/OCT/93002001002003000000">
+				<topp:determinand_description>
+					05/OCT/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="27/SEP/93002001002003000000">
+				<topp:determinand_description>
+					27/SEP/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="20/SEP/93002001002003000000">
+				<topp:determinand_description>
+					20/SEP/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="13/SEP/93002001002003000000">
+				<topp:determinand_description>
+					13/SEP/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="06/SEP/93002001002003000000">
+				<topp:determinand_description>
+					06/SEP/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="30/AUG/93002001002003000000">
+				<topp:determinand_description>
+					30/AUG/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="23/AUG/93002001002003000000">
+				<topp:determinand_description>
+					23/AUG/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="16/AUG/93002001002003000000">
+				<topp:determinand_description>
+					16/AUG/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="09/AUG/93002001002003000000">
+				<topp:determinand_description>
+					09/AUG/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="02/AUG/93002001002003000000">
+				<topp:determinand_description>
+					02/AUG/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="26/JUL/93002001002003000000">
+				<topp:determinand_description>
+					26/JUL/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="20/JUL/93002001002003000000">
+				<topp:determinand_description>
+					20/JUL/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="12/JUL/93002001002003000000">
+				<topp:determinand_description>
+					12/JUL/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="06/JUL/93002001002003000000">
+				<topp:determinand_description>
+					06/JUL/93
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="24/JUN/97002001002003000000">
+				<topp:determinand_description>
+					24/JUN/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="17/JUN/97002001002003000000">
+				<topp:determinand_description>
+					17/JUN/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="09/JUN/97002001002003000000">
+				<topp:determinand_description>
+					09/JUN/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="03/JUN/97002001002003000000">
+				<topp:determinand_description>
+					03/JUN/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="27/MAY/97002001002003000000">
+				<topp:determinand_description>
+					27/MAY/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="20/MAY/97002001002003000000">
+				<topp:determinand_description>
+					20/MAY/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="06/MAY/97002001002003000000">
+				<topp:determinand_description>
+					06/MAY/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="29/APR/97002001002003000000">
+				<topp:determinand_description>
+					29/APR/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="22/APR/97002001002003000000">
+				<topp:determinand_description>
+					22/APR/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="15/APR/97002001002003000000">
+				<topp:determinand_description>
+					15/APR/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="08/APR/97002001002003000000">
+				<topp:determinand_description>
+					08/APR/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="01/APR/97002001002003000000">
+				<topp:determinand_description>
+					01/APR/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="25/FEB/97002001002003000000">
+				<topp:determinand_description>
+					25/FEB/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="18/FEB/97002001002003000000">
+				<topp:determinand_description>
+					18/FEB/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="12/FEB/97002001002003000000">
+				<topp:determinand_description>
+					12/FEB/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="04/FEB/97002001002003000000">
+				<topp:determinand_description>
+					04/FEB/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="28/JAN/97002001002003000000">
+				<topp:determinand_description>
+					28/JAN/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="21/JAN/97002001002003000000">
+				<topp:determinand_description>
+					21/JAN/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="14/JAN/97002001002003000000">
+				<topp:determinand_description>
+					14/JAN/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="02/JAN/97002001002003000000">
+				<topp:determinand_description>
+					02/JAN/97
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="17/DEC/96002001002003000000">
+				<topp:determinand_description>
+					17/DEC/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="10/DEC/96002001002003000000">
+				<topp:determinand_description>
+					10/DEC/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="02/DEC/96002001002003000000">
+				<topp:determinand_description>
+					02/DEC/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="26/NOV/96002001002003000000">
+				<topp:determinand_description>
+					26/NOV/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="19/NOV/96002001002003000000">
+				<topp:determinand_description>
+					19/NOV/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="12/NOV/96002001002003000000">
+				<topp:determinand_description>
+					12/NOV/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="29/OCT/96002001002003000000">
+				<topp:determinand_description>
+					29/OCT/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="21/OCT/96002001002003000000">
+				<topp:determinand_description>
+					21/OCT/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="15/OCT/96002001002003000000">
+				<topp:determinand_description>
+					15/OCT/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="08/OCT/96002001002003000000">
+				<topp:determinand_description>
+					08/OCT/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="01/OCT/96002001002003000000">
+				<topp:determinand_description>
+					01/OCT/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="24/SEP/96002001002003000000">
+				<topp:determinand_description>
+					24/SEP/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="17/SEP/96002001002003000000">
+				<topp:determinand_description>
+					17/SEP/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="03/SEP/96002001002003000000">
+				<topp:determinand_description>
+					03/SEP/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="27/AUG/96002001002003000000">
+				<topp:determinand_description>
+					27/AUG/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="20/AUG/96002001002003000000">
+				<topp:determinand_description>
+					20/AUG/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="14/AUG/96002001002003000000">
+				<topp:determinand_description>
+					14/AUG/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="06/AUG/96002001002003000000">
+				<topp:determinand_description>
+					06/AUG/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="30/JUL/96002001002003000000">
+				<topp:determinand_description>
+					30/JUL/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="23/JUL/96002001002003000000">
+				<topp:determinand_description>
+					23/JUL/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="09/JUL/96002001002003000000">
+				<topp:determinand_description>
+					09/JUL/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="02/JUL/96002001002003000000">
+				<topp:determinand_description>
+					02/JUL/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="25/JUN/96002001002003000000">
+				<topp:determinand_description>
+					25/JUN/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="18/JUN/96002001002003000000">
+				<topp:determinand_description>
+					18/JUN/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="11/JUN/96002001002003000000">
+				<topp:determinand_description>
+					11/JUN/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="04/JUN/96002001002003000000">
+				<topp:determinand_description>
+					04/JUN/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="21/MAY/96002001002003000000">
+				<topp:determinand_description>
+					21/MAY/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="14/MAY/96002001002003000000">
+				<topp:determinand_description>
+					14/MAY/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="07/MAY/96002001002003000000">
+				<topp:determinand_description>
+					07/MAY/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="30/APR/96002001002003000000">
+				<topp:determinand_description>
+					30/APR/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="23/APR/96002001002003000000">
+				<topp:determinand_description>
+					23/APR/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="15/APR/96002001002003000000">
+				<topp:determinand_description>
+					15/APR/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="09/APR/96002001002003000000">
+				<topp:determinand_description>
+					09/APR/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="26/MAR/96002001002003000000">
+				<topp:determinand_description>
+					26/MAR/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="20/MAR/96002001002003000000">
+				<topp:determinand_description>
+					20/MAR/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="12/MAR/96002001002003000000">
+				<topp:determinand_description>
+					12/MAR/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="05/MAR/96002001002003000000">
+				<topp:determinand_description>
+					05/MAR/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="28/FEB/96002001002003000000">
+				<topp:determinand_description>
+					28/FEB/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="20/FEB/96002001002003000000">
+				<topp:determinand_description>
+					20/FEB/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="13/FEB/96002001002003000000">
+				<topp:determinand_description>
+					13/FEB/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="29/JAN/96002001002003000000">
+				<topp:determinand_description>
+					29/JAN/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="23/JAN/96002001002003000000">
+				<topp:determinand_description>
+					23/JAN/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="16/JAN/96002001002003000000">
+				<topp:determinand_description>
+					16/JAN/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="09/JAN/96002001002003000000">
+				<topp:determinand_description>
+					09/JAN/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="02/JAN/96002001002003000000">
+				<topp:determinand_description>
+					02/JAN/96
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="28/DEC/95002001002003000000">
+				<topp:determinand_description>
+					28/DEC/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="19/DEC/95002001002003000000">
+				<topp:determinand_description>
+					19/DEC/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="07/DEC/95002001002003000000">
+				<topp:determinand_description>
+					07/DEC/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="28/NOV/95002001002003000000">
+				<topp:determinand_description>
+					28/NOV/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="21/NOV/95002001002003000000">
+				<topp:determinand_description>
+					21/NOV/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="14/NOV/95002001002003000000">
+				<topp:determinand_description>
+					14/NOV/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="07/NOV/95002001002003000000">
+				<topp:determinand_description>
+					07/NOV/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="31/OCT/95002001002003000000">
+				<topp:determinand_description>
+					31/OCT/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="17/OCT/95002001002003000000">
+				<topp:determinand_description>
+					17/OCT/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="10/OCT/95002001002003000000">
+				<topp:determinand_description>
+					10/OCT/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="04/OCT/95002001002003000000">
+				<topp:determinand_description>
+					04/OCT/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="26/SEP/95002001002003000000">
+				<topp:determinand_description>
+					26/SEP/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="19/SEP/95002001002003000000">
+				<topp:determinand_description>
+					19/SEP/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="12/SEP/95002001002003000000">
+				<topp:determinand_description>
+					12/SEP/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="05/SEP/95002001002003000000">
+				<topp:determinand_description>
+					05/SEP/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="22/AUG/95002001002003000000">
+				<topp:determinand_description>
+					22/AUG/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="15/AUG/95002001002003000000">
+				<topp:determinand_description>
+					15/AUG/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="08/AUG/95002001002003000000">
+				<topp:determinand_description>
+					08/AUG/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="01/AUG/95002001002003000000">
+				<topp:determinand_description>
+					01/AUG/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="25/JUL/95002001002003000000">
+				<topp:determinand_description>
+					25/JUL/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="18/JUL/95002001002003000000">
+				<topp:determinand_description>
+					18/JUL/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="11/JUL/95002001002003000000">
+				<topp:determinand_description>
+					11/JUL/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+			<topp:measurement gml:id="04/JUL/95002001002003000000">
+				<topp:determinand_description>
+					04/JUL/95
+				</topp:determinand_description>
+				<topp:result>Turbidity</topp:result>
+			</topp:measurement>
+		</topp:wq_plus>
+	</gml:featureMember>
+</wfs:FeatureCollection>
