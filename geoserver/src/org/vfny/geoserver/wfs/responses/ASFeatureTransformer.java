@@ -34,6 +34,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.GeometryTransformer;
 import org.geotools.xml.transform.TransformerBase;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.XMLelementStructure;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
