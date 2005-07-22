@@ -638,7 +638,7 @@
 
 <!-- RELEASE -->
 <!-- builds a release version of the application -->
-<target name="release-all" depends="release-war, release-src, release-docs, release-binary" />
+<target name="release-all" depends="release-common, release-binary,release-war, release-src, release-docs" />
 
 <target name="release-common" depends="clean, all" description="Performs the release operations common to binary and source">
 <delete dir="${basedir}/data" failonerror="false" />
