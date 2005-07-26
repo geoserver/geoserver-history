@@ -1,3 +1,38 @@
+GeoServer 1.3.0-RC2 README file
+--------------------------------
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=11771
+
+This release is based on the geotools 2.1.0 release (2.1.x svn branch).
+
+1. JAI should no longer be required - this time I mean it.
+      If you get an error regarding a security issue (because the jars a 'sealed')
+      please leave a message on the geoserver-devel mailing list.  This will only
+      occur if you installed JAI.  You can do one of the following:
+          a) remove from the lib/ directory "jai-core-1.1.3-alpha.jar",
+              "jai_imageio-1.1-alpha.jar" and "jai_codec-1.1.3-alpha.jar".
+          b) uninstall JAI
+      I've had one report of this problem and I think I solved it.  I
+      have been unable to reproduce the issue.
+      
+2. I believe I fixed the error-logging issue for tomcat users.  Please
+   tell me if the problem still occurs.
+   
+3. You can now use <Function> elements in your WFS <Filter>
+
+4. KML (google map) output supported (james macgill)
+
+5. Several other bugs fixed in geoserver and geotools
+
+
+If you look at the roadmap for the next few releases 
+(http://jira.codehaus.org/browse/GEOS?report=com.atlassian.jira.plugin.system.project:roadmap-panel)
+you should see we are very rapidly approaching whats required for the 1.3.0 release.
+
+The geoserver-devel mailing list has been "bursting at the seams" recently with 
+good ideas and discussions for whats going to be happening over the longer term.
+
 GeoServer 1.3.0-RC1 README file
 --------------------------------
 0.  No longer relies on JAI!
