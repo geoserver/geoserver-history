@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -192,6 +193,11 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
         Rectangle paintArea = new Rectangle(width, height);
 
         this.renderer = new LiteRenderer2(map);
+        
+        renderer.setRenderingHint(
+        		   RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON
+        		);
+        
 
         //we already do everything that the optimized data loading does...
         //if we set it to true then it does it all twice...
