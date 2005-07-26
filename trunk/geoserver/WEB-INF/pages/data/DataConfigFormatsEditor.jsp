@@ -2,6 +2,12 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
+<%
+response.setHeader("Pragma", "No-cache");
+response.setDateHeader("Expires", 0);
+response.setHeader("Cache-Control", "no-cache");
+%>
+
 <logic:present name="GEOSERVER.USER" property="dataFormatConfig" scope="session">
 
 <html:form action="/config/data/formatSubmit">
@@ -43,8 +49,7 @@
 		</span>
       </td>
 	  <td class="datum">
-          <!--html:text property="url" size="60"/-->
-          <html:file size="60" property="formatFile"/>
+          <html:text size="60" property="url"/>
 	  </td>
 	</tr>	
 	<tr>

@@ -8,6 +8,7 @@ package org.vfny.geoserver.action.data;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.Hints;
@@ -43,6 +45,7 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataFormatConfig;
 import org.vfny.geoserver.form.data.DataFormatsEditorForm;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 
 
@@ -61,6 +64,7 @@ public class DataFormatsEditorAction extends ConfigAction {
 		String dataFormatID = dataFormatsForm.getDataFormatId();
 		String type = dataFormatsForm.getType();
 		String url = dataFormatsForm.getUrl();
+		FormFile formatFile = dataFormatsForm.getUrlFile();
 		String description = dataFormatsForm.getDescription();
 		
 		DataConfig dataConfig = (DataConfig) getDataConfig();
@@ -190,7 +194,46 @@ public class DataFormatsEditorAction extends ConfigAction {
 				}
 			}
 			
-			URL victimUrl = getResource(url, sc.getRealPath("/"));
+			URL victimUrl = null;
+			
+//			if(url != null) {
+				victimUrl = getResource(url, sc.getRealPath("/"));
+//			} else {
+//		        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(getServlet().getServletContext());
+//
+//		        File coverageDir = new File(rootDir, "data/coverages/" + dataFormatID);
+//
+//		        LOGGER.fine("new format dir is: " + coverageDir.getName() + ", exists: " + coverageDir.exists());
+//		        
+//		        boolean dirAvailable = false;
+//		        if(!coverageDir.exists()) {
+//		        	if(coverageDir.mkdir()) {
+//		        		dirAvailable = true;
+//		        	} else {
+//		        		LOGGER.fine("Cannot create Coverage Format Dir.");
+//						ActionErrors errors = new ActionErrors();
+//						errors.add(ActionErrors.GLOBAL_ERROR,
+//								new ActionError("error.coveragedir.create", coverageDir.getPath()));
+//						saveErrors(request, errors);
+//						
+//						return mapping.findForward("config.data.format.editor");
+//		        	}
+//		        } else if(coverageDir.isDirectory()) {
+//		        	dirAvailable = true;
+//		        } else {
+//	        		LOGGER.fine("Cannot write into Coverage Format Dir.");
+//					ActionErrors errors = new ActionErrors();
+//					errors.add(ActionErrors.GLOBAL_ERROR,
+//							new ActionError("error.coveragedir.write", coverageDir.getPath()));
+//					saveErrors(request, errors);
+//					
+//					return mapping.findForward("config.data.format.editor");
+//		        }
+//		        
+//		        if(dirAvailable) {
+//		        	formatFile.getFileName();
+//		        }
+//			}
 			
 		
 			GridCoverageReader reader = ((AbstractGridFormat) victim).getReader(victimUrl);

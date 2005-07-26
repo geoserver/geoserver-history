@@ -20,7 +20,10 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.config.ControllerConfig;
+import org.apache.struts.upload.CommonsMultipartRequestHandler;
 import org.apache.struts.upload.FormFile;
+import org.apache.struts.upload.MultipartRequestHandler;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.FactoryFinder;
@@ -70,7 +73,7 @@ public class DataFormatsEditorForm extends ActionForm {
     private String type;
     private String url;
 
-    private FormFile formatFile= null;
+    private FormFile urlFile= null;
 
     /* Description of DataStore (abstract?) */
     private String description;
@@ -127,7 +130,6 @@ public class DataFormatsEditorForm extends ActionForm {
         description = dfConfig.getAbstract();
         enabled = dfConfig.isEnabled();
         url = dfConfig.getUrl();
-        formatFile = null;
 //        namespaceId = dfConfig.getNameSpaceId();
 //        if (namespaceId.equals("")) {
 //        	namespaceId = config.getDefaultNameSpace().getPrefix();
@@ -199,10 +201,11 @@ public class DataFormatsEditorForm extends ActionForm {
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if (this.getFormatFile().getFileSize()==0) {// filename not filed or file does not exist
-            errors.add("Format", new ActionError("error.file.required")) ;
-            return errors;
-        }
+//        if (this.getUrlFile().getFileSize()==0) {// filename not filed or file does not exist
+//            errors.add("Format", new ActionError("error.file.required")) ;
+//            return errors;
+//        }
+//        Requests.getApplicationState(request);
 
         // Selected DataStoreConfig is in session
         //
@@ -229,6 +232,19 @@ public class DataFormatsEditorForm extends ActionForm {
                             factory.getDescription()));
 
                     continue;
+                }
+
+                Boolean maxSize= (Boolean)request.getAttribute(MultipartRequestHandler.ATTRIBUTE_MAX_LENGTH_EXCEEDED);
+                if ((maxSize!=null) && (maxSize.booleanValue())) {
+                    String size= null ;
+                    ControllerConfig cc= mapping.getModuleConfig().getControllerConfig() ;
+                    if (cc==null) {
+                        size= Long.toString(CommonsMultipartRequestHandler.DEFAULT_SIZE_MAX);
+                    } else {
+                        size= cc.getMaxFileSize() ;// struts-config : <controller maxFileSize="nK" />
+                    }
+                    errors.add("styleID", new ActionError("error.file.maxLengthExceeded",size)) ;
+                    return errors;
                 }
 
                 Object value = null;
@@ -606,10 +622,10 @@ public class DataFormatsEditorForm extends ActionForm {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public FormFile getFormatFile() {
-		return formatFile;
+	public FormFile getUrlFile() {
+		return this.urlFile;
 	}
-	public void setFormatFile(FormFile formatFile) {
-		this.formatFile = formatFile;
+	public void setUrlFile(FormFile filename) {
+		this.urlFile = filename;
 	}
 }
