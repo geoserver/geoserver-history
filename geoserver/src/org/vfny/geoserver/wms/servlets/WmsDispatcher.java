@@ -97,11 +97,12 @@ public class WmsDispatcher extends Dispatcher {
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
+    	
         int targetRequest = 0;
 
         // Examine the incoming request and create appropriate server objects
         //  to deal with each request
-        //              try {
+        //              try { 
         if (request.getQueryString() != null) {
             Map kvPairs = KvpRequestReader.parseKvpSet(request.getQueryString());
             targetRequest = DispatcherKvpReader.getRequestType(kvPairs);
@@ -111,7 +112,7 @@ public class WmsDispatcher extends Dispatcher {
             //throw exception
         }
 
-        doResponse(false, request, response, targetRequest);
+        doResponse(false, request, response, targetRequest);     
     }
 
     protected void doResponse(boolean isPost, HttpServletRequest request,
