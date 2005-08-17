@@ -1,15 +1,11 @@
 package org.vfny.geoserver.wms.responses.map.png;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
-import java.awt.image.ImageObserver;
-import java.awt.image.PixelGrabber;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
@@ -184,7 +180,18 @@ public class PngEncoderB extends PngEncoder
  //       hdrPos = bytePos;
         writeHeader();
 //        dataPos = bytePos;
-        if (writeImageData())
+        boolean okay;
+		
+        if (image.getType() == BufferedImage.TYPE_4BYTE_ABGR)
+        {
+        	okay = writeImageData_optimized();
+        }
+        else
+        {
+        	okay = writeImageData();
+        }
+      
+        if (okay)
         {
             writeEnd();
             pngBytes = resizeByteArray( pngBytes, maxPos );
@@ -306,6 +313,111 @@ public class PngEncoderB extends PngEncoder
         crcValue = crc.getValue();
         bytePos = writeInt4( (int) crcValue, bytePos );
     }
+    /**
+     *  assume -- write alpha
+     *         -- 4 byte colour model
+     *         -- no filter
+     * @return
+     */
+    protected boolean writeImageData_optimized()
+    {
+    	 int rowsLeft = height;  // number of rows remaining to write
+         int startRow = 0;       // starting row to process this time through
+         int nRows;              // how many rows to grab at a time
+
+         byte[] scanLines;       // the scan lines to be compressed
+         int scanPos;            // where we are in the scan lines
+         int startPos;           // where this line's actual pixels start (used for filtering)
+         int readPos;            // position from which source pixels are read
+
+         byte[] compressedLines; // the resultant compressed lines
+         int nCompressed;        // how big is the compressed area?
+
+         byte[] pixels;          // storage area for byte-sized pixels
+         int[] iPixels;          // storage area for int-sized pixels
+ 		short[] sPixels;		// for Win 2000/ME ushort pixels
+ 		final int type = image.getType();
+ 		
+
+         Deflater scrunch = new Deflater( compressionLevel );
+         ByteArrayOutputStream outBytes =  new ByteArrayOutputStream(20000); //made bufferer bigger (we'll get rid of this later to steam)
+             
+         DeflaterOutputStream compBytes = new DeflaterOutputStream( outBytes, scrunch );
+
+         try
+	        {
+	            while (rowsLeft > 0)
+	            {
+	                nRows = Math.min( 32767 / (width*(bytesPerPixel+1)), rowsLeft );
+	                nRows = Math.max( nRows, 1 );
+
+	                /*
+	                 * Create a data chunk. scanLines adds "nRows" for
+	                 * the filter bytes.
+	                 */
+	                scanLines = new byte[width * nRows * bytesPerPixel +  nRows];
+
+					final Object data =
+						wRaster.getDataElements( 0, startRow, width, nRows, null );
+
+	                pixels = null;
+					iPixels = null;
+					sPixels = null;
+
+	                    pixels = (byte[]) data;
+	  
+
+	                scanPos = 0;
+	                readPos = 0;
+	                startPos = 1;
+	                int count = width*nRows;
+	                int small_count = 0;
+	                for (int i=0;i<nRows;i++)
+	                {
+	                        scanLines[scanPos++] = (byte) 0; 
+	                        
+	                        System.arraycopy(pixels,readPos,scanLines,scanPos,4*width);
+	                        readPos += 4*width;
+	                        scanPos += 4*width;
+	                }
+
+	                /*
+	                 * Write these lines to the output area
+	                 */
+	                compBytes.write( scanLines, 0, scanPos );
+
+	                startRow += nRows;
+	                rowsLeft -= nRows;
+	            }
+	            compBytes.close();
+
+	            /*
+	             * Write the compressed bytes
+	             */
+	            compressedLines = outBytes.toByteArray();
+	            nCompressed = compressedLines.length;
+
+	            crc.reset();
+	            bytePos = writeInt4( nCompressed, bytePos );
+	            bytePos = writeBytes( IDAT, bytePos );
+	            crc.update( IDAT );
+	            bytePos = writeBytes( compressedLines, nCompressed, bytePos );
+	            crc.update( compressedLines, 0, nCompressed );
+
+	            crcValue = crc.getValue();
+	            bytePos = writeInt4( (int) crcValue, bytePos );
+	            scrunch.finish();
+	            return true;
+	        }
+	        catch (IOException e)
+	        {
+	            System.err.println( e.toString());
+	            return false;
+	        }
+}
+
+
+    
 
     /**
      * Write the image data into the pngBytes array.
