@@ -5,16 +5,29 @@
 package org.vfny.geoserver.wms.responses;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Transparency;
+import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferUShort;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geotools.renderer.lite.LiteRenderer;
 import org.geotools.renderer.lite.LiteRenderer2;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -165,7 +178,8 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
      *
      * @throws WmsException For any problems.
      */
-    public void produceMap(WMSMapContext map) throws WmsException {
+    public void produceMap(WMSMapContext map) throws WmsException 
+	{     
         this.mapContext = map;
 
         final int width = map.getMapWidth();
@@ -175,11 +189,13 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
             LOGGER.fine("setting up " + width + "x" + height + " image");
         }
 
-        BufferedImage curImage = new BufferedImage(width, height,
-                BufferedImage.TYPE_INT_ARGB);
+         BufferedImage curImage = new BufferedImage(width, height,BufferedImage.TYPE_4BYTE_ABGR);
+  
+  
 
-        final Graphics2D graphic = curImage.createGraphics();
-
+         final Graphics2D graphic = curImage.createGraphics();
+        
+ 
         if (!map.isTransparent()) {
             graphic.setColor(map.getBgColor());
             graphic.fillRect(0, 0, width, height);
@@ -187,16 +203,15 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
             LOGGER.fine("setting to transparent");
 
             int type = AlphaComposite.SRC_OVER;
-            graphic.setComposite(AlphaComposite.getInstance(type, 0));
+            graphic.setComposite(AlphaComposite.getInstance(type));
         }
-
+        
         Rectangle paintArea = new Rectangle(width, height);
 
         this.renderer = new LiteRenderer2(map);
         
-        renderer.setRenderingHint(
-        		   RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON
-        		);
+        //antialiasing option!
+       renderer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
         
 
         //we already do everything that the optimized data loading does...
@@ -207,13 +222,14 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
         AffineTransform at = this.renderer.worldToScreenTransform(dataArea,
                 paintArea);
 
-        LOGGER.fine("calling renderer");
+        //LOGGER.fine("calling renderer");
 
         if (this.abortRequested) {
             return;
         }
-
+      
         this.renderer.paint(graphic, paintArea, at);
+        
         map = null;
 
         if (!this.abortRequested) {
