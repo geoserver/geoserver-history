@@ -281,9 +281,12 @@ public class FeatureResponse implements Response {
                 LOGGER.fine("Query is " + query + "\n To gt2: "
                     + query.toDataQuery(maxFeatures));
 
+                //DJB: note if maxFeatures gets to 0 the while loop above takes care of this! (this is a subtle situation)
+                
                 FeatureResults features = source.getFeatures(query.toDataQuery(
                             maxFeatures));
-                maxFeatures -= features.getCount();
+                if (it.hasNext()) //DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
+                	maxFeatures -= features.getCount();
 
                 //GR: I don't know if the featuresults should be added here for later
                 //encoding if it was a lock request. may be after ensuring the lock
