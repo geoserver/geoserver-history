@@ -472,7 +472,13 @@ public class WMSCapsTransformer extends TransformerBase {
             	Iterator it = s.iterator();
             	while (it.hasNext())
             	{
-            		element("SRS", it.next().toString() );
+            		 // do not output srs if it was output as common srs
+                    // note, if commonSRS is "", this will not match
+                    String currentSRS = it.next().toString();
+                    if (!currentSRS.equals(commonSRS))
+                    {
+                         element("SRS", currentSRS );
+                    }
             	}
             }
             catch (Exception e)
