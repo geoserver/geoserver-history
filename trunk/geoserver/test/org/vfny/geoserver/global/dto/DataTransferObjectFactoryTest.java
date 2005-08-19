@@ -22,15 +22,25 @@ import org.vfny.geoserver.global.xml.XMLSchemaTranslator;
 
 import com.vividsolutions.jts.geom.Point;
 
-/**
- * @author Jody Garnett
- *
- * To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
+/** * @author Jody Garnett *  * To change the template for this generated type comment go to * Window - Preferences - Java - Code Generation - Code and Comments */
 public class DataTransferObjectFactoryTest extends TestCase {
-    XMLSchemaTranslator xs = (XMLSchemaTranslator) NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");        
-    GMLSchemaTranslator gml = (GMLSchemaTranslator) NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
+
+	/**
+	 * 
+	 * @uml.property name="xs"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	XMLSchemaTranslator xs = (XMLSchemaTranslator) NameSpaceTranslatorFactory
+		.getInstance().getNameSpaceTranslator("xs");
+
+	/**
+	 * 
+	 * @uml.property name="gml"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	GMLSchemaTranslator gml = (GMLSchemaTranslator) NameSpaceTranslatorFactory
+		.getInstance().getNameSpaceTranslator("gml");
+
     
     public DataTransferObjectFactoryTest(String name) {
         super(name);

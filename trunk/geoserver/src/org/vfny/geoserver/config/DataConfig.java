@@ -56,50 +56,80 @@ public class DataConfig {
     public static final String SELECTED_ATTRIBUTE_TYPE = "selectedAttributeType";
     public static final String SELECTED_COVERAGE = "selectedCoverage";
 
-    /**
-     * A set of dataFormatConfig by dataFormatId.
-     * 
-     * @see org.vfny.geoserver.config.data.FormatInfo
-     */
-    private Map dataFormats;
+	/**
+	 * A set of dataFormatConfig by dataFormatId.
+	 * 
+	 * @see org.vfny.geoserver.config.data.FormatInfo
+	 * 
+	 * @uml.property name="dataFormats"
+	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.DataFormatConfig"
+	 * multiplicity="(0 1)"
+	 */
+	private Map dataFormats;
 
-    /**
-     * A set of dataStoreConfig by dataStoreId.
-     * 
-     * @see org.vfny.geoserver.config.data.DataStoreInfo
-     */
-    private Map dataStores;
+	/**
+	 * A set of dataStoreConfig by dataStoreId.
+	 * 
+	 * @see org.vfny.geoserver.config.data.DataStoreInfo
+	 * 
+	 * @uml.property name="dataStores"
+	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.DataStoreConfig"
+	 * multiplicity="(0 1)"
+	 */
+	private Map dataStores;
 
-    /**
-     * A set of namespaces and their names.
-     *
-     * @see org.vfny.geoserver.config.data.NameSpaceConfig
-     */
-    private Map nameSpaces;
+	/**
+	 * A set of namespaces and their names.
+	 * 
+	 * @see org.vfny.geoserver.config.data.NameSpaceConfig
+	 * 
+	 * @uml.property name="nameSpaces"
+	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.NameSpaceConfig"
+	 * multiplicity="(0 1)"
+	 */
+	private Map nameSpaces;
 
-    /**
-     * FeatureTypesInfoConfig referenced by key "<code>dataStoreID + SEPARATOR
-     * + typeName</code>"
-     *
-     * @see org.vfny.geoserver.global.dto.FeatureTypeInfoConfig
-     */
-    private Map featuresTypes;
-    
-    private Map coverages;
+	/**
+	 * FeatureTypesInfoConfig referenced by key "<code>dataStoreID + SEPARATOR
+	 * + typeName</code>"
+	 * 
+	 * @see org.vfny.geoserver.global.dto.FeatureTypeInfoConfig
+	 * 
+	 * @uml.property name="featuresTypes"
+	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.FeatureTypeConfig"
+	 * multiplicity="(0 1)"
+	 */
+	private Map featuresTypes;
 
-    /**
-     * A set of styles and their names.
-     *
-     * @see org.vfny.geoserver.config.data.StyleConfig
-     */
-    private Map styles;
+	/**
+	 * 
+	 * @uml.property name="coverages"
+	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.CoverageConfig"
+	 * multiplicity="(0 1)"
+	 */
+	private Map coverages;
 
-    /**
-     * the default namespace for the server instance.
-     *
-     * @see org.vfny.geoserver.config.data.NameSpaceConfig
-     */
-    private NameSpaceConfig defaultNameSpace;
+	/**
+	 * A set of styles and their names.
+	 * 
+	 * @see org.vfny.geoserver.config.data.StyleConfig
+	 * 
+	 * @uml.property name="styles"
+	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.StyleConfig"
+	 * multiplicity="(0 1)"
+	 */
+	private Map styles;
+
+	/**
+	 * the default namespace for the server instance.
+	 * 
+	 * @see org.vfny.geoserver.config.data.NameSpaceConfig
+	 * 
+	 * @uml.property name="defaultNameSpace"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private NameSpaceConfig defaultNameSpace;
+
 
     /**
      * Data constructor.
@@ -356,18 +386,21 @@ public class DataConfig {
         }
     }
 
-    /**
-     * getDataFormats purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public Map getDataFormats() {
-        return dataFormats;
-    }
+	/**
+	 * getDataFormats purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="dataFormats"
+	 */
+	public Map getDataFormats() {
+		return dataFormats;
+	}
+
     /**
      * List of DataFormatIds
      *
@@ -396,18 +429,21 @@ public class DataConfig {
         return (DataFormatConfig) dataFormats.get(key);
     }
 
-    /**
-     * getDataStores purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public Map getDataStores() {
-        return dataStores;
-    }
+	/**
+	 * getDataStores purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="dataStores"
+	 */
+	public Map getDataStores() {
+		return dataStores;
+	}
+
 
     /**
      * List of DataStoreIds
@@ -437,31 +473,36 @@ public class DataConfig {
         return (DataStoreConfig) dataStores.get(key);
     }
 
-    /**
-     * getDefaultNameSpace purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public NameSpaceConfig getDefaultNameSpace() {
-        return defaultNameSpace;
-    }
+	/**
+	 * getDefaultNameSpace purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="defaultNameSpace"
+	 */
+	public NameSpaceConfig getDefaultNameSpace() {
+		return defaultNameSpace;
+	}
 
-    /**
-     * getFeatures purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public Map getFeaturesTypes() {
-        return featuresTypes;
-    }
+	/**
+	 * getFeatures purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="featuresTypes"
+	 */
+	public Map getFeaturesTypes() {
+		return featuresTypes;
+	}
+
 
     /**
      * getFeatures purpose.
@@ -482,18 +523,21 @@ public class DataConfig {
         return (CoverageConfig) coverages.get(key);
     }
 
-    /**
-     * getNameSpaces purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public Map getNameSpaces() {
-        return nameSpaces;
-    }
+	/**
+	 * getNameSpaces purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="nameSpaces"
+	 */
+	public Map getNameSpaces() {
+		return nameSpaces;
+	}
+
 
     /**
      * getNameSpaces purpose.
@@ -510,18 +554,21 @@ public class DataConfig {
         return (NameSpaceConfig) nameSpaces.get(key);
     }
 
-    /**
-     * getStyles purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public Map getStyles() {
-        return styles;
-    }
+	/**
+	 * getStyles purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="styles"
+	 */
+	public Map getStyles() {
+		return styles;
+	}
+
 
     /**
      * getStyles purpose.
@@ -589,20 +636,23 @@ public class DataConfig {
         return (DataFormatConfig) dataFormats.remove(key);
     }
 
-    /**
-     * setDataStores purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param map
-     */
-    public void setDataStores(Map map) {
-        if (map != null) {
-            dataStores = map;
-        }
-    }
+	/**
+	 * setDataStores purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param map
+	 * 
+	 * @uml.property name="dataStores"
+	 */
+	public void setDataStores(Map map) {
+		if (map != null) {
+			dataStores = map;
+		}
+	}
+
 
     /**
      * Add a new DataStoreConfig for the user to edit
@@ -640,35 +690,40 @@ public class DataConfig {
         return (DataStoreConfig) dataStores.remove(key);
     }
 
-    /**
-     * setDefaultNameSpace purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param support
-     */
-    public void setDefaultNameSpace(NameSpaceConfig support) {
-        if (support != null) {
-            defaultNameSpace = support;
-        }
-    }
+	/**
+	 * setDefaultNameSpace purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param support
+	 * 
+	 * @uml.property name="defaultNameSpace"
+	 */
+	public void setDefaultNameSpace(NameSpaceConfig support) {
+		if (support != null) {
+			defaultNameSpace = support;
+		}
+	}
 
-    /**
-     * setFeatures purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param map
-     */
-    public void setFeaturesTypes(Map map) {
-        if (map != null) {
-            featuresTypes = map;
-        }
-    }
+	/**
+	 * setFeatures purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param map
+	 * 
+	 * @uml.property name="featuresTypes"
+	 */
+	public void setFeaturesTypes(Map map) {
+		if (map != null) {
+			featuresTypes = map;
+		}
+	}
+
 
     /**
      * setFeatures purpose.
@@ -727,20 +782,23 @@ public class DataConfig {
         return (CoverageConfig) coverages.remove(key);
     }
 
-    /**
-     * setNameSpaces purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param map
-     */
-    public void setNameSpaces(Map map) {
-        if (map != null) {
-            nameSpaces = map;
-        }
-    }
+	/**
+	 * setNameSpaces purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param map
+	 * 
+	 * @uml.property name="nameSpaces"
+	 */
+	public void setNameSpaces(Map map) {
+		if (map != null) {
+			nameSpaces = map;
+		}
+	}
+
 
     /**
      * setNameSpaces purpose.
@@ -781,20 +839,23 @@ public class DataConfig {
         return (NameSpaceConfig) nameSpaces.remove(key);
     }
 
-    /**
-     * setStyles purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param map
-     */
-    public void setStyles(Map map) {
-        if (map != null) {
-            styles = map;
-        }
-    }
+	/**
+	 * setStyles purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param map
+	 * 
+	 * @uml.property name="styles"
+	 */
+	public void setStyles(Map map) {
+		if (map != null) {
+			styles = map;
+		}
+	}
+
 
     /**
      * setStyles purpose.
@@ -896,23 +957,33 @@ public class DataConfig {
     		repository.register( dataStoreId, dataStoreConfig.findDataStore( context ) );	
     	}    	
     	return repository;
-    }    
+    }
+
 	/**
 	 * @return Returns the coverages.
+	 * 
+	 * @uml.property name="coverages"
 	 */
 	public Map getCoverages() {
 		return coverages;
 	}
+
 	/**
 	 * @param coverages The coverages to set.
+	 * 
+	 * @uml.property name="coverages"
 	 */
 	public void setCoverages(Map coverages) {
 		this.coverages = coverages;
 	}
+
 	/**
 	 * @param dataFormats The dataFormats to set.
+	 * 
+	 * @uml.property name="dataFormats"
 	 */
 	public void setDataFormats(Map dataFormats) {
 		this.dataFormats = dataFormats;
 	}
+
 }

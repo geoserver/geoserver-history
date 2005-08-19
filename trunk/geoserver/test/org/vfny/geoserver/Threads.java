@@ -28,9 +28,13 @@ class TestGetThread extends Thread {
         url = new URL(u.toString());
     }
 
-    int getResult() {
-        return result;
-    }
+	/**
+	 * 
+	 * @uml.property name="result"
+	 */
+	int getResult() {
+		return result;
+	}
 
     public void connect() throws IOException {
         //HttpURLConnection hc = null;

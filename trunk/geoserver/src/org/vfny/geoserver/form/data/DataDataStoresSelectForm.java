@@ -33,12 +33,28 @@ import org.vfny.geoserver.config.ConfigRequests;
 >>>>>>> 1.4
  */
 public class DataDataStoresSelectForm extends ActionForm {
-    /** Action that spawned us must be "edit" or "delete" */
-    private String buttonAction;
 
-    /** Selection from list - will be a dataStoreId */
-    private String selectedDataStoreId;
-    private List dataStoreIds;
+	/**
+	 * Action that spawned us must be "edit" or "delete"
+	 * 
+	 * @uml.property name="buttonAction" multiplicity="(0 1)"
+	 */
+	private String buttonAction;
+
+	/**
+	 * Selection from list - will be a dataStoreId
+	 * 
+	 * @uml.property name="selectedDataStoreId" multiplicity="(0 1)"
+	 */
+	private String selectedDataStoreId;
+
+	/**
+	 * 
+	 * @uml.property name="dataStoreIds"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List dataStoreIds;
+
 
     /**
      * Reset form
@@ -89,48 +105,63 @@ public class DataDataStoresSelectForm extends ActionForm {
         return errors;
     }
 
-    /**
-     * List of current DataStoreIds
-     *
-     * @return DOCUMENT ME!
-     */
-    public List getDataStoreIds() {
-        return dataStoreIds;
-    }
+	/**
+	 * List of current DataStoreIds
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="dataStoreIds"
+	 */
+	public List getDataStoreIds() {
+		return dataStoreIds;
+	}
 
-    /**
-     * DataStoreID selected by User.
-     * 
-     * <p>
-     * If the user has not selected anything (is this possible?) we will return
-     * <code>null</code>.
-     * </p>
-     *
-     * @return Selected DataStoreID or <code>null</code> if nothing is selected
-     */
-    public String getSelectedDataStoreId() {
-        return selectedDataStoreId;
-    }
+	/**
+	 * DataStoreID selected by User.
+	 * 
+	 * <p>
+	 * If the user has not selected anything (is this possible?) we will return
+	 * <code>null</code>.
+	 * </p>
+	 * 
+	 * @return Selected DataStoreID or <code>null</code> if nothing is selected
+	 * 
+	 * @uml.property name="selectedDataStoreId"
+	 */
+	public String getSelectedDataStoreId() {
+		return selectedDataStoreId;
+	}
 
-    /**
-     * The button the user hit to submit this form.
-     * 
-     * <p>
-     * We are doubling up and having the Same action process both Edit and
-     * Delete.
-     * </p>
-     *
-     * @return Either <code>edit</code> or <code>delete</code>
-     */
-    public String getButtonAction() {
-        return buttonAction;
-    }
+	/**
+	 * The button the user hit to submit this form.
+	 * 
+	 * <p>
+	 * We are doubling up and having the Same action process both Edit and
+	 * Delete.
+	 * </p>
+	 * 
+	 * @return Either <code>edit</code> or <code>delete</code>
+	 * 
+	 * @uml.property name="buttonAction"
+	 */
+	public String getButtonAction() {
+		return buttonAction;
+	}
 
-    public void setButtonAction(String string) {
-        buttonAction = string;
-    }
+	/**
+	 * 
+	 * @uml.property name="buttonAction"
+	 */
+	public void setButtonAction(String string) {
+		buttonAction = string;
+	}
 
-    public void setSelectedDataStoreId(String string) {
-        selectedDataStoreId = string;
-    }
+	/**
+	 * 
+	 * @uml.property name="selectedDataStoreId"
+	 */
+	public void setSelectedDataStoreId(String string) {
+		selectedDataStoreId = string;
+	}
+
 }

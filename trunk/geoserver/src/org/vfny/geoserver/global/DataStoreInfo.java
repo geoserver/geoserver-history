@@ -28,20 +28,49 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  */
 public class DataStoreInfo extends GlobalLayerSupertype {
 
-    /** DataStoreInfo we are representing */
-    private DataStore dataStore = null;
+	/**
+	 * DataStoreInfo we are representing
+	 * 
+	 * @uml.property name="dataStore"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private DataStore dataStore = null;
 
-    /** ref to the parent class's collection */
-    private Data data;
-    private String id;
+	/**
+	 * ref to the parent class's collection
+	 * 
+	 * @uml.property name="data"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private Data data;
+
+	/**
+	 * 
+	 * @uml.property name="id" multiplicity="(0 1)"
+	 */
+	private String id;
+
     private String nameSpaceId;
     private boolean enabled;
-    private String title;
+
+	/**
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
+
     private String _abstract;
     private Map connectionParams;
 
-    /** Storage for metadata */
-    private Map meta;
+	/**
+	 * Storage for metadata
+	 * 
+	 * @uml.property name="meta"
+	 * @uml.associationEnd elementType="java.lang.Object" qualifier="key:java.lang.String
+	 * java.lang.Object" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private Map meta;
+
 
     /**
      * Directory associated with this DataStore.
@@ -106,18 +135,21 @@ public class DataStoreInfo extends GlobalLayerSupertype {
         return dto;
     }
 
-    /**
-     * getId purpose.
-     * 
-     * <p>
-     * Returns the dataStore's id.
-     * </p>
-     *
-     * @return String the id.
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * getId purpose.
+	 * 
+	 * <p>
+	 * Returns the dataStore's id.
+	 * </p>
+	 * 
+	 * @return String the id.
+	 * 
+	 * @uml.property name="id"
+	 */
+	public String getId() {
+		return id;
+	}
+
 
     protected Map getParams() {
         Map params = new HashMap(connectionParams);
@@ -186,69 +218,80 @@ public class DataStoreInfo extends GlobalLayerSupertype {
         return params;
     }
 
-    /**
-     * By now just uses DataStoreFinder to find a new instance of a
-     * DataStoreInfo capable of process <code>connectionParams</code>. In the
-     * future we can see if it is better to cache or pool DataStores for
-     * performance, but definitely we shouldn't maintain a single
-     * DataStoreInfo as instance variable for synchronizing reassons
-     * 
-     * <p>
-     * JG: Umm we actually require a single DataStoreInfo for for locking &
-     * transaction support to work. DataStoreInfo is expected to be thread
-     * aware (that is why it has Transaction Support).
-     * </p>
-     *
-     * @return DataStore
-     *
-     * @throws IllegalStateException if this DataStoreInfo is disabled by
-     *         configuration
-     * @throws NoSuchElementException if no DataStoreInfo is found
-     */
-    public synchronized DataStore getDataStore()
-        throws IllegalStateException, NoSuchElementException {
-        if (!isEnabled()) {
-            throw new IllegalStateException(
-                "this datastore is not enabled, check your configuration");
-        }
+	/**
+	 * By now just uses DataStoreFinder to find a new instance of a
+	 * DataStoreInfo capable of process <code>connectionParams</code>. In the
+	 * future we can see if it is better to cache or pool DataStores for
+	 * performance, but definitely we shouldn't maintain a single
+	 * DataStoreInfo as instance variable for synchronizing reassons
+	 * 
+	 * <p>
+	 * JG: Umm we actually require a single DataStoreInfo for for locking &
+	 * transaction support to work. DataStoreInfo is expected to be thread
+	 * aware (that is why it has Transaction Support).
+	 * </p>
+	 * 
+	 * @return DataStore
+	 * 
+	 * @throws IllegalStateException if this DataStoreInfo is disabled by
+	 *         configuration
+	 * @throws NoSuchElementException if no DataStoreInfo is found
+	 * 
+	 * @uml.property name="dataStore"
+	 */
+	public synchronized DataStore getDataStore()
+		throws IllegalStateException,
+		NoSuchElementException {
+		if (!isEnabled()) {
+			throw new IllegalStateException(
+				"this datastore is not enabled, check your configuration");
+		}
 
-        Map m = getParams();
+		Map m = getParams();
 
-        if (dataStore == null) {
-            try {
-                dataStore = DataStoreFinder.getDataStore(m);
-                LOGGER.fine("connection established by " + toString());
-            } catch (Throwable ex) {
-                throw new IllegalStateException("can't create the datastore "
-                    + getId() + ": " + ex.getClass().getName() + ": "
-                    + ex.getMessage() + "\n" + ex.toString());
-            }
+		if (dataStore == null) {
+			try {
+				dataStore = DataStoreFinder.getDataStore(m);
+				LOGGER.fine("connection established by " + toString());
+			} catch (Throwable ex) {
+				throw new IllegalStateException("can't create the datastore "
+					+ getId()
+					+ ": "
+					+ ex.getClass().getName()
+					+ ": "
+					+ ex.getMessage()
+					+ "\n"
+					+ ex.toString());
+			}
 
-            if (dataStore == null) {
-            	 // If datastore is not present, then disable it
-                // (although no change in config).
-                enabled=false;
-                LOGGER.fine("failed to establish connection with " + toString());
-                throw new NoSuchElementException(
-                    "No datastore found capable of managing " + toString());
-            }
-        }
+			if (dataStore == null) {
+				// If datastore is not present, then disable it
+				// (although no change in config).
+				enabled = false;
+				LOGGER
+					.fine("failed to establish connection with " + toString());
+				throw new NoSuchElementException(
+					"No datastore found capable of managing " + toString());
+			}
+		}
 
-        return dataStore;
-    }
+		return dataStore;
+	}
 
-    /**
-     * getTitle purpose.
-     * 
-     * <p>
-     * Returns the dataStore's title.
-     * </p>
-     *
-     * @return String the title.
-     */
-    public String getTitle() {
-        return title;
-    }
+	/**
+	 * getTitle purpose.
+	 * 
+	 * <p>
+	 * Returns the dataStore's title.
+	 * </p>
+	 * 
+	 * @return String the title.
+	 * 
+	 * @uml.property name="title"
+	 */
+	public String getTitle() {
+		return title;
+	}
 
     /**
      * getAbstract purpose.

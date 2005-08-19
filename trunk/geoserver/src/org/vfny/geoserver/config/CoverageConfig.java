@@ -37,25 +37,132 @@ import com.vividsolutions.jts.geom.Envelope;
  * @version $Id: FeatureTypeConfig.java,v 1.20 2004/03/09 10:59:56 jive Exp $
  */
 public class CoverageConfig {
+
+	/**
+	 * 
+	 * @uml.property name="formatId" multiplicity="(0 1)"
+	 */
 	private String formatId;
-    private String name;
-    private String label;
-    private String description;
-    private MetaDataLink metadataLink;
-    private String dirName;
-    private List keywords;
-    private Envelope envelope;
+
+	/**
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	private String name;
+
+	/**
+	 * 
+	 * @uml.property name="label" multiplicity="(0 1)"
+	 */
+	private String label;
+
+	/**
+	 * 
+	 * @uml.property name="description" multiplicity="(0 1)"
+	 */
+	private String description;
+
+	/**
+	 * 
+	 * @uml.property name="metadataLink"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private MetaDataLink metadataLink;
+
+	/**
+	 * 
+	 * @uml.property name="dirName" multiplicity="(0 1)"
+	 */
+	private String dirName;
+
+	/**
+	 * 
+	 * @uml.property name="keywords"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List keywords;
+
+	/**
+	 * 
+	 * @uml.property name="envelope"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private Envelope envelope;
+
+	/**
+	 * 
+	 * @uml.property name="grid"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
 	private GridGeometry grid;
+
+	/**
+	 * 
+	 * @uml.property name="dimensions"
+	 * @uml.associationEnd multiplicity="(0 -1)"
+	 */
 	private CoverageDimension[] dimensions;
+
+	/**
+	 * 
+	 * @uml.property name="dimentionNames"
+	 * @uml.associationEnd multiplicity="(0 -1)"
+	 */
 	private InternationalString[] dimentionNames;
-    private List requestCRSs;
-    private List responseCRSs;
-    private String nativeFormat;
-    private List supportedFormats;
-    private String defaultInterpolationMethod;
-    private List interpolationMethods;
-    private String srsName; 
-    private CoordinateReferenceSystem crs;
+
+	/**
+	 * 
+	 * @uml.property name="requestCRSs"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List requestCRSs;
+
+	/**
+	 * 
+	 * @uml.property name="responseCRSs"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List responseCRSs;
+
+	/**
+	 * 
+	 * @uml.property name="nativeFormat" multiplicity="(0 1)"
+	 */
+	private String nativeFormat;
+
+	/**
+	 * 
+	 * @uml.property name="supportedFormats"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List supportedFormats;
+
+	/**
+	 * 
+	 * @uml.property name="defaultInterpolationMethod" multiplicity="(0 1)"
+	 */
+	private String defaultInterpolationMethod;
+
+	/**
+	 * 
+	 * @uml.property name="interpolationMethods"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List interpolationMethods;
+
+	/**
+	 * 
+	 * @uml.property name="srsName" multiplicity="(0 1)"
+	 */
+	private String srsName;
+
+	/**
+	 * 
+	 * @uml.property name="crs"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private CoordinateReferenceSystem crs;
+
 
     /**
      * Package visible constructor for test cases
@@ -253,218 +360,341 @@ public class CoverageConfig {
 	return "CoverageConfig[name: " + name + " dewcription: " + description
 	    + " srsName: " + srsName + "]";
     }
+
 	/**
 	 * @return Returns the defaultInterpolationMethod.
+	 * 
+	 * @uml.property name="defaultInterpolationMethod"
 	 */
 	public String getDefaultInterpolationMethod() {
 		return defaultInterpolationMethod;
 	}
+
 	/**
 	 * @param defaultInterpolationMethod The defaultInterpolationMethod to set.
+	 * 
+	 * @uml.property name="defaultInterpolationMethod"
 	 */
 	public void setDefaultInterpolationMethod(String defaultInterpolationMethod) {
 		this.defaultInterpolationMethod = defaultInterpolationMethod;
 	}
+
 	/**
 	 * @return Returns the description.
+	 * 
+	 * @uml.property name="description"
 	 */
 	public String getDescription() {
 		return description;
 	}
+
 	/**
 	 * @param description The description to set.
+	 * 
+	 * @uml.property name="description"
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	/**
 	 * @return Returns the dirName.
+	 * 
+	 * @uml.property name="dirName"
 	 */
 	public String getDirName() {
 		return dirName;
 	}
+
 	/**
 	 * @param dirName The dirName to set.
+	 * 
+	 * @uml.property name="dirName"
 	 */
 	public void setDirName(String dirName) {
 		this.dirName = dirName;
 	}
+
 	/**
 	 * @return Returns the envelope.
+	 * 
+	 * @uml.property name="envelope"
 	 */
 	public Envelope getEnvelope() {
 		return envelope;
 	}
+
 	/**
 	 * @param envelope The envelope to set.
+	 * 
+	 * @uml.property name="envelope"
 	 */
 	public void setEnvelope(Envelope envelope) {
 		this.envelope = envelope;
 	}
+
 	/**
 	 * @return Returns the formatId.
+	 * 
+	 * @uml.property name="formatId"
 	 */
 	public String getFormatId() {
 		return formatId;
 	}
+
 	/**
 	 * @param formatId The formatId to set.
+	 * 
+	 * @uml.property name="formatId"
 	 */
 	public void setFormatId(String formatId) {
 		this.formatId = formatId;
 	}
+
 	/**
 	 * @return Returns the interpolationMethods.
+	 * 
+	 * @uml.property name="interpolationMethods"
 	 */
 	public List getInterpolationMethods() {
 		return interpolationMethods;
 	}
+
 	/**
 	 * @param interpolationMethods The interpolationMethods to set.
+	 * 
+	 * @uml.property name="interpolationMethods"
 	 */
 	public void setInterpolationMethods(List interpolationMethods) {
 		this.interpolationMethods = interpolationMethods;
 	}
+
 	/**
 	 * @return Returns the keywords.
+	 * 
+	 * @uml.property name="keywords"
 	 */
 	public List getKeywords() {
 		return keywords;
 	}
+
 	/**
 	 * @param keywords The keywords to set.
+	 * 
+	 * @uml.property name="keywords"
 	 */
 	public void setKeywords(List keywords) {
 		this.keywords = keywords;
 	}
+
 	/**
 	 * @return Returns the label.
+	 * 
+	 * @uml.property name="label"
 	 */
 	public String getLabel() {
 		return label;
 	}
+
 	/**
 	 * @param label The label to set.
+	 * 
+	 * @uml.property name="label"
 	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
+
 	/**
 	 * @return Returns the metadataLink.
+	 * 
+	 * @uml.property name="metadataLink"
 	 */
 	public MetaDataLink getMetadataLink() {
 		return metadataLink;
 	}
+
 	/**
 	 * @param metadataLink The metadataLink to set.
+	 * 
+	 * @uml.property name="metadataLink"
 	 */
 	public void setMetadataLink(MetaDataLink metadataLink) {
 		this.metadataLink = metadataLink;
 	}
+
 	/**
 	 * @return Returns the name.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public String getName() {
 		return name;
 	}
+
 	/**
 	 * @param name The name to set.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	/**
 	 * @return Returns the nativeFormat.
+	 * 
+	 * @uml.property name="nativeFormat"
 	 */
 	public String getNativeFormat() {
 		return nativeFormat;
 	}
+
 	/**
 	 * @param nativeFormat The nativeFormat to set.
+	 * 
+	 * @uml.property name="nativeFormat"
 	 */
 	public void setNativeFormat(String nativeFormat) {
 		this.nativeFormat = nativeFormat;
 	}
+
 	/**
 	 * @return Returns the requestCRSs.
+	 * 
+	 * @uml.property name="requestCRSs"
 	 */
 	public List getRequestCRSs() {
 		return requestCRSs;
 	}
+
 	/**
 	 * @param requestCRSs The requestCRSs to set.
+	 * 
+	 * @uml.property name="requestCRSs"
 	 */
 	public void setRequestCRSs(List requestCRSs) {
 		this.requestCRSs = requestCRSs;
 	}
+
 	/**
 	 * @return Returns the responseCRSs.
+	 * 
+	 * @uml.property name="responseCRSs"
 	 */
 	public List getResponseCRSs() {
 		return responseCRSs;
 	}
+
 	/**
 	 * @param responseCRSs The responseCRSs to set.
+	 * 
+	 * @uml.property name="responseCRSs"
 	 */
 	public void setResponseCRSs(List responseCRSs) {
 		this.responseCRSs = responseCRSs;
 	}
+
 	/**
 	 * @return Returns the srsName.
+	 * 
+	 * @uml.property name="srsName"
 	 */
 	public String getSrsName() {
 		return srsName;
 	}
+
 	/**
 	 * @param srsName The srsName to set.
+	 * 
+	 * @uml.property name="srsName"
 	 */
 	public void setSrsName(String srsName) {
 		this.srsName = srsName;
 	}
+
 	/**
 	 * @return Returns the supportedFormats.
+	 * 
+	 * @uml.property name="supportedFormats"
 	 */
 	public List getSupportedFormats() {
 		return supportedFormats;
 	}
+
 	/**
 	 * @param supportedFormats The supportedFormats to set.
+	 * 
+	 * @uml.property name="supportedFormats"
 	 */
 	public void setSupportedFormats(List supportedFormats) {
 		this.supportedFormats = supportedFormats;
 	}
+
+	/**
+	 * 
+	 * @uml.property name="crs"
+	 */
 	public CoordinateReferenceSystem getCrs() {
 		return crs;
 	}
+
+	/**
+	 * 
+	 * @uml.property name="crs"
+	 */
 	public void setCrs(CoordinateReferenceSystem crs) {
 		this.crs = crs;
 	}
 
+	/**
+	 * 
+	 * @uml.property name="grid"
+	 */
 	public GridGeometry getGrid() {
 		return grid;
 	}
 
+	/**
+	 * 
+	 * @uml.property name="grid"
+	 */
 	public void setGrid(GridGeometry grid) {
 		this.grid = grid;
 	}
 
+	/**
+	 * 
+	 * @uml.property name="dimentionNames"
+	 */
 	public InternationalString[] getDimentionNames() {
 		return dimentionNames;
 	}
 
+	/**
+	 * 
+	 * @uml.property name="dimentionNames"
+	 */
 	public void setDimentionNames(InternationalString[] dimentionNames) {
 		this.dimentionNames = dimentionNames;
 	}
+
 	/**
 	 * @return Returns the dimensions.
+	 * 
+	 * @uml.property name="dimensions"
 	 */
 	public CoverageDimension[] getDimensions() {
 		return dimensions;
 	}
+
 	/**
 	 * @param dimensions The dimensions to set.
+	 * 
+	 * @uml.property name="dimensions"
 	 */
 	public void setDimensions(CoverageDimension[] dimensions) {
 		this.dimensions = dimensions;
 	}
+
 }

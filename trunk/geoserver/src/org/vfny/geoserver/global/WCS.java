@@ -1,4 +1,4 @@
-/* Copyright (c) 2005 NATO - Undersea Research Centre.  All rights reserved.
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
@@ -36,7 +36,12 @@ public class WCS extends Service {
         "application/vnd.ogc.se_blank"
     };
 
-    private boolean gmlPrefixing;
+	/**
+	 * 
+	 * @uml.property name="gmlPrefixing" multiplicity="(0 1)"
+	 */
+	private boolean gmlPrefixing;
+
 
     /**
      * WCS constructor.
@@ -116,18 +121,21 @@ public class WCS extends Service {
         return gmlPrefixing;
     }
 
-    /**
-     * setGmlPrefixing purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setGmlPrefixing(boolean b) {
-        gmlPrefixing = b;
-    }
+	/**
+	 * setGmlPrefixing purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="gmlPrefixing"
+	 */
+	public void setGmlPrefixing(boolean b) {
+		gmlPrefixing = b;
+	}
+
     
     /**
      * getExceptionFormats purpose.

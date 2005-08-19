@@ -86,8 +86,13 @@ public class ServiceException extends Exception {
     /** full classpath of originating GeoServer class */
     protected String locator = new String();
 
-    /** Diagnostic code */
-    protected String code = new String();
+	/**
+	 * Diagnostic code
+	 * 
+	 * @uml.property name="code" multiplicity="(0 1)"
+	 */
+	protected String code = new String();
+
 
     /**
      * Empty constructor.
@@ -157,14 +162,16 @@ public class ServiceException extends Exception {
         this.locator = locator;
     }
 
-    /**
-     * Assigns a diagnostic code to this exception.
-     *
-     * @param code The diagnostic code.
-     */
-    public void setCode(String code) {
-        this.code = code;
-    }
+	/**
+	 * Assigns a diagnostic code to this exception.
+	 * 
+	 * @param code The diagnostic code.
+	 * 
+	 * @uml.property name="code"
+	 */
+	public void setCode(String code) {
+		this.code = code;
+	}
 
     /**
      * DOCUMENT ME!

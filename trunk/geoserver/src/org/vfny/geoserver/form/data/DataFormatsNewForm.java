@@ -36,11 +36,20 @@ import org.vfny.geoserver.action.data.DataFormatUtils;
 public class DataFormatsNewForm extends ActionForm {
     private static final Pattern idPattern = Pattern.compile("^\\a$");
 
-    /** Description provided by selected Datastore Factory */
-    private String selectedDescription;
+	/**
+	 * Description provided by selected Datastore Factory
+	 * 
+	 * @uml.property name="selectedDescription" multiplicity="(0 1)"
+	 */
+	private String selectedDescription;
 
-    /** User provided dataStoreID */
-    private String dataFormatID;
+	/**
+	 * User provided dataStoreID
+	 * 
+	 * @uml.property name="dataFormatID" multiplicity="(0 1)"
+	 */
+	private String dataFormatID;
+
 
     private List formatDescriptions;
     
@@ -88,21 +97,37 @@ public class DataFormatsNewForm extends ActionForm {
         return errors;
     }
 
-    public String getDataFormatID() {
-        return dataFormatID;
-    }
+	/**
+	 * 
+	 * @uml.property name="dataFormatID"
+	 */
+	public String getDataFormatID() {
+		return dataFormatID;
+	}
 
-    public String getSelectedDescription() {
-        return selectedDescription;
-    }
+	/**
+	 * 
+	 * @uml.property name="selectedDescription"
+	 */
+	public String getSelectedDescription() {
+		return selectedDescription;
+	}
 
-    public void setDataFormatID(String string) {
-        dataFormatID = string;
-    }
+	/**
+	 * 
+	 * @uml.property name="dataFormatID"
+	 */
+	public void setDataFormatID(String string) {
+		dataFormatID = string;
+	}
 
-    public void setSelectedDescription(String string) {
-        selectedDescription = string;
-    }
+	/**
+	 * 
+	 * @uml.property name="selectedDescription"
+	 */
+	public void setSelectedDescription(String string) {
+		selectedDescription = string;
+	}
 
     /*
      * Allows the JSP page to easily access the list of dataFormat Descriptions

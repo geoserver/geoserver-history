@@ -16,7 +16,6 @@
 	<classpathentry kind="var" path="GEOSERVER/geoapi.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-arcgrid.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-arcsde.jar"/>
-	<classpathentry kind="var" path="GEOSERVER/gt2-epsg.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-experiment.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-geotiff.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-gml.jar"/>
@@ -75,5 +74,7 @@
 	<classpathentry kind="var" path="MAVEN/batik/jars/batik-util-1.1.1.jar"/>
 	<classpathentry kind="var" path="MAVEN/batik/jars/batik-xml-1.5.1.jar"/>
 	<classpathentry kind="var" path="MAVEN/batik/jars/batik-xml-1.5.jar"/>
+	<classpathentry kind="var" path="GEOSERVER/gt2-epsg-h.jar"/>
+	<classpathentry kind="var" path="GEOSERVER/hsqldb-1.8.0.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

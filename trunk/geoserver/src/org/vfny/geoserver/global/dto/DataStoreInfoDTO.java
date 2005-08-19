@@ -34,29 +34,52 @@ import java.util.Map;
  * @version $Id: DataStoreInfoDTO.java,v 1.5 2004/02/02 08:56:45 jive Exp $
  */
 public final class DataStoreInfoDTO implements DataTransferObject {
-    /** unique datastore identifier */
-    private String id;
 
-    /** unique namespace to refer to this datastore */
-    private String nameSpaceId;
+	/**
+	 * unique datastore identifier
+	 * 
+	 * @uml.property name="id" multiplicity="(0 1)"
+	 */
+	private String id;
 
-    /** true if this data store is enabled */
-    private boolean enabled;
+	/**
+	 * unique namespace to refer to this datastore
+	 * 
+	 * @uml.property name="nameSpaceId" multiplicity="(0 1)"
+	 */
+	private String nameSpaceId;
 
-    /** The title of this data store */
-    private String title;
+	/**
+	 * true if this data store is enabled
+	 * 
+	 * @uml.property name="enabled" multiplicity="(0 1)"
+	 */
+	private boolean enabled;
+
+	/**
+	 * The title of this data store
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
+
 
     /** a short description about this data store */
     private String _abstract;
 
-    /**
-     * Connection parameters to create the DataStoreInfo
-     * 
-     * <p>
-     * Limitied to Strings for both Keys and Values.
-     * </p>
-     */
-    private Map connectionParams;
+	/**
+	 * Connection parameters to create the DataStoreInfo
+	 * 
+	 * <p>
+	 * Limitied to Strings for both Keys and Values.
+	 * </p>
+	 * 
+	 * @uml.property name="connectionParams"
+	 * @uml.associationEnd elementType="java.lang.Object" qualifier="key:java.lang.String
+	 * java.lang.Object" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private Map connectionParams;
+
     
     /**
      * DataStoreInfo constructor.
@@ -186,18 +209,21 @@ public final class DataStoreInfoDTO implements DataTransferObject {
         return _abstract;
     }
 
-    /**
-     * Map of param:value both of which are represented as text.
-     * 
-     * <p>
-     * The map is based on String Keys, and String values.
-     * </p>
-     *
-     * @return Map of Params for DataStoreFactoryAPI use
-     */
-    public Map getConnectionParams() {
-        return connectionParams;
-    }
+	/**
+	 * Map of param:value both of which are represented as text.
+	 * 
+	 * <p>
+	 * The map is based on String Keys, and String values.
+	 * </p>
+	 * 
+	 * @return Map of Params for DataStoreFactoryAPI use
+	 * 
+	 * @uml.property name="connectionParams"
+	 */
+	public Map getConnectionParams() {
+		return connectionParams;
+	}
+
 
     /**
      * Value is <code>true</code> if the DataStore should be enabled.
@@ -208,36 +234,43 @@ public final class DataStoreInfoDTO implements DataTransferObject {
         return enabled;
     }
 
-    /**
-     * Unique identifier representing this DataStore.
-     * 
-     * <p>
-     * This value is used to refer to this DataStore by FeatureTypeInfoDTO.
-     * </p>
-     *
-     * @return an identifier, non null
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * Unique identifier representing this DataStore.
+	 * 
+	 * <p>
+	 * This value is used to refer to this DataStore by FeatureTypeInfoDTO.
+	 * </p>
+	 * 
+	 * @return an identifier, non null
+	 * 
+	 * @uml.property name="id"
+	 */
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * Namespace <code>prefix</code> for this DataStore.
-     *
-     * @return <code>prefix</code> used for GML encoding
-     */
-    public String getNameSpaceId() {
-        return nameSpaceId;
-    }
+	/**
+	 * Namespace <code>prefix</code> for this DataStore.
+	 * 
+	 * @return <code>prefix</code> used for GML encoding
+	 * 
+	 * @uml.property name="nameSpaceId"
+	 */
+	public String getNameSpaceId() {
+		return nameSpaceId;
+	}
 
-    /**
-     * Title for DataStore, used in error messages & configuration.
-     *
-     * @return Title dor the DataStore
-     */
-    public String getTitle() {
-        return title;
-    }
+	/**
+	 * Title for DataStore, used in error messages & configuration.
+	 * 
+	 * @return Title dor the DataStore
+	 * 
+	 * @uml.property name="title"
+	 */
+	public String getTitle() {
+		return title;
+	}
+
 
     /**
      * Updates the DataStore abstract.
@@ -248,58 +281,69 @@ public final class DataStoreInfoDTO implements DataTransferObject {
         _abstract = description;
     }
 
-    /**
-     * Provide DataStore connectin parameters.
-     * 
-     * <p>
-     * Map is limited to text based keys and values
-     * </p>
-     *
-     * @param map
-     */
-    public void setConnectionParams(Map map) {
-        if (map != null) {
-            connectionParams = map;
-        }
-    }
+	/**
+	 * Provide DataStore connectin parameters.
+	 * 
+	 * <p>
+	 * Map is limited to text based keys and values
+	 * </p>
+	 * 
+	 * @param map
+	 * 
+	 * @uml.property name="connectionParams"
+	 */
+	public void setConnectionParams(Map map) {
+		if (map != null) {
+			connectionParams = map;
+		}
+	}
 
-    /**
-     * setEnabled purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setEnabled(boolean b) {
-        enabled = b;
-    }
+	/**
+	 * setEnabled purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="enabled"
+	 */
+	public void setEnabled(boolean b) {
+		enabled = b;
+	}
 
-    /**
-     * Sets the unique identifier for this DataStoreInfoDTO.
-     *
-     * @param identifier non<code>null</code> identifier for DataStore
-     */
-    public void setId(String identifier) {
-        id = identifier;
-    }
+	/**
+	 * Sets the unique identifier for this DataStoreInfoDTO.
+	 * 
+	 * @param identifier non<code>null</code> identifier for DataStore
+	 * 
+	 * @uml.property name="id"
+	 */
+	public void setId(String identifier) {
+		id = identifier;
+	}
 
-    /**
-     * Sets the Namespace prefix for the DataStore.
-     *
-     * @param prefix Namespace prefix used by DataStore
-     */
-    public void setNameSpaceId(String prefix) {
-        nameSpaceId = prefix;
-    }
+	/**
+	 * Sets the Namespace prefix for the DataStore.
+	 * 
+	 * @param prefix Namespace prefix used by DataStore
+	 * 
+	 * @uml.property name="nameSpaceId"
+	 */
+	public void setNameSpaceId(String prefix) {
+		nameSpaceId = prefix;
+	}
 
-    /**
-     * Set title used to identify this DataStore to the user.
-     *
-     * @param dataStoreTitle Title used to identify DataStore to user
-     */
-    public void setTitle(String dataStoreTitle) {
-        title = dataStoreTitle;
-    }
+	/**
+	 * Set title used to identify this DataStore to the user.
+	 * 
+	 * @param dataStoreTitle Title used to identify DataStore to user
+	 * 
+	 * @uml.property name="title"
+	 */
+	public void setTitle(String dataStoreTitle) {
+		title = dataStoreTitle;
+	}
+
 }

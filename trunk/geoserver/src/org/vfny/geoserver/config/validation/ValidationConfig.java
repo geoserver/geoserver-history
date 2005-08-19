@@ -27,8 +27,22 @@ public class ValidationConfig {
 	
 	public static final String CONFIG_KEY = "Validation.Config";
 
+	/**
+	 * 
+	 * @uml.property name="plugIns"
+	 * @uml.associationEnd qualifier="getName:java.lang.String org.vfny.geoserver.config.validation.PlugInConfig"
+	 * multiplicity="(0 1)"
+	 */
 	private Map plugIns;
+
+	/**
+	 * 
+	 * @uml.property name="testSuites"
+	 * @uml.associationEnd qualifier="testSuite:java.lang.String org.vfny.geoserver.config.validation.TestSuiteConfig"
+	 * multiplicity="(0 1)"
+	 */
 	private Map testSuites;
+
 	/**
 	 * ValidationConfig constructor.
 	 * <p>
@@ -203,15 +217,18 @@ public class ValidationConfig {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Access plugIns property.
 	 * 
 	 * @return Returns the plugIns.
+	 * 
+	 * @uml.property name="plugIns"
 	 */
 	public Map getPlugIns() {
 		return plugIns;
 	}
+
 	/**
 	 * Access plugIns property.
 	 * 
@@ -223,8 +240,10 @@ public class ValidationConfig {
 
 	/**
 	 * Set plugIns to plugIns.
-	 *
+	 * 
 	 * @param plugIns The plugIns to set.
+	 * 
+	 * @uml.property name="plugIns"
 	 */
 	public void setPlugIns(Map plugIns) {
 		this.plugIns = plugIns;
@@ -234,10 +253,13 @@ public class ValidationConfig {
 	 * Access testSuites property.
 	 * 
 	 * @return Returns the testSuites.
+	 * 
+	 * @uml.property name="testSuites"
 	 */
 	public Map getTestSuites() {
 		return testSuites;
 	}
+
 
 	/**
 	 * Access testSuites property.
@@ -250,8 +272,10 @@ public class ValidationConfig {
 
 	/**
 	 * Set testSuites to testSuites.
-	 *
+	 * 
 	 * @param testSuites The testSuites to set.
+	 * 
+	 * @uml.property name="testSuites"
 	 */
 	public void setTestSuites(Map testSuites) {
 		this.testSuites = testSuites;

@@ -94,11 +94,14 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     /** will be true if Shape-GZIP output format was requested */
     private boolean compressOutput = false;
 
-    /**
-     * the results of a getfeature request wich this object will encode as
-     * Shape
-     */
-    private GetFeatureResults results;
+	/**
+	 * the results of a getfeature request wich this object will encode as
+	 * Shape
+	 * 
+	 * @uml.property name="results"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GetFeatureResults results;
 
     /**
      * empty constructor required to be instantiated through

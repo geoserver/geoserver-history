@@ -42,12 +42,23 @@ public class EncodeKML {
     
     /** the KML closing element */
     private static final String KML_FOOTER = "</kml>\n";
-    
-    /** Map context document - layers, styles aoi etc. */
-    private WMSMapContext mapContext;
-    
-    /** Actualy writes the KML out */
-    private KMLWriter writer;
+
+	/**
+	 * Map context document - layers, styles aoi etc.
+	 * 
+	 * @uml.property name="mapContext"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private WMSMapContext mapContext;
+
+	/**
+	 * Actualy writes the KML out
+	 * 
+	 * @uml.property name="writer"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private KMLWriter writer;
+
     
     /** Flag to be monotored by writer loops */
     private boolean abortProcess;

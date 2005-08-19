@@ -35,11 +35,20 @@ import org.vfny.geoserver.action.data.DataStoreUtils;
 public class DataDataStoresNewForm extends ActionForm {
     private static final Pattern idPattern = Pattern.compile("^\\a$");
 
-    /** Description provided by selected Datastore Factory */
-    private String selectedDescription;
+	/**
+	 * Description provided by selected Datastore Factory
+	 * 
+	 * @uml.property name="selectedDescription" multiplicity="(0 1)"
+	 */
+	private String selectedDescription;
 
-    /** User provided dataStoreID */
-    private String dataStoreID;
+	/**
+	 * User provided dataStoreID
+	 * 
+	 * @uml.property name="dataStoreID" multiplicity="(0 1)"
+	 */
+	private String dataStoreID;
+
 
     /**
      * Default state of New form
@@ -102,21 +111,37 @@ public class DataDataStoresNewForm extends ActionForm {
         return errors;
     }
 
-    public String getDataStoreID() {
-        return dataStoreID;
-    }
+	/**
+	 * 
+	 * @uml.property name="dataStoreID"
+	 */
+	public String getDataStoreID() {
+		return dataStoreID;
+	}
 
-    public String getSelectedDescription() {
-        return selectedDescription;
-    }
+	/**
+	 * 
+	 * @uml.property name="selectedDescription"
+	 */
+	public String getSelectedDescription() {
+		return selectedDescription;
+	}
 
-    public void setDataStoreID(String string) {
-        dataStoreID = string;
-    }
+	/**
+	 * 
+	 * @uml.property name="dataStoreID"
+	 */
+	public void setDataStoreID(String string) {
+		dataStoreID = string;
+	}
 
-    public void setSelectedDescription(String string) {
-        selectedDescription = string;
-    }
+	/**
+	 * 
+	 * @uml.property name="selectedDescription"
+	 */
+	public void setSelectedDescription(String string) {
+		selectedDescription = string;
+	}
 
     /*
      * Allows the JSP page to easily access the list of dataStore Descriptions

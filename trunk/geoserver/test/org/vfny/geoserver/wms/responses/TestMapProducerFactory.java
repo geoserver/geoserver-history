@@ -52,14 +52,16 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
         return Collections.singleton(TESTING_MIME_TYPE);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public boolean isAvailable() {
-        return true;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="available"
+	 */
+	public boolean isAvailable() {
+		return true;
+	}
 
     /**
      * DOCUMENT ME!

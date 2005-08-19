@@ -24,8 +24,13 @@ public class DescribeLayerRequest extends WMSRequest {
 	/**
 	 * Holds the FeatureTypes parsed from the
 	 * request's <code>LAYERS</code> parameter.
+	 * 
+	 * @uml.property name="layers"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.global.MapLayerInfo" multiplicity=
+	 * "(0 -1)"
 	 */
 	private List layers = new ArrayList(2);
+
 	
 	
 	public void addLayer(MapLayerInfo layer){

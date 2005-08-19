@@ -61,14 +61,30 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");
 
-    /** Internal transaction request for construction. */
-    private TransactionRequest request = new TransactionRequest();
+	/**
+	 * Internal transaction request for construction.
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private TransactionRequest request = new TransactionRequest();
 
-    /** Tracks current sub request */
-    private SubTransactionRequest subRequest = null;
+	/**
+	 * Tracks current sub request
+	 * 
+	 * @uml.property name="subRequest"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private SubTransactionRequest subRequest = null;
 
-    /** Tracks tag we are currently inside: helps maintain state. */
-    private State state = UNKNOWN;
+	/**
+	 * Tracks tag we are currently inside: helps maintain state.
+	 * 
+	 * @uml.property name="state"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private State state = UNKNOWN;
+
 
     /** holds the property name for an update request. */
     private String curPropertyName;
@@ -79,8 +95,14 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     /** holds the current lockId */
     private String curLockId = new String();
 
-    /** holds the list of features for an insert request. */
-    private List curFeatures;
+	/**
+	 * holds the list of features for an insert request.
+	 * 
+	 * @uml.property name="curFeatures"
+	 * @uml.associationEnd elementType="org.geotools.feature.Feature" multiplicity="(0
+	 * -1)"
+	 */
+	private List curFeatures;
 
     /**
      * Flag to alert signal we are within a Property element.  The state thing

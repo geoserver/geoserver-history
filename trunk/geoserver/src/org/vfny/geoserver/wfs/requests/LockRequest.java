@@ -26,14 +26,35 @@ public class LockRequest extends WFSRequest {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");
-    private String handle;
 
-    /** Specifies a lock expiration. */
-    protected int expiry = 0; //DJB: this was defaulted to -1 --> the lock would release as soon as it was grabbed!!
+	/**
+	 * 
+	 * @uml.property name="handle" multiplicity="(0 1)"
+	 */
+	private String handle;
 
-    /** Specifices whether or not to lock all features grabbed in request */
-    protected boolean lockAll = true;
-    protected List locks = new ArrayList();
+	/**
+	 * Specifies a lock expiration.
+	 * 
+	 * @uml.property name="expiry" multiplicity="(0 1)"
+	 */
+	protected int expiry = 0; //DJB: this was defaulted to -1 --> the lock would release as soon as it was grabbed!!
+
+	/**
+	 * Specifices whether or not to lock all features grabbed in request
+	 * 
+	 * @uml.property name="lockAll" multiplicity="(0 1)"
+	 */
+	protected boolean lockAll = true;
+
+	/**
+	 * 
+	 * @uml.property name="locks"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.wfs.requests.LockRequest$Lock"
+	 * multiplicity="(0 -1)"
+	 */
+	protected List locks = new ArrayList();
+
 
     /**
      * Empty constructor.
@@ -93,64 +114,84 @@ public class LockRequest extends WFSRequest {
         return FeatureLockFactory.generate(handle, expiry * 60 * 1000);
     }
 
-    public void setHandle(String handle) {
-        this.handle = handle;
-    }
+	/**
+	 * 
+	 * @uml.property name="handle"
+	 */
+	public void setHandle(String handle) {
+		this.handle = handle;
+	}
 
-    public String getHandle() {
-        return handle;
-    }
+	/**
+	 * 
+	 * @uml.property name="handle"
+	 */
+	public String getHandle() {
+		return handle;
+	}
 
-    /**
-     * Gets whether lock request should fail if not all can be locked
-     *
-     * @return <tt>true</tt> If the request should fail if all are not locked.
-     */
-    public boolean getLockAll() {
-        return lockAll;
-    }
+	/**
+	 * Gets whether lock request should fail if not all can be locked
+	 * 
+	 * @return <tt>true</tt> If the request should fail if all are not locked.
+	 * 
+	 * @uml.property name="lockAll"
+	 */
+	public boolean getLockAll() {
+		return lockAll;
+	}
 
-    /**
-     * Sets whether lock request should fail if not all can be locked
-     *
-     * @param lockAll <tt>true</tt> If the request should fail if all are not
-     *        locked.
-     */
-    public void setLockAll(boolean lockAll) {
-        this.lockAll = lockAll;
-    }
+	/**
+	 * Sets whether lock request should fail if not all can be locked
+	 * 
+	 * @param lockAll <tt>true</tt> If the request should fail if all are not
+	 *        locked.
+	 * 
+	 * @uml.property name="lockAll"
+	 */
+	public void setLockAll(boolean lockAll) {
+		this.lockAll = lockAll;
+	}
 
-    /**
-     * Gets the expiration of the locks (in minutes).
-     *
-     * @return An int of the expiry in minutes.
-     */
-    public int getExpiry() {
-        return expiry;
-    }
+	/**
+	 * Gets the expiration of the locks (in minutes).
+	 * 
+	 * @return An int of the expiry in minutes.
+	 * 
+	 * @uml.property name="expiry"
+	 */
+	public int getExpiry() {
+		return expiry;
+	}
 
-    /**
-     * Sets the expiration of the locks (in minutes).
-     *
-     * @param expiry An int of the expiry in minutes.
-     */
-    public void setExpiry(int expiry) {
-        this.expiry = expiry;
-    }
+	/**
+	 * Sets the expiration of the locks (in minutes).
+	 * 
+	 * @param expiry An int of the expiry in minutes.
+	 * 
+	 * @uml.property name="expiry"
+	 */
+	public void setExpiry(int expiry) {
+		this.expiry = expiry;
+	}
+
 
     public int getExpirySeconds() {
         return expiry * 60;
     }
 
-    /**
-     * Gets a list of the locks held by this request(as LockRequest.Lock
-     * objects)
-     *
-     * @return The list of the locks.
-     */
-    public List getLocks() {
-        return locks;
-    }
+	/**
+	 * Gets a list of the locks held by this request(as LockRequest.Lock
+	 * objects)
+	 * 
+	 * @return The list of the locks.
+	 * 
+	 * @uml.property name="locks"
+	 */
+	public List getLocks() {
+		return locks;
+	}
+
 
     /**
      * Adds a single lock to this request
@@ -161,14 +202,17 @@ public class LockRequest extends WFSRequest {
         this.locks.add(lock);
     }
 
-    /**
-     * Sets the lock list for this request.  Gets rid of the old lock list.
-     *
-     * @param locks The list of locks to add.
-     */
-    public void setLocks(List locks) {
-        this.locks = locks;
-    }
+	/**
+	 * Sets the lock list for this request.  Gets rid of the old lock list.
+	 * 
+	 * @param locks The list of locks to add.
+	 * 
+	 * @uml.property name="locks"
+	 */
+	public void setLocks(List locks) {
+		this.locks = locks;
+	}
+
 
     /**
      * Sets the locks for this request according to the two lists passed in
@@ -341,61 +385,73 @@ public class LockRequest extends WFSRequest {
             this.featureType = featureType;
         }
 
-        /**
-         * Gets the feature for this to lock.
-         *
-         * @return The name of the feature type to lock.
-         */
-        public String getFeatureType() {
-            return featureType;
-        }
+		/**
+		 * Gets the feature for this to lock.
+		 * 
+		 * @return The name of the feature type to lock.
+		 * 
+		 * @uml.property name="featureType"
+		 */
+		public String getFeatureType() {
+			return featureType;
+		}
 
-        /**
-         * Sets the feature for this to lock
-         *
-         * @param featureType The name of the feature type to lock.
-         */
-        public void setFeatureType(String featureType) {
-            //filter out myns: type prefixes here?
-            //or will SAXParser do that for us?
-            this.featureType = featureType;
-        }
+		/**
+		 * Sets the feature for this to lock
+		 * 
+		 * @param featureType The name of the feature type to lock.
+		 * 
+		 * @uml.property name="featureType"
+		 */
+		public void setFeatureType(String featureType) {
+			//filter out myns: type prefixes here?
+			//or will SAXParser do that for us?
+			this.featureType = featureType;
+		}
 
-        /**
-         * Gets the filter of the features to lock.
-         *
-         * @return The filter to lock features with.
-         */
-        public Filter getFilter() {
-            return filter;
-        }
+		/**
+		 * Gets the filter of the features to lock.
+		 * 
+		 * @return The filter to lock features with.
+		 * 
+		 * @uml.property name="filter"
+		 */
+		public Filter getFilter() {
+			return filter;
+		}
 
-        /**
-         * Sets the filter to define which features to lock
-         *
-         * @param filter The filter to lock features with.
-         */
-        public void setFilter(Filter filter) {
-            this.filter = filter;
-        }
+		/**
+		 * Sets the filter to define which features to lock
+		 * 
+		 * @param filter The filter to lock features with.
+		 * 
+		 * @uml.property name="filter"
+		 */
+		public void setFilter(Filter filter) {
+			this.filter = filter;
+		}
 
-        /**
-         * Gets the handle that identifies this lock.
-         *
-         * @return The handle to identify this lock.
-         */
-        public String getHandle() {
-            return handle;
-        }
+		/**
+		 * Gets the handle that identifies this lock.
+		 * 
+		 * @return The handle to identify this lock.
+		 * 
+		 * @uml.property name="handle"
+		 */
+		public String getHandle() {
+			return handle;
+		}
 
-        /**
-         * Sets the handle that identifies this
-         *
-         * @param handle The handle to identify this lock.
-         */
-        public void setHandle(String handle) {
-            this.handle = handle;
-        }
+		/**
+		 * Sets the handle that identifies this
+		 * 
+		 * @param handle The handle to identify this lock.
+		 * 
+		 * @uml.property name="handle"
+		 */
+		public void setHandle(String handle) {
+			this.handle = handle;
+		}
 
         /* *******************************************************************
          * Overrides of toString and equals methods.                         *

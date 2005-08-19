@@ -31,28 +31,64 @@ import org.vfny.geoserver.global.dto.FormatInfoDTO;
  * @version $Id: DataStoreConfig.java,v 1.11 2004/04/30 02:49:24 sploreg Exp $
  */
 public class DataFormatConfig {
-    /** unique datasore identifier */
-    private String id;
 
+	/**
+	 * unique datasore identifier
+	 * 
+	 * @uml.property name="id" multiplicity="(0 1)"
+	 */
+	private String id;
+
+/**
+ * 
+ * @uml.property name="type" multiplicity="(0 1)"
+ */
 //    /** unique namespace to refer to this datastore */
 //    private String nameSpaceId;
-    private String type;
-    private String url;
+private String type;
 
-    /** wether this data store is enabled */
-    private boolean enabled = true;
+	/**
+	 * 
+	 * @uml.property name="url" multiplicity="(0 1)"
+	 */
+	private String url;
 
-    /** a short description about this data store */
-    private String title;
+	/**
+	 * wether this data store is enabled
+	 * 
+	 * @uml.property name="enabled" multiplicity="(0 1)"
+	 */
+	private boolean enabled = true;
+
+	/**
+	 * a short description about this data store
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
+
 
     /** a short description about this data store */
     private String _abstract;
 
-    /** connection parameters to create the DataStoreInfo */
-    private Map parameters;
+	/**
+	 * connection parameters to create the DataStoreInfo
+	 * 
+	 * @uml.property name="parameters"
+	 * @uml.associationEnd qualifier="key:java.lang.String java.lang.String" multiplicity=
+	 * "(0 1)"
+	 */
+	private Map parameters;
 
-    /** Config ONLY! DataStoreFactory used to test params */
-    private Format factory;
+	/**
+	 * Config ONLY! DataStoreFactory used to test params
+	 * 
+	 * @uml.property name="factory"
+	 * @uml.associationEnd elementType="org.opengis.parameter.ParameterValue" multiplicity=
+	 * "(0 -1)"
+	 */
+	private Format factory;
+
 
     /**
      * Create a new DataStoreConfig from a dataStoreId and factoryDescription
@@ -195,18 +231,21 @@ public class DataFormatConfig {
         return _abstract;
     }
 
-    /**
-     * getConnectionParams purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public Map getParameters() {
-        return parameters;
-    }
+	/**
+	 * getConnectionParams purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="parameters"
+	 */
+	public Map getParameters() {
+		return parameters;
+	}
+
 
     /**
      * isEnabled purpose.
@@ -221,44 +260,49 @@ public class DataFormatConfig {
         return enabled;
     }
 
-    /**
-     * This is the DataStore ID
-     * 
-     * <p>
-     * 
-     * </p>
-     *
-     * @return
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * This is the DataStore ID
+	 * 
+	 * <p>
+	 * 
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="id"
+	 */
+	public String getId() {
+		return id;
+	}
 
-//    /**
-//     * getNameSpace purpose.
-//     * 
-//     * <p>
-//     * Description ...
-//     * </p>
-//     *
-//     * @return
-//     */
-//    public String getNameSpaceId() {
-//        return nameSpaceId;
-//    }
+	//    /**
+	//     * getNameSpace purpose.
+	//     * 
+	//     * <p>
+	//     * Description ...
+	//     * </p>
+	//     *
+	//     * @return
+	//     */
+	//    public String getNameSpaceId() {
+	//        return nameSpaceId;
+	//    }
 
-    /**
-     * getTitle purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getTitle() {
-        return title;
-    }
+	/**
+	 * getTitle purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="title"
+	 */
+	public String getTitle() {
+		return title;
+	}
+
 
     /**
      * setAbstract purpose.
@@ -275,61 +319,68 @@ public class DataFormatConfig {
         }
     }
 
-    /**
-     * setConnectionParams purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param map
-     */
-    public void setParameters(Map map) {
-        parameters = map;
-    }
+	/**
+	 * setConnectionParams purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param map
+	 * 
+	 * @uml.property name="parameters"
+	 */
+	public void setParameters(Map map) {
+		parameters = map;
+	}
 
-    /**
-     * setEnabled purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setEnabled(boolean b) {
-        enabled = b;
-    }
+	/**
+	 * setEnabled purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="enabled"
+	 */
+	public void setEnabled(boolean b) {
+		enabled = b;
+	}
 
-//    /**
-//     * setNameSpace purpose.
-//     * 
-//     * <p>
-//     * Description ...
-//     * </p>
-//     *
-//     * @param support
-//     */
-//    public void setNameSpaceId(String support) {
-//        if (support != null) {
-//            nameSpaceId = support;
-//        }
-//    }
+	//    /**
+	//     * setNameSpace purpose.
+	//     * 
+	//     * <p>
+	//     * Description ...
+	//     * </p>
+	//     *
+	//     * @param support
+	//     */
+	//    public void setNameSpaceId(String support) {
+	//        if (support != null) {
+	//            nameSpaceId = support;
+	//        }
+	//    }
 
-    /**
-     * setTitle purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setTitle(String string) {
-        if (string != null) {
-            title = string;
-        }
-    }
+	/**
+	 * setTitle purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="title"
+	 */
+	public void setTitle(String string) {
+		if (string != null) {
+			title = string;
+		}
+	}
+
 
     // Access to Dyanmic Content
 
@@ -343,40 +394,59 @@ public class DataFormatConfig {
     public Format findDataFormat(ServletContext sc) throws IOException {
         return DataFormatUtils.acquireFormat(type,sc);
     }
+
 	/**
 	 * @return Returns the factory.
+	 * 
+	 * @uml.property name="factory"
 	 */
 	public Format getFactory() {
 		return factory;
 	}
+
 	/**
 	 * @param factory The factory to set.
+	 * 
+	 * @uml.property name="factory"
 	 */
 	public void setFactory(Format factory) {
 		this.factory = factory;
 	}
+
 /**
  * @return Returns the type.
+ * 
+ * @uml.property name="type"
  */
 public String getType() {
 	return type;
 }
+
 /**
  * @param type The type to set.
+ * 
+ * @uml.property name="type"
  */
 public void setType(String type) {
 	this.type = type;
 }
+
 	/**
 	 * @return Returns the url.
+	 * 
+	 * @uml.property name="url"
 	 */
 	public String getUrl() {
 		return url;
 	}
+
 	/**
 	 * @param url The url to set.
+	 * 
+	 * @uml.property name="url"
 	 */
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
 }

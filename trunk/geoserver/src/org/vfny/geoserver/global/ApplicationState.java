@@ -46,22 +46,63 @@ public class ApplicationState implements PlugIn {
     /** The key used to store this value in the Web Container */
     public static final String WEB_CONTAINER_KEY = "GeoServer.ApplicationState";
 
-    /** Non null if configuration has been edited (but not applied) */
-    private Date configTimestamp;
-    
-    /** Non null if the geoserve setup has been changed (but not saved) */
-    private Date appTimestamp;
-    
-    /** Non null if the modification date of the xml files is known */
-    private Date xmlTimestamp;
+	/**
+	 * Non null if configuration has been edited (but not applied)
+	 * 
+	 * @uml.property name="configTimestamp" multiplicity="(0 1)"
+	 */
+	private Date configTimestamp;
+
+	/**
+	 * Non null if the geoserve setup has been changed (but not saved)
+	 * 
+	 * @uml.property name="appTimestamp" multiplicity="(0 1)"
+	 */
+	private Date appTimestamp;
+
+	/**
+	 * Non null if the modification date of the xml files is known
+	 * 
+	 * @uml.property name="xmlTimestamp" multiplicity="(0 1)"
+	 */
+	private Date xmlTimestamp;
+
     
     /** magic, be very careful with this array. defined below in loadStatus() */
     private int[] geoserverStatus = new int[13];
-    private Map geoserverNSErrors;
-    private Map geoserverDSErrors;
-    private Map geoserverVPErrors;
-    
-    private ServletContext sc;
+
+	/**
+	 * 
+	 * @uml.property name="geoserverNSErrors"
+	 * @uml.associationEnd elementType="org.geotools.validation.dto.TestSuiteDTO" qualifier=
+	 * "key:java.lang.String java.util.Map$Entry" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private Map geoserverNSErrors;
+
+	/**
+	 * 
+	 * @uml.property name="geoserverDSErrors"
+	 * @uml.associationEnd elementType="org.geotools.validation.dto.TestSuiteDTO" qualifier=
+	 * "key:java.lang.String java.util.Map$Entry" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private Map geoserverDSErrors;
+
+	/**
+	 * 
+	 * @uml.property name="geoserverVPErrors"
+	 * @uml.associationEnd qualifier="key:java.lang.String java.lang.Exception" multiplicity=
+	 * "(0 1)"
+	 */
+	private Map geoserverVPErrors;
+
+	/**
+	 * 
+	 * @uml.property name="sc"
+	 * @uml.associationEnd elementType="org.geotools.validation.dto.TestSuiteDTO" qualifier=
+	 * "key:java.lang.Object java.util.Map$Entry" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private ServletContext sc;
+
     /**
      * Clean up the Configuration State during application exit.
      * 
@@ -515,37 +556,48 @@ public class ApplicationState implements PlugIn {
     public List getWMSErrorKeys(){
     	return getNameSpaceErrorKeys();
     }
-    /**
-     * Access appTimestamp property.
-     * 
-     * @return Returns the appTimestamp.
-     */
-    public Date getAppTimestamp() {
-        return appTimestamp;
-    }
-    /**
-     * Access configTimestamp property.
-     * 
-     * @return Returns the configTimestamp.
-     */
-    public Date getConfigTimestamp() {
-        return configTimestamp;
-    }
-    /**
-     * Access xmlTimestamp property.
-     * 
-     * @return Returns the xmlTimestamp.
-     */
-    public Date getXmlTimestamp() {
-        if( xmlTimestamp == null){
-        	//DJB: changed for geoserver_data_dir
-        	//File serviceFile = new File(sc.getRealPath("/WEB-INF/services.xml"));
-            File serviceFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(sc),"/WEB-INF/services.xml");
 
-            xmlTimestamp = new Date( serviceFile.lastModified() );
-        }
-        return xmlTimestamp;    
-    }
+	/**
+	 * Access appTimestamp property.
+	 * 
+	 * @return Returns the appTimestamp.
+	 * 
+	 * @uml.property name="appTimestamp"
+	 */
+	public Date getAppTimestamp() {
+		return appTimestamp;
+	}
+
+	/**
+	 * Access configTimestamp property.
+	 * 
+	 * @return Returns the configTimestamp.
+	 * 
+	 * @uml.property name="configTimestamp"
+	 */
+	public Date getConfigTimestamp() {
+		return configTimestamp;
+	}
+
+	/**
+	 * Access xmlTimestamp property.
+	 * 
+	 * @return Returns the xmlTimestamp.
+	 * 
+	 * @uml.property name="xmlTimestamp"
+	 */
+	public Date getXmlTimestamp() {
+		if (xmlTimestamp == null) {
+			//DJB: changed for geoserver_data_dir
+			//File serviceFile = new File(sc.getRealPath("/WEB-INF/services.xml"));
+			File serviceFile = new File(GeoserverDataDirectory
+				.getGeoserverDataDirectory(sc), "/WEB-INF/services.xml");
+
+			xmlTimestamp = new Date(serviceFile.lastModified());
+		}
+		return xmlTimestamp;
+	}
+
     private void resetXMLTimestamp(){
         xmlTimestamp = null;                
     }    

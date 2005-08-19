@@ -37,34 +37,62 @@ import org.vfny.geoserver.util.Requests;
  */
 public class StylesEditorForm extends ActionForm {
 
-    private String styleID;
-    private String filename;// kept, but not used
-    private FormFile sldFile= null;
+	/**
+	 * 
+	 * @uml.property name="styleID" multiplicity="(0 1)"
+	 */
+	private String styleID;
+
+	/**
+	 * 
+	 * @uml.property name="filename" multiplicity="(0 1)"
+	 */
+	private String filename;// kept, but not used
+
+	/**
+	 * 
+	 * @uml.property name="sldFile"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private FormFile sldFile = null;
+
 
     private boolean _default;
     private boolean defaultChecked = false;
     private boolean defaultInitial;
-    private String[] validationReport = null; // the SLD file with validation errors for it (saxexceptions)
-    
-    /**
-     *  okay this is a bit weird because of how struts html:checkbox works.
-     *   1. if the "thing" is check, then the set method will be called (with "true")
-     *   2. if the "thing" is not checked, then nothing happens!
-     *   
-     *  So, struts says to always set the thing to "false" in the reset method.
-     *    That way, if there's no event (ie. its unset), its state is false
-     *    If there is an event, it'll be set to true.
-     * 
-     *  Unforunately, this doesnt work well when you want a default value (the above give you a default value of false).
-     *  To set the default to "true", then we need two variables.
-     *   The main one, which you set to the default value.
-     *   A secondary one that tells you if the user actually checked it.
-     * 
-     *   In this way, the default value will be sent to the user, but they can uncheck it! 
-     */
-    
-    private boolean fullyValidate;
-    private boolean fullyValidateChecked;
+
+	/**
+	 * 
+	 * @uml.property name="validationReport" multiplicity="(0 1)"
+	 */
+	private String[] validationReport = null; // the SLD file with validation errors for it (saxexceptions)
+
+	/**
+	 * okay this is a bit weird because of how struts html:checkbox works.
+	 *   1. if the "thing" is check, then the set method will be called (with "true")
+	 *   2. if the "thing" is not checked, then nothing happens!
+	 *   
+	 *  So, struts says to always set the thing to "false" in the reset method.
+	 *    That way, if there's no event (ie. its unset), its state is false
+	 *    If there is an event, it'll be set to true.
+	 * 
+	 *  Unforunately, this doesnt work well when you want a default value (the above give you a default value of false).
+	 *  To set the default to "true", then we need two variables.
+	 *   The main one, which you set to the default value.
+	 *   A secondary one that tells you if the user actually checked it.
+	 * 
+	 *   In this way, the default value will be sent to the user, but they can uncheck it!
+	 * 
+	 * @uml.property name="fullyValidate" multiplicity="(0 1)"
+	 */
+	private boolean fullyValidate;
+
+	/**
+	 * 
+	 * @uml.property name="fullyValidateChecked" multiplicity="(0 1)"
+	 */
+	private boolean fullyValidateChecked;
+
 
 	
     public void reset(ActionMapping arg0, HttpServletRequest request) {
@@ -146,90 +174,114 @@ public class StylesEditorForm extends ActionForm {
         defaultChecked = true;
         this._default = _default;
     }
-    /**
-     * Access filename property.
-     *
-     * @return Returns the filename.
-     */
-    public String getFilename() {
-        return filename;
-    }
-    /**
-     * Set filename to filename.
-     *
-     * @param filename The filename to set.
-     */
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-    /**
-     * Access formfile property.
-     *
-     * @return Returns the formfile.
-     */
-    public FormFile getSldFile() {
-        return this.sldFile;
-    }
-    /**
-     * Set formfile to sldFile.
-     *
-     * @param filename The formfile to set.
-     */
-    public void setSldFile(FormFile filename) {
-        this.sldFile= filename;
-    }
-    
-    
-    
-    public boolean getFullyValidateChecked() {
-        return fullyValidateChecked;
-    }
 
+	/**
+	 * Access filename property.
+	 * 
+	 * @return Returns the filename.
+	 * 
+	 * @uml.property name="filename"
+	 */
+	public String getFilename() {
+		return filename;
+	}
 
-    public void setFullyValidateChecked(boolean fullyValidateChecked) {
-        this.fullyValidateChecked = fullyValidateChecked;
-    }
-    
-    /**
-     * Access fullyValidate property.
-     * 
-     *  true -> validate against the xsd schema
-     *
-     * @return Returns the fullyValidate.
-     */
-    public boolean getFullyValidate() {
-        return fullyValidate;
-    }
-    /**
-     * Set fullyValidate to fullyValidate.
-     *
-     * @param fullyValidate The fullyValidate to set.
-     */
-    public void setFullyValidate(boolean fullyValidate) {
-    	fullyValidateChecked = true;
-        this.fullyValidate = fullyValidate;
-    }
-    
-   
-    
-    
+	/**
+	 * Set filename to filename.
+	 * 
+	 * @param filename The filename to set.
+	 * 
+	 * @uml.property name="filename"
+	 */
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
 
-    /**
-     * Access styleID property.
-     *
-     * @return Returns the styleID.
-     */
-    public String getStyleID() {
-        return styleID;
-    }
-    /**
-     * Set styleID to styleID.
-     *
-     * @param styleID The styleID to set.
-     */
-    public void setStyleID(String styleID) {
-        this.styleID = styleID;
-    }
+	/**
+	 * Access formfile property.
+	 * 
+	 * @return Returns the formfile.
+	 * 
+	 * @uml.property name="sldFile"
+	 */
+	public FormFile getSldFile() {
+		return this.sldFile;
+	}
+
+	/**
+	 * Set formfile to sldFile.
+	 * 
+	 * @param filename The formfile to set.
+	 * 
+	 * @uml.property name="sldFile"
+	 */
+	public void setSldFile(FormFile filename) {
+		this.sldFile = filename;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="fullyValidateChecked"
+	 */
+	public boolean getFullyValidateChecked() {
+		return fullyValidateChecked;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="fullyValidateChecked"
+	 */
+	public void setFullyValidateChecked(boolean fullyValidateChecked) {
+		this.fullyValidateChecked = fullyValidateChecked;
+	}
+
+	/**
+	 * Access fullyValidate property.
+	 * 
+	 *  true -> validate against the xsd schema
+	 * 
+	 * @return Returns the fullyValidate.
+	 * 
+	 * @uml.property name="fullyValidate"
+	 */
+	public boolean getFullyValidate() {
+		return fullyValidate;
+	}
+
+	/**
+	 * Set fullyValidate to fullyValidate.
+	 * 
+	 * @param fullyValidate The fullyValidate to set.
+	 * 
+	 * @uml.property name="fullyValidate"
+	 */
+	public void setFullyValidate(boolean fullyValidate) {
+		fullyValidateChecked = true;
+		this.fullyValidate = fullyValidate;
+	}
+
+	/**
+	 * Access styleID property.
+	 * 
+	 * @return Returns the styleID.
+	 * 
+	 * @uml.property name="styleID"
+	 */
+	public String getStyleID() {
+		return styleID;
+	}
+
+	/**
+	 * Set styleID to styleID.
+	 * 
+	 * @param styleID The styleID to set.
+	 * 
+	 * @uml.property name="styleID"
+	 */
+	public void setStyleID(String styleID) {
+		this.styleID = styleID;
+	}
+
     /**
      * Does the magic with _default & defaultChecked.
      * <p>
@@ -252,14 +304,21 @@ public class StylesEditorForm extends ActionForm {
     {
     	return validationReport[i];
     }
-    
-    public String[] getValidationReport()
-    {
-    	return validationReport;
-    }
-    
-    public void setValidationReport(String[] exs)
-    {
-    	validationReport = exs;
-    }
+
+	/**
+	 * 
+	 * @uml.property name="validationReport"
+	 */
+	public String[] getValidationReport() {
+		return validationReport;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="validationReport"
+	 */
+	public void setValidationReport(String[] exs) {
+		validationReport = exs;
+	}
+
 }

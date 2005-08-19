@@ -1,4 +1,4 @@
-/* Copyright (c) 2005 NATO - Undersea Research Centre.  All rights reserved.
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
@@ -22,11 +22,22 @@ package org.vfny.geoserver.global.dto;
  * @version $Id: WCSDTO.java,v 0.1 Feb 15, 2005 2:57:52 PM $
  */
 public class WCSDTO implements DataTransferObject {
-    /** For the writer! */
-    private boolean gmlPrefixing;
 
-    /** The service parameters for this instance. */
-    private ServiceDTO service;
+	/**
+	 * For the writer!
+	 * 
+	 * @uml.property name="gmlPrefixing" multiplicity="(0 1)"
+	 */
+	private boolean gmlPrefixing;
+
+	/**
+	 * The service parameters for this instance.
+	 * 
+	 * @uml.property name="service"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private ServiceDTO service;
+
 
     /**
      * WCS constructor.  does nothing
@@ -103,37 +114,42 @@ public class WCSDTO implements DataTransferObject {
         | ((service == null) ? 0 : service.hashCode());
     }
 
-    /**
-     * getService purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public ServiceDTO getService() {
-        return service;
-    }
+	/**
+	 * getService purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="service"
+	 */
+	public ServiceDTO getService() {
+		return service;
+	}
 
-    /**
-     * setService purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param service
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
-    public void setService(ServiceDTO service) {
-        if (service == null) {
-            throw new NullPointerException("ServiceDTO required");
-        }
+	/**
+	 * setService purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param service
+	 * 
+	 * @throws NullPointerException DOCUMENT ME!
+	 * 
+	 * @uml.property name="service"
+	 */
+	public void setService(ServiceDTO service) {
+		if (service == null) {
+			throw new NullPointerException("ServiceDTO required");
+		}
 
-        this.service = service;
-    }
+		this.service = service;
+	}
+
 
     /**
      * isGmlPrefixing purpose.
@@ -148,16 +164,19 @@ public class WCSDTO implements DataTransferObject {
         return gmlPrefixing;
     }
 
-    /**
-     * setGmlPrefixing purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setGmlPrefixing(boolean b) {
-        gmlPrefixing = b;
-    }
+	/**
+	 * setGmlPrefixing purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="gmlPrefixing"
+	 */
+	public void setGmlPrefixing(boolean b) {
+		gmlPrefixing = b;
+	}
+
 }

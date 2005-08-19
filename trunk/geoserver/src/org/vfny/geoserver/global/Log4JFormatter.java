@@ -94,12 +94,15 @@ public class Log4JFormatter extends Formatter {
      */
     private final StringBuffer buffer;
 
-    /**
-     * The line writer. This object transform all "\r", "\n" or "\r\n"
-     * occurences into a single line separator. This line separator will
-     * include space for the marging, if needed.
-     */
-    private final LineWriter writer;
+	/**
+	 * The line writer. This object transform all "\r", "\n" or "\r\n"
+	 * occurences into a single line separator. This line separator will
+	 * include space for the marging, if needed.
+	 * 
+	 * @uml.property name="writer"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private final LineWriter writer;
 
     /**
      * Construct a <code>Log4JFormatter</code>.

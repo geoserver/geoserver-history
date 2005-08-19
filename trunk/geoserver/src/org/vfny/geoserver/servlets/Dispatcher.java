@@ -96,7 +96,13 @@ public class Dispatcher extends HttpServlet {
 
     /** Map get feature  request type */
     public static final int ERROR = -2;
-    protected ServletConfig servletConfig;
+
+	/**
+	 * 
+	 * @uml.property name="servletConfig"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected ServletConfig servletConfig;
 
     //HACK! This is just to fix instances where the first request is a 
     //dispatcher, and the strategy hasn't been inited yet.  This can be

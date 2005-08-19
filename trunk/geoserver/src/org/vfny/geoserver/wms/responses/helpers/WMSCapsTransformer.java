@@ -18,10 +18,12 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.FactoryFinder;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.metadata.Identifier;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
@@ -108,12 +110,10 @@ public class WMSCapsTransformer extends TransformerBase {
         return transformer;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @author Gabriel Roldan, Axios Engineering
-     * @version $Id
-     */
+/** * DOCUMENT ME!
+ * 
+ * @author Gabriel Roldan, Axios Engineering
+ * @version $Id */
     private static class CapabilitiesTranslator extends TranslatorSupport {
         /** DOCUMENT ME! */
         private static final Logger LOGGER = Logger.getLogger(CapabilitiesTranslator.class.getPackage()
@@ -132,11 +132,14 @@ public class WMSCapsTransformer extends TransformerBase {
             wmsVersion.addAttribute("", "version", "version", "", "1.1.1");
         }
 
-        /**
-         * The request from wich all the information needed to produce the
-         * capabilities document can be obtained
-         */
-        private CapabilitiesRequest request;
+		/**
+		 * The request from wich all the information needed to produce the
+		 * capabilities document can be obtained
+		 * 
+		 * @uml.property name="request"
+		 * @uml.associationEnd multiplicity="(0 1)"
+		 */
+		private CapabilitiesRequest request;
 
         /**
          * Creates a new CapabilitiesTranslator object.
@@ -484,7 +487,13 @@ public class WMSCapsTransformer extends TransformerBase {
             	Iterator it = s.iterator();
             	while (it.hasNext())
             	{
-            		element("SRS", it.next().toString() );
+            		 // do not output srs if it was output as common srs
+                    // note, if commonSRS is "", this will not match
+                    String currentSRS = it.next().toString();
+                    if (!currentSRS.equals(commonSRS))
+                    {
+                         element("SRS", currentSRS );
+                    }
             	}
             }
             catch (Exception e)
@@ -530,7 +539,10 @@ public class WMSCapsTransformer extends TransformerBase {
               // NOTE: this isnt well done because "comment()" isnt in the ContentHandler interface...
              
              	try{
-            		CoordinateReferenceSystem crs = CRS.decode(EPSG + ftype.getSRS());
+            		//CoordinateReferenceSystem crs = CRS.decode(EPSG + ftype.getSRS());
+        			CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG", null);
+        			CoordinateReferenceSystem crs=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem(EPSG + ftype.getSRS());
+
             		String desc = "WKT definition of this CRS:\n"+crs.toWKT();
             		comment(desc);
             	}

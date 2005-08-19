@@ -10,35 +10,16 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-/**
- * NameSpaceTranslator purpose.
- * <p>
- * Helps perform translation between element names, definition names 
- * and their java types for a particular namespace and namespace prefix.
- * </p>
- * <p>
- * Each name space translator should contain a list of name space
- * elements for their particular prefix. This loading should not be 
- * completed lazily to avoid performance lags at run time. When ever 
- * posible constants should alos be used for performance purposes.
- * </p>
- * <p>
- * USE:
- * <code>
- * NameSpaceTranslator nst = NameSpaceTranslatorFactor.getInstance().getNameSpaceTranslator("xs");
- * Class cls = nst.getElement("string").getJavaClass();
- * ...
- * Object obj // contains some data, what can it be represented as?
- * String elementName = ((NameSpaceElement)nst.getElements(obj).toArray()[0]).getTypeRefName();
- * </code>
- * </p>
- * @author dzwiers, Refractions Research, Inc.
- * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NameSpaceTranslator.java,v 1.6 2004/04/15 19:28:46 dmzwiers Exp $
- */
+/** * NameSpaceTranslator purpose. * <p> * Helps perform translation between element names, definition names  * and their java types for a particular namespace and namespace prefix. * </p> * <p> * Each name space translator should contain a list of name space * elements for their particular prefix. This loading should not be  * completed lazily to avoid performance lags at run time. When ever  * posible constants should alos be used for performance purposes. * </p> * <p> * USE: * <code> * NameSpaceTranslator nst = NameSpaceTranslatorFactor.getInstance().getNameSpaceTranslator("xs"); * Class cls = nst.getElement("string").getJavaClass(); * ... * Object obj // contains some data, what can it be represented as? * String elementName = ((NameSpaceElement)nst.getElements(obj).toArray()[0]).getTypeRefName(); * </code> * </p> * @author dzwiers, Refractions Research, Inc. * @author $Author: dmzwiers $ (last modification) * @version $Id: NameSpaceTranslator.java,v 1.6 2004/04/15 19:28:46 dmzwiers Exp $ */
 public abstract class NameSpaceTranslator{
-	/** the prefix for this translator instance*/
+
+	/**
+	 * the prefix for this translator instance
+	 * 
+	 * @uml.property name="prefix" multiplicity="(0 1)"
+	 */
 	private String prefix;
+
 	
 	/**
 	 * NameSpaceTranslator constructor.
@@ -168,15 +149,18 @@ public abstract class NameSpaceTranslator{
 		}
 		return false;
 	}
-	
+
 	/**
 	 * getElements purpose.
 	 * <p>
 	 * returns the set of elements.
 	 * </p>
 	 * @return Set
+	 * 
+	 * @uml.property name="elements" multiplicity="(0 1)"
 	 */
 	public abstract Set getElements();
+
 	
 	/**
 	 * getElements purpose.
@@ -291,24 +275,29 @@ public abstract class NameSpaceTranslator{
 		return (NameSpaceElement)posibilities.toArray()[0];
 		
 	}
-	
+
 	/**
 	 * getNameSpace purpose.
 	 * <p>
 	 * Returns the current namespace. Should be implemented as a constant.
 	 * </p>
 	 * @return String
+	 * 
+	 * @uml.property name="nameSpace" multiplicity="(0 1)"
 	 */
 	public abstract String getNameSpace();
-	
+
 	/**
 	 * getPrefix purpose.
 	 * <p>
 	 * Returns the prefix that this namespace represents.
 	 * </p>
 	 * @return String the prefix, null if it does not exist
+	 * 
+	 * @uml.property name="prefix"
 	 */
-	public final String getPrefix(){
+	public final String getPrefix() {
 		return prefix;
 	}
+
 }

@@ -20,13 +20,7 @@ import com.k_int.IR.QueryModels.RPNTree;
 import com.k_int.util.RPNQueryRep.AttrPlusTermNode;
 import com.k_int.util.RPNQueryRep.RootNode;
 
-
-/**
- * Tests the GeoSearchable and GeoSearchTask classes.
- *
- * @author Chris Holmes, TOPP
- * @version $Id: GeoSearchSuite.java,v 1.8 2004/04/02 11:35:45 cholmesny Exp $
- */
+/** * Tests the GeoSearchable and GeoSearchTask classes. *  * @author Chris Holmes, TOPP * @version $Id: GeoSearchSuite.java,v 1.8 2004/04/02 11:35:45 cholmesny Exp $ */
 public class GeoSearchSuite extends TestCase {
     /* Initializes the logger. Uncomment to see log messages.*/
 
@@ -51,7 +45,14 @@ public class GeoSearchSuite extends TestCase {
     private RootNode root2;
     private AttrPlusTermNode rpn1;
     private AttrPlusTermNode rpn2;
-    private GeoSearchable geoSource;
+
+	/**
+	 * 
+	 * @uml.property name="geoSource"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GeoSearchable geoSource;
+
     private RecordFormatSpecification spec;
 
     /**

@@ -26,7 +26,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageOutputStream;
 
-import org.geotools.renderer.lite.LiteRenderer2;
+import org.geotools.renderer.lite.LiteRenderer;
 
 
 /**
@@ -72,10 +72,10 @@ public final class JAISupport {
             //LiteRenderer renderer = null;
             String[] mimeTypes = null;
 
-            LiteRenderer2 testRenderer = null;
+            LiteRenderer testRenderer = null;
 
             try {
-                testRenderer = new LiteRenderer2();
+                testRenderer = new LiteRenderer();
                 mimeTypes = ImageIO.getWriterMIMETypes();
             } catch (NoClassDefFoundError ncdfe) {
                 supportedFormats = Collections.EMPTY_SET;

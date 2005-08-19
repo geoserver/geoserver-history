@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.JTS;
 import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
+//import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
@@ -62,26 +62,42 @@ public class DescribeResponse implements Response {
 	
 	/** Fixed return footer information */
 	private static final String FOOTER = "\n</CoverageDescription>";
+
+	/**
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
 	private DescribeRequest request;
+
 	
 	/** Main XML class for interpretation and response. */
 	private String xmlResponse = new String();
-	
-	
-    /**
-     * The default datum factory.
-     */
-    protected  final DatumFactory datumFactory = FactoryFinder.getDatumFactory(null);
+
+	/**
+	 * The default datum factory.
+	 * 
+	 * @uml.property name="datumFactory"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	protected final DatumFactory datumFactory = FactoryFinder
+		.getDatumFactory(null);
+
 
     /**
      * The default coordinate reference system factory.
      */
-    protected  final static CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+    //protected  final static CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+    protected  final static CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,CRSAuthorityFactory.class));
 
-    /**
-     * The default math transform factory.
-     */
-    protected  final MathTransformFactory mtFactory = FactoryFinder.getMathTransformFactory(null);
+	/**
+	 * The default math transform factory.
+	 * 
+	 * @uml.property name="mtFactory"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	protected final MathTransformFactory mtFactory = FactoryFinder
+		.getMathTransformFactory(null);
 
     /**
      * The default transformations factory.

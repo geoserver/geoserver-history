@@ -30,10 +30,32 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  */
 public class WFS extends Service {
     public static final String WEB_CONTAINER_KEY = "WFS";
-    private boolean gmlPrefixing;
-    private GeoValidator gv;
-    private int serviceLevel;
-    private boolean srsXmlStyle;
+
+	/**
+	 * 
+	 * @uml.property name="gmlPrefixing" multiplicity="(0 1)"
+	 */
+	private boolean gmlPrefixing;
+
+	/**
+	 * 
+	 * @uml.property name="gv"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GeoValidator gv;
+
+	/**
+	 * 
+	 * @uml.property name="serviceLevel" multiplicity="(0 1)"
+	 */
+	private int serviceLevel;
+
+	/**
+	 * 
+	 * @uml.property name="srsXmlStyle" multiplicity="(0 1)"
+	 */
+	private boolean srsXmlStyle;
+
 
     /**
      * WFS constructor.
@@ -119,18 +141,21 @@ public class WFS extends Service {
         return gmlPrefixing;
     }
 
-    /**
-     * setGmlPrefixing purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setGmlPrefixing(boolean b) {
-        gmlPrefixing = b;
-    }
+	/**
+	 * setGmlPrefixing purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="gmlPrefixing"
+	 */
+	public void setGmlPrefixing(boolean b) {
+		gmlPrefixing = b;
+	}
+
 
     /**
      * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
@@ -142,15 +167,18 @@ public class WFS extends Service {
         return srsXmlStyle;
     }
 
-    /**
-     * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
-     *
-     * @param doXmlStyle whether the srs style should be xml or not.
-     */
-    public void setSrsXmlStyle(boolean doXmlStyle) {
-        this.srsXmlStyle = doXmlStyle;
-    }
+	/**
+	 * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+	 * 
+	 * @param doXmlStyle whether the srs style should be xml or not.
+	 * 
+	 * @uml.property name="srsXmlStyle"
+	 */
+	public void setSrsXmlStyle(boolean doXmlStyle) {
+		this.srsXmlStyle = doXmlStyle;
+	}
+
 
     /**
      * Gets the prefix for the srs name, based on the SrsXmlStyle property.  If
@@ -185,12 +213,15 @@ public class WFS extends Service {
         this.gv = gv;
     }
 
-    /**
-     * Access serviceLevel property.
-     *
-     * @return Returns the serviceLevel.
-     */
-    public int getServiceLevel() {
-        return serviceLevel;
-    }
+	/**
+	 * Access serviceLevel property.
+	 * 
+	 * @return Returns the serviceLevel.
+	 * 
+	 * @uml.property name="serviceLevel"
+	 */
+	public int getServiceLevel() {
+		return serviceLevel;
+	}
+
 }

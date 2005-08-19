@@ -35,8 +35,14 @@ public class LockHandler extends XMLFilterImpl implements ContentHandler,
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** Internal lock request for construction. */
-    private LockRequest request = new LockRequest();
+	/**
+	 * Internal lock request for construction.
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private LockRequest request = new LockRequest();
+
 
     /* ***********************************************************************
      *  Local tracking methods to deal with incoming XML stream              *
@@ -48,8 +54,13 @@ public class LockHandler extends XMLFilterImpl implements ContentHandler,
     /** Boolean to flag whether or not we are inside a query */
     private boolean insideLock = false;
 
-    /** Tracks current query */
-    private Filter curFilter;
+	/**
+	 * Tracks current query
+	 * 
+	 * @uml.property name="curFilter"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private Filter curFilter;
 
     /** Tracks the current type name. */
     private String curTypeName;

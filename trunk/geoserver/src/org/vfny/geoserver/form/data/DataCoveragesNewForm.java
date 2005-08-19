@@ -26,8 +26,20 @@ import org.vfny.geoserver.config.DataConfig;
  * @version $Id: DataCoveragesNewForm.java,v 1.6 2004/03/09 01:37:39 dmzwiers Exp $
  */
 public class DataCoveragesNewForm extends ActionForm {
-    String selectedNewCoverage;
-    HttpServletRequest request;
+
+	/**
+	 * 
+	 * @uml.property name="selectedNewCoverage" multiplicity="(0 1)"
+	 */
+	String selectedNewCoverage;
+
+	/**
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	HttpServletRequest request;
+
 
     public SortedSet getNewCoverages() {
         DataConfig dataConfig = (DataConfig) request.getSession()
@@ -54,21 +66,26 @@ public class DataCoveragesNewForm extends ActionForm {
         return errors;
     }
 
-    /**
-     * Access selectedNewCoverage property.
-     *
-     * @return Returns the selectedNewCoverage.
-     */
-    public String getSelectedNewCoverage() {
-        return selectedNewCoverage;
-    }
+	/**
+	 * Access selectedNewCoverage property.
+	 * 
+	 * @return Returns the selectedNewCoverage.
+	 * 
+	 * @uml.property name="selectedNewCoverage"
+	 */
+	public String getSelectedNewCoverage() {
+		return selectedNewCoverage;
+	}
 
-    /**
-     * Set selectedNewCoverage to selectedNewCoverage.
-     *
-     * @param selectedNewCoverage The selectedNewCoverage to set.
-     */
-    public void setSelectedNewCoverage(String selectedNewCoverage) {
-        this.selectedNewCoverage = selectedNewCoverage;
-    }
+	/**
+	 * Set selectedNewCoverage to selectedNewCoverage.
+	 * 
+	 * @param selectedNewCoverage The selectedNewCoverage to set.
+	 * 
+	 * @uml.property name="selectedNewCoverage"
+	 */
+	public void setSelectedNewCoverage(String selectedNewCoverage) {
+		this.selectedNewCoverage = selectedNewCoverage;
+	}
+
 }

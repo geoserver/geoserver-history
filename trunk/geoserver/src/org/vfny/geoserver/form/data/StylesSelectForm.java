@@ -34,15 +34,29 @@ import org.vfny.geoserver.util.Requests;
  * @author jgarnett, Refractions Research
  */
 public class StylesSelectForm extends ActionForm {
-    
-    /** Selected style ID */
-    private String selectedStyle;
-    
-    /** Action requested on selectedStyle */
-    private String action;
-    
-    /** Sorted set of styles IDs */
-    private TreeSet styles;
+
+	/**
+	 * Selected style ID
+	 * 
+	 * @uml.property name="selectedStyle" multiplicity="(0 1)"
+	 */
+	private String selectedStyle;
+
+	/**
+	 * Action requested on selectedStyle
+	 * 
+	 * @uml.property name="action" multiplicity="(0 1)"
+	 */
+	private String action;
+
+	/**
+	 * Sorted set of styles IDs
+	 * 
+	 * @uml.property name="styles"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private TreeSet styles;
+
     
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -82,45 +96,59 @@ public class StylesSelectForm extends ActionForm {
         return errors;
     }
 
+	/**
+	 * Access selectedStyle property.
+	 * 
+	 * @return Returns the selectedStyle.
+	 * 
+	 * @uml.property name="selectedStyle"
+	 */
+	public String getSelectedStyle() {
+		return selectedStyle;
+	}
 
-    /**
-     * Access selectedStyle property.
-     * 
-     * @return Returns the selectedStyle.
-     */
-    public String getSelectedStyle() {
-        return selectedStyle;
-    }
-    /**
-     * Set selectedStyle to selectedStyle.
-     *
-     * @param selectedStyle The selectedStyle to set.
-     */
-    public void setSelectedStyle(String selectedStyle) {
-        this.selectedStyle = selectedStyle;
-    }
-    /**
-     * Access action property.
-     * 
-     * @return Returns the action.
-     */
-    public String getAction() {
-        return action;
-    }
-    /**
-     * Set action to action.
-     *
-     * @param action The action to set.
-     */
-    public void setAction(String action) {
-        this.action = action;
-    }
-    /**
-     * Access styles property.
-     * 
-     * @return Returns the styles.
-     */
-    public TreeSet getStyles() {
-        return styles;
-    }
+	/**
+	 * Set selectedStyle to selectedStyle.
+	 * 
+	 * @param selectedStyle The selectedStyle to set.
+	 * 
+	 * @uml.property name="selectedStyle"
+	 */
+	public void setSelectedStyle(String selectedStyle) {
+		this.selectedStyle = selectedStyle;
+	}
+
+	/**
+	 * Access action property.
+	 * 
+	 * @return Returns the action.
+	 * 
+	 * @uml.property name="action"
+	 */
+	public String getAction() {
+		return action;
+	}
+
+	/**
+	 * Set action to action.
+	 * 
+	 * @param action The action to set.
+	 * 
+	 * @uml.property name="action"
+	 */
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	/**
+	 * Access styles property.
+	 * 
+	 * @return Returns the styles.
+	 * 
+	 * @uml.property name="styles"
+	 */
+	public TreeSet getStyles() {
+		return styles;
+	}
+
 }

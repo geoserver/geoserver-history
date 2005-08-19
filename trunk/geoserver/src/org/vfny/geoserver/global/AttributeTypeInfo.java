@@ -27,16 +27,45 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
  * @version $Id: AttributeTypeInfo.java,v 1.12 2004/06/26 19:51:24 jive Exp $
  */
 public class AttributeTypeInfo {
+
+	/**
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
 	private String name;
+
+	/**
+	 * 
+	 * @uml.property name="minOccurs" multiplicity="(0 1)"
+	 */
 	private int minOccurs;
+
+	/**
+	 * 
+	 * @uml.property name="maxOccurs" multiplicity="(0 1)"
+	 */
 	private int maxOccurs;
+
 	private boolean nillable;
 	private String typeName;
 	private boolean isComplex;
 
-    /** Readl GeoTools2 AttributeType */
-    private AttributeType type;
-    private Map meta;
+	/**
+	 * Readl GeoTools2 AttributeType
+	 * 
+	 * @uml.property name="type"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private AttributeType type;
+
+	/**
+	 * 
+	 * @uml.property name="meta"
+	 * @uml.associationEnd elementType="java.lang.Object" qualifier="key:java.lang.String
+	 * java.lang.Object" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private Map meta;
+
 
     public AttributeTypeInfo(AttributeTypeInfoDTO dto) {
         type = null;
@@ -53,10 +82,15 @@ public class AttributeTypeInfo {
         this.type = type;
         meta = new HashMap();
     }
-    
-    public String getName(){
-    	return name;
-    }
+
+	/**
+	 * 
+	 * @uml.property name="name"
+	 */
+	public String getName() {
+		return name;
+	}
+
 
     /**
      * DOCUMENT ME!
@@ -190,10 +224,13 @@ public class AttributeTypeInfo {
     	dto.setType(typeName);
 		return dto;
     }
+
 	/**
 	 * Access maxOccurs property.
 	 * 
 	 * @return Returns the maxOccurs.
+	 * 
+	 * @uml.property name="maxOccurs"
 	 */
 	public int getMaxOccurs() {
 		return maxOccurs;
@@ -203,6 +240,8 @@ public class AttributeTypeInfo {
 	 * Access minOccurs property.
 	 * 
 	 * @return Returns the minOccurs.
+	 * 
+	 * @uml.property name="minOccurs"
 	 */
 	public int getMinOccurs() {
 		return minOccurs;

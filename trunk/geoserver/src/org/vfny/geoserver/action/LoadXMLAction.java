@@ -24,6 +24,7 @@ import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import org.vfny.geoserver.global.xml.XMLConfigReader;
@@ -72,6 +73,7 @@ public class LoadXMLAction extends ConfigAction {
 
         WMSDTO wmsDTO = null;
         WFSDTO wfsDTO = null;
+        WCSDTO wcsDTO = null;
         GeoServerDTO geoserverDTO = null;
         DataDTO dataDTO = null;
         //DJB: changed for geoserver_data_dir    
@@ -96,6 +98,7 @@ public class LoadXMLAction extends ConfigAction {
             // stack trace/debugger where things go wrong
             wmsDTO = configReader.getWms();
             wfsDTO = configReader.getWfs();
+            wcsDTO = configReader.getWcs();
             geoserverDTO = configReader.getGeoServer();
             dataDTO = configReader.getData();
         } else {
@@ -109,10 +112,13 @@ public class LoadXMLAction extends ConfigAction {
 
         // Update GeoServer
         try {
+        	getWCS(request).load(wcsDTO);
             getWFS(request).load(wfsDTO);
             getWMS(request).load(wmsDTO);
             getWFS(request).getGeoServer().load(geoserverDTO);
             getWFS(request).getData().load(dataDTO);
+            getWCS(request).getGeoServer().load(geoserverDTO);
+            getWCS(request).getData().load(dataDTO);
         } catch (ConfigurationException configException) {
             configException.printStackTrace();
 
@@ -126,6 +132,7 @@ public class LoadXMLAction extends ConfigAction {
         getDataConfig().update(dataDTO);
         getWFSConfig().update(wfsDTO);
         getWMSConfig().update(wmsDTO);
+        getWCSConfig().update(wcsDTO);
 
         getApplicationState(request).notifyLoadXML();
 

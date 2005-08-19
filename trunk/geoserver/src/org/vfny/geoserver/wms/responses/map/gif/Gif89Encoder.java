@@ -95,11 +95,32 @@ import java.util.Vector;
 public class Gif89Encoder {
 
   private Dimension     dispDim = new Dimension(0, 0);
-  public  GifColorTable colorTable;
+
+	/**
+	 * 
+	 * @uml.property name="colorTable"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	public GifColorTable colorTable;
+
   private int           bgIndex = 0;
-  private int           loopCount = 1;
+
+	/**
+	 * 
+	 * @uml.property name="loopCount" multiplicity="(0 1)"
+	 */
+	private int loopCount = 1;
+
   private String        theComments;
-  private Vector        vFrames = new Vector();
+
+	/**
+	 * 
+	 * @uml.property name="vFrames"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.wms.responses.map.gif.Gif89Frame"
+	 * multiplicity="(0 -1)"
+	 */
+	private Vector vFrames = new Vector();
+
 
   //----------------------------------------------------------------------------
   /** Use this default constructor if you'll be adding multiple frames
@@ -434,18 +455,21 @@ public class Gif89Encoder {
     dispDim = new Dimension(dim);
     bgIndex = background;
   }
- 
-  //----------------------------------------------------------------------------
-  /** Set animation looping parameter, if applicable.
-   *
-   * @param count
-   *   Number of times to play sequence.  Special value of 0 specifies
-   *   indefinite looping.  (Default: 1)  
-   */   
-  public void setLoopCount(int count)
-  {
-    loopCount = count;
-  }
+
+	//----------------------------------------------------------------------------
+	/**
+	 * Set animation looping parameter, if applicable.
+	 * 
+	 * @param count
+	 *   Number of times to play sequence.  Special value of 0 specifies
+	 *   indefinite looping.  (Default: 1)
+	 * 
+	 * @uml.property name="loopCount"
+	 */
+	public void setLoopCount(int count) {
+		loopCount = count;
+	}
+
 
   //----------------------------------------------------------------------------
   /** Specify some textual comments to be embedded in GIF.
@@ -669,7 +693,14 @@ class GifColorTable {
 
   // these fields track color-index info across frames
   private int             ciCount = 0; // count of distinct color indices
-  public ReverseColorMap ciLookup;    // cumulative rgb-to-ci lookup table
+
+	/**
+	 * 
+	 * @uml.property name="ciLookup"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	public ReverseColorMap ciLookup; // cumulative rgb-to-ci lookup table
+
 
   //----------------------------------------------------------------------------
   GifColorTable()
@@ -838,8 +869,13 @@ class ReverseColorMap {
   // load of about 1/8 capacity.
   private static final int HCAPACITY = 2053;  // a nice prime number
 
-  // our hash table proper
-  private ColorRecord[] hTable = new ColorRecord[HCAPACITY];
+	/**
+	 * 
+	 * @uml.property name="hTable"
+	 * @uml.associationEnd multiplicity="(0 -1)"
+	 */
+	// our hash table proper
+	private ColorRecord[] hTable = new ColorRecord[HCAPACITY];
 
   //----------------------------------------------------------------------------
   // Assert: rgb is not negative (which is the same as saying, be sure the

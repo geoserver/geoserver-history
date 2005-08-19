@@ -10,12 +10,7 @@ import org.vfny.geoserver.global.GeoServer;
 import java.io.IOException;
 import java.io.OutputStream;
 
-/**
- * DOCUMENT ME!
- * 
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
- */
+/** * DOCUMENT ME! *  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification) * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification) */
 public interface CoverageResponseDelegate {
     boolean canProduce(String outputFormat);
 
@@ -24,9 +19,17 @@ public interface CoverageResponseDelegate {
 
     String getContentType(GeoServer gs);
 
-    String getContentEncoding();
-    
-    String getContentDisposition();
+	/**
+	 * 
+	 * @uml.property name="contentEncoding" multiplicity="(0 1)"
+	 */
+	String getContentEncoding();
+
+	/**
+	 * 
+	 * @uml.property name="contentDisposition" multiplicity="(0 1)"
+	 */
+	String getContentDisposition();
 
     void encode(OutputStream output) throws ServiceException, IOException;
 }

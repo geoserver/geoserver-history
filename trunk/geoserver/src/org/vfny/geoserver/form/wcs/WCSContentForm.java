@@ -35,33 +35,52 @@ public class WCSContentForm extends ActionForm {
 	 * Comment for <code>serialVersionUID</code>
 	 */
 	private static final long serialVersionUID = 3977860674510534961L;
+
+	/**
+	 * 
+	 * @uml.property name="enabled" multiplicity="(0 1)"
+	 */
 	private boolean enabled;
-    private String onlineResource;
-    private String describeURL;
 
+	/**
+	 * 
+	 * @uml.property name="onlineResource" multiplicity="(0 1)"
+	 */
+	private String onlineResource;
 
-    /*
-     * Because of the way that STRUTS works, if the user does not check the enabled box,
-     * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()
-     * to see if it doesn't get called. This must be accessible, as ActionForms need to
-     * know about it -- there is no way we can tell whether we are about to be passed to
-     * an ActionForm or not.
-     *
-     * Probably a better way to do this, but I can't think of one.
-     * -rgould
-     *
-     * TODO: Hey richard Jody here - Struts knows that boolean properties are
-     * not set if the user does nothing. Apparently that is why the reset
-     * method exists.
-     * Reset is called *every* time on ActionForm. Before the populate
-     * process has a go at things.
-     *
-     * The problem is that reset() retrieves the WFS's config enabled value
-     * and uses that to pre-populate the form. Thus, if they deselect it, setEnabled is
-     * never called, and enabled still remains true. The way I have done it isn't simple,
-     * but it works just fine.
-     */
-    private boolean enabledChecked = false;
+	/**
+	 * 
+	 * @uml.property name="describeURL" multiplicity="(0 1)"
+	 */
+	private String describeURL;
+
+	/**
+	 * 
+	 * @uml.property name="enabledChecked" multiplicity="(0 1)"
+	 */
+	/*
+	 * Because of the way that STRUTS works, if the user does not check the enabled box,
+	 * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()
+	 * to see if it doesn't get called. This must be accessible, as ActionForms need to
+	 * know about it -- there is no way we can tell whether we are about to be passed to
+	 * an ActionForm or not.
+	 *
+	 * Probably a better way to do this, but I can't think of one.
+	 * -rgould
+	 *
+	 * TODO: Hey richard Jody here - Struts knows that boolean properties are
+	 * not set if the user does nothing. Apparently that is why the reset
+	 * method exists.
+	 * Reset is called *every* time on ActionForm. Before the populate
+	 * process has a go at things.
+	 *
+	 * The problem is that reset() retrieves the WFS's config enabled value
+	 * and uses that to pre-populate the form. Thus, if they deselect it, setEnabled is
+	 * never called, and enabled still remains true. The way I have done it isn't simple,
+	 * but it works just fine.
+	 */
+	private boolean enabledChecked = false;
+
 
     /**
      * DOCUMENT ME!
@@ -73,43 +92,52 @@ public class WCSContentForm extends ActionForm {
         return enabled;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getOnlineResource() {
-        return onlineResource;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="onlineResource"
+	 */
+	public String getOnlineResource() {
+		return onlineResource;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setDescribeURL(String string) {
-        describeURL = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="describeURL"
+	 */
+	public void setDescribeURL(String string) {
+		describeURL = string;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param b
-     */
-    public void setEnabled(boolean b) {
-        enabledChecked = true;
-        //System.out.println("setEnabled: enabledCheck/Enabled now " + b);
-        enabled = b;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="enabled"
+	 */
+	public void setEnabled(boolean b) {
+		enabledChecked = true;
+		//System.out.println("setEnabled: enabledCheck/Enabled now " + b);
+		enabled = b;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setOnlineResource(String string) {
-        onlineResource = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="onlineResource"
+	 */
+	public void setOnlineResource(String string) {
+		onlineResource = string;
+	}
+
 
 
     public void reset(ActionMapping arg0, HttpServletRequest arg1) {
@@ -158,14 +186,17 @@ public class WCSContentForm extends ActionForm {
         return enabledChecked;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param b
-     */
-    public void setEnabledChecked(boolean b) {
-        enabledChecked = b;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="enabledChecked"
+	 */
+	public void setEnabledChecked(boolean b) {
+		enabledChecked = b;
+	}
+
  
 
 }

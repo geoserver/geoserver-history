@@ -65,19 +65,30 @@ public class GeoValidator extends ValidationProcessor {
 	
 	private Map testSuites;
 	private Map plugIns;
-	
+
+	/**
+	 * 
+	 * @uml.property name="errors"
+	 * @uml.associationEnd elementType="org.geotools.validation.dto.TestSuiteDTO" qualifier=
+	 * "key:org.geotools.validation.dto.PlugInDTO java.util.Map$Entry" multiplicity="(0
+	 * -1)" ordering="ordered"
+	 */
 	private Map errors;
-    /**
-     * Map of errors encountered during loading process
-     * <p>
-     * Map of true (loaded), false (never used), or exception (error) keyed
-     * by PlugIn and Test DataTransferObjects.
-     * </p>
-     * @return Map of status by PlugInDTO and TestDTO 
-     */ 
-	public Map getErrors(){
+
+	/**
+	 * Map of errors encountered during loading process
+	 * <p>
+	 * Map of true (loaded), false (never used), or exception (error) keyed
+	 * by PlugIn and Test DataTransferObjects.
+	 * </p>
+	 * @return Map of status by PlugInDTO and TestDTO
+	 * 
+	 * @uml.property name="errors"
+	 */
+	public Map getErrors() {
 		return errors;
 	}
+
 	
 	/**
 	 * load purpose.

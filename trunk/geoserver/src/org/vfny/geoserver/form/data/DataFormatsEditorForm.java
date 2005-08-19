@@ -27,7 +27,8 @@ import org.apache.struts.upload.MultipartRequestHandler;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
+import org.geotools.referencing.factory.epsg.DefaultFactory;
+//import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.opengis.coverage.grid.Format;
 import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
@@ -56,54 +57,97 @@ import org.vfny.geoserver.util.Requests;
  * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
 public class DataFormatsEditorForm extends ActionForm {
-    /** Help text for Params if available */
-    private ArrayList paramHelp;
 
-    /**
-     * Used to identify the DataStore being edited. Maybe we should grab this
-     * from session?
-     */
-    private String dataFormatId;
+	/**
+	 * Help text for Params if available
+	 * 
+	 * @uml.property name="paramHelp"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private ArrayList paramHelp;
 
-    /** Enabled status of DataStore */
-    private boolean enabled;
+	/**
+	 * Used to identify the DataStore being edited. Maybe we should grab this
+	 * from session?
+	 * 
+	 * @uml.property name="dataFormatId" multiplicity="(0 1)"
+	 */
+	private String dataFormatId;
 
-    /* NamespaceID used for DataStore content */
-    //private String namespaceId;
-    private String type;
-    private String url;
+	/**
+	 * Enabled status of DataStore
+	 * 
+	 * @uml.property name="enabled" multiplicity="(0 1)"
+	 */
+	private boolean enabled;
 
-    private FormFile urlFile= null;
+	/**
+	 * 
+	 * @uml.property name="type" multiplicity="(0 1)"
+	 */
+	/* NamespaceID used for DataStore content */
+	//private String namespaceId;
+	private String type;
 
-    /* Description of DataStore (abstract?) */
-    private String description;
+	/**
+	 * 
+	 * @uml.property name="url" multiplicity="(0 1)"
+	 */
+	private String url;
 
-    // These are not stored in a single map so we can access them
-    // easily from JSP page
-    //
+	/**
+	 * 
+	 * @uml.property name="urlFile"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private FormFile urlFile = null;
 
-    /** String representation of connection parameter keys */
-    private List paramKeys;
+	/**
+	 * 
+	 * @uml.property name="description" multiplicity="(0 1)"
+	 */
+	/* Description of DataStore (abstract?) */
+	private String description;
 
-    /** String representation of connection parameter values */
-    private List paramValues;
+	// These are not stored in a single map so we can access them
+	// easily from JSP page
+	//
 
-    //
-    // More hacky attempts to transfer information into the JSP smoothly
-    //
+	/**
+	 * String representation of connection parameter keys
+	 * 
+	 * @uml.property name="paramKeys"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List paramKeys;
 
-//    /** Available NamespaceIds */
-//    private SortedSet namespaces;
+	/**
+	 * String representation of connection parameter values
+	 * 
+	 * @uml.property name="paramValues"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List paramValues;
 
-    /**
-     * Because of the way that STRUTS works, if the user does not check the
-     * enabled box, or unchecks it, setEnabled() is never called, thus we must
-     * monitor setEnabled() to see if it doesn't get called. This must be
-     * accessible, as ActionForms need to know about it -- there is no way we
-     * can tell whether we are about to be passed to an ActionForm or not.
-     * Probably a better way to do this, but I can't think of one. -rgould
-     */
-    private boolean enabledChecked = false;
+	//
+	// More hacky attempts to transfer information into the JSP smoothly
+	//
+
+	//    /** Available NamespaceIds */
+	//    private SortedSet namespaces;
+
+	/**
+	 * Because of the way that STRUTS works, if the user does not check the
+	 * enabled box, or unchecks it, setEnabled() is never called, thus we must
+	 * monitor setEnabled() to see if it doesn't get called. This must be
+	 * accessible, as ActionForms need to know about it -- there is no way we
+	 * can tell whether we are about to be passed to an ActionForm or not.
+	 * Probably a better way to do this, but I can't think of one. -rgould
+	 * 
+	 * @uml.property name="enabledChecked" multiplicity="(0 1)"
+	 */
+	private boolean enabledChecked = false;
+
 
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
@@ -252,11 +296,13 @@ public class DataFormatsEditorForm extends ActionForm {
                 try {
     				if( key.equalsIgnoreCase("crs") ) {
 						if( getParamValue(i) != null && ((String) getParamValue(i)).length() > 0 ) {
-							CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+							//CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+							CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,CRSAuthorityFactory.class));
 							CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) getParamValue(i));
 							value = crs;
 						} else {
-							CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+							//CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+							CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, DefaultFactory.class));
 							CoordinateReferenceSystem crs=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:4326");
 							value = crs;
 						}
@@ -376,14 +422,17 @@ public class DataFormatsEditorForm extends ActionForm {
         return map;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public List getParamKeys() {
-        return paramKeys;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="paramKeys"
+	 */
+	public List getParamKeys() {
+		return paramKeys;
+	}
+
 
     /**
      * DOCUMENT ME!
@@ -417,31 +466,36 @@ public class DataFormatsEditorForm extends ActionForm {
         paramValues.set(index, value);
     }
 
-    /**
-     * getDataStoreId purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getDataFormatId() {
-        return dataFormatId;
-    }
+	/**
+	 * getDataStoreId purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="dataFormatId"
+	 */
+	public String getDataFormatId() {
+		return dataFormatId;
+	}
 
-    /**
-     * getDescription purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getDescription() {
-        return description;
-    }
+	/**
+	 * getDescription purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="description"
+	 */
+	public String getDescription() {
+		return description;
+	}
+
 
     /**
      * isEnabled purpose.
@@ -456,84 +510,95 @@ public class DataFormatsEditorForm extends ActionForm {
         return enabled;
     }
 
-//    /**
-//     * getNamespaces purpose.
-//     * 
-//     * <p>
-//     * Description ...
-//     * </p>
-//     *
-//     * @return
-//     */
-//    public SortedSet getNamespaces() {
-//        return namespaces;
-//    }
+	//    /**
+	//     * getNamespaces purpose.
+	//     * 
+	//     * <p>
+	//     * Description ...
+	//     * </p>
+	//     *
+	//     * @return
+	//     */
+	//    public SortedSet getNamespaces() {
+	//        return namespaces;
+	//    }
 
-    /**
-     * getParamValues purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public List getParamValues() {
-        return paramValues;
-    }
+	/**
+	 * getParamValues purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="paramValues"
+	 */
+	public List getParamValues() {
+		return paramValues;
+	}
 
-    /**
-     * setDescription purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setDescription(String string) {
-        description = string;
-    }
+	/**
+	 * setDescription purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="description"
+	 */
+	public void setDescription(String string) {
+		description = string;
+	}
 
-    /**
-     * setEnabled purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setEnabled(boolean b) {
-        setEnabledChecked(true);
-        enabled = b;
-    }
+	/**
+	 * setEnabled purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="enabled"
+	 */
+	public void setEnabled(boolean b) {
+		setEnabledChecked(true);
+		enabled = b;
+	}
 
-    /**
-     * setParamKeys purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param list
-     */
-    public void setParamKeys(List list) {
-        paramKeys = list;
-    }
+	/**
+	 * setParamKeys purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param list
+	 * 
+	 * @uml.property name="paramKeys"
+	 */
+	public void setParamKeys(List list) {
+		paramKeys = list;
+	}
 
-    /**
-     * setParamValues purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param list
-     */
-    public void setParamValues(List list) {
-        paramValues = list;
-    }
+	/**
+	 * setParamValues purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param list
+	 * 
+	 * @uml.property name="paramValues"
+	 */
+	public void setParamValues(List list) {
+		paramValues = list;
+	}
+
 
 //    /**
 //     * getNamespaceId purpose.
@@ -570,14 +635,17 @@ public class DataFormatsEditorForm extends ActionForm {
         return enabledChecked;
     }
 
-    /**
-     * enabledChecked property
-     *
-     * @param b DOCUMENT ME!
-     */
-    public void setEnabledChecked(boolean b) {
-        enabledChecked = b;
-    }
+	/**
+	 * enabledChecked property
+	 * 
+	 * @param b DOCUMENT ME!
+	 * 
+	 * @uml.property name="enabledChecked"
+	 */
+	public void setEnabledChecked(boolean b) {
+		enabledChecked = b;
+	}
+
 
     /**
      * Index property paramHelp
@@ -598,34 +666,57 @@ public class DataFormatsEditorForm extends ActionForm {
     public String getParamHelp(int index) {
         return (String) paramHelp.get(index);
     }
+
 	/**
 	 * @return Returns the type.
+	 * 
+	 * @uml.property name="type"
 	 */
 	public String getType() {
 		return type;
 	}
+
 	/**
 	 * @param type The type to set.
+	 * 
+	 * @uml.property name="type"
 	 */
 	public void setType(String type) {
 		this.type = type;
 	}
+
 	/**
 	 * @return Returns the url.
+	 * 
+	 * @uml.property name="url"
 	 */
 	public String getUrl() {
 		return url;
 	}
+
 	/**
 	 * @param url The url to set.
+	 * 
+	 * @uml.property name="url"
 	 */
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
+	/**
+	 * 
+	 * @uml.property name="urlFile"
+	 */
 	public FormFile getUrlFile() {
 		return this.urlFile;
 	}
+
+	/**
+	 * 
+	 * @uml.property name="urlFile"
+	 */
 	public void setUrlFile(FormFile filename) {
 		this.urlFile = filename;
 	}
+
 }

@@ -30,26 +30,47 @@ public class Query {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** The user-specified name for the query. */
-    protected String handle = new String();
+	/**
+	 * The user-specified name for the query.
+	 * 
+	 * @uml.property name="handle" multiplicity="(0 1)"
+	 */
+	protected String handle = new String();
 
-    // UNIMPLEMENTED - YOU CAN SET THIS BUT IT DOES NOTHING
-    // NOTE THAT THIS IS FOR 'EVOLVING FEATURES' OR WHATEVER
+	// UNIMPLEMENTED - YOU CAN SET THIS BUT IT DOES NOTHING
+	// NOTE THAT THIS IS FOR 'EVOLVING FEATURES' OR WHATEVER
 
-    /**
-     * The version of the feature to request - current implementation  ignores
-     * entirely.
-     */
-    protected String version = new String();
+	/**
+	 * The version of the feature to request - current implementation  ignores
+	 * entirely.
+	 * 
+	 * @uml.property name="version" multiplicity="(0 1)"
+	 */
+	protected String version = new String();
 
-    /** The feature type name requested. */
-    protected String typeName = new String();
+	/**
+	 * The feature type name requested.
+	 * 
+	 * @uml.property name="typeName" multiplicity="(0 1)"
+	 */
+	protected String typeName = new String();
 
-    /** The property names requested */
-    protected List propertyNames = new ArrayList();
+	/**
+	 * The property names requested
+	 * 
+	 * @uml.property name="propertyNames"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	protected List propertyNames = new ArrayList();
 
-    /** The filter for the query */
-    protected Filter filter = null;
+	/**
+	 * The filter for the query
+	 * 
+	 * @uml.property name="filter"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected Filter filter = null;
+
 
     /** Flags whether or not all properties were requested */
     protected boolean allRequested = true;
@@ -60,36 +81,47 @@ public class Query {
     public Query() {
     }
 
-    /**
-     * Gets the requested property names as a list.
-     *
-     * @return A list of the names of the requested properties.
-     */
-    public List getPropertyNames() {
-        return propertyNames;
-    }
-    
-    public void setPropertyNames(List l){
-    	propertyNames = l;
-    }
+	/**
+	 * Gets the requested property names as a list.
+	 * 
+	 * @return A list of the names of the requested properties.
+	 * 
+	 * @uml.property name="propertyNames"
+	 */
+	public List getPropertyNames() {
+		return propertyNames;
+	}
 
-    /**
-     * Sets the feature type name for this query.
-     *
-     * @param typeName The featureType to query.
-     */
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
+	/**
+	 * 
+	 * @uml.property name="propertyNames"
+	 */
+	public void setPropertyNames(List l) {
+		propertyNames = l;
+	}
 
-    /**
-     * Gets the feature type name for this query.
-     *
-     * @return The featureType to query.
-     */
-    public String getTypeName() {
-        return this.typeName;
-    }
+	/**
+	 * Sets the feature type name for this query.
+	 * 
+	 * @param typeName The featureType to query.
+	 * 
+	 * @uml.property name="typeName"
+	 */
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
+
+	/**
+	 * Gets the feature type name for this query.
+	 * 
+	 * @return The featureType to query.
+	 * 
+	 * @uml.property name="typeName"
+	 */
+	public String getTypeName() {
+		return this.typeName;
+	}
+
 
     private String getName() {
         if (typeName.indexOf(":") == -1) {
@@ -151,41 +183,50 @@ public class Query {
         return this.allRequested;
     }
 
-    /**
-     * Sets the user-defined 'handle' for the query.
-     *
-     * @param handle The mnemonic handle to associate with this query.
-     */
-    public void setHandle(String handle) {
-        this.handle = handle;
-    }
+	/**
+	 * Sets the user-defined 'handle' for the query.
+	 * 
+	 * @param handle The mnemonic handle to associate with this query.
+	 * 
+	 * @uml.property name="handle"
+	 */
+	public void setHandle(String handle) {
+		this.handle = handle;
+	}
 
-    /**
-     * Gets the user-defined 'handle' for the query.
-     *
-     * @return The mnemonic handle associatee with this query.
-     */
-    public String getHandle() {
-        return this.handle;
-    }
+	/**
+	 * Gets the user-defined 'handle' for the query.
+	 * 
+	 * @return The mnemonic handle associatee with this query.
+	 * 
+	 * @uml.property name="handle"
+	 */
+	public String getHandle() {
+		return this.handle;
+	}
 
-    /**
-     * Sets the 'version' of features to retrieve.  Not currently used.
-     *
-     * @param version The feature version to retrieve.
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
+	/**
+	 * Sets the 'version' of features to retrieve.  Not currently used.
+	 * 
+	 * @param version The feature version to retrieve.
+	 * 
+	 * @uml.property name="version"
+	 */
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
-    /**
-     * Gets the 'version' of features to retrieve.
-     *
-     * @return The feature version to retrieve.
-     */
-    public String getVersion() {
-        return this.version;
-    }
+	/**
+	 * Gets the 'version' of features to retrieve.
+	 * 
+	 * @return The feature version to retrieve.
+	 * 
+	 * @uml.property name="version"
+	 */
+	public String getVersion() {
+		return this.version;
+	}
+
 
     /**
      * Sets the filter for the query.
@@ -196,14 +237,16 @@ public class Query {
         this.filter = filter;
     }
 
-    /**
-     * Gets the filter for this query.
-     *
-     * @return The ogc filter to narrow the results.
-     */
-    public Filter getFilter() {
-        return this.filter;
-    }
+	/**
+	 * Gets the filter for this query.
+	 * 
+	 * @return The ogc filter to narrow the results.
+	 * 
+	 * @uml.property name="filter"
+	 */
+	public Filter getFilter() {
+		return this.filter;
+	}
 
     /**
      * Gets this query as a geotools Query object.

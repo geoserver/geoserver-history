@@ -27,17 +27,35 @@ package org.vfny.geoserver.global.dto;
  * @version $Id$
  */
 public final class LegendURLDTO implements DataTransferObject {
-    /** The legend icon width. */
-    private int width;
 
-    /** The legend icon height. */
-    private int height;
+	/**
+	 * The legend icon width.
+	 * 
+	 * @uml.property name="width" multiplicity="(0 1)"
+	 */
+	private int width;
 
-    /** The legend icon format; */
-    private String format;
+	/**
+	 * The legend icon height.
+	 * 
+	 * @uml.property name="height" multiplicity="(0 1)"
+	 */
+	private int height;
 
-    /** The legend icon location. */
-    private String onlineResource;
+	/**
+	 * The legend icon format;
+	 * 
+	 * @uml.property name="format" multiplicity="(0 1)"
+	 */
+	private String format;
+
+	/**
+	 * The legend icon location.
+	 * 
+	 * @uml.property name="onlineResource" multiplicity="(0 1)"
+	 */
+	private String onlineResource;
+
 
     /**
      * LegendConfig constructor.
@@ -148,75 +166,92 @@ public final class LegendURLDTO implements DataTransferObject {
         + " -  Location : " + onlineResource + "\n";
     }
 
-    /**
-     * Getter for legend icon width.
-     *
-     * @return Value of legend icon width;
-     */
-    public int getWidth() {
-        return this.width;
-    }
+	/**
+	 * Getter for legend icon width.
+	 * 
+	 * @return Value of legend icon width;
+	 * 
+	 * @uml.property name="width"
+	 */
+	public int getWidth() {
+		return this.width;
+	}
 
-    /**
-     * Setter for legend icon width.
-     *
-     * @param width New value of legend icon width.
-     */
-    public void setWidth(int width) {
-        this.width = width;
-    }
+	/**
+	 * Setter for legend icon width.
+	 * 
+	 * @param width New value of legend icon width.
+	 * 
+	 * @uml.property name="width"
+	 */
+	public void setWidth(int width) {
+		this.width = width;
+	}
 
-    /**
-     * Getter for legend icon height.
-     *
-     * @return Value of legend icon height.
-     */
-    public int getHeight() {
-        return this.height;
-    }
+	/**
+	 * Getter for legend icon height.
+	 * 
+	 * @return Value of legend icon height.
+	 * 
+	 * @uml.property name="height"
+	 */
+	public int getHeight() {
+		return this.height;
+	}
 
-    /**
-     * Setter for legend icon height.
-     *
-     * @param height New value of legend icon height.
-     */
-    public void setHeight(int height) {
-        this.height = height;
-    }
+	/**
+	 * Setter for legend icon height.
+	 * 
+	 * @param height New value of legend icon height.
+	 * 
+	 * @uml.property name="height"
+	 */
+	public void setHeight(int height) {
+		this.height = height;
+	}
 
-    /**
-     * Getter for legend icon format.
-     *
-     * @return Value of legend icon format.
-     */
-    public String getFormat() {
-        return this.format;
-    }
+	/**
+	 * Getter for legend icon format.
+	 * 
+	 * @return Value of legend icon format.
+	 * 
+	 * @uml.property name="format"
+	 */
+	public String getFormat() {
+		return this.format;
+	}
 
-    /**
-     * Setter for legend icon format.
-     *
-     * @param format New value of legend icon format.
-     */
-    public void setFormat(String format) {
-        this.format = format;
-    }
+	/**
+	 * Setter for legend icon format.
+	 * 
+	 * @param format New value of legend icon format.
+	 * 
+	 * @uml.property name="format"
+	 */
+	public void setFormat(String format) {
+		this.format = format;
+	}
 
-    /**
-     * Getter for property onlineResource.
-     *
-     * @return Value of property onlineResource.
-     */
-    public String getOnlineResource() {
-        return this.onlineResource;
-    }
+	/**
+	 * Getter for property onlineResource.
+	 * 
+	 * @return Value of property onlineResource.
+	 * 
+	 * @uml.property name="onlineResource"
+	 */
+	public String getOnlineResource() {
+		return this.onlineResource;
+	}
 
-    /**
-     * Setter for legend icon onlineResource.
-     *
-     * @param onlineResource New value of legend icon onlineResource.
-     */
-    public void setOnlineResource(String onlineResource) {
-        this.onlineResource = onlineResource;
-    }
+	/**
+	 * Setter for legend icon onlineResource.
+	 * 
+	 * @param onlineResource New value of legend icon onlineResource.
+	 * 
+	 * @uml.property name="onlineResource"
+	 */
+	public void setOnlineResource(String onlineResource) {
+		this.onlineResource = onlineResource;
+	}
+
 }

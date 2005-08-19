@@ -53,21 +53,35 @@ public class GeoServerFeatureSource implements FeatureSource {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.global");
 
-    /** FeatureSource being served up */
-    protected FeatureSource source;
+	/**
+	 * FeatureSource being served up
+	 * 
+	 * @uml.property name="source"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	protected FeatureSource source;
 
-    /**
-     * GeoTools2 Schema information
-     * 
-     * <p>
-     * Is this the same as source.getSchema() or is it used supply the order
-     * that GeoServer requires attributes to be returned in?
-     * </p>
-     */
-    private FeatureType schema;
+	/**
+	 * GeoTools2 Schema information
+	 * 
+	 * <p>
+	 * Is this the same as source.getSchema() or is it used supply the order
+	 * that GeoServer requires attributes to be returned in?
+	 * </p>
+	 * 
+	 * @uml.property name="schema"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private FeatureType schema;
 
-    /** Used to constrain the Feature made available to GeoServer. */
-    private Filter definitionQuery = Filter.NONE;
+	/**
+	 * Used to constrain the Feature made available to GeoServer.
+	 * 
+	 * @uml.property name="definitionQuery"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private Filter definitionQuery = Filter.NONE;
+
 
     /**
      * Creates a new GeoServerFeatureSource object.
@@ -353,20 +367,22 @@ public class GeoServerFeatureSource implements FeatureSource {
         }
     }
 
-    /**
-     * Implement getSchema.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     *
-     * @see org.geotools.data.FeatureSource#getSchema()
-     */
-    public FeatureType getSchema() {
-        return schema;
-    }
+	/**
+	 * Implement getSchema.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @see org.geotools.data.FeatureSource#getSchema()
+	 * 
+	 * @uml.property name="schema"
+	 */
+	public FeatureType getSchema() {
+		return schema;
+	}
 
     /**
      * Retrieves the total extent of this FeatureSource.

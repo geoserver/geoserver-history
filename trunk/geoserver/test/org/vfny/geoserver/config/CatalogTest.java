@@ -6,22 +6,22 @@ package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
 
-
-/**
- * CatalogTest purpose.
- * 
- * <p>
- * Description of CatalogTest ...
- * </p>
- * 
- * <p></p>
- *
- * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CatalogTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $
- */
+/** * CatalogTest purpose. *  * <p> * Description of CatalogTest ... * </p> *  * <p></p> *  * @author dzwiers, Refractions Research, Inc. * @version $Id: CatalogTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $ */
 public class CatalogTest extends TestCase {
-    private DataConfig a;
-    private DataConfig b;
+
+	/**
+	 * 
+	 * @uml.property name="a"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private DataConfig a;
+
+	/**
+	 * 
+	 * @uml.property name="b"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private DataConfig b;
 
     /**
      * Constructor for CatalogTest.

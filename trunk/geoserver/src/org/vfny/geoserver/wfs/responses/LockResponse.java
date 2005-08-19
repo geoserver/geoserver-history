@@ -60,8 +60,20 @@ public class LockResponse implements Response {
 
     /** temporal, it will disappear when the response streaming be implemented */
     private String xmlResponse = null;
-    FeatureLock featureLock;
-    LockRequest request;
+
+	/**
+	 * 
+	 * @uml.property name="featureLock"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	FeatureLock featureLock;
+
+	/**
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	LockRequest request;
 
     /**
      * Constructor

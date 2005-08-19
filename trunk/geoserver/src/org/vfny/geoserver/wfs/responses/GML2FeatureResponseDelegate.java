@@ -42,30 +42,37 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private static final int NO_FORMATTING = -1;
     private static final int INDENT_SIZE = 2;
 
-    /**
-     * This is a "magic" class provided by Geotools that writes out GML for an
-     * array of FeatureResults.
-     * 
-     * <p>
-     * This class seems to do all the work, if you have a problem with GML you
-     * will need to hunt it down. We supply all of the header information in
-     * the execute method, and work through the featureList in the writeTo
-     * method.
-     * </p>
-     * 
-     * <p>
-     * This value will be <code>null</code> until execute is called.
-     * </p>
-     */
-    private FeatureTransformer transformer;
+	/**
+	 * This is a "magic" class provided by Geotools that writes out GML for an
+	 * array of FeatureResults.
+	 * 
+	 * <p>
+	 * This class seems to do all the work, if you have a problem with GML you
+	 * will need to hunt it down. We supply all of the header information in
+	 * the execute method, and work through the featureList in the writeTo
+	 * method.
+	 * </p>
+	 * 
+	 * <p>
+	 * This value will be <code>null</code> until execute is called.
+	 * </p>
+	 * 
+	 * @uml.property name="transformer"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private FeatureTransformer transformer;
+
 
     /** will be true if GML2-GZIP output format was requested */
     private boolean compressOutput = false;
 
-    /**
-     * the results of a getfeature request wich this object will encode as GML2
-     */
-    private GetFeatureResults results;
+	/**
+	 * the results of a getfeature request wich this object will encode as GML2
+	 * 
+	 * @uml.property name="results"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GetFeatureResults results;
 
     /**
      * empty constructor required to be instantiated through

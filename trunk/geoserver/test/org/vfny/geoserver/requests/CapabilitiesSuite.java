@@ -16,14 +16,7 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.readers.CapabilitiesKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.CapabilitiesXmlReader;
 
-
-/**
- * Tests the get capabilities request handling.
- *
- * @author Rob Hranac, TOPP
- * @author Chris Holmes, TOPP
- * @version $Id: CapabilitiesSuite.java,v 1.7 2004/01/31 00:17:52 jive Exp $
- */
+/** * Tests the get capabilities request handling. *  * @author Rob Hranac, TOPP * @author Chris Holmes, TOPP * @version $Id: CapabilitiesSuite.java,v 1.7 2004/01/31 00:17:52 jive Exp $ */
 public class CapabilitiesSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
@@ -35,8 +28,13 @@ public class CapabilitiesSuite extends RequestTestCase {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** Base request for comparison */
-    private CapabilitiesRequest[] baseRequest = new CapabilitiesRequest[10];
+	/**
+	 * Base request for comparison
+	 * 
+	 * @uml.property name="baseRequest"
+	 * @uml.associationEnd multiplicity="(0 -1)"
+	 */
+	private CapabilitiesRequest[] baseRequest = new CapabilitiesRequest[10];
 
     /**
      * Initializes the database and request handler.

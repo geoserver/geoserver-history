@@ -56,8 +56,13 @@ public class DispatcherXmlReader {
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.readers");
 
-    /** Handler for request interpretation duties. */
-    private DispatcherHandler currentRequest;
+	/**
+	 * Handler for request interpretation duties.
+	 * 
+	 * @uml.property name="currentRequest"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private DispatcherHandler currentRequest;
 
     public DispatcherXmlReader() {
     }

@@ -34,32 +34,45 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** Stores internal request type */
-    private int requestType = Dispatcher.UNKNOWN;
+	/**
+	 * Stores internal request type
+	 * 
+	 * @uml.property name="requestType" multiplicity="(0 1)"
+	 */
+	private int requestType = Dispatcher.UNKNOWN;
 
-    /** Stores internal service type. */
-    private int serviceType = Dispatcher.UNKNOWN;
+	/**
+	 * Stores internal service type.
+	 * 
+	 * @uml.property name="serviceType" multiplicity="(0 1)"
+	 */
+	private int serviceType = Dispatcher.UNKNOWN;
+
 
     /** Flags whether or not type has been set */
     private boolean gotType = false;
 
-    /**
-     * Gets the request type.  See Dispatcher for the available types.
-     *
-     * @return an int of the request type.
-     */
-    public int getRequestType() {
-        return requestType;
-    }
+	/**
+	 * Gets the request type.  See Dispatcher for the available types.
+	 * 
+	 * @return an int of the request type.
+	 * 
+	 * @uml.property name="requestType"
+	 */
+	public int getRequestType() {
+		return requestType;
+	}
 
-    /**
-     * Gets the service type, for now either WMS or WFS types of Dispatcher.
-     *
-     * @return an int of the service type.
-     */
-    public int getServiceType() {
-        return serviceType;
-    }
+	/**
+	 * Gets the service type, for now either WMS or WFS types of Dispatcher.
+	 * 
+	 * @return an int of the service type.
+	 * 
+	 * @uml.property name="serviceType"
+	 */
+	public int getServiceType() {
+		return serviceType;
+	}
 
     /**
      * Notes the start of the element and checks for request type.

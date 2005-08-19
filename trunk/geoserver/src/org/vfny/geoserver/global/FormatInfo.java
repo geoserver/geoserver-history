@@ -32,22 +32,61 @@ public class FormatInfo extends GlobalLayerSupertype {
 	/** for logging */
 	private static final Logger LOGGER = Logger.getLogger(
 	"org.vfny.geoserver.config");
-	
-	/** FormatInfo we are representing */
+
+	/**
+	 * FormatInfo we are representing
+	 * 
+	 * @uml.property name="format"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
 	private Format format = null;
-	
-	/** ref to the parent class's collection */
+
+	/**
+	 * ref to the parent class's collection
+	 * 
+	 * @uml.property name="data"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
 	private Data data;
+
+	/**
+	 * 
+	 * @uml.property name="id" multiplicity="(0 1)"
+	 */
 	private String id;
+
+	/**
+	 * 
+	 * @uml.property name="type" multiplicity="(0 1)"
+	 */
 	private String type;
+
+	/**
+	 * 
+	 * @uml.property name="url" multiplicity="(0 1)"
+	 */
 	private String url;
+
 	private boolean enabled;
+
+	/**
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
 	private String title;
+
 	private String _abstract;
 	private Map parameters;
-	
-	/** Storage for metadata */
+
+	/**
+	 * Storage for metadata
+	 * 
+	 * @uml.property name="meta"
+	 * @uml.associationEnd elementType="java.lang.Object" qualifier="key:java.lang.String
+	 * java.lang.Object" multiplicity="(0 -1)" ordering="ordered"
+	 */
 	private Map meta;
+
 	
 	/**
 	 * Directory associated with this DataStore.
@@ -115,19 +154,22 @@ public class FormatInfo extends GlobalLayerSupertype {
 		
 		return dto;
 	}
-	
+
 	/**
 	 * getId purpose.
 	 * 
 	 * <p>
 	 * Returns the dataStore's id.
 	 * </p>
-	 *
+	 * 
 	 * @return String the id.
+	 * 
+	 * @uml.property name="id"
 	 */
 	public String getId() {
 		return id;
 	}
+
 	
 	protected Map getParams() {
 		Map params = new HashMap(parameters);
@@ -195,7 +237,7 @@ public class FormatInfo extends GlobalLayerSupertype {
 		
 		return params;
 	}
-	
+
 	/**
 	 * By now just uses DataStoreFinder to find a new instance of a
 	 * DataStoreInfo capable of process <code>connectionParams</code>. In the
@@ -208,63 +250,76 @@ public class FormatInfo extends GlobalLayerSupertype {
 	 * transaction support to work. DataStoreInfo is expected to be thread
 	 * aware (that is why it has Transaction Support).
 	 * </p>
-	 *
+	 * 
 	 * @return DataStore
-	 *
+	 * 
 	 * @throws IllegalStateException if this DataStoreInfo is disabled by
 	 *         configuration
 	 * @throws NoSuchElementException if no DataStoreInfo is found
+	 * 
+	 * @uml.property name="format"
 	 */
 	public synchronized Format getFormat()
-	throws IllegalStateException, NoSuchElementException {
+		throws IllegalStateException,
+		NoSuchElementException {
 		if (!isEnabled()) {
 			throw new IllegalStateException(
-			"this format is not enabled, check your configuration");
+				"this format is not enabled, check your configuration");
 		}
-		
+
 		//        Map m = getParams();
-		
+
 		if (format == null) {
 			try {
 				//format = GridFormatFinder.getDataStore(m);
-				for( Iterator f_iT = GridFormatFinder.getAvailableFormats(); f_iT.hasNext(); ) {
+				for (Iterator f_iT = GridFormatFinder.getAvailableFormats(); f_iT
+					.hasNext();) {
 					Format fTmp = (Format) f_iT.next();
-					if( fTmp.getName().equals(type)) {
+					if (fTmp.getName().equals(type)) {
 						format = fTmp;
-						
+
 						break;
 					}
-					
+
 				}
 				LOGGER.fine("connection established by " + toString());
 			} catch (Throwable ex) {
 				throw new IllegalStateException("can't create the format "
-						+ getId() + ": " + ex.getClass().getName() + ": "
-						+ ex.getMessage() + "\n" + ex.toString());
+					+ getId()
+					+ ": "
+					+ ex.getClass().getName()
+					+ ": "
+					+ ex.getMessage()
+					+ "\n"
+					+ ex.toString());
 			}
-			
+
 			if (format == null) {
-				LOGGER.fine("failed to establish connection with " + toString());
+				LOGGER
+					.fine("failed to establish connection with " + toString());
 				throw new NoSuchElementException(
-						"No format found capable of managing " + toString());
+					"No format found capable of managing " + toString());
 			}
 		}
-		
+
 		return format;
 	}
-	
+
 	/**
 	 * getTitle purpose.
 	 * 
 	 * <p>
 	 * Returns the dataStore's title.
 	 * </p>
-	 *
+	 * 
 	 * @return String the title.
+	 * 
+	 * @uml.property name="title"
 	 */
 	public String getTitle() {
 		return title;
 	}
+
 	
 	/**
 	 * getAbstract purpose.
@@ -349,16 +404,23 @@ public class FormatInfo extends GlobalLayerSupertype {
 	public Object getMetaData(String key) {
 		return meta.get(key);
 	}
+
 	/**
 	 * @return Returns the type.
+	 * 
+	 * @uml.property name="type"
 	 */
 	public String getType() {
 		return type;
 	}
+
 	/**
 	 * @return Returns the url.
+	 * 
+	 * @uml.property name="url"
 	 */
 	public String getUrl() {
 		return url;
 	}
+
 }

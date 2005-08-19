@@ -24,8 +24,20 @@ import org.vfny.geoserver.config.DataConfig;
  * @version $Id: DataFeatureTypesNewForm.java,v 1.6 2004/03/09 01:37:39 dmzwiers Exp $
  */
 public class DataFeatureTypesNewForm extends ActionForm {
-    String selectedNewFeatureType;
-    HttpServletRequest request;
+
+	/**
+	 * 
+	 * @uml.property name="selectedNewFeatureType" multiplicity="(0 1)"
+	 */
+	String selectedNewFeatureType;
+
+	/**
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	HttpServletRequest request;
+
 
     public SortedSet getNewFeatureTypes() {
         DataConfig dataConfig = (DataConfig) request.getSession()
@@ -52,21 +64,26 @@ public class DataFeatureTypesNewForm extends ActionForm {
         return errors;
     }
 
-    /**
-     * Access selectedNewFeatureType property.
-     *
-     * @return Returns the selectedNewFeatureType.
-     */
-    public String getSelectedNewFeatureType() {
-        return selectedNewFeatureType;
-    }
+	/**
+	 * Access selectedNewFeatureType property.
+	 * 
+	 * @return Returns the selectedNewFeatureType.
+	 * 
+	 * @uml.property name="selectedNewFeatureType"
+	 */
+	public String getSelectedNewFeatureType() {
+		return selectedNewFeatureType;
+	}
 
-    /**
-     * Set selectedNewFeatureType to selectedNewFeatureType.
-     *
-     * @param selectedNewFeatureType The selectedNewFeatureType to set.
-     */
-    public void setSelectedNewFeatureType(String selectedNewFeatureType) {
-        this.selectedNewFeatureType = selectedNewFeatureType;
-    }
+	/**
+	 * Set selectedNewFeatureType to selectedNewFeatureType.
+	 * 
+	 * @param selectedNewFeatureType The selectedNewFeatureType to set.
+	 * 
+	 * @uml.property name="selectedNewFeatureType"
+	 */
+	public void setSelectedNewFeatureType(String selectedNewFeatureType) {
+		this.selectedNewFeatureType = selectedNewFeatureType;
+	}
+
 }

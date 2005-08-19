@@ -28,13 +28,25 @@ public class GeoSummary {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.zserver");
-    private String title;
+
+	/**
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
+
     private String onlink;
     private String westbc;
     private String eastbc;
     private String northbc;
     private String southbc;
-    private String extent;
+
+	/**
+	 * 
+	 * @uml.property name="extent" multiplicity="(0 1)"
+	 */
+	private String extent;
+
     private String pubDate;
     private String begDate;
     private String endDate;
@@ -45,14 +57,34 @@ public class GeoSummary {
     private String attrLabel;
     private String dsgpoly;
 
-    //REVISIT:  These are the values of the official  geo profile, but the fgdc
-    //seems to have different information.  They return the bounding coordinates, 
-    //the title, and the beg and end dates, but then they do the edition, the 
-    //update, the geoform, and the browsen.  So need to figure out which to return.
-    private String edition;
-    private String update;
-    private String geoform;
-    private String indspref;
+	/**
+	 * 
+	 * @uml.property name="edition" multiplicity="(0 1)"
+	 */
+	//REVISIT:  These are the values of the official  geo profile, but the fgdc
+	//seems to have different information.  They return the bounding coordinates, 
+	//the title, and the beg and end dates, but then they do the edition, the 
+	//update, the geoform, and the browsen.  So need to figure out which to return.
+	private String edition;
+
+	/**
+	 * 
+	 * @uml.property name="update" multiplicity="(0 1)"
+	 */
+	private String update;
+
+	/**
+	 * 
+	 * @uml.property name="geoform" multiplicity="(0 1)"
+	 */
+	private String geoform;
+
+	/**
+	 * 
+	 * @uml.property name="indspref" multiplicity="(0 1)"
+	 */
+	private String indspref;
+
 
     /**
      * Convenience constructor.  Takes a lucene document and a mapping of the
@@ -110,14 +142,17 @@ public class GeoSummary {
         browseType = fileType;
     }
 
-    /**
-     * Sets the title of the summary.
-     *
-     * @param title the title to be set.
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	/**
+	 * Sets the title of the summary.
+	 * 
+	 * @param title the title to be set.
+	 * 
+	 * @uml.property name="title"
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 
     /**
      * Sets the online linkage field of the summary.
@@ -146,14 +181,17 @@ public class GeoSummary {
                                 .toString();
     }
 
-    /**
-     * Sets the extent field of the summary.
-     *
-     * @param extent the area covered by the bounding coords.
-     */
-    public void setExtent(String extent) {
-        this.extent = extent;
-    }
+	/**
+	 * Sets the extent field of the summary.
+	 * 
+	 * @param extent the area covered by the bounding coords.
+	 * 
+	 * @uml.property name="extent"
+	 */
+	public void setExtent(String extent) {
+		this.extent = extent;
+	}
+
 
     /**
      * Sets the publication date of the summary.
@@ -209,41 +247,49 @@ public class GeoSummary {
         this.dsgpoly = dsgpoly;
     }
 
-    /**
-     * Sets the edition field of the summary.
-     *
-     * @param edition the string representation of the g-polygon.
-     */
-    public void setEdition(String edition) {
-        this.edition = edition;
-    }
+	/**
+	 * Sets the edition field of the summary.
+	 * 
+	 * @param edition the string representation of the g-polygon.
+	 * 
+	 * @uml.property name="edition"
+	 */
+	public void setEdition(String edition) {
+		this.edition = edition;
+	}
 
-    /**
-     * Sets the geoform field of the summary.
-     *
-     * @param geoform the string representation of the g-polygon.
-     */
-    public void setGeoform(String geoform) {
-        this.geoform = geoform;
-    }
+	/**
+	 * Sets the geoform field of the summary.
+	 * 
+	 * @param geoform the string representation of the g-polygon.
+	 * 
+	 * @uml.property name="geoform"
+	 */
+	public void setGeoform(String geoform) {
+		this.geoform = geoform;
+	}
 
-    /**
-     * Sets the update field of the summary.
-     *
-     * @param update the string representation of the g-polygon.
-     */
-    public void setUpdate(String update) {
-        this.update = update;
-    }
+	/**
+	 * Sets the update field of the summary.
+	 * 
+	 * @param update the string representation of the g-polygon.
+	 * 
+	 * @uml.property name="update"
+	 */
+	public void setUpdate(String update) {
+		this.update = update;
+	}
 
-    /**
-     * Sets the indspref field of the summary.
-     *
-     * @param indspref the string representation of the g-polygon.
-     */
-    public void setIndspref(String indspref) {
-        this.indspref = indspref;
-    }
+	/**
+	 * Sets the indspref field of the summary.
+	 * 
+	 * @param indspref the string representation of the g-polygon.
+	 * 
+	 * @uml.property name="indspref"
+	 */
+	public void setIndspref(String indspref) {
+		this.indspref = indspref;
+	}
 
     /**
      * Creates a text field for the return summary.

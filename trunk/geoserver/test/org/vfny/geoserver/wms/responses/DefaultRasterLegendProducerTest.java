@@ -21,21 +21,23 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 
-
-/**
- * Tets the functioning of the abstract legend producer for raster formats,
+/** * Tets the functioning of the abstract legend producer for raster formats,
  * which relies on Geotools' StyledShapePainter.
- *
+ * 
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id$
- */
+ * @version $Id$ */
 public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(DefaultRasterLegendProducerTest.class.getPackage()
                                                                                                .getName());
 
-    /** DOCUMENT ME! */
-    private DefaultRasterLegendProducer legendProducer;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="legendProducer"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private DefaultRasterLegendProducer legendProducer;
 
     /**
      * DOCUMENT ME!

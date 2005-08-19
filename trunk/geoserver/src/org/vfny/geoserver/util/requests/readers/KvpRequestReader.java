@@ -76,8 +76,14 @@ abstract public class KvpRequestReader {
     /** Holds mappings between HTTP and ASCII encodings */
     private static FilterFactory factory = FilterFactory.createFilterFactory();
 
-    /** KVP pair listing; stores all data from the KVP request */
-    protected Map kvpPairs = new HashMap();
+	/**
+	 * KVP pair listing; stores all data from the KVP request
+	 * 
+	 * @uml.property name="kvpPairs"
+	 * @uml.associationEnd qualifier="key:java.lang.String java.lang.String" multiplicity=
+	 * "(0 1)"
+	 */
+	protected Map kvpPairs = new HashMap();
 
     /**
      * Constructor with kvp request parameters.

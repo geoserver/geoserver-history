@@ -20,7 +20,7 @@ import org.vfny.geoserver.wms.responses.map.png.PngEncoderB;
  * @author Didier Richard
  * @version $Id
  */
-class PNGMapProducer extends DefaultRasterMapProducer {
+public class PNGMapProducer extends DefaultRasterMapProducer {
 	
 	public PNGMapProducer(String format)
 	{
@@ -38,7 +38,7 @@ class PNGMapProducer extends DefaultRasterMapProducer {
      * @throws WmsException not really.
      * @throws IOException if encoding to <code>outStream</code> fails.
      */
-    protected void formatImageOutputStream(String format, BufferedImage image,
+    public void formatImageOutputStream(String format, BufferedImage image,
         OutputStream outStream) throws WmsException, IOException 
 	{        
         PngEncoderB png =  new PngEncoderB( image, PngEncoder.ENCODE_ALPHA,	0, 1 ); // filter (0), and compression (1)

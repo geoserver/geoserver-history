@@ -23,8 +23,12 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
+import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureType;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.factory.epsg.DefaultFactory;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
@@ -58,106 +62,192 @@ public class TypesEditorForm extends ActionForm {
         schemaBases = Collections.unmodifiableList(bases);
     }
 
-    /** Identiy DataStore responsible for this FeatureType */
-    private String dataStoreId;
+	/**
+	 * Identiy DataStore responsible for this FeatureType
+	 * 
+	 * @uml.property name="dataStoreId" multiplicity="(0 1)"
+	 */
+	private String dataStoreId;
 
-    /** Identify Style used to render this feature type */
-    private String styleId;
+	/**
+	 * Identify Style used to render this feature type
+	 * 
+	 * @uml.property name="styleId" multiplicity="(0 1)"
+	 */
+	private String styleId;
 
-    /**
-     * Name of featureType.
-     * 
-     * <p>
-     * An exact match for typeName provided by a DataStore.
-     * </p>
-     */
-    private String typeName;
+	/**
+	 * Name of featureType.
+	 * 
+	 * <p>
+	 * An exact match for typeName provided by a DataStore.
+	 * </p>
+	 * 
+	 * @uml.property name="typeName" multiplicity="(0 1)"
+	 */
+	private String typeName;
 
-    /**
-     * Representation of the Spatial Reference System.
-     * 
-     * <p>
-     * Empty represents unknown, usually assumed to be Cartisian Coordinates.
-     * </p>
-     */
-    private String SRS;
-    
-    /**
-     *  WKT representation of the SRS
-     *  This is read-only since it gets generated from the SRS id.
-     *  Everytime SRS is updates (#setSRS()), this will also be re-set.
-     *  If there's a problem with the SRS, this will try to give some info about the error.
-     */
-    private String SRSWKT; 
+	/**
+	 * Representation of the Spatial Reference System.
+	 * 
+	 * <p>
+	 * Empty represents unknown, usually assumed to be Cartisian Coordinates.
+	 * </p>
+	 * 
+	 * @uml.property name="sRS" multiplicity="(0 1)"
+	 */
+	private String SRS;
 
-    /** Title of this FeatureType */
-    private String title;
+	/**
+	 * WKT representation of the SRS
+	 *  This is read-only since it gets generated from the SRS id.
+	 *  Everytime SRS is updates (#setSRS()), this will also be re-set.
+	 *  If there's a problem with the SRS, this will try to give some info about the error.
+	 * 
+	 * @uml.property name="sRSWKT" multiplicity="(0 1)"
+	 */
+	private String SRSWKT;
 
-    /** Representation of bounds info as parseable by Double */
-    private String minX;
+	/**
+	 * Title of this FeatureType
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
 
-    /** Representation of bounds info as parseable by Double */
-    private String minY;
+	/**
+	 * Representation of bounds info as parseable by Double
+	 * 
+	 * @uml.property name="minX" multiplicity="(0 1)"
+	 */
+	private String minX;
 
-    /** Representation of bounds info as parseable by Double */
-    private String maxX;
+	/**
+	 * Representation of bounds info as parseable by Double
+	 * 
+	 * @uml.property name="minY" multiplicity="(0 1)"
+	 */
+	private String minY;
 
-    /** Representation of bounds info as parseable by Double */
-    private String maxY;
+	/**
+	 * Representation of bounds info as parseable by Double
+	 * 
+	 * @uml.property name="maxX" multiplicity="(0 1)"
+	 */
+	private String maxX;
 
-    /** List of keywords, often grouped with brackets */
-    private String keywords;
+	/**
+	 * Representation of bounds info as parseable by Double
+	 * 
+	 * @uml.property name="maxY" multiplicity="(0 1)"
+	 */
+	private String maxY;
+
+	/**
+	 * List of keywords, often grouped with brackets
+	 * 
+	 * @uml.property name="keywords" multiplicity="(0 1)"
+	 */
+	private String keywords;
+
 
     /** FeatureType abstract */
     private String description;
 
-    /**
-     * One of a select list - simplest is AbstractBaseClass.
-     * 
-     * <p>
-     * The value "--" will be used to indicate default schema completly
-     * generated from FeatureType information at runtime.
-     * </p>
-     * 
-     * <p>
-     * When generated the schema will make use a schemaBase of
-     * "AbstractFeatureType".
-     * </p>
-     */
-    private String schemaBase;
+	/**
+	 * One of a select list - simplest is AbstractBaseClass.
+	 * 
+	 * <p>
+	 * The value "--" will be used to indicate default schema completly
+	 * generated from FeatureType information at runtime.
+	 * </p>
+	 * 
+	 * <p>
+	 * When generated the schema will make use a schemaBase of
+	 * "AbstractFeatureType".
+	 * </p>
+	 * 
+	 * @uml.property name="schemaBase" multiplicity="(0 1)"
+	 */
+	private String schemaBase;
 
-    /**
-     * The name of the complex element of type schemaBase.
-     * 
-     * <p>
-     * We only need this for non generated schemaBase.
-     * </p>
-     */
-    private String schemaName;
+	/**
+	 * The name of the complex element of type schemaBase.
+	 * 
+	 * <p>
+	 * We only need this for non generated schemaBase.
+	 * </p>
+	 * 
+	 * @uml.property name="schemaName" multiplicity="(0 1)"
+	 */
+	private String schemaName;
 
-    /** List of AttributeDisplay and AttributeForm */
-    private List attributes;
+	/**
+	 * List of AttributeDisplay and AttributeForm
+	 * 
+	 * @uml.property name="attributes"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.form.data.AttributeForm" multiplicity=
+	 * "(0 -1)"
+	 */
+	private List attributes;
 
-    /** List of attributes available for addition */
-    private List addList;
+	/**
+	 * List of attributes available for addition
+	 * 
+	 * @uml.property name="addList"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List addList;
 
-    /** Action requested by user */
-    private String action;
+	/**
+	 * Action requested by user
+	 * 
+	 * @uml.property name="action" multiplicity="(0 1)"
+	 */
+	private String action;
 
-    /** Sorted Set of available styles */
-    private SortedSet styles;
+	/**
+	 * Sorted Set of available styles
+	 * 
+	 * @uml.property name="styles"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private SortedSet styles;
 
-    /** Stores the name of the new attribute they wish to create */
-    private String newAttribute;
+	/**
+	 * Stores the name of the new attribute they wish to create
+	 * 
+	 * @uml.property name="newAttribute" multiplicity="(0 1)"
+	 */
+	private String newAttribute;
 
-    	/** these store the bounding box of DATASET - in it coordinate system.
-    	 *  normally, you'll have these set to "" or null.
-    	 *  They're only for information purposes (presentation), they are never persisted or used in any calculations.
-    	 */
-    private String dataMinX;
-    private String dataMinY;
-    private String dataMaxX;
-    private String dataMaxY;
+	/**
+	 * these store the bounding box of DATASET - in it coordinate system.
+	 *  normally, you'll have these set to "" or null.
+	 *  They're only for information purposes (presentation), they are never persisted or used in any calculations.
+	 * 
+	 * @uml.property name="dataMinX" multiplicity="(0 1)"
+	 */
+	private String dataMinX;
+
+	/**
+	 * 
+	 * @uml.property name="dataMinY" multiplicity="(0 1)"
+	 */
+	private String dataMinY;
+
+	/**
+	 * 
+	 * @uml.property name="dataMaxX" multiplicity="(0 1)"
+	 */
+	private String dataMaxX;
+
+	/**
+	 * 
+	 * @uml.property name="dataMaxY" multiplicity="(0 1)"
+	 */
+	private String dataMaxY;
+
     
     /**
      * Set up FeatureTypeEditor from from Web Container.
@@ -457,45 +547,54 @@ dataMaxY="";
         return schemaBases;
     }
 
-    //
-    // Generated Accessors for Editor.jsp
-    //
+	//
+	// Generated Accessors for Editor.jsp
+	//
 
-    /**
-     * Access attributes property.
-     *
-     * @return Returns the attributes.
-     */
-    public List getAttributes() {
-        return attributes;
-    }
+	/**
+	 * Access attributes property.
+	 * 
+	 * @return Returns the attributes.
+	 * 
+	 * @uml.property name="attributes"
+	 */
+	public List getAttributes() {
+		return attributes;
+	}
 
-    /**
-     * Set attributes to attributes.
-     *
-     * @param attributes The attributes to set.
-     */
-    public void setAttributes(List attributes) {
-        this.attributes = attributes;
-    }
+	/**
+	 * Set attributes to attributes.
+	 * 
+	 * @param attributes The attributes to set.
+	 * 
+	 * @uml.property name="attributes"
+	 */
+	public void setAttributes(List attributes) {
+		this.attributes = attributes;
+	}
 
-    /**
-     * Access dataStoreId property.
-     *
-     * @return Returns the dataStoreId.
-     */
-    public String getDataStoreId() {
-        return dataStoreId;
-    }
+	/**
+	 * Access dataStoreId property.
+	 * 
+	 * @return Returns the dataStoreId.
+	 * 
+	 * @uml.property name="dataStoreId"
+	 */
+	public String getDataStoreId() {
+		return dataStoreId;
+	}
 
-    /**
-     * Set dataStoreId to dataStoreId.
-     *
-     * @param dataStoreId The dataStoreId to set.
-     */
-    public void setDataStoreId(String dataStoreId) {
-        this.dataStoreId = dataStoreId;
-    }
+	/**
+	 * Set dataStoreId to dataStoreId.
+	 * 
+	 * @param dataStoreId The dataStoreId to set.
+	 * 
+	 * @uml.property name="dataStoreId"
+	 */
+	public void setDataStoreId(String dataStoreId) {
+		this.dataStoreId = dataStoreId;
+	}
+
 
     /**
      * Access abstact (or description) property.
@@ -515,257 +614,311 @@ dataMaxY="";
         this.description = description;
     }
 
-    /**
-     * Access keywords property.
-     *
-     * @return Returns the keywords.
-     */
-    public String getKeywords() {
-        return keywords;
-    }
+	/**
+	 * Access keywords property.
+	 * 
+	 * @return Returns the keywords.
+	 * 
+	 * @uml.property name="keywords"
+	 */
+	public String getKeywords() {
+		return keywords;
+	}
 
-    /**
-     * Set keywords to keywords.
-     *
-     * @param keywords The keywords to set.
-     */
-    public void setKeywords(String keywords) {
-        this.keywords = keywords;
-    }
+	/**
+	 * Set keywords to keywords.
+	 * 
+	 * @param keywords The keywords to set.
+	 * 
+	 * @uml.property name="keywords"
+	 */
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
 
-    /**
-     * Access name property.
-     *
-     * @return Returns the name.
-     */
-    public String getTypeName() {
-        return typeName;
-    }
+	/**
+	 * Access name property.
+	 * 
+	 * @return Returns the name.
+	 * 
+	 * @uml.property name="typeName"
+	 */
+	public String getTypeName() {
+		return typeName;
+	}
 
-    /**
-     * Set name to name.
-     *
-     * @param name The name to set.
-     */
-    public void setTypeName(String name) {
-        this.typeName = name;
-    }
+	/**
+	 * Set name to name.
+	 * 
+	 * @param name The name to set.
+	 * 
+	 * @uml.property name="typeName"
+	 */
+	public void setTypeName(String name) {
+		this.typeName = name;
+	}
 
-    /**
-     * Access schemaBase property.
-     *
-     * @return Returns the schemaBase.
-     */
-    public String getSchemaBase() {
-        return schemaBase;
-    }
+	/**
+	 * Access schemaBase property.
+	 * 
+	 * @return Returns the schemaBase.
+	 * 
+	 * @uml.property name="schemaBase"
+	 */
+	public String getSchemaBase() {
+		return schemaBase;
+	}
 
-    /**
-     * Set schemaBase to schemaBase.
-     *
-     * @param schemaBase The schemaBase to set.
-     */
-    public void setSchemaBase(String schemaBase) {
-        this.schemaBase = schemaBase;
-    }
+	/**
+	 * Set schemaBase to schemaBase.
+	 * 
+	 * @param schemaBase The schemaBase to set.
+	 * 
+	 * @uml.property name="schemaBase"
+	 */
+	public void setSchemaBase(String schemaBase) {
+		this.schemaBase = schemaBase;
+	}
 
-    /**
-     * Access sRS property.
-     *
-     * @return Returns the sRS.
-     */
-    public String getSRS() {
-        return SRS;
-    }
-    
-    /**
-     * Access SRSWKT property.  There is no setSRSWKT() because its derived from the SRS id.
-     *
-     * @return Returns the sRS.
-     */
-    public String getSRSWKT() {
-        return SRSWKT;
-    }
-    
+	/**
+	 * Access sRS property.
+	 * 
+	 * @return Returns the sRS.
+	 * 
+	 * @uml.property name="sRS"
+	 */
+	public String getSRS() {
+		return SRS;
+	}
 
-    /**
-     * Set sRS to srs. 
-     * 
-     *  Also sets WKTSRS.  
-     *  srs should be an Integer (in string form) - according to FeatureTypeConfig
-     *
-     * @param srs The sRS to set.
-     */
-    public void setSRS(String srs) 
-    {
-    
-        SRS = srs;
-        try{
-        	   // srs should be an Integer - according to FeatureTypeConfig
-        	// TODO: make everything consistent for SRS - either its an int or a
-        	//       string.
-        	String newSrs = srs;
-        	if (newSrs.indexOf(':') == -1)
-        	{
-        		newSrs = "EPSG:"+srs;
-        	}
-        	CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
-        	SRSWKT = crsTheirData.toWKT();
-        }
-        catch (Exception e)  // couldnt decode their code
+	/**
+	 * Access SRSWKT property.  There is no setSRSWKT() because its derived from the SRS id.
+	 * 
+	 * @return Returns the sRS.
+	 * 
+	 * @uml.property name="sRSWKT"
+	 */
+	public String getSRSWKT() {
+		return SRSWKT;
+	}
+
+	/**
+	 * Set sRS to srs. 
+	 * 
+	 *  Also sets WKTSRS.  
+	 *  srs should be an Integer (in string form) - according to FeatureTypeConfig
+	 * 
+	 * @param srs The sRS to set.
+	 * 
+	 * @uml.property name="sRS"
+	 */
+	public void setSRS(String srs) {
+
+		SRS = srs;
+		try {
+			// srs should be an Integer - according to FeatureTypeConfig
+			// TODO: make everything consistent for SRS - either its an int or a
+			//       string.
+			String newSrs = srs;
+			if (newSrs.indexOf(':') == -1) {
+				newSrs = "EPSG:" + srs;
+			}
+			//CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
+			CRSAuthorityFactory crsFactory = FactoryFinder
+				.getCRSAuthorityFactory("EPSG", new Hints(
+					Hints.CRS_AUTHORITY_FACTORY,
+					DefaultFactory.class));
+			CoordinateReferenceSystem crsTheirData = (CoordinateReferenceSystem) crsFactory
+				.createCoordinateReferenceSystem(newSrs);
+
+			SRSWKT = crsTheirData.toWKT();
+		} catch (Exception e) // couldnt decode their code
 		{
-        	// DJB:
-        	// dont know how to internationize this inside a set() method!!!
-        	// I think I need the request to get the local, then I can get MessageResources
-        	// from the servlet and call an appropriate method.  
-        	// Unforutunately, I dont know how to get the local!  
-        	SRSWKT = "Could not find a definition for: EPSG:"+srs;
+			// DJB:
+			// dont know how to internationize this inside a set() method!!!
+			// I think I need the request to get the local, then I can get MessageResources
+			// from the servlet and call an appropriate method.  
+			// Unforutunately, I dont know how to get the local!  
+			SRSWKT = "Could not find a definition for: EPSG:" + srs;
 		}
-    }
+	}
 
-    /**
-     * Access title property.
-     *
-     * @return Returns the title.
-     */
-    public String getTitle() {
-        return title;
-    }
+	/**
+	 * Access title property.
+	 * 
+	 * @return Returns the title.
+	 * 
+	 * @uml.property name="title"
+	 */
+	public String getTitle() {
+		return title;
+	}
 
-    /**
-     * Set title to title.
-     *
-     * @param title The title to set.
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	/**
+	 * Set title to title.
+	 * 
+	 * @param title The title to set.
+	 * 
+	 * @uml.property name="title"
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return Returns the action.
-     */
-    public String getAction() {
-        return action;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return Returns the action.
+	 * 
+	 * @uml.property name="action"
+	 */
+	public String getAction() {
+		return action;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param action The action to set.
-     */
-    public void setAction(String action) {
-        this.action = action;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param action The action to set.
+	 * 
+	 * @uml.property name="action"
+	 */
+	public void setAction(String action) {
+		this.action = action;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return Returns the maxX.
-     */
-    public String getMaxX() {
-        return maxX;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return Returns the maxX.
+	 * 
+	 * @uml.property name="maxX"
+	 */
+	public String getMaxX() {
+		return maxX;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param maxX The maxX to set.
-     */
-    public void setMaxX(String maxX) {
-        this.maxX = maxX;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param maxX The maxX to set.
+	 * 
+	 * @uml.property name="maxX"
+	 */
+	public void setMaxX(String maxX) {
+		this.maxX = maxX;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return Returns the maxY.
-     */
-    public String getMaxY() {
-        return maxY;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return Returns the maxY.
+	 * 
+	 * @uml.property name="maxY"
+	 */
+	public String getMaxY() {
+		return maxY;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param maxY The maxY to set.
-     */
-    public void setMaxY(String maxY) {
-        this.maxY = maxY;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param maxY The maxY to set.
+	 * 
+	 * @uml.property name="maxY"
+	 */
+	public void setMaxY(String maxY) {
+		this.maxY = maxY;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return Returns the minX.
-     */
-    public String getMinX() {
-        return minX;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return Returns the minX.
+	 * 
+	 * @uml.property name="minX"
+	 */
+	public String getMinX() {
+		return minX;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param minX The minX to set.
-     */
-    public void setMinX(String minX) {
-        this.minX = minX;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param minX The minX to set.
+	 * 
+	 * @uml.property name="minX"
+	 */
+	public void setMinX(String minX) {
+		this.minX = minX;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return Returns the minY.
-     */
-    public String getMinY() {
-        return minY;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return Returns the minY.
+	 * 
+	 * @uml.property name="minY"
+	 */
+	public String getMinY() {
+		return minY;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param minY The minY to set.
-     */
-    public void setMinY(String minY) {
-        this.minY = minY;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param minY The minY to set.
+	 * 
+	 * @uml.property name="minY"
+	 */
+	public void setMinY(String minY) {
+		this.minY = minY;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return Returns the styleId.
-     */
-    public String getStyleId() {
-        return styleId;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return Returns the styleId.
+	 * 
+	 * @uml.property name="styleId"
+	 */
+	public String getStyleId() {
+		return styleId;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param styleId The styleId to set.
-     */
-    public void setStyleId(String styleId) {
-        this.styleId = styleId;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param styleId The styleId to set.
+	 * 
+	 * @uml.property name="styleId"
+	 */
+	public void setStyleId(String styleId) {
+		this.styleId = styleId;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return Returns the styles.
-     */
-    public SortedSet getStyles() {
-        return styles;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return Returns the styles.
+	 * 
+	 * @uml.property name="styles"
+	 */
+	public SortedSet getStyles() {
+		return styles;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param styles The styles to set.
-     */
-    public void setStyles(SortedSet styles) {
-        this.styles = styles;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param styles The styles to set.
+	 * 
+	 * @uml.property name="styles"
+	 */
+	public void setStyles(SortedSet styles) {
+		this.styles = styles;
+	}
+
 
     public Object getAttribute(int index) {
         return attributes.get(index);
@@ -775,23 +928,28 @@ dataMaxY="";
         attributes.set(index, attribute);
     }
 
-    /**
-     * Access newAttribute property.
-     *
-     * @return Returns the newAttribute.
-     */
-    public String getNewAttribute() {
-        return newAttribute;
-    }
+	/**
+	 * Access newAttribute property.
+	 * 
+	 * @return Returns the newAttribute.
+	 * 
+	 * @uml.property name="newAttribute"
+	 */
+	public String getNewAttribute() {
+		return newAttribute;
+	}
 
-    /**
-     * Set newAttribute to newAttribute.
-     *
-     * @param newAttribute The newAttribute to set.
-     */
-    public void setNewAttribute(String newAttribute) {
-        this.newAttribute = newAttribute;
-    }
+	/**
+	 * Set newAttribute to newAttribute.
+	 * 
+	 * @param newAttribute The newAttribute to set.
+	 * 
+	 * @uml.property name="newAttribute"
+	 */
+	public void setNewAttribute(String newAttribute) {
+		this.newAttribute = newAttribute;
+	}
+
 
     /**
      * DOCUMENT ME!
@@ -802,55 +960,90 @@ dataMaxY="";
         return addList;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return Returns the schemaName.
-     */
-    public String getSchemaName() {
-        return schemaName;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return Returns the schemaName.
+	 * 
+	 * @uml.property name="schemaName"
+	 */
+	public String getSchemaName() {
+		return schemaName;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param schemaName The schemaName to set.
-     */
-    public void setSchemaName(String schemaName) {
-        this.schemaName = schemaName;
-    }
-    
-    public void setDataMinX(String x)
-    {
-    	dataMinX = x;
-    }
-    public void setDataMinY(String x)
-    {
-    	dataMinY = x;
-    }
-    public void setDataMaxX(String x)
-    {
-    	dataMaxX = x;
-    }
-    public void setDataMaxY(String x)
-    {
-    	dataMaxY = x;
-    }
-    
-    public String getDataMinX()
-    {
-    	return dataMinX;
-    }
-    public String getDataMinY()
-    {
-    	return dataMinY;
-    }
-    public String getDataMaxX()
-    {
-    	return dataMaxX;
-    }
-    public String getDataMaxY()
-    {
-    	return dataMaxY;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param schemaName The schemaName to set.
+	 * 
+	 * @uml.property name="schemaName"
+	 */
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="dataMinX"
+	 */
+	public void setDataMinX(String x) {
+		dataMinX = x;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="dataMinY"
+	 */
+	public void setDataMinY(String x) {
+		dataMinY = x;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="dataMaxX"
+	 */
+	public void setDataMaxX(String x) {
+		dataMaxX = x;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="dataMaxY"
+	 */
+	public void setDataMaxY(String x) {
+		dataMaxY = x;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="dataMinX"
+	 */
+	public String getDataMinX() {
+		return dataMinX;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="dataMinY"
+	 */
+	public String getDataMinY() {
+		return dataMinY;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="dataMaxX"
+	 */
+	public String getDataMaxX() {
+		return dataMaxX;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="dataMaxY"
+	 */
+	public String getDataMaxY() {
+		return dataMaxY;
+	}
+
 }

@@ -26,48 +26,78 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  * @version $Id: ServiceConfig.java,v 1.16 2004/02/09 23:30:05 dmzwiers Exp $
  */
 public class ServiceConfig {
-    /**
-     * Represents when the web service is enabled/disabled. True when enabled.
-     */
-    private boolean enabled = true;
 
-    /**
-     * Online Reference URL for the web service. A location to look for when
-     * additional assistance is required.
-     */
-    private URL onlineResource;
+	/**
+	 * Represents when the web service is enabled/disabled. True when enabled.
+	 * 
+	 * @uml.property name="enabled" multiplicity="(0 1)"
+	 */
+	private boolean enabled = true;
 
-    /** The name of the service. */
-    private String name;
+	/**
+	 * Online Reference URL for the web service. A location to look for when
+	 * additional assistance is required.
+	 * 
+	 * @uml.property name="onlineResource" multiplicity="(0 1)"
+	 */
+	private URL onlineResource;
 
-    /** The title of the service. */
-    private String title;
+	/**
+	 * The name of the service.
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	private String name;
+
+	/**
+	 * The title of the service.
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
+
 
     /** A short abstract about the service. */
     private String _abstract;
 
-    /** A list of keywords associated with the service. */
-    private String[] keywords;
+	/**
+	 * A list of keywords associated with the service.
+	 * 
+	 * @uml.property name="keywords" multiplicity="(0 1)"
+	 */
+	private String[] keywords;
 
-    /**
-     * The fees associated with the service. When there are not any fees, the
-     * value  "NONE" is used.
-     */
-    private String fees;
+	/**
+	 * The fees associated with the service. When there are not any fees, the
+	 * value  "NONE" is used.
+	 * 
+	 * @uml.property name="fees" multiplicity="(0 1)"
+	 */
+	private String fees;
 
-    /**
-     * The access constraints associated with the service. When there are not
-     * any,  the value "NONE" is used.
-     */
-    private String accessConstraints = "NONE";
+	/**
+	 * The access constraints associated with the service. When there are not
+	 * any,  the value "NONE" is used.
+	 * 
+	 * @uml.property name="accessConstraints" multiplicity="(0 1)"
+	 */
+	private String accessConstraints = "NONE";
 
-    /**
-     * Name of the person who maintains the web service. Should ideally be
-     * contact  information such as webmaster&amp;geoserver.org .
-     */
-    private String maintainer;
+	/**
+	 * Name of the person who maintains the web service. Should ideally be
+	 * contact  information such as webmaster&amp;geoserver.org .
+	 * 
+	 * @uml.property name="maintainer" multiplicity="(0 1)"
+	 */
+	private String maintainer;
 
-    private MetaDataLink metadataLink;
+	/**
+	 * 
+	 * @uml.property name="metadataLink"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private MetaDataLink metadataLink;
+
     /**
      * ServiceConfig constructor.
      * 
@@ -189,59 +219,72 @@ public class ServiceConfig {
         return sDto;
     }
 
-    /**
-     * getName purpose.
-     *
-     * @return
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * getName purpose.
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="name"
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * getOnlineResource purpose.
-     *
-     * @return
-     */
-    public URL getOnlineResource() {
-        return onlineResource;
-    }
+	/**
+	 * getOnlineResource purpose.
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="onlineResource"
+	 */
+	public URL getOnlineResource() {
+		return onlineResource;
+	}
 
-    /**
-     * getTitle purpose.
-     *
-     * @return
-     */
-    public String getTitle() {
-        return title;
-    }
+	/**
+	 * getTitle purpose.
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="title"
+	 */
+	public String getTitle() {
+		return title;
+	}
 
-    /**
-     * setName purpose.
-     *
-     * @param string
-     */
-    public void setName(String string) {
-        name = string;
-    }
+	/**
+	 * setName purpose.
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="name"
+	 */
+	public void setName(String string) {
+		name = string;
+	}
 
-    /**
-     * setOnlineResource purpose.
-     *
-     * @param url
-     */
-    public void setOnlineResource(URL url) {
-        onlineResource = url;
-    }
+	/**
+	 * setOnlineResource purpose.
+	 * 
+	 * @param url
+	 * 
+	 * @uml.property name="onlineResource"
+	 */
+	public void setOnlineResource(URL url) {
+		onlineResource = url;
+	}
 
-    /**
-     * setTitle purpose.
-     *
-     * @param string
-     */
-    public void setTitle(String string) {
-        title = string;
-    }
+	/**
+	 * setTitle purpose.
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="title"
+	 */
+	public void setTitle(String string) {
+		title = string;
+	}
+
 
     /**
      * getAbstract purpose.
@@ -252,14 +295,17 @@ public class ServiceConfig {
         return _abstract;
     }
 
-    /**
-     * getAccessConstraints purpose.
-     *
-     * @return
-     */
-    public String getAccessConstraints() {
-        return accessConstraints;
-    }
+	/**
+	 * getAccessConstraints purpose.
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="accessConstraints"
+	 */
+	public String getAccessConstraints() {
+		return accessConstraints;
+	}
+
 
     /**
      * isEnabled purpose.
@@ -270,32 +316,39 @@ public class ServiceConfig {
         return enabled;
     }
 
-    /**
-     * getFees purpose.
-     *
-     * @return
-     */
-    public String getFees() {
-        return fees;
-    }
+	/**
+	 * getFees purpose.
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="fees"
+	 */
+	public String getFees() {
+		return fees;
+	}
 
-    /**
-     * getKeywords purpose.
-     *
-     * @return
-     */
-    public String[] getKeywords() {
-        return keywords;
-    }
+	/**
+	 * getKeywords purpose.
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="keywords"
+	 */
+	public String[] getKeywords() {
+		return keywords;
+	}
 
-    /**
-     * getMaintainer purpose.
-     *
-     * @return
-     */
-    public String getMaintainer() {
-        return maintainer;
-    }
+	/**
+	 * getMaintainer purpose.
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="maintainer"
+	 */
+	public String getMaintainer() {
+		return maintainer;
+	}
+
 
     /**
      * setAbstract purpose.
@@ -306,60 +359,77 @@ public class ServiceConfig {
         _abstract = string;
     }
 
-    /**
-     * setAccessConstraints purpose.
-     *
-     * @param string
-     */
-    public void setAccessConstraints(String string) {
-        accessConstraints = string;
-    }
+	/**
+	 * setAccessConstraints purpose.
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="accessConstraints"
+	 */
+	public void setAccessConstraints(String string) {
+		accessConstraints = string;
+	}
 
-    /**
-     * setEnabled purpose.
-     *
-     * @param b
-     */
-    public void setEnabled(boolean b) {
-        enabled = b;
-    }
+	/**
+	 * setEnabled purpose.
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="enabled"
+	 */
+	public void setEnabled(boolean b) {
+		enabled = b;
+	}
 
-    /**
-     * setFees purpose.
-     *
-     * @param string
-     */
-    public void setFees(String string) {
-        fees = string;
-    }
+	/**
+	 * setFees purpose.
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="fees"
+	 */
+	public void setFees(String string) {
+		fees = string;
+	}
 
-    /**
-     * setKeywords purpose.
-     *
-     * @param list
-     */
-    public void setKeywords(String[] list) {
-        keywords = list;
-    }
+	/**
+	 * setKeywords purpose.
+	 * 
+	 * @param list
+	 * 
+	 * @uml.property name="keywords"
+	 */
+	public void setKeywords(String[] list) {
+		keywords = list;
+	}
 
-    /**
-     * setMaintainer purpose.
-     *
-     * @param string
-     */
-    public void setMaintainer(String string) {
-        maintainer = string;
-    }
+	/**
+	 * setMaintainer purpose.
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="maintainer"
+	 */
+	public void setMaintainer(String string) {
+		maintainer = string;
+	}
+
 	/**
 	 * @return Returns the metadataLink.
+	 * 
+	 * @uml.property name="metadataLink"
 	 */
 	public MetaDataLink getMetadataLink() {
 		return metadataLink;
 	}
+
 	/**
 	 * @param metadataLink The metadataLink to set.
+	 * 
+	 * @uml.property name="metadataLink"
 	 */
 	public void setMetadataLink(MetaDataLink metadataLink) {
 		this.metadataLink = metadataLink;
 	}
+
 }

@@ -52,30 +52,63 @@ public class SVGEncoder {
     /** the SVG closing element */
     private static final String SVG_FOOTER = "</svg>\n";
 
-    /**
-     * the referene space is an Envelope object wich is used to translate Y
-     * coordinates to an SVG viewbox space. It is necessary due to the
-     * different origin of Y coordinates in SVG space and in Coordinates space
-     */
-    private Envelope referenceSpace = null;
+	/**
+	 * the referene space is an Envelope object wich is used to translate Y
+	 * coordinates to an SVG viewbox space. It is necessary due to the
+	 * different origin of Y coordinates in SVG space and in Coordinates space
+	 * 
+	 * @uml.property name="referenceSpace"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private Envelope referenceSpace = null;
 
-    /** temporary holding of the Feature currently being encoded */
-    private Feature currentFeature = null;
+	/**
+	 * temporary holding of the Feature currently being encoded
+	 * 
+	 * @uml.property name="currentFeature"
+	 * @uml.associationEnd elementType="com.vividsolutions.jts.geom.Geometry" multiplicity=
+	 * "(0 -1)"
+	 */
+	private Feature currentFeature = null;
 
-    /** temporary holding of the geometry currently being encoded */
-    private Geometry currentGeometry = null;
+	/**
+	 * temporary holding of the geometry currently being encoded
+	 * 
+	 * @uml.property name="currentGeometry"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private Geometry currentGeometry = null;
 
-    /** temporary holding of the FeatureTypeInfo currently being encoded */
-    private FeatureType featureType;
+	/**
+	 * temporary holding of the FeatureTypeInfo currently being encoded
+	 * 
+	 * @uml.property name="featureType"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private FeatureType featureType;
 
-    /** the writer used to wrap the output stream */
-    private SVGWriter writer;
+	/**
+	 * the writer used to wrap the output stream
+	 * 
+	 * @uml.property name="writer"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private SVGWriter writer;
 
-    /** SVG canvas width */
-    private String width = "100%";
+	/**
+	 * SVG canvas width
+	 * 
+	 * @uml.property name="width" multiplicity="(0 1)"
+	 */
+	private String width = "100%";
 
-    /** svg canvas height */
-    private String height = "100%";
+	/**
+	 * svg canvas height
+	 * 
+	 * @uml.property name="height" multiplicity="(0 1)"
+	 */
+	private String height = "100%";
+
 
     /**
      * tells whether all the geometries in FeatureResults will be written as a
@@ -102,13 +135,16 @@ public class SVGEncoder {
     /** counter of coordinates actually written */
     int coordsWriteCount = 0;
 
-    /**
-     * defaults to <code>true</code>, and means if the xml header and svg
-     * element should be printed. Some applications may need to not get that
-     * encoded to directly parse and add the content to a working client. This
-     * field is setted thru the SVGHEADER custom request parameter
-     */
-    private boolean writeHeader = true;
+	/**
+	 * defaults to <code>true</code>, and means if the xml header and svg
+	 * element should be printed. Some applications may need to not get that
+	 * encoded to directly parse and add the content to a working client. This
+	 * field is setted thru the SVGHEADER custom request parameter
+	 * 
+	 * @uml.property name="writeHeader" multiplicity="(0 1)"
+	 */
+	private boolean writeHeader = true;
+
 
     /**
      * Creates a new SVGEncoder object.
@@ -132,23 +168,28 @@ public class SVGEncoder {
         abortProcess = true;
     }
 
-    /**
-     * sets the SVG canvas width
-     *
-     * @param width DOCUMENT ME!
-     */
-    public void setWidth(String width) {
-        this.width = width;
-    }
+	/**
+	 * sets the SVG canvas width
+	 * 
+	 * @param width DOCUMENT ME!
+	 * 
+	 * @uml.property name="width"
+	 */
+	public void setWidth(String width) {
+		this.width = width;
+	}
 
-    /**
-     * sets the SVG canvas height
-     *
-     * @param height DOCUMENT ME!
-     */
-    public void setHeight(String height) {
-        this.height = height;
-    }
+	/**
+	 * sets the SVG canvas height
+	 * 
+	 * @param height DOCUMENT ME!
+	 * 
+	 * @uml.property name="height"
+	 */
+	public void setHeight(String height) {
+		this.height = height;
+	}
+
 
     /**
      * If <code>collect == true</code>, then all the geometries will be grouped
@@ -182,57 +223,62 @@ public class SVGEncoder {
         setReferenceSpace(env, 5000);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param includeHeader DOCUMENT ME!
-     */
-    public void setWriteHeader(boolean includeHeader) {
-        this.writeHeader = includeHeader;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param includeHeader DOCUMENT ME!
+	 * 
+	 * @uml.property name="writeHeader"
+	 */
+	public void setWriteHeader(boolean includeHeader) {
+		this.writeHeader = includeHeader;
+	}
 
-    /**
-     * sets the "viewBox" of the generated SVG and establishes the encoding
-     * blur factor to <code>blurFactor</code>
-     * 
-     * <p>
-     * establishing the blur factor means that the greatest dimension between
-     * the width and height of the new SVG coordinate space <code>env</code>
-     * will be divided by this factor to obtain the minimun distance allowable
-     * between two coordinates to actually encode them.
-     * </p>
-     * 
-     * <p>
-     * This method updates the <code>minCoordDistance</code> field, wich every
-     * coordinate -<b>except the first 3</b> of a <i>path</i> element-, will
-     * be compared against the most previously written to decide if such
-     * distance is enough to encode such coordinate or it can be just skipped
-     * </p>
-     * 
-     * <p>
-     * In a <i>path</i> element, the first 3 coordinates do not get compared
-     * against the minimun coordinate separation distance as the easyest way
-     * of keeping polygon shapes consistent
-     * </p>
-     * 
-     * <p>
-     * NOTE: if you don't want that klind of hacky geometry generalyzation,
-     * just pass <code>0</code> (zero) as <code>blurFactor</code>
-     * </p>
-     *
-     * @param env DOCUMENT ME!
-     * @param blurFactor DOCUMENT ME!
-     */
-    public void setReferenceSpace(Envelope env, float blurFactor) {
-        this.referenceSpace = env;
+	/**
+	 * sets the "viewBox" of the generated SVG and establishes the encoding
+	 * blur factor to <code>blurFactor</code>
+	 * 
+	 * <p>
+	 * establishing the blur factor means that the greatest dimension between
+	 * the width and height of the new SVG coordinate space <code>env</code>
+	 * will be divided by this factor to obtain the minimun distance allowable
+	 * between two coordinates to actually encode them.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method updates the <code>minCoordDistance</code> field, wich every
+	 * coordinate -<b>except the first 3</b> of a <i>path</i> element-, will
+	 * be compared against the most previously written to decide if such
+	 * distance is enough to encode such coordinate or it can be just skipped
+	 * </p>
+	 * 
+	 * <p>
+	 * In a <i>path</i> element, the first 3 coordinates do not get compared
+	 * against the minimun coordinate separation distance as the easyest way
+	 * of keeping polygon shapes consistent
+	 * </p>
+	 * 
+	 * <p>
+	 * NOTE: if you don't want that klind of hacky geometry generalyzation,
+	 * just pass <code>0</code> (zero) as <code>blurFactor</code>
+	 * </p>
+	 * 
+	 * @param env DOCUMENT ME!
+	 * @param blurFactor DOCUMENT ME!
+	 * 
+	 * @uml.property name="referenceSpace"
+	 */
+	public void setReferenceSpace(Envelope env, float blurFactor) {
+		this.referenceSpace = env;
 
-        if (blurFactor > 0) {
-            double maxDimension = Math.max(env.getWidth(), env.getHeight());
-            this.minCoordDistance = maxDimension / blurFactor;
-        } else {
-            this.minCoordDistance = env.getWidth() + env.getHeight();
-        }
-    }
+		if (blurFactor > 0) {
+			double maxDimension = Math.max(env.getWidth(), env.getHeight());
+			this.minCoordDistance = maxDimension / blurFactor;
+		} else {
+			this.minCoordDistance = env.getWidth() + env.getHeight();
+		}
+	}
+
 
     /**
      * DOCUMENT ME!
@@ -915,7 +961,13 @@ class SVGWriter extends OutputStreamWriter {
 
 
 class SVGEncoderHandler {
-    protected SVGWriter writer;
+
+	/**
+	 * 
+	 * @uml.property name="writer"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	protected SVGWriter writer;
 
     public SVGEncoderHandler(SVGWriter writer) {
         this.writer = writer;

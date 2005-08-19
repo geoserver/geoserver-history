@@ -58,104 +58,136 @@ public final class GeoServerDTO implements DataTransferObject {
 		 */
 		public static final boolean VerboseExceptions = false;
 	}
-	
-    /** Sets the max number of Features returned by GetFeature */
-    private int maxFeatures = Defaults.MaxFeatures;
 
-    /**
-     * XML Verbosity.
-     * 
-     * <p>
-     * Whether newlines and indents should be returned in XML responses.
-     * </p>
-     * 
-     * <p>
-     * This should be called something other than verbose. Verbose should
-     * control things like printing out "magic" comments that tell people how
-     * to edit the xml files by hand.
-     * </p>
-     * Default is false
-     */
-    private boolean verbose = Defaults.Verbose;
+	/**
+	 * Sets the max number of Features returned by GetFeature
+	 * 
+	 * @uml.property name="maxFeatures" multiplicity="(0 1)"
+	 */
+	private int maxFeatures = Defaults.MaxFeatures;
 
-    /**
-     * Number of decimal places returned in a GetFeature response.
-     * 
-     * <p>
-     * Sets the max number of decimal places past the zero returned in a
-     * GetFeature response.  Default is 4.
-     * </p>
-     * DZ - should it be moved to FeatureTypeInfo level? JG - no WMS also has a
-     * getFeature response
-     */
-    private int numDecimals = Defaults.NumDecimals;
+	/**
+	 * XML Verbosity.
+	 * 
+	 * <p>
+	 * Whether newlines and indents should be returned in XML responses.
+	 * </p>
+	 * 
+	 * <p>
+	 * This should be called something other than verbose. Verbose should
+	 * control things like printing out "magic" comments that tell people how
+	 * to edit the xml files by hand.
+	 * </p>
+	 * Default is false
+	 * 
+	 * @uml.property name="verbose" multiplicity="(0 1)"
+	 */
+	private boolean verbose = Defaults.Verbose;
 
-    /**
-     * Sets the global character set.
-     * 
-     * <p>
-     * This could use some more testing from international users. What it does
-     * is sets the encoding globally for all postgis database connections (the
-     * charset tag in FeatureTypeInfo), as well as specifying the encoding in
-     * the return
-     * <code>org.vfny.geoserver.config.org.vfny.geoserver.global.xml</code>
-     * header and mime type.
-     * </p>
-     * 
-     * <p>
-     * The default is UTF-8
-     * </p>
-     * 
-     * <p>
-     * Also be warned that GeoServer does not check if the CharSet is valid
-     * before attempting to use it, so it will fail miserably if a bad charset
-     * is used.
-     * </p>
-     */
-    private Charset charSet = Defaults.Encoding;
+	/**
+	 * Number of decimal places returned in a GetFeature response.
+	 * 
+	 * <p>
+	 * Sets the max number of decimal places past the zero returned in a
+	 * GetFeature response.  Default is 4.
+	 * </p>
+	 * DZ - should it be moved to FeatureTypeInfo level? JG - no WMS also has a
+	 * getFeature response
+	 * 
+	 * @uml.property name="numDecimals" multiplicity="(0 1)"
+	 */
+	private int numDecimals = Defaults.NumDecimals;
 
-    /**
-     * Define a base url for the location of the wfs schemas.
-     * 
-     * <p>
-     * By default GeoServer  loads and references its own at
-     * <code>/data/capabilities</code>.
-     * </p>
-     * 
-     * <p>
-     * The standalone Tomcat server needs SchemaBaseUrl defined for validation.
-     * </p>
-     */
-    private String schemaBaseUrl;
+	/**
+	 * Sets the global character set.
+	 * 
+	 * <p>
+	 * This could use some more testing from international users. What it does
+	 * is sets the encoding globally for all postgis database connections (the
+	 * charset tag in FeatureTypeInfo), as well as specifying the encoding in
+	 * the return
+	 * <code>org.vfny.geoserver.config.org.vfny.geoserver.global.xml</code>
+	 * header and mime type.
+	 * </p>
+	 * 
+	 * <p>
+	 * The default is UTF-8
+	 * </p>
+	 * 
+	 * <p>
+	 * Also be warned that GeoServer does not check if the CharSet is valid
+	 * before attempting to use it, so it will fail miserably if a bad charset
+	 * is used.
+	 * </p>
+	 * 
+	 * @uml.property name="charSet" multiplicity="(0 1)"
+	 */
+	private Charset charSet = Defaults.Encoding;
 
-    /**
-     * Defines the Application logging level.
-     * 
-     * <p>
-     * Common options are SEVERE, WARNING, INFO, CONFIG,  FINER, FINEST, in
-     * order of Increasing statements logged.
-     * </p>
-     * 
-     * <p>
-     * There may be more then one point of control - the web containers often
-     * controls logging, the jakarta commons logging system is used by struts,
-     * these names seem taken from the jdk14 logging framework and GeoServer
-     * seems to also use log4j.
-     * </p>
-     */
-    private Level loggingLevel = Defaults.LoggingLevel;
+	/**
+	 * Define a base url for the location of the wfs schemas.
+	 * 
+	 * <p>
+	 * By default GeoServer  loads and references its own at
+	 * <code>/data/capabilities</code>.
+	 * </p>
+	 * 
+	 * <p>
+	 * The standalone Tomcat server needs SchemaBaseUrl defined for validation.
+	 * </p>
+	 * 
+	 * @uml.property name="schemaBaseUrl" multiplicity="(0 1)"
+	 */
+	private String schemaBaseUrl;
 
-    /** The Server contact person and their contact information. */
-    private ContactDTO contact = null;
+	/**
+	 * Defines the Application logging level.
+	 * 
+	 * <p>
+	 * Common options are SEVERE, WARNING, INFO, CONFIG,  FINER, FINEST, in
+	 * order of Increasing statements logged.
+	 * </p>
+	 * 
+	 * <p>
+	 * There may be more then one point of control - the web containers often
+	 * controls logging, the jakarta commons logging system is used by struts,
+	 * these names seem taken from the jdk14 logging framework and GeoServer
+	 * seems to also use log4j.
+	 * </p>
+	 * 
+	 * @uml.property name="loggingLevel" multiplicity="(0 1)"
+	 */
+	private Level loggingLevel = Defaults.LoggingLevel;
 
-    /** The username for the administrator log-in to perform configuration */
-    private String adminUserName = Defaults.AdminUserName;
+	/**
+	 * The Server contact person and their contact information.
+	 * 
+	 * @uml.property name="contact"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private ContactDTO contact = null;
 
-    /** The password for the administrator log-in to perform configuration */
-    private String adminPassword = Defaults.AdminPassword;
-    
-    /** Whether the exceptions returned to the client should contain full stack traces */
-    private boolean verboseExceptions = Defaults.VerboseExceptions;
+	/**
+	 * The username for the administrator log-in to perform configuration
+	 * 
+	 * @uml.property name="adminUserName" multiplicity="(0 1)"
+	 */
+	private String adminUserName = Defaults.AdminUserName;
+
+	/**
+	 * The password for the administrator log-in to perform configuration
+	 * 
+	 * @uml.property name="adminPassword" multiplicity="(0 1)"
+	 */
+	private String adminPassword = Defaults.AdminPassword;
+
+	/**
+	 * Whether the exceptions returned to the client should contain full stack traces
+	 * 
+	 * @uml.property name="verboseExceptions" multiplicity="(0 1)"
+	 */
+	private boolean verboseExceptions = Defaults.VerboseExceptions;
+
 
     /**
      * GlobalConfig constructor.
@@ -275,84 +307,81 @@ public final class GeoServerDTO implements DataTransferObject {
         return i;
     }
 
-    /**
-     * getCharSet purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public Charset getCharSet() {
-        return charSet;
-    }
+	/**
+	 * getCharSet purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="charSet"
+	 */
+	public Charset getCharSet() {
+		return charSet;
+	}
 
-    /**
-     * getContact purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public ContactDTO getContact() {
-        return contact;
-    }
+	/**
+	 * getContact purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="contact"
+	 */
+	public ContactDTO getContact() {
+		return contact;
+	}
 
-    /**
-     * getLoggingLevel purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
+	/**
+	 * getLoggingLevel purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="maxFeatures"
+	 */
+	public int getMaxFeatures() {
+		return maxFeatures;
+	}
 
-    //public Level getLoggingLevel() {
-    //	return loggingLevel;
-    //}
+	/**
+	 * getNumDecimals purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="numDecimals"
+	 */
+	public int getNumDecimals() {
+		return numDecimals;
+	}
 
-    /**
-     * getMaxFeatures purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public int getMaxFeatures() {
-        return maxFeatures;
-    }
+	/**
+	 * getSchemaBaseUrl purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="schemaBaseUrl"
+	 */
+	public String getSchemaBaseUrl() {
+		return schemaBaseUrl;
+	}
 
-    /**
-     * getNumDecimals purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public int getNumDecimals() {
-        return numDecimals;
-    }
-
-    /**
-     * getSchemaBaseUrl purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getSchemaBaseUrl() {
-        return schemaBaseUrl;
-    }
 
     /**
      * isVerbose purpose.
@@ -367,156 +396,181 @@ public final class GeoServerDTO implements DataTransferObject {
         return verbose;
     }
 
-    /**
-     * setCharSet purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param charset
-     */
-    public void setCharSet(Charset charset) {
-        if (charset == null) {
-            charset = Charset.forName("ISO-8859-1");
-        }
+	/**
+	 * setCharSet purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param charset
+	 * 
+	 * @uml.property name="charSet"
+	 */
+	public void setCharSet(Charset charset) {
+		if (charset == null) {
+			charset = Charset.forName("ISO-8859-1");
+		}
 
-        charSet = charset;
-    }
+		charSet = charset;
+	}
 
-    /**
-     * setContact purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param contact
-     */
-    public void setContact(ContactDTO contact) {
-        if (contact == null) {
-            contact = new ContactDTO();
-        }
+	/**
+	 * setContact purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param contact
+	 * 
+	 * @uml.property name="contact"
+	 */
+	public void setContact(ContactDTO contact) {
+		if (contact == null) {
+			contact = new ContactDTO();
+		}
 
-        this.contact = contact;
-    }
+		this.contact = contact;
+	}
 
-    /**
-     * setMaxFeatures purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param i
-     */
-    public void setMaxFeatures(int i) {
-        maxFeatures = i;
-    }
+	/**
+	 * setMaxFeatures purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param i
+	 * 
+	 * @uml.property name="maxFeatures"
+	 */
+	public void setMaxFeatures(int i) {
+		maxFeatures = i;
+	}
 
-    /**
-     * setNumDecimals purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param i
-     */
-    public void setNumDecimals(int i) {
-        numDecimals = i;
-    }
+	/**
+	 * setNumDecimals purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param i
+	 * 
+	 * @uml.property name="numDecimals"
+	 */
+	public void setNumDecimals(int i) {
+		numDecimals = i;
+	}
 
-    /**
-     * setSchemaBaseUrl purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param url
-     */
-    public void setSchemaBaseUrl(String url) {
-        schemaBaseUrl = url;
-    }
+	/**
+	 * setSchemaBaseUrl purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param url
+	 * 
+	 * @uml.property name="schemaBaseUrl"
+	 */
+	public void setSchemaBaseUrl(String url) {
+		schemaBaseUrl = url;
+	}
 
-    /**
-     * setVerbose purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setVerbose(boolean b) {
-        verbose = b;
-    }
+	/**
+	 * setVerbose purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="verbose"
+	 */
+	public void setVerbose(boolean b) {
+		verbose = b;
+	}
 
-    /**
-     * getLoggingLevel purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public Level getLoggingLevel() {
-        return loggingLevel;
-    }
+	/**
+	 * getLoggingLevel purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="loggingLevel"
+	 */
+	public Level getLoggingLevel() {
+		return loggingLevel;
+	}
 
-    /**
-     * setLoggingLevel purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param level
-     */
-    public void setLoggingLevel(Level level) {
-        //init this now so the rest of the config has correct log levels.
-        loggingLevel = level;
-    }
+	/**
+	 * setLoggingLevel purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param level
+	 * 
+	 * @uml.property name="loggingLevel"
+	 */
+	public void setLoggingLevel(Level level) {
+		//init this now so the rest of the config has correct log levels.
+		loggingLevel = level;
+	}
 
-    /**
-     * Gets the user name of the administrator of GeoServer, for login
-     * purposes.
-     *
-     * @return The administrator's password.
-     */
-    public String getAdminUserName() {
-        return adminUserName;
-    }
+	/**
+	 * Gets the user name of the administrator of GeoServer, for login
+	 * purposes.
+	 * 
+	 * @return The administrator's password.
+	 * 
+	 * @uml.property name="adminUserName"
+	 */
+	public String getAdminUserName() {
+		return adminUserName;
+	}
 
-    /**
-     * Sets the user name of the administrator of GeoServer, for login
-     * purposes.
-     *
-     * @param username the String to set as the admin username.
-     */
-    public void setAdminUserName(String username) {
-        this.adminUserName = username;
-    }
+	/**
+	 * Sets the user name of the administrator of GeoServer, for login
+	 * purposes.
+	 * 
+	 * @param username the String to set as the admin username.
+	 * 
+	 * @uml.property name="adminUserName"
+	 */
+	public void setAdminUserName(String username) {
+		this.adminUserName = username;
+	}
 
-    /**
-     * Gets the password of the administrator of GeoServer, for login purposes.
-     *
-     * @return The password of the administrator.
-     */
-    public String getAdminPassword() {
-        return adminPassword;
-    }
+	/**
+	 * Gets the password of the administrator of GeoServer, for login purposes.
+	 * 
+	 * @return The password of the administrator.
+	 * 
+	 * @uml.property name="adminPassword"
+	 */
+	public String getAdminPassword() {
+		return adminPassword;
+	}
 
-    /**
-     * Sets the password of the administrator of GeoServer, for login purposes.
-     *
-     * @param password The password to set as the login password.
-     */
-    public void setAdminPassword(String password) {
-        this.adminPassword = password;
-    }
+	/**
+	 * Sets the password of the administrator of GeoServer, for login purposes.
+	 * 
+	 * @param password The password to set as the login password.
+	 * 
+	 * @uml.property name="adminPassword"
+	 */
+	public void setAdminPassword(String password) {
+		this.adminPassword = password;
+	}
+
 
     /**
      * Should we display stackTraces or not? (And give them a nice little
@@ -528,15 +582,17 @@ public final class GeoServerDTO implements DataTransferObject {
         return verboseExceptions;
     }
 
-    /**
-     * If set to true, response exceptions will throw their stack trace back to
-     * the end user.
-     *
-     * @param showStackTraces The showStackTraces to set.
-     */
-    public void setVerboseExceptions(boolean showStackTraces) {
-        this.verboseExceptions = showStackTraces;
-    }
+	/**
+	 * If set to true, response exceptions will throw their stack trace back to
+	 * the end user.
+	 * 
+	 * @param showStackTraces The showStackTraces to set.
+	 * 
+	 * @uml.property name="verboseExceptions"
+	 */
+	public void setVerboseExceptions(boolean showStackTraces) {
+		this.verboseExceptions = showStackTraces;
+	}
 
     public String toString() {
         StringBuffer dto = new StringBuffer("[GeoServerDTO: \n");

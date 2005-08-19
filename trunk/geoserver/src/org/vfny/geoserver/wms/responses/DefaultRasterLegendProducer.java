@@ -122,8 +122,13 @@ public abstract class DefaultRasterLegendProducer
     /** top & bottom padding percentaje factor for the legend */
     private static final float vpaddingFactor = 0.15f;
 
-    /** The image produced at <code>produceLegendGraphic</code> */
-    private BufferedImage legendGraphic;
+	/**
+	 * The image produced at <code>produceLegendGraphic</code>
+	 * 
+	 * @uml.property name="legendGraphic" multiplicity="(0 1)"
+	 */
+	private BufferedImage legendGraphic;
+
 
     /**
      * set to <code>true</code> when <code>abort()</code> gets called,
@@ -132,23 +137,33 @@ public abstract class DefaultRasterLegendProducer
      */
     private boolean renderingStopRequested;
 
-    /**
-     * Just a holder to avoid creating many polygon shapes from inside
-     * <code>getSampleShape()</code>
-     */
-    private LiteShape2 sampleRect;
+	/**
+	 * Just a holder to avoid creating many polygon shapes from inside
+	 * <code>getSampleShape()</code>
+	 * 
+	 * @uml.property name="sampleRect"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private LiteShape2 sampleRect;
 
-    /**
-     * Just a holder to avoid creating many line shapes from inside
-     * <code>getSampleShape()</code>
-     */
-    private LiteShape2 sampleLine;
+	/**
+	 * Just a holder to avoid creating many line shapes from inside
+	 * <code>getSampleShape()</code>
+	 * 
+	 * @uml.property name="sampleLine"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private LiteShape2 sampleLine;
 
-    /**
-     * Just a holder to avoid creating many point shapes from inside
-     * <code>getSampleShape()</code>
-     */
-    private LiteShape2 samplePoint;
+	/**
+	 * Just a holder to avoid creating many point shapes from inside
+	 * <code>getSampleShape()</code>
+	 * 
+	 * @uml.property name="samplePoint"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private LiteShape2 samplePoint;
+
 
     /**
      * Default constructor. Subclasses may provide its own with a String
@@ -494,20 +509,22 @@ public abstract class DefaultRasterLegendProducer
         && ((r.getMaxScaleDenominator() + TOLERANCE) > scaleDenominator));
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     *
-     * @throws IllegalStateException DOCUMENT ME!
-     */
-    public BufferedImage getLegendGraphic() {
-        if (this.legendGraphic == null) {
-            throw new IllegalStateException();
-        }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @throws IllegalStateException DOCUMENT ME!
+	 * 
+	 * @uml.property name="legendGraphic"
+	 */
+	public BufferedImage getLegendGraphic() {
+		if (this.legendGraphic == null) {
+			throw new IllegalStateException();
+		}
 
-        return this.legendGraphic;
-    }
+		return this.legendGraphic;
+	}
 
     /**
      * Asks the rendering to stop processing.

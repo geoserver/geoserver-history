@@ -20,12 +20,23 @@ import org.vfny.geoserver.wfs.responses.WfsTransactionException;
  */
 public class TransactionRequest extends WFSRequest {
     public static final String TRANSACTION_REQUEST_TYPE = "Transaction";
-        
-    /** Assume this is a list of SubTransactionRequest */
-    protected List subRequests = new ArrayList();
-    
-    /** Assume null value means no lockID specified */
-    protected String lockId = null;
+
+	/**
+	 * Assume this is a list of SubTransactionRequest
+	 * 
+	 * @uml.property name="subRequests"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.wfs.requests.SubTransactionRequest"
+	 * multiplicity="(0 -1)"
+	 */
+	protected List subRequests = new ArrayList();
+
+	/**
+	 * Assume null value means no lockID specified
+	 * 
+	 * @uml.property name="lockId" multiplicity="(0 1)"
+	 */
+	protected String lockId = null;
+
     
     /** Replaced with releaseAction */ 
     //protected boolean releaseAll = true;
@@ -63,21 +74,27 @@ public class TransactionRequest extends WFSRequest {
      * </p>
      */    
     public final static ReleaseAction SOME = new ReleaseAction("SOME");
-    
-    /**
-     * Control how locked features are treated when a transaction is completed.
-     */
-    protected ReleaseAction releaseAction = ALL;
-    
-    /**
-     * Specifices the user-defined name for the entire transaction request.
-     * <p>
-     * Note that SubTransactionRequests are allowed there own handle as well,
-     * if they don't have one we should try and describe their position
-     * in a relative way.
-     * </p>
-     */
-    protected String handle = null;
+
+	/**
+	 * Control how locked features are treated when a transaction is completed.
+	 * 
+	 * @uml.property name="releaseAction"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	protected ReleaseAction releaseAction = ALL;
+
+	/**
+	 * Specifices the user-defined name for the entire transaction request.
+	 * <p>
+	 * Note that SubTransactionRequests are allowed there own handle as well,
+	 * if they don't have one we should try and describe their position
+	 * in a relative way.
+	 * </p>
+	 * 
+	 * @uml.property name="handle" multiplicity="(0 1)"
+	 */
+	protected String handle = null;
+
 
     /**
      * Create a WFS Transaction request. 
@@ -122,23 +139,28 @@ public class TransactionRequest extends WFSRequest {
         return subRequests.size();
     }
 
-    /**
-     * Sets the  user-defined name for the entire Transaction request.
-     *
-     * @param handle The user name for this request.
-     */
-    public void setHandle(String handle) {
-        this.handle = handle;
-    }
+	/**
+	 * Sets the  user-defined name for the entire Transaction request.
+	 * 
+	 * @param handle The user name for this request.
+	 * 
+	 * @uml.property name="handle"
+	 */
+	public void setHandle(String handle) {
+		this.handle = handle;
+	}
 
-    /**
-     * Returns the user-defined name for the entire Transaction request.
-     *
-     * @return The user name for this request.
-     */
-    public String getHandle() {
-        return handle;
-    }
+	/**
+	 * Returns the user-defined name for the entire Transaction request.
+	 * 
+	 * @return The user name for this request.
+	 * 
+	 * @uml.property name="handle"
+	 */
+	public String getHandle() {
+		return handle;
+	}
+
 
     public void setReleaseAction(String releaseAction)
         throws WfsTransactionException {
@@ -184,33 +206,39 @@ public class TransactionRequest extends WFSRequest {
         }        
     }
 
-    /**
-     * Returns the release for the Transaction request.
-     *
-     * @return <tt>true</tt> if all features held by the lock should be
-     *         released after this operation.
-     */
-    public ReleaseAction getReleaseAction() {
-        return releaseAction;
-    }
+	/**
+	 * Returns the release for the Transaction request.
+	 * 
+	 * @return <tt>true</tt> if all features held by the lock should be
+	 *         released after this operation.
+	 * 
+	 * @uml.property name="releaseAction"
+	 */
+	public ReleaseAction getReleaseAction() {
+		return releaseAction;
+	}
 
-    /**
-     * Sets the lock id for the entire Transaction request.
-     *
-     * @param lockId The authorization string to perform with this transaction.
-     */
-    public void setLockId(String lockId) {
-        this.lockId = lockId;
-    }
+	/**
+	 * Sets the lock id for the entire Transaction request.
+	 * 
+	 * @param lockId The authorization string to perform with this transaction.
+	 * 
+	 * @uml.property name="lockId"
+	 */
+	public void setLockId(String lockId) {
+		this.lockId = lockId;
+	}
 
-    /**
-     * Returns the lock id for the entire Transaction request.
-     *
-     * @return The authorization string to perform with this transaction.
-     */
-    public String getLockId() {
-        return lockId;
-    }
+	/**
+	 * Returns the lock id for the entire Transaction request.
+	 * 
+	 * @return The authorization string to perform with this transaction.
+	 * 
+	 * @uml.property name="lockId"
+	 */
+	public String getLockId() {
+		return lockId;
+	}
 
     public String toString() {
         StringBuffer tRequest = new StringBuffer("Lock Id: " + lockId + "\n");

@@ -72,14 +72,29 @@ public class TransactionResponse implements Response {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
 
-    /** Response to be streamed during writeTo */
-    private WfsTransResponse response;
+	/**
+	 * Response to be streamed during writeTo
+	 * 
+	 * @uml.property name="response"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private WfsTransResponse response;
 
-    /** Request provided to Execute method */
-    private TransactionRequest request;
+	/**
+	 * Request provided to Execute method
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private TransactionRequest request;
 
-    /** Geotools2 transaction used for this opperations */
-    protected Transaction transaction;
+	/**
+	 * Geotools2 transaction used for this opperations
+	 * 
+	 * @uml.property name="transaction"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected Transaction transaction;
 
     /**
      * Constructor

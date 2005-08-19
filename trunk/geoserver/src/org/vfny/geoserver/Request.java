@@ -28,24 +28,40 @@ import org.vfny.geoserver.util.Requests;
  * @version $Id: Request.java,v 1.16 2004/09/08 17:36:35 cholmesny Exp $
  */
 abstract public class Request {
+
 	/**
 	 * HttpServletRequest responsible for generating this GeoServer Request.
+	 * 
+	 * @uml.property name="httpServletRequest"
+	 * @uml.associationEnd qualifier="key:java.lang.String java.lang.String" multiplicity=
+	 * "(0 1)"
 	 */
 	protected HttpServletRequest httpServletRequest;
-	
-    /**
-     * The service type of the request.  In other words, is it a WMS
-     * or a WFS.  This is a standard element of a request.  It now has
-     * a practical purpose in GeoServer, as a GetCapabilities request
-     * can be WMS or WFS, this element tells which it is.
-     */
-    protected String service;
 
-    /** Request type */
-    protected String request = "";
+	/**
+	 * The service type of the request.  In other words, is it a WMS
+	 * or a WFS.  This is a standard element of a request.  It now has
+	 * a practical purpose in GeoServer, as a GetCapabilities request
+	 * can be WMS or WFS, this element tells which it is.
+	 * 
+	 * @uml.property name="service" multiplicity="(0 1)"
+	 */
+	protected String service;
 
-    /** Request version */
-    protected String version = "";
+	/**
+	 * Request type
+	 * 
+	 * @uml.property name="request" multiplicity="(0 1)"
+	 */
+	protected String request = "";
+
+	/**
+	 * Request version
+	 * 
+	 * @uml.property name="version" multiplicity="(0 1)"
+	 */
+	protected String version = "";
+
 
     /**
      * ServiceConfig indentifying constructor.
@@ -67,67 +83,79 @@ abstract public class Request {
         this.request = requestType;
     }
 
-     
-    /**
-     * Gets requested service.
-     *
-     * @return The requested service.
-     */
-    public String getService() {
-        return this.service;
-    }
+	/**
+	 * Gets requested service.
+	 * 
+	 * @return The requested service.
+	 * 
+	 * @uml.property name="service"
+	 */
+	public String getService() {
+		return this.service;
+	}
 
-    /**
-     * Gets requested service.
-     *
-     * @param service The requested service.
-     */
-    public void setService(String service) {
-        this.service = service;
-    }
+	/**
+	 * Gets requested service.
+	 * 
+	 * @param service The requested service.
+	 * 
+	 * @uml.property name="service"
+	 */
+	public void setService(String service) {
+		this.service = service;
+	}
 
-    /**
-     * Gets requested request type.
-     * <p>
-     * TODO: Could this bre renamed getType() for clarity?
-     * </p>
-     * <p>
-     * Um, no.  getType() is less clear.  getRequest makes sense because
-     * this is directly modeled off of the XML and KVP Requests that a
-     * wfs or wms makes, and they all contain an element called Request.
-     * 
-     * @return The name of the request.
-     */
-    public String getRequest() {
-        return this.request;
-    }
+	/**
+	 * Gets requested request type.
+	 * <p>
+	 * TODO: Could this bre renamed getType() for clarity?
+	 * </p>
+	 * <p>
+	 * Um, no.  getType() is less clear.  getRequest makes sense because
+	 * this is directly modeled off of the XML and KVP Requests that a
+	 * wfs or wms makes, and they all contain an element called Request.
+	 * 
+	 * @return The name of the request.
+	 * 
+	 * @uml.property name="request"
+	 */
+	public String getRequest() {
+		return this.request;
+	}
 
-    /**
-     * Sets requested request type.
-     *
-     * @param reqeust The type of request.
-     */
-    public void setRequest(String requestType) {
-        this.request = requestType;
-    }
+	/**
+	 * Sets requested request type.
+	 * 
+	 * @param reqeust The type of request.
+	 * 
+	 * @uml.property name="request"
+	 */
+	public void setRequest(String requestType) {
+		this.request = requestType;
+	}
 
-    /**
-     * Return version type.
-     *
-     * @return The request type version.
-     */
-    public String getVersion() {
-        return this.version;
-    }
+	/**
+	 * Return version type.
+	 * 
+	 * @return The request type version.
+	 * 
+	 * @uml.property name="version"
+	 */
+	public String getVersion() {
+		return this.version;
+	}
 
-    /**
-     * Sets version type.
-     *
-     * @param version The request type version.
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
+	/**
+	 * Sets version type.
+	 * 
+	 * @param version The request type version.
+	 * 
+	 * @uml.property name="version"
+	 */
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
 
     public boolean equals(Object o) {
         if (!(o instanceof Request)) {
@@ -160,11 +188,11 @@ abstract public class Request {
         return result;
     }
 
-    /**
-     * Retrive the ServletRequest that generated this GeoServer request.
-     * <p>
-     * The ServletRequest is often used to:
-     * </p>
+	/**
+	 * Retrive the ServletRequest that generated this GeoServer request.
+	 * <p>
+	 * The ServletRequest is often used to:
+	 * </p>
 	 * <ul>
 	 * <li>Access the Sesssion and WebContainer by execute opperations
 	 *     </li>
@@ -175,10 +203,13 @@ abstract public class Request {
 	 * This method is called by AbstractServlet during the processing of a Request.
 	 * </p>
 	 * @return The HttpServletRequest responsible for generating this SerivceRequest
+	 * 
+	 * @uml.property name="httpServletRequest"
 	 */
 	public HttpServletRequest getHttpServletRequest() throws ClassCastException {
 		return httpServletRequest;
 	}
+
 	
 	public WMS getWMS(){
 		WMS vp = Requests.getWMS( getHttpServletRequest() );
@@ -238,7 +269,7 @@ abstract public class Request {
 		uri = uri.toLowerCase();
 		}
 		// will happen if the dispatcher was called, as opposed to using the /wfs url.
-		if(uri.endsWith("/wfs") || uri.endsWith("/wms"))
+		if(uri.endsWith("/wcs") || uri.endsWith("/wfs") || uri.endsWith("/wms"))
 			return true;
 		return false;
 	}
@@ -250,7 +281,7 @@ abstract public class Request {
 	public boolean isLoggedIn(){
 		return Requests.isLoggedIn( getHttpServletRequest() );
 	}
-	
+
 	/**
 	 * Sets the servletRequest that generated this GeoServer request.
 	 * <p>
@@ -263,6 +294,8 @@ abstract public class Request {
 	 *     </li> 
 	 * </p>
 	 * @param servletRequest The servletRequest to set.
+	 * 
+	 * @uml.property name="httpServletRequest"
 	 */
 	public void setHttpServletRequest(HttpServletRequest servletRequest) {
 		httpServletRequest = servletRequest;

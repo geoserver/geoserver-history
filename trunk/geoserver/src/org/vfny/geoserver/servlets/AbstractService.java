@@ -38,68 +38,7 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 
-
-/**
- * Represents a service that all others extend from.  Subclasses should provide
- * response and exception handlers as appropriate.
- * 
- * <p>
- * It is <b>really</b> important to adhere to the following workflow:
- * 
- * <ol>
- * <li>
- * get a Request reader
- * </li>
- * <li>
- * ask the Request Reader for the Request object
- * </li>
- * <li>
- * Provide the resulting Request with the ServletRequest that generated it
- * </li>
- * <li>
- * get the appropiate ResponseHandler
- * </li>
- * <li>
- * ask it to execute the Request
- * </li>
- * <li>
- * set the response content type
- * </li>
- * <li>
- * write to the http response's output stream
- * </li>
- * <li>
- * pending - call Response cleanup
- * </li>
- * </ol>
- * </p>
- * 
- * <p>
- * If anything goes wrong a ServiceException can be thrown and will be written
- * to the output stream instead.
- * </p>
- * 
- * <p>
- * This is because we have to be sure that no exception have been produced
- * before setting the response's content type, so we can set the exception
- * specific content type; and that Response.getContentType is called AFTER
- * Response.execute, since the MIME type can depend on any request parameter
- * or another kind of desission making during the execute process. (i.e.
- * FORMAT in WMS GetMap)
- * </p>
- * 
- * <p>
- * TODO: We need to call Response.abort() if anything goes wrong to allow the
- * Response a chance to cleanup after itself.
- * </p>
- *
- * @author Gabriel Rold?n
- * @author Chris Holmes
- * @author Jody Garnett, Refractions Research
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
- * @version $Id: AbstractService.java,v 1.23 2004/09/08 17:34:38 cholmesny Exp $
- */
+/** * Represents a service that all others extend from.  Subclasses should provide * response and exception handlers as appropriate. *  * <p> * It is <b>really</b> important to adhere to the following workflow: *  * <ol> * <li> * get a Request reader * </li> * <li> * ask the Request Reader for the Request object * </li> * <li> * Provide the resulting Request with the ServletRequest that generated it * </li> * <li> * get the appropiate ResponseHandler * </li> * <li> * ask it to execute the Request * </li> * <li> * set the response content type * </li> * <li> * write to the http response's output stream * </li> * <li> * pending - call Response cleanup * </li> * </ol> * </p> *  * <p> * If anything goes wrong a ServiceException can be thrown and will be written * to the output stream instead. * </p> *  * <p> * This is because we have to be sure that no exception have been produced * before setting the response's content type, so we can set the exception * specific content type; and that Response.getContentType is called AFTER * Response.execute, since the MIME type can depend on any request parameter * or another kind of desission making during the execute process. (i.e. * FORMAT in WMS GetMap) * </p> *  * <p> * TODO: We need to call Response.abort() if anything goes wrong to allow the * Response a chance to cleanup after itself. * </p> *  * @author Gabriel Rold?n * @author Chris Holmes * @author Jody Garnett, Refractions Research * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification) * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification) * @version $Id: AbstractService.java,v 1.23 2004/09/08 17:34:38 cholmesny Exp $ */
 public abstract class AbstractService extends HttpServlet {
     /** Class logger */
     protected static Logger LOGGER = Logger.getLogger(
@@ -135,8 +74,14 @@ public abstract class AbstractService extends HttpServlet {
     /** Controls the Safty Mode used when using execute/writeTo. */
     private static Class safetyMode;
 
-    /** DOCUMENT ME!  */
-    protected HttpServletRequest curRequest;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="curRequest"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected HttpServletRequest curRequest;
+
 
     /**
      * loads the "serviceStrategy" servlet context parameter and checks it if
@@ -529,14 +474,18 @@ public abstract class AbstractService extends HttpServlet {
         LOGGER.info("Service handled");
     }
 
-    /**
-     * Gets the response class that should handle the request of this service.
-     * All subclasses must implement.
-     *
-     * @return The response that the request read by this servlet should be
-     *         passed to.
-     */
-    protected abstract Response getResponseHandler();
+	/**
+	 * Gets the response class that should handle the request of this service.
+	 * All subclasses must implement.
+	 * 
+	 * @return The response that the request read by this servlet should be
+	 *         passed to.
+	 * 
+	 * @uml.property name="responseHandler"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected abstract Response getResponseHandler();
+
 
     /**
      * Gets a reader that will figure out the correct Key Vaule Pairs for this
@@ -548,19 +497,26 @@ public abstract class AbstractService extends HttpServlet {
      */
     protected abstract KvpRequestReader getKvpReader(Map params);
 
-    /**
-     * Gets a reader that will handle a posted xml request for this servlet.
-     *
-     * @return An XmlRequestReader appropriate to this service.
-     */
-    protected abstract XmlRequestReader getXmlRequestReader();
+	/**
+	 * Gets a reader that will handle a posted xml request for this servlet.
+	 * 
+	 * @return An XmlRequestReader appropriate to this service.
+	 * 
+	 * @uml.property name="xmlRequestReader"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected abstract XmlRequestReader getXmlRequestReader();
 
-    /**
-     * Gets the exception handler for this service.
-     *
-     * @return The correct ExceptionHandler
-     */
-    protected abstract ExceptionHandler getExceptionHandler();
+	/**
+	 * Gets the exception handler for this service.
+	 * 
+	 * @return The correct ExceptionHandler
+	 * 
+	 * @uml.property name="exceptionHandler"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected abstract ExceptionHandler getExceptionHandler();
+
 
     /**
      * Instantiates a given strategy class and throws the proper exceptions.
@@ -929,8 +885,14 @@ class BufferStrategy implements AbstractService.ServiceStrategy {
     /** DOCUMENT ME!  */
     ByteArrayOutputStream buffer = null;
 
-    /** DOCUMENT ME!  */
-    private HttpServletResponse response;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="response"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private HttpServletResponse response;
+
 
     /**
      * Provides a ByteArrayOutputStream for writeTo.
@@ -996,8 +958,13 @@ class FileStrategy implements AbstractService.ServiceStrategy {
     protected static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
 
-    /** Response being targeted */
-    private HttpServletResponse response;
+	/**
+	 * Response being targeted
+	 * 
+	 * @uml.property name="response"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private HttpServletResponse response;
 
     /** OutputStream provided to writeTo method */
     private OutputStream safe;

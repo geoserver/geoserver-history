@@ -29,12 +29,44 @@ public class DemoForm extends ActionForm {
 	 * Comment for <code>serialVersionUID</code>
 	 */
 	private static final long serialVersionUID = 3978983293029005618L;
+
+	/**
+	 * 
+	 * @uml.property name="action" multiplicity="(0 1)"
+	 */
 	private String action;
+
+	/**
+	 * 
+	 * @uml.property name="url" multiplicity="(0 1)"
+	 */
 	private String url;
-    private String body;
-    private String demo;
-    private File dir;
-    List demoList;    
+
+	/**
+	 * 
+	 * @uml.property name="body" multiplicity="(0 1)"
+	 */
+	private String body;
+
+	/**
+	 * 
+	 * @uml.property name="demo" multiplicity="(0 1)"
+	 */
+	private String demo;
+
+	/**
+	 * 
+	 * @uml.property name="dir" multiplicity="(0 1)"
+	 */
+	private File dir;
+
+	/**
+	 * 
+	 * @uml.property name="demoList"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	List demoList;
+    
     
     /**
      * Sets request & post based on file selection.
@@ -83,64 +115,95 @@ public class DemoForm extends ActionForm {
         
         return errors;
     }
-    /**
-     * @return Returns the demo.
-     */
-    public String getDemo() {
-        return demo;
-    }
-    /**
-     * @param demo The demo to set.
-     */
-    public void setDemo(String demo) {
-        this.demo = demo;
-    }
-    /**
-     * @return Returns the dir.
-     */
-    public File getDir() {
-        return dir;
-    }
-    /**
-     * @return Returns the url.
-     */
-    public String getUrl() {
-        return url;
-    }
-    /**
-     * @param url The url to set.
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
-    /**
-     * @return Returns the demoList.
-     */
-    public List getDemoList() {
-        return demoList;
-    }
-    /**
-     * @return Returns the action.
-     */
-    public String getAction() {
-        return action;
-    }
-    /**
-     * @param action The action to set.
-     */
-    public void setAction(String action) {
-        this.action = action;
-    }
-    /**
-     * @return Returns the body.
-     */
-    public String getBody() {
-        return body;
-    }
-    /**
-     * @param body The body to set.
-     */
-    public void setBody(String body) {
-        this.body = body;
-    }
+
+	/**
+	 * @return Returns the demo.
+	 * 
+	 * @uml.property name="demo"
+	 */
+	public String getDemo() {
+		return demo;
+	}
+
+	/**
+	 * @param demo The demo to set.
+	 * 
+	 * @uml.property name="demo"
+	 */
+	public void setDemo(String demo) {
+		this.demo = demo;
+	}
+
+	/**
+	 * @return Returns the dir.
+	 * 
+	 * @uml.property name="dir"
+	 */
+	public File getDir() {
+		return dir;
+	}
+
+	/**
+	 * @return Returns the url.
+	 * 
+	 * @uml.property name="url"
+	 */
+	public String getUrl() {
+		return url;
+	}
+
+	/**
+	 * @param url The url to set.
+	 * 
+	 * @uml.property name="url"
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	/**
+	 * @return Returns the demoList.
+	 * 
+	 * @uml.property name="demoList"
+	 */
+	public List getDemoList() {
+		return demoList;
+	}
+
+	/**
+	 * @return Returns the action.
+	 * 
+	 * @uml.property name="action"
+	 */
+	public String getAction() {
+		return action;
+	}
+
+	/**
+	 * @param action The action to set.
+	 * 
+	 * @uml.property name="action"
+	 */
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	/**
+	 * @return Returns the body.
+	 * 
+	 * @uml.property name="body"
+	 */
+	public String getBody() {
+		return body;
+	}
+
+	/**
+	 * @param body The body to set.
+	 * 
+	 * @uml.property name="body"
+	 */
+	public void setBody(String body) {
+		this.body = body;
+	}
+
 }

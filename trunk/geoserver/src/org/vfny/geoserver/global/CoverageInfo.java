@@ -18,47 +18,143 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
 public class CoverageInfo extends GlobalLayerSupertype {
+
+	/**
+	 * 
+	 * @uml.property name="formatId" multiplicity="(0 1)"
+	 */
 	private String formatId;
 
-    private String name;
+	/**
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	private String name;
 
-    private String label;
+	/**
+	 * 
+	 * @uml.property name="label" multiplicity="(0 1)"
+	 */
+	private String label;
 
-    private String description;
+	/**
+	 * 
+	 * @uml.property name="description" multiplicity="(0 1)"
+	 */
+	private String description;
 
-    private MetaDataLink metadataLink;
+	/**
+	 * 
+	 * @uml.property name="metadataLink"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private MetaDataLink metadataLink;
 
-    private String dirName;
+	/**
+	 * 
+	 * @uml.property name="dirName" multiplicity="(0 1)"
+	 */
+	private String dirName;
 
-    private List keywords;
-    
-    private Envelope envelope;
-	
+	/**
+	 * 
+	 * @uml.property name="keywords" multiplicity="(0 1)"
+	 */
+	private List keywords;
+
+	/**
+	 * 
+	 * @uml.property name="envelope"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private Envelope envelope;
+
+	/**
+	 * 
+	 * @uml.property name="grid"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
 	private GridGeometry grid;
-	
+
+	/**
+	 * 
+	 * @uml.property name="dimensions"
+	 * @uml.associationEnd multiplicity="(0 -1)"
+	 */
 	private CoverageDimension[] dimensions;
-	
+
+	/**
+	 * 
+	 * @uml.property name="dimensionNames"
+	 * @uml.associationEnd multiplicity="(0 -1)"
+	 */
 	private InternationalString[] dimensionNames;
-    
-    private List requestCRSs;
-    
-    private List responseCRSs;
-    
-    private String nativeFormat;
-    
-    private List supportedFormats;
-    
-    private String defaultInterpolationMethod;
-    
-    private List interpolationMethods;
-    
-    private Data data;
 
-    private Map meta;
+	/**
+	 * 
+	 * @uml.property name="requestCRSs" multiplicity="(0 1)"
+	 */
+	private List requestCRSs;
 
-    private String srsName; 
+	/**
+	 * 
+	 * @uml.property name="responseCRSs" multiplicity="(0 1)"
+	 */
+	private List responseCRSs;
 
-    private CoordinateReferenceSystem crs;
+	/**
+	 * 
+	 * @uml.property name="nativeFormat" multiplicity="(0 1)"
+	 */
+	private String nativeFormat;
+
+	/**
+	 * 
+	 * @uml.property name="supportedFormats" multiplicity="(0 1)"
+	 */
+	private List supportedFormats;
+
+	/**
+	 * 
+	 * @uml.property name="defaultInterpolationMethod" multiplicity="(0 1)"
+	 */
+	private String defaultInterpolationMethod;
+
+	/**
+	 * 
+	 * @uml.property name="interpolationMethods" multiplicity="(0 1)"
+	 */
+	private List interpolationMethods;
+
+	/**
+	 * 
+	 * @uml.property name="data"
+	 * @uml.associationEnd inverse="coverages:org.vfny.geoserver.global.Data" multiplicity=
+	 * "(1 1)"
+	 */
+	private Data data;
+
+	/**
+	 * 
+	 * @uml.property name="meta"
+	 * @uml.associationEnd elementType="java.lang.Object" qualifier="key:java.lang.String
+	 * java.lang.Object" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private Map meta;
+
+	/**
+	 * 
+	 * @uml.property name="srsName" multiplicity="(0 1)"
+	 */
+	private String srsName;
+
+	/**
+	 * 
+	 * @uml.property name="crs"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private CoordinateReferenceSystem crs;
+
     
     /**
      * Default style used to render this Coverage with WMS
@@ -212,108 +308,160 @@ public class CoverageInfo extends GlobalLayerSupertype {
     public Object getMetaData(String key) {
         return meta.get(key);
     }
+
 	/**
 	 * @return Returns the data.
+	 * 
+	 * @uml.property name="data"
 	 */
 	public Data getData() {
 		return data;
 	}
+
 	/**
 	 * @return Returns the defaultInterpolationMethod.
+	 * 
+	 * @uml.property name="defaultInterpolationMethod"
 	 */
 	public String getDefaultInterpolationMethod() {
 		return defaultInterpolationMethod;
 	}
+
 	/**
 	 * @return Returns the description.
+	 * 
+	 * @uml.property name="description"
 	 */
 	public String getDescription() {
 		return description;
 	}
+
 	/**
 	 * @return Returns the dirName.
+	 * 
+	 * @uml.property name="dirName"
 	 */
 	public String getDirName() {
 		return dirName;
 	}
+
 	/**
 	 * @return Returns the envelope.
+	 * 
+	 * @uml.property name="envelope"
 	 */
 	public Envelope getEnvelope() {
 		return envelope;
 	}
+
 	/**
 	 * @return Returns the formatId.
+	 * 
+	 * @uml.property name="formatId"
 	 */
 	public String getFormatId() {
 		return formatId;
 	}
+
 	/**
 	 * @return Returns the interpolationMethods.
+	 * 
+	 * @uml.property name="interpolationMethods"
 	 */
 	public List getInterpolationMethods() {
 		return interpolationMethods;
 	}
+
 	/**
 	 * @return Returns the keywords.
+	 * 
+	 * @uml.property name="keywords"
 	 */
 	public List getKeywords() {
 		return keywords;
 	}
+
 	/**
 	 * @return Returns the label.
+	 * 
+	 * @uml.property name="label"
 	 */
 	public String getLabel() {
 		return label;
 	}
+
 	/**
 	 * @return Returns the meta.
+	 * 
+	 * @uml.property name="meta"
 	 */
 	public Map getMeta() {
 		return meta;
 	}
+
 	/**
 	 * @return Returns the metadataLink.
+	 * 
+	 * @uml.property name="metadataLink"
 	 */
 	public MetaDataLink getMetadataLink() {
 		return metadataLink;
 	}
+
 	/**
 	 * @return Returns the name.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public String getName() {
 		return name;
 	}
+
 	/**
 	 * @return Returns the nativeFormat.
+	 * 
+	 * @uml.property name="nativeFormat"
 	 */
 	public String getNativeFormat() {
 		return nativeFormat;
 	}
+
 	/**
 	 * @return Returns the requestCRSs.
+	 * 
+	 * @uml.property name="requestCRSs"
 	 */
 	public List getRequestCRSs() {
 		return requestCRSs;
 	}
+
 	/**
 	 * @return Returns the responseCRSs.
+	 * 
+	 * @uml.property name="responseCRSs"
 	 */
 	public List getResponseCRSs() {
 		return responseCRSs;
 	}
+
 	/**
 	 * @return Returns the srsName.
+	 * 
+	 * @uml.property name="srsName"
 	 */
 	public String getSrsName() {
 		return srsName;
 	}
+
 	/**
 	 * @return Returns the supportedFormats.
+	 * 
+	 * @uml.property name="supportedFormats"
 	 */
 	public List getSupportedFormats() {
 		return supportedFormats;
 	}
+
 	
 	/**
      * By now just return the default style to be able to declare it in
@@ -326,21 +474,38 @@ public class CoverageInfo extends GlobalLayerSupertype {
     public Style getDefaultStyle(){
     	return data.getStyle(defaultStyle);
     }
+
+	/**
+	 * 
+	 * @uml.property name="crs"
+	 */
 	public CoordinateReferenceSystem getCrs() {
 		return crs;
 	}
 
+	/**
+	 * 
+	 * @uml.property name="grid"
+	 */
 	public GridGeometry getGrid() {
 		return grid;
 	}
 
+	/**
+	 * 
+	 * @uml.property name="dimensionNames"
+	 */
 	public InternationalString[] getDimensionNames() {
 		return dimensionNames;
 	}
+
 	/**
 	 * @return Returns the dimensions.
+	 * 
+	 * @uml.property name="dimensions"
 	 */
 	public CoverageDimension[] getDimensions() {
 		return dimensions;
 	}
+
 }

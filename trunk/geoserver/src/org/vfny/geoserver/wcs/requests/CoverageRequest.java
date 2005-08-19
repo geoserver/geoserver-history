@@ -19,47 +19,103 @@ public class CoverageRequest extends WCSRequest {
 	/** Standard logging instance for class */
 	private static final Logger LOGGER = Logger.getLogger(
 	"org.vfny.geoserver.requests");
-	
+
+	/**
+	 * 
+	 * @uml.property name="coverage" multiplicity="(0 1)"
+	 */
 	protected String coverage = null;
-	
+
+	/**
+	 * 
+	 * @uml.property name="outputFormat" multiplicity="(0 1)"
+	 */
 	protected String outputFormat = "GML";
-	
+
+	/**
+	 * 
+	 * @uml.property name="envelope"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
 	protected Envelope envelope = null;
-	
+
+	/**
+	 * 
+	 * @uml.property name="interpolation" multiplicity="(0 1)"
+	 */
 	protected String interpolation = null;
-	
+
+	/**
+	 * 
+	 * @uml.property name="handle" multiplicity="(0 1)"
+	 */
 	protected String handle = null;
+
 	
 	protected String coverageVersion = null;
 
+	/**
+	 * 
+	 * @uml.property name="gridDimension" multiplicity="(0 1)"
+	 */
 	private int gridDimension;
 
+	/**
+	 * 
+	 * @uml.property name="gridLow" multiplicity="(0 1)"
+	 */
 	private Double[] gridLow;
 
+	/**
+	 * 
+	 * @uml.property name="gridHigh" multiplicity="(0 1)"
+	 */
 	private Double[] gridHigh;
 
+	/**
+	 * 
+	 * @uml.property name="gridOrigin" multiplicity="(0 1)"
+	 */
 	private Double[] gridOrigin;
+
 
 	public CoverageRequest() {
 		super();
 		setRequest("GetCoverage");
 	}
-	
+
+	/**
+	 * 
+	 * @uml.property name="outputFormat"
+	 */
 	public void setOutputFormat(String outputFormat) {
 		this.outputFormat = outputFormat;
 	}
-	
+
+	/**
+	 * 
+	 * @uml.property name="outputFormat"
+	 */
 	public String getOutputFormat() {
 		return this.outputFormat;
 	}
-	
+
+	/**
+	 * 
+	 * @uml.property name="handle"
+	 */
 	public void setHandle(String handle) {
 		this.handle = handle;
 	}
-	
+
+	/**
+	 * 
+	 * @uml.property name="handle"
+	 */
 	public String getHandle() {
 		return this.handle;
 	}
+
 	
 	public void setCoverageVersion(String version) {
 		this.version = version;
@@ -176,18 +232,25 @@ public class CoverageRequest extends WCSRequest {
 		
 		return result;
 	}
+
 	/**
 	 * @return Returns the envelope.
+	 * 
+	 * @uml.property name="envelope"
 	 */
 	public Envelope getEnvelope() {
 		return envelope;
 	}
+
 	/**
 	 * @param envelope The envelope to set.
+	 * 
+	 * @uml.property name="envelope"
 	 */
 	public void setEnvelope(Envelope envelope) {
 		this.envelope = envelope;
 	}
+
 	
 	public void setEnvelope(String envelope) {
 		String[] coords = envelope.split(",");
@@ -202,26 +265,38 @@ public class CoverageRequest extends WCSRequest {
 			this.envelope = null;
 		}
 	}
+
 	/**
 	 * @return Returns the interpolation.
+	 * 
+	 * @uml.property name="interpolation"
 	 */
 	public String getInterpolation() {
 		return interpolation;
 	}
+
 	/**
 	 * @param interpolation The interpolation to set.
+	 * 
+	 * @uml.property name="interpolation"
 	 */
 	public void setInterpolation(String interpolation) {
 		this.interpolation = interpolation;
 	}
+
 	/**
 	 * @return Returns the coverage.
+	 * 
+	 * @uml.property name="coverage"
 	 */
 	public String getCoverage() {
 		return coverage;
 	}
+
 	/**
 	 * @param coverage The coverage to set.
+	 * 
+	 * @uml.property name="coverage"
 	 */
 	public void setCoverage(String coverage) {
 		this.coverage = coverage;
@@ -229,16 +304,22 @@ public class CoverageRequest extends WCSRequest {
 
 	/**
 	 * @return Returns the gridDimension.
+	 * 
+	 * @uml.property name="gridDimension"
 	 */
 	public int getGridDimension() {
 		return gridDimension;
 	}
+
 	/**
 	 * @param gridDimension The gridDimension to set.
+	 * 
+	 * @uml.property name="gridDimension"
 	 */
 	public void setGridDimension(int gridDimension) {
 		this.gridDimension = gridDimension;
 	}
+
 
 	/**
 	 * @param value The gridDimension to set.
@@ -264,6 +345,8 @@ public class CoverageRequest extends WCSRequest {
 
 	/**
 	 * @param origin
+	 * 
+	 * @uml.property name="gridOrigin"
 	 */
 	public void setGridOrigin(Double[] origin) {
 		this.gridOrigin = origin;
@@ -271,6 +354,8 @@ public class CoverageRequest extends WCSRequest {
 
 	/**
 	 * @param highers
+	 * 
+	 * @uml.property name="gridHigh"
 	 */
 	public void setGridHigh(Double[] highers) {
 		this.gridHigh = highers;
@@ -278,26 +363,38 @@ public class CoverageRequest extends WCSRequest {
 
 	/**
 	 * @param lowers
+	 * 
+	 * @uml.property name="gridLow"
 	 */
 	public void setGridLow(Double[] lowers) {
 		this.gridLow = lowers;
 	}
+
 	/**
 	 * @return Returns the gridHigh.
+	 * 
+	 * @uml.property name="gridHigh"
 	 */
 	public Double[] getGridHigh() {
 		return gridHigh;
 	}
+
 	/**
 	 * @return Returns the gridLow.
+	 * 
+	 * @uml.property name="gridLow"
 	 */
 	public Double[] getGridLow() {
 		return gridLow;
 	}
+
 	/**
 	 * @return Returns the gridOrigin.
+	 * 
+	 * @uml.property name="gridOrigin"
 	 */
 	public Double[] getGridOrigin() {
 		return gridOrigin;
 	}
+
 }

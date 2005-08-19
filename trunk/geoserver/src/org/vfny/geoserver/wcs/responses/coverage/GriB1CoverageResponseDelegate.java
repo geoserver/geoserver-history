@@ -25,6 +25,12 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 public class GriB1CoverageResponseDelegate implements CoverageResponseDelegate {
 
 	private String outputFormat;
+
+	/**
+	 * 
+	 * @uml.property name="sourceCoverage"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
 	private GridCoverage2D sourceCoverage;
 
 	/**

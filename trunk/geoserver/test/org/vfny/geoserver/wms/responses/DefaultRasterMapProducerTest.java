@@ -23,14 +23,11 @@ import org.vfny.geoserver.wms.WmsException;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-
-/**
- * Tests that DefaultRasterMapProducerTest, which is based on LiteRenderer,
+/** * Tests that DefaultRasterMapProducerTest, which is based on LiteRenderer,
  * correctly generates a raster map.
- *
+ * 
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id$
- */
+ * @version $Id$ */
 public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(DefaultRasterMapProducerTest.class.getPackage()
@@ -46,8 +43,13 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
     /** DOCUMENT ME! */
     private static final Color BG_COLOR = Color.white;
 
-    /** DOCUMENT ME! */
-    private DefaultRasterMapProducer rasterMapProducer;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="rasterMapProducer"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private DefaultRasterMapProducer rasterMapProducer;
 
     /**
      *

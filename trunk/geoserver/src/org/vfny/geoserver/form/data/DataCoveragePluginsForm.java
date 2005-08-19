@@ -33,9 +33,28 @@ import org.vfny.geoserver.action.data.DataFormatUtils;
 public class DataCoveragePluginsForm extends ActionForm {
     private static final Pattern idPattern = Pattern.compile("^\\a$");
 
-    private List formats;
-    private List formatDescriptions;
-    private List formatIDs;
+	/**
+	 * 
+	 * @uml.property name="formats"
+	 * @uml.associationEnd elementType="org.opengis.coverage.grid.Format" multiplicity=
+	 * "(0 -1)"
+	 */
+	private List formats;
+
+	/**
+	 * 
+	 * @uml.property name="formatDescriptions"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List formatDescriptions;
+
+	/**
+	 * 
+	 * @uml.property name="formatIDs"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List formatIDs;
+
     
     /**
      * Default state of New form
@@ -72,16 +91,31 @@ public class DataCoveragePluginsForm extends ActionForm {
         return errors;
     }
 
-    /*
-     * Allows the JSP page to easily access the list of dataFormat Descriptions
-     */
+	/**
+	 * 
+	 * @uml.property name="formatDescriptions"
+	 */
+	/*
+	 * Allows the JSP page to easily access the list of dataFormat Descriptions
+	 */
 	public List getFormatDescriptions() {
 		return formatDescriptions;
 	}
+
+	/**
+	 * 
+	 * @uml.property name="formatIDs"
+	 */
 	public List getFormatIDs() {
 		return formatIDs;
 	}
+
+	/**
+	 * 
+	 * @uml.property name="formats"
+	 */
 	public List getFormats() {
 		return formats;
 	}
+
 }

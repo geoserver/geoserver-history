@@ -34,7 +34,13 @@ public class FreefsLog extends HttpServlet {
 
     /** Default name for configuration directory */
     private static final String CONFIG_DIR = "data/";
-    private GeoZServer server;
+
+	/**
+	 * 
+	 * @uml.property name="server"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GeoZServer server;
 
     /**
      * Initializes logging and config.

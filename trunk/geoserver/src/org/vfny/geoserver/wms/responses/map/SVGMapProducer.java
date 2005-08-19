@@ -27,8 +27,13 @@ class SVGMapProducer implements GetMapProducer {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.map");
 
-    /** DOCUMENT ME! */
-    private EncodeSVG svgEncoder;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="svgEncoder"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private EncodeSVG svgEncoder;
 
     /**
      * DOCUMENT ME!

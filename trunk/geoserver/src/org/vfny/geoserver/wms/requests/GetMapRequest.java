@@ -25,11 +25,24 @@ public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */
     public static final String SE_XML = "SE_XML";
 
-    /** set of mandatory request's parameters */
-    private MandatoryParameters mandatoryParams = new MandatoryParameters();
+	/**
+	 * set of mandatory request's parameters
+	 * 
+	 * @uml.property name="mandatoryParams"
+	 * @uml.associationEnd inverse="this$0:org.vfny.geoserver.wms.requests.GetMapRequest$MandatoryParameters"
+	 * multiplicity="(1 1)"
+	 */
+	private MandatoryParameters mandatoryParams = new MandatoryParameters();
 
-    /** set of optionals request's parameters */
-    private OptionalParameters optionalParams = new OptionalParameters();
+	/**
+	 * set of optionals request's parameters
+	 * 
+	 * @uml.property name="optionalParams"
+	 * @uml.associationEnd inverse="this$0:org.vfny.geoserver.wms.requests.GetMapRequest$OptionalParameters"
+	 * multiplicity="(1 1)"
+	 */
+	private OptionalParameters optionalParams = new OptionalParameters();
+
 
     /**
      * Creates a new GetMapRequest object.
@@ -231,15 +244,16 @@ public class GetMapRequest extends WMSRequest {
         return Color.decode(hexColor);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @author Gabriel Roldan, Axios Engineering
-     * @version $Id$
-     */
+/** * DOCUMENT ME! *  * @author Gabriel Roldan, Axios Engineering * @version $Id$ */
     private class MandatoryParameters {
-        /** ordered list of requested layers */
-        MapLayerInfo[] layers;
+
+		/**
+		 * ordered list of requested layers
+		 * 
+		 * @uml.property name="layers"
+		 * @uml.associationEnd multiplicity="(0 -1)"
+		 */
+		MapLayerInfo[] layers;
 
         /**
          * ordered list of requested layers' styles, in a one to one

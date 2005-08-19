@@ -25,9 +25,20 @@ public class DescribeRequest extends WCSRequest {
     /** Flags whether or not all coverages were requested */
     protected boolean allRequested = true;
 
-    /** Stores all coverages */
-    protected List coverages = new ArrayList();
-    protected String outputFormat = "XMLSCHEMA";
+	/**
+	 * Stores all coverages
+	 * 
+	 * @uml.property name="coverages"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	protected List coverages = new ArrayList();
+
+	/**
+	 * 
+	 * @uml.property name="outputFormat" multiplicity="(0 1)"
+	 */
+	protected String outputFormat = "XMLSCHEMA";
+
 
     /**
      * Empty constructor.
@@ -54,15 +65,18 @@ public class DescribeRequest extends WCSRequest {
         return this.allRequested;
     }
 
-    /**
-     * Set requested coverages.
-     *
-     * @param coverages DOCUMENT ME!
-     */
-    public void setCoverages(List coverages) {
-        this.coverages = coverages;
-        this.allRequested = false;
-    }
+	/**
+	 * Set requested coverages.
+	 * 
+	 * @param coverages DOCUMENT ME!
+	 * 
+	 * @uml.property name="coverages"
+	 */
+	public void setCoverages(List coverages) {
+		this.coverages = coverages;
+		this.allRequested = false;
+	}
+
 
     /**
      * Adds a requested coverages to the list.
@@ -74,34 +88,40 @@ public class DescribeRequest extends WCSRequest {
         this.allRequested = false;
     }
 
-    /**
-     * Return requested coverages.
-     *
-     * @return DOCUMENT ME!
-     */
-    public List getCoverages() {
-        return this.coverages;
-    }
+	/**
+	 * Return requested coverages.
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="coverages"
+	 */
+	public List getCoverages() {
+		return this.coverages;
+	}
 
-    /**
-     * Sets the outputFormat.  Right now XMLSCHEMA is the only allowed format.
-     *
-     * @param outputFormat the new outputFormat
-     */
-    public void setOutputFormat(String outputFormat) {
-        if (!((outputFormat == null) || outputFormat.equals(""))) {
-            this.outputFormat = outputFormat;
-        }
-    }
+	/**
+	 * Sets the outputFormat.  Right now XMLSCHEMA is the only allowed format.
+	 * 
+	 * @param outputFormat the new outputFormat
+	 * 
+	 * @uml.property name="outputFormat"
+	 */
+	public void setOutputFormat(String outputFormat) {
+		if (!((outputFormat == null) || outputFormat.equals(""))) {
+			this.outputFormat = outputFormat;
+		}
+	}
 
-    /**
-     * Returns the format for printing the coverage.
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getOutputFormat() {
-        return outputFormat;
-    }
+	/**
+	 * Returns the format for printing the coverage.
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="outputFormat"
+	 */
+	public String getOutputFormat() {
+		return outputFormat;
+	}
 
     /* ***********************************************************************
      * OVERRIDES OF toString AND equals METHODS.                             *

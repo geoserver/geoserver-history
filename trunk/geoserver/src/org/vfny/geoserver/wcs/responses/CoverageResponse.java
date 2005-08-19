@@ -44,9 +44,8 @@ import org.geotools.coverage.processing.GridCoverageProcessor2D;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
+//import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.geotools.referencing.operation.transform.LinearTransform1D;
 import org.geotools.resources.GCSUtilities;
 import org.geotools.util.NumberRange;
@@ -74,8 +73,6 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
 
-import com.vividsolutions.jts.geom.Coordinate;
-
 
 /**
  * DOCUMENT ME!
@@ -92,9 +89,13 @@ public class CoverageResponse implements Response {
 	private static final Logger LOGGER = Logger.getLogger(
 	"org.vfny.geoserver.responses");
 
-	
+	/**
+	 * 
+	 * @uml.property name="delegate"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
 	CoverageResponseDelegate delegate;
-	
+
 	/**
 	 * This is the request provided to the execute( Request ) method.
 	 * 
@@ -106,8 +107,12 @@ public class CoverageResponse implements Response {
 	 * <p>
 	 * This value will be <code>null</code> until execute is called.
 	 * </p>
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private CoverageRequest request;
+
 	
 	/**
 	 * Empty constructor
@@ -229,11 +234,13 @@ public class CoverageResponse implements Response {
 					try {
 	    				if( key.equalsIgnoreCase("crs") ) {
 							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
-								CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+								//CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+								CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,CRSAuthorityFactory.class));
 								CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) dfConfig.getParameters().get(key));
 								value = crs;
 							} else {
-								CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+								//CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+								CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG", null);
 								CoordinateReferenceSystem crs=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:4326");
 								value = crs;
 							}

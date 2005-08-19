@@ -23,8 +23,19 @@ public abstract class SubTransactionRequest {
     public static final short UPDATE = 0;
     public static final short INSERT = 1;
     public static final short DELETE = 2;
-    protected String handle = null;
-    protected String typeName = null;
+
+	/**
+	 * 
+	 * @uml.property name="handle" multiplicity="(0 1)"
+	 */
+	protected String handle = null;
+
+	/**
+	 * 
+	 * @uml.property name="typeName" multiplicity="(0 1)"
+	 */
+	protected String typeName = null;
+
 
     public SubTransactionRequest() {
     }
@@ -33,28 +44,33 @@ public abstract class SubTransactionRequest {
         this.typeName = typeName;
     }
 
-    /**
-     * User supplied handle for this sub element.
-     *
-     * @param handle
-     */
-    public void setHandle(String handle) {
-        this.handle = handle;
-    }
+	/**
+	 * User supplied handle for this sub element.
+	 * 
+	 * @param handle
+	 * 
+	 * @uml.property name="handle"
+	 */
+	public void setHandle(String handle) {
+		this.handle = handle;
+	}
 
-    /**
-     * Provide typeName for this sub element.
-     * 
-     * <p>
-     * We may consider supplying this in the constructor? Why would this need
-     * to change?
-     * </p>
-     *
-     * @param typeName
-     */
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
+	/**
+	 * Provide typeName for this sub element.
+	 * 
+	 * <p>
+	 * We may consider supplying this in the constructor? Why would this need
+	 * to change?
+	 * </p>
+	 * 
+	 * @param typeName
+	 * 
+	 * @uml.property name="typeName"
+	 */
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
+
 
     /**
      * Filter providing constraints
@@ -66,23 +82,27 @@ public abstract class SubTransactionRequest {
     public void setFilter(Filter filter) throws WfsException {
     }
 
-    /**
-     * Name of FeatureTypeInfo being modified
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getTypeName() {
-        return typeName;
-    }
+	/**
+	 * Name of FeatureTypeInfo being modified
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="typeName"
+	 */
+	public String getTypeName() {
+		return typeName;
+	}
 
-    /**
-     * User defined name for this Transaction element
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getHandle() {
-        return handle;
-    }
+	/**
+	 * User defined name for this Transaction element
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="handle"
+	 */
+	public String getHandle() {
+		return handle;
+	}
 
     /**
      * One of UPDATE, INSERT, DELETE

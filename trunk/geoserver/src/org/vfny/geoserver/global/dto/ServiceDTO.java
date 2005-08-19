@@ -37,49 +37,59 @@ import org.vfny.geoserver.global.MetaDataLink;
  * @version $Id: ServiceDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
  */
 public final class ServiceDTO implements DataTransferObject {
-    /**
-     * Represents when the Web Service is enabled/disabled.
-     * 
-     * <p>
-     * Example: <code>true</code>
-     * </p>
-     */
-    private boolean enabled;
 
-    /**
-     * Online Reference URL for the web service.
-     * 
-     * <p>
-     * A location to look for when additional assistance is required.
-     * </p>
-     * 
-     * <p>
-     * Example: <code>new URL("http://www.openplans.org/")</code>
-     * </p>
-     */
-    private URL onlineResource;
+	/**
+	 * Represents when the Web Service is enabled/disabled.
+	 * 
+	 * <p>
+	 * Example: <code>true</code>
+	 * </p>
+	 * 
+	 * @uml.property name="enabled" multiplicity="(0 1)"
+	 */
+	private boolean enabled;
 
-    /**
-     * The name of the service.
-     * 
-     * <p>
-     * Example: <code>FreeWFS</code>
-     * </p>
-     * 
-     * <p>
-     * It is not clear from the examples if this name allows whitespace?
-     * </p>
-     */
-    private String name;
+	/**
+	 * Online Reference URL for the web service.
+	 * 
+	 * <p>
+	 * A location to look for when additional assistance is required.
+	 * </p>
+	 * 
+	 * <p>
+	 * Example: <code>new URL("http://www.openplans.org/")</code>
+	 * </p>
+	 * 
+	 * @uml.property name="onlineResource" multiplicity="(0 1)"
+	 */
+	private URL onlineResource;
 
-    /**
-     * The title of the service.
-     * 
-     * <p>
-     * Example: <code>The Open Planning Project Basemap Server</code>
-     * </p>
-     */
-    private String title;
+	/**
+	 * The name of the service.
+	 * 
+	 * <p>
+	 * Example: <code>FreeWFS</code>
+	 * </p>
+	 * 
+	 * <p>
+	 * It is not clear from the examples if this name allows whitespace?
+	 * </p>
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	private String name;
+
+	/**
+	 * The title of the service.
+	 * 
+	 * <p>
+	 * Example: <code>The Open Planning Project Basemap Server</code>
+	 * </p>
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
+
 
     /**
      * A short abstract about the service.
@@ -93,50 +103,63 @@ public final class ServiceDTO implements DataTransferObject {
      */
     private String serverAbstract;
 
-    /**
-     * A list of keywords associated with the service.
-     * 
-     * <p>
-     * Example: <code>new String[]{"WFS","New York"}</code>
-     * </p>
-     */
-    private String[] keywords = new String[0];
+	/**
+	 * A list of keywords associated with the service.
+	 * 
+	 * <p>
+	 * Example: <code>new String[]{"WFS","New York"}</code>
+	 * </p>
+	 * 
+	 * @uml.property name="keywords" multiplicity="(0 1)"
+	 */
+	private String[] keywords = new String[0];
 
-    /**
-     * The fees associated with the service.
-     * 
-     * <p>
-     * When there are not any fees, the value  "NONE" is used.
-     * </p>
-     * 
-     * <p>
-     * Example: <code>NONE</code>
-     * </p>
-     */
-    private String fees;
+	/**
+	 * The fees associated with the service.
+	 * 
+	 * <p>
+	 * When there are not any fees, the value  "NONE" is used.
+	 * </p>
+	 * 
+	 * <p>
+	 * Example: <code>NONE</code>
+	 * </p>
+	 * 
+	 * @uml.property name="fees" multiplicity="(0 1)"
+	 */
+	private String fees;
 
-    /**
-     * The access constraints associated with the service. When there are not
-     * any, the value "NONE" is used.
-     * 
-     * <p>
-     * Example: <code>"NONE"</code>
-     * </p>
-     */
-    private String accessConstraints;
+	/**
+	 * The access constraints associated with the service. When there are not
+	 * any, the value "NONE" is used.
+	 * 
+	 * <p>
+	 * Example: <code>"NONE"</code>
+	 * </p>
+	 * 
+	 * @uml.property name="accessConstraints" multiplicity="(0 1)"
+	 */
+	private String accessConstraints;
 
-    /**
-     * Name of the person who maintains the web service. Should ideally be
-     * contact  information such as a email address.
-     * 
-     * <p>
-     * Example: <code>"The Open Planning Project"</code>
-     * </p>
-     */
-    private String maintainer;
+	/**
+	 * Name of the person who maintains the web service. Should ideally be
+	 * contact  information such as a email address.
+	 * 
+	 * <p>
+	 * Example: <code>"The Open Planning Project"</code>
+	 * </p>
+	 * 
+	 * @uml.property name="maintainer" multiplicity="(0 1)"
+	 */
+	private String maintainer;
 
-    
-    private MetaDataLink metadataLink;
+	/**
+	 * 
+	 * @uml.property name="metadataLink"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private MetaDataLink metadataLink;
+
 
 
     /**
@@ -277,75 +300,88 @@ public final class ServiceDTO implements DataTransferObject {
         | ((metadataLink != null) ? metadataLink.hashCode() : 0);
     }
 
-    /**
-     * Name of Service.
-     *
-     * @return
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Name of Service.
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="name"
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Online Reference URL for the web service.
-     * 
-     * <p>
-     * A location to look for when additional assistance is required.
-     * </p>
-     * 
-     * <p>
-     * Example: <code>new URL("http://www.openplans.org/")</code>
-     * </p>
-     *
-     * @return DOCUMENT ME!
-     */
-    public URL getOnlineResource() {
-        return onlineResource;
-    }
+	/**
+	 * Online Reference URL for the web service.
+	 * 
+	 * <p>
+	 * A location to look for when additional assistance is required.
+	 * </p>
+	 * 
+	 * <p>
+	 * Example: <code>new URL("http://www.openplans.org/")</code>
+	 * </p>
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="onlineResource"
+	 */
+	public URL getOnlineResource() {
+		return onlineResource;
+	}
 
-    /**
-     * The title of the service.
-     * 
-     * <p>
-     * Example: <code>The Open Planning Project Basemap Server</code>
-     * </p>
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getTitle() {
-        return title;
-    }
+	/**
+	 * The title of the service.
+	 * 
+	 * <p>
+	 * Example: <code>The Open Planning Project Basemap Server</code>
+	 * </p>
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="title"
+	 */
+	public String getTitle() {
+		return title;
+	}
 
-    /**
-     * setName purpose.
-     *
-     * @param string
-     */
-    public void setName(String string) {
-        name = string;
-    }
+	/**
+	 * setName purpose.
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="name"
+	 */
+	public void setName(String string) {
+		name = string;
+	}
 
-    /**
-     * setOnlineResource purpose.
-     *
-     * @param url
-     */
-    public void setOnlineResource(URL url) {
-        onlineResource = url;
-    }
+	/**
+	 * setOnlineResource purpose.
+	 * 
+	 * @param url
+	 * 
+	 * @uml.property name="onlineResource"
+	 */
+	public void setOnlineResource(URL url) {
+		onlineResource = url;
+	}
 
-    /**
-     * Sets the title of the service.
-     * 
-     * <p>
-     * Example: <code>The Open Planning Project Basemap Server</code>
-     * </p>
-     *
-     * @param string Title of the Service
-     */
-    public void setTitle(String string) {
-        title = string;
-    }
+	/**
+	 * Sets the title of the service.
+	 * 
+	 * <p>
+	 * Example: <code>The Open Planning Project Basemap Server</code>
+	 * </p>
+	 * 
+	 * @param string Title of the Service
+	 * 
+	 * @uml.property name="title"
+	 */
+	public void setTitle(String string) {
+		title = string;
+	}
+
 
     /**
      * getAbstract purpose.
@@ -356,22 +392,25 @@ public final class ServiceDTO implements DataTransferObject {
         return serverAbstract;
     }
 
-    /**
-     * The access constraints associated with the service.
-     * 
-     * <p>
-     * When there are not any, the value "NONE" is used.
-     * </p>
-     * 
-     * <p>
-     * Example: <code>"NONE"</code>
-     * </p>
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getAccessConstraints() {
-        return accessConstraints;
-    }
+	/**
+	 * The access constraints associated with the service.
+	 * 
+	 * <p>
+	 * When there are not any, the value "NONE" is used.
+	 * </p>
+	 * 
+	 * <p>
+	 * Example: <code>"NONE"</code>
+	 * </p>
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="accessConstraints"
+	 */
+	public String getAccessConstraints() {
+		return accessConstraints;
+	}
+
 
     /**
      * Represents when the Web Service is enabled/disabled.
@@ -382,52 +421,59 @@ public final class ServiceDTO implements DataTransferObject {
         return enabled;
     }
 
-    /**
-     * The fees associated with the service.
-     * 
-     * <p>
-     * When there are not any fees, the value  "NONE" is used.
-     * </p>
-     * 
-     * <p>
-     * Example: <code>NONE</code>
-     * </p>
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getFees() {
-        return fees;
-    }
+	/**
+	 * The fees associated with the service.
+	 * 
+	 * <p>
+	 * When there are not any fees, the value  "NONE" is used.
+	 * </p>
+	 * 
+	 * <p>
+	 * Example: <code>NONE</code>
+	 * </p>
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="fees"
+	 */
+	public String getFees() {
+		return fees;
+	}
 
-    /**
-     * Keywords associated with the service.
-     * 
-     * <p>
-     * Example: <code>new String[]{"WFS","New York"}</code>
-     * </p>
-     *
-     * @return DOCUMENT ME!
-     */
-    public String[] getKeywords() {
-        return keywords;
-    }
+	/**
+	 * Keywords associated with the service.
+	 * 
+	 * <p>
+	 * Example: <code>new String[]{"WFS","New York"}</code>
+	 * </p>
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="keywords"
+	 */
+	public String[] getKeywords() {
+		return keywords;
+	}
 
-    /**
-     * Name of the party who maintains the web service.
-     * 
-     * <p>
-     * Should ideally be contact information such as a email address.
-     * </p>
-     * 
-     * <p>
-     * Example: <code>"The Open Planning Project"</code>
-     * </p>
-     *
-     * @return The maintainer of this Service
-     */
-    public String getMaintainer() {
-        return maintainer;
-    }
+	/**
+	 * Name of the party who maintains the web service.
+	 * 
+	 * <p>
+	 * Should ideally be contact information such as a email address.
+	 * </p>
+	 * 
+	 * <p>
+	 * Example: <code>"The Open Planning Project"</code>
+	 * </p>
+	 * 
+	 * @return The maintainer of this Service
+	 * 
+	 * @uml.property name="maintainer"
+	 */
+	public String getMaintainer() {
+		return maintainer;
+	}
+
 
     /**
      * Provides a short abstract about the service.
@@ -445,88 +491,105 @@ public final class ServiceDTO implements DataTransferObject {
         serverAbstract = serviceAbstract;
     }
 
-    /**
-     * Provide the access constraints associated with the service.
-     * 
-     * <p>
-     * When there are not any, use the value "NONE".
-     * </p>
-     * 
-     * <p>
-     * Example: <code>"NONE"</code>
-     * </p>
-     *
-     * @param constraints DOCUMENT ME!
-     */
-    public void setAccessConstraints(String constraints) {
-        accessConstraints = constraints;
-    }
+	/**
+	 * Provide the access constraints associated with the service.
+	 * 
+	 * <p>
+	 * When there are not any, use the value "NONE".
+	 * </p>
+	 * 
+	 * <p>
+	 * Example: <code>"NONE"</code>
+	 * </p>
+	 * 
+	 * @param constraints DOCUMENT ME!
+	 * 
+	 * @uml.property name="accessConstraints"
+	 */
+	public void setAccessConstraints(String constraints) {
+		accessConstraints = constraints;
+	}
 
-    /**
-     * setEnabled purpose.
-     *
-     * @param b
-     */
-    public void setEnabled(boolean b) {
-        enabled = b;
-    }
+	/**
+	 * setEnabled purpose.
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="enabled"
+	 */
+	public void setEnabled(boolean b) {
+		enabled = b;
+	}
 
-    /**
-     * Provide the fees associated with the service.
-     * 
-     * <p>
-     * When there are not any fees, use the value "NONE".
-     * </p>
-     * 
-     * <p>
-     * Example: <code>NONE</code>
-     * </p>
-     *
-     * @param string DOCUMENT ME!
-     */
-    public void setFees(String string) {
-        fees = string;
-    }
+	/**
+	 * Provide the fees associated with the service.
+	 * 
+	 * <p>
+	 * When there are not any fees, use the value "NONE".
+	 * </p>
+	 * 
+	 * <p>
+	 * Example: <code>NONE</code>
+	 * </p>
+	 * 
+	 * @param string DOCUMENT ME!
+	 * 
+	 * @uml.property name="fees"
+	 */
+	public void setFees(String string) {
+		fees = string;
+	}
 
-    /**
-     * Provide keywords associated with the service.
-     * 
-     * <p>
-     * Example: <code>new String[]{"WFS","New York"}</code>
-     * </p>
-     *
-     * @param array DOCUMENT ME!
-     */
-    public void setKeywords(String[] array) {
-        keywords = array;
-    }
+	/**
+	 * Provide keywords associated with the service.
+	 * 
+	 * <p>
+	 * Example: <code>new String[]{"WFS","New York"}</code>
+	 * </p>
+	 * 
+	 * @param array DOCUMENT ME!
+	 * 
+	 * @uml.property name="keywords"
+	 */
+	public void setKeywords(String[] array) {
+		keywords = array;
+	}
 
-    /**
-     * Provide the party that maintains the web service.
-     * 
-     * <p>
-     * Should ideally be contact information such as a email address.
-     * </p>
-     * 
-     * <p>
-     * Example: <code>"The Open Planning Project"</code>
-     * </p>
-     *
-     * @param string DOCUMENT ME!
-     */
-    public void setMaintainer(String string) {
-        maintainer = string;
-    }
+	/**
+	 * Provide the party that maintains the web service.
+	 * 
+	 * <p>
+	 * Should ideally be contact information such as a email address.
+	 * </p>
+	 * 
+	 * <p>
+	 * Example: <code>"The Open Planning Project"</code>
+	 * </p>
+	 * 
+	 * @param string DOCUMENT ME!
+	 * 
+	 * @uml.property name="maintainer"
+	 */
+	public void setMaintainer(String string) {
+		maintainer = string;
+	}
+
 	/**
 	 * @return Returns the metadataLink.
+	 * 
+	 * @uml.property name="metadataLink"
 	 */
 	public MetaDataLink getMetadataLink() {
 		return metadataLink;
 	}
+
 	/**
 	 * @param metadataLink The metadataLink to set.
+	 * 
+	 * @uml.property name="metadataLink"
 	 */
 	public void setMetadataLink(MetaDataLink metadataLink) {
 		this.metadataLink = metadataLink;
 	}
+
 }

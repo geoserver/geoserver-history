@@ -6,22 +6,22 @@ package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
 
-
-/**
- * FeatureTest purpose.
- * 
- * <p>
- * Description of FeatureTest ...
- * </p>
- * 
- * <p></p>
- *
- * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $
- */
+/** * FeatureTest purpose. *  * <p> * Description of FeatureTest ... * </p> *  * <p></p> *  * @author dzwiers, Refractions Research, Inc. * @version $Id: FeatureTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $ */
 public class FeatureTest extends TestCase {
-    private FeatureTypeConfig a;
-    private FeatureTypeConfig b;
+
+	/**
+	 * 
+	 * @uml.property name="a"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private FeatureTypeConfig a;
+
+	/**
+	 * 
+	 * @uml.property name="b"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private FeatureTypeConfig b;
 
     /**
      * Constructor for FeatureTest.

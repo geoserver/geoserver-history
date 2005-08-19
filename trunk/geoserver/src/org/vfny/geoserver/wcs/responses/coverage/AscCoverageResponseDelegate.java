@@ -24,7 +24,14 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
  * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
 public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
+
+	/**
+	 * 
+	 * @uml.property name="sourceCoverage"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
 	private GridCoverage2D sourceCoverage;
+
 	private String outputFormat;
     private boolean compressOutput = false;
 	

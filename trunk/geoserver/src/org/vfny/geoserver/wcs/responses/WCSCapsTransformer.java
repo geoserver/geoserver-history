@@ -11,10 +11,12 @@ import java.util.logging.Logger;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.JTS;
 import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
+import org.geotools.referencing.factory.epsg.DefaultFactory;
+//import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.CoordinateOperation;
@@ -66,8 +68,14 @@ public class WCSCapsTransformer extends TransformerBase {
     /** DOCUMENT ME! */
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
-    /** DOCUMENT ME! */
-    protected Request request;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected Request request;
+
 
     /**
      * Creates a new WFSCapsTransformer object.
@@ -88,18 +96,21 @@ public class WCSCapsTransformer extends TransformerBase {
         return new WCSCapsTranslator(handler);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @author Gabriel Roldan, Axios Engineering
-     * @version $Id
-     */
+/** * DOCUMENT ME!
+ * 
+ * @author Gabriel Roldan, Axios Engineering
+ * @version $Id */
     private static class WCSCapsTranslator extends TranslatorSupport {
         /** DOCUMENT ME!  */
         private static final String EPSG = "EPSG:";
 
-        /** DOCUMENT ME! */
-        private CapabilitiesRequest request;
+		/**
+		 * DOCUMENT ME!
+		 * 
+		 * @uml.property name="request"
+		 * @uml.associationEnd multiplicity="(0 1)"
+		 */
+		private CapabilitiesRequest request;
 
         /**
          * Creates a new WFSCapsTranslator object.
@@ -420,10 +431,11 @@ public class WCSCapsTransformer extends TransformerBase {
 
         private void handleEnvelope(CoordinateReferenceSystem crs, Envelope envelope) {
 			try {
-				if( !crs.getName().getCode().equalsIgnoreCase("WGS 84") ) {
-					final CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+				if( crs != null && crs.getName() != null && crs.getName().getCode() != null && !crs.getName().getCode().equalsIgnoreCase("WGS 84") ) {
+					//final CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+					final CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, DefaultFactory.class));
 					final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(null);
-					final CoordinateReferenceSystem targetCRS = crsFactory.createFromWKT(
+/*					final CoordinateReferenceSystem targetCRS = crsFactory.createFromWKT(
 				    		"GEOGCS[\"WGS 84\",\n" 								 + 
 				    		"DATUM[\"WGS_1984\",\n"								 + 
 				    		"  SPHEROID[\"WGS 84\",\n" 							 + 
@@ -436,7 +448,8 @@ public class WCSCapsTransformer extends TransformerBase {
 				    		"  AXIS[\"Lon\", EAST],\n"							 +
 				    		"  AXIS[\"Lat\", NORTH],\n"							 +
 				    		"AUTHORITY[\"EPSG\",\"4326\"]]");
-					
+*/
+					final CoordinateReferenceSystem targetCRS = crsFactory.createCoordinateReferenceSystem("EPSG:4326");
 					
 				    final CoordinateReferenceSystem sourceCRS = crs;
 				    

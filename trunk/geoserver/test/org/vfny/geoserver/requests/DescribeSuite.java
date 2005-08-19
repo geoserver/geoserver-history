@@ -16,14 +16,7 @@ import org.vfny.geoserver.wfs.requests.DescribeRequest;
 import org.vfny.geoserver.wfs.requests.readers.DescribeKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.DescribeXmlReader;
 
-
-/**
- * Tests the get capabilities request handling.
- *
- * @author Rob Hranac, TOPP
- * @author Chris Holmes, TOPP
- * @version $Id: DescribeSuite.java,v 1.8 2004/01/31 00:17:52 jive Exp $
- */
+/** * Tests the get capabilities request handling. *  * @author Rob Hranac, TOPP * @author Chris Holmes, TOPP * @version $Id: DescribeSuite.java,v 1.8 2004/01/31 00:17:52 jive Exp $ */
 public class DescribeSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
@@ -35,8 +28,13 @@ public class DescribeSuite extends RequestTestCase {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** Base request for comparison */
-    private DescribeRequest[] baseRequest = new DescribeRequest[10];
+	/**
+	 * Base request for comparison
+	 * 
+	 * @uml.property name="baseRequest"
+	 * @uml.associationEnd multiplicity="(0 -1)"
+	 */
+	private DescribeRequest[] baseRequest = new DescribeRequest[10];
 
     /**
      * Constructor with super.

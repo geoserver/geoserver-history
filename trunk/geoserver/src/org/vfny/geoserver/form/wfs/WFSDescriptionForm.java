@@ -33,142 +33,206 @@ import org.vfny.geoserver.config.WFSConfig;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public final class WFSDescriptionForm extends ActionForm {
-    private String name;
-    private String title;
-    private String accessConstraints;
-    private String fees;
-    private String maintainer;
-    private String keywords;
-    private String _abstract;
+
+	/**
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	private String name;
+
+	/**
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
+
+	/**
+	 * 
+	 * @uml.property name="accessConstraints" multiplicity="(0 1)"
+	 */
+	private String accessConstraints;
+
+	/**
+	 * 
+	 * @uml.property name="fees" multiplicity="(0 1)"
+	 */
+	private String fees;
+
+	/**
+	 * 
+	 * @uml.property name="maintainer" multiplicity="(0 1)"
+	 */
+	private String maintainer;
+
+	/**
+	 * 
+	 * @uml.property name="keywords" multiplicity="(0 1)"
+	 */
+	private String keywords;
+
+	/**
+	 * 
+	 * @uml.property name="_abstract" multiplicity="(0 1)"
+	 */
+	private String _abstract;
+
 
     public WFSDescriptionForm() {
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="name"
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getTitle() {
-        return title;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="title"
+	 */
+	public String getTitle() {
+		return title;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setName(String string) {
-        name = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="name"
+	 */
+	public void setName(String string) {
+		name = string;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setTitle(String string) {
-        title = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="title"
+	 */
+	public void setTitle(String string) {
+		title = string;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String get_abstract() {
-        return _abstract;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="_abstract"
+	 */
+	public String get_abstract() {
+		return _abstract;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getAccessConstraints() {
-        return accessConstraints;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="accessConstraints"
+	 */
+	public String getAccessConstraints() {
+		return accessConstraints;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getFees() {
-        return fees;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="fees"
+	 */
+	public String getFees() {
+		return fees;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getKeywords() {
-        return keywords;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="keywords"
+	 */
+	public String getKeywords() {
+		return keywords;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getMaintainer() {
-        return maintainer;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="maintainer"
+	 */
+	public String getMaintainer() {
+		return maintainer;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void set_abstract(String string) {
-        _abstract = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="_abstract"
+	 */
+	public void set_abstract(String string) {
+		_abstract = string;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setAccessConstraints(String string) {
-        accessConstraints = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="accessConstraints"
+	 */
+	public void setAccessConstraints(String string) {
+		accessConstraints = string;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setFees(String string) {
-        fees = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="fees"
+	 */
+	public void setFees(String string) {
+		fees = string;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setKeywords(String string) {
-        keywords = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="keywords"
+	 */
+	public void setKeywords(String string) {
+		keywords = string;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setMaintainer(String string) {
-        maintainer = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="maintainer"
+	 */
+	public void setMaintainer(String string) {
+		maintainer = string;
+	}
 
     /* (non-Javadoc)
      * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)

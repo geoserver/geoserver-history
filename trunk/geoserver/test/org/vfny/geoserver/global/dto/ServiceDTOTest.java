@@ -8,16 +8,15 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-
-/**
- * ServiceDTOTest JUnit Test.
- *
- * @author jgarnett, Refractions Research, Inc.
- * @author $Author: jive $ (last modification)
- * @version $Id: ServiceDTOTest.java,v 1.5 2004/03/03 09:39:08 jive Exp $
- */
+/** * ServiceDTOTest JUnit Test. *  * @author jgarnett, Refractions Research, Inc. * @author $Author: jive $ (last modification) * @version $Id: ServiceDTOTest.java,v 1.5 2004/03/03 09:39:08 jive Exp $ */
 public class ServiceDTOTest extends TestCase {
-    ServiceDTO dto;
+
+	/**
+	 * 
+	 * @uml.property name="dto"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	ServiceDTO dto;
 
     /**
      * Constructor for ServiceDTOTest.

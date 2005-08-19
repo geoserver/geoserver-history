@@ -30,7 +30,13 @@ public class TransactionFilterHandler extends FilterFilter
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");
-    private TransactionHandler parent;
+
+	/**
+	 * 
+	 * @uml.property name="parent"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private TransactionHandler parent;
 
     /**
      * Empty constructor.

@@ -26,7 +26,12 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wcs");
 
-    private CoverageRequest request = new CoverageRequest();
+	/**
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private CoverageRequest request = new CoverageRequest();
 
     private String currentTag = new String();
     

@@ -28,8 +28,13 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** Internal Capabilities request for construction. */
-    private CapabilitiesRequest request;
+	/**
+	 * Internal Capabilities request for construction.
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private CapabilitiesRequest request;
 
     public CapabilitiesHandler(String serviceType) {
     	request = new CapabilitiesRequest(serviceType);

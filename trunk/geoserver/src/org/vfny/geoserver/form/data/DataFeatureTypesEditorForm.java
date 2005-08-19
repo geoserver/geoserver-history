@@ -30,16 +30,67 @@ import com.vividsolutions.jts.geom.Envelope;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class DataFeatureTypesEditorForm extends ActionForm {
-    private String name;
-    private String SRS;
-    private String title;
-    private String latLonBoundingBoxMinX;
-    private String latLonBoundingBoxMinY;
-    private String latLonBoundingBoxMaxX;
-    private String latLonBoundingBoxMaxY;    
-    private String keywords;
-    private String _abstract;
-    private boolean _default;
+
+	/**
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	private String name;
+
+	/**
+	 * 
+	 * @uml.property name="sRS" multiplicity="(0 1)"
+	 */
+	private String SRS;
+
+	/**
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
+
+	/**
+	 * 
+	 * @uml.property name="latLonBoundingBoxMinX" multiplicity="(0 1)"
+	 */
+	private String latLonBoundingBoxMinX;
+
+	/**
+	 * 
+	 * @uml.property name="latLonBoundingBoxMinY" multiplicity="(0 1)"
+	 */
+	private String latLonBoundingBoxMinY;
+
+	/**
+	 * 
+	 * @uml.property name="latLonBoundingBoxMaxX" multiplicity="(0 1)"
+	 */
+	private String latLonBoundingBoxMaxX;
+
+	/**
+	 * 
+	 * @uml.property name="latLonBoundingBoxMaxY" multiplicity="(0 1)"
+	 */
+	private String latLonBoundingBoxMaxY;
+
+	/**
+	 * 
+	 * @uml.property name="keywords" multiplicity="(0 1)"
+	 */
+	private String keywords;
+
+	/**
+	 * 
+	 * @uml.property name="_abstract" multiplicity="(0 1)"
+	 */
+	private String _abstract;
+
+	/**
+	 * 
+	 * @uml.property name="_default" multiplicity="(0 1)"
+	 */
+	private boolean _default;
+
     private boolean defaultChecked;
 
     /**
@@ -130,113 +181,138 @@ public class DataFeatureTypesEditorForm extends ActionForm {
         return errors;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String get_abstract() {
-        return _abstract;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="_abstract"
+	 */
+	public String get_abstract() {
+		return _abstract;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getKeywords() {
-        return keywords;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="keywords"
+	 */
+	public String getKeywords() {
+		return keywords;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getLatLonBoundingBoxMinX() {
-        return latLonBoundingBoxMinX;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="latLonBoundingBoxMinX"
+	 */
+	public String getLatLonBoundingBoxMinX() {
+		return latLonBoundingBoxMinX;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="name"
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getSRS() {
-        return SRS;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="sRS"
+	 */
+	public String getSRS() {
+		return SRS;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getTitle() {
-        return title;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="title"
+	 */
+	public String getTitle() {
+		return title;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void set_abstract(String string) {
-        _abstract = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="_abstract"
+	 */
+	public void set_abstract(String string) {
+		_abstract = string;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setKeywords(String string) {
-        keywords = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="keywords"
+	 */
+	public void setKeywords(String string) {
+		keywords = string;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param text
-     */
-    public void setLatLonBoundingBoxMinX(String text) {
-        latLonBoundingBoxMinX = text;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param text
+	 * 
+	 * @uml.property name="latLonBoundingBoxMinX"
+	 */
+	public void setLatLonBoundingBoxMinX(String text) {
+		latLonBoundingBoxMinX = text;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setName(String string) {
-        name = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="name"
+	 */
+	public void setName(String string) {
+		name = string;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setSRS(String string) {
-        SRS = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="sRS"
+	 */
+	public void setSRS(String string) {
+		SRS = string;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setTitle(String string) {
-        title = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="title"
+	 */
+	public void setTitle(String string) {
+		title = string;
+	}
+
 
     /**
      * Access _default property.
@@ -247,15 +323,18 @@ public class DataFeatureTypesEditorForm extends ActionForm {
         return _default;
     }
 
-    /**
-     * Set _default to _default.
-     *
-     * @param _default The _default to set.
-     */
-    public void set_default(boolean _default) {
-        defaultChecked = true;
-        this._default = _default;
-    }
+	/**
+	 * Set _default to _default.
+	 * 
+	 * @param _default The _default to set.
+	 * 
+	 * @uml.property name="_default"
+	 */
+	public void set_default(boolean _default) {
+		defaultChecked = true;
+		this._default = _default;
+	}
+
 
     /**
      * Access defaultChecked property.
@@ -265,10 +344,13 @@ public class DataFeatureTypesEditorForm extends ActionForm {
     public boolean isDefaultChecked() {
         return defaultChecked;
     }
+
 	/**
 	 * Access latLonBoundingBox2 property.
 	 * 
 	 * @return Returns the latLonBoundingBox2.
+	 * 
+	 * @uml.property name="latLonBoundingBoxMinY"
 	 */
 	public String getLatLonBoundingBoxMinY() {
 		return latLonBoundingBoxMinY;
@@ -276,8 +358,10 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 
 	/**
 	 * Set latLonBoundingBox2 to latLonBoundingBox2.
-	 *
+	 * 
 	 * @param latLonBoundingBox2 The latLonBoundingBox2 to set.
+	 * 
+	 * @uml.property name="latLonBoundingBoxMinY"
 	 */
 	public void setLatLonBoundingBoxMinY(String latLonBoundingBox2) {
 		this.latLonBoundingBoxMinY = latLonBoundingBox2;
@@ -287,6 +371,8 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 	 * Access latLonBoundingBox3 property.
 	 * 
 	 * @return Returns the latLonBoundingBox3.
+	 * 
+	 * @uml.property name="latLonBoundingBoxMaxX"
 	 */
 	public String getLatLonBoundingBoxMaxX() {
 		return latLonBoundingBoxMaxX;
@@ -294,8 +380,10 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 
 	/**
 	 * Set latLonBoundingBox3 to latLonBoundingBox3.
-	 *
+	 * 
 	 * @param latLonBoundingBox3 The latLonBoundingBox3 to set.
+	 * 
+	 * @uml.property name="latLonBoundingBoxMaxX"
 	 */
 	public void setLatLonBoundingBoxMaxX(String latLonBoundingBox3) {
 		this.latLonBoundingBoxMaxX = latLonBoundingBox3;
@@ -305,6 +393,8 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 	 * Access latLonBoundingBox4 property.
 	 * 
 	 * @return Returns the latLonBoundingBox4.
+	 * 
+	 * @uml.property name="latLonBoundingBoxMaxY"
 	 */
 	public String getLatLonBoundingBoxMaxY() {
 		return latLonBoundingBoxMaxY;
@@ -312,8 +402,10 @@ public class DataFeatureTypesEditorForm extends ActionForm {
 
 	/**
 	 * Set latLonBoundingBox4 to latLonBoundingBox4.
-	 *
+	 * 
 	 * @param latLonBoundingBox4 The latLonBoundingBox4 to set.
+	 * 
+	 * @uml.property name="latLonBoundingBoxMaxY"
 	 */
 	public void setLatLonBoundingBoxMaxY(String latLonBoundingBox4) {
 		this.latLonBoundingBoxMaxY = latLonBoundingBox4;

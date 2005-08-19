@@ -52,30 +52,42 @@ public class FeatureResponse implements Response {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
-    FeatureResponseDelegate delegate;
 
-    /**
-     * This is the request provided to the execute( Request ) method.
-     * 
-     * <p>
-     * We save it so we can access the handle provided by the user for error
-     * reporting during the writeTo( OutputStream ) opperation.
-     * </p>
-     * 
-     * <p>
-     * This value will be <code>null</code> until execute is called.
-     * </p>
-     */
-    private FeatureRequest request;
+	/**
+	 * 
+	 * @uml.property name="delegate"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	FeatureResponseDelegate delegate;
 
-    /**
-     * This is the FeatureLock provided by execute( Request ) method.
-     * 
-     * <p>
-     * This will only be non null if RequestFeatureWithLock.
-     * </p>
-     */
-    FeatureLock featureLock;
+	/**
+	 * This is the request provided to the execute( Request ) method.
+	 * 
+	 * <p>
+	 * We save it so we can access the handle provided by the user for error
+	 * reporting during the writeTo( OutputStream ) opperation.
+	 * </p>
+	 * 
+	 * <p>
+	 * This value will be <code>null</code> until execute is called.
+	 * </p>
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private FeatureRequest request;
+
+	/**
+	 * This is the FeatureLock provided by execute( Request ) method.
+	 * 
+	 * <p>
+	 * This will only be non null if RequestFeatureWithLock.
+	 * </p>
+	 * 
+	 * @uml.property name="featureLock"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	FeatureLock featureLock;
 
     /**
      * Empty constructor
@@ -281,9 +293,12 @@ public class FeatureResponse implements Response {
                 LOGGER.fine("Query is " + query + "\n To gt2: "
                     + query.toDataQuery(maxFeatures));
 
+                //DJB: note if maxFeatures gets to 0 the while loop above takes care of this! (this is a subtle situation)
+                
                 FeatureResults features = source.getFeatures(query.toDataQuery(
                             maxFeatures));
-                maxFeatures -= features.getCount();
+                if (it.hasNext()) //DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
+                	maxFeatures -= features.getCount();
 
                 //GR: I don't know if the featuresults should be added here for later
                 //encoding if it was a lock request. may be after ensuring the lock

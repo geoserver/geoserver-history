@@ -21,13 +21,23 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
  * @version $Id: NameSpaceConfig.java,v 1.5 2004/01/31 00:27:27 jive Exp $
  */
 public class NameSpaceConfig {
-    //public static final String PREFIX_DELIMITER = ":";
 
-    /** The namespace prefix. */
-    private String prefix;
+	//public static final String PREFIX_DELIMITER = ":";
 
-    /** The URI for this namespace. */
-    private String uri;
+	/**
+	 * The namespace prefix.
+	 * 
+	 * @uml.property name="prefix" multiplicity="(0 1)"
+	 */
+	private String prefix;
+
+	/**
+	 * The URI for this namespace.
+	 * 
+	 * @uml.property name="uri" multiplicity="(0 1)"
+	 */
+	private String uri;
+
 
     /** Whether this is the default namespace. */
     private boolean _default;
@@ -128,31 +138,36 @@ public class NameSpaceConfig {
         return _default;
     }
 
-    /**
-     * getPrefix purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getPrefix() {
-        return prefix;
-    }
+	/**
+	 * getPrefix purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="prefix"
+	 */
+	public String getPrefix() {
+		return prefix;
+	}
 
-    /**
-     * getUri purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getUri() {
-        return uri;
-    }
+	/**
+	 * getUri purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="uri"
+	 */
+	public String getUri() {
+		return uri;
+	}
+
 
     /**
      * setDdefault purpose.
@@ -167,29 +182,34 @@ public class NameSpaceConfig {
         _default = b;
     }
 
-    /**
-     * setPrefix purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setPrefix(String string) {
-        prefix = string;
-    }
+	/**
+	 * setPrefix purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="prefix"
+	 */
+	public void setPrefix(String string) {
+		prefix = string;
+	}
 
-    /**
-     * setUri purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setUri(String string) {
-        uri = string;
-    }
+	/**
+	 * setUri purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="uri"
+	 */
+	public void setUri(String string) {
+		uri = string;
+	}
+
 }

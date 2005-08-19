@@ -24,8 +24,13 @@ public class FilterHandlerImpl extends XMLFilterImpl implements ContentHandler,
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** Tracks current filter */
-    private Filter currentFilter = null;
+	/**
+	 * Tracks current filter
+	 * 
+	 * @uml.property name="currentFilter"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private Filter currentFilter = null;
 
     /**
      * Empty constructor.

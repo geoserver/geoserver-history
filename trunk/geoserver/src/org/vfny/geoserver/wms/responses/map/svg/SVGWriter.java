@@ -82,23 +82,53 @@ public class SVGWriter extends OutputStreamWriter {
     /** DOCUMENT ME! */
     private int coordsWriteCount;
 
-    /** DOCUMENT ME! */
-    private SVGFeatureWriterHandler writerHandler = new SVGFeatureWriterHandler();
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="writerHandler"
+	 * @uml.associationEnd inverse="this$0:org.vfny.geoserver.wms.responses.map.svg.SVGWriter$SVGFeatureWriterHandler"
+	 * multiplicity="(1 1)"
+	 */
+	private SVGFeatureWriterHandler writerHandler = new SVGFeatureWriterHandler();
 
-    /** DOCUMENT ME! */
-    private SVGFeatureWriter featureWriter = null;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="featureWriter"
+	 * @uml.associationEnd inverse="this$0:org.vfny.geoserver.wms.responses.map.svg.SVGWriter$SVGFeatureWriter"
+	 * multiplicity="(0 1)"
+	 */
+	private SVGFeatureWriter featureWriter = null;
 
-    /** DOCUMENT ME! */
-    private double minCoordDistance;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="minCoordDistance" multiplicity="(0 1)"
+	 */
+	private double minCoordDistance;
 
-    /** DOCUMENT ME! */
-    private String attributeStyle;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="attributeStyle" multiplicity="(0 1)"
+	 */
+	private String attributeStyle;
 
-    /** DOCUMENT ME! */
-    private boolean pointsAsCircles;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="pointsAsCircles" multiplicity="(0 1)"
+	 */
+	private boolean pointsAsCircles;
 
-    /** DOCUMENT ME! */
-    private WMSMapContext mapContext;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="mapContext"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private WMSMapContext mapContext;
+
 
     /**
      * Creates a new SVGWriter object.
@@ -115,23 +145,28 @@ public class SVGWriter extends OutputStreamWriter {
         this.maxY = space.getMaxY();
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param attributeName DOCUMENT ME!
-     */
-    public void setAttributeStyle(String attributeName) {
-        this.attributeStyle = attributeName;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param attributeName DOCUMENT ME!
+	 * 
+	 * @uml.property name="attributeStyle"
+	 */
+	public void setAttributeStyle(String attributeName) {
+		this.attributeStyle = attributeName;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param asCircles DOCUMENT ME!
-     */
-    public void setPointsAsCircles(boolean asCircles) {
-        this.pointsAsCircles = asCircles;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param asCircles DOCUMENT ME!
+	 * 
+	 * @uml.property name="pointsAsCircles"
+	 */
+	public void setPointsAsCircles(boolean asCircles) {
+		this.pointsAsCircles = asCircles;
+	}
+
 
     /**
      * DOCUMENT ME!
@@ -170,18 +205,25 @@ public class SVGWriter extends OutputStreamWriter {
          */
     }
 
-    public void setWriterHandler(SVGFeatureWriterHandler handler) {
-        this.writerHandler = handler;
-    }
+	/**
+	 * 
+	 * @uml.property name="writerHandler"
+	 */
+	public void setWriterHandler(SVGFeatureWriterHandler handler) {
+		this.writerHandler = handler;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param minCoordDistance DOCUMENT ME!
-     */
-    public void setMinCoordDistance(double minCoordDistance) {
-        this.minCoordDistance = minCoordDistance;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param minCoordDistance DOCUMENT ME!
+	 * 
+	 * @uml.property name="minCoordDistance"
+	 */
+	public void setMinCoordDistance(double minCoordDistance) {
+		this.minCoordDistance = minCoordDistance;
+	}
+
 
     /**
      * if a reference space has been set, returns a translated Y coordinate
@@ -448,15 +490,17 @@ public class SVGWriter extends OutputStreamWriter {
         }
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @author $author$
-     * @version $Revision: 1.5 $
-     */
+/** * DOCUMENT ME! *  * @author $author$ * @version $Revision: 1.5 $ */
     public class CollectSVGHandler extends SVGFeatureWriterHandler {
-        /** DOCUMENT ME! */
-        private SVGFeatureWriter featureWriter;
+
+		/**
+		 * DOCUMENT ME!
+		 * 
+		 * @uml.property name="featureWriter"
+		 * @uml.associationEnd multiplicity="(0 1)"
+		 */
+		private SVGFeatureWriter featureWriter;
+
 
         /**
          * Creates a new CollectSVGHandler object.
@@ -480,12 +524,17 @@ public class SVGWriter extends OutputStreamWriter {
         }
     }
 
-    /**
-     * decorator handler that adds the feature id as the "id" attribute
-     */
+/** * decorator handler that adds the feature id as the "id" attribute */
     public class FIDSVGHandler extends SVGFeatureWriterHandler {
-        /** DOCUMENT ME! */
-        private SVGFeatureWriterHandler handler;
+
+		/**
+		 * DOCUMENT ME!
+		 * 
+		 * @uml.property name="handler"
+		 * @uml.associationEnd multiplicity="(0 1)"
+		 */
+		private SVGFeatureWriterHandler handler;
+
 
         /**
          * Creates a new NormalSVGHandler object.
@@ -520,12 +569,17 @@ public class SVGWriter extends OutputStreamWriter {
         }
     }
 
-    /**
-     * decorator handler that adds the feature id as the "id" attribute
-     */
+/** * decorator handler that adds the feature id as the "id" attribute */
     public class BoundsSVGHandler extends SVGFeatureWriterHandler {
-        /** DOCUMENT ME! */
-        private SVGFeatureWriterHandler handler;
+
+		/**
+		 * DOCUMENT ME!
+		 * 
+		 * @uml.property name="handler"
+		 * @uml.associationEnd multiplicity="(0 1)"
+		 */
+		private SVGFeatureWriterHandler handler;
+
 
         /**
          * Creates a new NormalSVGHandler object.
@@ -562,12 +616,16 @@ public class SVGWriter extends OutputStreamWriter {
         }
     }
 
-    /**
-     * decorator handler that adds the feature id as the "id" attribute
-     */
+/** * decorator handler that adds the feature id as the "id" attribute */
     public class AttributesSVGHandler extends SVGFeatureWriterHandler {
-        /** DOCUMENT ME! */
-        private SVGFeatureWriterHandler handler;
+
+		/**
+		 * DOCUMENT ME!
+		 * 
+		 * @uml.property name="handler"
+		 * @uml.associationEnd multiplicity="(0 1)"
+		 */
+		private SVGFeatureWriterHandler handler;
 
         /**
          * Creates a new NormalSVGHandler object.

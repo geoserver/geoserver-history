@@ -28,8 +28,13 @@ public class FeatureWithLockRequest extends FeatureRequest {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** The time to hold the lock for */
-    protected int expiry = 0;
+	/**
+	 * The time to hold the lock for
+	 * 
+	 * @uml.property name="expiry" multiplicity="(0 1)"
+	 */
+	protected int expiry = 0;
+
 
     public FeatureWithLockRequest() {
         super();
@@ -109,23 +114,27 @@ public class FeatureWithLockRequest extends FeatureRequest {
         return lockRequest;
     }
 
-    /**
-     * Gets the expiration of the locks (in minutes).
-     *
-     * @return How many minutes till the lock should expire.
-     */
-    public int getExpiry() {
-        return expiry;
-    }
+	/**
+	 * Gets the expiration of the locks (in minutes).
+	 * 
+	 * @return How many minutes till the lock should expire.
+	 * 
+	 * @uml.property name="expiry"
+	 */
+	public int getExpiry() {
+		return expiry;
+	}
 
-    /**
-     * Sets the expiration of the locks (in minutes).
-     *
-     * @param expiry How many minutes till the lock should expire.
-     */
-    public void setExpiry(int expiry) {
-        this.expiry = expiry;
-    }
+	/**
+	 * Sets the expiration of the locks (in minutes).
+	 * 
+	 * @param expiry How many minutes till the lock should expire.
+	 * 
+	 * @uml.property name="expiry"
+	 */
+	public void setExpiry(int expiry) {
+		this.expiry = expiry;
+	}
 
     public String toString() {
         StringBuffer returnString = new StringBuffer("\nGetFeatureWithLock");

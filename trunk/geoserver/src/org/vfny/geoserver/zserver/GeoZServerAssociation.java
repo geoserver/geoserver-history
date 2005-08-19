@@ -92,33 +92,59 @@ public class GeoZServerAssociation implements TargetAPDUListener {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.zserver");
 
-    /** to generate search tasks. */
-    private Searchable search_service = null;
+	/**
+	 * to generate search tasks.
+	 * 
+	 * @uml.property name="search_service"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private Searchable search_service = null;
 
-    /** how this attaches to the socket. */
-    private ZTargetEndpoint assoc = null;
+	/**
+	 * how this attaches to the socket.
+	 * 
+	 * @uml.property name="assoc"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private ZTargetEndpoint assoc = null;
 
-    /** The names of the searches run by this client. */
-    private Hashtable active_searches = new Hashtable();
+	/**
+	 * The names of the searches run by this client.
+	 * 
+	 * @uml.property name="active_searches"
+	 * @uml.associationEnd qualifier="constant:java.lang.String com.k_int.IR.SearchTask"
+	 * multiplicity="(0 1)"
+	 */
+	private Hashtable active_searches = new Hashtable();
 
-    /* Impl notes: Used
-     * mostly by Present request, because z3950 is stateful,
-     * so it needs to know what searches it has run, so
-     * it can return more specific records.*/
+	/* Impl notes: Used
+	 * mostly by Present request, because z3950 is stateful,
+	 * so it needs to know what searches it has run, so
+	 * it can return more specific records.*/
 
-    /** Handles the translation of Object IDs into their names. */
-    private OIDRegister reg = OIDRegister.getRegister();
+	/**
+	 * Handles the translation of Object IDs into their names.
+	 * 
+	 * @uml.property name="reg"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private OIDRegister reg = OIDRegister.getRegister();
 
-    /*  Impl: z3950 specifies that most everything, such as attributes,
-     * relations, return formats and more, are sent with an ID.  The
-     * list of ids is at: http://www.loc.gov/z3950/agency/defns/oids.html.
-     * jzkit uses this OIDRegister to do the translations.  The a2jruntime
-     * should hold all the information to propertly fill the OIDRegister
-     * with appropriate information.
-     */
+	/*  Impl: z3950 specifies that most everything, such as attributes,
+	 * relations, return formats and more, are sent with an ID.  The
+	 * list of ids is at: http://www.loc.gov/z3950/agency/defns/oids.html.
+	 * jzkit uses this OIDRegister to do the translations.  The a2jruntime
+	 * should hold all the information to propertly fill the OIDRegister
+	 * with appropriate information.
+	 */
 
-    /** for notification messages when requests come in. */
-    private GenericEventToTargetListenerAdapter event_adapter = null;
+	/**
+	 * for notification messages when requests come in.
+	 * 
+	 * @uml.property name="event_adapter"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GenericEventToTargetListenerAdapter event_adapter = null;
 
     /**
      * the properties needed to do a search, such as where the  datafolders

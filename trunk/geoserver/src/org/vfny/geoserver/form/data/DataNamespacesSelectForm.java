@@ -26,12 +26,28 @@ import org.vfny.geoserver.util.Requests;
  * @version $Id: DataNamespacesSelectForm.java,v 1.5 2004/04/03 00:24:28 emperorkefka Exp $
  */
 public class DataNamespacesSelectForm extends ActionForm {
-    /** namespace the user selected (value is a prefix) */
-    
-    private String selectedNamespace;
-    /** Action the user clicked on */
-    private String action;
-    private TreeSet namespaces;
+
+	/**
+	 * namespace the user selected (value is a prefix)
+	 * 
+	 * @uml.property name="selectedNamespace" multiplicity="(0 1)"
+	 */
+	private String selectedNamespace;
+
+	/**
+	 * Action the user clicked on
+	 * 
+	 * @uml.property name="action" multiplicity="(0 1)"
+	 */
+	private String action;
+
+	/**
+	 * 
+	 * @uml.property name="namespaces"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private TreeSet namespaces;
+
     
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -61,45 +77,60 @@ public class DataNamespacesSelectForm extends ActionForm {
 
         return errors;
     }
-    
-    /**
-     * Access action property.
-     * 
-     * @return Returns the action.
-     */
-    public String getAction() {
-        return action;
-    }
-    /**
-     * Set action to action.
-     *
-     * @param action The action to set.
-     */
-    public void setAction(String action) {
-        this.action = action;
-    }
-    /**
-     * Access selectedNamespace property.
-     * 
-     * @return Returns the selectedNamespace.
-     */
-    public String getSelectedNamespace() {
-        return selectedNamespace;
-    }
-    /**
-     * Set selectedNamespace to selectedNamespace.
-     *
-     * @param selectedNamespace The selectedNamespace to set.
-     */
-    public void setSelectedNamespace(String selectedNamespace) {
-        this.selectedNamespace = selectedNamespace;
-    }
-    /**
-     * Access namespaces property.
-     * 
-     * @return Returns the namespaces.
-     */
-    public TreeSet getNamespaces() {
-        return namespaces;
-    }
+
+	/**
+	 * Access action property.
+	 * 
+	 * @return Returns the action.
+	 * 
+	 * @uml.property name="action"
+	 */
+	public String getAction() {
+		return action;
+	}
+
+	/**
+	 * Set action to action.
+	 * 
+	 * @param action The action to set.
+	 * 
+	 * @uml.property name="action"
+	 */
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	/**
+	 * Access selectedNamespace property.
+	 * 
+	 * @return Returns the selectedNamespace.
+	 * 
+	 * @uml.property name="selectedNamespace"
+	 */
+	public String getSelectedNamespace() {
+		return selectedNamespace;
+	}
+
+	/**
+	 * Set selectedNamespace to selectedNamespace.
+	 * 
+	 * @param selectedNamespace The selectedNamespace to set.
+	 * 
+	 * @uml.property name="selectedNamespace"
+	 */
+	public void setSelectedNamespace(String selectedNamespace) {
+		this.selectedNamespace = selectedNamespace;
+	}
+
+	/**
+	 * Access namespaces property.
+	 * 
+	 * @return Returns the namespaces.
+	 * 
+	 * @uml.property name="namespaces"
+	 */
+	public TreeSet getNamespaces() {
+		return namespaces;
+	}
+
 }

@@ -9,9 +9,7 @@ import java.io.OutputStream;
 
 import org.vfny.geoserver.ServiceException;
 
-
-/**
- * Provides the skeleton for producers of map image, as required by the
+/** * Provides the skeleton for producers of map image, as required by the
  * GetMap WMS request.
  * 
  * <p>
@@ -26,10 +24,9 @@ import org.vfny.geoserver.ServiceException;
  * should raise an exception if are called in the wrong order (which is
  * produceMap -> getContentType -> writeTo)
  * </p>
- *
+ * 
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id$
- */
+ * @version $Id$ */
 public interface GetMapProducer {
     /**
      * Asks this map producer to create a map image for the passed {@linkPlain
@@ -56,16 +53,18 @@ public interface GetMapProducer {
      */
     void writeTo(OutputStream out) throws ServiceException, IOException;
 
-    /**
-     * Returns the MIME type of the content to be writen at
-     * <code>writeTo(OutputStream)</code>
-     *
-     * @return the output format
-     *
-     * @throws java.lang.IllegalStateException if this method is called before
-     *         {@linkPlain #produceMap(WMSMapContext)},
-     */
-    String getContentType() throws java.lang.IllegalStateException;
+	/**
+	 * Returns the MIME type of the content to be writen at
+	 * <code>writeTo(OutputStream)</code>
+	 * 
+	 * @return the output format
+	 * 
+	 * @throws java.lang.IllegalStateException if this method is called before
+	 *         {@linkPlain #produceMap(WMSMapContext)},
+	 * 
+	 * @uml.property name="contentType" multiplicity="(0 1)"
+	 */
+	String getContentType() throws java.lang.IllegalStateException;
 
     /**
      * asks the legend graphic producer to stop processing since it will be no

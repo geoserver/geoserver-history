@@ -153,15 +153,18 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final StyleFactory styleFactory = StyleFactory
         .createStyleFactory();
 
-    /**
-     * Indicates wether STYLES parameter must be parsed. Defaults to
-     * <code>true</code>, but can be set to false, for example, when parsing a
-     * GetFeatureInfo request, which shares most of the getmap parameter but
-     * not STYLES.
-     *
-     * @task TODO: refactor this so it dont stay _so_ ugly
-     */
-    private boolean stylesRequired = true;
+	/**
+	 * Indicates wether STYLES parameter must be parsed. Defaults to
+	 * <code>true</code>, but can be set to false, for example, when parsing a
+	 * GetFeatureInfo request, which shares most of the getmap parameter but
+	 * not STYLES.
+	 * 
+	 * @task TODO: refactor this so it dont stay _so_ ugly
+	 * 
+	 * @uml.property name="stylesRequired" multiplicity="(0 1)"
+	 */
+	private boolean stylesRequired = true;
+
 
     /**
      * Creates a new GetMapKvpReader object.
@@ -172,14 +175,16 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         super(kvpPairs);
     }
 
-    /**
-     * Sets wether the STYLES parameter must be parsed
-     *
-     * @param parseStyles
-     */
-    public void setStylesRequired(boolean parseStyles) {
-        this.stylesRequired = parseStyles;
-    }
+	/**
+	 * Sets wether the STYLES parameter must be parsed
+	 * 
+	 * @param parseStyles
+	 * 
+	 * @uml.property name="stylesRequired"
+	 */
+	public void setStylesRequired(boolean parseStyles) {
+		this.stylesRequired = parseStyles;
+	}
 
     /**
      * DOCUMENT ME!

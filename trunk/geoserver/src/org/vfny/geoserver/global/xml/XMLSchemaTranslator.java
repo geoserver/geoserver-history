@@ -32,7 +32,14 @@ import java.util.Set;
  */
 public class XMLSchemaTranslator extends NameSpaceTranslator {
 
+	/**
+	 * 
+	 * @uml.property name="elements"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.global.xml.NCNameElement" multiplicity=
+	 * "(0 -1)"
+	 */
 	private HashSet elements;
+
 	
 	/**
 	 * XMLSchemaTranslator constructor.

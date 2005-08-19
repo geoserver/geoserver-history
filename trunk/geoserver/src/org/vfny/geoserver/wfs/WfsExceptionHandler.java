@@ -17,7 +17,13 @@ import org.vfny.geoserver.ServiceException;
 public class WfsExceptionHandler implements ExceptionHandler {
     /** DOCUMENT ME! */
     private static final WfsExceptionHandler instance = new WfsExceptionHandler();
-    private WfsException lnkWfsException;
+
+	/**
+	 * 
+	 * @uml.property name="lnkWfsException"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private WfsException lnkWfsException;
 
     private WfsExceptionHandler() {
     }

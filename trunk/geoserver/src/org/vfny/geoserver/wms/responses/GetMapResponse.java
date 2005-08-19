@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.responses;
  
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -16,13 +17,15 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.factory.FactoryFinder;
-import org.geotools.feature.DefaultFeatureType;
+import org.geotools.factory.FactoryRegistry;
+import org.geotools.factory.Hints;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
-import org.geotools.referencing.CRS;
+import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.factory.epsg.DefaultFactory;
 import org.geotools.styling.Style;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -52,11 +55,14 @@ public class GetMapResponse implements Response {
     private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage()
                                                                               .getName());
 
-    /**
-     * The map producer that will be used for the production of a map in the
-     * requested format.
-     */
-    private GetMapProducer delegate;
+	/**
+	 * The map producer that will be used for the production of a map in the
+	 * requested format.
+	 * 
+	 * @uml.property name="delegate"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GetMapProducer delegate;
 
     /**
      * Creates a new GetMapResponse object.
@@ -111,7 +117,9 @@ public class GetMapResponse implements Response {
         {
         	//construct the crs object
         	try {
-        		mapcrs = CRS.decode(request.getCrs());
+        		//mapcrs = CRS.decode(request.getCrs());
+    			CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY, DefaultFactory.class));
+    			mapcrs=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem(request.getCrs());
         	}
         	catch (Exception e)
 			{
@@ -282,7 +290,13 @@ public class GetMapResponse implements Response {
         LOGGER.finer("request format is " + outputFormat);
 
         GetMapProducerFactorySpi mpf = null;
-        Iterator mpfi = FactoryFinder.factories(GetMapProducerFactorySpi.class);
+        Iterator mpfi = org.geotools.factory.FactoryFinder.factories(GetMapProducerFactorySpi.class);
+        
+        /*Set categories = Collections.singleton(new Class[] {GetMapProducerFactorySpi.class});
+        FactoryRegistry registry = new FactoryRegistry(categories);
+        
+        // get the providers
+        Iterator mpfi = registry.getServiceProviders(GetMapProducerFactorySpi.class);*/
 
         while (mpfi.hasNext()) {
             mpf = (GetMapProducerFactorySpi) mpfi.next();
@@ -314,7 +328,13 @@ public class GetMapResponse implements Response {
     public static Set getMapFormats() {
         Set mapFormats = new HashSet();
         GetMapProducerFactorySpi mpf;
-        Iterator mpfi = FactoryFinder.factories(GetMapProducerFactorySpi.class);
+        Iterator mpfi = org.geotools.factory.FactoryFinder.factories(GetMapProducerFactorySpi.class);
+        
+        /*Set categories = Collections.singleton(new Class[] {GetMapProducerFactorySpi.class});
+        FactoryRegistry registry = new FactoryRegistry(categories);
+        
+        // get the providers
+        Iterator mpfi = registry.getServiceProviders(GetMapProducerFactorySpi.class);*/
 
         while (mpfi.hasNext()) {
             mpf = (GetMapProducerFactorySpi) mpfi.next();

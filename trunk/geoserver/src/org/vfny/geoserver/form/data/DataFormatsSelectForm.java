@@ -28,12 +28,28 @@ import org.vfny.geoserver.config.ConfigRequests;
  * @version $Id: DataDataStoresSelectForm.java,v 1.9 2004/03/16 19:57:40 emperorkefka Exp $
  */
 public class DataFormatsSelectForm extends ActionForm {
-    /** Action that spawned us must be "edit" or "delete" */
-    private String buttonAction;
 
-    /** Selection from list - will be a dataStoreId */
-    private String selectedDataFormatId;
-    private List dataFormatIds;
+	/**
+	 * Action that spawned us must be "edit" or "delete"
+	 * 
+	 * @uml.property name="buttonAction" multiplicity="(0 1)"
+	 */
+	private String buttonAction;
+
+	/**
+	 * Selection from list - will be a dataStoreId
+	 * 
+	 * @uml.property name="selectedDataFormatId" multiplicity="(0 1)"
+	 */
+	private String selectedDataFormatId;
+
+	/**
+	 * 
+	 * @uml.property name="dataFormatIds"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List dataFormatIds;
+
 
     /**
      * Reset form
@@ -84,48 +100,63 @@ public class DataFormatsSelectForm extends ActionForm {
         return errors;
     }
 
-    /**
-     * List of current DataFormatIds
-     *
-     * @return DOCUMENT ME!
-     */
-    public List getDataFormatIds() {
-        return dataFormatIds;
-    }
+	/**
+	 * List of current DataFormatIds
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="dataFormatIds"
+	 */
+	public List getDataFormatIds() {
+		return dataFormatIds;
+	}
 
-    /**
-     * DataFormatID selected by User.
-     * 
-     * <p>
-     * If the user has not selected anything (is this possible?) we will return
-     * <code>null</code>.
-     * </p>
-     *
-     * @return Selected DataFormatID or <code>null</code> if nothing is selected
-     */
-    public String getSelectedDataFormatId() {
-        return selectedDataFormatId;
-    }
+	/**
+	 * DataFormatID selected by User.
+	 * 
+	 * <p>
+	 * If the user has not selected anything (is this possible?) we will return
+	 * <code>null</code>.
+	 * </p>
+	 * 
+	 * @return Selected DataFormatID or <code>null</code> if nothing is selected
+	 * 
+	 * @uml.property name="selectedDataFormatId"
+	 */
+	public String getSelectedDataFormatId() {
+		return selectedDataFormatId;
+	}
 
-    /**
-     * The button the user hit to submit this form.
-     * 
-     * <p>
-     * We are doubling up and having the Same action process both Edit and
-     * Delete.
-     * </p>
-     *
-     * @return Either <code>edit</code> or <code>delete</code>
-     */
-    public String getButtonAction() {
-        return buttonAction;
-    }
+	/**
+	 * The button the user hit to submit this form.
+	 * 
+	 * <p>
+	 * We are doubling up and having the Same action process both Edit and
+	 * Delete.
+	 * </p>
+	 * 
+	 * @return Either <code>edit</code> or <code>delete</code>
+	 * 
+	 * @uml.property name="buttonAction"
+	 */
+	public String getButtonAction() {
+		return buttonAction;
+	}
 
-    public void setButtonAction(String string) {
-        buttonAction = string;
-    }
+	/**
+	 * 
+	 * @uml.property name="buttonAction"
+	 */
+	public void setButtonAction(String string) {
+		buttonAction = string;
+	}
 
-    public void setSelectedDataFormatId(String string) {
-        selectedDataFormatId = string;
-    }
+	/**
+	 * 
+	 * @uml.property name="selectedDataFormatId"
+	 */
+	public void setSelectedDataFormatId(String string) {
+		selectedDataFormatId = string;
+	}
+
 }

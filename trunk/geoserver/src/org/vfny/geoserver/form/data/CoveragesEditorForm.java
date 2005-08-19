@@ -33,28 +33,103 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
 public class CoveragesEditorForm extends ActionForm {
+
+	/**
+	 * 
+	 * @uml.property name="formatId" multiplicity="(0 1)"
+	 */
 	private String formatId;
+
+	/**
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
 	private String name;
+
+	/**
+	 * 
+	 * @uml.property name="label" multiplicity="(0 1)"
+	 */
 	private String label;
+
+	/**
+	 * 
+	 * @uml.property name="description" multiplicity="(0 1)"
+	 */
 	private String description;
+
+	/**
+	 * 
+	 * @uml.property name="metadataLink" multiplicity="(0 1)"
+	 */
 	private String metadataLink;
+
 	private String latLonBoundingBoxMinX;
 	private String latLonBoundingBoxMinY;
 	private String latLonBoundingBoxMaxX;
-	private String latLonBoundingBoxMaxY;    
+	private String latLonBoundingBoxMaxY;
+
+	/**
+	 * 
+	 * @uml.property name="keywords" multiplicity="(0 1)"
+	 */
 	private String keywords;
-	private String srsName; 
+
+	/**
+	 * 
+	 * @uml.property name="srsName" multiplicity="(0 1)"
+	 */
+	private String srsName;
+
+	/**
+	 * 
+	 * @uml.property name="requestCRSs" multiplicity="(0 1)"
+	 */
 	private String requestCRSs;
+
+	/**
+	 * 
+	 * @uml.property name="responseCRSs" multiplicity="(0 1)"
+	 */
 	private String responseCRSs;
+
+	/**
+	 * 
+	 * @uml.property name="nativeFormat" multiplicity="(0 1)"
+	 */
 	private String nativeFormat;
+
+	/**
+	 * 
+	 * @uml.property name="supportedFormats" multiplicity="(0 1)"
+	 */
 	private String supportedFormats;
+
+	/**
+	 * 
+	 * @uml.property name="defaultInterpolationMethod" multiplicity="(0 1)"
+	 */
 	private String defaultInterpolationMethod;
+
+	/**
+	 * 
+	 * @uml.property name="interpolationMethods" multiplicity="(0 1)"
+	 */
 	private String interpolationMethods;
 
-    /** Action requested by user */
-    private String action;
-    
-    private String newCoverage;
+	/**
+	 * Action requested by user
+	 * 
+	 * @uml.property name="action" multiplicity="(0 1)"
+	 */
+	private String action;
+
+	/**
+	 * 
+	 * @uml.property name="newCoverage" multiplicity="(0 1)"
+	 */
+	private String newCoverage;
+
 
 	/**
 	 * Set up CoverageEditor from from Web Container.
@@ -239,55 +314,79 @@ public class CoveragesEditorForm extends ActionForm {
 		
 		return errors;
 	}
-	
+
 	/**
 	 * @return Returns the defaultInterpolationMethod.
+	 * 
+	 * @uml.property name="defaultInterpolationMethod"
 	 */
 	public String getDefaultInterpolationMethod() {
 		return defaultInterpolationMethod;
 	}
+
 	/**
 	 * @param defaultInterpolationMethod The defaultInterpolationMethod to set.
+	 * 
+	 * @uml.property name="defaultInterpolationMethod"
 	 */
 	public void setDefaultInterpolationMethod(String defaultInterpolationMethod) {
 		this.defaultInterpolationMethod = defaultInterpolationMethod;
 	}
+
 	/**
 	 * @return Returns the description.
+	 * 
+	 * @uml.property name="description"
 	 */
 	public String getDescription() {
 		return description;
 	}
+
 	/**
 	 * @param description The description to set.
+	 * 
+	 * @uml.property name="description"
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	/**
 	 * @return Returns the keywords.
+	 * 
+	 * @uml.property name="keywords"
 	 */
 	public String getKeywords() {
 		return keywords;
 	}
+
 	/**
 	 * @param keywords The keywords to set.
+	 * 
+	 * @uml.property name="keywords"
 	 */
 	public void setKeywords(String keywords) {
 		this.keywords = keywords;
 	}
+
 	/**
 	 * @return Returns the label.
+	 * 
+	 * @uml.property name="label"
 	 */
 	public String getLabel() {
 		return label;
 	}
+
 	/**
 	 * @param label The label to set.
+	 * 
+	 * @uml.property name="label"
 	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
+
 	/**
 	 * @return Returns the latLonBoundingBoxMaxX.
 	 */
@@ -336,136 +435,203 @@ public class CoveragesEditorForm extends ActionForm {
 	public void setMinY(String latLonBoundingBoxMinY) {
 		this.latLonBoundingBoxMinY = latLonBoundingBoxMinY;
 	}
+
 	/**
 	 * @return Returns the name.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public String getName() {
 		return name;
 	}
+
 	/**
 	 * @param name The name to set.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	/**
 	 * @return Returns the nativeFormat.
+	 * 
+	 * @uml.property name="nativeFormat"
 	 */
 	public String getNativeFormat() {
 		return nativeFormat;
 	}
+
 	/**
 	 * @param nativeFormat The nativeFormat to set.
+	 * 
+	 * @uml.property name="nativeFormat"
 	 */
 	public void setNativeFormat(String nativeFormat) {
 		this.nativeFormat = nativeFormat;
 	}
+
 	/**
 	 * @return Returns the srsName.
+	 * 
+	 * @uml.property name="srsName"
 	 */
 	public String getSrsName() {
 		return srsName;
 	}
+
 	/**
 	 * @param srsName The srsName to set.
+	 * 
+	 * @uml.property name="srsName"
 	 */
 	public void setSrsName(String srsName) {
 		this.srsName = srsName;
 	}
+
 	/**
 	 * @return Returns the metadataLink.
+	 * 
+	 * @uml.property name="metadataLink"
 	 */
 	public String getMetadataLink() {
 		return metadataLink;
 	}
+
 	/**
 	 * @param metadataLink The metadataLink to set.
+	 * 
+	 * @uml.property name="metadataLink"
 	 */
 	public void setMetadataLink(String metadataLink) {
 		this.metadataLink = metadataLink;
 	}
+
 	/**
 	 * @return Returns the interpolationMethods.
+	 * 
+	 * @uml.property name="interpolationMethods"
 	 */
 	public String getInterpolationMethods() {
 		return interpolationMethods;
 	}
+
 	/**
 	 * @param interpolationMethods The interpolationMethods to set.
+	 * 
+	 * @uml.property name="interpolationMethods"
 	 */
 	public void setInterpolationMethods(String interpolationMethods) {
 		this.interpolationMethods = interpolationMethods;
 	}
+
 	/**
 	 * @return Returns the requestCRSs.
+	 * 
+	 * @uml.property name="requestCRSs"
 	 */
 	public String getRequestCRSs() {
 		return requestCRSs;
 	}
+
 	/**
 	 * @param requestCRSs The requestCRSs to set.
+	 * 
+	 * @uml.property name="requestCRSs"
 	 */
 	public void setRequestCRSs(String requestCRSs) {
 		this.requestCRSs = requestCRSs;
 	}
+
 	/**
 	 * @return Returns the responseCRSs.
+	 * 
+	 * @uml.property name="responseCRSs"
 	 */
 	public String getResponseCRSs() {
 		return responseCRSs;
 	}
+
 	/**
 	 * @param responseCRSs The responseCRSs to set.
+	 * 
+	 * @uml.property name="responseCRSs"
 	 */
 	public void setResponseCRSs(String responseCRSs) {
 		this.responseCRSs = responseCRSs;
 	}
+
 	/**
 	 * @return Returns the supportedFormats.
+	 * 
+	 * @uml.property name="supportedFormats"
 	 */
 	public String getSupportedFormats() {
 		return supportedFormats;
 	}
+
 	/**
 	 * @param supportedFormats The supportedFormats to set.
+	 * 
+	 * @uml.property name="supportedFormats"
 	 */
 	public void setSupportedFormats(String supportedFormats) {
 		this.supportedFormats = supportedFormats;
 	}
+
 	/**
 	 * @return Returns the action.
+	 * 
+	 * @uml.property name="action"
 	 */
 	public String getAction() {
 		return action;
 	}
+
 	/**
 	 * @param action The action to set.
+	 * 
+	 * @uml.property name="action"
 	 */
 	public void setAction(String action) {
 		this.action = action;
 	}
+
 	/**
 	 * @return Returns the formatId.
+	 * 
+	 * @uml.property name="formatId"
 	 */
 	public String getFormatId() {
 		return formatId;
 	}
+
 	/**
 	 * @param formatId The formatId to set.
+	 * 
+	 * @uml.property name="formatId"
 	 */
 	public void setFormatId(String formatId) {
 		this.formatId = formatId;
 	}
+
 	/**
 	 * @return Returns the newCoverage.
+	 * 
+	 * @uml.property name="newCoverage"
 	 */
 	public String getNewCoverage() {
 		return newCoverage;
 	}
+
 	/**
 	 * @param newCoverage The newCoverage to set.
+	 * 
+	 * @uml.property name="newCoverage"
 	 */
 	public void setNewCoverage(String newCoverage) {
 		this.newCoverage = newCoverage;
 	}
+
 }

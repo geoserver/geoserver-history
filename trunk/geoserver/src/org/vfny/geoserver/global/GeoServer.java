@@ -32,14 +32,51 @@ public class GeoServer extends GlobalLayerSupertype {
      * </p>
      */
     public static final String WEB_CONTAINER_KEY = "GeoServer";
-    private String title;
-    private int maxFeatures = Integer.MAX_VALUE;
+
+	/**
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
+
+	/**
+	 * 
+	 * @uml.property name="maxFeatures" multiplicity="(0 1)"
+	 */
+	private int maxFeatures = Integer.MAX_VALUE;
+
     private boolean verbose = true;
-    private int numDecimals = 4;
-    private Charset charSet = Charset.forName("UTF-8");
-    private String adminUserName = "admin";
-    private String adminPassword;
-    private String schemaBaseUrl;
+
+	/**
+	 * 
+	 * @uml.property name="numDecimals" multiplicity="(0 1)"
+	 */
+	private int numDecimals = 4;
+
+	/**
+	 * 
+	 * @uml.property name="charSet" multiplicity="(0 1)"
+	 */
+	private Charset charSet = Charset.forName("UTF-8");
+
+	/**
+	 * 
+	 * @uml.property name="adminUserName" multiplicity="(0 1)"
+	 */
+	private String adminUserName = "admin";
+
+	/**
+	 * 
+	 * @uml.property name="adminPassword" multiplicity="(0 1)"
+	 */
+	private String adminPassword;
+
+	/**
+	 * 
+	 * @uml.property name="schemaBaseUrl" multiplicity="(0 1)"
+	 */
+	private String schemaBaseUrl;
+
     private String contactPerson;
     private String contactOrganization;
     private String contactPosition;
@@ -53,13 +90,22 @@ public class GeoServer extends GlobalLayerSupertype {
     private String contactFacsimile;
     private String contactEmail;
     private String onlineResource;
-    
-    /** Should we throw the stack traces back in responses? */
-    private boolean verboseExceptions = false;
 
-    /** Default Logging level */
-    private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
-                                       .getLevel();
+	/**
+	 * Should we throw the stack traces back in responses?
+	 * 
+	 * @uml.property name="verboseExceptions" multiplicity="(0 1)"
+	 */
+	private boolean verboseExceptions = false;
+
+	/**
+	 * Default Logging level
+	 * 
+	 * @uml.property name="loggingLevel" multiplicity="(0 1)"
+	 */
+	private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
+		.getLevel();
+
 
 
     /**
@@ -140,22 +186,25 @@ public class GeoServer extends GlobalLayerSupertype {
         return notNull(addressType);
     }
 
-    /**
-     * getCharSet purpose.
-     * 
-     * <p>
-     * Returns the default charset for this server instance.
-     * </p>
-     *
-     * @return Charset the default charset for this server instance.
-     */
-    public Charset getCharSet() {
-        if (charSet != null) {
-            return charSet;
-        }
+	/**
+	 * getCharSet purpose.
+	 * 
+	 * <p>
+	 * Returns the default charset for this server instance.
+	 * </p>
+	 * 
+	 * @return Charset the default charset for this server instance.
+	 * 
+	 * @uml.property name="charSet"
+	 */
+	public Charset getCharSet() {
+		if (charSet != null) {
+			return charSet;
+		}
 
-        return Charset.forName("UTF-8");
-    }
+		return Charset.forName("UTF-8");
+	}
+
 
     /**
      * getContactEmail purpose.
@@ -247,32 +296,37 @@ public class GeoServer extends GlobalLayerSupertype {
     public String getOnlineResource() {
         return notNull(onlineResource);
     }
-    
-    /**
-     * getLoggingLevel purpose.
-     * 
-     * <p>
-     * Returns the Logging Level.
-     * </p>
-     *
-     * @return String the Logging Level.
-     */
-    public Level getLoggingLevel() {
-        return loggingLevel;
-    }
 
-    /**
-     * getMaxFeatures purpose.
-     * 
-     * <p>
-     * Returns the max number of features supported.
-     * </p>
-     *
-     * @return String the max number of features supported.
-     */
-    public int getMaxFeatures() {
-        return maxFeatures;
-    }
+	/**
+	 * getLoggingLevel purpose.
+	 * 
+	 * <p>
+	 * Returns the Logging Level.
+	 * </p>
+	 * 
+	 * @return String the Logging Level.
+	 * 
+	 * @uml.property name="loggingLevel"
+	 */
+	public Level getLoggingLevel() {
+		return loggingLevel;
+	}
+
+	/**
+	 * getMaxFeatures purpose.
+	 * 
+	 * <p>
+	 * Returns the max number of features supported.
+	 * </p>
+	 * 
+	 * @return String the max number of features supported.
+	 * 
+	 * @uml.property name="maxFeatures"
+	 */
+	public int getMaxFeatures() {
+		return maxFeatures;
+	}
+
 
     /**
      * getMimeType purpose.
@@ -287,46 +341,51 @@ public class GeoServer extends GlobalLayerSupertype {
         return "text/xml; charset=" + getCharSet().displayName();
     }
 
-    /**
-     * getNumDecimals purpose.
-     * 
-     * <p>
-     * The default number of decimals allowed in the data.
-     * </p>
-     *
-     * @return int the default number of decimals allowed in the data.
-     */
-    public int getNumDecimals() {
-        return numDecimals;
-    }
+	/**
+	 * getNumDecimals purpose.
+	 * 
+	 * <p>
+	 * The default number of decimals allowed in the data.
+	 * </p>
+	 * 
+	 * @return int the default number of decimals allowed in the data.
+	 * 
+	 * @uml.property name="numDecimals"
+	 */
+	public int getNumDecimals() {
+		return numDecimals;
+	}
 
-    /**
-     * getSchemaBaseUrl purpose.
-     * 
-     * <p>
-     * The Schema Base URL for this instance.  This should generally be a local
-     * reference, as GeoServer by default puts up the schemas that it needs
-     * and references them.  It could be used to specify an alternate site for
-     * the schemas, however, for example if a user didn't want their servlet
-     * container hit every time someone did a validation, they could instead
-     * store it on another machine.  I don't really know if this is useful to
-     * anyone...
-     * </p>
-     *
-     * @return String the Schema Base URL for this instance.
-     *
-     * @task TODO: Right now this is broken, and I'm not quite sure if there's
-     *       an elegant way to have this return the local schemas.  Perhaps we
-     *       should just have it return 'local', and then the users of this
-     *       method can do the local referencing themselves.  For now no one
-     *       is using this  method, perhaps we should just leave it out for
-     *       1.2.0, as it's very  obscure.  I think I only added it originally
-     *       because I didn't want to  go through the busy work of cleaning up
-     *       and figuring out how to copy over the ogc schemas.
-     */
-    public String getSchemaBaseUrl() {
-        return schemaBaseUrl;
-    }
+	/**
+	 * getSchemaBaseUrl purpose.
+	 * 
+	 * <p>
+	 * The Schema Base URL for this instance.  This should generally be a local
+	 * reference, as GeoServer by default puts up the schemas that it needs
+	 * and references them.  It could be used to specify an alternate site for
+	 * the schemas, however, for example if a user didn't want their servlet
+	 * container hit every time someone did a validation, they could instead
+	 * store it on another machine.  I don't really know if this is useful to
+	 * anyone...
+	 * </p>
+	 * 
+	 * @return String the Schema Base URL for this instance.
+	 * 
+	 * @task TODO: Right now this is broken, and I'm not quite sure if there's
+	 *       an elegant way to have this return the local schemas.  Perhaps we
+	 *       should just have it return 'local', and then the users of this
+	 *       method can do the local referencing themselves.  For now no one
+	 *       is using this  method, perhaps we should just leave it out for
+	 *       1.2.0, as it's very  obscure.  I think I only added it originally
+	 *       because I didn't want to  go through the busy work of cleaning up
+	 *       and figuring out how to copy over the ogc schemas.
+	 * 
+	 * @uml.property name="schemaBaseUrl"
+	 */
+	public String getSchemaBaseUrl() {
+		return schemaBaseUrl;
+	}
+
 
     /**
      * whether xml documents should be pretty formatted
@@ -424,23 +483,28 @@ public class GeoServer extends GlobalLayerSupertype {
         return dto;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return Returns the title.
-     */
-    public String getTitle() {
-        return title;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return Returns the title.
+	 * 
+	 * @uml.property name="title"
+	 */
+	public String getTitle() {
+		return title;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param title The title to set.
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param title The title to set.
+	 * 
+	 * @uml.property name="title"
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 
     /**
      * Property representing the contact party (person, position or
@@ -471,13 +535,22 @@ public class GeoServer extends GlobalLayerSupertype {
         return null;
     }
 
-    public String getAdminUserName() {
-        return adminUserName;
-    }
+	/**
+	 * 
+	 * @uml.property name="adminUserName"
+	 */
+	public String getAdminUserName() {
+		return adminUserName;
+	}
 
-    public String getAdminPassword() {
-        return adminPassword;
-    }
+	/**
+	 * 
+	 * @uml.property name="adminPassword"
+	 */
+	public String getAdminPassword() {
+		return adminPassword;
+	}
+
 
     public String toString() {
         StringBuffer geoserver = new StringBuffer("[GeoServer: \n");
@@ -501,14 +574,18 @@ public class GeoServer extends GlobalLayerSupertype {
 	public boolean isVerboseExceptions() {
 		return verboseExceptions;
 	}
+
 	/**
 	 * If set to true, response exceptions will throw their stack trace
-     * back to the end user.
-	 *
+	 * back to the end user.
+	 * 
 	 * @param showStackTraces The showStackTraces to set.
+	 * 
+	 * @uml.property name="verboseExceptions"
 	 */
 	public void setVerboseExceptions(boolean showStackTraces) {
 		this.verboseExceptions = showStackTraces;
 	}
+
 	
 }

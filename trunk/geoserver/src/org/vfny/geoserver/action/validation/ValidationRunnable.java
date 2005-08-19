@@ -41,13 +41,57 @@ public class ValidationRunnable implements Runnable {
 	
 	private Map testSuites;
 	private Map plugins;
+
+	/**
+	 * 
+	 * @uml.property name="dataConfig"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
 	private DataConfig dataConfig;
+
+	/**
+	 * 
+	 * @uml.property name="context"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
 	private ServletContext context;
+
+	/**
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
 	private HttpServletRequest request;
+
+	/**
+	 * 
+	 * @uml.property name="validator"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
 	Validator validator;
+
+	/**
+	 * 
+	 * @uml.property name="gv"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
 	ValidationProcessor gv;
-	public TestValidationResults results;	// I get filled up with goodies
+
+	/**
+	 * 
+	 * @uml.property name="results"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	public TestValidationResults results; // I get filled up with goodies
+
+	/**
+	 * 
+	 * @uml.property name="repository"
+	 * @uml.associationEnd elementType="org.geotools.data.FeatureSource" multiplicity=
+	 * "(0 -1)"
+	 */
 	Repository repository;
+
 	
 	public final static String KEY = "validationTestDoItThread.key";
 	

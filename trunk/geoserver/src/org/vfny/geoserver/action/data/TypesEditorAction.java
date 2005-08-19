@@ -29,8 +29,10 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.geometry.JTS;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.FactoryFinder;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
@@ -186,9 +188,13 @@ public class TypesEditorAction extends ConfigAction {
  
 
         try {
-        	CoordinateReferenceSystem crsTheirData = CRS.decode(srs);
-        	CoordinateReferenceSystem crsLatLong   = CRS.decode("EPSG:4326");  // latlong
-        	MathTransform xform = CRS.transform(crsTheirData,crsLatLong);
+        	//CoordinateReferenceSystem crsTheirData = CRS.decode(srs);
+        	//CoordinateReferenceSystem crsLatLong   = CRS.decode("EPSG:4326");  // latlong
+			CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", null);
+			CoordinateReferenceSystem crsTheirData=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem(srs);
+			CoordinateReferenceSystem crsLatLong=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:4326");
+
+			MathTransform xform = CRS.transform(crsTheirData,crsLatLong);
         	Envelope xformed_envelope = JTS.transform(envelope,xform/*,10*/); //convert data bbox to lat/long
         	
             typeForm.setMinX(Double.toString(xformed_envelope.getMinX()));

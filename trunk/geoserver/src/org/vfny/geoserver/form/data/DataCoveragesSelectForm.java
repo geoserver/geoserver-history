@@ -21,8 +21,19 @@ import javax.servlet.http.HttpServletRequest;
  * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
 public class DataCoveragesSelectForm extends ActionForm {
-    private String selectedCoverageName;
-    private String buttonAction;
+
+	/**
+	 * 
+	 * @uml.property name="selectedCoverageName" multiplicity="(0 1)"
+	 */
+	private String selectedCoverageName;
+
+	/**
+	 * 
+	 * @uml.property name="buttonAction" multiplicity="(0 1)"
+	 */
+	private String buttonAction;
+
 
     public void reset(ActionMapping arg0, HttpServletRequest arg1) {
         super.reset(arg0, arg1);
@@ -35,23 +46,28 @@ public class DataCoveragesSelectForm extends ActionForm {
         return errors;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return Returns the selectedCoverageName.
-     */
-    public String getSelectedCoverageName() {
-        return selectedCoverageName;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return Returns the selectedCoverageName.
+	 * 
+	 * @uml.property name="selectedCoverageName"
+	 */
+	public String getSelectedCoverageName() {
+		return selectedCoverageName;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param selectedCoverageName The selectedCoverageName to set.
-     */
-    public void setSelectedCoverageName(String selectedCoverageName) {
-        this.selectedCoverageName = selectedCoverageName;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param selectedCoverageName The selectedCoverageName to set.
+	 * 
+	 * @uml.property name="selectedCoverageName"
+	 */
+	public void setSelectedCoverageName(String selectedCoverageName) {
+		this.selectedCoverageName = selectedCoverageName;
+	}
+
 
     public Set getCoverageNames() {
         ServletContext context = getServlet().getServletContext();
@@ -60,21 +76,26 @@ public class DataCoveragesSelectForm extends ActionForm {
         return config.getCoverages().keySet();
     }
 
-    /**
-     * Access buttonAction property.
-     *
-     * @return Returns the buttonAction.
-     */
-    public String getButtonAction() {
-        return buttonAction;
-    }
+	/**
+	 * Access buttonAction property.
+	 * 
+	 * @return Returns the buttonAction.
+	 * 
+	 * @uml.property name="buttonAction"
+	 */
+	public String getButtonAction() {
+		return buttonAction;
+	}
 
-    /**
-     * Set buttonAction to buttonAction.
-     *
-     * @param buttonAction The buttonAction to set.
-     */
-    public void setButtonAction(String buttonAction) {
-        this.buttonAction = buttonAction;
-    }
+	/**
+	 * Set buttonAction to buttonAction.
+	 * 
+	 * @param buttonAction The buttonAction to set.
+	 * 
+	 * @uml.property name="buttonAction"
+	 */
+	public void setButtonAction(String buttonAction) {
+		this.buttonAction = buttonAction;
+	}
+
 }

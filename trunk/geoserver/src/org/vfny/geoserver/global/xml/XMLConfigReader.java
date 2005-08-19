@@ -35,14 +35,13 @@ import org.geotools.filter.FilterDOMParser;
 import org.geotools.geometry.GeneralDirectPosition;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
+//import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.geotools.util.NameFactory;
 import org.geotools.util.NumberRange;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageCategory;
@@ -101,11 +100,42 @@ public class XMLConfigReader {
 	
 	/** Is set to true after the model is loaded into memory. */
 	private boolean initialized = false;
+
+	/**
+	 * 
+	 * @uml.property name="wms"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
 	private WMSDTO wms;
+
+	/**
+	 * 
+	 * @uml.property name="wfs"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
 	private WFSDTO wfs;
+
+	/**
+	 * 
+	 * @uml.property name="wcs"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
 	private WCSDTO wcs;
+
+	/**
+	 * 
+	 * @uml.property name="geoServer"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
 	private GeoServerDTO geoServer;
+
+	/**
+	 * 
+	 * @uml.property name="data"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
 	private DataDTO data;
+
 	
 	/**
 	 * XMLConfigReader constructor.
@@ -1307,7 +1337,8 @@ public class XMLConfigReader {
 		Element envelope = ReaderUtils.getChildElement(coverageRoot, "envelope");
 		cv.setSrsName(ReaderUtils.getAttribute(envelope, "srsName", true));
 		
-		CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+		//CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+		CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,CRSAuthorityFactory.class));
 		try {
 			cv.setCrs(
 					crsFactory.createFromWKT(
@@ -1813,69 +1844,80 @@ public class XMLConfigReader {
 		
 		featureTypeInfoDTO.setSchemaAttributes(list);
 	}
-	
+
 	/**
 	 * getData purpose.
 	 * 
 	 * <p>
 	 * Description ...
 	 * </p>
-	 *
+	 * 
 	 * @return
+	 * 
+	 * @uml.property name="data"
 	 */
 	public DataDTO getData() {
 		return data;
 	}
-	
+
 	/**
 	 * getGeoServer purpose.
 	 * 
 	 * <p>
 	 * Description ...
 	 * </p>
-	 *
+	 * 
 	 * @return
+	 * 
+	 * @uml.property name="geoServer"
 	 */
 	public GeoServerDTO getGeoServer() {
 		return geoServer;
 	}
-	
+
 	/**
 	 * getWcs purpose.
 	 * 
 	 * <p>
 	 * Description ...
 	 * </p>
-	 *
+	 * 
 	 * @return
+	 * 
+	 * @uml.property name="wcs"
 	 */
 	public WCSDTO getWcs() {
 		return wcs;
 	}
-	
+
 	/**
 	 * getWfs purpose.
 	 * 
 	 * <p>
 	 * Description ...
 	 * </p>
-	 *
+	 * 
 	 * @return
+	 * 
+	 * @uml.property name="wfs"
 	 */
 	public WFSDTO getWfs() {
 		return wfs;
 	}
-	
+
 	/**
 	 * getWms purpose.
 	 * 
 	 * <p>
 	 * Description ...
 	 * </p>
-	 *
+	 * 
 	 * @return
+	 * 
+	 * @uml.property name="wms"
 	 */
 	public WMSDTO getWms() {
 		return wms;
 	}
+
 }

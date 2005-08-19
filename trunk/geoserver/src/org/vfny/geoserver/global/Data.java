@@ -57,49 +57,114 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 	
 	/** used to create styles */
 	private static StyleFactory styleFactory = StyleFactory.createStyleFactory();
-	
-	/** holds the mappings between prefixes and NameSpaceInfo objects */
+
+	/**
+	 * holds the mappings between prefixes and NameSpaceInfo objects
+	 * 
+	 * @uml.property name="nameSpaces"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.global.dto.FeatureTypeInfoDTO"
+	 * qualifier="next:java.lang.String org.vfny.geoserver.global.NameSpaceInfo" multiplicity=
+	 * "(0 -1)" ordering="ordered"
+	 */
 	private Map nameSpaces;
-	
-	/** NameSpaceInfo */
+
+	/**
+	 * NameSpaceInfo
+	 * 
+	 * @uml.property name="defaultNameSpace"
+	 * @uml.associationEnd inverse="data:org.vfny.geoserver.global.NameSpaceInfo" multiplicity=
+	 * "(0 1)"
+	 */
 	private NameSpaceInfo defaultNameSpace;
-	
-	/** Mapping of DataStoreInfo by dataStoreId */
+
+	/**
+	 * Mapping of DataStoreInfo by dataStoreId
+	 * 
+	 * @uml.property name="dataStores"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.global.dto.FeatureTypeInfoDTO"
+	 * qualifier="next:java.lang.String org.vfny.geoserver.global.DataStoreInfo" multiplicity=
+	 * "(0 -1)" ordering="ordered"
+	 */
 	private Map dataStores;
-	
-	/** Mapping of FormatInfo by formatId */
+
+	/**
+	 * Mapping of FormatInfo by formatId
+	 * 
+	 * @uml.property name="formats"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.global.dto.FeatureTypeInfoDTO"
+	 * qualifier="next:java.lang.String org.vfny.geoserver.global.FormatInfo" multiplicity=
+	 * "(0 -1)" ordering="ordered"
+	 */
 	private Map formats;
-	
-	/** holds the mapping of Styles and style names */
+
+	/**
+	 * holds the mapping of Styles and style names
+	 * 
+	 * @uml.property name="styles"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.global.dto.FeatureTypeInfoDTO"
+	 * qualifier="id:java.lang.String org.geotools.styling.Style" multiplicity="(0 -1)
+	 * " ordering="ordered"
+	 */
 	private Map styles;
+
+	/**
+	 * 
+	 * @uml.property name="stFiles"
+	 * @uml.associationEnd qualifier="id:java.lang.String java.io.File" multiplicity="(0
+	 * 1)"
+	 */
 	private Map stFiles;
-	
+
 	/**
 	 * Map of <code>FeatureTypeInfo</code>'s stored by full qualified name
 	 * (NameSpaceInfo prefix + PREFIX_DELIMITER + typeName)
+	 * 
+	 * @uml.property name="featureTypes"
+	 * @uml.associationEnd inverse="data:org.vfny.geoserver.global.FeatureTypeInfo" qualifier=
+	 * "name:java.lang.String org.vfny.geoserver.global.FeatureTypeInfo" multiplicity=
+	 * "(0 1)"
 	 */
 	private Map featureTypes;
-	
+
+	/**
+	 * 
+	 * @uml.property name="coverages"
+	 * @uml.associationEnd inverse="data:org.vfny.geoserver.global.CoverageInfo" qualifier=
+	 * "next:java.lang.String org.vfny.geoserver.global.CoverageInfo" multiplicity="(0
+	 * 1)"
+	 */
 	private Map coverages;
-	
-	/** Base directory for use with file based relative paths */
+
+	/**
+	 * Base directory for use with file based relative paths
+	 * 
+	 * @uml.property name="baseDir" multiplicity="(0 1)"
+	 */
 	private File baseDir;
-	
+
 	/**
 	 * Data constructor.
 	 * 
 	 * <p>
 	 * Creates a Data object from the data provided.
 	 * </p>
+	 * 
+	 * @uml.property name="gs"
+	 * @uml.associationEnd multiplicity="(1 1)"
 	 */
 	private GeoServer gs;
-	
+
 	/**
 	 * map of all featureTypeDTO -> load status (Boolean.True, Boolean.False,
 	 * Exception) Boolean.True when feature was loaded. Boolean.False when
 	 * something was disabled. Exception the error.
+	 * 
+	 * @uml.property name="errors"
+	 * @uml.associationEnd qualifier="featureTypeDTO:org.vfny.geoserver.global.dto.FeatureTypeInfoDTO
+	 * org.vfny.geoserver.global.ConfigurationException" multiplicity="(0 1)"
 	 */
 	private Map errors;
+
 	
 	public Data(DataDTO config, File dir, GeoServer g)
 	throws ConfigurationException {
@@ -869,32 +934,37 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 		
 		return retNS;
 	}
-	
+
 	/**
 	 * getDefaultNameSpace purpose.
 	 * 
 	 * <p>
 	 * Returns the default NameSpaceInfo for this Data object.
 	 * </p>
-	 *
+	 * 
 	 * @return NameSpaceInfo the default name space
+	 * 
+	 * @uml.property name="defaultNameSpace"
 	 */
 	public NameSpaceInfo getDefaultNameSpace() {
 		return defaultNameSpace;
 	}
-	
+
 	/**
 	 * getStyles purpose.
 	 * 
 	 * <p>
 	 * A reference to the map of styles
 	 * </p>
-	 *
+	 * 
 	 * @return Map A map containing the Styles.
+	 * 
+	 * @uml.property name="styles"
 	 */
 	public Map getStyles() {
 		return this.styles;
 	}
+
 	
 	public Style getStyle(String id) {
 		return (Style) styles.get(id);
@@ -1576,13 +1646,16 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 		
 		return dataStore.getDataStore().getFeatureSource(typeName);
 	}
-	
+
 	/**
 	 * Returns the baseDir for use with relative paths.
-	 *
+	 * 
 	 * @return Returns the baseDir.
+	 * 
+	 * @uml.property name="baseDir"
 	 */
 	public File getBaseDir() {
 		return baseDir;
 	}
+
 }

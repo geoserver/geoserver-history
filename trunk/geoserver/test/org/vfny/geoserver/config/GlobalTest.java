@@ -6,22 +6,22 @@ package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
 
-
-/**
- * GlobalTest purpose.
- * 
- * <p>
- * Description of GlobalTest ...
- * </p>
- * 
- * <p></p>
- *
- * @author dzwiers, Refractions Research, Inc.
- * @version $Id: GlobalTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $
- */
+/** * GlobalTest purpose. *  * <p> * Description of GlobalTest ... * </p> *  * <p></p> *  * @author dzwiers, Refractions Research, Inc. * @version $Id: GlobalTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $ */
 public class GlobalTest extends TestCase {
-    private GlobalConfig a;
-    private GlobalConfig b;
+
+	/**
+	 * 
+	 * @uml.property name="a"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GlobalConfig a;
+
+	/**
+	 * 
+	 * @uml.property name="b"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GlobalConfig b;
 
     /**
      * Constructor for GlobalTest.

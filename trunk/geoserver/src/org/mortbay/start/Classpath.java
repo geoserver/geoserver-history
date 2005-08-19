@@ -20,7 +20,14 @@ import java.util.Vector;
  */
 public class Classpath {
 
-    Vector _elements = new Vector();    
+	/**
+	 * 
+	 * @uml.property name="_elements"
+	 * @uml.associationEnd elementType="java.io.File" multiplicity="(0 -1)"
+	 */
+	Vector _elements = new Vector();
+
+    
 
     public Classpath()
     {}    

@@ -14,15 +14,51 @@ import org.vfny.geoserver.global.xml.NameSpaceElement;
  * Present Attribute information for user input.
  */
 public class AttributeForm {
-    
-    private String name;    
-    private boolean nillable;
-    private String minOccurs;
-    private String maxOccurs;    
-    private String type;
-    private String fragment;
-    
-    private AttributeType attributeType;
+
+	/**
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	private String name;
+
+	/**
+	 * 
+	 * @uml.property name="nillable" multiplicity="(0 1)"
+	 */
+	private boolean nillable;
+
+	/**
+	 * 
+	 * @uml.property name="minOccurs" multiplicity="(0 1)"
+	 */
+	private String minOccurs;
+
+	/**
+	 * 
+	 * @uml.property name="maxOccurs" multiplicity="(0 1)"
+	 */
+	private String maxOccurs;
+
+	/**
+	 * 
+	 * @uml.property name="type" multiplicity="(0 1)"
+	 */
+	private String type;
+
+	/**
+	 * 
+	 * @uml.property name="fragment" multiplicity="(0 1)"
+	 */
+	private String fragment;
+
+	/**
+	 * 
+	 * @uml.property name="attributeType"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.global.xml.NameSpaceElement"
+	 * multiplicity="(0 -1)"
+	 */
+	private AttributeType attributeType;
+
     
     public AttributeForm( AttributeTypeInfoConfig config, AttributeType attribute ){
         name = config.getName();
@@ -55,86 +91,124 @@ public class AttributeForm {
     public AttributeTypeInfoConfig toConfig(){
         return new AttributeTypeInfoConfig( toDTO() );
     }
-    /**
-     * @return Returns the fragment.
-     */
-    public String getFragment() {
-        return fragment;
-    }
-    /**
-     * @param fragment The fragment to set.
-     */
-    public void setFragment(String fragment) {
-        this.fragment = fragment;
-    }
-    /**
-     * @return Returns the maxOccurs.
-     */
-    public String getMaxOccurs() {
-        return maxOccurs;
-    }
-    /**
-     * @param maxOccurs The maxOccurs to set.
-     */
-    public void setMaxOccurs(String maxOccurs) {
-        this.maxOccurs = maxOccurs;
-    }
-    /**
-     * @return Returns the minOccurs.
-     */
-    public String getMinOccurs() {
-        return minOccurs;
-    }
-    /**
-     * @param minOccurs The minOccurs to set.
-     */
-    public void setMinOccurs(String minOccurs) {
-        this.minOccurs = minOccurs;
-    }
-    /**
-     * @return Returns the name.
-     */
-    public String getName() {
-        return name;
-    }
-    /**
-     * @param name The name to set.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+
+	/**
+	 * @return Returns the fragment.
+	 * 
+	 * @uml.property name="fragment"
+	 */
+	public String getFragment() {
+		return fragment;
+	}
+
+	/**
+	 * @param fragment The fragment to set.
+	 * 
+	 * @uml.property name="fragment"
+	 */
+	public void setFragment(String fragment) {
+		this.fragment = fragment;
+	}
+
+	/**
+	 * @return Returns the maxOccurs.
+	 * 
+	 * @uml.property name="maxOccurs"
+	 */
+	public String getMaxOccurs() {
+		return maxOccurs;
+	}
+
+	/**
+	 * @param maxOccurs The maxOccurs to set.
+	 * 
+	 * @uml.property name="maxOccurs"
+	 */
+	public void setMaxOccurs(String maxOccurs) {
+		this.maxOccurs = maxOccurs;
+	}
+
+	/**
+	 * @return Returns the minOccurs.
+	 * 
+	 * @uml.property name="minOccurs"
+	 */
+	public String getMinOccurs() {
+		return minOccurs;
+	}
+
+	/**
+	 * @param minOccurs The minOccurs to set.
+	 * 
+	 * @uml.property name="minOccurs"
+	 */
+	public void setMinOccurs(String minOccurs) {
+		this.minOccurs = minOccurs;
+	}
+
+	/**
+	 * @return Returns the name.
+	 * 
+	 * @uml.property name="name"
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name The name to set.
+	 * 
+	 * @uml.property name="name"
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
     /**
      * @return Returns the nillible.
      */
     public boolean isNillable() {
         return nillable;
     }
-    /**
-     * @param nillible The nillible to set.
-     */
-    public void setNillable(boolean nillible) {
-        this.nillable = nillible;
-    }
-    /**
-     * @return Returns the selectedType.
-     */
-    public String getType() {
-        return type;
-    }
-    /**
-     * @param selectedType The selectedType to set.
-     */
-    public void setType(String selectedType) {
-        this.type = selectedType;
-    }
-    /**
-     * AttributeType used to limit getType.
-     * 
-     * @return AttributeType
-     */
-    public AttributeType getAttributeType() {
-        return attributeType;
-    }
+
+	/**
+	 * @param nillible The nillible to set.
+	 * 
+	 * @uml.property name="nillable"
+	 */
+	public void setNillable(boolean nillible) {
+		this.nillable = nillible;
+	}
+
+	/**
+	 * @return Returns the selectedType.
+	 * 
+	 * @uml.property name="type"
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param selectedType The selectedType to set.
+	 * 
+	 * @uml.property name="type"
+	 */
+	public void setType(String selectedType) {
+		this.type = selectedType;
+	}
+
+	/**
+	 * AttributeType used to limit getType.
+	 * 
+	 * @return AttributeType
+	 * 
+	 * @uml.property name="attributeType"
+	 */
+	public AttributeType getAttributeType() {
+		return attributeType;
+	}
+
     /**
      * List of Types available for this attribtue.
      * <p>

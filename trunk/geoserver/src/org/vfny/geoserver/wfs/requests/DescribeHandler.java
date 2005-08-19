@@ -33,8 +33,13 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");
 
-    /** Internal GetCapabilities request for construction. */
-    private DescribeRequest request = new DescribeRequest();
+	/**
+	 * Internal GetCapabilities request for construction.
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private DescribeRequest request = new DescribeRequest();
 
     /** Local variable to track current tag */
     private String currentTag = new String();

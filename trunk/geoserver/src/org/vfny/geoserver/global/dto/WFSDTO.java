@@ -42,11 +42,32 @@ public final class WFSDTO implements DataTransferObject {
     /** ServiceLevel mask equivilent to complete WFS conformance */
     public static final int COMPLETE = TRANSACTIONAL | SERVICE_LOCKING;
 
-    /** The service parameters for this instance. */
-    private ServiceDTO service;
-    private boolean gmlPrefixing = false;
+	/**
+	 * The service parameters for this instance.
+	 * 
+	 * @uml.property name="service"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private ServiceDTO service;
+
+	/**
+	 * 
+	 * @uml.property name="gmlPrefixing" multiplicity="(0 1)"
+	 */
+	private boolean gmlPrefixing = false;
+
+	/**
+	 * 
+	 * @uml.property name="srsXmlStyle" multiplicity="(0 1)"
+	 */
 	private boolean srsXmlStyle = true;
-    private int serviceLevel = COMPLETE; //if not set then it should be complete.   
+
+	/**
+	 * 
+	 * @uml.property name="serviceLevel" multiplicity="(0 1)"
+	 */
+	private int serviceLevel = COMPLETE; //if not set then it should be complete.
+
 
     /**
      * WFS Data Transfer Object constructor.  does nothing
@@ -118,39 +139,44 @@ public final class WFSDTO implements DataTransferObject {
         return (service == null) ? 0 : service.hashCode();
     }
 
-    /**
-     * Provides access to the Service DTO object.
-     * 
-     * <p>
-     * Note well that this is the internal ServiceDTO object used by the WFSDTO
-     * - any changes made to the result of this method will change the state
-     * of this WFSDTO object.
-     * </p>
-     *
-     * @return ServericeDTO used by this WFSDTO
-     */
-    public ServiceDTO getService() {
-        return service;
-    }
+	/**
+	 * Provides access to the Service DTO object.
+	 * 
+	 * <p>
+	 * Note well that this is the internal ServiceDTO object used by the WFSDTO
+	 * - any changes made to the result of this method will change the state
+	 * of this WFSDTO object.
+	 * </p>
+	 * 
+	 * @return ServericeDTO used by this WFSDTO
+	 * 
+	 * @uml.property name="service"
+	 */
+	public ServiceDTO getService() {
+		return service;
+	}
 
-    /**
-     * Set this WFS Data Tranfer Object to use the provided Service DTO.
-     * 
-     * <p>
-     * A copy of the provided dto is made.
-     * </p>
-     *
-     * @param dto ServiceDTO used to configure this WFSDTO
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
-    public void setService(ServiceDTO dto) {
-        if (dto == null) {
-            throw new NullPointerException("ServiceDTO requrired");
-        }
+	/**
+	 * Set this WFS Data Tranfer Object to use the provided Service DTO.
+	 * 
+	 * <p>
+	 * A copy of the provided dto is made.
+	 * </p>
+	 * 
+	 * @param dto ServiceDTO used to configure this WFSDTO
+	 * 
+	 * @throws NullPointerException DOCUMENT ME!
+	 * 
+	 * @uml.property name="service"
+	 */
+	public void setService(ServiceDTO dto) {
+		if (dto == null) {
+			throw new NullPointerException("ServiceDTO requrired");
+		}
 
-        service = dto;
-    }
+		service = dto;
+	}
+
 
     /**
      * isGmlPrefixing purpose.
@@ -165,18 +191,21 @@ public final class WFSDTO implements DataTransferObject {
         return gmlPrefixing;
     }
 
-    /**
-     * setGmlPrefixing purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setGmlPrefixing(boolean b) {
-        gmlPrefixing = b;
-    }
+	/**
+	 * setGmlPrefixing purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="gmlPrefixing"
+	 */
+	public void setGmlPrefixing(boolean b) {
+		gmlPrefixing = b;
+	}
+
     
 	/**
 	 * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
@@ -193,28 +222,35 @@ public final class WFSDTO implements DataTransferObject {
 	 * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
 	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
 	 * style.  
-	 *
+	 * 
 	 * @param doXmlStyle whether the srs style should be xml or not.
+	 * 
+	 * @uml.property name="srsXmlStyle"
 	 */
 	public void setSrsXmlStyle(boolean doXmlStyle) {
 		this.srsXmlStyle = doXmlStyle;
 	}
 
-    /**
-     * Access serviceLevel property.
-     *
-     * @return Returns the serviceLevel.
-     */
-    public int getServiceLevel() {
-        return serviceLevel;
-    }
+	/**
+	 * Access serviceLevel property.
+	 * 
+	 * @return Returns the serviceLevel.
+	 * 
+	 * @uml.property name="serviceLevel"
+	 */
+	public int getServiceLevel() {
+		return serviceLevel;
+	}
 
-    /**
-     * Set serviceLevel to serviceLevel.
-     *
-     * @param serviceLevel The serviceLevel to set.
-     */
-    public void setServiceLevel(int serviceLevel) {
-        this.serviceLevel = serviceLevel;
-    }
+	/**
+	 * Set serviceLevel to serviceLevel.
+	 * 
+	 * @param serviceLevel The serviceLevel to set.
+	 * 
+	 * @uml.property name="serviceLevel"
+	 */
+	public void setServiceLevel(int serviceLevel) {
+		this.serviceLevel = serviceLevel;
+	}
+
 }

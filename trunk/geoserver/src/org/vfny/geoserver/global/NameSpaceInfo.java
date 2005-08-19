@@ -34,16 +34,39 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
  * @version $Id: NameSpaceInfo.java,v 1.11 2004/06/26 19:51:24 jive Exp $
  */
 public class NameSpaceInfo extends GlobalLayerSupertype {
-	
+
+	/**
+	 * 
+	 * @uml.property name="prefix" multiplicity="(0 1)"
+	 */
 	private String prefix;
+
+	/**
+	 * 
+	 * @uml.property name="uri" multiplicity="(0 1)"
+	 */
 	private String uri;
+
 	private boolean _default;
 
-    /** ref to parent set of datastores. */
-    private Data data;
+	/**
+	 * ref to parent set of datastores.
+	 * 
+	 * @uml.property name="data"
+	 * @uml.associationEnd inverse="defaultNameSpace:org.vfny.geoserver.global.Data" multiplicity=
+	 * "(0 1)"
+	 */
+	private Data data;
 
-    /** metadata */
-    private Map meta;
+	/**
+	 * metadata
+	 * 
+	 * @uml.property name="meta"
+	 * @uml.associationEnd elementType="java.lang.Object" qualifier="key:java.lang.String
+	 * java.lang.Object" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private Map meta;
+
 
     /**
      * NameSpaceConfig constructor.
@@ -169,31 +192,36 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
         return _default;
     }
 
-    /**
-     * getPrefix purpose.
-     * 
-     * <p>
-     * returns the namespace's prefix.
-     * </p>
-     *
-     * @return String the namespace's prefix
-     */
-    public String getPrefix() {
-        return prefix;
-    }
+	/**
+	 * getPrefix purpose.
+	 * 
+	 * <p>
+	 * returns the namespace's prefix.
+	 * </p>
+	 * 
+	 * @return String the namespace's prefix
+	 * 
+	 * @uml.property name="prefix"
+	 */
+	public String getPrefix() {
+		return prefix;
+	}
 
-    /**
-     * getUri purpose.
-     * 
-     * <p>
-     * returns the namespace's uri.
-     * </p>
-     *
-     * @return String the namespace's uri.
-     */
-    public String getUri() {
-        return uri;
-    }
+	/**
+	 * getUri purpose.
+	 * 
+	 * <p>
+	 * returns the namespace's uri.
+	 * </p>
+	 * 
+	 * @return String the namespace's uri.
+	 * 
+	 * @uml.property name="uri"
+	 */
+	public String getUri() {
+		return uri;
+	}
+
     
     /**
      * Implementation of getURI.
@@ -219,31 +247,35 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
         _default = b;
     }
 
-    /**
-     * setPrefix purpose.
-     * 
-     * <p>
-     * stores the namespace's prefix.
-     * </p>
-     *
-     * @param string the namespace's prefix.
-     */
-    public void setPrefix(String string) {
-        prefix=string;
-    }
+	/**
+	 * setPrefix purpose.
+	 * 
+	 * <p>
+	 * stores the namespace's prefix.
+	 * </p>
+	 * 
+	 * @param string the namespace's prefix.
+	 * 
+	 * @uml.property name="prefix"
+	 */
+	public void setPrefix(String string) {
+		prefix = string;
+	}
 
-    /**
-     * setUri purpose.
-     * 
-     * <p>
-     * Stores the namespace's uri.
-     * </p>
-     *
-     * @param string the namespace's uri.
-     */
-    public void setUri(String string) {
-        uri=string;
-    }
+	/**
+	 * setUri purpose.
+	 * 
+	 * <p>
+	 * Stores the namespace's uri.
+	 * </p>
+	 * 
+	 * @param string the namespace's uri.
+	 * 
+	 * @uml.property name="uri"
+	 */
+	public void setUri(String string) {
+		uri = string;
+	}
 
     /**
      * Implement containsMetaData.

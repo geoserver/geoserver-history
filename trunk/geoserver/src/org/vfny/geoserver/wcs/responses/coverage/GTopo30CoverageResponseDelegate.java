@@ -26,10 +26,15 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
  */
 public class GTopo30CoverageResponseDelegate implements
 		CoverageResponseDelegate {
+
 	/**
 	 * the grid coverage to be used in this repsonse
+	 * 
+	 * @uml.property name="sourceCoverage"
+	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private GridCoverage2D sourceCoverage;
+
 	private String outputFormat=null;;
 
 	/* (non-Javadoc)
