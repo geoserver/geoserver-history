@@ -727,7 +727,7 @@ dataMaxY="";
 			CRSAuthorityFactory crsFactory = FactoryFinder
 				.getCRSAuthorityFactory("EPSG", new Hints(
 					Hints.CRS_AUTHORITY_FACTORY,
-					DefaultFactory.class));
+					CRSAuthorityFactory.class));
 			CoordinateReferenceSystem crsTheirData = (CoordinateReferenceSystem) crsFactory
 				.createCoordinateReferenceSystem(newSrs);
 

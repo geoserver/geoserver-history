@@ -16,17 +16,14 @@ import java.util.Map;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
-import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeFactory;
+import org.geotools.feature.FeatureTypeBuilder;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.FactoryFinder;
 import org.geotools.styling.Style;
-import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
@@ -929,9 +926,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 }
 
                 try {
-                    ft = FeatureTypeFactory.newFeatureType(attributes, typeName, namespace);
+                    ft = FeatureTypeBuilder.newFeatureType(attributes, typeName, namespace);
                 } catch (SchemaException ex) {
-                } catch (FactoryConfigurationError ex) {
                 }
             }
         }
@@ -1144,8 +1140,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     	{
     		//make and add to hash
     		//result = CRS.decode(/*"EPSG:"+*/String.valueOf(epsg));
-			CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG", null);
-			result=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:"+epsg);
+			//CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
+			result = CRS.decode("EPSG:"+epsg); //(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:"+epsg);
 
     		SRSLookup.put( new Integer(epsg)  , result);
     	}

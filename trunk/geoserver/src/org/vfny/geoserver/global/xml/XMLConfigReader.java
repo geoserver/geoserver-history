@@ -1342,7 +1342,7 @@ public class XMLConfigReader {
 		try {
 			cv.setCrs(
 					crsFactory.createFromWKT(
-							ReaderUtils.getAttribute(envelope, "crs", true).replaceAll("'","\"")
+							ReaderUtils.getAttribute(envelope, "crs", false).replaceAll("'","\"")
 					)
 			);
 		} catch (FactoryException e) {

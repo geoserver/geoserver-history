@@ -25,11 +25,13 @@ import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
+import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.geometry.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.factory.epsg.DefaultFactory;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
@@ -190,7 +192,7 @@ public class TypesEditorAction extends ConfigAction {
         try {
         	//CoordinateReferenceSystem crsTheirData = CRS.decode(srs);
         	//CoordinateReferenceSystem crsLatLong   = CRS.decode("EPSG:4326");  // latlong
-			CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", null);
+			CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
 			CoordinateReferenceSystem crsTheirData=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem(srs);
 			CoordinateReferenceSystem crsLatLong=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:4326");
 

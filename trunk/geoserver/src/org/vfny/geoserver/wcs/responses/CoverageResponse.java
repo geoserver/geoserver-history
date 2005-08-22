@@ -39,15 +39,14 @@ import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.coverage.operation.Resampler2D;
 import org.geotools.coverage.processing.GridCoverageProcessor2D;
+import org.geotools.coverage.processing.operation.Resample;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.FactoryFinder;
-//import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.geotools.referencing.operation.transform.LinearTransform1D;
-import org.geotools.resources.GCSUtilities;
+import org.geotools.resources.image.CoverageUtilities;
 import org.geotools.util.NumberRange;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
@@ -240,7 +239,7 @@ public class CoverageResponse implements Response {
 								value = crs;
 							} else {
 								//CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-								CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG", null);
+								CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
 								CoordinateReferenceSystem crs=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:4326");
 								value = crs;
 							}
@@ -557,7 +556,7 @@ public class CoverageResponse implements Response {
 				 * view associated. In such a case it creates a new coverage based on this non
 				 * geophysic view, otherwise it keeps the original view as it is provided.
 				 */
-				if(GCSUtilities.hasTransform(sampleDimensions))
+				if(CoverageUtilities.hasTransform(sampleDimensions))
 					subCoverage= new GridCoverage2D(
 						meta.getName(),
 						result,
@@ -599,7 +598,7 @@ public class CoverageResponse implements Response {
 	        		subCoverage.getEnvelope(), new boolean[] { false, true });
 
 	        //getting the needed operation
-	        Resampler2D.Operation op = new Resampler2D.Operation();
+	        Resample op = new Resample();
 
 	        //getting parameters
 	        ParameterValueGroup group = op.getParameters();

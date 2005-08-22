@@ -433,7 +433,7 @@ public class WCSCapsTransformer extends TransformerBase {
 			try {
 				if( crs != null && crs.getName() != null && crs.getName().getCode() != null && !crs.getName().getCode().equalsIgnoreCase("WGS 84") ) {
 					//final CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-					final CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, DefaultFactory.class));
+					final CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
 					final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(null);
 /*					final CoordinateReferenceSystem targetCRS = crsFactory.createFromWKT(
 				    		"GEOGCS[\"WGS 84\",\n" 								 + 
