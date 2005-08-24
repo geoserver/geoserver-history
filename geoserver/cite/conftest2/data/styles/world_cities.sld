@@ -15,7 +15,7 @@
 
             <Rule>  
             
-                 <MaxScaleDenominator>14000000</MaxScaleDenominator>
+             
 		
 
 		  <PointSymbolizer>
@@ -51,7 +51,7 @@
             </Rule>
             
 <Rule>
-            <MaxScaleDenominator>6000000</MaxScaleDenominator>
+     
             <TextSymbolizer>
             
 	    		    <Label>
@@ -79,6 +79,8 @@
 	    		    <Fill>
 	    			<CssParameter name="fill">#000000</CssParameter>
 	    		    </Fill>
+	    		    
+	    		    
 	</TextSymbolizer>
 
             </Rule>
