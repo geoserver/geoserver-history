@@ -9,8 +9,10 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
+import org.geotools.factory.FactoryFinder;
 import org.geotools.filter.FunctionExpression;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
@@ -20,6 +22,7 @@ import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
+import org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -251,7 +254,30 @@ public class WFSCapsTransformer extends TransformerBase {
 
             String resultFormat = "ResultFormat";
             start(resultFormat);
-            element("GML2", null);
+            
+            //DJB: okay, I'm adding all the supported formats
+            //     we probably need a "strict cite" conformance option
+            //     somewhere in the config files. (default = not scrict)
+            //     Strict meaning only have "GML2" in here.
+            //     Alternatively, we could have options for "supported output formats"
+            //     in the config and people could check off the extras they want
+            //     to allow.
+            
+           //  element("GML2", null); // old implementation
+            
+            FeatureResponseDelegateProducerSpi spi;
+            Iterator spi_it = FactoryFinder.factories(FeatureResponseDelegateProducerSpi.class);
+
+            while (spi_it.hasNext()) 
+            {
+                spi = (FeatureResponseDelegateProducerSpi) spi_it.next();
+                Set formats = spi.getSupportedFormats();
+                Iterator it =formats.iterator();
+                while (it.hasNext())
+                {
+                	element( (String)it.next(), null);
+                }
+            }
 
             //So cite does not even like this.  Which is really lame, since it
             //validates according to our definition for now, and because the cite
