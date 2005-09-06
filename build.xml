@@ -51,6 +51,7 @@
 	<property name="dir.conf" value="${basedir}/conf" />
 	<property name="dir.release" value="${basedir}/release" />
 	<property name="dir.webinf" value="${basedir}/WEB-INF" />
+	<property name="dir.jarcopy" value="${dir.server}/geoserver/WEB-INF/lib" />
 
 	<!-- secondary directories -->
 	<property name="dir.data" value="${dir.conf}" />
@@ -353,6 +354,18 @@
 		<delete dir="${dir.server}/geoserver" />
 		<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
 	</target>
+	
+	<!-- copies the geoserver jar from lib to the server WEB-INF/lib directory -->
+	<target name="move_jar" depends="all"
+	    description="Copies the Geoserver jar from">
+		
+		<copy todir="${dir.jarcopy}">
+			<fileset dir="${dir.lib}">
+				<include name="geoserver.jar"/>
+			</fileset>
+		</copy>
+   	</target>
+		
 	<!-- Prepares embedded server, server.built isn't working, so users must
       run this manually -->
 	<target name="prepareEmbedded" depends="init" unless="server.built">
