@@ -28,11 +28,12 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.property.PropertyDataStore;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
-import org.geotools.referencing.crs.GeographicCRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.crs.GeographicCRS;
 
 
 /**
@@ -108,8 +109,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
     /**
      * Since the PropertyDataStore does not provides CRS support, we force
      * feature types to be in WGS84
-     */
-    static CoordinateReferenceSystem FORCED_WGS84 = GeographicCRS.WGS84;
+     */ 
+    static CoordinateReferenceSystem FORCED_WGS84 = DefaultGeographicCRS.WGS84;
 
     /** User temp dir, where to store .property files containing cite data */
     private File tempDir;
