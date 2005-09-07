@@ -51,7 +51,7 @@ import java.util.Iterator;
 import javax.xml.transform.TransformerException;
 import org.geotools.filter.Filter;
 import org.geotools.gml.producer.GeometryTransformer;
-import org.geotools.referencing.crs.CoordinateReferenceSystem;
+
 import org.geotools.renderer.style.Style2D;
 import org.geotools.styling.RasterSymbolizer;
 import org.geotools.styling.TextSymbolizer;
