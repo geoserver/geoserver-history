@@ -21,7 +21,7 @@ import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 
-import org.geotools.referencing.crs.GeographicCRS;
+
 import org.geotools.styling.Style;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
