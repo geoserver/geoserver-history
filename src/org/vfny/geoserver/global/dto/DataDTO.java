@@ -273,6 +273,8 @@ public final class DataDTO implements DataTransferObject {
 
     /**
      * Retrive Map of FeatureTypeInfoDTO by "dataStoreID.typeName".
+     * 
+     *   DJB: I recommend that you use this.getKey() as the key for this hash
      *
      * @return Map of FeatureTypeInfoDTO by "dataStoreID.typeName"
      */
@@ -344,6 +346,8 @@ public final class DataDTO implements DataTransferObject {
      * <p>
      * The dataStoreID used for the map must be in datastores.
      * </p>
+     * 
+     *   DJB: I recommend that you use this.getKey() as the key for this hash
      *
      * @param map of FeatureTypeInfoDTO by "dataStoreID.typeName"
      *

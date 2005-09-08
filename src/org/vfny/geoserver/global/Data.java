@@ -698,7 +698,7 @@ SCHEMA:
 
         while (i.hasNext()) {
             FeatureTypeInfoDTO fti = (FeatureTypeInfoDTO) i.next();
-            tmp.put(fti.getName(), fti.clone());
+            tmp.put(fti.getKey(), fti.clone());   //DJB:  changed to getKey() from getName() which was NOT unique!
         }
 
         dto.setFeaturesTypes(tmp);
