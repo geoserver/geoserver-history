@@ -16,8 +16,11 @@ import javax.xml.transform.TransformerException;
 
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureResults;
-import org.geotools.gml.producer.FeatureTransformer;
-import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
+//SISfixed - use local version
+//import org.geotools.gml.producer.FeatureTransformer;
+//import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
+import org.vfny.geoserver.geotools.gml.producer.FeatureTransformer;
+import org.vfny.geoserver.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;

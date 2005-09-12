@@ -190,12 +190,12 @@ public class Log4JFormatter extends Formatter {
         if (!logger.getUseParentHandlers()) {
             logger.setLevel(filterLevel);
 
-            Handler handler = logger.getHandlers()[0];
-
-            //this should be the right handler, if set with geoserver.
-            if (handler != null) {
-                handler.setLevel(filterLevel);
-            }
+          	//SISfixed - getHandlers() can return a zero-sized array
+            Handler[] handlers = logger.getHandlers();
+            if (handlers != null)
+            	if( handlers.length > 0 )
+                //this should be the right handler, if set with geoserver.
+                handlers[0].setLevel(filterLevel);            
         }
 
         for (Logger parent = logger; parent.getUseParentHandlers();) {
