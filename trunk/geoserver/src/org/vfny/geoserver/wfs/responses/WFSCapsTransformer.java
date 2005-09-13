@@ -7,10 +7,15 @@ package org.vfny.geoserver.wfs.responses;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import org.geotools.factory.FactoryFinder;
 import org.geotools.filter.FunctionExpression;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
@@ -20,6 +25,7 @@ import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
+import org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -260,7 +266,29 @@ public class WFSCapsTransformer extends TransformerBase {
 
             String resultFormat = "ResultFormat";
             start(resultFormat);
-            element("GML2", null);
+            //DJB: okay, I'm adding all the supported formats
+            //     we probably need a "strict cite" conformance option
+            //     somewhere in the config files. (default = not scrict)
+            //     Strict meaning only have "GML2" in here.
+            //     Alternatively, we could have options for "supported output formats"
+            //     in the config and people could check off the extras they want
+            //     to allow.
+            
+           //  element("GML2", null); // old implementation
+            
+            FeatureResponseDelegateProducerSpi spi;
+            Iterator spi_it = FactoryFinder.factories(FeatureResponseDelegateProducerSpi.class);
+
+            while (spi_it.hasNext()) 
+            {
+                spi = (FeatureResponseDelegateProducerSpi) spi_it.next();
+                Set formats = spi.getSupportedFormats();
+                Iterator it =formats.iterator();
+                while (it.hasNext())
+                {
+                	element( (String)it.next(), null);
+                }
+            }
 
             //So cite does not even like this.  Which is really lame, since it
             //validates according to our definition for now, and because the cite
@@ -492,7 +520,22 @@ public class WFSCapsTransformer extends TransformerBase {
         	 start(prefix +"Functions");
         	 start(prefix +"Function_Names");
         	 java.util.Iterator it = org.geotools.factory.FactoryFinder.factories(FunctionExpression.class);
+             //Sort them up for easier visual inspection
+        	 SortedSet sortedFunctions = new TreeSet(new Comparator(){
+            	 	public int compare(Object o1, Object o2){
+                        String n1 = ((FunctionExpression) o1).getName();
+                        String n2 = ((FunctionExpression) o2).getName();
+                        return n1.toLowerCase().compareTo(n2.toLowerCase());
+            	 	}
+             });
+             while (  it.hasNext()   )
+             {
+            	sortedFunctions.add(it.next()); 
+             }
+             
+             //write them now that functions are sorted by name
              FunctionExpression exp = null;
+             it = sortedFunctions.iterator();
              while (  it.hasNext()   )
              {
                  FunctionExpression fe = (FunctionExpression) it.next();

@@ -333,10 +333,13 @@
         additional elements representing other output formats. -->
    <xsd:element name="GML2" type="wfs:EmptyType"/>
    <xsd:element name="GML2-GZIP" type="wfs:EmptyType"/>
+   <xsd:element name="SHAPE-ZIP" type="wfs:EmptyType"/>
+
    <xsd:complexType name="ResultFormatType">
       <xsd:sequence maxOccurs="unbounded">
          <xsd:element ref="wfs:GML2"/>
          <xsd:element ref="wfs:GML2-GZIP" minOccurs="0"/>
+         <xsd:element ref="wfs:SHAPE-ZIP" minOccurs="0"/>
       </xsd:sequence>
    </xsd:complexType>
 

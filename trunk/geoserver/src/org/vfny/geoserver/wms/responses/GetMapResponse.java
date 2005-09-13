@@ -16,12 +16,12 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.factory.FactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.FactoryFinder;
 import org.geotools.styling.Style;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -116,7 +116,7 @@ public class GetMapResponse implements Response {
         	//construct the crs object
         	try {
         		//mapcrs = CRS.decode(request.getCrs());
-    			CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
+    			CRSAuthorityFactory crsFactory = org.geotools.referencing.FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
     			mapcrs = CRS.decode("EPSG:4326"); //(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem(request.getCrs());
         	}
         	catch (Exception e)

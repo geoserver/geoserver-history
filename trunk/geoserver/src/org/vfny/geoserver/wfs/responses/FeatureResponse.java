@@ -21,6 +21,7 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Transaction;
+import org.geotools.factory.FactoryFinder;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.IllegalAttributeException;
@@ -35,10 +36,12 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi;
 import org.vfny.geoserver.wfs.Query;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
 import org.vfny.geoserver.wfs.requests.FeatureWithLockRequest;
+import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 
 
 /** 
@@ -154,6 +157,29 @@ public class FeatureResponse implements Response {
     public void execute(Request req) throws ServiceException {
         execute((FeatureRequest) req);
     }
+    /** 
+     * use the SPI mechanism to get a FeatureResponseDelegate for the
+     * specified output format.
+     * 
+     * @param outputFormat
+     * @return
+     */
+    public static FeatureResponseDelegate getDelegate(String outputFormat) 
+               throws NoSuchElementException
+	{
+    	FeatureResponseDelegateProducerSpi spi;
+         Iterator spi_it = FactoryFinder.factories(FeatureResponseDelegateProducerSpi.class);
+
+         while (spi_it.hasNext()) 
+         {
+             spi = (FeatureResponseDelegateProducerSpi) spi_it.next();
+             if (spi.canProduce(outputFormat))
+             {
+             	return spi.createFeatureDelegateProducer(outputFormat);
+             }             		
+         }
+         throw new NoSuchElementException();
+	}
 
     /**
      * Performs a getFeatures, or getFeaturesWithLock (using gt2 locking ).
@@ -184,7 +210,7 @@ public class FeatureResponse implements Response {
         String outputFormat = request.getOutputFormat();
 
         try {
-            delegate = FeatureResponseDelegateFactory.encoderFor(outputFormat);
+            delegate = FeatureResponse.getDelegate(outputFormat);
         } catch (NoSuchElementException ex) {
             throw new WfsException("output format: " + outputFormat + " not "
                 + "supported by geoserver", ex);

@@ -83,12 +83,7 @@ public class GIFOutputStream extends FilterOutputStream
                                              { 40, 232,  24, 200},
                                              {168, 104, 136,  72}};
 
-	/**
-	 * 
-	 * @uml.property name="errorStatus" multiplicity="(0 1)"
-	 */
-	protected int errorStatus = NO_ERROR;
-
+   protected int     errorStatus = NO_ERROR;
 
   /** DOCUMENT ME! */
   private static final Logger LOGGER = Logger.getLogger(
@@ -153,13 +148,7 @@ public class GIFOutputStream extends FilterOutputStream
       super(out);
    }
 
-	/**
-	 * 
-	 * @uml.property name="errorStatus"
-	 */
-	public int getErrorStatus() {
-		return errorStatus;
-	}
+   public int getErrorStatus() { return errorStatus; }
 
    public void write(Image image) throws IOException
    {

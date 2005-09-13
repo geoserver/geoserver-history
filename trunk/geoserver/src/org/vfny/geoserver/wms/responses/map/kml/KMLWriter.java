@@ -51,7 +51,7 @@ import java.util.Iterator;
 import javax.xml.transform.TransformerException;
 import org.geotools.filter.Filter;
 import org.geotools.gml.producer.GeometryTransformer;
-//import org.geotools.referencing.crs.CoordinateReferenceSystem;
+
 import org.geotools.renderer.style.Style2D;
 import org.geotools.styling.RasterSymbolizer;
 import org.geotools.styling.TextSymbolizer;
@@ -74,27 +74,19 @@ public class KMLWriter extends OutputStreamWriter {
      * a number formatter set up to write KML legible numbers
      */
     private static DecimalFormat formatter;
-
-	/**
-	 * Resolves the FeatureTypeStyle info per feature into a Style2D object.
-	 * 
-	 * @uml.property name="styleFactory"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
-	private SLDStyleFactory styleFactory = new SLDStyleFactory();
-
+    
+    /**
+     * Resolves the FeatureTypeStyle info per feature into a Style2D object.
+     */
+    private SLDStyleFactory styleFactory = new SLDStyleFactory();
     
     //TODO: calcuate a real value based on image size to bbox ratio, as image size has no meanining for KML yet this is a fudge.
     private double scaleDenominator = 1;
-
-	/**
-	 * Handles the outputing of geometries as GML
-	 * 
-	 * @uml.property name="transformer"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
-	private GeometryTransformer transformer;
- 
+    
+    /**
+     * Handles the outputing of geometries as GML
+     **/
+    private GeometryTransformer transformer; 
     
     static {
         Locale locale = new Locale("en", "US");
@@ -117,15 +109,10 @@ public class KMLWriter extends OutputStreamWriter {
         //minimun fraction digits to 0 so they get not rendered if not needed
         formatter.setMinimumFractionDigits(0);
     }
-
-	/**
-	 * Holds the map layer set, styling info and area of interest bounds
-	 * 
-	 * @uml.property name="mapContext"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
-	private WMSMapContext mapContext;
-
+    
+    
+    /** Holds the map layer set, styling info and area of interest bounds */
+    private WMSMapContext mapContext;
     
     /**
      * Creates a new KMLWriter object.
