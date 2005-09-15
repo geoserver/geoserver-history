@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<project name="fromsis" default="default" basedir=".">
+    <description>
+    	fromsis description
+    </description>
+
+    <target name="copy_from_sis" description="copy_from_sis --> description">
+		<copy todir="${dir.dst}/${dir.tocopy}" overwrite="true">
+			<fileset dir="${dir.src}/${dir.tocopy}"></fileset>
+		</copy>
+    </target>
+	
+    <target name="default" description="default --> description">
+    	<property name="dir.src" value="../../../eclipse_workspace"/>
+    	<property name="dir.dst" value="."/>
+
+    	<antcall target="copy_from_sis">
+    		<param name="dir.tocopy" value="SISlib"/></antcall>
+
+    	<delete file="${dir.dst}/eclipse_workspace.zip" />
+    	<zip destfile="${dir.dst}/eclipse_workspace.zip">
+    		<!--    	
+    	<zip destfile="${dir.dst}/eclipse_workspace.zip" basedir="${dir.src}">
+    		<zipfileset dir="${dir.src}" excludes="*.zip"/>
+    		-->
+    		<zipfileset dir="${dir.src}" includes="SISCapsuleDataStore/*"/>
+    		<zipfileset dir="${dir.src}" includes="SISDataop/*"/>
+    		<zipfileset dir="${dir.src}" includes="SISGeomUtils/*"/>
+			<zipfileset dir="${dir.src}" includes="SISGTMeta/*"/>
+			<zipfileset dir="${dir.src}" includes="SISGTUtils/*"/>
+			<zipfileset dir="${dir.src}" includes="SISlib/*"/>
+			<zipfileset dir="${dir.src}" includes="SISMeta/*"/>
+			<zipfileset dir="${dir.src}" includes="SISPostgisDataStore/*"/>
+			<zipfileset dir="${dir.src}" includes="SISSecurity/*"/>
+			<zipfileset dir="${dir.src}" includes="SISSecurityDataStore/*"/>
+			<zipfileset dir="${dir.src}" includes="SISServer/*"/>
+			<zipfileset dir="${dir.src}" includes="SISUtils/*"/>
+    	</zip>        
+    	
+<!--    	
+    	<antcall target="copy_from_sis">
+    		<param name="dir.tocopy" value="SISCapsuleDataStore"/></antcall>
+    	<antcall target="copy_from_sis">
+    		<param name="dir.tocopy" value="SISDataop"/></antcall>
+    	<antcall target="copy_from_sis">
+    		<param name="dir.tocopy" value="SISGeomUtils"/></antcall>
+    	<antcall target="copy_from_sis">
+    		<param name="dir.tocopy" value="SISGTMeta"/></antcall>
+    	<antcall target="copy_from_sis">
+    		<param name="dir.tocopy" value="SISGTUtils"/></antcall>
+    	<antcall target="copy_from_sis">
+    		<param name="dir.tocopy" value="SISlib"/></antcall>
+    	<antcall target="copy_from_sis">
+    		<param name="dir.tocopy" value="SISMeta"/></antcall>
+    	<antcall target="copy_from_sis">
+    		<param name="dir.tocopy" value="SISPostgisDataStore"/></antcall>
+    	<antcall target="copy_from_sis">
+    		<param name="dir.tocopy" value="SISSecurity"/></antcall>
+    	<antcall target="copy_from_sis">
+    		<param name="dir.tocopy" value="SISSecurityDataStore"/></antcall>
+    	<antcall target="copy_from_sis">
+    		<param name="dir.tocopy" value="SISServer"/></antcall>
+    	<antcall target="copy_from_sis">
+    		<param name="dir.tocopy" value="SISUtils"/></antcall>
+-->    		
+    </target>    	 
+</project>
+
+
