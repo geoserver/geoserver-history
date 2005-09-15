@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE server
+    PUBLIC "-//JBoss//DTD MBean Service 3.2//EN"
+    "http://www.jboss.org/j2ee/dtd/jboss-service_3_2.dtd">
+<server>
+	<loader-repository>@target.name@:loader=@target.name@.ear</loader-repository>
+	
+	<mbean code="it.ama_mi.sis.framework.j2ee.SISModuleLoaderService"
+		name="@target.name@:service=SISModule,name=tasmania_cities">
+		<attribute name="SISInstanceName">@target.name@</attribute>
+		<attribute name="Id">tasmania_cities</attribute>
+		<attribute name="DataStoreProperties">
+		  url=file:../server/sis/deploy/@target.name@.ear/geoserver.war/data/featureTypes/tasmania_cities/tasmania_cities.shp
+		</attribute>
+		<depends>@target.name@:service=SISMetaSpaceService</depends>
+	</mbean>
+</server>

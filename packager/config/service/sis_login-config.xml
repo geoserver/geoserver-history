@@ -1,0 +1,35 @@
+<policy>
+<application-policy name="@target.name@_SECURITY_DOMAIN">
+  <authentication>
+    <login-module code="it.ama_mi.sis.framework.security.j2ee.MetaSpaceLoginModule"
+                  flag="required">
+      <module-option name="metaSpacePath">root:@target.name@metauser</module-option>
+    </login-module>
+
+<!--
+    <login-module code="org.jboss.security.ClientLoginModule"
+                  flag="optional">
+    </login-module>
+-->
+
+<!--
+    <login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule"
+                  flag="optional">
+      <module-option name="usersProperties">usersb64.properties</module-option>
+      <module-option name="hashAlgorithm">MD5</module-option>
+      <module-option name="hashEncoding">base64</module-option>
+      <module-option name="unauthenticatedIdentity">nobody</module-option>
+    </login-module>
+-->
+
+<!--
+    <login-module code="org.jboss.security.auth.spi.IdentityLoginModule"
+                  flag="required">
+      <module-option name="principal">Authenticated</module-option>
+      <module-option name="roles">Browser</module-option>
+    </login-module>
+-->
+  </authentication>
+</application-policy>
+</policy>
+

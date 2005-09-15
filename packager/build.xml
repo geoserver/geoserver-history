@@ -1,0 +1,272 @@
+<?xml version="1.0"?>
+<project name="packager" default="default" basedir=".">
+    <description>
+    	packager description
+    </description>
+
+    <target name="buildall" description="buildall --> description">
+    	<property name="dir.sis" value="../fromsis/SISlib"/>
+    	<property name="dir.gt" value="../geoserver/lib"/>
+    	<property name="file.gs.war" value="../geoserver/build/geoserver.war"/>
+    	<property name="dir.config" value="./config"/>
+    	
+    	<property name="call.after" value="nullafter"/>    	
+    	
+    	<property name="dir.target" value="../release/${target.name}"/>
+    	<property name="dir.target.ear" value="${dir.target}/${target.name}.ear"/>
+    	<property name="dir.target.sar" value="${dir.target}/${target.name}.deployer"/>
+    	<property name="dir.target.gs" value="${dir.target.ear}/geoserver.war"/>
+    	<property name="target.gs.context-root" value="${target.name}"/>
+    	
+    	<delete dir="${dir.target}" includeemptydirs="true" />
+    	<mkdir dir="${dir.target.ear}/META-INF" />
+    	<mkdir dir="${dir.target.sar}/META-INF" />    	
+    	<mkdir dir="${dir.target.gs}" />    	
+    	<unjar src="${file.gs.war}" dest="${dir.target.gs}" />
+		<copy todir="${dir.target.ear}/META-INF">
+			<fileset dir="${dir.config}/application/META-INF"/>
+		    <filterset>
+				<filter token="target.name" value="${target.name}"/>
+				<filter token="target.display-name" value="${target.display-name}"/>
+				<filter token="target.gs.context-root" value="${target.gs.context-root}"/>
+		    </filterset>
+		</copy>
+    	<manifest file="${dir.target.ear}/META-INF/MANIFEST.MF" />
+		<copy todir="${dir.target.sar}/META-INF">
+			<fileset dir="${dir.config}/service/META-INF"/>
+		    <filterset>
+				<filter token="target.name" value="${target.name}"/>
+				<filter token="target.display-name" value="${target.display-name}"/>
+				<filter token="target.gs.context-root" value="${target.gs.context-root}"/>
+		    </filterset>
+		</copy>
+        <manifest file="${dir.target.sar}/META-INF/MANIFEST.MF" />
+		<copy todir="${dir.target.sar}">
+			<fileset dir="${dir.config}/service" excludes="*.jar"/>
+		    <filterset>
+				<filter token="target.name" value="${target.name}"/>
+				<filter token="target.display-name" value="${target.display-name}"/>
+				<filter token="target.gs.context-root" value="${target.gs.context-root}"/>
+		    </filterset>
+		</copy>
+		<copy todir="${dir.target.sar}">
+			<fileset dir="${dir.config}/service" includes="*.jar"/>
+		</copy>
+		<copy todir="${dir.target.gs}/WEB-INF" overwrite="true">
+			<fileset dir="${dir.config}/geoserver/WEB-INF"/>
+		    <filterset>
+				<filter token="target.name" value="${target.name}"/>
+				<filter token="target.display-name" value="${target.display-name}"/>
+				<filter token="target.gs.context-root" value="${target.gs.context-root}"/>
+		    </filterset>
+		</copy>
+    	<!-- Left off to test it's deployment inside SISLocator
+    	<copy todir="${dir.target.sar}" file="${dir.sis}/sisgeom-utils.jar"/>
+    	-->
+    	<copy todir="${dir.target.sar}" file="${dir.sis}/sisgt-utils.jar"/>
+    	<copy todir="${dir.target.sar}" file="${dir.sis}/sisgt-meta.jar"/>
+    	<copy todir="${dir.target.sar}" file="${dir.sis}/sismeta-core.jar"/>
+    	<copy todir="${dir.target.sar}" file="${dir.sis}/sismetadict-security.jar"/>
+    	<copy todir="${dir.target.sar}" file="${dir.sis}/sismetadict-structure.jar"/>
+    	<copy todir="${dir.target.sar}" file="${dir.sis}/sissecurity-core.jar"/>
+    	<copy todir="${dir.target.sar}" file="${dir.sis}/sisserver-core.jar"/>
+    	<copy todir="${dir.target.sar}" file="${dir.sis}/sisgt-postgisdatastore.jar"/>
+    	<copy todir="${dir.target.sar}" file="${dir.sis}/sisgt-securitydatastore.jar"/>
+    	<copy todir="${dir.target.sar}" file="${dir.sis}/sismetadict-dataop.jar"/>
+    	<copy todir="${dir.target.sar}" file="${dir.sis}/sisgt-dataop.jar"/>
+
+    	<!-- Substitute GeoServer's GT JARs, with the ones from our current version -->    	
+        <copy todir="${dir.target.sar}">
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="gt2*.jar" />
+        </copy>
+    	<delete>
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="gt2*.jar" />
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="geoapi*.jar" />
+		</delete>
+        <copy todir="${dir.target.sar}" overwrite="true">
+        	<fileset dir="${dir.gt}" includes="gt2*.jar" />
+        	<fileset dir="${dir.gt}" includes="geoapi*.jar" />
+        </copy>
+    	
+    	<!-- remove some JARs that will conflict with JBoss' ones -->
+    	<delete>
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="junit.jar" />
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="servlet.jar" />
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="xalan.jar" />
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="ki*.jar" />
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="a2jruntime.jar" />
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="lucene.jar" />
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="xml-apis.jar" />
+			<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="xercesImpl.jar" />
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="*jetty*/**/*" />
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="commons-logging.jar" />
+		</delete>
+
+    	<!-- remove some JARs that will conflict with ones already installed -->
+    	<delete>
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="jai*.jar" />
+		</delete>
+
+    	<!-- remove some JARs we already copied into the sar -->
+    	<delete>
+    		<fileset dir="${dir.target.gs}/WEB-INF/lib" includes="jdbcPostgres.jar" />
+		</delete>
+
+    	<!-- remove unused and/or ill behaving DataStores -->
+    	<delete>
+    		<fileset dir="${dir.target.sar}" includes="gt2-vpf.jar" />
+    	</delete>
+	
+    	<!-- remove some data directories really too big -->
+    	<delete dir="${dir.target.gs}/data/coverages/gtopo_sample" 
+    		includeemptydirs="true" failonerror="false"/>
+    	
+        <antcall target="${call.after}" />    	
+    </target>
+
+    <target name="nullafter" description="The default noop call.after">
+    </target>
+	
+    <target name="default" description="default --> description">
+    	<antcall target="sisdemo" />
+    </target>
+
+    <target name="sis_wcsSVN" description="sis_wcsSVN --> description">
+    	<property name="file.gs.war" 
+    		value="../../eclipse_workspace_geoserver/wcs/release/geoserver.war"/>    	
+    	<antcall target="sis" />
+    </target>
+	
+    <target name="sis" description="sis --> description">
+    	<property name="target.name" value="sis"/>
+    	<property name="target.display-name" value="SIS Sistema Informativo Strade"/>
+    	<antcall target="buildall" />
+    </target>
+
+    <target name="sisdemo" description="sisdemo --> description">
+    	<property name="target.name" value="sisdemo"/>
+    	<property name="target.display-name" value="SIS Demo"/>
+    	<property name="target.gs.context-root" value="sisdemo"/>
+    	<property name="call.after" value="sisdemoafter"/>
+    	<antcall target="buildall" />
+    </target>
+
+    <target name="sisdemoafter" description="--> description">
+		<copy todir="${dir.target.sar}">
+			<fileset dir="${dir.config}/sisdemo/service"/>
+		    <filterset>
+				<filter token="target.name" value="${target.name}"/>
+				<filter token="target.display-name" value="${target.display-name}"/>
+				<filter token="target.gs.context-root" value="${target.gs.context-root}"/>
+		    </filterset>
+		</copy>
+		<copy todir="${dir.target.gs}/WEB-INF" overwrite="true">
+			<fileset dir="${dir.config}/sisdemo/geoserver/WEB-INF"/>
+		    <filterset>
+				<filter token="target.name" value="${target.name}"/>
+				<filter token="target.display-name" value="${target.display-name}"/>
+				<filter token="target.gs.context-root" value="${target.gs.context-root}"/>
+		    </filterset>
+		</copy>
+		<copy todir="${dir.target.gs}/data" overwrite="true">
+			<fileset dir="${dir.config}/sisdemo/geoserver/data"/>
+		</copy>
+    </target>
+
+    <target name="plain_wcsSVN" description="plain_wcsSVN --> description">
+    	<property name="target.name" value="geoserver"/>
+    	<property name="target.display-name" value="GeoServer"/>
+    	<property name="target.gs.context-root" value="geoserver"/>
+    	<property name="call.after" value="plainafter"/>
+    	<property name="file.gs.war" 
+    		value="../../eclipse_workspace_geoserver/wcs/release/geoserver.war"/>    	
+    	<antcall target="buildall" />
+    </target>
+
+    <target name="plainafter" description="--> description">
+		<copy todir="${dir.target.sar}" overwrite="true">
+			<fileset dir="${dir.config}/plain/service"/>
+		    <filterset>
+				<filter token="target.name" value="${target.name}"/>
+				<filter token="target.display-name" value="${target.display-name}"/>
+				<filter token="target.gs.context-root" value="${target.gs.context-root}"/>
+		    </filterset>
+		</copy>    	
+		<copy todir="${dir.target.gs}/WEB-INF" overwrite="true">
+			<fileset dir="${dir.config}/plain/geoserver/WEB-INF"/>
+		    <filterset>
+				<filter token="target.name" value="${target.name}"/>
+				<filter token="target.display-name" value="${target.display-name}"/>
+				<filter token="target.gs.context-root" value="${target.gs.context-root}"/>
+		    </filterset>
+		</copy>
+    	<delete>
+			<fileset dir="${dir.target.sar}/sissecurity-service.xml"/>
+    	</delete>
+    </target>
+	
+    <target name="osap" description="--> description">
+    	<property name="target.name" value="osap"/>
+    	<property name="target.display-name" value="OSAP Occupazione Suolo Pubblico"/>
+    	<property name="target.gs.context-root" value="osap"/>
+    	<property name="call.after" value="osapafter"/>
+    	<antcall target="buildall" />
+    </target>
+
+    <target name="osapafter" description="--> description">
+		<copy todir="${dir.target}">
+			<fileset dir="${dir.config}/osap/root"/>
+		</copy>
+		<copy todir="${dir.target.ear}">
+			<fileset dir="${dir.config}/osap/application"/>
+		</copy>
+		<copy todir="${dir.target.ear}/META-INF" overwrite="true">
+			<fileset dir="${dir.config}/osap/application/META-INF"/>
+		    <filterset>
+				<filter token="target.name" value="${target.name}"/>
+				<filter token="target.display-name" value="${target.display-name}"/>
+				<filter token="target.gs.context-root" value="${target.gs.context-root}"/>
+		    </filterset>
+		</copy>
+		<copy todir="${dir.target.sar}">
+			<fileset dir="${dir.config}/osap/service"/>
+		</copy>
+    	
+    	<!-- per integrare anche OSAPDocs dopo aver fatto girare il suo build -->
+    	<property name="dir.osapdocs.war" 
+    		value="../../eclipse_workspace_OSAP/OSAPDocs/release/osapdocs/osapdocs.war"/>
+    	<property name="target.gs.osapdocs_basepath" value="osapdocs"/>
+    	<property name="target.gs.osapdocs_printdesign" value="osapdocs/printdesign"/>
+    	
+		<copy todir="${dir.target.gs}/WEB-INF" overwrite="true">
+			<fileset dir="${dir.config}/osap/geoserver/WEB-INF"/>
+		    <filterset>
+				<filter token="target.name" value="${target.name}"/>
+				<filter token="target.display-name" value="${target.display-name}"/>
+				<filter token="target.gs.context-root" value="${target.gs.context-root}"/>
+				<filter token="target.gs.osapdocs_basepath" value="${target.gs.osapdocs_basepath}"/>
+				<filter token="target.gs.osapdocs_printdesign" value="${target.gs.osapdocs_printdesign}"/>		    	
+		    </filterset>
+		</copy>
+		<copy todir="${dir.target.gs}/data" overwrite="true">
+			<fileset dir="${dir.config}/osap/geoserver/data"/>
+		</copy>
+    	<delete>
+			<fileset dir="${dir.target.gs}/data/validation"/>
+    	</delete>
+    	<copy todir="${dir.target.sar}" 
+    		file="${dir.osapdocs.war}/WEB-INF/lib/itext.jar"/>
+    	<copy todir="${dir.target.sar}" 
+    		file="${dir.osapdocs.war}/WEB-INF/lib/jasperreports.jar"/>
+    	<copy todir="${dir.target.sar}" 
+    		file="${dir.osapdocs.war}/WEB-INF/lib/jdt-compiler.jar"/>
+    	<copy todir="${dir.target.sar}" 
+    		file="${dir.osapdocs.war}/WEB-INF/lib/osapdocs.jar"/>
+    	<mkdir dir="${dir.target.gs}/${target.gs.osapdocs_basepath}/printdesign" />    	
+		<copy todir="${dir.target.gs}/${target.gs.osapdocs_basepath}/printdesign">
+			<fileset dir="${dir.osapdocs.war}/printdesign"/>
+		</copy>
+    </target>
+</project>
+
+

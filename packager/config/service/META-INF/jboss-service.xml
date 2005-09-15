@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE server
+    PUBLIC "-//JBoss//DTD MBean Service 3.2//EN"
+    "http://www.jboss.org/j2ee/dtd/jboss-service_3_2.dtd">
+<server>
+	<loader-repository>@target.name@:loader=@target.name@.ear</loader-repository>
+	
+	<mbean code="it.ama_mi.sis.framework.j2ee.SISMetaSpaceService"
+		name="@target.name@:service=SISMetaSpaceService">
+		<depends>jboss.j2ee:service=EARDeployment,url='@target.name@.ear'</depends>		
+		<attribute name="ContextName">@target.gs.context-root@</attribute>
+	</mbean>
+
+   <mbean code="org.jboss.security.auth.login.DynamicLoginConfig"
+      name="@target.name@:service=DynamicLoginConfig">
+      <attribute name="AuthConfig">sis_login-config.xml</attribute>
+      <!-- The service which supports dynamic processing of login-config.xml
+         configurations.
+      -->
+      <depends optional-attribute-name="LoginConfigService">
+         jboss.security:service=XMLLoginConfig
+      </depends>
+      <!-- Optionally specify the security mgr service to use when
+         this service is stopped to flush the auth caches of the domains
+         registered by this service.
+      -->
+      <depends optional-attribute-name="SecurityManagerService">
+         jboss.security:service=JaasSecurityManager
+      </depends>
+	  
+	  <depends>@target.name@:service=SISMetaSpaceService</depends>
+   </mbean>
+</server>
