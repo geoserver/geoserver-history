@@ -3,18 +3,26 @@
     PUBLIC "-//JBoss//DTD MBean Service 3.2//EN"
     "http://www.jboss.org/j2ee/dtd/jboss-service_3_2.dtd">
 <server>
-	<loader-repository>@target.name@:loader=@target.name@.ear</loader-repository>
+	<loader-repository>sisdemo:loader=sisdemo.ear</loader-repository>
 	
 	<mbean code="it.ama_mi.sis.framework.j2ee.SISModuleLoaderService"
-		name="@target.name@:service=SISModule,name=@target.name@metauser">
-		<attribute name="SISInstanceName">@target.name@</attribute>
-		<attribute name="Id">@target.name@metauser</attribute>
+		name="sisdemo:service=SISModule,name=sisdemometauser">
+		<attribute name="SISInstanceName">sisdemo</attribute>
+		<attribute name="Id">sisdemometauser</attribute>
 		<attribute name="MetaSpaceLoaderClassName">
 			it.ama_mi.sis.framework.security.geotools.DataStoreSecurityMetaSpaceLoader
 		</attribute>
 		<attribute name="DataStoreProperties">
-			directory=../server/sis/deploy/@target.name@.ear/geoserver.war/data/featureTypes/security/
+			directory=../server/sis/deploy/sisdemo.ear/geoserver.war/data/featureTypes/security/
+<!--
+			dbtype=postgis
+			host=localhost
+			port=5432
+			database=sis
+			user=postgres
+			passwd=postgres
+-->
 		</attribute>
-		<depends>@target.name@:service=SISMetaSpaceService</depends>
+		<depends>sisdemo:service=SISMetaSpaceService</depends>
 	</mbean>
 </server>
