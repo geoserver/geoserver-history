@@ -73,7 +73,7 @@
 <logic:equal name="dataDataStoresEditorForm"
    		     property='<%= "paramKey[" + ctr + "]"%>'
              value="passwd">
-          <html:password property='<%= "paramValues[" + ctr + "]"%>' size="12" maxlength="10"/>
+          <html:password property='<%= "paramValues[" + ctr + "]"%>' size="12"/>
 </logic:equal>			             
 	  </td>
 	</tr>

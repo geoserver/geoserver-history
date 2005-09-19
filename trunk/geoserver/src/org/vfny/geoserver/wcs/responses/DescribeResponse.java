@@ -246,8 +246,8 @@ public class DescribeResponse implements Response {
 				    		"  PRIMEM[\"Greenwich\", 0.0,\n" 					 +
 				    		"    AUTHORITY[\"EPSG\",\"8901\"]],\n"				 + 
 				    		"  UNIT[\"degree\", 0.017453292519943295],\n"		 + 
-				    		"  AXIS[\"Lon\", EAST],\n"							 +
 				    		"  AXIS[\"Lat\", NORTH],\n"							 +
+				    		"  AXIS[\"Lon\", EAST],\n"							 +
 				    		"AUTHORITY[\"EPSG\",\"4326\"]]");
 					
 					

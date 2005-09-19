@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -204,8 +205,8 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 
             //ALEX: Do not need to set Alpha Blending ..... simply we don't draw the background :-)
             
-            //int type = AlphaComposite.SRC_OVER;
-            //graphic.setComposite(AlphaComposite.getInstance(type, 0.0f));
+            int type = AlphaComposite.SRC_OVER;
+            graphic.setComposite(AlphaComposite.getInstance(type, 0.0f));
         }
         
         Rectangle paintArea = new Rectangle(width, height);

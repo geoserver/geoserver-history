@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+
 /**
  * Data Transfer Object used to represent GeoServer Catalog information.
  * 
