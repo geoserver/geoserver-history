@@ -228,7 +228,7 @@
 				<filter token="target.gs.context-root" value="${target.gs.context-root}"/>
 		    </filterset>
 		</copy>
-		<copy todir="${dir.target.sar}">
+		<copy todir="${dir.target.sar}" overwrite="true">
 			<fileset dir="${dir.config}/osap/service"/>
 		</copy>
     	
