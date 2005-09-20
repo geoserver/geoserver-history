@@ -6,13 +6,10 @@ package org.vfny.geoserver.wfs.responses;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -20,12 +17,11 @@ import java.util.zip.ZipOutputStream;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureStore;
+
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.NameSpaceInfo;
-import org.vfny.geoserver.wfs.requests.FeatureRequest;
+
 
 
 /**
@@ -87,8 +83,10 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.wfs.responses");
 
-    /** will be true if Shape-GZIP output format was requested */
-    private boolean compressOutput = false;
+    String tempDir = null;
+    
+    /** will be true if Shape-ZIP output format was requested */
+    //private boolean compressOutput = false;	// already in ZIP by default
 
     /**
      * the results of a getfeature request wich this object will encode as
@@ -111,8 +109,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      * @return true if <code>outputFormat</code> is Shape or Shape-GZIP
      */
     public boolean canProduce(String outputFormat) {
-        return "Shape".equalsIgnoreCase(outputFormat)
-        || "SHAPE-ZIP".equalsIgnoreCase(outputFormat);
+        return "SHAPE".equalsIgnoreCase(outputFormat);
     }
 
     /**
@@ -125,30 +122,22 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      * @throws IOException DOCUMENT ME!
      */
     public void prepare(String outputFormat, GetFeatureResults results)
-        throws IOException {
-        this.compressOutput = "SHAPE-ZIP".equalsIgnoreCase(outputFormat);
+        throws IOException 
+    {
+        //this.compressOutput = true;
         this.results = results;
 
-        FeatureRequest request = results.getRequest();
-        GeoServer config = request.getWFS().getGeoServer();
-
-        //transformer = new FeatureTransformer();
-        //FeatureTypeNamespaces ftNames = transformer.getFeatureTypeNamespaces();
-        int maxFeatures = request.getMaxFeatures();
-        int serverMaxFeatures = config.getMaxFeatures();
-
-        if (maxFeatures > serverMaxFeatures) {
-            maxFeatures = serverMaxFeatures;
+        if (results == null) {
+            throw new IllegalStateException(
+                "It seems prepare() has not succeed. <results> is null");
         }
-
-        StringBuffer typeNames = new StringBuffer();
-        FeatureResults features;
-        FeatureTypeInfo meta = null;
-        NameSpaceInfo namespace;
-        int resCount = results.getResultsetsCount();
-        Map ftNamespaces = new HashMap(resCount);
-
-        //TODO: move the majority of the encode stuff here.
+        
+        tempDir = System.getProperty("java.io.tmpdir");
+        
+        if (tempDir == null) {
+        	throw new NullPointerException("<tempDir> is null. " +
+        			"There is a problem with the java.io.tempdir directory.");
+        }
     }
 
     /**
@@ -159,7 +148,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      * @return DOCUMENT ME!
      */
     public String getContentType(GeoServer gs) {
-        return "application/zip"; //gs.getMimeType();
+        return "application/zip";
     }
 
     /**
@@ -168,11 +157,17 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      * @return DOCUMENT ME!
      */
     public String getContentEncoding() {
-        return "zip"; //return compressOutput ? "gzip" : null;
+        return "zip";
     }
 
     /**
-     * DOCUMENT ME!
+     * encode()
+     * 
+     * Description:
+     * This will save out the features to a shapefile using the ShapefileWriter and 
+     * DbaseWriter that live underneath the ShapefileDataStore. Once they are written out, 
+     * they are read back in and streamed out to a zip output stream to the user.
+     * Each entry, .shp and .dbf, are read in separately but bundled in the same zip file.
      *
      * @param output DOCUMENT ME!
      *
@@ -181,71 +176,106 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      * @throws IllegalStateException DOCUMENT ME!
      */
     public void encode(OutputStream output)
-        throws ServiceException, IOException {
+        throws ServiceException, IOException 
+    {
         if (results == null) {
             throw new IllegalStateException(
                 "It seems prepare() has not been called"
                 + " or has not succeed");
         }
 
-        File tempZip = new File(System.getProperty("java.io.tmpdir"),
-                "shape.zip");
-        FileOutputStream tempFileOS = new FileOutputStream(tempZip);
-        ZipOutputStream zipOut = null;
-        LOGGER.info("zip out location is: " + tempZip);
-        zipOut = new ZipOutputStream(output);
+        ZipOutputStream zipOut = new ZipOutputStream(output);
         output = zipOut;
-
+        
         List resultsList = results.getFeatures();
         FeatureResults[] featureResults = (FeatureResults[]) resultsList
             .toArray(new FeatureResults[resultsList.size()]);
         FeatureReader reader = featureResults[0].reader();
         String name = featureResults[0].getSchema().getTypeName();
-        File file = new File(System.getProperty("java.io.tmpdir"), name);
-        ShapefileDataStore sfds = new ShapefileDataStore(file.toURL());
-        sfds.createSchema(featureResults[0].getSchema());
-
-        FeatureStore store = (FeatureStore) sfds.getFeatureSource(name);
-        store.addFeatures(reader);
-
-        //zipOut.
+        
+        String namePath = tempDir+name;
+        
+        try {
+	        writeOut(name, tempDir, featureResults, reader);
+        } catch (IOException e)
+        {
+        	throw e;
+        }
+        
+        // BEGIN RELOADING and ZIPPING
+        
+        // read in and write out .shp
         ZipEntry entry = new ZipEntry(name + ".shp");
         zipOut.putNextEntry(entry);
-
-        try {
-            LOGGER.info("first feature is: "
-                + store.getFeatures().reader().next());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        //put this junk in a real method, get rid of silly code duplication.
-        InputStream is = new FileInputStream(file.getAbsolutePath() + ".shp");
-        int c;
-
-        while (-1 != (c = is.read())) {
-            output.write(c);
-        }
-
+        InputStream shp_in = new FileInputStream(namePath + ".shp");
+		readInWriteOutBytes(output, shp_in);
         zipOut.closeEntry();
+        shp_in.close();
+        
+        // read in and write out .dbf
         entry = new ZipEntry(name + ".dbf");
         zipOut.putNextEntry(entry);
-
-        InputStream dbf = new FileInputStream(file.getAbsolutePath() + ".dbf");
-        c = 0;
-
-        while (-1 != (c = dbf.read())) {
-            output.write(c);
-        }
-
+        InputStream dbf_in = new FileInputStream(namePath + ".dbf");
+        readInWriteOutBytes(output, dbf_in);
         zipOut.closeEntry();
-
-        if (zipOut != null) {
-            zipOut.finish();
-            zipOut.flush();
-        }
-
-        //don't think we actually want this here...
+        dbf_in.close();
+        
+        zipOut.finish();
+        zipOut.flush();
         zipOut.close();
     }
+
+	/**
+	 * readInWriteOutBytes
+	 * 
+	 * Description:
+	 * Reads in the bytes from the input stream and writes them to the output stream.
+	 * 
+	 * @param output
+	 * @param in
+	 * @throws IOException
+	 */
+	private void readInWriteOutBytes(OutputStream output, InputStream in) throws IOException {
+		int c;
+
+        while (-1 != (c = in.read())) {
+            output.write(c);
+        }
+	}
+    
+    
+    /**
+     * writeOldWay
+     * 
+     * Description:
+     * Write the old way Chris had it. It creates a ShapefileDataStore to write out the
+     * shapefile, which we don't think is quick, O(n^2): addFeature() loads all stored 
+     * features and then adds the next one and writes out again, or memory friendly: loading
+     * all thos features.
+     * TODO: This theory needs testing.
+     * 
+     * In the end, a shapefile is written to disk.
+     * 
+     * @param name
+     * @param featureResults
+     * @param reader
+     * @throws IOException
+     */
+    private void writeOut(String name,
+    						String tempDir, 
+				    		FeatureResults[] featureResults, 
+				    		FeatureReader reader) 
+    throws IOException
+    {
+    	//File file = new File(System.getProperty("java.io.tmpdir"), name+".zip");
+    	File file = new File(tempDir, name/*+".zip"*/);
+    	
+    	ShapefileDataStore sfds = new ShapefileDataStore(file.toURL());
+    	sfds.createSchema(featureResults[0].getSchema());
+    	
+    	FeatureStore store = (FeatureStore) sfds.getFeatureSource(name);
+    	store.addFeatures(reader);
+    }
+  
+    
 }

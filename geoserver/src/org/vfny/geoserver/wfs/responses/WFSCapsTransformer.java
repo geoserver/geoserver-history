@@ -7,9 +7,12 @@ package org.vfny.geoserver.wfs.responses;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.geotools.factory.FactoryFinder;
@@ -509,7 +512,22 @@ public class WFSCapsTransformer extends TransformerBase {
         	 start(prefix +"Functions");
         	 start(prefix +"Function_Names");
         	 java.util.Iterator it = org.geotools.factory.FactoryFinder.factories(FunctionExpression.class);
+             //Sort them up for easier visual inspection
+        	 SortedSet sortedFunctions = new TreeSet(new Comparator(){
+            	 	public int compare(Object o1, Object o2){
+                        String n1 = ((FunctionExpression) o1).getName();
+                        String n2 = ((FunctionExpression) o2).getName();
+                        return n1.toLowerCase().compareTo(n2.toLowerCase());
+            	 	}
+             });
+             while (  it.hasNext()   )
+             {
+            	sortedFunctions.add(it.next()); 
+             }
+             
+             //write them now that functions are sorted by name
              FunctionExpression exp = null;
+             it = sortedFunctions.iterator();
              while (  it.hasNext()   )
              {
                  FunctionExpression fe = (FunctionExpression) it.next();
