@@ -1,0 +1,25 @@
+quickWMS Javascript classes for WMS clients 
+Coding guidelines 
+_________________________________________________________________________________
+
+This is a working list of recommendations for writing the javascript
+code in the quickWMS library. It should be mandatory but as you might
+have seen even I have sometimes disregard it ... let's do our best to 
+follow it. Any suggestions are welcomed : pedro@inovagis.org 
+_________________________________________________________________________________
+
+- All objects methods and properties are case sensitive and should 
+  start with a lower case letter and when applicable, in the case 
+  of composed names with two or more English words, the following 
+  words should have the first character in upper case (known as 
+  lowerCamelCase, e.g. startService or percentDone). 
+
+- All changes should be commented and signed.
+
+- All parameters functions calls and definitions should have a space 
+  between the comma and parameter name or value 
+  e.g. you should do 
+          function myFunction(param1, param2, param3)
+  and NOT 
+          function myFunction(param1,param2,param3)
+  the same thing when calling the function.

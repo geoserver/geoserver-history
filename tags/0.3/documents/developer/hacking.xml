@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
+<article>
+  <title>Hacking</title>
+
+  <para>This document is focused on actually working with the GeoServer source
+  code. It is recommended that you read the <ulink
+  url="build_docs.html">Building</ulink> section first, and should also at
+  least glance at the <ulink url="design.html">Design</ulink> document. It
+  contains hints on debugging, testing, as well as code conventions, and hints
+  on working with GeoTools, our primary library.</para>
+
+  <section>
+    <title>Debugging</title>
+
+    <para>We don't want to tell you how you should debug here, as that's
+    obviously a developer preference, but there are a few non-obvious hints
+    about debugging that we wanted to get here. Many GeoServer developers just
+    make use of log statements and java stack traces. Others can not work
+    without a real debugger. For hints on running a GeoServer war in debug
+    mode in Eclipse using Tomcat see the <ulink
+    url="http://docs.codehaus.org/display/GEOS/Home">wiki</ulink>. </para>
+
+    <para>GeoServer comes configured to run quickly and is geared to users. A
+    few things can be done to make GeoServer more friendly for debugging. The
+    first is to turn the verbose exceptions on. This will make it so any
+    ServiceException that GeoServer returns will include the Java stack trace.
+    All requests used to do this, and then we realized that for even common
+    errors it looked like something went completely wrong, from the
+    perspective an end user. So we turned it into a configuration option. This
+    can be set in the web admin tool (Welcome -&gt; Config -&gt; Server) or in
+    the services.xml file. If the errors returned are really nasty, like from
+    the Servlet Container and not normal GeoServer service exceptions, then we
+    recommend editing the web.xml file in WEB-INF. This contains a
+    'serviceStrategy' param. This is the strategy used by AbstractServlet to
+    return the response. SPEED is the default, which writes directly to the
+    output. The problem is that any errors that take place during the actual
+    writing will not return proper ServiceExceptions, as GeoServer will have
+    already started writing. This is why the very nasty errors show up. To get
+    a better error set it to FILE or BUFFER. FILE is more scalable, writing
+    all responses to a temp file first, and if successful that is returned to
+    the client. BUFFER just writes to memory, so it is faster, but memory
+    bound. We were going to make this user configurable, but realized that you
+    should only need non SPEED strategy if there are programming errors. If
+    everything is working correctly then the writing of the response should
+    not be the source of errors. Note that for version 1.2.3 we have
+    configured verboseExceptions to also set the service strategy to FILE when
+    set to true. So just setting that to true should produce much better
+    errors, we are just including this for information on how things work, and
+    for past versions.</para>
+
+    <para>The next hint is logging. GeoServer uses the logger that was added
+    to Java 1.4. For debugging we recommend starting with FINE, and if that
+    does not reveal the errors, put it to FINER. FINEST generally will reveal
+    no more, as GeoTools will fill the screen with log statements from Factory
+    construction, and little else of value is added. GeoServer uses a console
+    logger, which means that when used in a Servlet Container it will write to
+    whatever the container is configured to write to. So consult your
+    container's documentation about logs.</para>
+  </section>
+
+  <section>
+    <title>Testing</title>
+
+    <para>There are two main types of testing in GeoServer. The first is
+    automated unit tests, found in the test/ directory of the source tree. The
+    second is conformance testing, for which we now make use of two tools, the
+    OGC's <ulink url="http://cite.occamlab.com/tsOGC/">Conformance and
+    Interoperability Testing and Evaluation (CITE)</ulink> tests, and a more
+    flexible, easier to use, and open source test suite developed by the
+    <ulink url="http://acegis.net/">ACE-GIS</ulink> project. </para>
+
+    <para>Unit tests should be written for all code in GeoServer. Our unit
+    tests are based on Junit, and are contained in the test folder. For more
+    information on writing junit tests explore the <ulink
+    url="http://junit.sourceforge.net/">junit.sourceforge.net</ulink>. By far
+    the easiest way to get acquainted with how to write tests is to look at
+    the current tests, and model your tests after those. To run all the tests
+    you can run the 'unit-all' target in ant. There are several targets to run
+    groups of tests, such as 'unit-requests', and the 'unit' target allows you
+    to pass in a package and class of a single test to run with the
+    'test.name' parameter. We also recommend doing test driven development,
+    that is, if you are going to write a new interface or method then you
+    write the test first, and then the code to solve the exact problem. For
+    more information on test driven development <ulink
+    url="http://www.testdriven.com/modules/news/">go here</ulink>.</para>
+
+    <para>Unit tests should be run as often as possible, the conformance tests
+    should ideally be run before every release. Between the two is testing
+    GeoServer by hand, issuing a number of requests to ensure that nothing
+    major was broken. To do this we highly recommend using the 'demo' section
+    of the web administration tool. This allows you to easily issue 'post'
+    requests, by just filling them into the form. And you can also put
+    pre-configured requests that you use a lot in the 'demo' folder. See the
+    <ulink url="???">section</ulink> on the CITE folder for more information
+    about flexible build configurations. We recommend making use of these for
+    joint debugging, so that developers are assured of having exactly the same
+    set up. </para>
+
+    <para>As for testing actual web based requests, the <ulink
+    url="http://cite.occamlab.com/tsOGC/">CITE tests</ulink> are the most
+    complete, and GeoServer is required to pass all for any non-beta release.
+    The cite/ directory is especially useful for setting up the tests on
+    PostGIS. The other DataStores will not work as well, not because we are
+    not extremely confident in them, much more because CITE is extremely rigid
+    about the data that must be used and implicitly imposes a number of
+    requirements, for example the server must support more than 10 characters
+    for attributes, which shapefiles do not support (at least not without
+    implementing non open standard helper files). For a more flexible (and
+    open source) tests, we highly recommend the <ulink
+    url="http://150.128.82.168/webACEGIS/ACEGIS_Test_Engines.htm">WMS and WFS
+    suites</ulink> developed as part of the ACE-GIS project. They are
+    available online here (link). And if you are interested in the source
+    files and running them yourselves, then email the list, as we have access
+    to them, and indeed are looking to make them available for download on the
+    GeoServer community site. </para>
+  </section>
+
+  <section>
+    <title>Coding Conventions</title>
+
+    <para>GeoServer follows the Sun's <ulink
+    url="http://java.sun.com/docs/codeconv/html/CodeConvTOC.doc.html">coding
+    standards</ulink>. Developers need not all develop exactly to the
+    standard, as we make use of Jalopy (link), a source code formatter. It
+    lays out any valid Java source code according to configurable rules to
+    meet a coding style without putting a formatting burden on individual
+    developers. It is required to set up Jalopy, which is easily integrated
+    with most IDE's (and available on the command line). The coding convention
+    for GeoServer is contained in the 'documents' folder:
+    jalopy.geoserver.xml. It will put on the correct header for you, in
+    addition to formatting all the code. If there are parts of the code that
+    you do not want formatted with Jalopy then you can insert //J++ and //J--
+    before and after the blocks of code that should not be jalopied. </para>
+
+    <para>One thing Jalopy does not do for you is get rid of .* imports. Code
+    is much more clear if there are no mass imports, in the GeoServer code
+    base we like every class used in the file to be explicitly named. This is
+    easily done with most modern compilers, such as eclipse (organize
+    imports). Please make use of it. </para>
+
+    <para>Also note that every method should have a javadoc comment. Please do
+    not leave any undocumented, as some other developer will have to clean up
+    your omissions, and that's a great way to make developers hate life. Most
+    people do not like documentation, especially not when it is someone else's
+    code. Each class should also have a good comment explaining what it does,
+    along with @version and @author tags. For the version tag we recommend
+    letting subversion control it, if creating a new class then just put $Id: hacking.xml 2976 2004-10-13 23:25:25Z cholmes $
+    for the version, and it will be formatted when first committed. </para>
+
+    <para>One last convention is commit comments. When committing code the -m
+    tag allows you to specify a message. Please make use of this with an
+    informative message about the code you are committing. It helps out
+    immensely, especially when other bugs may be introduced. Make a comment
+    for every commit, and try to use complete, useful sentences. </para>
+  </section>
+
+  <section>
+    <title>Working with GeoTools2</title>
+
+    <para>Since much GeoServer work actually takes place in GeoTools we
+    thought offering some advice on how to work in GeoTools might be in order.
+    First completely read the Developer's Guide, as we do not want to
+    replicate information there, we just want to give some GeoServer specific
+    tips that are not found there. The first is building, and moving jars to
+    GeoServer. Any module or plugin can be individually built using the
+    <emphasis>maven jar:install</emphasis> command. This is useful especially
+    for the plug-ins, as a new DataStore can easily be modified, built, and
+    plugged right in to GeoServer. To move from GeoTools to GeoServer the jar
+    will be located in <filename>target/</filename>. Generally the names of
+    the jars in GeoServer are a bit different from what GeoTools calls them,
+    be sure to rename to the GeoServer name so that they do not conflict.
+    Putting the jars in the geoserver/lib directory of the source tree will
+    insure that any subsequent build will pick up the jars. But that can be a
+    bit cumbersome, rebuilding the war every single time, so one way we have
+    found around that is to copy the jars directly to a running GeoServer
+    instance, under the <filename>webapps/geoserver/WEB-INF/lib</filename>
+    directory. Then merely restarting the servlet container will pick up the
+    changes. This can even be done for the main module of gt2. </para>
+
+    <para>The second is where new code should live. GeoTools work begs
+    extensive review from the whole team of developers, which many new
+    GeoServer developers have found a bit frustrating. Others simply aren't
+    initially comfortable with the size of the GeoTools code base and have not
+    studied it enough to know where their improvements should go. For this
+    reason GeoServer often allows major work to take place in GeoServer first,
+    and later rolled in to GeoTools. We've had good success with this
+    approach, as it gets the initial requirements of GeoServer out and
+    working, and then allows the GeoTools team to evaluate from a working
+    implementation, refactoring as appropriate, instead of designing from
+    scratch. The one thing we do advise though is that we will only
+    temporarily allow work that should go in GeoTools in GeoServer. It is
+    extremely important that we do not fork core functionality from GeoTools,
+    that instead we continue to roll it in, or else GeoServer will be stuck
+    with it's own feature model, which is exactly what we wanted to avoid in
+    joining with GeoTools. So if you do work GeoServer on code that should be
+    in GeoTools, your functionality will not be rolled in to an official
+    release until it is properly in GeoTools. This practice ensures that the
+    changes are done right, reviewed by a number of people, instead of just
+    focused on very narrow needs. </para>
+
+    <para>Also note that work for DataStores is done entirely in GeoTools. If
+    you are simply interested in adding a new data format to GeoServer then
+    your work will take place <emphasis>entirely</emphasis> in GeoTools. Read
+    the DataStore tutorial in GeoTools for information on how to write a new
+    one. GeoServer will be more than happy to test out new DataStores, we have
+    started allowing additional downloads of more experimental versions for
+    users to try out. Once it is all tested we roll it in to the main
+    GeoServer distribution. Doing this work in GeoTools ensures that other
+    GeoTools based projects, such as uDig, can make use of the work as
+    well.s</para>
+  </section>
+</article>

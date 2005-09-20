@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html><head>
+<!--
+/*
+* Project quickWMS: Generic JavaScript WMS Client 
+* quickWMS - multiple layer request according to OpenGIS Web Mapping Specification with auxiliary window for map navigation
+* Author : Pedro Pereira Gonçalves (pedro@inovagis.org)
+* File : map.htm
+* Version : 0.01
+* Last Change : 2003-10-27
+* Dependencies : WMSbrowsers.js, WMSlayer.js, WMSmap.js, WMStools.js, WMSquick.js, WMSnavigation.js, 
+* Future Developments : 
+* Tested on : Netscape 7.0, IE 6.0
+* History :
+    2003-10-27 : File Created
+*/
+-->
+<link rel="stylesheet" href="help.css">
+
+<link rel="stylesheet" href="inc/quickWMS.css">
+<script language="Javascript" src="inc/WMSbrowsers.js"></script>
+<script language="Javascript" src="inc/WMSlayer.js"></script>
+<script language="Javascript" src="inc/WMSmap.js"></script>
+<script language="Javascript" src="inc/WMStools.js"></script>
+<script language="Javascript" src="inc/WMSquick.js"></script>
+<script language="Javascript" src="inc/WMSnavigation.js"></script>
+
+
+<title>WMS Client</title>
+</head>
+<body>
+
+<script language='Javascript'>
+// WMS servers - list here other OGC compliant map servers 
+// Changes:	2003-10-24 : Added http:// to the DEMIS and ESRIN server urls 
+var demisWMS = "http://www.demis.nl/mapserver/request.asp";
+var esaWMS = "http://mapserv2.esrin.esa.it/cubestor/cubeserv/cubeserv.cgi";
+var geoserverWMS = "http://localhost/geoserver/wms?"
+
+	function map_onSelecting (wmsLayer, x1, y1, x2, y2){ 
+		// you can use the variables sent 
+		window.status= x1 + "," +y1 + ":" +x2 + "," +y2; 
+		return true; 
+	} 
+	
+	function map_onSelection (wmsLayer, x1, y1, x2, y2){ 
+		// or the class properties 	
+		alert( "final: " + wmsLayer.slBox[0]+ "," +wmsLayer.slBox[1] + ":" +wmsLayer.slBox[2] + "," +wmsLayer.slBox[3]); 
+		return true; 
+	} 
+
+	function writeMaps(){
+		var map = new quickWMS(-132, 20, -60, 55);
+		
+		// events 
+		map.onError = function (layer){alert("Unable to load " + layer.caption + "\n from server " + layer.wmsUrl)}
+		
+		//map.addLayer(esaWMS, "WORLD_MODIS_1KM:MapAdmin", "1.0.0", "Modis Mosaic");		
+		//map.addLayer(demisWMS, "Coastlines", "1.0.0", "World Coastlines");			
+		map.addLayer(geoserverWMS, "Img_Sample", "1.1.1");
+		map.addLayer(geoserverWMS, "states", "1.1.1");
+		//map.layers[0].format="GIF";
+		map.layers[0].styles="raster";
+		map.layers[0].format="image/gif";	
+		map.layers[1].styles="population";
+		map.layers[1].format="image/gif";	
+		map.writeDOM("myMap", 300, 250, 400, 200, "background-color:white;border-style:solid;border-width:1;border-color:black;");
+		map.toolbar = new toolBar(map);
+		map.toolbar.writeDOM(350,226,true);		
+
+		// add a navigation window
+		var nav = new navigationWMS(-180,-90,180,90);
+		//nav.addLayer(demisWMS, "Coastlines,Builtup+areas", "1.0.0", "Coastlines");
+		//nav.addLayer(esaWMS, "WORLD_MODIS_1KM:MapAdmin", "1.0.0", "Modis Mosaic");
+		nav.addLayer(geoserverWMS, "Img_Sample", "1.1.1");
+		nav.layers[0].styles="raster";
+		nav.layers[0].format="image/gif";	
+		nav.writeDOM("myNavMap", map.left-205, map.top+40, 200, 100, "background-color:white; border-style:solid; border-width:1; border-color:black;");
+		nav.addListener(map);	
+		nav.refresh();												
+		map.updateBBox (-132, 20, -60, 55) ;
+		// add the events 
+		map.onSelecting = map_onSelecting; 
+		map.onSelection = map_onSelection; 
+		}
+writeMaps()	
+
+</script>	
+
+<table width="700"><tr><td>
+<!-- WEBpage Information -->
+<tr><td align="justify">
+
+<img src="images/logo.gif" width=62 height=64 border=0 alt="" align="middle">
+ &nbsp;&nbsp;<a href="index.htm"><img src="images/quickWMS.gif" width=121 height=23 border=0 alt=""></a>
+
+<div align="right">
+<br>&copy; Pedro Pereira Gon&ccedil;alves (<a href="mailto:pedro&#064;inovagis.org">pedro&#064;inovagis.org</a>)<BR>
+</div>
+<hr noshade>
+</td></tr><tr><td>
+
+Project <a href="index.htm">quickWMS</a>: Generic JavaScript WMS Client<br>
+<b>Example</b> : multiple layer request example according to OpenGIS Web Mapping Specification using <a href="quickwms.htm">quickWMS</a> class, together with a simple auxiliary navigation window (using the <a href="navwms.htm">navWMS</a> class)<br>
+<b>Author</b> : Pedro Pereira Gonçalves (pedro&#064;inovagis.org)<br>
+<b>Version</b> : 0.01<br>
+<b>Last Change </b>: 2003-10-27<br>
+<b>Tested on </b>: Netscape 7.0 and 7.1, <br>Mozilla 1.4.1, IE 6.0
+<br><br><br><br><br><br><br>			   <br><br><br>
+<b>Source Code</b>
+<ul>
+<P>&lt;<FONT color=#800000>script</FONT><FONT color=#ff0000> language</FONT><FONT color=#0000ff>='</FONT><FONT color=#000000>Javascript</FONT><FONT color=#0000ff>'&gt;</FONT></P><FONT color=#0000ff><FONT color=#000000>
+<P><FONT color=green>// WMS servers - list here other OGC compliant map servers <BR></FONT>
+<FONT color=green>// Changes:	2003-10-24 : Added http:// to the DEMIS and ESRIN server urls <br></FONT>
+<FONT color=blue><strong>var</strong></FONT> demisWMS </FONT><FONT color=#0000ff>=</FONT><FONT color=#000000> <FONT color=blue>"http://www.demis.nl/mapserver/request.asp"</FONT>;<br></FONT></FONT>
+<FONT color=blue><strong>var</strong></FONT> esaWMS </FONT><FONT color=#0000ff>=</FONT><FONT color=#000000> <FONT color=blue>"http://mapserv2.esrin.esa.it/cubestor/cubeserv/cubeserv.cgi"</FONT>;</P></FONT></FONT>
+
+<FONT color=#000000>
+<P><FONT color=blue><strong>function</strong></FONT> writeMaps(){</P>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<P><FONT color=blue><strong>var</strong></FONT> map </FONT><FONT color=#0000ff>=</FONT><FONT color=#000000> <strong><FONT color=blue>new</FONT></strong> <FONT color=brown>mapWMS</FONT>(<FONT color=magenta>-180</FONT><FONT color=magenta>,-90</FONT>,<FONT color=magenta>180</FONT>,<FONT color=magenta>90</FONT>);<BR>map.<FONT color=brown>addLayer</FONT>(esaWMS, <FONT color=blue>"WORLD_MODIS_1KM:MapAdmin"</FONT>);<BR>map.<FONT color=brown>addLayer</FONT>(demisWMS, <FONT color=blue>"Coastlines"</FONT>);<BR>map.<FONT color=brown>layers</FONT>[<FONT color=magenta>0</FONT>].</FONT><FONT color=brown>format</FONT><FONT color=#0000ff>=</FONT><FONT color=#000000><FONT color=blue>"JPEG"</FONT>; <BR>map.<FONT color=brown>writeDOM</FONT>(<FONT color=blue>"myMap"</FONT>, <FONT color=magenta>350</FONT>, <FONT color=magenta>226</FONT>, <FONT color=magenta>400</FONT>, <FONT color=magenta>200</FONT>, <FONT color=blue>"background-color:white; border-style:solid; border-width:1; border-color:black;"</FONT>); <BR>
+</FONT>
+map.<FONT color=brown>toolbar</FONT> = <strong><FONT color=blue>new</FONT></strong> <FONT color=brown>toolBar</FONT>(map);<br>
+map.<FONT color=brown>toolbar</FONT>.<FONT color=brown>writeDOM</FONT>(<FONT color=magenta>350</FONT>, <FONT color=magenta>170</FONT>, <strong><FONT color=blue>true</FONT></strong>);<br>		
+
+<P><FONT color=green>		// add a navigation window		 </FONT>
+<br><FONT color=blue><strong>var</strong></FONT> nav <FONT color=#0000ff>=</FONT> <strong><FONT color=blue>new</FONT></strong> <FONT color=brown>navigationWMS</FONT>(mapWMS, -180,-90,180,90);
+<br>		nav.<FONT color=brown>addLayer</FONT>(demisWMS, <FONT color=blue>"Coastlines,Builtup+areas"</FONT>, <FONT color=blue>"1.0.0"</FONT>, <FONT color=blue>"Coastlines"</FONT>);
+<br>		nav.<FONT color=brown>writeDOM</FONT>(<FONT color=blue>"myNavMap"</FONT>, map.<FONT color=brown>left</FONT>-<FONT color=magenta>205</FONT>, map.<FONT color=brown>top</FONT>+<FONT color=magenta>40</FONT>, <FONT color=magenta>200</FONT>, <FONT color=magenta>100</FONT>, <FONT color=blue>"background-color:white; border-style:solid; border-width:1; border-color:black;"</FONT>);
+<br>		nav.<FONT color=brown>addListener</FONT>(map);
+
+<p>nav.<FONT color=brown>refresh</FONT>();
+
+<br>map.<FONT color=brown>updateBBox</FONT> (<FONT color=magenta>-20</FONT>, <FONT color=magenta>20</FONT>, <FONT color=magenta>60</FONT>, <FONT color=magenta>60</FONT>) ;
+
+<BR></FONT></P></BLOCKQUOTE>
+	
+<P><FONT color=#000000>}<BR></FONT>writeMaps();<BR><FONT color=#0000ff>&lt;/</FONT><FONT color=#800000>script</FONT><FONT color=#0000ff>&gt;</FONT><FONT color=#000000> </P></FONT> 
+
+</P>
+</ul>
+<hr noshade>
+</td></tr></table>
+</body></html>

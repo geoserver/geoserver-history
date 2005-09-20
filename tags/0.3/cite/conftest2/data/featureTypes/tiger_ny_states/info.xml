@@ -1,0 +1,17 @@
+<featureType datastore = "tiger_ny" >
+<name>states</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>4326</SRS>
+<title>states_Type</title>
+<abstract>Generated from tiger_ny</abstract>
+<numDecimals value = "8" />
+<keywords>states tiger_ny</keywords>
+<latLonBoundingBox dynamic = "false" miny = "24.9559669494629" maxy = "49.3717384338379" maxx = "-66.9698486328125" minx = "-124.731422424316"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "giant_polygon"  />
+</featureType>

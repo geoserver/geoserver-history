@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html><head>
+<!--
+/*
+* Project quickWMS: Generic JavaScript WMS Client 
+* quickWMS - multiple layer request according to OpenGIS Web Mapping Specification
+* Author : Pedro Pereira Gonçalves (pedro@inovagis.org)
+* File : map.htm
+* Version : 0.12
+* Last Change : 2003-10-24
+* Dependencies : WMSbrowsers.js, WMSlayer.js, WMSmap.js
+* Future Developments : 
+* Tested on : Netscape 4.7, 7.0 and 7.1, IE 5.5, IE 6.0, Mozilla 1.4.1, Firebird 0.6 and Camino 0.7
+* History :
+	2003-10-24 : Added http:// to the DEMIS and ESRIN server urls
+	2003-04-28 : Netscape 4.7 support added
+    2003-03-20 : File Created
+*/
+-->
+<link rel="stylesheet" href="help.css">
+
+<link rel="stylesheet" href="inc/quickWMS.css">
+<script language="Javascript" src="inc/WMSbrowsers.js"></script>
+<script language="Javascript" src="inc/WMSlayer.js"></script>
+<script language="Javascript" src="inc/WMSmap.js"></script>
+
+
+<title>WMS Client</title>
+</head>
+<body>
+
+<script language='Javascript'>
+// WMS servers - list here other OGC compliant map servers 
+// Changes:	2003-10-24 : Added http:// to the DEMIS and ESRIN server urls 
+//var demisWMS = "http://www.demis.nl/mapserver/request.asp?teste";
+//var esaWMS = "http://mapserv2.esrin.esa.it/cubestor/cubeserv/cubeserv.cgi";
+var geoserverWMS = "http://localhost/geoserver/wms?"
+	
+	function writeMaps(){
+		var map = new mapWMS(-130,24,-66,50);
+		map.addLayer(geoserverWMS, "Img_Sample", "1.1.1");
+		map.addLayer(geoserverWMS, "states", "1.1.1");
+		map.layers[0].styles="raster";
+		map.layers[0].format="image/gif";	
+		map.layers[1].styles="population";
+		map.layers[1].format="image/gif";	
+		map.writeDOM("myMap", 350, 175, 350, 175, "background-color:white;border-style:solid;border-width:1;border-color:black;");
+		map.refresh();
+		}
+writeMaps()	
+</script>	
+
+<table width="700"><tr><td>
+<!-- WEBpage Information -->
+<tr><td align="justify">
+
+<img src="images/logo.gif" width=62 height=64 border=0 alt="" align="middle">
+ &nbsp;&nbsp;<a href="index.htm"><img src="images/quickWMS.gif" width=121 height=23 border=0 alt=""></a>
+
+<div align="right">
+<br>&copy; Pedro Pereira Gon&ccedil;alves (<a href="mailto:pedro&#064;inovagis.org">pedro&#064;inovagis.org</a>)<BR>
+</div>
+<hr noshade>
+</td></tr><tr><td>
+
+Project <a href="index.htm">quickWMS</a>: Generic JavaScript WMS Client<br>
+<b>Example</b> : multiple layer request example according to OpenGIS Web Mapping Specification using <a href="mapwms.htm">mapWMS</a> class<br>
+<b>Author</b> : Pedro Pereira Gonçalves (pedro&#064;inovagis.org)<br>
+<b>Version</b> : 0.12<br>
+<b>Created </b>: 2003-03-20<br>
+<b>Tested on </b>: Netscape 7.0, Netscape 4.7, IE 5.5, IE 6.0
+<br><br><br><br><br><br>
+<b>Source Code</b>
+<ul>
+
+<P>&lt;<FONT color=#800000>script</FONT><FONT color=#ff0000> language</FONT><FONT color=#0000ff>='</FONT><FONT color=#000000>Javascript</FONT><FONT color=#0000ff>'&gt;</FONT></P><FONT color=#0000ff><FONT color=#000000>
+<P><FONT color=green>// WMS servers - list here your favorite server <BR></FONT>
+<FONT color=green>// Changes:	2003-10-24 : Added http:// to the DEMIS and ESRIN server urls <br></FONT>
+<FONT color=blue><strong>var</strong></FONT> demisWMS </FONT><FONT color=#0000ff>=</FONT><FONT color=#000000> <FONT color=blue>"http://www.demis.nl/mapserver/request.asp"</FONT>;<br></FONT></FONT>
+<FONT color=blue><strong>var</strong></FONT> esaWMS </FONT><FONT color=#0000ff>=</FONT><FONT color=#000000> <FONT color=blue>"http://mapserv2.esrin.esa.it/cubestor/cubeserv/cubeserv.cgi"</FONT>;</P></FONT></FONT>
+
+<FONT color=#000000>
+<P><FONT color=blue><strong>function</strong></FONT> writeMaps(){</P>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<P><FONT color=blue><strong>var</strong></FONT> map </FONT><FONT color=#0000ff>=</FONT><FONT color=#000000> <strong><FONT color=blue>new</FONT></strong> <FONT color=brown>mapWMS</FONT>(<FONT color=magenta>-180</FONT><FONT color=magenta>,-90</FONT>,<FONT color=magenta>180</FONT>,<FONT color=magenta>90</FONT>);<BR>map.<FONT color=brown>addLayer</FONT>(esaWMS, <FONT color=blue>"WORLD_MODIS_1KM:MapAdmin"</FONT>);<BR>map.<FONT color=brown>addLayer</FONT>(demisWMS, <FONT color=blue>"Coastlines"</FONT>);<BR>map.<FONT color=brown>layers</FONT>[<FONT color=magenta>0</FONT>].</FONT><FONT color=brown>format</FONT><FONT color=#0000ff>=</FONT><FONT color=#000000><FONT color=blue>"JPEG"</FONT>; <BR>map.<FONT color=brown>writeDOM</FONT>(<FONT color=blue>"myMap"</FONT>, <FONT color=magenta>350</FONT>, <FONT color=magenta>175</FONT>, <FONT color=magenta>350</FONT>, <FONT color=magenta>175</FONT>, <FONT color=blue>"background-color:white; border-style:solid; border-width:1; border-color:black;"</FONT>); <BR></FONT>map.<FONT color=brown>refresh</FONT>();<BR></FONT></P></BLOCKQUOTE>
+	
+<P><FONT color=#000000>}<BR></FONT>writeMaps();<BR><FONT color=#0000ff>&lt;/</FONT><FONT color=#800000>script</FONT><FONT color=#0000ff>&gt;</FONT><FONT color=#000000> </P></FONT> 
+
+</P>
+</ul>
+<hr noshade>
+</td></tr></table>
+</body></html>
