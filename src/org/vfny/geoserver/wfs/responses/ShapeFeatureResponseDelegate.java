@@ -6,48 +6,22 @@ package org.vfny.geoserver.wfs.responses;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.channels.FileChannel;
-import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.geotools.data.AbstractFeatureStore;
-import org.geotools.data.DataStore;
-import org.geotools.data.FeatureListener;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureStore;
 
-import org.geotools.data.shapefile.Lock;
 import org.geotools.data.shapefile.ShapefileDataStore;
-import org.geotools.data.shapefile.dbf.DbaseFileException;
-import org.geotools.data.shapefile.dbf.DbaseFileHeader;
-import org.geotools.data.shapefile.dbf.DbaseFileWriter;
-import org.geotools.data.shapefile.shp.JTSUtilities;
-import org.geotools.data.shapefile.shp.ShapeType;
-import org.geotools.data.shapefile.shp.ShapefileWriter;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.NameSpaceInfo;
-import org.vfny.geoserver.wfs.requests.FeatureRequest;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
@@ -112,7 +86,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     String tempDir = null;
     
     /** will be true if Shape-ZIP output format was requested */
-    private boolean compressOutput = false;
+    //private boolean compressOutput = false;	// already in ZIP by default
 
     /**
      * the results of a getfeature request wich this object will encode as
@@ -150,7 +124,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     public void prepare(String outputFormat, GetFeatureResults results)
         throws IOException 
     {
-        this.compressOutput = true;
+        //this.compressOutput = true;
         this.results = results;
 
         if (results == null) {
