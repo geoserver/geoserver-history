@@ -39,6 +39,7 @@ import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.processing.DefaultProcessor;
 import org.geotools.coverage.processing.GridCoverageProcessor2D;
 import org.geotools.coverage.processing.operation.Resample;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
@@ -595,7 +596,7 @@ public class CoverageResponse implements Response {
 	        //new grid range
 	        GeneralGridRange newGridrange = new GeneralGridRange(lowers, highers);
 	        GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange,
-	        		subCoverage.getEnvelope(), new boolean[] { false, true });
+	        		subCoverage.getEnvelope()/*, new boolean[] { false, true }, true*/);
 
 	        //getting the needed operation
 	        Resample op = new Resample();
@@ -610,9 +611,8 @@ public class CoverageResponse implements Response {
 	        	group.parameter("InterpolationType").setValue(request.getInterpolation());
 	        }
 
-	        GridCoverageProcessor2D processor2D = GridCoverageProcessor2D
-	            .getDefault();
-	        GridCoverage2D gcOp = (GridCoverage2D) processor2D.doOperation(op, group);
+	        DefaultProcessor processor2D = new DefaultProcessor(null);
+	        GridCoverage2D gcOp = (GridCoverage2D) processor2D.doOperation(/*op, */group);
 			delegate.prepare(outputFormat, gcOp);				
 		}else {
 			delegate.prepare(outputFormat, subCoverage);
