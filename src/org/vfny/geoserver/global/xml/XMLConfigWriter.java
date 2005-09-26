@@ -298,6 +298,8 @@ public class XMLConfigWriter {
         boolean gml = false;
         boolean srsXmlStyle = false;
         int serviceLevel = 0;
+        
+        boolean citeConformanceHacks = false;
 
         if (obj instanceof WFSDTO) {
             WFSDTO w = (WFSDTO) obj;
@@ -306,6 +308,7 @@ public class XMLConfigWriter {
             gml = w.isGmlPrefixing();
             srsXmlStyle = w.isSrsXmlStyle();
             serviceLevel = w.getServiceLevel();
+            citeConformanceHacks = w.getCiteConformanceHacks();
         } else if (obj instanceof WMSDTO) {
             WMSDTO w = (WMSDTO) obj;
             s = w.getService();
@@ -367,6 +370,10 @@ public class XMLConfigWriter {
 
         if (serviceLevel != 0) {
             cw.valueTag("serviceLevel", serviceLevel + "");
+        }
+        if (obj instanceof WFSDTO) //DJB: this method (storeService) doesnt separate WFS and WMS very well!
+        {
+        	 cw.textTag("citeConformanceHacks", citeConformanceHacks + "");
         }
 
         if ((s.getMaintainer() != null) && (s.getMaintainer() != "")) {

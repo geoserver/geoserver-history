@@ -26,6 +26,8 @@ public class WFSConfig extends ServiceConfig {
     
     private int serviceLevel;
     
+    private     boolean citeConformanceHacks = false;// see WFSDTO for more info
+    
     private boolean srsXmlStyle = true;
 
     /**
@@ -57,6 +59,7 @@ public class WFSConfig extends ServiceConfig {
         gmlPrefixing = w.isGmlPrefixing();
         serviceLevel = w.getServiceLevel();
         srsXmlStyle = w.isSrsXmlStyle();
+        citeConformanceHacks = w.getCiteConformanceHacks();
     }
 
     /**
@@ -81,6 +84,9 @@ public class WFSConfig extends ServiceConfig {
         gmlPrefixing = dto.isGmlPrefixing();
         srsXmlStyle = dto.isSrsXmlStyle();
         serviceLevel = dto.getServiceLevel();
+        
+        citeConformanceHacks = dto.getCiteConformanceHacks();
+        
     }
 
     /**
@@ -100,6 +106,8 @@ public class WFSConfig extends ServiceConfig {
         wfsDto.setGmlPrefixing(gmlPrefixing);
         wfsDto.setServiceLevel(serviceLevel);
         wfsDto.setSrsXmlStyle(srsXmlStyle);
+        
+        wfsDto.setCiteConformanceHacks(citeConformanceHacks);
         return wfsDto;
     }
 
@@ -167,5 +175,26 @@ public class WFSConfig extends ServiceConfig {
 	public void setSrsXmlStyle(boolean doXmlStyle) {
 		this.srsXmlStyle = doXmlStyle;
 	}
+	
+	/**
+     *  turn on/off the citeConformanceHacks option.
+     * 
+     * @param on
+     */
+    public void setCiteConformanceHacks(boolean on)
+    {
+    	citeConformanceHacks = on;
+    }
+    
+    /**
+     * get the current value of the citeConformanceHacks
+     * 
+     * @return
+     */
+    public boolean getCiteConformanceHacks()
+    {
+    	return (citeConformanceHacks );
+    }
+    
 
 }
