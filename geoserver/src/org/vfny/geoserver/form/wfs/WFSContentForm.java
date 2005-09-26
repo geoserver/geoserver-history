@@ -38,9 +38,13 @@ public class WFSContentForm extends ActionForm {
     private int serviceLevel;
     private String[] selectedFeatures;
     private String[] features;
+    
     private boolean srsXmlStyle;
     private boolean srsXmlStyleChecked = false;
 
+    private boolean citeConformanceHacks;
+    private boolean citeConformanceHacksChecked =false;
+    
     /*
      * Because of the way that STRUTS works, if the user does not check the enabled box,
      * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()
@@ -153,9 +157,14 @@ public class WFSContentForm extends ActionForm {
 
         enabledChecked = false;
         srsXmlStyleChecked = false;
+        citeConformanceHacksChecked = false;
+        
+        
 
         ServletContext context = getServlet().getServletContext();
         WFSConfig config = (WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
+        
+        citeConformanceHacks = config.getCiteConformanceHacks();
         
         serviceLevel = config.getServiceLevel();
         this.enabled = config.isEnabled();
@@ -270,5 +279,36 @@ public class WFSContentForm extends ActionForm {
 		this.srsXmlStyle = doXmlStyle;
 	}
 
+	/**
+     *  turn on/off the citeConformanceHacks option.
+     * 
+     * @param on
+     */
+    public void setCiteConformanceHacks(boolean on)
+    {
+    	this.citeConformanceHacksChecked = true; //this function only gets called when the form has it checked...
+    	citeConformanceHacks = on;
+    }
+    
+    /**
+     * get the current value of the citeConformanceHacks
+     * 
+     * @return
+     */
+    public boolean getCiteConformanceHacks()
+    {
+    	return (citeConformanceHacks );
+    }
+    
+    /**
+     * get the current value of the citeConformanceHacksChecked (ie. was it in the http form?)
+     * 
+     * @return
+     */
+    public boolean getCiteConformanceHacksChecked()
+    {
+    	return ( citeConformanceHacksChecked );
+    }
+    
 
 }
