@@ -76,7 +76,8 @@ public class MapPreviewAction extends Action
 		ArrayList dsList = new ArrayList();
 		ArrayList ftList = new ArrayList();
 		ArrayList bboxList = new ArrayList();
-       
+		ArrayList ftnsList = new ArrayList();
+		
 		// 1) get the capabilities info so we can find out our feature types
 		CapabilitiesRequest capRequest = new CapabilitiesRequest("WMS");
 		capRequest.setHttpServletRequest(request);
@@ -106,7 +107,8 @@ public class MapPreviewAction extends Action
 			if (layer.isEnabled()) 
 			{
 				// prepare strings for web output
-				ftList.add(layer.getFeatureType().getTypeName());	// FeatureType name
+				ftList.add(layer.getNameSpace().getPrefix()+"_"+layer.getFeatureType().getTypeName());	// FeatureType name
+				ftnsList.add(layer.getNameSpace().getPrefix()+":"+layer.getFeatureType().getTypeName() );
 				dsList.add(layer.getDataStoreInfo().getId());	// DataStore info
 				// bounding box of the FeatureType
 				bboxList.add(bbox.getMinX()+", "+bbox.getMinY()+", "+bbox.getMaxX()+", "+bbox.getMaxY());
@@ -122,6 +124,7 @@ public class MapPreviewAction extends Action
 		myForm.set("DSNameList",dsList.toArray(new String[dsList.size()]) );
 		myForm.set("FTNameList",ftList.toArray(new String[ftList.size()]) );
 		myForm.set("BBoxList",bboxList.toArray(new String[bboxList.size()]) );
+		myForm.set("FTNamespaceList",ftnsList.toArray(new String[ftnsList.size()]) );
 		
 		return mapping.findForward("success");
 	}
@@ -188,32 +191,34 @@ public class MapPreviewAction extends Action
 		throws FileNotFoundException, IOException 
 	{
 		FeatureType featureType = layer.getFeatureType();
+		String ft_name = featureType.getTypeName();
+		String ft_namespace = layer.getNameSpace().getPrefix();
 		
-		File html_file = new File(previewDir, featureType.getTypeName()+".html");
-		File config_file = new File(previewDir, featureType.getTypeName()+"Config.xml");
-		File xml_file = new File(previewDir, featureType.getTypeName()+".xml");
+		File html_file = new File(previewDir, ft_namespace + "_"+ ft_name+".html");
+		File config_file = new File(previewDir, ft_namespace + "_"+ ft_name+"Config.xml");
+		File xml_file = new File(previewDir, ft_namespace + "_"+ ft_name+".xml");
 		
 		// *.html
 		FileOutputStream html_fos = new FileOutputStream(html_file);
 		PrintStream html_out = new PrintStream(html_fos);
-		createIndexHTML(html_out, featureType.getTypeName());
+		createIndexHTML(html_out, ft_name, ft_namespace);
 		html_out.close();
 		
 		// *Config.xml
 		FileOutputStream config_fos = new FileOutputStream(config_file);
 		PrintStream config_out = new PrintStream(config_fos);
-		createConfigXML(config_out, featureType.getTypeName());
+		createConfigXML(config_out, ft_name, ft_namespace);
 		config_out.close();
 		
 		// *.xml
 		FileOutputStream xml_fos = new FileOutputStream(xml_file);
 		PrintStream xml_out = new PrintStream(xml_fos);
-		createLayersXML(xml_out, featureType, bbox);
+		createLayersXML(xml_out, ft_name, ft_namespace, bbox);
 		xml_out.close();
 	}
 	
 	
-	private void createIndexHTML(PrintStream out, String ftName)
+	private void createIndexHTML(PrintStream out, String ft_name, String ft_namespace)
 	{
 		out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">");
 		out.println("<!--");
@@ -226,7 +231,7 @@ public class MapPreviewAction extends Action
 		out.println("<html>");
 		out.println("<head>");
 		// CHANGE HERE
-		out.println("<title>"+ftName+" Preview</title>");
+		out.println("<title>"+ft_namespace+":"+ft_name+" Preview</title>");
 		out.println("");
 		out.println("<link rel=\"stylesheet\" href=\"../../style.css\"");
 		out.println("	type=\"text/css\">");
@@ -236,7 +241,7 @@ public class MapPreviewAction extends Action
 		out.println("<script type=\"text/javascript\">");
 		out.println("      // URL of Mapbuilder configuration file.");
 		// CHANGE HERE
-		out.println("      var mbConfigUrl='"+ftName+"Config.xml"+"';");
+		out.println("      var mbConfigUrl='"+ft_namespace+"_"+ft_name+"Config.xml"+"';");
 		out.println("    </script>");
 		out.println("<script type=\"text/javascript\" src=\"../mbdemos/lib/Mapbuilder.js\"></script>");
 		out.println("</head>");
@@ -246,7 +251,7 @@ public class MapPreviewAction extends Action
 		out.println("<h2><a href=\"http://geoserver.sf.net\">GeoServer</a>/<a");
 		out.println("	href=\"http://mapbuilder.sourceforge.net\">Map Builder</a>");
 		// CHANGE HERE
-		out.println(""+ftName+" preview</h2>");
+		out.println(""+ft_namespace+":"+ft_name+" preview</h2>");
 		out.println("");
 		out.println("<table border=\"0\">");
 		out.println("	<tr>");
@@ -295,7 +300,7 @@ public class MapPreviewAction extends Action
 
 	}
 	
-	private void createConfigXML(PrintStream out, String ftName)
+	private void createConfigXML(PrintStream out, String ft_name, String ft_namespace)
 	{
 		
 		out.println("<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>");
@@ -315,7 +320,7 @@ public class MapPreviewAction extends Action
 		out.println("  <models>");
 		out.println("    <Context id=\"mainMap\">");
 		// CHANGE HERE
-		out.println("      <defaultModelUrl>"+ftName+".xml</defaultModelUrl>");
+		out.println("      <defaultModelUrl>"+ft_namespace+"_"+ft_name+".xml</defaultModelUrl>");
 		out.println("      <widgets>");
 		out.println("        <MapPane id=\"mainMapWidget\">");
 		out.println("          <htmlTagId>mainMapPane</htmlTagId>");
@@ -348,7 +353,7 @@ public class MapPreviewAction extends Action
 		out.println("");    
 		out.println("    <Context id=\"locator\">");
 		// CHANGE HERE
-		out.println("      <defaultModelUrl>"+ftName+".xml</defaultModelUrl>");
+		out.println("      <defaultModelUrl>"+ft_namespace+"_"+ft_name+".xml</defaultModelUrl>");
 		out.println("      <widgets>");
 		out.println("        <MapPane id=\"locatorWidget\">");
 		out.println("          <htmlTagId>locatorMap</htmlTagId>");
@@ -443,14 +448,11 @@ public class MapPreviewAction extends Action
 	}
 	
 	private void createLayersXML(PrintStream out, 
-								FeatureType featureType, 
+								String ft_name, 
+								String ft_namespace,  
 								Envelope bbox) 
 		throws IOException
 	{
-		
-		String ft_name = featureType.getTypeName();
-		String ft_namespace = featureType.getNamespace().getPath().substring(1);
-
 		
 		out.println("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>");
 		out.println("<ViewContext version=\"1.0.0\" id=\"atlas_world\" xmlns=\"http://www.opengis.net/context\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd\">");
@@ -458,23 +460,23 @@ public class MapPreviewAction extends Action
 		out.println("    <Window width=\"500\" height=\"285\"/>");
 		out.println("    <BoundingBox SRS=\"EPSG:4326\" minx=\""+bbox.getMinX()+"\" miny=\""+bbox.getMinY()+"\" maxx=\""+bbox.getMaxX()+"\" maxy=\""+bbox.getMaxY()+"\"/>");
 		// CHANGE HERE
-		out.println("    <Title>"+ft_name+" Map</Title>");
+		out.println("    <Title>"+ft_namespace+":"+ft_name+" Map</Title>");
 		out.println("    <KeywordList>");
 		// CHANGE HERE
-		out.println("      <Keyword>"+ft_name+"</Keyword>");
+		out.println("      <Keyword>"+ft_namespace+":"+ft_name+"</Keyword>");
 		out.println("    </KeywordList>");
 		out.println("    <Abstract></Abstract>");
 		out.println("  </General>");
 		out.println("  <LayerList>");
 		out.println("    <Layer queryable=\"1\" hidden=\"0\">");
 		// CHANGE HERE
-		out.println("      <Server service=\"OGC:WMS\" version=\"1.1.1\" title=\""+ft_namespace+" "+ft_name+" Preview\">");
+		out.println("      <Server service=\"OGC:WMS\" version=\"1.1.1\" title=\""+ft_namespace+":"+ft_name+" Preview\">");
 		out.println("        <OnlineResource xlink:type=\"simple\" xlink:href=\"http://localhost:8080/geoserver/wms\"/>");
 		out.println("      </Server>");
 		// CHANGE HERE
-		out.println("      <Name>"+ft_name+"</Name>");
+		out.println("      <Name>"+ft_namespace+":"+ft_name+"</Name>");
 		// CHANGE HERE
-		out.println("      <Title>"+ft_name+"</Title>");
+		out.println("      <Title>"+ft_namespace+":"+ft_name+"</Title>");
 		out.println("      <SRS>EPSG:4326</SRS>");
 		out.println("      <FormatList><Format current=\"1\">image/png</Format></FormatList>");
 		out.println("    </Layer>");
