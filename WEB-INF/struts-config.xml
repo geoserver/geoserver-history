@@ -43,6 +43,10 @@
 	        type="java.lang.String[]" 
 	    />
 	    <form-property 
+	        name="FTNamespaceList" 
+	        type="java.lang.String[]" 
+	    />
+	    <form-property 
 	        name="BBoxList" 
 	        type="java.lang.String[]" 
 	    />
