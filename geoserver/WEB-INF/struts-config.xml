@@ -28,7 +28,26 @@
 	        name="srsIDList" 
 	        type="java.lang.String[]" 
 	    />
-	</form-bean>
+		</form-bean>
+		
+		
+		<form-bean 
+	    name="mapPreviewForm" 
+	    type="org.apache.struts.action.DynaActionForm">
+	    <form-property 
+	        name="DSNameList"
+	        type="java.lang.String[]" 
+	    />
+	    <form-property 
+	        name="FTNameList" 
+	        type="java.lang.String[]" 
+	    />
+	    <form-property 
+	        name="BBoxList" 
+	        type="java.lang.String[]" 
+	    />
+		</form-bean>
+
 
     	<form-bean
     		name="loginForm"
@@ -803,6 +822,18 @@
 		            scope="request"
                  >
                  <forward name="success" path="/WEB-INF/pages/srsList.jsp"/>
+          </action>
+          
+          
+          <!-- mapPreview -->
+          
+          <action
+		            path="/mapPreview"
+		            type="org.vfny.geoserver.action.MapPreviewAction"
+		            name="mapPreviewForm"
+		            scope="request"
+                 >
+                 <forward name="success" path="/WEB-INF/pages/mapPreview.jsp"/>
           </action>
             
 
