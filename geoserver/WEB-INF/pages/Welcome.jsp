@@ -29,7 +29,7 @@
 
 <ul>
   <li>
-    <a href="http://geoserver.sourceforge.net/documentation/1.3.0-RC2">
+    <a href="http://geoserver.sourceforge.net/documentation/1.3.0-RC3">
       Documentation
     </a>
   </li>
@@ -49,6 +49,11 @@
     </a>
   </li>
 </ul>
+
+<p>
+	<bean:message key="text.newFeatureLogo"/>&nbsp;
+	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>mapPreview.do"/><bean:message key="text.newFeature1"/></a>
+</p>
 
 <h2>
   <bean:write name="WFS" property="title"/>
