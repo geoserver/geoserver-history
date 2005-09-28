@@ -633,13 +633,27 @@ public class XMLConfigReader {
 		
 		LOGGER.finer("setting service level to " + serviceLevel);
 		wfs.setServiceLevel(serviceLevel);
-		
-		//} catch (Exception e) {
-		//}
-		ServiceDTO s = loadService(wfsElement);
-		wfs.setService(s);
-	}
-	
+        
+        //get the conformance hacks attribute
+        // it might not be there, in which case we just use the default value 
+        //  (see WFSDTO.java)        
+        Element e = ReaderUtils.getChildElement(wfsElement, "citeConformanceHacks");
+        if (e != null)
+        {
+        	String text = ReaderUtils.getChildText(wfsElement,"citeConformanceHacks");
+        	boolean citeConformanceHacks = Boolean.valueOf(text).booleanValue(); // just get the value and parse it
+        	wfs.setCiteConformanceHacks(
+        			citeConformanceHacks
+						);
+        	LOGGER.finer("setting citeConformanceHacks to " + citeConformanceHacks);
+        }
+
+        //} catch (Exception e) {
+        //}
+        ServiceDTO s = loadService(wfsElement);
+        wfs.setService(s);
+    }
+
 	/**
 	 * loadWMS purpose.
 	 * 

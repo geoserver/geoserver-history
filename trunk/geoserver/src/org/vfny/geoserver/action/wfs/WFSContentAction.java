@@ -44,6 +44,12 @@ public final class WFSContentAction extends ConfigAction {
 		if (contentForm.isSrsXmlStyleChecked() == false) {
 			srsXmlStyle = false;
 		}
+		
+		boolean citeConformanceHacks = contentForm.getCiteConformanceHacks();
+		if (contentForm.getCiteConformanceHacksChecked() == false)
+		{
+			citeConformanceHacks = false; // deal with the way HTTP works.
+		}
 
         String onlineResource = contentForm.getOnlineResource();
         String[] selectedFeatures = contentForm.getSelectedFeatures();
@@ -54,6 +60,7 @@ public final class WFSContentAction extends ConfigAction {
         config.setEnabled(enabled);
         config.setOnlineResource(new URL(onlineResource));
         config.setServiceLevel(contentForm.getServiceLevel());
+        config.setCiteConformanceHacks(citeConformanceHacks);
 
         getApplicationState().notifyConfigChanged();
 

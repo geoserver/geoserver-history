@@ -483,14 +483,15 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		return collection;
 	}
 
-	public GridCoverage getCoverageToLayer(HttpServletRequest request) {
+	public GridCoverage getCoverageToLayer(HttpServletRequest request)
+	throws DataSourceException {
 		GridCoverage gridCoverage = null;
 		try {
 			gridCoverage = getGridCoverage(request, this.coverage);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new DataSourceException("IO error", e);
 		}
+
 		return gridCoverage;
 	}
 	

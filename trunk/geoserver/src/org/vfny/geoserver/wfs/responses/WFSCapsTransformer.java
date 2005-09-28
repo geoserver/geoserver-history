@@ -277,18 +277,35 @@ public class WFSCapsTransformer extends TransformerBase {
            //  element("GML2", null); // old implementation
             
             FeatureResponseDelegateProducerSpi spi;
-            Iterator spi_it = FactoryFinder.factories(FeatureResponseDelegateProducerSpi.class);
+ 
 
-            while (spi_it.hasNext()) 
+        	//DJB: (see above comment, this fixes it0
+        	//      WFS config now has a "citeConformanceHacks" boolean in it.
+        	//      true --> only publish GML2 in caps file
+        	//      false -> publish all
+            WFS config = request.getWFS();
+            boolean onlyGML2 = config.getCiteConformanceHacks();
+            
+            if (onlyGML2)
             {
-                spi = (FeatureResponseDelegateProducerSpi) spi_it.next();
-                Set formats = spi.getSupportedFormats();
-                Iterator it =formats.iterator();
-                while (it.hasNext())
-                {
-                	element( (String)it.next(), null);
-                }
+            	element("GML2",null);
             }
+            else
+	        {
+            	//FULL MONTY
+	            Iterator spi_it = FactoryFinder.factories(FeatureResponseDelegateProducerSpi.class);
+	            while (spi_it.hasNext()) 
+	            {
+	                spi = (FeatureResponseDelegateProducerSpi) spi_it.next();
+	                Set formats = spi.getSupportedFormats();
+	                Iterator it =formats.iterator();
+	                while (it.hasNext())
+	                {
+	                	String format = (String) it.next();
+	                	element( format, null);
+	                }
+	            }
+	        }
 
             //So cite does not even like this.  Which is really lame, since it
             //validates according to our definition for now, and because the cite

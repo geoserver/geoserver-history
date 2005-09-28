@@ -68,7 +68,17 @@ public final class WFSDTO implements DataTransferObject {
 	 */
 	private int serviceLevel = COMPLETE; //if not set then it should be complete.
 
-
+    /**
+     * ie. <citeConformanceHacks>true</citeConformanceHacks>
+     *
+     *Currently there are certain legal things in the Geoserver WFS GetCapabilities response that the CITE tests throw error if it finds.  An example of this is the supported GetFeature output formats.  CITE only allows GML2, GML2-ZIP, and SHAPE-ZIP.
+     *We support GML2, GML2-GZIP, GML2-ZIP, and SHAPE-ZIP, so CITE tests will complain that we're not allowed to support GML2-GZIP!
+     *By setting this option to "true" the GetCapabilities response will NOT show we support those extra dataformats.
+     *
+     *In the future we may find other "silly" things.
+     */
+    private     boolean citeConformanceHacks = false; //default to normal operations
+    
     /**
      * WFS Data Transfer Object constructor.  does nothing
      */
@@ -95,6 +105,7 @@ public final class WFSDTO implements DataTransferObject {
         service = (ServiceDTO) new ServiceDTO(other.getService());
         gmlPrefixing = other.isGmlPrefixing();
         serviceLevel = other.getServiceLevel();
+        citeConformanceHacks = other.getCiteConformanceHacks();
     }
 
     /**
@@ -123,6 +134,9 @@ public final class WFSDTO implements DataTransferObject {
         }
 
         WFSDTO dto = (WFSDTO) other;
+        
+        if (citeConformanceHacks !=dto.getCiteConformanceHacks())
+        	return false;
 
         return (((serviceLevel == dto.getServiceLevel()) && (service == null))
         ? (dto.getService() == null) : service.equals(dto.getService()));
@@ -252,5 +266,24 @@ public final class WFSDTO implements DataTransferObject {
 	public void setServiceLevel(int serviceLevel) {
 		this.serviceLevel = serviceLevel;
 	}
-
+    
+    /**
+     *  turn on/off the citeConformanceHacks option.
+     * 
+     * @param on
+     */
+    public void setCiteConformanceHacks(boolean on)
+    {
+    	citeConformanceHacks = on;
+    }
+    
+    /**
+     * get the current value of the citeConformanceHacks
+     * 
+     * @return
+     */
+    public boolean getCiteConformanceHacks()
+    {
+    	return (citeConformanceHacks );
+    }
 }

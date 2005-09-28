@@ -4,8 +4,10 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DirectColorModel;
+import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,9 +26,14 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
 
 import org.geotools.renderer.lite.LiteRenderer;
+
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGEncodeParam;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 
 /**
@@ -186,16 +193,18 @@ public final class JAISupport {
             
             meta = writer.getDefaultStreamMetadata(param);
             
-            WritableRaster raster = image.getRaster();
-            WritableRaster newRaster = raster.createWritableChild(0, 0, image.getWidth(), image.getHeight(), 0, 0, new int[] {0, 1, 2});
+ //           WritableRaster raster = image.getRaster();
+ //           WritableRaster newRaster = raster.createWritableChild(0, 0, image.getWidth(), image.getHeight(), 0, 0, new int[] {0, 1, 2});
 //             create a ColorModel that represents the one of the ARGB except the alpha channel:
-            DirectColorModel cm = (DirectColorModel)image.getColorModel();
-            DirectColorModel newCM = new DirectColorModel(cm.getPixelSize(), cm.getRedMask(), cm.getGreenMask(), cm.getBlueMask());
+//            DirectColorModel cm = (DirectColorModel)image.getColorModel();
+ //           DirectColorModel newCM = new DirectColorModel(cm.getPixelSize(), cm.getRedMask(), cm.getGreenMask(), cm.getBlueMask());
 //             now create the new buffer that is used ot write the image:
-            BufferedImage rgbBuffer = new BufferedImage(newCM, newRaster, false, null);
+           // BufferedImage rgbBuffer = new BufferedImage(newCM, newRaster, false, null);
+            BufferedImage curImage = new BufferedImage(image.getWidth(), image.getHeight(),BufferedImage.TYPE_3BYTE_BGR);
+            Graphics2D g = (Graphics2D) curImage.createGraphics();
+            g.drawImage(image,0,0,null);
             
-                   	
-        	image = rgbBuffer;
+        	image = curImage;
         	
             ioutstream = ImageIO.createImageOutputStream(outStream);
             writer.setOutput(ioutstream);

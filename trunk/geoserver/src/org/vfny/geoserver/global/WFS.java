@@ -55,6 +55,7 @@ public class WFS extends Service {
 	 * @uml.property name="srsXmlStyle" multiplicity="(0 1)"
 	 */
 	private boolean srsXmlStyle;
+    private boolean citeConformanceHacks ;
 
 
     /**
@@ -72,6 +73,7 @@ public class WFS extends Service {
         gmlPrefixing = config.isGmlPrefixing();
         srsXmlStyle = config.isSrsXmlStyle();
         serviceLevel = config.getServiceLevel();
+        citeConformanceHacks  = config.getCiteConformanceHacks();
     }
 
     /**
@@ -101,6 +103,7 @@ public class WFS extends Service {
         srsXmlStyle = config.isSrsXmlStyle();
         gmlPrefixing = config.isGmlPrefixing();
         serviceLevel = config.getServiceLevel();
+        citeConformanceHacks = config.getCiteConformanceHacks();
     }
 
     /**
@@ -124,7 +127,7 @@ public class WFS extends Service {
         dto.setGmlPrefixing(gmlPrefixing);
         dto.setServiceLevel(serviceLevel);
         dto.setSrsXmlStyle(srsXmlStyle);
-
+        dto.setCiteConformanceHacks( citeConformanceHacks );
         return dto;
     }
 
@@ -223,5 +226,25 @@ public class WFS extends Service {
 	public int getServiceLevel() {
 		return serviceLevel;
 	}
-
+    
+	/**
+     *  turn on/off the citeConformanceHacks option.
+     * 
+     * @param on
+     */
+    public void setCiteConformanceHacks(boolean on)
+    {
+    	citeConformanceHacks = on;
+    }
+    
+    /**
+     * get the current value of the citeConformanceHacks
+     * 
+     * @return
+     */
+    public boolean getCiteConformanceHacks()
+    {
+    	return (citeConformanceHacks );
+    }
+    
 }

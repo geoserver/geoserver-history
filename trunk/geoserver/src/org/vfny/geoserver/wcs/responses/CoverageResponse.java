@@ -40,7 +40,6 @@ import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.processing.DefaultProcessor;
-import org.geotools.coverage.processing.GridCoverageProcessor2D;
 import org.geotools.coverage.processing.operation.Resample;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.Hints;
@@ -596,12 +595,12 @@ public class CoverageResponse implements Response {
 	        //new grid range
 	        GeneralGridRange newGridrange = new GeneralGridRange(lowers, highers);
 	        GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange,
-	        		subCoverage.getEnvelope()/*, new boolean[] { false, true }, true*/);
+	        		subCoverage.getEnvelope(), new boolean[] { true, false }, true);
 
 	        //getting the needed operation
 	        Resample op = new Resample();
 
-	        //getting parameters
+	        //setting parameters
 	        ParameterValueGroup group = op.getParameters();
 	        group.parameter("Source").setValue(subCoverage);
 	        group.parameter("CoordinateReferenceSystem").setValue(subCoverage

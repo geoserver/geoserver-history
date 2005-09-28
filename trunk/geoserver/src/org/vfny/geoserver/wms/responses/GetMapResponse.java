@@ -3,7 +3,7 @@
  * application directory.
  */
 package org.vfny.geoserver.wms.responses;
- 
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
@@ -12,18 +12,20 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geotools.coverage.grid.GeneralGridRange;
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.processing.Operations;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.factory.FactoryFinder;
-import org.geotools.factory.Hints;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
-import org.opengis.referencing.crs.CRSAuthorityFactory;
+import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -49,10 +51,10 @@ import com.vividsolutions.jts.geom.Envelope;
  * @version $Id: GetMapResponse.java,v 1.11 2004/03/14 23:29:30 groldan Exp $
  */
 public class GetMapResponse implements Response {
-    /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage()
-                                                                              .getName());
-
+	/** DOCUMENT ME! */
+	private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage()
+			.getName());
+	
 	/**
 	 * The map producer that will be used for the production of a map in the
 	 * requested format.
@@ -61,287 +63,286 @@ public class GetMapResponse implements Response {
 	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private GetMapProducer delegate;
-
-    /**
-     * Creates a new GetMapResponse object.
-     */
-    public GetMapResponse() {
-        // intentionally left blank
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param req DOCUMENT ME!
-     *
-     * @throws ServiceException DOCUMENT ME!
-     * @throws WmsException DOCUMENT ME!
-     */
-    public void execute(Request req) throws ServiceException {
-        GetMapRequest request = (GetMapRequest) req;
-
-        final String outputFormat = request.getFormat();
-
-        this.delegate = getDelegate(outputFormat);
-
-        final MapLayerInfo[] layers = request.getLayers();
-        final Style[] styles = (Style[])request.getStyles().toArray(new Style[]{});
-
-        final WMSMapContext map = new WMSMapContext();
-        
-        //DJB: the WMS spec says that the request must not be 0 area
-        //     if it is, throw a service exception!
-        Envelope env = request.getBbox();
-        if (env.isNull() || (env.getWidth() <=0)|| (env.getHeight() <=0))
-        {
-        	throw new WmsException("The request bounding box has zero area.");
-        }
-
-        // DJB DONE: replace by setAreaOfInterest(Envelope,
-        // CoordinateReferenceSystem)
-        // with the user supplied SRS parameter
-        
-        //if there's a crs in the request, use that.  If not, assume its 4326
-        
-        CoordinateReferenceSystem mapcrs;
-        //DJB: spec says SRS is *required*, so if they dont specify one, we should throw an error
-        //     instead we use "NONE" - which is no-projection.
-        //     Previous behavior was to the WSG84 lat/long (4326)
-        if ((request.getCrs() == null) || request.getCrs().equals("")|| request.getCrs().equalsIgnoreCase("NONE"))
-        {
-        	mapcrs = null;
-        }
-        else
-        {
-        	//construct the crs object
-        	try {
-        		//mapcrs = CRS.decode(request.getCrs());
-    			CRSAuthorityFactory crsFactory = org.geotools.referencing.FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-    			mapcrs = CRS.decode("EPSG:4326"); //(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem(request.getCrs());
-        	}
-        	catch (Exception e)
-			{
-        		//couldnt make it - we send off a service exception with the correct info
-        		throw new WmsException(e.getLocalizedMessage(),"InvalidSRS");
+	
+	/**
+	 * Creates a new GetMapResponse object.
+	 */
+	public GetMapResponse() {
+		// intentionally left blank
+	}
+	
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param req DOCUMENT ME!
+	 *
+	 * @throws ServiceException DOCUMENT ME!
+	 * @throws WmsException DOCUMENT ME!
+	 */
+	public void execute(Request req) throws ServiceException {
+		GetMapRequest request = (GetMapRequest) req;
+		
+		final String outputFormat = request.getFormat();
+		
+		this.delegate = getDelegate(outputFormat);
+		
+		final MapLayerInfo[] layers = request.getLayers();
+		final Style[] styles = (Style[])request.getStyles().toArray(new Style[]{});
+		
+		final WMSMapContext map = new WMSMapContext();
+		
+		//DJB: the WMS spec says that the request must not be 0 area
+		//     if it is, throw a service exception!
+		Envelope env = request.getBbox();
+		if (env.isNull() || (env.getWidth() <=0)|| (env.getHeight() <=0))
+		{
+			throw new WmsException("The request bounding box has zero area.");
+		}
+		
+		// DJB DONE: replace by setAreaOfInterest(Envelope,
+		// CoordinateReferenceSystem)
+		// with the user supplied SRS parameter
+		
+		//if there's a crs in the request, use that.  If not, assume its 4326
+		
+		CoordinateReferenceSystem mapcrs = null;
+		//DJB: spec says SRS is *required*, so if they dont specify one, we should throw an error
+		//     instead we use "NONE" - which is no-projection.
+		//     Previous behavior was to the WSG84 lat/long (4326)
+		if ((request.getCrs() == null) || request.getCrs().equals("")|| request.getCrs().equalsIgnoreCase("NONE"))
+		{
+			mapcrs = null;
+		}
+		else
+		{
+			//construct the crs object
+			try {
+				//CRSAuthorityFactory crsFactory = org.geotools.referencing.FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
+				mapcrs = CRS.decode(request.getCrs());
 			}
-        }
-        
-        //DJB: added this to be nicer about the "NONE" srs.
-        if (mapcrs !=null)
-        	map.setAreaOfInterest(request.getBbox(),mapcrs);
-        else
-        	map.setAreaOfInterest(request.getBbox());
-        map.setMapWidth(request.getWidth());
-        map.setMapHeight(request.getHeight());
-        map.setBgColor(request.getBgColor());
-        map.setTransparent(request.isTransparent());
-
-        LOGGER.fine("setting up map");
-
-        try{ // mapcontext can leak memory -- we make sure we done (see finally block)
-        MapLayer layer;
-
-        FeatureSource source;
-        for (int i = 0; i < layers.length; i++) {
-            Style style = styles[i];
-
-            if( layers[i].getType() == MapLayerInfo.TYPE_VECTOR ) {
-                try {
-                    source = layers[i].getFeature().getFeatureSource();
-                } catch (IOException exp) {
-                    LOGGER.log(Level.SEVERE,
-                        "Getting feature source: " + exp.getMessage(), exp);
-                    throw new WmsException(null,
-                        "Internal error : " + exp.getMessage());
-                }
-
-                layer = new DefaultMapLayer(source, style);
-
-                Filter definitionFilter = layers[i].getFeature().getDefinitionQuery();
-
-                if (definitionFilter != null) {
-                    Query definitionQuery = new DefaultQuery(source.getSchema()
-                                                                   .getTypeName(),
-                            definitionFilter);
-                    layer.setQuery(definitionQuery);
-                }
-
-                map.addLayer(layer);
-            } else if( layers[i].getType() == MapLayerInfo.TYPE_RASTER ) {
-            	//layers[i].getCoverageToLayer(req.getHttpServletRequest());
-            	layer = new DefaultMapLayer(layers[i].getCoverageToFeatures(req.getHttpServletRequest()), style);
-				map.addLayer(layer);    			
-            }
-        }
-
-        this.delegate.produceMap(map);
-        } catch (DataSourceException e) {
+			catch (Exception e)
+			{
+				//couldnt make it - we send off a service exception with the correct info
+				throw new WmsException(e.getLocalizedMessage(),"InvalidSRS");
+			}
+		}
+		
+		//DJB: added this to be nicer about the "NONE" srs.
+		if (mapcrs !=null) {
+			map.setAreaOfInterest(request.getBbox(),mapcrs);
+		}
+		else
+			map.setAreaOfInterest(request.getBbox());
+		map.setMapWidth(request.getWidth());
+		map.setMapHeight(request.getHeight());
+		map.setBgColor(request.getBgColor());
+		map.setTransparent(request.isTransparent());
+		
+		LOGGER.fine("setting up map");
+		
+		try{ // mapcontext can leak memory -- we make sure we done (see finally block)
+			MapLayer layer;
+			
+			FeatureSource source;
+			for (int i = 0; i < layers.length; i++) {
+				Style style = styles[i];
+				
+				if( layers[i].getType() == MapLayerInfo.TYPE_VECTOR ) {
+					try {
+						source = layers[i].getFeature().getFeatureSource();
+					} catch (IOException exp) {
+						LOGGER.log(Level.SEVERE,
+								"Getting feature source: " + exp.getMessage(), exp);
+						throw new WmsException(null,
+								"Internal error : " + exp.getMessage());
+					}
+					
+					layer = new DefaultMapLayer(source, style);
+					
+					Filter definitionFilter = layers[i].getFeature().getDefinitionQuery();
+					
+					if (definitionFilter != null) {
+						Query definitionQuery = new DefaultQuery(source.getSchema()
+								.getTypeName(),
+								definitionFilter);
+						layer.setQuery(definitionQuery);
+					}
+					
+					map.addLayer(layer);
+				} else if( layers[i].getType() == MapLayerInfo.TYPE_RASTER ) {
+					final GridCoverage gridCoverage = layers[i].getCoverageToLayer(req.getHttpServletRequest());
+					map.addLayer(gridCoverage, style);
+				}
+			}
+			
+			this.delegate.produceMap(map);
+		} catch (DataSourceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassCastException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        finally
+		finally
 		{
-        	//clean
-        	try{
-        		map.clearLayerList();
-        	}
-        	catch(Exception e) // we dont want to propogate a new error
-			{
-        		e.printStackTrace();
+			//clean
+			try{
+				map.clearLayerList();
 			}
-        	
-        	//call the Garbage Collector six times to be sure he hears us.
-        	Runtime.getRuntime().gc();
-        	Runtime.getRuntime().gc();
-        	Runtime.getRuntime().gc();
-        	Runtime.getRuntime().gc();
-        	Runtime.getRuntime().gc();
-        	Runtime.getRuntime().gc();	
+			catch(Exception e) // we dont want to propogate a new error
+			{
+				e.printStackTrace();
+			}
+			
+			//call the Garbage Collector six times to be sure he hears us.
+			Runtime.getRuntime().gc();
+			Runtime.getRuntime().gc();
+			Runtime.getRuntime().gc();
+			Runtime.getRuntime().gc();
+			Runtime.getRuntime().gc();
+			Runtime.getRuntime().gc();	
 		}
-    }
-
-    /**
-     * asks the internal GetMapDelegate for the MIME type of the map that it
-     * will generate or is ready to, and returns it
-     *
-     * @param gs DOCUMENT ME!
-     *
-     * @return the MIME type of the map generated or ready to generate
-     *
-     * @throws IllegalStateException if a GetMapDelegate is not setted yet
-     */
-    public String getContentType(GeoServer gs) throws IllegalStateException {
-        if (this.delegate == null) {
-            throw new IllegalStateException("No request has been processed");
-        }
-
-        return this.delegate.getContentType();
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getContentEncoding() {
-        LOGGER.finer("returning content encoding null");
-
-        return null;
-    }
-
-    /**
-     * if a GetMapDelegate is set, calls it's abort method. Elsewere do
-     * nothing.
-     *
-     * @param gs DOCUMENT ME!
-     */
-    public void abort(Service gs) {
-        if (this.delegate != null) {
-            LOGGER.fine("asking delegate for aborting the process");
-            this.delegate.abort();
-        }
-    }
-
-    /**
-     * delegates the writing and encoding of the results of the request to the
-     * <code>GetMapDelegate</code> wich is actually processing it, and has
-     * been obtained when <code>execute(Request)</code> was called
-     *
-     * @param out the output to where the map must be written
-     *
-     * @throws ServiceException if the delegate throws a ServiceException
-     *         inside its <code>writeTo(OuptutStream)</code>, mostly due to
-     * @throws IOException if the delegate throws an IOException inside its
-     *         <code>writeTo(OuptutStream)</code>, mostly due to
-     * @throws IllegalStateException if this method is called before
-     *         <code>execute(Request)</code> has succeed
-     */
-    public void writeTo(OutputStream out) throws ServiceException, IOException {
-        if (this.delegate == null) {
-            throw new IllegalStateException(
-                "No GetMapDelegate is setted, make sure you have called execute and it has succeed");
-        }
-
-        LOGGER.finer("asking delegate for write to " + out);
-        this.delegate.writeTo(out);
-    }
-
-    /**
-     * Creates a GetMapDelegate specialized in generating the requested map
-     * format
-     *
-     * @param outputFormat a request parameter object wich holds the processed
-     *        request objects, such as layers, bbox, outpu format, etc.
-     *
-     * @return A specialization of <code>GetMapDelegate</code> wich can produce
-     *         the requested output map format
-     *
-     * @throws WmsException if no specialization is configured for the output
-     *         format specified in <code>request</code> or if it can't be
-     *         instantiated
-     */
-    static GetMapProducer getDelegate(String outputFormat)
-        throws WmsException {
-        LOGGER.finer("request format is " + outputFormat);
-
-        GetMapProducerFactorySpi mpf = null;
-        Iterator mpfi = org.geotools.factory.FactoryFinder.factories(GetMapProducerFactorySpi.class);
-        
-        /*Set categories = Collections.singleton(new Class[] {GetMapProducerFactorySpi.class});
-        FactoryRegistry registry = new FactoryRegistry(categories);
-        
-        // get the providers
-        Iterator mpfi = registry.getServiceProviders(GetMapProducerFactorySpi.class);*/
-
-        while (mpfi.hasNext()) {
-            mpf = (GetMapProducerFactorySpi) mpfi.next();
-
-            if (mpf.canProduce(outputFormat)) {
-                break;
-            }
-
-            mpf = null;
-        }
-
-        if (mpf == null) {
-            throw new WmsException("There is no support for creating maps in "
-                + outputFormat + " format", "InvalidFormat");
-        }
-
-        GetMapProducer producer = mpf.createMapProducer(outputFormat);
-
-        return producer;
-    }
-
-    /**
-     * Convenient mehtod to inspect the available
-     * <code>GetMapProducerFactorySpi</code> and return the set of all the map
-     * formats' MIME types that the producers can handle
-     *
-     * @return a Set&lt;String&gt; with the supported mime types.
-     */
-    public static Set getMapFormats() {
-        Set mapFormats = new HashSet();
-        GetMapProducerFactorySpi mpf;
-        Iterator mpfi = org.geotools.factory.FactoryFinder.factories(GetMapProducerFactorySpi.class);
-        
-        /*Set categories = Collections.singleton(new Class[] {GetMapProducerFactorySpi.class});
-        FactoryRegistry registry = new FactoryRegistry(categories);
-        
-        // get the providers
-        Iterator mpfi = registry.getServiceProviders(GetMapProducerFactorySpi.class);*/
-
-        while (mpfi.hasNext()) {
-            mpf = (GetMapProducerFactorySpi) mpfi.next();
-            mapFormats.addAll(mpf.getSupportedFormats());
-        }
-
-        return mapFormats;
-    }
-
+	}
+	
+	/**
+	 * asks the internal GetMapDelegate for the MIME type of the map that it
+	 * will generate or is ready to, and returns it
+	 *
+	 * @param gs DOCUMENT ME!
+	 *
+	 * @return the MIME type of the map generated or ready to generate
+	 *
+	 * @throws IllegalStateException if a GetMapDelegate is not setted yet
+	 */
+	public String getContentType(GeoServer gs) throws IllegalStateException {
+		if (this.delegate == null) {
+			throw new IllegalStateException("No request has been processed");
+		}
+		
+		return this.delegate.getContentType();
+	}
+	
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public String getContentEncoding() {
+		LOGGER.finer("returning content encoding null");
+		
+		return null;
+	}
+	
+	/**
+	 * if a GetMapDelegate is set, calls it's abort method. Elsewere do
+	 * nothing.
+	 *
+	 * @param gs DOCUMENT ME!
+	 */
+	public void abort(Service gs) {
+		if (this.delegate != null) {
+			LOGGER.fine("asking delegate for aborting the process");
+			this.delegate.abort();
+		}
+	}
+	
+	/**
+	 * delegates the writing and encoding of the results of the request to the
+	 * <code>GetMapDelegate</code> wich is actually processing it, and has
+	 * been obtained when <code>execute(Request)</code> was called
+	 *
+	 * @param out the output to where the map must be written
+	 *
+	 * @throws ServiceException if the delegate throws a ServiceException
+	 *         inside its <code>writeTo(OuptutStream)</code>, mostly due to
+	 * @throws IOException if the delegate throws an IOException inside its
+	 *         <code>writeTo(OuptutStream)</code>, mostly due to
+	 * @throws IllegalStateException if this method is called before
+	 *         <code>execute(Request)</code> has succeed
+	 */
+	public void writeTo(OutputStream out) throws ServiceException, IOException {
+		if (this.delegate == null) {
+			throw new IllegalStateException(
+			"No GetMapDelegate is setted, make sure you have called execute and it has succeed");
+		}
+		
+		LOGGER.finer("asking delegate for write to " + out);
+		this.delegate.writeTo(out);
+	}
+	
+	/**
+	 * Creates a GetMapDelegate specialized in generating the requested map
+	 * format
+	 *
+	 * @param outputFormat a request parameter object wich holds the processed
+	 *        request objects, such as layers, bbox, outpu format, etc.
+	 *
+	 * @return A specialization of <code>GetMapDelegate</code> wich can produce
+	 *         the requested output map format
+	 *
+	 * @throws WmsException if no specialization is configured for the output
+	 *         format specified in <code>request</code> or if it can't be
+	 *         instantiated
+	 */
+	static GetMapProducer getDelegate(String outputFormat)
+	throws WmsException {
+		LOGGER.finer("request format is " + outputFormat);
+		
+		GetMapProducerFactorySpi mpf = null;
+		Iterator mpfi = org.geotools.factory.FactoryFinder.factories(GetMapProducerFactorySpi.class);
+		
+		/*Set categories = Collections.singleton(new Class[] {GetMapProducerFactorySpi.class});
+		 FactoryRegistry registry = new FactoryRegistry(categories);
+		 
+		 // get the providers
+		  Iterator mpfi = registry.getServiceProviders(GetMapProducerFactorySpi.class);*/
+		
+		while (mpfi.hasNext()) {
+			mpf = (GetMapProducerFactorySpi) mpfi.next();
+			
+			if (mpf.canProduce(outputFormat)) {
+				break;
+			}
+			
+			mpf = null;
+		}
+		
+		if (mpf == null) {
+			throw new WmsException("There is no support for creating maps in "
+					+ outputFormat + " format", "InvalidFormat");
+		}
+		
+		GetMapProducer producer = mpf.createMapProducer(outputFormat);
+		
+		return producer;
+	}
+	
+	/**
+	 * Convenient mehtod to inspect the available
+	 * <code>GetMapProducerFactorySpi</code> and return the set of all the map
+	 * formats' MIME types that the producers can handle
+	 *
+	 * @return a Set&lt;String&gt; with the supported mime types.
+	 */
+	public static Set getMapFormats() {
+		Set mapFormats = new HashSet();
+		GetMapProducerFactorySpi mpf;
+		Iterator mpfi = org.geotools.factory.FactoryFinder.factories(GetMapProducerFactorySpi.class);
+		
+		/*Set categories = Collections.singleton(new Class[] {GetMapProducerFactorySpi.class});
+		 FactoryRegistry registry = new FactoryRegistry(categories);
+		 
+		 // get the providers
+		  Iterator mpfi = registry.getServiceProviders(GetMapProducerFactorySpi.class);*/
+		
+		while (mpfi.hasNext()) {
+			mpf = (GetMapProducerFactorySpi) mpfi.next();
+			mapFormats.addAll(mpf.getSupportedFormats());
+		}
+		
+		return mapFormats;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.vfny.geoserver.Response#getContentDisposition()
 	 */
@@ -349,5 +350,5 @@ public class GetMapResponse implements Response {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 }

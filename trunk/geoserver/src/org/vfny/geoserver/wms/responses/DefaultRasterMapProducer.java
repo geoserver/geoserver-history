@@ -6,16 +6,21 @@ package org.vfny.geoserver.wms.responses;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geotools.renderer.lite.LiteRenderer;
+import org.geotools.renderer.GTRenderer;
+import org.geotools.renderer.lite.StreamingRenderer;
+import org.geotools.renderer.lite.RendererUtilities;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
@@ -65,12 +70,8 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 
 	/**
 	 * The one to do the magic of rendering a map
-	 * 
-	 * @uml.property name="renderer"
-	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
-	private LiteRenderer renderer;
-
+    private GTRenderer renderer;
 
     /**
      * Set in produceMap(...) from the requested output format, it's holded
@@ -202,36 +203,48 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
             graphic.fillRect(0, 0, width, height);
         } else {
             LOGGER.fine("setting to transparent");
-
-            //ALEX: Do not need to set Alpha Blending ..... simply we don't draw the background :-)
             
-            int type = AlphaComposite.SRC_OVER;
-            graphic.setComposite(AlphaComposite.getInstance(type, 0.0f));
+            int type = AlphaComposite.SRC;
+            graphic.setComposite(AlphaComposite.getInstance(type));
+            
+            Color c = new Color(map.getBgColor().getRed(),
+            		map.getBgColor().getGreen(),
+					map.getBgColor().getBlue(),
+					0);
+            graphic.setBackground(map.getBgColor());
+            graphic.setColor( c );
+            graphic.fillRect(0, 0, width, height);
+            
+            type = AlphaComposite.SRC_OVER;
+            graphic.setComposite(AlphaComposite.getInstance(type));
+
         }
         
         Rectangle paintArea = new Rectangle(width, height);
 
-        this.renderer = new LiteRenderer(map);
+        renderer = new StreamingRenderer();
+        renderer.setContext(map);
         
-        //antialiasing option!
-       renderer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+        RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+        renderer.setJava2DHints(hints);
         
-
         //we already do everything that the optimized data loading does...
         //if we set it to true then it does it all twice...
-        this.renderer.setOptimizedDataLoadingEnabled(true);
+        Map rendererParams = new HashMap();
+        rendererParams.put("optimizedDataLoadingEnabled",new Boolean(true) );
+       
 
         Envelope dataArea = map.getAreaOfInterest();
-        AffineTransform at = this.renderer.worldToScreenTransform(dataArea,
-                paintArea);
+        AffineTransform at = RendererUtilities.worldToScreenTransform(dataArea,   paintArea);
 
         //LOGGER.fine("calling renderer");
 
-        if (this.abortRequested) {
+        if (this.abortRequested)
+        {
             return;
         }
       
-        this.renderer.paint(graphic, paintArea, at);
+        renderer.paint(graphic, paintArea, at);
         
         map = null;
 

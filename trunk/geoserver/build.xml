@@ -175,6 +175,7 @@
 		<copy todir="${dir.build}">
 			<fileset dir="${dir.src}">
 				<include name="**/META-INF"/>
+				<include name="**/META-INF/**"/>
 				<include name="**/META-INF/services"/>
 				<include name="**/META-INF/services/**"/>
 				<include name="**/*.properties" />
@@ -183,6 +184,7 @@
 		</copy>
 		<jar jarfile="${dir.lib}/geoserver.jar">
 			<fileset dir="${dir.build}">
+				<include name="META-INF/**"/>
 				<include name="META-INF/services/**"/>
 				<include name="**/*.class"/>
 				<exclude name="geoserver.war" />

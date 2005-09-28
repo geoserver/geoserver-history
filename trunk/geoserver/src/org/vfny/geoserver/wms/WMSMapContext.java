@@ -9,7 +9,6 @@ import java.awt.Color;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapLayer;
 
-
 /**
  * Extends DefaultMapContext to provide the whole set of request parameters a
  * WMS GetMap request can have.
@@ -65,7 +64,6 @@ public class WMSMapContext extends DefaultMapContext {
 	 * @uml.property name="transparent" multiplicity="(0 1)"
 	 */
 	private boolean transparent;
-
 
     /**
      *
@@ -148,7 +146,6 @@ public class WMSMapContext extends DefaultMapContext {
 	public void setMapWidth(int mapWidth) {
 		this.mapWidth = mapWidth;
 	}
-
 
     /**
      * DOCUMENT ME!
