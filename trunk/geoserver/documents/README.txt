@@ -1,3 +1,26 @@
+Geoserver 1.3.0 RC3
+-------------------
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=11901
+
+The major changes since RC2 have been:
+* You can now have the same FeatureType name for different datasets (each in different namespaces).
+* Large improvements to GIF format support
+* Improved performance for GetFeature
+* New output format for WFS: SHAPE-ZIP  (shapefile-in-zip-file)
+* FeatureType summary page with link to Mapbuilder demo for each layer
+* Many improvements to the Renderer, labeling, etc...
+* Currently compatible with Geotools 2.1.x branch and Geotools 2.2 (trunk)
+* added "Strict CITE conformance" checkbox to WFS because of problems in the way CITE test verifies the GetCapabilitites document
+* fixed VM crash for labeling (linux only)
+* <PropertyIsLike> now optimized in PostGIS and Oracle (SQL92 implementation)
+* Labeling option (SLD) for grouping, priority, overlapping
+* Useability changes & testing
+* Now based on StreamingRenderer/GTRenderer interfaces
+
+Based on the geotools 2.1.x branch (tag = for_geoserver_1_3_rc3)
+
 GeoServer 1.3.0-RC2 README file
 --------------------------------
 

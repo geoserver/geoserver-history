@@ -23,7 +23,7 @@
 	<!--These should be defined in the build.properties file, which will -->
 	<!-- override these values -->
 
-	<!--property name="version.geotools" value="2.1.RC1" /-->
+	<!--property name="version.geotools" value="2.1.1" /-->
 	<property name="version.geotools" value="2.2.x" />
 
 
@@ -39,7 +39,7 @@
 	<!-- ====================================================================== -->
 
 	<!-- release version -->
-	<property name="name.release" value="1.3.0-RC2-WCS" />
+	<property name="name.release" value="1.3.0-RC3-WCS" />
 
 	<!-- primary directories -->
 	<property name="dir.bin" value="${basedir}/bin" />
@@ -175,7 +175,6 @@
 		<copy todir="${dir.build}">
 			<fileset dir="${dir.src}">
 				<include name="**/META-INF"/>
-				<include name="**/META-INF/**"/>
 				<include name="**/META-INF/services"/>
 				<include name="**/META-INF/services/**"/>
 				<include name="**/*.properties" />
@@ -184,7 +183,6 @@
 		</copy>
 		<jar jarfile="${dir.lib}/geoserver.jar">
 			<fileset dir="${dir.build}">
-				<include name="META-INF/**"/>
 				<include name="META-INF/services/**"/>
 				<include name="**/*.class"/>
 				<exclude name="geoserver.war" />
