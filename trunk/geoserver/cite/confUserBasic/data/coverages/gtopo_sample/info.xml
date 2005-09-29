@@ -12,8 +12,8 @@ null
     AUTHORITY['EPSG','6326']], 
   PRIMEM['Greenwich', 0.0, AUTHORITY['EPSG','8901']], 
   UNIT['degree', 0.017453292519943295], 
-  AXIS['Lon', EAST], 
   AXIS['Lat', NORTH], 
+  AXIS['Lon', EAST], 
   AUTHORITY['EPSG','4326']]" srsName = "EPSG:WGS 84" >
 <pos>-19.999999999999996 40.000000000019995</pos>
 <pos>19.99999999998401 90.0</pos>
