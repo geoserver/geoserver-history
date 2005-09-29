@@ -12,12 +12,22 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.media.jai.JAI;
+import javax.media.jai.OperationDescriptor;
+import javax.media.jai.OperationRegistry;
+import javax.media.jai.registry.RenderedRegistryMode;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
+import org.geotools.image.jai.CombineCRIF;
+import org.geotools.image.jai.CombineDescriptor;
+import org.geotools.image.jai.HysteresisCRIF;
+import org.geotools.image.jai.HysteresisDescriptor;
+import org.geotools.image.jai.NodataFilterCRIF;
+import org.geotools.image.jai.NodataFilterDescriptor;
 import org.geotools.validation.xml.XMLReader;
 import org.vfny.geoserver.global.xml.XMLConfigReader;
 
@@ -47,6 +57,8 @@ public class GeoServerPlugIn implements PlugIn {
      */
     private boolean started = false;
 
+    private static final String RENDERED_MODE = RenderedRegistryMode.MODE_NAME;
+    
     /**
      * Implement destroy.
      * 
@@ -85,6 +97,31 @@ public class GeoServerPlugIn implements PlugIn {
         ServletContext sc = as.getServletContext();
         File geoserverDataDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc); //geoserver_home fix
          String rootDir = geoserverDataDir.getAbsolutePath();
+
+         //Registering JAI Operations
+         final OperationRegistry registry = JAI.getDefaultInstance().getOperationRegistry();
+         OperationDescriptor operation;
+
+         // Combine
+         operation = (OperationDescriptor) registry.getDescriptor(RENDERED_MODE, "org.geotools.Combine");
+         if(operation == null) {
+			registry.registerOperationDescriptor(new CombineDescriptor() , "org.geotools.Combine");
+			registry.registerRIF("org.geotools.Combine", "org.geotools" , new CombineCRIF());
+         }
+
+         // Hysteresis
+         operation = (OperationDescriptor) registry.getDescriptor(RENDERED_MODE, "org.geotools.Hysteresis");
+         if(operation == null) {
+			registry.registerOperationDescriptor(new HysteresisDescriptor() , "org.geotools.Hysteresis");
+			registry.registerRIF("org.geotools.Hysteresis", "org.geotools" , new HysteresisCRIF());
+         }
+
+         // NodataFilter
+         operation = (OperationDescriptor) registry.getDescriptor(RENDERED_MODE, "org.geotools.NodataFilter");
+         if(operation == null) {
+			registry.registerOperationDescriptor(new NodataFilterDescriptor() , "org.geotools.NodataFilter");
+			registry.registerRIF("org.geotools.NodataFilter", "org.geotools" , new NodataFilterCRIF());
+         }
 
         try {
             File f = geoserverDataDir; //geoserver_home fix
