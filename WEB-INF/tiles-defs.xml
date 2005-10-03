@@ -62,7 +62,7 @@
    	<definition name="admin" extends=".mainLayout">
    		<put name="key" value="admin"/>
    		<put name="body" value="/WEB-INF/pages/Administration.jsp"/>
-   		<put name="layer" value="administration"/>
+   		<put name="layer" value="configuration"/>
         <put name="locationForwards" value="welcome"/>
         <put name="actionForwards" value="admin.freeLocks:admin.freeMemory"/>
    	</definition>   	
