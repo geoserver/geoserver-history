@@ -20,7 +20,6 @@
 	<classpathentry kind="lib" path="lib/gt2-oracle-spatial.jar"/>
 	<classpathentry sourcepath="/gt_trunk" kind="lib" path="lib/gt2-postgis.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-property.jar"/>
-	<classpathentry sourcepath="/gt_trunk/plugin/shapefile" kind="lib" path="lib/gt2-shapefile.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-utils.jar"/>
 	<classpathentry sourcepath="/gt_trunk" kind="lib" path="lib/gt2-validation.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-vpf.jar"/>
@@ -50,7 +49,9 @@
 	<classpathentry sourcepath="C:/Documents and Settings/Owner/Desktop/xerces-2_5_0" kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/commons-httpclient-2.0.1.jar"/>
-	<classpathentry sourcepath="/g2_2_1_x/module/main/src" kind="lib" path="lib/gt2-main.jar"/>
+	<classpathentry sourcepath="/main" kind="lib" path="lib/gt2-main.jar"/>
 	<classpathentry kind="lib" path="lib/geoapi-2.0.jar"/>
+	<classpathentry sourcepath="/shapefile" kind="lib" path="lib/gt2-shapefile.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-indexed-shapefile.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
