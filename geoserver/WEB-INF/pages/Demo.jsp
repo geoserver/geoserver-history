@@ -2,41 +2,39 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<table class="info">
-  <tbody>
-    <tr>
-      <td class="label">request:</td>
-      <td class="datum">
-        <html:form action="/demoSubmit">
-        
-          <html:select property="demo">
-			<html:options property="demoList"/>
-		  </html:select>
-		  <html:submit property="action">
-			<bean:message key="label.change"/>
-		  </html:submit>  
-        </html:form>		  
-      </td>
-    </tr>
-    <form action="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs/TestWfsPost" method="POST">    
-      <tr>
-        <td class="label">url:</td>
-        <td class="datum">
-          <input type="text" size="90" name="url" value="<bean:write name="demoForm" property="url"/>">
-        </td>
-      </tr>
-      <tr>
-        <td class="label">body:</td>
-        <td class="datum">
-          <textarea rows="10" cols="90" name="body"><bean:write name="demoForm" property="body"/></textarea>
-        </td>
-      </tr>    
-      <tr>
-        <td class="label"></td>
-        <td class="datum">
-          <html:submit><bean:message key="label.submit"/></html:submit>
-        </td>
-      </tr>
-    </form>      
-  </tbody>
+<table class="info" cellpadding=10 width=670>
+	<tbody>
+		<tr>
+			<td width=70/>
+			<td width=600 class="label" valign="top">
+			<center><u><b><font size=+2><a href="../../../mapPreview.do"><bean:message key="welcome.demo.mappreview.title"/></a></font></b></u><br>
+			<p>
+			<bean:message key="welcome.demo.mappreview.short"/>
+			</p>
+			</center>
+			</td>
+		</tr>
+		
+		<tr>
+			<td width=70/>
+			<td width=600 class="label" valign="top">
+			<center><u><b><font size=+2><a href="../../../demoRequest.do"><bean:message key="welcome.demo.requests.title"/></a></font></b></u><br>
+			<p>
+			<bean:message key="welcome.demo.requests.short"/>
+			</p>
+			</center>
+			</td>
+		</tr>
+		
+		<tr>
+			<td width=70/>
+			<td width=600 class="label" valign="top">
+			<center><u><b><font size=+2><a href="http://docs.codehaus.org/display/GEOSDOC/Documentation" target="newwindow"><bean:message key="welcome.demo.documentation.title"/></a></font></b></u><br>
+			<p>
+			<bean:message key="welcome.demo.documentation.short"/>
+			</p>
+			</center>
+			</td>
+		</tr>
+	</tbody>
 </table>
