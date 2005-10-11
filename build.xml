@@ -838,6 +838,7 @@
 		<exclude name="org/**" />
 		<exclude name="bin/*.sh"/>
 	</tarfileset>
+
 	<!-- JD(GEOS-385)include bin seperatly in order to get permission right -->
 	<tarfileset dir="${dir.build}" prefix="geoserver" mode="755">
 		<include name="bin/*.sh"/>
@@ -945,6 +946,9 @@
 <copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-shapefile.jar" />
 <copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" toFile="${dir.lib}/gt2-validation.jar" />
 <copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/property-${version.geotools}.jar" toFile="${dir.lib}/gt2-property.jar" />
+	
+<!-- JD: GEOS-389, adding indexed shapefile support -->
+<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/indexed-shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-indexed-shapefile.jar" />
 </target>
 
 <target name="gt2-validation" depends="init" description="Generate gt2-validation.jar for quick testing (use maven for jars you commit)">
