@@ -57,24 +57,52 @@
                 value="dbtype">
     <tr>
 	  <td class="label">
+	  <!-- is this a required field -->
+		<logic:equal name="dataDataStoresEditorForm"
+			property='<%= "paramRequired[" + ctr + "]"%>'
+			value="true">
+		  <font color="red">*</font>
+		</logic:equal>
+		
         <span class="help"
 		      title="<bean:write name="dataDataStoresEditorForm"
 		      property='<%= "paramHelp[" + ctr + "]" %>'/>">
-          <bean:write name="dataDataStoresEditorForm"
-                      property='<%= "paramKey[" + ctr + "]"%>'/>:
+		      
+			<bean:write name="dataDataStoresEditorForm"
+                    property='<%= "paramKey[" + ctr + "]"%>'/>:
 		</span>
-      </td>
+	</td>
 	  <td class="datum">
 <logic:notEqual name="dataDataStoresEditorForm"
 	    	        property='<%= "paramKey[" + ctr + "]"%>'
 			        value="passwd">
-          <html:text property='<%= "paramValues[" + ctr + "]"%>' size="60"/>
+	
+    <!--use the type information to figure out the type of widget to create -->
+	<!-- check for boolean, if so provide a drop down of true false -->
+	<logic:match name="dataDataStoresEditorForm"
+		property='<%= "paramType[" + ctr + "]"%>'
+		value="java.lang.Boolean">		
+		
+		<html:select property='<%= "paramValues[" + ctr + "]"%>'>
+			<html:option key="" value=""/>
+			<html:option key="false" value="false"/>
+			<html:option key="true" value="true"/>
+		</html:select>
+	</logic:match>
+	<logic:notMatch name="dataDataStoresEditorForm"
+		property='<%= "paramType[" + ctr + "]"%>'
+		value="java.lang.Boolean">		
+		
+		<!-- default to just a text box -->		
+		<html:text property='<%= "paramValues[" + ctr + "]"%>' size="60"/>	
+	</logic:notMatch>
+	
 </logic:notEqual>
 <logic:equal name="dataDataStoresEditorForm"
    		     property='<%= "paramKey[" + ctr + "]"%>'
              value="passwd">
           <html:password property='<%= "paramValues[" + ctr + "]"%>' size="12"/>
-</logic:equal>			             
+</logic:equal>		
 	  </td>
 	</tr>
 </logic:notEqual>
@@ -94,3 +122,6 @@
   </table>
 </html:form>
 </logic:present>
+<br>
+&nbsp;&nbsp;<font color="red">*</font> = <bean:message key="config.data.store.editor.requiredField"/>
+
