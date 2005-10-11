@@ -232,6 +232,8 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
         //if we set it to true then it does it all twice...
         Map rendererParams = new HashMap();
         rendererParams.put("optimizedDataLoadingEnabled",new Boolean(true) );
+        
+        renderer.setRendererHints(rendererParams);
        
 
         Envelope dataArea = map.getAreaOfInterest();

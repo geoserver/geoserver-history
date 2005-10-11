@@ -882,11 +882,18 @@
 <unwar src="${dir.build}/geoserver.war" dest="${dir.build}/server/geoserver/" />
 
 	
+<!--JD(GEOS-385) fix the end of line for shell scripts -->
+<fixcrlf srcdir="${dir.build}" includes="**/*.sh" eol="unix"/>
 <tar destfile="${basedir}/geoserver-${name.release}-bin.tar">
 	<tarfileset dir="${dir.build}" prefix="geoserver">
 		<include name="**/*" />
 		<exclude name="geoserver.war" />
 		<exclude name="org/**" />
+		<exclude name="bin/*.sh"/>
+	</tarfileset>
+	<!-- JD(GEOS-385)include bin seperatly in order to get permission right -->
+	<tarfileset dir="${dir.build}" prefix="geoserver" mode="755">
+		<include name="bin/*.sh"/>
 	</tarfileset>
 </tar>
 

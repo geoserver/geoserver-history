@@ -594,8 +594,7 @@ public class CoverageResponse implements Response {
 			final int[] highers = new int[] {request.getGridHigh()[0].intValue(), request.getGridHigh()[1].intValue()};
 	        //new grid range
 	        GeneralGridRange newGridrange = new GeneralGridRange(lowers, highers);
-	        GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange,
-	        		subCoverage.getEnvelope(), new boolean[] { true, false }, true);
+	        GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange, subCoverage.getEnvelope());
 
 	        //getting the needed operation
 	        Resample op = new Resample();

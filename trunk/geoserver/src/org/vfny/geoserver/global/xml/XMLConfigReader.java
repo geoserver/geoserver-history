@@ -34,12 +34,13 @@ import org.geotools.factory.Hints;
 import org.geotools.filter.FilterDOMParser;
 import org.geotools.geometry.GeneralDirectPosition;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
-//import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.geotools.util.NameFactory;
 import org.geotools.util.NumberRange;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.util.InternationalString;
@@ -1454,12 +1455,17 @@ public class XMLConfigReader {
 				new GeneralDirectPosition(envelope.getMinX(), envelope.getMinY()),
 				new GeneralDirectPosition(envelope.getMaxX(), envelope.getMaxY())
 		);
+		try {
+			gcEnvelope.setCoordinateReferenceSystem(CRS.decode("EPSG:4326"));
+		} catch (NoSuchAuthorityCodeException e) {
+			throw new ConfigurationException(e);
+		}
 		
 		if (gridElem == null) {
 	        //new grid range
 	        GeneralGridRange newGridrange = new GeneralGridRange(new int[] { 0, 0 },
 	                new int[] { 1, 1 });
-	        GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange, gcEnvelope, new boolean[] { false, true });
+	        GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange, gcEnvelope);
 
 			return newGridGeometry;
 		}
@@ -1493,7 +1499,7 @@ public class XMLConfigReader {
 
         //new grid range
         GeneralGridRange newGridrange = new GeneralGridRange(lowers, upers);
-        GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange, gcEnvelope, new boolean[] { false, true });
+        GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange, gcEnvelope);
 
 		return newGridGeometry;
 	}
