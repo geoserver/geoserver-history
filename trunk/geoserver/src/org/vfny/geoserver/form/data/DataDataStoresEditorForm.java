@@ -4,7 +4,10 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,6 +23,7 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFactorySpi.Param;
 import org.vfny.geoserver.action.data.DataStoreUtils;
@@ -97,17 +101,18 @@ public class DataDataStoresEditorForm extends ActionForm {
 	 * @uml.property name="paramValues"
 	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
-	private List paramValues;
+    private List paramValues;
 
-	//
-	// More hacky attempts to transfer information into the JSP smoothly
-	//
+    /** String representation of connection paramter types */
+    private List paramTypes;
+    
+    /** String representation of paramters which are required */
+    private List paramRequired;
+    //
+    // More hacky attempts to transfer information into the JSP smoothly
+    //
 
-	/**
-	 * Available NamespaceIds
-	 * 
-	 * @uml.property name="namespaces" multiplicity="(0 1)"
-	 */
+    /** Available NamespaceIds */
 	private SortedSet namespaces;
 
 	/**
@@ -158,7 +163,9 @@ public class DataDataStoresEditorForm extends ActionForm {
 
         paramKeys = new ArrayList(params.length);
         paramValues = new ArrayList(params.length);
+        paramTypes = new ArrayList(params.length);
         paramHelp = new ArrayList(params.length);
+        paramRequired = new ArrayList(params.length);
 
         for (int i = 0; i < params.length; i++) {
             Param param = params[i];
@@ -184,8 +191,10 @@ public class DataDataStoresEditorForm extends ActionForm {
 
             paramKeys.add(key);
             paramValues.add((text != null) ? text : "");
+            paramTypes.add(param.type.getName());
             paramHelp.add(param.description
                 + (param.required ? "" : " (optional)"));
+            paramRequired.add(Boolean.valueOf(param.required).toString());
         }
     }
 
@@ -219,6 +228,31 @@ public class DataDataStoresEditorForm extends ActionForm {
                 continue;
             }
 
+            //special case check for url
+            if (URL.class.equals(param.type)) {
+            	String value = getParamValue(i);
+            	if (value != null && !"".equals(value)) {
+            		URL url = null;
+            		try {
+            			// if this does not throw an exception then cool
+            			url = new URL(value);
+            		}
+            		catch(MalformedURLException e) {
+            			//check for special case of file
+            			try {
+							if (new File(value).exists())  {
+								new URL("file://" + value);
+								setParamValues(i,"file://" + value);
+							}
+						} 
+            			catch (MalformedURLException e1) {
+            				//let this paramter die later
+						}
+            		}
+            		
+            	}
+            }
+            
             Object value;
 
             try {
@@ -551,5 +585,38 @@ public class DataDataStoresEditorForm extends ActionForm {
      */
     public String getParamHelp(int index) {
         return (String) paramHelp.get(index);
+    }
+    
+    /**
+     * @return list containing the name of the class of each paramter.
+     */
+    public List getParamTypes() {
+    	return paramTypes;
+    }
+    
+    /**
+     * @param index paramter index.
+     * 
+     * @return The string represention of the class of the paramter at the 
+     * specified index.
+     */
+    public String getParamType(int index) {
+    	return (String)paramTypes.get(index);
+    }
+    
+    /**
+     * @return list containing java.lang.Boolean values representing which 
+     * paramters are required.
+     */
+    public List getParamRequired() {
+    	return paramRequired;
+    }
+    
+    /**
+     * @param index paramter index.
+     * @return True if the paramter is required, otherwise false.
+     */
+    public String getParamRequired(int index) {
+    	return (String)paramRequired.get(index);
     }
 }

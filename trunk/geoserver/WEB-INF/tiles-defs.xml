@@ -57,6 +57,13 @@
    		<put name="layer" value="application"/>
         <put name="locationForwards" value="welcome"/>        
    	</definition>
+   	
+   	<definition name="welcome.demoRequest" extends=".mainLayout">
+   		<put name="key" value="welcome.demoRequest"/>
+   		<put name="body" value="/WEB-INF/pages/demoRequest.jsp"/>   		
+   		<put name="layer" value="application"/>
+        <put name="locationForwards" value="welcome:welcome.demo"/>        
+   	</definition>
    	   	   	
    	<!-- ADMIN -->
    	<definition name="admin" extends=".mainLayout">

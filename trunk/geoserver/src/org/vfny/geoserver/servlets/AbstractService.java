@@ -6,6 +6,7 @@ package org.vfny.geoserver.servlets;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +36,7 @@ import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 
@@ -244,7 +246,22 @@ public abstract class AbstractService extends HttpServlet {
         // implements the main request/response logic
         try {
             XmlRequestReader requestReader = getXmlRequestReader();
-            Reader xml = (requestXml != null) ? requestXml : request.getReader();
+            //JD: GEOS-323, adding support for character encoding detection
+            // Reader xml = (requestXml != null) ? requestXml : request.getReader();
+            Reader xml;
+            if (null != requestXml) {
+                xml = requestXml;
+            } else {
+                /*
+                 * `getCharsetAwareReader` returns a reader which not support
+                 * mark/reset. So it is a good idea to wrap it into BufferedReader.
+                 * In this case the below debug output will work.
+                 */
+                xml = new BufferedReader(
+                          XmlCharsetDetector.getCharsetAwareReader(
+                              request.getInputStream()));
+            }
+            //JD: GEOS-323
             
             //DJB: add support for POST loggin
             if (LOGGER.isLoggable(Level.FINE)) {

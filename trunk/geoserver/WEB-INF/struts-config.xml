@@ -61,6 +61,10 @@
     		type="org.vfny.geoserver.form.DemoForm"/>    		
 
     	<form-bean
+    		name="demoRequestForm"
+    		type="org.vfny.geoserver.form.DemoRequestForm"/>
+
+    	<form-bean
     		name="loginEditForm"
     		type="org.vfny.geoserver.form.LoginForm"/>
     
@@ -205,6 +209,11 @@
         <forward 
         	name="welcome.demo"
         	path="/demo.do"/>
+        	
+        <forward 
+        	name="welcome.demoRequest"
+        	path="/demoRequest.do"/>
+        
         	
         <!-- Appearance -->       		
        	<forward name="style" path="/style.css"/>
@@ -449,6 +458,11 @@
 			path ="/demo"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="welcome.demo"/>
+        	
+       	<action
+			path ="/demoRequest"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="welcome.demoRequest"/>
         	
         <!-- ADMIN -->
         <action
@@ -721,6 +735,15 @@
 			scope="request"
 			validate="true"
 			input="/demo.do"/>
+			
+		<action
+			path="/demoRequestSubmit"
+			type="org.vfny.geoserver.action.DemoRequestAction"
+			name="demoRequestForm"
+			scope="request"
+			validate="true"
+			input="/demoRequest.do"/>
+			
 			
 		<!-- Admin Actions -->
         <action
