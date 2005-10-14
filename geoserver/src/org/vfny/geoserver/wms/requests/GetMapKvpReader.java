@@ -8,8 +8,10 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -18,6 +20,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -714,7 +719,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         	SLDValidator validator = new SLDValidator();
         	List errors =null;
         	try {
-        		InputStream in = sldUrl.openStream();
+        		//JD: GEOS-420, Wrap the sldUrl in getINputStream method in order
+        		// to do compression
+        		InputStream in = getInputStream(sldUrl);
         		errors = validator.validateSLD(in, request.getHttpServletRequest().getSession().getServletContext());
         		in.close();
         		if (errors.size() != 0)
@@ -730,7 +737,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         SLDParser parser;
 
         try {
-            parser = new SLDParser(styleFactory, sldUrl);
+        	//JD: GEOS-420, Wrap the sldUrl in getINputStream method in order
+    		// to do compression
+            parser = new SLDParser(styleFactory, getInputStream( sldUrl));
         } catch (IOException e) {
             String msg = "Creating remote SLD url: " + e.getMessage();
             LOGGER.log(Level.WARNING, msg, e);
@@ -1062,5 +1071,52 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         }
 
         return ftype;
+    }
+    
+    /**
+     * This method gets the correct input stream for a URL.
+     * If the URL is a http/https connection, the Accept-Encoding: gzip, deflate is added.
+     * It the paramter is added, the response is checked to see if the response
+     * is encoded in gzip, deflate or plain bytes. The correct input stream wrapper is then
+     * selected and returned.
+     *
+     * This method was added as part of GEOS-420
+     * 
+     * @param sldUrl The url to the sld file
+     * @return The InputStream used to validate and parse the SLD xml.
+     * @throws IOException
+     */
+    private InputStream getInputStream(URL sldUrl) throws IOException {
+      //Open the connection
+      URLConnection conn = sldUrl.openConnection();
+
+      //If it is the http or https scheme, then ask for gzip if the server supports it.
+      if (conn instanceof HttpURLConnection) {
+        //Send the requested encoding to the remote server.
+        conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+      }
+      //Conect to get the response headers
+      conn.connect();
+      //Return the correct inputstream
+      //If the connection is a url, connection, check the response encoding.
+      if (conn instanceof HttpURLConnection) {
+        //Get the content encoding of the server response
+        String encoding = conn.getContentEncoding();
+        //If null, set it to a emtpy string
+        if (encoding == null) encoding = "";
+        if (encoding.equalsIgnoreCase("gzip")) {
+          //For gzip input stream, use a GZIPInputStream
+          return new GZIPInputStream(conn.getInputStream());
+        } else if (encoding.equalsIgnoreCase("deflate")) {
+          //If it is encoded as deflate, then select the inflater inputstream.
+          return new InflaterInputStream(conn.getInputStream(), new Inflater(true));
+        } else {
+          //Else read the raw bytes
+          return conn.getInputStream();
+        }
+      } else {
+        //Else read the raw bytes.
+        return conn.getInputStream();
+      }
     }
 }
