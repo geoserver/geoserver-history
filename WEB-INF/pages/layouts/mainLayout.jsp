@@ -24,8 +24,33 @@
           content="<bean:message key="<%= keyShort %>"/>">
     <meta name="keywords"
           content="(GeoServer) (GIS) (Geographic Information Systems) <bean:message key="<%= keyWords %>"/>"/>
-    <meta name="author" content="Jody Garnett, Richard Gould, David Zwiers"/>
-  
+    <meta name="author" content="Dave Blasby, Chris Holmes, Brent Owens, Justin Deoliveira, Jody Garnett, Richard Gould, David Zwiers"/>
+  	
+  	<script language="JavaScript">
+		<!--
+		// This is used for URL parsing to check for any spaces that will cause invalid XML
+		// Currently it is used in DataConfigDataStoresEditor.jsp
+		function checkspaces(form)
+		{
+			for(var i=0; i<form.elements.length; i++)
+			{
+				if(form.elements[i].value.match("file:"))
+				{
+					var badchar = " ";	// look for the space character
+					if (form.elements[i].value.indexOf(badchar) > -1) 
+					{
+						alert("Spaces are not allowed in the filename or path.");
+						form.elements[i].focus();
+						form.elements[i].select();
+						return false;
+					}
+				}
+			}// end for
+			return true;
+		}
+		-->
+	</script>
+  	
     <style type="text/css">
       <!-- @import url("<html:rewrite forward='style'/>"); -->
     </style>
