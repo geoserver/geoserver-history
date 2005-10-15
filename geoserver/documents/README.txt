@@ -1,4 +1,4 @@
-Geoserver 1.3.0 RC4 SC1
+Geoserver 1.3.0 RC4.SC1
 -------------------
 
 The issue log for this release is here:
@@ -7,11 +7,13 @@ http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=
 The major changes since RC3 have been:
 * Color Scheme
 * Indexed Shapefile support
-* Data Store Editor User Interface improvements
 * Compression/Decompression of remote SLD documents
-* Improved support for XML request character set detection
-* PostGIS data store - more intuitive error messages regarding permissions
-
+* Data Store Editor User Interface Improvments
+* XML request character set detection
+* PostGIS support - more intuitive error messages regarding permissions
+* Shapefile support - url handling
+* Linux support - start / stop scripts
+* Developer Documentation
 
 Geoserver 1.3.0 RC3
 -------------------
