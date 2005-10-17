@@ -100,7 +100,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * Convenient array with all the CITE type names for dealing with copying
      * and deleting files
      */
-    private static String[] CITE_TYPE_NAMES = {
+    public static String[] CITE_TYPE_NAMES = {
             BASIC_POLYGONS_TYPE, BRIDGES_TYPE, BUILDINGS_TYPE,
             DIVIDED_ROUTES_TYPE, FORESTS_TYPE, LAKES_TYPE, MAP_NEATLINE_TYPE,
             NAMED_PLACES_TYPE, PONDS_TYPE, ROAD_SEGMENTS_TYPE, STREAMS_TYPE
