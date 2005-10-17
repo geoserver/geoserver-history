@@ -80,5 +80,6 @@
 	<classpathentry kind="var" path="GEOSERVER/jai_codec.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/jai_core.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/jai_imageio.jar"/>
+	<classpathentry kind="var" path="GEOSERVER/gt2-indexed-shapefile.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

@@ -12,6 +12,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -77,10 +79,14 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         DataStoreConfig dsConfig = dataConfig.getDataStore(dataStoreID);
         DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
 
+        FeatureTypeConfig ftConfig;
+        //JD: GEOS-399, wrap rest of method in try catch block in order to 
+        // report back nicely to app
+		try {
         FeatureType featureType = dataStore.getSchema(featureTypeName);
 
-        FeatureTypeConfig ftConfig = new FeatureTypeConfig(dataStoreID,
-                featureType, false);
+			ftConfig = new FeatureTypeConfig(dataStoreID,
+			        featureType, false);
 
         // DJB: this comment looks old - SRS support is much better now.  
         //     TODO: delete this comment (but wait a bit)
@@ -130,6 +136,18 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         
         //Extent ex = featureType.getDefaultGeometry().getCoordinateSystem().getValidArea();
         //ftConfig.setLatLongBBox(ex);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+			
+			ActionErrors errors = new ActionErrors();
+            errors.add(ActionErrors.GLOBAL_ERROR,
+                new ActionError("error.exception", e.getMessage()));
+
+            saveErrors(request, errors);
+
+            return mapping.findForward("config.data.type.new");
+		}
 
         request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);
         request.getSession().removeAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
@@ -137,4 +155,6 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         user.setFeatureTypeConfig( ftConfig );
         return mapping.findForward("config.data.type.editor");
     }
+    
+    
 }

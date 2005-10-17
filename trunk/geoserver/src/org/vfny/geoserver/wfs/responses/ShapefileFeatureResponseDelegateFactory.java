@@ -10,12 +10,6 @@ import java.util.Set;
 
 import org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi;
 
-
-
-
-
-
-
 /**
  * ShapefileFeatureResponseDelegateFactory
  * Sep 6, 2005

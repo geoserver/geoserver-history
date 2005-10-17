@@ -27,8 +27,8 @@
 ;General
 
   ;Name and file
-  Name "GeoServer 1.3.0-RC3 WCS Experiment"
-  OutFile "geoserver-1.3.0-RC3-WCS.exe"
+  Name "GeoServer 1.3.0-RC4.SC1 WCS Experiment"
+  OutFile "geoserver-1.3.0-RC4.SC1-WCS.exe"
 
 
   ;Default installation folder
