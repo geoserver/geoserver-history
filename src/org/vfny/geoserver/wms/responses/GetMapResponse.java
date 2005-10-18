@@ -57,7 +57,11 @@ public class GetMapResponse implements Response {
      * requested format.
      */
     private GetMapProducer delegate;
-
+    /**
+     * The map context
+     */
+    private WMSMapContext map;
+    
     /**
      * Creates a new GetMapResponse object.
      */
@@ -83,7 +87,9 @@ public class GetMapResponse implements Response {
         final FeatureTypeInfo[] layers = request.getLayers();
         final Style[] styles = (Style[])request.getStyles().toArray(new Style[]{});
 
-        final WMSMapContext map = new WMSMapContext();
+        //JD:make instance variable in order to release resources later
+        //final WMSMapContext map = new WMSMapContext();
+        map = new WMSMapContext();
         
         //DJB: the WMS spec says that the request must not be 0 area
         //     if it is, throw a service exception!
@@ -132,49 +138,37 @@ public class GetMapResponse implements Response {
 
         LOGGER.fine("setting up map");
 
-        try{ // mapcontext can leak memory -- we make sure we done (see finally block)
-	        MapLayer layer;
-	
-	        FeatureSource source;
-	        for (int i = 0; i < layers.length; i++) {
-	            Style style = styles[i];
-	
-	            try {
-	                source = layers[i].getFeatureSource();
-	            } catch (IOException exp) {
-	                LOGGER.log(Level.SEVERE,
-	                    "Getting feature source: " + exp.getMessage(), exp);
-	                throw new WmsException(null,
-	                    "Internal error : " + exp.getMessage());
-	            }
-	
-	            layer = new DefaultMapLayer(source, style);
-	
-	            Filter definitionFilter = layers[i].getDefinitionQuery();
-	
-	            if (definitionFilter != null) {
-	                Query definitionQuery = new DefaultQuery(source.getSchema()
-	                                                               .getTypeName(),
-	                        definitionFilter);
-	                layer.setQuery(definitionQuery);
-	            }
-	
-	            map.addLayer(layer);// mapcontext can leak memory -- we make sure we done (see finally block)
-	        }
-	
-	        this.delegate.produceMap(map);
+         
+        MapLayer layer;
+
+        FeatureSource source;
+        for (int i = 0; i < layers.length; i++) {
+            Style style = styles[i];
+
+            try {
+                source = layers[i].getFeatureSource();
+            } catch (IOException exp) {
+                LOGGER.log(Level.SEVERE,
+                    "Getting feature source: " + exp.getMessage(), exp);
+                throw new WmsException(null,
+                    "Internal error : " + exp.getMessage());
+            }
+
+            layer = new DefaultMapLayer(source, style);
+
+            Filter definitionFilter = layers[i].getDefinitionQuery();
+
+            if (definitionFilter != null) {
+                Query definitionQuery = new DefaultQuery(source.getSchema()
+                                                               .getTypeName(),
+                        definitionFilter);
+                layer.setQuery(definitionQuery);
+            }
+
+            map.addLayer(layer);// mapcontext can leak memory -- we make sure we done (see finally block)
         }
-        finally
-		{
-        	//clean
-        	try{
-        		map.clearLayerList();
-        	}
-        	catch(Exception e) // we dont want to propogate a new error
-			{
-        		e.printStackTrace();
-			}
-		}
+
+        this.delegate.produceMap(map);
     }
 
     /**
@@ -234,13 +228,27 @@ public class GetMapResponse implements Response {
      *         <code>execute(Request)</code> has succeed
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
-        if (this.delegate == null) {
-            throw new IllegalStateException(
-                "No GetMapDelegate is setted, make sure you have called execute and it has succeed");
-        }
+    	
+        try { // mapcontext can leak memory -- we make sure we done (see finally block)
+			if (this.delegate == null) {
+			    throw new IllegalStateException(
+			        "No GetMapDelegate is setted, make sure you have called execute and it has succeed");
+			}
 
-        LOGGER.finer("asking delegate for write to " + out);
-        this.delegate.writeTo(out);
+			LOGGER.finer("asking delegate for write to " + out);
+			this.delegate.writeTo(out);
+        }
+        finally {
+        	try{
+        		map.clearLayerList();
+        	}
+        	catch(Exception e) // we dont want to propogate a new error
+			{
+        		e.printStackTrace();
+			}
+        }
+    	
+        
     }
 
     /**
