@@ -31,6 +31,9 @@ public final class WMSDTO implements DataTransferObject {
     /** The service parameters for this instance. */
     private ServiceDTO service;
 
+    /** The current svg renderer **/
+    private String svgRenderer;
+    
     /**
      * WMS constructor.  does nothing
      */
@@ -56,6 +59,7 @@ public final class WMSDTO implements DataTransferObject {
 
         service = (ServiceDTO) other.getService().clone();
         gmlPrefixing = other.isGmlPrefixing();
+        svgRenderer = other.getSvgRenderer();
     }
 
     /**
@@ -89,9 +93,22 @@ public final class WMSDTO implements DataTransferObject {
         }
 
         WMSDTO dto = (WMSDTO) other;
+        
+        boolean equals = gmlPrefixing == dto.gmlPrefixing;
+        if (equals) {
+        	if (service == null) {
+        		equals = dto.getService() == null;
+        	}
+        	else equals = service.equals(dto.getService());
+        }
+        if (equals) {
+        	if (svgRenderer == null) {
+        		equals = dto.getSvgRenderer() == null;
+        	}
+        	else equals = svgRenderer.equals(dto.getSvgRenderer());
+        }
 
-        return ((gmlPrefixing == dto.gmlPrefixing) && (service == null))
-        ? (dto.getService() == null) : service.equals(dto.getService());
+        return equals;
     }
 
     /**
@@ -103,7 +120,8 @@ public final class WMSDTO implements DataTransferObject {
      */
     public int hashCode() {
         return (gmlPrefixing ? 1 : 0)
-        | ((service == null) ? 0 : service.hashCode());
+        | ((service == null) ? 0 : service.hashCode()) 
+        | ((svgRenderer == null) ? 0 : svgRenderer.hashCode());
     }
 
     /**
@@ -162,5 +180,23 @@ public final class WMSDTO implements DataTransferObject {
      */
     public void setGmlPrefixing(boolean b) {
         gmlPrefixing = b;
+    }
+    
+    /**
+     * @return The constant identifying the current svg renderer.
+     * @see org.vfny.geoserver.config.WMSConfig#SVG_SIMPLE
+     * @see org.vfny.geoserver.config.WMSConfig#SVG_BATIK
+     */
+    public String getSvgRenderer() {
+    	return svgRenderer;
+    }
+    
+    /**
+     * @param The constant identifying the current svg renderer.
+     * @see org.vfny.geoserver.config.WMSConfig#SVG_SIMPLE
+     * @see org.vfny.geoserver.config.WMSConfig#SVG_BATIK
+     */
+    public void setSvgRenderer(String svgRenderer) {
+    	this.svgRenderer = svgRenderer;
     }
 }

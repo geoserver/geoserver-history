@@ -25,6 +25,15 @@ public class WMSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WMS";
 
     /**
+     * SVG renderers.
+     */
+    public static final String SVG_SIMPLE = "Simple";
+    public static final String SVG_BATIK = "Batik";
+    
+    /** current svg renderer **/
+    private String svgRenderer;
+    
+    /**
      * WMS constructor.
      * 
      * <p>
@@ -35,6 +44,7 @@ public class WMSConfig extends ServiceConfig {
      */
     public WMSConfig() {
         super();
+        svgRenderer = SVG_SIMPLE;
     }
 
     /**
@@ -49,6 +59,7 @@ public class WMSConfig extends ServiceConfig {
      */
     public WMSConfig(WMSDTO w) {
         super(w.getService());
+        svgRenderer = w.getSvgRenderer();
     }
 
     /**
@@ -70,6 +81,7 @@ public class WMSConfig extends ServiceConfig {
         }
 
         super.update(dto.getService());
+        svgRenderer = dto.getSvgRenderer();
     }
 
     /**
@@ -86,7 +98,25 @@ public class WMSConfig extends ServiceConfig {
     public WMSDTO toDTO() {
         WMSDTO wmsDto = new WMSDTO();
         wmsDto.setService((ServiceDTO) super.toServDTO());
-
+        wmsDto.setSvgRenderer(svgRenderer);
         return wmsDto;
+    }
+    
+    /**
+     * @return The constant identifying the current svg renderer.
+     * @see org.vfny.geoserver.config.WMSConfig#SVG_SIMPLE
+     * @see org.vfny.geoserver.config.WMSConfig#SVG_BATIK
+     */
+    public String getSvgRenderer() {
+    	return svgRenderer;
+    }
+    
+    /**
+     * @param The constant identifying the current svg renderer.
+     * @see org.vfny.geoserver.config.WMSConfig#SVG_SIMPLE
+     * @see org.vfny.geoserver.config.WMSConfig#SVG_BATIK
+     */
+    public void setSvgRenderer(String svgRenderer) {
+    	this.svgRenderer = svgRenderer;
     }
 }

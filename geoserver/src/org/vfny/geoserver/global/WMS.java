@@ -24,7 +24,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * System.out.println(wms.getAbstract());
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Roldï¿½n
  * @version $Id: WMS.java,v 1.7 2004/02/24 02:08:50 cholmesny Exp $
  */
 public class WMS extends Service {
@@ -44,6 +44,9 @@ public class WMS extends Service {
     
     public static final String WEB_CONTAINER_KEY = "WMS";
 
+    /** svg Renderer to use **/
+    private String svgRenderer;
+    
     /**
      * WMS constructor.
      * 
@@ -56,6 +59,7 @@ public class WMS extends Service {
      */
     public WMS(WMSDTO config) {
         super(config.getService());
+        this.svgRenderer = config.getSvgRenderer();
     }
 
     /**
@@ -67,6 +71,7 @@ public class WMS extends Service {
      */
     public void load(WMSDTO config) {
     	super.load(config.getService());
+    	this.svgRenderer = config.getSvgRenderer();
     }
 
     /**
@@ -100,7 +105,8 @@ public class WMS extends Service {
     public Object toDTO() {
         WMSDTO w = new WMSDTO();
         w.setService((ServiceDTO)super.toDTO());
-
+        w.setSvgRenderer(svgRenderer);
+        
         return w;
     }
 

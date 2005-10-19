@@ -27,6 +27,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
@@ -61,12 +62,16 @@ public class GetMapResponse implements Response {
      * The map context
      */
     private WMSMapContext map;
+    /**
+     * WMS configuration
+     */
+    private WMSConfig config;
     
     /**
      * Creates a new GetMapResponse object.
      */
-    public GetMapResponse() {
-        // intentionally left blank
+    public GetMapResponse(WMSConfig config) {
+        this.config = config;
     }
 
     /**
@@ -79,10 +84,10 @@ public class GetMapResponse implements Response {
      */
     public void execute(Request req) throws ServiceException {
         GetMapRequest request = (GetMapRequest) req;
-
+        
         final String outputFormat = request.getFormat();
 
-        this.delegate = getDelegate(outputFormat);
+        this.delegate = getDelegate(outputFormat, config);
 
         final FeatureTypeInfo[] layers = request.getLayers();
         final Style[] styles = (Style[])request.getStyles().toArray(new Style[]{});
@@ -265,7 +270,7 @@ public class GetMapResponse implements Response {
      *         format specified in <code>request</code> or if it can't be
      *         instantiated
      */
-    static GetMapProducer getDelegate(String outputFormat)
+    static GetMapProducer getDelegate(String outputFormat, WMSConfig config)
         throws WmsException {
         LOGGER.finer("request format is " + outputFormat);
 
@@ -287,7 +292,8 @@ public class GetMapResponse implements Response {
                 + outputFormat + " format", "InvalidFormat");
         }
 
-        GetMapProducer producer = mpf.createMapProducer(outputFormat);
+        
+        GetMapProducer producer = mpf.createMapProducer(outputFormat,config);
 
         return producer;
     }

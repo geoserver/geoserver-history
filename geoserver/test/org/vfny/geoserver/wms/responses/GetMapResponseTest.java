@@ -43,7 +43,7 @@ public class GetMapResponseTest extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        this.getMapResponse = new GetMapResponse();
+        this.getMapResponse = new GetMapResponse(null);
     }
 
     /*
@@ -59,7 +59,7 @@ public class GetMapResponseTest extends TestCase {
      */
     public void testExecute() throws Exception{
         GetMapProducer producer;
-    	producer = GetMapResponse.getDelegate(TestMapProducerFactory.TESTING_MIME_TYPE);
+    	producer = GetMapResponse.getDelegate(TestMapProducerFactory.TESTING_MIME_TYPE,null);
     	assertEquals(TestMapProducerFactory.class, producer.getClass());
     }
 

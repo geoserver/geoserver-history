@@ -61,7 +61,7 @@ public class EncodeSVG {
      * @param mapContext DOCUMENT ME!
      */
     public EncodeSVG(WMSMapContext mapContext) {
-        this.mapContext = mapContext;
+       this.mapContext = mapContext;
     }
 
     /**
