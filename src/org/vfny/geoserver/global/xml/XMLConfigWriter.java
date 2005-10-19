@@ -298,6 +298,7 @@ public class XMLConfigWriter {
         boolean gml = false;
         boolean srsXmlStyle = false;
         int serviceLevel = 0;
+        String svgRenderer = null;
         
         boolean citeConformanceHacks = false;
 
@@ -313,6 +314,7 @@ public class XMLConfigWriter {
             WMSDTO w = (WMSDTO) obj;
             s = w.getService();
             t = "WMS";
+            svgRenderer = w.getSvgRenderer();
         } else {
             throw new ConfigurationException("Invalid object: not WMS of WFS");
         }
@@ -368,7 +370,7 @@ public class XMLConfigWriter {
 			cw.valueTag("srsXmlStyle", srsXmlStyle + "");
 			//}
 
-        if (serviceLevel != 0) {
+		if (serviceLevel != 0) {
             cw.valueTag("serviceLevel", serviceLevel + "");
         }
         if (obj instanceof WFSDTO) //DJB: this method (storeService) doesnt separate WFS and WMS very well!
@@ -378,6 +380,10 @@ public class XMLConfigWriter {
 
         if ((s.getMaintainer() != null) && (s.getMaintainer() != "")) {
             cw.textTag("maintainer", s.getMaintainer());
+        }
+        
+        if (svgRenderer != null) {
+        	cw.textTag("svgRenderer", svgRenderer);
         }
 
         cw.closeTag("service");

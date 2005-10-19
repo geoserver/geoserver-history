@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 
@@ -99,7 +100,7 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
      *
      * @throws IllegalArgumentException DOCUMENT ME!
      */
-    public GetMapProducer createMapProducer(String mapFormat)
+    public GetMapProducer createMapProducer(String mapFormat, WMSConfig config )
     throws IllegalArgumentException {
         return new KMLMapProducer();
     }

@@ -17,12 +17,13 @@ import org.vfny.geoserver.wms.responses.map.svg.EncodeSVG;
 
 
 /**
- * Handles a GetMap request that spects a map in SVG format.
+ * Handles a GetMap request that spects a map in SVG format. 
  *
  * @author Gabriel Rold?n
  * @version $Id: SVGMapResponse.java,v 1.11 2004/04/16 18:36:49 cholmesny Exp $
  */
 class SVGMapProducer implements GetMapProducer {
+	
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.map");

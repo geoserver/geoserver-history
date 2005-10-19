@@ -53,5 +53,9 @@
 	<classpathentry kind="lib" path="lib/geoapi-2.0.jar"/>
 	<classpathentry sourcepath="/shapefile" kind="lib" path="lib/gt2-shapefile.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-indexed-shapefile.jar"/>
+	<classpathentry kind="lib" path="lib/mockrunner-servlet.jar"/>
+	<classpathentry kind="lib" path="lib/batik-awt-util-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/batik-svggen-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/batik-util-1.1.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
