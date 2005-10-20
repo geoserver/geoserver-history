@@ -6,6 +6,12 @@
   <context-param>
     <param-name>serviceStratagy</param-name>
     <!-- Meaning of the different values :
+    	 
+    	 PARTIAL-BUFFER
+    	 - Partially buffers the first xKb to disk. Once that has buffered, the the 
+    	   result is streamed to the user. This will allow for most errors to be caught
+    	   early.
+    	   
          BUFFER
          - stores the entire response in memory first, before sending it off to
            the user (may run out of memory)
