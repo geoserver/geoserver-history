@@ -16,6 +16,7 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.factory.FactoryFinder;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
@@ -26,6 +27,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.config.WMSConfig;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
@@ -59,13 +62,21 @@ public class GetMapResponse implements Response {
 	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private GetMapProducer delegate;
-	
-	/**
-	 * Creates a new GetMapResponse object.
-	 */
-	public GetMapResponse() {
-		// intentionally left blank
-	}
+    /**
+     * The map context
+     */
+    private WMSMapContext map;
+    /**
+     * WMS configuration
+     */
+    private WMSConfig config;
+    
+    /**
+     * Creates a new GetMapResponse object.
+     */
+    public GetMapResponse(WMSConfig config) {
+        this.config = config;
+    }
 	
 	/**
 	 * DOCUMENT ME!
@@ -80,13 +91,15 @@ public class GetMapResponse implements Response {
 		
 		final String outputFormat = request.getFormat();
 		
-		this.delegate = getDelegate(outputFormat);
+        this.delegate = getDelegate(outputFormat, config);
 		
 		final MapLayerInfo[] layers = request.getLayers();
 		final Style[] styles = (Style[])request.getStyles().toArray(new Style[]{});
 		
-		final WMSMapContext map = new WMSMapContext();
-		
+        //JD:make instance variable in order to release resources later
+        //final WMSMapContext map = new WMSMapContext();
+        map = new WMSMapContext();
+        
 		//DJB: the WMS spec says that the request must not be 0 area
 		//     if it is, throw a service exception!
 		Envelope env = request.getBbox();
@@ -101,7 +114,7 @@ public class GetMapResponse implements Response {
 		
 		//if there's a crs in the request, use that.  If not, assume its 4326
 		
-		CoordinateReferenceSystem mapcrs = null;
+        CoordinateReferenceSystem mapcrs;
 		//DJB: spec says SRS is *required*, so if they dont specify one, we should throw an error
 		//     instead we use "NONE" - which is no-projection.
 		//     Previous behavior was to the WSG84 lat/long (4326)
@@ -124,9 +137,8 @@ public class GetMapResponse implements Response {
 		}
 		
 		//DJB: added this to be nicer about the "NONE" srs.
-		if (mapcrs !=null) {
-			map.setAreaOfInterest(request.getBbox(),mapcrs);
-		}
+        if (mapcrs !=null)
+        	map.setAreaOfInterest(request.getBbox(),mapcrs);
 		else
 			map.setAreaOfInterest(request.getBbox());
 		map.setMapWidth(request.getWidth());
@@ -257,16 +269,30 @@ public class GetMapResponse implements Response {
 	 *         <code>execute(Request)</code> has succeed
 	 */
 	public void writeTo(OutputStream out) throws ServiceException, IOException {
-		if (this.delegate == null) {
-			throw new IllegalStateException(
-			"No GetMapDelegate is setted, make sure you have called execute and it has succeed");
-		}
-		
-		LOGGER.finer("asking delegate for write to " + out);
-		this.delegate.writeTo(out);
-	}
-	
-	/**
+    	
+        try { // mapcontext can leak memory -- we make sure we done (see finally block)
+			if (this.delegate == null) {
+			    throw new IllegalStateException(
+			        "No GetMapDelegate is setted, make sure you have called execute and it has succeed");
+			}
+
+			LOGGER.finer("asking delegate for write to " + out);
+			this.delegate.writeTo(out);
+        }
+        finally {
+        	try{
+        		map.clearLayerList();
+        	}
+        	catch(Exception e) // we dont want to propogate a new error
+			{
+        		e.printStackTrace();
+			}
+        }
+    	
+        
+    }
+
+    /**
 	 * Creates a GetMapDelegate specialized in generating the requested map
 	 * format
 	 *
@@ -280,19 +306,13 @@ public class GetMapResponse implements Response {
 	 *         format specified in <code>request</code> or if it can't be
 	 *         instantiated
 	 */
-	static GetMapProducer getDelegate(String outputFormat)
+    static GetMapProducer getDelegate(String outputFormat, WMSConfig config)
 	throws WmsException {
 		LOGGER.finer("request format is " + outputFormat);
 		
 		GetMapProducerFactorySpi mpf = null;
-		Iterator mpfi = org.geotools.factory.FactoryFinder.factories(GetMapProducerFactorySpi.class);
-		
-		/*Set categories = Collections.singleton(new Class[] {GetMapProducerFactorySpi.class});
-		 FactoryRegistry registry = new FactoryRegistry(categories);
-		 
-		 // get the providers
-		  Iterator mpfi = registry.getServiceProviders(GetMapProducerFactorySpi.class);*/
-		
+        Iterator mpfi = FactoryFinder.factories(GetMapProducerFactorySpi.class);
+
 		while (mpfi.hasNext()) {
 			mpf = (GetMapProducerFactorySpi) mpfi.next();
 			
@@ -308,7 +328,7 @@ public class GetMapResponse implements Response {
 					+ outputFormat + " format", "InvalidFormat");
 		}
 		
-		GetMapProducer producer = mpf.createMapProducer(outputFormat);
+        GetMapProducer producer = mpf.createMapProducer(outputFormat,config);
 		
 		return producer;
 	}
@@ -323,14 +343,8 @@ public class GetMapResponse implements Response {
 	public static Set getMapFormats() {
 		Set mapFormats = new HashSet();
 		GetMapProducerFactorySpi mpf;
-		Iterator mpfi = org.geotools.factory.FactoryFinder.factories(GetMapProducerFactorySpi.class);
-		
-		/*Set categories = Collections.singleton(new Class[] {GetMapProducerFactorySpi.class});
-		 FactoryRegistry registry = new FactoryRegistry(categories);
-		 
-		 // get the providers
-		  Iterator mpfi = registry.getServiceProviders(GetMapProducerFactorySpi.class);*/
-		
+        Iterator mpfi = FactoryFinder.factories(GetMapProducerFactorySpi.class);
+
 		while (mpfi.hasNext()) {
 			mpf = (GetMapProducerFactorySpi) mpfi.next();
 			mapFormats.addAll(mpf.getSupportedFormats());

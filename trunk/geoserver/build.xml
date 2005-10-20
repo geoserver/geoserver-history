@@ -1008,6 +1008,9 @@
 	
 <!-- JD: GEOS-389, adding indexed shapefile support -->
 <copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/indexed-shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-indexed-shapefile.jar" />
+<copy overwrite="true" failonerror="true" file="${dir.maven}/batik/jars/batik-util-1.1.1.jar" toFile="${dir.lib}/batik-util-1.1.1.jar" />
+<copy overwrite="true" failonerror="true" file="${dir.maven}/batik/jars/batik-svggen-1.1.1.jar" toFile="${dir.lib}/batik-svggen-1.1.1.jar" />
+<copy overwrite="true" failonerror="true" file="${dir.maven}/batik/jars/batik-awt-util-1.1.1.jar" toFile="${dir.lib}/batik-awt-util-1.1.1.jar" />
 </target>
 
 <target name="gt2-validation" depends="init" description="Generate gt2-validation.jar for quick testing (use maven for jars you commit)">

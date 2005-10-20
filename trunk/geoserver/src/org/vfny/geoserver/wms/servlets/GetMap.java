@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.config.WMSConfig;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetMapKvpReader;
@@ -77,7 +79,9 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected Response getResponseHandler() {
-        return new GetMapResponse();
+    	WMSConfig config = (WMSConfig) getServletContext()
+    		.getAttribute(WMSConfig.CONFIG_KEY);
+    	return new GetMapResponse(config);
     }
 
     /**

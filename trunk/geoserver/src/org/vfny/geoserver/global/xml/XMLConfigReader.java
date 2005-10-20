@@ -671,6 +671,9 @@ public class XMLConfigReader {
 	protected void loadWMS(Element wmsElement) throws ConfigurationException {
 		wms = new WMSDTO();
 		wms.setService(loadService(wmsElement));
+        
+        wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
+                
 	}
 	
 	/**

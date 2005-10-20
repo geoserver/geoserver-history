@@ -798,8 +798,8 @@ private void trackPixelUsage(IndexGif89Frame igf) throws IOException
  byte[] ci_pixels = (byte[]) igf.getPixelSource(); 
  int    npixels = ci_pixels.length;   
  for (int i = 0; i < npixels; ++i)
-   if (ci_pixels[i] >= ciCount)
-     ciCount = ci_pixels[i] + 1;
+   if ((ci_pixels[i] & 0xff) >= ciCount) //djb - 0xff will convert -1 --> 255 (ie. unsigned byte to a "proper" int)
+     ciCount = (ci_pixels[i] & 0xff) + 1;
 }
 
 //----------------------------------------------------------------------------

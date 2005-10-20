@@ -259,6 +259,11 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 			throw new NoSuchElementException(
 					"No styles have been provided to search for " + styleName);
 		}
+		if(styleName == null){
+			LOGGER.finer("styleName is null, request in literal mode, returning first style");
+			return styles[0];
+		}
+		LOGGER.finer("request in library mode, looking for style " + styleName);
 		StringBuffer noMatchNames = new StringBuffer();
 		for (int i = 0; i < styles.length; i++) {
 			if (styles[i] != null && styleName.equals(styles[i].getName())) {

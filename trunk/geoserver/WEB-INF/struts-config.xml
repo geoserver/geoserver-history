@@ -96,6 +96,9 @@
     		name="wmsContentForm"
     		type="org.vfny.geoserver.form.wms.WMSContentForm"/>
 
+		<form-bean
+			name="wmsRenderingForm"
+			type="org.vfny.geoserver.form.wms.WMSRenderingForm"/>
     	<form-bean
     		name="dataCoveragePluginsForm"
     		type="org.vfny.geoserver.form.data.DataCoveragePluginsForm"/>
@@ -338,6 +341,9 @@
        	<forward
        		name="config.wms.content"
        		path="/config/wms/content.do"/>
+     	<forward
+     		name="config.wms.rendering"
+     		path="/config/wms/rendering.do"/>
        		       		
        	<forward
        		name="wmsConfigDescription"
@@ -579,7 +585,12 @@
         	path="/config/wms/content"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.wms.content"/>
-
+        	
+       	<action 
+       		path="/config/wms/rendering"
+       		type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.wms.rendering"/>
+       		
         <!-- CONFIG VALIDATION -->
         <action
         	path="/config/validation/index"
@@ -814,7 +825,14 @@
         	scope="request"
         	validate="true"
         	input="/config/wms/content.do"/>
-
+		<action
+        	path="/config/wms/renderingSubmit"
+        	type="org.vfny.geoserver.action.wms.WMSRenderingAction"
+        	name="wmsRenderingForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/wms/rendering.do"/>
+       
        	<!-- DATA Coverage Plugins Actions -->
         <action
         	path="/config/data/coveragePlugins"

@@ -226,7 +226,7 @@
         <put name="locationForwards" value="welcome:config"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
         <put name="menuForwards"
-             value="config.wms.content:config.wms.description"/>
+             value="config.wms.content:config.wms.description:config.wms.rendering"/>
    	</definition>
 
    	<definition name="config.wms.description" extends=".mainLayout">
@@ -249,6 +249,15 @@
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
     
+    <definition name="config.wms.rendering" extends=".mainLayout">
+   		<put name="key" value="config.wms.rendering"/>   		
+		<put name="body" value="/WEB-INF/pages/wms/WMSConfigRendering.jsp"/>
+		<put name="status" value="/WEB-INF/pages/wms/status.jsp"/>		
+		<put name="serviceName" value="/WEB-INF/pages/wms/serviceName.jsp"/>			
+   		<put name="layer" value="configuration"/>   				
+        <put name="locationForwards" value="welcome:config:config.wms"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+   	</definition>
     <!-- CONFIG DATA -->
    	<definition name="config.data" extends=".mainLayout">
    		<put name="key" value="config.data"/>

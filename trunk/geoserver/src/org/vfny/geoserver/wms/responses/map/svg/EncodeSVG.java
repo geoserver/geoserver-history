@@ -46,21 +46,11 @@ public class EncodeSVG {
     /** the SVG closing element */
     private static final String SVG_FOOTER = "</svg>\n";
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @uml.property name="mapContext"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
-	private WMSMapContext mapContext;
+    /** DOCUMENT ME! */
+    private WMSMapContext mapContext;
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @uml.property name="writer"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private SVGWriter writer;
+    /** DOCUMENT ME! */
+    private SVGWriter writer;
 
     /** DOCUMENT ME! */
     private boolean abortProcess;
@@ -71,7 +61,7 @@ public class EncodeSVG {
      * @param mapContext DOCUMENT ME!
      */
     public EncodeSVG(WMSMapContext mapContext) {
-        this.mapContext = mapContext;
+       this.mapContext = mapContext;
     }
 
     /**

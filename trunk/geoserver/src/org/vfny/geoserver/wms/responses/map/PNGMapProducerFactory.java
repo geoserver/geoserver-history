@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 
@@ -16,7 +17,7 @@ import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
  * DOCUMENT ME!
  *
  * @author Didier Richard, IGN-F
- * @version $Id: PNGMapProducerFactory.java 3622 2005-06-04 21:23:58Z dblasby $
+ * @version $Id: PNGMapProducerFactory.java 3838 2005-10-19 01:16:54Z jdeolive $
  */
 public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
     /** the only MIME type this map producer supports */
@@ -86,7 +87,7 @@ public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
      *
      * @throws IllegalArgumentException DOCUMENT ME!
      */
-    public GetMapProducer createMapProducer(String mapFormat)
+    public GetMapProducer createMapProducer(String mapFormat, WMSConfig config)
         throws IllegalArgumentException {
         if (!canProduce(mapFormat)) {
             throw new IllegalArgumentException(mapFormat

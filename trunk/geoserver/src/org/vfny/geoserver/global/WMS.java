@@ -44,6 +44,9 @@ public class WMS extends Service {
     
     public static final String WEB_CONTAINER_KEY = "WMS";
 
+    /** svg Renderer to use **/
+    private String svgRenderer;
+    
     /**
      * WMS constructor.
      * 
@@ -56,6 +59,7 @@ public class WMS extends Service {
      */
     public WMS(WMSDTO config) {
         super(config.getService());
+        this.svgRenderer = config.getSvgRenderer();
     }
 
     /**
@@ -67,6 +71,7 @@ public class WMS extends Service {
      */
     public void load(WMSDTO config) {
     	super.load(config.getService());
+    	this.svgRenderer = config.getSvgRenderer();
     }
 
     /**
@@ -100,7 +105,8 @@ public class WMS extends Service {
     public Object toDTO() {
         WMSDTO w = new WMSDTO();
         w.setService((ServiceDTO)super.toDTO());
-
+        w.setSvgRenderer(svgRenderer);
+        
         return w;
     }
 
