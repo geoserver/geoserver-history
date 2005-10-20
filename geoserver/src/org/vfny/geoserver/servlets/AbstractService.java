@@ -36,6 +36,7 @@ import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.util.PartialBufferedOutputStream;
 import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -127,6 +128,7 @@ public abstract class AbstractService extends HttpServlet {
     public static final Map serviceStrategys = new HashMap();
 
     static {
+    	serviceStrategys.put("PARTIAL-BUFFER", PartialBufferStrategy.class);
         serviceStrategys.put("SPEED", SpeedStrategy.class);
         serviceStrategys.put("FILE", FileStrategy.class);
         serviceStrategys.put("BUFFER", BufferStrategy.class);
@@ -927,9 +929,7 @@ class SpeedStrategy implements AbstractService.ServiceStrategy {
  * between SpeedStrategy and FileStrategy
  * </p>
  *
- * @author jgarnett To change the template for this generated type comment go
- *         to Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and
- *         Comments
+ * @author jgarnett
  */
 class BufferStrategy implements AbstractService.ServiceStrategy {
     /** DOCUMENT ME!  */
@@ -1124,4 +1124,57 @@ class FileStrategy implements AbstractService.ServiceStrategy {
         temp = null;
         response = null;
     }
+    
+}
+
+/**
+ * <b>PartialBufferStrategy</b><br>
+ * Oct 19, 2005<br>
+ * 
+ * <b>Purpose:</b><br>
+ * This strategy will buffer the response before it starts streaming it to the user. This 
+ * will allow for errors to be caught early so a proper error message can be sent to the
+ * user. Right now it buffers the first 20KB, enough for a full getCapabilities document.
+ * 
+ * @author Brent Owens (The Open Planning Project)
+ * @version 
+ */
+class PartialBufferStrategy implements AbstractService.ServiceStrategy 
+{
+    /** Class logger */
+    protected static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.servlets");
+
+    private OutputStream out = null;
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#getDestination(javax.servlet.http.HttpServletResponse)
+	 */
+	public OutputStream getDestination(HttpServletResponse response) throws IOException 
+	{
+		out = new BufferedOutputStream(response.getOutputStream());
+		out = new PartialBufferedOutputStream(out);
+		return out;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#flush()
+	 */
+	public void flush() throws IOException 
+	{
+		if (out != null)
+            out.flush();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#abort()
+	 */
+	public void abort() {
+		
+	}
+	
+	
+	
+	
+	
 }
