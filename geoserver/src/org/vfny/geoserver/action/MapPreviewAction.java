@@ -89,9 +89,11 @@ public class MapPreviewAction extends Action
 		// 2) delete any existing generated files in the generation directory
 		ServletContext sc = request.getSession().getServletContext();
 		File rootDir =  GeoserverDataDirectory.getGeoserverDataDirectory(sc);
-		File previewDir = new File(rootDir, "data/generated");
+		File previewDir = new File(sc.getRealPath("data/generated"));
+		
+		//File previewDir = new File(rootDir, "data/generated");
 		if (!previewDir.exists())
-			previewDir.mkdir();	// if it doesn't exist, create it
+			previewDir.mkdirs();
 		
 		try {
 			emptyGeneratedDirectory(previewDir);	// clear the contents of the directory
@@ -420,7 +422,7 @@ public class MapPreviewAction extends Action
 		out.println("      <enabledSrc>/images/ZoomOutEnable.gif</enabledSrc>");
 		out.println("      <disabledSrc>/images/ZoomOutDisable.gif</disabledSrc>");
 		out.println("      <tooltip xml:lang=\"en\">click to zoom out</tooltip>");
-		out.println("      <tooltip xml:lang=\"fr\">cliquer pour rée</tooltip>");
+		out.println("      <tooltip xml:lang=\"fr\">cliquer pour rï¿½e</tooltip>");
 		out.println("    </ZoomOut>");
 		out.println("    <DragPan id=\"dragPan\">");
 		out.println("      <buttonBar>mainButtonBar</buttonBar>");
@@ -438,7 +440,7 @@ public class MapPreviewAction extends Action
 		out.println("      <class>Button</class>");
 		out.println("      <disabledSrc>/images/ResetExtentDisable.gif</disabledSrc>");
 		out.println("      <tooltip xml:lang=\"en\">reset the map to full extent</tooltip>");
-		out.println("      <tooltip xml:lang=\"fr\">redonner la carte ses dimensions complèts</tooltip>");
+		out.println("      <tooltip xml:lang=\"fr\">redonner la carte ses dimensions complï¿½ts</tooltip>");
 		out.println("    </Reset>");
 		out.println("  </widgets>");
 		out.println("  <skinDir>../mbdemos/lib/skin/default</skinDir>");
