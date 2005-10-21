@@ -57,6 +57,10 @@ public final class GeoServerDTO implements DataTransferObject {
 		 * service exceptions don't look like someone 'kacked'.
 		 */
 		public static final boolean VerboseExceptions = false;
+		
+		/** Default logging location on disk **/
+		public static final String LogLocation = null;
+		
 	}
 	
     /** Sets the max number of Features returned by GetFeature */
@@ -156,7 +160,10 @@ public final class GeoServerDTO implements DataTransferObject {
     
     /** Whether the exceptions returned to the client should contain full stack traces */
     private boolean verboseExceptions = Defaults.VerboseExceptions;
-
+    
+    /** Where on disk the server should log to **/
+    private String logLocation = Defaults.LogLocation;
+    
     /**
      * GlobalConfig constructor.
      * 
@@ -192,7 +199,8 @@ public final class GeoServerDTO implements DataTransferObject {
         schemaBaseUrl = g.getSchemaBaseUrl();
         loggingLevel = g.getLoggingLevel();
         verboseExceptions = g.isVerboseExceptions();
-
+        logLocation = g.getLogLocation();
+        
         if (g.getContact() != null) {
             contact = (ContactDTO) (g.getContact().clone());
         } else {
@@ -239,7 +247,7 @@ public final class GeoServerDTO implements DataTransferObject {
         r = r && (maxFeatures == g.getMaxFeatures());
         r = r && (verbose == g.isVerbose());
         r = r && (numDecimals == g.getNumDecimals());
-
+        
         if (charSet != null) {
             r = r && charSet.equals(g.getCharSet());
         } else if (g.getCharSet() != null) {
@@ -254,6 +262,12 @@ public final class GeoServerDTO implements DataTransferObject {
             return false;
         }
 
+        if (logLocation != null) {
+        	r = r && logLocation.equals(g.getLogLocation());
+        }
+        else if (g.getLogLocation() != null)
+        	return false;
+        
         return r;
     }
 
@@ -538,6 +552,22 @@ public final class GeoServerDTO implements DataTransferObject {
         this.verboseExceptions = showStackTraces;
     }
 
+   /**
+	 * @return The string representation of the path on disk in which the 
+	 * server logs to.
+	 */
+	public String getLogLocation() {
+		return logLocation;
+	}
+	
+	/**
+	 * @param logLocation The string representation of the path on disk in which 
+	 * the server logs to.
+	 */
+	public void setLogLocation(String logLocation) {
+		this.logLocation = logLocation;
+	}
+	
     public String toString() {
         StringBuffer dto = new StringBuffer("[GeoServerDTO: \n");
         dto.append("   maxFeatures - " + maxFeatures);

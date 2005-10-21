@@ -93,8 +93,10 @@ public class GeoServerConfigurationForm extends ActionForm {
 	private boolean verboseChecked;
 	
 	private boolean verboseExceptionsChecked;
-    
-    
+	
+	/** log to disk ? **/
+	private String logLocation;
+	 
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
        
@@ -117,6 +119,7 @@ public class GeoServerConfigurationForm extends ActionForm {
         } else {
         	loggingLevel = globalConfig.getLoggingLevel().getName();
         }
+        logLocation = globalConfig.getLogLocation();
         
         ContactConfig contactConfig = globalConfig.getContact();
         contactPerson = contactConfig.getContactPerson();
@@ -549,6 +552,22 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	public String getAdminPassword() {
 		return adminPassword;
+	}
+	
+	/**
+	 * @return The string representation of the path on disk in which the 
+	 * server logs to.
+	 */
+	public String getLogLocation() {
+		return logLocation;
+	}
+	
+	/**
+	 * @param logLocation The string representation of the path on disk in which 
+	 * the server logs to.
+	 */
+	public void setLogLocation(String logLocation) {
+		this.logLocation = logLocation;
 	}
 
 }

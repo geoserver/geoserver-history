@@ -102,6 +102,17 @@
 		</html:select>
 	  </td>
     </tr>	
+    
+    <tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.global.logLocation"/>">
+			<bean:message key="label.logLocation"/>:
+		</span>
+      </td>
+	  <td class="datum">
+		<html:text property="logLocation" size="60"/>
+	  </td>
+    </tr>	
   </tbody>
 </table>
 

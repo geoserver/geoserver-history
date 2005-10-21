@@ -136,6 +136,9 @@ public class GlobalConfig {
 
     /** The Server contact person and their contact information. */
     private ContactConfig contact = null;
+    
+    /** location on disk to log to **/
+    private String logLocation = null;
 
     /**
      * GlobalConfig constructor.
@@ -155,6 +158,7 @@ public class GlobalConfig {
         schemaBaseUrl = null;
         contact = null;
         verboseExceptions = true;
+        logLocation = null;
     }
 
     /**
@@ -183,7 +187,8 @@ public class GlobalConfig {
         adminUserName = g.getAdminUserName();
         adminPassword = g.getAdminPassword();
         verboseExceptions = g.isVerboseExceptions();
-
+        logLocation = g.getLogLocation();
+        
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
         } else {
@@ -217,7 +222,7 @@ public class GlobalConfig {
         schemaBaseUrl = g.getSchemaBaseUrl();
         loggingLevel = g.getLoggingLevel();
 		verboseExceptions = g.isVerboseExceptions();
-        
+        logLocation = g.getLogLocation();
 
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -249,7 +254,7 @@ public class GlobalConfig {
         g.setSchemaBaseUrl(schemaBaseUrl);
 		g.setVerboseExceptions(verboseExceptions);
         g.setContact((ContactDTO) contact.toDTO());
-
+        g.setLogLocation(logLocation);
 
         return g;
     }
@@ -525,5 +530,21 @@ public class GlobalConfig {
 	 */
 	public void setVerboseExceptions(boolean showStackTraces) {
 		this.verboseExceptions = showStackTraces;
+	}
+	
+	/**
+	 * @return The string representation of the path on disk in which the 
+	 * server logs to.
+	 */
+	public String getLogLocation() {
+		return logLocation;
+	}
+	
+	/**
+	 * @param logLocation The string representation of the path on disk in which 
+	 * the server logs to.
+	 */
+	public void setLogLocation(String logLocation) {
+		this.logLocation = logLocation;
 	}
 }

@@ -6,12 +6,14 @@
  */
 package org.vfny.geoserver.action.global;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.locale.converters.StringLocaleConverter;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -83,7 +85,28 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
 		if (form.isVerboseExceptionsChecked() == false) {
 			verboseExceptions = false;
 		}
-        GlobalConfig globalConfig = getGlobalConfig();
+		
+		String logLocation = form.getLogLocation();
+		if (logLocation != null && "".equals(logLocation.trim()))
+			logLocation = null;
+		
+		if (logLocation != null) {
+			File f = new File(logLocation);
+			if (f.exists() && f.isDirectory()) {
+				//attach a file to the end of the directory
+				if (!logLocation.endsWith(File.separator))
+					logLocation += File.separator;
+				logLocation += "geoserver.log";
+			}
+			if (!f.canWrite()) {
+				ActionErrors errors = new ActionErrors();
+			    errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.noWritePermission",logLocation));
+			    saveErrors(request, errors);
+			    return mapping.findForward("config.server");
+			}
+		}
+		
+		GlobalConfig globalConfig = getGlobalConfig();
         globalConfig.setMaxFeatures(maxFeatures);
         globalConfig.setVerbose(verbose);
         globalConfig.setNumDecimals(numDecimals);
@@ -93,7 +116,9 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setAdminUserName(adminUserName);
         globalConfig.setAdminPassword(adminPassword);
         globalConfig.setLoggingLevel(loggingLevel);
+        globalConfig.setLogLocation(logLocation);
         globalConfig.setVerboseExceptions(verboseExceptions);
+        
         ContactConfig contactConfig = globalConfig.getContact();
         contactConfig.setContactPerson( form.getContactPerson() );
         contactConfig.setContactOrganization( form.getContactOrganization() );

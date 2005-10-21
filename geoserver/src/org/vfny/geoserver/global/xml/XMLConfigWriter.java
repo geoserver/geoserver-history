@@ -153,6 +153,9 @@ public class XMLConfigWriter {
                 cw.textTag("loggingLevel", g.getLoggingLevel().getName());
             }
 
+            if (g.getLogLocation() != null)
+            	cw.textTag("logLocation", g.getLogLocation());
+            
             /*if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){
                cw.comment("The base URL where this servlet will run.  If running locally\n"+
                "then http://localhost:8080 (or whatever port you're running on)\n"+
