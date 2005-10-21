@@ -11,7 +11,7 @@ public class PartialBufferedOutputStreamTest extends TestCase
 	ByteArrayOutputStream memory_out;	// the real output
 	PartialBufferedOutputStream out;	// the buffered output, wrapping the real one
 	byte[] byteArray = new byte[]{66,114,101,110,116};
-	
+/*	
 	protected void setUp() throws Exception 
 	{
 		super.setUp();
@@ -44,9 +44,7 @@ public class PartialBufferedOutputStreamTest extends TestCase
 		
 	}
 
-	/*
-	 * Test method for 'org.vfny.geoserver.util.PartialBufferedOutputStream.PartialBufferedOutputStream(OutputStream)'
-	 */
+
 	public void testPartialBufferedOutputStream() 
 	{
 		assertNotNull(out);
@@ -62,9 +60,7 @@ public class PartialBufferedOutputStreamTest extends TestCase
 		//assertEquals(0, out.bufferSize());
 	}
 	
-	/*
-	 * Test method for 'org.vfny.geoserver.util.PartialBufferedOutputStream.close()'
-	 */
+
 	public void testClose() 
 	{
 		try {
@@ -76,9 +72,7 @@ public class PartialBufferedOutputStreamTest extends TestCase
 		out = null;	// for tearDown()
 	}
 
-	/*
-	 * Test method for 'org.vfny.geoserver.util.PartialBufferedOutputStream.write(int)'
-	 */
+
 	public void testWriteInt() 
 	{
 		try {
@@ -137,9 +131,7 @@ public class PartialBufferedOutputStreamTest extends TestCase
 		}
 	}
 
-	/*
-	 * Test method for 'org.vfny.geoserver.util.PartialBufferedOutputStream.flush()'
-	 */
+
 	public void testFlush() 
 	{
 		try {
@@ -151,4 +143,5 @@ public class PartialBufferedOutputStreamTest extends TestCase
 		}
 	}
 
+*/
 }
