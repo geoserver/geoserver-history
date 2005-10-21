@@ -23,9 +23,8 @@ public class WMSRenderingAction extends ConfigAction {
 			WMSConfig config = getWMSConfig();
 	        WMSRenderingForm renderingForm = (WMSRenderingForm) form;
 
-	        String svgRenderer = renderingForm.getSvgRenderer();
-	        config.setSvgRenderer(svgRenderer);
-	        
+	        config.setSvgRenderer(renderingForm.getSvgRenderer());
+	        config.setSvgAntiAlias(renderingForm.getSvgAntiAlias());
 	        getApplicationState().notifyConfigChanged();
 
 	        return mapping.findForward("config");

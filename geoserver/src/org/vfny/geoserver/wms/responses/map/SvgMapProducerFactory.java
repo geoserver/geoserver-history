@@ -108,7 +108,7 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
     		if (WMSConfig.SVG_SIMPLE.equals(config.getSvgRenderer()))
 				return new SVGMapProducer();
     		if (WMSConfig.SVG_BATIK.equals(config.getSvgRenderer()))
-    			return new SVGBatikMapProducer();
+    			return new SVGBatikMapProducer(config);
     	}
     
     	//do the default
