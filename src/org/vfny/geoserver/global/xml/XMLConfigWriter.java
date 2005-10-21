@@ -299,7 +299,7 @@ public class XMLConfigWriter {
         boolean srsXmlStyle = false;
         int serviceLevel = 0;
         String svgRenderer = null;
-        
+        boolean svgAntiAlias = false;
         boolean citeConformanceHacks = false;
 
         if (obj instanceof WFSDTO) {
@@ -315,6 +315,7 @@ public class XMLConfigWriter {
             s = w.getService();
             t = "WMS";
             svgRenderer = w.getSvgRenderer();
+            svgAntiAlias = w.getSvgAntiAlias();
         } else {
             throw new ConfigurationException("Invalid object: not WMS of WFS");
         }
@@ -386,6 +387,10 @@ public class XMLConfigWriter {
         	cw.textTag("svgRenderer", svgRenderer);
         }
 
+        if (obj instanceof WMSDTO) {
+        	cw.textTag("svgAntiAlias", svgAntiAlias+"");
+        }
+        
         cw.closeTag("service");
     }
 

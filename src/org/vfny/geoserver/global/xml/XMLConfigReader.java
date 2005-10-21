@@ -587,7 +587,7 @@ public class XMLConfigReader {
         wms.setService(loadService(wmsElement));
         
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
-                
+        wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(wmsElement, "svgAntiAlias")));
     }
 
     /**
