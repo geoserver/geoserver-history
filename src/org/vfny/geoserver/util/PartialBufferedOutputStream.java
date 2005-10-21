@@ -176,6 +176,8 @@ public class PartialBufferedOutputStream extends OutputStream
 		
 		if (out_buffer != null && out_buffer.size() > 0 && !sendToUser)
 		{
+			if (out_real == null)
+				out_real = new BufferedOutputStream(response.getOutputStream());
 			out_buffer.writeTo(out_real);
 			out_buffer = null;
 		}
