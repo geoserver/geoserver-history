@@ -20,7 +20,7 @@
 	        name="BBoxList" 
 	        type="java.lang.String[]" 
 	    />
-		</form-bean>
+	    </form-bean>
 	
 	   given to it.  
 	   The DSNameList list is a list of strings - these are the 
@@ -128,10 +128,11 @@
 				<bean:write property="<%= "BBoxList[" + idx + "]" %>" name="mapPreviewForm"/>
 		 </td-->
 		 <td width=10%>
-				<!-- add link to FTNameList.html -->
-				<center><b>
-				<a href="../../data/generated/<bean:write property="<%= "FTNameList[" + idx + "]" %>" name="mapPreviewForm"/>.html" target="newwindow">Preview</a>
-				</b></center>
+			<!-- add link to FTNameList.html -->
+			<center><b>
+			<a href="../../data/generated/<bean:write property="<%= "FTNameList[" + idx + "]" %>" name="mapPreviewForm"/>.html" target="newwindow">Preview</a>
+			
+			</b></center>
 		 </td>
 	</tr>
 </logic:iterate>
