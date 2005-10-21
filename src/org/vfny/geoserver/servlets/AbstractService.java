@@ -134,6 +134,8 @@ public abstract class AbstractService extends HttpServlet {
         serviceStrategys.put("BUFFER", BufferStrategy.class);
     }
 
+    public static int BUFFER_SIZE;
+    
     /** Controls the Safty Mode used when using execute/writeTo. */
     private static Class safetyMode;
 
@@ -182,6 +184,29 @@ public abstract class AbstractService extends HttpServlet {
 
         LOGGER.info("Using service strategy " + stgyClass);
         AbstractService.safetyMode = stgyClass;
+        
+        if (stgyClass == PartialBufferStrategy.class)
+        {
+        	// this is a little hacky cause we are still dealing with a class and not an object
+        	
+        	// get the default value of the buffer size
+        	int buffSize = PartialBufferStrategy.DEFAULT_BUFFER_SIZE();
+        	String size = servContext.getInitParameter("PARTIAL_BUFFER_STRATEGY_SIZE");
+        	if (size != null)
+        	{
+				try {
+					//... convert string to # ...
+					Integer i = new Integer(size);
+					buffSize = i.intValue();
+					LOGGER.info("Set buffer size to " + buffSize);
+				}
+				catch (Exception e) {
+					LOGGER.warning("Invalid default buffer size for PARTIAL-BUFFER: " + size);
+				}
+        	}
+        	
+        	BUFFER_SIZE = buffSize;
+        }
     }
 
     /**
@@ -1145,16 +1170,19 @@ class PartialBufferStrategy implements AbstractService.ServiceStrategy
     protected static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
 
-    private OutputStream out = null;
+    private PartialBufferedOutputStream out = null;
 
 	/* (non-Javadoc)
 	 * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#getDestination(javax.servlet.http.HttpServletResponse)
 	 */
 	public OutputStream getDestination(HttpServletResponse response) throws IOException 
 	{
-		out = new BufferedOutputStream(response.getOutputStream());
-		out = new PartialBufferedOutputStream(out);
+		out = new PartialBufferedOutputStream(response, AbstractService.BUFFER_SIZE);
 		return out;
+	}
+
+	public static int DEFAULT_BUFFER_SIZE() {
+		return PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE;
 	}
 
 	/* (non-Javadoc)
@@ -1163,14 +1191,29 @@ class PartialBufferStrategy implements AbstractService.ServiceStrategy
 	public void flush() throws IOException 
 	{
 		if (out != null)
+		{
             out.flush();
+            out = null;
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#abort()
 	 */
-	public void abort() {
-		
+	public void abort() 
+	{
+		if (out != null)
+		{
+			try {
+				if (out.abort())
+					LOGGER.info("OutputStream was successfully aborted.");
+				else
+					LOGGER.warning("OutputStream could not be aborted in time. An error has occurred and could not be sent to the user.");
+			} catch (IOException e) {
+				LOGGER.warning("Error aborting OutputStream");
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	
