@@ -5,6 +5,10 @@ The issue log for this release is here:
 http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=11906
 
 The major changes since RC3 have been:
+* SVG Support with full support for sld
+* Map builder preview with custom configuration works
+* Writing logs to disk
+* GetLegendGraphic will now find the required style in a multiple styles remote SLD document
 * Color Scheme
 * Indexed Shapefile support
 * Compression/Decompression of remote SLD documents
@@ -14,10 +18,7 @@ The major changes since RC3 have been:
 * Shapefile support - url handling
 * Linux support - start / stop scripts
 * Developer Documentation
-* WMS layers looking for config files in default location
-* Default distribution will write logs to disk
-* GetLegendGraphic will now find the required style in a multiple styles remote SLD document
-* WMS SVG request will now return results
+
 
 
 Geoserver 1.3.0 RC4.SC1
