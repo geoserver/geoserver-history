@@ -36,6 +36,7 @@ import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.util.PartialBufferedOutputStream;
 import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -68,11 +69,14 @@ public abstract class AbstractService extends HttpServlet {
     public static final Map serviceStrategys = new HashMap();
 
     static {
+    	serviceStrategys.put("PARTIAL-BUFFER", PartialBufferStrategy.class);
         serviceStrategys.put("SPEED", SpeedStrategy.class);
         serviceStrategys.put("FILE", FileStrategy.class);
         serviceStrategys.put("BUFFER", BufferStrategy.class);
     }
 
+    public static int BUFFER_SIZE;
+    
     /** Controls the Safty Mode used when using execute/writeTo. */
     private static Class safetyMode;
 
@@ -127,6 +131,29 @@ public abstract class AbstractService extends HttpServlet {
 
         LOGGER.info("Using service strategy " + stgyClass);
         AbstractService.safetyMode = stgyClass;
+        
+        if (stgyClass == PartialBufferStrategy.class)
+        {
+        	// this is a little hacky cause we are still dealing with a class and not an object
+        	
+        	// get the default value of the buffer size
+        	int buffSize = PartialBufferStrategy.DEFAULT_BUFFER_SIZE();
+        	String size = servContext.getInitParameter("PARTIAL_BUFFER_STRATEGY_SIZE");
+        	if (size != null)
+        	{
+				try {
+					//... convert string to # ...
+					Integer i = new Integer(size);
+					buffSize = i.intValue();
+					LOGGER.info("Set buffer size to " + buffSize);
+				}
+				catch (Exception e) {
+					LOGGER.warning("Invalid default buffer size for PARTIAL-BUFFER: " + size);
+				}
+        	}
+        	
+        	BUFFER_SIZE = buffSize;
+        }
     }
 
     /**
@@ -1102,4 +1129,75 @@ class FileStrategy implements AbstractService.ServiceStrategy {
         temp = null;
         response = null;
     }
+    
+}
+
+/**
+ * <b>PartialBufferStrategy</b><br>
+ * Oct 19, 2005<br>
+ * 
+ * <b>Purpose:</b><br>
+ * This strategy will buffer the response before it starts streaming it to the user. This 
+ * will allow for errors to be caught early so a proper error message can be sent to the
+ * user. Right now it buffers the first 20KB, enough for a full getCapabilities document.
+ * 
+ * @author Brent Owens (The Open Planning Project)
+ * @version 
+ */
+class PartialBufferStrategy implements AbstractService.ServiceStrategy 
+{
+    /** Class logger */
+    protected static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.servlets");
+
+    private PartialBufferedOutputStream out = null;
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#getDestination(javax.servlet.http.HttpServletResponse)
+	 */
+	public OutputStream getDestination(HttpServletResponse response) throws IOException 
+	{
+		out = new PartialBufferedOutputStream(response, AbstractService.BUFFER_SIZE);
+		return out;
+	}
+
+	public static int DEFAULT_BUFFER_SIZE() {
+		return PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#flush()
+	 */
+	public void flush() throws IOException 
+	{
+		if (out != null)
+		{
+            out.flush();
+            out = null;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#abort()
+	 */
+	public void abort() 
+	{
+		if (out != null)
+		{
+			try {
+				if (out.abort())
+					LOGGER.info("OutputStream was successfully aborted.");
+				else
+					LOGGER.warning("OutputStream could not be aborted in time. An error has occurred and could not be sent to the user.");
+			} catch (IOException e) {
+				LOGGER.warning("Error aborting OutputStream");
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	
+	
+	
 }

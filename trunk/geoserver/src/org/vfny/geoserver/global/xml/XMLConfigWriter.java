@@ -167,6 +167,9 @@ public class XMLConfigWriter {
                 cw.textTag("loggingLevel", g.getLoggingLevel().getName());
             }
 
+            if (g.getLogLocation() != null)
+            	cw.textTag("logLocation", g.getLogLocation());
+            
             /*if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){
                cw.comment("The base URL where this servlet will run.  If running locally\n"+
                "then http://localhost:8080 (or whatever port you're running on)\n"+
@@ -316,7 +319,7 @@ public class XMLConfigWriter {
         boolean srsXmlStyle = false;
         int serviceLevel = 0;
         String svgRenderer = null;
-        
+        boolean svgAntiAlias = false;
         boolean citeConformanceHacks = false;
 		if (obj instanceof WCSDTO) {
 			WCSDTO w = (WCSDTO) obj;
@@ -336,6 +339,7 @@ public class XMLConfigWriter {
             s = w.getService();
             t = "WMS";
             svgRenderer = w.getSvgRenderer();
+            svgAntiAlias = w.getSvgAntiAlias();
         } else {
 			throw new ConfigurationException("Invalid object: not WMS or WFS or WCS");
         }
@@ -414,6 +418,10 @@ public class XMLConfigWriter {
         	cw.textTag("svgRenderer", svgRenderer);
         }
 
+        if (obj instanceof WMSDTO) {
+        	cw.textTag("svgAntiAlias", svgAntiAlias+"");
+        }
+        
         cw.closeTag("service");
     }
 

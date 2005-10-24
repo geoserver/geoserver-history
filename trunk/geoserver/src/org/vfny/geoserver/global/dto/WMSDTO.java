@@ -43,6 +43,8 @@ public final class WMSDTO implements DataTransferObject {
 
     /** The current svg renderer **/
     private String svgRenderer;
+    /** The antialisaing hint for the svg renderer **/
+    private boolean svgAntiAlias;
     
     /**
      * WMS constructor.  does nothing
@@ -70,6 +72,7 @@ public final class WMSDTO implements DataTransferObject {
         service = (ServiceDTO) other.getService().clone();
         gmlPrefixing = other.isGmlPrefixing();
         svgRenderer = other.getSvgRenderer();
+        svgAntiAlias = other.getSvgAntiAlias();
     }
 
     /**
@@ -104,7 +107,8 @@ public final class WMSDTO implements DataTransferObject {
 
         WMSDTO dto = (WMSDTO) other;
         
-        boolean equals = gmlPrefixing == dto.gmlPrefixing;
+        boolean equals = gmlPrefixing == dto.gmlPrefixing && 
+        	svgAntiAlias == dto.svgAntiAlias;
         if (equals) {
         	if (service == null) {
         		equals = dto.getService() == null;
@@ -130,6 +134,7 @@ public final class WMSDTO implements DataTransferObject {
      */
     public int hashCode() {
         return (gmlPrefixing ? 1 : 0)
+        | (svgAntiAlias ? 1 : 0)
         | ((service == null) ? 0 : service.hashCode()) 
         | ((svgRenderer == null) ? 0 : svgRenderer.hashCode());
     }
@@ -215,5 +220,19 @@ public final class WMSDTO implements DataTransferObject {
      */
     public void setSvgRenderer(String svgRenderer) {
     	this.svgRenderer = svgRenderer;
+    }
+    
+    /**
+     * @param svgAntiAlias anti alias hint.
+     */
+    public void setSvgAntiAlias(boolean svgAntiAlias) {
+    	this.svgAntiAlias = svgAntiAlias;
+    }
+    
+    /**
+     * @return The value of the anti aliasing rendering hint.
+     */
+    public boolean getSvgAntiAlias() {
+    	return svgAntiAlias;
     }
 }

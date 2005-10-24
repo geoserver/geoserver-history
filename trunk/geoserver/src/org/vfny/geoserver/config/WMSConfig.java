@@ -32,6 +32,8 @@ public class WMSConfig extends ServiceConfig {
     
     /** current svg renderer **/
     private String svgRenderer;
+    /** anti aliasing hint for svg renderer **/
+    private boolean svgAntiAlias;
     
     /**
      * WMS constructor.
@@ -45,6 +47,7 @@ public class WMSConfig extends ServiceConfig {
     public WMSConfig() {
         super();
         svgRenderer = SVG_SIMPLE;
+        svgAntiAlias = true;
     }
 
     /**
@@ -60,6 +63,7 @@ public class WMSConfig extends ServiceConfig {
     public WMSConfig(WMSDTO w) {
         super(w.getService());
         svgRenderer = w.getSvgRenderer();
+        svgAntiAlias = w.getSvgAntiAlias();
     }
 
     /**
@@ -82,6 +86,7 @@ public class WMSConfig extends ServiceConfig {
 
         super.update(dto.getService());
         svgRenderer = dto.getSvgRenderer();
+        svgAntiAlias = dto.getSvgAntiAlias();
     }
 
     /**
@@ -99,6 +104,7 @@ public class WMSConfig extends ServiceConfig {
         WMSDTO wmsDto = new WMSDTO();
         wmsDto.setService((ServiceDTO) super.toServDTO());
         wmsDto.setSvgRenderer(svgRenderer);
+        wmsDto.setSvgAntiAlias(svgAntiAlias);
         return wmsDto;
     }
     
@@ -118,5 +124,19 @@ public class WMSConfig extends ServiceConfig {
      */
     public void setSvgRenderer(String svgRenderer) {
     	this.svgRenderer = svgRenderer;
+    }
+    
+    /**
+     * @param svgAntiAlias anti alias hint.
+     */
+    public void setSvgAntiAlias(boolean svgAntiAlias) {
+    	this.svgAntiAlias = svgAntiAlias;
+    }
+    
+    /**
+     * @return The value of the anti aliasing rendering hint.
+     */
+    public boolean getSvgAntiAlias() {
+    	return svgAntiAlias;
     }
 }

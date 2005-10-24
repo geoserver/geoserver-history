@@ -46,6 +46,8 @@ public class WMS extends Service {
 
     /** svg Renderer to use **/
     private String svgRenderer;
+    /** svg anitalias or not **/
+    private boolean svgAntiAlias;
     
     /**
      * WMS constructor.
@@ -59,7 +61,8 @@ public class WMS extends Service {
      */
     public WMS(WMSDTO config) {
         super(config.getService());
-        this.svgRenderer = config.getSvgRenderer();
+        svgRenderer = config.getSvgRenderer();
+        svgAntiAlias = config.getSvgAntiAlias();
     }
 
     /**
@@ -71,7 +74,8 @@ public class WMS extends Service {
      */
     public void load(WMSDTO config) {
     	super.load(config.getService());
-    	this.svgRenderer = config.getSvgRenderer();
+    	svgRenderer = config.getSvgRenderer();
+    	svgAntiAlias = config.getSvgAntiAlias();
     }
 
     /**
@@ -106,6 +110,7 @@ public class WMS extends Service {
         WMSDTO w = new WMSDTO();
         w.setService((ServiceDTO)super.toDTO());
         w.setSvgRenderer(svgRenderer);
+        w.setSvgAntiAlias(svgAntiAlias);
         
         return w;
     }

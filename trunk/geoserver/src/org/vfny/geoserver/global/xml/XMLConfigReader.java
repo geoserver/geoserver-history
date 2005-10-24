@@ -47,6 +47,7 @@ import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageCategory;
 import org.vfny.geoserver.global.CoverageDimension;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Log4JFormatter;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -408,13 +409,25 @@ public class XMLConfigReader {
 		LOGGER.finer("parsing global configuration parameters");
 		
 		Level loggingLevel = getLoggingLevel(globalElem);
-		
-		//init this now so the rest of the config has correct log levels.
-		Log4JFormatter.init("org.geotools", loggingLevel);
-		Log4JFormatter.init("org.vfny.geoserver", loggingLevel);
-		LOGGER.config("logging level is " + loggingLevel);
-		geoServer.setLoggingLevel(loggingLevel);
-		
+        geoServer.setLoggingLevel(loggingLevel);
+
+        String logLocation = ReaderUtils.getChildText(globalElem, "logLocation");
+        if (logLocation != null && "".equals(logLocation.trim()))
+        	logLocation = null;
+        geoServer.setLogLocation(logLocation);
+        
+        //init this now so the rest of the config has correct log levels.
+        try {
+			GeoServer.initLogging(loggingLevel,logLocation);
+		} 
+        catch (IOException e) {
+        	throw new ConfigurationException(e);
+		}
+        
+        LOGGER.config("logging level is " + loggingLevel);
+        if (logLocation != null) 
+        	LOGGER.config("logging to " + logLocation);
+        
 		Element elem = null;
 		elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
 		geoServer.setContact(loadContact(elem));
@@ -673,7 +686,7 @@ public class XMLConfigReader {
 		wms.setService(loadService(wmsElement));
         
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
-                
+        wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(wmsElement, "svgAntiAlias")));
 	}
 	
 	/**

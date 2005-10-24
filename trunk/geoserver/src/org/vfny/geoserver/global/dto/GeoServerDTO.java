@@ -57,6 +57,10 @@ public final class GeoServerDTO implements DataTransferObject {
 		 * service exceptions don't look like someone 'kacked'.
 		 */
 		public static final boolean VerboseExceptions = false;
+		
+		/** Default logging location on disk **/
+		public static final String LogLocation = null;
+		
 	}
 
 	/**
@@ -187,8 +191,10 @@ public final class GeoServerDTO implements DataTransferObject {
 	 * @uml.property name="verboseExceptions" multiplicity="(0 1)"
 	 */
 	private boolean verboseExceptions = Defaults.VerboseExceptions;
-
-
+    
+    /** Where on disk the server should log to **/
+    private String logLocation = Defaults.LogLocation;
+    
     /**
      * GlobalConfig constructor.
      * 
@@ -224,7 +230,8 @@ public final class GeoServerDTO implements DataTransferObject {
         schemaBaseUrl = g.getSchemaBaseUrl();
         loggingLevel = g.getLoggingLevel();
         verboseExceptions = g.isVerboseExceptions();
-
+        logLocation = g.getLogLocation();
+        
         if (g.getContact() != null) {
             contact = (ContactDTO) (g.getContact().clone());
         } else {
@@ -286,6 +293,12 @@ public final class GeoServerDTO implements DataTransferObject {
             return false;
         }
 
+        if (logLocation != null) {
+        	r = r && logLocation.equals(g.getLogLocation());
+        }
+        else if (g.getLogLocation() != null)
+        	return false;
+        
         return r;
     }
 
@@ -594,6 +607,22 @@ public final class GeoServerDTO implements DataTransferObject {
 		this.verboseExceptions = showStackTraces;
 	}
 
+   /**
+	 * @return The string representation of the path on disk in which the 
+	 * server logs to.
+	 */
+	public String getLogLocation() {
+		return logLocation;
+	}
+	
+	/**
+	 * @param logLocation The string representation of the path on disk in which 
+	 * the server logs to.
+	 */
+	public void setLogLocation(String logLocation) {
+		this.logLocation = logLocation;
+	}
+	
     public String toString() {
         StringBuffer dto = new StringBuffer("[GeoServerDTO: \n");
         dto.append("   maxFeatures - " + maxFeatures);

@@ -4,9 +4,17 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.StreamHandler;
 
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
@@ -105,8 +113,8 @@ public class GeoServer extends GlobalLayerSupertype {
 	 */
 	private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
 		.getLevel();
-
-
+    /** where to log **/
+    private String logLocation = null;
 
     /**
      * getAddress purpose.
@@ -423,8 +431,15 @@ public class GeoServer extends GlobalLayerSupertype {
             contactPosition = dto.getContact().getContactPosition();
             contactVoice = dto.getContact().getContactVoice();
             loggingLevel = dto.getLoggingLevel();
-            Log4JFormatter.init("org.geotools", loggingLevel);
-            Log4JFormatter.init("org.vfny.geoserver", loggingLevel);
+            logLocation = dto.getLogLocation();
+            
+            try {
+				initLogging(loggingLevel,logLocation);
+			} 
+            catch (IOException e) {
+            	throw new ConfigurationException(e);
+			}
+            
             maxFeatures = dto.getMaxFeatures();
             numDecimals = dto.getNumDecimals();
             onlineResource = dto.getContact().getOnlineResource();
@@ -439,6 +454,40 @@ public class GeoServer extends GlobalLayerSupertype {
         }
     }
 
+    /** 
+     * Initializes logging based on configuration paramters.
+     *
+     */
+    public static void initLogging(Level level, String location) throws IOException {
+    	Log4JFormatter.init("org.geotools", level);
+        Log4JFormatter.init("org.vfny.geoserver", level);
+        
+        //remove the old handler
+    	Logger logger = Logger.getLogger("org.vfny.geoserver");
+    	Handler[] handlers = logger.getHandlers();
+    	Handler old = null;
+    	for (int i = 0; i < handlers.length; i++) {
+    		Handler handler = handlers[i];
+    		if (handler instanceof StreamHandler) {
+    			old = handler;
+    			break;
+    		}
+    			
+    	}
+    	if (old != null) {
+    		logger.removeHandler(old);
+    	}
+    	
+        if (location != null) {
+        	//add the new handler
+        	Handler handler = new StreamHandler(
+        		new BufferedOutputStream(new FileOutputStream(location,true)),
+        		new SimpleFormatter()
+        	);
+        	handler.setLevel(level);
+        	logger.addHandler(handler);
+        }
+    }
     /**
      * toDTO purpose.
      * 
@@ -461,6 +510,7 @@ public class GeoServer extends GlobalLayerSupertype {
         dto.setAdminUserName(adminUserName);
         dto.setAdminPassword(adminPassword);
         dto.setVerboseExceptions(verboseExceptions);
+        dto.setLogLocation(logLocation);
 
         ContactDTO cdto = new ContactDTO();
 
@@ -586,6 +636,20 @@ public class GeoServer extends GlobalLayerSupertype {
 	public void setVerboseExceptions(boolean showStackTraces) {
 		this.verboseExceptions = showStackTraces;
 	}
-
 	
+	/**
+	 * @return The string representation of the path on disk in which the 
+	 * server logs to.
+	 */
+	public String getLogLocation() {
+		return logLocation;
+	}
+	
+	/**
+	 * @param logLocation The string representation of the path on disk in which 
+	 * the server logs to.
+	 */
+	public void setLogLocation(String logLocation) {
+		this.logLocation = logLocation;
+	}
 }

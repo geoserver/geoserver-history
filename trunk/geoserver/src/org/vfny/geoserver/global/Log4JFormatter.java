@@ -94,15 +94,12 @@ public class Log4JFormatter extends Formatter {
      */
     private final StringBuffer buffer;
 
-	/**
-	 * The line writer. This object transform all "\r", "\n" or "\r\n"
-	 * occurences into a single line separator. This line separator will
-	 * include space for the marging, if needed.
-	 * 
-	 * @uml.property name="writer"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
-	private final LineWriter writer;
+    /**
+     * The line writer. This object transform all "\r", "\n" or "\r\n"
+     * occurences into a single line separator. This line separator will
+     * include space for the marging, if needed.
+     */
+    private final LineWriter writer;
 
     /**
      * Construct a <code>Log4JFormatter</code>.
@@ -193,12 +190,15 @@ public class Log4JFormatter extends Formatter {
         if (!logger.getUseParentHandlers()) {
             logger.setLevel(filterLevel);
 
-            Handler handler = logger.getHandlers()[0];
+            if (logger.getHandlers().length > 0) {
+            	Handler handler = logger.getHandlers()[0];
 
-            //this should be the right handler, if set with geoserver.
-            if (handler != null) {
-                handler.setLevel(filterLevel);
+                //this should be the right handler, if set with geoserver.
+                if (handler != null) {
+                    handler.setLevel(filterLevel);
+                }
             }
+            
         }
 
         for (Logger parent = logger; parent.getUseParentHandlers();) {

@@ -93,7 +93,7 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     /**
-     * DOCUMENT ME!
+     * Returns an svg renderer based on the current wms configuration.
      *
      * @param mapFormat DOCUMENT ME!
      *
@@ -108,7 +108,7 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
     		if (WMSConfig.SVG_SIMPLE.equals(config.getSvgRenderer()))
 				return new SVGMapProducer();
     		if (WMSConfig.SVG_BATIK.equals(config.getSvgRenderer()))
-    			return new SVGBatikMapProducer();
+    			return new SVGBatikMapProducer(config);
     	}
     
     	//do the default
