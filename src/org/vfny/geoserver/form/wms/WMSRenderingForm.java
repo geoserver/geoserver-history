@@ -17,6 +17,29 @@ public class WMSRenderingForm extends ActionForm {
 	String svgRenderer;
 	boolean svgAntiAlias;
 	
+	/*
+     * Because of the way that STRUTS works, if the user does not check the enabled box,
+     * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()
+     * to see if it doesn't get called. This must be accessible, as ActionForms need to
+     * know about it -- there is no way we can tell whether we are about to be passed to
+     * an ActionForm or not.
+     *
+     * Probably a better way to do this, but I can't think of one.
+     * -rgould
+     *
+     * TODO: Hey richard Jody here - Struts knows that boolean properties are
+     * not set if the user does nothing. Apparently that is why the reset
+     * method exists.
+     * Reset is called *every* time on ActionForm. Before the populate
+     * process has a go at things.
+     *
+     * The problem is that reset() retrieves the WFS's config enabled value
+     * and uses that to pre-populate the form. Thus, if they deselect it, setEnabled is
+     * never called, and enabled still remains true. The way I have done it isn't simple,
+     * but it works just fine.
+     */
+    private boolean svgAntiAliasChecked = false;
+    
 	public WMSRenderingForm() {
 		svgRenderers = new ArrayList();
 		svgRenderers.add(WMSConfig.SVG_SIMPLE);
@@ -61,6 +84,7 @@ public class WMSRenderingForm extends ActionForm {
      * @param svgAntiAlias anti alias hint.
      */
     public void setSvgAntiAlias(boolean svgAntiAlias) {
+    	svgAntiAliasChecked = true;
     	this.svgAntiAlias = svgAntiAlias;
     }
     
@@ -69,5 +93,23 @@ public class WMSRenderingForm extends ActionForm {
      */
     public boolean getSvgAntiAlias() {
     	return svgAntiAlias;
+    }
+    
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public boolean isSvgAntiAliasChecked() {
+        return svgAntiAliasChecked;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param b
+     */
+    public void setEnabledChecked(boolean svgAntiAliasChecked) {
+    	this.svgAntiAliasChecked = svgAntiAliasChecked;
     }
 }
