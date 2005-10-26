@@ -44,6 +44,7 @@
 	<!-- primary directories -->
 	<property name="dir.bin" value="${basedir}/bin" />
 	<property name="dir.build" value="${basedir}/build" />
+	<property name="dir.upgrade" value="${basedir}/upgrade" />
 	<property name="dir.doc" value="${basedir}/documents/generated" />
 	<property name="dir.lib" value="${basedir}/lib" />
 	<property name="dir.server" value="${basedir}/server" />
@@ -567,6 +568,107 @@
 
 	</target>
 
+	<!-- BUILD UPGRADE WAR -->
+	<target name="build-war-upgrade" depends="all" if="conf.path">
+		<!-- preparation -->
+		<mkdir dir="${dir.upgrade}" />
+		<delete file="${dir.upgrade}/geoserver.war" failonerror="false" />
+		<delete dir="${basedir}/data" failonerror="false" />
+		<mkdir dir="${basedir}/data" />
+		<copy todir="${basedir}/data">
+			<fileset dir="${basedir}/documents">
+				<include name="license.txt" />
+				<include name="geoserver.log" />
+				<include name="z3950-geo.map" />
+			</fileset>
+		</copy>
+
+		<!-- populate base directory -->
+		<mkdir dir="${basedir}/data" />
+		<copy todir="${basedir}/data">
+			<fileset dir="${conf.path}/data/">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+
+		<copy todir="${dir.upgrade}">
+			<fileset dir="${basedir}/documents">
+				<include name="log4j.properties" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${dir.webinf}/work" />
+		<!-- war file -->
+		<war warfile="${dir.upgrade}/geoserver.war" webxml="${dir.webinf}/web.xml" update="true">
+
+			<!-- classes -->
+			<classes dir="${dir.upgrade}">
+				<include name="**/servlets/**" />
+				<include name="**/*.properties" />
+				<exclude name="**/servlets/utilities/**" />
+				<exclude name="**/mortbay/**" />
+				<exclude name="**/zserver/**" />
+			</classes>
+
+			<classes dir="${dir.webinf}">
+				<include name="ApplicationResources*.properties" />
+			</classes>
+
+			<webinf dir="${conf.path}/WEB-INF">
+				<exclude name="services.xml" />
+				<exclude name="catalog.xml" />
+			</webinf>
+			
+			<webinf dir="${basedir}/data">
+				<include name="*.html" />
+				<include name="*.png" />
+			</webinf>
+
+			<webinf dir="${dir.webinf}">
+				<exclude name="web.xml" />
+			</webinf>
+
+			<!-- libraries -->
+			<lib dir="${dir.lib}">
+				<exclude name="**/junit.jar" />
+				<exclude name="**/servlet.jar" />
+				<!--exclude name="**/gt2-oracle-spatial.jar"/-->
+				<exclude name="**/xalan.jar" />
+				<exclude name="**/ki*.jar" />
+				<exclude name="**/a2jruntime.jar" />
+				<!--exclude name="**/log4j-1.2.5.jar" /-->
+				<exclude name="**/lucene.jar" />
+				<exclude name="**/xml-apis.jar" />
+				<exclude name="**/xercesImpl.jar" />
+				<exclude name="*jetty*/**/*" />
+			</lib>
+
+			<!-- directories -->
+			<fileset dir="${basedir}">
+				<include name="data/**" />
+				<include name="documents/api/**" />
+				<exclude name="**/catalog.xml" />
+				<exclude name="**/services.xml" />
+				<exclude name="data/featureTypes/**" />
+			</fileset>
+
+			<fileset dir="${dir.webinf}/pages">
+				<include name="index.jsp" />
+				<include name="style.css" />
+			</fileset>
+			<fileset dir="${dir.webinf}">
+				<include name="images/**" />
+			</fileset>
+
+		</war>
+
+		<!-- clean-up -->
+		<delete file="${dir.upgrade}/log4j.properties" failonerror="true" />
+		
+		<delete dir="${basedir}/data" failonerror="true" />
+
+	</target>
+	
 	<!-- BUILD JARS FOR SCRIPTS -->
 	<target name="script-jars" depends="start.jar, stop.jar" />
 
@@ -655,6 +757,45 @@
 <!-- builds a release version of the application -->
 <target name="release-all" depends="release-common, release-binary,release-war, release-src, release-docs" />
 
+
+<target name="release-all-upgrade" depends="release-all, release-war-upgrade">
+	<mkdir dir="${dir.upgrade}" />
+	<mkdir dir="${dir.upgrade}/untar" />
+	
+	<!-- get binary tar, unzip, remove *flagged*.xml, re-tar -->
+	<gunzip src="${dir.release}/geoserver-${name.release}-bin.tar.gz" dest="${dir.upgrade}" />
+	<untar src="${dir.upgrade}/geoserver-${name.release}-bin.tar" dest="${dir.upgrade}/untar"/>
+	
+	<!--JD(GEOS-385) fix the end of line for shell scripts -->
+	<fixcrlf srcdir="${dir.upgrade}/untar" includes="**/*.sh" eol="unix"/>
+	<tar destfile="${dir.upgrade}/geoserver-${name.release}-bin-upgrade.tar">
+		<tarfileset dir="${dir.upgrade}/untar/geoserver" prefix="geoserver">
+			<include name="**/*" />
+			<exclude name="geoserver.war" />
+			<exclude name="org/**" />
+			<exclude name="bin/*.sh"/>
+			<exclude name="**/catalog.xml"/>
+			<exclude name="**/services.xml"/>
+		</tarfileset>
+
+		<!-- JD(GEOS-385)include bin seperatly in order to get permission right -->
+		<tarfileset dir="${dir.upgrade}/untar/geoserver" prefix="geoserver" mode="755">
+			<include name="bin/*.sh"/>
+		</tarfileset>
+	</tar>
+
+	<gzip src="${dir.upgrade}/geoserver-${name.release}-bin-upgrade.tar" zipfile="${dir.upgrade}/geoserver-${name.release}-bin-upgrade.tar.gz" />
+
+	<copy file="${dir.upgrade}/geoserver-${name.release}-bin-upgrade.tar.gz" todir="${dir.release}" />
+	
+	<delete dir="${dir.upgrade}/untar"/>
+	<delete file="${dir.upgrade}/geoserver-${name.release}-bin-upgrade.tar.gz" failonerror="false" />
+	<delete file="${dir.upgrade}/geoserver-${name.release}-bin-upgrade.tar" failonerror="false" />
+	<delete file="${dir.upgrade}/geoserver-${name.release}-bin.tar" failonerror="false" />
+	
+</target>
+
+
 <target name="release-common" depends="clean, all" description="Performs the release operations common to binary and source">
 <delete dir="${basedir}/data" failonerror="false" />
 <copy todir="${dir.build}">
@@ -681,7 +822,7 @@
 	</fileset>
 </copy>
 </target>
-
+	
 
 
 <target name="release-src" depends="release-common">
@@ -772,6 +913,7 @@
 <delete file="${basedir}/geoserver-${name.release}-src.zip" failonerror="true" />
 <delete file="${basedir}/license.txt" failonerror="true" />
 </target>
+	
 
 <target name="release-war" depends="clean, all" description="Genearte the Geoserver.war war release (includes UserBasic)">
 <antcall target="build-war">
@@ -787,6 +929,22 @@
 <move file="${basedir}/geoserver-${name.release}-war.zip" todir="${dir.release}" />
 	<delete file="${dir.build}/geoserver.war" failonerror="true" />
 	
+</target>
+	
+<target name="release-war-upgrade" depends="clean, all" description="Genearte the Geoserver.war war release-upgrade (includes UserBasic)">
+	<antcall target="build-war-upgrade">
+		<param name="conf.path" value="${basedir}/cite/confUserBasic" />
+	</antcall>
+	<!-- .war build, stick it in a geoserver-<version>-war.zip -->
+	<zip destfile="${basedir}/geoserver-${name.release}-war-upgrade.zip">
+		<zipfileset dir="${dir.upgrade}">
+			<include name="geoserver.war" />
+		</zipfileset>
+	</zip>
+		
+	<move file="${basedir}/geoserver-${name.release}-war-upgrade.zip" todir="${dir.release}" />
+		<delete file="${dir.upgrade}/geoserver.war" failonerror="true" />
+		
 </target>
 
 <target name="release-binary" depends="release-common">
@@ -860,6 +1018,8 @@
  -->
 
 </target>
+	
+
 
 <target name="release-docs" depends="document">
 <mkdir dir="${basedir}/docs" />
