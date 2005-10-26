@@ -97,6 +97,8 @@ private int           bgIndex = 0;
 private int           loopCount = 1;
 private String        theComments;
 private Vector        vFrames = new Vector();
+private boolean[]     transparentpixels =null; //djb: true=this pixel is transparent in row-major form
+boolean DEBUG = false;
 
 //----------------------------------------------------------------------------
 /** Use this default constructor if you'll be adding multiple frames
@@ -112,20 +114,22 @@ public Gif89Encoder()
 *   Handles all the JAI stuff.
 *    1. replace all the pixels with alpha (100% transparent) with the transColor (or white)
 *    2. converts image to BGR (it comes in ARGB)
-*    
+*    3. also populates transparentpixels[]
 * 
 * 
 * @param image
 * @param transColor might be null if you dont have a transparent color
 * @return
 */
-public static BufferedImage prepareImage(BufferedImage image,Color transColor) throws IOException
+public  BufferedImage prepareImage(BufferedImage image,Color transColor) throws IOException
 {	
+	
 	WritableRaster alphaRaster = image.getAlphaRaster();
 	
 	if (transColor == null)
 		transColor = new Color(255,255,255);
-	int[] sample = new int[3];
+	transparentpixels = new boolean[image.getWidth() *image.getHeight() ];
+	int width = image.getWidth();
 	
 	for (int x=0;x<image.getWidth(); x++)
 	{
@@ -135,11 +139,12 @@ public static BufferedImage prepareImage(BufferedImage image,Color transColor) t
 		     if ( alphaValue==0)  // only for 100% transparent things!
 		     {
 		     	image.setRGB(x,y,transColor.getRGB());  //set to background colour
+		     	transparentpixels[y*width +x] = true;
 		     }
-		     //else if (alphaValue != 255)
-		    // {
-		    // 	System.out.println("y="+y+", x="+x+", alpha="+alphaValue);
-		    // }
+		     else
+		     {
+		     	transparentpixels[y*width +x] = false;
+		     }		   
 		}
 	}
 	
@@ -176,10 +181,20 @@ public static BufferedImage prepareImage(BufferedImage image,Color transColor) t
 * @exception Exception
 *   See the addFrame() methods.   
 */
-public Gif89Encoder(BufferedImage image, Color transparentColor) throws IOException
+public Gif89Encoder(BufferedImage image, Color transparentColor, int SAMPLE_FACTOR) throws IOException
 {
-	    image = prepareImage(image,transparentColor);  //make BGR and put in background colour where its 100% transparent.
+	boolean noTransparentColor = (transparentColor == null);
+	if (transparentColor ==null)
+		transparentColor = Color.WHITE;
+	
+	if (DEBUG)
+		System.out.println("Start GIF");
+	
+	    image = prepareImage(image,transparentColor);  //make BGR and put in background colour where its 100% transparent. populate transparentpixels
 
+		if (DEBUG)
+			System.out.println("   Prepared finished");
+		
 		byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();  //list of rgb bytes (3*#of pixels)
  
 		//do color reduction
@@ -191,9 +206,15 @@ public Gif89Encoder(BufferedImage image, Color transparentColor) throws IOExcept
 		int len = pixels.length;
 		int nPix = len / 3;
 		byte[] indexedPixels = new byte[nPix];
-		NeuQuant nq = new NeuQuant(pixels, len, 1);  //10 is recommended value
+		NeuQuant nq = new NeuQuant(pixels, len, SAMPLE_FACTOR);  //last number is the pixel sampling factor (1=all).  will return 255 colours
 		// initialize quantizer
+		if (DEBUG)
+			System.out.println("   Colour reduced being called");
+		
 		byte[] colorTab = nq.process(); // create reduced palette
+		
+		if (DEBUG)
+			System.out.println("   Colour reducer call finished");
 		// convert map from BGR to RGB
 		for (int i = 0; i < colorTab.length; i += 3) {
 			byte temp = colorTab[i];
@@ -202,6 +223,9 @@ public Gif89Encoder(BufferedImage image, Color transparentColor) throws IOExcept
 			usedEntry[i / 3] = false;
 		}
  
+		if (DEBUG)
+			System.out.println("   Colour reduced");
+		
 		//we have a color table now!  its a list of rgb values (3*256 usually)
 		
 		// next step, convert the image to a list of color index values.
@@ -217,16 +241,12 @@ public Gif89Encoder(BufferedImage image, Color transparentColor) throws IOExcept
 			indexedPixels[i] = (byte) index;
 		}
  
-	   int trans_index = -1;
-    //find tranparent index
-	   if(transparentColor != null)
-	   {	   	
-	   		trans_index = nq.map(transparentColor.getRed(), transparentColor.getGreen(),transparentColor.getBlue() );
-	   }
+		if (DEBUG)
+			System.out.println("   Colour indexing mapped");
 	   
 	   //make colour table
     Color[] colors = new Color[256];
-    for (int t=0;t<256;t++)
+    for (int t=0;t<255;t++)
     {
 	       	int r = colorTab[t*3];
 	    	int g = colorTab[t*3+1];
@@ -241,12 +261,39 @@ public Gif89Encoder(BufferedImage image, Color transparentColor) throws IOExcept
  	
     	   colors[t] = new Color(r,g,b);
     }
+    colors[255] = transparentColor;
 	    
+       int trans_index = -1;
+    //find tranparent index
+	   if (!noTransparentColor )
+	   {	   	
+	   		//trans_index = nq.map(transparentColor.getRed(), transparentColor.getGreen(),transparentColor.getBlue() );
+	   	   trans_index = 255;  // we will add the transparent colour at the end of the list of colours
+//	   	now, match the transparent pixels in the image to index 255
+		   
+		   //NOTE: assume that we're row-major!!!  This is a big assumption
+	   	   byte transindx = (byte)(trans_index );
+		   for (int t=0;t<nPix;t++)
+		   {
+		   	  if (transparentpixels[t])
+		   	 indexedPixels[t] = transindx;
+		   }
+		   
+		   
+	   }
+	   
+	   if (DEBUG)
+		System.out.println("   transparency added");
+	   
+	   
     //normal gif stuff
 	    colorTable = new GifColorTable(colors); 
 	    addFrame(image.getWidth(), image.getHeight(), indexedPixels);
 	    if (trans_index != -1)
 	    	this.setTransparentIndex(trans_index);
+	    
+	    if (DEBUG)
+			System.out.println("   --- finished prepare");
 	  }
 
 
@@ -521,6 +568,9 @@ public void encode(OutputStream out) throws IOException
  out.write((int) ';');
  
  out.flush();
+ 
+ if (DEBUG)
+ 	System.out.println("done GIF!");
 }
 
 //----------------------------------------------------------------------------
@@ -551,7 +601,7 @@ public static void main(String[] args)
    );
    
    if (args[0].toUpperCase().endsWith(".JPG"))
-     new Gif89Encoder((BufferedImage)tk.getImage(args[0]),(Color) null).encode(out);
+     new Gif89Encoder((BufferedImage)tk.getImage(args[0]),(Color) null,1).encode(out);
    else
    {
      BufferedReader in = new BufferedReader(new FileReader(args[0]));   

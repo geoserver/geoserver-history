@@ -23,7 +23,8 @@ package org.vfny.geoserver.wms.responses.map.gif;
 
 public class NeuQuant {
 
-	protected static final int netsize = 256; /* number of colours used */
+	 //DJB: 255 so you have 1 left for transparent colour
+	protected static final int netsize = 255; /* number of colours used */
 
 	/* four primes near 500 - assume no image has a length so large */
 	/* that it is divisible by all four primes */
@@ -336,9 +337,13 @@ public class NeuQuant {
 		return (best);
 	}
 	public byte[] process() {
+		//System.out.println("        calling learn()");
 		learn();
+		//System.out.println("        calling unbiasnet()");
 		unbiasnet();
+		//System.out.println("        calling indxbuild()");
 		inxbuild();
+		//System.out.println("        calling colorMap()");
 		return colorMap();
 	}
 	
