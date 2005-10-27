@@ -45,6 +45,7 @@
 	<property name="dir.bin" value="${basedir}/bin" />
 	<property name="dir.build" value="${basedir}/build" />
 	<property name="dir.upgrade" value="${basedir}/upgrade" />
+	<property name="dir.documents" value="${basedir}/documents" />
 	<property name="dir.doc" value="${basedir}/documents/generated" />
 	<property name="dir.lib" value="${basedir}/lib" />
 	<property name="dir.server" value="${basedir}/server" />
@@ -84,6 +85,18 @@
 	<available file="${basedir}/conf" type="dir" property="conf.folder.present" />
 	<available file="${basedir}/server/geoserver" type="dir" property="server.built" />
 
+	<!--taskdef name="nsis" classname="info.waynegrant.ant.NsisTask">
+        <classpath>
+            <pathelement location="${dir.lib}/wat-12.jar"/>
+        </classpath>
+    </taskdef-->
+	<!--taskdef name="nsis" classname="net.sf.nsisant.Task">
+        <classpath>
+            <pathelement location="${dir.lib}/nsisant-1.0.jar"/>
+        </classpath>
+    </taskdef-->
+	
+	
 	<!-- paths -->
 	<path id="path.lib">
 		<fileset dir="${dir.lib}">
@@ -753,12 +766,20 @@
 </style>
 </target>
 
+	
 <!-- RELEASE -->
 <!-- builds a release version of the application -->
-<target name="release-all" depends="release-common, release-binary,release-war, release-src, release-docs" />
+<!-- MAKE SURE!: -->
+<!-- Set up an environment variable called NSIS_PATH that points to your NSIS -->
+<!--   install directory. You can download Nullsoft Scriptable Install System -->
+<!--   here: http://nsis.sourceforge.net/-->
+<target name="release-all" depends="release-common, release-binary,release-war, release-src, release-docs" >
+	<antcall target="release-all-upgrade"/>
+	<antcall target="release-installer-win"/>
+</target>
 
 
-<target name="release-all-upgrade" depends="release-all, release-war-upgrade">
+<target name="release-all-upgrade" depends="release-war-upgrade">
 	<mkdir dir="${dir.upgrade}" />
 	<mkdir dir="${dir.upgrade}/untar" />
 	
@@ -1039,6 +1060,47 @@
 <delete dir="${basedir}/docs" failonerror="true" />
 </target>
 
+	
+<!-- HOW TO RUN -->
+<!-- Set up an environment variable called NSIS_PATH that points to your NSIS -->
+<!--   install directory. -->
+<target name="release-installer-win">
+	
+	<delete dir="${dir.build}/installer"/>
+	<mkdir dir="${dir.build}/installer" />
+	
+	<gunzip src="${dir.release}/geoserver-${name.release}-bin.tar.gz" dest="${dir.build}/installer" />
+	<untar src="${dir.build}/installer/geoserver-${name.release}-bin.tar" dest="${dir.build}/installer"/>
+	<delete file="${dir.build}/installer/${dir.upgrade}/geoserver-${name.release}-bin.tar"/>
+	
+	<copy file="${dir.documents}/geoserver.nsi" todir="${dir.build}/installer/geoserver" />
+	
+	<property environment="env"/>
+	<exec executable="${env.NSIS_PATH}/makensis.exe">
+		<arg line="${dir.build}/installer/geoserver/geoserver.nsi"/>
+	</exec>
+	
+	<!-- copy over the exe to release -->
+	<copy file="${dir.build}/installer/geoserver/geoserver-${name.release}.exe" todir="${dir.release}" />
+	
+	<!-- clean up files so we can realse the update exe version -->
+	<delete dir="${dir.build}/installer"/>
+	<mkdir dir="${dir.build}/installer" />
+	
+	<gunzip src="${dir.release}/geoserver-${name.release}-bin-upgrade.tar.gz" dest="${dir.build}/installer" />
+	<untar src="${dir.build}/installer/geoserver-${name.release}-bin-upgrade.tar" dest="${dir.build}/installer"/>
+	
+	<copy file="${dir.documents}/geoserver-upgrade.nsi" todir="${dir.build}/installer/geoserver" />
+	
+	<exec executable="${env.NSIS_PATH}/makensis.exe">
+		<arg line="${dir.build}/installer/geoserver/geoserver-upgrade.nsi"/>
+	</exec>
+	
+	<copy file="${dir.build}/installer/geoserver/geoserver-${name.release}-upgrade.exe" todir="${dir.release}" />
+	
+</target>
+	
+	
 <!-- ====================================================================== -->
 <!-- ADMIN TARGETS                                                          -->
 <!-- ====================================================================== -->
