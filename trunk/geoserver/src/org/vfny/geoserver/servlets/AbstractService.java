@@ -1172,7 +1172,7 @@ class PartialBufferStrategy implements AbstractService.ServiceStrategy
 	{
 		if (out != null)
 		{
-            out.flush();
+            out.forceFlush();
             out = null;
 		}
 	}

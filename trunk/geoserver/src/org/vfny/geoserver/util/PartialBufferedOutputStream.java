@@ -174,6 +174,27 @@ public class PartialBufferedOutputStream extends OutputStream
 		if (closed)
 			return;
 		
+		if (sendToUser)
+		{
+			if (out_real != null)
+				out_real.flush();
+		}
+		
+	}
+	
+	/**
+	 * <b>forceFlush</b><br>
+	 * <br>
+	 * <b>Description:</b><br>
+	 * Flush when the user says to. Even if the buffer is not maxed out yet.
+	 * We need to revisit this.
+	 * @throws IOException
+	 */
+	public synchronized void forceFlush() throws IOException 
+	{
+		if (closed)
+			return;
+		
 		if (out_buffer != null && out_buffer.size() > 0 && !sendToUser)
 		{
 			if (out_real == null)
@@ -185,7 +206,6 @@ public class PartialBufferedOutputStream extends OutputStream
 		if (out_real != null)
 			out_real.flush();
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see java.io.OutputStream#close()

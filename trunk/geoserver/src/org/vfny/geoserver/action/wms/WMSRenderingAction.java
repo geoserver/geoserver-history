@@ -23,8 +23,14 @@ public class WMSRenderingAction extends ConfigAction {
 			WMSConfig config = getWMSConfig();
 	        WMSRenderingForm renderingForm = (WMSRenderingForm) form;
 
+	        boolean svgAntiAlias = renderingForm.getSvgAntiAlias();
+
+	        if (renderingForm.isSvgAntiAliasChecked() == false) {
+	        	svgAntiAlias = false;
+	        }
+	        
 	        config.setSvgRenderer(renderingForm.getSvgRenderer());
-	        config.setSvgAntiAlias(renderingForm.getSvgAntiAlias());
+	        config.setSvgAntiAlias(svgAntiAlias);
 	        getApplicationState().notifyConfigChanged();
 
 	        return mapping.findForward("config");

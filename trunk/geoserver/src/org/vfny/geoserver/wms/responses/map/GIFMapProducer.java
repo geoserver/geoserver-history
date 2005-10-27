@@ -52,7 +52,7 @@ class GIFMapProducer extends DefaultRasterMapProducer {
         	    //DJB: note I had to make colorTable in the encoder source public to do this!
         	    //DJB: to add a function "return colorTable.ciLookup.getPaletteIndex(rgb);" to Gif89Encoder
         	
-        	Gif89Encoder gifenc = new Gif89Encoder(image,mapCtx.getBgColor() );
+        	Gif89Encoder gifenc = new Gif89Encoder(image,mapCtx.getBgColor(),2 ); // 2= colour reduction pixel sample factor (1=look at all pixels, but its slow) 
             gifenc.setComments("produced by Geoserver");
             
             gifenc.getFrameAt(0).setInterlaced(false);
@@ -61,7 +61,7 @@ class GIFMapProducer extends DefaultRasterMapProducer {
         else 
         {
            // GIFOutputStream.writeGIF(outStream, image);
-        	Gif89Encoder gifenc = new Gif89Encoder(image,null);
+        	Gif89Encoder gifenc = new Gif89Encoder(image,null,2);// 2= colour reduction pixel sample factor (1=look at all pixels, but its slow)
             gifenc.setComments("produced by Geoserver");
            // gifenc.setTransparentIndex(transparent_index);
             gifenc.getFrameAt(0).setInterlaced(false);
