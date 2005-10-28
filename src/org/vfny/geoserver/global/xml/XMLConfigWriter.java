@@ -680,20 +680,20 @@ public class XMLConfigWriter {
 	    }
 	    if(fti == null){
 		//delete it
-		File[] t = fa[j].listFiles();
-		if (t != null) {
-		    for(int x=0;x<t.length;x++) {
+		File[] files = fa[j].listFiles();
+		if (files != null) {
+		    for(int x=0;x<files.length;x++) {
 			//hold on to the data, but be sure to get rid of the
 			//geoserver config shit, as these were deleted.
-			if (t[x].getName().equals("info.xml") ||
-			    t[x].getName().equals("schema.xml")) {
+			if (files[x].getName().equals("info.xml") ||
+			    files[x].getName().equals("schema.xml")) {
 			    //sorry for the hardcodes, I don't remember if/where
 			    //we have these file names.
-			    t[x].delete();
+			    files[x].delete();
 			}
 		    }
 		}
-		if (fa[j].listFiles().length == 0) {
+		if (files != null && files.length == 0) {
 		    fa[j].delete();
 		}
 	    }
