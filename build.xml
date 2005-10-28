@@ -905,7 +905,7 @@
 		<exclude name="**/*CVS*/*" />
 	</fileset>
 </copy>
-	<!--
+
 <copy todir="${dir.build}/cite/">
 	<fileset dir="${basedir}/cite">
 		<include name="**/*" />
@@ -913,7 +913,7 @@
 		<exclude name="**/*CVS*/*" />
 	</fileset>
 </copy>
- -->
+
 
 
 <zip destfile="${basedir}/geoserver-${name.release}-src.zip">
