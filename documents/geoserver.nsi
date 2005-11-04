@@ -27,8 +27,8 @@
 ;General
 
   ;Name and file
-  Name "GeoServer 1.3.0-RC4"
-  OutFile "geoserver-1.3.0-RC4.exe"
+  Name "GeoServer 1.3.0-RC5"
+  OutFile "geoserver-1.3.0-RC5.exe"
 
 
   ;Default installation folder

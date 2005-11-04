@@ -1,3 +1,25 @@
+Geoserver 1.3.0 RC5
+-------------------
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12031
+
+The major changes since RC4 have been:
+* strategy -- partial buffer. Now the default strategy. Please TEST this one. If you are 
+    having weird errors, set WEB-INF/web.xml serviceStratagy back to SPEED.
+* NullPointerException in XMLConfigWriter
+* GIF - improvments
+* Cannot turn off Antialias in config
+* GIF -- no feature gives invalid image
+* tomcat error re-writing
+* better error reporting
+* easier upgrade path
+* Website upgrade
+* Performed more testing with Java 1.5, still not fully complete
+* Ant buildfile no work with 1.5.3
+* Error while trying to "Apply" or "Load" data config changes
+
+
 Geoserver 1.3.0 RC4
 -------------------
 
