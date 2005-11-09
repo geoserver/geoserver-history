@@ -102,6 +102,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
                 writer.println("</table>");
                 writer.println("<p>");
+                writer.println("</body></html>");
             }
         } catch (IllegalAttributeException ife) {
             writer.println("Unable to generate information " + ife);
