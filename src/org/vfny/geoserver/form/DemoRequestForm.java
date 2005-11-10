@@ -57,8 +57,9 @@ public class DemoRequestForm extends ActionForm
         if( dir.exists() && dir.isDirectory() ){
             File files[] = dir.listFiles();
             for( int i=0; i<files.length;i++){
-                File file = files[i];                
-                demoList.add( file.getName() );
+                File file = files[i];           
+                if (!file.isDirectory())
+                	demoList.add( file.getName() );
             }            
         }        
 	Collections.sort(demoList);
