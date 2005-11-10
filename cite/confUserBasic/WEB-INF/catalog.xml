@@ -5,31 +5,6 @@
 a datastore configuration element serves as a common data source connection
 parameters repository for all featuretypes it holds.
 -->
-<datastore namespace = "cite" enabled = "true" id = "Forests" >
-<connectionParams>
-<parameter value = "file:data/featureTypes/cite_Forests/Forests.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "cite" enabled = "true" id = "BuildingCenters" >
-<connectionParams>
-<parameter value = "file:data/featureTypes/cite_BuildingCenters/BuildingCenters.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "cite" enabled = "true" id = "MapNeatline" >
-<connectionParams>
-<parameter value = "file:data/featureTypes/cite_MapNeatline/MapNeatline.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "topp" enabled = "true" id = "tasmania_water_bodies" >
-<connectionParams>
-<parameter value = "file:data/featureTypes/tasmania_water_bodies/tasmania_water_bodies.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "cite" enabled = "true" id = "Lakes" >
-<connectionParams>
-<parameter value = "file:data/featureTypes/cite_Lakes/Lakes.shp" name = "url"  />
-</connectionParams>
-</datastore>
 <datastore namespace = "topp" enabled = "true" id = "localPostgis" >
 <connectionParams>
 <parameter value = "postgres" name = "user"  />
@@ -40,9 +15,11 @@ parameters repository for all featuretypes it holds.
 <parameter value = "postgis" name = "dbtype"  />
 </connectionParams>
 </datastore>
-<datastore namespace = "cite" enabled = "true" id = "Ponds" >
+<datastore namespace = "tiger" enabled = "true" id = "DS_giant_polygon" >
+<abstract></abstract>
 <connectionParams>
-<parameter value = "file:data/featureTypes/cite_Ponds/Ponds.shp" name = "url"  />
+<parameter value = "tiger" name = "namespace"  />
+<parameter value = "file:data/demo/popup_map/data/giant_polygon.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "topp" enabled = "true" id = "states_shapefile" >
@@ -50,19 +27,11 @@ parameters repository for all featuretypes it holds.
 <parameter value = "file:data/featureTypes/states/states.shp" name = "url"  />
 </connectionParams>
 </datastore>
-<datastore namespace = "cite" enabled = "true" id = "RoadSegments" >
+<datastore namespace = "tiger" enabled = "true" id = "DS_poi" >
+<abstract></abstract>
 <connectionParams>
-<parameter value = "file:data/featureTypes/cite_RoadSegments/RoadSegments.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "cite" enabled = "true" id = "NamedPlaces" >
-<connectionParams>
-<parameter value = "file:data/featureTypes/cite_NamedPlaces/NamedPlaces.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "cite" enabled = "true" id = "Bridges" >
-<connectionParams>
-<parameter value = "file:data/featureTypes/cite_Bridges/Bridges.shp" name = "url"  />
+<parameter value = "tiger" name = "namespace"  />
+<parameter value = "file:data/demo/popup_map/data/poi.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "topp" enabled = "true" id = "tasmania_cities" >
@@ -70,34 +39,9 @@ parameters repository for all featuretypes it holds.
 <parameter value = "file:data/featureTypes/tasmania_cities/tasmania_cities.shp" name = "url"  />
 </connectionParams>
 </datastore>
-<datastore namespace = "cite" enabled = "true" id = "DividedRoutes" >
-<connectionParams>
-<parameter value = "file:data/featureTypes/cite_DividedRoutes/DividedRoutes.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "cite" enabled = "true" id = "BasicPolygons" >
-<connectionParams>
-<parameter value = "file:data/featureTypes/cite_BasicPolygons/BasicPolygons.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "cite" enabled = "true" id = "Buildings" >
-<connectionParams>
-<parameter value = "file:data/featureTypes/cite_Buildings/Buildings.shp" name = "url"  />
-</connectionParams>
-</datastore>
 <datastore namespace = "topp" enabled = "true" id = "tasmania_roads" >
 <connectionParams>
 <parameter value = "file:data/featureTypes/tasmania_roads/tasmania_roads.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "cite" enabled = "true" id = "Streams" >
-<connectionParams>
-<parameter value = "file:data/featureTypes/cite_Streams/Streams.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "topp" enabled = "true" id = "tasmania_state_boundaries" >
-<connectionParams>
-<parameter value = "file:data/featureTypes/tasmania_state_boundaries/tasmania_state_boundaries.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "sde" enabled = "false" id = "testSde" >
@@ -110,6 +54,30 @@ parameters repository for all featuretypes it holds.
 <parameter value = "arcsde" name = "dbtype"  />
 </connectionParams>
 </datastore>
+<datastore namespace = "topp" enabled = "true" id = "tasmania_state_boundaries" >
+<connectionParams>
+<parameter value = "file:data/featureTypes/tasmania_state_boundaries/tasmania_state_boundaries.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "tiger" enabled = "true" id = "DS_poly_landmarks" >
+<abstract></abstract>
+<connectionParams>
+<parameter value = "tiger" name = "namespace"  />
+<parameter value = "file:data/demo/popup_map/data/poly_landmarks.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "tiger" enabled = "true" id = "DS_tiger_roads" >
+<abstract></abstract>
+<connectionParams>
+<parameter value = "tiger" name = "namespace"  />
+<parameter value = "file:data/demo/popup_map/data/tiger_roads.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "topp" enabled = "true" id = "tasmania_water_bodies" >
+<connectionParams>
+<parameter value = "file:data/featureTypes/tasmania_water_bodies/tasmania_water_bodies.shp" name = "url"  />
+</connectionParams>
+</datastore>
 </datastores>
 <!--
 Defines namespaces to be used by the datastores.
@@ -118,6 +86,7 @@ Defines namespaces to be used by the datastores.
 <namespace uri = "http://www.openplans.org/topp" prefix = "topp" default = "true"  />
 <namespace uri = "http://geoserver.sf.net" prefix = "sde"  />
 <namespace uri = "http://www.refractions.net/lakes" prefix = "lake"  />
+<namespace uri = "http://www.census.gov" prefix = "tiger"  />
 <namespace uri = "http://www.opengeospatial.net/cite" prefix = "cite"  />
 </namespaces>
 <styles>
@@ -127,25 +96,29 @@ contained in geoserver/misc/wms/styles.  We're working on finding
 a better place for them, but for now that's where you must put them
 if you want them on the server.
 -->
+<style filename = "giant_polygon.sld" id = "giant_polygon"  />
 <style filename = "NamedPlaces.sld" id = "cite_named_places"  />
 <style filename = "capitals.sld" id = "capitals"  />
 <style filename = "MapNeatline.sld" id = "cite_map_neatline"  />
 <style filename = "Buildings.sld" id = "cite_buildings"  />
 <style filename = "funkypolyshp.sld" id = "dotty"  />
 <style filename = "Streams.sld" id = "cite_streams"  />
+<style filename = "tiger_roads.sld" id = "tiger_roads"  />
+<style filename = "poly_landmarks.sld" id = "poly_landmarks"  />
 <style filename = "green.sld" id = "green"  />
 <style filename = "usa_math.sld" id = "manualVsWorkers"  />
 <style filename = "simpleRoads.sld" id = "simple_roads"  />
-<style filename = "normal.sld" id = "normal"  />
-<style filename = "popshade.sld" id = "population"  />
 <style filename = "Ponds.sld" id = "cite_ponds"  />
-<style filename = "RoadSegments.sld" id = "cite_road_segments"  />
+<style filename = "popshade.sld" id = "population"  />
+<style filename = "normal.sld" id = "normal"  />
 <style filename = "blue.sld" id = "blue"  />
+<style filename = "RoadSegments.sld" id = "cite_road_segments"  />
 <style filename = "Forests.sld" id = "cite_forests"  />
-<style filename = "point.sld" id = "point"  />
 <style filename = "Bridges.sld" id = "cite_bridges"  />
-<style filename = "usa_ratio.sld" id = "maleVsFemale"  />
-<style filename = "Lakes.sld" id = "cite_lakes"  />
+<style filename = "point.sld" id = "point"  />
+<style filename = "poi.sld" id = "poi"  />
 <style filename = "DividedRoutes.sld" id = "cite_divided_routes"  />
+<style filename = "Lakes.sld" id = "cite_lakes"  />
+<style filename = "usa_ratio.sld" id = "maleVsFemale"  />
 </styles>
 </catalog>
