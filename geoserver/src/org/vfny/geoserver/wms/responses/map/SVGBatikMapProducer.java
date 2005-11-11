@@ -16,6 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.batik.svggen.SVGGeneratorContext;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.geotools.map.MapContext;
+import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 
 import org.vfny.geoserver.ServiceException;
@@ -111,7 +112,8 @@ public class SVGBatikMapProducer implements GetMapProducer {
 			Rectangle r = new Rectangle(g.getSVGCanvasSize());
 			
 			Envelope e = renderer.getContext().getAreaOfInterest();
-			AffineTransform at = renderer.worldToScreenTransform(e,r);
+			//AffineTransform at = renderer.worldToScreenTransform(e,r);
+			AffineTransform at = RendererUtilities.worldToScreenTransform(e, r);
 			
 			renderer.paint(g, r, at);
 			
