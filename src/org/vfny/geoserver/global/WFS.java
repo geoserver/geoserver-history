@@ -34,7 +34,7 @@ public class WFS extends Service {
     private GeoValidator gv;
     private int serviceLevel;
     private boolean srsXmlStyle;
-    private boolean citeConformanceHacks ;
+    private boolean citeConformanceHacks;
     private boolean featureBounding;
 
     /**
@@ -52,8 +52,8 @@ public class WFS extends Service {
         gmlPrefixing = config.isGmlPrefixing();
         srsXmlStyle = config.isSrsXmlStyle();
         serviceLevel = config.getServiceLevel();
-        citeConformanceHacks  = config.getCiteConformanceHacks();
-	featureBounding = config.isFeatureBounding();
+        citeConformanceHacks = config.getCiteConformanceHacks();
+        featureBounding = config.isFeatureBounding();
     }
 
     /**
@@ -84,7 +84,7 @@ public class WFS extends Service {
         gmlPrefixing = config.isGmlPrefixing();
         serviceLevel = config.getServiceLevel();
         citeConformanceHacks = config.getCiteConformanceHacks();
-	featureBounding = config.isFeatureBounding();
+        featureBounding = config.isFeatureBounding();
     }
 
     /**
@@ -108,8 +108,9 @@ public class WFS extends Service {
         dto.setGmlPrefixing(gmlPrefixing);
         dto.setServiceLevel(serviceLevel);
         dto.setSrsXmlStyle(srsXmlStyle);
-        dto.setCiteConformanceHacks( citeConformanceHacks );
-	dto.setFeatureBounding(featureBounding);
+        dto.setCiteConformanceHacks(citeConformanceHacks);
+        dto.setFeatureBounding(featureBounding);
+
         return dto;
     }
 
@@ -200,41 +201,44 @@ public class WFS extends Service {
     public int getServiceLevel() {
         return serviceLevel;
     }
-    
-	/**
-     *  turn on/off the citeConformanceHacks option.
-     * 
+
+    /**
+     * turn on/off the citeConformanceHacks option.
+     *
      * @param on
      */
-    public void setCiteConformanceHacks(boolean on)
-    {
-    	citeConformanceHacks = on;
-    }
-    
-    /**
-     * get the current value of the citeConformanceHacks
-     * 
-     * @return
-     */
-    public boolean getCiteConformanceHacks()
-    {
-    	return (citeConformanceHacks );
+    public void setCiteConformanceHacks(boolean on) {
+        citeConformanceHacks = on;
     }
 
     /**
-     * Returns whether the gml returned by getFeature includes an 
+     * get the current value of the citeConformanceHacks
+     *
+     * @return
+     */
+    public boolean getCiteConformanceHacks() {
+        return (citeConformanceHacks);
+    }
+
+    /**
+     * Returns whether the gml returned by getFeature includes an
      * auto-calculated bounds element on each feature or not.
-     */ 
-    public boolean isFeatureBounding(){
-	return featureBounding;
+     *
+     * @return <tt>true</tt> if the gml features will have boundedBy
+     *         automatically generated.
+     */
+    public boolean isFeatureBounding() {
+        return featureBounding;
     }
 
     /**
      * Sets whether the gml returned by getFeature includes an auto-calculated
      * bounds element on each feature or not.
-     */   
-    public void setFeatureBounding(boolean featureBounding){
-	this.featureBounding = featureBounding;
+     *
+     * @param featureBounding <tt>true</tt> if gml features should have
+     *        boundedBy automatically generated.
+     */
+    public void setFeatureBounding(boolean featureBounding) {
+        this.featureBounding = featureBounding;
     }
-    
 }

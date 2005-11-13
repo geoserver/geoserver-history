@@ -23,12 +23,9 @@ import org.vfny.geoserver.global.dto.WFSDTO;
 public class WFSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WFS";
     private boolean gmlPrefixing;
-    
     private int serviceLevel;
-    
-    private     boolean citeConformanceHacks = false;// see WFSDTO for more info
+    private boolean citeConformanceHacks = false; // see WFSDTO for more info
     private boolean featureBounding = false;
-    
     private boolean srsXmlStyle = true;
 
     /**
@@ -61,7 +58,7 @@ public class WFSConfig extends ServiceConfig {
         serviceLevel = w.getServiceLevel();
         srsXmlStyle = w.isSrsXmlStyle();
         citeConformanceHacks = w.getCiteConformanceHacks();
-	featureBounding = w.isFeatureBounding();
+        featureBounding = w.isFeatureBounding();
     }
 
     /**
@@ -86,10 +83,9 @@ public class WFSConfig extends ServiceConfig {
         gmlPrefixing = dto.isGmlPrefixing();
         srsXmlStyle = dto.isSrsXmlStyle();
         serviceLevel = dto.getServiceLevel();
-        
+
         citeConformanceHacks = dto.getCiteConformanceHacks();
-	featureBounding = dto.isFeatureBounding();
-        
+        featureBounding = dto.isFeatureBounding();
     }
 
     /**
@@ -109,9 +105,10 @@ public class WFSConfig extends ServiceConfig {
         wfsDto.setGmlPrefixing(gmlPrefixing);
         wfsDto.setServiceLevel(serviceLevel);
         wfsDto.setSrsXmlStyle(srsXmlStyle);
-        
+
         wfsDto.setCiteConformanceHacks(citeConformanceHacks);
-	wfsDto.setFeatureBounding(featureBounding);
+        wfsDto.setFeatureBounding(featureBounding);
+
         return wfsDto;
     }
 
@@ -140,82 +137,82 @@ public class WFSConfig extends ServiceConfig {
     public void setGmlPrefixing(boolean b) {
         gmlPrefixing = b;
     }
-	/**
-	 * Access serviceLevel property.
-	 * 
-	 * @return Returns the serviceLevel.
-	 */
-	public int getServiceLevel() {
-		return serviceLevel;
-	}
 
-	/**
-	 * Set serviceLevel to serviceLevel.
-	 *
-	 * @param serviceLevel The serviceLevel to set.
-	 */
-	public void setServiceLevel(int serviceLevel) {
-		this.serviceLevel = serviceLevel;
-	}
+    /**
+     * Access serviceLevel property.
+     *
+     * @return Returns the serviceLevel.
+     */
+    public int getServiceLevel() {
+        return serviceLevel;
+    }
 
-	/**
-	 * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-	 * style.  
-	 *
-	 * @return <tt>true</tt> if the srs is reported with the xml style
-	 */
-	public boolean isSrsXmlStyle() {
-		return srsXmlStyle;
-	}
+    /**
+     * Set serviceLevel to serviceLevel.
+     *
+     * @param serviceLevel The serviceLevel to set.
+     */
+    public void setServiceLevel(int serviceLevel) {
+        this.serviceLevel = serviceLevel;
+    }
 
-	/**
-	 * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-	 * style.  
-	 *
-	 * @param doXmlStyle whether the srs style should be xml or not.
-	 */
-	public void setSrsXmlStyle(boolean doXmlStyle) {
-		this.srsXmlStyle = doXmlStyle;
-	}
-	
-	/**
-     *  turn on/off the citeConformanceHacks option.
-     * 
+    /**
+     * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+     *
+     * @return <tt>true</tt> if the srs is reported with the xml style
+     */
+    public boolean isSrsXmlStyle() {
+        return srsXmlStyle;
+    }
+
+    /**
+     * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+     *
+     * @param doXmlStyle whether the srs style should be xml or not.
+     */
+    public void setSrsXmlStyle(boolean doXmlStyle) {
+        this.srsXmlStyle = doXmlStyle;
+    }
+
+    /**
+     * turn on/off the citeConformanceHacks option.
+     *
      * @param on
      */
-    public void setCiteConformanceHacks(boolean on)
-    {
-    	citeConformanceHacks = on;
+    public void setCiteConformanceHacks(boolean on) {
+        citeConformanceHacks = on;
     }
-    
-    /**
-     * get the current value of the citeConformanceHacks
-     * 
-     * @return
-     */
-    public boolean getCiteConformanceHacks()
-    {
-    	return (citeConformanceHacks );
-    }
-    
 
     /**
-     * Returns whether the gml returned by getFeature includes an 
+     * get the current value of the citeConformanceHacks
+     *
+     * @return
+     */
+    public boolean getCiteConformanceHacks() {
+        return (citeConformanceHacks);
+    }
+
+    /**
+     * Returns whether the gml returned by getFeature includes an
      * auto-calculated bounds element on each feature or not.
-     */ 
-    public boolean isFeatureBounding(){
-	return featureBounding;
+     *
+     * @return <tt>true</tt> if the gml features will have boundedBy
+     *         automatically generated.
+     */
+    public boolean isFeatureBounding() {
+        return featureBounding;
     }
 
     /**
      * Sets whether the gml returned by getFeature includes an auto-calculated
      * bounds element on each feature or not.
-     */   
-    public void setFeatureBounding(boolean featureBounding){
-	this.featureBounding = featureBounding;
+     *
+     * @param featureBounding <tt>true</tt> if gml features should have
+     *        boundedBy automatically generated.
+     */
+    public void setFeatureBounding(boolean featureBounding) {
+        this.featureBounding = featureBounding;
     }
-    
-
 }
