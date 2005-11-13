@@ -44,6 +44,9 @@ public class WFSContentForm extends ActionForm {
 
     private boolean citeConformanceHacks;
     private boolean citeConformanceHacksChecked =false;
+
+    private boolean featureBounding;
+    private boolean featureBoundingChecked = false;
     
     /*
      * Because of the way that STRUTS works, if the user does not check the enabled box,
@@ -158,6 +161,7 @@ public class WFSContentForm extends ActionForm {
         enabledChecked = false;
         srsXmlStyleChecked = false;
         citeConformanceHacksChecked = false;
+	featureBoundingChecked = false;
         
         
 
@@ -165,6 +169,7 @@ public class WFSContentForm extends ActionForm {
         WFSConfig config = (WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
         
         citeConformanceHacks = config.getCiteConformanceHacks();
+	featureBounding = config.isFeatureBounding();
         
         serviceLevel = config.getServiceLevel();
         this.enabled = config.isEnabled();
@@ -308,6 +313,38 @@ public class WFSContentForm extends ActionForm {
     public boolean getCiteConformanceHacksChecked()
     {
     	return ( citeConformanceHacksChecked );
+    }
+
+
+    /**
+     *  turn on/off the featureBounding option.
+     * 
+     * @param on
+     */
+    public void setFeatureBounding(boolean on)
+    {
+    	this.featureBoundingChecked = true; //this function only gets called when the form has it checked...
+    	featureBounding = on;
+    }
+    
+    /**
+     * get the current value of the featureBounding
+     * 
+     * @return
+     */
+    public boolean isFeatureBounding()
+    {
+    	return (featureBounding );
+    }
+    
+    /**
+     * get the current value of the featureBoundingChecked (ie. was it in the http form?)
+     * 
+     * @return
+     */
+    public boolean isFeatureBoundingChecked()
+    {
+    	return ( featureBoundingChecked );
     }
     
 

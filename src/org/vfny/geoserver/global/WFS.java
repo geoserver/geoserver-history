@@ -35,7 +35,7 @@ public class WFS extends Service {
     private int serviceLevel;
     private boolean srsXmlStyle;
     private boolean citeConformanceHacks ;
-    
+    private boolean featureBounding;
 
     /**
      * WFS constructor.
@@ -53,6 +53,7 @@ public class WFS extends Service {
         srsXmlStyle = config.isSrsXmlStyle();
         serviceLevel = config.getServiceLevel();
         citeConformanceHacks  = config.getCiteConformanceHacks();
+	featureBounding = config.isFeatureBounding();
     }
 
     /**
@@ -83,6 +84,7 @@ public class WFS extends Service {
         gmlPrefixing = config.isGmlPrefixing();
         serviceLevel = config.getServiceLevel();
         citeConformanceHacks = config.getCiteConformanceHacks();
+	featureBounding = config.isFeatureBounding();
     }
 
     /**
@@ -107,6 +109,7 @@ public class WFS extends Service {
         dto.setServiceLevel(serviceLevel);
         dto.setSrsXmlStyle(srsXmlStyle);
         dto.setCiteConformanceHacks( citeConformanceHacks );
+	dto.setFeatureBounding(featureBounding);
         return dto;
     }
 
@@ -216,6 +219,22 @@ public class WFS extends Service {
     public boolean getCiteConformanceHacks()
     {
     	return (citeConformanceHacks );
+    }
+
+    /**
+     * Returns whether the gml returned by getFeature includes an 
+     * auto-calculated bounds element on each feature or not.
+     */ 
+    public boolean isFeatureBounding(){
+	return featureBounding;
+    }
+
+    /**
+     * Sets whether the gml returned by getFeature includes an auto-calculated
+     * bounds element on each feature or not.
+     */   
+    public void setFeatureBounding(boolean featureBounding){
+	this.featureBounding = featureBounding;
     }
     
 }

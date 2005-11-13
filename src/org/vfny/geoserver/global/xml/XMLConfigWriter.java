@@ -299,6 +299,7 @@ public class XMLConfigWriter {
         String u = null;
         String t = "";
         boolean gml = false;
+	boolean fBounds = false;
         boolean srsXmlStyle = false;
         int serviceLevel = 0;
         String svgRenderer = null;
@@ -310,6 +311,7 @@ public class XMLConfigWriter {
             s = w.getService();
             t = "WFS";
             gml = w.isGmlPrefixing();
+	    fBounds = w.isFeatureBounding();
             srsXmlStyle = w.isSrsXmlStyle();
             serviceLevel = w.getServiceLevel();
             citeConformanceHacks = w.getCiteConformanceHacks();
@@ -369,6 +371,9 @@ public class XMLConfigWriter {
         if (gml) {
 			cw.valueTag("gmlPrefixing", gml + "");
         }
+	if (fBounds) {
+	    cw.valueTag("featureBounding", fBounds + "");
+	}
         
         //if (srsXmlStyle) {
 			cw.valueTag("srsXmlStyle", srsXmlStyle + "");

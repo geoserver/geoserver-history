@@ -27,6 +27,7 @@ public class WFSConfig extends ServiceConfig {
     private int serviceLevel;
     
     private     boolean citeConformanceHacks = false;// see WFSDTO for more info
+    private boolean featureBounding = false;
     
     private boolean srsXmlStyle = true;
 
@@ -60,6 +61,7 @@ public class WFSConfig extends ServiceConfig {
         serviceLevel = w.getServiceLevel();
         srsXmlStyle = w.isSrsXmlStyle();
         citeConformanceHacks = w.getCiteConformanceHacks();
+	featureBounding = w.isFeatureBounding();
     }
 
     /**
@@ -86,6 +88,7 @@ public class WFSConfig extends ServiceConfig {
         serviceLevel = dto.getServiceLevel();
         
         citeConformanceHacks = dto.getCiteConformanceHacks();
+	featureBounding = dto.isFeatureBounding();
         
     }
 
@@ -108,6 +111,7 @@ public class WFSConfig extends ServiceConfig {
         wfsDto.setSrsXmlStyle(srsXmlStyle);
         
         wfsDto.setCiteConformanceHacks(citeConformanceHacks);
+	wfsDto.setFeatureBounding(featureBounding);
         return wfsDto;
     }
 
@@ -194,6 +198,23 @@ public class WFSConfig extends ServiceConfig {
     public boolean getCiteConformanceHacks()
     {
     	return (citeConformanceHacks );
+    }
+    
+
+    /**
+     * Returns whether the gml returned by getFeature includes an 
+     * auto-calculated bounds element on each feature or not.
+     */ 
+    public boolean isFeatureBounding(){
+	return featureBounding;
+    }
+
+    /**
+     * Sets whether the gml returned by getFeature includes an auto-calculated
+     * bounds element on each feature or not.
+     */   
+    public void setFeatureBounding(boolean featureBounding){
+	this.featureBounding = featureBounding;
     }
     
 

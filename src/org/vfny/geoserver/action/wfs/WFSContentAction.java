@@ -51,6 +51,12 @@ public final class WFSContentAction extends ConfigAction {
 			citeConformanceHacks = false; // deal with the way HTTP works.
 		}
 
+		boolean featureBounding = contentForm.isFeatureBounding();
+		
+		if (contentForm.isFeatureBoundingChecked() == false) {
+		    featureBounding = false;
+		}
+
         String onlineResource = contentForm.getOnlineResource();
         String[] selectedFeatures = contentForm.getSelectedFeatures();
         String[] features = contentForm.getFeatures();
@@ -61,7 +67,7 @@ public final class WFSContentAction extends ConfigAction {
         config.setOnlineResource(new URL(onlineResource));
         config.setServiceLevel(contentForm.getServiceLevel());
         config.setCiteConformanceHacks(citeConformanceHacks);
-
+	config.setFeatureBounding(featureBounding);
         getApplicationState().notifyConfigChanged();
 
         return mapping.findForward("config");

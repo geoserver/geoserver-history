@@ -45,8 +45,9 @@ public final class WFSDTO implements DataTransferObject {
     /** The service parameters for this instance. */
     private ServiceDTO service;
     private boolean gmlPrefixing = false;
-	private boolean srsXmlStyle = true;
-    private int serviceLevel = COMPLETE; //if not set then it should be complete.   
+    private boolean srsXmlStyle = true;
+    private int serviceLevel = COMPLETE; //if not set then it should be complete
+    private boolean featureBounding = true;
 
     /**
      * ie. <citeConformanceHacks>true</citeConformanceHacks>
@@ -84,6 +85,7 @@ public final class WFSDTO implements DataTransferObject {
 
         service = (ServiceDTO) new ServiceDTO(other.getService());
         gmlPrefixing = other.isGmlPrefixing();
+        featureBounding = other.isFeatureBounding();
         serviceLevel = other.getServiceLevel();
         citeConformanceHacks = other.getCiteConformanceHacks();
     }
@@ -116,7 +118,10 @@ public final class WFSDTO implements DataTransferObject {
         WFSDTO dto = (WFSDTO) other;
         
         if (citeConformanceHacks !=dto.getCiteConformanceHacks())
-        	return false;
+                return false;
+
+        if (featureBounding !=dto.isFeatureBounding())
+	    return false;
 
         return (((serviceLevel == dto.getServiceLevel()) && (service == null))
         ? (dto.getService() == null) : service.equals(dto.getService()));
@@ -251,5 +256,21 @@ public final class WFSDTO implements DataTransferObject {
     public boolean getCiteConformanceHacks()
     {
     	return (citeConformanceHacks );
+    }
+
+    /**
+     * Returns whether the gml returned by getFeature includes an 
+     * auto-calculated bounds element on each feature or not.
+     */ 
+    public boolean isFeatureBounding(){
+	return featureBounding;
+    }
+
+      /**
+     * Sets whether the gml returned by getFeature includes an auto-calculated
+     * bounds element on each feature or not.
+     */   
+    public void setFeatureBounding(boolean featureBounding){
+	this.featureBounding = featureBounding;
     }
 }
