@@ -4,17 +4,7 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.xml.transform.TransformerException;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.filter.FilterTransformer;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -28,8 +18,15 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Logger;
+import javax.xml.transform.TransformerException;
 
 
 /**
@@ -153,9 +150,10 @@ public class XMLConfigWriter {
                 cw.textTag("loggingLevel", g.getLoggingLevel().getName());
             }
 
-            if (g.getLogLocation() != null)
-            	cw.textTag("logLocation", g.getLogLocation());
-            
+            if (g.getLogLocation() != null) {
+                cw.textTag("logLocation", g.getLogLocation());
+            }
+
             /*if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){
                cw.comment("The base URL where this servlet will run.  If running locally\n"+
                "then http://localhost:8080 (or whatever port you're running on)\n"+
@@ -168,9 +166,10 @@ public class XMLConfigWriter {
             cw.comment("Whether newlines and indents should be returned in \n"
                 + "XML responses.  Default is false");
             cw.valueTag("verbose", "" + g.isVerbose());
-			cw.comment("Whether the Service Exceptions returned to clients should contain\n"
-							+ "full java stack traces (useful for debugging). ");
-			cw.valueTag("verboseExceptions", "" + g.isVerboseExceptions());
+            cw.comment(
+                "Whether the Service Exceptions returned to clients should contain\n"
+                + "full java stack traces (useful for debugging). ");
+            cw.valueTag("verboseExceptions", "" + g.isVerboseExceptions());
             cw.comment(
                 "Sets the max number of decimal places past the zero returned in\n"
                 + "a GetFeature response.  Default is 4");
@@ -299,7 +298,7 @@ public class XMLConfigWriter {
         String u = null;
         String t = "";
         boolean gml = false;
-	boolean fBounds = false;
+        boolean fBounds = false;
         boolean srsXmlStyle = false;
         int serviceLevel = 0;
         String svgRenderer = null;
@@ -311,7 +310,7 @@ public class XMLConfigWriter {
             s = w.getService();
             t = "WFS";
             gml = w.isGmlPrefixing();
-	    fBounds = w.isFeatureBounding();
+            fBounds = w.isFeatureBounding();
             srsXmlStyle = w.isSrsXmlStyle();
             serviceLevel = w.getServiceLevel();
             citeConformanceHacks = w.getCiteConformanceHacks();
@@ -369,36 +368,38 @@ public class XMLConfigWriter {
         }
 
         if (gml) {
-			cw.valueTag("gmlPrefixing", gml + "");
+            cw.valueTag("gmlPrefixing", gml + "");
         }
-	if (fBounds) {
-	    cw.valueTag("featureBounding", fBounds + "");
-	}
-        
-        //if (srsXmlStyle) {
-			cw.valueTag("srsXmlStyle", srsXmlStyle + "");
-			//}
 
-		if (serviceLevel != 0) {
+        if (fBounds) {
+            cw.valueTag("featureBounding", fBounds + "");
+        }
+
+        //if (srsXmlStyle) {
+        cw.valueTag("srsXmlStyle", srsXmlStyle + "");
+
+        //}
+        if (serviceLevel != 0) {
             cw.valueTag("serviceLevel", serviceLevel + "");
         }
+
         if (obj instanceof WFSDTO) //DJB: this method (storeService) doesnt separate WFS and WMS very well!
-        {
-        	 cw.textTag("citeConformanceHacks", citeConformanceHacks + "");
+         {
+            cw.textTag("citeConformanceHacks", citeConformanceHacks + "");
         }
 
         if ((s.getMaintainer() != null) && (s.getMaintainer() != "")) {
             cw.textTag("maintainer", s.getMaintainer());
         }
-        
+
         if (svgRenderer != null) {
-        	cw.textTag("svgRenderer", svgRenderer);
+            cw.textTag("svgRenderer", svgRenderer);
         }
 
         if (obj instanceof WMSDTO) {
-        	cw.textTag("svgAntiAlias", svgAntiAlias+"");
+            cw.textTag("svgAntiAlias", svgAntiAlias + "");
         }
-        
+
         cw.closeTag("service");
     }
 
@@ -421,71 +422,65 @@ public class XMLConfigWriter {
         cw.writeln("<?config.xml version=\"1.0\" encoding=\"UTF-8\"?>");
         cw.openTag("catalog");
 
-        	//DJB: this used to not put in a datastores tag if there were none defined.
-            //     this caused the loader to blow up.  I changed it so it puts an empty <datastore> here!
-   
+        //DJB: this used to not put in a datastores tag if there were none defined.
+        //     this caused the loader to blow up.  I changed it so it puts an empty <datastore> here!
         cw.openTag("datastores");
-            cw.comment(
-                "a datastore configuration element serves as a common data source connection\n"
-                + "parameters repository for all featuretypes it holds.");
+        cw.comment(
+            "a datastore configuration element serves as a common data source connection\n"
+            + "parameters repository for all featuretypes it holds.");
 
-            Iterator i = data.getDataStores().keySet().iterator();
+        Iterator i = data.getDataStores().keySet().iterator();
 
-            while (i.hasNext()) {
-                String s = (String) i.next();
-                DataStoreInfoDTO ds = (DataStoreInfoDTO) data.getDataStores()
-                                                             .get(s);
+        while (i.hasNext()) {
+            String s = (String) i.next();
+            DataStoreInfoDTO ds = (DataStoreInfoDTO) data.getDataStores().get(s);
 
-                if (ds != null) {
-                    storeDataStore(cw, ds);
-                }
+            if (ds != null) {
+                storeDataStore(cw, ds);
             }
+        }
 
         cw.closeTag("datastores");
-        
-     	//DJB: since datastore screws up if the tag is missing, I'm fixing it here too
-         cw.comment("Defines namespaces to be used by the datastores.");
-            cw.openTag("namespaces");
 
-            i = data.getNameSpaces().keySet().iterator();
+        //DJB: since datastore screws up if the tag is missing, I'm fixing it here too
+        cw.comment("Defines namespaces to be used by the datastores.");
+        cw.openTag("namespaces");
 
-            while (i.hasNext()) {
-                String s = (String) i.next();
-                NameSpaceInfoDTO ns = (NameSpaceInfoDTO) data.getNameSpaces()
-                                                             .get(s);
+        i = data.getNameSpaces().keySet().iterator();
 
-                if (ns != null) {
-                    storeNameSpace(cw, ns);
-                }
+        while (i.hasNext()) {
+            String s = (String) i.next();
+            NameSpaceInfoDTO ns = (NameSpaceInfoDTO) data.getNameSpaces().get(s);
+
+            if (ns != null) {
+                storeNameSpace(cw, ns);
             }
+        }
 
         cw.closeTag("namespaces");
-   
-    	//DJB: since datastore screws up if the tag is missing, I'm fixing it here too
-   
+
+        //DJB: since datastore screws up if the tag is missing, I'm fixing it here too
         cw.openTag("styles");
-            cw.comment(
-                "Defines the style ids to be used by the wms.  The files must be\n"
-                + "contained in geoserver/misc/wms/styles.  We're working on finding\n"
-                + "a better place for them, but for now that's where you must put them\n"
-                + "if you want them on the server.");
- 
+        cw.comment(
+            "Defines the style ids to be used by the wms.  The files must be\n"
+            + "contained in geoserver/misc/wms/styles.  We're working on finding\n"
+            + "a better place for them, but for now that's where you must put them\n"
+            + "if you want them on the server.");
 
-            i = data.getStyles().keySet().iterator();
+        i = data.getStyles().keySet().iterator();
 
-            while (i.hasNext()) {
-                String s = (String) i.next();
-                StyleDTO st = (StyleDTO) data.getStyles().get(s);
+        while (i.hasNext()) {
+            String s = (String) i.next();
+            StyleDTO st = (StyleDTO) data.getStyles().get(s);
 
-                if (st != null) {
-                    storeStyle(cw, st);
-                }
+            if (st != null) {
+                storeStyle(cw, st);
             }
+        }
 
-      cw.closeTag("styles");
-        
+        cw.closeTag("styles");
 
-      cw.closeTag("catalog");
+        cw.closeTag("catalog");
     }
 
     /**
@@ -610,7 +605,8 @@ public class XMLConfigWriter {
             attr.put("default", "true");
         }
 
-		LOGGER.fine("storing style " + attr);
+        LOGGER.fine("storing style " + attr);
+
         if (attr.size() != 0) {
             cw.attrTag("style", attr);
         }
@@ -633,33 +629,35 @@ public class XMLConfigWriter {
     protected static void storeFeatures(File dir, DataDTO data)
         throws ConfigurationException {
         LOGGER.fine("In method storeFeatures");
-	
-	// write them
+
+        // write them
         Iterator i = data.getFeaturesTypes().keySet().iterator();
+
         while (i.hasNext()) {
             String s = (String) i.next();
             FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) data.getFeaturesTypes()
-		.get(s);
-	    
+                                                             .get(s);
+
             if (ft != null) {
                 File dir2 = WriterUtils.initWriteFile(new File(dir,
-							       ft.getDirName()), true);
-                
+                            ft.getDirName()), true);
+
                 storeFeature(ft, dir2);
-                
+
                 if (ft.getSchemaAttributes() != null) {
-                    LOGGER.fine( ft.getKey() +" writing schema.xml w/ "+ft.getSchemaAttributes().size() );
+                    LOGGER.fine(ft.getKey() + " writing schema.xml w/ "
+                        + ft.getSchemaAttributes().size());
                     storeFeatureSchema(ft, dir2);
                 }
             }
         }
-        
+
         // delete old ones that are not overwritten
         //I'm changing this action, as it is directly leading to users not 
         //being able to create their own shapefiles in the web admin tool.
         //since their shit always gets deleted.  The behaviour has now changed
-	//to just getting rid of the geoserver config files, info.xml and 
-	//schema.xml and leaving any others.  We should revisit this, I 
+        //to just getting rid of the geoserver config files, info.xml and 
+        //schema.xml and leaving any others.  We should revisit this, I 
         //do think getting rid of stale featureTypes is a good thing.  For 1.3
         //I want to look into directly uploading shapefiles, and perhaps they
         //would then go in a 'shapefile' directory, next to featureTypes or
@@ -671,40 +669,46 @@ public class XMLConfigWriter {
         //if it's from another datastore.  Though I suppose that is not 
         //mutually exclusive, just a little wasting of space, for shapefiles
         //would be held twice.
+        File[] fa = dir.listFiles();
 
-	File[] fa = dir.listFiles();
-	for(int j=0;j<fa.length;j++){
-	    // find dir name
-	    i = data.getFeaturesTypes().values().iterator();
-	    FeatureTypeInfoDTO fti = null;
-	    while(fti==null && i.hasNext()){
-		FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO)i.next();
-		if(ft.getDirName().equals(fa[j].getName())){
-		    fti = ft;
-		}
-	    }
-	    if(fti == null){
-		//delete it
-		File[] files = fa[j].listFiles();
-		if (files != null) {
-		    for(int x=0;x<files.length;x++) {
-			//hold on to the data, but be sure to get rid of the
-			//geoserver config shit, as these were deleted.
-			if (files[x].getName().equals("info.xml") ||
-			    files[x].getName().equals("schema.xml")) {
-			    //sorry for the hardcodes, I don't remember if/where
-			    //we have these file names.
-			    files[x].delete();
-			}
-		    }
-		}
-		if (files != null && files.length == 0) {
-		    fa[j].delete();
-		}
-	    }
-	}
+        for (int j = 0; j < fa.length; j++) {
+            // find dir name
+            i = data.getFeaturesTypes().values().iterator();
+
+            FeatureTypeInfoDTO fti = null;
+
+            while ((fti == null) && i.hasNext()) {
+                FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) i.next();
+
+                if (ft.getDirName().equals(fa[j].getName())) {
+                    fti = ft;
+                }
+            }
+
+            if (fti == null) {
+                //delete it
+                File[] files = fa[j].listFiles();
+
+                if (files != null) {
+                    for (int x = 0; x < files.length; x++) {
+                        //hold on to the data, but be sure to get rid of the
+                        //geoserver config shit, as these were deleted.
+                        if (files[x].getName().equals("info.xml")
+                                || files[x].getName().equals("schema.xml")) {
+                            //sorry for the hardcodes, I don't remember if/where
+                            //we have these file names.
+                            files[x].delete();
+                        }
+                    }
+                }
+
+                if ((files != null) && (files.length == 0)) {
+                    fa[j].delete();
+                }
+            }
+        }
     }
-    
+
     /**
      * storeStyle purpose.
      * 
@@ -803,15 +807,16 @@ public class XMLConfigWriter {
                  * @REVISIT: strongly test this works.
                  */
                 /*
-                StringWriter sw = new StringWriter();
-                org.geotools.filter.XMLEncoder xe = new org.geotools.filter.XMLEncoder(sw);
-                xe.encode(ft.getDefinitionQuery());
-                cw.writeln(sw.toString());
-                cw.closeTag("definitionQuery");
-                */
+                   StringWriter sw = new StringWriter();
+                   org.geotools.filter.XMLEncoder xe = new org.geotools.filter.XMLEncoder(sw);
+                   xe.encode(ft.getDefinitionQuery());
+                   cw.writeln(sw.toString());
+                   cw.closeTag("definitionQuery");
+                 */
                 FilterTransformer ftransformer = new FilterTransformer();
                 ftransformer.setOmitXMLDeclaration(true);
                 ftransformer.setNamespaceDeclarationEnabled(false);
+
                 String sfilter = ftransformer.transform(ft.getDefinitionQuery());
                 cw.writeln(sfilter);
             }
@@ -827,21 +832,23 @@ public class XMLConfigWriter {
 
     protected static void storeFeatureSchema(FeatureTypeInfoDTO fs, File dir)
         throws ConfigurationException {
-
         if ((fs.getSchemaBase() == null) || (fs.getSchemaBase() == "")) {
             //LOGGER.info( "No schema base" );
-            LOGGER.fine( fs.getKey() + " has not schemaBase");            
+            LOGGER.fine(fs.getKey() + " has not schemaBase");
+
             return;
         }
-        
-        if ((fs.getSchemaName() == null) || (fs.getSchemaName() == "")) {                   
+
+        if ((fs.getSchemaName() == null) || (fs.getSchemaName() == "")) {
             // Should assume Null?
             //LOGGER.info( "No schema name" ); // Do we even have a field for this?
-            LOGGER.fine( fs.getKey() + " has not schemaName");
+            LOGGER.fine(fs.getKey() + " has not schemaName");
+
             return;
         }
-        
+
         File f = WriterUtils.initWriteFile(new File(dir, "schema.xml"), false);
+
         try {
             FileWriter fw = new FileWriter(f);
             storeFeatureSchema(fs, fw);

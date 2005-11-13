@@ -4,26 +4,7 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -45,8 +26,25 @@ import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -346,22 +344,26 @@ public class XMLConfigReader {
         geoServer.setLoggingLevel(loggingLevel);
 
         String logLocation = ReaderUtils.getChildText(globalElem, "logLocation");
-        if (logLocation != null && "".equals(logLocation.trim()))
-        	logLocation = null;
+
+        if ((logLocation != null) && "".equals(logLocation.trim())) {
+            logLocation = null;
+        }
+
         geoServer.setLogLocation(logLocation);
-        
+
         //init this now so the rest of the config has correct log levels.
         try {
-			GeoServer.initLogging(loggingLevel,logLocation);
-		} 
-        catch (IOException e) {
-        	throw new ConfigurationException(e);
-		}
-        
+            GeoServer.initLogging(loggingLevel, logLocation);
+        } catch (IOException e) {
+            throw new ConfigurationException(e);
+        }
+
         LOGGER.config("logging level is " + loggingLevel);
-        if (logLocation != null) 
-        	LOGGER.config("logging to " + logLocation);
-        
+
+        if (logLocation != null) {
+            LOGGER.config("logging to " + logLocation);
+        }
+
         Element elem = null;
         elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
         geoServer.setContact(loadContact(elem));
@@ -527,11 +529,13 @@ public class XMLConfigReader {
 
         Element elem = ReaderUtils.getChildElement(wfsElement, "srsXmlStyle",
                 false);
-	LOGGER.info("reading srsXmlStyle: " + elem);
+        LOGGER.info("reading srsXmlStyle: " + elem);
+
         if (elem != null) {
             wfs.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem, "value",
                     false, true));
-	    LOGGER.info("set srsXmlStyle to " +ReaderUtils.getBooleanAttribute(elem, "value", false, true));
+            LOGGER.info("set srsXmlStyle to "
+                + ReaderUtils.getBooleanAttribute(elem, "value", false, true));
         }
 
         String serviceLevelValue = ReaderUtils.getChildText(wfsElement,
@@ -565,19 +569,20 @@ public class XMLConfigReader {
 
         LOGGER.finer("setting service level to " + serviceLevel);
         wfs.setServiceLevel(serviceLevel);
-        
+
         //get the conformance hacks attribute
         // it might not be there, in which case we just use the default value 
         //  (see WFSDTO.java)        
-        Element e = ReaderUtils.getChildElement(wfsElement, "citeConformanceHacks");
-        if (e != null)
-        {
-        	String text = ReaderUtils.getChildText(wfsElement,"citeConformanceHacks");
-        	boolean citeConformanceHacks = Boolean.valueOf(text).booleanValue(); // just get the value and parse it
-        	wfs.setCiteConformanceHacks(
-        			citeConformanceHacks
-						);
-        	LOGGER.finer("setting citeConformanceHacks to " + citeConformanceHacks);
+        Element e = ReaderUtils.getChildElement(wfsElement,
+                "citeConformanceHacks");
+
+        if (e != null) {
+            String text = ReaderUtils.getChildText(wfsElement,
+                    "citeConformanceHacks");
+            boolean citeConformanceHacks = Boolean.valueOf(text).booleanValue(); // just get the value and parse it
+            wfs.setCiteConformanceHacks(citeConformanceHacks);
+            LOGGER.finer("setting citeConformanceHacks to "
+                + citeConformanceHacks);
         }
 
         //} catch (Exception e) {
@@ -602,9 +607,10 @@ public class XMLConfigReader {
     protected void loadWMS(Element wmsElement) throws ConfigurationException {
         wms = new WMSDTO();
         wms.setService(loadService(wmsElement));
-        
+
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
-        wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(wmsElement, "svgAntiAlias")));
+        wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(
+                    wmsElement, "svgAntiAlias")));
     }
 
     /**
@@ -1057,23 +1063,21 @@ public class XMLConfigReader {
 
         // Modif C. Kolbowicz - 06/10/2004
         Element legendURL = ReaderUtils.getChildElement(fTypeRoot, "LegendURL");
+
         if (legendURL != null) {
             LegendURLDTO legend = new LegendURLDTO();
-            legend.setWidth(Integer.parseInt(ReaderUtils.getAttribute(legendURL, "width", true)));
-            legend.setHeight(Integer.parseInt(ReaderUtils.getAttribute(legendURL, "height", true)));            
+            legend.setWidth(Integer.parseInt(ReaderUtils.getAttribute(
+                        legendURL, "width", true)));
+            legend.setHeight(Integer.parseInt(ReaderUtils.getAttribute(
+                        legendURL, "height", true)));
             legend.setFormat(ReaderUtils.getChildText(legendURL, "Format", true));
-            legend.setOnlineResource(
-                ReaderUtils.getAttribute(
-                    ReaderUtils.getChildElement(legendURL, "OnlineResource", true), 
-                    "xlink:href", 
-                    true
-                )
-            );
-            ft.setLegendURL(legend);           
+            legend.setOnlineResource(ReaderUtils.getAttribute(
+                    ReaderUtils.getChildElement(legendURL, "OnlineResource",
+                        true), "xlink:href", true));
+            ft.setLegendURL(legend);
         }
+
         //-- Modif C. Kolbowicz - 06/10/2004
-
-
         ft.setLatLongBBox(loadLatLongBBox(ReaderUtils.getChildElement(
                     fTypeRoot, "latLonBoundingBox")));
 
@@ -1233,6 +1237,7 @@ public class XMLConfigReader {
 
         Element elem = null;
         dto.setSchemaFile(schemaFile);
+
         if ((schemaFile == null)
                 || (!schemaFile.exists() || !schemaFile.canRead())) {
             System.err.println("File does not exist for schema for "

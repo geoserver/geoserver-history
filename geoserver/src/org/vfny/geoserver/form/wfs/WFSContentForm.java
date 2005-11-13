@@ -10,19 +10,16 @@
  */
 package org.vfny.geoserver.form.wfs;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.global.dto.WFSDTO;
-
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -38,16 +35,13 @@ public class WFSContentForm extends ActionForm {
     private int serviceLevel;
     private String[] selectedFeatures;
     private String[] features;
-    
     private boolean srsXmlStyle;
     private boolean srsXmlStyleChecked = false;
-
     private boolean citeConformanceHacks;
-    private boolean citeConformanceHacksChecked =false;
-
+    private boolean citeConformanceHacksChecked = false;
     private boolean featureBounding;
     private boolean featureBoundingChecked = false;
-    
+
     /*
      * Because of the way that STRUTS works, if the user does not check the enabled box,
      * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()
@@ -77,7 +71,6 @@ public class WFSContentForm extends ActionForm {
      * @return
      */
     public boolean isEnabled() {
-
         return enabled;
     }
 
@@ -106,6 +99,7 @@ public class WFSContentForm extends ActionForm {
      */
     public void setEnabled(boolean b) {
         enabledChecked = true;
+
         //System.out.println("setEnabled: enabledCheck/Enabled now " + b);
         enabled = b;
     }
@@ -161,16 +155,14 @@ public class WFSContentForm extends ActionForm {
         enabledChecked = false;
         srsXmlStyleChecked = false;
         citeConformanceHacksChecked = false;
-	featureBoundingChecked = false;
-        
-        
+        featureBoundingChecked = false;
 
         ServletContext context = getServlet().getServletContext();
         WFSConfig config = (WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
-        
+
         citeConformanceHacks = config.getCiteConformanceHacks();
-	featureBounding = config.isFeatureBounding();
-        
+        featureBounding = config.isFeatureBounding();
+
         serviceLevel = config.getServiceLevel();
         this.enabled = config.isEnabled();
         this.srsXmlStyle = config.isSrsXmlStyle();
@@ -188,22 +180,25 @@ public class WFSContentForm extends ActionForm {
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if (serviceLevel != WFSDTO.BASIC &&
-            serviceLevel != WFSDTO.TRANSACTIONAL &&
-            serviceLevel != WFSDTO.COMPLETE) {
-            errors.add("serviceLevel", new ActionError("error.serviceLevel.invalid"));
+        if ((serviceLevel != WFSDTO.BASIC)
+                && (serviceLevel != WFSDTO.TRANSACTIONAL)
+                && (serviceLevel != WFSDTO.COMPLETE)) {
+            errors.add("serviceLevel",
+                new ActionError("error.serviceLevel.invalid"));
         }
-        
-        if (onlineResource == null || onlineResource.equals("")) {
-        	errors.add("onlineResource", new ActionError("error.wfs.onlineResource.required"));
+
+        if ((onlineResource == null) || onlineResource.equals("")) {
+            errors.add("onlineResource",
+                new ActionError("error.wfs.onlineResource.required"));
         } else {
-        	try {
+            try {
                 URL url = new URL(onlineResource);
             } catch (MalformedURLException badURL) {
-                errors.add("onlineResource", new ActionError("error.wfs.onlineResource.malformed", badURL));
+                errors.add("onlineResource",
+                    new ActionError("error.wfs.onlineResource.malformed", badURL));
             }
         }
-        
+
         return errors;
     }
 
@@ -224,128 +219,119 @@ public class WFSContentForm extends ActionForm {
     public void setEnabledChecked(boolean b) {
         enabledChecked = b;
     }
-    
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return
-	 */
-	public boolean isSrsXmlStyleChecked() {
-		return srsXmlStyleChecked;
-	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param b
-	 */
-	public void setSrsXmlStyleChecked(boolean b) {
-		srsXmlStyleChecked = b;
-	}
-    
-	/**
-	 * Access serviceLevel property.
-	 * 
-	 * @return Returns the serviceLevel.
-	 */
-	public int getServiceLevel() {
-		return serviceLevel;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public boolean isSrsXmlStyleChecked() {
+        return srsXmlStyleChecked;
+    }
 
-	/**
-	 * Set serviceLevel to serviceLevel.
-	 *
-	 * @param serviceLevel The serviceLevel to set.
-	 */
-	public void setServiceLevel(int serviceLevel) {
-		this.serviceLevel = serviceLevel;
-	}
-	
-	/**
-	 * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-	 * style.  
-	 *
-	 * @return <tt>true</tt> if the srs is reported with the xml style
-	 */
-	public boolean isSrsXmlStyle() {
-		return srsXmlStyle;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param b
+     */
+    public void setSrsXmlStyleChecked(boolean b) {
+        srsXmlStyleChecked = b;
+    }
 
-	/**
-	 * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-	 * style.  
-	 *
-	 * @param doXmlStyle whether the srs style should be xml or not.
-	 */
-	public void setSrsXmlStyle(boolean doXmlStyle) {
-		this.srsXmlStyleChecked = true;
-		this.srsXmlStyle = doXmlStyle;
-	}
+    /**
+     * Access serviceLevel property.
+     *
+     * @return Returns the serviceLevel.
+     */
+    public int getServiceLevel() {
+        return serviceLevel;
+    }
 
-	/**
-     *  turn on/off the citeConformanceHacks option.
-     * 
+    /**
+     * Set serviceLevel to serviceLevel.
+     *
+     * @param serviceLevel The serviceLevel to set.
+     */
+    public void setServiceLevel(int serviceLevel) {
+        this.serviceLevel = serviceLevel;
+    }
+
+    /**
+     * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+     *
+     * @return <tt>true</tt> if the srs is reported with the xml style
+     */
+    public boolean isSrsXmlStyle() {
+        return srsXmlStyle;
+    }
+
+    /**
+     * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+     *
+     * @param doXmlStyle whether the srs style should be xml or not.
+     */
+    public void setSrsXmlStyle(boolean doXmlStyle) {
+        this.srsXmlStyleChecked = true;
+        this.srsXmlStyle = doXmlStyle;
+    }
+
+    /**
+     * turn on/off the citeConformanceHacks option.
+     *
      * @param on
      */
-    public void setCiteConformanceHacks(boolean on)
-    {
-    	this.citeConformanceHacksChecked = true; //this function only gets called when the form has it checked...
-    	citeConformanceHacks = on;
+    public void setCiteConformanceHacks(boolean on) {
+        this.citeConformanceHacksChecked = true; //this function only gets called when the form has it checked...
+        citeConformanceHacks = on;
     }
-    
+
     /**
      * get the current value of the citeConformanceHacks
-     * 
+     *
      * @return
      */
-    public boolean getCiteConformanceHacks()
-    {
-    	return (citeConformanceHacks );
+    public boolean getCiteConformanceHacks() {
+        return (citeConformanceHacks);
     }
-    
+
     /**
-     * get the current value of the citeConformanceHacksChecked (ie. was it in the http form?)
-     * 
+     * get the current value of the citeConformanceHacksChecked (ie. was it in
+     * the http form?)
+     *
      * @return
      */
-    public boolean getCiteConformanceHacksChecked()
-    {
-    	return ( citeConformanceHacksChecked );
+    public boolean getCiteConformanceHacksChecked() {
+        return (citeConformanceHacksChecked);
     }
 
-
     /**
-     *  turn on/off the featureBounding option.
-     * 
+     * turn on/off the featureBounding option.
+     *
      * @param on
      */
-    public void setFeatureBounding(boolean on)
-    {
-    	this.featureBoundingChecked = true; //this function only gets called when the form has it checked...
-    	featureBounding = on;
+    public void setFeatureBounding(boolean on) {
+        this.featureBoundingChecked = true; //this function only gets called when the form has it checked...
+        featureBounding = on;
     }
-    
+
     /**
      * get the current value of the featureBounding
-     * 
+     *
      * @return
      */
-    public boolean isFeatureBounding()
-    {
-    	return (featureBounding );
+    public boolean isFeatureBounding() {
+        return (featureBounding);
     }
-    
-    /**
-     * get the current value of the featureBoundingChecked (ie. was it in the http form?)
-     * 
-     * @return
-     */
-    public boolean isFeatureBoundingChecked()
-    {
-    	return ( featureBoundingChecked );
-    }
-    
 
+    /**
+     * get the current value of the featureBoundingChecked (ie. was it in the
+     * http form?)
+     *
+     * @return
+     */
+    public boolean isFeatureBoundingChecked() {
+        return (featureBoundingChecked);
+    }
 }

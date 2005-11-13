@@ -50,16 +50,21 @@ public final class WFSDTO implements DataTransferObject {
     private boolean featureBounding = true;
 
     /**
-     * ie. <citeConformanceHacks>true</citeConformanceHacks>
-     *
-     *Currently there are certain legal things in the Geoserver WFS GetCapabilities response that the CITE tests throw error if it finds.  An example of this is the supported GetFeature output formats.  CITE only allows GML2, GML2-ZIP, and SHAPE-ZIP.
-     *We support GML2, GML2-GZIP, GML2-ZIP, and SHAPE-ZIP, so CITE tests will complain that we're not allowed to support GML2-GZIP!
-     *By setting this option to "true" the GetCapabilities response will NOT show we support those extra dataformats.
-     *
-     *In the future we may find other "silly" things.
+     * ie. citeConformanceHacks value equals true
+     * 
+     * <p>
+     * Currently there are certain legal things in the Geoserver WFS
+     * GetCapabilities response that the CITE tests throw error if it finds.
+     * An example of this is the supported GetFeature output formats.  CITE
+     * only allows GML2, GML2-ZIP, and SHAPE-ZIP. We support GML2, GML2-GZIP,
+     * GML2-ZIP, and SHAPE-ZIP, so CITE tests will complain that we're not
+     * allowed to support GML2-GZIP! By setting this option to "true" the
+     * GetCapabilities response will NOT show we support those extra
+     * dataformats. In the future we may find other "silly" things.
+     * </p>
      */
-    private     boolean citeConformanceHacks = false; //default to normal operations
-    
+    private boolean citeConformanceHacks = false; //default to normal operations
+
     /**
      * WFS Data Transfer Object constructor.  does nothing
      */
@@ -116,12 +121,14 @@ public final class WFSDTO implements DataTransferObject {
         }
 
         WFSDTO dto = (WFSDTO) other;
-        
-        if (citeConformanceHacks !=dto.getCiteConformanceHacks())
-                return false;
 
-        if (featureBounding !=dto.isFeatureBounding())
-	    return false;
+        if (citeConformanceHacks != dto.getCiteConformanceHacks()) {
+            return false;
+        }
+
+        if (featureBounding != dto.isFeatureBounding()) {
+            return false;
+        }
 
         return (((serviceLevel == dto.getServiceLevel()) && (service == null))
         ? (dto.getService() == null) : service.equals(dto.getService()));
@@ -197,28 +204,26 @@ public final class WFSDTO implements DataTransferObject {
     public void setGmlPrefixing(boolean b) {
         gmlPrefixing = b;
     }
-    
-	/**
-	 * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-	 * style.  
-	 *
-	 * @return <tt>true</tt> if the srs is reported with the xml style
-	 */
-	public boolean isSrsXmlStyle() {
-		return srsXmlStyle;
-	}
 
-	/**
-	 * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-	 * style.  
-	 *
-	 * @param doXmlStyle whether the srs style should be xml or not.
-	 */
-	public void setSrsXmlStyle(boolean doXmlStyle) {
-		this.srsXmlStyle = doXmlStyle;
-	}
+    /**
+     * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+     *
+     * @return <tt>true</tt> if the srs is reported with the xml style
+     */
+    public boolean isSrsXmlStyle() {
+        return srsXmlStyle;
+    }
+
+    /**
+     * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+     *
+     * @param doXmlStyle whether the srs style should be xml or not.
+     */
+    public void setSrsXmlStyle(boolean doXmlStyle) {
+        this.srsXmlStyle = doXmlStyle;
+    }
 
     /**
      * Access serviceLevel property.
@@ -237,40 +242,44 @@ public final class WFSDTO implements DataTransferObject {
     public void setServiceLevel(int serviceLevel) {
         this.serviceLevel = serviceLevel;
     }
-    
+
     /**
-     *  turn on/off the citeConformanceHacks option.
-     * 
+     * turn on/off the citeConformanceHacks option.
+     *
      * @param on
      */
-    public void setCiteConformanceHacks(boolean on)
-    {
-    	citeConformanceHacks = on;
+    public void setCiteConformanceHacks(boolean on) {
+        citeConformanceHacks = on;
     }
-    
+
     /**
      * get the current value of the citeConformanceHacks
-     * 
+     *
      * @return
      */
-    public boolean getCiteConformanceHacks()
-    {
-    	return (citeConformanceHacks );
+    public boolean getCiteConformanceHacks() {
+        return (citeConformanceHacks);
     }
 
     /**
-     * Returns whether the gml returned by getFeature includes an 
+     * Returns whether the gml returned by getFeature includes an
      * auto-calculated bounds element on each feature or not.
-     */ 
-    public boolean isFeatureBounding(){
-	return featureBounding;
+     *
+     * @return <tt>true</tt> if the gml features will have boundedBy
+     *         automatically generated.
+     */
+    public boolean isFeatureBounding() {
+        return featureBounding;
     }
 
-      /**
+    /**
      * Sets whether the gml returned by getFeature includes an auto-calculated
      * bounds element on each feature or not.
-     */   
-    public void setFeatureBounding(boolean featureBounding){
-	this.featureBounding = featureBounding;
+     *
+     * @param featureBounding <tt>true</tt> if gml features should have
+     *        boundedBy automatically generated.
+     */
+    public void setFeatureBounding(boolean featureBounding) {
+        this.featureBounding = featureBounding;
     }
 }
