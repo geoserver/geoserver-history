@@ -521,6 +521,10 @@ public class XMLConfigReader {
                 ReaderUtils.getChildElement(wfsElement, "gmlPrefixing"),
                 "value", false, false));
 
+        wfs.setFeatureBounding(ReaderUtils.getBooleanAttribute(
+                ReaderUtils.getChildElement(wfsElement, "featureBounding"),
+                "value", false, false));
+
         Element elem = ReaderUtils.getChildElement(wfsElement, "srsXmlStyle",
                 false);
 	LOGGER.info("reading srsXmlStyle: " + elem);

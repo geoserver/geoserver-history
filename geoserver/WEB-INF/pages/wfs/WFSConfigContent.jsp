@@ -20,6 +20,7 @@
 		<html:checkbox property="srsXmlStyle"/>
 	</td></tr>
 	
+
 	<tr><td align="right">
 		<span class="help" title="<bean:message key="help.citeConformanceHacks"/>">
 			<bean:message key="label.citeConformanceHacks"/>:
@@ -28,6 +29,15 @@
 		<html:checkbox property="citeConformanceHacks"/>
 	</td></tr>
 	
+
+	<tr><td align="right">
+		<span class="help" title="<bean:message key="help.featureBounding"/>">
+			<bean:message key="label.featureBounding"/>:
+		</span>
+	</td><td colspan=2>
+		<html:checkbox property="featureBounding"/>
+	</td></tr>
+
 	
 	<tr><td align="right">
 		<span class="help" title="<bean:message key="help.serviceLevel"/>">
