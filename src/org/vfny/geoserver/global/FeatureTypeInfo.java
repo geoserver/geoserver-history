@@ -20,6 +20,7 @@ import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
+import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.filter.Filter;
@@ -826,7 +827,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     
                     if (attributes[count].isGeometry())  //DJB: added this to set SRS
                     {
-                    	GeometricAttributeType old = (GeometricAttributeType) attributes[count];
+                    	GeometryAttributeType old = (GeometryAttributeType) attributes[count];
                     	try {
                     		attributes[count] = new GeometricAttributeType(old,getSRS(SRS)) ;
                     	}
@@ -849,6 +850,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     ft = FeatureTypeFactory.newFeatureType(attributes, typeName, namespace);
                 } catch (SchemaException ex) {
                 } catch (FactoryConfigurationError ex) {
+                }catch(Exception e){
+                	LOGGER.fine("caught creating FeatureType: " + typeName + ": " + e.getMessage());
+                	ft = fs.getSchema();
                 }
             }
         }

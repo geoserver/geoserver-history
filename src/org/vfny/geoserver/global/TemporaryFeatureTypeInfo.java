@@ -13,21 +13,14 @@ package org.vfny.geoserver.global;
 
 import java.io.File;
 import java.io.IOException;
-
 import java.util.List;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
-
 import org.geotools.feature.FeatureType;
-
 import org.geotools.filter.Filter;
-
 import org.geotools.styling.Style;
-
-import org.opengis.feature.Query;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-
 import org.w3c.dom.Element;
 
 import com.vividsolutions.jts.geom.Envelope;
