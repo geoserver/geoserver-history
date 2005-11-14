@@ -1,0 +1,17 @@
+<featureType datastore="pg_xy">
+	<name>wq_derived</name>
+	<!-- native EPGS code for the FeatureTypeInfoDTO : for Oracle, all geometries must use an equivalent SRID -->
+	<SRS>4283</SRS>
+	<title>FeatureType derived from a SQL query</title>
+	<abstract>FeatureType derived from the following SQL query:
+		SELECT station_no, station_name as sitename,anzlic_no,
+		project_no, sample_collection_date || determinand_code as id,
+		sample_collection_date, determinand_description, results_value,
+		longitude as x, -latitude as y FROM wq_ir_results WHERE 1=1
+		order by station_no
+	</abstract>
+	<numDecimals value="0" />
+	<keywords>testing</keywords>
+	<latLonBoundingBox dynamic="false" miny="-90" maxy="90" maxx="180" minx="-180" />
+	<styles default="point" />
+</featureType>

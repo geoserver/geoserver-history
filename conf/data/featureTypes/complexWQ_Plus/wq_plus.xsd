@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://online.socialchange.net.au" xmlns:sco="http://online.socialchange.net.au"
+  xmlns:gml="http://www.opengis.net/gml" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  attributeFormDefault="unqualified" version="1.0">
+
+  <xs:import namespace="http://www.opengis.net/gml"
+    schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/feature.xsd" />
+  <xs:complexType name="wq_plus">
+    <xs:complexContent>
+      <xs:extension base="gml:AbstractFeatureType">
+        <xs:sequence>
+          <xs:element name="station_no" type="xs:string" nillable="true" />
+          <xs:element name="station_name" type="xs:string" nillable="true" minOccurs="0" />
+          <xs:element name="anzlic_no" type="xs:string" nillable="true" minOccurs="0" />
+          <xs:element name="project_no" type="xs:string" nillable="true" minOccurs="0" />
+          <xs:element name="measurement" nillable="true" minOccurs="0" maxOccurs="unbounded">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="determinand_description" type="xs:string" nillable="true" minOccurs="0" />
+                <xs:element name="result" type="xs:string" nillable="true" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="location" type="gml:PointPropertyType" nillable="true" minOccurs="0" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

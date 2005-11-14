@@ -1,0 +1,17 @@
+<featureType datastore = "complex2" >
+<name>wq_plus</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>4326</SRS>
+<title>wq_plus complex type from a SQL query</title>
+<abstract>wq_plus is a complex type derived from a LocationsXY datastore.
+The LocationsXY datastore receives a SQL query from where it creates the base "simple"
+feature type. Then a ComplexDataStore takes it as input together with an output
+schema and a set of attribute type mapping definitions to accomodate each
+attribute or expression from the base type to the output schema.</abstract>
+<numDecimals value = "8" />
+<keywords>complexds</keywords>
+<latLonBoundingBox dynamic="false" minx="-180" miny="-90" maxx="180" maxy="90"/>
+<styles default="point" />
+</featureType>

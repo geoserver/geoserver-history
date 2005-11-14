@@ -11,20 +11,13 @@
 	<classpathentry kind="lib" path="lib/commons-lang.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/commons-validator.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-arcsde.jar"/>
 	<classpathentry sourcepath="/gt_trunk" kind="lib" path="lib/gt2-epsg.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-experiment.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-gml.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-graph.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-mysql.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-oracle-spatial.jar"/>
 	<classpathentry sourcepath="/gt_trunk" kind="lib" path="lib/gt2-postgis.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-property.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-utils.jar"/>
 	<classpathentry sourcepath="/gt_trunk" kind="lib" path="lib/gt2-validation.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-vpf.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-wfs.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-wms.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta-oro.jar"/>
 	<classpathentry kind="lib" path="lib/jdbcPostgres.jar"/>
 	<classpathentry kind="lib" path="lib/jsde_concurrent-9.0.jar"/>
@@ -50,12 +43,14 @@
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/commons-httpclient-2.0.1.jar"/>
 	<classpathentry sourcepath="/main" kind="lib" path="lib/gt2-main.jar"/>
-	<classpathentry kind="lib" path="lib/geoapi-2.0.jar"/>
 	<classpathentry sourcepath="/shapefile" kind="lib" path="lib/gt2-shapefile.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-indexed-shapefile.jar"/>
 	<classpathentry kind="lib" path="lib/mockrunner-servlet.jar"/>
 	<classpathentry kind="lib" path="lib/batik-awt-util-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/batik-svggen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/batik-util-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-referencing.jar"/>
+	<classpathentry kind="lib" path="lib/geoapi-2.0-without-feature.jar"/>
+	<classpathentry kind="lib" path="lib/commons-jxpath-1.2.jar"/>
+	<classpathentry sourcepath="/complexds/src" kind="lib" path="lib/gt2-complexds.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

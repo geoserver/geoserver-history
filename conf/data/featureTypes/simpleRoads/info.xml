@@ -1,0 +1,17 @@
+<featureType datastore = "directory" >
+<name>RoadSegments</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>4326</SRS>
+<title>RoadSegments directory datastore</title>
+<abstract></abstract>
+<numDecimals value = "8" />
+<keywords>RoadSegments</keywords>
+<latLonBoundingBox dynamic="false" minx="-0.0042" miny="-0.0042" maxx="0.0042" maxy="0.0042"/>
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default="cite_road_segments"  />
+</featureType>
