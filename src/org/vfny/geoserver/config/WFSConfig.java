@@ -22,7 +22,6 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  */
 public class WFSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WFS";
-    private boolean gmlPrefixing;
     private int serviceLevel;
     private boolean citeConformanceHacks = false; // see WFSDTO for more info
     private boolean featureBounding = false;
@@ -54,7 +53,6 @@ public class WFSConfig extends ServiceConfig {
      */
     public WFSConfig(WFSDTO w) {
         super(w.getService());
-        gmlPrefixing = w.isGmlPrefixing();
         serviceLevel = w.getServiceLevel();
         srsXmlStyle = w.isSrsXmlStyle();
         citeConformanceHacks = w.getCiteConformanceHacks();
@@ -80,7 +78,6 @@ public class WFSConfig extends ServiceConfig {
         }
 
         super.update(dto.getService());
-        gmlPrefixing = dto.isGmlPrefixing();
         srsXmlStyle = dto.isSrsXmlStyle();
         serviceLevel = dto.getServiceLevel();
 
@@ -102,7 +99,6 @@ public class WFSConfig extends ServiceConfig {
     public WFSDTO toDTO() {
         WFSDTO wfsDto = new WFSDTO();
         wfsDto.setService((ServiceDTO) super.toServDTO());
-        wfsDto.setGmlPrefixing(gmlPrefixing);
         wfsDto.setServiceLevel(serviceLevel);
         wfsDto.setSrsXmlStyle(srsXmlStyle);
 
@@ -112,32 +108,7 @@ public class WFSConfig extends ServiceConfig {
         return wfsDto;
     }
 
-    /**
-     * isGmlPrefixing purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public boolean isGmlPrefixing() {
-        return gmlPrefixing;
-    }
-
-    /**
-     * setGmlPrefixing purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setGmlPrefixing(boolean b) {
-        gmlPrefixing = b;
-    }
-
+    
     /**
      * Access serviceLevel property.
      *

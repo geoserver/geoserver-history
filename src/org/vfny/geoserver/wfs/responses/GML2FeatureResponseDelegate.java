@@ -155,7 +155,7 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
             transformer.addSchemaLocation(uri, (String) ftNamespaces.get(uri));
         }
 
-        transformer.setGmlPrefixing(request.getWFS().isGmlPrefixing());
+        transformer.setGmlPrefixing(request.getWFS().getCiteConformanceHacks());
 
         FeatureLock featureLock = results.getFeatureLock();
 

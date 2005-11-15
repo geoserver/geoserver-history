@@ -297,7 +297,7 @@ public class XMLConfigWriter {
         ServiceDTO s = null;
         String u = null;
         String t = "";
-        boolean gml = false;
+        
         boolean fBounds = false;
         boolean srsXmlStyle = false;
         int serviceLevel = 0;
@@ -309,7 +309,7 @@ public class XMLConfigWriter {
             WFSDTO w = (WFSDTO) obj;
             s = w.getService();
             t = "WFS";
-            gml = w.isGmlPrefixing();
+            
             fBounds = w.isFeatureBounding();
             srsXmlStyle = w.isSrsXmlStyle();
             serviceLevel = w.getServiceLevel();
@@ -365,10 +365,6 @@ public class XMLConfigWriter {
         if ((s.getAccessConstraints() != null)
                 && (s.getAccessConstraints() != "")) {
             cw.textTag("accessConstraints", s.getAccessConstraints());
-        }
-
-        if (gml) {
-            cw.valueTag("gmlPrefixing", gml + "");
         }
 
         if (fBounds) {

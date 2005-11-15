@@ -24,13 +24,13 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  * System.out.println(wfs.getAbstract());
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Roldï¿½n
  * @author Chris Holmes
  * @version $Id: WFS.java,v 1.8 2004/09/09 16:54:19 cholmesny Exp $
  */
 public class WFS extends Service {
     public static final String WEB_CONTAINER_KEY = "WFS";
-    private boolean gmlPrefixing;
+    
     private GeoValidator gv;
     private int serviceLevel;
     private boolean srsXmlStyle;
@@ -49,7 +49,6 @@ public class WFS extends Service {
      */
     public WFS(WFSDTO config) {
         super(config.getService());
-        gmlPrefixing = config.isGmlPrefixing();
         srsXmlStyle = config.isSrsXmlStyle();
         serviceLevel = config.getServiceLevel();
         citeConformanceHacks = config.getCiteConformanceHacks();
@@ -81,7 +80,6 @@ public class WFS extends Service {
     public void load(WFSDTO config) {
         super.load(config.getService());
         srsXmlStyle = config.isSrsXmlStyle();
-        gmlPrefixing = config.isGmlPrefixing();
         serviceLevel = config.getServiceLevel();
         citeConformanceHacks = config.getCiteConformanceHacks();
         featureBounding = config.isFeatureBounding();
@@ -105,7 +103,7 @@ public class WFS extends Service {
     public Object toDTO() {
         WFSDTO dto = new WFSDTO();
         dto.setService((ServiceDTO) super.toDTO());
-        dto.setGmlPrefixing(gmlPrefixing);
+        
         dto.setServiceLevel(serviceLevel);
         dto.setSrsXmlStyle(srsXmlStyle);
         dto.setCiteConformanceHacks(citeConformanceHacks);
@@ -114,33 +112,7 @@ public class WFS extends Service {
         return dto;
     }
 
-    /**
-     * isGmlPrefixing purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public boolean isGmlPrefixing() {
-        return gmlPrefixing;
-    }
-
-    /**
-     * setGmlPrefixing purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setGmlPrefixing(boolean b) {
-        gmlPrefixing = b;
-    }
-
-    /**
+       /**
      * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
      * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
      *

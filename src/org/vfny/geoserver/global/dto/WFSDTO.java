@@ -44,7 +44,6 @@ public final class WFSDTO implements DataTransferObject {
 
     /** The service parameters for this instance. */
     private ServiceDTO service;
-    private boolean gmlPrefixing = false;
     private boolean srsXmlStyle = true;
     private int serviceLevel = COMPLETE; //if not set then it should be complete
     private boolean featureBounding = true;
@@ -89,7 +88,6 @@ public final class WFSDTO implements DataTransferObject {
         }
 
         service = (ServiceDTO) new ServiceDTO(other.getService());
-        gmlPrefixing = other.isGmlPrefixing();
         featureBounding = other.isFeatureBounding();
         serviceLevel = other.getServiceLevel();
         citeConformanceHacks = other.getCiteConformanceHacks();
@@ -177,32 +175,6 @@ public final class WFSDTO implements DataTransferObject {
         }
 
         service = dto;
-    }
-
-    /**
-     * isGmlPrefixing purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public boolean isGmlPrefixing() {
-        return gmlPrefixing;
-    }
-
-    /**
-     * setGmlPrefixing purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setGmlPrefixing(boolean b) {
-        gmlPrefixing = b;
     }
 
     /**
