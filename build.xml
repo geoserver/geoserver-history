@@ -1135,7 +1135,7 @@
 <!--
 <copy overwrite="true" failonerror="true" toFile="${dir.lib}/geoapi-2.0.jar" file="${dir.maven}/geoapi/jars/geoapi-2.0.jar" />
 -->
-<copy overwrite="true" failonerror="true" toFile="${dir.lib}/opengis-css-0.1.jar" file="${dir.maven}/opengis/jars/opengis-css-0.1.jar" />
+<copy overwrite="true" failonerror="false" toFile="${dir.lib}/opengis-css-0.1.jar" file="${dir.maven}/opengis/jars/opengis-css-0.1.jar" />
 <!--
  <copy failonerror="false" toFile="${dir.lib}/opengis-legacy-0.1.jar" file="${dir.maven}/opengis/jars/opengis-legacy-0.1.jar" />
   -->

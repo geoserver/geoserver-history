@@ -76,7 +76,13 @@
       <sourceDataStore>locationsXY</sourceDataStore>
       <sourceType>wq_derived</sourceType>
       <targetType>wq_plus</targetType>
-      <groupBy />
+      <groupBy>
+        <GroupByAttribute>station_no</GroupByAttribute>
+        <GroupByAttribute>sitename</GroupByAttribute>
+        <GroupByAttribute>anzlic_no</GroupByAttribute>
+        <GroupByAttribute>project_no</GroupByAttribute>
+        <GroupByAttribute>location</GroupByAttribute>
+      </groupBy>
       <fidMappings>
         <FidMapping>
           <targetAttribute>wq_plus</targetAttribute>
@@ -131,7 +137,7 @@
         <AttributeMapping>
           <targetAttribute>wq_plus/measurement/result</targetAttribute>
           <sourceExpression>
-            <OCQL>result</OCQL>
+            <OCQL>results_value</OCQL>
           </sourceExpression>
         </AttributeMapping>
         <AttributeMapping>

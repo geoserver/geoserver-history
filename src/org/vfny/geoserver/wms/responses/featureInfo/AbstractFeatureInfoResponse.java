@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.GeometryFilter;
@@ -196,15 +198,6 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
         GeometryFilter getFInfoFilter = null;
 
-        try {
-            getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
-            getFInfoFilter.addLeftGeometry(filterFac.createLiteralExpression(
-                    pixelRect));
-        } catch (IllegalFilterException e) {
-            e.printStackTrace();
-            throw new WmsException(null, "Internal error : " + e.getMessage());
-        }
-
         int layerCount = requestedLayers.length;
         results = new ArrayList(layerCount);
         metas = new ArrayList(layerCount);
@@ -213,6 +206,20 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         try {
             for (int i = 0; i < layerCount; i++) {
                 FeatureTypeInfo finfo = requestedLayers[i];
+
+                try {
+                    getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
+                    FeatureType type = finfo.getFeatureType();
+                    AttributeType defaultGeom = type.getDefaultGeometry();
+                    getFInfoFilter.addLeftGeometry(filterFac.createAttributeExpression(type, defaultGeom.name()));
+                    getFInfoFilter.addRightGeometry(filterFac.createLiteralExpression(
+                            pixelRect));
+                } catch (IllegalFilterException e) {
+                    e.printStackTrace();
+                    throw new WmsException(null, "Internal error : " + e.getMessage());
+                }
+
+                
                 Query q = new DefaultQuery( finfo.getTypeName(), null, getFInfoFilter,request.getFeatureCount(), Query.ALL_NAMES, null ); 
                 FeatureResults match = finfo.getFeatureSource().getFeatures(q);
 
