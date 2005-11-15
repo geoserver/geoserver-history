@@ -199,7 +199,7 @@ public class MockUtils {
 	 */
 	public static WFSDTO newWfsDto() {
 		WFSDTO dto = new WFSDTO();
-		dto.setGmlPrefixing(true);
+		dto.setCiteConformanceHacks(true);
 		ServiceDTO service = new ServiceDTO();
 		service.setAbstract("test abstract");
 		service.setAccessConstraints("NONE");

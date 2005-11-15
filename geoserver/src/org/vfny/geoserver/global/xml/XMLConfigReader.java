@@ -519,10 +519,7 @@ public class XMLConfigReader {
         wfs = new WFSDTO();
 
         //try {
-        wfs.setGmlPrefixing(ReaderUtils.getBooleanAttribute(
-                ReaderUtils.getChildElement(wfsElement, "gmlPrefixing"),
-                "value", false, false));
-
+        
         wfs.setFeatureBounding(ReaderUtils.getBooleanAttribute(
                 ReaderUtils.getChildElement(wfsElement, "featureBounding"),
                 "value", false, false));
