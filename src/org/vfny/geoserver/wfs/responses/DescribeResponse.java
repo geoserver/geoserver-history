@@ -57,12 +57,12 @@ public class DescribeResponse implements Response {
     private static final String GML_URL = "\"http://www.opengis.net/gml\"";
     private static final String GML_NAMESPACE = "\n  xmlns:gml=" + GML_URL;
     private static final String ELEMENT_FORM_DEFAULT = "\n  elementFormDefault=\"qualified\"";
-    private static final String ATTR_FORM_DEFAULT = "\n  attributeFormDefault=\"unqualified\" version=\"1.0\"&gt;";
+    private static final String ATTR_FORM_DEFAULT = "\n  attributeFormDefault=\"unqualified\" version=\"1.0\">";
     private static final String TARGETNS_PREFIX = "\n  targetNamespace=\"";
     private static final String TARGETNS_SUFFIX = "\" ";
 
     /** Fixed return footer information */
-    private static final String FOOTER = "\n&lt;/xs:schema&gt;";
+    private static final String FOOTER = "\n</xs:schema>";
     private DescribeRequest request;
 
     /** Main XML class for interpretation and response. */
@@ -102,7 +102,7 @@ public class DescribeResponse implements Response {
             //characters and whatnot, unless we can get rid of formatting
             //when we read the file, which could be worth looking into if
             //this slows things down.
-        	xmlResponse = xmlResponse.replaceAll("&gt;\n[ \\t\\n]*", "&gt;");
+        	xmlResponse = xmlResponse.replaceAll(">\n[ \\t\\n]*", ">");
             xmlResponse = xmlResponse.replaceAll("\n[ \\t\\n]*", " ");
         }
     }
@@ -165,9 +165,9 @@ public class DescribeResponse implements Response {
                                                      .keySet());
         }
 
-        tempResponse.append("&lt;?xml version=\"1.0\" encoding=\""
-            + wfsRequest.getGeoServer().getCharSet().displayName() + "\"?&gt;"
-            + "\n&lt;xs:schema ");
+        tempResponse.append("<?xml version=\"1.0\" encoding=\""
+            + wfsRequest.getGeoServer().getCharSet().displayName() + "\"?>"
+            + "\n<xs:schema ");
 
         //allSameType will throw WfsException if there are types that are not found.
         if (allSameType(requestedTypes, wfsRequest)) {
@@ -197,9 +197,9 @@ public class DescribeResponse implements Response {
 
             //request.getBaseUrl should actually be GeoServer.getSchemaBaseUrl()
             //but that method is broken right now.  See the note there.
-            tempResponse.append("\n\n&lt;xs:import namespace=" + GML_URL
+            tempResponse.append("\n\n<xs:import namespace=" + GML_URL
                 + " schemaLocation=\"" + request.getSchemaBaseUrl()
-                + "gml/2.1.2/feature.xsd\"/&gt;\n\n");
+                + "gml/2.1.2/feature.xsd\"/>\n\n");
             tempResponse.append(generateSpecifiedTypes(requestedTypes,
                     wfsRequest.getWFS()));
         } else {
@@ -251,7 +251,7 @@ public class DescribeResponse implements Response {
     private StringBuffer getNSImport(String prefix, List typeNames, Request r) {
         LOGGER.finer("prefix is " + prefix);
 
-        StringBuffer retBuffer = new StringBuffer("\n  &lt;xs:import namespace=\"");
+        StringBuffer retBuffer = new StringBuffer("\n  <xs:import namespace=\"");
         String namespace = r.getWFS().getData().getNameSpace(prefix).getUri();
         retBuffer.append(namespace + "\"");
         retBuffer.append("\n        schemaLocation=\"" + r.getBaseUrl()
@@ -272,7 +272,7 @@ public class DescribeResponse implements Response {
         }
 
         retBuffer.deleteCharAt(retBuffer.length() - 1);
-        retBuffer.append("\"/&gt;");
+        retBuffer.append("\"/>");
 
         return retBuffer;
     }
@@ -411,8 +411,8 @@ public class DescribeResponse implements Response {
         //if (prefixDelimPos > 0) {
         //String tableName = typeName.substring(prefixDelimPos + 1);
         //  }
-    	return "\n  &lt;xs:element name='" + type.getTypeName() + "' type='"
-        + type.getPrefix()+":"+type.getSchemaName() + "' substitutionGroup='gml:_Feature'/&gt;";
+    	return "\n  <xs:element name='" + type.getTypeName() + "' type='"
+        + type.getPrefix()+":"+type.getSchemaName() + "' substitutionGroup='gml:_Feature'/>";
     }
 
     /**
