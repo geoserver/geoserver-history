@@ -20,8 +20,7 @@ import java.util.logging.Logger;
 import javax.xml.transform.TransformerException;
 
 import org.geotools.feature.FeatureType;
-//SISfixed - use local version
-//import org.geotools.gml.producer.FeatureTypeTransformer;
+import org.geotools.gml.producer.FeatureTypeTransformer;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.FeatureTypeInfo;
