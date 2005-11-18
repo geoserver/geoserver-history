@@ -1,0 +1,91 @@
+<?config.xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <datastores>
+    <datastore namespace="sco" enabled="true" id="pg_xy">
+      <abstract>Postgres (not POSTGIS)</abstract>
+      <connectionParams>
+        <parameter name="dbtype" value="locationsxy" />
+        <parameter name="user" value="postgres" />
+        <parameter name="passwd" value="postgres" />
+        <parameter name="host" value="localhost" />
+        <parameter name="port" value="5432" />
+        <parameter name="database" value="sco" />
+        <parameter name="driver" value="org.geotools.data.geometryless.wrapper.PGConnectionPool" />
+        <parameter name="urlprefix" value="jdbc:postgresql://localhost:5432/sco" />
+        <parameter name="geom_name" value="location" />
+        <parameter name="xcolumn" value="x" />
+        <parameter name="ycolumn" value="y" />
+        <parameter name="sqlView.1.typeName" value="wq_derived" />
+        <parameter name="sqlView.1.sqlQuery"
+          value="SELECT station_no, station_name as sitename,anzlic_no,
+  		  project_no, sample_collection_date || determinand_code as id,
+		  sample_collection_date, determinand_description, results_value,
+		  longitude as x, -latitude as y FROM wq_ir_results WHERE 1=1
+		  order by station_no" />
+      </connectionParams>
+    </datastore>
+    <datastore namespace="sco" enabled="true" id="directory">
+      <connectionParams>
+        <parameter name="directory"
+          value="/home/gabriel/workspaces/complex_sco/GEOS/conf/data/featureTypes/simpleRoads" />
+      </connectionParams>
+    </datastore>
+    <datastore namespace="sco" enabled="true" id="complex1">
+      <connectionParams>
+        <parameter name="dbtype" value="complex" />
+        <parameter name="config"
+          value="file:/home/gabriel/workspaces/complex_sco/GEOS/conf/data/featureTypes/complexRoads/roadsegments.xml" />
+      </connectionParams>
+    </datastore>
+    <datastore namespace="sco" enabled="true" id="complex2">
+      <connectionParams>
+        <parameter name="dbtype" value="complex" />
+        <parameter name="config"
+          value="file:/home/gabriel/workspaces/complex_sco/GEOS/conf/data/featureTypes/complexWQ_Plus/wq_plus_mappings.xml" />
+      </connectionParams>
+    </datastore>
+  </datastores>
+  <!--
+    Defines namespaces to be used by the datastores.
+  -->
+  <namespaces>
+    <namespace uri="http://www.socialchange.net" prefix="sco" default="true" />
+    <namespace uri="http://www.openplans.org/topp" prefix="topp" default="true" />
+    <namespace uri="http://geoserver.sf.net" prefix="sde" />
+    <namespace uri="http://www.refractions.net/lakes" prefix="lake" />
+    <namespace uri="http://www.census.gov" prefix="tiger" />
+    <namespace uri="http://www.opengeospatial.net/cite" prefix="cite" />
+  </namespaces>
+  <styles>
+    <!--
+      Defines the style ids to be used by the wms.  The files must be
+      contained in geoserver/misc/wms/styles.  We're working on finding
+      a better place for them, but for now that's where you must put them
+      if you want them on the server.
+    -->
+    <style filename="giant_polygon.sld" id="giant_polygon" />
+    <style filename="NamedPlaces.sld" id="cite_named_places" />
+    <style filename="capitals.sld" id="capitals" />
+    <style filename="MapNeatline.sld" id="cite_map_neatline" />
+    <style filename="Buildings.sld" id="cite_buildings" />
+    <style filename="funkypolyshp.sld" id="dotty" />
+    <style filename="Streams.sld" id="cite_streams" />
+    <style filename="tiger_roads.sld" id="tiger_roads" />
+    <style filename="poly_landmarks.sld" id="poly_landmarks" />
+    <style filename="green.sld" id="green" />
+    <style filename="usa_math.sld" id="manualVsWorkers" />
+    <style filename="simpleRoads.sld" id="simple_roads" />
+    <style filename="Ponds.sld" id="cite_ponds" />
+    <style filename="popshade.sld" id="population" />
+    <style filename="normal.sld" id="normal" />
+    <style filename="blue.sld" id="blue" />
+    <style filename="RoadSegments.sld" id="cite_road_segments" />
+    <style filename="Forests.sld" id="cite_forests" />
+    <style filename="Bridges.sld" id="cite_bridges" />
+    <style filename="point.sld" id="point" />
+    <style filename="poi.sld" id="poi" />
+    <style filename="DividedRoutes.sld" id="cite_divided_routes" />
+    <style filename="Lakes.sld" id="cite_lakes" />
+    <style filename="usa_ratio.sld" id="maleVsFemale" />
+  </styles>
+</catalog>
