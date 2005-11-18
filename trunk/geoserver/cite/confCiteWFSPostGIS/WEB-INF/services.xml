@@ -81,6 +81,8 @@ from New York City.</abstract>
 <gmlPrefixing value = "true" />
 <srsXmlStyle value = "true" />
 <serviceLevel value = "31" />
+<citeConformanceHacks>true</citeConformanceHacks>
+
 <maintainer>The Open Planning Project</maintainer>
 </service>
 <service type = "WMS" enabled = "true" >

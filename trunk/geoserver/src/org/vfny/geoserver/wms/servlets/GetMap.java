@@ -33,6 +33,11 @@ import org.vfny.geoserver.wms.responses.GetMapResponse;
  * @version $Id: GetMap.java,v 1.7 2004/03/30 11:12:40 cholmesny Exp $
  */
 public class GetMap extends WMService {
+	/**
+	 * Part of HTTP content type header.
+	 */
+	public static final String MULTIPART = "multipart/";
+	  
     /**
      * Creates a new GetMap object.
      */
@@ -42,6 +47,11 @@ public class GetMap extends WMService {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException 
 	{
+	    if (!isMultipartContent(request)) {
+	       doGet(request, response);
+	       return;
+	    }
+    	 
     	//DJB: added post support
     	Request serviceRequest = null;
     	this.curRequest = request;
@@ -111,6 +121,28 @@ public class GetMap extends WMService {
         return new GetMapKvpReader(params);
     }
     
-
+    /**
+     * A method that decides if a request is a multipart request.
+     * <p>
+     * <a href="http://www.w3.org/TR/REC-html40/interact/forms.html#form-content-type">w3.org content type</a>
+     * </p>
+     *
+     * @param req the servlet request
+     * @return if this is multipart or not
+     */
+    public boolean isMultipartContent(HttpServletRequest req) {
+	      //If it is not post, then it can't be multipart
+	      if (!"post".equals(req.getMethod().toLowerCase())) {
+	        return false;
+	      }
+	      //Get the content type
+	      String contentType = req.getContentType();
+	      //If there is no content type, then it is not multipart
+	      if (contentType == null) {
+	        return false;
+	      }
+	      //If it starts with multipart/ then it is multipart
+	      return contentType.toLowerCase().startsWith(MULTIPART);
+    }
 	
 }

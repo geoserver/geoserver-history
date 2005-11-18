@@ -63,13 +63,7 @@ public class DescribeResponse implements Response {
 
     /** Fixed return footer information */
     private static final String FOOTER = "\n</xs:schema>";
-
-	/**
-	 * 
-	 * @uml.property name="request"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private DescribeRequest request;
+    private DescribeRequest request;
 
     /** Main XML class for interpretation and response. */
     private String xmlResponse = new String();

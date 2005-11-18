@@ -24,39 +24,18 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  * System.out.println(wfs.getAbstract());
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Roldï¿½n
  * @author Chris Holmes
  * @version $Id: WFS.java,v 1.8 2004/09/09 16:54:19 cholmesny Exp $
  */
 public class WFS extends Service {
     public static final String WEB_CONTAINER_KEY = "WFS";
-
-	/**
-	 * 
-	 * @uml.property name="gmlPrefixing" multiplicity="(0 1)"
-	 */
-	private boolean gmlPrefixing;
-
-	/**
-	 * 
-	 * @uml.property name="gv"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private GeoValidator gv;
-
-	/**
-	 * 
-	 * @uml.property name="serviceLevel" multiplicity="(0 1)"
-	 */
-	private int serviceLevel;
-
-	/**
-	 * 
-	 * @uml.property name="srsXmlStyle" multiplicity="(0 1)"
-	 */
-	private boolean srsXmlStyle;
-    private boolean citeConformanceHacks ;
-
+    
+    private GeoValidator gv;
+    private int serviceLevel;
+    private boolean srsXmlStyle;
+    private boolean citeConformanceHacks;
+    private boolean featureBounding;
 
     /**
      * WFS constructor.
@@ -70,10 +49,10 @@ public class WFS extends Service {
      */
     public WFS(WFSDTO config) {
         super(config.getService());
-        gmlPrefixing = config.isGmlPrefixing();
         srsXmlStyle = config.isSrsXmlStyle();
         serviceLevel = config.getServiceLevel();
-        citeConformanceHacks  = config.getCiteConformanceHacks();
+        citeConformanceHacks = config.getCiteConformanceHacks();
+        featureBounding = config.isFeatureBounding();
     }
 
     /**
@@ -101,9 +80,9 @@ public class WFS extends Service {
     public void load(WFSDTO config) {
         super.load(config.getService());
         srsXmlStyle = config.isSrsXmlStyle();
-        gmlPrefixing = config.isGmlPrefixing();
         serviceLevel = config.getServiceLevel();
         citeConformanceHacks = config.getCiteConformanceHacks();
+        featureBounding = config.isFeatureBounding();
     }
 
     /**
@@ -124,43 +103,16 @@ public class WFS extends Service {
     public Object toDTO() {
         WFSDTO dto = new WFSDTO();
         dto.setService((ServiceDTO) super.toDTO());
-        dto.setGmlPrefixing(gmlPrefixing);
+        
         dto.setServiceLevel(serviceLevel);
         dto.setSrsXmlStyle(srsXmlStyle);
-        dto.setCiteConformanceHacks( citeConformanceHacks );
+        dto.setCiteConformanceHacks(citeConformanceHacks);
+        dto.setFeatureBounding(featureBounding);
+
         return dto;
     }
 
-    /**
-     * isGmlPrefixing purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public boolean isGmlPrefixing() {
-        return gmlPrefixing;
-    }
-
-	/**
-	 * setGmlPrefixing purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param b
-	 * 
-	 * @uml.property name="gmlPrefixing"
-	 */
-	public void setGmlPrefixing(boolean b) {
-		gmlPrefixing = b;
-	}
-
-
-    /**
+       /**
      * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
      * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
      *
@@ -170,18 +122,15 @@ public class WFS extends Service {
         return srsXmlStyle;
     }
 
-	/**
-	 * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
-	 * 
-	 * @param doXmlStyle whether the srs style should be xml or not.
-	 * 
-	 * @uml.property name="srsXmlStyle"
-	 */
-	public void setSrsXmlStyle(boolean doXmlStyle) {
-		this.srsXmlStyle = doXmlStyle;
-	}
-
+    /**
+     * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+     *
+     * @param doXmlStyle whether the srs style should be xml or not.
+     */
+    public void setSrsXmlStyle(boolean doXmlStyle) {
+        this.srsXmlStyle = doXmlStyle;
+    }
 
     /**
      * Gets the prefix for the srs name, based on the SrsXmlStyle property.  If
@@ -216,35 +165,52 @@ public class WFS extends Service {
         this.gv = gv;
     }
 
-	/**
-	 * Access serviceLevel property.
-	 * 
-	 * @return Returns the serviceLevel.
-	 * 
-	 * @uml.property name="serviceLevel"
-	 */
-	public int getServiceLevel() {
-		return serviceLevel;
-	}
-    
-	/**
-     *  turn on/off the citeConformanceHacks option.
-     * 
+    /**
+     * Access serviceLevel property.
+     *
+     * @return Returns the serviceLevel.
+     */
+    public int getServiceLevel() {
+        return serviceLevel;
+    }
+
+    /**
+     * turn on/off the citeConformanceHacks option.
+     *
      * @param on
      */
-    public void setCiteConformanceHacks(boolean on)
-    {
-    	citeConformanceHacks = on;
+    public void setCiteConformanceHacks(boolean on) {
+        citeConformanceHacks = on;
     }
-    
+
     /**
      * get the current value of the citeConformanceHacks
-     * 
+     *
      * @return
      */
-    public boolean getCiteConformanceHacks()
-    {
-    	return (citeConformanceHacks );
+    public boolean getCiteConformanceHacks() {
+        return (citeConformanceHacks);
     }
-    
+
+    /**
+     * Returns whether the gml returned by getFeature includes an
+     * auto-calculated bounds element on each feature or not.
+     *
+     * @return <tt>true</tt> if the gml features will have boundedBy
+     *         automatically generated.
+     */
+    public boolean isFeatureBounding() {
+        return featureBounding;
+    }
+
+    /**
+     * Sets whether the gml returned by getFeature includes an auto-calculated
+     * bounds element on each feature or not.
+     *
+     * @param featureBounding <tt>true</tt> if gml features should have
+     *        boundedBy automatically generated.
+     */
+    public void setFeatureBounding(boolean featureBounding) {
+        this.featureBounding = featureBounding;
+    }
 }

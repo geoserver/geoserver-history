@@ -15,6 +15,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.batik.svggen.SVGGeneratorContext;
 import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 import org.geotools.map.MapContext;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
@@ -26,6 +28,7 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -103,7 +106,7 @@ public class SVGBatikMapProducer implements GetMapProducer {
 			SVGGraphics2D g = new SVGGraphics2D(context,true);
 			
 			g.setSVGCanvasSize(new Dimension((int)width,(int)height));
-			
+		
 			//turn off/on anti aliasing
 			if (config.getSvgAntiAlias())
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
@@ -112,11 +115,22 @@ public class SVGBatikMapProducer implements GetMapProducer {
 			Rectangle r = new Rectangle(g.getSVGCanvasSize());
 			
 			Envelope e = renderer.getContext().getAreaOfInterest();
-			AffineTransform at = RendererUtilities.worldToScreenTransform(e,r);
+			//AffineTransform at = renderer.worldToScreenTransform(e,r);
+			AffineTransform at = RendererUtilities.worldToScreenTransform(e, r);
 			
 			renderer.paint(g, r, at);
 			
-			g.stream(new OutputStreamWriter(out,"UTF-8"));
+			//This method of output does not output the DOCTYPE definiition
+			//TODO: make a config option that toggles wether doctype is 
+			// written out.
+			OutputFormat format = new OutputFormat();
+			XMLSerializer serializer = new XMLSerializer(
+				new OutputStreamWriter(out,"UTF-8"), format
+			);
+			serializer.serialize(g.getDOMTreeManager().getRoot());
+			
+			//this method does output the DOCTYPE def
+			//g.stream(new OutputStreamWriter(out,"UTF-8"));
 			
 		} 
     	catch(Exception e) {

@@ -100,7 +100,19 @@ public class WfsDispatcher extends Dispatcher {
             // - Could we use response.getHandle() in the filename?
             // - ProcessID is traditional, I don't know how to find that in Java
             sequence++;
-            temp = File.createTempFile("wfsdispatch" + sequence, "tmp");
+            // test to see if we have permission to write, if not, throw an appropirate error
+            try {
+            	temp = File.createTempFile("wfsdispatch" + sequence, "tmp");
+            	if (!temp.canRead() || !temp.canWrite())
+            	{
+            		String errorMsg = "Temporary-file permission problem for location: " + temp.getPath();
+                	throw new IOException(errorMsg);
+            	}
+            } catch (IOException e) {
+            	String errorMsg = "Possible file permission problem. Root cause: \n" + e.toString();
+            	IOException newE = new IOException(errorMsg);
+            	throw newE;
+            }
             temp.deleteOnExit();
             FileOutputStream fos = new FileOutputStream(temp);
             BufferedOutputStream out = new BufferedOutputStream(fos);

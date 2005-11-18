@@ -123,6 +123,7 @@ data.
       <accessConstraints>NONE</accessConstraints>
 <srsXmlStyle value = "true" />
 <serviceLevel value = "31" />
+<citeConformanceHacks>false</citeConformanceHacks>
 <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
 </service>
     <service type="WMS" enabled="true">
@@ -143,6 +144,7 @@ This is a description of your Web Map Server.
       <accessConstraints>NONE</accessConstraints>
 <srsXmlStyle value = "false" />
       <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
+<svgAntiAlias>true</svgAntiAlias>
     </service>
   </services>
 </serverConfiguration>

@@ -1037,7 +1037,19 @@ class FileStrategy implements AbstractService.ServiceStrategy {
         // - ProcessID is traditional, I don't know how to find that in Java
         this.response = response;
         sequence++;
-        temp = File.createTempFile("wfs" + sequence, "tmp");
+        // lets check for file permissions first so we can throw a clear error
+        try {
+        	temp = File.createTempFile("wfs" + sequence, "tmp");
+        	if (!temp.canRead() || !temp.canWrite())
+        	{
+        		String errorMsg = "Temporary-file permission problem for location: " + temp.getPath();
+            	throw new IOException(errorMsg);
+        	}
+        } catch (IOException e) {
+        	String errorMsg = "Possible file permission problem. Root cause: \n" + e.toString();
+        	IOException newE = new IOException(errorMsg);
+        	throw newE;
+        }
         temp.deleteOnExit();
         safe = new BufferedOutputStream(new FileOutputStream(temp));
 

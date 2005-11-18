@@ -199,7 +199,7 @@ public class MockUtils {
 	 */
 	public static WFSDTO newWfsDto() {
 		WFSDTO dto = new WFSDTO();
-		dto.setGmlPrefixing(true);
+		dto.setCiteConformanceHacks(true);
 		ServiceDTO service = new ServiceDTO();
 		service.setAbstract("test abstract");
 		service.setAccessConstraints("NONE");
@@ -453,7 +453,7 @@ public class MockUtils {
 	 * DOCUMENT ME!
 	 * 
 	 * @author Gabriel Roldan, Axios Engineering
-	 * @version $Id: MockUtils.java 3833 2005-10-17 07:24:15Z groldan $
+	 * @version $Id: MockUtils.java 3917 2005-11-15 19:08:51Z jdeolive $
 	 */
 	private static class ForceWGS84PropertyDataStore extends PropertyDataStore {
 		/**

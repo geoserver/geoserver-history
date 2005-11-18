@@ -7,7 +7,9 @@ package org.vfny.geoserver.wms.requests;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.StringBufferInputStream;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,6 +48,7 @@ import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WmsException;
+import org.xml.sax.InputSource;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -692,32 +695,58 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         
         if (getValue("VALIDATESCHEMA") != null)
         {
-        	InputStream in = new StringBufferInputStream(sldBody);
+        	//Get a reader from the given string
+            Reader reader = getReaderFromString(sldBody);
+        	//-InputStream in = new StringBufferInputStream(sldBody);
         	// user requested to validate the schema.
         	SLDValidator validator = new SLDValidator();
         	List errors =null;
 
-        		errors = validator.validateSLD(in, request.getHttpServletRequest().getSession().getServletContext());
-        		try{
-        			in.close();
-        		}
-        		catch(Exception e)
-				{
-        			// do nothing
-				}
-        		if (errors.size() != 0)
-        		{
-        			in = new StringBufferInputStream(sldBody);
-        			throw new WmsException(SLDValidator.getErrorMessage(in,errors));
-        		}
+        	 //Create a sax input source from the reader
+            InputSource in = new InputSource(reader);
+            errors = validator.validateSLD(in, request.getHttpServletRequest().getSession().getServletContext());
+            if (errors.size() != 0) {
+              reader = getReaderFromString(sldBody);
+              throw new WmsException(SLDValidator.getErrorMessage(reader, errors));
+            }
+//-    		errors = validator.validateSLD(in, request.getHttpServletRequest().getSession().getServletContext());
+//-    		try{
+//-    			in.close();
+//-    		}
+//-    		catch(Exception e)
+//-			{
+//-    			// do nothing
+//-			}
+//-    		if (errors.size() != 0)
+//-    		{
+//-    			in = new StringBufferInputStream(sldBody);
+//-    			throw new WmsException(SLDValidator.getErrorMessage(in,errors));
+//-    		}
         }
 
-        InputStream in = new StringBufferInputStream(sldBody);
-        SLDParser parser = new SLDParser(styleFactory, in);
+//-        InputStream in = new StringBufferInputStream(sldBody);
+//-        SLDParser parser = new SLDParser(styleFactory, in);
+        Reader reader = getReaderFromString(sldBody);
+        SLDParser parser = new SLDParser(styleFactory, reader);
         StyledLayerDescriptor sld = parser.parseSLD();
         parseStyledLayerDescriptor(request, sld);
     }
 
+    /**
+     * Create a reader of the given String.
+     * This reader will be used in the InputSource for the sld parser.
+     * The advantage with a reader over a input stream is that we don't have to consider encoding.
+     * The xml declaration with encoding is ignored using a Reader in parser.
+     * The encoding of the string has been appropiate handled by the servlet when streaming in.
+     *
+     * @param sldBody the sldbody to create a reader of.
+     * @return The created reader
+     * @see Reader
+     */
+    private Reader getReaderFromString(String sldBody) {
+      return new StringReader(sldBody);
+    }
+    
     /**
      * DOCUMENT ME!
      *

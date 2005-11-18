@@ -412,22 +412,26 @@ public class XMLConfigReader {
         geoServer.setLoggingLevel(loggingLevel);
 
         String logLocation = ReaderUtils.getChildText(globalElem, "logLocation");
-        if (logLocation != null && "".equals(logLocation.trim()))
-        	logLocation = null;
+
+        if ((logLocation != null) && "".equals(logLocation.trim())) {
+            logLocation = null;
+        }
+
         geoServer.setLogLocation(logLocation);
-        
+
         //init this now so the rest of the config has correct log levels.
         try {
-			GeoServer.initLogging(loggingLevel,logLocation);
-		} 
-        catch (IOException e) {
-        	throw new ConfigurationException(e);
-		}
-        
+            GeoServer.initLogging(loggingLevel, logLocation);
+        } catch (IOException e) {
+            throw new ConfigurationException(e);
+        }
+
         LOGGER.config("logging level is " + loggingLevel);
-        if (logLocation != null) 
-        	LOGGER.config("logging to " + logLocation);
-        
+
+        if (logLocation != null) {
+            LOGGER.config("logging to " + logLocation);
+        }
+
 		Element elem = null;
 		elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
 		geoServer.setContact(loadContact(elem));
@@ -603,18 +607,21 @@ public class XMLConfigReader {
 		wfs = new WFSDTO();
 		
 		//try {
-		wfs.setGmlPrefixing(ReaderUtils.getBooleanAttribute(
-				ReaderUtils.getChildElement(wfsElement, "gmlPrefixing"),
-				"value", false, false));
-		
+        
+        wfs.setFeatureBounding(ReaderUtils.getBooleanAttribute(
+                ReaderUtils.getChildElement(wfsElement, "featureBounding"),
+                "value", false, false));
+
 		Element elem = ReaderUtils.getChildElement(wfsElement, "srsXmlStyle",
 				false);
 		LOGGER.info("reading srsXmlStyle: " + elem);
+
 		if (elem != null) {
 			wfs.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem, "value",
 					false, true));
-			LOGGER.info("set srsXmlStyle to " +ReaderUtils.getBooleanAttribute(elem, "value", false, true));
-		}
+            LOGGER.info("set srsXmlStyle to "
+                + ReaderUtils.getBooleanAttribute(elem, "value", false, true));
+        }
 		
 		String serviceLevelValue = ReaderUtils.getChildText(wfsElement,
 		"serviceLevel");
@@ -651,15 +658,16 @@ public class XMLConfigReader {
         //get the conformance hacks attribute
         // it might not be there, in which case we just use the default value 
         //  (see WFSDTO.java)        
-        Element e = ReaderUtils.getChildElement(wfsElement, "citeConformanceHacks");
-        if (e != null)
-        {
-        	String text = ReaderUtils.getChildText(wfsElement,"citeConformanceHacks");
-        	boolean citeConformanceHacks = Boolean.valueOf(text).booleanValue(); // just get the value and parse it
-        	wfs.setCiteConformanceHacks(
-        			citeConformanceHacks
-						);
-        	LOGGER.finer("setting citeConformanceHacks to " + citeConformanceHacks);
+        Element e = ReaderUtils.getChildElement(wfsElement,
+                "citeConformanceHacks");
+
+        if (e != null) {
+            String text = ReaderUtils.getChildText(wfsElement,
+                    "citeConformanceHacks");
+            boolean citeConformanceHacks = Boolean.valueOf(text).booleanValue(); // just get the value and parse it
+            wfs.setCiteConformanceHacks(citeConformanceHacks);
+            LOGGER.finer("setting citeConformanceHacks to "
+                + citeConformanceHacks);
         }
 
         //} catch (Exception e) {
@@ -686,8 +694,9 @@ public class XMLConfigReader {
 		wms.setService(loadService(wmsElement));
         
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
-        wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(wmsElement, "svgAntiAlias")));
-	}
+        wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(
+                    wmsElement, "svgAntiAlias")));
+    }
 	
 	/**
 	 * loadService purpose.
@@ -1227,35 +1236,32 @@ public class XMLConfigReader {
 		Element legendURL = ReaderUtils.getChildElement(fTypeRoot, "LegendURL");
 		if (legendURL != null) {
 			LegendURLDTO legend = new LegendURLDTO();
-			legend.setWidth(Integer.parseInt(ReaderUtils.getAttribute(legendURL, "width", true)));
-			legend.setHeight(Integer.parseInt(ReaderUtils.getAttribute(legendURL, "height", true)));            
-			legend.setFormat(ReaderUtils.getChildText(legendURL, "Format", true));
-			legend.setOnlineResource(
-					ReaderUtils.getAttribute(
-							ReaderUtils.getChildElement(legendURL, "OnlineResource", true), 
-							"xlink:href", 
-							true
-					)
-			);
-			ft.setLegendURL(legend);           
-		}
-		//-- Modif C. Kolbowicz - 06/10/2004
-		
-		
-		ft.setLatLongBBox(loadLatLongBBox(ReaderUtils.getChildElement(
-				fTypeRoot, "latLonBoundingBox")));
-		
-		Element numDecimalsElem = ReaderUtils.getChildElement(fTypeRoot,
-				"numDecimals", false);
-		
-		if (numDecimalsElem != null) {
-			ft.setNumDecimals(ReaderUtils.getIntAttribute(numDecimalsElem,
-					"value", false, 8));
-		}
-		
-		ft.setDefinitionQuery(loadDefinitionQuery(fTypeRoot));
-		
-		return ft;
+            legend.setWidth(Integer.parseInt(ReaderUtils.getAttribute(
+                        legendURL, "width", true)));
+            legend.setHeight(Integer.parseInt(ReaderUtils.getAttribute(
+                        legendURL, "height", true)));
+            legend.setFormat(ReaderUtils.getChildText(legendURL, "Format", true));
+            legend.setOnlineResource(ReaderUtils.getAttribute(
+                    ReaderUtils.getChildElement(legendURL, "OnlineResource",
+                        true), "xlink:href", true));
+            ft.setLegendURL(legend);
+        }
+
+        //-- Modif C. Kolbowicz - 06/10/2004
+        ft.setLatLongBBox(loadLatLongBBox(ReaderUtils.getChildElement(
+                    fTypeRoot, "latLonBoundingBox")));
+
+        Element numDecimalsElem = ReaderUtils.getChildElement(fTypeRoot,
+                "numDecimals", false);
+
+        if (numDecimalsElem != null) {
+            ft.setNumDecimals(ReaderUtils.getIntAttribute(numDecimalsElem,
+                    "value", false, 8));
+        }
+
+        ft.setDefinitionQuery(loadDefinitionQuery(fTypeRoot));
+
+        return ft;
 	}
 
 	

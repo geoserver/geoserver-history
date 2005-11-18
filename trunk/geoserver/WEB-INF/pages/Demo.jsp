@@ -4,6 +4,18 @@
 
 <table class="info" cellpadding=10 width=670>
 	<tbody>
+	
+		<tr>
+			<td width=70/>
+			<td width=600 class="label" valign="top">
+			<center><u><b><font size=+2><a href="../../../data/demo/popup_map/index.html"><bean:message key="welcome.demo.wmsexample.title"/></a></font></b></u><br>
+			<p>
+			<bean:message key="welcome.demo.wmsexample.short"/>
+			</p>
+			</center>
+			</td>
+		</tr>
+		
 		<tr>
 			<td width=70/>
 			<td width=600 class="label" valign="top">

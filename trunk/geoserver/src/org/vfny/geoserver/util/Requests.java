@@ -143,7 +143,7 @@ public final class Requests {
  *       return "http://" + httpServletRequest.getServerName() + ":"
  *       + httpServletRequest.getServerPort() + "/geoserver/";
  */
-        return "http://" + httpServletRequest.getServerName() + ":"
+    	return httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName() + ":"
         + httpServletRequest.getServerPort() + httpServletRequest.getContextPath() +"/";
     }
     

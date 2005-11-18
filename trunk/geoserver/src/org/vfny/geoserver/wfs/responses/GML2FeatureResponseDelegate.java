@@ -4,16 +4,6 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.GZIPOutputStream;
-
-import javax.xml.transform.TransformerException;
-
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureResults;
 import org.geotools.gml.producer.FeatureTransformer;
@@ -23,6 +13,14 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
+import javax.xml.transform.TransformerException;
 
 
 /**
@@ -42,37 +40,30 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private static final int NO_FORMATTING = -1;
     private static final int INDENT_SIZE = 2;
 
-	/**
-	 * This is a "magic" class provided by Geotools that writes out GML for an
-	 * array of FeatureResults.
-	 * 
-	 * <p>
-	 * This class seems to do all the work, if you have a problem with GML you
-	 * will need to hunt it down. We supply all of the header information in
-	 * the execute method, and work through the featureList in the writeTo
-	 * method.
-	 * </p>
-	 * 
-	 * <p>
-	 * This value will be <code>null</code> until execute is called.
-	 * </p>
-	 * 
-	 * @uml.property name="transformer"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private FeatureTransformer transformer;
-
+    /**
+     * This is a "magic" class provided by Geotools that writes out GML for an
+     * array of FeatureResults.
+     * 
+     * <p>
+     * This class seems to do all the work, if you have a problem with GML you
+     * will need to hunt it down. We supply all of the header information in
+     * the execute method, and work through the featureList in the writeTo
+     * method.
+     * </p>
+     * 
+     * <p>
+     * This value will be <code>null</code> until execute is called.
+     * </p>
+     */
+    private FeatureTransformer transformer;
 
     /** will be true if GML2-GZIP output format was requested */
     private boolean compressOutput = false;
 
-	/**
-	 * the results of a getfeature request wich this object will encode as GML2
-	 * 
-	 * @uml.property name="results"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private GetFeatureResults results;
+    /**
+     * the results of a getfeature request wich this object will encode as GML2
+     */
+    private GetFeatureResults results;
 
     /**
      * empty constructor required to be instantiated through
@@ -151,7 +142,9 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         transformer.setIndentation(config.isVerbose() ? INDENT_SIZE
                                                       : (NO_FORMATTING));
         transformer.setNumDecimals(config.getNumDecimals());
-	transformer.setEncoding(request.getWFS().getGeoServer().getCharSet());
+        transformer.setFeatureBounding(request.getWFS().isFeatureBounding());
+        transformer.setEncoding(request.getWFS().getGeoServer().getCharSet());
+
         String wfsSchemaLoc = request.getSchemaBaseUrl()
             + "wfs/1.0.0/WFS-basic.xsd";
 
@@ -162,14 +155,15 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
             transformer.addSchemaLocation(uri, (String) ftNamespaces.get(uri));
         }
 
-        transformer.setGmlPrefixing(request.getWFS().isGmlPrefixing());
-	
+        transformer.setGmlPrefixing(request.getWFS().getCiteConformanceHacks());
+
         FeatureLock featureLock = results.getFeatureLock();
 
         if (featureLock != null) {
             transformer.setLockId(featureLock.getAuthorization());
         }
-		transformer.setSrsName(request.getWFS().getSrsPrefix() + meta.getSRS());
+
+        transformer.setSrsName(request.getWFS().getSrsPrefix() + meta.getSRS());
     }
 
     /**

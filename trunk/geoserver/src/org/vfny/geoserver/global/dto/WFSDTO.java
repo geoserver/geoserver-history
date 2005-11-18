@@ -42,43 +42,28 @@ public final class WFSDTO implements DataTransferObject {
     /** ServiceLevel mask equivilent to complete WFS conformance */
     public static final int COMPLETE = TRANSACTIONAL | SERVICE_LOCKING;
 
-	/**
-	 * The service parameters for this instance.
-	 * 
-	 * @uml.property name="service"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private ServiceDTO service;
-
-	/**
-	 * 
-	 * @uml.property name="gmlPrefixing" multiplicity="(0 1)"
-	 */
-	private boolean gmlPrefixing = false;
-
-	/**
-	 * 
-	 * @uml.property name="srsXmlStyle" multiplicity="(0 1)"
-	 */
-	private boolean srsXmlStyle = true;
-
-	/**
-	 * 
-	 * @uml.property name="serviceLevel" multiplicity="(0 1)"
-	 */
-	private int serviceLevel = COMPLETE; //if not set then it should be complete.
+    /** The service parameters for this instance. */
+    private ServiceDTO service;
+    private boolean srsXmlStyle = true;
+    private int serviceLevel = COMPLETE; //if not set then it should be complete
+    private boolean featureBounding = true;
 
     /**
-     * ie. <citeConformanceHacks>true</citeConformanceHacks>
-     *
-     *Currently there are certain legal things in the Geoserver WFS GetCapabilities response that the CITE tests throw error if it finds.  An example of this is the supported GetFeature output formats.  CITE only allows GML2, GML2-ZIP, and SHAPE-ZIP.
-     *We support GML2, GML2-GZIP, GML2-ZIP, and SHAPE-ZIP, so CITE tests will complain that we're not allowed to support GML2-GZIP!
-     *By setting this option to "true" the GetCapabilities response will NOT show we support those extra dataformats.
-     *
-     *In the future we may find other "silly" things.
+     * ie. citeConformanceHacks value equals true
+     * 
+     * <p>
+     * Currently there are certain legal things in the Geoserver WFS
+     * GetCapabilities response that the CITE tests throw error if it finds.
+     * An example of this is the supported GetFeature output formats.  CITE
+     * only allows GML2, GML2-ZIP, and SHAPE-ZIP. We support GML2, GML2-GZIP,
+     * GML2-ZIP, and SHAPE-ZIP, so CITE tests will complain that we're not
+     * allowed to support GML2-GZIP! By setting this option to "true" the
+     * GetCapabilities response will NOT show we support those extra
+     * dataformats. In the future we may find other "silly" things.
+     * </p>
      */
-    private     boolean citeConformanceHacks = false; //default to normal operations
-    
+    private boolean citeConformanceHacks = false; //default to normal operations
+
     /**
      * WFS Data Transfer Object constructor.  does nothing
      */
@@ -103,7 +88,7 @@ public final class WFSDTO implements DataTransferObject {
         }
 
         service = (ServiceDTO) new ServiceDTO(other.getService());
-        gmlPrefixing = other.isGmlPrefixing();
+        featureBounding = other.isFeatureBounding();
         serviceLevel = other.getServiceLevel();
         citeConformanceHacks = other.getCiteConformanceHacks();
     }
@@ -134,9 +119,14 @@ public final class WFSDTO implements DataTransferObject {
         }
 
         WFSDTO dto = (WFSDTO) other;
-        
-        if (citeConformanceHacks !=dto.getCiteConformanceHacks())
-        	return false;
+
+        if (citeConformanceHacks != dto.getCiteConformanceHacks()) {
+            return false;
+        }
+
+        if (featureBounding != dto.isFeatureBounding()) {
+            return false;
+        }
 
         return (((serviceLevel == dto.getServiceLevel()) && (service == null))
         ? (dto.getService() == null) : service.equals(dto.getService()));
@@ -153,137 +143,115 @@ public final class WFSDTO implements DataTransferObject {
         return (service == null) ? 0 : service.hashCode();
     }
 
-	/**
-	 * Provides access to the Service DTO object.
-	 * 
-	 * <p>
-	 * Note well that this is the internal ServiceDTO object used by the WFSDTO
-	 * - any changes made to the result of this method will change the state
-	 * of this WFSDTO object.
-	 * </p>
-	 * 
-	 * @return ServericeDTO used by this WFSDTO
-	 * 
-	 * @uml.property name="service"
-	 */
-	public ServiceDTO getService() {
-		return service;
-	}
-
-	/**
-	 * Set this WFS Data Tranfer Object to use the provided Service DTO.
-	 * 
-	 * <p>
-	 * A copy of the provided dto is made.
-	 * </p>
-	 * 
-	 * @param dto ServiceDTO used to configure this WFSDTO
-	 * 
-	 * @throws NullPointerException DOCUMENT ME!
-	 * 
-	 * @uml.property name="service"
-	 */
-	public void setService(ServiceDTO dto) {
-		if (dto == null) {
-			throw new NullPointerException("ServiceDTO requrired");
-		}
-
-		service = dto;
-	}
-
-
     /**
-     * isGmlPrefixing purpose.
+     * Provides access to the Service DTO object.
      * 
      * <p>
-     * Description ...
+     * Note well that this is the internal ServiceDTO object used by the WFSDTO
+     * - any changes made to the result of this method will change the state
+     * of this WFSDTO object.
      * </p>
+     *
+     * @return ServericeDTO used by this WFSDTO
+     */
+    public ServiceDTO getService() {
+        return service;
+    }
+
+    /**
+     * Set this WFS Data Tranfer Object to use the provided Service DTO.
+     * 
+     * <p>
+     * A copy of the provided dto is made.
+     * </p>
+     *
+     * @param dto ServiceDTO used to configure this WFSDTO
+     *
+     * @throws NullPointerException DOCUMENT ME!
+     */
+    public void setService(ServiceDTO dto) {
+        if (dto == null) {
+            throw new NullPointerException("ServiceDTO requrired");
+        }
+
+        service = dto;
+    }
+
+    /**
+     * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+     *
+     * @return <tt>true</tt> if the srs is reported with the xml style
+     */
+    public boolean isSrsXmlStyle() {
+        return srsXmlStyle;
+    }
+
+    /**
+     * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+     *
+     * @param doXmlStyle whether the srs style should be xml or not.
+     */
+    public void setSrsXmlStyle(boolean doXmlStyle) {
+        this.srsXmlStyle = doXmlStyle;
+    }
+
+    /**
+     * Access serviceLevel property.
+     *
+     * @return Returns the serviceLevel.
+     */
+    public int getServiceLevel() {
+        return serviceLevel;
+    }
+
+    /**
+     * Set serviceLevel to serviceLevel.
+     *
+     * @param serviceLevel The serviceLevel to set.
+     */
+    public void setServiceLevel(int serviceLevel) {
+        this.serviceLevel = serviceLevel;
+    }
+
+    /**
+     * turn on/off the citeConformanceHacks option.
+     *
+     * @param on
+     */
+    public void setCiteConformanceHacks(boolean on) {
+        citeConformanceHacks = on;
+    }
+
+    /**
+     * get the current value of the citeConformanceHacks
      *
      * @return
      */
-    public boolean isGmlPrefixing() {
-        return gmlPrefixing;
+    public boolean getCiteConformanceHacks() {
+        return (citeConformanceHacks);
     }
 
-	/**
-	 * setGmlPrefixing purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param b
-	 * 
-	 * @uml.property name="gmlPrefixing"
-	 */
-	public void setGmlPrefixing(boolean b) {
-		gmlPrefixing = b;
-	}
-
-    
-	/**
-	 * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-	 * style.  
-	 *
-	 * @return <tt>true</tt> if the srs is reported with the xml style
-	 */
-	public boolean isSrsXmlStyle() {
-		return srsXmlStyle;
-	}
-
-	/**
-	 * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-	 * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-	 * style.  
-	 * 
-	 * @param doXmlStyle whether the srs style should be xml or not.
-	 * 
-	 * @uml.property name="srsXmlStyle"
-	 */
-	public void setSrsXmlStyle(boolean doXmlStyle) {
-		this.srsXmlStyle = doXmlStyle;
-	}
-
-	/**
-	 * Access serviceLevel property.
-	 * 
-	 * @return Returns the serviceLevel.
-	 * 
-	 * @uml.property name="serviceLevel"
-	 */
-	public int getServiceLevel() {
-		return serviceLevel;
-	}
-
-	/**
-	 * Set serviceLevel to serviceLevel.
-	 * 
-	 * @param serviceLevel The serviceLevel to set.
-	 * 
-	 * @uml.property name="serviceLevel"
-	 */
-	public void setServiceLevel(int serviceLevel) {
-		this.serviceLevel = serviceLevel;
-	}
-    
     /**
-     *  turn on/off the citeConformanceHacks option.
-     * 
-     * @param on
+     * Returns whether the gml returned by getFeature includes an
+     * auto-calculated bounds element on each feature or not.
+     *
+     * @return <tt>true</tt> if the gml features will have boundedBy
+     *         automatically generated.
      */
-    public void setCiteConformanceHacks(boolean on)
-    {
-    	citeConformanceHacks = on;
+    public boolean isFeatureBounding() {
+        return featureBounding;
     }
-    
+
     /**
-     * get the current value of the citeConformanceHacks
-     * 
-     * @return
+     * Sets whether the gml returned by getFeature includes an auto-calculated
+     * bounds element on each feature or not.
+     *
+     * @param featureBounding <tt>true</tt> if gml features should have
+     *        boundedBy automatically generated.
      */
-    public boolean getCiteConformanceHacks()
-    {
-    	return (citeConformanceHacks );
+    public void setFeatureBounding(boolean featureBounding) {
+        this.featureBounding = featureBounding;
     }
 }

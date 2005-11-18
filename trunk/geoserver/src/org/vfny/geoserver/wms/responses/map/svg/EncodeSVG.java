@@ -4,10 +4,9 @@
  */
 package org.vfny.geoserver.wms.responses.map.svg;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
@@ -20,10 +19,9 @@ import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.map.MapLayer;
 import org.vfny.geoserver.wms.WMSMapContext;
-
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Point;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Logger;
 
 
 /**
@@ -36,11 +34,11 @@ public class EncodeSVG {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.map");
+    private static final String DOCTYPE = "<!DOCTYPE svg \n\tPUBLIC \"-//W3C//DTD SVG 20001102//EN\" \n\t\"http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd\">\n";
 
     /** the XML and SVG header */
     private static final String SVG_HEADER =
         "<?xml version=\"1.0\" standalone=\"no\"?>\n\t"
-        + "<!DOCTYPE svg \n\tPUBLIC \"-//W3C//DTD SVG 20001102//EN\" \n\t\"http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd\">\n"
         + "<svg xmlns=\"http://www.w3.org/2000/svg\" \n\tstroke=\"green\" \n\tfill=\"none\" \n\tstroke-width=\"0.001%\" \n\twidth=\"_width_\" \n\theight=\"_height_\" \n\tviewBox=\"_viewBox_\" \n\tpreserveAspectRatio=\"xMidYMid meet\">\n";
 
     /** the SVG closing element */
@@ -61,7 +59,7 @@ public class EncodeSVG {
      * @param mapContext DOCUMENT ME!
      */
     public EncodeSVG(WMSMapContext mapContext) {
-       this.mapContext = mapContext;
+        this.mapContext = mapContext;
     }
 
     /**
@@ -119,9 +117,8 @@ public class EncodeSVG {
         Envelope referenceSpace = mapContext.getAreaOfInterest();
         String viewBox = writer.getX(referenceSpace.getMinX()) + " "
             + (writer.getY(referenceSpace.getMinY())
-            - referenceSpace.getHeight()) + " "
-            + referenceSpace.getWidth() + " "
-            + referenceSpace.getHeight();
+            - referenceSpace.getHeight()) + " " + referenceSpace.getWidth()
+            + " " + referenceSpace.getHeight();
 
         return viewBox;
     }
@@ -132,6 +129,8 @@ public class EncodeSVG {
      * @throws IOException DOCUMENT ME!
      */
     private void writeHeader() throws IOException {
+        //TODO: this does not write out the doctype definition, there should be 
+        // a configuration option wether to include it or not.
         String viewBox = createViewBox();
         String header = SVG_HEADER.replaceAll("_viewBox_", viewBox);
         header = header.replaceAll("_width_",
@@ -179,7 +178,8 @@ public class EncodeSVG {
     private void writeLayers() throws IOException, AbortedException {
         MapLayer[] layers = mapContext.getLayers();
         int nLayers = layers.length;
-        //FeatureTypeInfo layerInfo = null;
+
+        // FeatureTypeInfo layerInfo = null;
         int defMaxDecimals = writer.getMaximunFractionDigits();
 
         FilterFactory fFac = FilterFactory.createFilterFactory();

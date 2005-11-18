@@ -40,6 +40,13 @@ parameters repository for all featuretypes it holds.
 <parameter value = "postgis" name = "dbtype"  />
 </connectionParams>
 </datastore>
+<datastore namespace = "tiger" enabled = "true" id = "DS_giant_polygon" >
+<abstract></abstract>
+<connectionParams>
+<parameter value = "tiger" name = "namespace"  />
+<parameter value = "file:data/demo/popup_map/data/giant_polygon.shp" name = "url"  />
+</connectionParams>
+</datastore>
 <datastore namespace = "cite" enabled = "true" id = "Ponds" >
 <connectionParams>
 <parameter value = "file:data/featureTypes/cite_Ponds/Ponds.shp" name = "url"  />
@@ -48,6 +55,13 @@ parameters repository for all featuretypes it holds.
 <datastore namespace = "topp" enabled = "true" id = "states_shapefile" >
 <connectionParams>
 <parameter value = "file:data/featureTypes/states/states.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "tiger" enabled = "true" id = "DS_poi" >
+<abstract></abstract>
+<connectionParams>
+<parameter value = "tiger" name = "namespace"  />
+<parameter value = "file:data/demo/popup_map/data/poi.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "cite" enabled = "true" id = "RoadSegments" >
@@ -110,6 +124,20 @@ parameters repository for all featuretypes it holds.
 <parameter value = "arcsde" name = "dbtype"  />
 </connectionParams>
 </datastore>
+<datastore namespace = "tiger" enabled = "true" id = "DS_poly_landmarks" >
+<abstract></abstract>
+<connectionParams>
+<parameter value = "tiger" name = "namespace"  />
+<parameter value = "file:data/demo/popup_map/data/poly_landmarks.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "tiger" enabled = "true" id = "DS_tiger_roads" >
+<abstract></abstract>
+<connectionParams>
+<parameter value = "tiger" name = "namespace"  />
+<parameter value = "file:data/demo/popup_map/data/tiger_roads.shp" name = "url"  />
+</connectionParams>
+</datastore>
 </datastores>
 	<!-- Defines the Coverage Formats -->
   <formats>
@@ -144,6 +172,7 @@ Defines namespaces to be used by the datastores.
 <namespace uri = "http://www.openplans.org/topp" prefix = "topp" default = "true"  />
 <namespace uri = "http://geoserver.sf.net" prefix = "sde"  />
 <namespace uri = "http://www.refractions.net/lakes" prefix = "lake"  />
+<namespace uri = "http://www.census.gov" prefix = "tiger"  />
 <namespace uri = "http://www.opengeospatial.net/cite" prefix = "cite"  />
 </namespaces>
 <styles>
@@ -153,6 +182,7 @@ contained in geoserver/misc/wms/styles.  We're working on finding
 a better place for them, but for now that's where you must put them
 if you want them on the server.
 -->
+<style filename = "giant_polygon.sld" id = "giant_polygon"  />
 		<style id="raster" filename="raster.sld" />
 <style filename = "NamedPlaces.sld" id = "cite_named_places"  />
 <style filename = "capitals.sld" id = "capitals"  />
@@ -160,6 +190,8 @@ if you want them on the server.
 <style filename = "Buildings.sld" id = "cite_buildings"  />
 <style filename = "funkypolyshp.sld" id = "dotty"  />
 <style filename = "Streams.sld" id = "cite_streams"  />
+<style filename = "tiger_roads.sld" id = "tiger_roads"  />
+<style filename = "poly_landmarks.sld" id = "poly_landmarks"  />
 <style filename = "green.sld" id = "green"  />
 <style filename = "usa_math.sld" id = "manualVsWorkers"  />
 <style filename = "simpleRoads.sld" id = "simple_roads"  />
@@ -170,6 +202,7 @@ if you want them on the server.
 <style filename = "blue.sld" id = "blue"  />
 <style filename = "Forests.sld" id = "cite_forests"  />
 <style filename = "point.sld" id = "point"  />
+<style filename = "poi.sld" id = "poi"  />
 <style filename = "Bridges.sld" id = "cite_bridges"  />
 <style filename = "usa_ratio.sld" id = "maleVsFemale"  />
 <style filename = "Lakes.sld" id = "cite_lakes"  />

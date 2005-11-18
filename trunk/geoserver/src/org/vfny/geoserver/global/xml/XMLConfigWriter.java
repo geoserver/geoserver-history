@@ -167,9 +167,10 @@ public class XMLConfigWriter {
                 cw.textTag("loggingLevel", g.getLoggingLevel().getName());
             }
 
-            if (g.getLogLocation() != null)
-            	cw.textTag("logLocation", g.getLogLocation());
-            
+            if (g.getLogLocation() != null) {
+                cw.textTag("logLocation", g.getLogLocation());
+            }
+
             /*if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){
                cw.comment("The base URL where this servlet will run.  If running locally\n"+
                "then http://localhost:8080 (or whatever port you're running on)\n"+
@@ -182,9 +183,10 @@ public class XMLConfigWriter {
             cw.comment("Whether newlines and indents should be returned in \n"
                 + "XML responses.  Default is false");
             cw.valueTag("verbose", "" + g.isVerbose());
-			cw.comment("Whether the Service Exceptions returned to clients should contain\n"
-							+ "full java stack traces (useful for debugging). ");
-			cw.valueTag("verboseExceptions", "" + g.isVerboseExceptions());
+            cw.comment(
+                "Whether the Service Exceptions returned to clients should contain\n"
+                + "full java stack traces (useful for debugging). ");
+            cw.valueTag("verboseExceptions", "" + g.isVerboseExceptions());
             cw.comment(
                 "Sets the max number of decimal places past the zero returned in\n"
                 + "a GetFeature response.  Default is 4");
@@ -315,7 +317,8 @@ public class XMLConfigWriter {
         ServiceDTO s = null;
         String u = null;
         String t = "";
-        boolean gml = false;
+        
+        boolean fBounds = false;
         boolean srsXmlStyle = false;
         int serviceLevel = 0;
         String svgRenderer = null;
@@ -330,7 +333,8 @@ public class XMLConfigWriter {
             WFSDTO w = (WFSDTO) obj;
             s = w.getService();
             t = "WFS";
-            gml = w.isGmlPrefixing();
+            
+            fBounds = w.isFeatureBounding();
             srsXmlStyle = w.isSrsXmlStyle();
             serviceLevel = w.getServiceLevel();
             citeConformanceHacks = w.getCiteConformanceHacks();
@@ -394,10 +398,10 @@ public class XMLConfigWriter {
             cw.textTag("accessConstraints", s.getAccessConstraints());
         }
 
-        if (gml) {
-			cw.valueTag("gmlPrefixing", gml + "");
+        if (fBounds) {
+            cw.valueTag("featureBounding", fBounds + "");
         }
-        
+
         //if (srsXmlStyle) {
 			cw.valueTag("srsXmlStyle", srsXmlStyle + "");
 			//}
@@ -492,8 +496,7 @@ public class XMLConfigWriter {
 
             while (i.hasNext()) {
                 String s = (String) i.next();
-                NameSpaceInfoDTO ns = (NameSpaceInfoDTO) data.getNameSpaces()
-                                                             .get(s);
+            NameSpaceInfoDTO ns = (NameSpaceInfoDTO) data.getNameSpaces().get(s);
 
                 if (ns != null) {
                     storeNameSpace(cw, ns);
@@ -772,7 +775,8 @@ public class XMLConfigWriter {
                 storeFeature(ft, dir2);
                 
                 if (ft.getSchemaAttributes() != null) {
-                    LOGGER.fine( ft.getKey() +" writing schema.xml w/ "+ft.getSchemaAttributes().size() );
+                    LOGGER.fine(ft.getKey() + " writing schema.xml w/ "
+                        + ft.getSchemaAttributes().size());
                     storeFeatureSchema(ft, dir2);
                 }
             }
@@ -795,38 +799,44 @@ public class XMLConfigWriter {
         //if it's from another datastore.  Though I suppose that is not 
         //mutually exclusive, just a little wasting of space, for shapefiles
         //would be held twice.
-
 	File[] fa = dir.listFiles();
+
 	for(int j=0;j<fa.length;j++){
-	    // find dir name
-	    i = data.getFeaturesTypes().values().iterator();
-	    FeatureTypeInfoDTO fti = null;
-	    while(fti==null && i.hasNext()){
-		FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO)i.next();
-		if(ft.getDirName().equals(fa[j].getName())){
-		    fti = ft;
-		}
-	    }
-	    if(fti == null){
-		//delete it
-		File[] files = fa[j].listFiles();
-		if (files != null) {
-		    for(int x=0;x<files.length;x++) {
-			//hold on to the data, but be sure to get rid of the
-			//geoserver config shit, as these were deleted.
-			if (files[x].getName().equals("info.xml") ||
-			    files[x].getName().equals("schema.xml")) {
-			    //sorry for the hardcodes, I don't remember if/where
-			    //we have these file names.
-			    files[x].delete();
-			}
-		    }
-		}
-		if (files != null && files.length == 0) {
-		    fa[j].delete();
-		}
-	    }
-	}
+            // find dir name
+            i = data.getFeaturesTypes().values().iterator();
+
+            FeatureTypeInfoDTO fti = null;
+
+            while ((fti == null) && i.hasNext()) {
+                FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) i.next();
+
+                if (ft.getDirName().equals(fa[j].getName())) {
+                    fti = ft;
+                }
+            }
+
+            if (fti == null) {
+                //delete it
+                File[] files = fa[j].listFiles();
+
+                if (files != null) {
+                    for (int x = 0; x < files.length; x++) {
+                        //hold on to the data, but be sure to get rid of the
+                        //geoserver config shit, as these were deleted.
+                        if (files[x].getName().equals("info.xml")
+                                || files[x].getName().equals("schema.xml")) {
+                            //sorry for the hardcodes, I don't remember if/where
+                            //we have these file names.
+                            files[x].delete();
+                        }
+                    }
+                }
+
+                if ((files != null) && (files.length == 0)) {
+                    fa[j].delete();
+                }
+            }
+        }
     }
     
     /**

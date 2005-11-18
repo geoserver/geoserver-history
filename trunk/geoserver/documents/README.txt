@@ -1,3 +1,19 @@
+Geoserver 1.3.0 RC6
+-------------------
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12080
+
+The major changes since RC5 have been:
+
+* support for Java 5
+* option to output verbose GML (boundedBy element per feature)
+* handling of form-based POST requests
+* Oracle spatial support for MultiPoints
+* Fast SVG Renderer - support for heterogeneos geometry types
+
+Based on the geotools 2.1.x branch (tag = geoserver-1.3.0.RC6)
+
 Geoserver 1.3.0 RC5
 -------------------
 
