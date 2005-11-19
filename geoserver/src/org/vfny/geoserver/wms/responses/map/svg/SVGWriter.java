@@ -896,7 +896,11 @@ public class SVGWriter extends OutputStreamWriter {
                 write("\" y=\"");
                 write(getY(p.getY()));
 		//Issue GEOS-193, from John Steining.
-                //write(" xlink:href=\"#point\"");
+                write("\" xlink:href=\"#point");
+                //putting this in to fix the issue, but I am not sure about
+                //the broader implications - I don't think we need it for
+                //pointsAsCircles.  And it looks like the quote gets closed
+                //somewhere else, but I'm not sure where.
             }
         }
     }
