@@ -328,7 +328,7 @@ public class XMLConfigWriter {
 			WCSDTO w = (WCSDTO) obj;
 			s = w.getService();
 			t = "WCS";
-			gml = w.isGmlPrefixing();
+			//citeConformanceHacks = w.getCiteConformanceHacks();
 		}else if (obj instanceof WFSDTO) {
             WFSDTO w = (WFSDTO) obj;
             s = w.getService();

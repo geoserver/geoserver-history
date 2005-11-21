@@ -164,7 +164,7 @@ public class EncodeSVG {
      */
     private void writePointDefs() throws IOException {
         writer.write(
-            "<defs>\n\t<circle id='point' cx='0' cy='0' r='0.02%' fill='blue'/>\n</defs>\n");
+            "<defs>\n\t<circle id='point' cx='0' cy='0' r='0.25%' fill='blue'/>\n</defs>\n");
     }
 
     /**

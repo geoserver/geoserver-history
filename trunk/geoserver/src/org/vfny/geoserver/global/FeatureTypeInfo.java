@@ -16,9 +16,10 @@ import java.util.Map;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
+import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeBuilder;
+import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.filter.Filter;
@@ -29,6 +30,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.LegendURLDTO;
+import org.vfny.geoserver.action.data.DataStoreUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
@@ -505,7 +507,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
         FeatureSource realSource = dataStore.getFeatureSource(typeName);
 
-        return realSource.getBounds();
+        return DataStoreUtils.getBoundingBoxEnvelope(realSource);
     }
 
 	/**
@@ -904,7 +906,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     String attName = ati.getName();
                     attributes[count] = ft.getAttributeType(attName);
                     
-                    if (attributes[count].isGeometry())  //DJB: added this to set SRS
+                    /*
+                     * TODO Align with GeoTolls 2.1.1 ASAP
+                     */
+                    //if (attributes[count].isGeometry())  //DJB: added this to set SRS
+                    if (attributes[count] instanceof GeometricAttributeType)
                     {
                     	GeometricAttributeType old = (GeometricAttributeType) attributes[count];
                     	try {
@@ -926,8 +932,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 }
 
                 try {
-                    ft = FeatureTypeBuilder.newFeatureType(attributes, typeName, namespace);
+                    ft = FeatureTypeFactory.newFeatureType(attributes, typeName, namespace);
                 } catch (SchemaException ex) {
+                } catch (FactoryConfigurationError ex) {
                 }
             }
         }

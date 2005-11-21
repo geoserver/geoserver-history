@@ -83,5 +83,6 @@
 	<classpathentry kind="var" path="GEOSERVER/gt2-indexed-shapefile.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/mockrunner-servlet.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-coverage.jar"/>
+	<classpathentry kind="var" path="GEOSERVER/gt2-api.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

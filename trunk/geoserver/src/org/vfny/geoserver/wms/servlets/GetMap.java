@@ -135,7 +135,7 @@ public class GetMap extends WMService {
 	      if (!"post".equals(req.getMethod().toLowerCase())) {
 	        return false;
 	      }
-	      //Get the content type
+	      //Get the content type from the request
 	      String contentType = req.getContentType();
 	      //If there is no content type, then it is not multipart
 	      if (contentType == null) {

@@ -1209,10 +1209,13 @@
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2/jars/arcsde-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-epsg-h.jar" file="${dir.maven}/gt2/jars/epsg-hsql-${version.geotools}.jar" />
+	<delete file="${dir.lib}/gt2-api.jar" failonerror="false" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-api.jar" file="${dir.maven}/gt2/jars/api-${version.geotools}.jar" />
 	<delete file="${dir.lib}/gt2-coverage.jar" failonerror="false" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-coverage.jar" file="${dir.maven}/gt2/jars/coverage-${version.geotools}.jar" />
 	<delete file="${dir.lib}/gt2-referencing.jar" failonerror="false" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-referencing.jar" file="${dir.maven}/gt2/jars/referencing-${version.geotools}.jar" />
+	
+	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-referencing.jar" file="${dir.maven}/gt2/jars/referencing-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-experiment.jar" file="${dir.maven}/gt2/jars/experiment-${version.geotools}.jar" />
 
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
@@ -1220,9 +1223,7 @@
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-vpf.jar" file="${dir.maven}/gt2/jars/vpf-1.9.0.jar" />
-	<!--
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wfs.jar" file="${dir.maven}/gt2/jars/wfs-${version.geotools}.jar" />
-	-->
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wms.jar" file="${dir.maven}/gt2/jars/wms-${version.geotools}.jar" />
 
 
