@@ -39,6 +39,7 @@
 	<!-- ====================================================================== -->
 
 	<!-- release version -->
+
 	<property name="name.release" value="1.3.0-RC6" />
 
 	<!-- primary directories -->
@@ -55,7 +56,7 @@
 	<property name="dir.release" value="${basedir}/release" />
 	<property name="dir.webinf" value="${basedir}/WEB-INF" />
 	<property name="dir.jarcopy" value="${dir.server}/geoserver/WEB-INF/lib" />
-
+	
 	<!-- secondary directories -->
 	<property name="dir.data" value="${dir.conf}" />
 	<property name="dir.testApp" value="${dir.server}/geoserver" />
@@ -499,6 +500,12 @@
 				<include name="**/*" />
 			</fileset>
 		</copy>
+		
+		<!--copy todir="${basedir}/data">
+			<fileset dir="${basedir}/cite/conftiger_and_apps/data/">
+				<include name="**/*" />
+			</fileset>
+		</copy-->
 
 		
 
@@ -544,7 +551,7 @@
 				<exclude name="**/junit.jar" />
 				<exclude name="**/servlet.jar" />
 				<!--exclude name="**/gt2-oracle-spatial.jar"/-->
-				<exclude name="**/xalan.jar" />
+				<!--exclude name="**/xalan.jar" /-->
 				<exclude name="**/ki*.jar" />
 				<exclude name="**/a2jruntime.jar" />
 				<!--exclude name="**/log4j-1.2.5.jar" /-->
@@ -776,6 +783,7 @@
 <target name="release-all" depends="release-common, release-binary,release-war, release-src, release-docs" >
 	<antcall target="release-all-upgrade"/>
 	<antcall target="release-installer-win"/>
+	<delete dir="${dir.build}/installer"/>
 </target>
 
 
