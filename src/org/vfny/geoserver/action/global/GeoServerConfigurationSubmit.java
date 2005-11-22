@@ -7,6 +7,7 @@
 package org.vfny.geoserver.action.global;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 
@@ -23,7 +24,11 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.ContactConfig;
 import org.vfny.geoserver.config.GlobalConfig;
 import org.vfny.geoserver.form.global.GeoServerConfigurationForm;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
+
+import com.sun.rsasign.r;
 
 /**
  * GeoServerConfigurationSubmit purpose.
@@ -86,18 +91,28 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
 			verboseExceptions = false;
 		}
 		
+		boolean loggingToFile = form.isLoggingToFile();
+		if (!form.isLoggingToFileChecked()) {
+			loggingToFile = false;
+		}
+		
 		String logLocation = form.getLogLocation();
 		if (logLocation != null && "".equals(logLocation.trim()))
 			logLocation = null;
 		
 		if (logLocation != null) {
-			File f = new File(logLocation);
-			if (f.exists() && f.isDirectory()) {
-				//attach a file to the end of the directory
-				if (!logLocation.endsWith(File.separator))
-					logLocation += File.separator;
-				logLocation += "geoserver.log";
+			File f = null;
+			try {
+				f = GeoServer.getLogLocation(logLocation,getServlet().getServletContext());
 			}
+			catch (IOException e) {
+				ActionErrors errors = new ActionErrors();
+				ActionError error = new ActionError("error.couldNotCreateFile",f.getAbsolutePath(),e.getLocalizedMessage());
+				errors.add(ActionErrors.GLOBAL_ERROR, error);
+			    saveErrors(request, errors);
+			    return mapping.findForward("config.server");
+			}
+			
 			if (!f.canWrite()) {
 				ActionErrors errors = new ActionErrors();
 			    errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.noWritePermission",logLocation));
@@ -116,6 +131,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setAdminUserName(adminUserName);
         globalConfig.setAdminPassword(adminPassword);
         globalConfig.setLoggingLevel(loggingLevel);
+        globalConfig.setLoggingToFile(loggingToFile);
         globalConfig.setLogLocation(logLocation);
         globalConfig.setVerboseExceptions(verboseExceptions);
         

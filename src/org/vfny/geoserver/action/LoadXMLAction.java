@@ -82,7 +82,7 @@ public class LoadXMLAction extends ConfigAction {
         XMLConfigReader configReader;
 
         try {
-            configReader = new XMLConfigReader(rootDir);
+            configReader = new XMLConfigReader(rootDir,sc);
         } catch (ConfigurationException configException) {
             configException.printStackTrace();
 
@@ -111,7 +111,7 @@ public class LoadXMLAction extends ConfigAction {
         try {
             getWFS(request).load(wfsDTO);
             getWMS(request).load(wmsDTO);
-            getWFS(request).getGeoServer().load(geoserverDTO);
+            getWFS(request).getGeoServer().load(geoserverDTO,sc);
             getWFS(request).getData().load(dataDTO);
         } catch (ConfigurationException configException) {
             configException.printStackTrace();

@@ -13,6 +13,9 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
+import com.mockrunner.mock.web.MockServletConfig;
+import com.mockrunner.mock.web.MockServletContext;
+
 
 /**
  * XMLConfigWriterTest purpose.
@@ -62,7 +65,7 @@ public class XMLConfigWriterTest extends TestCase {
 
     public void testRoundTrip() {
         try {
-            XMLConfigReader cr = new XMLConfigReader(root2);
+            XMLConfigReader cr = new XMLConfigReader(root2,new MockServletContext());
             XMLConfigWriter.store(cr.getWms(), cr.getWfs(), cr.getGeoServer(),
                 cr.getData(), root3);
         } catch (ConfigurationException e) {

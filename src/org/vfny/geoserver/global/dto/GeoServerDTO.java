@@ -7,6 +7,10 @@ package org.vfny.geoserver.global.dto;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 
+import javax.servlet.ServletContext;
+
+import org.vfny.geoserver.global.GeoServer;
+
 
 /**
  * Data Transfer Object for Global GeoServer Configuration information.
@@ -58,6 +62,8 @@ public final class GeoServerDTO implements DataTransferObject {
 		 */
 		public static final boolean VerboseExceptions = false;
 		
+		/** Default of wether to log to disk **/
+		public static final boolean LoggingToFile = false;
 		/** Default logging location on disk **/
 		public static final String LogLocation = null;
 		
@@ -161,6 +167,8 @@ public final class GeoServerDTO implements DataTransferObject {
     /** Whether the exceptions returned to the client should contain full stack traces */
     private boolean verboseExceptions = Defaults.VerboseExceptions;
     
+    /** to log to disk or not to log to disk **/
+    private boolean loggingToFile = Defaults.LoggingToFile;
     /** Where on disk the server should log to **/
     private String logLocation = Defaults.LogLocation;
     
@@ -199,6 +207,8 @@ public final class GeoServerDTO implements DataTransferObject {
         schemaBaseUrl = g.getSchemaBaseUrl();
         loggingLevel = g.getLoggingLevel();
         verboseExceptions = g.isVerboseExceptions();
+        
+        loggingToFile = g.getLoggingToFile();
         logLocation = g.getLogLocation();
         
         if (g.getContact() != null) {
@@ -262,6 +272,7 @@ public final class GeoServerDTO implements DataTransferObject {
             return false;
         }
 
+        r = r && (loggingToFile == g.getLoggingToFile());
         if (logLocation != null) {
         	r = r && logLocation.equals(g.getLogLocation());
         }
@@ -553,8 +564,11 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
    /**
-	 * @return The string representation of the path on disk in which the 
-	 * server logs to.
+	 * Returns the location of where the server ouputs logs. Note that this may 
+	 * not reference an actual physical location on disk. 
+	 * Call {@link GeoServer#getLogLocation(String, ServletContext)} to map this
+	 * string to a file on disk.
+	 * 
 	 */
 	public String getLogLocation() {
 		return logLocation;
@@ -566,6 +580,20 @@ public final class GeoServerDTO implements DataTransferObject {
 	 */
 	public void setLogLocation(String logLocation) {
 		this.logLocation = logLocation;
+	}
+	
+	/**
+	 * @return True if the server is logging to file, otherwise false.
+	 */
+	public boolean getLoggingToFile() {
+		return loggingToFile;
+	}
+	
+	/**
+	 * Toggles server logging to file.
+	 */
+	public void setLoggingToFile(boolean loggingToFile) {
+		this.loggingToFile = loggingToFile;
 	}
 	
     public String toString() {

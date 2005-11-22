@@ -46,6 +46,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+
 
 /**
  * XMLConfigReader purpose.
@@ -80,6 +83,9 @@ public class XMLConfigReader {
     private GeoServerDTO geoServer;
     private DataDTO data;
 
+    /** the servlet context **/
+    ServletContext context;
+    
     /**
      * XMLConfigReader constructor.
      * 
@@ -87,8 +93,9 @@ public class XMLConfigReader {
      * Should never be called.
      * </p>
      */
-    protected XMLConfigReader() {
-        wms = new WMSDTO();
+    protected XMLConfigReader(ServletContext context) {
+    	this.context = context;
+    	wms = new WMSDTO();
         wfs = new WFSDTO();
         geoServer = new GeoServerDTO();
         data = new DataDTO();
@@ -123,14 +130,16 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException When an error occurs.
      */
-    public XMLConfigReader(File root) throws ConfigurationException {
+    public XMLConfigReader(File root, ServletContext context) throws ConfigurationException {
         this.root = root;
+        this.context = context;
         wms = new WMSDTO();
         wfs = new WFSDTO();
         geoServer = new GeoServerDTO();
         data = new DataDTO();
         load();
         initialized = true;
+        
     }
 
     public boolean isInitialized() {
@@ -343,17 +352,24 @@ public class XMLConfigReader {
         Level loggingLevel = getLoggingLevel(globalElem);
         geoServer.setLoggingLevel(loggingLevel);
 
+        boolean loggingToFile = false;
+        Element elem = null;
+        elem = ReaderUtils.getChildElement(globalElem, "loggingToFile",false);
+        if (elem != null) {
+           loggingToFile = ReaderUtils.getBooleanAttribute(elem, "value", false, false);
+        }
+        
         String logLocation = ReaderUtils.getChildText(globalElem, "logLocation");
-
         if ((logLocation != null) && "".equals(logLocation.trim())) {
             logLocation = null;
         }
 
+        geoServer.setLoggingToFile(loggingToFile);
         geoServer.setLogLocation(logLocation);
 
         //init this now so the rest of the config has correct log levels.
         try {
-            GeoServer.initLogging(loggingLevel, logLocation);
+            GeoServer.initLogging(loggingLevel, loggingToFile,logLocation, context);
         } catch (IOException e) {
             throw new ConfigurationException(e);
         }
@@ -364,7 +380,6 @@ public class XMLConfigReader {
             LOGGER.config("logging to " + logLocation);
         }
 
-        Element elem = null;
         elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
         geoServer.setContact(loadContact(elem));
 

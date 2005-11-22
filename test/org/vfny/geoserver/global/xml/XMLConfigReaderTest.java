@@ -17,6 +17,8 @@ import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
+import com.mockrunner.mock.web.MockServletContext;
+
 
 /**
  * XMLConfigReaderTest purpose.
@@ -139,7 +141,7 @@ public class XMLConfigReaderTest extends TestCase {
         XMLConfigReader m = null;
 
         try {
-            m = new XMLConfigReader(root2);
+            m = new XMLConfigReader(root2,new MockServletContext());
         } catch (ConfigurationException e) {
             fail(e.toString());
         }
@@ -195,7 +197,7 @@ public class XMLConfigReaderTest extends TestCase {
 
 class XMLConfigReaderExpose extends XMLConfigReader {
     public XMLConfigReaderExpose() {
-        super();
+        super(new MockServletContext());
     }
 
     public void loadServicesWrapper(File f) throws ConfigurationException {

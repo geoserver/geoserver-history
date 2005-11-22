@@ -95,6 +95,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 	private boolean verboseExceptionsChecked;
 	
 	/** log to disk ? **/
+	private boolean loggingToFile;
+	private boolean loggingToFileChecked;
 	private String logLocation;
 	 
     public void reset(ActionMapping arg0, HttpServletRequest request) {
@@ -119,6 +121,8 @@ public class GeoServerConfigurationForm extends ActionForm {
         } else {
         	loggingLevel = globalConfig.getLoggingLevel().getName();
         }
+        loggingToFile = globalConfig.getLoggingToFile();
+        loggingToFileChecked = false;
         logLocation = globalConfig.getLogLocation();
         
         ContactConfig contactConfig = globalConfig.getContact();
@@ -568,6 +572,43 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 */
 	public void setLogLocation(String logLocation) {
 		this.logLocation = logLocation;
+	}
+	
+	/**
+	 * Set loggingToFile to loggingToFile.
+	 *
+	 * @param verbose The loggingToFile to set.
+	 */
+	public void setLoggingToFile(boolean loggingToFile) {
+		loggingToFileChecked = true;
+		this.loggingToFile = loggingToFile;
+	}
+	
+	/**
+	 * Access loggingToFile property.
+	 * 
+	 * @return Returns the loggingToFile.
+	 */
+	public boolean isLoggingToFile() {
+		return loggingToFile;
+	}
+	
+	/**
+	 * Access loggingToFileChecked property.
+	 * 
+	 * @return Returns the loggingToFileChecked.
+	 */
+	public boolean isLoggingToFileChecked() {
+		return loggingToFileChecked;
+	}
+
+	/**
+	 * Set loggingToFileChecked to loggingToFileChecked.
+	 *
+	 * @param loggingToFileChecked The loggingToFileChecked to set.
+	 */
+	public void setLoggingToFileChecked(boolean loggingToFileChecked) {
+		this.loggingToFileChecked = loggingToFileChecked;
 	}
 
 }
