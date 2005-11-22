@@ -86,7 +86,7 @@ public class GeoServerPlugIn implements PlugIn {
 
         try {
             File f = geoserverDataDir; //geoserver_home fix
-            XMLConfigReader cr = new XMLConfigReader(f);
+            XMLConfigReader cr = new XMLConfigReader(f,sc);
             GeoServer gs = new GeoServer();
             sc.setAttribute(GeoServer.WEB_CONTAINER_KEY, gs);
             
@@ -103,7 +103,7 @@ public class GeoServerPlugIn implements PlugIn {
             sc.setAttribute(GeoValidator.WEB_CONTAINER_KEY, gv);
 
             if (cr.isInitialized()) {
-                gs.load(cr.getGeoServer());
+                gs.load(cr.getGeoServer(),sc);
                 wfs.load(cr.getWfs());
                 wms.load(cr.getWms());
                 dt.load(cr.getData());

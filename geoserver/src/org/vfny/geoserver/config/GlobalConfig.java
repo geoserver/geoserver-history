@@ -137,6 +137,8 @@ public class GlobalConfig {
     /** The Server contact person and their contact information. */
     private ContactConfig contact = null;
     
+    /** to log to disk or not to log to disk **/
+    private boolean loggingToFile = false;
     /** location on disk to log to **/
     private String logLocation = null;
 
@@ -187,6 +189,8 @@ public class GlobalConfig {
         adminUserName = g.getAdminUserName();
         adminPassword = g.getAdminPassword();
         verboseExceptions = g.isVerboseExceptions();
+        
+        loggingToFile = g.getLoggingToFile();
         logLocation = g.getLogLocation();
         
         if (g.getContact() != null) {
@@ -220,10 +224,13 @@ public class GlobalConfig {
         numDecimals = g.getNumDecimals();
         charSet = g.getCharSet();
         schemaBaseUrl = g.getSchemaBaseUrl();
+        
         loggingLevel = g.getLoggingLevel();
 		verboseExceptions = g.isVerboseExceptions();
-        logLocation = g.getLogLocation();
-
+        
+		loggingToFile = g.getLoggingToFile();
+		logLocation = g.getLogLocation();
+        
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
         } else {
@@ -254,6 +261,7 @@ public class GlobalConfig {
         g.setSchemaBaseUrl(schemaBaseUrl);
 		g.setVerboseExceptions(verboseExceptions);
         g.setContact((ContactDTO) contact.toDTO());
+        g.setLoggingToFile(loggingToFile);
         g.setLogLocation(logLocation);
 
         return g;
@@ -546,5 +554,19 @@ public class GlobalConfig {
 	 */
 	public void setLogLocation(String logLocation) {
 		this.logLocation = logLocation;
+	}
+	
+	/**
+	 * @return True if the server is logging to file, otherwise false.
+	 */
+	public boolean getLoggingToFile() {
+		return loggingToFile;
+	}
+	
+	/**
+	 * Toggles server logging to file.
+	 */
+	public void setLoggingToFile(boolean loggingToFile) {
+		this.loggingToFile = loggingToFile;
 	}
 }

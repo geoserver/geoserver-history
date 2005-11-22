@@ -150,6 +150,7 @@ public class XMLConfigWriter {
                 cw.textTag("loggingLevel", g.getLoggingLevel().getName());
             }
 
+            cw.valueTag("loggingToFile",g.getLoggingToFile()+"");
             if (g.getLogLocation() != null) {
                 cw.textTag("logLocation", g.getLogLocation());
             }
