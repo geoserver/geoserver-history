@@ -13,12 +13,15 @@ if "%GEOSERVER_HOME%" == "" goto noGeo1
 
 if not exist "%GEOSERVER_HOME%\bin\startup.bat" goto noGeo2
 
+if "%GEOSERVER_DATA_DIR%" == "" goto noDataDir
+
 REM -------------
 REM OK, we're ready to try actually runnning it.
 REM -------------
 
 goto run
 
+REM Actions having to do with JAVA_HOME being defined
 :noJava1
   echo The JAVA_HOME environment variable is not defined.
   echo This environment variable is needed to run this program.
@@ -29,6 +32,7 @@ goto end
   echo was not found there.
 goto end
 
+REM Actions if GEOSERVER_HOME isn't defined
 :noGeo1
   if exist start.jar goto doGeo1
   echo The GEOSERVER_HOME environment variable is not defined.
@@ -36,9 +40,9 @@ goto end
 goto end
 
 :doGeo1
-echo GEOSERVER_HOME environment variable not found.  Using current
-echo directory.  Please set GEOSERVER_HOME for future uses.
- goto run
+  echo GEOSERVER_HOME environment variable not found.  Using current
+  echo directory.  Please set GEOSERVER_HOME for future uses.
+goto setCurAsHome
 
 :noGeo2
   if exist start.jar goto doGeo2
@@ -50,25 +54,43 @@ goto end
   echo GEOSERVER_HOME environment variable not properly set.  Using parent
   echo directory of this script.  Please set GEOSERVER_HOME correctly for 
   echo future uses.
+goto setCurAsHome
+
+:setCurAsHome
+  cd ..
+  set GEOSERVER_HOME=.
 goto run
 
 :run
   if not exist "%GEOSERVER_HOME%/server/geoserver" goto noServer
+  if not exist "%GEOSERVER_DATA_DIR%" goto noDataDir
   goto execJava
 
+REM if there is not a server/ directory, this is likely a fresh source install
+REM so we look for ant, and if it's there we can make the directory
 :noServer
   if "%ANT_HOME%" == "" goto noAnt
   %ANT_HOME%/bin/ant -f %GEOSERVER_HOME%/build.xml prepareEmbedded
   goto execJava
 
+REM if no ant we're out of luck
 :noAnt
   echo ANT_HOME not found, Ant is needed to run the embedded server
   echo in the source download.  Please install ant or download the 
   echo binary release of GeoServer
 goto end
 
+REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/conf/
+:noDataDir
+  if exist "%GEOSERVER_HOME%\conf\" goto setDataDir
+  goto execJava
+
+:setDataDir
+  set GEOSERVER_DATA_DIR=%GEOSERVER_HOME%\conf\
+  goto execJava
+
 :execJava
-  java -jar %GEOSERVER_HOME%/bin/start.jar
+  %JAVA_HOME%/bin/java -DGEOSERVER_DATA_DIR=%GEOSERVER_DATA_DIR% -jar %GEOSERVER_HOME%/bin/start.jar
   goto end  
 
 :end
