@@ -48,7 +48,7 @@ public class GeoserverDataDirectory
 	{
 		//see if there's a system property
 		String prop = System.getProperty("GEOSERVER_DATA_DIR");
-		if (prop != null)
+		if (prop != null && !prop.equals(""))
 		{
 			 //its defined!!
 			return new File(prop);
