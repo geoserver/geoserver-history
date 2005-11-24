@@ -109,7 +109,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      * @return true if <code>outputFormat</code> is Shape or Shape-GZIP
      */
     public boolean canProduce(String outputFormat) {
-        return "SHAPE".equalsIgnoreCase(outputFormat);
+        return "SHAPE-ZIP".equalsIgnoreCase(outputFormat);
     }
 
     /**
