@@ -26,7 +26,7 @@ public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseD
 	static HashSet supportedFormats = new HashSet();
 	
 	static{
-		supportedFormats.add("SHAPE");
+		supportedFormats.add("SHAPE-ZIP");
 	}
 
     /**
@@ -72,7 +72,10 @@ public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseD
      * @return <code>true</code>  or false
      */
     public boolean canProduce(String outputFormat) {
-        return "SHAPE".equalsIgnoreCase(outputFormat);
+        //Argh, this just caused me like 10 minutes of confusion.  This should
+        //should just check 'supported-formats', so there's only one place
+        //to change.  Or at least have the format as a static final -ch
+        return "SHAPE-ZIP".equalsIgnoreCase(outputFormat);
     }
 
     
