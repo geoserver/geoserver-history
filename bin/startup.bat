@@ -9,6 +9,7 @@ if "%JAVA_HOME%" == "" goto noJava1
 
 if not exist "%JAVA_HOME%\bin\java.exe" goto noJava2
 
+:doGeo
 if "%GEOSERVER_HOME%" == "" goto noGeo1
 
 if not exist "%GEOSERVER_HOME%\bin\startup.bat" goto noGeo2
@@ -24,8 +25,8 @@ goto run
 REM Actions having to do with JAVA_HOME being defined
 :noJava1
   echo The JAVA_HOME environment variable is not defined.
-  echo This environment variable is needed to run this program.
-goto end
+  echo Attempting to use current installed Java
+goto doGeo
 
 :noJava2
   echo The JAVA_HOME environment variable is defined, but 'java.exe'
@@ -90,8 +91,21 @@ REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/conf/
   goto execJava
 
 :execJava
-  %JAVA_HOME%/bin/java -DGEOSERVER_DATA_DIR=%GEOSERVER_DATA_DIR% -jar %GEOSERVER_HOME%/bin/start.jar
-  goto end  
+  if "%JAVA_HOME%" == "" goto usePathJava
+  ::If it's not defined by now, then we are just using 'java', and it will 
+  ::fail there if it can't find it.
+  set RUN_JAVA=%JAVA_HOME%/bin/java
+  goto runJava
+
+:usePathJava
+  ::A better way to do this is given at http://www.ericphelps.com/batch/samples/JavaRuntime.cmd.txt
+  ::looking up the registry, but I think this should work too... 
+  set JAVA_RUN=java
+  goto runJava
+
+:runJava
+  %RUN_JAVA% -DGEOSERVER_DATA_DIR=%GEOSERVER_DATA_DIR% -jar %GEOSERVER_HOME%/bin/start.jar
+
 
 :end
  pause
