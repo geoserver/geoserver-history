@@ -157,7 +157,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      * @return DOCUMENT ME!
      */
     public String getContentEncoding() {
-        return "zip";
+        return "zip-zip";
     }
 
     /**
