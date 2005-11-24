@@ -84,6 +84,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
             "org.vfny.geoserver.wfs.responses");
 
     String tempDir = null;
+    public static final String formatName = "SHAPE-ZIP";
     
     /** will be true if Shape-ZIP output format was requested */
     //private boolean compressOutput = false;	// already in ZIP by default
@@ -109,7 +110,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      * @return true if <code>outputFormat</code> is Shape or Shape-GZIP
      */
     public boolean canProduce(String outputFormat) {
-        return "SHAPE-ZIP".equalsIgnoreCase(outputFormat);
+        return formatName.equalsIgnoreCase(outputFormat);
     }
 
     /**
@@ -157,7 +158,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      * @return DOCUMENT ME!
      */
     public String getContentEncoding() {
-        return "zip-zip";
+        return formatName;
     }
 
     /**
