@@ -489,10 +489,13 @@
 				<include name="geoserver.log" />
 				<include name="z3950-geo.map" />
 			</fileset>
+               
 		</copy>
 
 
-		<!-- populate base directory -->
+		<!-- populate base directory. Er, this doesn't seem to get --> 
+                <!-- used at all?  To build the war it's not used. -ch -->
+                <!-- should remove it, but we're right before 1.3, so wait -->
 
 		<mkdir dir="${basedir}/data" />
 		<copy todir="${basedir}/data">
@@ -507,14 +510,14 @@
 			</fileset>
 		</copy-->
 
-		
-
+ 
 		<copy todir="${dir.build}">
 			<fileset dir="${basedir}/documents">
 				<include name="log4j.properties" />
 			</fileset>
 		</copy>
-
+                <!-- making a work directory ensures the compiled jsps get -->
+		<!-- saved there, instead of some random temp location -->
 		<mkdir dir="${dir.webinf}/work" />
 		<!-- war file -->
 		<war warfile="${dir.build}/geoserver.war" webxml="${dir.webinf}/web.xml" update="true">
@@ -565,7 +568,8 @@
 			<fileset dir="${basedir}">
 				<include name="data/**" />
 				<include name="documents/api/**" />
-				<exclude name="**/catalog.xml" />
+                                <include name="schemas/**"/>
+  				<exclude name="**/catalog.xml" />
 				<exclude name="**/services.xml" />
 			</fileset>
 
@@ -906,8 +910,8 @@
 		<exclude name="**/*CVS*/*" />
 	</fileset>
 </copy>
-<copy todir="${dir.build}/capabilities/">
-	<fileset dir="${basedir}/capabilities">
+<copy todir="${dir.build}/schemas/">
+	<fileset dir="${basedir}/schemas">
 		<include name="**/*" />
 		<exclude name="*CVS*/*" />
 		<exclude name="**/*CVS*/*" />
