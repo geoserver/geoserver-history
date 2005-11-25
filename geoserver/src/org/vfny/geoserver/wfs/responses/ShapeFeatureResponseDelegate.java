@@ -158,6 +158,12 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      * @return DOCUMENT ME!
      */
     public String getContentEncoding() {
+        //I don't think this is right, but I think perhaps it doesnt matter
+        //right now, this field has to do with the charSet.  Right now 
+        //shapefile hardcodes the charset to IS0-8859-1, so we should probably
+        //return that for this param.  I don't know that it'd even get used 
+        //though.  We should still do the fix to allow shapefiles to be 
+        //configured with different charsets. -ch
         return formatName;
     }
 
