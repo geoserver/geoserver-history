@@ -53,6 +53,7 @@
 	<property name="dir.src" value="${basedir}/src" />
 	<property name="dir.test" value="${basedir}/test" />
 	<property name="dir.conf" value="${basedir}/conf" />
+	<property name="dir.data_dirs" value="${basedir}/data_dirs" />
 	<property name="dir.release" value="${basedir}/release" />
 	<property name="dir.webinf" value="${basedir}/WEB-INF" />
 	<property name="dir.jarcopy" value="${dir.server}/geoserver/WEB-INF/lib" />
@@ -81,7 +82,8 @@
 	<property name="test.name" value="config.ConfigSuite" />
 	<property name="jetty.run" value="${basedir}/documents/admin.xml ${basedir}/documents/jetty.xml" />
 	<property name="jetty.jvmarg" value="-Djetty.home=${basedir}" />
-
+	<property environment="env"/>
+        <property name="data_dir.jvmarg" value="-DGEOSERVER_DATA_DIR=${env.GEOSERVER_DATA_DIR}"/>
 	<!-- Chris this fails on eclipse 2 or M7 but not on M8 - w/ unexpected element "available" -->
 	<available file="${basedir}/conf" type="dir" property="conf.folder.present" />
 	<available file="${basedir}/server/geoserver" type="dir" property="server.built" />
@@ -302,8 +304,6 @@
 
 	<!-- TEST -->
 	<target name="test" depends="init, all" description="Depolys application to the test server">
-		<!-- no longer needed, as work is in geoserver/WEB-INF -->
-		<!--mkdir dir="${dir.server}/work"/-->
 
 		<!-- This will now build with the users directory, which I think is
          appropriate for testing of this sort, as you'll want to configure
@@ -394,14 +394,12 @@
 	<!-- runs the server -->
 	<target name="run" depends="prepareEmbedded, init"
 		description="Runs the jetty servlet container in the background, use ant stop to halt">
-		<echo message="Please be sure that either prepareEmbedded or" />
-		<echo message="test has been run before using this target" />
-
 		<java classname="org.mortbay.jetty.Server" dir="${basedir}" fork="yes" failonerror="yes">
 			<classpath>
 				<path refid="path.jetty" />
 			</classpath>
 			<jvmarg line="${jetty.jvmarg}" />
+			<jvmarg line="${data_dir.jvmarg}" />
 			<arg line="${jetty.run}" />
 		</java>
 	</target>
@@ -806,6 +804,7 @@
 			<include name="**/*" />
 			<exclude name="geoserver.war" />
 			<exclude name="org/**" />
+			<exclude name="META-INF/**" />
 			<exclude name="bin/*.sh"/>
 			<exclude name="**/catalog.xml"/>
 			<exclude name="**/services.xml"/>
@@ -926,6 +925,12 @@
 	</fileset>
 </copy>
 
+<copy todir="${dir.build}/data_dirs/">
+	<fileset dir="${basedir}/data_dirs">
+		<include name="**/*" />
+	</fileset>
+</copy>
+
 
 
 <zip destfile="${basedir}/geoserver-${name.release}-src.zip">
@@ -934,6 +939,7 @@
 		<exclude name="bin/*" />
 		<exclude name="geoserver.war" />
 		<exclude name="org/**" />
+		<exclude name="META-INF/**" />
 	</zipfileset>
 	<zipfileset dir="${dir.build}" prefix="geoserver" filemode="755" includes="bin/*" />
 </zip>
@@ -1033,6 +1039,7 @@
 		<include name="**/*" />
 		<exclude name="geoserver.war" />
 		<exclude name="org/**" />
+                <exclude name="META-INF/**"/>
 		<exclude name="bin/*.sh"/>
 	</tarfileset>
 
