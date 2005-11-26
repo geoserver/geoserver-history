@@ -5,78 +5,59 @@
 a datastore configuration element serves as a common data source connection
 parameters repository for all featuretypes it holds.
 -->
-<datastore namespace = "topp" enabled = "true" id = "localPostgis" >
-<connectionParams>
-<parameter value = "postgres" name = "user"  />
-<parameter value = "postgres" name = "passwd"  />
-<parameter value = "localhost" name = "host"  />
-<parameter value = "5432" name = "port"  />
-<parameter value = "dcmms" name = "database"  />
-<parameter value = "postgis" name = "dbtype"  />
-</connectionParams>
-</datastore>
 <datastore namespace = "tiger" enabled = "true" id = "DS_giant_polygon" >
 <abstract></abstract>
 <connectionParams>
 <parameter value = "tiger" name = "namespace"  />
-<parameter value = "file:data/demo/popup_map/data/giant_polygon.shp" name = "url"  />
+<parameter value = "file:data/nyc/giant_polygon.shp" name = "url"  
+/>
 </connectionParams>
 </datastore>
 <datastore namespace = "topp" enabled = "true" id = "states_shapefile" >
 <connectionParams>
-<parameter value = "file:data/featureTypes/states/states.shp" name = "url"  />
+<parameter value = "file:data/shapefiles/states.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "tiger" enabled = "true" id = "DS_poi" >
 <abstract></abstract>
 <connectionParams>
 <parameter value = "tiger" name = "namespace"  />
-<parameter value = "file:data/demo/popup_map/data/poi.shp" name = "url"  />
+<parameter value = "file:data/nyc/poi.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "topp" enabled = "true" id = "tasmania_cities" >
 <connectionParams>
-<parameter value = "file:data/featureTypes/tasmania_cities/tasmania_cities.shp" name = "url"  />
+<parameter value = "file:data/taz_shapes/tasmania_cities.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "topp" enabled = "true" id = "tasmania_roads" >
 <connectionParams>
-<parameter value = "file:data/featureTypes/tasmania_roads/tasmania_roads.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "sde" enabled = "false" id = "testSde" >
-<connectionParams>
-<parameter value = "sdepwd" name = "password"  />
-<parameter value = "sde" name = "user"  />
-<parameter value = "sde" name = "instance"  />
-<parameter value = "localhost" name = "server"  />
-<parameter value = "5151" name = "port"  />
-<parameter value = "arcsde" name = "dbtype"  />
+<parameter value = "file:data/taz_shapes/tasmania_roads.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "topp" enabled = "true" id = "tasmania_state_boundaries" >
 <connectionParams>
-<parameter value = "file:data/featureTypes/tasmania_state_boundaries/tasmania_state_boundaries.shp" name = "url"  />
+<parameter value = "file:data/taz_shapes/tasmania_state_boundaries.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "tiger" enabled = "true" id = "DS_poly_landmarks" >
 <abstract></abstract>
 <connectionParams>
 <parameter value = "tiger" name = "namespace"  />
-<parameter value = "file:data/demo/popup_map/data/poly_landmarks.shp" name = "url"  />
+<parameter value = "file:data/nyc/poly_landmarks.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "tiger" enabled = "true" id = "DS_tiger_roads" >
 <abstract></abstract>
 <connectionParams>
 <parameter value = "tiger" name = "namespace"  />
-<parameter value = "file:data/demo/popup_map/data/tiger_roads.shp" name = "url"  />
+<parameter value = "file:data/nyc/tiger_roads.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "topp" enabled = "true" id = "tasmania_water_bodies" >
 <connectionParams>
-<parameter value = "file:data/featureTypes/tasmania_water_bodies/tasmania_water_bodies.shp" name = "url"  />
-</connectionParams>
+<parameter value = "file:data/taz_shapes/tasmania_water_bodies.shp" 
+name = "url"  /> </connectionParams>
 </datastore>
 </datastores>
 <!--
@@ -84,7 +65,6 @@ Defines namespaces to be used by the datastores.
 -->
 <namespaces>
 <namespace uri = "http://www.openplans.org/topp" prefix = "topp" default = "true"  />
-<namespace uri = "http://geoserver.sf.net" prefix = "sde"  />
 <namespace uri = "http://www.census.gov" prefix = "tiger"  />
 <namespace uri = "http://www.opengeospatial.net/cite" prefix = "cite"  />
 </namespaces>
@@ -104,5 +84,8 @@ if you want them on the server.
 <style filename = "poi.sld" id = "poi"  />
 <style filename = "Lakes.sld" id = "cite_lakes"  />
 <style filename = "popshade.sld" id = "population"  />
+<style filename = "default_point.sld" id = "point"  />
+<style filename = "default_line.sld" id = "line"  />
+<style filename = "default_polygon.sld" id = "polygon"  />
 </styles>
 </catalog>
