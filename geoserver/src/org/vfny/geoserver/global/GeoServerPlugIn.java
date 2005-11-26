@@ -2,10 +2,6 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
 package org.vfny.geoserver.global;
 
 import java.io.File;
@@ -36,6 +32,11 @@ import org.vfny.geoserver.global.xml.XMLConfigReader;
  * @version $Id: GeoServerPlugIn.java,v 1.9 2004/02/20 00:28:19 dmzwiers Exp $
  *
  * @see org.vfny.geoserver.config.ConfigPlugIn
+ * @REVISIT: There seems to be quite a bit of code duplication in this class
+ *           with LoadXMLAction, loading things, especially with the
+ *           validation stuff.  Anyway we could cut that down?  Have one call
+ *           the other?  Too close to release to do sucha refactoring but
+ *           in 1.4 we should. -CH
  */
 public class GeoServerPlugIn implements PlugIn {
     /**
@@ -82,7 +83,6 @@ public class GeoServerPlugIn implements PlugIn {
 
         ServletContext sc = as.getServletContext();
         File geoserverDataDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc); //geoserver_home fix
-         String rootDir = geoserverDataDir.getAbsolutePath();
 
         try {
             File f = geoserverDataDir; //geoserver_home fix
@@ -119,8 +119,8 @@ public class GeoServerPlugIn implements PlugIn {
 
 
             try {
-            	File plugInDir = new File(rootDir, "data/plugIns");
-            	File validationDir = new File(rootDir, "data/validation");
+            File plugInDir = findConfigDir(geoserverDataDir, "plugIns");
+            File validationDir = findConfigDir(geoserverDataDir, "validation");
             	Map plugIns = null;
             	Map testSuites = null;
             	if(plugInDir.exists()){
@@ -148,5 +148,9 @@ public class GeoServerPlugIn implements PlugIn {
         }
 
         started = true;
+    }
+
+    private File findConfigDir(File rootDir, String name) throws Exception {
+	return GeoserverDataDirectory.findConfigDir(rootDir, name);
     }
 }

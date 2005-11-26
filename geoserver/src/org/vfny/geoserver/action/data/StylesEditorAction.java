@@ -1,19 +1,3 @@
-/*
- *    Geotools2 - OpenSource mapping toolkit
- *    http://geotools.org
- *    (C) 2002, Geotools Project Managment Committee (PMC)
- *
- *    This library is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU Lesser General Public
- *    License as published by the Free Software Foundation;
- *    version 2.1 of the License.
- *
- *    This library is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *    Lesser General Public License for more details.
- *
- */
 /* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -36,6 +20,7 @@ import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.form.data.StylesEditorForm;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.util.SLDValidator;
 import org.xml.sax.SAXParseException;
 
@@ -106,14 +91,20 @@ public class StylesEditorAction extends ConfigAction {
             return mapping.findForward("config.data.style");
         }
 
+	
+	ServletContext sc = getServlet().getServletContext();
         //DJB: changed for geoserver_data_dir
         //File rootDir = new File(getServlet().getServletContext().getRealPath("/"));
-        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(getServlet().getServletContext());
-
-        //All styles are stored in the data/styles directory.  When we move to
-        //the geoserver_home this call will need to change.
-        File styleDir = new File(rootDir, "data/styles");
-
+        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+	
+	File styleDir;
+	try {
+	    styleDir = GeoserverDataDirectory.findConfigDir(rootDir, "styles");
+	} catch (ConfigurationException cfe) {
+            LOGGER.warning("no style dir found, creating new one");
+            //if for some bizarre reason we don't fine the dir, make a new one.
+            styleDir = new File(rootDir, "styles");
+	}
         // send content of FormFile to /styles :
         // there nothing to keep the styles in memory for XMLConfigWriter.store() 
         InputStreamReader isr = new InputStreamReader(file.getInputStream());

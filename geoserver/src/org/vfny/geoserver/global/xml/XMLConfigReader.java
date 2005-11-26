@@ -11,6 +11,7 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.geotools.filter.FilterDOMParser;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.Log4JFormatter;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.ContactDTO;
@@ -158,8 +159,16 @@ public class XMLConfigReader {
      */
     protected void load() throws ConfigurationException {
         root = ReaderUtils.checkFile(root, true);
+	File configDir;
 
-        File configDir = ReaderUtils.checkFile(new File(root, "WEB-INF/"), true);
+        //Doing some trys here for either being in the webapp, with data and web-inf defined
+        //or in a true data_dir, with the catalog and service in the same root dir.
+        try {
+            configDir = ReaderUtils.checkFile(new File(root, "WEB-INF/"), true);
+        } catch (ConfigurationException confE) {
+            //no WEB-INF, so we're in a data_dir, use as root.
+            configDir = root;
+        }
         File configFile = ReaderUtils.checkFile(new File(configDir,
                     "services.xml"), false);
 
@@ -167,10 +176,10 @@ public class XMLConfigReader {
 
         File catalogFile = ReaderUtils.checkFile(new File(configDir,
                     "catalog.xml"), false);
-        File dataDir = ReaderUtils.checkFile(new File(root, "data/"), true);
-        File featureTypeDir = ReaderUtils.checkFile(new File(dataDir,
-                    "featureTypes/"), true);
-        loadCatalog(catalogFile, featureTypeDir);
+        File featureTypeDir = GeoserverDataDirectory.findConfigDir(root, "featureTypes/");
+        File styleDir = GeoserverDataDirectory.findConfigDir(root, "styles/");
+
+        loadCatalog(catalogFile, featureTypeDir, styleDir);
 
         // Future additions
         // validationDir = ReaderUtils.initFile(new File(dataDir,"validation/"),true);
@@ -244,7 +253,8 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException When an error occurs.
      */
-    protected void loadCatalog(File catalogFile, File featureTypeDir)
+    protected void loadCatalog(File catalogFile, File featureTypeDir, 
+       	                       File styleDir)
         throws ConfigurationException {
         LOGGER.fine("loading catalog file: " + catalogFile);
 
@@ -266,9 +276,11 @@ public class XMLConfigReader {
         setDefaultNS();
         data.setDataStores(loadDataStores(ReaderUtils.getChildElement(
                     catalogElem, "datastores", true)));
+
+
         data.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem,
-                    "styles", false),
-                new File(featureTypeDir.getParentFile(), "styles")));
+						  "styles", false), styleDir));
+//                new File(featureTypeDir.getParentFile(), "styles")));
 
         // must be last
         data.setFeaturesTypes(loadFeatureTypes(featureTypeDir));
@@ -712,8 +724,8 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException When an error occurs.
      */
-    protected Map loadStyles(Element stylesElem, File baseDir)
-        throws ConfigurationException {
+    protected Map loadStyles(Element stylesElem, File baseDir) 
+       throws ConfigurationException {
         Map styles = new HashMap();
 
         NodeList stylesList = null;

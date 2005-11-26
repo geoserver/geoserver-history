@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +30,8 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  */
 public class DemoRequestForm extends ActionForm 
 {
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.form");
 	private String action;
 	private String url;
     private String body;
@@ -48,20 +51,26 @@ public class DemoRequestForm extends ActionForm
         super.reset(arg0, request);
         
         ServletContext context = getServlet().getServletContext();
-        //DJB: changed this for geoserver_data_dir 
-       // this.dir = new File(context.getRealPath("/data/demo"));
-        this.dir = new File(GeoserverDataDirectory.getGeoserverDataDirectory(context),"/data/demo");
         demoList = new ArrayList();
         demoList.add("");
-                
-        if( dir.exists() && dir.isDirectory() ){
+
+        //DJB: changed this for geoserver_data_dir 
+       // this.dir = new File(context.getRealPath("/data/demo"));
+        File dataDir = GeoserverDataDirectory.getGeoserverDataDirectory(context);
+        try {
+            this.dir = GeoserverDataDirectory.findConfigDir(dataDir, "demo/");
+            //commented out, findConfigDir does this for us.    
+	    //if( dir.exists() && dir.isDirectory() ){
             File files[] = dir.listFiles();
             for( int i=0; i<files.length;i++){
                 File file = files[i];           
                 if (!file.isDirectory())
                 	demoList.add( file.getName() );
             }            
-        }        
+        } catch (org.vfny.geoserver.global.ConfigurationException confE) {
+	    LOGGER.fine("Conf e: " + confE);
+	    //eat this, no demo dir, so we just don't get any demo requests.
+	}       
 	Collections.sort(demoList);
     }
 

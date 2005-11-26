@@ -81,9 +81,20 @@ public class SaveXMLAction extends ConfigAction {
     HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         ServletContext sc = request.getSession().getServletContext();
-        File rootDir = new File(sc.getRealPath("/"));
-        File plugInDir = new File(rootDir, "data/plugIns");
-        File validationDir = new File(rootDir, "data/validation");
+        //CH: changed for geoserver_data_dir, forgotten first round.
+        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+
+	File dataDir;
+	if (GeoserverDataDirectory.isTrueDataDir()){
+	    dataDir = rootDir;
+	} else {
+	    dataDir = new File(rootDir, "data/");
+	}		
+	//should probably use the XMLConfigWriter's initFile utility methods 
+	//here.  But they're in a protected static class.  Should really just
+	//move this method to XMLConfigWriter.
+        File plugInDir = new File(dataDir, "plugIns");
+        File validationDir = new File(dataDir, "validation");
 
         Map plugIns = (Map) getWFS(request).getValidation().toPlugInDTO();
         Map testSuites = (Map) getWFS(request).getValidation().toTestSuiteDTO();

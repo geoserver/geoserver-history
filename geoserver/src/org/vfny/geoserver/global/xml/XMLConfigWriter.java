@@ -7,6 +7,7 @@ package org.vfny.geoserver.global.xml;
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.filter.FilterTransformer;
 import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
@@ -66,8 +67,12 @@ public class XMLConfigWriter {
         }
 
         WriterUtils.initFile(root, true);
-
-        File configDir = WriterUtils.initFile(new File(root, "WEB-INF/"), true);
+	boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
+	//We're just checking if it's actually a data_dir, not trying to
+	//to do backwards compatibility.  So if an old data_dir is made in
+	//the old way, on save it'll come to the new way.
+	File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
+        File configDir = WriterUtils.initFile(fileDir, true);
 
         File catalogFile = WriterUtils.initWriteFile(new File(configDir,
                     "catalog.xml"), false);
@@ -79,8 +84,12 @@ public class XMLConfigWriter {
         } catch (IOException e) {
             throw new ConfigurationException("Store" + root, e);
         }
-
-        File dataDir = WriterUtils.initFile(new File(root, "data/"), true);
+	File dataDir;
+	if (!inDataDir) { 
+	    dataDir = WriterUtils.initFile(new File(root, "data/"), true);
+	} else {
+	    dataDir = root;
+	}
         File featureTypeDir = WriterUtils.initFile(new File(dataDir,
                     "featureTypes/"), true);
         storeFeatures(featureTypeDir, data);
@@ -97,7 +106,12 @@ public class XMLConfigWriter {
 
         WriterUtils.initFile(root, true);
 
-        File configDir = WriterUtils.initFile(new File(root, "WEB-INF/"), true);
+	boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
+	//We're just checking if it's actually a data_dir, not trying to
+	//to do backwards compatibility.  So if an old data_dir is made in
+	//the old way, on save it'll come to the new way.
+	File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
+        File configDir = WriterUtils.initFile(fileDir, true);
         File configFile = WriterUtils.initWriteFile(new File(configDir,
                     "services.xml"), false);
 
