@@ -97,7 +97,7 @@ public class XMLConfigWriter {
 
     public static void store(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
         File root) throws ConfigurationException {
-        LOGGER.fine("In method store WMSDTO,WFSDTO, GeoServerDTO");
+        LOGGER.finest("In method store WMSDTO,WFSDTO, GeoServerDTO");
 
         if (geoServer == null) {
             throw new ConfigurationException(
@@ -146,7 +146,7 @@ public class XMLConfigWriter {
      */
     protected static void storeServices(WriterHelper cw, WMSDTO wms,
         WFSDTO wfs, GeoServerDTO geoServer) throws ConfigurationException {
-        LOGGER.fine("In method storeServices");
+        LOGGER.finer("In method storeServices");
         cw.writeln("<?config.xml version=\"1.0\" encoding=\"UTF-8\"?>");
         cw.comment("Service level configuration");
         cw.openTag("serverConfiguration");
@@ -267,7 +267,7 @@ public class XMLConfigWriter {
      */
     protected static void storeContact(ContactDTO c, WriterHelper cw)
         throws ConfigurationException {
-        LOGGER.fine("In method storeContact");
+        LOGGER.finer("In method storeContact");
 
         if ((c != null) && !c.equals(new ContactDTO())) {
             cw.openTag("ContactInformation");
@@ -307,7 +307,7 @@ public class XMLConfigWriter {
      */
     protected static void storeService(Object obj, WriterHelper cw)
         throws ConfigurationException {
-        LOGGER.fine("In method storeService");
+        LOGGER.finer("In method storeService");
 
         ServiceDTO s = null;
         String u = null;
@@ -429,7 +429,7 @@ public class XMLConfigWriter {
      */
     protected static void storeCatalog(WriterHelper cw, DataDTO data)
         throws ConfigurationException {
-        LOGGER.fine("In method storeCatalog");
+        LOGGER.finer("In method storeCatalog");
         cw.writeln("<?config.xml version=\"1.0\" encoding=\"UTF-8\"?>");
         cw.openTag("catalog");
 
@@ -508,7 +508,7 @@ public class XMLConfigWriter {
      */
     protected static void storeDataStore(WriterHelper cw, DataStoreInfoDTO ds)
         throws ConfigurationException {
-        LOGGER.fine("In method storeDataStore");
+        LOGGER.finer("In method storeDataStore");
 
         Map temp = new HashMap();
 
@@ -565,7 +565,7 @@ public class XMLConfigWriter {
      */
     protected static void storeNameSpace(WriterHelper cw, NameSpaceInfoDTO ns)
         throws ConfigurationException {
-        LOGGER.fine("In method storeNameSpace");
+        LOGGER.finer("In method storeNameSpace");
 
         Map attr = new HashMap();
 
@@ -600,7 +600,7 @@ public class XMLConfigWriter {
      */
     protected static void storeStyle(WriterHelper cw, StyleDTO s)
         throws ConfigurationException {
-        LOGGER.fine("In method storeStyle: " + s);
+        LOGGER.finer("In method storeStyle: " + s);
 
         Map attr = new HashMap();
 
@@ -616,7 +616,7 @@ public class XMLConfigWriter {
             attr.put("default", "true");
         }
 
-        LOGGER.fine("storing style " + attr);
+        LOGGER.finer("storing style " + attr);
 
         if (attr.size() != 0) {
             cw.attrTag("style", attr);
@@ -639,7 +639,7 @@ public class XMLConfigWriter {
      */
     protected static void storeFeatures(File dir, DataDTO data)
         throws ConfigurationException {
-        LOGGER.fine("In method storeFeatures");
+        LOGGER.finer("In method storeFeatures");
 
         // write them
         Iterator i = data.getFeaturesTypes().keySet().iterator();
@@ -656,7 +656,7 @@ public class XMLConfigWriter {
                 storeFeature(ft, dir2);
 
                 if (ft.getSchemaAttributes() != null) {
-                    LOGGER.fine(ft.getKey() + " writing schema.xml w/ "
+                    LOGGER.finer(ft.getKey() + " writing schema.xml w/ "
                         + ft.getSchemaAttributes().size());
                     storeFeatureSchema(ft, dir2);
                 }
@@ -736,7 +736,7 @@ public class XMLConfigWriter {
      */
     protected static void storeFeature(FeatureTypeInfoDTO ft, File dir)
         throws ConfigurationException {
-        LOGGER.fine("In method storeFeature");
+        LOGGER.finer("In method storeFeature");
 
         File f = WriterUtils.initWriteFile(new File(dir, "info.xml"), false);
 
@@ -845,7 +845,7 @@ public class XMLConfigWriter {
         throws ConfigurationException {
         if ((fs.getSchemaBase() == null) || (fs.getSchemaBase() == "")) {
             //LOGGER.info( "No schema base" );
-            LOGGER.fine(fs.getKey() + " has not schemaBase");
+            LOGGER.finer(fs.getKey() + " has not schemaBase");
 
             return;
         }
@@ -853,7 +853,7 @@ public class XMLConfigWriter {
         if ((fs.getSchemaName() == null) || (fs.getSchemaName() == "")) {
             // Should assume Null?
             //LOGGER.info( "No schema name" ); // Do we even have a field for this?
-            LOGGER.fine(fs.getKey() + " has not schemaName");
+            LOGGER.finer(fs.getKey() + " has not schemaName");
 
             return;
         }
@@ -948,7 +948,7 @@ public class XMLConfigWriter {
         cw.closeTag("xs:complexContent");
         cw.closeTag("xs:complexType");
     }
-}
+
 
 
 /**
@@ -964,7 +964,7 @@ public class XMLConfigWriter {
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: XMLConfigWriter.java,v 1.32 2004/09/20 20:43:37 cholmesny Exp $
  */
-class WriterUtils {
+public static class WriterUtils {
     /** Used internally to create log information to detect errors. */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.global");
@@ -998,7 +998,7 @@ class WriterUtils {
     public static File initFile(File f, boolean isDir)
         throws ConfigurationException {
         if (!f.exists()) {
-            LOGGER.fine("Creating File: " + f.toString());
+            LOGGER.finer("Creating File: " + f.toString());
 
             if (isDir) {
                 if (!f.mkdir()) {
@@ -1029,7 +1029,7 @@ class WriterUtils {
                 "Path specified does not have a valid file.\n" + f + "\n\n");
         }
 
-        LOGGER.fine("File is valid: " + f);
+        LOGGER.finer("File is valid: " + f);
 
         return f;
     }
@@ -1061,4 +1061,5 @@ class WriterUtils {
 
         return f;
     }
+}
 }
