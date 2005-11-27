@@ -29,6 +29,7 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
+import org.vfny.geoserver.global.xml.XMLConfigWriter.WriterUtils;
 
 
 /**
@@ -89,13 +90,15 @@ public class SaveXMLAction extends ConfigAction {
 	    dataDir = rootDir;
 	} else {
 	    dataDir = new File(rootDir, "data/");
-	}		
-	//should probably use the XMLConfigWriter's initFile utility methods 
-	//here.  But they're in a protected static class.  Should really just
-	//move this method to XMLConfigWriter.
-        File plugInDir = new File(dataDir, "plugIns");
-        File validationDir = new File(dataDir, "validation");
-
+	}
+	File plugInDir;
+	File validationDir;
+	try {
+	    plugInDir = WriterUtils.initWriteFile(new File(dataDir, "plugIns"), true);
+	    validationDir = WriterUtils.initWriteFile(new File(dataDir, "validation"), true);
+	} catch (ConfigurationException confE) {
+	    throw new ServletException(confE);
+	}
         Map plugIns = (Map) getWFS(request).getValidation().toPlugInDTO();
         Map testSuites = (Map) getWFS(request).getValidation().toTestSuiteDTO();
 
@@ -111,9 +114,9 @@ public class SaveXMLAction extends ConfigAction {
                 try {
                     key = i.next();
                     dto = (PlugInDTO) plugIns.get(key);
-
-                    FileWriter fw = new FileWriter(new File(plugInDir,
-                                dto.getName().replaceAll(" ", "") + ".xml"));
+		    String fName = dto.getName().replaceAll(" ", "") + ".xml";
+                    File pFile = WriterUtils.initWriteFile(new File(plugInDir, fName), false);
+                    FileWriter fw = new FileWriter(pFile);
                     XMLWriter.writePlugIn(dto, fw);
                     fw.close();
                 } catch (Exception e) {
@@ -142,9 +145,10 @@ public class SaveXMLAction extends ConfigAction {
 
                 try {
                     dto = (TestSuiteDTO) testSuites.get(i.next());
-
-                    FileWriter fw = new FileWriter(new File(validationDir,
-                                dto.getName().replaceAll(" ", "") + ".xml"));
+		    String fName = dto.getName().replaceAll(" ", "") + ".xml";
+                    File pFile = WriterUtils.initWriteFile(new File(validationDir, fName), false);
+                    FileWriter fw = new FileWriter(pFile);//new File(validationDir,
+		    //dto.getName().replaceAll(" ", "") + ".xml"));
                     XMLWriter.writeTestSuite(dto, fw);
                     fw.close();
                 } catch (Exception e) {
