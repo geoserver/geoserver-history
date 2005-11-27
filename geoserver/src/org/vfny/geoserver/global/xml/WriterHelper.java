@@ -53,7 +53,6 @@ public class WriterHelper {
      * @param writer the writer which will be used for outputing the xml.
      */
     public WriterHelper(Writer writer) {
-        LOGGER.fine("In constructor WriterHelper");
         this.writer = writer;
     }
 
