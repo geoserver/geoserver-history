@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+
+	<!-- pick up all application contexts -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/*-applicationContext.xml</param-value>
+	</context-param>
+	
+	<!-- logging configuration -->
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>/WEB-INF/log4j.properties</param-value>
+	</context-param>
+	
+	<!-- listener to trigger context load -->
+	<listener>
+	  <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<!-- listener to trigger logging config -->
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+	
+	<!-- dispatcher servlet, dispatches incoming requests to controllers -->
+	<servlet>
+		<servlet-name>org.openplans.geoserver</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>	
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>org.openplans.geoserver</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	
+</web-app>

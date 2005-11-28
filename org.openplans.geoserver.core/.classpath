@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="web/WEB-INF"/>
+	<classpathentry output="target/test-classes" kind="src" path="test"/>
+	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="MAVEN_REPO/javax.servlet/jars/servlet-api-2.4.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-core-1.2.5.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-beans-1.2.5.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-context-1.2.5.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-web-1.2.5.jar"/>
+	<classpathentry sourcepath="/SPRING_SRC" kind="var" path="MAVEN_REPO/springframework/jars/spring-webmvc-1.2.5.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jstl/jars/jstl-1.1.2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/taglibs/jars/standard-1.1.2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.9.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/com.mockrunner/jars/mockrunner-0.3.1.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

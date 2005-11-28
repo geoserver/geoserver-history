@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+
+
+  <!-- ==================================================== -->
+  <!--     Project description (including license)          -->
+  <!-- ==================================================== -->
+  <groupId>org.openplans</groupId>
+  <artifactId>skunkworks</artifactId>
+  <version>0.1</version>
+  <name>Skunkworks GeoServer</name>
+
+  <organization>
+    <name>The Open Planning Project</name>
+    <url>http://www.openplans.org</url>
+  </organization>
+  <inceptionYear>2005</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>Lesser General Public License (LGPL)</name>
+      <url>http://www.gnu.org/copyleft/lesser.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>1.2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>1.2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>1.2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>1.2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>javadoc</groupId>
+			<artifactId>javadoc</artifactId>
+			<version>1.3</version>
+		</dependency>
+  </dependencies>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+  <repositories>
+    <repository>
+      <id>ibiblio</id>
+      <name>Ibiblio - the public's library and digital archive</name>
+      <url>http://www.ibiblio.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>espace</id>
+      <name>Repository from the Sicade laboratory in New-Caledonia</name>
+      <url>http://maven.espace.ird.nc</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <modules>
+    <module>org.openplans.skunkworks</module>
+    <module>org.openplans.skunkworks.geotools</module>
+  </modules>
+
+
+</project>

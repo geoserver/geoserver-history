@@ -1,0 +1,47 @@
+<project basedir="." default="deploy" name="skunkworks">
+
+	<property name="src.dir" location="src"/>
+	<property name="bin.dir" location="bin"/>
+	<property name="dist.dir" location="dist"/>
+	<property name="lib.dir" location="lib"/>
+	<property name="webinf.dir" location="WEB-INF"/>
+	<property name="deploy.dir" location="/opt/apache-tomcat-5.5.12/webapps"/>
+	
+	<target name="clean">
+		<delete file="${dist.dir}/skunkworks.war"/>
+	</target>
+	
+	<target name="init" depends="clean">
+		<mkdir dir="${dist.dir}"/>
+	</target>
+			
+	<target name="compile" depends="init">
+		<javac destdir="${bin.dir}" srcdir="${src.dir}">
+			<classpath>
+				<fileset dir="${lib.dir}" includes="*.jar"/>
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="war" depends="compile">
+		<war destfile="${dist.dir}/skunkworks.war" 
+			webxml="${webinf.dir}/web.xml">
+			
+
+			<webinf dir="${webinf.dir}" 
+				includes="**/*" excludes="web.xml"/> 
+				
+			<!-- classes -->
+			<classes dir="${bin.dir}" includes="**/*.class"/>
+			
+			<!-- spring libraries -->
+			<lib dir="${lib.dir}" includes="spring-*.jar"/>
+			
+		</war>
+	</target>
+	
+	<target name="deploy" depends="war">
+		<copy todir="${deploy.dir}" file="${dist.dir}/skunkworks.war"/>
+	</target>
+	
+</project>

@@ -1,0 +1,54 @@
+<!-- ========================= -->
+<!-- GeoTools 2.0 build script -->
+<!-- ========================= -->
+<project xmlns:j="jelly:core" xmlns:u="jelly:util" xmlns:ant="jelly:ant" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="info">
+	
+	<goal name="build">
+		<j:set var="ignoreFailures" value="true"/>
+		<j:set var="goal" value="clean,jar:install,test"/>
+		<attainGoal name="multiproject:goal"/>
+	</goal>
+
+	<goal name="cleanAll">
+		<!-- clean the root module -->
+		<attainGoal name="clean"/>
+		
+		<!-- delete the geoserver deployment directory -->
+		<ant:delete dir="geoserver"/>
+
+		<!-- run multiproject clean -->
+		<j:set var="ignoreFailures" value="true"/>
+		<j:set var="goal" value="clean"/>
+		<attainGoal name="multiproject:goal"/>
+	</goal>
+
+	<goal name="warAll">
+		<attainGoal name="build"/>
+		<j:set var="ignoreFailures" value="true"/>
+		<j:set var="goal" value="war"/>
+		<attainGoal name="multiproject:goal"/>
+
+		<ant:mkdir dir="${maven.build.dir}/war"/>
+		<ant:unwar dest="${maven.build.dir}/war">
+			<ant:fileset dir="." includes="**/*.war"/>
+		</ant:unwar>
+
+		<ant:jar destfile="${maven.build.dir}/${pom.artifactId}.war"
+			 basedir="${maven.build.dir}/war"/>
+  </goal>
+
+	<goal name="eclipseAll">
+		<j:set var="ignoreFailures" value="true"/>
+		<j:set var="goal" value="eclipse"/>
+		<attainGoal name="multiproject:goal"/>
+	</goal>
+
+	<goal name="deploy">
+		<attainGoal name="cleanAll"/>
+		<attainGoal name="warAll"/>
+		<ant:delete dir="geoserver"/>
+		<ant:mkdir dir="geoserver"/>
+
+		<ant:unwar src="${maven.build.dir}/${pom.artifactId}.war" dest="geoserver"/>
+	</goal>
+</project>
