@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.requests;
 import java.awt.Color;
 import java.util.List;
 
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -58,11 +59,14 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * DOCUMENT ME!
+     * DJB: spec says SRS is *required*, so if they dont specify one, we should throw an error
+     *      instead we use "NONE" - which is no-projection.
+     *      Previous behavior was to the WSG84 lat/long (4326)
      *
-     * @return DOCUMENT ME!
+     * @return request CRS, or <code>null</code> if not set.
+     * TODO: make CRS manditory as for spec conformance
      */
-    public String getCrs() {
+    public CoordinateReferenceSystem getCrs() {
         return this.optionalParams.crs;
     }
 
@@ -152,7 +156,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @param crs DOCUMENT ME!
      */
-    public void setCrs(String crs) {
+    public void setCrs(CoordinateReferenceSystem crs) {
         this.optionalParams.crs = crs;
     }
 
@@ -274,7 +278,7 @@ public class GetMapRequest extends WMSRequest {
         Color bgColor = DEFAULT_BG;
 
         /** from SRS (1.1) or CRS (1.2) param */
-        String crs;
+        CoordinateReferenceSystem crs;
 
         /** DOCUMENT ME!  */
         String exceptions = SE_XML;
