@@ -99,9 +99,8 @@ public class GetMapResponse implements Response {
         //DJB: the WMS spec says that the request must not be 0 area
         //     if it is, throw a service exception!
         Envelope env = request.getBbox();
-        if (env.isNull() || (env.getWidth() <=0)|| (env.getHeight() <=0))
-        {
-        	throw new WmsException("The request bounding box has zero area.");
+        if (env.isNull() || (env.getWidth() <=0)|| (env.getHeight() <=0)){
+        	throw new WmsException("The request bounding box has zero area: " + env);
         }
 
         // DJB DONE: replace by setAreaOfInterest(Envelope,
@@ -110,26 +109,7 @@ public class GetMapResponse implements Response {
         
         //if there's a crs in the request, use that.  If not, assume its 4326
         
-        CoordinateReferenceSystem mapcrs;
-        //DJB: spec says SRS is *required*, so if they dont specify one, we should throw an error
-        //     instead we use "NONE" - which is no-projection.
-        //     Previous behavior was to the WSG84 lat/long (4326)
-        if ((request.getCrs() == null) || request.getCrs().equals("")|| request.getCrs().equalsIgnoreCase("NONE"))
-        {
-        	mapcrs = null;
-        }
-        else
-        {
-        	//construct the crs object
-        	try {
-        		mapcrs = CRS.decode(request.getCrs());
-        	}
-        	catch (Exception e)
-			{
-        		//couldnt make it - we send off a service exception with the correct info
-        		throw new WmsException(e.getLocalizedMessage(),"InvalidSRS");
-			}
-        }
+        CoordinateReferenceSystem mapcrs = request.getCrs();
         
         //DJB: added this to be nicer about the "NONE" srs.
         if (mapcrs !=null)
