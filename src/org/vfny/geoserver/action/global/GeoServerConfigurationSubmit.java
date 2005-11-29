@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.beanutils.locale.converters.StringLocaleConverter;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -25,10 +24,7 @@ import org.vfny.geoserver.config.ContactConfig;
 import org.vfny.geoserver.config.GlobalConfig;
 import org.vfny.geoserver.form.global.GeoServerConfigurationForm;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
-
-import com.sun.rsasign.r;
 
 /**
  * GeoServerConfigurationSubmit purpose.
