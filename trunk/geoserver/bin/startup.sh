@@ -1,4 +1,4 @@
-#!/bin/sh
+j#!/bin/sh
 # -----------------------------------------------------------------------------
 # Start Script for GEOSERVER
 #
@@ -51,7 +51,15 @@ if [ ! -r "$GEOSERVER_HOME"/bin/startup.sh ]; then
   exit 1
 fi
 
-
+#Find the configuration directory: GEOSERVER_DATA_DIR
+if [ -z $GEOSERVER_DATA_DIR ]; then
+    if [ -r "$GEOSERVER_HOME"/conf/ ]; then
+        export GEOSERVER_DATA_DIR="$GEOSERVER_HOME"/conf
+    else
+        echo "No GEOSERVER_DATA_DIR found, using application defaults"
+	GEOSERVER_DATA_DIR=""
+    fi
+fi
 
 cd "$GEOSERVER_HOME"
 if [ ! -r server/ ]; then
@@ -66,6 +74,8 @@ if [ ! -r server/ ]; then
         "$ANT_HOME"/bin/ant prepareEmbedded
      fi
 fi
+
+echo "GEOSERVER DATA DIR is $GEOSERVER_DATA_DIR"
 #added headless to true by default, if this messes anyone up let the list
 #know and we can change it back, but it seems like it won't hurt -ch
-exec "$_RUNJAVA" -Djava.awt.headless=true -jar bin/start.jar 
+exec "$_RUNJAVA" -DGEOSERVER_DATA_DIR=$GEOSERVER_DATA_DIR -Djava.awt.headless=true -jar bin/start.jar 

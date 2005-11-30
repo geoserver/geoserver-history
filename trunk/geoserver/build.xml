@@ -52,6 +52,7 @@
 	<property name="dir.src" value="${basedir}/src" />
 	<property name="dir.test" value="${basedir}/test" />
 	<property name="dir.conf" value="${basedir}/conf" />
+	<property name="dir.data_dirs" value="${basedir}/data_dirs" />
 	<property name="dir.release" value="${basedir}/release" />
 	<property name="dir.webinf" value="${basedir}/WEB-INF" />
 	<property name="dir.jarcopy" value="${dir.server}/geoserver/WEB-INF/lib" />
@@ -80,7 +81,8 @@
 	<property name="test.name" value="config.ConfigSuite" />
 	<property name="jetty.run" value="${basedir}/documents/admin.xml ${basedir}/documents/jetty.xml" />
 	<property name="jetty.jvmarg" value="-Djetty.home=${basedir}" />
-
+	<property environment="env"/>
+        <property name="data_dir.jvmarg" value="-DGEOSERVER_DATA_DIR=${env.GEOSERVER_DATA_DIR}"/>
 	<!-- Chris this fails on eclipse 2 or M7 but not on M8 - w/ unexpected element "available" -->
 	<available file="${basedir}/conf" type="dir" property="conf.folder.present" />
 	<available file="${basedir}/server/geoserver" type="dir" property="server.built" />
@@ -301,8 +303,6 @@
 
 	<!-- TEST -->
 	<target name="test" depends="init, all" description="Depolys application to the test server">
-		<!-- no longer needed, as work is in geoserver/WEB-INF -->
-		<!--mkdir dir="${dir.server}/work"/-->
 
 		<!-- This will now build with the users directory, which I think is
          appropriate for testing of this sort, as you'll want to configure
@@ -393,14 +393,12 @@
 	<!-- runs the server -->
 	<target name="run" depends="prepareEmbedded, init"
 		description="Runs the jetty servlet container in the background, use ant stop to halt">
-		<echo message="Please be sure that either prepareEmbedded or" />
-		<echo message="test has been run before using this target" />
-
 		<java classname="org.mortbay.jetty.Server" dir="${basedir}" fork="yes" failonerror="yes">
 			<classpath>
 				<path refid="path.jetty" />
 			</classpath>
 			<jvmarg line="${jetty.jvmarg}" />
+			<jvmarg line="${data_dir.jvmarg}" />
 			<arg line="${jetty.run}" />
 		</java>
 	</target>
@@ -488,10 +486,13 @@
 				<include name="geoserver.log" />
 				<include name="z3950-geo.map" />
 			</fileset>
+               
 		</copy>
 
 
-		<!-- populate base directory -->
+		<!-- populate base directory. Er, this doesn't seem to get --> 
+                <!-- used at all?  To build the war it's not used. -ch -->
+                <!-- should remove it, but we're right before 1.3, so wait -->
 
 		<mkdir dir="${basedir}/data" />
 		<copy todir="${basedir}/data">
@@ -500,68 +501,20 @@
 			</fileset>
 		</copy>
 
-		<mkdir dir="${basedir}/data/capabilities" />
-		<copy todir="${basedir}/data/capabilities">
-			<fileset dir="${basedir}/capabilities">
-				<include name="*" />
+		<!--copy todir="${basedir}/data">
+			<fileset dir="${basedir}/cite/conftiger_and_apps/data/">
+				<include name="**/*" />
 			</fileset>
-		</copy>
+		</copy-->
 
-    <mkdir dir="${basedir}/data/capabilities/wcs"/>
-    <mkdir dir="${basedir}/data/capabilities/wcs/1.0.0"/>
-    <copy todir="${basedir}/data/capabilities/wcs/1.0.0">
-      <fileset dir="${basedir}/capabilities/wcs">
-				<include name="*" />
-			</fileset>
-		</copy>
-		<mkdir dir="${basedir}/data/capabilities/wfs" />
-		<mkdir dir="${basedir}/data/capabilities/wfs/1.0.0" />
-		<copy todir="${basedir}/data/capabilities/wfs/1.0.0">
-			<fileset dir="${basedir}/capabilities/wfs">
-				<include name="*" />
-			</fileset>
-		</copy>
-
-		<copy todir="${basedir}/data/capabilities/wms/1.1.1">
-			<fileset dir="${basedir}/capabilities/wms">
-				<include name="*" />
-			</fileset>
-		</copy>
-
-		<mkdir dir="${basedir}/data/capabilities/filter/1.0.0" />
-		<copy todir="${basedir}/data/capabilities/filter/1.0.0">
-			<fileset dir="${basedir}/capabilities/filter">
-				<include name="*" />
-			</fileset>
-		</copy>
-
-		<mkdir dir="${basedir}/data/capabilities/gml/2.1.2" />
-		<copy todir="${basedir}/data/capabilities/gml/2.1.2">
-			<fileset dir="${basedir}/capabilities/gml">
-				<include name="*" />
-			</fileset>
-		</copy>
-	
-		<mkdir dir="${basedir}/data/capabilities/sld" />
-		<copy todir="${basedir}/data/capabilities/sld">
-			<fileset dir="${basedir}/capabilities/sld">
-				<include name="*" />
-			</fileset>
-		</copy>	
-
-		<mkdir dir="${basedir}/data/capabilities/validate" />
-		<copy todir="${basedir}/data/capabilities/validate">
-			<fileset dir="${basedir}/capabilities/validate">
-				<include name="*" />
-			</fileset>
-		</copy>
-
+ 
 		<copy todir="${dir.build}">
 			<fileset dir="${basedir}/documents">
 				<include name="log4j.properties" />
 			</fileset>
 		</copy>
-
+                <!-- making a work directory ensures the compiled jsps get -->
+		<!-- saved there, instead of some random temp location -->
 		<mkdir dir="${dir.webinf}/work" />
 		<!-- war file -->
 		<war warfile="${dir.build}/geoserver.war" webxml="${dir.webinf}/web.xml" update="true">
@@ -598,7 +551,7 @@
 				<exclude name="**/junit.jar" />
 				<exclude name="**/servlet.jar" />
 				<!--exclude name="**/gt2-oracle-spatial.jar"/-->
-				<exclude name="**/xalan.jar" />
+				<!--exclude name="**/xalan.jar" /-->
 				<exclude name="**/ki*.jar" />
 				<exclude name="**/a2jruntime.jar" />
 				<!--exclude name="**/log4j-1.2.5.jar" /-->
@@ -612,6 +565,7 @@
 			<fileset dir="${basedir}">
 				<include name="data/**" />
 				<include name="documents/api/**" />
+                                <include name="schemas/**"/>
 				<exclude name="**/catalog.xml" />
 				<exclude name="**/services.xml" />
 			</fileset>
@@ -830,6 +784,7 @@
 <target name="release-all" depends="release-common, release-binary,release-war, release-src, release-docs" >
 	<antcall target="release-all-upgrade"/>
 	<antcall target="release-installer-win"/>
+	<delete dir="${dir.build}/installer"/>
 </target>
 
 
@@ -848,6 +803,7 @@
 			<include name="**/*" />
 			<exclude name="geoserver.war" />
 			<exclude name="org/**" />
+			<exclude name="META-INF/**" />
 			<exclude name="bin/*.sh"/>
 			<exclude name="**/catalog.xml"/>
 			<exclude name="**/services.xml"/>
@@ -952,8 +908,8 @@
 		<exclude name="**/*CVS*/*" />
 	</fileset>
 </copy>
-<copy todir="${dir.build}/capabilities/">
-	<fileset dir="${basedir}/capabilities">
+<copy todir="${dir.build}/schemas/">
+	<fileset dir="${basedir}/schemas">
 		<include name="**/*" />
 		<exclude name="*CVS*/*" />
 		<exclude name="**/*CVS*/*" />
@@ -968,6 +924,12 @@
 	</fileset>
 </copy>
 
+<copy todir="${dir.build}/data_dirs/">
+	<fileset dir="${basedir}/data_dirs">
+		<include name="**/*" />
+	</fileset>
+</copy>
+
 
 
 <zip destfile="${basedir}/geoserver-${name.release}-src.zip">
@@ -976,6 +938,7 @@
 		<exclude name="bin/*" />
 		<exclude name="geoserver.war" />
 		<exclude name="org/**" />
+		<exclude name="META-INF/**" />
 	</zipfileset>
 	<zipfileset dir="${dir.build}" prefix="geoserver" filemode="755" includes="bin/*" />
 </zip>
@@ -1055,6 +1018,12 @@
 		<include name="admin.xml" />
 	</fileset>
 </copy>
+<copy todir="${dir.build}/conf">
+        <fileset dir="${basedir}/data_dirs/userBasic">
+                <include name="**/*"/>
+        </fileset>
+</copy>
+
 <antcall target="build-war">
 	<param name="conf.path" value="${basedir}/cite/confUserBasic" />
 </antcall>
@@ -1069,6 +1038,7 @@
 		<include name="**/*" />
 		<exclude name="geoserver.war" />
 		<exclude name="org/**" />
+                <exclude name="META-INF/**"/>
 		<exclude name="bin/*.sh"/>
 	</tarfileset>
 
@@ -1087,8 +1057,8 @@
 
 	
 
-	<!--
 	<delete dir="${dir.build}" failonerror="false" />
+<!--
 <delete file="${basedir}/geoserver-${name.release}-bin.zip" failonerror="true" />
  -->
 
