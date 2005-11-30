@@ -25,6 +25,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletContext;
+
 import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -48,6 +50,7 @@ import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageCategory;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.Log4JFormatter;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -138,6 +141,8 @@ public class XMLConfigReader {
 	 */
 	private DataDTO data;
 
+    /** the servlet context **/
+    ServletContext context;
 	
 	/**
 	 * XMLConfigReader constructor.
@@ -146,7 +151,8 @@ public class XMLConfigReader {
 	 * Should never be called.
 	 * </p>
 	 */
-	protected XMLConfigReader() {
+    protected XMLConfigReader(ServletContext context) {
+    	this.context = context;
 		wms = new WMSDTO();
 		wfs = new WFSDTO();
 		wcs = new WCSDTO();
@@ -183,8 +189,9 @@ public class XMLConfigReader {
 	 *
 	 * @throws ConfigurationException When an error occurs.
 	 */
-	public XMLConfigReader(File root) throws ConfigurationException {
-		this.root = root;
+    public XMLConfigReader(File root, ServletContext context) throws ConfigurationException {
+        this.root = root;
+        this.context = context;
 		wms = new WMSDTO();
 		wfs = new WFSDTO();
 		wcs = new WCSDTO();
@@ -210,8 +217,16 @@ public class XMLConfigReader {
 	 */
 	protected void load() throws ConfigurationException {
 		root = ReaderUtils.checkFile(root, true);
-		
-		File configDir = ReaderUtils.checkFile(new File(root, "WEB-INF/"), true);
+	File configDir;
+
+        //Doing some trys here for either being in the webapp, with data and web-inf defined
+        //or in a true data_dir, with the catalog and service in the same root dir.
+        try {
+            configDir = ReaderUtils.checkFile(new File(root, "WEB-INF/"), true);
+        } catch (ConfigurationException confE) {
+            //no WEB-INF, so we're in a data_dir, use as root.
+            configDir = root;
+        }
 		File configFile = ReaderUtils.checkFile(new File(configDir,
 		"services.xml"), false);
 		
@@ -220,11 +235,11 @@ public class XMLConfigReader {
 		File catalogFile = ReaderUtils.checkFile(new File(configDir,
 		"catalog.xml"), false);
 		File dataDir = ReaderUtils.checkFile(new File(root, "data/"), true);
-		File featureTypeDir = ReaderUtils.checkFile(new File(dataDir,
-		"featureTypes/"), true);
-		File coverageDir = ReaderUtils.checkFile(new File(dataDir,
-		"coverages/"), true);
-		loadCatalog(catalogFile, featureTypeDir, coverageDir);
+        File featureTypeDir = GeoserverDataDirectory.findConfigDir(root, "featureTypes/");
+        File styleDir = GeoserverDataDirectory.findConfigDir(root, "styles/");
+		File coverageDir = GeoserverDataDirectory.findConfigDir(root, "coverages/"); 
+
+		loadCatalog(catalogFile, featureTypeDir, styleDir, coverageDir);
 		
 		// Future additions
 		// validationDir = ReaderUtils.initFile(new File(dataDir,"validation/"),true);
@@ -300,7 +315,7 @@ public class XMLConfigReader {
 	 *
 	 * @throws ConfigurationException When an error occurs.
 	 */
-	protected void loadCatalog(File catalogFile, File featureTypeDir, File coverageDir)
+	protected void loadCatalog(File catalogFile, File featureTypeDir, File styleDir, File coverageDir)
 	throws ConfigurationException {
 		LOGGER.fine("loading catalog file: " + catalogFile);
 		
@@ -324,9 +339,9 @@ public class XMLConfigReader {
 				catalogElem, "formats", true)));
 		data.setDataStores(loadDataStores(ReaderUtils.getChildElement(
 				catalogElem, "datastores", true)));
-		data.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem,
-				"styles", false),
-				new File(featureTypeDir.getParentFile(), "styles")));
+        data.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem,
+						  "styles", false), styleDir));
+//                new File(featureTypeDir.getParentFile(), "styles")));
 		
 		// must be last
 		data.setFeaturesTypes(loadFeatureTypes(featureTypeDir));
@@ -411,17 +426,24 @@ public class XMLConfigReader {
 		Level loggingLevel = getLoggingLevel(globalElem);
         geoServer.setLoggingLevel(loggingLevel);
 
+        boolean loggingToFile = false;
+        Element elem = null;
+        elem = ReaderUtils.getChildElement(globalElem, "loggingToFile",false);
+        if (elem != null) {
+           loggingToFile = ReaderUtils.getBooleanAttribute(elem, "value", false, false);
+        }
+        
         String logLocation = ReaderUtils.getChildText(globalElem, "logLocation");
-
         if ((logLocation != null) && "".equals(logLocation.trim())) {
             logLocation = null;
         }
 
+        geoServer.setLoggingToFile(loggingToFile);
         geoServer.setLogLocation(logLocation);
 
         //init this now so the rest of the config has correct log levels.
         try {
-            GeoServer.initLogging(loggingLevel, logLocation);
+            GeoServer.initLogging(loggingLevel, loggingToFile,logLocation, context);
         } catch (IOException e) {
             throw new ConfigurationException(e);
         }
@@ -432,7 +454,6 @@ public class XMLConfigReader {
             LOGGER.config("logging to " + logLocation);
         }
 
-		Element elem = null;
 		elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
 		geoServer.setContact(loadContact(elem));
 		

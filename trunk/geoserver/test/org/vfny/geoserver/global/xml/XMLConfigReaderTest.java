@@ -17,6 +17,8 @@ import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
+import com.mockrunner.mock.web.MockServletContext;
+
 
 /**
  * XMLConfigReaderTest purpose.
@@ -76,7 +78,9 @@ public class XMLConfigReaderTest extends TestCase {
 
         try {
             // pass incorrect feature dir to avoid running this portion
-            cfe.loadCatalogWrapper(new File(root1, "catalog.xml"),
+            cfe.loadCatalogWrapper(
+            	new File(root1, "catalog.xml"),
+                new File(root1, "catalog.xml"),
                 new File(root1, "catalog.xml"),
 				new File(root1, "catalog.xml"));
         } catch (ConfigurationException e) {
@@ -139,7 +143,7 @@ public class XMLConfigReaderTest extends TestCase {
         XMLConfigReader m = null;
 
         try {
-            m = new XMLConfigReader(root2);
+            m = new XMLConfigReader(root2,new MockServletContext());
         } catch (ConfigurationException e) {
             fail(e.toString());
         }
@@ -195,16 +199,16 @@ public class XMLConfigReaderTest extends TestCase {
 
 class XMLConfigReaderExpose extends XMLConfigReader {
     public XMLConfigReaderExpose() {
-        super();
+        super(new MockServletContext());
     }
 
     public void loadServicesWrapper(File f) throws ConfigurationException {
         loadServices(f);
     }
 
-    public void loadCatalogWrapper(File f1, File f2, File f3)
+    public void loadCatalogWrapper(File f1, File f2, File f3, File f4)
         throws ConfigurationException {
-        loadCatalog(f1, f2, f3);
+        loadCatalog(f1, f2, f3, f4);
     }
 
     public void loadFeatureTypesWrapper(File f) throws ConfigurationException {

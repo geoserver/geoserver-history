@@ -5,8 +5,12 @@
   <description>Web Mapping, Feature and Coverage Services</description>
   <context-param>
     <param-name>serviceStratagy</param-name>
-    <param-value>PARTIAL-BUFFER</param-value>
+    <param-value>SPEED</param-value>
   </context-param>
+  <!--context-param>
+    <param-name>serviceStratagy</param-name>
+    <param-value>PARTIAL-BUFFER</param-value>
+  </context-param-->
   
   <context-param>
 	<!-- see comments on the PARTIAL-BUFFER strategy -->

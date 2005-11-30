@@ -5,6 +5,7 @@
 package org.vfny.geoserver.global;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -16,6 +17,10 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
+import javax.servlet.ServletContext;
+
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 
@@ -113,8 +118,14 @@ public class GeoServer extends GlobalLayerSupertype {
 	 */
 	private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
 		.getLevel();
+    
+    /** to log or not to log **/
+    private boolean logToFile = false;
+    /** to log to file or not to log to file **/
+    private boolean loggingToFile = false;
     /** where to log **/
     private String logLocation = null;
+    
 
     /**
      * getAddress purpose.
@@ -415,7 +426,7 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @throws ConfigurationException If an error occurs
      */
-    public void load(GeoServerDTO dto) throws ConfigurationException {
+    public void load(GeoServerDTO dto, ServletContext context) throws ConfigurationException {
         if (dto != null) {
             address = dto.getContact().getAddress();
             addressCity = dto.getContact().getAddressCity();
@@ -431,10 +442,12 @@ public class GeoServer extends GlobalLayerSupertype {
             contactPosition = dto.getContact().getContactPosition();
             contactVoice = dto.getContact().getContactVoice();
             loggingLevel = dto.getLoggingLevel();
+            
+            loggingToFile = dto.getLoggingToFile();
             logLocation = dto.getLogLocation();
             
             try {
-				initLogging(loggingLevel,logLocation);
+				initLogging(loggingLevel,loggingToFile,logLocation,context);
 			} 
             catch (IOException e) {
             	throw new ConfigurationException(e);
@@ -454,34 +467,80 @@ public class GeoServer extends GlobalLayerSupertype {
         }
     }
 
+    /**
+     * Convenience method for determining the actual location on the local file 
+     * system of the log file based an arbirtrary path. Relative paths are 
+     * appended to the geoserver data directory. 
+     * 
+     * @param location The log file path, this can be an absolute or relative 
+     * path.
+     * @param context The servlet context
+     * 
+     * @return The file containing the absolute path to the log file.
+     * @throws IOException
+     */
+    public static File getLogLocation(String logLocation, ServletContext context) 
+    	throws IOException {
+    	
+    	File f = new File(logLocation);
+		if (f.exists()) {
+			 if (f.isDirectory()) {
+				//attach a file to the end of the directory
+				if (!logLocation.endsWith(File.separator))
+					logLocation += File.separator;
+				logLocation += "geoserver.log";
+			 }
+		}
+		else {
+			//could be a relative path
+			if (!f.isAbsolute()) {
+				//append to data dir
+				File data = GeoserverDataDirectory
+					.getGeoserverDataDirectory(context);
+				f = new File(data,f.getPath());
+			}
+			
+			//make sure parent directory exists
+			if (f.getParentFile() != null && !f.getParentFile().exists())
+				f.getParentFile().mkdirs();
+			
+			f.createNewFile();
+		}
+		
+		return f;
+    }
+    
     /** 
      * Initializes logging based on configuration paramters.
      *
      */
-    public static void initLogging(Level level, String location) throws IOException {
+    public static void initLogging(Level level,boolean logToFile,String location,ServletContext context) 
+    	throws IOException {
+    	
     	Log4JFormatter.init("org.geotools", level);
         Log4JFormatter.init("org.vfny.geoserver", level);
         
-        //remove the old handler
-    	Logger logger = Logger.getLogger("org.vfny.geoserver");
-    	Handler[] handlers = logger.getHandlers();
-    	Handler old = null;
-    	for (int i = 0; i < handlers.length; i++) {
-    		Handler handler = handlers[i];
-    		if (handler instanceof StreamHandler) {
-    			old = handler;
-    			break;
-    		}
-    			
-    	}
-    	if (old != null) {
-    		logger.removeHandler(old);
-    	}
-    	
-        if (location != null) {
+        Logger logger = Logger.getLogger("org.vfny.geoserver");
+//    	Handler[] handlers = logger.getHandlers();
+//    	Handler old = null;
+//    	for (int i = 0; i < handlers.length; i++) {
+//    		Handler handler = handlers[i];
+//    		if (handler instanceof StreamHandler) {
+//    			old = handler;
+//    			break;
+//    		}
+//    			
+//    	}
+//    	if (old != null) {
+//    		logger.removeHandler(old);
+//    	}
+    	if (logToFile && location != null) {
+        	//map the location to an actual location on disk
+        	File logFile = GeoServer.getLogLocation(location,context);
+        	
         	//add the new handler
         	Handler handler = new StreamHandler(
-        		new BufferedOutputStream(new FileOutputStream(location,true)),
+        		new BufferedOutputStream(new FileOutputStream(logFile,true)),
         		new SimpleFormatter()
         	);
         	handler.setLevel(level);
@@ -510,6 +569,7 @@ public class GeoServer extends GlobalLayerSupertype {
         dto.setAdminUserName(adminUserName);
         dto.setAdminPassword(adminPassword);
         dto.setVerboseExceptions(verboseExceptions);
+        dto.setLoggingToFile(loggingToFile);
         dto.setLogLocation(logLocation);
 
         ContactDTO cdto = new ContactDTO();
@@ -651,5 +711,19 @@ public class GeoServer extends GlobalLayerSupertype {
 	 */
 	public void setLogLocation(String logLocation) {
 		this.logLocation = logLocation;
+	}
+	
+	/**
+	 * @return True if the server is logging to file, otherwise false.
+	 */
+	public boolean getLoggingToFile() {
+		return loggingToFile;
+	}
+	
+	/**
+	 * Toggles server logging to file.
+	 */
+	public void setLoggingToFile(boolean loggingToFile) {
+		this.loggingToFile = loggingToFile;
 	}
 }

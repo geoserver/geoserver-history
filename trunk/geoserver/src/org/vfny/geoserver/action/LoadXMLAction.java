@@ -24,7 +24,6 @@ import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
-import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import org.vfny.geoserver.global.xml.XMLConfigReader;
@@ -53,6 +52,11 @@ import org.vfny.geoserver.global.xml.XMLConfigReader;
  * <p>
  * Q: Does this need to load the Validation Processor as well?
  * </p>
+ * @REVISIT: There seems to be quite a bit of code duplication in this class
+ *           with GeoServerPlugIn, loading things, especially with the
+ *           validation stuff.  Anyway we could cut that down?  Have one call
+ *           the other?  Too close to release to do sucha refactoring but
+ *           in 1.4 we should. -CH
  */
 public class LoadXMLAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -73,7 +77,6 @@ public class LoadXMLAction extends ConfigAction {
 
         WMSDTO wmsDTO = null;
         WFSDTO wfsDTO = null;
-        WCSDTO wcsDTO = null;
         GeoServerDTO geoserverDTO = null;
         DataDTO dataDTO = null;
         //DJB: changed for geoserver_data_dir    
@@ -84,7 +87,7 @@ public class LoadXMLAction extends ConfigAction {
         XMLConfigReader configReader;
 
         try {
-            configReader = new XMLConfigReader(rootDir);
+            configReader = new XMLConfigReader(rootDir,sc);
         } catch (ConfigurationException configException) {
             configException.printStackTrace();
 
@@ -98,7 +101,6 @@ public class LoadXMLAction extends ConfigAction {
             // stack trace/debugger where things go wrong
             wmsDTO = configReader.getWms();
             wfsDTO = configReader.getWfs();
-            wcsDTO = configReader.getWcs();
             geoserverDTO = configReader.getGeoServer();
             dataDTO = configReader.getData();
         } else {
@@ -112,13 +114,10 @@ public class LoadXMLAction extends ConfigAction {
 
         // Update GeoServer
         try {
-        	getWCS(request).load(wcsDTO);
             getWFS(request).load(wfsDTO);
             getWMS(request).load(wmsDTO);
-            getWFS(request).getGeoServer().load(geoserverDTO);
+            getWFS(request).getGeoServer().load(geoserverDTO,sc);
             getWFS(request).getData().load(dataDTO);
-            getWCS(request).getGeoServer().load(geoserverDTO);
-            getWCS(request).getData().load(dataDTO);
         } catch (ConfigurationException configException) {
             configException.printStackTrace();
 
@@ -132,7 +131,6 @@ public class LoadXMLAction extends ConfigAction {
         getDataConfig().update(dataDTO);
         getWFSConfig().update(wfsDTO);
         getWMSConfig().update(wmsDTO);
-        getWCSConfig().update(wcsDTO);
 
         getApplicationState(request).notifyLoadXML();
 
@@ -159,11 +157,12 @@ public class LoadXMLAction extends ConfigAction {
             loadGeoserver(mapping, form, request, response);
         }
 
-        File rootDir = new File(sc.getRealPath("/"));
-        File plugInDir = new File(rootDir, "data/plugIns");
-        File validationDir = new File(rootDir, "data/validation");
+        //CH- fixed for data dir, looks like this got missed first time around.
+        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
 
         try {
+            File plugInDir = findConfigDir(rootDir, "plugIns");
+            File validationDir = findConfigDir(rootDir, "validation");
             Map plugIns = XMLReader.loadPlugIns(plugInDir);
             Map testSuites = XMLReader.loadValidations(validationDir, plugIns);
             ValidationConfig vc = new ValidationConfig(plugIns, testSuites);
@@ -176,5 +175,9 @@ public class LoadXMLAction extends ConfigAction {
         }
 
         return mapping.findForward("config.validation");
+    }
+
+    private File findConfigDir(File rootDir, String name) throws Exception {
+	return GeoserverDataDirectory.findConfigDir(rootDir, name);
     }
 }

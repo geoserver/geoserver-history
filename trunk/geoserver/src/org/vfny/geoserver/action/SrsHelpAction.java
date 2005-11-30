@@ -20,12 +20,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
-import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.factory.epsg.DefaultFactory;
-import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 
 
 
@@ -66,10 +63,7 @@ public class SrsHelpAction extends Action {
     	       for (t=0;t<ids.length;t++) //for each id (in sorted order)
     	       {
     	       	   try{  //get its definition
-    	       	   		//CoordinateReferenceSystem crs = CRS.decode("EPSG:"+ids[t]);
-        			CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-        			CoordinateReferenceSystem crs=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:"+ids[t]);
-
+    	       	   		CoordinateReferenceSystem crs = CRS.decode("EPSG:"+ids[t]);
     	       	   		String def = crs.toWKT();
     	       	   		defs.add(def);
     	       	   		ids_string.add(""+ids[t]);

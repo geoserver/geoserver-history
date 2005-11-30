@@ -21,7 +21,7 @@ import org.apache.struts.config.ModuleConfig;
 import org.geotools.validation.dto.PlugInDTO;
 import org.geotools.validation.dto.TestDTO;
 import org.geotools.validation.dto.TestSuiteDTO;
-
+import org.vfny.geoserver.global.xml.XMLConfigWriter.WriterUtils;
 
 /**
  * This class represents the state of the GeoServer appliaction.
@@ -578,26 +578,32 @@ public class ApplicationState implements PlugIn {
 	public Date getConfigTimestamp() {
 		return configTimestamp;
 	}
-
-	/**
-	 * Access xmlTimestamp property.
-	 * 
-	 * @return Returns the xmlTimestamp.
-	 * 
-	 * @uml.property name="xmlTimestamp"
-	 */
-	public Date getXmlTimestamp() {
-		if (xmlTimestamp == null) {
-			//DJB: changed for geoserver_data_dir
-			//File serviceFile = new File(sc.getRealPath("/WEB-INF/services.xml"));
-			File serviceFile = new File(GeoserverDataDirectory
-				.getGeoserverDataDirectory(sc), "/WEB-INF/services.xml");
-
-			xmlTimestamp = new Date(serviceFile.lastModified());
-		}
-		return xmlTimestamp;
-	}
-
+    /**
+     * Access xmlTimestamp property.
+     * 
+     * @return Returns the xmlTimestamp.
+     */
+    public Date getXmlTimestamp() {
+        if( xmlTimestamp == null){
+        	//DJB: changed for geoserver_data_dir
+        
+            File dataDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+            boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
+            //We're just checking if it's actually a data_dir, not trying to
+            //to do backwards compatibility.  So if an old data_dir is made in
+            //the old way, on save it'll come to the new way. -ch
+            File serviceDir = inDataDir ? dataDir : new File(dataDir, "WEB-INF/");
+	    File serviceFile;
+	    try {
+            serviceFile = WriterUtils.initWriteFile(new File(serviceDir,
+                                                       "services.xml"), false);
+	    } catch (ConfigurationException confE) {
+		throw new RuntimeException(confE);
+	    }
+	    xmlTimestamp = new Date( serviceFile.lastModified() );
+        }
+        return xmlTimestamp;    
+    }
     private void resetXMLTimestamp(){
         xmlTimestamp = null;                
     }    

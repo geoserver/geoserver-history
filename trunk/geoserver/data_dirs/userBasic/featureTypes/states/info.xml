@@ -1,0 +1,17 @@
+<featureType datastore = "states_shapefile" >
+<name>states</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>4326</SRS>
+<title>USA Population</title>
+<abstract>This is some census data on the states.</abstract>
+<numDecimals value = "0" />
+<keywords>census, state boundaries, united states</keywords>
+<latLonBoundingBox dynamic = "false" miny = "24.955967" maxy = "49.371735" maxx = "-66.969849" minx = "-124.731422"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "population"  />
+</featureType>

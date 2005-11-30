@@ -40,6 +40,9 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private static final int NO_FORMATTING = -1;
     private static final int INDENT_SIZE = 2;
 
+    public static final String formatName = "GML2";
+    public static final String formatNameCompressed = "GML2-GZIP";
+    
     /**
      * This is a "magic" class provided by Geotools that writes out GML for an
      * array of FeatureResults.
@@ -80,8 +83,8 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
      * @return true if <code>outputFormat</code> is GML2 or GML2-GZIP
      */
     public boolean canProduce(String outputFormat) {
-        return "GML2".equalsIgnoreCase(outputFormat)
-        || "GML2-GZIP".equalsIgnoreCase(outputFormat);
+        return formatName.equalsIgnoreCase(outputFormat)
+        || formatNameCompressed.equalsIgnoreCase(outputFormat);
     }
 
     /**
@@ -95,7 +98,7 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
      */
     public void prepare(String outputFormat, GetFeatureResults results)
         throws IOException {
-        this.compressOutput = "GML2-GZIP".equalsIgnoreCase(outputFormat);
+        this.compressOutput = formatNameCompressed.equalsIgnoreCase(outputFormat);
         this.results = results;
 
         FeatureRequest request = results.getRequest();
@@ -142,10 +145,11 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         transformer.setIndentation(config.isVerbose() ? INDENT_SIZE
                                                       : (NO_FORMATTING));
         transformer.setNumDecimals(config.getNumDecimals());
-        /*
-         * TODO To be aligned with GeoTools 2.1.1 ASAP
+        /**
+         * TODO
          */
         //transformer.setFeatureBounding(request.getWFS().isFeatureBounding());
+
         transformer.setEncoding(request.getWFS().getGeoServer().getCharSet());
 
         String wfsSchemaLoc = request.getSchemaBaseUrl()

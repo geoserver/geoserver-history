@@ -42,164 +42,61 @@ import org.vfny.geoserver.config.GlobalConfig;
  * @version $Id: GeoServerConfigurationForm.java,v 1.3 2004/09/09 17:04:42 cholmesny Exp $
  */
 public class GeoServerConfigurationForm extends ActionForm {
+    
+    private int maxFeatures;
+    private boolean verbose;
+    private int numDecimals;
+    private String charset;
+    private String baseURL;
+    private String schemaBaseURL;
+    private String loggingLevel;
+    private String adminUserName;
+    private String adminPassword;
+    private boolean verboseExceptions;
+    
+    /** The name of the contact person */
+    private String contactPerson;
 
-	/**
-	 * 
-	 * @uml.property name="maxFeatures" multiplicity="(0 1)"
-	 */
-	private int maxFeatures;
+    /** The name of the organization with which the contact is affiliated. */
+    private String contactOrganization;
 
-	/**
-	 * 
-	 * @uml.property name="verbose" multiplicity="(0 1)"
-	 */
-	private boolean verbose;
+    /** The position of the contact within their organization. */
+    private String contactPosition;
 
-	/**
-	 * 
-	 * @uml.property name="numDecimals" multiplicity="(0 1)"
-	 */
-	private int numDecimals;
+    /** The type of address specified, such as postal. */
+    private String addressType;
 
-	/**
-	 * 
-	 * @uml.property name="charset" multiplicity="(0 1)"
-	 */
-	private String charset;
+    /** The actual street address. */
+    private String address;
 
-	/**
-	 * 
-	 * @uml.property name="baseURL" multiplicity="(0 1)"
-	 */
-	private String baseURL;
+    /** The city of the address. */
+    private String addressCity;
 
-	/**
-	 * 
-	 * @uml.property name="schemaBaseURL" multiplicity="(0 1)"
-	 */
-	private String schemaBaseURL;
+    /** The state/prov. of the address. */
+    private String addressState;
 
-	/**
-	 * 
-	 * @uml.property name="loggingLevel" multiplicity="(0 1)"
-	 */
-	private String loggingLevel;
+    /** The postal code for the address. */
+    private String addressPostalCode;
 
-	/**
-	 * 
-	 * @uml.property name="adminUserName" multiplicity="(0 1)"
-	 */
-	private String adminUserName;
+    /** The country of the address. */
+    private String addressCountry;
 
-	/**
-	 * 
-	 * @uml.property name="adminPassword" multiplicity="(0 1)"
-	 */
-	private String adminPassword;
+    /** The contact phone number. */
+    private String contactVoice;
 
-	/**
-	 * 
-	 * @uml.property name="verboseExceptions" multiplicity="(0 1)"
-	 */
-	private boolean verboseExceptions;
+    /** The contact Fax number. */
+    private String contactFacsimile;
 
-	/**
-	 * The name of the contact person
-	 * 
-	 * @uml.property name="contactPerson" multiplicity="(0 1)"
-	 */
-	private String contactPerson;
-
-	/**
-	 * The name of the organization with which the contact is affiliated.
-	 * 
-	 * @uml.property name="contactOrganization" multiplicity="(0 1)"
-	 */
-	private String contactOrganization;
-
-	/**
-	 * The position of the contact within their organization.
-	 * 
-	 * @uml.property name="contactPosition" multiplicity="(0 1)"
-	 */
-	private String contactPosition;
-
-	/**
-	 * The type of address specified, such as postal.
-	 * 
-	 * @uml.property name="addressType" multiplicity="(0 1)"
-	 */
-	private String addressType;
-
-	/**
-	 * The actual street address.
-	 * 
-	 * @uml.property name="address" multiplicity="(0 1)"
-	 */
-	private String address;
-
-	/**
-	 * The city of the address.
-	 * 
-	 * @uml.property name="addressCity" multiplicity="(0 1)"
-	 */
-	private String addressCity;
-
-	/**
-	 * The state/prov. of the address.
-	 * 
-	 * @uml.property name="addressState" multiplicity="(0 1)"
-	 */
-	private String addressState;
-
-	/**
-	 * The postal code for the address.
-	 * 
-	 * @uml.property name="addressPostalCode" multiplicity="(0 1)"
-	 */
-	private String addressPostalCode;
-
-	/**
-	 * The country of the address.
-	 * 
-	 * @uml.property name="addressCountry" multiplicity="(0 1)"
-	 */
-	private String addressCountry;
-
-	/**
-	 * The contact phone number.
-	 * 
-	 * @uml.property name="contactVoice" multiplicity="(0 1)"
-	 */
-	private String contactVoice;
-
-	/**
-	 * The contact Fax number.
-	 * 
-	 * @uml.property name="contactFacsimile" multiplicity="(0 1)"
-	 */
-	private String contactFacsimile;
-
-	/**
-	 * The contact email address.
-	 * 
-	 * @uml.property name="contactEmail" multiplicity="(0 1)"
-	 */
-	private String contactEmail;
-
-	/**
-	 * 
-	 * @uml.property name="verboseChecked" multiplicity="(0 1)"
-	 */
+    /** The contact email address. */
+    private String contactEmail;    
+    
 	private boolean verboseChecked;
-
-	/**
-	 * 
-	 * @uml.property name="verboseExceptionsChecked" multiplicity="(0 1)"
-	 */
+	
 	private boolean verboseExceptionsChecked;
 	
 	/** log to disk ? **/
+	private boolean loggingToFile;
+	private boolean loggingToFileChecked;
 	private String logLocation;
 	 
     public void reset(ActionMapping arg0, HttpServletRequest request) {
@@ -224,6 +121,8 @@ public class GeoServerConfigurationForm extends ActionForm {
         } else {
         	loggingLevel = globalConfig.getLoggingLevel().getName();
         }
+        loggingToFile = globalConfig.getLoggingToFile();
+        loggingToFileChecked = false;
         logLocation = globalConfig.getLogLocation();
         
         ContactConfig contactConfig = globalConfig.getContact();
@@ -250,13 +149,10 @@ public class GeoServerConfigurationForm extends ActionForm {
 
         return errors;
     }
-
 	/**
 	 * Access maxFeatures property.
 	 * 
 	 * @return Returns the maxFeatures.
-	 * 
-	 * @uml.property name="maxFeatures"
 	 */
 	public int getMaxFeatures() {
 		return maxFeatures;
@@ -264,15 +160,12 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set maxFeatures to maxFeatures.
-	 * 
+	 *
 	 * @param maxFeatures The maxFeatures to set.
-	 * 
-	 * @uml.property name="maxFeatures"
 	 */
 	public void setMaxFeatures(int maxFeatures) {
 		this.maxFeatures = maxFeatures;
 	}
-
 
 	/**
 	 * Access verbose property.
@@ -285,16 +178,13 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set verbose to verbose.
-	 * 
+	 *
 	 * @param verbose The verbose to set.
-	 * 
-	 * @uml.property name="verbose"
 	 */
 	public void setVerbose(boolean verbose) {
 		verboseChecked = true;
 		this.verbose = verbose;
 	}
-
 	
 	/**
 		 * Access verboseChecked property.
@@ -307,15 +197,12 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 		/**
 		 * Set verboseChecked to verboseChecked.
-		 * 
+		 *
 		 * @param verboseChecked The verboseChecked to set.
-		 * 
-		 * @uml.property name="verboseChecked"
 		 */
 		public void setVerboseChecked(boolean verboseChecked) {
 			this.verboseChecked = verboseChecked;
 		}
-
 
 
 	/**
@@ -329,15 +216,12 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 		/**
 		 * Set verboseChecked to verboseChecked.
-		 * 
+		 *
 		 * @param verboseChecked The verboseChecked to set.
-		 * 
-		 * @uml.property name="verboseExceptionsChecked"
 		 */
 		public void setVerboseExceptionsChecked(boolean verboseExceptionsChecked) {
 			this.verboseExceptionsChecked = verboseExceptionsChecked;
 		}
-
 
 	
 	/**
@@ -351,10 +235,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set verboseExceptions to verboseExceptions.
-	 * 
+	 *
 	 * @param verboseExceptions The verboseExceptions to set.
-	 * 
-	 * @uml.property name="verboseExceptions"
 	 */
 	public void setVerboseExceptions(boolean verboseExceptions) {
 		verboseExceptionsChecked = true;
@@ -365,8 +247,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access numDecimals property.
 	 * 
 	 * @return Returns the numDecimals.
-	 * 
-	 * @uml.property name="numDecimals"
 	 */
 	public int getNumDecimals() {
 		return numDecimals;
@@ -374,10 +254,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set numDecimals to numDecimals.
-	 * 
+	 *
 	 * @param numDecimals The numDecimals to set.
-	 * 
-	 * @uml.property name="numDecimals"
 	 */
 	public void setNumDecimals(int numDecimals) {
 		this.numDecimals = numDecimals;
@@ -387,8 +265,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access charset property.
 	 * 
 	 * @return Returns the charset.
-	 * 
-	 * @uml.property name="charset"
 	 */
 	public String getCharset() {
 		return charset;
@@ -396,10 +272,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set charset to charset.
-	 * 
+	 *
 	 * @param charset The charset to set.
-	 * 
-	 * @uml.property name="charset"
 	 */
 	public void setCharset(String charset) {
 		this.charset = charset;
@@ -409,8 +283,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access baseURL property.
 	 * 
 	 * @return Returns the baseURL.
-	 * 
-	 * @uml.property name="baseURL"
 	 */
 	public String getBaseURL() {
 		return baseURL;
@@ -418,10 +290,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set baseURL to baseURL.
-	 * 
+	 *
 	 * @param baseURL The baseURL to set.
-	 * 
-	 * @uml.property name="baseURL"
 	 */
 	public void setBaseURL(String baseURL) {
 		this.baseURL = baseURL;
@@ -431,8 +301,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access schemaBaseURL property.
 	 * 
 	 * @return Returns the schemaBaseURL.
-	 * 
-	 * @uml.property name="schemaBaseURL"
 	 */
 	public String getSchemaBaseURL() {
 		return schemaBaseURL;
@@ -440,10 +308,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set schemaBaseURL to schemaBaseURL.
-	 * 
+	 *
 	 * @param schemaBaseURL The schemaBaseURL to set.
-	 * 
-	 * @uml.property name="schemaBaseURL"
 	 */
 	public void setSchemaBaseURL(String schemaBaseURL) {
 		this.schemaBaseURL = schemaBaseURL;
@@ -453,8 +319,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access loggingLevel property.
 	 * 
 	 * @return Returns the loggingLevel.
-	 * 
-	 * @uml.property name="loggingLevel"
 	 */
 	public String getLoggingLevel() {
 		return loggingLevel;
@@ -462,10 +326,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set loggingLevel to loggingLevel.
-	 * 
+	 *
 	 * @param loggingLevel The loggingLevel to set.
-	 * 
-	 * @uml.property name="loggingLevel"
 	 */
 	public void setLoggingLevel(String loggingLevel) {
 		this.loggingLevel = loggingLevel;
@@ -475,8 +337,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access address property.
 	 * 
 	 * @return Returns the address.
-	 * 
-	 * @uml.property name="address"
 	 */
 	public String getAddress() {
 		return address;
@@ -484,10 +344,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set address to address.
-	 * 
+	 *
 	 * @param address The address to set.
-	 * 
-	 * @uml.property name="address"
 	 */
 	public void setAddress(String address) {
 		this.address = address;
@@ -497,8 +355,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access addressCity property.
 	 * 
 	 * @return Returns the addressCity.
-	 * 
-	 * @uml.property name="addressCity"
 	 */
 	public String getAddressCity() {
 		return addressCity;
@@ -506,10 +362,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set addressCity to addressCity.
-	 * 
+	 *
 	 * @param addressCity The addressCity to set.
-	 * 
-	 * @uml.property name="addressCity"
 	 */
 	public void setAddressCity(String addressCity) {
 		this.addressCity = addressCity;
@@ -519,8 +373,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access addressCountry property.
 	 * 
 	 * @return Returns the addressCountry.
-	 * 
-	 * @uml.property name="addressCountry"
 	 */
 	public String getAddressCountry() {
 		return addressCountry;
@@ -528,10 +380,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set addressCountry to addressCountry.
-	 * 
+	 *
 	 * @param addressCountry The addressCountry to set.
-	 * 
-	 * @uml.property name="addressCountry"
 	 */
 	public void setAddressCountry(String addressCountry) {
 		this.addressCountry = addressCountry;
@@ -541,8 +391,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access addressPostalCode property.
 	 * 
 	 * @return Returns the addressPostalCode.
-	 * 
-	 * @uml.property name="addressPostalCode"
 	 */
 	public String getAddressPostalCode() {
 		return addressPostalCode;
@@ -550,10 +398,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set addressPostalCode to addressPostalCode.
-	 * 
+	 *
 	 * @param addressPostalCode The addressPostalCode to set.
-	 * 
-	 * @uml.property name="addressPostalCode"
 	 */
 	public void setAddressPostalCode(String addressPostalCode) {
 		this.addressPostalCode = addressPostalCode;
@@ -563,8 +409,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access addressState property.
 	 * 
 	 * @return Returns the addressState.
-	 * 
-	 * @uml.property name="addressState"
 	 */
 	public String getAddressState() {
 		return addressState;
@@ -572,10 +416,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set addressState to addressState.
-	 * 
+	 *
 	 * @param addressState The addressState to set.
-	 * 
-	 * @uml.property name="addressState"
 	 */
 	public void setAddressState(String addressState) {
 		this.addressState = addressState;
@@ -585,8 +427,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access addressType property.
 	 * 
 	 * @return Returns the addressType.
-	 * 
-	 * @uml.property name="addressType"
 	 */
 	public String getAddressType() {
 		return addressType;
@@ -594,10 +434,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set addressType to addressType.
-	 * 
+	 *
 	 * @param addressType The addressType to set.
-	 * 
-	 * @uml.property name="addressType"
 	 */
 	public void setAddressType(String addressType) {
 		this.addressType = addressType;
@@ -607,8 +445,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access contactEmail property.
 	 * 
 	 * @return Returns the contactEmail.
-	 * 
-	 * @uml.property name="contactEmail"
 	 */
 	public String getContactEmail() {
 		return contactEmail;
@@ -616,10 +452,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set contactEmail to contactEmail.
-	 * 
+	 *
 	 * @param contactEmail The contactEmail to set.
-	 * 
-	 * @uml.property name="contactEmail"
 	 */
 	public void setContactEmail(String contactEmail) {
 		this.contactEmail = contactEmail;
@@ -629,8 +463,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access contactFacsimile property.
 	 * 
 	 * @return Returns the contactFacsimile.
-	 * 
-	 * @uml.property name="contactFacsimile"
 	 */
 	public String getContactFacsimile() {
 		return contactFacsimile;
@@ -638,10 +470,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set contactFacsimile to contactFacsimile.
-	 * 
+	 *
 	 * @param contactFacsimile The contactFacsimile to set.
-	 * 
-	 * @uml.property name="contactFacsimile"
 	 */
 	public void setContactFacsimile(String contactFacsimile) {
 		this.contactFacsimile = contactFacsimile;
@@ -651,8 +481,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access contactOrganization property.
 	 * 
 	 * @return Returns the contactOrganization.
-	 * 
-	 * @uml.property name="contactOrganization"
 	 */
 	public String getContactOrganization() {
 		return contactOrganization;
@@ -660,10 +488,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set contactOrganization to contactOrganization.
-	 * 
+	 *
 	 * @param contactOrganization The contactOrganization to set.
-	 * 
-	 * @uml.property name="contactOrganization"
 	 */
 	public void setContactOrganization(String contactOrganization) {
 		this.contactOrganization = contactOrganization;
@@ -673,8 +499,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access contactPerson property.
 	 * 
 	 * @return Returns the contactPerson.
-	 * 
-	 * @uml.property name="contactPerson"
 	 */
 	public String getContactPerson() {
 		return contactPerson;
@@ -682,10 +506,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set contactPerson to contactPerson.
-	 * 
+	 *
 	 * @param contactPerson The contactPerson to set.
-	 * 
-	 * @uml.property name="contactPerson"
 	 */
 	public void setContactPerson(String contactPerson) {
 		this.contactPerson = contactPerson;
@@ -695,8 +517,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access contactPosition property.
 	 * 
 	 * @return Returns the contactPosition.
-	 * 
-	 * @uml.property name="contactPosition"
 	 */
 	public String getContactPosition() {
 		return contactPosition;
@@ -704,10 +524,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set contactPosition to contactPosition.
-	 * 
+	 *
 	 * @param contactPosition The contactPosition to set.
-	 * 
-	 * @uml.property name="contactPosition"
 	 */
 	public void setContactPosition(String contactPosition) {
 		this.contactPosition = contactPosition;
@@ -717,8 +535,6 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * Access contactVoice property.
 	 * 
 	 * @return Returns the contactVoice.
-	 * 
-	 * @uml.property name="contactVoice"
 	 */
 	public String getContactVoice() {
 		return contactVoice;
@@ -726,28 +542,18 @@ public class GeoServerConfigurationForm extends ActionForm {
 
 	/**
 	 * Set contactVoice to contactVoice.
-	 * 
+	 *
 	 * @param contactVoice The contactVoice to set.
-	 * 
-	 * @uml.property name="contactVoice"
 	 */
 	public void setContactVoice(String contactVoice) {
 		this.contactVoice = contactVoice;
 	}
 
-	/**
-	 * 
-	 * @uml.property name="adminUserName"
-	 */
 	//No sets yet, they will be needed for login config page though.
 	public String getAdminUserName() {
 		return adminUserName;
 	}
 
-	/**
-	 * 
-	 * @uml.property name="adminPassword"
-	 */
 	public String getAdminPassword() {
 		return adminPassword;
 	}
@@ -766,6 +572,43 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 */
 	public void setLogLocation(String logLocation) {
 		this.logLocation = logLocation;
+	}
+	
+	/**
+	 * Set loggingToFile to loggingToFile.
+	 *
+	 * @param verbose The loggingToFile to set.
+	 */
+	public void setLoggingToFile(boolean loggingToFile) {
+		loggingToFileChecked = true;
+		this.loggingToFile = loggingToFile;
+	}
+	
+	/**
+	 * Access loggingToFile property.
+	 * 
+	 * @return Returns the loggingToFile.
+	 */
+	public boolean isLoggingToFile() {
+		return loggingToFile;
+	}
+	
+	/**
+	 * Access loggingToFileChecked property.
+	 * 
+	 * @return Returns the loggingToFileChecked.
+	 */
+	public boolean isLoggingToFileChecked() {
+		return loggingToFileChecked;
+	}
+
+	/**
+	 * Set loggingToFileChecked to loggingToFileChecked.
+	 *
+	 * @param loggingToFileChecked The loggingToFileChecked to set.
+	 */
+	public void setLoggingToFileChecked(boolean loggingToFileChecked) {
+		this.loggingToFileChecked = loggingToFileChecked;
 	}
 
 }

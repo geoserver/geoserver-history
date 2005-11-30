@@ -68,7 +68,7 @@ import org.vfny.geoserver.global.GeoServer;
  * </p>
  *
  * @author Chris Holmes
- * @version $Id: ShapeFeatureResponseDelegate.java 3768 2005-09-20 15:01:16Z bowens $
+ * @version $Id: ShapeFeatureResponseDelegate.java 3960 2005-11-25 08:46:09Z cholmes $
  *
  * @task TODO: lots of cleanup.  Get working with more than one feature result,
  *       get rid of duplicate code in writing out shp and dbf files, and add
@@ -84,6 +84,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
             "org.vfny.geoserver.wfs.responses");
 
     String tempDir = null;
+    public static final String formatName = "SHAPE-ZIP";
     
     /** will be true if Shape-ZIP output format was requested */
     //private boolean compressOutput = false;	// already in ZIP by default
@@ -109,7 +110,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      * @return true if <code>outputFormat</code> is Shape or Shape-GZIP
      */
     public boolean canProduce(String outputFormat) {
-        return "SHAPE".equalsIgnoreCase(outputFormat);
+        return formatName.equalsIgnoreCase(outputFormat);
     }
 
     /**
@@ -157,7 +158,13 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      * @return DOCUMENT ME!
      */
     public String getContentEncoding() {
-        return "zip";
+        //I don't think this is right, but I think perhaps it doesnt matter
+        //right now, this field has to do with the charSet.  Right now 
+        //shapefile hardcodes the charset to IS0-8859-1, so we should probably
+        //return that for this param.  I don't know that it'd even get used 
+        //though.  We should still do the fix to allow shapefiles to be 
+        //configured with different charsets. -ch
+        return formatName;
     }
 
     /**

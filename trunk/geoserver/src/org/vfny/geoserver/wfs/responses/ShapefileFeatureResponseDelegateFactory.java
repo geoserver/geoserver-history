@@ -26,7 +26,7 @@ public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseD
 	static HashSet supportedFormats = new HashSet();
 	
 	static{
-		supportedFormats.add("SHAPE");
+		supportedFormats.add(ShapeFeatureResponseDelegate.formatName);	// eg. SHAPE-ZIP
 	}
 
     /**
@@ -72,7 +72,7 @@ public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseD
      * @return <code>true</code>  or false
      */
     public boolean canProduce(String outputFormat) {
-        return "SHAPE".equalsIgnoreCase(outputFormat);
+        return ShapeFeatureResponseDelegate.formatName.equalsIgnoreCase(outputFormat);
     }
 
     

@@ -23,8 +23,8 @@ public class GML2FeatureResponseDelegateFactory implements FeatureResponseDelega
 	static HashSet supportedFormats = new HashSet();
 	
 	static{
-		supportedFormats.add("GML2");
-		supportedFormats.add("GML2-GZIP");
+		supportedFormats.add(GML2FeatureResponseDelegate.formatName);	// eg. GML2
+		supportedFormats.add(GML2FeatureResponseDelegate.formatNameCompressed);	// eg. GML2-GZIP
 	}
 
     /**
@@ -69,8 +69,8 @@ public class GML2FeatureResponseDelegateFactory implements FeatureResponseDelega
      * @return <code>true</code>  or false
      */
     public boolean canProduce(String outputFormat) {
-        return "GML2".equalsIgnoreCase(outputFormat)
-        || "GML2-GZIP".equalsIgnoreCase(outputFormat);
+        return GML2FeatureResponseDelegate.formatName.equalsIgnoreCase(outputFormat)
+        || GML2FeatureResponseDelegate.formatNameCompressed.equalsIgnoreCase(outputFormat);
     }
 
     

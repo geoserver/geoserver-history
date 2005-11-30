@@ -104,15 +104,33 @@
     </tr>	
     
     <tr>
-	  <td class="label">
-		<span class="help" title="<bean:message key="help.global.logLocation"/>">
-			<bean:message key="label.logLocation"/>:
+      <td class="label">
+		<span class="help" title="<bean:message key="help.global.loggingToFile"/>">
+			<bean:message key="label.loggingToFile"/>:
 		</span>
       </td>
 	  <td class="datum">
-		<html:text property="logLocation" size="60"/>
+	  	<html:checkbox property="loggingToFile"/>
 	  </td>
+	 </tr> 
+	 
+	 <tr>
+		 <td class="label">
+		  	<span class="help" title="<bean:message key="help.global.logLocation"/>">
+				<bean:message key="label.logLocation"/>:
+			</span>
+		</td>
+		<td class="datum">
+		<logic:empty name="geoServerConfigurationForm" property="logLocation">
+			<html:text property="logLocation" size="60" value="logs/geoserver.log"/>		
+		</logic:empty>
+		<logic:notEmpty name="geoServerConfigurationForm" property="logLocation">
+			<html:text property="logLocation" size="60"/>		
+		</logic:notEmpty>
+
+		</td>
     </tr>	
+    
   </tbody>
 </table>
 

@@ -125,7 +125,7 @@ public class GeoServerPlugIn implements PlugIn {
 
         try {
             File f = geoserverDataDir; //geoserver_home fix
-            XMLConfigReader cr = new XMLConfigReader(f);
+            XMLConfigReader cr = new XMLConfigReader(f,sc);
             GeoServer gs = new GeoServer();
             sc.setAttribute(GeoServer.WEB_CONTAINER_KEY, gs);
             
@@ -145,7 +145,7 @@ public class GeoServerPlugIn implements PlugIn {
             sc.setAttribute(GeoValidator.WEB_CONTAINER_KEY, gv);
 
             if (cr.isInitialized()) {
-                gs.load(cr.getGeoServer());
+                gs.load(cr.getGeoServer(),sc);
                 wcs.load(cr.getWcs());
                 wfs.load(cr.getWfs());
                 wms.load(cr.getWms());
@@ -164,8 +164,8 @@ public class GeoServerPlugIn implements PlugIn {
 
 
             try {
-            	File plugInDir = new File(rootDir, "data/plugIns");
-            	File validationDir = new File(rootDir, "data/validation");
+            File plugInDir = findConfigDir(geoserverDataDir, "plugIns");
+            File validationDir = findConfigDir(geoserverDataDir, "validation");
             	Map plugIns = null;
             	Map testSuites = null;
             	if(plugInDir.exists()){
@@ -194,5 +194,9 @@ public class GeoServerPlugIn implements PlugIn {
         }
 
         started = true;
+    }
+
+    private File findConfigDir(File rootDir, String name) throws Exception {
+	return GeoserverDataDirectory.findConfigDir(rootDir, name);
     }
 }

@@ -30,6 +30,7 @@ import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
+import org.vfny.geoserver.global.xml.XMLConfigWriter.WriterUtils;
 
 
 /**
@@ -38,9 +39,6 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter;
  * <p>
  * This is a propert ConfigAction - you need to be logged in for this to work.
  * </p>
- *
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
  */
 public class SaveXMLAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -64,7 +62,8 @@ public class SaveXMLAction extends ConfigAction {
         //File rootDir = new File(sc.getRealPath("/"));
         File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
         try {
-            XMLConfigWriter.store((WCSDTO) getWCS(request).toDTO(),
+            XMLConfigWriter.store(
+            	(WCSDTO) getWCS(request).toDTO(),
             	(WMSDTO) getWMS(request).toDTO(),
                 (WFSDTO) getWFS(request).toDTO(),
                 (GeoServerDTO) getWFS(request).getGeoServer().toDTO(),
@@ -86,10 +85,23 @@ public class SaveXMLAction extends ConfigAction {
     HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         ServletContext sc = request.getSession().getServletContext();
-        File rootDir = new File(sc.getRealPath("/"));
-        File plugInDir = new File(rootDir, "data/plugIns");
-        File validationDir = new File(rootDir, "data/validation");
+        //CH: changed for geoserver_data_dir, forgotten first round.
+        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
 
+	File dataDir;
+	if (GeoserverDataDirectory.isTrueDataDir()){
+	    dataDir = rootDir;
+	} else {
+	    dataDir = new File(rootDir, "data/");
+	}
+	File plugInDir;
+	File validationDir;
+	try {
+	    plugInDir = WriterUtils.initWriteFile(new File(dataDir, "plugIns"), true);
+	    validationDir = WriterUtils.initWriteFile(new File(dataDir, "validation"), true);
+	} catch (ConfigurationException confE) {
+	    throw new ServletException(confE);
+	}
         Map plugIns = (Map) getWFS(request).getValidation().toPlugInDTO();
         Map testSuites = (Map) getWFS(request).getValidation().toTestSuiteDTO();
 
@@ -105,9 +117,9 @@ public class SaveXMLAction extends ConfigAction {
                 try {
                     key = i.next();
                     dto = (PlugInDTO) plugIns.get(key);
-
-                    FileWriter fw = new FileWriter(new File(plugInDir,
-                                dto.getName().replaceAll(" ", "") + ".xml"));
+		    String fName = dto.getName().replaceAll(" ", "") + ".xml";
+                    File pFile = WriterUtils.initWriteFile(new File(plugInDir, fName), false);
+                    FileWriter fw = new FileWriter(pFile);
                     XMLWriter.writePlugIn(dto, fw);
                     fw.close();
                 } catch (Exception e) {
@@ -136,9 +148,10 @@ public class SaveXMLAction extends ConfigAction {
 
                 try {
                     dto = (TestSuiteDTO) testSuites.get(i.next());
-
-                    FileWriter fw = new FileWriter(new File(validationDir,
-                                dto.getName().replaceAll(" ", "") + ".xml"));
+		    String fName = dto.getName().replaceAll(" ", "") + ".xml";
+                    File pFile = WriterUtils.initWriteFile(new File(validationDir, fName), false);
+                    FileWriter fw = new FileWriter(pFile);//new File(validationDir,
+		    //dto.getName().replaceAll(" ", "") + ".xml"));
                     XMLWriter.writeTestSuite(dto, fw);
                     fw.close();
                 } catch (Exception e) {

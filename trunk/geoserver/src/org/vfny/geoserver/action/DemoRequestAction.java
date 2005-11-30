@@ -69,6 +69,8 @@ public class DemoRequestAction extends GeoServerAction
         String demo = demoForm.getDemo();
         String baseUrl = org.vfny.geoserver.util.Requests.getBaseUrl(request);
         
+        if (demo == null)
+        	demo = "";
         if (demo.equals("")) {
             demoForm.setUrl(baseUrl);
             demoForm.setBody("");
