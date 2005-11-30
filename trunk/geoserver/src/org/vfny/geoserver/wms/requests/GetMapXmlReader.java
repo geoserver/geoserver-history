@@ -9,12 +9,14 @@ import org.geotools.filter.ExpressionDOMParser;
 import org.geotools.filter.FilterFilter;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
+import org.geotools.referencing.CRS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
@@ -379,7 +381,15 @@ public class GetMapXmlReader extends XmlRequestReader {
         if (srsNode != null) {
             String srs = srsNode.getNodeValue();
             String epsgCode = srs.substring(srs.indexOf('#') + 1);
-            getMapRequest.setCrs("EPSG:" + epsgCode);
+            epsgCode = "EPSG:" + epsgCode;
+            
+        	try {
+        		CoordinateReferenceSystem  mapcrs = CRS.decode(epsgCode);
+        		getMapRequest.setCrs(mapcrs);
+        	}catch (Exception e){
+        		//couldnt make it - we send off a service exception with the correct info
+        		throw new WmsException(e.getLocalizedMessage(),"InvalidSRS");
+			}
         }
     }
 

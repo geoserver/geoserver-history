@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.requests;
 import java.awt.Color;
 import java.util.List;
 
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.MapLayerInfo;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -75,7 +76,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @return DOCUMENT ME!
      */
-    public String getCrs() {
+    public CoordinateReferenceSystem getCrs() {
         return this.optionalParams.crs;
     }
 
@@ -165,7 +166,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @param crs DOCUMENT ME!
      */
-    public void setCrs(String crs) {
+    public void setCrs(CoordinateReferenceSystem crs) {
         this.optionalParams.crs = crs;
     }
 
@@ -288,7 +289,7 @@ public class GetMapRequest extends WMSRequest {
         Color bgColor = DEFAULT_BG;
 
         /** from SRS (1.1) or CRS (1.2) param */
-        String crs;
+        CoordinateReferenceSystem crs;
 
         /** DOCUMENT ME!  */
         String exceptions = SE_XML;

@@ -29,6 +29,7 @@ import java.util.zip.InflaterInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.feature.FeatureType;
+import org.geotools.referencing.CRS;
 import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.NamedLayer;
 import org.geotools.styling.NamedStyle;
@@ -39,6 +40,7 @@ import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.CoverageInfo;
@@ -256,10 +258,16 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      */
     public void parseOptionalParameters(GetMapRequest request)
         throws WmsException {
-        String crs = getValue("SRS");
+        String epsgCode = getValue("SRS");
 
-        if (crs != null) {
-            request.setCrs(crs);
+        if (epsgCode != null) {
+        	try {
+        		CoordinateReferenceSystem  mapcrs = CRS.decode(epsgCode);
+        		request.setCrs(mapcrs);
+        	}catch (Exception e){
+        		//couldnt make it - we send off a service exception with the correct info
+        		throw new WmsException(e.getLocalizedMessage(), "InvalidSRS");
+			}
         }
 
         String transparentValue = getValue("TRANSPARENT");
@@ -1081,7 +1089,6 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 			throw new RuntimeException("Error getting FeatureType, this should never happen!");
 		}
 		checkStyle(style, type);
-
 		return style;
     }
 

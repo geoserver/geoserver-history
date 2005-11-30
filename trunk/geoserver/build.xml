@@ -181,6 +181,7 @@
 		<mkdir dir="${dir.server}" />
 		<tstamp>
 			<format property="date.current" pattern="MM.dd.yyyy" />
+			<format property="date.yesterday" pattern="MM.dd.yyyy" offset="-1" unit="day"/>
 		</tstamp>
 	</target>
 
@@ -718,7 +719,7 @@
 	<!-- DOCUMENTATION -->
 	<target name="document" depends="init" description="generate all project documentation">
 		<mkdir dir="${dir.doc}" />
-		<javadoc sourcepath="${dir.src}" destdir="${dir.doc}/api" private="true" windowtitle="GeoServer Documentation" stylesheetfile="${basedir}/documents/stylesheet.css" overview="${dir.src}/overview.html">
+		<javadoc sourcepath="${dir.src}" destdir="${dir.doc}/javadoc" private="true" windowtitle="GeoServer Documentation" stylesheetfile="${basedir}/documents/stylesheet.css" overview="${dir.src}/overview.html">
 			<package name="org.vfny.geoserver.*" />
 			<package name="org.geotools.*" />
 			<classpath>
@@ -744,34 +745,55 @@
 <antcall target="generate-docbook" />
 </target>
 
+<!-- This task is expecting a GEOSDOC directory in [geoserver]\documents
+This directory is the exported geoserver wiki page. If it does not exist, it will die.
+ -->
 <target name="generate-docbook" depends="init">
-<copy todir="${dir.doc}/" file="${dir.doc}/../docbook-xsl/lib/html.css" />
-<copy todir="${dir.doc}/" file="${dir.doc}/../index.html" />
 
-<!-- Convert docbook to html -->
-<style basedir="${dir.doc}/../" destdir="${dir.doc}/" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" excludes="jetty.xml admin.xml jalopy.geoserver.xml" processor="trax">
-	<param name="section.autolabel" expression="1" />
-	<param name="toc.section.depth" expression="4" />
-</style>
-
-<copy todir="${dir.doc}/developer" file="${dir.doc}/../docbook-xsl/lib/html.css" />
-
-<!-- Convert docbook to html -->
-<style basedir="${dir.doc}/../developer" destdir="${dir.doc}/developer" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" processor="trax">
-	<param name="section.autolabel" expression="1" />
-	<param name="toc.section.depth" expression="4" />
-</style>
-
-<copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css" />
-<copy todir="${dir.doc}/user" file="${dir.doc}/../user/DataStoreUserGuide.pdf" failonerror="false" />
-<copy todir="${dir.doc}/user" file="${dir.doc}/../user/ValidationUserGuide.pdf" failonerror="false" />
-<copy todir="${dir.doc}/user" file="${dir.doc}/../user/FeatureTypeUserGuide.pdf" failonerror="false" />
-
-<!-- Convert docbook to html -->
-<style basedir="${dir.doc}/../user" destdir="${dir.doc}/user" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" processor="trax">
-	<param name="section.autolabel" expression="1" />
-	<param name="toc.section.depth" expression="4" />
-</style>
+	<!-- copy wiki docs -->
+	<mkdir dir="${dir.doc}/temp"/>
+	<copy todir="${dir.doc}/temp" failonerror="true">
+		<fileset dir="${dir.doc}/../GEOSDOC">
+			<date datetime="${date.yesterday}" pattern="MM.dd.yyyy" when="after" checkdirs="true"/>
+		</fileset>
+	</copy>
+	<!-- this is the test to see if anything was copied -->
+	<copy todir="${dir.doc}/GEOSDOC" file="${dir.doc}/temp/index.html" failonerror="true"/>
+	<copy todir="${dir.doc}/GEOSDOC" failonerror="true">
+		<fileset dir="${dir.doc}/temp/">
+			<include name="**/*" />
+		</fileset>
+	</copy>
+	<delete dir="${dir.doc}/temp"/>
+	
+	
+	<copy todir="${dir.doc}/" file="${dir.doc}/../docbook-xsl/lib/html.css" />
+	<copy todir="${dir.doc}/" file="${dir.doc}/../index.html" />
+	
+	<!-- Convert docbook to html -->
+	<style basedir="${dir.doc}/../" destdir="${dir.doc}/" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" excludes="jetty.xml admin.xml jalopy.geoserver.xml" processor="trax">
+		<param name="section.autolabel" expression="1" />
+		<param name="toc.section.depth" expression="4" />
+	</style>
+	
+	<!--copy todir="${dir.doc}/developer" file="${dir.doc}/../docbook-xsl/lib/html.css" /-->
+	
+	<!-- Convert docbook to html -->
+	<!--style basedir="${dir.doc}/../developer" destdir="${dir.doc}/developer" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" processor="trax">
+		<param name="section.autolabel" expression="1" />
+		<param name="toc.section.depth" expression="4" />
+	</style-->
+	
+	<!--copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css" /-->
+	<copy todir="${dir.doc}" file="${dir.doc}/../user/DataStoreUserGuide.pdf" failonerror="false" />
+	<copy todir="${dir.doc}" file="${dir.doc}/../user/ValidationUserGuide.pdf" failonerror="false" />
+	<copy todir="${dir.doc}" file="${dir.doc}/../user/FeatureTypeUserGuide.pdf" failonerror="false" />
+	
+	<!-- Convert docbook to html -->
+	<!--style basedir="${dir.doc}/../user" destdir="${dir.doc}/user" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" processor="trax">
+		<param name="section.autolabel" expression="1" />
+		<param name="toc.section.depth" expression="4" />
+	</style-->
 </target>
 
 	

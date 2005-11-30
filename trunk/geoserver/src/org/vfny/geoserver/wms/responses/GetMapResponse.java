@@ -54,13 +54,10 @@ public class GetMapResponse implements Response {
 	private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage()
 			.getName());
 	
-	/**
-	 * The map producer that will be used for the production of a map in the
-	 * requested format.
-	 * 
-	 * @uml.property name="delegate"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
+    /**
+     * The map producer that will be used for the production of a map in the
+     * requested format.
+     */
 	private GetMapProducer delegate;
     /**
      * The map context
@@ -103,9 +100,8 @@ public class GetMapResponse implements Response {
 		//DJB: the WMS spec says that the request must not be 0 area
 		//     if it is, throw a service exception!
 		Envelope env = request.getBbox();
-		if (env.isNull() || (env.getWidth() <=0)|| (env.getHeight() <=0))
-		{
-			throw new WmsException("The request bounding box has zero area.");
+        if (env.isNull() || (env.getWidth() <=0)|| (env.getHeight() <=0)){
+        	throw new WmsException("The request bounding box has zero area: " + env);
 		}
 		
 		// DJB DONE: replace by setAreaOfInterest(Envelope,
@@ -113,29 +109,9 @@ public class GetMapResponse implements Response {
 		// with the user supplied SRS parameter
 		
 		//if there's a crs in the request, use that.  If not, assume its 4326
-		
-        CoordinateReferenceSystem mapcrs;
-		//DJB: spec says SRS is *required*, so if they dont specify one, we should throw an error
-		//     instead we use "NONE" - which is no-projection.
-		//     Previous behavior was to the WSG84 lat/long (4326)
-		if ((request.getCrs() == null) || request.getCrs().equals("")|| request.getCrs().equalsIgnoreCase("NONE"))
-		{
-			mapcrs = null;
-		}
-		else
-		{
-			//construct the crs object
-			try {
-				//CRSAuthorityFactory crsFactory = org.geotools.referencing.FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-				mapcrs = CRS.decode(request.getCrs());
-			}
-			catch (Exception e)
-			{
-				//couldnt make it - we send off a service exception with the correct info
-				throw new WmsException(e.getLocalizedMessage(),"InvalidSRS");
-			}
-		}
-		
+        
+        CoordinateReferenceSystem mapcrs = request.getCrs();
+        
 		//DJB: added this to be nicer about the "NONE" srs.
         if (mapcrs !=null)
         	map.setAreaOfInterest(request.getBbox(),mapcrs);
