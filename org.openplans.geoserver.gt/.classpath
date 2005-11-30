@@ -11,6 +11,8 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/referencing-2.2.x.jar">
   </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/api-2.2.x.jar">
+  </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/main-2.2.x.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/geoapi/jars/geoapi-2.0.jar">

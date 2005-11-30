@@ -1,22 +1,25 @@
 package org.openplans.geoserver.gt.binding;
 
+import java.util.List;
+import java.util.Map;
+
 import org.openplans.geoserver.binding.KvpBinding;
 import org.openplans.geoserver.binding.KvpRequestReader;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-public class BBoxBinding extends KvpRequestReader implements KvpBinding{
+public class BBoxBinding extends KvpBinding {
 
-
-	public boolean canBind(String key, String value) {
-		return "bbox".equalsIgnoreCase(key);
+	public BBoxBinding(List keys, String key) {
+		super(keys, key);
 	}
 
-	public Object bind(String key, String value) {
+	public Object bind(Map kvp) {
 		Envelope bbox = new Envelope();
 		
-		String bboxParam = value;
-        Object[] bboxValues = readFlat(bboxParam, INNER_DELIMETER).toArray();
+		String bboxParam = (String) kvp.get("bbox");
+        Object[] bboxValues = KvpRequestReader
+        	.readFlat(bboxParam, KvpRequestReader.INNER_DELIMETER).toArray();
 
         if (bboxValues.length != 4) {
         	String msg = bboxParam + " is not a valid pair of coordinates"; 

@@ -5,7 +5,7 @@
 
 	<!-- controller for handling all incoming requests -->
 	<bean id="requestController" 
-		class="org.openplans.geoserver.controller.RequestController"/>
+		class="org.openplans.geoserver.RequestController"/>
 
 	<!-- url mappings -->		
 	<bean id="urlMapping"

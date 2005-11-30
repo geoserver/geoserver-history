@@ -1,17 +1,23 @@
 package org.openplans.geoserver.gt.binding;
 
+import java.awt.Dimension;
+import java.util.List;
+import java.util.Map;
+
 import org.openplans.geoserver.binding.KvpBinding;
 import org.openplans.geoserver.binding.KvpRequestReader;
 
-public class DimensionBinding extends KvpRequestReader implements KvpBinding {
+public class DimensionBinding extends KvpBinding {
 
-	public boolean canBind(String key, String value) {
-		return "width".equalsIgnoreCase(key) || 
-			"height".equalsIgnoreCase(key);
+	public DimensionBinding(List keys, String key) {
+		super(keys, key);
 	}
 
-	public Object bind(String key, String value) {
-		return Integer.valueOf(value);
+	public Object bind(Map kvp) {
+		return new Dimension(
+			Integer.parseInt((String) kvp.get("width")),
+			Integer.parseInt((String) kvp.get("height"))
+		);
 	}
 
 }

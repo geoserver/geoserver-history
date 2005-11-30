@@ -1,8 +1,25 @@
 package org.openplans.geoserver.binding;
 
-public interface KvpBinding {
+import java.util.List;
+import java.util.Map;
 
-	boolean canBind(String key, String value);
+public abstract class KvpBinding {
+
+	private List keys;
+	private String key;
 	
-	Object bind(String key, String value);
+	public KvpBinding(List keys, String key) {
+		this.keys = keys;
+		this.key = key;
+	}
+	
+	public List getKeys() {
+		return keys;
+	}
+	
+	public String getKey() {
+		return key;
+	}
+	
+	public abstract Object bind(Map kvp);
 }

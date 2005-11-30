@@ -62,16 +62,16 @@ abstract public class KvpRequestReader {
             "org.vfny.geoserver.requests.readers");
 
     /** Delimeter for KVPs in the raw string */
-    private static final String KEYWORD_DELIMITER = "&";
+    public static final String KEYWORD_DELIMITER = "&";
 
     /** Delimeter that seperates keywords from values */
-    private static final String VALUE_DELIMITER = "=";
+    public static final String VALUE_DELIMITER = "=";
 
     /** Delimeter for outer value lists in the KVPs */
-    protected static final String OUTER_DELIMETER = "()";
+    public static final String OUTER_DELIMETER = "()";
 
     /** Delimeter for inner value lists in the KVPs */
-    protected static final String INNER_DELIMETER = ",";
+    public static final String INNER_DELIMETER = ",";
 
     /** Holds mappings between HTTP and ASCII encodings */
   //  private static FilterFactory factory = FilterFactory.createFilterFactory();
@@ -166,7 +166,7 @@ abstract public class KvpRequestReader {
      *
      * @return A list of the tokenized string.
      */
-    protected static List readFlat(String rawList, String delimiter) {
+    public static List readFlat(String rawList, String delimiter) {
         // handles implicit unconstrained case
         if (rawList == null) {
             return Collections.EMPTY_LIST;
