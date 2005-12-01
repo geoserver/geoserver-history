@@ -95,6 +95,9 @@ contained in geoserver/misc/wms/styles.  We're working on finding
 a better place for them, but for now that's where you must put them
 if you want them on the server.
 -->
+<style filename = "default_polygon.sld" id = "default_polygon"  />
+<style filename = "default_line.sld" id = "default_line"  />
+<style filename = "default_point.sld" id = "default_point"  />
 <style filename = "giant_polygon.sld" id = "giant_polygon"  />
 <style filename = "capitals.sld" id = "capitals"  />
 <style filename = "tiger_roads.sld" id = "tiger_roads"  />
