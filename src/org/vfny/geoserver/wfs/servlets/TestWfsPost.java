@@ -4,13 +4,8 @@
  */
 package org.vfny.geoserver.wfs.servlets;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
+
 import java.net.URL;
 
 import javax.servlet.ServletConfig;
@@ -96,8 +91,8 @@ public class TestWfsPost extends HttpServlet {
         HttpServletResponse response) throws ServletException, IOException {
         String requestString = request.getParameter("body");
         String urlString = request.getParameter("url");
-        boolean doGet = (requestString == null)
-            || requestString.trim().equals("");
+        boolean doGet = (requestString == null) ||
+            requestString.trim().equals("");
 
         if ((urlString == null)) {
             PrintWriter out = response.getWriter();
@@ -107,8 +102,8 @@ public class TestWfsPost extends HttpServlet {
                 urlInfo.delete(urlInfo.indexOf("?"), urlInfo.length());
             }
 
-            String geoserverUrl = urlInfo.substring(0, urlInfo.indexOf("/", 8))
-                + request.getContextPath();
+            String geoserverUrl = urlInfo.substring(0, urlInfo.indexOf("/", 8)) +
+                request.getContextPath();
             response.setContentType("text/html");
             out.println(
                 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">");
@@ -182,13 +177,13 @@ public class TestWfsPost extends HttpServlet {
 
             try {
                 URL u = new URL(urlString);
-                java.net.HttpURLConnection acon = (java.net.HttpURLConnection) u
-                    .openConnection();
+                java.net.HttpURLConnection acon = (java.net.HttpURLConnection) u.openConnection();
                 acon.setAllowUserInteraction(false);
 
                 if (!doGet) {
                     //System.out.println("set to post");
                     acon.setRequestMethod("POST");
+                    acon.setRequestProperty("Content-Type", "application/xml");
                 } else {
                     //System.out.println("set to get");
                     acon.setRequestMethod("GET");
@@ -198,16 +193,15 @@ public class TestWfsPost extends HttpServlet {
                 acon.setDoInput(true);
                 acon.setUseCaches(false);
 
-                
                 //SISfixed - if there was authentication info in the request,
                 //           Pass it along the way to the target URL
                 //DJB: applied patch in GEOS-335
-              String authHeader = request.getHeader("Authorization");
-              if( authHeader != null )
-              		acon.setRequestProperty("Authorization",authHeader);
-              
-              
-                //acon.setRequestProperty("Content-Type", "application/xml");
+                String authHeader = request.getHeader("Authorization");
+
+                if (authHeader != null) {
+                    acon.setRequestProperty("Authorization", authHeader);
+                }
+
                 if (!doGet) {
                     xmlOut = new PrintWriter(new BufferedWriter(
                                 new OutputStreamWriter(acon.getOutputStream())));
@@ -220,6 +214,7 @@ public class TestWfsPost extends HttpServlet {
                 //xmlIn = new BufferedReader(new InputStreamReader(
                 //            acon.getInputStream()));
                 String line;
+
                 //System.out.println("got encoding from acon: "
                 //    + acon.getContentType());
                 response.setContentType(acon.getContentType());
