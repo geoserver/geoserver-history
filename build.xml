@@ -143,6 +143,7 @@
 		<echo message="    unit:         compiles, runs unit 1 test" />
 		<echo message="                    -param: test.name=[package.class]" />
 		<echo message="    unit-all:     compiles and runs all unit tests" />
+		<echo message="    unit-http:    compiles and runs all http unit tests" />
 		<echo message="    test:         builds and runs the built-in server" />
 		<echo message="    run:          runs the built-in server" />
 		<echo message=" prepareEmbedded  prepares built-in server, must be run" />
