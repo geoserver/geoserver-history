@@ -33,11 +33,11 @@ import org.vfny.geoserver.wms.responses.GetMapResponse;
  * @version $Id: GetMap.java,v 1.7 2004/03/30 11:12:40 cholmesny Exp $
  */
 public class GetMap extends WMService {
-	/**
-	 * Part of HTTP content type header.
-	 */
-	public static final String MULTIPART = "multipart/";
-	  
+    /**
+     * Part of HTTP content type header.
+     */
+    public static final String URLENCODED = "application/x-www-form-urlencoded";
+
     /**
      * Creates a new GetMap object.
      */
@@ -45,19 +45,20 @@ public class GetMap extends WMService {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException 
-	{
-	    if (!isMultipartContent(request)) {
-	       doGet(request, response);
-	       return;
-	    }
-    	 
-    	//DJB: added post support
-    	Request serviceRequest = null;
-    	this.curRequest = request;
+        throws ServletException, IOException {
+        //If the post is of mime-type application/x-www-form-urlencoded
+        //Then the get system can handle it. For all other requests the
+        //post code must handle it.
+        if (isURLEncoded(request)) {
+            doGet(request, response);
+            return;
+        }
 
-        if (!isServiceEnabled(request)) 
-        {
+        //DJB: added post support
+        Request serviceRequest = null;
+        this.curRequest = request;
+
+        if (!isServiceEnabled(request)) {
             response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             return;
         }
@@ -68,18 +69,14 @@ public class GetMap extends WMService {
         	
         	 Reader xml =  request.getReader();
         	 serviceRequest= xmlPostReader.read(xml,request);
-        }
-        catch (ServiceException se) 
-		{
+        } catch (ServiceException se) {
             sendError(response, se);
             return;
-        } 
-        catch (Throwable e) 
-		{
+        } catch (Throwable e) {
             sendError(response, e);
             return;
         }
-        
+
         doService(request, response, serviceRequest);
     }
 
@@ -89,8 +86,8 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected Response getResponseHandler() {
-    	WMSConfig config = (WMSConfig) getServletContext()
-    		.getAttribute(WMSConfig.CONFIG_KEY);
+        WMSConfig config = (WMSConfig) getServletContext().getAttribute(WMSConfig.CONFIG_KEY);
+
     	return new GetMapResponse(config);
     }
 
@@ -130,19 +127,16 @@ public class GetMap extends WMService {
      * @param req the servlet request
      * @return if this is multipart or not
      */
-    public boolean isMultipartContent(HttpServletRequest req) {
-	      //If it is not post, then it can't be multipart
-	      if (!"post".equals(req.getMethod().toLowerCase())) {
-	        return false;
-	      }
-	      //Get the content type from the request
-	      String contentType = req.getContentType();
-	      //If there is no content type, then it is not multipart
-	      if (contentType == null) {
-	        return false;
-	      }
-	      //If it starts with multipart/ then it is multipart
-	      return contentType.toLowerCase().startsWith(MULTIPART);
+    public boolean isURLEncoded(HttpServletRequest req) {
+        //Get the content type from the request
+        String contentType = req.getContentType();
+
+        //If there is no content type, then it is not multipart
+        if (contentType == null) {
+            return false;
+        }
+
+        //If it starts with multipart/ then it is multipart
+        return contentType.toLowerCase().equals(URLENCODED);
     }
-	
 }

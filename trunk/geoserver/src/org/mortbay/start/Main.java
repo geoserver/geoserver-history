@@ -79,23 +79,9 @@ public class Main
     static boolean _debug = System.getProperty("DEBUG",null)!=null;
     
     private String _classname = null;
-
-	/**
-	 * 
-	 * @uml.property name="_classpath"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
-	private Classpath _classpath = new Classpath();
-
+    private Classpath _classpath = new Classpath();
     private String _config = System.getProperty("START","org/mortbay/start/start.config");
-
-	/**
-	 * 
-	 * @uml.property name="_xml"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
-	 */
-	private ArrayList _xml = new ArrayList();
-
+    private ArrayList _xml = new ArrayList();
        
     public static void main(String[] args)
     {
