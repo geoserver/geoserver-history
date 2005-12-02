@@ -52,6 +52,7 @@
 	<property name="dir.server" value="${basedir}/server" />
 	<property name="dir.src" value="${basedir}/src" />
 	<property name="dir.test" value="${basedir}/test" />
+	<property name="dir.httptest" value="${basedir}/httptest" />
 	<property name="dir.conf" value="${basedir}/conf" />
 	<property name="dir.data_dirs" value="${basedir}/data_dirs" />
 	<property name="dir.release" value="${basedir}/release" />
@@ -115,6 +116,7 @@
 		<pathelement location="${jar.xercesImpl}" />
 		<pathelement location="${jar.xml}" />
 	</path>
+
 
 	<path id="path.build">
 		<path refid="path.lib" />
@@ -242,6 +244,21 @@
 		</junit>
 	</target>
 
+	<target name="compile-tests" depends="all">
+  	<javac srcdir="${dir.test}" destdir="${dir.build}" classpathref="path.build" deprecation="off" debug="on" >
+			<include name="**/*.java"/>
+		</javac>
+  	<javac srcdir="${dir.httptest}" destdir="${dir.build}" classpathref="path.build" deprecation="off" debug="on" >
+			<include name="**/*.java"/>
+		</javac>
+		<!-- copy over any additional resources -->
+		<copy todir="${dir.build}"> 
+			<fileset dir="${dir.test}" includes="**/*.xml" excludes="test-data/**"/>
+			<fileset dir="${dir.httptest}" includes="**/*.xml"/>
+		</copy>
+		
+	</target>
+
 	<target name="unit-all" depends="unit-requests">
 		<!-- no zserver for now, as we're not including it anywhere -->
 		<junit fork="false" printsummary="on">
@@ -257,12 +274,12 @@
 		</junit>
 	</target>
 
-	<target name="unit-requests" depends="init, all">
-		<javac srcdir="${dir.test}" destdir="${dir.build}" includes="**/*.java" classpathref="path.build" deprecation="off" debug="on" />
+	<target name="unit-requests" depends="init, all, compile-tests">
+		<!--javac srcdir="${dir.test}" destdir="${dir.build}" includes="**/*.java" classpathref="path.build" deprecation="off" debug="on" /-->
 		<antcall target="all" />
 		<junit fork="false" printsummary="on">
 			<formatter type="plain" usefile="false" />
-			<sysproperty key="dataFolder" value="${basedir}/tests/unit/testData" />
+			<!--sysproperty key="dataFolder" value="${basedir}/tests/unit/testData" /-->
 
 			<classpath>
 				<fileset dir="${dir.lib}">
@@ -270,6 +287,8 @@
 				</fileset>
 			</classpath>
 			
+			<test fork="true" name="org.vfny.geoserver.requests.wms.GetMapTest"/>
+
 			<test fork="true" name="org.vfny.geoserver.requests.FeatureSuite" />
 				
 			<test fork="true" name="org.vfny.geoserver.requests.CapabilitiesSuite" />
@@ -278,6 +297,33 @@
 			<test fork="true" name="org.vfny.geoserver.requests.LockSuite" />
 			
 		</junit>
+	</target>
+
+	<target name="unit-http" depends="init,all,compile-tests">
+
+		<!-- I am really sure why this has to be here, but the test fails 
+				if it is not -->
+		<antcall target="all" />
+
+		<junit fork="false" printsummary="on">
+      <formatter type="plain" usefile="false" />
+
+      <classpath>
+        <fileset dir="${dir.lib}">
+          <include name="*.jar" />
+        </fileset>
+				<fileset dir="${dir.build}" includes="**/*.xml"/>
+      </classpath>
+
+			<batchtest fork="yes"> 
+				<fileset dir="${dir.httptest}">
+					<include name="**/*Test.java"/>
+					<exclude name="**/Abstract*Test.java"/>
+				</fileset>
+			</batchtest>
+
+    </junit>
+
 	</target>
 
 	<target name="unit-zserver" depends="init, all">

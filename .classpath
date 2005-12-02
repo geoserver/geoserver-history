@@ -9,7 +9,6 @@
 	<classpathentry kind="lib" path="lib/commons-digester.jar"/>
 	<classpathentry kind="lib" path="lib/commons-fileupload.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang.jar"/>
-	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/commons-validator.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-arcsde.jar"/>
 	<classpathentry sourcepath="/gt_trunk" kind="lib" path="lib/gt2-epsg.jar"/>
@@ -35,7 +34,6 @@
 	<classpathentry kind="lib" path="lib/ki-jzkit-iface.jar"/>
 	<classpathentry kind="lib" path="lib/ki-jzkit-z3950.jar"/>
 	<classpathentry kind="lib" path="lib/ki-util.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.5.jar"/>
 	<classpathentry kind="lib" path="lib/lucene.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-3.0.9.jar"/>
 	<classpathentry kind="lib" path="lib/opengis-css-0.1.jar"/>
@@ -49,13 +47,15 @@
 	<classpathentry sourcepath="C:/Documents and Settings/Owner/Desktop/xerces-2_5_0" kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/commons-httpclient-2.0.1.jar"/>
-	<classpathentry sourcepath="/main" kind="lib" path="lib/gt2-main.jar"/>
+	<classpathentry sourcepath="/main-2.1.x" kind="lib" path="lib/gt2-main.jar"/>
 	<classpathentry kind="lib" path="lib/geoapi-2.0.jar"/>
 	<classpathentry sourcepath="/shapefile" kind="lib" path="lib/gt2-shapefile.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-indexed-shapefile.jar"/>
 	<classpathentry kind="lib" path="lib/mockrunner-servlet.jar"/>
 	<classpathentry kind="lib" path="lib/batik-awt-util-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/batik-svggen-1.1.1.jar"/>
+	<classpathentry sourcepath="/batik" kind="lib" path="lib/batik-svggen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/batik-util-1.1.1.jar"/>
+	<classpathentry kind="src" path="httptest"/>
+	<classpathentry kind="lib" path="lib/httpunit.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

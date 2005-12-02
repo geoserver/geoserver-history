@@ -45,6 +45,7 @@ public class GetMap extends WMService {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
+    	
         //If the post is of mime-type application/x-www-form-urlencoded
         //Then the get system can handle it. For all other requests the
         //post code must handle it.
@@ -52,6 +53,7 @@ public class GetMap extends WMService {
             doGet(request, response);
             return;
         }
+
 
         //DJB: added post support
         Request serviceRequest = null;
