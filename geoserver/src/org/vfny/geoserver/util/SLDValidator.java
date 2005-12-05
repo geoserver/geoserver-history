@@ -204,6 +204,14 @@ public class SLDValidator {
         SAXParser parser = new SAXParser();
 
         try {
+//     1. tell the parser to validate the XML document vs the schema
+//     2. does not validate the schema (the GML schema is *not* valid.  This is
+//        			an OGC blunder)
+//     3. tells the validator that the tags without a namespace are actually
+//        			SLD tags.
+//     4. tells the validator to 'override' the SLD schema that a user may
+//        			include with the one inside geoserver.
+
             parser.setFeature("http://xml.org/sax/features/validation", true);
             parser.setFeature("http://apache.org/xml/features/validation/schema",
                 true);
