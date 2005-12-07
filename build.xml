@@ -815,14 +815,14 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	<delete dir="${dir.doc}/temp"/>
 	
 	
-	<copy todir="${dir.doc}/" file="${dir.doc}/../docbook-xsl/lib/html.css" />
-	<copy todir="${dir.doc}/" file="${dir.doc}/../index.html" />
+	<!--copy todir="${dir.doc}/" file="${dir.doc}/../docbook-xsl/lib/html.css" />
+	<copy todir="${dir.doc}/" file="${dir.doc}/../index.html" /-->
 	
 	<!-- Convert docbook to html -->
-	<style basedir="${dir.doc}/../" destdir="${dir.doc}/" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" excludes="jetty.xml admin.xml jalopy.geoserver.xml" processor="trax">
+	<!--style basedir="${dir.doc}/../" destdir="${dir.doc}/" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" excludes="jetty.xml admin.xml jalopy.geoserver.xml" processor="trax">
 		<param name="section.autolabel" expression="1" />
 		<param name="toc.section.depth" expression="4" />
-	</style>
+	</style-->
 	
 	<!--copy todir="${dir.doc}/developer" file="${dir.doc}/../docbook-xsl/lib/html.css" /-->
 	
@@ -852,49 +852,10 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 <!--   install directory. You can download Nullsoft Scriptable Install System -->
 <!--   here: http://nsis.sourceforge.net/-->
 <target name="release-all" depends="release-common, release-binary,release-war, release-src, release-docs" >
-	<antcall target="release-all-upgrade"/>
 	<antcall target="release-installer-win"/>
 	<delete dir="${dir.build}/installer"/>
 </target>
 
-
-<target name="release-all-upgrade" depends="release-war-upgrade">
-	<mkdir dir="${dir.upgrade}" />
-	<mkdir dir="${dir.upgrade}/untar" />
-	
-	<!-- get binary tar, unzip, remove *flagged*.xml, re-tar -->
-	<gunzip src="${dir.release}/geoserver-${name.release}-bin.tar.gz" dest="${dir.upgrade}" />
-	<untar src="${dir.upgrade}/geoserver-${name.release}-bin.tar" dest="${dir.upgrade}/untar"/>
-	
-	<!--JD(GEOS-385) fix the end of line for shell scripts -->
-	<fixcrlf srcdir="${dir.upgrade}/untar" includes="**/*.sh" eol="unix"/>
-	<tar destfile="${dir.upgrade}/geoserver-${name.release}-bin-upgrade.tar">
-		<tarfileset dir="${dir.upgrade}/untar/geoserver" prefix="geoserver">
-			<include name="**/*" />
-			<exclude name="geoserver.war" />
-			<exclude name="org/**" />
-			<exclude name="META-INF/**" />
-			<exclude name="bin/*.sh"/>
-			<exclude name="**/catalog.xml"/>
-			<exclude name="**/services.xml"/>
-		</tarfileset>
-
-		<!-- JD(GEOS-385)include bin seperatly in order to get permission right -->
-		<tarfileset dir="${dir.upgrade}/untar/geoserver" prefix="geoserver" mode="755">
-			<include name="bin/*.sh"/>
-		</tarfileset>
-	</tar>
-
-	<gzip src="${dir.upgrade}/geoserver-${name.release}-bin-upgrade.tar" zipfile="${dir.upgrade}/geoserver-${name.release}-bin-upgrade.tar.gz" />
-
-	<copy file="${dir.upgrade}/geoserver-${name.release}-bin-upgrade.tar.gz" todir="${dir.release}" />
-	
-	<delete dir="${dir.upgrade}/untar"/>
-	<delete file="${dir.upgrade}/geoserver-${name.release}-bin-upgrade.tar.gz" failonerror="false" />
-	<delete file="${dir.upgrade}/geoserver-${name.release}-bin-upgrade.tar" failonerror="false" />
-	<delete file="${dir.upgrade}/geoserver-${name.release}-bin.tar" failonerror="false" />
-	
-</target>
 
 
 <target name="release-common" depends="clean, all" description="Performs the release operations common to binary and source">
@@ -1038,22 +999,6 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	<delete file="${dir.build}/geoserver.war" failonerror="true" />
 	
 </target>
-	
-<target name="release-war-upgrade" depends="clean, all" description="Genearte the Geoserver.war war release-upgrade (includes UserBasic)">
-	<antcall target="build-war-upgrade">
-		<param name="conf.path" value="${basedir}/cite/confUserBasic" />
-	</antcall>
-	<!-- .war build, stick it in a geoserver-<version>-war.zip -->
-	<zip destfile="${basedir}/geoserver-${name.release}-war-upgrade.zip">
-		<zipfileset dir="${dir.upgrade}">
-			<include name="geoserver.war" />
-		</zipfileset>
-	</zip>
-		
-	<move file="${basedir}/geoserver-${name.release}-war-upgrade.zip" todir="${dir.release}" />
-		<delete file="${dir.upgrade}/geoserver.war" failonerror="true" />
-		
-</target>
 
 <target name="release-binary" depends="release-common">
 <copy todir="${dir.build}">
@@ -1157,7 +1102,7 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	
 <!-- HOW TO RUN -->
 <!-- Set up an environment variable called NSIS_PATH that points to your NSIS -->
-<!--   install directory. -->
+<!--   install directory. "eg: C:\NSIS" -->
 <target name="release-installer-win">
 	
 	<delete dir="${dir.build}/installer"/>
@@ -1167,30 +1112,15 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	<untar src="${dir.build}/installer/geoserver-${name.release}-bin.tar" dest="${dir.build}/installer"/>
 	<delete file="${dir.build}/installer/${dir.upgrade}/geoserver-${name.release}-bin.tar"/>
 	
-	<copy file="${dir.documents}/geoserver.nsi" todir="${dir.build}/installer/geoserver" />
+	<copy file="${dir.documents}/geoserver2.nsi" todir="${dir.build}/installer/geoserver" />
 	
 	<property environment="env"/>
 	<exec executable="${env.NSIS_PATH}/makensis.exe">
-		<arg line="${dir.build}/installer/geoserver/geoserver.nsi"/>
+		<arg line="${dir.build}/installer/geoserver/geoserver2.nsi"/>
 	</exec>
 	
 	<!-- copy over the exe to release -->
 	<copy file="${dir.build}/installer/geoserver/geoserver-${name.release}.exe" todir="${dir.release}" />
-	
-	<!-- clean up files so we can realse the update exe version -->
-	<delete dir="${dir.build}/installer"/>
-	<mkdir dir="${dir.build}/installer" />
-	
-	<gunzip src="${dir.release}/geoserver-${name.release}-bin-upgrade.tar.gz" dest="${dir.build}/installer" />
-	<untar src="${dir.build}/installer/geoserver-${name.release}-bin-upgrade.tar" dest="${dir.build}/installer"/>
-	
-	<copy file="${dir.documents}/geoserver-upgrade.nsi" todir="${dir.build}/installer/geoserver" />
-	
-	<exec executable="${env.NSIS_PATH}/makensis.exe">
-		<arg line="${dir.build}/installer/geoserver/geoserver-upgrade.nsi"/>
-	</exec>
-	
-	<copy file="${dir.build}/installer/geoserver/geoserver-${name.release}-upgrade.exe" todir="${dir.release}" />
 	
 </target>
 	
