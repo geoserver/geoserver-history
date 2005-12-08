@@ -806,6 +806,7 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 		</fileset>
 	</copy>
 	<!-- this is the test to see if anything was copied -->
+	<echo>If it dies here, you need to download a new version of the DOCS from the Wiki.</echo>
 	<copy todir="${dir.doc}/GEOSDOC" file="${dir.doc}/temp/index.html" failonerror="true"/>
 	<copy todir="${dir.doc}/GEOSDOC" failonerror="true">
 		<fileset dir="${dir.doc}/temp/">
@@ -1112,11 +1113,13 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	<untar src="${dir.build}/installer/geoserver-${name.release}-bin.tar" dest="${dir.build}/installer"/>
 	<delete file="${dir.build}/installer/${dir.upgrade}/geoserver-${name.release}-bin.tar"/>
 	
-	<copy file="${dir.documents}/geoserver2.nsi" todir="${dir.build}/installer/geoserver" />
+	<copy file="${dir.documents}/geoserver.nsi" todir="${dir.build}/installer/geoserver" />
+	<copy file="${dir.documents}/dataDirPage.ini" todir="${dir.build}/installer/geoserver" />
+	<copy file="${dir.documents}/splash.bmp" todir="${dir.build}/installer/geoserver" />
 	
 	<property environment="env"/>
 	<exec executable="${env.NSIS_PATH}/makensis.exe">
-		<arg line="${dir.build}/installer/geoserver/geoserver2.nsi"/>
+		<arg line="${dir.build}/installer/geoserver/geoserver.nsi"/>
 	</exec>
 	
 	<!-- copy over the exe to release -->
