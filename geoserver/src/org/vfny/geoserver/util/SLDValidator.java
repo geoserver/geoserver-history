@@ -9,15 +9,12 @@
 package org.vfny.geoserver.util;
 
 import org.apache.xerces.parsers.SAXParser;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -32,7 +29,7 @@ public class SLDValidator {
 
     /**
      * validates against the "normal" location of the schema (ie.
-     * ".../capabilities/sld/StyleLayerDescriptor.xsd" uses the geoserver_home
+     * ".../schemas/sld/StyleLayerDescriptor.xsd" uses the geoserver_home
      * patch
      *
      * @param xml
@@ -41,9 +38,9 @@ public class SLDValidator {
      * @return
      */
     public List validateSLD(InputStream xml, ServletContext servContext) {
-        // File schemaFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(servContext),"/data/capabilities/sld/StyledLayerDescriptor.xsd");
-        File schemaFile = new File(GeoserverDataDirectory
-                .getGeoserverDataDirectory(servContext),
+    	// a riminder not to use the data directory for the schemas
+    	//String url = GeoserverDataDirectory.getGeoserverDataDirectory(servContext).toString();
+    	File schemaFile = new File(servContext.getRealPath("/"),
                 "/schemas/sld/StyledLayerDescriptor.xsd");
 
         try {
@@ -177,9 +174,8 @@ public class SLDValidator {
     }
 
     public List validateSLD(InputSource xml, ServletContext servContext) {
-        File schemaFile = new File(GeoserverDataDirectory
-                .getGeoserverDataDirectory(servContext),
-                "/data/capabilities/sld/GetMap.xsd");
+        File schemaFile = new File(servContext.getRealPath("/"),
+        "/schemas/sld/StyledLayerDescriptor.xsd");
 
         try {
             return validateSLD(xml, schemaFile.toURL().toString());
@@ -196,7 +192,7 @@ public class SLDValidator {
      *
      * @param xml input stream representing the .sld file
      * @param SchemaUrl location of the schemas. Normally use
-     *        ".../capabilities/sld/StyleLayerDescriptor.xsd"
+     *        ".../schemas/sld/StyleLayerDescriptor.xsd"
      *
      * @return list of SAXExceptions (0 if the file's okay)
      */
