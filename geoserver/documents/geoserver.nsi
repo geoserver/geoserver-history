@@ -40,7 +40,7 @@
 
 ;--------------------------------
 ;Variables
-
+  
   Var MUI_TEMP
   Var STARTMENU_FOLDER
   Var DATA_DIR
@@ -104,11 +104,14 @@ Section "GeoServer Section" SecGeoServer
   
   ;ADD YOUR OWN FILES HERE...
   File /r bin
+  File /r conf
   File /r documents
   File /a README.txt
   File /r lib
   File /a RUNNING.txt
   File /a license.txt
+  File /r server
+
 
 
   ## Create the GEOSERVER_DATA_DIR environment variable (this will overwrite if one already exists)
@@ -188,9 +191,12 @@ Function .onInit
 	  ;	'0' if everything closed normally, and '-1' if some error occurred.
 
 
-   ;Extract InstallOptions INI files
-   !insertmacro MUI_INSTALLOPTIONS_EXTRACT "dataDirPage.ini" ; -bo
+   #Extract InstallOptions INI files
+   !insertmacro MUI_INSTALLOPTIONS_EXTRACT "dataDirPage.ini"
 
+   #load page link, save it to temp location
+   WriteIniStr $PLUGINSDIR\dataDirPage.ini "Field 3" "State" "$WINDIR\Notepad.exe"
+   
    ClearErrors
 
    Call findJavaPath
@@ -206,22 +212,20 @@ Function dataDirPage
   ;MessageBox MB_OK "existing env string: $1"
 
   StrCmp $1 "" 0 copy_str
-  ## if it doesn't exist, use: "$INSTDIR\server\geoserver\data"
-    StrCpy $1 "$INSTDIR\server\geoserver\data"
+  ## if it doesn't exist, use: "$INSTDIR\conf"
+    StrCpy $1 "$INSTDIR\conf"
 
   ## if it exists, use it for temp value until user chooses new one
   copy_str:
     StrCpy $DATA_DIR $1
 
   
-
   !insertmacro MUI_HEADER_TEXT "GeoServer Data Directory" "Choose your Data Directory's location."
   !insertmacro MUI_INSTALLOPTIONS_INITDIALOG "dataDirPage.ini"
   Pop $HWND
-  GetDlgItem $1 $HWND 1201	; 1200 + field number - 1 (MINUS ONE!!!!!!!! pos NSIS)
+  GetDlgItem $1 $HWND 1202	; 1200 + field number - 1 (MINUS ONE!!!!!!!! pos NSIS)
   SendMessage $1 ${WM_SETTEXT} 1 "STR:$DATA_DIR"
   !insertmacro MUI_INSTALLOPTIONS_SHOW
-
   
 
 FunctionEnd
@@ -232,7 +236,7 @@ FunctionEnd
 ; =====================
 Function dataDirPageLeave
   
-  !insertmacro MUI_INSTALLOPTIONS_READ $R1 "dataDirPage.ini" "Field 2" "State"
+  !insertmacro MUI_INSTALLOPTIONS_READ $R1 "dataDirPage.ini" "Field 3" "State"
   StrCpy $DATA_DIR $R1
   ;MessageBox MB_OK "window value: $DATA_DIR"
 
