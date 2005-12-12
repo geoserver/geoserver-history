@@ -105,7 +105,7 @@ public class MapPreviewAction extends Action
 		for (Iterator it = ftypes.iterator(); it.hasNext();) 
 		{
 			layer = (FeatureTypeInfo) it.next();
-			Envelope bbox = layer.getBoundingBox();
+			Envelope bbox = layer.getLatLongBoundingBox();
 			if (layer.isEnabled()) 
 			{
 				// prepare strings for web output
