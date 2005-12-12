@@ -1,0 +1,17 @@
+<featureType datastore = "geoserver-demo" >
+	<name>swamps</name>
+	<!--
+		native wich EPGS code for the FeatureTypeInfoDTO
+	-->
+	<SRS>26910</SRS>
+	<title>swamps_Type</title>
+	<abstract>Generated from swamps</abstract>
+	<numDecimals value = "8" />
+	<keywords>swamps</keywords>
+	<latLonBoundingBox dynamic = "false" miny = "47.2480730062538" maxy = "47.37217444602" maxx = "-122.123411805448" minx = "-122.248437678166"  />
+	<!--
+		the default style this FeatureTypeInfoDTO can be represented by.
+		at least must contain the "default" attribute 
+	-->
+	<styles default = "normal"  />
+</featureType>

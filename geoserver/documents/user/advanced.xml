@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<article>
+  <title>Advanced Configuration</title>
+
+  <sect1 id="additional">
+    <title>Additional Options</title>
+
+    <para>Several advanced configuration options have been added to
+    GeoServer:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>LoggingLevel allows easier configuration of GeoServer's logging.
+        Possible values include FINEST, FINER, CONFIG, INFO, WARNING, and
+        SEVERE (in order from most messages to least). FINEST should not be
+        used except for tracking difficult bugs, as it generates a lot of
+        messages and will quickly fill up your log. Logging still needs a bit
+        of work, to have the correct meaningful messages for each level, but
+        the current logging provides a good start. If the LoggingLevel is not
+        set then GeoServer will just use the values in your jre's
+        logging.properties file. To set the logging just add a line like the
+        following to the global section of the
+        <emphasis>services.xml</emphasis> file: <programlisting>&lt;loggingLevel&gt;FINER&lt;/loggingLevel&gt;</programlisting></para>
+      </listitem>
+
+      <listitem>
+        <para>Verbose, if set to true, outputs the xml with newlines and
+        indents. If set to false, or not present in the global section of the
+        <emphasis>services.xml</emphasis> file, then no newlines or indents
+        will be contained in the output.<programlisting>&lt;verbose value="true"&gt;</programlisting></para>
+      </listitem>
+
+      <listitem>
+        <para>The NumDecimals element can be used to set how many places past
+        the decimal are returned in a getFeature response. To set to two
+        decimal places add the following to services.xml in the global
+        section:<programlisting>&lt;numDecimals&gt;2&lt;/numDecimals&gt;</programlisting></para>
+      </listitem>
+
+      <listitem>
+        <para>We have also brought back the maxFeatures parameter, to specify
+        the maximum number of features that will be returned to a client. It
+        is also in the <emphasis>services.xml</emphasis> file:<programlisting>&lt;maxFeatures&gt;20000&lt;/maxFeatures&gt;</programlisting></para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="namespaces">
+    <title>FeatureType Control</title>
+
+    <para>GeoServer 1.2.0 introduces greater control over attributes contained
+    in a featureType. In an <emphasis>schema.xml</emphasis> file you may now
+    specify an attributes element as follows:<programlisting>&lt;xs:element name="id" type="xs:string" minOccurs="1"/&gt;
+&lt;xs:element ref="gml:lineStringProperty" minOccurs="0"/&gt;</programlisting></para>
+
+    <para>This indicates that only the attributes id and lineStringProperty
+    may be returned. This also spercifies that the id MUST be returned. If the
+    back end table has columns of id, length, lineStringProperty, and name
+    then this set up would make it so length and name are never seen by the
+    clients. The types which are valid are any types defined using either the
+    GML specifications, the primitive XML Schema elements or any user defined
+    XML Schema complexTypes. All of the restrictions specified in these the
+    <emphasis>schema.xml</emphasis> files restrictes the associated
+    featuretype. For more information please refer to the XML Schema and GML
+    specifications.</para>
+  </sect1>
+
+  <sect1 id="shapefile">
+    <title>ShapeFile Support</title>
+
+    <para>As of 0.96 GeoServer supports the Shapefile format. Postgis remains
+    the recommended GeoServer datastore, due to its speed and transactional
+    capabilities. But for those users wishing to avoid the lengthy Postgis
+    install, who just want to get GeoServer up and running, Shapefiles provide
+    a good alternative. Large Shapefiles have not been tested too extensively,
+    so we'd appreciate reports on how it goes. And much thanks goes out to the
+    <ulink url="http://geotools.org">Geotools</ulink> team, as we are just
+    plugging in their hard work. Ian Schneider deserves special mention for
+    his work to get the geotools Shapefile module ready to go into
+    GeoServer.</para>
+
+    <para>To use Shapefiles instead of PostGIS, modify the datastore element
+    of <emphasis>catalog.xml</emphasis> with different connectionParams. Check
+    the user install page <ulink url="install.html#data">here</ulink>, for
+    more information on that set up. To use Shapefiles include the url to the
+    location of the .shp file as follows:<programlisting>&lt;connectionParams&gt;
+  &lt;parameter name="url" value="file:/home/chris/road.shp"&gt;
+&lt;/connectionParams&gt;</programlisting></para>
+
+    <para>The Shapefile can also be referenced locally - if put in the
+    conf/featureTypes directory than it will be copied over to the data
+    directory of the war file. It is best to put them in the same directory as
+    the corresponding <emphasis>info.xml</emphasis> file, for example
+    <emphasis>conf/featureTypes/bc_roads/bc_roads.shp</emphasis>, and then
+    reference with the <emphasis>data/featureTypes/bc_roads</emphasis> path.
+    If the file was stored there then the params should look like
+    this:<programlisting>&lt;connectionParams&gt;
+  &lt;parameter name="url" value="file:data/featureTypes/bc_roads/bc_roads.shp"&gt;
+&lt;/connectionParams&gt;</programlisting></para>
+
+    <para>One more thing to note, the name element of the
+    <emphasis>info.xml</emphasis> file that references a shape datastore
+    <emphasis role="bold">must</emphasis> have the same 'name' element as the
+    file name. So for the bc_roads shape it should be
+    &lt;name&gt;bc_roads&lt;/name&gt;. Any other name will fail. Future
+    versions should handle this better</para>
+  </sect1>
+
+  <sect1 id="oracle">
+    <title>Oracle Support</title>
+
+    <para>GeoServer also offers Oracle Spatial support, contributed and
+    maintained by Sean Geoghegan. It includes support of all OGC filters,
+    connection pooling, and transactional capabilities. Please check the
+    <ulink
+    url="http://docs.codehaus.org/display/GEOS/Installing+Oracle#Installing+Oracle-Oracle%20Installation%20Information">wiki</ulink>
+    for the latest information on oracle.</para>
+
+    <para>The oracle datastore has been substantially improved since 1.2.0
+    RC1. We have cleaned up a few little annoying bugs, and done some good
+    testing. We are no longer dependant on the sdoapi jar, thanks to some work
+    done by Refractions Research. There is still one jar file that we can not
+    distribute, but it is readily available from the oracle technology network
+    <ulink
+    url="http://otn.oracle.com/software/tech/java/sqlj_jdbc/index.html">here</ulink>.
+    It is the jdbc driver, and should be called ojdbc14.jar. This is targeted
+    at java 1.4, which is required by GeoServer. We have also found that
+    classes12.jar works as well, the main class it needs to have is
+    oracle.jdbc.driver.OracleDriver. Just place the jar in the
+    webapps/geoserver/WEB-INF/lib/ directory of a geoserver war install (or in
+    geoserver/lib of a source installation that you are building from). Once
+    the jar is in the directory then oracle should be an option from the drop
+    down menu when creating a new datastore.</para>
+
+    <para>To use the Oracle Datastore you must have the following values for
+    the connectionParams:</para>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left" colwidth="100" />
+
+        <thead>
+          <row>
+            <entry align="center">Param Name</entry>
+
+            <entry align="center">Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry>host</entry>
+
+            <entry>The machine which the Oracle instance is running
+            on.</entry>
+          </row>
+
+          <row>
+            <entry>port</entry>
+
+            <entry>The port the Oracle instance is running on. The default is
+            1521</entry>
+          </row>
+
+          <row>
+            <entry>user</entry>
+
+            <entry>The user to connect with.</entry>
+          </row>
+
+          <row>
+            <entry>passwd</entry>
+
+            <entry>The password to connect with.</entry>
+          </row>
+
+          <row>
+            <entry>dbtype</entry>
+
+            <entry>Must be 'oracle' to use the oracle datastore.</entry>
+          </row>
+
+          <row>
+            <entry>schema</entry>
+
+            <entry>An optional field to specify which schema the tables should
+            be found in.</entry>
+          </row>
+
+          <row>
+            <entry>instance</entry>
+
+            <entry>The Oracle instance name, should be the same as the SERVICE
+            ID.</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>GeoServer 1.2.2 also introduces an option to use an OCI (thick) jdbc
+    client connection to oracle. The thin client that GeoServer has always
+    supported before was designed to be completely portable. But often
+    GeoServer will be installed on a computer that has all the OCI (Oracle
+    Call Interface) drivers needed for a thick connection (such as when
+    installed on the same computer as the database). In this case the thick
+    driver is preferable, as it leads to a nice speed increase. It should come
+    up as an option on the new datastore menu - instead of taking a host,
+    port, and instance params it uses an 'alias'. This alias can be found in
+    $ORACLE_HOME/network/admin/tnsnames.ora; we have also had some success
+    with leaving the alias as an empty string, it seems to find the
+    appropriate default. Note that if you are using the OCI you
+    <emphasis>must</emphasis> use the classes12.jar or ojdbc14.jar found in
+    your $ORACLE_HOME/jdbc/lib directory. </para>
+
+    <para>The oracle spatial table you are using must have a correct entry in
+    the USER_SDO_GEOM_METADATA table. And whatever table you use MUST have a
+    primary key declared, it will not work otherwise. We have also seen
+    problems using spatial filters when a spatial index is not defined, so if
+    everything but spatial filters work it may just be that the spatial index
+    is not defined for the table.</para>
+
+    <para>A nice little tool to help out figuring out if your oracle instance
+    can be connected to and what the parameters are is lsnrctl. If you can run
+    it I believe that means that your oracle instance will accept a connection
+    from geoserver. And it is also useful for figuring out the hostname - mine
+    would not accept 'localhost' or '127.0.0.1' (this is with 10g and windows
+    xp), it needed the name of my computer, which was given by the lsnrctl
+    program, with the services command. The 'status' command will also tell if
+    geoserver is connected to your oracle instance. Also note that if you are
+    working directly with the geoserver configuration files the name element
+    in the info.xml file to specify the featureType must be all capitalized,
+    as the JDBC driver does not recognize the table otherwise. This also means
+    that when you request the features from GeoServer you must use upper
+    cases. If specifying attributes in the schema.xml file they must also be
+    all capitalized. Oracle does not use cases, but things seem to work better
+    all around if all upper case letters are used</para>
+
+    <para>Also, The <emphasis>catalog.xml</emphasis> file for an Oracle
+    datastore should look as follows:</para>
+
+    <programlisting>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;catalog&gt;
+schema  &lt;!-- defines the datastores, more than one is possible --&gt;
+  &lt;datastores&gt;
+    &lt;datastore id="remote.oracle" enabled="true" namespace="topp"&gt;
+      &lt;connectionParams&gt;
+        &lt;parameter name="host" value="oracle"/&gt;
+        &lt;parameter name="port" value="1521"/&gt;
+        &lt;parameter name="instance" value="test"/&gt;
+        &lt;parameter name="user" value="testuser"/&gt;
+        &lt;parameter name="passwd" value="pass"/&gt;
+        &lt;parameter name="dbtype" value="oracle"/&gt;
+      &lt;/connectionParams&gt;
+    &lt;/datastore&gt;
+  ...
+  &lt;/datastores&gt;
+  ... 
+&lt;/catalog&gt;</programlisting>
+  </sect1>
+
+  <sect1 id="arcsde">
+    <title>ArcSDE Support</title>
+
+    <para>GeoServer 1.1.0 adds ArcSDE as a datastore, contributed by Gabriel
+    Roldán. He has tested it extensively, and other developers have tested,
+    mostly against version 8.3. It could use more tests on other machines,
+    especially different versions of ArcSDE. If you have an ArcSDE
+    installation it would be great if you could provide feedback on the
+    datastore. To use the ArcSDE Datastore the
+    <emphasis>catalog.xml</emphasis> file must have the following values for
+    the connectionParams:</para>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left" colwidth="100" />
+
+        <thead>
+          <row>
+            <entry align="center">Param Name</entry>
+
+            <entry align="center">Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry>server</entry>
+
+            <entry>The machine which the ArcSDE instance is running
+            on.</entry>
+          </row>
+
+          <row>
+            <entry>port</entry>
+
+            <entry>The port the ArcSDE instance is running on. The default is
+            1521</entry>
+          </row>
+
+          <row>
+            <entry>user</entry>
+
+            <entry>The user to connect with.</entry>
+          </row>
+
+          <row>
+            <entry>password</entry>
+
+            <entry>The password to connect with.</entry>
+          </row>
+
+          <row>
+            <entry>dbtype</entry>
+
+            <entry>Must be 'arcsde' to use the ArcSDE datastore.</entry>
+          </row>
+
+          <row>
+            <entry>instance</entry>
+
+            <entry>The ArcSDE instance name (required).</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>GeoServer includes the jsde_sdk.8.3.jar with installation, and no
+    additional jars should be needed. The <emphasis>catalog.xml</emphasis>
+    file for an ArcSDE datastore should look as follows:</para>
+
+    <programlisting>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;catalog&gt;
+  &lt;!-- defines the datastores, more than one is possible --&gt;
+  &lt;datastores&gt;
+    &lt;datastore id="arcsde.sig" enabled="true" namespace="topp"&gt;
+      &lt;connectionParams&gt;
+        &lt;parameter name="server" value="localhost"/&gt;
+        &lt;parameter name="port" value="5151"/&gt;
+        &lt;parameter name="instance" value="sde"/&gt;
+        &lt;parameter name="user" value="testsde"/&gt;
+        &lt;parameter name="password" value="pass"/&gt;
+        &lt;parameter name="dbtype" value="arcsde"/&gt;
+      &lt;/connectionParams&gt;
+    &lt;/datastore&gt;
+  ...
+  &lt;/datastores&gt;
+  ... 
+
+&lt;/catalog&gt;</programlisting>
+
+    <para>One more thing to note is that in the info.xml file the &lt;name&gt;
+    parameter of the featureType may need to be the full qualified type name.
+    It should be &lt;instance&gt;.&lt;table_owner&gt;.&lt;table_name&gt;, so
+    in the example above a table called roads should be named
+    sde.testsde.roads. But some users have also reported success without the
+    instance prepended. Also make sure that the port number specified is the
+    same as in the services file
+    (%(%(%systemRoot%\system32\drivers\etc\services in windows), it should
+    contain a line like (if yours is different then change the port param of
+    your datastore definition):<programlisting>esri_sde        5151/tcp</programlisting></para>
+  </sect1>
+
+  <sect1 id="international">
+    <title>Internationalization</title>
+
+    <para>The 0.97 release includes better support for international character
+    set encoding. If you have problems with this don't hesitate to ask for
+    support; We've tried to resolve the issues, but we also don't have the
+    capacity to carry out extensive tests for different languages, so we rely
+    on our users to let us know when things go wrong. Hopefully the fixes thus
+    far should be sufficient for most users. To use the new
+    internationalization fixes, the easiest way is to add a &lt;CharSet&gt;
+    element to the configuration.xml file that contains the encoding you wish
+    to use:</para>
+
+    <programlisting>&lt;charSet&gt;iso-8859-1&lt;/charSet&gt;</programlisting>
+
+    <para>This will set the mime encoding and the xml header encoding to that
+    charset. Past releases would use the charSet for PostGIS connection
+    parameters, but that is no longer supported, as Postgresql as of version
+    7.2 does not need a charSet specified, as the language support is built
+    in. If no CharSet element is found then the default is UTF-8 for the
+    return xml.</para>
+  </sect1>
+
+  <sect1 id="dispatcher">
+    <title>Dispatcher Servlet</title>
+
+    <para>Due to the functioning of some WFS clients, the 0.98 release
+    introduces the Dispatcher servlets, which can be used to make GeoServer
+    respond just like a cgi script to get requests. This is actually not
+    officially part of the WFS specification, but all the spec examples use
+    the same base URL, complete cgi style, so it is understandable why some
+    wfs clients would use this shortcut. To make use of the Dispatcher servlet
+    you can use either <emphasis>http://<emphasis
+    role="bold">SERVER_ADDRESS</emphasis>:<emphasis
+    role="bold">SERVER_PORT</emphasis> /GeoServer/Dispatcher?</emphasis> or
+    <emphasis>http://<emphasis role="bold">SERVER_ADDRESS</emphasis>:<emphasis
+    role="bold">SERVER_PORT</emphasis>/GeoServer/wfs?</emphasis>, to look even
+    more like a cgi script. If you'd like to change the base name from wfs you
+    only need edit the <emphasis>web.xml</emphasis> file in
+    <emphasis>geoserver/misc/documents</emphasis>. Using the dispatcher is as
+    simple as the following series of requests:<programlisting>http://openplans.org:8080/geoserver/wfs?request=GetCapabilities
+http://openplans.org:8080/geoserver/wfs?request=DescribeFeatureType&amp;typename=topp:rail
+http://openplans.org:8080/geoserver/wfs?request=GetFeature&amp;typename=topp:rail</programlisting></para>
+
+    <para>Version 1.2.0-rc1 also includes a dispatcher for post requests. It
+    can be accessed by sending all post requests to the same
+    location:<programlisting>http://openplans.org:8080/geoserver/wfs</programlisting></para>
+
+    <para>This should hopefully help GeoServer be accessible to more client
+    apps, as they often naively assume that all requests should go to the same
+    url location. While this is technically a misunderstanding of the spec we
+    want actually interoperability, not just theoretical. If the capabilities
+    document is requested with the wfs?request=GetCapabilities cgi style then
+    it will return cgi style locations.</para>
+  </sect1>
+</article>

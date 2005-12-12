@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
+<article>
+  <title>Building GeoServer</title>
+
+  <para>This document is focused on building GeoServer from the source code.
+  It contains information on obtaining the source code, the directory
+  structure of the source tree, how to compile and run the source, and hints
+  on a few popular tools. This document should be enough to get GeoServer
+  building, for further information on actually writing and testing code in
+  GeoServer please see the <ulink url="???">Hacking</ulink> section.</para>
+
+  <section>
+    <title>Obtaining the Source Code</title>
+
+    <para>Please see the wiki page on this subject, as we have recently
+    changed the way you obtain the source code, <ulink
+    url="???">here</ulink>.</para>
+  </section>
+
+  <section>
+    <title>GeoServer Configuration</title>
+
+    <para>The source tree of GeoServer contains several directories. Some are
+    permanent, while others are temporarily created. This directory overview
+    only attempts the top level basics, to give a quick overview of what is
+    where.</para>
+
+    <section>
+      <title>Permanent Directories</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>The <filename>bin/</filename> directory contains the start and
+          stop scripts, for linux and windows. These can be used with the
+          source check out, but are more tailored for the binary release. If
+          working with the source then we recommend using the ant 'test',
+          'war', and 'run' targets, see the section on <ulink
+          url="???">ant</ulink> for more information.</para>
+        </listitem>
+      </itemizedlist>
+
+      <itemizedlist>
+        <listitem>
+          <para>The <filename>capabilities/</filename> directory contains the
+          schema information that GeoServer uses. These schemas are copied to
+          the war files, and the responses that GeoServer returns directly
+          refer to schemas hosted in the servlet container. These schemas are
+          taken directly from http://schemas.opengis.org – they are the
+          official OGC schemas for WFS and WMS.</para>
+        </listitem>
+      </itemizedlist>
+
+      <itemizedlist>
+        <listitem>
+          <para>The <filename>cite/</filename> directory was created to ease
+          testing with the CITE tests. (link to section on CITE). There are
+          sql scripts to create a PostGIS database that will work with CITE.
+          The conf*/ directories are various sample configurations of
+          GeoServer. They allow all developers to test with the exact same
+          config. ConfDemo and confDemoPostGIS contain 6 layers all in the
+          same area. ConfCitePostGis contains the featureTypes that work with
+          the sql scripts. And confUserBasic/ is the default configuration
+          shipped with the releases.</para>
+        </listitem>
+
+        <listitem>
+          <para>The <filename>documents/</filename> directory is a fairly
+          random assortment of various documents. It contains the user and
+          developer documentation in docbook format, a few configuration
+          files, the docbook-xsl files to transform the docbook files into
+          generated html.</para>
+        </listitem>
+
+        <listitem>
+          <para>The <filename>lib/</filename> directory contains the various
+          libraries that geoserver needs to run.</para>
+        </listitem>
+
+        <listitem>
+          <para>The <filename>src/ </filename>directory contains all of
+          geoserver source files.</para>
+        </listitem>
+
+        <listitem>
+          <para>The <filename>test/</filename> directory contains the junit
+          test classes along with the test data that they use.</para>
+        </listitem>
+
+        <listitem>
+          <para>The <filename>WEB-INF/</filename> directory contains STRUTS
+          resource files needed for the web administration tool</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Temporary Directories</title>
+
+      <para>These directories are not part of the source checkout or download,
+      but are generally created by various targets.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><filename>build/</filename> is where the class and war files
+          are created.</para>
+        </listitem>
+
+        <listitem>
+          <para><filename>release/</filename> is where the zipped release
+          files are created.</para>
+        </listitem>
+
+        <listitem>
+          <para><filename>server/</filename> is the location of the jetty
+          based embedded geoserver instance.</para>
+        </listitem>
+
+        <listitem>
+          <para><filename>conf/</filename> optional directory where a
+          developer may store the configuration that he wants to build
+          geoserver with.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+
+  <section>
+    <title>Compiling GeoServer</title>
+
+    <section>
+      <title>Java</title>
+
+      <para>The first obvious requirement of building GeoServer is a JDK 1.4
+      installation on your development machine. It can be obtained from Sun's
+      website <link linkend="???">here</link>. Be sure to set a JAVA_HOME
+      environment variable to the base directory where it is installed. Java
+      1.5 should also work, though all GeoServer code must be written against
+      1.4. You are more than welcome to use Java 1.5 though. We recently fixed
+      out 1.5 compilation errors. The only hiccup that you should encounter is
+      that GeoServer assumes xalan (an apache xslt library), is included in
+      Java. In 1.4 it was, but in 1.5 that appears to not be the case. To
+      include it in the build targets edit the build.xml file and remove (or
+      comment out) the line that says:</para>
+
+      <programlisting><emphasis role="bold">&lt;exclude name="**/xalan.jar" &gt;</emphasis></programlisting>
+
+      <para>This should be in the 'war' section of the file. Subsequent builds
+      will then properly copy xalan to GeoServer.</para>
+    </section>
+
+    <section>
+      <title>Ant</title>
+
+      <para>GeoServer is built using <ulink
+      url="http://jakarta.apache.org/ant/">Ant</ulink>, , the excellent
+      cross-platform Java based build tool. If you have never worked with ant
+      we recommend digging into the <ulink url="???">ant manual</ulink> a bit.
+      But as it is the most popular Java build tool, and GeoServer provides
+      most every build target that you need, we will say little more about it.
+      Most IDE's now have ant partially or fully integrated. But it is easily
+      worked on from the command line. To get started with the build targets
+      that GeoServer provides go to the root GeoServer directory and
+      type:</para>
+
+      <programlisting>ant</programlisting>
+
+      <para>You will be given a list of all build targets availible, as well
+      as a description of what they do. If you would like to see the the Ant
+      build file, just open up 'build.xml' in the root directory. To execute
+      any of the build targets from the root GeoServer directory, you simply
+      need to type:</para>
+
+      <programlisting>ant <emphasis>target</emphasis></programlisting>
+
+      <para>Where target is the name of the target that you want to build.
+      Since all necessary libraries are included in the GeoServer directory,
+      you should now be able to build any needed target. Don't worry about
+      classpath issues: Ant takes care of them for you.</para>
+    </section>
+
+    <section>
+      <title>Setting Ant properties</title>
+
+      <para>Setting Ant properties. The GeoServer build process optionally
+      makes use of several ant properties. These can be set in a number of
+      ways: passing in on the command line, setting in a build.properties
+      file, and editing the build.xml file. Each has their advantages and
+      disadvantages, but we recommend using a build.properties file. It makes
+      it so you do not have to pass in the argument each time, and also
+      prevents conflicts in the build file if you update from CVS. A sample
+      build.properties file looks as follows:</para>
+
+      <programlisting><emphasis role="bold">dir.container=c:/resin-3.0.6/webapps
+#test.type=UserBasic
+test.type=Demo</emphasis></programlisting>
+
+      <para>Each line contains a property value pair, the first a geotools
+      property, the second the value to be used. Note that a # in front of the
+      line is how you comment out things in ant. The properties that can be
+      user defined are in the 'LOCAL PROPERTIES' section of the build file.
+      Other developer documentation sections will relate what properties
+      should be set when.</para>
+    </section>
+
+    <section>
+      <title>Build targets</title>
+
+      <para>To build GeoServer for development purposes we recommend using one
+      of three targets: <emphasis>war</emphasis>,
+      <emphasis>test-ext</emphasis>, and <emphasis>test</emphasis>. Each of
+      these will build any modified source files anew, they are just different
+      ways of operating, depending on the developer's preference.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis>war</emphasis> builds a war file with configuration
+          based on the test.type property, and places it in the build
+          directory. This can the be copied into any servlet container by
+          hand. Test-ext and test both depend on this target.</para>
+        </listitem>
+      </itemizedlist>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis>test-ext</emphasis> does the additional step of
+          copying the built war to the directory defined by the dir.container
+          property (link to setting ant properties), and deletes the old
+          expanded war. This should be the directory where the servlet
+          container uses its .war files, generally it will be named webapps,
+          such as /opt/tomcat/webapps. This target may seem like a fairly
+          useless convenience, but when you are working with GeoServer
+          extensively it is just nice to have.</para>
+        </listitem>
+      </itemizedlist>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis>test</emphasis> takes the war built by the war
+          target, and expands it in the embedded Jetty servlet container that
+          is a part of every GeoServer download. It then runs Jetty, so you
+          can start testing immediately.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>One additional target to take note of is the
+      <emphasis>run</emphasis> target. This performs the second half of the
+      test target, meaning it runs Jetty, but does not build a new war. This
+      can be useful to just restart GeoServer when there are no changes to the
+      source files or the configuration, as it starts up much more quickly. A
+      nice trick if working in GeoTools is to copy the jars built from
+      GeoTools directly into the embedded servlet container
+      (<filename>server/geoserver/WEB-INF/lib/</filename>), and just hit run,
+      as the new jars will be picked up, without having to rebuild
+      GeoServer.</para>
+    </section>
+
+    <section>
+      <title>Build Configuration</title>
+
+      <para>By default GeoServer is built with the configuration files in
+      the<filename> conf/</filename> directory. For more information about
+      these files see the page on <ulink url="???">GeoServer Files</ulink>.
+      The source download will come with a default <ulink
+      url="???">conf/</ulink> directory, and a svn checkout should build one
+      at the first ant build. But note that one can also set a
+      <emphasis>test.type</emphasis> ant property, which will use a
+      pre-defined configuration from the <filename>cite/</filename> directory.
+      See Section 3.3 of this document for more information on setting ant
+      properties. The directory was originally intended to put the PostGIS
+      CITE configuration, with all the appropriate geoserver files and postgis
+      sql scripts to get users started quickly. Developers started using it
+      more generically, though it still retains its name. Each sub-directory
+      that starts with 'conf' can be passed to build a war using the
+      <emphasis>test.type</emphasis> ant property (link to properties
+      section). Each test.type is the name of the directory after the conf
+      prefix. These provide a convenient place for developers to share
+      configuration information. Right now PostGIS is the only one that works
+      completely with CITE, for 1.3 we hope to have sample configurations for
+      all DataStores. We also have two 'demo' configurations, that are more
+      interesting sets of FeatureTypes, that are quite useful for diagnosing
+      and displaying problems, as the CITE features are a bit boring. Any time
+      a <emphasis>test.type</emphasis> property is set the 'war' target and
+      the 'test' property will use that instead of the normal conf/ directory.
+      </para>
+
+      <para>If no test.type (like CitePostGis or UserBasic) variables are
+      found then the conf/ directory will be used. This is an area where
+      GeoServer needs improvement. Basically if you build from source then the
+      changes you made with the web admin tool will be lost when you copy in
+      the new war. Having the <filename>conf/</filename> directory helps (but
+      does not solve) this problem. It allows the developer to put his
+      configuration there. If you make changes with the web admin tool you can
+      copy the appropriate files back into the <filename>conf/</filename>
+      directory (it mirrors geoserver/data/ in the webapp directory pretty
+      much directly, except that the <filename>services.xml</filename> and
+      <filename>catalog.xml</filename> are in geoserver/WEB-INF, so that they
+      can not be seen by users). </para>
+    </section>
+  </section>
+
+  <section>
+    <title>Running GeoServer with an IDE</title>
+
+    <para>We hope that developers will fill in the <ulink url="???">GeoServer
+    Wiki</ulink> with their experiences of how to get GeoServer set up with
+    various IDE's. But for now we only have one good contribution, which is
+    how to run GeoServer with Eclipse and Tomcat, avalialble <ulink
+    url="???">here</ulink>. Also note that the GeoServer source download comes
+    with a .project and .classpath, which defines the Eclipse project, as
+    Eclipse is easily the most popular IDE among GeoServer developers. We have
+    no inherent preference for Eclipse though, and are more than willing to
+    include other useful meta files for other IDE's, it just happens that
+    Eclipse is the only one to have been contributed.</para>
+  </section>
+</article>

@@ -1,0 +1,17 @@
+<featureType datastore = "cgf" >
+<name>Lines</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>32615</SRS>
+<title>Lines_Type</title>
+<abstract>Generated from cgf</abstract>
+<numDecimals value = "8" />
+<keywords>cgf Lines</keywords>
+<latLonBoundingBox dynamic = "false" miny = "4.523788751137377" maxy = "4.524241087719057" maxx = "-92.99842243632469" minx = "-92.99887316950249"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "dotty"  />
+</featureType>

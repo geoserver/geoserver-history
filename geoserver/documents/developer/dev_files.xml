@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
+<article>
+  <title>GeoServer Config Files</title>
+
+  <para>GeoServer configuration is currently persisted in a number of xml
+  based files. Early versions of GeoServer were configured entirely by editing
+  the files, but as of 1.2 there is also the web administration tool, which we
+  highly recommend, as it makes configuration much quicker. However, there are
+  times when you will need to work directly with the xml files themselves. If
+  things are not working exactly right through the web admin tool then the
+  files can be quite useful. And many times the latest configuration options
+  will only be available through the files, as it often takes time to
+  implement the changes in STRUTS. One thing to note, if working with files
+  and through the web administration interface the files will often times get
+  mangled. No data should be lost, but comments and formatting can not be
+  persisted. If those things are important than GeoServer should only be
+  configured through the files. </para>
+
+  <para>The two central configuration files are
+  <filename>services.xml</filename> and <filename>catalog.xml</filename>. In
+  the source tree they are located in the <filename>conf/
+  </filename>directory. In the created wars they are copied to the
+  <filename>WEB-INF/</filename> directory. This is a little out of the way, as
+  it would make sense for them to live with the other configuration files, but
+  they are placed in <filename>WEB-INF/</filename> so they are hidden from
+  users. Servlet containers often make all files not in
+  <filename>WEB-INF/</filename> viewable, and <filename>catalog.xml</filename>
+  in particular contains sensitive passwords and configuration information.
+  </para>
+
+  <para>The rest of the <filename>conf/ </filename>folder is copied to
+  <filename>geoserver/data/</filename>. The decision was made to make this
+  information accessible to users, as it is just meta information. Users can
+  also place additional files that relate to their featuretypes, such as
+  metadata about the layers. A past version of GeoServer offered z39.50
+  catalog support using metadata files in the featureType folders, and future
+  versions will likely bring it back (especially if there is interest, please
+  email us if you would like integrated z39.50 geo profile support). </para>
+
+  <section>
+    <title>Services.xml</title>
+
+    <para>The <filename>services.xml </filename>file contains configuration
+    options for the server (like the maximum number of features to return, the
+    logging level, the admin username and password, ect.) as well as meta
+    information for the WMS and WFS. This meta information is primarily what
+    would appear in a Capabilities document for either, such as the name and
+    title of the server, keywords, ect. A sample services.xml file is as
+    follows:</para>
+
+    <programlisting><emphasis role="bold">&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;
+&lt;serverConfiguration&gt;
+  &lt;global&gt;
+      &lt;!-- Defines the logging level.  Common options are SEVERE,
+           WARNING, INFO, CONFIG, FINE, FINER, FINEST, in order of
+           Increasing statements logged.
+       --&gt;
+     &lt;loggingLevel&gt;FINE&lt;/loggingLevel&gt;
+
+     &lt;!-- Sets the maximum features returned by GeoServer.  This used to
+          be necessary, due to out of memory errors.  The server is much
+          more scalable now, but admins may use it to limit the amount of
+          data returned, so naive clients don't ask for megabytes.
+       --&gt;
+     &lt;maxFeatures value="1000000"/&gt;
+
+     &lt;!-- Sets if the xml returned should have line feeds and indents. 
+          The default is true.  Setting it to false will cut down on
+          the amount of blank spaces returned to clients, and is recommended
+          if humans will not read the output --&gt;
+     &lt;verbose value="false"/&gt;
+
+     &lt;!-- Sets the max number of decimal places past the zero returned in
+          the gml coordinates of a GetFeature response.  Default is 4 --&gt;
+     &lt;numDecimals value="8"/&gt;
+     
+     &lt;!-- The user name of the administrator of this machine.  Used for   --&gt;
+     &lt;!-- logging in to the web administration tool.                      --&gt;
+     &lt;adminUserName&gt;admin&lt;/adminUserName&gt;
+       
+     &lt;!-- The user name of the administrator of this machine.  Used for   --&gt;
+     &lt;!-- logging in to the web administration tool.                      --&gt;
+     &lt;adminPassword&gt;geoserver&lt;/adminPassword&gt;
+
+     &lt;!-- contact information --&gt;
+     &lt;ContactInformation&gt;
+       &lt;ContactPersonPrimary&gt;
+         &lt;ContactPerson&gt;Chris Holmes&lt;/ContactPerson&gt;
+         &lt;ContactOrganization&gt;The Open Planning Project&lt;/ContactOrganization&gt;
+       &lt;/ContactPersonPrimary&gt;
+     &lt;/ContactInformation&gt;
+  &lt;/global&gt;
+  &lt;services&gt;
+    &lt;service type="WFS" enabled="true"&gt;
+      &lt;!-- Service elements, needed for the capabilities document --&gt;
+      &lt;!-- Title and OnlineResource are the two required --&gt;
+      &lt;name&gt;My GeoServer WFS&lt;/name&gt;
+      &lt;title&gt;My GeoServer WFS&lt;/title&gt;
+      &lt;abstract&gt;This is a description of your Web Feature Server.&lt;/abstract&gt;
+      &lt;keywords&gt;
+        &lt;keyword&gt;WFS&lt;/keyword&gt;
+        &lt;keyword&gt;GEOSERVER&lt;/keyword&gt;
+      &lt;/keywords&gt;
+      &lt;onlineResource&gt;http://geoserver.sourceforge.net/html/index.php&lt;/onlineResource&gt;
+      &lt;fees&gt;NONE&lt;/fees&gt;
+      &lt;accessConstraints&gt;NONE&lt;/accessConstraints&gt;
+      &lt;maintainer&gt;http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311&lt;/maintainer&gt;
+      &lt;!-- Sets whether name, description and boundedBy elements should   --&gt;
+      &lt;!-- have a gml: prefix instead of the standard one for the feature --&gt;
+      &lt;!-- It is a bit of a hack, and should generally only be used with  --&gt;
+      &lt;!-- the cite tests for now.  In the future it should all be done   --&gt;
+      &lt;!-- automatically --&gt;
+      &lt;gmlPrefixing value="false"/&gt;
+      &lt;!-- Sets the service level ie whether transaction operations are   --&gt;
+      &lt;!-- enabled or not.  --&gt;
+      &lt;serviceLevel&gt;Complete&lt;/serviceLevel&gt;
+    &lt;/service&gt;
+
+    &lt;service type="WMS" enabled="true"&gt;
+      &lt;!-- Service elements, needed for the capabilities document --&gt;
+      &lt;!-- Title and OnlineResource are the two required --&gt;
+      &lt;name&gt;My GeoServer WMS&lt;/name&gt;
+      &lt;title&gt;My GeoServer WMS&lt;/title&gt;
+      &lt;abstract&gt; This is a description of your Web Map Server.&lt;/abstract&gt;
+      &lt;keywords&gt;
+        &lt;keyword&gt;WMS&lt;/keyword&gt;
+      &lt;/keywords&gt;
+      &lt;onlineResource&gt;http://geoserver.sourceforge.net/html/index.php&lt;/onlineResource&gt;
+      &lt;fees&gt;NONE&lt;/fees&gt;
+      &lt;accessConstraints&gt;NONE&lt;/accessConstraints&gt;
+    &lt;/service&gt;
+
+  &lt;/services&gt;
+&lt;/serverConfiguration&gt;
+</emphasis></programlisting>
+
+    <para>As you can see it is divided into to main sections, global, which
+    defines configuration options for all of GeoServer, and Service, which
+    defines meta information for the individual service's capabilities
+    documents, as well as a few service specific config items. </para>
+  </section>
+
+  <section>
+    <title>Catalog.xml</title>
+
+    <para>The <filename>catalog.xml</filename> file is the place that stores
+    configuration of DataStores, Namespaces, and Styles. A sample catalog
+    files looks like this:</para>
+
+    <programlisting><emphasis role="bold"> &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;catalog&gt;
+  &lt;datastores&gt;
+    &lt;!-- a datastore configuration element serves as a common data source --&gt;
+    &lt;!-- connection parameters repository for all featuretypes it holds.  --&gt;
+    &lt;datastore id="bc_shapefile"
+               enabled="true"
+               namespace="topp"&gt;
+      &lt;description&gt;British Columbia sample road shapefiles&lt;/description&gt;
+      &lt;connectionParams&gt;
+        &lt;!-- For now the url value is relative to where GeoServer moves the --&gt;
+        &lt;!-- featureTypes directory.  Everything in featureTypes moves to   --&gt;
+        &lt;!-- data, so just put the relative location.  --&gt;
+        &lt;parameter name="url" 
+                   value="file:data/featureTypes/bc_roads/bc_roads.shp"/&gt;
+      &lt;/connectionParams&gt;
+    &lt;/datastore&gt;
+    &lt;!-- Unfortunately all shapefiles have their own datastore definitions. --&gt;
+    &lt;!-- With the other datastores it is possible to define one datastore   --&gt;
+    &lt;!-- that is refered to by a number of featureTypes.                    --&gt;
+    &lt;datastore id="states_shapefile"
+               enabled="true"
+               namespace="topp"&gt;
+      &lt;description&gt;United States sample shapefile&lt;/description&gt;
+      &lt;connectionParams&gt;
+        &lt;!-- For now the url value is relative to where GeoServer moves the --&gt;
+        &lt;!-- featureTypes directory.  Everything in featureTypes moves to   --&gt;
+        &lt;!-- data, so just put the relative location.  --&gt;
+        &lt;parameter name="url" 
+                   value="file:data/featureTypes/states/states.shp"/&gt;
+      &lt;/connectionParams&gt;
+    &lt;/datastore&gt;
+
+    &lt;!-- A sample postgis datastore. --&gt;
+    &lt;datastore id="localPostgis" enabled="true" namespace="topp"&gt;
+    &lt;!-- enabled is optional, defaults to true.  If a dcmms database on the --&gt;
+    &lt;!-- local machine (automatic installation available for windows users) --&gt;
+    &lt;!-- then set enabled to true and define a new featureTyp with localpg  --&gt;
+    &lt;!-- as the datastore id --&gt;
+      &lt;description&gt;My local postgis testing database&lt;/description&gt;
+      &lt;connectionParams&gt;
+        &lt;!-- Must always be postgis --&gt;
+        &lt;parameter name="dbtype" value="postgis"/&gt;
+        &lt;!-- Where postgis is running (can be a remote name or ip) --&gt; 
+        &lt;parameter name="host" value="localhost"/&gt;
+        &lt;!-- The port to connect to (5432 is postgresql default) --&gt;
+        &lt;!-- Be sure postmaster is running with -i to accept connections --&gt;
+        &lt;parameter name="port" value="5432"/&gt;
+        &lt;!-- The name of the postgis database --&gt;
+        &lt;parameter name="database" value="dcmms"/&gt;
+        &lt;!-- The username and password to connect with --&gt;
+        &lt;parameter name="user" value="postgres"/&gt;
+        &lt;parameter name="passwd" value="postgres"/&gt;
+      &lt;/connectionParams&gt;
+    &lt;/datastore&gt; 
+  &lt;/datastores&gt;
+
+  &lt;!-- Defines the namespaces to be used.  All dataStores must refer to a   --&gt;
+  &lt;!-- namespace.  If two namespaces are required for the same database then--&gt;
+  &lt;!-- it is possible to just define two datastores with different ids but  --&gt;
+  &lt;!-- the same connection parameters.                                      --&gt;
+  &lt;namespaces&gt;
+    &lt;namespace uri="http://www.refractions.net/lakes" 
+           prefix="lake"/&gt;
+    &lt;!-- Setting a namespace as the default allows you to refer to the --&gt;
+    &lt;!-- featureTypes it contains without prefixing them --&gt;           
+    &lt;namespace uri="http://www.openplans.org/topp" 
+           prefix="topp"
+           default="true"/&gt;
+    &lt;namespace uri="http://www.axios.es/geoserver" 
+           prefix="biz"/&gt;
+  &lt;/namespaces&gt;
+
+  &lt;!-- Style definitions - maps a style name to a file.  The style files  --&gt;
+  &lt;!-- must be contained in the styles folder                             --&gt; 
+  &lt;styles&gt;
+      &lt;style id="dotty" filename="funkypolyshp.sld"/&gt;
+      &lt;style id="green" filename="green.sld"/&gt;
+      &lt;style id="normal" filename="normal.sld" default="true"/&gt;
+      &lt;style id="population" filename="popshade.sld"/&gt;
+      &lt;style id="manualVsWorkers" filename="usa_math.sld"/&gt;
+  &lt;/styles&gt;
+
+&lt;/catalog&gt;</emphasis></programlisting>
+
+    <para>Each namespace consists of a URI, which should be a unique string,
+    such as in a domain that you own, and a prefix, generally a 3 or 4
+    character string used as a shortcut in the returned XML documents. One of
+    the namespaces may have a 'default' attribute set to true, as well. The
+    default will show up first in the web administration interface, and
+    requests that leave off a prefix are assumed to live in that namespace.
+    </para>
+
+    <para> Each DataStore consists of an id, which its featureTypes use to
+    refer to it, an enabled attribute, which must be set to true if the
+    DataStore is to be used, a namespace, a description, and a number of
+    connection parameters. The namespace is just a prefix, which must match a
+    registered namespace element. If more than one namespace is desired for a
+    single back end data base then a way around that is to register two
+    DataStores with the exact same connection parameters but different
+    namespaces. We would like to change this, but involves some fundamental
+    changes, to both GeoServer and GeoTools. The description is just a human
+    readable description, not used by the WMS or WFS (as they only have
+    concepts of FeatureTypes/Layers, not where those come from). The
+    connection parameters are what are used to find and connect to a given
+    datastore. These must match a plug-in DataStore, they correspond directly
+    to the PARAM classes of a DataStoreFactorySpi implementation in GeoTools,
+    which allows GeoServer to be completely independent of GeoTools data
+    loading classes, except through their interfaces. If the appropriate jars
+    to process a given set of connectionParams are present then the DataStore
+    will be loaded. </para>
+
+    <para> The styles section contains the names of the SLD files and their
+    ids. The style files themselves must be stored in the styles/ directory
+    (under conf/, moved to data/ in an installed GeoServer). The id is the
+    name that clients will refer to a style by. This is one of the areas in
+    need of most improvement, it should be reworked for 1.3, most likely
+    removing references to files from the catalog.xml file, the names should
+    be specified in the SLD files themselves. </para>
+
+    <para>Along with the styles/ directory there four other directories under
+    conf/ that contain various configuration data (and thus are copied to
+    geoserver/data in the webapp): featureTypes, demo, plugIns, and
+    validation. </para>
+  </section>
+
+  <section>
+    <title>featureTypes/ files</title>
+
+    <para>FeatureType is the most important of the conf folder's additional
+    directories, as it defines what Layers (FeatureTypes) GeoServer returns.
+    Each FeatureType is defined in its own folder, generally named by
+    datastoreid_featuretypename. The main file in this folder is the
+    <filename>info.xml</filename> file, which defines meta information of the
+    FeatureType, such as returned by a Capabilities Document. A sample
+    <filename>info.xml</filename> file is as follows:</para>
+
+    <programlisting><emphasis role="bold">&lt;?xml version="1.0" encoding="UTF-8"?&gt; 
+&lt;featureType datastore="states_shapefile"&gt;
+  &lt;!-- the name of the featureType in the dataStore, for shapefile it 
+       must match the filename. --&gt;
+  &lt;name&gt;states&lt;/name&gt;
+  &lt;!-- EPSG code for the FeatureType --&gt;
+  &lt;SRS&gt;4326&lt;/SRS&gt;
+  &lt;!-- service elements returned for the capabilities document. --&gt;
+  &lt;title&gt;USA Population&lt;/title&gt;
+  &lt;abstract&gt;This is some census data on the states.&lt;/abstract&gt;
+  &lt;keywords&gt;census, united states, state boundaries&lt;/keywords&gt;
+  &lt;!-- The bounding box for this featureType, in lat long coords. --&gt;
+  &lt;latLonBoundingBox dynamic="false"  minx="-74.27000" miny="40.50000" maxx="-73.80000" maxy="40.94000"/&gt;
+  &lt;!-- default style, for when the layer is requested with a blank style --&gt;
+  &lt;styles default="population"/&gt;
+  &lt;LegendURL width="72" height="72"&gt;
+      &lt;Format&gt;image/png&lt;/Format&gt;
+      &lt;OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+                      xlink:type="simple"
+                      xlink:href="http://www.espace.ird.nc/legend/legend.png"/&gt;
+   &lt;/LegendURL&gt;
+&lt;/featureType&gt;</emphasis></programlisting>
+
+    <para> The folder may also contain the data for the layer itself, such as
+    in the case of shapefiles. Since each shapefile only defines one layer it
+    can easily live in the same directory as its meta information.</para>
+
+    <para> The last file is not always present, it is the
+    <filename>schema.xml</filename> file. This is a tricky file – if present
+    it is used directly for a DescribeFeatureType response, but configuration
+    information is also read from it. If it is absent then the
+    DescribeFeatureType response is automatically generated by GeoServer with
+    the default AttributeTypes of the DataStore (such as the columns of the
+    table). If present the schema.xml file can control the order and presence
+    of attributes, as well as if they are mandatory or not. For example, the
+    sample bc_roads shapefile contains three attributes, 'the_geom',
+    BTRN_BC_ID, and LENGTH. A GetFeature request with no schema.xml file
+    yields features with all three attributes, in that order. But if a
+    <filename>schema.xml</filename> files such as the following is added to
+    the bc_roads directory, then the behavior changes:</para>
+
+    <programlisting><emphasis role="bold">&lt;xs:complexType name="bc_roads_Type"&gt;
+  &lt;xs:complexContent&gt;
+    &lt;xs:extension base="gml:AbstractFeatureType"&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element name="LENGTH" minOccurs="1" nillable="true" type="xs:double"/&gt;
+        &lt;xs:element name="the_geom" minOccurs="0" nillable="true" type="gml:MultiLineStringPropertyType"/&gt;
+      &lt;/xs:sequence&gt;
+    &lt;/xs:extension&gt;
+  &lt;/xs:complexContent&gt;
+&lt;/xs:complexType&gt;</emphasis></programlisting>
+
+    <para>Features returned will only have a LENGTH and a the_geom attribute.
+    The BTRN_BC_ID is hidden. This is useful for just exposing certain
+    attributes in a database to the public, other attributes in a table can be
+    hidden. Note also that the order matches that of the schema.xml file. This
+    is so that the returned GetFeature request will validate – in xml the
+    order must match that of the schema (at least if it is a sequence). Also
+    note that if a GetFeature request is made that only asks for 'the_geom' as
+    a propertyName then LENGTH will still be returned in the response, since
+    the <filename>schema.xml</filename> says that it has minOccurs=1, which
+    means that an instance of bc_roads must always contain at the LENGTH
+    property, or else it will not validate. </para>
+
+    <para> Since the <filename>schema.xml</filename> file is directly returned
+    in a DescribeFeatureType response this means it can be further customized,
+    with advanced schemas that are not easily generated. Note that since it is
+    returned directly it must only define the complexType element, it must
+    define one type. The rest of the response is generated, according to the
+    DescribeFeatureType request, if multiple FeatureTypes in the same
+    namespace are requested then the complex types are appropriately appended
+    together. Note that the web admin interface even allows you to specify xml
+    fragments for each attribute. We figured that this would cover 99% of the
+    cases, and the last 1% could work directly with the schema.xml files. We
+    realize that the decisions with schemas do privilege some ways of
+    operating over others. If you have feedback on how you would actually like
+    to work with the schema files please let us know. We felt that this was
+    the best way to make it configurable through the user interface while also
+    allowing a large degree of flexibility over the control. In the future we
+    will likely review this, as one of the next major goals is to roll in
+    support for complex object definitions, which will beg a rethinking of all
+    this. The current approach is limited by the fact that all the attributes
+    must match the names as they are in the back end data format. We want to
+    be able to specify different names, and indeed to create new complex types
+    (with nested xml attributes) from what is present. And the end goal is to
+    allow those definitions to be the result of complex joins. If you are
+    interested in such things please get in touch, as we can use all the help
+    we can get on this complex problem. </para>
+  </section>
+
+  <section>
+    <title>demo/ Files</title>
+
+    <para>The next directory is the demo directory. This one is very simple,
+    it just contains a number of sample requests for the 'demo' section of the
+    web administration tool. Each file in the directory is put on the drop
+    down selector. This is very useful for testing during development, as you
+    can just save your longer xml requests here. The demo section has the nice
+    functionality of providing an interface for post requests, and the demo
+    folder will save these post requests. Currently all requests that end in
+    .url are simply appended to the base url of the running geoserver, and the
+    body is left blank. This will then issue a get request to GeoServer. A
+    sample GetCapabilities wms request is a getMap.url file that just contains
+    the following line:</para>
+
+    <programlisting><emphasis role="bold">wms?request=GetCapabilities</emphasis></programlisting>
+
+    <para>For a post request the file must end in .xml. Since GeoServer only
+    supports post with WFS the assumption is made to send it to the wfs. Once
+    we get wms requests we will improve this. A sample GetFeature.xml file
+    looks as follows:</para>
+
+    <programlisting><emphasis role="bold">&lt;!-- Performs a get feature with a bounding box filter.      --&gt;
+&lt;!-- The BBOX filter is a convenience for a &lt;Not&gt;&lt;Disjoint&gt;, --&gt;
+&lt;!-- it fetches all features that spatially interact with the given box. --&gt;
+&lt;!-- This example also shows how to request specific properties, in this --&gt;
+&lt;!-- case we just get the LENGTH and the_geom --&gt;
+&lt;wfs:GetFeature service="WFS" version="1.0.0"
+  outputFormat="GML2"
+  xmlns:topp="http://www.openplans.org/topp"
+  xmlns:wfs="http://www.opengis.net/wfs"
+  xmlns:ogc="http://www.opengis.net/ogc"
+  xmlns:gml="http://www.opengis.net/gml"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.opengis.net/wfs
+                      http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd"&gt;
+  &lt;wfs:Query typeName="topp:bc_roads"&gt;
+    &lt;wfs:PropertyName&gt;topp:LENGTH&lt;/wfs:PropertyName&gt;
+    &lt;wfs:PropertyName&gt;topp:the_geom&lt;/wfs:PropertyName&gt;
+    &lt;ogc:Filter&gt;
+      &lt;ogc:BBOX&gt;
+        &lt;ogc:PropertyName&gt;the_geom&lt;/ogc:PropertyName&gt;
+        &lt;gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#27345"&gt;
+           &lt;gml:coordinates&gt;489154,5433017 505234,5448023&lt;/gml:coordinates&gt;
+        &lt;/gml:Box&gt;
+      &lt;/ogc:BBOX&gt;
+   &lt;/ogc:Filter&gt;
+  &lt;/wfs:Query&gt;
+&lt;/wfs:GetFeature&gt;</emphasis></programlisting>
+  </section>
+
+  <section>
+    <title>Validation Files</title>
+
+    <para>The last two directories are both related to validation. The
+    plugIns/ directory defines the mapping between a validation class and the
+    name and arguments that it is assigned in GeoServer. Each plugIn must
+    conform to the <filename>plugInSchema.xsd</filename> file found in
+    capabilities/validate. It contains the name and description, that are used
+    for display in the GeoServer web admin interface, the class, which
+    performs the actual validation, and zero or more arguments, that specify
+    the argument name and type, which must be supplied to perform a
+    validation. For more information check the geotools java docs for the
+    validation package. A sample plugIn file looks like this:</para>
+
+    <programlisting><emphasis role="bold">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;plugin xmlns="pluginSchema" 
+        xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc" 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+        xs:schemaLocation="pluginSchema /data/capabilities/validate/pluginSchema.xsd"&gt;
+  &lt;name&gt;Equality&lt;/name&gt;
+  &lt;description&gt;Checks for equality between a set value and a feature.&lt;/description&gt;
+  &lt;class&gt;org.geotools.validation.attributes.EqualityValidation&lt;/class&gt;
+&lt;/plugin&gt;</emphasis></programlisting>
+
+    <para>The validation folder defines the validation that GeoServer makes
+    use of. Validation is used to maintain the integrity of the back end
+    database, according to user defined rules. The plugIn folder defines the
+    possible rules, the validation folder specifies which ones should actually
+    be used, for which featureTypes and against which attributes. A validation
+    file must match the testSuiteSchema.xsd file, found in
+    capabilities/validation. It contains a name, a description, and one or
+    more tests to run. Each test has a name, a description, and a plugIn that
+    it uses. It also supplies the appropriate arguments, as to which
+    attributes and featureTypes to check. A sample file looks as
+    follows:</para>
+
+    <programlisting><emphasis role="bold">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;suite xmlns="testSuiteSchema" 
+       xmlns:gml="http://www.opengis.net/gml" 
+       xmlns:ogc="http://www.opengis.net/ogc" 
+       xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+       xs:schemaLocation="testSuiteSchema /data/capabilities/validate/testSuiteSchema.xsd"&gt;
+  &lt;name&gt;IntegrityCheck&lt;/name&gt;
+  &lt;description&gt;Integrity Check Description&lt;/description&gt;
+  &lt;test&gt;
+    &lt;name&gt;Attr Check&lt;/name&gt;
+    &lt;description&gt;Checks all id's are non null, non zero values.&lt;/description&gt;
+    &lt;plugin&gt;Null Zero&lt;/plugin&gt;
+    &lt;argument &gt;
+      &lt;name&gt;attributeName&lt;/name&gt;
+      &lt;string&gt;id&lt;/string&gt;
+    &lt;/argument&gt;
+    &lt;argument &gt;
+      &lt;name&gt;typeRef&lt;/name&gt;
+      &lt;string&gt;*&lt;/string&gt;
+    &lt;/argument&gt;
+  &lt;/test&gt;
+  &lt;test&gt;
+    &lt;name&gt;BC Roads Length&lt;/name&gt;
+    &lt;description&gt;Checks that road lengths are non zero.&lt;/description&gt;
+    &lt;plugin&gt;Null Zero&lt;/plugin&gt;
+    &lt;argument &gt;
+      &lt;name&gt;attributeName&lt;/name&gt;
+      &lt;string&gt;LENGTH&lt;/string&gt;
+    &lt;/argument&gt;
+    &lt;argument &gt;
+      &lt;name&gt;typeRef&lt;/name&gt;
+      &lt;string&gt;bc_shapefile:bc_roads&lt;/string&gt;
+   &lt;/argument&gt;
+ &lt;/test&gt;
+&lt;/suite&gt;
+</emphasis></programlisting>
+
+    <para>This checks all featureTypes to make sure that their id attribute is
+    never null, and that the bc_roads featureType always has a LENGTH greater
+    than 0.</para>
+  </section>
+</article>
