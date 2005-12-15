@@ -104,7 +104,7 @@ REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/conf/
   goto runJava
 
 :runJava
-  %RUN_JAVA% -DGEOSERVER_DATA_DIR=%GEOSERVER_DATA_DIR% -jar %GEOSERVER_HOME%/bin/start.jar
+  %RUN_JAVA% -DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -jar %GEOSERVER_HOME%/bin/start.jar
 
 
 :end
