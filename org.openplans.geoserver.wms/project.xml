@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
 	<pomVersion>3</pomVersion>
-	<extend>${basedir}/../org.openplans.geoserver.gt/project.xml</extend>
+	<extend>${basedir}/../org.openplans.geoserver.gtlibs/project.xml</extend>
 
 	<groupId>org.openplans</groupId>
-  <artifactId>org.openplans.geoserver.gt.wms</artifactId>
+  <artifactId>org.openplans.geoserver.wms</artifactId>
 	<currentVersion>0.1</currentVersion>
   <name>GeoServer WMS Plug-in</name>
 
@@ -15,22 +15,6 @@
 			<version>0.1</version>
 			<properties>
 				<eclipse.dependency>true</eclipse.dependency>
-			</properties>
-		</dependency>
-		<dependency>
-			<groupId>org.openplans</groupId>
-			<artifactId>org.openplans.geoserver.gt</artifactId>
-			<version>0.1</version>
-			<properties>
-				<eclipse.dependency>true</eclipse.dependency>
-			</properties>
-		</dependency>
-		<dependency>
-			<groupId>gt2</groupId>
-			<artifactId>wms</artifactId>
-			<version>2.2.x</version>
-			<properties>
-				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
   </dependencies>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<!-- service factory for wms catalog handle -->
+	<bean id="wmsServiceFactory"
+		class="org.geotools.catalog.wms.WMSServiceFactory"/>
+		
+	<!-- wms service bean -->
+	<bean id="org.openplans.geoserver.gt.wms.wmsService"
+		class="org.openplans.geoserver.gt.wms.WMS"/>
+		
+	<!-- url to service mapping -->
+	<bean id="wmsServiceMapping" 
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="wms">org.openplans.geoserver.gt.wms.wmsService</prop>
+			</props>		
+		</property>
+	</bean>
+
+	<!-- kvp bindings -->
+	<bean id="bboxBinding"
+    class="org.openplans.geoserver.gt.binding.BBoxBinding">
+    <constructor-arg>
+      <list>
+        <value type="String">bbox</value>
+      </list>
+    </constructor-arg>
+    <constructor-arg type="String" value="bbox"/>
+  </bean>
+
+	<bean id="dimensionBinding"
+    class="org.openplans.geoserver.gt.binding.DimensionBinding">
+    <constructor-arg>
+      <list>
+        <value type="String">height</value>
+        <value type="String">width</value>
+      </list>
+    </constructor-arg>
+    <constructor-arg type="String" value="dimension"/>
+  </bean>
+
+ 	<bean id="srsBinding"
+    class="org.openplans.geoserver.gt.binding.SRSBinding">
+    <constructor-arg>
+      <list>
+        <value type="String">srs</value>
+      </list>
+    </constructor-arg>
+    <constructor-arg type="String" value="srs"/>
+  </bean>
+</beans>

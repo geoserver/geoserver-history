@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+ <!--  the catalog -->
+  <bean id="org.openplans.geoserver.gt.localCatalog"
+    class="org.geotools.catalog.defaults.DefaultCatalog"/>
+
+  <!-- service finder bean -->
+  <bean id="org.openplans.geoserver.gt.serviceFinder"
+    class="org.openplans.geoserver.gt.catalog.GSServiceFinder">
+    <constructor-arg ref="org.openplans.geoserver.gt.localCatalog"/>
+  </bean>
+
+</beans>
+
