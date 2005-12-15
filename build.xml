@@ -1124,7 +1124,7 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	
 	<!-- copy over the exe to release -->
 	<copy file="${dir.build}/installer/geoserver/geoserver-${name.release}.exe" todir="${dir.release}" />
-	
+	<delete dir="${dir.build}/installer"/>
 </target>
 	
 	
