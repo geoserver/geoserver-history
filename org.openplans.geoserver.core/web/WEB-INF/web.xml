@@ -3,7 +3,6 @@
 
 <web-app>
 
-
 	<!-- pick up all application contexts -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>

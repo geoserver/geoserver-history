@@ -8,15 +8,4 @@
 	<currentVersion>0.1</currentVersion>
   <name>GeoServer Core</name>
 
-	<build>
-		<resources>
-			<resource>
-			<directory>src</directory>
-			<includes>
-				<include>**/start.config</include>
-			</includes>
-			</resource>
-		</resources>
-	</build>
-
 </project>

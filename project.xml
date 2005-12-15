@@ -89,13 +89,13 @@
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<id>commons-logging</id>
 			<version>1.0.4</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
-		</dependency>
+		</dependency-->
 		<dependency>
 			<id>junit</id>
 			<version>3.8.1</version>
@@ -114,7 +114,7 @@
 
 		<resources>
 			<resource>
-					<directory>web</directory>
+					<directory>web/WEB-INF</directory>
 					<includes>**/*.xml</includes>
 			</resource>
 		</resources>
@@ -126,7 +126,7 @@
 					<includes>**/*.xml</includes>
 				</resource>
 				<resource>
-					<directory>web</directory>
+					<directory>web/WEB-INF</directory>
 					<includes>**/*.xml</includes>
 				</resource>
 			</resources>

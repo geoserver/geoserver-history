@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.openplans.geoserver.binding.KvpBinding;
-import org.openplans.geoserver.binding.KvpRequestReader;
 
 public class DimensionBinding extends KvpBinding {
 

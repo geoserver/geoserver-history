@@ -66,7 +66,7 @@
   <!-- UNCOMMENT TO ACTIVATE-->
   <Call name="addWebApplication">
     <Arg>/geoserver</Arg>
-    <Arg><SystemProperty name="jetty.home" default="."/>/../geoserver</Arg>
+    <Arg><SystemProperty name="jetty.home" default="."/>/../target/war</Arg>
 
     <Set name="extractWAR">false</Set> 
 
