@@ -188,7 +188,7 @@ public class TypesEditorAction extends ConfigAction {
         try {
         	CoordinateReferenceSystem crsTheirData = CRS.decode(srs);
         	CoordinateReferenceSystem crsLatLong   = CRS.decode("EPSG:4326");  // latlong
-        	MathTransform xform = CRS.transform(crsTheirData,crsLatLong);
+        	MathTransform xform = CRS.transform(crsTheirData,crsLatLong,true);
         	Envelope xformed_envelope = JTS.transform(envelope,xform,10); //convert data bbox to lat/long
         	
             typeForm.setMinX(Double.toString(xformed_envelope.getMinX()));
