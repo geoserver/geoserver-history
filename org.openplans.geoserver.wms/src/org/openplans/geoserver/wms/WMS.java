@@ -1,6 +1,6 @@
-package org.openplans.geoserver.gt.wms;
+package org.openplans.geoserver.wms;
 
 public class WMS {
 	/** bean id **/
-	public static final String ID = "org.openplans.geoserver.gt.wms.wmsService";
+	public static final String ID = "org.openplans.geoserver.wms.wmsService";
 }

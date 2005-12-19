@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryFinder;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -43,7 +44,7 @@ public abstract class RequestTestCase extends TestCase {
         + "/test/test-data/requests/";
 
     /** Holds mappings between HTTP and ASCII encodings */
-    protected static FilterFactory factory = FilterFactory.createFilterFactory();
+    protected static FilterFactory factory = FilterFactoryFinder.createFilterFactory();
 
     /** Unit test data directory */
     private static final String CONFIG_DIR = System.getProperty("user.dir")

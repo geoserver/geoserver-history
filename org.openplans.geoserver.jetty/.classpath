@@ -31,6 +31,8 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-webmvc-1.2.5.jar">
   </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-mock-1.2.5.jar">
+  </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/jstl/jars/jstl-1.1.2.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/taglibs/jars/standard-1.1.2.jar">
@@ -38,8 +40,6 @@
   <classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.9.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar">
-  </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/com.mockrunner/jars/mockrunner-0.3.1.jar">
   </classpathentry>
   <classpathentry kind="output" path="target/classes">
   </classpathentry>

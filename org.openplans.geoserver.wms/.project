@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <projectDescription>
-  <name>org.openplans.geoserver.gt.wms</name>
+  <name>org.openplans.geoserver.wms</name>
   <comment>
   </comment>
   <projects>
     <project>org.openplans.geoserver.core</project>
-    <project>org.openplans.geoserver.gt</project>
+    <project>org.openplans.geoserver.gtlibs</project>
   </projects>
   <buildSpec>
     <buildCommand>

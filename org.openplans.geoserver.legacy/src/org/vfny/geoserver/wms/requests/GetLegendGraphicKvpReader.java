@@ -23,6 +23,7 @@ import org.geotools.styling.Rule;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryFinder;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Data;
@@ -52,7 +53,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 	 * Factory to create styles from inline or remote SLD documents (aka, from
 	 * SLD_BODY or SLD parameters).
 	 */
-	private static final StyleFactory styleFactory = StyleFactory
+	private static final StyleFactory styleFactory = StyleFactoryFinder
 			.createStyleFactory();
 
 	/**

@@ -24,6 +24,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.LogicFilter;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -44,7 +45,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * so?
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Roldï¿½n
  * @version $Id: GeoServerFeatureSource.java,v 1.8 2004/02/13 18:45:50 dmzwiers Exp $
  */
 public class GeoServerFeatureSource implements FeatureSource {
@@ -214,7 +215,7 @@ public class GeoServerFeatureSource implements FeatureSource {
 
         try {
             if (definitionQuery != Filter.NONE) {
-                FilterFactory ff = FilterFactory.createFilterFactory();
+                FilterFactory ff = FilterFactoryFinder.createFilterFactory();
                 newFilter = ff.createLogicFilter(AbstractFilter.LOGIC_AND);
                 ((LogicFilter) newFilter).addFilter(definitionQuery);
                 ((LogicFilter) newFilter).addFilter(filter);

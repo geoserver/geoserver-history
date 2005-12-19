@@ -51,14 +51,6 @@
     </dependency>
     <dependency>
       <groupId>gt2</groupId>
-      <artifactId>experiment</artifactId>
-      <version>2.2.x</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-    </dependency>
-    <dependency>
-      <groupId>gt2</groupId>
       <artifactId>gml</artifactId>
       <version>2.2.x</version>
 			<properties>
@@ -147,14 +139,6 @@
     </dependency>
     <dependency>
       <groupId>gt2</groupId>
-      <artifactId>utils</artifactId>
-      <version>2.2.x</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-    </dependency>
-    <dependency>
-      <groupId>gt2</groupId>
       <artifactId>validation</artifactId>
       <version>2.2.x</version>
 			<properties>
@@ -164,7 +148,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>vpf</artifactId>
-      <version>2.2.x</version>
+      <version>1.9.0</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
@@ -523,5 +507,23 @@
          <war.bundle>true</war.bundle>
        </properties>
      </dependency-->
+
+		<!-- gtxml -->
+     <dependency>
+       <groupId>org.geotools</groupId>
+       <artifactId>gtxml</artifactId>
+       <version>0.1</version>
+       <properties>
+         <war.bundle>true</war.bundle>
+       </properties>
+     </dependency>
+     <dependency>
+       <groupId>org.geotools</groupId>
+       <artifactId>gtxml</artifactId>
+       <version>0.1</version>
+       <properties>
+         <war.bundle>true</war.bundle>
+       </properties>
+     </dependency>
 	</dependencies>
 </project>

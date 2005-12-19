@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
 	<pomVersion>3</pomVersion>
-	<extend>${basedir}/../project.xml</extend>
+	<extend>${basedir}/../org.openplans.geoserver.gtlibs/project.xml</extend>
 
 	<groupId>org.openplans</groupId>
   <artifactId>org.openplans.geoserver.core</artifactId>

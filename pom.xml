@@ -3,15 +3,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-
-
-  <!-- ==================================================== -->
-  <!--     Project description (including license)          -->
-  <!-- ==================================================== -->
   <groupId>org.openplans</groupId>
-  <artifactId>skunkworks</artifactId>
+  <artifactId>geoserver</artifactId>
+	<packaging>pom</packaging>
   <version>0.1</version>
-  <name>Skunkworks GeoServer</name>
+  <name>GeoServer</name>
 
   <organization>
     <name>The Open Planning Project</name>
@@ -26,6 +22,44 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
+  <repositories>
+    <repository>
+      <id>ibiblio</id>
+      <name>Ibiblio - the public's library and digital archive</name>
+      <url>http://www.ibiblio.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>espace</id>
+      <name>Repository from the Sicade laboratory in New-Caledonia</name>
+      <url>http://maven.espace.ird.nc</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>geotools</id>
+      <name>Repository serving Geotools libraries hosted by Refractions</name>
+      <url>http://lists.refractions.net/geotools</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+			<layout>legacy</layout>
+    </repository>
+
+    <repository>
+      <id>codehaus</id>
+      <name>Repository serving Geoserver libraries hosted by Codehaus</name>
+      <url>http://dist.codehaus.org/geoserver</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+			<layout>legacy</layout>
+    </repository>
+  </repositories>
 
   <dependencies>
 		<dependency>
@@ -54,45 +88,84 @@
 			<version>1.2.5</version>
 		</dependency>
 		<dependency>
-			<groupId>javadoc</groupId>
-			<artifactId>javadoc</artifactId>
-			<version>1.3</version>
-		</dependency>
+      <groupId>springframework</groupId>
+      <artifactId>spring-mock</artifactId>
+      <version>1.2.5</version>
+    </dependency>
+		<dependency>
+      <groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+      <version>1.2.9</version>
+    </dependency>
+		<dependency>
+      <groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+      <version>3.8.1</version>
+    </dependency>
   </dependencies>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test/unit</testSourceDirectory>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-			</plugin>
-		</plugins>
+		<resources>
+      <resource>
+          <directory>web/WEB-INF</directory>
+          <includes>
+						<include>**/*.xml</include>
+					</includes>
+      </resource>
+    </resources>
+
+		<testResources>
+			 <testResource>
+          <directory>test</directory>
+          <includes>
+						<include>**/*.xml</include>
+					</includes>
+        </testResource>
+        <testResource>
+          <directory>web/WEB-INF</directory>
+          <includes>
+						<include>**/*.xml</include>
+					</includes>
+        </testResource>
+		</testResources>
+
 	</build>
 
-  <repositories>
-    <repository>
-      <id>ibiblio</id>
-      <name>Ibiblio - the public's library and digital archive</name>
-      <url>http://www.ibiblio.org/maven2</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>espace</id>
-      <name>Repository from the Sicade laboratory in New-Caledonia</name>
-      <url>http://maven.espace.ird.nc</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
+	<profiles>
+
+		<profile>
+			<id>devel</id>
+
+			<build>
+				<plugins>
+					<plugin>
+						<inherited>true</inherited>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+
+		</profile>
+
+	</profiles>
+
 
   <modules>
-    <module>org.openplans.skunkworks</module>
-    <module>org.openplans.skunkworks.geotools</module>
+    <module>org.openplans.geoserver.gtlibs</module>
   </modules>
 
 

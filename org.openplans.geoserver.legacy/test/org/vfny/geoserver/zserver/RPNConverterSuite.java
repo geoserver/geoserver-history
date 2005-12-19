@@ -167,110 +167,110 @@ public class RPNConverterSuite extends TestCase {
                 + "+(+title:nor -origin:not)"));
     }
 
-    public void testNumbers() throws Exception {
-        attrMap.setProperty("22", "westbc");
+//    public void testNumbers() throws Exception {
+//        attrMap.setProperty("22", "westbc");
+//
+//        String searchVal = "15";
+//        rpn2.setTerm(searchVal);
+//
+//        String numConv = NumericField.numberToString(searchVal);
+//        rpn2.clearAttrs();
+//        setAttribute(rpn2, GeoProfile.USE, 22);
+//        setAttribute(rpn2, GeoProfile.RELATION, GeoProfile.LESS_THAN);
+//
+//        Query retQuery = converter.toLuceneQuery((QueryNode) rpn2);
+//        String term = retQuery.toString("westbc");
+//        LOGGER.fine("Less than query is " + term);
+//        assertTrue(term.equals("{null-" + numConv + "}"));
+//
+//        setAttribute(rpn2, GeoProfile.RELATION, GeoProfile.LESS_THAN_EQUAL);
+//        retQuery = converter.toLuceneQuery((QueryNode) rpn2);
+//        term = retQuery.toString("westbc");
+//        LOGGER.fine("Less than or eq query is " + term);
+//        assertTrue(term.equals("[null-" + numConv + "]"));
+//
+//        setAttribute(rpn2, GeoProfile.RELATION, GeoProfile.GREATER_THAN_EQUAL);
+//        retQuery = converter.toLuceneQuery((QueryNode) rpn2);
+//        term = retQuery.toString("westbc");
+//        LOGGER.fine("Greater than or eq query is " + term);
+//        assertTrue(term.equals("[" + numConv + "-null]"));
+//
+//        setAttribute(rpn2, GeoProfile.RELATION, GeoProfile.GREATER_THAN);
+//        retQuery = converter.toLuceneQuery((QueryNode) rpn2);
+//        term = retQuery.toString("westbc");
+//        LOGGER.fine("Greater than query is " + term);
+//        assertTrue(term.equals("{" + numConv + "-null}"));
+//    }
 
-        String searchVal = "15";
-        rpn2.setTerm(searchVal);
+//    public void testDates() throws Exception {
+//        attrMap.setProperty(DATE_NUM, DATE_NAME);
+//        converter = new RPNConverter(attrMap);
+//        rpn1.setTerm("1979");
+//        rpn1.clearAttrs();
+//        rpn1.setAttr(null, new Integer(GeoProfile.USE), new Integer(DATE_NUM));
+//
+//        Query retQuery = converter.toLuceneQuery((QueryNode) rpn1);
+//        String term = retQuery.toString(DATE_NAME);
+//        LOGGER.fine("1st query is " + term);
+//        assertTrue(term.equals("1979*")); //prefix search is proper return.
+//
+//        setAttribute(rpn1, GeoProfile.RELATION, GeoProfile.DURING_OR_AFTER);
+//        retQuery = converter.toLuceneQuery((QueryNode) rpn1);
+//        term = retQuery.toString(DATE_NAME);
+//        LOGGER.fine("During or After query is " + term);
+//        assertTrue(term.equals("[1979-null]"));
+//
+//        setAttribute(rpn1, GeoProfile.RELATION, GeoProfile.AFTER);
+//        retQuery = converter.toLuceneQuery((QueryNode) rpn1);
+//        term = retQuery.toString(DATE_NAME);
+//        LOGGER.fine("After query is " + term);
+//        assertTrue(term.equals("{19799999-null}"));
+//
+//        //trailing 9's so it doesn't match dates like 197902,
+//        //since that's not after 1979.  {} means exclusive.
+//        rpn1.setTerm("19550203 1998");
+//        setAttribute(rpn1, GeoProfile.RELATION, GeoProfile.DURING);
+//        retQuery = converter.toLuceneQuery((QueryNode) rpn1);
+//        term = retQuery.toString(DATE_NAME);
+//        LOGGER.fine("During query is " + term);
+//        assertTrue(term.equals("[19550203-19989999]"));
+//
+//        //trailing 9's are so all dates within a year match.
+//        setAttribute(rpn1, GeoProfile.RELATION, GeoProfile.BEFORE);
+//        retQuery = converter.toLuceneQuery((QueryNode) rpn1);
+//        term = retQuery.toString(DATE_NAME);
+//        LOGGER.fine("Before query is " + term);
+//        assertTrue(term.equals("{null-19550203}"));
+//
+//        setAttribute(rpn1, GeoProfile.RELATION, GeoProfile.BEFORE_OR_DURING);
+//        retQuery = converter.toLuceneQuery((QueryNode) rpn1);
+//        term = retQuery.toString(DATE_NAME);
+//        LOGGER.fine("Before or during query is " + term);
+//        assertTrue(term.equals("[null-19989999]"));
+//    }
 
-        String numConv = NumericField.numberToString(searchVal);
-        rpn2.clearAttrs();
-        setAttribute(rpn2, GeoProfile.USE, 22);
-        setAttribute(rpn2, GeoProfile.RELATION, GeoProfile.LESS_THAN);
-
-        Query retQuery = converter.toLuceneQuery((QueryNode) rpn2);
-        String term = retQuery.toString("westbc");
-        LOGGER.fine("Less than query is " + term);
-        assertTrue(term.equals("{null-" + numConv + "}"));
-
-        setAttribute(rpn2, GeoProfile.RELATION, GeoProfile.LESS_THAN_EQUAL);
-        retQuery = converter.toLuceneQuery((QueryNode) rpn2);
-        term = retQuery.toString("westbc");
-        LOGGER.fine("Less than or eq query is " + term);
-        assertTrue(term.equals("[null-" + numConv + "]"));
-
-        setAttribute(rpn2, GeoProfile.RELATION, GeoProfile.GREATER_THAN_EQUAL);
-        retQuery = converter.toLuceneQuery((QueryNode) rpn2);
-        term = retQuery.toString("westbc");
-        LOGGER.fine("Greater than or eq query is " + term);
-        assertTrue(term.equals("[" + numConv + "-null]"));
-
-        setAttribute(rpn2, GeoProfile.RELATION, GeoProfile.GREATER_THAN);
-        retQuery = converter.toLuceneQuery((QueryNode) rpn2);
-        term = retQuery.toString("westbc");
-        LOGGER.fine("Greater than query is " + term);
-        assertTrue(term.equals("{" + numConv + "-null}"));
-    }
-
-    public void testDates() throws Exception {
-        attrMap.setProperty(DATE_NUM, DATE_NAME);
-        converter = new RPNConverter(attrMap);
-        rpn1.setTerm("1979");
-        rpn1.clearAttrs();
-        rpn1.setAttr(null, new Integer(GeoProfile.USE), new Integer(DATE_NUM));
-
-        Query retQuery = converter.toLuceneQuery((QueryNode) rpn1);
-        String term = retQuery.toString(DATE_NAME);
-        LOGGER.fine("1st query is " + term);
-        assertTrue(term.equals("1979*")); //prefix search is proper return.
-
-        setAttribute(rpn1, GeoProfile.RELATION, GeoProfile.DURING_OR_AFTER);
-        retQuery = converter.toLuceneQuery((QueryNode) rpn1);
-        term = retQuery.toString(DATE_NAME);
-        LOGGER.fine("During or After query is " + term);
-        assertTrue(term.equals("[1979-null]"));
-
-        setAttribute(rpn1, GeoProfile.RELATION, GeoProfile.AFTER);
-        retQuery = converter.toLuceneQuery((QueryNode) rpn1);
-        term = retQuery.toString(DATE_NAME);
-        LOGGER.fine("After query is " + term);
-        assertTrue(term.equals("{19799999-null}"));
-
-        //trailing 9's so it doesn't match dates like 197902,
-        //since that's not after 1979.  {} means exclusive.
-        rpn1.setTerm("19550203 1998");
-        setAttribute(rpn1, GeoProfile.RELATION, GeoProfile.DURING);
-        retQuery = converter.toLuceneQuery((QueryNode) rpn1);
-        term = retQuery.toString(DATE_NAME);
-        LOGGER.fine("During query is " + term);
-        assertTrue(term.equals("[19550203-19989999]"));
-
-        //trailing 9's are so all dates within a year match.
-        setAttribute(rpn1, GeoProfile.RELATION, GeoProfile.BEFORE);
-        retQuery = converter.toLuceneQuery((QueryNode) rpn1);
-        term = retQuery.toString(DATE_NAME);
-        LOGGER.fine("Before query is " + term);
-        assertTrue(term.equals("{null-19550203}"));
-
-        setAttribute(rpn1, GeoProfile.RELATION, GeoProfile.BEFORE_OR_DURING);
-        retQuery = converter.toLuceneQuery((QueryNode) rpn1);
-        term = retQuery.toString(DATE_NAME);
-        LOGGER.fine("Before or during query is " + term);
-        assertTrue(term.equals("[null-19989999]"));
-    }
-
-    public void testBoundingQuery() throws Exception {
-        attrMap.setProperty("58", "bounding");
-        attrMap.setProperty(GeoProfile.Attribute.WESTBC, "westbc");
-        attrMap.setProperty(GeoProfile.Attribute.NORTHBC, "northbc");
-        attrMap.setProperty(GeoProfile.Attribute.SOUTHBC, "southbc");
-        attrMap.setProperty(GeoProfile.Attribute.EASTBC, "eastbc");
-
-        String searchVal = "25, -25, -25, 25";
-        rpn2.setTerm(searchVal);
-
-        String numConvPos = NumericField.numberToString("25");
-        String numConvNeg = NumericField.numberToString("-25");
-        rpn2.clearAttrs();
-        setAttribute(rpn2, GeoProfile.USE, 58);
-
-        Query retQuery = converter.toLuceneQuery((QueryNode) rpn2);
-        String term = retQuery.toString(ALL_FIELDS);
-        LOGGER.fine("Bounding query " + term);
-        assertTrue(term.equals("+southbc:[null-" + numConvPos + "] +northbc:["
-                + numConvNeg + "-null] +westbc:[null-" + numConvPos
-                + "] +eastbc:[" + numConvNeg + "-null]"));
-    }
+//    public void testBoundingQuery() throws Exception {
+//        attrMap.setProperty("58", "bounding");
+//        attrMap.setProperty(GeoProfile.Attribute.WESTBC, "westbc");
+//        attrMap.setProperty(GeoProfile.Attribute.NORTHBC, "northbc");
+//        attrMap.setProperty(GeoProfile.Attribute.SOUTHBC, "southbc");
+//        attrMap.setProperty(GeoProfile.Attribute.EASTBC, "eastbc");
+//
+//        String searchVal = "25, -25, -25, 25";
+//        rpn2.setTerm(searchVal);
+//
+//        String numConvPos = NumericField.numberToString("25");
+//        String numConvNeg = NumericField.numberToString("-25");
+//        rpn2.clearAttrs();
+//        setAttribute(rpn2, GeoProfile.USE, 58);
+//
+//        Query retQuery = converter.toLuceneQuery((QueryNode) rpn2);
+//        String term = retQuery.toString(ALL_FIELDS);
+//        LOGGER.fine("Bounding query " + term);
+//        assertTrue(term.equals("+southbc:[null-" + numConvPos + "] +northbc:["
+//                + numConvNeg + "-null] +westbc:[null-" + numConvPos
+//                + "] +eastbc:[" + numConvNeg + "-null]"));
+//    }
 
     //TODO: test truncation
     private void setAttribute(AttrPlusTermNode node, int attr, int value) {

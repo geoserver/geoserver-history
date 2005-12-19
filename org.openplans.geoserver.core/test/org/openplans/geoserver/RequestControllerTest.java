@@ -2,8 +2,7 @@ package org.openplans.geoserver;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.mockrunner.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 import junit.framework.TestCase;
 
@@ -22,7 +21,8 @@ public class RequestControllerTest extends TestCase {
 	
 	public void testOperation() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.setRequestURL("http://localhost/dummy");
+		
+		request.setRequestURI("http://localhost/dummy");
 		request.setQueryString("service=dummy&&request=dummy&dummy=dummy");
 		
 		RequestController rc = 

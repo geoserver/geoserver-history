@@ -27,6 +27,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryFinder;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
@@ -52,7 +53,7 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
     private static final String INFO_FILE = "info.xml";
 
     /** used to create styles */
-    private static StyleFactory styleFactory = StyleFactory.createStyleFactory();
+    private static StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
     /** holds the mappings between prefixes and NameSpaceInfo objects */
     private Map nameSpaces;

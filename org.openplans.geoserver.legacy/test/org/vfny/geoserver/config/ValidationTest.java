@@ -8,6 +8,8 @@ package org.vfny.geoserver.config;
 
 import java.beans.PropertyDescriptor;
 
+import junit.framework.TestCase;
+
 import org.geotools.validation.attributes.GazetteerNameValidation;
 import org.vfny.geoserver.config.validation.ArgumentConfig;
 import org.vfny.geoserver.config.validation.PlugInConfig;
@@ -23,9 +25,10 @@ import org.vfny.geoserver.config.validation.TestConfig;
  * @author $Author: jive $ (last modification)
  * @version $Id: ValidationTest.java,v 1.1 2004/01/31 00:17:53 jive Exp $
  */
-public class ValidationTest {
+public class ValidationTest extends TestCase {
 
-	public static void main(String[] args) {
+//	public static void main(String[] args) {
+	public void test() {
 		TestConfig testConfig = new TestConfig();
 		PlugInConfig pluginConfig = new PlugInConfig();
 		// the plugin to test the bean info for.

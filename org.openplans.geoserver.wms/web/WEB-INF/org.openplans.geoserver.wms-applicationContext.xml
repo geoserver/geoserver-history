@@ -7,8 +7,8 @@
 		class="org.geotools.catalog.wms.WMSServiceFactory"/>
 		
 	<!-- wms service bean -->
-	<bean id="org.openplans.geoserver.gt.wms.wmsService"
-		class="org.openplans.geoserver.gt.wms.WMS"/>
+	<bean id="org.openplans.geoserver.wms.wmsService"
+		class="org.openplans.geoserver.wms.WMS"/>
 		
 	<!-- url to service mapping -->
 	<bean id="wmsServiceMapping" 

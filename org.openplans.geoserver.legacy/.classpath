@@ -3,15 +3,11 @@
 <classpath>
   <classpathentry excluding="" kind="src" path="src">
   </classpathentry>
-  <classpathentry kind="src" path="web/WEB-INF">
-  </classpathentry>
   <classpathentry output="target/test-classes" kind="src" path="test">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar">
   </classpathentry>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
-  </classpathentry>
-  <classpathentry kind="src" path="/org.openplans.geoserver.gt.libs">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/struts/jars/struts-1.2.8.jar">
   </classpathentry>
@@ -49,43 +45,43 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/httpunit/jars/httpunit-1.6.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/arcgrid-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/api-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/arcsde-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/arcgrid-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/epsg-wkt-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/arcsde-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/experiment-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/coverage-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/gml-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/epsg-wkt-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/graph-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/gml-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/image-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/graph-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/indexed-shapefile-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/image-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/main-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/indexed-shapefile-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/mysql-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/main-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/oracle-spatial-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/mysql-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/postgis-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/oracle-spatial-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/property-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/postgis-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/shapefile-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/property-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/utils-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/referencing-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/validation-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/shapefile-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/vpf-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/validation-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/wfs-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/wfs-2.2.x.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/wms-2.1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/gt2/jars/wms-2.2.x.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/commons-jxpath/jars/commons-jxpath-1.2.jar">
   </classpathentry>
@@ -177,11 +173,11 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-webmvc-1.2.5.jar">
   </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-mock-1.2.5.jar">
+  </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/jstl/jars/jstl-1.1.2.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/taglibs/jars/standard-1.1.2.jar">
-  </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar">
   </classpathentry>
   <classpathentry kind="output" path="target/classes">
   </classpathentry>

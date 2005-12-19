@@ -54,14 +54,14 @@ public class GetMapResponseTest extends TestCase {
         super.tearDown();
     }
 
-    /**
-     * DOCUMENT ME!
-     */
-    public void testExecute() throws Exception{
-        GetMapProducer producer;
-    	producer = GetMapResponse.getDelegate(TestMapProducerFactory.TESTING_MIME_TYPE,null);
-    	assertEquals(TestMapProducerFactory.class, producer.getClass());
-    }
+//    /**
+//     * DOCUMENT ME!
+//     */
+//    public void testExecute() throws Exception{
+//        GetMapProducer producer;
+//    	producer = GetMapResponse.getDelegate(TestMapProducerFactory.TESTING_MIME_TYPE,null);
+//    	assertEquals(TestMapProducerFactory.class, producer.getClass());
+//    }
 
     /**
      * DOCUMENT ME!

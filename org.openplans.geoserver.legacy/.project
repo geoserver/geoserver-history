@@ -5,7 +5,6 @@
   <comment>
   </comment>
   <projects>
-    <project>org.openplans.geoserver.gt.libs</project>
   </projects>
   <buildSpec>
     <buildCommand>

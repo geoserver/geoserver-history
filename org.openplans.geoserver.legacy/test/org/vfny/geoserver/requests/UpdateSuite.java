@@ -80,37 +80,37 @@ public class UpdateSuite extends TransactionSuite {
         assertTrue(runXmlTest(baseRequest, "update2", true));
     }
 
-    public void testXml3() throws Exception {
-        // make base comparison objects        
-        UpdateRequest update = new UpdateRequest();
-        update.setTypeName("BUILTUPA_1M");
-
-        FidFilter tempFilter = factory.createFidFilter("1031");
-        tempFilter.addFid("34");
-        tempFilter.addFid("24256");
-        update.setFilter(tempFilter);
-        update.addProperty("NAME", "somestring");
-
-        UpdateRequest update2 = new UpdateRequest();
-        update2.setTypeName("BUILTUPA_1M");
-
-        CompareFilter compFilter = factory.createCompareFilter(AbstractFilter.COMPARE_GREATER_THAN);
-        AttributeExpression tempLeftExp = factory.createAttributeExpression((AttributeType)null);
-        tempLeftExp.setAttributePath("TILE_ID");
-
-        LiteralExpression tempRightExp = factory.createLiteralExpression(1000);
-        compFilter.addLeftValue(tempLeftExp);
-        compFilter.addRightValue(tempRightExp);
-        update2.setFilter(compFilter);
-        update2.addProperty("FAC_ID", "100");
-
-        TransactionRequest baseRequest = new TransactionRequest();
-        baseRequest.addSubRequest(update);
-        baseRequest.addSubRequest(update2);
-
-        // run test       
-        assertTrue(runXmlTest(baseRequest, "update3", true));
-    }
+//    public void testXml3() throws Exception {
+//        // make base comparison objects        
+//        UpdateRequest update = new UpdateRequest();
+//        update.setTypeName("BUILTUPA_1M");
+//
+//        FidFilter tempFilter = factory.createFidFilter("1031");
+//        tempFilter.addFid("34");
+//        tempFilter.addFid("24256");
+//        update.setFilter(tempFilter);
+//        update.addProperty("NAME", "somestring");
+//
+//        UpdateRequest update2 = new UpdateRequest();
+//        update2.setTypeName("BUILTUPA_1M");
+//
+//        CompareFilter compFilter = factory.createCompareFilter(AbstractFilter.COMPARE_GREATER_THAN);
+//        AttributeExpression tempLeftExp = factory.createAttributeExpression((AttributeType)null);
+//        tempLeftExp.setAttributePath("TILE_ID");
+//
+//        LiteralExpression tempRightExp = factory.createLiteralExpression(1000);
+//        compFilter.addLeftValue(tempLeftExp);
+//        compFilter.addRightValue(tempRightExp);
+//        update2.setFilter(compFilter);
+//        update2.addProperty("FAC_ID", "100");
+//
+//        TransactionRequest baseRequest = new TransactionRequest();
+//        baseRequest.addSubRequest(update);
+//        baseRequest.addSubRequest(update2);
+//
+//        // run test       
+//        assertTrue(runXmlTest(baseRequest, "update3", true));
+//    }
 
     /* public void testXml4() throws Exception {
        // make base comparison objects

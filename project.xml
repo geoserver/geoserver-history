@@ -67,6 +67,14 @@
 				<war.bundle>true</war.bundle>
 			</properties>
     </dependency>
+    <dependency>
+      <groupId>springframework</groupId>
+      <artifactId>spring-mock</artifactId>
+      <version>1.2.5</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+    </dependency>
 		<dependency>
 			<id>jstl</id>
 			<version>1.1.2</version>
@@ -100,11 +108,6 @@
 			<id>junit</id>
 			<version>3.8.1</version>
 		</dependency>
-		<dependency>
-			<groupId>com.mockrunner</groupId>
-			<artifactId>mockrunner</artifactId>
-			<version>0.3.1</version>
-		</dependency>
 
   </dependencies>
 
@@ -113,6 +116,11 @@
 		<unitTestSourceDirectory>test</unitTestSourceDirectory>
 
 		<resources>
+			<resource>
+					<directory>${basedir}/src</directory>
+					<includes>**/*.xml</includes>
+					<includes>**/services/**</includes>
+			</resource>
 			<resource>
 					<directory>web/WEB-INF</directory>
 					<includes>**/*.xml</includes>

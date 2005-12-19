@@ -40,6 +40,7 @@ import org.geotools.feature.SchemaException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
@@ -356,7 +357,7 @@ public class TransactionResponse implements Response {
                             // extra work when doing release mode ALL.
                             // 
                             DataStore data = store.getDataStore();
-                            FilterFactory factory = FilterFactory
+                            FilterFactory factory = FilterFactoryFinder
                                 .createFilterFactory();
                             FeatureWriter writer;                            
                             writer = data.getFeatureWriter(typeName, filter,
@@ -495,7 +496,7 @@ public class TransactionResponse implements Response {
                     //
                     if( !fids.isEmpty() ) {
                         LOGGER.finer("Post process update for boundary update and featureValidation");
-                        FidFilter modified = FilterFactory.createFilterFactory().createFidFilter();
+                        FidFilter modified = FilterFactoryFinder.createFilterFactory().createFidFilter();
                         modified.addAllFids( fids );
                     
                         FeatureCollection changed = store.getFeatures( modified ).collection();
