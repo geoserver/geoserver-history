@@ -4,14 +4,22 @@
 	<extend>${basedir}/../org.openplans.geoserver.gtlibs/project.xml</extend>
 
 	<groupId>org.openplans</groupId>
-  <artifactId>org.openplans.geoserver.wms</artifactId>
+  <artifactId>org.openplans.geoserver.sld</artifactId>
 	<currentVersion>0.1</currentVersion>
-  <name>GeoServer WMS Plug-in</name>
+  <name>GeoServer SLD PlugIn</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.openplans</groupId>
 			<artifactId>org.openplans.geoserver.core</artifactId>
+			<version>0.1</version>
+			<properties>
+				<eclipse.dependency>true</eclipse.dependency>
+			</properties>
+		</dependency>
+		<dependency>
+			<groupId>org.openplans</groupId>
+			<artifactId>org.openplans.geoserver.catalog</artifactId>
 			<version>0.1</version>
 			<properties>
 				<eclipse.dependency>true</eclipse.dependency>

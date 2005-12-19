@@ -4,9 +4,9 @@
 	<extend>${basedir}/../org.openplans.geoserver.gtlibs/project.xml</extend>
 
 	<groupId>org.openplans</groupId>
-  <artifactId>org.openplans.geoserver.wms</artifactId>
+  <artifactId>org.openplans.geoserver.catalog</artifactId>
 	<currentVersion>0.1</currentVersion>
-  <name>GeoServer WMS Plug-in</name>
+  <name>GeoServer Catalog</name>
 
 	<dependencies>
 		<dependency>

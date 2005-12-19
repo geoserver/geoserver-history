@@ -15,40 +15,40 @@
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
 			<props>
-				<prop key="wms">org.openplans.geoserver.gt.wms.wmsService</prop>
+				<prop key="wms">org.openplans.geoserver.wms.wmsService</prop>
 			</props>		
 		</property>
 	</bean>
 
 	<!-- kvp bindings -->
 	<bean id="bboxBinding"
-    class="org.openplans.geoserver.gt.binding.BBoxBinding">
+    class="org.openplans.geoserver.wms.bindings.BBoxBinding">
     <constructor-arg>
       <list>
-        <value type="String">bbox</value>
+        <value type="java.lang.String">bbox</value>
       </list>
     </constructor-arg>
-    <constructor-arg type="String" value="bbox"/>
+    <constructor-arg type="java.lang.String" value="bbox"/>
   </bean>
 
 	<bean id="dimensionBinding"
-    class="org.openplans.geoserver.gt.binding.DimensionBinding">
+    class="org.openplans.geoserver.wms.bindings.DimensionBinding">
     <constructor-arg>
       <list>
-        <value type="String">height</value>
-        <value type="String">width</value>
+        <value type="java.lang.String">height</value>
+        <value type="java.lang.String">width</value>
       </list>
     </constructor-arg>
-    <constructor-arg type="String" value="dimension"/>
+    <constructor-arg type="java.lang.String" value="dimension"/>
   </bean>
 
  	<bean id="srsBinding"
-    class="org.openplans.geoserver.gt.binding.SRSBinding">
+    class="org.openplans.geoserver.wms.bindings.SRSBinding">
     <constructor-arg>
       <list>
-        <value type="String">srs</value>
+        <value type="java.lang.String">srs</value>
       </list>
     </constructor-arg>
-    <constructor-arg type="String" value="srs"/>
+    <constructor-arg type="java.lang.String" value="srs"/>
   </bean>
 </beans>

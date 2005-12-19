@@ -26,8 +26,8 @@
 		<attainGoal name="multiproject:goal"/>
 	</goal>
 
-	<goal name="warAll">
-		<!--attainGoal name="build"/-->
+	<!-- multiproject goal to build + deploy war for each module -->
+	<goal name="deployAll">
 		<j:set var="ignoreFailures" value="true"/>
 		<j:set var="goal" value="war"/>
 		<attainGoal name="multiproject:goal"/>
@@ -41,18 +41,24 @@
 			 basedir="${maven.build.dir}/war"/>
   </goal>
 
+	<!-- module level goal to deploy a single module -->
+	<goal name="deploy">
+		<attainGoal name="war"/>
+		<ant:unwar dest="${basedir}/../target/war">
+			<ant:fileset dir="${maven.build.dir}" includes="*.war"/>
+		</ant:unwar>
+	</goal>
+
 	<goal name="eclipseAll">
 		<j:set var="ignoreFailures" value="true"/>
 		<j:set var="goal" value="eclipse"/>
 		<attainGoal name="multiproject:goal"/>
 	</goal>
 
-	<goal name="deploy">
-		<attainGoal name="cleanAll"/>
-		<attainGoal name="warAll"/>
-		<ant:delete dir="geoserver"/>
-		<ant:mkdir dir="geoserver"/>
-
-		<ant:unwar src="${maven.build.dir}/${pom.artifactId}.war" dest="geoserver"/>
+	<goal name="eclipseCleanAll">
+		<j:set var="ignoreFailures" value="true"/>
+		<j:set var="goal" value="eclipse:clean"/>
+		<attainGoal name="multiproject:goal"/>
 	</goal>
+
 </project>
