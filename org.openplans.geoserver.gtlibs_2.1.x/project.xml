@@ -4,7 +4,7 @@
 	<extend>${basedir}/../project.xml</extend>
 
 	<groupId>org.openplans</groupId>
-  <artifactId>org.openplans.geoserver.gt.libs</artifactId>
+  <artifactId>org.openplans.geoserver.gtlibs</artifactId>
 	<currentVersion>2.1.x</currentVersion>
   <name>Geotools 2.1.x Libraries</name>
 
