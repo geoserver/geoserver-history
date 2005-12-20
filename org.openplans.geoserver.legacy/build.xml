@@ -40,7 +40,7 @@
 
 	<!-- release version -->
 
-	<property name="name.release" value="1.3.0-RC6" />
+	<property name="name.release" value="1.3.0-RC7" />
 
 	<!-- primary directories -->
 	<property name="dir.bin" value="${basedir}/bin" />
@@ -1124,7 +1124,7 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	
 	<!-- copy over the exe to release -->
 	<copy file="${dir.build}/installer/geoserver/geoserver-${name.release}.exe" todir="${dir.release}" />
-	
+	<delete dir="${dir.build}/installer"/>
 </target>
 	
 	

@@ -62,22 +62,24 @@ public class GeoserverDataDirectory
 	    //If this assumption can't be made, then we can't allow data_dir
 	    //_and_ webapp options with relative data/ links -ch
 	    if (dataDir == null) {
+	    	
 		//see if there's a system property
 		String prop = System.getProperty("GEOSERVER_DATA_DIR");
 		if (prop != null && !prop.equals(""))
 		{
 			 //its defined!!
-		        isTrueDataDir = true;
+		    isTrueDataDir = true;
 			dataDir = new File(prop);
 			return dataDir;
 		}
+		
 		
 		//try the webxml
 		String loc = servContext.getInitParameter("GEOSERVER_DATA_DIR");
 		if (loc != null)
 		{
 			//its defined!!
-		        isTrueDataDir = true;
+		    isTrueDataDir = true;
 			dataDir = new File(loc);
 			return dataDir;
 		}
@@ -86,7 +88,7 @@ public class GeoserverDataDirectory
                 isTrueDataDir = false;
 		String rootDir = servContext.getRealPath("/");
 		dataDir = new File (rootDir);
-	    } 
+	    }
 	    return dataDir;
 	}
 

@@ -28,8 +28,8 @@
 ;General
 
   ;Name and file
-  Name "GeoServer 1.3.0-RC6"
-  OutFile "geoserver-1.3.0-RC6.exe"
+  Name "GeoServer 1.3.0-RC7"
+  OutFile "geoserver-1.3.0-RC7.exe"
 
 
   ;Default installation folder
@@ -140,7 +140,7 @@ Section "GeoServer Section" SecGeoServer
                    "http://127.0.0.1:8080/geoserver/"
 
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Start GeoServer.lnk" \
-                   "$2\bin\java.exe" '-Xmx300m -jar start.jar'\
+                   "$2\bin\java.exe" '-DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -Xmx300m -jar start.jar'\
                    "$INSTDIR\server\geoserver\images\gs.ico" 0 SW_SHOWNORMAL
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Stop GeoServer.lnk" \
                    "$2\bin\java.exe" '-jar stop.jar'\
