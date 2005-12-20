@@ -85,7 +85,7 @@ public class DataNamespacesSelectAction extends ConfigAction {
         	if(!nsSelected
         			.equals(dataConfig.getDefaultNameSpace().getPrefix())){
         		dataConfig.setDefaultNameSpace(dataConfig.getNameSpace(nsSelected));
-                getApplicationState().notifyConfigChanged();
+        		getApplicationState().notifyConfigChanged();
         	}
             
             getUserContainer(request).setNamespaceConfig(null);
