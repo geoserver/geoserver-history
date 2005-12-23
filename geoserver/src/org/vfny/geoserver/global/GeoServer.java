@@ -472,6 +472,8 @@ public class GeoServer extends GlobalLayerSupertype {
         	);
         	handler.setLevel(level);
         	logger.addHandler(handler);
+        	if (Logger.getLogger("org.geotools") != null) 
+        		Logger.getLogger("org.geotools").addHandler(handler);
         }
     }
     /**
