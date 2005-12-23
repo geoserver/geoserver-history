@@ -78,7 +78,11 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
      * <p>
      * In this case, true if <code>mapFormat</code> starts with "kml", as
      * both <code>"kml"</code> and <code>"kml+xml"</code> are
-     * commonly passed.
+     * commonly passed.  Also true if <code>application/vnd.google-earth.kml</code>
+     * is passed, since that is as close as we can get to the value advertised in the 
+     * capabilities document taking into account the common mistake of not escaping '+'.
+     * We must do this as the most way to request an output format is to use the name
+     * in the caps document.
      * </p>
      *
      * @TODO should this be image/kml and image/kml+xml?
@@ -87,7 +91,10 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
      * @return true if class can produce a map in the passed format.
      */
     public boolean canProduce(String mapFormat) {
-        return (mapFormat != null) && mapFormat.startsWith(PRODUCE_TYPE);
+        //MIME TYPE is spec compliant, as its what we advertise in the caps
+        //document.  Keeping the startsWith kml, so shortcuts can be used. -ch
+        return (mapFormat != null) && (mapFormat.startsWith(PRODUCE_TYPE)
+                                    || mapFormat.startsWith("application/vnd.google-earth.kml"));
     }
     
     /**
