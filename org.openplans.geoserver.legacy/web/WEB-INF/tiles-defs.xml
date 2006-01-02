@@ -360,5 +360,6 @@
         <put name="locationForwards" value="welcome:config:config.data:config.data.type"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
-   	   	
+   	
+   
 </tiles-definitions>

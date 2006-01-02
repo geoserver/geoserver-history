@@ -15,12 +15,13 @@ import org.springframework.context.ApplicationContextAware;
  * An implementation of ServiceFinder used for finding services inside of a 
  * Spring context.
  * 
- * @author Justin Deoliveira, jdeolive@openplans.org
+ * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
 public class GSServiceFinder extends DefaultServiceFinder 
 	implements ApplicationContextAware {
 
+	/** bean id **/
 	public static final String ID = 
 		"org.openplans.geoserver.catalog.serviceFinder";
 	

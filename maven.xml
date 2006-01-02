@@ -28,15 +28,15 @@
 
 	<!-- multiproject goal to build + deploy war for each module -->
 	<goal name="deployAll">
+		<ant:mkdir dir="${maven.build.dir}/war"/>
+
 		<j:set var="ignoreFailures" value="true"/>
-		<j:set var="goal" value="war"/>
+		<j:set var="goal" value="deploy"/>
 		<attainGoal name="multiproject:goal"/>
 
-		<ant:mkdir dir="${maven.build.dir}/war"/>
-		<ant:unwar dest="${maven.build.dir}/war">
+		<!--ant:unwar dest="${maven.build.dir}/war">
 			<ant:fileset dir="." includes="**/*.war"/>
-		</ant:unwar>
-
+		</ant:unwar-->
 		<ant:jar destfile="${maven.build.dir}/${pom.artifactId}.war"
 			 basedir="${maven.build.dir}/war"/>
   </goal>

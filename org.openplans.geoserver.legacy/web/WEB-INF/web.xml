@@ -266,4 +266,9 @@
     <taglib-location>/WEB-INF/struts-tiles.tld</taglib-location>
   </taglib>  
   
+  <!-- spring taglib -->
+  <taglib>
+  	<taglib-uri>/tags/spring</taglib-uri>
+  	<taglib-location>/WEB-INF/tld/spring.tld</taglib-location>
+  </taglib>
 </web-app>

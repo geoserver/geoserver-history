@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- shapefile datastore ui help -->
+	<bean id="shpDataStoreUIHelp"
+	  class="org.openplans.geoserver.shp.internal.ShapefileDataStoreUIHelp">
+	  
+	  <property name="dataStoreFactoryClass" 
+	  	value="org.geotools.data.shapefile.ShapefileDataStoreFactory"/>
+	  	
+	</bean>
+
+</beans>

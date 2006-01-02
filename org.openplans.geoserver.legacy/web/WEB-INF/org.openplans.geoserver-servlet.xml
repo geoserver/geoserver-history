@@ -2,17 +2,16 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-
 	<!-- controller for handling all incoming requests -->
-	<bean id="requestController" 
+	<bean id="org.openplans.geoserver.requestController" 
 		class="org.openplans.geoserver.RequestController"/>
 
 	<!-- url mappings -->		
-	<bean id="urlMapping"
+	<bean id="org.openplans.geoserver.urlMapping"
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
 			<props>
-				<prop key="*.gs">requestController</prop>
+				<prop key="*.gs">org.openplans.geoserver.requestController</prop>
 			</props>
 		</property>
 	</bean>
