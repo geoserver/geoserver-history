@@ -1,0 +1,710 @@
+# Jody Here I cannot make sense of this file!
+#
+# I have organized the remainder of this file by application subsection,
+# this should probably be done by splitting this file into separate files?
+#
+#       Sections (Similar comments are present in struts-config.xml)
+#       --------
+#        WELCOME
+# ADMINISTRATION
+#  CONFIGURATION
+#           DATA
+#
+# Within each section resources are organizing by page,
+# the page names agree forwards in the struts-config.xml
+#
+# Implementation Notes:
+# - 'key' from tiles-def is the same as page name, when someone explains to
+#   to me how to get at page name we can get rid of 'key'.
+# 
+# resource    value                          Example
+# --------    -----                          -------
+# key.label   display label for page links   Contact
+# key.title   page title & window title      Contact Information
+# key.short   short description              Contact information for webmaster
+# key.words   key words                      (Contact Information) (webmaster)
+#
+# We have a few additional resources grouping in the same section as the pages
+# that use them. These appear to be grouped by use.
+#
+# resource    value                           Example
+# --------    -----                           -------
+# label.*     Label for datum, or field       Prefix
+# help.*      Tooltip for datum, or field     Namespace prefix used for GML
+# message.*   Used for information messages   Spatial information loaded
+# error.*     Used for error messages         Namespace URI malformed: {0}
+# errors.*    As abvoe w/ Exception?
+#
+# If you need aditional resources, please just invent a convention
+# make a note of them above
+#
+# Here are my additional resource entries
+# resource    value                           Example
+# --------    -----                           -------
+# text.*(0-9) Long text passage               text.welcome1=GeoServer is ....
+#
+# This is not the best solution, I have not found a decent example of how to
+# internationalize page content. Apparently this is something JSP land is
+# working on - there are some JCP open on this issue.
+#
+
+# -- standard errors --
+errors.header=<UL>
+errors.prefix=<LI>
+errors.suffix=</LI>
+errors.footer=</UL>
+
+# -- validator --
+errors.invalid={0}は無効です。
+errors.maxlength={0}は{1}文字以上ではいけません。
+errors.minlength={0}は{1}文字以下ではいけません。
+errors.range={0}は{1}から{2}の範囲にありません。
+errors.required={0}は必要です。
+errors.byte={0}はバイトでなければなりません。
+errors.date={0}は日付でありません。
+errors.double={0}は倍精度(double)でなければなりません。
+errors.float={0}は浮動小数点(float)でなければなりません。
+errors.integer={0}は整数(integerでなければなりません。
+errors.long={0}は長整数(long)でなければなりません。
+errors.short={0}は短整数(short)でなければなりません。
+errors.creditcard={0}は有効なクレジットカード番号ではありません。
+errors.email={0}は無効なメールアドレスです。
+
+# -- other --
+errors.cancel=操作がキャンセルされました。
+errors.detail={0}
+errors.general=プロセスが完了しませんでした。 詳細は次です。
+errors.token=リクエストが完成しませんでした. 操作が順番どおりではありません。
+
+label.validationConfig=検証設定
+label.wfsConfig=WFS設定
+label.wmsConfig=WMS設定
+label.dataConfig=データ設定
+label.name=名前
+label.title=タイトル
+label.accessConstraints=アクセス制限
+label.fees=ライセンス料金等
+label.maintainer=保守担当者
+label.keywords=キーワード
+label.abstract=要約
+label.description=説明
+label.contents=内容
+label.login=ログイン
+label.logout=ログアウト
+label.help=ヘルプ
+label.actions=アクション
+label.buttons=設定
+label.context=コンテキスト
+label.toGeoserver=GeoServerへ
+label.saveXML=XMLの保存
+label.loadXML=XMLの読込
+label.onlineResource=オンライン・リソース
+label.featureTypes=フューチャー(地物)のタイプ
+label.namespace=名前空間
+label.namespaceID=名前空間ID
+label.namespaces=名前空間
+label.new=新規
+label.edit=編集
+label.delete=削除
+label.dataStoreID=データストアID
+label.enabled=有効
+label.srsXmlStyle=XMLのsrsName
+label.username=ユーザー名
+label.server=サーバー
+label.port=ポート
+label.password=パスワード
+label.password.confirm=パスワードの確認
+label.URI=URI
+label.default=デフォルト
+label.prefix=プリフックス
+label.filename=ファイル名
+label.SRS=SRS
+label.latLonBoundingBox=経緯度境界ボックス
+label.connectionParameters=接続パラメータ
+label.dataStoreDescription=データストアの説明
+label.attributeTypes=属性タイプ
+label.attributeTypeName=属性タイプ名
+label.isNillible=ヌル可
+label.isRef=isRef
+label.minOccurs=最小が存在
+label.maxOccurs=最大が存在
+label.type=タイプ
+label.messages=メッセージ
+label.mainMenu=メインメニュー
+label.status=ステータス
+label.configStatus=設定ステータス
+label.configChangedTrue=変更済
+label.configChangedFalse=未変更
+label.geoServerStatus=GeoServerのステータス
+label.geoServerChangedTrue=変更済
+label.geoServerChangedFalse=未変更
+label.submit=実行
+label.reset=リセット
+label.credits=クレジット
+label.credits.url=http://geoserver.sourceforge.net/documentation/developer/contrib.htm
+label.newLoginAndPassword=新しいログインとパスワードを入力してください。
+label.wms.svgRenderer=SVG描画
+label.wms.svgSimple=シンプル(早い、限定されたスタイル)
+label.wms.svgBatik=バチック(遅い、フルスタイル)
+label.wms.svgAntiAlias=アンチ・アリアス
+
+help.name_service=サービス名です。
+help.title_service=サービスのタイトルです。
+help.accessConstraints_service=サービスの制約
+help.fees_service=ライセンス料金等が必要です。
+help.maintainer_service=保守対象の名前
+help.keywords_service=サービスに関するキーワードのリスト
+help.dataFeatureTypeKeywords_service=フューチャータイプのキーワード
+help.abstract_service=サービスについての短い要約
+help.onlineResource_service=WebサービスのオンラインリファレンスURL
+help.serviceType_service=サービスタイプ
+
+help.dataStore_id=ユニークなデータストア識別子
+help.dataStore_enabled=データストアを有効にするためにチェックされます。
+help.dataStore_nameSpace=このデータストアに関連する名前空間のプレフィックス
+help.dataStore_description=このデータストアについての短い説明
+help.dataStore_server=接続するサーバー名
+help.dataStore_port=サーバーの接続ポート
+help.dataStore_username=サーバーにログインするユーザー名
+help.dataStore_password=サーバーにログインするパスワード
+
+help.namespace.default=何も指定がない時にこの名前空間を仮定するならば、チェックされます。
+help.namespace.prefix=プレフィックスはGMLドキュメントの中でこの名前空間を識別するのに使われます。
+help.namespace.uri=名前空間の定義を記述したドキュメントのURI
+
+
+help.dataFeatureTypeAbstract_service=フューチャータイプの説明
+
+help.dataFeatureTypeKeywords=BLAH
+help.dataFeatureTypeAbstract=BLAH
+
+error.name.required=名前が必要です。
+error.title.required=タイトルが必要です。
+error.fees.required=ライセンス料金等が必要です。
+error.maintainer.required=保守担当者が必要です。
+error.keywords.required=キーワードが必要です。
+error.abstract.required=要約が必要です。
+error.accessConstraints.required=アクセス制限が必要です。
+
+error.dataStoreId.invalid=データストアID '{0}'は英数字に制限されてます。(A-Z, a-z, 0-9)
+error.dataStoreId.required=データストアIDが必要です。
+error.dataStoreFactory.invalid=無効なデータストア・ファクトリです。(リストから一つ選択してください)
+error.dataStoreEditor.param.required={0}は必須パラメータです。
+error.dataStoreEditor.param.parse={0}は妥当な{1}: {2}でなければなりません。
+error.datastoreEditor.validation=与えられたパラメタを処理できません。
+errors.buttonAction.invalid=無効なボタンが押されました。
+errors.factory.invalid=無効なデータストアIDが選択されました。
+error.dataStoreEditor.param.missing={1}に対して{0}が見つけられません。
+error.exception={0}
+error.invalidConnectionParams=接続パラメータが無効です。
+error.cannotProcessConnectionParams=与えられたパラメータで接続できません。
+error.badCharSet=与えられた文字セットが無効です - 名前はIANAキャラクタセット・レジストリに記述された規約に従わなければなりません。
+error.cannotRunValidation=妥当性検証が実行できません。: {0}
+error.password.mismatch=パスワードが確認のパスワードと一致しません。再入力してください。
+error.prefix.invalid=名前空間のプレフックス '(0}' は英数字のみです。(A-Z, a-z, 0-9)
+error.prefix.required=名前空間のプレフックスが必要です。
+error.uri.malformed=名前空間のURIが奇妙です。: {0}
+error.uri.required=Nam名前空間のURIが必要です。
+
+error.style.required=選択されたスタイルが必要です。
+error.style.invalid=選択されたスタイルが定義されていません。
+
+error.noWritePermission={0}に書き込み許可がありません。
+
+welcome.heading=Welcome　ようこそ
+
+geoserver.logo=GeoServer
+
+label.defaultTitle=GeoServer
+label.featureTypeName=フューチャータイプ名
+label.moveUp=下に移動
+label.moveDown=上に移動
+label.attributeTypeName=属性タイプ名
+label.testSuite=テスト・スィート
+label.testName=テスト名
+label.testDescription=テストの説明
+label.newName=新しい名前
+label.currentTestSuite=現在のテストスイート
+label.plugInType=プラグイン・タイプ
+label.plugInDescription=プラグインの説明
+label.maxFeatures=最大フューチャー数
+label.verbose=バーボーズ
+label.verboseExceptions=例外のバーボーズ
+label.numDecimals=小数点以下の桁数
+label.charset=キャラクタセット
+label.baseURL=ベースURL
+label.schemaBaseURL=スキーマ・ベースのURL
+label.loggingLevel=ロギング・レベル
+label.loggingToDisk=ディスクへログを書込みます
+label.logLocation=ログの保存場所
+label.contactInformation=連絡先
+label.contactPerson=担当者
+label.contactOrganization=組織
+label.contactPosition=役職名
+label.addressType=住所タイプ
+label.address=住所
+label.addressCity=市区町村
+label.addressState=都道府県
+label.addressPostalCode=郵便番号
+label.addressCountry=国
+label.contactVoice=電話番号
+label.contactFacsimile=ファックス番号
+label.contactEmail=Eメール
+label.wfs=Webフューチャー・サーバ
+label.wms=Webマップ・サーバー
+label.data=データ
+label.wfsStatus=WFS ステータス
+label.wmsStatus=WMS ステータス
+label.dataStatus=Data ステータス
+label.apply=適用
+label.save=保存
+label.load=読込
+label.actions=アクション
+label.calculateBoundingBox=境界矩形の計算
+label.wfsDescription=WFSの説明
+label.wfsContent=WFSコンテンツ
+label.wmsDescription=WMSの説明
+label.wmsContent=WMSコンテンツ
+label.wmsRendering=WMS描画
+label.dataStores=データストア
+label.featureTypes=フューチャータイプ
+label.createNewDataStore=新しいデータストアを作成します。
+label.createNewNamespace=新しい名前空間を作成します。
+label.serviceLevel=サービスレベル
+label.serviceLevel.basic=ベーシック
+label.serviceLevel.transactional=トランザクション
+label.serviceLevel.complete=完全
+label.server=サーバー
+label.validation=妥当性検証
+label.contact=連絡先
+label.none=なし
+label.phoneNumber=電話番号
+label.faxNumber=ファックス番号
+label.email=Eメール
+label.info=窓口
+
+help.enabled=サービスの有効/無効
+help.srsXmlStyle=もし返されたGMLのsrsNameが(仕様のように)xmlスタイルであるならばチェックしてください。EPSGであるならチェックを外してください。
+help.featureList=サービスの中で個々のフューチャータイプを有効、無効にするのを許可します。
+help.global.maxFeatures=GetFeatureによって返されたフューチャーの最大数を設定します。
+help.global.verbose=XML応答で改行とインデントが返されるかどうかに関係なく設定します。
+help.global.verboseExceptions=ユーザに返されたサービス例外が、フルにjavaスタックトレースを持っているかどうかに関係なくセットします。
+help.global.numDecimals=十進の桁数はGetFeatureの応答で返されます。
+help.global.charset=クローバルキャラクターセットを設定します。
+help.global.baseURL=サーブレットを実行するベースURL
+help.global.schemaBaseURL=WFSスキーマの位置に対するベースURLを定義します。
+help.global.loggingLevel=アプリケーションのロギングレベルを定義します。
+help.global.loggingToDisk=ディスクへのロギングを有効/無効にします。
+help.global.logLocation=ディレクトリかファイルのログ位置を指定してください。空白の状態のままだとロギングは無効となります。
+
+help.global.contactPerson=連絡先の担当者名;
+help.global.contactOrganization=連絡が提携先である組織の名前
+help.global.contactPosition=組織内の連絡担当者の役職
+help.global.addressType=指定されたアドレスのタイプ、すなわち郵便のような
+help.global.address=実際のストリート・アドレス
+help.global.addressCity=市
+help.global.addressState=州
+help.global.addressPostalCode=郵便番号
+help.global.addressCountry=国
+help.global.contactVoice=連絡先電話番号
+help.global.contactFacsimile=ファックス番号
+help.global.contactEmail=eメールアドレス
+
+help.serviceLevel=WFSが提供するサービスレベルの定義
+
+help.wms.svgRenderer=WMS SVGリクエストをサービスする時に使用するsvg 描画方法を選択します。
+
+tab.description=説明
+tab.content=コンテンツ
+tab.dataStores=データ・ストア
+tab.namespaces=名前空間
+tab.styles=スタイル
+tab.featureTypes=フューチャー・タイプ
+
+error.login.invalidCombo=無効なユーザー名とパスワードの組合せです。
+error.login.required=このフューチャーにアクセスするためにはログインしなければなりません。
+
+error.latLonBoundingBox.required=経緯度境界上の全エレメントが必要です。
+error.latLonBoundingBox.invalid=無効な経緯度境界です。: {0}
+error.serviceLevel.invalid=無効なサービスレベルが選択されました。
+
+link.geoserver=http://geoserver.sourceforge.net/
+link.license=http://geoserver.sourceforge.net/documentation/developer/license.htm
+
+# --- changed ----
+label.geoServerConfiguration=GeoServer 設定
+message.login.hint=(デフォルトユーザーは'admin'、パスワードは'geoserver'です)
+message.noContact=連絡先は提供されておりません。
+message.notLoaded=アプリケーションのリソースがロードされませんでした。--サーブレットコンテナ・ログのエラーメッセージをチェックしなさい。
+message.noTitle=My GeoServer
+message.dataOkay=データが障害なく読込まれました。
+
+
+# WELCOME
+welcome.label=Welcome
+welcome.title=Welcome GeoServer
+welcome.short=ようこそ　GeoServer 1.3.0-RC6へ　　GeoServerのご利用ありがとうございます!
+welcome.words=(GeoServer) (GIS) (Geographic Information Systems) (WFS)
+
+welcome.contact.label=連絡先
+welcome.contact.title=連絡先
+welcome.contact.short=サイト管理者の連絡先です
+welcome.contact.words=(Webマスター) (連絡先) 
+
+welcome.demo.label=デモ
+welcome.demo.title=デモ
+welcome.demo.short=Geoserverのデモページ　Geoserverとツールの使用方法は例をご覧下さい。
+welcome.demo.words=(GeoServer) (デモ)
+welcome.demo.wmsexample.title=WMS　事例
+welcome.demo.wmsexample.label=WMS　ニューヨークを見る
+welcome.demo.wmsexample.short=ニューヨーク・マンハッタンのWMS表示です。パン、ズームができて、イメージをクリックすると拡大画像がポップアップします。これはJavascriptで書かれており、コードは[geoserver]/data/demo/popup_mapの下で見ることができます。
+welcome.demo.mappreview.title=地図プレビュー
+welcome.demo.mappreview.label=有効なフューチャータイプのWMSプレビュー
+welcome.demo.mappreview.short=地図プレビューページページは、有効な各フューチャータイプを表示し、MapBuilderのWMSフォームで見ることができるリンクを与えます。
+welcome.demo.requests.title=サンプル・リクエスト
+welcome.demo.requests.label=Example WMSとWFSリクエストの例
+welcome.demo.requests.short=このページは、使用や試験、変更ができるWMSとWFSリクエストの例があります。Geoserverとの対話方法や、自分でカスタムやリクエストを作る方法を見るには大変役に立ちます。
+welcome.demo.documentation.title=ドキュメンテーション
+welcome.demo.documentation.label=メイン・ドキュメントページ
+welcome.demo.documentation.short=これがGeoserverのメイン・ドキュメントページです。それは 、あらゆるドキュメントやウォークスルー、チュートリアル、または他のユーザのためになると思われる情報等を加えることが自由なWIKIです。
+
+welcome.demoRequest.label=デモ・リクエスト
+welcome.demoRequest.title=デモ・リクエスト
+welcome.demoRequest.short=(テストServletを使った)GeoServerへのリクエスト例　ドロップダウン・リストからリクエストを選び、'変更'をクリックしてください。リクエストURL(とxmlリクエストならばbody)が表示されます。GeoServerへリクエストを送るために実行をクリックして下さい。
+welcome.demoRequest.words=(GeoServer) (デモ)
+
+# WELCOME resources
+text.welcome1=GeoServer projectは、OpenGIS ConsortiumのWeb Feature Server仕様をWeb Map Serverと統合してフルトランザクションのJava (J2EE)で実装するものです。
+text.welcome2=GeoServerはGPL 2.0ライセンスの下で利用可能なフリーソフトウエアです。
+text.welcome3=柔軟でかつ産業的に推奨された標準を使って、インターネット上で自身の地理的データにアクセスして更新したいユーザーは、GeoServerを見るべきです。
+text.welcome4=WFSとWMSの説明文は上のリンクにある設定を使って編集されます。GeoServerの設定(連絡先を含む）や、実行しているアプリケーションの管理を変更するには、ログイン(リンクトップの右側)しなければなりません。
+text.welcome5=このリリースのドキュメントは、以下のリンクでオンライン利用できます。GeoServer wikiは最新版のために使われます。; GeoServerであなたの経験やヒント、こつを共有してください。タスクトラッカーは機能要求とバグを報告する所です。また　お手数ですがGeoServerへの支援を示すために、ユーザーマップにあなたを加えてください。
+
+text.welcome.mapbuilder=Mapbuilderデモ
+text.welcome.mapbuilder.detail= <a href='http://mapbuilder.sourceforge.net/'>Mapbuilder</a> はjava-scriptによるWFS-Tクライアントです。このGeoserverにインストールしているデータを編集するには、Mapbuilderが利用できます。
+
+# NEW features
+text.newFeatureLogo=<b><font color='red'>NEW!</font></b>
+text.newFeature1=新しいMapBuilder GUIでWMSレイヤーをごらんください。
+text.newFeature2=デモページですばらしいWMSとWFSのデモを確認してください。
+
+# ADMIN
+admin.label=管理
+admin.title=GeoServerの管理
+admin.short=実行中のGeoServerアプリケーションを管理します。
+admin.words=(管理)
+
+admin.login.label=ログイン
+admin.login.title=ログイン
+admin.login.short=GeoServerにログインしてください。 (デフォルトは、ユーザー名：admin、パスワード：geoserverです。 Config->Server->Passwordから変更できます。)
+admin.login.words=(GeoServer) (ログイン)
+
+admin.freeLocks.label=ロック解放
+admin.freeLocks.title=ロックの全解放
+admin.freeLocks.short=サーバーで現在ホールドしているロックを全て解放します。
+admin.freeLocks.words=(機能ロック) (解放) (管理)
+
+admin.freeMemory.label=メモリ解放
+admin.freeMemory.title=利用可能メモリの解放
+admin.freeMemory.short=ガベージコレクターの実行により利用可能なメモリを解放します。
+admin.freeMemory.words=(メモリ) (解放) (管理)
+
+# resources for Admin
+label.locks=ロック
+label.connections=接続
+label.memory=メモリ
+help.locks=機能ロックの数
+help.connections=データ接続数
+help.memory=利用可能なメモリ容量
+text.admin=この管理ページは現在のところアイディア段階であり、（アプリケーションへの対話を許可する共に）GeoSeverアプリケーションの実行状態を表示することを目的としています。
+message.freeLocks=ロックが解除されました。 ({0}が保持されてます)
+message.memory=メモリが解放されました 。({0}Kを解放しました)
+
+# CONFIG
+config.label=設定
+config.title=GeoServerの設定
+config.short=GeoServerアプリケーションを設定します。
+config.words=(設定)
+
+# CONFIG Server
+config.server.label=サーバー
+config.server.title=サーバーの設定
+config.server.short=サーバーと連絡先を設定します。
+config.server.words=(設定) (連絡) (サーバー)
+
+# CONFIG Server Login
+config.server.login.label=パスワード
+config.server.login.title=パスワードの変更
+config.server.login.short=ユーザー名/パスワードを編集します。
+config.server.login.words=(GeoServer) (ログイン) (管理)
+
+# CONFIG validation
+config.validation.label=妥当性検証
+config.validation.title=妥当性検証の設定
+config.validation.short=GeoServerの妥当性検証プロセッサーを設定します。
+config.validation.words=(Configuration) (妥当性検証)
+
+config.validation.suite.label=テスト・スィート
+config.validation.suite.title=妥当性検証用テスト・スィートの設定
+config.validation.suite.short=妥当性検証プロセッサーのテスト・スィートを設定します。
+config.validation.suite.words=(妥当性検証処理) (テスト・スィート)
+
+config.validation.suite.doit.label=テストの実行
+config.validation.suite.doit.title=テスト・スィートの実行
+config.validation.suite.doit.short=テスト・スィートを実行します。
+config.validation.suite.doit.words=(妥当性検証処理) (テスト・スィート)
+
+config.validation.test.label=テスト
+config.validation.test.title=妥当性検証テストの設定
+config.validation.test.short=（テスト・スィート中の）妥当性検証テストを設定します。
+config.validation.test.words=(妥当性検証プロセッサー) (妥当性検証) (テスト)
+
+config.validation.suite.editor.label=編集
+config.validation.suite.editor.title=妥当性検証テスト・スィートの編集
+config.validation.suite.editor.short=妥当性検証テスト・スィートを編集します。
+config.validation.suite.editor.words=(妥当性検証プロセッサー) (妥当性検証) (テストスィート)
+
+config.validation.test.editor.label=編集
+config.validation.test.editor.title=妥当性検証テストの編集
+config.validation.test.editor.short=妥当性検証テストを編集します。
+config.validation.test.editor.words=(妥当性検証プロセッサー) (妥当性検証) (テスト)
+
+config.validation.test.doit.label=テストの実行
+config.validation.test.doit.title=妥当性検証テストの実行
+config.validation.test.doit.short=妥当性検証テストを実行します。
+config.validation.test.doit.words=(妥当性検証プロセッサー) (テスト)
+
+config.validation.displayResults.label=結果の表示
+config.validation.displayResults.title=テストの実行結果
+config.validation.displayResults.short=テストの実行結果を表示します。
+config.validation.displayResults.words=(妥当性検証プロセッサー) (妥当性検証) (テストスィート) (結果)
+config.validation.displayResults.errors=エラー
+config.validation.displayResults.runCompleted=実行は完了
+config.validation.displayResults.runNotCompleted=実行は完了しませんでした
+config.validation.displayResults.stop=停止
+
+# CONFIG wfs
+config.wfs.label=WFS
+config.wfs.title=Web Feature Serverの設定
+config.wfs.short=Web Feature Serverを設定します。
+config.wfs.words=(WFS) (Web Feature Server) (設定)
+
+config.wfs.content.label=コンテンツ
+config.wfs.content.title=Web Feature Serverのコンテンツ
+config.wfs.content.short=Web Feature Serverの機能を設定します。
+config.wfs.content.words=(WFS) (Web Feature Server) (設定)
+
+config.wfs.description.label=説明
+config.wfs.description.title=Web Feature Serverの説明
+config.wfs.description.short=Web Feature Serverの情報とメタデータを設定します。
+config.wfs.description.words=(WFS) (Web Feature Server) (設定)
+
+error.wfs.onlineResource.required=オンラインリソースが必要です。
+error.wfs.onlineResource.malformed=オンラインリソースがおかしいです。: {0}
+
+# CONFIG wms
+config.wms.label=WMS
+config.wms.title=Web Map Serverの設定
+config.wms.short=Web Map Serverを設定します。
+config.wms.words=(WMS) (Web Map Server) (設定)
+
+config.wms.content.label=コンテンツ
+config.wms.content.title=Web Map Server コンテンツ
+config.wms.content.short=Web Map Serverの機能を設定します。
+config.wms.content.words=(WMS) (Web Map Server) (設定)
+
+config.wms.description.label=説明
+config.wms.description.title=Web Map Serverの説明
+config.wms.description.short=Web Map Serverの情報とメタデータを設定します。
+config.wms.description.words=(WMS) (Web Map Server) (Configuration)
+
+config.wms.rendering.label=レンダリング
+config.wms.rendering.title=Web Map Serverのレンダリング
+config.wms.rendering.short=Web Map Serverのレンダリングを設定します。
+config.wms.rendering.words=(WMS) (Web Map Server) (レンダリング)
+
+error.wms.onlineResource.required=オンライン・リソースが必要です。
+error.wms.onlineResource.malformed=オンライン・リソースが奇妙です。: {0}
+
+# DATA
+config.data.label=データ
+config.data.title=GeoServerのデータ設定
+config.data.short=GeoServerアプリケーションのconfig.dataのアクセスと表示を設定します。
+config.data.words=(設定) (データ) (空間データ)
+
+# DATA - config.dataStores
+config.data.store.label=データストア
+config.data.store.title=データストアの設定
+config.data.store.short=設定するデータストアを選択してください。
+config.data.store.words=(設定) (データベース) (Shapeファイル) (空間データ) (データ)
+
+config.data.store.new.label=新規
+config.data.store.new.title=新しいデータストアの作成
+config.data.store.new.short=空間情報のソースを作成します。
+config.data.store.new.words=(設定) (データｰベース) (Shapeファイル) (空間データ) (データ)
+
+config.data.store.editor.label=編集
+config.data.store.editor.title=データストアの編集
+config.data.store.editor.short=空間情報のソースを編集します。
+config.data.store.editor.words=(設定)(データｰベース) (Shapeファイル) (空間データ) (データ) 
+config.data.store.editor.requiredField=必要なフィールド
+
+# DATA namespace
+config.data.namespace.label=名前空間
+config.data.namespace.title=名前空間の設定
+config.data.namespace.short=GMLの生成に使用する名前空間を設定します。
+config.data.namespace.words=(GML) (名前空間) (プレフィックス)
+
+config.data.namespace.new.label=新規
+config.data.namespace.new.title=新しい名前空間の作成
+config.data.namespace.new.short=GMLコンテンツの新しい名前空間を作成します。
+config.data.namespace.new.words=(GML) (名前空間) (プレフィックス)
+
+config.data.namespace.editor.label=編集
+config.data.namespace.editor.title=名前空間の編集
+config.data.namespace.editor.short=GML名前空間のURIとプレフィックスを編集します。
+config.data.namespace.editor.words=(GML) (名前空間) (プレフィックス)
+
+text.namespace=リストから名前空間を選択してください。＊はデフォルトの名前空間を示します。
+# DATA styles
+# -----------
+config.data.style.label=スタイル
+config.data.style.title=スタイルの設定
+config.data.style.short=使用可能なスタイルを定義します。
+config.data.style.words=(WMS) (Web Map Server) (スタイル)
+
+config.data.style.new.label=新規
+config.data.style.new.title=新規スタイル
+config.data.style.new.short=新しいスタイルを作成します。
+config.data.style.new.words=(WMS) (Web Map Server) (スタイル)
+
+config.data.style.editor.label=編集
+config.data.style.editor.title=スタイルの編集
+config.data.style.editor.short=選択したスタイルを編集します。
+config.data.style.editor.words=(WMS) (Web Map Server) (スタイル)
+
+# Resources for styles
+label.styles=スタイル
+label.styleID=スタイルID
+help.styles=利用可能なスタイルのリスト
+help.styleID=スタイルの識別子
+error.style.exists=スタイルID {0} は既にあります。
+error.file.required=ファイル名が必要です。
+# didier, 2004-04-20, not anymore used :
+error.file.nonexistent=ファイル {0} がありません。
+# didier, 2004-04-20, FormFile :
+error.file.maxLengthExceeded=SLD文書の最大アップロード長を越えました。 ({0} バイトまで許容）
+error.action.invalid=アクション '{0}' は理解されませんでした。
+error.styleID.required=StyleID が必要です。
+error.styleID.invalid=StyleIDは英数字で始まらなければなりません。
+error.style.sldFileExists=既に{0}があります　ファイルをリネームして実行してください。
+
+
+error.namespace.namespaceInUse=削除する名前空間はデータベースで使用してます　最初にデータストアを削除してください。
+
+
+# DATA featureType
+# -----------
+config.data.type.label=フューチャータイプ
+config.data.type.title=フューチャータイプの設定
+config.data.type.short=このサービスで利用可能なフューチャータイプを定義します。
+config.data.type.words=(フューチャータイプ) (空間情報)
+
+config.data.type.new.label=新規
+config.data.type.new.title=新しいフューチャータイプの作成
+config.data.type.new.short=利用可能なデータストアから新しいフューチャータイプを作成します。
+config.data.type.new.words=(フューチャータイプ) (空間情報)
+
+config.data.type.editor.label=編集
+config.data.type.editor.title=フューチャータイプの編集
+config.data.type.editor.short=フューチャータイプの定義とスキーマを編集します。
+config.data.type.editor.words=(フューチャータイプ) (空間情報)
+
+config.data.calculateBoundingBox.label=生成
+config.data.calculateBoundingBox.title=境界の計算
+config.data.calculateBoundingBox.short=フューチャータイプ定義のための境界を計算します。
+config.data.calculateBoundingBox.words=(フューチャータイプ) (空間情報) (境界) 
+
+error.data.nullBBOX=フューチャータイプ'{0}'は範囲がヌルです <br> ヒント: データセットが空か、ジオメトリの属性がデフォルトありません。
+error.data.couldNotFindSRSAuthority=あなたのSRSを解釈するためのSRS判例が見つかりません。 SRSが正しいことを確かめてください。-あなたのSRSが確実にリストされるために、SRS判例のプラグインについて相談する必要があるかもしれません。 <br> {0} <br> {1} 
+error.data.factoryException=SRS変換を構築することができませんでした。 - {0}
+error.data.transformException=座標変換をすることができませんでした。
+error.style.noParse=スタイルを解析することができませんでした。 - {0}
+
+
+label.SRSHelp=SRS Help
+
+#might want the other langages to point to a different url!
+label.SRSHelp.URL=http://docs.codehaus.org/display/GEOS/crshelp
+
+label.SRSList=SRSリスト
+
+
+label.type.dataminx=データ min X
+label.type.dataminy=データ min Y
+label.type.datamaxx=データ max X
+label.type.datamaxy=データ max Y
+
+help.type.dataminx=データセットのSRSにおけるX座標最小値
+help.type.dataminy=データセットのSRSにおけるY座標最小値
+help.type.datamaxx=データセットのSRSにおけるX座標最大値
+help.type.datamaxy=データセットのSRSにおけるY座標最大値
+
+error.badsrc=SRSの定義を見つけることができません。 - {0}
+
+label.type.srswkt=SRS WKT
+help.type.srswkt=SRSのEPSG番号のOGC Well Known Text 定義
+
+# Resources for FeatureType
+label.bbox=Bounding Box
+label.type.minx=Min 経度
+label.type.miny=Min 緯度
+label.type.maxx=Max 経度
+label.type.maxy=Max 緯度
+label.base=スキーマ・ベース
+label.schemaName=スキーマ名
+label.style=スタイル
+label.change=変更
+label.add=追加
+label.nillable=ヌル値可
+label.min=最小
+label.max=最大
+help.type.name=フューチャータイプ名
+help.type.style=描画フューチャータイプに使用するデフォルトのスタイル
+help.type.srs=フューチャータイプへの空間参照システム
+help.type.title=このフューチャータイプのエンドユーザーへのタイトル
+help.type.bbox=全体のフューチャータイプに対する領域ボックス
+help.type.minx=フューチャータイプの最小緯度
+help.type.miny=フューチャータイプの最小経度
+help.type.maxx=フューチャータイプの最大緯度
+help.type.maxy=フューチャータイプの最大経度
+help.type.base=ベースXMLスキーマ要素(必須な属性を定義するか、生成する)
+help.type.schemaName=タイプを説明するXMLスキーマ要素名
+error.styleId.notFound=スタイルId '{0}'が定義されてません。
+
+type.title.up=このタイプを1レベル上に動かしてください。
+type.title.down=このタイプを1レベル下に動かしてください。
+type.title.delete=このタイプを削除する。
+label.jai=JAIの利用
+
+help.jai=JAI (Java Advanced Imaging) 拡張はWMSにたいしてのイメージ描画に使われます。
+
+label.jvm=JVMバージョン
+
+help.jvm=どのJVMのバージョンがサーバーを動かすのに使うのかを指示します。
+
+
+srsList.title=空間参照システム系番号の一覧
+srsList.tableTitle=EPSG WKT 定義
+
+mapPreview.title=有効なフューチャータイプの最小地図プレビュー
+
+sldValididity.title=.SLDファイルはSLDスキーマに従っていません。
+sldValiditity.help.text=さらにヘルプはここで利用できます。
+sldValiditity.help.url=http://docs.codehaus.org/display/GEOS/SLD+Validation
+
+help.citeConformanceHacks=厳密なCITEテストの一致を望むかどうかチェックしてください。CITEテストを実行していない限り、多分これをチェックしたくないでしょう。
+label.citeConformanceHacks=厳密なCITEテストの一致
+
+help.featureBounding=フューチャーのデフォルトジオメトリの境界をGetFeatureのgml出力に自動的に含むようにするならチェックしてください。大部分のクライアントはそれを要求せず余分なバンド幅の取得もしないので、推奨しません。
+label.featureBounding=フューチャーの境界生成
