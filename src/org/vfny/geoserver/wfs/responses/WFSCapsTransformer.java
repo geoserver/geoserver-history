@@ -209,11 +209,11 @@ public class WFSCapsTransformer extends TransformerBase {
             handleDescribeFT();
             handleGetFeature();
 
-            if ((config.getServiceLevel() | WFSDTO.TRANSACTIONAL) != 0) {
+		if (config.getServiceLevel() >= WFSDTO.TRANSACTIONAL) {
                 handleTransaction();
             }
 
-            if ((config.getServiceLevel() | WFSDTO.SERVICE_LOCKING) != 0) {
+		if (config.getServiceLevel() == WFSDTO.COMPLETE) { 
                 handleLock();
                 handleFeatureWithLock();
             }
