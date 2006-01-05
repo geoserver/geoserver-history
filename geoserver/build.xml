@@ -578,7 +578,7 @@
 			</classes>
 
 			<classes dir="${dir.webinf}">
-				<include name="ApplicationResources*.properties" />
+				<include name="ApplicationResources*" />
 			</classes>
 
 			<webinf dir="${conf.path}/WEB-INF">
@@ -681,7 +681,7 @@
 			</classes>
 
 			<classes dir="${dir.webinf}">
-				<include name="ApplicationResources*.properties" />
+				<include name="ApplicationResources*" />
 			</classes>
 
 			<webinf dir="${conf.path}/WEB-INF">
