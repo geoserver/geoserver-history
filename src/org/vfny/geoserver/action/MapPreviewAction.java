@@ -473,7 +473,7 @@ public class MapPreviewAction extends Action
 		out.println("    <Layer queryable=\"1\" hidden=\"0\">");
 		// CHANGE HERE
 		out.println("      <Server service=\"OGC:WMS\" version=\"1.1.1\" title=\""+ft_namespace+":"+ft_name+" Preview\">");
-		out.println("        <OnlineResource xlink:type=\"simple\" xlink:href=\"http://localhost:8080/geoserver/wms\"/>");
+		out.println("        <OnlineResource xlink:type=\"simple\" xlink:href=\"../../wms\"/>");
 		out.println("      </Server>");
 		// CHANGE HERE
 		out.println("      <Name>"+ft_namespace+":"+ft_name+"</Name>");
