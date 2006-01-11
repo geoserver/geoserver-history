@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>geoserver</name>
+	<name>GeoServer</name>
 	<comment>@key 32303035303431312067656F7365727665722F6769616E6E65636368696E69 </comment>
 	<projects>
 	</projects>
@@ -19,5 +19,6 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>com.omondo.uml.std.Nature</nature>
+		<nature>com.sysdeo.eclipse.tomcat.tomcatnature</nature>
 	</natures>
 </projectDescription>

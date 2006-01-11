@@ -11,7 +11,7 @@ import java.io.OutputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.data.gtopo30.GTopo30Writer;
+import org.geotools.gce.gtopo30.GTopo30Writer;
 import org.opengis.coverage.grid.GridCoverageWriter;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;

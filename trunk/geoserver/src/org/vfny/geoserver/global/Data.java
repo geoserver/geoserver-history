@@ -46,7 +46,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @author Chris Holmes
  * @author dzwiers
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: Data.java,v 1.45 2004/09/13 16:05:10 cholmesny Exp $
  */
 public class Data extends GlobalLayerSupertype /*implements Repository*/ {
