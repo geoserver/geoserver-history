@@ -15,7 +15,6 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -46,12 +45,11 @@ public class SLDValidator {
     public List validateSLD(InputStream xml, ServletContext servContext) {
     	// a riminder not to use the data directory for the schemas
     	//String url = GeoserverDataDirectory.getGeoserverDataDirectory(servContext).toString();
-    	try {
+    	
+    	return validateSLD(new InputSource(xml), servContext);
+    	/*try {
     		 URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
     		 LOGGER.info("Validating SLD with " + schemaFile.toString());
-//    	File schemaFile = new File(servContext.getRealPath("/"),
-//                "/schemas/sld/StyledLayerDescriptor.xsd");
-    	
        
             return validateSLD(xml, schemaFile.toString());
         } catch (Exception e) {
@@ -60,7 +58,7 @@ public class SLDValidator {
             al.add(new SAXException(e));
 
             return al;
-        }
+        }*/
     }
 
     public static String getErrorMessage(InputStream xml, List errors) {
@@ -179,11 +177,11 @@ public class SLDValidator {
         return result.toString();
     }
 
-    public List validateSLD(InputStream xml, String SchemaUrl) {
+    /*public List validateSLD(InputStream xml, String SchemaUrl) {
         return validateSLD(new InputSource(xml), SchemaUrl);
-    }
+    }*/
 
-    public List validateSLD(InputSource xml, ServletContext servContext) {
+    /*public List validateSLD(InputSource xml, ServletContext servContext) {
         File schemaFile = new File(servContext.getRealPath("/"),
         "/schemas/sld/StyledLayerDescriptor.xsd");
 
@@ -195,7 +193,7 @@ public class SLDValidator {
 
             return al;
         }
-    }
+    }*/
 
     /**
      * validate a .sld against the schema
@@ -206,11 +204,16 @@ public class SLDValidator {
      *
      * @return list of SAXExceptions (0 if the file's okay)
      */
-    public List validateSLD(InputSource xml, String SchemaUrl) {
+    public List validateSLD(InputSource xml, ServletContext servContext) {
+    	
         SAXParser parser = new SAXParser();
-
-        LOGGER.info("Validating SLD with schema: " + SchemaUrl);
+        
         try {
+        	// this takes care of spaces in the path to the file
+	        URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
+			LOGGER.info("Validating SLD with " + schemaFile.toString());
+			String schemaUrl = schemaFile.toString();
+		
 //     1. tell the parser to validate the XML document vs the schema
 //     2. does not validate the schema (the GML schema is *not* valid.  This is
 //        			an OGC blunder)
@@ -226,9 +229,9 @@ public class SLDValidator {
                 false);
 
             parser.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation",
-                SchemaUrl);
+                schemaUrl);
             parser.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
-                "http://www.opengis.net/sld " + SchemaUrl);
+                "http://www.opengis.net/sld " + schemaUrl);
 
             //parser.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation","http://www.opengis.net/ows "+SchemaUrl);
             Validator handler = new Validator();
