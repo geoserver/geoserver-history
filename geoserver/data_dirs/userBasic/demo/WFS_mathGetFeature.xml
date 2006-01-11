@@ -14,11 +14,11 @@
   <wfs:Query typeName="topp:states">
     <ogc:Filter>
       <ogc:PropertyIsGreaterThan>
-        <Div>
-            <PropertyName>MANUAL</PropertyName>
-            <PropertyName>WORKERS</PropertyName>
-        </Div>
-         <Literal>0.25</Literal>
+        <ogc:Div>
+            <ogc:PropertyName>MANUAL</ogc:PropertyName>
+            <ogc:PropertyName>WORKERS</ogc:PropertyName>
+        </ogc:Div>
+         <ogc:Literal>0.25</ogc:Literal>
     </ogc:PropertyIsGreaterThan>
     </ogc:Filter>
     </wfs:Query>

@@ -21,9 +21,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.opengis.net/wfs
                       http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd">
-  <Query typeName="topp:states">
-    <Filter>
-       <FeatureId fid="states.3"/>
-    </Filter>
-    </Query>
+  <wfs:Query typeName="topp:states">
+    <ogc:Filter>
+       <ogc:FeatureId fid="states.3"/>
+    </ogc:Filter>
+    </wfs:Query>
 </wfs:GetFeature>
