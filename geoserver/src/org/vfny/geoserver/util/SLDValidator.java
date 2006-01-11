@@ -13,17 +13,23 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
 import javax.servlet.ServletContext;
 
 
 public class SLDValidator {
+	static Logger LOGGER = Logger.getLogger("org.vfny.geoserver");
+	
     public SLDValidator() {
     }
 
@@ -40,13 +46,17 @@ public class SLDValidator {
     public List validateSLD(InputStream xml, ServletContext servContext) {
     	// a riminder not to use the data directory for the schemas
     	//String url = GeoserverDataDirectory.getGeoserverDataDirectory(servContext).toString();
-    	File schemaFile = new File(servContext.getRealPath("/"),
-                "/schemas/sld/StyledLayerDescriptor.xsd");
-
-        try {
-            return validateSLD(xml, schemaFile.toURL().toString());
+    	try {
+    		 URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
+    		 LOGGER.info("Validating SLD with " + schemaFile.toString());
+//    	File schemaFile = new File(servContext.getRealPath("/"),
+//                "/schemas/sld/StyledLayerDescriptor.xsd");
+    	
+       
+            return validateSLD(xml, schemaFile.toString());
         } catch (Exception e) {
-            ArrayList al = new ArrayList();
+        	LOGGER.severe(e.getLocalizedMessage());
+        	ArrayList al = new ArrayList();
             al.add(new SAXException(e));
 
             return al;
@@ -199,6 +209,7 @@ public class SLDValidator {
     public List validateSLD(InputSource xml, String SchemaUrl) {
         SAXParser parser = new SAXParser();
 
+        LOGGER.info("Validating SLD with schema: " + SchemaUrl);
         try {
 //     1. tell the parser to validate the XML document vs the schema
 //     2. does not validate the schema (the GML schema is *not* valid.  This is
@@ -226,6 +237,7 @@ public class SLDValidator {
 
             return handler.errors;
         } catch (java.io.IOException ioe) {
+        	
             ArrayList al = new ArrayList();
             al.add(new SAXParseException(ioe.getLocalizedMessage(), null));
 
