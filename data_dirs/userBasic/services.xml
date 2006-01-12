@@ -9,7 +9,7 @@ Defines the logging level.  Common options are SEVERE,
 WARNING, INFO, CONFIG, FINER, FINEST, in order of
 Increasing statements logged.
 -->
-<loggingLevel>FINE</loggingLevel>
+<loggingLevel>CONFIG</loggingLevel>
 <!--
 Sets the max number of Features returned by GetFeature
 -->

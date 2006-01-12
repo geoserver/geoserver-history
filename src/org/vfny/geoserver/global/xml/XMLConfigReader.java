@@ -199,7 +199,7 @@ public class XMLConfigReader {
      * @throws ConfigurationException When an error occurs.
      */
     protected void loadServices(File configFile) throws ConfigurationException {
-        LOGGER.finer("loading config file: " + configFile);
+        LOGGER.config("Loading configuration file: " + configFile);
 
         Element configElem = null;
 
@@ -213,7 +213,7 @@ public class XMLConfigReader {
             throw new ConfigurationException(e);
         }
 
-        LOGGER.fine("parsing configuration documents");
+        LOGGER.config("parsing configuration documents");
 
         Element elem = (Element) configElem.getElementsByTagName("global").item(0);
         loadGlobal(elem);
@@ -256,11 +256,11 @@ public class XMLConfigReader {
     protected void loadCatalog(File catalogFile, File featureTypeDir, 
        	                       File styleDir)
         throws ConfigurationException {
-        LOGGER.fine("loading catalog file: " + catalogFile);
-
+        
         Element catalogElem = null;
 
         try {
+        	LOGGER.config("Loading configuration file: " + catalogFile);
             FileReader fr = new FileReader(catalogFile);
             catalogElem = ReaderUtils.loadConfig(fr);
             fr.close();
@@ -270,7 +270,6 @@ public class XMLConfigReader {
             throw new ConfigurationException(e);
         }
 
-        LOGGER.finer("loading catalog configuration");
         data.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(
                     catalogElem, "namespaces", true)));
         setDefaultNS();
@@ -553,12 +552,12 @@ public class XMLConfigReader {
 
         Element elem = ReaderUtils.getChildElement(wfsElement, "srsXmlStyle",
                 false);
-        LOGGER.info("reading srsXmlStyle: " + elem);
+        LOGGER.config("reading srsXmlStyle: " + elem);
 
         if (elem != null) {
             wfs.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem, "value",
                     false, true));
-            LOGGER.info("set srsXmlStyle to "
+            LOGGER.fine("set srsXmlStyle to "
                 + ReaderUtils.getBooleanAttribute(elem, "value", false, true));
         }
 
@@ -703,7 +702,7 @@ public class XMLConfigReader {
             ns.setPrefix(ReaderUtils.getAttribute(elem, "prefix", true));
             ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default",
                     false, false) || (nsCount == 1));
-            LOGGER.finer("added namespace " + ns);
+            LOGGER.config("added namespace " + ns);
             nameSpaces.put(ns.getPrefix(), ns);
         }
 
@@ -756,6 +755,8 @@ public class XMLConfigReader {
             s.setDefault(ReaderUtils.getBooleanAttribute(styleElem, "default",
                     false, false));
             styles.put(s.getId(), s);
+            
+            LOGGER.config("Loaded style " + s.getId());
         }
 
         return styles;
@@ -838,6 +839,7 @@ public class XMLConfigReader {
         ds.setConnectionParams(loadConnectionParams(ReaderUtils.getChildElement(
                     dsElem, "connectionParams", true)));
 
+        LOGGER.config("Loaded datastore " + ds.getId());
         return ds;
     }
 
@@ -1000,6 +1002,7 @@ public class XMLConfigReader {
         Element featureElem = null;
 
         try {
+        	LOGGER.config("Loading configuration file: " + infoFile);
             Reader reader = null;
             reader = new FileReader(infoFile);
             featureElem = ReaderUtils.loadConfig(reader);
@@ -1036,7 +1039,7 @@ public class XMLConfigReader {
             dto.setSchemaAttributes(Collections.EMPTY_LIST);
         }
 
-        LOGGER.finer("added featureType " + dto.getName());
+        LOGGER.config("added featureType " + dto.getName());
 
         return dto;
     }
@@ -1271,6 +1274,7 @@ public class XMLConfigReader {
         }
 
         try {
+        	LOGGER.config("Loading configuration file: " + schemaFile);
             Reader reader;
             reader = new FileReader(schemaFile);
             elem = ReaderUtils.loadConfig(reader);
