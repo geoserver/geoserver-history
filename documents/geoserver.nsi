@@ -28,8 +28,8 @@
 ;General
 
   ;Name and file
-  Name "GeoServer 1.3.0-RC7"
-  OutFile "geoserver-1.3.0-RC7.exe"
+  Name "GeoServer 1.3.0-PR1"
+  OutFile "geoserver-1.3.0-PR1.exe"
 
 
   ;Default installation folder
