@@ -271,6 +271,7 @@
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
+
 		</junit>
 	</target>
 
@@ -287,8 +288,6 @@
 				</fileset>
 			</classpath>
 			
-			<test fork="true" name="org.vfny.geoserver.requests.wms.GetMapTest"/>
-
 			<test fork="true" name="org.vfny.geoserver.requests.FeatureSuite" />
 				
 			<test fork="true" name="org.vfny.geoserver.requests.CapabilitiesSuite" />
