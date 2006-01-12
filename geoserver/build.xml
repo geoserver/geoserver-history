@@ -60,7 +60,6 @@
 	<property name="dir.jarcopy" value="${dir.server}/geoserver/WEB-INF/lib" />
 	
 	<!-- secondary directories -->
-	<property name="dir.data" value="${dir.conf}" />
 	<property name="dir.testApp" value="${dir.server}/geoserver" />
 	<property name="dir.jetty" value="${dir.lib}/jetty" />
 
@@ -439,15 +438,26 @@
 		<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
 	</target>
 
+	<!-- set data.dir to default if not already set -->
+	<target name="setDataDir" unless="data.dir">
+		<property name="data.dir" value="${dir.data_dirs}/userBasic"/>
+	</target>
+
+	<!-- set data.dir if env.GEOSERVER_DATA_DIR is available -->
+	<target name="checkDataDir" if="env.GEOSERVER_DATA_DIR">
+		<property name="data.dir" value="${env.GEOSERVER_DATA_DIR}"/>
+	</target>
+
 	<!-- runs the server -->
-	<target name="run" depends="prepareEmbedded, init"
+	<target name="run" depends="prepareEmbedded,init,checkDataDir,setDataDir" if="data.dir"
 		description="Runs the jetty servlet container in the background, use ant stop to halt">
+		<echo message="Data dir is: ${data.dir}"/>
 		<java classname="org.mortbay.jetty.Server" dir="${basedir}" fork="yes" failonerror="yes">
 			<classpath>
 				<path refid="path.jetty" />
 			</classpath>
 			<jvmarg line="${jetty.jvmarg}" />
-			<jvmarg line="${data_dir.jvmarg}" />
+			<jvmarg line="-DGEOSERVER_DATA_DIR=${data.dir}" />
 			<arg line="${jetty.run}" />
 		</java>
 	</target>
