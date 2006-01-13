@@ -56,7 +56,7 @@ import java.util.logging.Logger;
  * @author Jody Garnett, Refractions Research, Inc.
  * @author cholmesny
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: GeoServerAction.java,v 1.7 2004/04/16 16:33:31 cholmesny Exp $
  */
 public class GeoServerAction extends Action {

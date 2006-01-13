@@ -76,7 +76,7 @@ import org.vfny.geoserver.global.UserContainer;
  * @author rgould, Refractions Research, Inc.
  * @author cholmesny
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: DataCoveragesNewAction.java,v 1.15 2004/09/17 16:34:47 cholmesny Exp $
  */
 public class DataCoveragesNewAction extends ConfigAction {
@@ -98,25 +98,25 @@ public class DataCoveragesNewAction extends ConfigAction {
         GridCoverage2D gc = null;
 
         try {
-			ServletContext sc = getServlet().getServletContext();
-			URL url = getResource(dfConfig.getUrl(), sc.getRealPath("/"));
+			final ServletContext sc = getServlet().getServletContext();
+			final URL url = getResource(dfConfig.getUrl(), sc.getRealPath("/"));
 
 
-			Format format = dfConfig.getFactory();
-			GridCoverageReader reader = ((AbstractGridFormat) format).getReader(url);
+			final Format format = dfConfig.getFactory();
+			final GridCoverageReader reader = ((AbstractGridFormat) format).getReader(url);
 
-			ParameterValueGroup params = format.getReadParameters();
+			final ParameterValueGroup params = format.getReadParameters();
 
 			if( params != null ) {
-				List list=params.values();
-				Iterator it=list.iterator();
+				final List list=params.values();
+				final Iterator it=list.iterator();
 				while(it.hasNext())
 				{
-					ParameterValue param=((ParameterValue)it.next());
-					ParameterDescriptor descr=(ParameterDescriptor)param.getDescriptor();
+					final ParameterValue param=((ParameterValue)it.next());
+					final ParameterDescriptor descr=(ParameterDescriptor)param.getDescriptor();
 
 					Object value = null;
-					String key = descr.getName().toString();
+					final String key = descr.getName().toString();
 					
 					try {
 						if( key.equalsIgnoreCase("crs") ) {

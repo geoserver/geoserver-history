@@ -21,7 +21,7 @@ import org.vfny.geoserver.wcs.WcsExceptionHandler;
  * </p>
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: WCService.java,v 0.1 Feb 15, 2005 12:18:00 PM $
  */
 abstract public class WCService extends AbstractService {

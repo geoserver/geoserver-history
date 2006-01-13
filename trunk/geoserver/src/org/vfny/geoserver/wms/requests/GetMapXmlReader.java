@@ -4,15 +4,30 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import java.awt.Color;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.geotools.filter.ExpressionDOMParser;
-import org.geotools.filter.FilterFilter;
-import org.geotools.gml.GMLFilterDocument;
-import org.geotools.gml.GMLFilterGeometry;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactory2;
+import org.geotools.styling.StyleFactoryImpl;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
@@ -24,36 +39,14 @@ import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.util.GETMAPValidator;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.wfs.WfsException;
-import org.vfny.geoserver.wfs.requests.FeatureHandler;
 import org.vfny.geoserver.wms.WmsException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.ParserAdapter;
-import java.awt.Color;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+
+import com.vividsolutions.jts.geom.Coordinate;
 
 
 /**
@@ -64,8 +57,7 @@ import javax.xml.parsers.SAXParserFactory;
  * @version $Id: GetMapXmlReader.java 3961 2005-11-25 13:16:04Z cholmes $
  */
 public class GetMapXmlReader extends XmlRequestReader {
-    private static final StyleFactory styleFactory = StyleFactory
-        .createStyleFactory();
+    private static final StyleFactory2 styleFactory = new StyleFactoryImpl();
 
     /**
      * Creates a new GetMapXmlReader object.

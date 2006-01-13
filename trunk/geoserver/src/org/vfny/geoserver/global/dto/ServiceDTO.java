@@ -33,7 +33,7 @@ import org.vfny.geoserver.global.MetaDataLink;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: ServiceDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
  */
 public final class ServiceDTO implements DataTransferObject {

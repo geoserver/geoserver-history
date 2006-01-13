@@ -10,7 +10,7 @@ import org.vfny.geoserver.global.GeoServer;
 import java.io.IOException;
 import java.io.OutputStream;
 
-/** * DOCUMENT ME! *  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification) * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification) */
+/** * DOCUMENT ME! *  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification) * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification) */
 public interface CoverageResponseDelegate {
     boolean canProduce(String outputFormat);
 

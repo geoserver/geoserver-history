@@ -12,7 +12,7 @@ import org.vfny.geoserver.ServiceException;
  * ExceptionHandler don't seems appropiate.
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: WcsExceptionHandler.java,v 0.1 Feb 15, 2005 11:14:22 AM $
  */
 public class WcsExceptionHandler implements ExceptionHandler {

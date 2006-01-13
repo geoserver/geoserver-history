@@ -51,7 +51,7 @@ import org.vfny.geoserver.config.StyleConfig;
  * @author jgarnett, Refractions Research, Inc.
  * @author jive
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: UserContainer.java,v 1.10 2004/03/09 05:38:18 jive Exp $
  */
 public class UserContainer implements HttpSessionBindingListener {

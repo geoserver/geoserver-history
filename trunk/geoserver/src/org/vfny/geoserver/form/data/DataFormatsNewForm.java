@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.form.data;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -20,33 +19,23 @@ import org.vfny.geoserver.action.data.DataFormatUtils;
 
 
 /**
- * Used to accept information from user for a New DataStore Action.
+ * Used to accept information from user for a New DataFormat Action.
  * 
- * <p>
- * This form contains a convience property getDataStoreDescrptions() which is
- * simply to make writing the JSP easier.
- * </p>
- *
  * @author User, Refractions Research, Inc.
  * @author jive
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
- * @version $Id: DataDataStoresNewForm.java,v 1.8 2004/03/15 08:16:11 jive Exp $
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class DataFormatsNewForm extends ActionForm {
     private static final Pattern idPattern = Pattern.compile("^\\a$");
 
 	/**
-	 * Description provided by selected Datastore Factory
-	 * 
-	 * @uml.property name="selectedDescription" multiplicity="(0 1)"
+	 * Description provided by selected Dataformat Factory
 	 */
 	private String selectedDescription;
 
 	/**
-	 * User provided dataStoreID
-	 * 
-	 * @uml.property name="dataFormatID" multiplicity="(0 1)"
+	 * User provided dataFormatID
 	 */
 	private String dataFormatID;
 
@@ -99,7 +88,6 @@ public class DataFormatsNewForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="dataFormatID"
 	 */
 	public String getDataFormatID() {
 		return dataFormatID;
@@ -107,7 +95,6 @@ public class DataFormatsNewForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="selectedDescription"
 	 */
 	public String getSelectedDescription() {
 		return selectedDescription;
@@ -115,7 +102,6 @@ public class DataFormatsNewForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="dataFormatID"
 	 */
 	public void setDataFormatID(String string) {
 		dataFormatID = string;
@@ -123,7 +109,6 @@ public class DataFormatsNewForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="selectedDescription"
 	 */
 	public void setSelectedDescription(String string) {
 		selectedDescription = string;

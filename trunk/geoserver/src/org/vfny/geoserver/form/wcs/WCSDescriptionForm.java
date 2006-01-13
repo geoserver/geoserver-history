@@ -2,12 +2,6 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-/*
- * Created on Dec 23, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package org.vfny.geoserver.form.wcs;
 
 import javax.servlet.ServletContext;
@@ -24,7 +18,7 @@ import org.vfny.geoserver.config.WCSConfig;
  * DOCUMENT ME!
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public final class WCSDescriptionForm extends ActionForm {
     /**
@@ -34,43 +28,36 @@ public final class WCSDescriptionForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="name" multiplicity="(0 1)"
 	 */
 	private String name;
 
 	/**
 	 * 
-	 * @uml.property name="title" multiplicity="(0 1)"
 	 */
 	private String title;
 
 	/**
 	 * 
-	 * @uml.property name="accessConstraints" multiplicity="(0 1)"
 	 */
 	private String accessConstraints;
 
 	/**
 	 * 
-	 * @uml.property name="fees" multiplicity="(0 1)"
 	 */
 	private String fees;
 
 	/**
 	 * 
-	 * @uml.property name="maintainer" multiplicity="(0 1)"
 	 */
 	private String maintainer;
 
 	/**
 	 * 
-	 * @uml.property name="keywords" multiplicity="(0 1)"
 	 */
 	private String keywords;
 
 	/**
 	 * 
-	 * @uml.property name="_abstract" multiplicity="(0 1)"
 	 */
 	private String _abstract;
 
@@ -82,8 +69,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="name"
 	 */
 	public String getName() {
 		return name;
@@ -93,8 +78,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="title"
 	 */
 	public String getTitle() {
 		return title;
@@ -104,8 +87,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @param string
-	 * 
-	 * @uml.property name="name"
 	 */
 	public void setName(String string) {
 		name = string;
@@ -115,8 +96,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @param string
-	 * 
-	 * @uml.property name="title"
 	 */
 	public void setTitle(String string) {
 		title = string;
@@ -126,8 +105,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="_abstract"
 	 */
 	public String get_abstract() {
 		return _abstract;
@@ -137,8 +114,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="accessConstraints"
 	 */
 	public String getAccessConstraints() {
 		return accessConstraints;
@@ -148,8 +123,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="fees"
 	 */
 	public String getFees() {
 		return fees;
@@ -159,8 +132,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="keywords"
 	 */
 	public String getKeywords() {
 		return keywords;
@@ -170,8 +141,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="maintainer"
 	 */
 	public String getMaintainer() {
 		return maintainer;
@@ -181,8 +150,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @param string
-	 * 
-	 * @uml.property name="_abstract"
 	 */
 	public void set_abstract(String string) {
 		_abstract = string;
@@ -192,8 +159,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @param string
-	 * 
-	 * @uml.property name="accessConstraints"
 	 */
 	public void setAccessConstraints(String string) {
 		accessConstraints = string;
@@ -203,8 +168,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @param string
-	 * 
-	 * @uml.property name="fees"
 	 */
 	public void setFees(String string) {
 		fees = string;
@@ -214,8 +177,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @param string
-	 * 
-	 * @uml.property name="keywords"
 	 */
 	public void setKeywords(String string) {
 		keywords = string;
@@ -225,8 +186,6 @@ public final class WCSDescriptionForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @param string
-	 * 
-	 * @uml.property name="maintainer"
 	 */
 	public void setMaintainer(String string) {
 		maintainer = string;

@@ -218,11 +218,11 @@ public class WFSCapsTransformer extends TransformerBase {
             handleDescribeFT();
             handleGetFeature();
 
-            if ((config.getServiceLevel() | WFSDTO.TRANSACTIONAL) != 0) {
+		if (config.getServiceLevel() >= WFSDTO.TRANSACTIONAL) {
                 handleTransaction();
             }
 
-            if ((config.getServiceLevel() | WFSDTO.SERVICE_LOCKING) != 0) {
+		if (config.getServiceLevel() == WFSDTO.COMPLETE) { 
                 handleLock();
                 handleFeatureWithLock();
             }
@@ -266,6 +266,7 @@ public class WFSCapsTransformer extends TransformerBase {
 
             String resultFormat = "ResultFormat";
             start(resultFormat);
+            
             //DJB: okay, I'm adding all the supported formats
             //     we probably need a "strict cite" conformance option
             //     somewhere in the config files. (default = not scrict)

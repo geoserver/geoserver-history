@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Richard Gould
  * @author Jody Garnett
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class DemoAction extends GeoServerAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,

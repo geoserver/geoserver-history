@@ -37,7 +37,7 @@ import org.xml.sax.SAXException;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: ReaderUtils.java,v 1.10 2004/09/13 16:04:26 cholmesny Exp $
  *
  * @see XMLConfigReader

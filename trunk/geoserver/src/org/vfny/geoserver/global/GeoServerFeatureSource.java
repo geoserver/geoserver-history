@@ -14,17 +14,15 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureListener;
 import org.geotools.data.FeatureLocking;
-import org.geotools.data.FeatureResults;
-
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
-
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.LogicFilter;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -229,7 +227,7 @@ public class GeoServerFeatureSource implements FeatureSource {
 
         try {
             if (definitionQuery != Filter.NONE) {
-                FilterFactory ff = FilterFactory.createFilterFactory();
+                FilterFactory ff = new FilterFactoryImpl();
                 newFilter = ff.createLogicFilter(AbstractFilter.LOGIC_AND);
                 ((LogicFilter) newFilter).addFilter(definitionQuery);
                 ((LogicFilter) newFilter).addFilter(filter);

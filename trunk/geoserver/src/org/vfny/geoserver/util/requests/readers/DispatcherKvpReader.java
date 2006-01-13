@@ -16,7 +16,7 @@ import org.vfny.geoserver.servlets.Dispatcher;
  * @author Chris Holmes, TOPP
  * @author Gabriel Rold?n
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: DispatcherKvpReader.java,v 1.11 2004/08/02 17:38:04 cholmesny Exp $
  */
 public class DispatcherKvpReader {

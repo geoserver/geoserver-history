@@ -39,7 +39,7 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter.WriterUtils;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: ApplicationState.java,v 1.15 2004/04/03 13:13:03 cholmesny Exp $
  */
 public class ApplicationState implements PlugIn {

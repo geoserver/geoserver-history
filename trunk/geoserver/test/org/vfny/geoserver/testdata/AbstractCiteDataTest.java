@@ -31,9 +31,9 @@ import org.geotools.feature.SchemaException;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactory2;
+import org.geotools.styling.StyleFactoryImpl;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.crs.GeographicCRS;
 
 
 /**
@@ -88,7 +88,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * used to create default styles for cite types loading them from
      * test-data/styles/&lt;cite-typename&gt;.sld
      */
-    private static final StyleFactory sFac = StyleFactory.createStyleFactory();
+    private static final StyleFactory2 sFac = new StyleFactoryImpl();
 
     /** DOCUMENT ME! */
     private static final int SHOW_TIMEOUT = 200;

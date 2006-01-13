@@ -27,7 +27,7 @@ import org.xml.sax.helpers.ParserAdapter;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version 0.1
  */
 public class DescribeXmlReader extends XmlRequestReader {

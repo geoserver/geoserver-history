@@ -16,10 +16,10 @@ import org.vfny.geoserver.global.dto.FormatInfoDTO;
 
 
 /**
- * DataStoreInfo purpose.
+ * DataFormatInfo purpose.
  * 
  * <p>
- * Used to describe a datastore, typically one specified in the catalog.xml
+ * Used to describe a coverage format, typically one specified in the catalog.xml
  * config file.
  * </p>
  * 
@@ -27,77 +27,52 @@ import org.vfny.geoserver.global.dto.FormatInfoDTO;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
- * @version $Id: DataStoreConfig.java,v 1.11 2004/04/30 02:49:24 sploreg Exp $
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class DataFormatConfig {
 
 	/**
 	 * unique datasore identifier
-	 * 
-	 * @uml.property name="id" multiplicity="(0 1)"
 	 */
 	private String id;
 
-/**
- * 
- * @uml.property name="type" multiplicity="(0 1)"
- */
-//    /** unique namespace to refer to this datastore */
-//    private String nameSpaceId;
 private String type;
 
-	/**
-	 * 
-	 * @uml.property name="url" multiplicity="(0 1)"
-	 */
 	private String url;
 
 	/**
-	 * wether this data store is enabled
-	 * 
-	 * @uml.property name="enabled" multiplicity="(0 1)"
+	 * wether this format is enabled
 	 */
 	private boolean enabled = true;
 
 	/**
-	 * a short description about this data store
-	 * 
-	 * @uml.property name="title" multiplicity="(0 1)"
+	 * a short description about this format
 	 */
 	private String title;
 
 
-    /** a short description about this data store */
+    /** a short description about this format */
     private String _abstract;
 
 	/**
-	 * connection parameters to create the DataStoreInfo
-	 * 
-	 * @uml.property name="parameters"
-	 * @uml.associationEnd qualifier="key:java.lang.String java.lang.String" multiplicity=
-	 * "(0 1)"
+	 * connection parameters to create the DataFormatInfo
 	 */
 	private Map parameters;
 
 	/**
-	 * Config ONLY! DataStoreFactory used to test params
-	 * 
-	 * @uml.property name="factory"
-	 * @uml.associationEnd elementType="org.opengis.parameter.ParameterValue" multiplicity=
-	 * "(0 -1)"
+	 * Config ONLY!
 	 */
 	private Format factory;
 
 
     /**
-     * Create a new DataStoreConfig from a dataStoreId and factoryDescription
+     * Create a new DataFormatConfig from a dataFormatId and factoryDescription
      * 
      * <p>
-     * Creates a DataStoreInfo to represent an instance with default data.
+     * Creates a DataFormatInfo to represent an instance with default data.
      * </p>
      *
-     * @param dataStoreId Description of DataStore (see DataStoreUtils)
+     * @param dataFormatId Description of Format (see DataFormatUtils)
      * @param factoryDescription DOCUMENT ME!
      *
      * @see defaultSettings()
@@ -106,11 +81,10 @@ private String type;
         this(dataFormatId, DataFormatUtils.aquireFactory(factoryDescription));
     }
 
-    /** Creates a new DataStoreConfig for the provided factory. */
+    /** Creates a new DataFormatConfig for the provided factory (Format). */
     public DataFormatConfig(String dataFormatId, Format factory) {
     	this.factory = factory;
         id = dataFormatId;
-        //nameSpaceId = "";
         type = factory.getName();
         url = "file:data/coverages/";
         enabled = true;
@@ -120,14 +94,14 @@ private String type;
     }
 
     /**
-     * DataStoreInfo constructor.
+     * DataFormatInfo constructor.
      * 
      * <p>
-     * Creates a copy of the DataStoreInfoDTO provided. All the datastructures
+     * Creates a copy of the DataFormatInfoDTO provided. All the datastructures
      * are cloned.
      * </p>
      *
-     * @param dto The datastore to copy.
+     * @param dto The format to copy.
      */
     public DataFormatConfig(FormatInfoDTO dto) {
         reset(dto);
@@ -148,7 +122,6 @@ private String type;
         factory = DataFormatUtils.aquireFactory(dto.getParameters(), dto.getType());
 
         id = dto.getId();
-//        nameSpaceId = dto.getNameSpaceId();
         type = dto.getType();
         url = dto.getUrl();
         enabled = dto.isEnabled();
@@ -160,30 +133,29 @@ private String type;
      * Implement loadDTO.
      * 
      * <p>
-     * Populates the data fields with the DataStoreInfoDTO provided.
+     * Populates the data fields with the DataFormatInfoDTO provided.
      * </p>
      *
-     * @param ds the DataStoreInfoDTO to use.
+     * @param df the DataFormatInfoDTO to use.
      *
      * @throws NullPointerException DOCUMENT ME!
      *
      * @see org.vfny.geoserver.config.DataStructure#loadDTO(java.lang.Object)
      */
-    public void update(FormatInfoDTO ds) {
-        if (ds == null) {
+    public void update(FormatInfoDTO df) {
+        if (df == null) {
             throw new NullPointerException(
                 "FormatInfo Data Transfer Object required");
         }
 
-        id = ds.getId();
-//        nameSpaceId = ds.getNameSpaceId();
-        type = ds.getType();
-        url = ds.getUrl();
-        enabled = ds.isEnabled();
-        _abstract = ds.getAbstract();
+        id = df.getId();
+        type = df.getType();
+        url = df.getUrl();
+        enabled = df.isEnabled();
+        _abstract = df.getAbstract();
 
         try {
-            parameters = new HashMap(ds.getParameters()); //clone?
+            parameters = new HashMap(df.getParameters()); //clone?
         } catch (Exception e) {
         	parameters = new HashMap();
         }
@@ -193,17 +165,16 @@ private String type;
      * Implement toDTO.
      * 
      * <p>
-     * Create a DataStoreInfoDTO from the current config object.
+     * Create a DataFormatInfoDTO from the current config object.
      * </p>
      *
-     * @return The data represented as a DataStoreInfoDTO
+     * @return The data represented as a DataFormatInfoDTO
      *
      * @see org.vfny.geoserver.config.DataStructure#toDTO()
      */
     public FormatInfoDTO toDTO() {
     	FormatInfoDTO ds = new FormatInfoDTO();
         ds.setId(id);
-//        ds.setNameSpaceId(nameSpaceId);
         ds.setType(type);
         ds.setUrl(url);
         ds.setEnabled(enabled);
@@ -239,8 +210,6 @@ private String type;
 	 * </p>
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="parameters"
 	 */
 	public Map getParameters() {
 		return parameters;
@@ -261,32 +230,17 @@ private String type;
     }
 
 	/**
-	 * This is the DataStore ID
+	 * This is the Format ID
 	 * 
 	 * <p>
 	 * 
 	 * </p>
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="id"
 	 */
 	public String getId() {
 		return id;
 	}
-
-	//    /**
-	//     * getNameSpace purpose.
-	//     * 
-	//     * <p>
-	//     * Description ...
-	//     * </p>
-	//     *
-	//     * @return
-	//     */
-	//    public String getNameSpaceId() {
-	//        return nameSpaceId;
-	//    }
 
 	/**
 	 * getTitle purpose.
@@ -296,8 +250,6 @@ private String type;
 	 * </p>
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="title"
 	 */
 	public String getTitle() {
 		return title;
@@ -327,8 +279,6 @@ private String type;
 	 * </p>
 	 * 
 	 * @param map
-	 * 
-	 * @uml.property name="parameters"
 	 */
 	public void setParameters(Map map) {
 		parameters = map;
@@ -342,27 +292,10 @@ private String type;
 	 * </p>
 	 * 
 	 * @param b
-	 * 
-	 * @uml.property name="enabled"
 	 */
 	public void setEnabled(boolean b) {
 		enabled = b;
 	}
-
-	//    /**
-	//     * setNameSpace purpose.
-	//     * 
-	//     * <p>
-	//     * Description ...
-	//     * </p>
-	//     *
-	//     * @param support
-	//     */
-	//    public void setNameSpaceId(String support) {
-	//        if (support != null) {
-	//            nameSpaceId = support;
-	//        }
-	//    }
 
 	/**
 	 * setTitle purpose.
@@ -387,9 +320,9 @@ private String type;
     /**
      * It would be nice if we did not throw this away - but life is too short
      *
-     * @return Real DataStore generated by this DataStoreConfig
+     * @return Real Format generated by this DataFormatConfig
      *
-     * @throws IOException If DataStore could not be aquired
+     * @throws IOException If Format could not be aquired
      */
     public Format findDataFormat(ServletContext sc) throws IOException {
         return DataFormatUtils.acquireFormat(type,sc);
@@ -397,8 +330,6 @@ private String type;
 
 	/**
 	 * @return Returns the factory.
-	 * 
-	 * @uml.property name="factory"
 	 */
 	public Format getFactory() {
 		return factory;
@@ -406,8 +337,6 @@ private String type;
 
 	/**
 	 * @param factory The factory to set.
-	 * 
-	 * @uml.property name="factory"
 	 */
 	public void setFactory(Format factory) {
 		this.factory = factory;
@@ -415,8 +344,6 @@ private String type;
 
 /**
  * @return Returns the type.
- * 
- * @uml.property name="type"
  */
 public String getType() {
 	return type;
@@ -424,8 +351,6 @@ public String getType() {
 
 /**
  * @param type The type to set.
- * 
- * @uml.property name="type"
  */
 public void setType(String type) {
 	this.type = type;
@@ -433,8 +358,6 @@ public void setType(String type) {
 
 	/**
 	 * @return Returns the url.
-	 * 
-	 * @uml.property name="url"
 	 */
 	public String getUrl() {
 		return url;
@@ -442,8 +365,6 @@ public void setType(String type) {
 
 	/**
 	 * @param url The url to set.
-	 * 
-	 * @uml.property name="url"
 	 */
 	public void setUrl(String url) {
 		this.url = url;

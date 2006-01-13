@@ -18,19 +18,17 @@ import javax.servlet.http.HttpServletRequest;
  * DOCUMENT ME!
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class DataCoveragesSelectForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="selectedCoverageName" multiplicity="(0 1)"
 	 */
 	private String selectedCoverageName;
 
 	/**
 	 * 
-	 * @uml.property name="buttonAction" multiplicity="(0 1)"
 	 */
 	private String buttonAction;
 
@@ -50,8 +48,6 @@ public class DataCoveragesSelectForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @return Returns the selectedCoverageName.
-	 * 
-	 * @uml.property name="selectedCoverageName"
 	 */
 	public String getSelectedCoverageName() {
 		return selectedCoverageName;
@@ -61,8 +57,6 @@ public class DataCoveragesSelectForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @param selectedCoverageName The selectedCoverageName to set.
-	 * 
-	 * @uml.property name="selectedCoverageName"
 	 */
 	public void setSelectedCoverageName(String selectedCoverageName) {
 		this.selectedCoverageName = selectedCoverageName;
@@ -80,8 +74,6 @@ public class DataCoveragesSelectForm extends ActionForm {
 	 * Access buttonAction property.
 	 * 
 	 * @return Returns the buttonAction.
-	 * 
-	 * @uml.property name="buttonAction"
 	 */
 	public String getButtonAction() {
 		return buttonAction;
@@ -91,8 +83,6 @@ public class DataCoveragesSelectForm extends ActionForm {
 	 * Set buttonAction to buttonAction.
 	 * 
 	 * @param buttonAction The buttonAction to set.
-	 * 
-	 * @uml.property name="buttonAction"
 	 */
 	public void setButtonAction(String buttonAction) {
 		this.buttonAction = buttonAction;

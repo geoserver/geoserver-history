@@ -28,7 +28,7 @@ import org.vfny.geoserver.global.UserContainer;
  * @author User, Refractions Research, Inc.
  * @author dmzwiers
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: DataFormatsSelectAction.java,v 1.12 2004/02/25 21:51:11 dmzwiers Exp $
  */
 public class DataFormatsSelectAction extends ConfigAction {

@@ -27,6 +27,7 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -261,7 +262,7 @@ public class FeatureResponse implements Response {
         FeatureSource source;
         Feature feature;
         String fid;
-        FilterFactory filterFactory = FilterFactory.createFilterFactory();
+        FilterFactory filterFactory = new FilterFactoryImpl();
         FidFilter fidFilter;
         int numberLocked;
 

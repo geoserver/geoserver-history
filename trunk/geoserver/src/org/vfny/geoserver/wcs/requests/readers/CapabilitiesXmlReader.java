@@ -24,7 +24,7 @@ import org.xml.sax.helpers.ParserAdapter;
  * reads a WCS GetCapabilities request from an XML stream
  * 
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: CapabilitiesXmlReader.java,v 0.1 Feb 15, 2005 12:35:09 PM $
  */
 public class CapabilitiesXmlReader extends XmlRequestReader {

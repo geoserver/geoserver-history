@@ -65,6 +65,10 @@
 			<CssParameter name="font-weight">bold</CssParameter>
 		    </Font>
 		    
+		    <LabelPlacement>
+		      <LinePlacement>
+		      </LinePlacement>
+		    </LabelPlacement>
 		    <Halo>
 
 			    <Radius>
@@ -80,6 +84,9 @@
 		    <Fill>
 			<CssParameter name="fill">#000000</CssParameter>
 		    </Fill>
+		    
+		    <VendorOption name="group">true</VendorOption>
+		    
 	</TextSymbolizer>
     </Rule>
             

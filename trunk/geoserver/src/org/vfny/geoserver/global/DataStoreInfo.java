@@ -180,7 +180,10 @@ public class DataStoreInfo extends GlobalLayerSupertype {
             Object value = entry.getValue();
 
             try {
-                if ("url".equals(key) && value instanceof String) {
+            	//TODO: this code is a pretty big hack, using the name to 
+            	// determine if the key is a url, could be named something else
+            	// and still be a url
+                if (key != null && key.matches(".* *url") && value instanceof String) {
                     String path = (String) value;
 		    LOGGER.finer("in string url");
                     if (path.startsWith("file:data/")) {
@@ -239,43 +242,36 @@ public class DataStoreInfo extends GlobalLayerSupertype {
 	 * 
 	 * @uml.property name="dataStore"
 	 */
-	public synchronized DataStore getDataStore()
-		throws IllegalStateException,
-		NoSuchElementException {
-		if (!isEnabled()) {
-			throw new IllegalStateException(
-				"this datastore is not enabled, check your configuration");
-		}
+    public synchronized DataStore getDataStore()
+        throws IllegalStateException, NoSuchElementException {
+        if (!isEnabled()) {
+            throw new IllegalStateException(
+                "this datastore is not enabled, check your configuration");
+        }
 
-		Map m = getParams();
+        Map m = getParams();
 
-		if (dataStore == null) {
-			try {
-				dataStore = DataStoreFinder.getDataStore(m);
-				LOGGER.fine("connection established by " + toString());
-			} catch (Throwable ex) {
-				throw new IllegalStateException("can't create the datastore "
-					+ getId()
-					+ ": "
-					+ ex.getClass().getName()
-					+ ": "
-					+ ex.getMessage()
-					+ "\n"
-					+ ex.toString());
-			}
+        if (dataStore == null) {
+            try {
+                dataStore = DataStoreFinder.getDataStore(m);
+                LOGGER.fine("connection established by " + toString());
+            } catch (Throwable ex) {
+                throw new IllegalStateException("can't create the datastore "
+                    + getId() + ": " + ex.getClass().getName() + ": "
+                    + ex.getMessage() + "\n" + ex.toString());
+            }
 
-			if (dataStore == null) {
-				// If datastore is not present, then disable it
-				// (although no change in config).
-				enabled = false;
-				LOGGER
-					.fine("failed to establish connection with " + toString());
-				throw new NoSuchElementException(
-					"No datastore found capable of managing " + toString());
-			}
-		}
+            if (dataStore == null) {
+            	 // If datastore is not present, then disable it
+                // (although no change in config).
+                enabled=false;
+                LOGGER.fine("failed to establish connection with " + toString());
+                throw new NoSuchElementException(
+                    "No datastore found capable of managing " + toString());
+            }
+        }
 
-		return dataStore;
+        return dataStore;
 	}
 
 	/**

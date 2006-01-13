@@ -18,6 +18,7 @@ import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.vfny.geoserver.ServiceException;
@@ -213,7 +214,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
         Polygon pixelRect = geomFac.createPolygon(boundary, null);
 
-        FilterFactory filterFac = FilterFactory.createFilterFactory();
+        FilterFactory filterFac = new FilterFactoryImpl();
 
         GeometryFilter getFInfoFilter = null;
 

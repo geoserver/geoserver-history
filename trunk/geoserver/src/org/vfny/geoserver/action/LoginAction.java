@@ -50,11 +50,11 @@ public class LoginAction extends GeoServerAction {
 
         //GlobalConfig global = (GlobalConfig) getServlet().getServletContext()
         //                                       .getAttribute(GlobalConfig.CONFIG_KEY);
-        GeoServer geoserver = getWFS(request).getGeoServer();
+        final GeoServer geoserver = getWFS(request).getGeoServer();
 
         if (username.equalsIgnoreCase(geoserver.getAdminUserName())
                 && password.equalsIgnoreCase(geoserver.getAdminPassword())) {
-            UserContainer user = new UserContainer();
+            final UserContainer user = new UserContainer();
             user.setUsername(username);
             request.getSession().setAttribute(UserContainer.SESSION_KEY, user);
 

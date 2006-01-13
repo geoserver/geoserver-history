@@ -18,7 +18,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: WCSDTO.java,v 0.1 Feb 15, 2005 2:57:52 PM $
  */
 public class WCSDTO implements DataTransferObject {

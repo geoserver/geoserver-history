@@ -44,69 +44,55 @@ import org.vfny.geoserver.util.Requests;
 
 
 /**
- * Represents the information required for editing a DataStore.
+ * Represents the information required for editing a DataFormat.
  * 
  * <p>
- * The parameters required by a DataStore are dynamically generated from the
- * DataStoreFactorySPI. Most use of DataStoreFactorySPI has been hidden behind
+ * The parameters required by a DataFormat are dynamically generated from the
+ * DataFormatFactorySPI. Most use of DataFormatFactorySPI has been hidden behind
  * the DataStoreUtil class.
  * </p>
  *
  * @author Richard Gould, Refractions Research
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class DataFormatsEditorForm extends ActionForm {
 
 	/**
 	 * Help text for Params if available
-	 * 
-	 * @uml.property name="paramHelp"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
 	private ArrayList paramHelp;
 
 	/**
-	 * Used to identify the DataStore being edited. Maybe we should grab this
+	 * Used to identify the Format being edited. Maybe we should grab this
 	 * from session?
-	 * 
-	 * @uml.property name="dataFormatId" multiplicity="(0 1)"
 	 */
 	private String dataFormatId;
 
 	/**
-	 * Enabled status of DataStore
-	 * 
-	 * @uml.property name="enabled" multiplicity="(0 1)"
+	 * Enabled status of Format
 	 */
 	private boolean enabled;
 
 	/**
 	 * 
-	 * @uml.property name="type" multiplicity="(0 1)"
 	 */
-	/* NamespaceID used for DataStore content */
-	//private String namespaceId;
 	private String type;
 
 	/**
 	 * 
-	 * @uml.property name="url" multiplicity="(0 1)"
 	 */
 	private String url;
 
 	/**
 	 * 
-	 * @uml.property name="urlFile"
-	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private FormFile urlFile = null;
 
 	/**
 	 * 
-	 * @uml.property name="description" multiplicity="(0 1)"
 	 */
-	/* Description of DataStore (abstract?) */
+	/* Description of Format (abstract?) */
 	private String description;
 
 	// These are not stored in a single map so we can access them
@@ -115,26 +101,13 @@ public class DataFormatsEditorForm extends ActionForm {
 
 	/**
 	 * String representation of connection parameter keys
-	 * 
-	 * @uml.property name="paramKeys"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
 	private List paramKeys;
 
 	/**
 	 * String representation of connection parameter values
-	 * 
-	 * @uml.property name="paramValues"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
 	private List paramValues;
-
-	//
-	// More hacky attempts to transfer information into the JSP smoothly
-	//
-
-	//    /** Available NamespaceIds */
-	//    private SortedSet namespaces;
 
 	/**
 	 * Because of the way that STRUTS works, if the user does not check the
@@ -143,8 +116,6 @@ public class DataFormatsEditorForm extends ActionForm {
 	 * accessible, as ActionForms need to know about it -- there is no way we
 	 * can tell whether we are about to be passed to an ActionForm or not.
 	 * Probably a better way to do this, but I can't think of one. -rgould
-	 * 
-	 * @uml.property name="enabledChecked" multiplicity="(0 1)"
 	 */
 	private boolean enabledChecked = false;
 
@@ -157,14 +128,12 @@ public class DataFormatsEditorForm extends ActionForm {
         ServletContext context = getServlet().getServletContext();
         DataConfig config = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 
-//        namespaces = new TreeSet(config.getNameSpaces().keySet());
-
         DataFormatConfig dfConfig = Requests.getUserContainer(request).getDataFormatConfig();
 
         if (dfConfig == null) {
-            // something is horribly wrong no DataStoreID selected!
+            // something is horribly wrong no FormatID selected!
             // The JSP needs to not include us if there is no
-            // selected DataStore
+            // selected Format
             //
             throw new RuntimeException(
                 "selectedDataFormatId required in Session");
@@ -174,10 +143,6 @@ public class DataFormatsEditorForm extends ActionForm {
         description = dfConfig.getAbstract();
         enabled = dfConfig.isEnabled();
         url = dfConfig.getUrl();
-//        namespaceId = dfConfig.getNameSpaceId();
-//        if (namespaceId.equals("")) {
-//        	namespaceId = config.getDefaultNameSpace().getPrefix();
-//        }
 
         //Retrieve connection params
         Format factory = dfConfig.getFactory();
@@ -202,7 +167,7 @@ public class DataFormatsEditorForm extends ActionForm {
 
                     if ("namespace".equals(key)) {
                         // skip namespace as it is *magic* and
-                        // appears to be an entry used in all datastores?
+                        // appears to be an entry used in all dataformats?
                         //
                         continue;
                     }
@@ -251,7 +216,7 @@ public class DataFormatsEditorForm extends ActionForm {
 //        }
 //        Requests.getApplicationState(request);
 
-        // Selected DataStoreConfig is in session
+        // Selected DataFormatConfig is in session
         //
         UserContainer user = Requests.getUserContainer( request );
         DataFormatConfig dfConfig = user.getDataFormatConfig();
@@ -367,10 +332,6 @@ public class DataFormatsEditorForm extends ActionForm {
             }        	
         }
 
-        // put magic namespace into the mix
-        //
-        //connectionParams.put("namespace", getNamespaceId());
-
         dump("form", connectionParams );
         // Factory will provide even more stringent checking
         //
@@ -426,8 +387,6 @@ public class DataFormatsEditorForm extends ActionForm {
 	 * DOCUMENT ME!
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="paramKeys"
 	 */
 	public List getParamKeys() {
 		return paramKeys;
@@ -474,8 +433,6 @@ public class DataFormatsEditorForm extends ActionForm {
 	 * </p>
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="dataFormatId"
 	 */
 	public String getDataFormatId() {
 		return dataFormatId;
@@ -489,8 +446,6 @@ public class DataFormatsEditorForm extends ActionForm {
 	 * </p>
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="description"
 	 */
 	public String getDescription() {
 		return description;
@@ -510,19 +465,6 @@ public class DataFormatsEditorForm extends ActionForm {
         return enabled;
     }
 
-	//    /**
-	//     * getNamespaces purpose.
-	//     * 
-	//     * <p>
-	//     * Description ...
-	//     * </p>
-	//     *
-	//     * @return
-	//     */
-	//    public SortedSet getNamespaces() {
-	//        return namespaces;
-	//    }
-
 	/**
 	 * getParamValues purpose.
 	 * 
@@ -531,8 +473,6 @@ public class DataFormatsEditorForm extends ActionForm {
 	 * </p>
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="paramValues"
 	 */
 	public List getParamValues() {
 		return paramValues;
@@ -546,8 +486,6 @@ public class DataFormatsEditorForm extends ActionForm {
 	 * </p>
 	 * 
 	 * @param string
-	 * 
-	 * @uml.property name="description"
 	 */
 	public void setDescription(String string) {
 		description = string;
@@ -561,8 +499,6 @@ public class DataFormatsEditorForm extends ActionForm {
 	 * </p>
 	 * 
 	 * @param b
-	 * 
-	 * @uml.property name="enabled"
 	 */
 	public void setEnabled(boolean b) {
 		setEnabledChecked(true);
@@ -577,8 +513,6 @@ public class DataFormatsEditorForm extends ActionForm {
 	 * </p>
 	 * 
 	 * @param list
-	 * 
-	 * @uml.property name="paramKeys"
 	 */
 	public void setParamKeys(List list) {
 		paramKeys = list;
@@ -592,39 +526,11 @@ public class DataFormatsEditorForm extends ActionForm {
 	 * </p>
 	 * 
 	 * @param list
-	 * 
-	 * @uml.property name="paramValues"
 	 */
 	public void setParamValues(List list) {
 		paramValues = list;
 	}
 
-
-//    /**
-//     * getNamespaceId purpose.
-//     * 
-//     * <p>
-//     * Description ...
-//     * </p>
-//     *
-//     * @return
-//     */
-//    public String getNamespaceId() {
-//        return namespaceId;
-//    }
-//
-//    /**
-//     * setNamespaceId purpose.
-//     * 
-//     * <p>
-//     * Description ...
-//     * </p>
-//     *
-//     * @param string
-//     */
-//    public void setNamespaceId(String string) {
-//        namespaceId = string;
-//    }
 
     /**
      * enabledChecked property
@@ -639,8 +545,6 @@ public class DataFormatsEditorForm extends ActionForm {
 	 * enabledChecked property
 	 * 
 	 * @param b DOCUMENT ME!
-	 * 
-	 * @uml.property name="enabledChecked"
 	 */
 	public void setEnabledChecked(boolean b) {
 		enabledChecked = b;
@@ -669,8 +573,6 @@ public class DataFormatsEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the type.
-	 * 
-	 * @uml.property name="type"
 	 */
 	public String getType() {
 		return type;
@@ -678,8 +580,6 @@ public class DataFormatsEditorForm extends ActionForm {
 
 	/**
 	 * @param type The type to set.
-	 * 
-	 * @uml.property name="type"
 	 */
 	public void setType(String type) {
 		this.type = type;
@@ -687,8 +587,6 @@ public class DataFormatsEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the url.
-	 * 
-	 * @uml.property name="url"
 	 */
 	public String getUrl() {
 		return url;
@@ -696,8 +594,6 @@ public class DataFormatsEditorForm extends ActionForm {
 
 	/**
 	 * @param url The url to set.
-	 * 
-	 * @uml.property name="url"
 	 */
 	public void setUrl(String url) {
 		this.url = url;
@@ -705,7 +601,6 @@ public class DataFormatsEditorForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="urlFile"
 	 */
 	public FormFile getUrlFile() {
 		return this.urlFile;
@@ -713,7 +608,6 @@ public class DataFormatsEditorForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="urlFile"
 	 */
 	public void setUrlFile(FormFile filename) {
 		this.urlFile = filename;

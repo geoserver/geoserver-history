@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.filter.LiteralExpression;
@@ -74,7 +75,7 @@ abstract public class KvpRequestReader {
     protected static final String INNER_DELIMETER = ",";
 
     /** Holds mappings between HTTP and ASCII encodings */
-    private static FilterFactory factory = FilterFactory.createFilterFactory();
+    private static FilterFactory factory = new FilterFactoryImpl();
 
 	/**
 	 * KVP pair listing; stores all data from the KVP request

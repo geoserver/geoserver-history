@@ -1,3 +1,19 @@
+Geoserver 1.3.0 RC7
+-------------------
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12105
+
+The major changes since RC6 have been:
+
+* Reorganization of the data directory structure
+* SLD Validation
+* Lenient CRS Transforms
+* Logging
+* Http Unit Testing
+
+Based on the geotools 2.1.x branch (tag = geoserver-1.3.0.RC7)
+
 Geoserver 1.3.0 RC6
 -------------------
 

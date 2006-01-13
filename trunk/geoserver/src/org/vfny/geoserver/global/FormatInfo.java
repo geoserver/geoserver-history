@@ -19,51 +19,37 @@ import java.util.logging.Logger;
 
 
 /**
- * This is the configuration iformation for one DataStore. This class can also
- * generate real datastores.
+ * This is the configuration iformation for one coverage Format.
  *
- * @author Gabriel Roldán
- * @author dzwiers
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
- * @version $Id: DataStoreInfo.java,v 1.14 2004/06/26 19:51:24 jive Exp $
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class FormatInfo extends GlobalLayerSupertype {
 	/** for logging */
-	private static final Logger LOGGER = Logger.getLogger(
-	"org.vfny.geoserver.config");
+	private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.config");
 
 	/**
 	 * FormatInfo we are representing
-	 * 
-	 * @uml.property name="format"
-	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private Format format = null;
 
 	/**
 	 * ref to the parent class's collection
-	 * 
-	 * @uml.property name="data"
-	 * @uml.associationEnd multiplicity="(1 1)"
 	 */
 	private Data data;
 
 	/**
 	 * 
-	 * @uml.property name="id" multiplicity="(0 1)"
 	 */
 	private String id;
 
 	/**
 	 * 
-	 * @uml.property name="type" multiplicity="(0 1)"
 	 */
 	private String type;
 
 	/**
 	 * 
-	 * @uml.property name="url" multiplicity="(0 1)"
 	 */
 	private String url;
 
@@ -71,7 +57,6 @@ public class FormatInfo extends GlobalLayerSupertype {
 
 	/**
 	 * 
-	 * @uml.property name="title" multiplicity="(0 1)"
 	 */
 	private String title;
 
@@ -80,16 +65,12 @@ public class FormatInfo extends GlobalLayerSupertype {
 
 	/**
 	 * Storage for metadata
-	 * 
-	 * @uml.property name="meta"
-	 * @uml.associationEnd elementType="java.lang.Object" qualifier="key:java.lang.String
-	 * java.lang.Object" multiplicity="(0 -1)" ordering="ordered"
 	 */
 	private Map meta;
 
 	
 	/**
-	 * Directory associated with this DataStore.
+	 * Directory associated with this Format.
 	 * 
 	 * <p>
 	 * This directory may be used for File based relative paths.
@@ -98,7 +79,7 @@ public class FormatInfo extends GlobalLayerSupertype {
 	File baseDir;
 	
 	/**
-	 * URL associated with this DataStore.
+	 * URL associated with this Format.
 	 * 
 	 * <p>
 	 * This directory may be used for URL based relative paths.
@@ -107,13 +88,13 @@ public class FormatInfo extends GlobalLayerSupertype {
 	URL baseURL;
 	
 	/**
-	 * DataStoreInfo constructor.
+	 * FormatInfo constructor.
 	 * 
 	 * <p>
 	 * Stores the specified data for later use.
 	 * </p>
 	 *
-	 * @param config DataStoreInfoDTO the current configuration to use.
+	 * @param config FormatInfoDTO the current configuration to use.
 	 * @param data Data a ref to use later to look up related informtion
 	 */
 	public FormatInfo(FormatInfoDTO config, Data data) {
@@ -123,7 +104,6 @@ public class FormatInfo extends GlobalLayerSupertype {
 		parameters = config.getParameters();
 		enabled = config.isEnabled();
 		id = config.getId();
-		//nameSpaceId = config.getNameSpaceId();
 		type = config.getType();
 		url = config.getUrl();
 		title = config.getTitle();
@@ -139,7 +119,7 @@ public class FormatInfo extends GlobalLayerSupertype {
 	 * extreme caution.
 	 * </p>
 	 *
-	 * @return DataStoreInfoDTO the generated object
+	 * @return FormatInfoDTO the generated object
 	 */
 	Object toDTO() {
 		FormatInfoDTO dto = new FormatInfoDTO();
@@ -147,7 +127,6 @@ public class FormatInfo extends GlobalLayerSupertype {
 		dto.setParameters(parameters);
 		dto.setEnabled(enabled);
 		dto.setId(id);
-		//dto.setNameSpaceId(nameSpaceId);
 		dto.setType(type);
 		dto.setUrl(url);
 		dto.setTitle(title);
@@ -159,12 +138,10 @@ public class FormatInfo extends GlobalLayerSupertype {
 	 * getId purpose.
 	 * 
 	 * <p>
-	 * Returns the dataStore's id.
+	 * Returns the format's id.
 	 * </p>
 	 * 
 	 * @return String the id.
-	 * 
-	 * @uml.property name="id"
 	 */
 	public String getId() {
 		return id;
@@ -173,22 +150,13 @@ public class FormatInfo extends GlobalLayerSupertype {
 	
 	protected Map getParams() {
 		Map params = new HashMap(parameters);
-		//params.put("namespace", getNameSpace().getURI());
 		return getParams(params, data.getBaseDir().toString());
 	}
 	
 	/**
 	 * Get Connect params.
 	 * 
-	 * <p>
-	 * This is used to smooth any relative path kind of issues for any file
-	 * URLS. This code should be expanded to deal with any other context
-	 * sensitve isses dataStores tend to have.
-	 * </p>
-	 *
 	 * @return DOCUMENT ME!
-	 *
-	 * @task REVISIT: cache these?
 	 */
 	
 	public static Map getParams(Map m, String baseDir) {
@@ -220,16 +188,7 @@ public class FormatInfo extends GlobalLayerSupertype {
 						File file = new File(baseDir, path);
 						entry.setValue(file.toURL());
 					}
-				} /*else if ("dbtype".equals(key) && value instanceof String) {
-				String val = (String) value;
-				
-				if ((val != null) && val.equals("postgis")) {
-				if (!params.containsKey("charset")) {
-				params.put("charset",
-				data.getGeoServer().getCharSet().toString());
 				}
-				}
-				} */
 			} catch (MalformedURLException ignore) {
 				// ignore attempt to fix relative paths
 			}
@@ -239,25 +198,13 @@ public class FormatInfo extends GlobalLayerSupertype {
 	}
 
 	/**
-	 * By now just uses DataStoreFinder to find a new instance of a
-	 * DataStoreInfo capable of process <code>connectionParams</code>. In the
-	 * future we can see if it is better to cache or pool DataStores for
-	 * performance, but definitely we shouldn't maintain a single
-	 * DataStoreInfo as instance variable for synchronizing reassons
+	 * DOCUMENT ME !
+	 *  
+	 * @return Format
 	 * 
-	 * <p>
-	 * JG: Umm we actually require a single DataStoreInfo for for locking &
-	 * transaction support to work. DataStoreInfo is expected to be thread
-	 * aware (that is why it has Transaction Support).
-	 * </p>
-	 * 
-	 * @return DataStore
-	 * 
-	 * @throws IllegalStateException if this DataStoreInfo is disabled by
+	 * @throws IllegalStateException if this FormatInfo is disabled by
 	 *         configuration
-	 * @throws NoSuchElementException if no DataStoreInfo is found
-	 * 
-	 * @uml.property name="format"
+	 * @throws NoSuchElementException if no FormatInfo is found
 	 */
 	public synchronized Format getFormat()
 		throws IllegalStateException,
@@ -313,8 +260,6 @@ public class FormatInfo extends GlobalLayerSupertype {
 	 * </p>
 	 * 
 	 * @return String the title.
-	 * 
-	 * @uml.property name="title"
 	 */
 	public String getTitle() {
 		return title;
@@ -407,8 +352,6 @@ public class FormatInfo extends GlobalLayerSupertype {
 
 	/**
 	 * @return Returns the type.
-	 * 
-	 * @uml.property name="type"
 	 */
 	public String getType() {
 		return type;
@@ -416,8 +359,6 @@ public class FormatInfo extends GlobalLayerSupertype {
 
 	/**
 	 * @return Returns the url.
-	 * 
-	 * @uml.property name="url"
 	 */
 	public String getUrl() {
 		return url;

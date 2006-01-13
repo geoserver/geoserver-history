@@ -9,15 +9,12 @@
 package org.vfny.geoserver.util;
 
 import org.apache.xerces.parsers.SAXParser;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -41,9 +38,9 @@ public class SLDValidator {
      * @return
      */
     public List validateSLD(InputStream xml, ServletContext servContext) {
-        // File schemaFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(servContext),"/data/capabilities/sld/StyledLayerDescriptor.xsd");
-        File schemaFile = new File(GeoserverDataDirectory
-                .getGeoserverDataDirectory(servContext),
+    	// a riminder not to use the data directory for the schemas
+    	//String url = GeoserverDataDirectory.getGeoserverDataDirectory(servContext).toString();
+    	File schemaFile = new File(servContext.getRealPath("/"),
                 "/schemas/sld/StyledLayerDescriptor.xsd");
 
         try {
@@ -177,9 +174,8 @@ public class SLDValidator {
     }
 
     public List validateSLD(InputSource xml, ServletContext servContext) {
-        File schemaFile = new File(GeoserverDataDirectory
-                .getGeoserverDataDirectory(servContext),
-                "/data/capabilities/sld/GetMap.xsd");
+        File schemaFile = new File(servContext.getRealPath("/"),
+        "/schemas/sld/StyledLayerDescriptor.xsd");
 
         try {
             return validateSLD(xml, schemaFile.toURL().toString());
@@ -204,6 +200,14 @@ public class SLDValidator {
         SAXParser parser = new SAXParser();
 
         try {
+//     1. tell the parser to validate the XML document vs the schema
+//     2. does not validate the schema (the GML schema is *not* valid.  This is
+//        			an OGC blunder)
+//     3. tells the validator that the tags without a namespace are actually
+//        			SLD tags.
+//     4. tells the validator to 'override' the SLD schema that a user may
+//        			include with the one inside geoserver.
+
             parser.setFeature("http://xml.org/sax/features/validation", true);
             parser.setFeature("http://apache.org/xml/features/validation/schema",
                 true);

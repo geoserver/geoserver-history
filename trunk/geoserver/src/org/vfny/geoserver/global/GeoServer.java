@@ -9,18 +9,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Iterator;
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
 import javax.servlet.ServletContext;
 
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 
@@ -31,7 +27,7 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  * @author Gabriel Rold?n
  * @author dzwiers
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: GeoServer.java,v 1.23 2004/09/09 16:54:19 cholmesny Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
@@ -545,6 +541,8 @@ public class GeoServer extends GlobalLayerSupertype {
         	);
         	handler.setLevel(level);
         	logger.addHandler(handler);
+        	if (Logger.getLogger("org.geotools") != null) 
+        		Logger.getLogger("org.geotools").addHandler(handler);
         }
     }
     /**
@@ -573,6 +571,7 @@ public class GeoServer extends GlobalLayerSupertype {
         dto.setLogLocation(logLocation);
 
         ContactDTO cdto = new ContactDTO();
+        dto.setContact(cdto);
 
         cdto.setAddress(address);
         cdto.setAddressCity(addressCity);
@@ -587,8 +586,6 @@ public class GeoServer extends GlobalLayerSupertype {
         cdto.setContactPosition(contactPosition);
         cdto.setContactVoice(contactVoice);
         cdto.setOnlineResource(onlineResource);
-
-        dto.setContact(cdto);
 
         return dto;
     }
@@ -698,8 +695,11 @@ public class GeoServer extends GlobalLayerSupertype {
 	}
 	
 	/**
-	 * @return The string representation of the path on disk in which the 
-	 * server logs to.
+	 * Returns the location of where the server ouputs logs. Note that this may 
+	 * not reference an actual physical location on disk. 
+	 * Call {@link GeoServer#getLogLocation(String, ServletContext)} to map this
+	 * string to a file on disk.
+	 * 
 	 */
 	public String getLogLocation() {
 		return logLocation;

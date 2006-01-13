@@ -19,34 +19,27 @@ import org.vfny.geoserver.config.ConfigRequests;
 
 
 /**
- * Select current DataStore for edit or delete Action.
+ * Select current DataFormat for edit or delete Action.
  *
  * @author rgould, Refractions Research, Inc.
  * @author emperorkefka
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.9 2004/03/16 19:57:40 emperorkefka Exp $
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class DataFormatsSelectForm extends ActionForm {
 
 	/**
 	 * Action that spawned us must be "edit" or "delete"
-	 * 
-	 * @uml.property name="buttonAction" multiplicity="(0 1)"
 	 */
 	private String buttonAction;
 
 	/**
-	 * Selection from list - will be a dataStoreId
-	 * 
-	 * @uml.property name="selectedDataFormatId" multiplicity="(0 1)"
+	 * Selection from list - will be a dataFormatId
 	 */
 	private String selectedDataFormatId;
 
 	/**
 	 * 
-	 * @uml.property name="dataFormatIds"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
 	private List dataFormatIds;
 
@@ -104,8 +97,6 @@ public class DataFormatsSelectForm extends ActionForm {
 	 * List of current DataFormatIds
 	 * 
 	 * @return DOCUMENT ME!
-	 * 
-	 * @uml.property name="dataFormatIds"
 	 */
 	public List getDataFormatIds() {
 		return dataFormatIds;
@@ -120,8 +111,6 @@ public class DataFormatsSelectForm extends ActionForm {
 	 * </p>
 	 * 
 	 * @return Selected DataFormatID or <code>null</code> if nothing is selected
-	 * 
-	 * @uml.property name="selectedDataFormatId"
 	 */
 	public String getSelectedDataFormatId() {
 		return selectedDataFormatId;
@@ -136,8 +125,6 @@ public class DataFormatsSelectForm extends ActionForm {
 	 * </p>
 	 * 
 	 * @return Either <code>edit</code> or <code>delete</code>
-	 * 
-	 * @uml.property name="buttonAction"
 	 */
 	public String getButtonAction() {
 		return buttonAction;
@@ -145,7 +132,6 @@ public class DataFormatsSelectForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="buttonAction"
 	 */
 	public void setButtonAction(String string) {
 		buttonAction = string;
@@ -153,7 +139,6 @@ public class DataFormatsSelectForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="selectedDataFormatId"
 	 */
 	public void setSelectedDataFormatId(String string) {
 		selectedDataFormatId = string;

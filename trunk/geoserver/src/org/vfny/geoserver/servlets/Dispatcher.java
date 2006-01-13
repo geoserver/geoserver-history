@@ -34,7 +34,7 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: Dispatcher.java,v 1.13 2004/07/15 21:13:12 jmacgill Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets

@@ -8,7 +8,7 @@ package org.vfny.geoserver.global;
  * Represents a MetadataLink Attribute.
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: MetadataLink.java,v 0.1 Feb 16, 2005 1:32:39 PM $
  */
 public class MetaDataLink extends GlobalLayerSupertype {

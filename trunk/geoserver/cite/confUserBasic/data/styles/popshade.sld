@@ -3,7 +3,10 @@
 <!-- a named layer is the basic building block of an sld document -->
 <NamedLayer>
 <Name>A Test Layer</Name>
-
+<title>The title of the layer</title>
+<abstract>
+A styling layer used for the unit tests of sldstyler
+</abstract>
 <!-- with in a layer you have Named Styles -->
 <UserStyle>
     <!-- again they have names, titles and abstracts -->
@@ -14,17 +17,17 @@
     <FeatureTypeStyle>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
-        <ogc:Filter xmlns:gml="http://www.opengis.net/gml">
-          <ogc:PropertyIsBetween>
-            <ogc:PropertyName>PERSONS</ogc:PropertyName>
-            <ogc:LowerBoundary>
-              <ogc:Literal>2000000</ogc:Literal>
-            </ogc:LowerBoundary>
-            <ogc:UpperBoundary>
-              <ogc:Literal>4000000</ogc:Literal>
-            </ogc:UpperBoundary>
-          </ogc:PropertyIsBetween>
-        </ogc:Filter>
+        <Filter xmlns:gml="http://www.opengis.net/gml">
+          <PropertyIsBetween>
+            <PropertyName>PERSONS</PropertyName>
+            <LowerBoundary>
+              <Literal>2000000</Literal>
+            </LowerBoundary>
+            <UpperBoundary>
+              <Literal>4000000</Literal>
+            </UpperBoundary>
+          </PropertyIsBetween>
+        </Filter>
         <PolygonSymbolizer>
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
@@ -34,12 +37,12 @@
       </Rule>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
-        <ogc:Filter xmlns:gml="http://www.opengis.net/gml">
-          <ogc:PropertyIsLessThan>
-           <ogc:PropertyName>PERSONS</ogc:PropertyName>
-           <ogc:Literal>2000000</ogc:Literal>
-          </ogc:PropertyIsLessThan>
-        </ogc:Filter>
+        <Filter xmlns:gml="http://www.opengis.net/gml">
+          <PropertyIsLessThan>
+           <PropertyName>PERSONS</PropertyName>
+           <Literal>2000000</Literal>
+          </PropertyIsLessThan>
+        </Filter>
         <PolygonSymbolizer>
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
@@ -49,12 +52,12 @@
       </Rule>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
-        <ogc:Filter xmlns:gml="http://www.opengis.net/gml">
-          <ogc:PropertyIsGreaterThan>
-           <ogc:PropertyName>PERSONS</ogc:PropertyName>
-           <ogc:Literal>4000000</ogc:Literal>
-          </ogc:PropertyIsGreaterThan>
-        </ogc:Filter>
+        <Filter xmlns:gml="http://www.opengis.net/gml">
+          <PropertyIsGreaterThan>
+           <PropertyName>PERSONS</PropertyName>
+           <Literal>4000000</Literal>
+          </PropertyIsGreaterThan>
+        </Filter>
         <PolygonSymbolizer>
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->

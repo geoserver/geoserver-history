@@ -17,16 +17,12 @@ import org.vfny.geoserver.global.dto.WCSDTO;
  * <p></p>
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: WCSConfig.java,v 0.1 Feb 15, 2005 5:26:50 PM $
  */
 public class WCSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WCS";
 
-	/**
-	 * 
-	 * @uml.property name="gmlPrefixing" multiplicity="(0 1)"
-	 */
 	private boolean gmlPrefixing;
 
     
@@ -119,8 +115,6 @@ public class WCSConfig extends ServiceConfig {
 	 * </p>
 	 * 
 	 * @param b
-	 * 
-	 * @uml.property name="gmlPrefixing"
 	 */
 	public void setGmlPrefixing(boolean b) {
 		gmlPrefixing = b;

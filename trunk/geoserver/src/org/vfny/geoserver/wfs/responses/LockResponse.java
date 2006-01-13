@@ -25,6 +25,7 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -164,7 +165,7 @@ public class LockResponse implements Response {
         Set lockFailedFids = new HashSet();
         GeoServer config = request.getGeoServer();
         Data catalog = request.getWFS().getData();
-        FilterFactory filterFactory = FilterFactory.createFilterFactory();
+        FilterFactory filterFactory = new FilterFactoryImpl();
         LOGGER.info("locks size is " + locks.size());
 
         if (locks.size() == 0) {

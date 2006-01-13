@@ -22,7 +22,7 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: ServiceConfig.java,v 1.16 2004/02/09 23:30:05 dmzwiers Exp $
  */
 public class ServiceConfig {

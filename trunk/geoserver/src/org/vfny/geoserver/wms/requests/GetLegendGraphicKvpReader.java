@@ -7,7 +7,6 @@ package org.vfny.geoserver.wms.requests;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringBufferInputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.MalformedURLException;
@@ -18,20 +17,20 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.geotools.feature.FeatureType;
 import org.geotools.feature.Feature;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactory2;
+import org.geotools.styling.StyleFactoryImpl;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.CoverageInfo;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 
 
@@ -52,8 +51,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      * Factory to create styles from inline or remote SLD documents (aka, from
      * SLD_BODY or SLD parameters).
      */
-    private static final StyleFactory styleFactory = StyleFactory
-        .createStyleFactory();
+    private static final StyleFactory2 styleFactory = new StyleFactoryImpl();
 
     /**
      * Creates a new GetLegendGraphicKvpReader object.

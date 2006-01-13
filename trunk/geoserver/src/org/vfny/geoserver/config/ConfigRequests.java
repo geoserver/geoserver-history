@@ -29,7 +29,7 @@ import javax.servlet.http.HttpSession;
  * @author jgarnett, Refractions Research, Inc.
  * @author jive
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: ConfigRequests.java,v 1.4 2004/01/31 00:27:27 jive Exp $
  */
 public class ConfigRequests {
@@ -38,7 +38,7 @@ public class ConfigRequests {
      * 
      * <p>
      * Note that this represents the Configuration and not the state of the Web
-     * Feature Server.
+     * Coverage Server.
      * </p>
      *
      * @param request DOCUMENT ME!

@@ -18,7 +18,7 @@ import org.vfny.geoserver.wcs.responses.WCSCapabilitiesResponse;
  * server can do.
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: Capabilities.java,v 0.1 Feb 15, 2005 12:15:13 PM $
  */
 public class Capabilities extends WCService {

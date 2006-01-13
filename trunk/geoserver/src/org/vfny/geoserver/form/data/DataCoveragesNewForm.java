@@ -22,21 +22,17 @@ import org.vfny.geoserver.config.DataConfig;
  * @author rgould, Refractions Research, Inc.
  * @author dmzwiers
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
- * @version $Id: DataCoveragesNewForm.java,v 1.6 2004/03/09 01:37:39 dmzwiers Exp $
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class DataCoveragesNewForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="selectedNewCoverage" multiplicity="(0 1)"
 	 */
 	String selectedNewCoverage;
 
 	/**
 	 * 
-	 * @uml.property name="request"
-	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	HttpServletRequest request;
 
@@ -70,8 +66,6 @@ public class DataCoveragesNewForm extends ActionForm {
 	 * Access selectedNewCoverage property.
 	 * 
 	 * @return Returns the selectedNewCoverage.
-	 * 
-	 * @uml.property name="selectedNewCoverage"
 	 */
 	public String getSelectedNewCoverage() {
 		return selectedNewCoverage;
@@ -81,8 +75,6 @@ public class DataCoveragesNewForm extends ActionForm {
 	 * Set selectedNewCoverage to selectedNewCoverage.
 	 * 
 	 * @param selectedNewCoverage The selectedNewCoverage to set.
-	 * 
-	 * @uml.property name="selectedNewCoverage"
 	 */
 	public void setSelectedNewCoverage(String selectedNewCoverage) {
 		this.selectedNewCoverage = selectedNewCoverage;

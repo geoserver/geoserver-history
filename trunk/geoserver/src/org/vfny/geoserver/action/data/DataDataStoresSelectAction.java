@@ -45,8 +45,8 @@ public class DataDataStoresSelectAction extends ConfigAction {
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = servlet.getResources();
         
-        String editLabel = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
-        String deleteLabel = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
+        String editLabel = messages.getMessage(locale, "label.edit");
+        String deleteLabel = messages.getMessage(locale, "label.delete");
         
         if (editLabel.equals(buttonAction)) {
             dsConfig = (DataStoreConfig) dataConfig.getDataStore(form

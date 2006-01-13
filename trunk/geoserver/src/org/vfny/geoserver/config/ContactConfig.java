@@ -47,7 +47,7 @@ import org.vfny.geoserver.global.dto.ContactDTO;
  *
  * @author David Zwiers, Refractions Research, Inc.
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: ContactConfig.java,v 1.8 2004/02/20 17:03:11 jive Exp $
  */
 public class ContactConfig {

@@ -74,6 +74,8 @@ import org.vfny.geoserver.global.GeoServer;
  *       get rid of duplicate code in writing out shp and dbf files, and add
  *       shx,  (and prj?).  And try to get shapefile writer working directly,
  *       instead of writing to a temp file using the DataStore.
+ *       Not worth the time as it won't speed it up and will take much time to 
+ *       implement - brent
  * @task HACK: Since we are just writing to temp files right now we should move
  *       all of that to the prepare method, and just use the encode method to
  *       write out the results.  That's the whole point of preparing, so we
@@ -252,14 +254,18 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     
     
     /**
-     * writeOldWay
      * 
      * Description:
      * Write the old way Chris had it. It creates a ShapefileDataStore to write out the
      * shapefile, which we don't think is quick, O(n^2): addFeature() loads all stored 
      * features and then adds the next one and writes out again, or memory friendly: loading
      * all thos features.
-     * TODO: This theory needs testing.
+     * This theory needs testing. RESPONSE: Tested. It only reads through the entire shapefile
+     * if the shapefile is not yep opened. The first time you add a feature to the shapefile, 
+     * it has to crawl to the end, O(n). It saves this point and uses it as reference for
+     * future appends. So each time after when you add another feature, it jsut calls that 
+     * pointer to the end, and appends there. So it it only O(n) once, then constant time 
+     * after that. - brent
      * 
      * In the end, a shapefile is written to disk.
      * 

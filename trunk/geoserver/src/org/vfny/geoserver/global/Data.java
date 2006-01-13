@@ -26,7 +26,8 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactory2;
+import org.geotools.styling.StyleFactoryImpl;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
@@ -56,7 +57,7 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 	private static final String INFO_FILE = "info.xml";
 	
 	/** used to create styles */
-	private static StyleFactory styleFactory = StyleFactory.createStyleFactory();
+	private static StyleFactory2 styleFactory = new StyleFactoryImpl();
 
 	/**
 	 * holds the mappings between prefixes and NameSpaceInfo objects

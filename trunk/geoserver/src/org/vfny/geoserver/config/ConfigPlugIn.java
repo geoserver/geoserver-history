@@ -40,7 +40,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: ConfigPlugIn.java,v 1.8 2004/02/20 00:28:19 dmzwiers Exp $
  *
  * @see org.vfny.geoserver.global.GeoServerPlugIn

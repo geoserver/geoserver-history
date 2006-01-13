@@ -19,39 +19,26 @@ import org.vfny.geoserver.action.data.DataFormatUtils;
 
 
 /**
- * Used to accept information from user for a New DataStore Action.
+ * DOCUMENT ME!
  * 
- * <p>
- * This form contains a convience property getDataStoreDescrptions() which is
- * simply to make writing the JSP easier.
- * </p>
- *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
- * @version $Id: DataDataStoresNewForm.java,v 1.8 2004/03/15 08:16:11 jive Exp $
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class DataCoveragePluginsForm extends ActionForm {
     private static final Pattern idPattern = Pattern.compile("^\\a$");
 
 	/**
 	 * 
-	 * @uml.property name="formats"
-	 * @uml.associationEnd elementType="org.opengis.coverage.grid.Format" multiplicity=
-	 * "(0 -1)"
 	 */
 	private List formats;
 
 	/**
 	 * 
-	 * @uml.property name="formatDescriptions"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
 	private List formatDescriptions;
 
 	/**
 	 * 
-	 * @uml.property name="formatIDs"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
 	private List formatIDs;
 
@@ -91,10 +78,6 @@ public class DataCoveragePluginsForm extends ActionForm {
         return errors;
     }
 
-	/**
-	 * 
-	 * @uml.property name="formatDescriptions"
-	 */
 	/*
 	 * Allows the JSP page to easily access the list of dataFormat Descriptions
 	 */
@@ -104,7 +87,6 @@ public class DataCoveragePluginsForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="formatIDs"
 	 */
 	public List getFormatIDs() {
 		return formatIDs;
@@ -112,7 +94,6 @@ public class DataCoveragePluginsForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="formats"
 	 */
 	public List getFormats() {
 		return formats;

@@ -47,7 +47,7 @@ import java.util.NoSuchElementException;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: DataDTO.java,v 1.5 2004/02/09 18:02:23 dmzwiers Exp $
  *
  * @see DataSource

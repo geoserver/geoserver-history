@@ -15,6 +15,7 @@ import org.geotools.filter.BBoxExpression;
 import org.geotools.filter.Expression;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.vfny.geoserver.Request;
@@ -127,7 +128,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
         Query[] queries = new Query[nLayers];
         GetFeatureInfoRequest infoRequest = getRequest();
         Envelope requestExtent = infoRequest.getGetMapRequest().getBbox();
-        FilterFactory ffactory = FilterFactory.createFilterFactory();
+        FilterFactory ffactory = new FilterFactoryImpl();
 
         try {
             Filter finalLayerFilter;

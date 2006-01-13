@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.vfny.geoserver.form.DemoForm;
 import org.vfny.geoserver.form.DemoRequestForm;
 
 /**
@@ -51,6 +50,8 @@ import org.vfny.geoserver.form.DemoRequestForm;
  * @author Richard Gould
  * @author Jody Garnett
  * @author Brent Owens (The Open Planning Project)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * 
  * @version 
  */

@@ -105,7 +105,7 @@ public class MapPreviewAction extends Action
 		for (Iterator it = ftypes.iterator(); it.hasNext();) 
 		{
 			layer = (FeatureTypeInfo) it.next();
-			Envelope bbox = layer.getBoundingBox();
+			Envelope bbox = layer.getLatLongBoundingBox();
 			if (layer.isEnabled()) 
 			{
 				// prepare strings for web output
@@ -313,7 +313,7 @@ public class MapPreviewAction extends Action
 		out.println("                 page.");
 		out.println("    Licence:     GPL as per: http://www.gnu.org/copyleft/gpl.html ");
 		out.println("");
-		out.println("    $Id: MapPreviewAction.java 3848 2005-10-21 00:38:00Z jdeolive $");
+		out.println("    $Id: MapPreviewAction.java 4066 2006-01-10 01:59:45Z cholmes $");
 		out.println("  -->");
 		out.println("  <!--");
 		out.println("    All static images should be relative to this URL.");
@@ -473,7 +473,7 @@ public class MapPreviewAction extends Action
 		out.println("    <Layer queryable=\"1\" hidden=\"0\">");
 		// CHANGE HERE
 		out.println("      <Server service=\"OGC:WMS\" version=\"1.1.1\" title=\""+ft_namespace+":"+ft_name+" Preview\">");
-		out.println("        <OnlineResource xlink:type=\"simple\" xlink:href=\"http://localhost:8080/geoserver/wms\"/>");
+		out.println("        <OnlineResource xlink:type=\"simple\" xlink:href=\"../../wms\"/>");
 		out.println("      </Server>");
 		// CHANGE HERE
 		out.println("      <Name>"+ft_namespace+":"+ft_name+"</Name>");

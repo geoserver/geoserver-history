@@ -42,7 +42,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: DataConfig.java,v 1.17 2004/06/29 17:19:12 jive Exp $
  *
  * @see DataSource
@@ -701,11 +701,20 @@ public class DataConfig {
 	 * 
 	 * @uml.property name="defaultNameSpace"
 	 */
-	public void setDefaultNameSpace(NameSpaceConfig support) {
-		if (support != null) {
-			defaultNameSpace = support;
-		}
-	}
+    public void setDefaultNameSpace(NameSpaceConfig support) {
+        if (support != null) {
+        	//first unset the old as default
+        	if (defaultNameSpace != null) {
+        		defaultNameSpace.setDefault(false);
+        	}
+            defaultNameSpace = support;
+            
+            //set the new as default
+            if (defaultNameSpace != null) {
+            	defaultNameSpace.setDefault(true);
+            }
+        }
+    }
 
 	/**
 	 * setFeatures purpose.

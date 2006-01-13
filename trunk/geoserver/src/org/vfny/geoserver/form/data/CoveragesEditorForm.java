@@ -30,37 +30,32 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="formatId" multiplicity="(0 1)"
 	 */
 	private String formatId;
 
 	/**
 	 * 
-	 * @uml.property name="name" multiplicity="(0 1)"
 	 */
 	private String name;
 
 	/**
 	 * 
-	 * @uml.property name="label" multiplicity="(0 1)"
 	 */
 	private String label;
 
 	/**
 	 * 
-	 * @uml.property name="description" multiplicity="(0 1)"
 	 */
 	private String description;
 
 	/**
 	 * 
-	 * @uml.property name="metadataLink" multiplicity="(0 1)"
 	 */
 	private String metadataLink;
 
@@ -71,62 +66,51 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * 
-	 * @uml.property name="keywords" multiplicity="(0 1)"
 	 */
 	private String keywords;
 
 	/**
 	 * 
-	 * @uml.property name="srsName" multiplicity="(0 1)"
 	 */
 	private String srsName;
 
 	/**
 	 * 
-	 * @uml.property name="requestCRSs" multiplicity="(0 1)"
 	 */
 	private String requestCRSs;
 
 	/**
 	 * 
-	 * @uml.property name="responseCRSs" multiplicity="(0 1)"
 	 */
 	private String responseCRSs;
 
 	/**
 	 * 
-	 * @uml.property name="nativeFormat" multiplicity="(0 1)"
 	 */
 	private String nativeFormat;
 
 	/**
 	 * 
-	 * @uml.property name="supportedFormats" multiplicity="(0 1)"
 	 */
 	private String supportedFormats;
 
 	/**
 	 * 
-	 * @uml.property name="defaultInterpolationMethod" multiplicity="(0 1)"
 	 */
 	private String defaultInterpolationMethod;
 
 	/**
 	 * 
-	 * @uml.property name="interpolationMethods" multiplicity="(0 1)"
 	 */
 	private String interpolationMethods;
 
 	/**
 	 * Action requested by user
-	 * 
-	 * @uml.property name="action" multiplicity="(0 1)"
 	 */
 	private String action;
 
 	/**
 	 * 
-	 * @uml.property name="newCoverage" multiplicity="(0 1)"
 	 */
 	private String newCoverage;
 
@@ -317,8 +301,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the defaultInterpolationMethod.
-	 * 
-	 * @uml.property name="defaultInterpolationMethod"
 	 */
 	public String getDefaultInterpolationMethod() {
 		return defaultInterpolationMethod;
@@ -326,8 +308,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param defaultInterpolationMethod The defaultInterpolationMethod to set.
-	 * 
-	 * @uml.property name="defaultInterpolationMethod"
 	 */
 	public void setDefaultInterpolationMethod(String defaultInterpolationMethod) {
 		this.defaultInterpolationMethod = defaultInterpolationMethod;
@@ -335,8 +315,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the description.
-	 * 
-	 * @uml.property name="description"
 	 */
 	public String getDescription() {
 		return description;
@@ -344,8 +322,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param description The description to set.
-	 * 
-	 * @uml.property name="description"
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -353,8 +329,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the keywords.
-	 * 
-	 * @uml.property name="keywords"
 	 */
 	public String getKeywords() {
 		return keywords;
@@ -362,8 +336,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param keywords The keywords to set.
-	 * 
-	 * @uml.property name="keywords"
 	 */
 	public void setKeywords(String keywords) {
 		this.keywords = keywords;
@@ -371,8 +343,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the label.
-	 * 
-	 * @uml.property name="label"
 	 */
 	public String getLabel() {
 		return label;
@@ -380,8 +350,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param label The label to set.
-	 * 
-	 * @uml.property name="label"
 	 */
 	public void setLabel(String label) {
 		this.label = label;
@@ -438,8 +406,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the name.
-	 * 
-	 * @uml.property name="name"
 	 */
 	public String getName() {
 		return name;
@@ -447,8 +413,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param name The name to set.
-	 * 
-	 * @uml.property name="name"
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -456,8 +420,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the nativeFormat.
-	 * 
-	 * @uml.property name="nativeFormat"
 	 */
 	public String getNativeFormat() {
 		return nativeFormat;
@@ -465,8 +427,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param nativeFormat The nativeFormat to set.
-	 * 
-	 * @uml.property name="nativeFormat"
 	 */
 	public void setNativeFormat(String nativeFormat) {
 		this.nativeFormat = nativeFormat;
@@ -474,8 +434,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the srsName.
-	 * 
-	 * @uml.property name="srsName"
 	 */
 	public String getSrsName() {
 		return srsName;
@@ -483,8 +441,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param srsName The srsName to set.
-	 * 
-	 * @uml.property name="srsName"
 	 */
 	public void setSrsName(String srsName) {
 		this.srsName = srsName;
@@ -492,8 +448,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the metadataLink.
-	 * 
-	 * @uml.property name="metadataLink"
 	 */
 	public String getMetadataLink() {
 		return metadataLink;
@@ -501,8 +455,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param metadataLink The metadataLink to set.
-	 * 
-	 * @uml.property name="metadataLink"
 	 */
 	public void setMetadataLink(String metadataLink) {
 		this.metadataLink = metadataLink;
@@ -510,8 +462,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the interpolationMethods.
-	 * 
-	 * @uml.property name="interpolationMethods"
 	 */
 	public String getInterpolationMethods() {
 		return interpolationMethods;
@@ -519,8 +469,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param interpolationMethods The interpolationMethods to set.
-	 * 
-	 * @uml.property name="interpolationMethods"
 	 */
 	public void setInterpolationMethods(String interpolationMethods) {
 		this.interpolationMethods = interpolationMethods;
@@ -528,8 +476,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the requestCRSs.
-	 * 
-	 * @uml.property name="requestCRSs"
 	 */
 	public String getRequestCRSs() {
 		return requestCRSs;
@@ -537,8 +483,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param requestCRSs The requestCRSs to set.
-	 * 
-	 * @uml.property name="requestCRSs"
 	 */
 	public void setRequestCRSs(String requestCRSs) {
 		this.requestCRSs = requestCRSs;
@@ -546,8 +490,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the responseCRSs.
-	 * 
-	 * @uml.property name="responseCRSs"
 	 */
 	public String getResponseCRSs() {
 		return responseCRSs;
@@ -555,8 +497,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param responseCRSs The responseCRSs to set.
-	 * 
-	 * @uml.property name="responseCRSs"
 	 */
 	public void setResponseCRSs(String responseCRSs) {
 		this.responseCRSs = responseCRSs;
@@ -564,8 +504,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the supportedFormats.
-	 * 
-	 * @uml.property name="supportedFormats"
 	 */
 	public String getSupportedFormats() {
 		return supportedFormats;
@@ -573,8 +511,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param supportedFormats The supportedFormats to set.
-	 * 
-	 * @uml.property name="supportedFormats"
 	 */
 	public void setSupportedFormats(String supportedFormats) {
 		this.supportedFormats = supportedFormats;
@@ -582,8 +518,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the action.
-	 * 
-	 * @uml.property name="action"
 	 */
 	public String getAction() {
 		return action;
@@ -591,8 +525,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param action The action to set.
-	 * 
-	 * @uml.property name="action"
 	 */
 	public void setAction(String action) {
 		this.action = action;
@@ -600,8 +532,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the formatId.
-	 * 
-	 * @uml.property name="formatId"
 	 */
 	public String getFormatId() {
 		return formatId;
@@ -609,8 +539,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param formatId The formatId to set.
-	 * 
-	 * @uml.property name="formatId"
 	 */
 	public void setFormatId(String formatId) {
 		this.formatId = formatId;
@@ -618,8 +546,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @return Returns the newCoverage.
-	 * 
-	 * @uml.property name="newCoverage"
 	 */
 	public String getNewCoverage() {
 		return newCoverage;
@@ -627,8 +553,6 @@ public class CoveragesEditorForm extends ActionForm {
 
 	/**
 	 * @param newCoverage The newCoverage to set.
-	 * 
-	 * @uml.property name="newCoverage"
 	 */
 	public void setNewCoverage(String newCoverage) {
 		this.newCoverage = newCoverage;

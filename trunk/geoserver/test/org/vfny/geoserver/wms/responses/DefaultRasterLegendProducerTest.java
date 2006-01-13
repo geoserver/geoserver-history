@@ -11,11 +11,13 @@ import java.util.logging.Logger;
 
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Fill;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactory2;
+import org.geotools.styling.StyleFactoryImpl;
 import org.geotools.styling.Symbolizer;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
@@ -177,8 +179,8 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
      * @return
      */
     private Style createSampleStyleWithScale() {
-        FilterFactory ff = FilterFactory.createFilterFactory();
-        StyleFactory sf = StyleFactory.createStyleFactory();
+        FilterFactory ff = new FilterFactoryImpl();
+        StyleFactory2 sf = new StyleFactoryImpl();
         Style s = sf.createStyle();
 
         Rule rule1_1000 = sf.createRule();

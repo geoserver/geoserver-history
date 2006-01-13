@@ -52,7 +52,7 @@ import org.vfny.geoserver.wcs.WcsException;
  * most requests for this will likely come with get.
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: WcsDispatcher.java,v 0.1 2005/02/15 10:55:15 $
  */
 public class WcsDispatcher extends Dispatcher {

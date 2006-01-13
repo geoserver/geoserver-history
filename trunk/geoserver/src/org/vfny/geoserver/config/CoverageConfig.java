@@ -29,11 +29,11 @@ import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import com.vividsolutions.jts.geom.Envelope;
 
 /**
- * User interface FeatureType staging area.
+ * User interface Coverage staging area.
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: FeatureTypeConfig.java,v 1.20 2004/03/09 10:59:56 jive Exp $
  */
 public class CoverageConfig {
@@ -190,8 +190,7 @@ public class CoverageConfig {
 		try {
 			dimensions = parseCoverageDimesions(gc.getSampleDimensions());
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ConfigurationException("Coverage dimensions: " + e.toString());
 		}
 		dimentionNames = gc.getDimensionNames();
         crs = gc.getCoordinateReferenceSystem2D();

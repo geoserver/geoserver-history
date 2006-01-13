@@ -35,7 +35,7 @@ import org.vfny.geoserver.global.WMS;
  *
  * @author Jody Garnett
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public final class Requests {
     /**

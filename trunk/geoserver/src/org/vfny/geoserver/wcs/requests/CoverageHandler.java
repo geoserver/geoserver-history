@@ -19,7 +19,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * DOCUMENT ME!
  * 
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */

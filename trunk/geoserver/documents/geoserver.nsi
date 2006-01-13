@@ -22,13 +22,14 @@
 ;Include Modern UI
 
   !include "MUI.nsh"
+  XPStyle on
 
 ;--------------------------------
 ;General
 
   ;Name and file
-  Name "GeoServer 1.3.0-RC6 WCS Experiment"
-  OutFile "geoserver-1.3.0-RC6-WCS.exe"
+  Name "GeoServer 1.3.0-RC7 WCS Experiment"
+  OutFile "geoserver-1.3.0-RC7-WCS.exe"
 
 
   ;Default installation folder
@@ -43,6 +44,7 @@
   Var MUI_TEMP
   Var STARTMENU_FOLDER
   Var DATA_DIR
+  Var HWND
 
 ;--------------------------------
 ;Interface Settings
@@ -66,6 +68,7 @@
   !insertmacro MUI_PAGE_LICENSE "license.txt"
   !insertmacro MUI_PAGE_DIRECTORY
 
+  Page custom dataDirPage dataDirPageLeave
   
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
@@ -88,6 +91,10 @@
  
   !insertmacro MUI_LANGUAGE "English"
 
+
+ReserveFile "dataDirPage.ini"; -bo
+!insertmacro MUI_RESERVEFILE_INSTALLOPTIONS ; -bo
+
 ;--------------------------------
 ;Installer Sections
 
@@ -95,19 +102,22 @@ Section "GeoServer Section" SecGeoServer
 
   SetOutPath "$INSTDIR"
   
-  ## Craete the GEOSERVER_DATA_DIR environment variable
-  Push GEOSERVER_DATA_DIR
-  Push $INSTDIR/server/geoserver/data
-  Call WriteEnvStr
-  
   ;ADD YOUR OWN FILES HERE...
-  File /r D:\Java\__TMP\geoserver\bin
-  File /r D:\Java\__TMP\geoserver\documents
-  File /r D:\Java\__TMP\geoserver\server
-  File /a D:\Java\__TMP\geoserver\README.txt
-  File /r D:\Java\__TMP\geoserver\lib
-  File /a D:\Java\__TMP\geoserver\RUNNING.txt
-  File /a D:\Java\__TMP\geoserver\license.txt
+  File /r bin
+  File /r conf
+  File /r documents
+  File /a README.txt
+  File /r lib
+  File /a RUNNING.txt
+  File /a license.txt
+  File /r server
+
+
+
+  ## Create the GEOSERVER_DATA_DIR environment variable (this will overwrite if one already exists)
+  Push GEOSERVER_DATA_DIR
+  Push $DATA_DIR
+  Call WriteEnvStr
 
   ;Store installation folderh
   WriteRegStr HKCU "Software\GeoServer" "" $INSTDIR
@@ -130,7 +140,7 @@ Section "GeoServer Section" SecGeoServer
                    "http://127.0.0.1:8080/geoserver/"
 
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Start GeoServer.lnk" \
-                   "$2\bin\java.exe" '-Xmx300m -jar start.jar'\
+                   "$2\bin\java.exe" '-DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -Xmx300m -jar start.jar'\
                    "$INSTDIR\server\geoserver\images\gs.ico" 0 SW_SHOWNORMAL
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Stop GeoServer.lnk" \
                    "$2\bin\java.exe" '-jar stop.jar'\
@@ -167,13 +177,73 @@ Function echoJava
 
 FunctionEnd
 
+
+
+; =====================
 Function .onInit
 
+   # Splash Screen
+   # the plugins dir is automatically deleted when the installer exits
+   InitPluginsDir
+   File /oname=$PLUGINSDIR\splash.bmp "splash.bmp"
+   splash::show 1500 $PLUGINSDIR\splash
+   Pop $0 ;	$0 has '1' if the user closed the splash screen early,
+	  ;	'0' if everything closed normally, and '-1' if some error occurred.
+
+
+   #Extract InstallOptions INI files
+   !insertmacro MUI_INSTALLOPTIONS_EXTRACT "dataDirPage.ini"
+
+   #load page link, save it to temp location
+   WriteIniStr $PLUGINSDIR\dataDirPage.ini "Field 3" "State" "$WINDIR\Notepad.exe"
+   
    ClearErrors
 
    Call findJavaPath
+   
+FunctionEnd
+
+
+; =====================
+Function dataDirPage
+
+  ## get the existing data dir environment variable
+  ReadEnvStr $1 GEOSERVER_DATA_DIR
+  ;MessageBox MB_OK "existing env string: $1"
+
+  StrCmp $1 "" 0 copy_str
+  ## if it doesn't exist, use: "$INSTDIR\conf"
+    StrCpy $1 "$INSTDIR\conf"
+
+  ## if it exists, use it for temp value until user chooses new one
+  copy_str:
+    StrCpy $DATA_DIR $1
+
+  
+  !insertmacro MUI_HEADER_TEXT "GeoServer Data Directory" "Choose your Data Directory's location."
+  !insertmacro MUI_INSTALLOPTIONS_INITDIALOG "dataDirPage.ini"
+  Pop $HWND
+  GetDlgItem $1 $HWND 1202	; 1200 + field number - 1 (MINUS ONE!!!!!!!! pos NSIS)
+  SendMessage $1 ${WM_SETTEXT} 1 "STR:$DATA_DIR"
+  !insertmacro MUI_INSTALLOPTIONS_SHOW
+  
 
 FunctionEnd
+; =====================
+
+
+
+; =====================
+Function dataDirPageLeave
+  
+  !insertmacro MUI_INSTALLOPTIONS_READ $R1 "dataDirPage.ini" "Field 3" "State"
+  StrCpy $DATA_DIR $R1
+  ;MessageBox MB_OK "window value: $DATA_DIR"
+
+FunctionEnd
+; =====================
+
+
 
 ; =====================
 ; FindJavaPath Function

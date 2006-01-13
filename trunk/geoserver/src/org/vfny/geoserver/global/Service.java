@@ -28,7 +28,7 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  * @author Gabriel Roldán
  * @author Chris Holmes
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: Service.java,v 1.7 2004/02/09 23:29:42 dmzwiers Exp $
  *
  * @see WMS

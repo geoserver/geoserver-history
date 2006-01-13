@@ -52,7 +52,7 @@ import org.vfny.geoserver.global.UserContainer;
  * DOCUMENT ME!
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class DataFormatsEditorAction extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,

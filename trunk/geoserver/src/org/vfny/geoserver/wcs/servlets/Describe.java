@@ -23,7 +23,7 @@ import org.vfny.geoserver.wcs.responses.DescribeResponse;
  *
  * @author Rob Hranac, TOPP
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: Describe.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class Describe extends WCService {

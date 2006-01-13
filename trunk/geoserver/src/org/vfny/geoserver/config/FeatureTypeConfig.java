@@ -198,8 +198,7 @@ public class FeatureTypeConfig {
             // pardon? Does this not make you a table?
             SRS = -1;
         } else {
-            GeometryFactory geometryFactory = schema.getDefaultGeometry()
-                                                    .getGeometryFactory();
+        	GeometryFactory geometryFactory = schema.getDefaultGeometry().getGeometryFactory();
 
             if (geometryFactory == null) {
                 // Assume Cartisian Coordiantes

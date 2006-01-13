@@ -59,23 +59,12 @@ import com.vividsolutions.jts.geom.Envelope;
  * These Action handles all the buttons for the Coverage Editor.
  * 
  * <p>
- * This one is more complicated then usual since not all the actions require
- * the form bean to be validated! I am going to have to hack a little bit to
- * make that happen, I may end up making the form bean validation differ
- * depending on the selected action.
- * </p>
- * 
- * <p>
  * Buttons that make this action go:
  * 
  * <ul>
  * <li>
  * Submit: update the CoverageConfig held by the user, punt it back into
  * DataConfig and return to the CoverageSelect screen.
- * </li>
- * <li>
- * Up and Down (for each attribute): not quite sure how to make these work yet
- * - I hope I dont have to give them different names.
  * </li>
  * </ul>
  * 
@@ -85,7 +74,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Richard Gould
  * @author Jody Garnett
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class CoveragesEditorAction extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -154,28 +143,28 @@ public class CoveragesEditorAction extends ConfigAction {
 		GridCoverage2D gc = null;
 		
 		try {
-			ServletContext sc = getServlet().getServletContext();
-			URL url = getResource(dfConfig.getUrl(), sc.getRealPath("/"));
+			final ServletContext sc = getServlet().getServletContext();
+			final URL url = getResource(dfConfig.getUrl(), sc.getRealPath("/"));
 			
 //			GridCoverageExchange gce = new StreamGridCoverageExchange();
 //			GridCoverageReader reader = gce.getReader(url);
 //			Format format = reader.getFormat();
 
-			Format format = dfConfig.getFactory();
-			GridCoverageReader reader = ((AbstractGridFormat) format).getReader(url);
+			final Format format = dfConfig.getFactory();
+			final GridCoverageReader reader = ((AbstractGridFormat) format).getReader(url);
 
-			ParameterValueGroup params = format.getReadParameters();
+			final ParameterValueGroup params = format.getReadParameters();
 			
 			if( params != null ) {
-				List list=params.values();
-				Iterator it=list.iterator();
+				final List list=params.values();
+				final Iterator it=list.iterator();
 				while(it.hasNext())
 				{
-					ParameterValue param=((ParameterValue)it.next());
-					ParameterDescriptor descr=(ParameterDescriptor)param.getDescriptor();
+					final ParameterValue param=((ParameterValue)it.next());
+					final ParameterDescriptor descr=(ParameterDescriptor)param.getDescriptor();
 					
 					Object value = null;
-					String key = descr.getName().toString();
+					final String key = descr.getName().toString();
 					
 					try {
 						if( key.equalsIgnoreCase("crs") ) {

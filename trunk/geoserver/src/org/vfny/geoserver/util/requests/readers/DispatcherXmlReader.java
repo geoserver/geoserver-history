@@ -40,7 +40,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Chris Holmes
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss_ml@tiscali.it) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: DispatcherXmlReader.java,v 1.1 2004/03/30 04:37:32 cholmesny Exp $
  *
  * @task REVISIT: This might be better implemented to extend XmlRequestReader,

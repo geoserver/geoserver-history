@@ -40,6 +40,7 @@ import org.geotools.feature.SchemaException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
@@ -325,9 +326,19 @@ public class TransactionResponse implements Response {
                     throw new ServiceException(
                         "Transaction Delete support is not enabled");
                 }
+                
+                DeleteRequest delete = (DeleteRequest) element;
+                
+                //do a check for Filter.NONE, the spec specifically does not
+                // allow this
+                if (delete.getFilter() == Filter.NONE) {
+                	throw new ServiceException(
+            			"Filter must be supplied for Transaction Delete"
+                	);
+                }
+                
                 LOGGER.finer( "Transaction Delete:"+element );
                 try {
-                    DeleteRequest delete = (DeleteRequest) element;
                     Filter filter = delete.getFilter();
 
                     Envelope damaged = store.getBounds(new DefaultQuery(
@@ -371,8 +382,7 @@ public class TransactionResponse implements Response {
                             // extra work when doing release mode ALL.
                             // 
                             DataStore data = store.getDataStore();
-                            FilterFactory factory = FilterFactory
-                                .createFilterFactory();
+                            FilterFactory factory = new FilterFactoryImpl();
                             FeatureWriter writer;                            
                             writer = data.getFeatureWriter(typeName, filter,
                                     transaction);
@@ -510,7 +520,7 @@ public class TransactionResponse implements Response {
                     //
                     if( !fids.isEmpty() ) {
                         LOGGER.finer("Post process update for boundary update and featureValidation");
-                        FidFilter modified = FilterFactory.createFilterFactory().createFidFilter();
+                        FidFilter modified = new FilterFactoryImpl().createFidFilter();
                         modified.addAllFids( fids );
                     
                         FeatureCollection changed = store.getFeatures( modified ).collection();
