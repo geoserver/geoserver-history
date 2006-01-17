@@ -6,7 +6,7 @@ Any other issues can be discussed on the mailing list (http://lists.sourceforge.
 
 Currently contains the following data stores:
 
-- $$$
+- MySQL
 
 INSTALLATION
 

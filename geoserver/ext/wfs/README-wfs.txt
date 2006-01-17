@@ -4,9 +4,9 @@ This package contains data store implementations which are still in an experimen
 
 Any other issues can be discussed on the mailing list (http://lists.sourceforge.net/lists/listinfo/geoserver-users).
 
-Currently contains the following data stores:
+Contains the following data stores:
 
-- $$$
+- WFS
 
 INSTALLATION
 
