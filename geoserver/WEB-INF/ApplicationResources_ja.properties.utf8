@@ -141,7 +141,7 @@ label.geoServerChangedFalse=未変更
 label.submit=実行
 label.reset=リセット
 label.credits=クレジット
-label.credits.url=http://geoserver.sourceforge.net/documentation/developer/contrib.htm
+label.credits.url=http://docs.codehaus.org/display/GEOS/Contributors
 label.newLoginAndPassword=新しいログインとパスワードを入力してください。
 label.wms.svgRenderer=SVG描画
 label.wms.svgSimple=シンプル(早い、限定されたスタイル)
@@ -343,7 +343,7 @@ message.dataOkay=データが障害なく読込まれました。
 # WELCOME
 welcome.label=Welcome
 welcome.title=Welcome GeoServer
-welcome.short=ようこそ　GeoServer 1.3.0-RC6へ　　GeoServerのご利用ありがとうございます!
+welcome.short=ようこそ　GeoServer 1.3.0へ　　GeoServerのご利用ありがとうございます!
 welcome.words=(GeoServer) (GIS) (Geographic Information Systems) (WFS)
 
 welcome.contact.label=連絡先
@@ -384,6 +384,7 @@ text.welcome.mapbuilder=Mapbuilderデモ
 text.welcome.mapbuilder.detail= <a href='http://mapbuilder.sourceforge.net/'>Mapbuilder</a> はjava-scriptによるWFS-Tクライアントです。このGeoserverにインストールしているデータを編集するには、Mapbuilderが利用できます。
 
 # NEW features
+text.visitDemoPage=Visit the <b><a href="../../../demo.do">demo</a></b> page for examples of GeoServer in action. This includes an integrated <b><a href="../../../mapPreview.do"/>Mapbuilder client</a></b>.
 text.newFeatureLogo=<b><font color='red'>NEW!</font></b>
 text.newFeature1=新しいMapBuilder GUIでWMSレイヤーをごらんください。
 text.newFeature2=デモページですばらしいWMSとWFSのデモを確認してください。
