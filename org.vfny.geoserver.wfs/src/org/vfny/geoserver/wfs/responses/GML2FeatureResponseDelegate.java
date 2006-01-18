@@ -4,6 +4,16 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
+
+import javax.xml.transform.TransformerException;
+
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureResults;
 import org.geotools.gml.producer.FeatureTransformer;
@@ -13,14 +23,6 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.GZIPOutputStream;
-import javax.xml.transform.TransformerException;
 
 
 /**

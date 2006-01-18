@@ -6,7 +6,9 @@ package org.vfny.geoserver.global;
  */
 
 import java.io.File;
+
 import javax.servlet.ServletContext;
+
 import org.vfny.geoserver.global.xml.ReaderUtils;
 
 /**

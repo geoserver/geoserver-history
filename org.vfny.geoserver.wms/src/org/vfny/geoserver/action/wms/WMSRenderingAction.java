@@ -11,7 +11,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.WMSConfig;
-
 import org.vfny.geoserver.form.wms.WMSRenderingForm;
 import org.vfny.geoserver.global.UserContainer;
 

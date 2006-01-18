@@ -4,32 +4,8 @@
  */
 package org.vfny.geoserver.action.data;
 
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
-import org.geotools.styling.SLDParser;
-import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyleFactoryFinder;
-import org.geotools.styling.StyledLayerDescriptor;
-import org.vfny.geoserver.action.ConfigAction;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.StyleConfig;
-import org.vfny.geoserver.form.data.StylesEditorForm;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.util.SLDValidator;
-import org.xml.sax.SAXParseException;
-
-
-
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -40,6 +16,26 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+import org.geotools.styling.SLDParser;
+import org.geotools.styling.Style;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryFinder;
+import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.StyleConfig;
+import org.vfny.geoserver.form.data.StylesEditorForm;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.util.SLDValidator;
+import org.xml.sax.SAXParseException;
 
 
 /**

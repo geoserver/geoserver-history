@@ -6,7 +6,7 @@ package org.vfny.geoserver.wfs.responses;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set; 
+import java.util.Set;
 
 import org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi;
 

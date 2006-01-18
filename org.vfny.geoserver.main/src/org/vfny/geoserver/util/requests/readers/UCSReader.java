@@ -58,8 +58,8 @@
 //package org.apache.xerces.impl.io;
 package org.vfny.geoserver.util.requests.readers;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 
 /**

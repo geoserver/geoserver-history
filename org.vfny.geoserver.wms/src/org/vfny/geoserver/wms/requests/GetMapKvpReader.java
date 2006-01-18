@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.io.StringBufferInputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;

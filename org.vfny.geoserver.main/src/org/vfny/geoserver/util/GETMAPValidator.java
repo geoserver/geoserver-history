@@ -8,12 +8,7 @@
  */
 package org.vfny.geoserver.util;
 
-import org.apache.xerces.parsers.SAXParser;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -22,6 +17,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.apache.xerces.parsers.SAXParser;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

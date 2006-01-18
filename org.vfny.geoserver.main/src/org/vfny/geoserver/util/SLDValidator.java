@@ -8,12 +8,6 @@
  */
 package org.vfny.geoserver.util;
 
-import org.apache.xerces.parsers.SAXParser;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,6 +18,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
+
+import org.apache.xerces.parsers.SAXParser;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 
 public class SLDValidator {

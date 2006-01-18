@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wfs.Query;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
 import org.vfny.geoserver.wfs.requests.FeatureWithLockRequest;
+import org.vfny.geoserver.wfs.requests.WfsKvpRequestReader;
 
 /**
  * This utility reads in a GetFeature KVP request and turns it into a
@@ -34,7 +34,7 @@ import org.vfny.geoserver.wfs.requests.FeatureWithLockRequest;
  * @author Gabriel Rold?n
  * @version $Id: GetFeatureKvpReader.java,v 1.6 2004/02/09 23:29:40 dmzwiers Exp $
  */
-public class GetFeatureKvpReader extends KvpRequestReader {
+public class GetFeatureKvpReader extends WfsKvpRequestReader {
     /** Class logger */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.readers");

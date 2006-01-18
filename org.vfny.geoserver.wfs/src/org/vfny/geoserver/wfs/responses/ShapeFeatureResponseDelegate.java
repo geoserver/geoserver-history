@@ -17,7 +17,6 @@ import java.util.zip.ZipOutputStream;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureStore;
-
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;

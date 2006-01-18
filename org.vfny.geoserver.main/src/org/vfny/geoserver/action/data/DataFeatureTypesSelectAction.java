@@ -17,7 +17,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
-import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataFeatureTypesSelectForm;

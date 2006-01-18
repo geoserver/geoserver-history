@@ -1,26 +1,18 @@
 package org.vfny.geoserver.util.requests;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.io.Writer;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
 import java.nio.charset.UnsupportedCharsetException;
-
 import java.util.Locale;
-
-import java.util.logging.Logger;
 import java.util.logging.Level;
-
-import java.util.regex.Pattern;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.vfny.geoserver.util.requests.RewindableInputStream;
-import org.vfny.geoserver.util.requests.EncodingInfo;
 import org.vfny.geoserver.util.requests.readers.UCSReader;
 
 /**

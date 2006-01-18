@@ -20,7 +20,6 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.geotools.map.MapContext;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
-
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.Service;
@@ -28,7 +27,6 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
 
 import com.vividsolutions.jts.geom.Envelope;
 

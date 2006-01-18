@@ -23,7 +23,6 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFactorySpi.Param;
 import org.vfny.geoserver.action.data.DataStoreUtils;

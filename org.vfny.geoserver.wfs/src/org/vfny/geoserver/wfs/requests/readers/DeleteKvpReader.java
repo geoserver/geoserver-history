@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.DeleteRequest;
 import org.vfny.geoserver.wfs.requests.TransactionRequest;
+import org.vfny.geoserver.wfs.requests.WfsKvpRequestReader;
 
 /**
  * This utility reads in a Delete KVP request and turns it into an appropriate
@@ -26,7 +26,7 @@ import org.vfny.geoserver.wfs.requests.TransactionRequest;
  * @author Gabriel Rold?n
  * @version $Id: DeleteKvpReader.java,v 1.6 2004/02/09 23:29:40 dmzwiers Exp $
  */
-public class DeleteKvpReader extends KvpRequestReader {
+public class DeleteKvpReader extends WfsKvpRequestReader {
     /** Class logger */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.readers");

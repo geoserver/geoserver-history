@@ -4,8 +4,8 @@
 package org.vfny.geoserver.wms.responses.map.gif;
 
 import java.awt.Point;
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 //==============================================================================
 /** First off, just to dispel any doubt, this class and its subclasses have

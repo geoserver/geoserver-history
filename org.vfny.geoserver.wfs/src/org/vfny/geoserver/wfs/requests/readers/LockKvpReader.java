@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.LockRequest;
+import org.vfny.geoserver.wfs.requests.WfsKvpRequestReader;
 
 
 /**
@@ -25,7 +25,7 @@ import org.vfny.geoserver.wfs.requests.LockRequest;
  * @author Gabriel Rold?n
  * @version $Id: LockKvpReader.java,v 1.6 2004/02/09 23:29:40 dmzwiers Exp $
  */
-public class LockKvpReader extends KvpRequestReader {
+public class LockKvpReader extends WfsKvpRequestReader {
     /** Class logger */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.readers");

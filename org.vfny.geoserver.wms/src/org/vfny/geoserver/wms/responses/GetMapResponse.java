@@ -19,9 +19,6 @@ import org.geotools.factory.FactoryFinder;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
-import org.geotools.referencing.CRS;
-
-
 import org.geotools.styling.Style;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;

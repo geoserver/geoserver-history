@@ -17,6 +17,27 @@
 				<eclipse.dependency>true</eclipse.dependency>
 			</properties>
 		</dependency>
+		<dependency>
+			<groupId>org.vfny</groupId>
+			<artifactId>org.vfny.geoserver.wfs</artifactId>
+			<version>0.1</version>
+			<properties>
+				<eclipse.dependency>true</eclipse.dependency>
+			</properties>
+		</dependency>
+		<dependency>
+			<groupId>com.mockrunner</groupId>
+			<artifactId>mockrunner</artifactId>
+			<version>0.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xerces</artifactId>
+			<version>2.4.0</version>
+			<properties>
+				<war.bundle>true</war.bundle>	
+			</properties>
+		</dependency>
   </dependencies>
 
 </project>

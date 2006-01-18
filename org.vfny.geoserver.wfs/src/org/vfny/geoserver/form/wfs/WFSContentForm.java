@@ -10,16 +10,18 @@
  */
 package org.vfny.geoserver.form.wfs;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.global.dto.WFSDTO;
-import java.net.MalformedURLException;
-import java.net.URL;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**

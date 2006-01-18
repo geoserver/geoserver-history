@@ -8,12 +8,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
-
-
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
-import org.vfny.geoserver.wms.responses.map.gif.GIFOutputStream;
 import org.vfny.geoserver.wms.responses.map.gif.Gif89Encoder;
 
 

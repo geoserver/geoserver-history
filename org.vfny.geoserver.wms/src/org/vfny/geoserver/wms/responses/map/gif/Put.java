@@ -3,8 +3,8 @@
 //******************************************************************************
 package org.vfny.geoserver.wms.responses.map.gif;
 
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 //==============================================================================
 /** Just a couple of trivial output routines used by other classes in the

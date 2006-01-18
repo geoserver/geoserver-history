@@ -8,19 +8,11 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import junit.framework.TestCase;
 
 import org.vfny.geoserver.global.xml.GMLSchemaTranslator;
-import org.vfny.geoserver.global.xml.NameSpaceElement;
 import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
 import org.vfny.geoserver.global.xml.XMLSchemaTranslator;
-
-import com.vividsolutions.jts.geom.Point;
 
 /**
  * @author Jody Garnett

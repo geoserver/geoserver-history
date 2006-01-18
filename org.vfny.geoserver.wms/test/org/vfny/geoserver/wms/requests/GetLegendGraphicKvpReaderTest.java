@@ -7,7 +7,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.geotools.styling.Style;
-import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.testdata.MockUtils;
 
