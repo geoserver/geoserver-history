@@ -42,8 +42,6 @@ import org.vfny.geoserver.wfs.Query;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
 import org.vfny.geoserver.wfs.requests.FeatureWithLockRequest;
-import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
-
 
 /** 
  * Handles a Get Feature request and creates a Get Feature response GML string.

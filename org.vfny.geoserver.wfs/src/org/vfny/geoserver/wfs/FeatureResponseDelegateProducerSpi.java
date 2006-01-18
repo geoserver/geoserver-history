@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.geotools.factory.Factory;
 import org.vfny.geoserver.wfs.responses.FeatureResponseDelegate;
-import org.vfny.geoserver.wms.GetMapProducer;
+
 
 public interface FeatureResponseDelegateProducerSpi extends Factory
 {

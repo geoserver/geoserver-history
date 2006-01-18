@@ -17,7 +17,7 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
-import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wfs.WfsException;
 
 
 /**
@@ -60,7 +60,7 @@ public class WFSCapabilitiesResponse implements Response {
         try {
             transformer.transform(request, out);
         } catch (TransformerException e) {
-            throw new WmsException(e);
+            throw new WfsException(e);
         }
 
         this.rawResponse = out.toByteArray();
