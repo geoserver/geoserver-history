@@ -500,7 +500,16 @@ public class DataConfig {
      */
     public void setDefaultNameSpace(NameSpaceConfig support) {
         if (support != null) {
+        	//first unset the old as default
+        	if (defaultNameSpace != null) {
+        		defaultNameSpace.setDefault(false);
+        	}
             defaultNameSpace = support;
+            
+            //set the new as default
+            if (defaultNameSpace != null) {
+            	defaultNameSpace.setDefault(true);
+            }
         }
     }
 

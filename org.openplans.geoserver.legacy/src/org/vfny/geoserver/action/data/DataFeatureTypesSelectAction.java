@@ -48,8 +48,8 @@ public class DataFeatureTypesSelectAction extends ConfigAction {
         
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = getResources(request);
-        String edit = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
-        String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
+        String edit = messages.getMessage(locale, "label.edit");
+        String delete = messages.getMessage(locale, "label.delete");
 
         if (edit.equals(buttonAction)) {
             request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE,

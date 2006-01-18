@@ -148,9 +148,12 @@ public class DataStoreInfo extends GlobalLayerSupertype {
             Object value = entry.getValue();
 
             try {
-                if ("url".equals(key) && value instanceof String) {
+            	//TODO: this code is a pretty big hack, using the name to 
+            	// determine if the key is a url, could be named something else
+            	// and still be a url
+                if (key != null && key.matches(".* *url") && value instanceof String) {
                     String path = (String) value;
-		    LOGGER.finer("in string url");
+                    LOGGER.finer("in string url");
                     if (path.startsWith("file:data/")) {
                         path = path.substring(5); // remove 'file:' prefix
 

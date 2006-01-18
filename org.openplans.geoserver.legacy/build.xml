@@ -40,7 +40,7 @@
 
 	<!-- release version -->
 
-	<property name="name.release" value="1.3.0-RC7" />
+	<property name="name.release" value="1.3.0" />
 
 	<!-- primary directories -->
 	<property name="dir.bin" value="${basedir}/bin" />
@@ -60,7 +60,6 @@
 	<property name="dir.jarcopy" value="${dir.server}/geoserver/WEB-INF/lib" />
 	
 	<!-- secondary directories -->
-	<property name="dir.data" value="${dir.conf}" />
 	<property name="dir.testApp" value="${dir.server}/geoserver" />
 	<property name="dir.jetty" value="${dir.lib}/jetty" />
 
@@ -272,6 +271,7 @@
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
+
 		</junit>
 	</target>
 
@@ -288,8 +288,6 @@
 				</fileset>
 			</classpath>
 			
-			<test fork="true" name="org.vfny.geoserver.requests.wms.GetMapTest"/>
-
 			<test fork="true" name="org.vfny.geoserver.requests.FeatureSuite" />
 				
 			<test fork="true" name="org.vfny.geoserver.requests.CapabilitiesSuite" />
@@ -439,15 +437,26 @@
 		<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
 	</target>
 
+	<!-- set data.dir to default if not already set -->
+	<target name="setDataDir" unless="data.dir">
+		<property name="data.dir" value="${dir.data_dirs}/userBasic"/>
+	</target>
+
+	<!-- set data.dir if env.GEOSERVER_DATA_DIR is available -->
+	<target name="checkDataDir" if="env.GEOSERVER_DATA_DIR">
+		<property name="data.dir" value="${env.GEOSERVER_DATA_DIR}"/>
+	</target>
+
 	<!-- runs the server -->
-	<target name="run" depends="prepareEmbedded, init"
+	<target name="run" depends="prepareEmbedded,init,checkDataDir,setDataDir" if="data.dir"
 		description="Runs the jetty servlet container in the background, use ant stop to halt">
+		<echo message="Data dir is: ${data.dir}"/>
 		<java classname="org.mortbay.jetty.Server" dir="${basedir}" fork="yes" failonerror="yes">
 			<classpath>
 				<path refid="path.jetty" />
 			</classpath>
 			<jvmarg line="${jetty.jvmarg}" />
-			<jvmarg line="${data_dir.jvmarg}" />
+			<jvmarg line="-DGEOSERVER_DATA_DIR=${data.dir}" />
 			<arg line="${jetty.run}" />
 		</java>
 	</target>
@@ -578,7 +587,7 @@
 			</classes>
 
 			<classes dir="${dir.webinf}">
-				<include name="ApplicationResources*.properties" />
+				<include name="ApplicationResources*" />
 			</classes>
 
 			<webinf dir="${conf.path}/WEB-INF">
@@ -681,7 +690,7 @@
 			</classes>
 
 			<classes dir="${dir.webinf}">
-				<include name="ApplicationResources*.properties" />
+				<include name="ApplicationResources*" />
 			</classes>
 
 			<webinf dir="${conf.path}/WEB-INF">
@@ -853,8 +862,8 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 <!--   install directory. You can download Nullsoft Scriptable Install System -->
 <!--   here: http://nsis.sourceforge.net/-->
 <target name="release-all" depends="release-common, release-binary,release-war, release-src, release-docs" >
-	<antcall target="release-installer-win"/>
-	<delete dir="${dir.build}/installer"/>
+	<!--antcall target="release-installer-win"/>
+	<delete dir="${dir.build}/installer"/-->
 </target>
 
 
@@ -1179,13 +1188,13 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-wkt-${version.geotools}.jar" />
 
 <copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" />	
+	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" /-->	
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-vpf.jar" file="${dir.maven}/gt2/jars/vpf-1.9.0.jar" />
-	<!--
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wfs.jar" file="${dir.maven}/gt2/jars/wfs-${version.geotools}.jar" />
-	-->
+	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-vpf.jar" file="${dir.maven}/gt2/jars/vpf-1.9.0.jar" /-->
+	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-db2.jar" file="${dir.maven}/gt2/jars/db2-${version.geotools}.jar" /-->
+	
+	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wfs.jar" file="${dir.maven}/gt2/jars/wfs-${version.geotools}.jar" /-->
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wms.jar" file="${dir.maven}/gt2/jars/wms-${version.geotools}.jar" />
 
 

@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -294,8 +295,26 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
          //if curProperty is not null then there is a geometry there.
 		} else if (state == VALUE) {
             String s = new String(ch, start, length);
+            
 			//GR:also doing s.trim() is wrong. We can't force spaces not to be part of the data
-            curPropertyValue = curPropertyValue == null? s : curPropertyValue + s;
+            //JD:appending the string blindly changes the type of non String values
+            if (curPropertyValue != null && !(curPropertyValue instanceof String)) {
+            	//do the trim since random whitespace is usually meaningless to 
+            	// non strings (ie Geometry)
+            	if (!"".equals(s.trim())) {
+            		//something wierd has happened if we get there, just append
+            		// and let fail later
+            		curPropertyValue = curPropertyValue + s;
+            	}
+            	else {
+            		//dont append
+            	}
+            }
+            else {
+            	curPropertyValue = curPropertyValue == null? s : curPropertyValue + s;	
+            }
+           
+            
         } else if (state == LOCKID) {
             String s = new String(ch, start, length);
             curLockId = s.trim();

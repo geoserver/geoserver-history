@@ -311,9 +311,19 @@ public class TransactionResponse implements Response {
                     throw new ServiceException(
                         "Transaction Delete support is not enabled");
                 }
+                
+                DeleteRequest delete = (DeleteRequest) element;
+                
+                //do a check for Filter.NONE, the spec specifically does not
+                // allow this
+                if (delete.getFilter() == Filter.NONE) {
+                	throw new ServiceException(
+            			"Filter must be supplied for Transaction Delete"
+                	);
+                }
+                
                 LOGGER.finer( "Transaction Delete:"+element );
                 try {
-                    DeleteRequest delete = (DeleteRequest) element;
                     Filter filter = delete.getFilter();
 
                     Envelope damaged = store.getBounds(new DefaultQuery(

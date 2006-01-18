@@ -136,6 +136,12 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
         }
         
         tempDir = System.getProperty("java.io.tmpdir");
+        if (tempDir != null) {
+        	//append file seperator if doesn't exist
+        	if (!tempDir.endsWith(File.separator)) {
+        		tempDir += File.separator;
+        	}
+        }
         
         if (tempDir == null) {
         	throw new NullPointerException("<tempDir> is null. " +

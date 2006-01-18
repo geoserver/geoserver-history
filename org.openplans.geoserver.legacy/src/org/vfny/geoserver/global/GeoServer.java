@@ -448,7 +448,8 @@ public class GeoServer extends GlobalLayerSupertype {
         Log4JFormatter.init("org.vfny.geoserver", level);
         
         Logger logger = Logger.getLogger("org.vfny.geoserver");
-//    	Handler[] handlers = logger.getHandlers();
+
+        Handler[] handlers = logger.getHandlers();
 //    	Handler old = null;
 //    	for (int i = 0; i < handlers.length; i++) {
 //    		Handler handler = handlers[i];
@@ -472,6 +473,8 @@ public class GeoServer extends GlobalLayerSupertype {
         	);
         	handler.setLevel(level);
         	logger.addHandler(handler);
+        	if (Logger.getLogger("org.geotools") != null) 
+        		Logger.getLogger("org.geotools").addHandler(handler);
         }
     }
     /**

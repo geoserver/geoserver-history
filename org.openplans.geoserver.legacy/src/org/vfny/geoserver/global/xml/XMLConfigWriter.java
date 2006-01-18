@@ -1008,6 +1008,7 @@ public static class WriterUtils {
                 }
             } else {
                 try {
+                	LOGGER.severe("Attempting to create file:" + f.getAbsolutePath());
                     if (!f.createNewFile()) {
                         throw new ConfigurationException(
                             "Path specified does not have a valid file.\n" + f
