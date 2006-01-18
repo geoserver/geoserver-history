@@ -3,19 +3,26 @@
 <script language="JavaScript">
 
 function dataStoreChanged() {
-	var ds = document.forms[0].datastores;
-	document.getElementById("description").innerHTML  = ds.options[ds.selectedIndex].value;
+	var ds = document.forms[0].dataStore;
+	var id = ds.options[ds.selectedIndex].value;
+	
+	for (var i = 0; i < document.forms[0].elements.length; i++) {
+		var element = document.forms[0].elements[i];
+		alert(element.type);
+	}
+	
+	//document.getElementById("description").innerHTML  = desc;
 }
 	
 </script>	
 
-<form>
+<form method="post">
 
-	<select name="datastores" onchange="dataStoreChanged()">
+	<select name="dataStore" onchange="dataStoreChanged()">
 	
-	<c:forEach var="datastore" items="${datastores}">
-		
-		<option value='<c:out value="${datastore.description}"/>'><c:out value="${datastore.displayName}"/>
+	<c:forEach var="ds" items="${datastores}">
+		<option value='<c:out value="${ds.displayName}"/>'><c:out value="${ds.displayName}"/>
+		<input type="hidden" id="${ds.displayName}" value="${ds.description}"/>
 	</c:forEach>
 	
 	</select>

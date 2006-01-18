@@ -7,9 +7,18 @@
 	<bean id="shpDataStoreUIHelp"
 	  class="org.openplans.geoserver.shp.internal.ShapefileDataStoreUIHelp">
 	  
-	  <property name="dataStoreFactoryClass" 
+	  <constructor-arg type="java.lang.Class"
 	  	value="org.geotools.data.shapefile.ShapefileDataStoreFactory"/>
 	  	
 	</bean>
+	
+	<bean id="messageSource"
+        class="org.springframework.context.support.ResourceBundleMessageSource">
+	    <property name="basenames">
+	      <list>
+	        <value>message</value>
+	      </list>
+	    </property>
+  </bean>
 
 </beans>

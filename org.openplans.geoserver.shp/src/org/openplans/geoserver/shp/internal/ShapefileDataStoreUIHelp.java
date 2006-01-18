@@ -17,11 +17,18 @@ public class ShapefileDataStoreUIHelp extends DataStoreUIHelp
 		super(dataStoreFactoryClass);
 	}
 
+	public String getDisplayName() {
+		return context.getMessage("shapefile.displayName",null,null);
+	}
+	
 	public String getDescription(DataStoreFactorySpi factory, Param param) {
 		if (param == ShapefileDataStoreFactory.URLP) {
 			return context.getMessage("shapefile.url.description",null,null);
 		}
-		if (param == )
+		if (param == ShapefileDataStoreFactory.MEMORY_MAPPED) {
+			return context.getMessage("shapefile.url.memoryMapped",null,null);
+		}
+		return null;
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext) 

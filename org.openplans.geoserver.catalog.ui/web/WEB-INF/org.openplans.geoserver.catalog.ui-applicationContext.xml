@@ -3,11 +3,11 @@
 
 <beans>
 
-	<!-- controller for handling all incoming requests -->
+	<!-- controllers -->
 	<bean id="newDataStoreController" 
 		class="org.openplans.geoserver.catalog.ui.internal.NewDataStoreController">
-
 	</bean>
+	
 
 	<!-- url mappings -->		
 	<bean id="org.openplans.geoserver.catalog.ui.urlMapping"

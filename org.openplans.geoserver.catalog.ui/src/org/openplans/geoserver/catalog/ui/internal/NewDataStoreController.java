@@ -14,18 +14,31 @@ import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFinder;
 import org.openplans.geoserver.catalog.ui.DataStoreUIHelp;
 import org.springframework.context.ApplicationContext;
+import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.mvc.AbstractFormController;
 
-public class NewDataStoreController extends AbstractController {
+public class NewDataStoreController extends AbstractFormController {
 
 	/** model key for data store factory list **/
 	public static final String DATASTORES = "datastores";
 	
-	protected ModelAndView handleRequestInternal(
-		HttpServletRequest request, HttpServletResponse response
-	) throws Exception {
-		
+	/** selected data store **/
+	private String dataStore;
+	
+	public void setDataStore(String dataStore) {
+		this.dataStore = dataStore;
+	}
+	 
+	public String getDataStore() {
+		return dataStore;
+	}
+
+	protected Object formBackingObject(HttpServletRequest request) throws Exception {
+		return this;
+	}
+	
+	protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
 		//populate model with available datastores
 		Iterator itr = DataStoreFinder.getAvailableDataStores();
 		ArrayList list = new ArrayList();
@@ -69,6 +82,11 @@ public class NewDataStoreController extends AbstractController {
 		
 		return new ModelAndView("newDataStore",model);
 	}
+
+	protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+		return null;
+	}
+	
 	
 	/**
 	 * Process beans of type {@link DataStoreUIHelp} to overide ui names, 
