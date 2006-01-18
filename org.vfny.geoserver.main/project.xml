@@ -3,10 +3,10 @@
 	<pomVersion>3</pomVersion>
 	<extend>${basedir}/../org.openplans.geoserver.gtlibs/project.xml</extend>
 
-	<groupId>org.openplans</groupId>
-	<artifactId>org.openplans.geoserver.legacy</artifactId>
+	<groupId>org.vfny</groupId>
+	<artifactId>org.vfny.geoserver.main</artifactId>
 	<currentVersion>0.1</currentVersion>
-	<name>GeoServer 1.X Plugin</name>
+	<name>GeoServer Main Module</name>
 
 	<dependencies>
 		<dependency>

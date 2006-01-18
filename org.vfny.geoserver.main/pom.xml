@@ -9,10 +9,10 @@
 		<version>0.1</version>
 	</parent>
 
-	<groupId>org.openplans</groupId>
-  <artifactId>org.openplans.geoserver.legacy</artifactId>
+	<groupId>org.vfny</groupId>
+  <artifactId>org.vfny.geoserver.main</artifactId>
 	<packaging>jar</packaging>
-  <name>GeoServer 1.X Plugin</name>
+  <name>GeoServer Main Module</name>
 
 	<dependencies>
 		<dependency>
