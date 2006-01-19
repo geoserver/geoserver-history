@@ -10,7 +10,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-fileupload.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-lang.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-validator.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gt2-arcsde.jar"/>
+	<classpathentry exported="true" sourcepath="/arcsde" kind="lib" path="lib/gt2-arcsde.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gt2-experiment.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gt2-gml.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gt2-graph.jar"/>
@@ -55,5 +55,6 @@
 	<classpathentry kind="lib" path="lib/batik-svggen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-arcgrid.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-image.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.5.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
