@@ -187,7 +187,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
      */
     protected Style getStyle(String styleName) throws Exception {
         SLDParser parser = new SLDParser(sFac);
-        URL styleRes = getClass().getResource("test-data/styles/" + styleName);
+        URL styleRes = AbstractCiteDataTest.class.getResource("test-data/styles/" + styleName);
         parser.setInput(styleRes);
 
         Style s = parser.readXML()[0];
@@ -359,7 +359,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
 
         String resourceName = "test-data/featureTypes/" + fileName;
 
-        InputStream in = getClass().getResourceAsStream(resourceName);
+        InputStream in = AbstractCiteDataTest.class.getResourceAsStream(resourceName);
 
         if (in == null) {
             throw new NullPointerException(resourceName
