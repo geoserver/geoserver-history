@@ -13,7 +13,7 @@
 	<classpathentry kind="var" path="GEOSERVER/commons-lang.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/commons-logging.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/commons-validator.jar"/>
-	<classpathentry sourcepath="MAIN" kind="var" path="GEOSERVER/geoapi.jar"/>
+	<classpathentry kind="var" path="GEOSERVER/geoapi-2.0.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-arcgrid.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-arcsde.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-experiment.jar"/>
@@ -24,14 +24,11 @@
 	<classpathentry kind="var" path="GEOSERVER/gt2-gtopo30.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-image.jar"/>
 	<classpathentry sourcepath="MAIN" kind="var" path="GEOSERVER/gt2-main.jar"/>
-	<classpathentry kind="var" path="GEOSERVER/gt2-mysql.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-oracle-spatial.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-postgis.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-property.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-utils.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-validation.jar"/>
-	<classpathentry kind="var" path="GEOSERVER/gt2-vpf.jar"/>
-	<classpathentry kind="var" path="GEOSERVER/gt2-wfs.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/gt2-wms.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/jakarta-oro.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/jdbcPostgres.jar"/>
@@ -47,7 +44,6 @@
 	<classpathentry kind="var" path="GEOSERVER/ki-util.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/log4j-1.2.5.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/lucene.jar"/>
-	<classpathentry kind="var" path="GEOSERVER/mysql-connector-java-3.0.9.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/opengis-css-0.1.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/opengis-legacy-0.1.jar"/>
 	<classpathentry kind="var" path="GEOSERVER/servlet.jar"/>
