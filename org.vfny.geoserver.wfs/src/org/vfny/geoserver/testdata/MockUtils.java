@@ -1,6 +1,9 @@
 package org.vfny.geoserver.testdata;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -232,7 +235,10 @@ public class MockUtils {
 			throws ConfigurationException, IOException {
 		DataDTO dataDto = new DataDTO();
 		File dir = null;
-		URL testDataUrl = MockUtils.class.getResource("/test-data");
+		
+		URL testDataUrl = MockUtils.class.getResource("test-data");
+		System.out.println(testDataUrl);
+		
 		if (!"file".equals(testDataUrl.getProtocol())) {
 			throw new IOException("unsupported protocol: "
 					+ testDataUrl.getProtocol());
@@ -407,7 +413,7 @@ public class MockUtils {
 		// pathname be deleted when the virtual machine terminates.
 		outFile.deleteOnExit();
 
-		String resourceName = "/test-data/featureTypes/" + fileName;
+		String resourceName = "test-data/featureTypes/" + fileName;
 
 		InputStream in = MockUtils.class.getResourceAsStream(resourceName);
 

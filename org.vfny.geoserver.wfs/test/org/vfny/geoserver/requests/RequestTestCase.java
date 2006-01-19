@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.vfny.geoserver.Request;
+import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 
@@ -40,8 +41,10 @@ public abstract class RequestTestCase extends TestCase {
             "org.vfny.geoserver.requests");
 
     /** Unit test data directory */
-    private static final String DATA_DIRECTORY = System.getProperty("user.dir")
-        + "/test/test-data/requests/";
+    private static final String DATA_DIRECTORY = 
+    	//System.getProperty("user.dir") + "/test/test-data/requests/";
+    	AbstractCiteDataTest.class.getResource("test-data/requests").getFile();
+    		
 
     /** Holds mappings between HTTP and ASCII encodings */
     protected static FilterFactory factory = FilterFactoryFinder.createFilterFactory();
