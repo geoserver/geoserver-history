@@ -24,7 +24,7 @@ import org.vfny.geoserver.wfs.requests.readers.DescribeXmlReader;
  * @author Chris Holmes, TOPP
  * @version $Id: DescribeSuite.java,v 1.8 2004/01/31 00:17:52 jive Exp $
  */
-public class DescribeSuite extends RequestTestCase {
+public class DescribeSuiteTest extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
@@ -43,12 +43,12 @@ public class DescribeSuite extends RequestTestCase {
      *
      * @param testName The name of this test.
      */
-    public DescribeSuite(String testName) {
+    public DescribeSuiteTest(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite(DescribeSuite.class);
+        TestSuite suite = new TestSuite(DescribeSuiteTest.class);
 
         return suite;
     }

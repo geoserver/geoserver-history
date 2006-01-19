@@ -24,7 +24,7 @@ import org.vfny.geoserver.wfs.requests.readers.CapabilitiesXmlReader;
  * @author Chris Holmes, TOPP
  * @version $Id: CapabilitiesSuite.java,v 1.7 2004/01/31 00:17:52 jive Exp $
  */
-public class CapabilitiesSuite extends RequestTestCase {
+public class CapabilitiesSuiteTest extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
@@ -43,12 +43,12 @@ public class CapabilitiesSuite extends RequestTestCase {
      *
      * @param testName The name of this test.
      */
-    public CapabilitiesSuite(String testName) {
+    public CapabilitiesSuiteTest(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite(CapabilitiesSuite.class);
+        TestSuite suite = new TestSuite(CapabilitiesSuiteTest.class);
 
         return suite;
     }

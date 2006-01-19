@@ -21,7 +21,7 @@ import org.vfny.geoserver.wfs.requests.UpdateRequest;
  * @task TODO: Bring back tests 4 and 6, they are broken due to reading of the
  *       same literals in different ways - string/double/int.
  */
-public class UpdateSuite extends TransactionSuite {
+public class UpdateSuiteTest extends TransactionSuiteTest {
     // Initializes the logger. Uncomment to see log messages.
     //static {
     //    org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", Level.FINEST);
@@ -32,13 +32,13 @@ public class UpdateSuite extends TransactionSuite {
      *
      * @param testName The name of the test.
      */
-    public UpdateSuite(String testName) {
+    public UpdateSuiteTest(String testName) {
         super(testName);
     }
 
     public static Test suite() {
         TestSuite suite = new TestSuite("Update tests");
-        suite.addTestSuite(UpdateSuite.class);
+        suite.addTestSuite(UpdateSuiteTest.class);
 
         return suite;
     }

@@ -32,7 +32,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  * @author Chris Holmes, TOPP
  * @version $Id: LockSuite.java,v 1.8 2004/01/31 00:17:52 jive Exp $
  */
-public class LockSuite extends RequestTestCase {
+public class LockSuiteTest extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
@@ -48,7 +48,7 @@ public class LockSuite extends RequestTestCase {
      *
      * @param testName The name of the test.
      */
-    public LockSuite(String testName) {
+    public LockSuiteTest(String testName) {
         super(testName);
     }
 

@@ -24,7 +24,7 @@ import org.vfny.geoserver.wfs.requests.readers.DeleteKvpReader;
  * @author Chris Holmes, TOPP
  * @version $Id: DeleteSuite.java,v 1.13 2004/01/31 00:17:52 jive Exp $
  */
-public class DeleteSuite extends TransactionSuite {
+public class DeleteSuiteTest extends TransactionSuiteTest {
     // Initializes the logger. Uncomment to see log messages.
     //static {
     //    org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", Level.FINEST);
@@ -39,13 +39,13 @@ public class DeleteSuite extends TransactionSuite {
      *
      * @param testName DOCUMENT ME!
      */
-    public DeleteSuite(String testName) {
+    public DeleteSuiteTest(String testName) {
         super(testName);
     }
 
     public static Test suite() {
         TestSuite suite = new TestSuite("Delete tests");
-        suite.addTestSuite(DeleteSuite.class);
+        suite.addTestSuite(DeleteSuiteTest.class);
 
         return suite;
     }

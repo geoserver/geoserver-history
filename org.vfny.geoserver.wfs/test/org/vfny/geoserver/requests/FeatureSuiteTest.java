@@ -35,7 +35,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  * @author Chris Holmes, TOPP
  * @version $Id: FeatureSuite.java,v 1.10 2004/01/31 00:17:52 jive Exp $
  */
-public class FeatureSuite extends RequestTestCase {
+public class FeatureSuiteTest extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
@@ -51,7 +51,7 @@ public class FeatureSuite extends RequestTestCase {
      *
      * @param testName The name of the test.
      */
-    public FeatureSuite(String testName) {
+    public FeatureSuiteTest(String testName) {
         super(testName);
     }
 

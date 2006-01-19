@@ -25,7 +25,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  *
  * @task TODO: fix up for the new config stuff.
  */
-public class InsertSuite extends TransactionSuite {
+public class InsertSuiteTest extends TransactionSuiteTest {
     // Initializes the logger. Uncomment to see log messages.
     //static {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
@@ -37,13 +37,13 @@ public class InsertSuite extends TransactionSuite {
      *
      * @param testName The name of the test.
      */
-    public InsertSuite(String testName) {
+    public InsertSuiteTest(String testName) {
         super(testName);
     }
 
     public static Test suite() {
         TestSuite suite = new TestSuite("Insert tests");
-        suite.addTestSuite(InsertSuite.class);
+        suite.addTestSuite(InsertSuiteTest.class);
 
         return suite;
     }

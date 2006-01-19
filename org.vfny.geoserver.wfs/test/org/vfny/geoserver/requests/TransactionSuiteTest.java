@@ -42,7 +42,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  * @task REVISIT: This should serve as the place for the sub transaction suites
  *       to run their tests.
  */
-public class TransactionSuite extends RequestTestCase {
+public class TransactionSuiteTest extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
@@ -64,7 +64,7 @@ public class TransactionSuite extends RequestTestCase {
      *
      * @param testName The name of the test.
      */
-    public TransactionSuite(String testName) {
+    public TransactionSuiteTest(String testName) {
         super(testName);
     }
 
