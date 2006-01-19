@@ -1,4 +1,5 @@
 Geoserver 1.3.0 PR1
+-------------------
 
 The issue log for this release is here:
 

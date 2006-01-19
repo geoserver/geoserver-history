@@ -28,8 +28,8 @@
 ;General
 
   ;Name and file
-  Name "GeoServer 1.3.0-PR1 WCS Experiment"
-  OutFile "geoserver-1.3.0-PR1-WCS.exe"
+  Name "GeoServer 1.3.0 WCS Experiment"
+  OutFile "geoserver-1.3.0-WCS.exe"
 
 
   ;Default installation folder
@@ -54,9 +54,7 @@
   
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
-      installation of GeoServer 1.3 WCS Experiment \r\n \r\nNote that this is the first \
-      attempt by the GeoServer project to create \
-      a Windows executable installer.  \
+      installation of GeoServer 1.3 WCS Experiment\r\n
       Please report any problems or suggestions for improvement to \
       geoserver-devel@lists.sourceforge.net. \r\n \r\n \
       Click Next to continue."
@@ -135,7 +133,7 @@ Section "GeoServer Section" SecGeoServer
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
     SetOutPath "$INSTDIR\bin"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\GeoServer Documentation.lnk"\
-                   "$INSTDIR\documents\index.html"
+                   "$INSTDIR\documents\GEOSDOC\Documentation.html"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\GeoServer Administration.lnk" \
                    "http://127.0.0.1:8080/geoserver/"
 

@@ -39,7 +39,8 @@
 	<!-- ====================================================================== -->
 
 	<!-- release version -->
-	<property name="name.release" value="1.3.0-RC7-WCS" />
+
+	<property name="name.release" value="1.3.0-WCS" />
 
 	<!-- primary directories -->
 	<property name="dir.bin" value="${basedir}/bin" />
@@ -861,8 +862,8 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 <!--   install directory. You can download Nullsoft Scriptable Install System -->
 <!--   here: http://nsis.sourceforge.net/-->
 <target name="release-all" depends="release-common, release-binary,release-war, release-src, release-docs" >
-	<antcall target="release-installer-win"/>
-	<delete dir="${dir.build}/installer"/>
+	<!--antcall target="release-installer-win"/>
+	<delete dir="${dir.build}/installer"/-->
 </target>
 
 
@@ -1163,7 +1164,7 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
      Building with maven is required before commit changed jar files.
 -->
 <target name="geotools" depends="init" description="Generate geotools2 jars for quick testing (use maven for jars you commit)">
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/geoapi.jar" file="${dir.maven}/geoapi/jars/geoapi-2.0.jar" />
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/geoapi-2.0.jar" file="${dir.maven}/geoapi/jars/geoapi-2.0.jar" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/opengis-css-0.1.jar" file="${dir.maven}/opengis/jars/opengis-css-0.1.jar" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/units-0.01.jar" file="${dir.maven}/units/jars/units-0.01.jar" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_sdk-9.0.jar" />
@@ -1201,13 +1202,13 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-experiment.jar" file="${dir.maven}/gt2/jars/experiment-${version.geotools}.jar" />
 
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" />	
+	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" /-->	
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-vpf.jar" file="${dir.maven}/gt2/jars/vpf-1.9.0.jar" />
-	<!--
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wfs.jar" file="${dir.maven}/gt2/jars/wfs-${version.geotools}.jar" />
-	-->
+	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-vpf.jar" file="${dir.maven}/gt2/jars/vpf-1.9.0.jar" /-->
+	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-db2.jar" file="${dir.maven}/gt2/jars/db2-${version.geotools}.jar" /-->
+	
+	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wfs.jar" file="${dir.maven}/gt2/jars/wfs-${version.geotools}.jar" /-->
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wms.jar" file="${dir.maven}/gt2/jars/wms-${version.geotools}.jar" />
 
 

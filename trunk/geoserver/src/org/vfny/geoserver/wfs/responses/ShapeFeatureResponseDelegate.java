@@ -68,12 +68,12 @@ import org.vfny.geoserver.global.GeoServer;
  * </p>
  *
  * @author Chris Holmes
- * @version $Id: ShapeFeatureResponseDelegate.java 3960 2005-11-25 08:46:09Z cholmes $
+ * @version $Id: ShapeFeatureResponseDelegate.java 4098 2006-01-17 23:05:46Z jdeolive $
  *
  * @task TODO: lots of cleanup.  Get working with more than one feature result,
  *       get rid of duplicate code in writing out shp and dbf files, and add
  *       shx,  (and prj?).  And try to get shapefile writer working directly,
- *       instead of writing to a temp file using the DataStore.
+ *       instead of writing to a temp file using the DataStore. - can't do, easily.
  *       Not worth the time as it won't speed it up and will take much time to 
  *       implement - brent
  * @task HACK: Since we are just writing to temp files right now we should move
@@ -136,6 +136,12 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
         }
         
         tempDir = System.getProperty("java.io.tmpdir");
+        if (tempDir != null) {
+        	//append file seperator if doesn't exist
+        	if (!tempDir.endsWith(File.separator)) {
+        		tempDir += File.separator;
+        	}
+        }
         
         if (tempDir == null) {
         	throw new NullPointerException("<tempDir> is null. " +
