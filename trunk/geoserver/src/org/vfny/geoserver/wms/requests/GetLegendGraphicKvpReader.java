@@ -101,7 +101,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         	try {
         		CoverageInfo cvi = request.getWMS().getData().getCoverageInfo(layer);
         		mli.setCoverage(cvi);
-        		Feature feature = mli.getCoverageToFeatures(httpRequest).features().next();
+        		Feature feature = mli.getCoverageToFeatures(httpRequest).getFeatures().features().next();
                 request.setLayer(feature.getFeatureType());
         	} catch (NoSuchElementException ne) {
                 throw new WmsException(layer + " layer does not exists.",

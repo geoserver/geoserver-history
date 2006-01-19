@@ -141,7 +141,7 @@ public class WfsDispatcher extends Dispatcher {
                 requestReader = new BufferedReader(
                         XmlCharsetDetector.createReader(
                                 new FileInputStream(temp), encInfo));
-            } catch (Exception e) {
+            } catch (IOException e) {
                 /*
                  * Any exception other than WfsException will "hang up" the
                  * process - no client output, no log entries, only "Internal

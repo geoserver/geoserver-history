@@ -27,10 +27,13 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.factory.FactoryRegistryException;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.geometry.JTS;
 import org.geotools.referencing.FactoryFinder;
 import org.geotools.referencing.factory.epsg.DefaultFactory;
+import org.geotools.resources.CRSUtilities;
 //import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverageReader;
@@ -40,9 +43,18 @@ import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.AxisDirection;
+import org.opengis.referencing.cs.CoordinateSystem;
+import org.opengis.referencing.operation.CoordinateOperation;
+import org.opengis.referencing.operation.CoordinateOperationFactory;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.MathTransform2D;
+import org.opengis.referencing.operation.OperationNotFoundException;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.CoverageConfig;
@@ -247,19 +259,64 @@ public class CoveragesEditorAction extends ConfigAction {
 		} catch (IOException e) {
 			throw new ServletException(e);
 		}
-		
-		Envelope envelope = new Envelope();
-		GeneralEnvelope gEnvelope=(GeneralEnvelope)gc.getEnvelope();
-		envelope.init(gEnvelope.getLowerCorner().getOrdinate(0),
-				gEnvelope.getUpperCorner().getOrdinate(0),
-				gEnvelope.getLowerCorner().getOrdinate(1),
-				gEnvelope.getUpperCorner().getOrdinate(1));
-		
-		coverageForm.setMinX(Double.toString(envelope.getMinX()));
-		coverageForm.setMaxX(Double.toString(envelope.getMaxX()));
-		coverageForm.setMinY(Double.toString(envelope.getMinY()));
-		coverageForm.setMaxY(Double.toString(envelope.getMaxY()));
-		
+
+		try {
+			final CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
+			final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
+			final CoordinateReferenceSystem targetCRS = crsFactory.createCoordinateReferenceSystem("EPSG:4326");
+			final CoordinateReferenceSystem sourceCRS = gc.getEnvelope2D().getCoordinateReferenceSystem();
+			final CoordinateOperation operation = opFactory.createOperation(sourceCRS, targetCRS);
+			MathTransform mathTransform = (MathTransform) operation.getMathTransform();
+			GeneralEnvelope gEnvelope=(GeneralEnvelope)gc.getEnvelope();
+			GeneralEnvelope targetEnvelope = null;
+			if( !mathTransform.isIdentity() )
+				targetEnvelope = CRSUtilities.transform(mathTransform, gEnvelope);
+			else
+				targetEnvelope = gEnvelope;
+
+	    	final CoordinateSystem cs = targetCRS.getCoordinateSystem();
+	    	boolean lonFirst = true;
+	    	if (cs.getAxis(0).getDirection().absolute().equals(AxisDirection.NORTH)) {
+	    		lonFirst = false;
+	    	}
+	    	boolean swapXY = !lonFirst;
+
+	    	// latitude index
+	        final int latIndex = lonFirst ? 1 : 0;
+
+	        final AxisDirection latitude = cs.getAxis(latIndex).getDirection();
+	        final AxisDirection longitude = cs.getAxis((latIndex + 1) % 2).getDirection();
+	        final boolean[] reverse = new boolean[] {
+	        		lonFirst ? !longitude.equals(AxisDirection.EAST) : !latitude.equals(AxisDirection.NORTH), 
+	        		lonFirst ? !latitude.equals(AxisDirection.NORTH) : !longitude.equals(AxisDirection.EAST)
+			};
+
+		    Envelope envelope = new Envelope();
+			envelope.init(
+					reverse[(latIndex + 1) % 2] ? targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 1 : 0) : targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 1 : 0),
+					reverse[(latIndex + 1) % 2] ? targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 1 : 0) : targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 1 : 0),
+					reverse[latIndex] ? targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 0 : 1) : targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 0 : 1),
+					reverse[latIndex] ? targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 0 : 1) : targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 0 : 1));
+
+			if(!targetCRS.getIdentifiers().isEmpty()) {
+				coverageForm.setSrsName(targetCRS.getIdentifiers().toArray()[0].toString());				
+			} else {
+				coverageForm.setSrsName(targetCRS.getName().toString());
+			}
+			coverageForm.setMinX(Double.toString(envelope.getMinX()));
+			coverageForm.setMaxX(Double.toString(envelope.getMaxX()));
+			coverageForm.setMinY(Double.toString(envelope.getMinY()));
+			coverageForm.setMaxY(Double.toString(envelope.getMaxY()));
+		} catch (FactoryRegistryException e) {
+			throw new ServletException(e);
+		} catch (OperationNotFoundException e) {
+			throw new ServletException(e);
+		} catch (FactoryException e) {
+			throw new ServletException(e);
+		} catch (TransformException e) {
+			throw new ServletException(e);
+		}
+
 		return mapping.findForward("config.data.coverage.editor");
 	}
 	

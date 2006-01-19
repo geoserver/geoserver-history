@@ -261,7 +261,7 @@ public class CoverageRequest extends WCSRequest {
 			double arg3 = Double.parseDouble(coords[3]);
 			
 			this.envelope = new Envelope(arg0, arg2, arg1, arg3);
-		} catch(Exception e) {
+		} catch(NumberFormatException e) {
 			this.envelope = null;
 		}
 	}

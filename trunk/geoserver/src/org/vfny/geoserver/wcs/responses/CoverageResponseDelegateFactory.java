@@ -59,11 +59,15 @@ public class CoverageResponseDelegateFactory {
                         return (CoverageResponseDelegate) encoder.getClass()
                                                                 .newInstance();
                     }
-                } catch (Exception ex) {
+                } catch (IllegalAccessException ex) {
                     throw new NoSuchElementException(
                         "Can't create the encoder "
                         + encoder.getClass().getName());
-                }
+                } catch (InstantiationException e) {
+                    throw new NoSuchElementException(
+                            "Can't create the encoder "
+                            + encoder.getClass().getName());
+				}
             }
         }
 

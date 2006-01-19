@@ -98,48 +98,18 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class XMLConfigReader {
 	/** Used internally to create log information to detect errors. */
-	private static final Logger LOGGER = Logger
-			.getLogger("org.vfny.geoserver.global");
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.global");
 
 	/** The root directory from which the configuration is loaded. */
 	private File root;
 
 	/** Is set to true after the model is loaded into memory. */
 	private boolean initialized = false;
-
-	/**
-	 * 
-	 * @uml.property name="wms"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
 	private WMSDTO wms;
-
-	/**
-	 * 
-	 * @uml.property name="wfs"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
 	private WFSDTO wfs;
-
-	/**
-	 * 
-	 * @uml.property name="wcs"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
 	private WCSDTO wcs;
-
-	/**
-	 * 
-	 * @uml.property name="geoServer"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
 	private GeoServerDTO geoServer;
-
-	/**
-	 * 
-	 * @uml.property name="data"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
 	private DataDTO data;
 
 	/** the servlet context * */
@@ -162,31 +132,35 @@ public class XMLConfigReader {
 		root = new File(".");
 	}
 
-	/**
-	 * <p>
-	 * This method loads the config files from the specified directory into a
-	 * ModelConfig. If the path is incorrect, or the directory is formed
-	 * correctly, a ConfigException will be thrown and/or null returned. <br>
-	 * <br>
-	 * The config directory is as follows:<br>
-	 * 
-	 * <ul>
-	 * <li> ./WEB-INF/catalog.xml </li>
-	 * <li> ./WEB-INF/services.xml </li>
-	 * <li> ./data/featuretypes/ /info.xml </li>
-	 * <li> ./data/featuretypes/ /schema.xml </li>
-	 * <li> ./data/coverages/ /info.xml </li>
-	 * </ul>
-	 * </p>
-	 * 
-	 * @param root
-	 *            A directory which contains the config files.
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 */
-	public XMLConfigReader(File root, ServletContext context)
-			throws ConfigurationException {
+    /**
+     * <p>
+     * This method loads the config files from the  specified directory into a
+     * ModelConfig. If the path is incorrect,  or the directory is formed
+     * correctly, a ConfigException  will be thrown and/or null returned. <br>
+     * <br>
+     * The config directory is as follows:<br>
+     * 
+     * <ul>
+     * <li>
+     * ./WEB-INF/catalog.xml
+     * </li>
+     * <li>
+     * ./WEB-INF/services.xml
+     * </li>
+     * <li>
+     * ./data/featuretypes/  /info.xml
+     * </li>
+     * <li>
+     * ./data/featuretypes/  /schema.xml
+     * </li>
+     * </ul>
+     * </p>
+     *
+     * @param root A directory which contains the config files.
+     *
+     * @throws ConfigurationException When an error occurs.
+     */
+    public XMLConfigReader(File root, ServletContext context) throws ConfigurationException {
 		this.root = root;
 		this.context = context;
 		wms = new WMSDTO();
@@ -196,6 +170,7 @@ public class XMLConfigReader {
 		data = new DataDTO();
 		load();
 		initialized = true;
+        
 	}
 
 	public boolean isInitialized() {
@@ -216,10 +191,8 @@ public class XMLConfigReader {
 		root = ReaderUtils.checkFile(root, true);
 		File configDir;
 
-		// Doing some trys here for either being in the webapp, with data and
-		// web-inf defined
-		// or in a true data_dir, with the catalog and service in the same root
-		// dir.
+        //Doing some trys here for either being in the webapp, with data and web-inf defined
+        //or in a true data_dir, with the catalog and service in the same root dir.
 		try {
 			configDir = ReaderUtils.checkFile(new File(root, "WEB-INF/"), true);
 		} catch (ConfigurationException confE) {
@@ -233,7 +206,6 @@ public class XMLConfigReader {
 
 		File catalogFile = ReaderUtils.checkFile(new File(configDir,
 				"catalog.xml"), false);
-		ReaderUtils.checkFile(new File(root, "data/"), true);
 		File featureTypeDir = GeoserverDataDirectory.findConfigDir(root,
 				"featureTypes/");
 		File styleDir = GeoserverDataDirectory.findConfigDir(root, "styles/");
@@ -242,28 +214,25 @@ public class XMLConfigReader {
 
 		loadCatalog(catalogFile, featureTypeDir, styleDir, coverageDir);
 
-		// Future additions
-		// validationDir = ReaderUtils.initFile(new
-		// File(dataDir,"validation/"),true);
-		// loadValidation(validationDir);
+        // Future additions
+        // validationDir = ReaderUtils.initFile(new File(dataDir,"validation/"),true);
+        // loadValidation(validationDir);	
 	}
 
-	/**
-	 * loadServices purpose.
-	 * 
-	 * <p>
-	 * loads services.xml into memory with the assistance of other class
-	 * methods.
-	 * </p>
-	 * 
-	 * @param configFile
-	 *            services.xml
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 */
-	protected void loadServices(File configFile) throws ConfigurationException {
-		LOGGER.finer("loading config file: " + configFile);
+    /**
+     * loadServices purpose.
+     * 
+     * <p>
+     * loads services.xml into memory with the assistance of other class
+     * methods.
+     * </p>
+     *
+     * @param configFile services.xml
+     *
+     * @throws ConfigurationException When an error occurs.
+     */
+    protected void loadServices(File configFile) throws ConfigurationException {
+        LOGGER.config("Loading configuration file: " + configFile);
 
 		Element configElem = null;
 
@@ -277,14 +246,12 @@ public class XMLConfigReader {
 			throw new ConfigurationException(e);
 		}
 
-		LOGGER.fine("parsing configuration documents");
+        LOGGER.config("parsing configuration documents");
 
-		Element elem = (Element) configElem.getElementsByTagName("global")
-				.item(0);
+        Element elem = (Element) configElem.getElementsByTagName("global").item(0);
 		loadGlobal(elem);
 
-		NodeList configuredServices = configElem
-				.getElementsByTagName("service");
+        NodeList configuredServices = configElem.getElementsByTagName("service");
 		int nServices = configuredServices.getLength();
 
 		for (int i = 0; i < nServices; i++) {
@@ -307,29 +274,27 @@ public class XMLConfigReader {
 		}
 	}
 
-	/**
-	 * loadCatalog purpose.
-	 * 
-	 * <p>
-	 * loads catalog.xml into memory with the assistance of other class methods.
-	 * </p>
-	 * 
-	 * @param catalogFile
-	 *            catalog.xml
-	 * @param featureTypeDir
-	 *            the directory containing the info.xml files for the
-	 *            featuretypes.
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 */
+    /**
+     * loadCatalog purpose.
+     * 
+     * <p>
+     * loads catalog.xml into memory with the assistance of other class
+     * methods.
+     * </p>
+     *
+     * @param catalogFile catalog.xml
+     * @param featureTypeDir the directory containing the info.xml files for
+     *        the featuretypes.
+     *
+     * @throws ConfigurationException When an error occurs.
+     */
 	protected void loadCatalog(File catalogFile, File featureTypeDir,
 			File styleDir, File coverageDir) throws ConfigurationException {
-		LOGGER.fine("loading catalog file: " + catalogFile);
 
 		Element catalogElem = null;
 
 		try {
+        	LOGGER.config("Loading configuration file: " + catalogFile);
 			FileReader fr = new FileReader(catalogFile);
 			catalogElem = ReaderUtils.loadConfig(fr);
 			fr.close();
@@ -339,7 +304,6 @@ public class XMLConfigReader {
 			throw new ConfigurationException(e);
 		}
 
-		LOGGER.finer("loading catalog configuration");
 		data.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(
 				catalogElem, "namespaces", true)));
 		setDefaultNS();
@@ -347,11 +311,14 @@ public class XMLConfigReader {
 				"formats", true)));
 		data.setDataStores(loadDataStores(ReaderUtils.getChildElement(
 				catalogElem, "datastores", true)));
-		data.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem,
-				"styles", false), styleDir));
 
-		// must be last
-		data.setFeaturesTypes(loadFeatureTypes(featureTypeDir));
+
+        data.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem,
+						  "styles", false), styleDir));
+//                new File(featureTypeDir.getParentFile(), "styles")));
+
+        // must be last
+        data.setFeaturesTypes(loadFeatureTypes(featureTypeDir));
 		data.setCoverages(loadCoverages(coverageDir));
 	}
 
@@ -378,21 +345,20 @@ public class XMLConfigReader {
 		}
 	}
 
-	/**
-	 * getLoggingLevel purpose.
-	 * 
-	 * <p>
-	 * Parses the LoggingLevel from a DOM tree and converts the level into a
-	 * Level Object.
-	 * </p>
-	 * 
-	 * @param globalConfigElem
-	 * 
-	 * @return The logging Level
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 */
+    /**
+     * getLoggingLevel purpose.
+     * 
+     * <p>
+     * Parses the LoggingLevel from a DOM tree and converts the level into a
+     * Level Object.
+     * </p>
+     *
+     * @param globalConfigElem
+     *
+     * @return The logging Level
+     *
+     * @throws ConfigurationException When an error occurs.
+     */
 	protected Level getLoggingLevel(Element globalConfigElem)
 			throws ConfigurationException {
 		Level level = Logger.getLogger("org.vfny.geoserver").getLevel();
@@ -439,12 +405,10 @@ public class XMLConfigReader {
 		Element elem = null;
 		elem = ReaderUtils.getChildElement(globalElem, "loggingToFile", false);
 		if (elem != null) {
-			loggingToFile = ReaderUtils.getBooleanAttribute(elem, "value",
-					false, false);
+           loggingToFile = ReaderUtils.getBooleanAttribute(elem, "value", false, false);
 		}
 
-		String logLocation = ReaderUtils
-				.getChildText(globalElem, "logLocation");
+        String logLocation = ReaderUtils.getChildText(globalElem, "logLocation");
 		if ((logLocation != null) && "".equals(logLocation.trim())) {
 			logLocation = null;
 		}
@@ -454,8 +418,7 @@ public class XMLConfigReader {
 
 		// init this now so the rest of the config has correct log levels.
 		try {
-			GeoServer.initLogging(loggingLevel, loggingToFile, logLocation,
-					context);
+            GeoServer.initLogging(loggingLevel, loggingToFile,logLocation, context);
 		} catch (IOException e) {
 			throw new ConfigurationException(e);
 		}
@@ -548,21 +511,19 @@ public class XMLConfigReader {
 		}
 	}
 
-	/**
-	 * loadContact purpose.
-	 * 
-	 * <p>
-	 * Converts a DOM tree into a ContactConfig
-	 * </p>
-	 * 
-	 * @param contactInfoElement
-	 *            a DOM tree to convert into a ContactConfig.
-	 * 
-	 * @return The resulting ContactConfig object from the DOM tree.
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 */
+    /**
+     * loadContact purpose.
+     * 
+     * <p>
+     * Converts a DOM tree into a ContactConfig
+     * </p>
+     *
+     * @param contactInfoElement a DOM tree to convert into a ContactConfig.
+     *
+     * @return The resulting ContactConfig object from the DOM tree.
+     *
+     * @throws ConfigurationException When an error occurs.
+     */
 	protected ContactDTO loadContact(Element contactInfoElement)
 			throws ConfigurationException {
 		ContactDTO c = new ContactDTO();
@@ -584,16 +545,13 @@ public class XMLConfigReader {
 
 		c.setContactPosition(ReaderUtils.getChildText(contactInfoElement,
 				"ContactPosition"));
-		elem = ReaderUtils
-				.getChildElement(contactInfoElement, "ContactAddress");
+        elem = ReaderUtils.getChildElement(contactInfoElement, "ContactAddress");
 
 		if (elem != null) {
 			c.setAddressType(ReaderUtils.getChildText(elem, "AddressType"));
 			c.setAddress(ReaderUtils.getChildText(elem, "Address"));
 			c.setAddressCity(ReaderUtils.getChildText(elem, "City"));
-			c
-					.setAddressState(ReaderUtils.getChildText(elem,
-							"StateOrProvince"));
+            c.setAddressState(ReaderUtils.getChildText(elem, "StateOrProvince"));
 			c.setAddressPostalCode(ReaderUtils.getChildText(elem, "PostCode"));
 			c.setAddressCountry(ReaderUtils.getChildText(elem, "Country"));
 		}
@@ -650,21 +608,20 @@ public class XMLConfigReader {
 
 		// try {
 
-		wfs.setFeatureBounding(ReaderUtils.getBooleanAttribute(ReaderUtils
-				.getChildElement(wfsElement, "featureBounding"), "value",
-				false, false));
+        wfs.setFeatureBounding(ReaderUtils.getBooleanAttribute(
+                ReaderUtils.getChildElement(wfsElement, "featureBounding"),
+                "value", false, false));
 
-		Element elem = ReaderUtils.getChildElement(wfsElement, "srsXmlStyle",
-				false);
-		LOGGER.info("reading srsXmlStyle: " + elem);
+        Element elem = ReaderUtils.getChildElement(wfsElement, "srsXmlStyle",
+                false);
+        LOGGER.config("reading srsXmlStyle: " + elem);
 
-		if (elem != null) {
-			wfs.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem, "value",
-					false, true));
-			LOGGER.info("set srsXmlStyle to "
-					+ ReaderUtils.getBooleanAttribute(elem, "value", false,
-							true));
-		}
+        if (elem != null) {
+            wfs.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem, "value",
+                    false, true));
+            LOGGER.fine("set srsXmlStyle to "
+                + ReaderUtils.getBooleanAttribute(elem, "value", false, true));
+        }
 
 		String serviceLevelValue = ReaderUtils.getChildText(wfsElement,
 				"serviceLevel");
@@ -707,13 +664,7 @@ public class XMLConfigReader {
 		if (e != null) {
 			String text = ReaderUtils.getChildText(wfsElement,
 					"citeConformanceHacks");
-			boolean citeConformanceHacks = Boolean.valueOf(text).booleanValue(); // just
-			// get
-			// the
-			// value
-			// and
-			// parse
-			// it
+            boolean citeConformanceHacks = Boolean.valueOf(text).booleanValue(); // just get the value and parse it
 			wfs.setCiteConformanceHacks(citeConformanceHacks);
 			LOGGER.finer("setting citeConformanceHacks to "
 					+ citeConformanceHacks);
@@ -725,21 +676,19 @@ public class XMLConfigReader {
 		wfs.setService(s);
 	}
 
-	/**
-	 * loadWMS purpose.
-	 * 
-	 * <p>
-	 * Converts a DOM tree into a WMS object.
-	 * </p>
-	 * 
-	 * @param wmsElement
-	 *            a DOM tree to convert into a WMS object.
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 * 
-	 * @see GlobalData#getBaseUrl()
-	 */
+    /**
+     * loadWMS purpose.
+     * 
+     * <p>
+     * Converts a DOM tree into a WMS object.
+     * </p>
+     *
+     * @param wmsElement a DOM tree to convert into a WMS object.
+     *
+     * @throws ConfigurationException When an error occurs.
+     *
+     * @see GlobalData#getBaseUrl()
+     */
 	protected void loadWMS(Element wmsElement) throws ConfigurationException {
 		wms = new WMSDTO();
 		wms.setService(loadService(wmsElement));
@@ -749,21 +698,19 @@ public class XMLConfigReader {
 				wmsElement, "svgAntiAlias")));
 	}
 
-	/**
-	 * loadService purpose.
-	 * 
-	 * <p>
-	 * Converts a DOM tree into a ServiceDTO object.
-	 * </p>
-	 * 
-	 * @param serviceRoot
-	 *            a DOM tree to convert into a ServiceDTO object.
-	 * 
-	 * @return A complete ServiceDTO object loaded from the DOM tree provided.
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 */
+    /**
+     * loadService purpose.
+     * 
+     * <p>
+     * Converts a DOM tree into a ServiceDTO object.
+     * </p>
+     *
+     * @param serviceRoot a DOM tree to convert into a ServiceDTO object.
+     *
+     * @return A complete ServiceDTO object loaded from the DOM tree provided.
+     *
+     * @throws ConfigurationException When an error occurs.
+     */
 	protected ServiceDTO loadService(Element serviceRoot)
 			throws ConfigurationException {
 		ServiceDTO s = new ServiceDTO();
@@ -819,33 +766,29 @@ public class XMLConfigReader {
 			NameSpaceInfoDTO ns = new NameSpaceInfoDTO();
 			ns.setUri(ReaderUtils.getAttribute(elem, "uri", true));
 			ns.setPrefix(ReaderUtils.getAttribute(elem, "prefix", true));
-			ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default",
-					false, false)
-					|| (nsCount == 1));
-			LOGGER.finer("added namespace " + ns);
+            ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default",
+                    false, false) || (nsCount == 1));
+            LOGGER.config("added namespace " + ns);
 			nameSpaces.put(ns.getPrefix(), ns);
 		}
 
 		return nameSpaces;
 	}
 
-	/**
-	 * loadStyles purpose.
-	 * 
-	 * <p>
-	 * Converts a DOM tree into a Map of Styles.
-	 * </p>
-	 * 
-	 * @param stylesElem
-	 *            a DOM tree to convert into a Map of Styles.
-	 * @param baseDir
-	 *            DOCUMENT ME!
-	 * 
-	 * @return A complete Map of Styles loaded from the DOM tree provided.
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 */
+    /**
+     * loadStyles purpose.
+     * 
+     * <p>
+     * Converts a DOM tree into a Map of Styles.
+     * </p>
+     *
+     * @param stylesElem a DOM tree to convert into a Map of Styles.
+     * @param baseDir DOCUMENT ME!
+     *
+     * @return A complete Map of Styles loaded from the DOM tree provided.
+     *
+     * @throws ConfigurationException When an error occurs.
+     */
 	protected Map loadStyles(Element stylesElem, File baseDir)
 			throws ConfigurationException {
 		Map styles = new HashMap();
@@ -873,11 +816,13 @@ public class XMLConfigReader {
 
 			StyleDTO s = new StyleDTO();
 			s.setId(ReaderUtils.getAttribute(styleElem, "id", true));
-			s.setFilename(new File(baseDir, ReaderUtils.getAttribute(styleElem,
-					"filename", true)));
-			s.setDefault(ReaderUtils.getBooleanAttribute(styleElem, "default",
-					false, false));
-			styles.put(s.getId(), s);
+            s.setFilename(new File(baseDir,
+                    ReaderUtils.getAttribute(styleElem, "filename", true)));
+            s.setDefault(ReaderUtils.getBooleanAttribute(styleElem, "default",
+                    false, false));
+            styles.put(s.getId(), s);
+            
+            LOGGER.config("Loaded style " + s.getId());
 		}
 
 		return styles;
@@ -969,20 +914,18 @@ public class XMLConfigReader {
 	}
 
 	/**
-	 * loadDataStores purpose.
-	 * 
-	 * <p>
-	 * Converts a DOM tree into a Map of DataStores.
-	 * </p>
-	 * 
-	 * @param dsRoot
-	 *            a DOM tree to convert into a Map of DataStores.
-	 * 
-	 * @return A complete Map of DataStores loaded from the DOM tree provided.
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 */
+     * loadDataStores purpose.
+     * 
+     * <p>
+     * Converts a DOM tree into a Map of DataStores.
+     * </p>
+     *
+     * @param dsRoot a DOM tree to convert into a Map of DataStores.
+     *
+     * @return A complete Map of DataStores loaded from the DOM tree provided.
+     *
+     * @throws ConfigurationException When an error occurs.
+     */
 	protected Map loadDataStores(Element dsRoot) throws ConfigurationException {
 		Map dataStores = new HashMap();
 
@@ -1006,22 +949,20 @@ public class XMLConfigReader {
 		return dataStores;
 	}
 
-	/**
-	 * loadDataStore purpose.
-	 * 
-	 * <p>
-	 * Converts a DOM tree into a DataStoreInfo object.
-	 * </p>
-	 * 
-	 * @param dsElem
-	 *            a DOM tree to convert into a DataStoreInfo object.
-	 * 
-	 * @return A complete DataStoreInfo object loaded from the DOM tree
-	 *         provided.
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 */
+    /**
+     * loadDataStore purpose.
+     * 
+     * <p>
+     * Converts a DOM tree into a DataStoreInfo object.
+     * </p>
+     *
+     * @param dsElem a DOM tree to convert into a DataStoreInfo object.
+     *
+     * @return A complete DataStoreInfo object loaded from the DOM tree
+     *         provided.
+     *
+     * @throws ConfigurationException When an error occurs.
+     */
 	protected DataStoreInfoDTO loadDataStore(Element dsElem)
 			throws ConfigurationException {
 		DataStoreInfoDTO ds = new DataStoreInfoDTO();
@@ -1046,30 +987,29 @@ public class XMLConfigReader {
 		ds.setAbstract(ReaderUtils.getChildText(dsElem, "description", false));
 		LOGGER.finer("loading connection parameters for DataStoreDTO "
 				+ ds.getNameSpaceId());
-		ds.setConnectionParams(loadConnectionParams(ReaderUtils
-				.getChildElement(dsElem, "connectionParams", true)));
+        ds.setConnectionParams(loadConnectionParams(ReaderUtils.getChildElement(
+                    dsElem, "connectionParams", true)));
 
+        LOGGER.config("Loaded datastore " + ds.getId());
 		return ds;
 	}
 
-	/**
-	 * loadConnectionParams purpose.
-	 * 
-	 * <p>
-	 * Converts a DOM tree into a Map of Strings which represent connection
-	 * parameters.
-	 * </p>
-	 * 
-	 * @param connElem
-	 *            a DOM tree to convert into a Map of Strings which represent
-	 *            connection parameters.
-	 * 
-	 * @return A complete Map of Strings which represent connection parameters
-	 *         loaded from the DOM tree provided.
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 */
+    /**
+     * loadConnectionParams purpose.
+     * 
+     * <p>
+     * Converts a DOM tree into a Map of Strings which represent connection
+     * parameters.
+     * </p>
+     *
+     * @param connElem a DOM tree to convert into a Map of Strings which
+     *        represent connection parameters.
+     *
+     * @return A complete Map of Strings which represent connection parameters
+     *         loaded from the DOM tree provided.
+     *
+     * @throws ConfigurationException When an error occurs.
+     */
 	protected Map loadConnectionParams(Element connElem)
 			throws ConfigurationException {
 		Map connectionParams = new HashMap();
@@ -1095,36 +1035,43 @@ public class XMLConfigReader {
 		return connectionParams;
 	}
 
-	/**
-	 * Load map of FeatureTypeDTO instances from a directory.
-	 * 
-	 * <p>
-	 * Expected directory structure:
-	 * </p>
-	 * 
-	 * <ul>
-	 * <li> rootDir/ </li>
-	 * <li> rootDir/featureType1/info.xml - required </li>
-	 * <li> rootDir/featureType1/schema.xml - optional </li>
-	 * <li> rootDir/featureType2/info.xml - required </li>
-	 * <li> rootDir/featureType2/schema.xml - optional </li>
-	 * </ul>
-	 * 
-	 * <p>
-	 * If a schema.xml file is not used, the information may be generated from a
-	 * FeatureType using DataTransferObjectFactory.
-	 * </p>
-	 * 
-	 * @param featureTypeRoot
-	 *            Root FeatureType directory
-	 * 
-	 * @return Map of FeatureTypeInfoDTO by <code>dataStoreId:typeName</code>
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 * @throws IllegalArgumentException
-	 *             DOCUMENT ME!
-	 */
+    /**
+     * Load map of FeatureTypeDTO instances from a directory.
+     * 
+     * <p>
+     * Expected directory structure:
+     * </p>
+     * 
+     * <ul>
+     * <li>
+     * rootDir/
+     * </li>
+     * <li>
+     * rootDir/featureType1/info.xml - required
+     * </li>
+     * <li>
+     * rootDir/featureType1/schema.xml - optional
+     * </li>
+     * <li>
+     * rootDir/featureType2/info.xml - required
+     * </li>
+     * <li>
+     * rootDir/featureType2/schema.xml - optional
+     * </li>
+     * </ul>
+     * 
+     * <p>
+     * If a schema.xml file is not used, the information may be generated from
+     * a FeatureType using DataTransferObjectFactory.
+     * </p>
+     *
+     * @param featureTypeRoot Root FeatureType directory
+     *
+     * @return Map of FeatureTypeInfoDTO by <code>dataStoreId:typeName</code>
+     *
+     * @throws ConfigurationException When an error occurs.
+     * @throws IllegalArgumentException DOCUMENT ME!
+     */
 	protected Map loadFeatureTypes(File featureTypeRoot)
 			throws ConfigurationException {
 		LOGGER.finest("examining: " + featureTypeRoot.getAbsolutePath());
@@ -1157,36 +1104,38 @@ public class XMLConfigReader {
 		return map;
 	}
 
-	/**
-	 * Load FeatureTypeInfoDTO from a directory.
-	 * 
-	 * <p>
-	 * Expected directory structure:
-	 * </p>
-	 * 
-	 * <ul>
-	 * <li> info.xml - required </li>
-	 * <li> schema.xml - optional </li>
-	 * </ul>
-	 * 
-	 * <p>
-	 * If a schema.xml file is not used, the information may be generated from a
-	 * FeatureType using DataTransferObjectFactory.
-	 * </p>
-	 * 
-	 * @param infoFile
-	 *            a File to convert into a FeatureTypeInfo object. (info.xml)
-	 * 
-	 * @return A complete FeatureTypeInfo object loaded from the File handle
-	 *         provided.
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 * @throws IllegalArgumentException
-	 *             DOCUMENT ME!
-	 * 
-	 * @see loadFeaturePt2(Element)
-	 */
+    /**
+     * Load FeatureTypeInfoDTO from a directory.
+     * 
+     * <p>
+     * Expected directory structure:
+     * </p>
+     * 
+     * <ul>
+     * <li>
+     * info.xml - required
+     * </li>
+     * <li>
+     * schema.xml - optional
+     * </li>
+     * </ul>
+     * 
+     * <p>
+     * If a schema.xml file is not used, the information may be generated from
+     * a FeatureType using DataTransferObjectFactory.
+     * </p>
+     *
+     * @param infoFile a File to convert into a FeatureTypeInfo object.
+     *        (info.xml)
+     *
+     * @return A complete FeatureTypeInfo object loaded from the File handle
+     *         provided.
+     *
+     * @throws ConfigurationException When an error occurs.
+     * @throws IllegalArgumentException DOCUMENT ME!
+     *
+     * @see loadFeaturePt2(Element)
+     */
 	protected FeatureTypeInfoDTO loadFeature(File infoFile)
 			throws ConfigurationException {
 		if (!infoFile.exists()) {
@@ -1207,6 +1156,7 @@ public class XMLConfigReader {
 		Element featureElem = null;
 
 		try {
+        	LOGGER.config("Loading configuration file: " + infoFile);
 			Reader reader = null;
 			reader = new FileReader(infoFile);
 			featureElem = ReaderUtils.loadConfig(reader);
@@ -1243,27 +1193,25 @@ public class XMLConfigReader {
 			dto.setSchemaAttributes(Collections.EMPTY_LIST);
 		}
 
-		LOGGER.finer("added featureType " + dto.getName());
+        LOGGER.config("added featureType " + dto.getName());
 
 		return dto;
 	}
 
-	/**
-	 * loadFeaturePt2 purpose.
-	 * 
-	 * <p>
-	 * Converts a DOM tree into a FeatureTypeInfo object.
-	 * </p>
-	 * 
-	 * @param fTypeRoot
-	 *            a DOM tree to convert into a FeatureTypeInfo object.
-	 * 
-	 * @return A complete FeatureTypeInfo object loaded from the DOM tree
-	 *         provided.
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 */
+    /**
+     * loadFeaturePt2 purpose.
+     * 
+     * <p>
+     * Converts a DOM tree into a FeatureTypeInfo object.
+     * </p>
+     *
+     * @param fTypeRoot a DOM tree to convert into a FeatureTypeInfo object.
+     *
+     * @return A complete FeatureTypeInfo object loaded from the DOM tree
+     *         provided.
+     *
+     * @throws ConfigurationException When an error occurs.
+     */
 	protected FeatureTypeInfoDTO loadFeaturePt2(Element fTypeRoot)
 			throws ConfigurationException {
 		FeatureTypeInfoDTO ft = new FeatureTypeInfoDTO();
@@ -1808,19 +1756,18 @@ public class XMLConfigReader {
 	}
 
 	/**
-	 * getKeyWords purpose.
-	 * 
-	 * <p>
-	 * Converts a DOM tree into a List of Strings representing keywords.
-	 * </p>
-	 * 
-	 * @param keywordsElem
-	 *            a DOM tree to convert into a List of Strings representing
-	 *            keywords.
-	 * 
-	 * @return A complete List of Strings representing keywords loaded from the
-	 *         DOM tree provided.
-	 */
+     * getKeyWords purpose.
+     * 
+     * <p>
+     * Converts a DOM tree into a List of Strings representing keywords.
+     * </p>
+     *
+     * @param keywordsElem a DOM tree to convert into a List of Strings
+     *        representing keywords.
+     *
+     * @return A complete List of Strings representing keywords loaded from the
+     *         DOM tree provided.
+     */
 	protected List getKeyWords(Element keywordsElem) {
 		NodeList klist = keywordsElem.getElementsByTagName("keyword");
 		int kCount = klist.getLength();
@@ -1840,21 +1787,19 @@ public class XMLConfigReader {
 		return keywords;
 	}
 
-	/**
-	 * loadLatLongBBox purpose.
-	 * 
-	 * <p>
-	 * Converts a DOM tree into a Envelope object.
-	 * </p>
-	 * 
-	 * @param bboxElem
-	 *            a DOM tree to convert into a Envelope object.
-	 * 
-	 * @return A complete Envelope object loaded from the DOM tree provided.
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 */
+    /**
+     * loadLatLongBBox purpose.
+     * 
+     * <p>
+     * Converts a DOM tree into a Envelope object.
+     * </p>
+     *
+     * @param bboxElem a DOM tree to convert into a Envelope object.
+     *
+     * @return A complete Envelope object loaded from the DOM tree provided.
+     *
+     * @throws ConfigurationException When an error occurs.
+     */
 	protected Envelope loadLatLongBBox(Element bboxElem)
 			throws ConfigurationException {
 		if (bboxElem == null) {
@@ -1880,21 +1825,19 @@ public class XMLConfigReader {
 		return new Envelope();
 	}
 
-	/**
-	 * loadDefinitionQuery purpose.
-	 * 
-	 * <p>
-	 * Converts a DOM tree into a Filter object.
-	 * </p>
-	 * 
-	 * @param typeRoot
-	 *            a DOM tree to convert into a Filter object.
-	 * 
-	 * @return A complete Filter object loaded from the DOM tree provided.
-	 * 
-	 * @throws ConfigurationException
-	 *             When an error occurs.
-	 */
+    /**
+     * loadDefinitionQuery purpose.
+     * 
+     * <p>
+     * Converts a DOM tree into a Filter object.
+     * </p>
+     *
+     * @param typeRoot a DOM tree to convert into a Filter object.
+     *
+     * @return A complete Filter object loaded from the DOM tree provided.
+     *
+     * @throws ConfigurationException When an error occurs.
+     */
 	protected org.geotools.filter.Filter loadDefinitionQuery(Element typeRoot)
 			throws ConfigurationException {
 		Element defQNode = ReaderUtils.getChildElement(typeRoot,
@@ -1907,13 +1850,13 @@ public class XMLConfigReader {
 			Element filterNode = ReaderUtils.getChildElement(defQNode,
 					"Filter", false);
 
-			if ((filterNode != null)
-					&& ((filterNode = ReaderUtils
-							.getFirstChildElement(filterNode)) != null)) {
-				filter = FilterDOMParser.parseFilter(filterNode);
+            if ((filterNode != null)
+                    && ((filterNode = ReaderUtils.getFirstChildElement(
+                            filterNode)) != null)) {
+                filter = FilterDOMParser.parseFilter(filterNode);
 
-				return filter;
-			}
+                return filter;
+            }
 
 			LOGGER.finer("No Filter definition query found");
 		}
@@ -1921,18 +1864,17 @@ public class XMLConfigReader {
 		return filter;
 	}
 
-	/**
-	 * isInfoFile purpose.
-	 * 
-	 * <p>
-	 * Used to perform safety checks on info.xml file handles.
-	 * </p>
-	 * 
-	 * @param testFile
-	 *            The file to test.
-	 * 
-	 * @return true if the file is an info.xml file.
-	 */
+    /**
+     * isInfoFile purpose.
+     * 
+     * <p>
+     * Used to perform safety checks on info.xml file handles.
+     * </p>
+     *
+     * @param testFile The file to test.
+     *
+     * @return true if the file is an info.xml file.
+     */
 	protected static boolean isInfoFile(File testFile) {
 		String testName = testFile.getAbsolutePath();
 
@@ -1942,26 +1884,25 @@ public class XMLConfigReader {
 		return testName.substring(start, end).equals("info.xml");
 	}
 
-	/**
-	 * Process schema File for a list of AttributeTypeInfoDTO.
-	 * 
-	 * <p>
-	 * The provided FeatureTypeInfoDTO will be updated with the schemaBase.
-	 * </p>
-	 * 
-	 * @param schemaFile
-	 *            File containing schema definition
-	 * @param dto
-	 *            Schema DOM element
-	 * 
-	 * @throws ConfigurationException
-	 */
+    /**
+     * Process schema File for a list of AttributeTypeInfoDTO.
+     * 
+     * <p>
+     * The provided FeatureTypeInfoDTO will be updated with the schemaBase.
+     * </p>
+     *
+     * @param schemaFile File containing schema definition
+     * @param dto Schema DOM element
+     *
+     * @throws ConfigurationException
+     */
 	protected void loadSchema(File schemaFile, FeatureTypeInfoDTO dto)
 			throws ConfigurationException {
 		schemaFile = ReaderUtils.checkFile(schemaFile, false);
 
 		Element elem = null;
 		dto.setSchemaFile(schemaFile);
+
 		if ((schemaFile == null)
 				|| (!schemaFile.exists() || !schemaFile.canRead())) {
 			System.err.println("File does not exist for schema for "
@@ -1971,6 +1912,7 @@ public class XMLConfigReader {
 		}
 
 		try {
+        	LOGGER.config("Loading configuration file: " + schemaFile);
 			Reader reader;
 			reader = new FileReader(schemaFile);
 			elem = ReaderUtils.loadConfig(reader);
@@ -1992,22 +1934,20 @@ public class XMLConfigReader {
 		}
 	}
 
-	/**
-	 * Process schema DOM for a list of AttributeTypeInfoDTO.
-	 * 
-	 * <p>
-	 * The provided FeatureTypeInfoDTO will be updated with the schemaBase.
-	 * </p>
-	 * 
-	 * @param elem
-	 *            Schema DOM element
-	 * @param featureTypeInfoDTO
-	 * 
-	 * @throws ConfigurationException
-	 */
-	public static void processSchema(Element elem,
-			FeatureTypeInfoDTO featureTypeInfoDTO)
-			throws ConfigurationException {
+    /**
+     * Process schema DOM for a list of AttributeTypeInfoDTO.
+     * 
+     * <p>
+     * The provided FeatureTypeInfoDTO will be updated with the schemaBase.
+     * </p>
+     *
+     * @param elem Schema DOM element
+     * @param featureTypeInfoDTO
+     *
+     * @throws ConfigurationException
+     */
+    public static void processSchema(Element elem,
+        FeatureTypeInfoDTO featureTypeInfoDTO) throws ConfigurationException {
 		ArrayList list = new ArrayList();
 
 		featureTypeInfoDTO.setSchemaName(ReaderUtils.getAttribute(elem, "name",
@@ -2050,7 +1990,6 @@ public class XMLConfigReader {
 				String tmp = nse.getTypeRefName();
 
 				// tmp = Character.toLowerCase(tmp.charAt(0)) +
-				// tmp.substring(1);
 				ati.setType(tmp);
 				ati.setName(tmp);
 			} else {
@@ -2069,8 +2008,7 @@ public class XMLConfigReader {
 					ati.setComplex(false);
 				} else {
 					Element tmp = ReaderUtils.getFirstChildElement(elem);
-					OutputFormat format = new OutputFormat(tmp
-							.getOwnerDocument());
+                    OutputFormat format = new OutputFormat(tmp.getOwnerDocument());
 					format.setLineSeparator(LineSeparator.Windows);
 					format.setIndenting(true);
 					format.setLineWidth(0);
@@ -2103,32 +2041,28 @@ public class XMLConfigReader {
 		featureTypeInfoDTO.setSchemaAttributes(list);
 	}
 
-	/**
-	 * getData purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 * 
-	 * @uml.property name="data"
-	 */
+    /**
+     * getData purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
 	public DataDTO getData() {
 		return data;
 	}
 
-	/**
-	 * getGeoServer purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 * 
-	 * @uml.property name="geoServer"
-	 */
+    /**
+     * getGeoServer purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
 	public GeoServerDTO getGeoServer() {
 		return geoServer;
 	}
@@ -2141,8 +2075,6 @@ public class XMLConfigReader {
 	 * </p>
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="wcs"
 	 */
 	public WCSDTO getWcs() {
 		return wcs;
@@ -2156,9 +2088,7 @@ public class XMLConfigReader {
 	 * </p>
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="wfs"
-	 */
+     */
 	public WFSDTO getWfs() {
 		return wfs;
 	}
@@ -2171,11 +2101,8 @@ public class XMLConfigReader {
 	 * </p>
 	 * 
 	 * @return
-	 * 
-	 * @uml.property name="wms"
-	 */
+     */
 	public WMSDTO getWms() {
 		return wms;
 	}
-
 }

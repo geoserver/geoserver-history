@@ -59,11 +59,12 @@ public class ValidationTestSuiteSelectForm extends ActionForm {
     
     public SortedSet getTestSuites(){
     	try{
-        ServletContext context = getServlet().getServletContext();
-        ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
-        if(validationConfig!=null && validationConfig.getTestSuiteNames()!=null)
-        	return new TreeSet(validationConfig.getTestSuiteNames());
+    		ServletContext context = getServlet().getServletContext();
+    		ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
+    		if(validationConfig!=null && validationConfig.getTestSuiteNames()!=null)
+    			return new TreeSet(validationConfig.getTestSuiteNames());
     	}catch(Exception e){
+    		//TODO log error
     		e.printStackTrace();
     	}
         return new TreeSet();

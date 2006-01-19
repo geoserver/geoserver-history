@@ -161,7 +161,7 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
             		
             		coordinates[0] = new Double(arg0);
             		coordinates[1] = new Double(arg1);
-            	} catch(Exception e) {
+            	} catch(NumberFormatException e) {
             		coordinates[0] = null;
             		coordinates[1] = null;
             	}
@@ -180,7 +180,7 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
                     		coordinates[1].doubleValue(), 
                     		coordinates[3].doubleValue());
                     request.setEnvelope(env);
-            	} catch(Exception e) {
+            	} catch(NumberFormatException e) {
             		coordinates[2] = null;
             		coordinates[3] = null;
             	}
@@ -196,7 +196,7 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
         		lowers[1] = new Double(arg1);
 
                 request.setGridLow(lowers);
-        	} catch(Exception e) {
+        	} catch(NumberFormatException e) {
         		lowers[0] = null;
         		lowers[1] = null;
         	}
@@ -211,7 +211,7 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
         		highers[1] = new Double(arg1);
 
                 request.setGridHigh(highers);
-        	} catch(Exception e) {
+        	} catch(NumberFormatException e) {
         		highers[0] = null;
         		highers[1] = null;
         	}
@@ -226,7 +226,7 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
         		origin[1] = new Double(arg1);
 
                 request.setGridOrigin(origin);
-        	} catch(Exception e) {
+        	} catch(NumberFormatException e) {
         		origin[0] = null;
         		origin[1] = null;
         	}
@@ -243,7 +243,7 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
         			offsetVector[1] = new Double(arg1);
                     request.setOffsetVector(offsetVector);
         		}
-        	} catch(Exception e) {
+        	} catch(NumberFormatException e) {
         		offsetVector[0] = null;
         		offsetVector[1] = null;
         	}

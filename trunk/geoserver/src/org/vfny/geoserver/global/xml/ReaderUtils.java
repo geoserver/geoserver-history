@@ -73,8 +73,6 @@ public class ReaderUtils {
     public static Element loadConfig(Reader configFile)
         throws ConfigurationException {
         try {
-            LOGGER.finer("loading configuration file " + configFile);
-
             InputSource in = new InputSource(configFile);
             DocumentBuilderFactory dfactory = DocumentBuilderFactory
                 .newInstance();

@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.global;
 
 
@@ -15,17 +19,23 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataSourceException;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.FeatureSource;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.AttributeTypeFactory;
+import org.geotools.feature.DefaultFeature;
+import org.geotools.feature.DefaultFeatureType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeFactory;
+import org.geotools.feature.FeatureTypeBuilder;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
+import org.geotools.feature.type.GeometricAttributeType;
+import org.geotools.filter.Filter;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.FactoryFinder;
 import org.geotools.referencing.factory.epsg.DefaultFactory;
@@ -326,6 +336,7 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		GeometryFactory gf = new GeometryFactory(pm, 0);
 		Coordinate[] coord = new Coordinate[5];
 		Rectangle2D rect = ((GridCoverage2D) gridCoverage).getEnvelope2D().getBounds2D();
+		CoordinateReferenceSystem sourceCrs = ((GridCoverage2D) gridCoverage).getEnvelope2D().getCoordinateReferenceSystem();
 		coord[0] = new Coordinate(rect.getMinX(), rect.getMinY());
 		coord[1] = new Coordinate(rect.getMaxX(), rect.getMinY());
 		coord[2] = new Coordinate(rect.getMaxX(), rect.getMaxY());
@@ -336,16 +347,17 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		Polygon bounds = new Polygon(ring, null, gf);
 		
 		// create the feature type
-		AttributeType geom = AttributeTypeFactory.newAttributeType("geom", Polygon.class, true, 1, null, gridCoverage.getCoordinateReferenceSystem());
+ 		GeometricAttributeType geom = new GeometricAttributeType("geom", Polygon.class, true, 1, 1, null, sourceCrs, null);
 		AttributeType grid = AttributeTypeFactory.newAttributeType("grid", GridCoverage.class);
 		
-		FeatureType schema = null;
+		DefaultFeatureType schema = null;
 		AttributeType[] attTypes = {geom, grid};
 		
-		schema = FeatureTypeFactory.newFeatureType(attTypes, this.name);  
+		schema = (DefaultFeatureType) FeatureTypeBuilder.newFeatureType(attTypes, this.name);
 		
 		// create the feature
-		Feature feature = schema.create(new Object[] {bounds, gridCoverage});
+		Feature feature = new CoverageFeature(schema, new Object[] {bounds, gridCoverage}, this.name);
+		feature.setDefaultGeometry(bounds);
 		
 		return feature;
 	}
@@ -469,18 +481,20 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		return coverage;
 	}
 	
-	public FeatureCollection getCoverageToFeatures(HttpServletRequest request)
+	public FeatureSource getCoverageToFeatures(HttpServletRequest request)
 	throws DataSourceException {
 		FeatureCollection collection = FeatureCollections.newCollection();
-		// last step, wrap, add the the feature collection and return
+		// last step, wrap, add to the feature collection and return
 		try {
 			GridCoverage gridCoverage = getGridCoverage(request, this.coverage);
 			collection.add(wrapGcInFeature(gridCoverage));
 		} catch (Exception e) {
 			throw new DataSourceException("IO error", e);
 		}
+
+		final FeatureSource source = DataUtilities.source(collection);
 		
-		return collection;
+		return source;
 	}
 
 	public GridCoverage getCoverageToLayer(HttpServletRequest request)
@@ -502,5 +516,20 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 			return this.coverage.getDefaultStyle();
 		
 		return null;
+	}
+	
+	
+	/************************************
+	 * 
+	 * Extension of the DefaultFeature.
+	 *  
+	 */
+	private class CoverageFeature extends DefaultFeature {
+		public CoverageFeature(DefaultFeatureType fType, Object[] attributes, String featureId) throws IllegalAttributeException {
+			super(
+					fType,
+					attributes, 
+					featureId);
+		}
 	}
 }

@@ -346,9 +346,9 @@ public class TestConfig{
 			try{
 				ac.setValue(ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(ac.getValue()),value));
 				return true;
-			}catch(Exception e){
+			} catch (ValidationException e) {
 				e.printStackTrace();
-				// error, log it
+				//TODO error, log it
 				return false;
 			}
 		}

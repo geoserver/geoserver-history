@@ -29,7 +29,7 @@
 
 <ul>
   <li>
-    <a href="http://geoserver.sourceforge.net/documentation/1.3.0-RC7-WCS">
+    <a href="http://geoserver.sourceforge.net/documentation/1.3.0-PR1-WCS">
       Documentation
     </a>
   </li>

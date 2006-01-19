@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -61,30 +62,14 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");
 
-	/**
-	 * Internal transaction request for construction.
-	 * 
-	 * @uml.property name="request"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
-	private TransactionRequest request = new TransactionRequest();
+    /** Internal transaction request for construction. */
+    private TransactionRequest request = new TransactionRequest();
 
-	/**
-	 * Tracks current sub request
-	 * 
-	 * @uml.property name="subRequest"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private SubTransactionRequest subRequest = null;
+    /** Tracks current sub request */
+    private SubTransactionRequest subRequest = null;
 
-	/**
-	 * Tracks tag we are currently inside: helps maintain state.
-	 * 
-	 * @uml.property name="state"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
-	private State state = UNKNOWN;
-
+    /** Tracks tag we are currently inside: helps maintain state. */
+    private State state = UNKNOWN;
 
     /** holds the property name for an update request. */
     private String curPropertyName;
@@ -95,14 +80,8 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     /** holds the current lockId */
     private String curLockId = new String();
 
-	/**
-	 * holds the list of features for an insert request.
-	 * 
-	 * @uml.property name="curFeatures"
-	 * @uml.associationEnd elementType="org.geotools.feature.Feature" multiplicity="(0
-	 * -1)"
-	 */
-	private List curFeatures;
+    /** holds the list of features for an insert request. */
+    private List curFeatures;
 
     /**
      * Flag to alert signal we are within a Property element.  The state thing
@@ -316,8 +295,26 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
          //if curProperty is not null then there is a geometry there.
 		} else if (state == VALUE) {
             String s = new String(ch, start, length);
+            
 			//GR:also doing s.trim() is wrong. We can't force spaces not to be part of the data
-            curPropertyValue = curPropertyValue == null? s : curPropertyValue + s;
+            //JD:appending the string blindly changes the type of non String values
+            if (curPropertyValue != null && !(curPropertyValue instanceof String)) {
+            	//do the trim since random whitespace is usually meaningless to 
+            	// non strings (ie Geometry)
+            	if (!"".equals(s.trim())) {
+            		//something wierd has happened if we get there, just append
+            		// and let fail later
+            		curPropertyValue = curPropertyValue + s;
+            	}
+            	else {
+            		//dont append
+            	}
+            }
+            else {
+            	curPropertyValue = curPropertyValue == null? s : curPropertyValue + s;	
+            }
+           
+            
         } else if (state == LOCKID) {
             String s = new String(ch, start, length);
             curLockId = s.trim();

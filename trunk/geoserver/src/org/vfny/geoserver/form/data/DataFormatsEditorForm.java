@@ -312,6 +312,8 @@ public class DataFormatsEditorForm extends ActionForm {
                     	Object[] inArray = {getParamValue(i)};
                     	value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
     				}
+    			
+    			// Intentionally generic exception catched
                 } catch (Exception e) {
                 	value = null;
 //                    errors.add("paramValue[" + i + "]",

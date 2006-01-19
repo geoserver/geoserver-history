@@ -105,7 +105,7 @@ public class ConfigPlugIn implements PlugIn {
 		try{
 			vc = new ValidationConfig((Map)wfs.getValidation().toPlugInDTO(), (Map)wfs.getValidation().toTestSuiteDTO());
 		}catch(Exception e){
-			//load error
+			//TODO load error
 			vc = new ValidationConfig();
 		}
         sc.setAttribute(ValidationConfig.CONFIG_KEY, vc);

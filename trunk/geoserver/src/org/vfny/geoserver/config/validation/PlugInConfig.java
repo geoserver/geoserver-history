@@ -324,9 +324,9 @@ public class PlugInConfig{
 			try{
 				ac.setValue(ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(ac.getValue()),value));
 				return true;
-			}catch(Exception e){
+			}catch(ValidationException e){
 				e.printStackTrace();
-				// error, log it
+				//TODO error, log it
 				return false;
 			}
 		}
@@ -413,7 +413,9 @@ public class PlugInConfig{
 				Class plugIn = this.getClass().getClassLoader().loadClass(className);
 				BeanInfo bi = Introspector.getBeanInfo(plugIn);
 				return bi.getPropertyDescriptors();
+			//If an error occurs
 			}catch(Exception e){
+				//TODO log the error
 				e.printStackTrace();
 				return null;
 			}

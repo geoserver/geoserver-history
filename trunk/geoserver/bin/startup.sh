@@ -26,13 +26,13 @@ if [ -z $GEOSERVER_HOME ]; then
      echo "GEOSERVER_HOME environment variable not found, using current "
      echo "directory.  If not set then running this script from other "
      echo "directories will not work in the future."
-     export GEOSERVER_HOME=.
+     export GEOSERVER_HOME=`pwd`
   else 
     if [ -r start.jar ]; then
       echo "GEOSERVER_HOME environment variable not found, using current "
       echo "location.  If not set then running this script from other "
       echo "directories will not work in the future."
-      export GEOSERVER_HOME=..
+      export GEOSERVER_HOME=`pwd`/..
     fi
   fi 
 

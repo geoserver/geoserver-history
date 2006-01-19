@@ -9,7 +9,7 @@ Defines the logging level.  Common options are SEVERE,
 WARNING, INFO, CONFIG, FINER, FINEST, in order of
 Increasing statements logged.
 -->
-<loggingLevel>FINE</loggingLevel>
+<loggingLevel>CONFIG</loggingLevel>
 <!--
 Sets the max number of Features returned by GetFeature
 -->
@@ -102,8 +102,10 @@ This is a description of your Web Coverage Server.
     </service>
     
     <service type="WFS" enabled="true">
-      <!-- Service elements, needed for the capabilities document -->
-      <!-- Title and OnlineResource are the two required -->
+<!--
+ServiceDTO elements, needed for the capabilities document
+Title and OnlineResource are the two required
+-->
       <name>My GeoServer WFS</name>
       <title>My GeoServer WFS</title>
       <abstract>
@@ -127,8 +129,10 @@ data.
 <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
 </service>
     <service type="WMS" enabled="true">
-      <!-- Service elements, needed for the capabilities document -->
-      <!-- Title and OnlineResource are the two required -->
+<!--
+ServiceDTO elements, needed for the capabilities document
+Title and OnlineResource are the two required
+-->
       <name>My GeoServer WMS</name>
       <title>My GeoServer WMS</title>
       <abstract>

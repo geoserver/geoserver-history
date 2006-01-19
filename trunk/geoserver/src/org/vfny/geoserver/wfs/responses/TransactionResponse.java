@@ -541,14 +541,16 @@ public class TransactionResponse implements Response {
             }
         }
 
-        // All opperations have worked thus far
-        // 
-        // Time for some global Validation Checks against envelope
-        //
         try {
-            integrityValidation(stores2, envelope);
-        } catch (Exception invalid) {
+        	// All opperations have worked thus far
+        	// 
+        	// Time for some global Validation Checks against envelope
+        	//
+        	integrityValidation(stores2, envelope);
+        } catch (WfsTransactionException invalid) {
             throw new WfsTransactionException(invalid);
+        } catch (IOException io) {
+            throw new WfsException(io);
         }
 
         // we will commit in the writeTo method
@@ -601,7 +603,7 @@ public class TransactionResponse implements Response {
         } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
             throw new DataSourceException("Validation Failed", badIdea);
-        }
+		}
 
         if (failed.isEmpty()) {
             return; // everything worked out

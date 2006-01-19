@@ -20,7 +20,6 @@ import org.geotools.factory.FactoryFinder;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
-import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -28,7 +27,6 @@ import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.config.WMSConfig;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
@@ -154,8 +152,14 @@ public class GetMapResponse implements Response {
 					
 					map.addLayer(layer);
 				} else if( layers[i].getType() == MapLayerInfo.TYPE_RASTER ) {
-					final GridCoverage gridCoverage = layers[i].getCoverageToLayer(req.getHttpServletRequest());
-					map.addLayer(gridCoverage, style);
+					//final GridCoverage gridCoverage = layers[i].getCoverageToLayer(req.getHttpServletRequest());
+					//map.addLayer(gridCoverage, style);
+					source = layers[i].getCoverageToFeatures(req.getHttpServletRequest());
+
+					layer = new DefaultMapLayer(source, style);
+					layer.setQuery(Query.ALL);
+					
+					map.addLayer(layer);
 				}
 			}
 			
@@ -175,6 +179,7 @@ public class GetMapResponse implements Response {
 			}
 			catch(Exception e) // we dont want to propogate a new error
 			{
+				//TODO log the error
 				e.printStackTrace();
 			}
 			
@@ -261,6 +266,7 @@ public class GetMapResponse implements Response {
         	}
         	catch(Exception e) // we dont want to propogate a new error
 			{
+        		//TODO log the error
         		e.printStackTrace();
 			}
         }

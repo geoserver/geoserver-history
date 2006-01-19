@@ -22,7 +22,7 @@ import org.xml.sax.helpers.ParserAdapter;
 
 
 /**
- * reads in a DescribeFeatureType WFS request from a XML stream
+ * reads in a DescribeCoverageType WCS request from a XML stream
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
@@ -44,10 +44,10 @@ public class DescribeXmlReader extends XmlRequestReader {
      *
      * @return DOCUMENT ME!
      *
-     * @throws WfsException DOCUMENT ME!
+     * @throws WCSException DOCUMENT ME!
      */
     public Request read(Reader reader, HttpServletRequest req) throws WcsException {
-        /** create a describe feature type request class to return */
+        /** create a describe Coverage type request class to return */
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers

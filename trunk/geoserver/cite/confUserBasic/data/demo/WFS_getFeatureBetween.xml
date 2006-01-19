@@ -13,15 +13,15 @@
   xsi:schemaLocation="http://www.opengis.net/wfs
                       http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd">
   <wfs:Query typeName="topp:states">
-  <wfs:PropertyName>topp:STATE_NAME</wfs:PropertyName> 
-  <wfs:PropertyName>topp:LAND_KM</wfs:PropertyName> 
-   <wfs:PropertyName>topp:the_geom</wfs:PropertyName> 
-<Filter>
-<PropertyIsBetween>
-<PropertyName>topp:LAND_KM</PropertyName>
-<LowerBoundary><Literal>100000</Literal></LowerBoundary>
-<UpperBoundary><Literal>150000</Literal></UpperBoundary>
-</PropertyIsBetween>
-</Filter>
+  <ogc:PropertyName>topp:STATE_NAME</ogc:PropertyName> 
+  <ogc:PropertyName>topp:LAND_KM</ogc:PropertyName> 
+   <ogc:PropertyName>topp:the_geom</ogc:PropertyName> 
+<ogc:Filter>
+<ogc:PropertyIsBetween>
+<ogc:PropertyName>topp:LAND_KM</ogc:PropertyName>
+<ogc:LowerBoundary><ogc:Literal>100000</ogc:Literal></ogc:LowerBoundary>
+<ogc:UpperBoundary><ogc:Literal>150000</ogc:Literal></ogc:UpperBoundary>
+</ogc:PropertyIsBetween>
+</ogc:Filter>
   </wfs:Query>
 </wfs:GetFeature> 

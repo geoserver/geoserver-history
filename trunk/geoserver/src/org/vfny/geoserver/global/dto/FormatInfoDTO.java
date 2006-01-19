@@ -9,10 +9,10 @@ import java.util.Map;
 
 
 /**
- * Data Transfer Object for GeoServer DataStore information.
+ * Data Transfer Object for GeoServer Format information.
  * 
  * <p>
- * Used to describe a datastore, typically one specified in the catalog.xml
+ * Used to describe a Format, typically one specified in the catalog.xml
  * config file.
  * </p>
  * 
@@ -21,8 +21,8 @@ import java.util.Map;
  * application and its configuration and persistent layers. As such the class
  * is final - to allow for its future use as an on-the-wire message.
  * </p>
- * Example:<code> DataStoreInfoDTO dsiDto = new DataStoreInfoDTO();
- * dsiDto.setIde("myDataStore"); dsiDto.setEnabled(true); dsiDto.setTile("My
+ * Example:<code> FormatInfoDTO dsiDto = new FormatInfoDTO();
+ * dsiDto.setIde("myFormat"); dsiDto.setEnabled(true); dsiDto.setTile("My
  * Data Store"); Map m = new HashMap(); m.put("key","param");
  * dsiDto.setConnectionParams(m); </code>
  *
@@ -113,7 +113,6 @@ public final class FormatInfoDTO implements DataTransferObject {
         }
 
         id = dto.getId();
-        //nameSpaceId = dto.getNameSpaceId();
         type = dto.getType();
         url = dto.getUrl();
         enabled = dto.isEnabled();
@@ -159,7 +158,6 @@ public final class FormatInfoDTO implements DataTransferObject {
         FormatInfoDTO ds = (FormatInfoDTO) obj;
         boolean r = true;
         r = r && (id == ds.getId());
-        //r = r && (nameSpaceId == ds.getNameSpaceId());
         r = r && (type == ds.getType());
         r = r && (url == ds.getUrl());
         r = r && (enabled == ds.isEnabled());
@@ -188,9 +186,6 @@ public final class FormatInfoDTO implements DataTransferObject {
             r *= id.hashCode();
         }
 
-//        if (nameSpaceId != null) {
-//            r *= nameSpaceId.hashCode();
-//        }
         if (type != null) {
             r *= type.hashCode();
         }
@@ -244,7 +239,7 @@ public final class FormatInfoDTO implements DataTransferObject {
 	 * Unique identifier representing this Format.
 	 * 
 	 * <p>
-	 * This value is used to refer to this Format by FeatureTypeInfoDTO.
+	 * This value is used to refer to this Format by CoverageInfoDTO.
 	 * </p>
 	 * 
 	 * @return an identifier, non null

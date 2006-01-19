@@ -424,6 +424,7 @@ public class XMLConfigWriter {
         if (serviceLevel != 0) {
             cw.valueTag("serviceLevel", serviceLevel + "");
         }
+
         if (obj instanceof WFSDTO) //DJB: this method (storeService) doesnt separate WFS and WMS very well!
         {
         	 cw.textTag("citeConformanceHacks", citeConformanceHacks + "");
@@ -520,14 +521,12 @@ public class XMLConfigWriter {
         cw.closeTag("namespaces");
    
     	//DJB: since datastore screws up if the tag is missing, I'm fixing it here too
-   
         cw.openTag("styles");
             cw.comment(
                 "Defines the style ids to be used by the wms.  The files must be\n"
                 + "contained in geoserver/misc/wms/styles.  We're working on finding\n"
                 + "a better place for them, but for now that's where you must put them\n"
                 + "if you want them on the server.");
- 
 
             i = data.getStyles().keySet().iterator();
 
@@ -541,7 +540,6 @@ public class XMLConfigWriter {
             }
 
       cw.closeTag("styles");
-        
 
       cw.closeTag("catalog");
     }
@@ -1411,6 +1409,7 @@ public static class WriterUtils {
                 }
             } else {
                 try {
+                	LOGGER.severe("Attempting to create file:" + f.getAbsolutePath());
                     if (!f.createNewFile()) {
                         throw new ConfigurationException(
                             "Path specified does not have a valid file.\n" + f

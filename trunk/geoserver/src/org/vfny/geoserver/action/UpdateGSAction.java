@@ -27,6 +27,7 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
@@ -60,13 +61,17 @@ public class UpdateGSAction extends ConfigAction {
         ServletContext sc = request.getSession().getServletContext();
 
         try {
+        	WCSDTO wcsDTO = getWCSConfig().toDTO();
             WMSDTO wmsDTO = getWMSConfig().toDTO();
             WFSDTO wfsDTO = getWFSConfig().toDTO();
             GeoServerDTO geoserverDTO = getGlobalConfig().toDTO();
             DataDTO dataDTO = getDataConfig().toDTO();
 
+            getWCS(request).load(wcsDTO);
             getWFS(request).load(wfsDTO);
             getWMS(request).load(wmsDTO);
+            getWCS(request).getGeoServer().load(geoserverDTO,sc);
+            getWCS(request).getData().load(dataDTO);
             getWFS(request).getGeoServer().load(geoserverDTO,sc);
             getWFS(request).getData().load(dataDTO);
 

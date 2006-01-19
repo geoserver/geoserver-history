@@ -102,7 +102,7 @@ public class DescribeResponse implements Response {
     /**
      * The default transformations factory.
      */
-    protected  final static CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(null);
+    protected  final static CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
 
 	public void execute(Request request) throws WcsException {
 		if (!(request instanceof DescribeRequest)) {

@@ -117,7 +117,7 @@ public class SaveXMLAction extends ConfigAction {
                 try {
                     key = i.next();
                     dto = (PlugInDTO) plugIns.get(key);
-		    String fName = dto.getName().replaceAll(" ", "") + ".xml";
+                    String fName = dto.getName().replaceAll(" ", "") + ".xml";
                     File pFile = WriterUtils.initWriteFile(new File(plugInDir, fName), false);
                     FileWriter fw = new FileWriter(pFile);
                     XMLWriter.writePlugIn(dto, fw);
@@ -148,10 +148,10 @@ public class SaveXMLAction extends ConfigAction {
 
                 try {
                     dto = (TestSuiteDTO) testSuites.get(i.next());
-		    String fName = dto.getName().replaceAll(" ", "") + ".xml";
+                    String fName = dto.getName().replaceAll(" ", "") + ".xml";
                     File pFile = WriterUtils.initWriteFile(new File(validationDir, fName), false);
                     FileWriter fw = new FileWriter(pFile);//new File(validationDir,
-		    //dto.getName().replaceAll(" ", "") + ".xml"));
+                    //dto.getName().replaceAll(" ", "") + ".xml"));
                     XMLWriter.writeTestSuite(dto, fw);
                     fw.close();
                 } catch (Exception e) {

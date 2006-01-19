@@ -5,6 +5,8 @@
 package org.vfny.geoserver.wcs.responses.coverage;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -87,7 +89,6 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 					+ " or has not succeed");
 		}
 		try {
-			
 			GridCoverageWriter writer= new WorldImageWriter(output);
 		      //writing parameters for png
 	        Format writerParams = writer.getFormat();
@@ -99,8 +100,8 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 			//writer=null;
 			//this.sourceCoverage.dispose();
 			//this.sourceCoverage=null;
-			output.flush();
-			output.close();
+	        output.flush();
+	        output.close();
 		} catch (Exception e) {
 			throw new WcsException("Problems Rendering Image: " + e.toString(), e);
 		}

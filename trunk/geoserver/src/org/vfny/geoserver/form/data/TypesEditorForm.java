@@ -28,6 +28,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
 import org.geotools.referencing.factory.epsg.DefaultFactory;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.HTMLEncoder;
@@ -732,7 +733,7 @@ dataMaxY="";
 				.createCoordinateReferenceSystem(newSrs);
 
 			SRSWKT = crsTheirData.toWKT();
-		} catch (Exception e) // couldnt decode their code
+		} catch (FactoryException e) // couldnt decode their code
 		{
 			// DJB:
 			// dont know how to internationize this inside a set() method!!!
