@@ -80,6 +80,7 @@
 		    <Fill>
 			<CssParameter name="fill">#000000</CssParameter>
 		    </Fill>
+			<VendorOption name="group">yes</VendorOption>
 	</TextSymbolizer>
     </Rule>
             
