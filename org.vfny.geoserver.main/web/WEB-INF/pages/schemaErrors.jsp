@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
@@ -15,7 +16,7 @@
       <bean:message key="geoserver.logo"/>
       Geoserver
     </title>
-    <meta content="text/html; charset=iso-8859-1" http-equiv="content-type"/>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
     <meta content="text/css" http-equiv="content-style-type"/>  
     <meta name="keywords"
           content="(GeoServer) (GIS) (Geographic Information Systems)"/>

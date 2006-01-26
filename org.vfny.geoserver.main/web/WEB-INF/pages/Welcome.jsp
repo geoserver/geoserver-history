@@ -29,7 +29,7 @@
 
 <ul>
   <li>
-    <a href="http://geoserver.sourceforge.net/documentation/1.3.0-RC7">
+    <a href="http://geoserver.sourceforge.net/documentation/1.3.0">
       Documentation
     </a>
   </li>
@@ -51,64 +51,7 @@
 </ul>
 
 <p>
-	<bean:message key="text.newFeatureLogo"/>&nbsp;
-	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>mapPreview.do"/><bean:message key="text.newFeature1"/></a>
+	<bean:message key="text.visitDemoPage"/>
 </p>
-
-<h2>
-  <bean:write name="WFS" property="title"/>
-</h2>
-<pre><code><bean:write name="WFS" property="abstract"/>
-</code></pre>
-<ul>
-  <li>
-    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs?request=GetCapabilities&service=WFS">
-      getCapabilities
-    </a>
-  </li>
-  <li>
-    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs/TestWfsPost">
-      TestWfsPost
-    </a>
-  </li>
-</ul>
-
-<h2>
-  <bean:write name="WMS" property="title"/>
-</h2>
-<pre><code><bean:write name="WMS" property="abstract"/>
-</code></pre>
-
-<ul>
-  <li>
-    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms?request=GetCapabilities&service=WMS">
-      getCapabilities
-    </a>
-  </li>
-</ul>
-
-<p>
-<bean:message key="text.welcome4"/>
-</p>
-
-<h2>
-  <bean:message key="text.welcome.mapbuilder"/>
-</h2>
-
-<p>
-<bean:message key="text.welcome.mapbuilder.detail"/>
-</p>
-<ul>
-  <li>
-    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>data/mbdemos/demo/wfs-t/index.html">
-      Mapbuilder/Geoserver (Tasmania)
-    </a>
-  </li>
-  <li>
-    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>data/mbdemos/demo/cite/index.html">
-      Mapbuilder/Geoserver (CITE)
-    </a>
-  </li>
-</ul>
 
 <br>
