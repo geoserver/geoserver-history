@@ -3,7 +3,7 @@
   <pomVersion>3</pomVersion>
 
   <groupId>org.openplans</groupId>
-  <artifactId>org.openplans.geoserver</artifactId>
+  <artifactId>geoserver</artifactId>
   <currentVersion>0.1</currentVersion>
   <name>GeoServer</name>
 

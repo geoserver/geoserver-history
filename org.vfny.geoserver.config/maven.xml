@@ -1,0 +1,10 @@
+<project xmlns:j="jelly:core" xmlns:u="jelly:util" xmlns:ant="jelly:ant" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="config">
+	
+	<goal name="config">
+		<ant:delete dir="${maven.war.src}"/>
+		<ant:mkdir dir="${maven.war.src}"/>
+		<ant:get src="${config.repo}/${config.id}.zip" dest="${basedir}/${config.id}.zip"/>
+		<ant:unzip src="${basedir}/${config.id}.zip" dest="${maven.war.src}"/>
+	</goal>
+
+</project>

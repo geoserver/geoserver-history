@@ -1,6 +1,3 @@
-<!-- ========================= -->
-<!-- GeoTools 2.0 build script -->
-<!-- ========================= -->
 <project xmlns:j="jelly:core" xmlns:u="jelly:util" xmlns:ant="jelly:ant" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="info">
 	
 	<goal name="info">
@@ -28,7 +25,7 @@
 
 	<!-- multiproject goal to build + deploy war for each module -->
 	<goal name="deployAll">
-		<ant:mkdir dir="${maven.build.dir}/war"/>
+		<ant:mkdir dir="${maven.build.dir}/geoserver"/>
 
 		<j:set var="ignoreFailures" value="true"/>
 		<j:set var="goal" value="deploy"/>
@@ -38,23 +35,27 @@
 			<ant:fileset dir="." includes="**/*.war"/>
 		</ant:unwar-->
 		<ant:jar destfile="${maven.build.dir}/${pom.artifactId}.war"
-			 basedir="${maven.build.dir}/war"/>
+			 basedir="${maven.build.dir}/${pom.artifactId}"/>
   </goal>
 
 	<!-- module level goal to deploy a single module -->
 	<goal name="deploy">
+		<j:set var="maven.test.skip" value="true"/>
 		<attainGoal name="war"/>
-		<ant:unwar dest="${basedir}/../target/war">
+		<!-- TODO: this hardcodes location, find a way to get at the parent target dir -->
+		<ant:unwar dest="${basedir}/../target/geoserver">
 			<ant:fileset dir="${maven.build.dir}" includes="*.war"/>
 		</ant:unwar>
 	</goal>
 
+	<!-- executes eclipse over all modules -->
 	<goal name="eclipseAll">
 		<j:set var="ignoreFailures" value="true"/>
 		<j:set var="goal" value="eclipse"/>
 		<attainGoal name="multiproject:goal"/>
 	</goal>
 
+	<!-- executes eclipse:clean over all modules -->
 	<goal name="eclipseCleanAll">
 		<j:set var="ignoreFailures" value="true"/>
 		<j:set var="goal" value="eclipse:clean"/>
