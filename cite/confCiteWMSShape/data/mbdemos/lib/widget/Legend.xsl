@@ -87,7 +87,7 @@ $Name:  $
             id="query_{wmc:Name}"
             title="Click to set {wmc:Title} as the query layer"
             onclick="{$context}.setParam('queryLayer','{wmc:Name}')"
-            src="../../lib/skin/default/images/id.gif" />
+            src="../mbdemos/lib/skin/default/images/id.gif" />
         </xsl:if>
       </td>
       <td>
