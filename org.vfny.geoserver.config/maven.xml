@@ -1,5 +1,9 @@
 <project xmlns:j="jelly:core" xmlns:u="jelly:util" xmlns:ant="jelly:ant" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="config">
 	
+	<preGoal name="java:compile">
+		<attainGoal name="config"/>
+	</preGoal>
+
 	<goal name="config">
 		<ant:delete dir="${maven.war.src}"/>
 		<ant:mkdir dir="${maven.war.src}"/>
