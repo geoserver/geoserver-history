@@ -1,3 +1,17 @@
+Geoserver 1.3.0
+---------------
+
+The issue log for this release is here:
+
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12106
+
+This is the official 1.3.0 release. 1.3.0 Represents a major milestone for the 
+GeoServer project. Months of bug fixes and patches have allowed us to acheive 
+our goal of a stable release. Much thanks to everyone who helped out with 
+contributions and bug reports.
+
+Based on the geotools 2.1.1 release (tag = 2.1.1)
+
 Geoserver 1.3.0 PR1
 -------------------
 

@@ -11,6 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.varia.DenyAllFilter;
 import org.geotools.data.jdbc.ConnectionPoolManager;
 import org.vfny.geoserver.zserver.GeoZServer;
 
@@ -23,24 +27,13 @@ import org.vfny.geoserver.zserver.GeoZServer;
  * @version $Id: FreefsLog.java,v 1.22 2004/03/14 15:57:32 groldan Exp $
  */
 public class FreefsLog extends HttpServlet {
-    /**
-	 * Comment for <code>serialVersionUID</code>
-	 */
-	private static final long serialVersionUID = 3689353199903781424L;
-
-	/** Standard logging instance for class */
+    /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
 
     /** Default name for configuration directory */
     private static final String CONFIG_DIR = "data/";
-
-	/**
-	 * 
-	 * @uml.property name="server"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private GeoZServer server;
+    private GeoZServer server;
 
     /**
      * Initializes logging and config.
@@ -48,12 +41,35 @@ public class FreefsLog extends HttpServlet {
      * @throws ServletException DOCUMENT ME!
      */
     public void init() throws ServletException {
+    	//configure log4j, since console logging is configured elsewhere 
+    	// we deny all logging, this is really just to prevent log4j 
+    	// initilization warnings
+    	// TODO: this is a hack, log config should be cleaner 
+    	ConsoleAppender appender = new ConsoleAppender(new PatternLayout());
+    	appender.addFilter(new DenyAllFilter());
+    	
+    	BasicConfigurator.configure(appender);
+    	
         //HACK: java.util.prefs are awful.  See
         //http://www.allaboutbalance.com/disableprefs.  When the site comes
         //back up we should implement their better way of fixing the problem.
         System.setProperty("java.util.prefs.syncInterval", "5000000");
 
-  
+        //if(GeoServer.getInstance()==null){
+        //	(new GeoServer()).init(this);
+        //}
+
+        /*ServletContext sc = getServletContext();
+           GeoServer gs = (GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+           ConfigInfo cfgInfo = ConfigInfo.getInstance(path, gs);
+                   if (cfgInfo.runZServer()) {
+              try {
+                  server = new GeoZServer(cfgInfo.getZServerProps());
+                  server.start();
+              } catch (java.io.IOException e) {
+                  LOGGER.info("zserver module could not start: " + e.getMessage());
+              }
+                   }*/
     }
 
     /**

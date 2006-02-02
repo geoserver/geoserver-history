@@ -11,7 +11,7 @@ Description: Convert a Web Map Context into a HTML Legend
 Author:      Cameron Shorter cameron ATshorter.net
 Licence:     GPL as per: http://www.gnu.org/copyleft/gpl.html
 
-$Id: Legend.xsl 3435 2005-04-21 21:12:56Z dblasby $
+$Id: Legend.xsl 4124 2006-01-26 04:30:46Z bowens $
 $Name:  $
 -->
   <xsl:output method="xml" encoding="utf-8"/>
@@ -87,7 +87,7 @@ $Name:  $
             id="query_{wmc:Name}"
             title="Click to set {wmc:Title} as the query layer"
             onclick="{$context}.setParam('queryLayer','{wmc:Name}')"
-            src="../../lib/skin/default/images/id.gif" />
+            src="../mbdemos/lib/skin/default/images/id.gif" />
         </xsl:if>
       </td>
       <td>
