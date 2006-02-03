@@ -89,6 +89,12 @@ public class GeoServerPlugIn implements PlugIn {
 			return;
 		}
 
+		//
+		// TODO think about how to handle me properly
+		JAI.getDefaultInstance().getTileCache().setMemoryCapacity(400*1024*1024);
+		//
+		//
+		
 		final ServletContext sc = as.getServletContext();
 		final File geoserverDataDir = GeoserverDataDirectory
 				.getGeoserverDataDirectory(sc); // geoserver_home fix

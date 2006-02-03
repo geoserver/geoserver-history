@@ -30,12 +30,10 @@ import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.FactoryRegistryException;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.geometry.JTS;
 import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.factory.epsg.DefaultFactory;
 import org.geotools.resources.CRSUtilities;
-//import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.opengis.coverage.grid.Format;
+import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.InvalidParameterValueException;
@@ -52,7 +50,6 @@ import org.opengis.referencing.cs.CoordinateSystem;
 import org.opengis.referencing.operation.CoordinateOperation;
 import org.opengis.referencing.operation.CoordinateOperationFactory;
 import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.MathTransform2D;
 import org.opengis.referencing.operation.OperationNotFoundException;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.action.ConfigAction;
@@ -152,16 +149,11 @@ public class CoveragesEditorAction extends ConfigAction {
 		DataConfig dataConfig = getDataConfig();
 		DataFormatConfig dfConfig = dataConfig.getDataFormat(coverageForm.getFormatId());
 		
-		GridCoverage2D gc = null;
+		GridCoverage gc;
 		
 		try {
 			final ServletContext sc = getServlet().getServletContext();
 			final URL url = getResource(dfConfig.getUrl(), sc.getRealPath("/"));
-			
-//			GridCoverageExchange gce = new StreamGridCoverageExchange();
-//			GridCoverageReader reader = gce.getReader(url);
-//			Format format = reader.getFormat();
-
 			final Format format = dfConfig.getFactory();
 			final GridCoverageReader reader = ((AbstractGridFormat) format).getReader(url);
 
@@ -241,11 +233,14 @@ public class CoveragesEditorAction extends ConfigAction {
 				}
 			}
 			
-			gc = (GridCoverage2D) reader.read(
+			gc =  reader.read(
 					params != null ?
 					(GeneralParameterValue[]) params.values().toArray(new GeneralParameterValue[params.values().size()])
 					: null
 					);
+			if (gc == null || !(gc instanceof GridCoverage2D))
+				throw new IOException(
+						"The requested coverage could not be found.");
 		} catch (InvalidParameterValueException e) {
 			throw new ServletException(e);
 		} catch (ParameterNotFoundException e) {
@@ -261,14 +256,15 @@ public class CoveragesEditorAction extends ConfigAction {
 		}
 
 		try {
+			final GridCoverage2D coverage= (GridCoverage2D) gc;
 			final CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
 			final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
 			final CoordinateReferenceSystem targetCRS = crsFactory.createCoordinateReferenceSystem("EPSG:4326");
-			final CoordinateReferenceSystem sourceCRS = gc.getEnvelope2D().getCoordinateReferenceSystem();
+			final CoordinateReferenceSystem sourceCRS = coverage.getEnvelope2D().getCoordinateReferenceSystem();
 			final CoordinateOperation operation = opFactory.createOperation(sourceCRS, targetCRS);
 			MathTransform mathTransform = (MathTransform) operation.getMathTransform();
 			GeneralEnvelope gEnvelope=(GeneralEnvelope)gc.getEnvelope();
-			GeneralEnvelope targetEnvelope = null;
+			GeneralEnvelope targetEnvelope ;
 			if( !mathTransform.isIdentity() )
 				targetEnvelope = CRSUtilities.transform(mathTransform, gEnvelope);
 			else
@@ -352,12 +348,13 @@ public class CoveragesEditorAction extends ConfigAction {
 		config.setNativeFormat(form.getNativeFormat());
 		config.setRequestCRSs(requestCRSs(form));
 		config.setResponseCRSs(responseCRSs(form));
-		//*A* config.setCrs(form.get);
+
 		config.setSrsName(form.getSrsName());
 		config.setSupportedFormats(supportedFormats(form));
-
 		config.setName(form.getName());
-		config.setDirName(config.getFormatId() + "_" + form.getName());
+		final StringBuffer temp= new StringBuffer(config.getFormatId());
+		temp.append("_").append(form.getName());
+		config.setDirName(temp.toString());
 	}
 	
 	/**
@@ -376,8 +373,8 @@ public class CoveragesEditorAction extends ConfigAction {
 			sync(form, config, request);
 			
 			DataConfig dataConfig = (DataConfig) getDataConfig();
-			dataConfig.addCoverage(config.getFormatId() + ":"
-					+ config.getName(), config);
+			final StringBuffer coverage=new StringBuffer(config.getFormatId());
+			dataConfig.addCoverage( coverage.append(":").append(config.getName()).toString(), config);
 			
 			// Don't think reset is needed (as me have moved on to new page)
 			// form.reset(mapping, request);
@@ -390,11 +387,13 @@ public class CoveragesEditorAction extends ConfigAction {
 		}
 	
 	/**
-	 * DOCUMENT ME!
+	 *
 	 *
 	 * @param coverageForm
 	 *
 	 * @return Bounding box in lat long
+	 * 
+	 * TODO IS THIS CORRECT?
 	 */
 	private Envelope getEnvelope(CoveragesEditorForm coverageForm) {
 		return new Envelope(
@@ -429,8 +428,8 @@ public class CoveragesEditorAction extends ConfigAction {
 		String[] array = (coverageForm.getKeywords() != null)
 		? coverageForm.getKeywords().split(" ")
 				: new String[0];
-		
-		for (int i = 0; i < array.length; i++) {
+		final int length= array.length;
+		for (int i = 0; i < length; i++) {
 			keywords.add(array[i]);
 		}
 		
@@ -442,8 +441,8 @@ public class CoveragesEditorAction extends ConfigAction {
 		String[] array = (coverageForm.getInterpolationMethods() != null)
 		? coverageForm.getInterpolationMethods().split(",")
 				: new String[0];
-		
-		for (int i = 0; i < array.length; i++) {
+		final int length= array.length;
+		for (int i = 0; i < length; i++) {
 			interpolationMethods.add(array[i]);
 		}
 		
@@ -455,8 +454,8 @@ public class CoveragesEditorAction extends ConfigAction {
 		String[] array = (coverageForm.getRequestCRSs() != null)
 		? coverageForm.getRequestCRSs().split(",")
 				: new String[0];
-		
-		for (int i = 0; i < array.length; i++) {
+		final int length= array.length;
+		for (int i = 0; i <length; i++) {
 			requestCRSs.add(array[i]);
 		}
 		
@@ -468,8 +467,8 @@ public class CoveragesEditorAction extends ConfigAction {
 		String[] array = (coverageForm.getResponseCRSs() != null)
 		? coverageForm.getResponseCRSs().split(",")
 				: new String[0];
-		
-		for (int i = 0; i < array.length; i++) {
+		final int length= array.length;
+		for (int i = 0; i < length; i++) {
 			responseCRSs.add(array[i]);
 		}
 		
@@ -481,8 +480,8 @@ public class CoveragesEditorAction extends ConfigAction {
 		String[] array = (coverageForm.getSupportedFormats() != null)
 		? coverageForm.getSupportedFormats().split(",")
 				: new String[0];
-		
-		for (int i = 0; i < array.length; i++) {
+		final int length= array.length;
+		for (int i = 0; i < length; i++) {
 			supportedFormats.add(array[i]);
 		}
 		

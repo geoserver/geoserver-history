@@ -258,7 +258,7 @@ public class DataFormatsEditorAction extends ConfigAction {
 			}
 			dump( "typeNames", typeNames );
 		} catch (Throwable throwable) {
-			throwable.printStackTrace();
+			
 			
 			ActionErrors errors = new ActionErrors();
 			errors.add(ActionErrors.GLOBAL_ERROR,
