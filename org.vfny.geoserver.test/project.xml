@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
 	<pomVersion>3</pomVersion>
-	<extend>${basedir}/../org.openplans.geoserver.libs/project.xml</extend>
+	<extend>${basedir}/../org.vfny.geoserver.libs/project.xml</extend>
 
 	<groupId>org.vfny</groupId>
   <artifactId>org.vfny.geoserver.test</artifactId>

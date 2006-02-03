@@ -3,8 +3,8 @@
 	<pomVersion>3</pomVersion>
 	<extend>${basedir}/../project.xml</extend>
 
-	<groupId>org.openplans</groupId>
-  <artifactId>org.openplans.geoserver.gtlibs</artifactId>
+	<groupId>org.vfny</groupId>
+  <artifactId>org.vfny.geoserver.gtlibs</artifactId>
 	<currentVersion>2.2.x</currentVersion>
   <name>Geotools Libraries</name>
 
