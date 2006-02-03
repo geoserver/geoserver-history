@@ -35,4 +35,15 @@
 		</dependency>
   </dependencies>
 
+	<build>
+		<unitTest>
+			<excludes>		
+				<exclude>**/GIFMapProducerTest.*</exclude>
+				<exclude>**/DefaultRasterLegendProducerTest.*</exclude>
+				<exclude>**/DefaultRasterMapProducerTest.*</exclude>
+				<exclude>**/Abstract*Test.*</exclude>
+			</excludes>
+		</unitTest>
+	</build>
+
 </project>
