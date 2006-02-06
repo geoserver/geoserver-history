@@ -5,16 +5,6 @@
 a datastore configuration element serves as a common data source connection
 parameters repository for all featuretypes it holds.
 -->
-<datastore namespace = "topp" enabled = "true" id = "localPostgis" >
-<connectionParams>
-<parameter value = "postgres" name = "user"  />
-<parameter value = "postgres" name = "passwd"  />
-<parameter value = "localhost" name = "host"  />
-<parameter value = "5432" name = "port"  />
-<parameter value = "dcmms" name = "database"  />
-<parameter value = "postgis" name = "dbtype"  />
-</connectionParams>
-</datastore>
 <datastore namespace = "tiger" enabled = "true" id = "DS_giant_polygon" >
 <abstract></abstract>
 <connectionParams>
@@ -42,16 +32,6 @@ parameters repository for all featuretypes it holds.
 <datastore namespace = "topp" enabled = "true" id = "tasmania_roads" >
 <connectionParams>
 <parameter value = "file:data/featureTypes/tasmania_roads/tasmania_roads.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "sde" enabled = "false" id = "testSde" >
-<connectionParams>
-<parameter value = "sdepwd" name = "password"  />
-<parameter value = "sde" name = "user"  />
-<parameter value = "sde" name = "instance"  />
-<parameter value = "localhost" name = "server"  />
-<parameter value = "5151" name = "port"  />
-<parameter value = "arcsde" name = "dbtype"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "topp" enabled = "true" id = "tasmania_state_boundaries" >

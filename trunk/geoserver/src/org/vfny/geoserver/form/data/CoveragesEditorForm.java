@@ -7,6 +7,8 @@ package org.vfny.geoserver.form.data;
 
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +22,7 @@ import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
 
@@ -38,6 +41,11 @@ public class CoveragesEditorForm extends ActionForm {
 	 * 
 	 */
 	private String formatId;
+
+	/**
+	 * Identify Style used to render this feature type
+	 */
+	private String styleId;
 
 	/**
 	 * 
@@ -70,9 +78,19 @@ public class CoveragesEditorForm extends ActionForm {
 	private String keywords;
 
 	/**
+	 * Sorted Set of available styles
+	 */
+	private SortedSet styles;
+
+	/**
 	 * 
 	 */
 	private String srsName;
+
+	/**
+	 * 
+	 */
+	private String WKTString;
 
 	/**
 	 * 
@@ -147,7 +165,8 @@ public class CoveragesEditorForm extends ActionForm {
         }
 
         this.formatId = type.getFormatId();
-        
+        this.styleId = type.getDefaultStyle();
+
 		// Richard can we please use this to store stuff?
 		CoverageConfig cvConfig; //= user.getCoverageConfig();
 		
@@ -155,6 +174,7 @@ public class CoveragesEditorForm extends ActionForm {
 		
 		Envelope bounds = cvConfig.getEnvelope();
 		srsName = cvConfig.getSrsName();
+		WKTString = cvConfig.getSrsWKT();
 		
 		if (bounds.isNull()) {
 			latLonBoundingBoxMinX = "";
@@ -247,6 +267,25 @@ public class CoveragesEditorForm extends ActionForm {
 			
 			this.interpolationMethods = buf.toString();
 		}
+
+        styles = new TreeSet();
+
+        for (Iterator i = config.getStyles().values().iterator(); i.hasNext();) {
+            StyleConfig sc = (StyleConfig) i.next();
+            styles.add(sc.getId());
+
+            if (sc.isDefault()) {
+                if ((styleId == null) || styleId.equals("")) {
+                    styleId.equals(sc.getId());
+                }
+            }
+        }
+
+        Object attribute = styles;
+
+        if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) {
+            ;
+        }
 	}
 	
 	public ActionErrors validate(ActionMapping mapping,
@@ -266,6 +305,12 @@ public class CoveragesEditorForm extends ActionForm {
         }
 		
 		DataConfig data = ConfigRequests.getDataConfig(request);
+        // Check selected style exists
+
+        if (!(data.getStyles().containsKey(styleId) || "".equals(styleId))) {
+            errors.add("styleId",
+                new ActionError("error.styleId.notFound", styleId));
+        }
 		
 		// check name exists in current DataStore?
 		if ("".equals(latLonBoundingBoxMinX)
@@ -558,4 +603,22 @@ public class CoveragesEditorForm extends ActionForm {
 		this.newCoverage = newCoverage;
 	}
 
+	public SortedSet getStyles() {
+		return styles;
+	}
+	public void setStyles(SortedSet styles) {
+		this.styles = styles;
+	}
+	public String getStyleId() {
+		return styleId;
+	}
+	public void setStyleId(String styleId) {
+		this.styleId = styleId;
+	}
+	public String getWKTString() {
+		return WKTString;
+	}
+	public void setWKTString(String string) {
+		WKTString = string;
+	}
 }

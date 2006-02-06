@@ -34,6 +34,7 @@ import org.geotools.referencing.FactoryFinder;
 import org.geotools.referencing.factory.epsg.DefaultFactory;
 //import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.opengis.coverage.grid.Format;
+import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValue;
@@ -46,6 +47,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataFormatConfig;
 import org.vfny.geoserver.form.data.DataFormatsEditorForm;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.util.CoverageUtils;
 
 
 /**
@@ -103,74 +105,12 @@ public class DataFormatsEditorAction extends ConfigAction {
 				return mapping.findForward("config.data.format.editor");
 			}
 			
-			Object value = null;
-			
-			try {
-				if( key.equalsIgnoreCase("crs") ) {
-					if( params.get(key) != null && ((String) params.get(key)).length() > 0 ) {
-						//CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-						CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,CRSAuthorityFactory.class));
-						CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) params.get(key));
-						value = crs;
-					} else {
-						//CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-						CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-						CoordinateReferenceSystem crs=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:4326");
-						value = crs;
-					}
-				} else if( key.equalsIgnoreCase("envelope") ) {
-					if( params.get(key) != null && ((String) params.get(key)).length() > 0 ) {
-						String tmp = (String) params.get(key);
-						if( tmp.indexOf("[") > 0 && tmp.indexOf("]") > tmp.indexOf("[") ) {
-							tmp = tmp.substring(tmp.indexOf("[") + 1, tmp.indexOf("]")).trim();
-							tmp = tmp.replaceAll(",","");
-							String[] strCoords = tmp.split(" ");
-							double[] coords = new double[strCoords.length];
-							if( strCoords.length == 4 ) {
-								for( int iT=0; iT<4; iT++) {
-									coords[iT] = Double.parseDouble(strCoords[iT].trim());
-								}
-								
-								value = (org.opengis.spatialschema.geometry.Envelope) 
-										new GeneralEnvelope(
-											new double[] {coords[0], coords[1]},
-											new double[] {coords[2], coords[3]}
-										);
-							}
-						}
-					}
-				} else if( key.equalsIgnoreCase("values_palette") ) {
-					if( params.get(key) != null && ((String) params.get(key)).length() > 0 ) {
-						String tmp = (String) params.get(key);
-						String[] strColors = tmp.split(";");
-						Vector colors = new Vector();
-						final int colLength = strColors.length;
-						Color tmpColor = null;
-						for( int col=0; col<colLength; col++) {
-							tmpColor = Color.decode(strColors[col]);
-							if(tmpColor != null) {
-								colors.add(tmpColor);
-							}
-						}
-						
-						value = colors.toArray(new Color[colors.size()]);
-//					} else {
-//						value = "#000000;#3C3C3C;#FFFFFF";
-					}
-				} else {
-					Class[] clArray = {String.class};
-					Object[] inArray = {params.get(key)};
-					value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
-				}
-			} catch (Exception e) {
-				value = param.getValue();
-			}
+			Object value = CoverageUtils.getCvParamValue(key, param, params);
 			
 			if (value != null) {
 				parameters.put(key, value);
 				if( key.equalsIgnoreCase("values_palette") ) {
 					paramTexts.put(key, value);
-					
 				} else {
 					String text = value.toString();
 					paramTexts.put(key, text);
@@ -198,7 +138,7 @@ public class DataFormatsEditorAction extends ConfigAction {
 			URL victimUrl = null;
 			
 //			if(url != null) {
-				victimUrl = getResource(url, sc.getRealPath("/"));
+				victimUrl = CoverageUtils.getResource(url, sc.getRealPath("/"));
 //			} else {
 //		        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(getServlet().getServletContext());
 //
@@ -239,12 +179,16 @@ public class DataFormatsEditorAction extends ConfigAction {
 		
 			GridCoverageReader reader = ((AbstractGridFormat) victim).getReader(victimUrl);
 			
-			GridCoverage2D gc = (GridCoverage2D) reader.read(
+			GridCoverage gc = /*(GridCoverage2D) reader.read(
 					vicParams != null ?
 					(GeneralParameterValue[]) vicParams.values().toArray(new GeneralParameterValue[vicParams.values().size()])
 					: null
-					);
-			
+					);*/
+				reader.read(
+						vicParams != null ?
+								(GeneralParameterValue[]) vicParams.values().toArray(new GeneralParameterValue[vicParams.values().size()])
+								: null
+				);
 			
 			if (gc == null) {
 				// We *really* could not use these params!
@@ -258,7 +202,6 @@ public class DataFormatsEditorAction extends ConfigAction {
 			}
 			dump( "typeNames", typeNames );
 		} catch (Throwable throwable) {
-			
 			
 			ActionErrors errors = new ActionErrors();
 			errors.add(ActionErrors.GLOBAL_ERROR,
@@ -338,19 +281,4 @@ public class DataFormatsEditorAction extends ConfigAction {
 		}	
 		System.out.println( ")" );
 	}
-	
-	private URL getResource(String path, String baseDir) throws MalformedURLException{
-		URL url = null;
-		if (path.startsWith("file:data/")) {
-			path = path.substring(5); // remove 'file:' prefix
-			
-			File file = new File(baseDir, path);
-			url = file.toURL();
-		} else {
-			url = new URL(path);
-		}
-		
-		return url;
-	}
-	
 }

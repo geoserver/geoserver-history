@@ -158,10 +158,22 @@ public class CoverageConfig {
 
 	/**
 	 * 
+	 */
+	private String srsWKT;
+
+	/**
+	 * 
 	 * @uml.property name="crs"
 	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private CoordinateReferenceSystem crs;
+
+	/**
+	 * The default style name.
+	 * 
+	 * @uml.property name="defaultStyle" multiplicity="(0 1)"
+	 */
+	private String defaultStyle;
 
 
     /**
@@ -195,6 +207,7 @@ public class CoverageConfig {
 		dimentionNames = gc.getDimensionNames();
         crs = gc.getCoordinateReferenceSystem2D();
         srsName = (crs != null ? crs.getName().toString() : "WGS84");
+        srsWKT = (crs != null ? crs.toWKT() : "");
 
         Format[] formats = GridFormatFinder.getFormatArray();
 		Format format = null;
@@ -209,7 +222,9 @@ public class CoverageConfig {
         	throw new ConfigurationException("Cannot handle format: " + formatId);
         }
 
-        name = formatId + "_Coverage";
+		// TODO change the coverage config in order to reflect real name of a
+		// coverage and real description
+        name = gc.getName().toString() + "_Coverage";
         label = format.getName() + "_Type";
         description = "Generated from " + formatId;
         metadataLink = new MetaDataLink();
@@ -226,6 +241,7 @@ public class CoverageConfig {
         supportedFormats = new LinkedList(); // ?
         defaultInterpolationMethod = "nearest neighbor"; // ?
         interpolationMethods = new LinkedList(); // ?
+        defaultStyle = "";
     }
 
     /**
@@ -312,6 +328,7 @@ public class CoverageConfig {
         keywords = dto.getKeywords();
         crs = dto.getCrs();
         srsName = dto.getSrsName();
+        srsWKT = dto.getSrsWKT();
         envelope = dto.getEnvelope();
 		grid = dto.getGrid();
 		dimensions = dto.getDimensions();
@@ -323,6 +340,7 @@ public class CoverageConfig {
         supportedFormats = dto.getSupportedFormats();
         defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
         interpolationMethods = dto.getInterpolationMethods();
+        defaultStyle = dto.getDefaultStyle();
     }
 
     public CoverageInfoDTO toDTO() {
@@ -335,6 +353,7 @@ public class CoverageConfig {
         c.setKeywords(keywords);
         c.setCrs(crs);
         c.setSrsName(srsName);
+        c.setSrsWKT(srsWKT);
         c.setEnvelope(envelope);
 		c.setGrid(grid);
 		c.setDimensions(dimensions);
@@ -346,6 +365,7 @@ public class CoverageConfig {
         c.setSupportedFormats(supportedFormats);
         c.setDefaultInterpolationMethod(defaultInterpolationMethod);
         c.setInterpolationMethods(interpolationMethods);
+        c.setDefaultStyle(defaultStyle);
 
         return c;
     }
@@ -696,4 +716,16 @@ public class CoverageConfig {
 		this.dimensions = dimensions;
 	}
 
+	public String getDefaultStyle() {
+		return defaultStyle;
+	}
+	public void setDefaultStyle(String defaultStyle) {
+		this.defaultStyle = defaultStyle;
+	}
+	public String getSrsWKT() {
+		return srsWKT;
+	}
+	public void setSrsWKT(String srsWKT) {
+		this.srsWKT = srsWKT;
+	}
 }

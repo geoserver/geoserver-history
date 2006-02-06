@@ -1189,7 +1189,16 @@ public class XMLConfigWriter {
 				
 				cw.textTag("keywords", s);
 			}
-			
+
+            if ((cv.getDefaultStyle() != null) && (cv.getDefaultStyle() != "")) {
+                cw.comment(
+                    "the default style this CoverageInfoDTO can be represented by.\n"
+                    + "at least must contain the \"default\" attribute ");
+                m = new HashMap();
+                m.put("default", cv.getDefaultStyle());
+                cw.attrTag("styles", m);
+            }
+
 			if (cv.getEnvelope() != null) {
 				Envelope e = cv.getEnvelope();
 				m = new HashMap();
@@ -1200,6 +1209,8 @@ public class XMLConfigWriter {
 				
 				if ((cv.getCrs() != null)) {
 					m.put("crs", cv.getCrs().toWKT().replaceAll("\"","'"));
+				} else if ((cv.getSrsWKT() != null)) {
+					m.put("crs", cv.getSrsWKT().replaceAll("\"","'"));
 				}
 				
 				if (!e.isNull()) {

@@ -40,6 +40,7 @@ import org.vfny.geoserver.action.data.DataFormatUtils;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataFormatConfig;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.Requests;
 
 
@@ -256,70 +257,7 @@ public class DataFormatsEditorForm extends ActionForm {
                     return errors;
                 }
 
-                Object value = null;
-
-                try {
-    				if( key.equalsIgnoreCase("crs") ) {
-						if( getParamValue(i) != null && ((String) getParamValue(i)).length() > 0 ) {
-							//CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-							CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,CRSAuthorityFactory.class));
-							CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) getParamValue(i));
-							value = crs;
-						} else {
-							//CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-							CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-							CoordinateReferenceSystem crs=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:4326");
-							value = crs;
-						}
-					} else if( key.equalsIgnoreCase("envelope") ) {
-						if( getParamValue(i) != null && ((String) getParamValue(i)).length() > 0 ) {
-							String tmp = (String) getParamValue(i);
-							if( tmp.indexOf("[") > 0 && tmp.indexOf("]") > tmp.indexOf("[") ) {
-								tmp = tmp.substring(tmp.indexOf("[") + 1, tmp.indexOf("]")).trim();
-								tmp = tmp.replaceAll(",","");
-								String[] strCoords = tmp.split(" ");
-								double[] coords = new double[strCoords.length];
-								if( strCoords.length == 4 ) {
-									for( int iT=0; iT<4; iT++) {
-										coords[iT] = Double.parseDouble(strCoords[iT].trim());
-									}
-									
-									value = (org.opengis.spatialschema.geometry.Envelope) 
-											new GeneralEnvelope(
-												new double[] {coords[0], coords[1]},
-												new double[] {coords[2], coords[3]}
-											);
-								}
-							}
-						}
-					} else if( key.equalsIgnoreCase("values_palette") ) {
-						if( getParamValue(i) != null && ((String) getParamValue(i)).length() > 0 ) {
-							String tmp = (String) getParamValue(i);
-							String[] strColors = tmp.split(";");
-							Vector colors = new Vector();
-							for( int col=0; col<strColors.length; col++) {
-								if(Color.decode(strColors[col]) != null) {
-									colors.add(Color.decode(strColors[col]));
-								}
-							}
-							
-							value = colors.toArray(new Color[colors.size()]);
-						} else {
-							value = "#000000;#3C3C3C;#FFFFFF";
-						}
-					} else {
-                    	Class[] clArray = {getParamValue(i).getClass()};
-                    	Object[] inArray = {getParamValue(i)};
-                    	value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
-    				}
-    			
-    			// Intentionally generic exception catched
-                } catch (Exception e) {
-                	value = null;
-//                    errors.add("paramValue[" + i + "]",
-//                            new ActionError("error.dataFormatEditor.param.parse", key,
-//                            		getParamValue(i).getClass(), e));
-                }
+                Object value = CoverageUtils.getCvParamValue(key, param, paramValues, i);
 
 //                if ((value == null) && param.required) {
 //                    errors.add("paramValue[" + i + "]",

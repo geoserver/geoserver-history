@@ -140,6 +140,11 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
 	/**
 	 * 
+	 */
+	private String srsWKT;
+
+	/**
+	 * 
 	 * @uml.property name="crs"
 	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
@@ -176,6 +181,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
         }
         crs = dto.getCrs();
         srsName = dto.getSrsName(); 
+        srsWKT = dto.getSrsWKT();
         envelope = CloneLibrary.clone(dto.getEnvelope());
 		grid = dto.getGrid();
 		dimensions = dto.getDimensions();
@@ -225,6 +231,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
             return false;
         }
         r = r && (srsName == f.getSrsName());
+        r = r && (srsWKT == f.getSrsWKT());
         r = r && (crs == f.getCrs());
         r = r && (name == f.getName());
         r = r && (description == f.getDescription());
@@ -268,6 +275,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
         if (srsName != null) {
             r *= srsName.hashCode();
+        }
+
+        if (srsWKT != null) {
+            r *= srsWKT.hashCode();
         }
 
         if (crs != null) {
@@ -739,4 +750,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
 		this.dimensions = dimensions;
 	}
 
+	public String getSrsWKT() {
+		return srsWKT;
+	}
+	public void setSrsWKT(String srsWKT) {
+		this.srsWKT = srsWKT;
+	}
 }

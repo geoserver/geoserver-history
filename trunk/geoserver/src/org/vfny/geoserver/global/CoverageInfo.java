@@ -126,6 +126,11 @@ public class CoverageInfo extends GlobalLayerSupertype {
 	/**
 	 * 
 	 */
+	private String srsWKT;
+
+	/**
+	 * 
+	 */
 	private CoordinateReferenceSystem crs;
 
     
@@ -147,6 +152,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
         keywords = dto.getKeywords();
         crs = dto.getCrs();
         srsName = dto.getSrsName(); 
+        srsWKT = dto.getSrsWKT();
         envelope = dto.getEnvelope();
 		grid = dto.getGrid();
 		dimensions = dto.getDimensions();
@@ -172,6 +178,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
         dto.setKeywords(keywords);
         dto.setCrs(crs);
         dto.setSrsName(srsName); 
+        dto.setSrsWKT(srsWKT);
         dto.setEnvelope(envelope);
 		dto.setGrid(grid);
 		dto.setDimensions(dimensions);
@@ -371,4 +378,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
 		return dimensions;
 	}
 
+	public String getSrsWKT() {
+		return srsWKT;
+	}
 }

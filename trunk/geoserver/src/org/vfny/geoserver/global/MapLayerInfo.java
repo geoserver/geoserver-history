@@ -57,6 +57,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataFormatConfig;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.util.CoverageUtils;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequenceFactory;
@@ -314,20 +315,6 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 
 	
 	
-	private URL getResource(String path, String baseDir) throws MalformedURLException{
-		URL url = null;
-		if (path.startsWith("file:data/")) {
-			path = path.substring(5); // remove 'file:' prefix
-			
-			File file = new File(baseDir, path);
-			url = file.toURL();
-		} else {
-			url = new URL(path);
-		}
-		
-		return url;
-	}
-
 	private Feature wrapGcInFeature(GridCoverage gridCoverage)
 	throws IllegalAttributeException, SchemaException {
 		// create surrounding polygon
@@ -364,7 +351,7 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 	
 	
 	private GridCoverage getGridCoverage(HttpServletRequest request, CoverageInfo meta) throws IOException {
-		GridCoverage2D coverage = null;
+		GridCoverage coverage;
 		
 		try {
 			String formatID = meta.getFormatId();
@@ -375,7 +362,7 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 			DataFormatConfig dfConfig = dataConfig.getDataFormat(formatID);
 
 			String realPath = request.getRealPath("/");
-			URL url = getResource(dfConfig.getUrl(), realPath);
+			URL url = CoverageUtils.getResource(dfConfig.getUrl(), realPath);
 
 //			GridCoverageExchange gce = new StreamGridCoverageExchange();
 //			GridCoverageReader reader = gce.getReader(url);
@@ -394,76 +381,27 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 					ParameterValue param=((ParameterValue)it.next());
 					ParameterDescriptor descr=(ParameterDescriptor)param.getDescriptor();
 					
-					Object value = null;
 					String key = descr.getName().toString();
-					
-					try {
-	    				if( key.equalsIgnoreCase("crs") ) {
-							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
-								//CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-								CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,CRSAuthorityFactory.class));
-								CoordinateReferenceSystem crs = crsFactory.createFromWKT((String) dfConfig.getParameters().get(key));
-								value = crs;
-							} else {
-								//CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG",new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-								CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-								CoordinateReferenceSystem crs=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:4326");
-								value = crs;
-							}
-						} else if( key.equalsIgnoreCase("envelope") ) {
-							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
-								String tmp = (String) dfConfig.getParameters().get(key);
-								if( tmp.indexOf("[") > 0 && tmp.indexOf("]") > tmp.indexOf("[") ) {
-									tmp = tmp.substring(tmp.indexOf("[") + 1, tmp.indexOf("]")).trim();
-									tmp = tmp.replaceAll(",","");
-									String[] strCoords = tmp.split(" ");
-									double[] coords = new double[strCoords.length];
-									if( strCoords.length == 4 ) {
-										for( int iT=0; iT<4; iT++) {
-											coords[iT] = Double.parseDouble(strCoords[iT].trim());
-										}
-										
-										value = (org.opengis.spatialschema.geometry.Envelope) 
-												new GeneralEnvelope(
-													new double[] {coords[0], coords[1]},
-													new double[] {coords[2], coords[3]}
-												);
-									}
-								}
-							}
-						} else if( key.equalsIgnoreCase("values_palette") ) {
-							if( dfConfig.getParameters().get(key) != null && ((String) dfConfig.getParameters().get(key)).length() > 0 ) {
-								String tmp = (String) dfConfig.getParameters().get(key);
-								String[] strColors = tmp.split(";");
-								Vector colors = new Vector();
-								for( int i=0; i<strColors.length; i++) {
-									if(Color.decode(strColors[i]) != null) {
-										colors.add(Color.decode(strColors[i]));
-									}
-								}
-								
-								value = colors.toArray(new Color[colors.size()]);
-							}
-							reader.getFormat().getReadParameters().parameter("values_palette").setValue(value);
-						} else {
-							Class[] clArray = {String.class};
-							Object[] inArray = {dfConfig.getParameters().get(key)};
-							value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
-	    				}
-					} catch (Exception e) {
-						value = null;
-					}
+					Object value = CoverageUtils.getCvParamValue(key, param, dfConfig.getParameters());
 					
 					if( value != null )
 						params.parameter(key).setValue(value);
 				}
 			}
 			
-			coverage = (GridCoverage2D) reader.read(
+			coverage = /*(GridCoverage2D) reader.read(
 					params != null ?
 					(GeneralParameterValue[]) params.values().toArray(new GeneralParameterValue[params.values().size()])
 					: null
-					);
+					);*/
+				reader.read(
+						params != null ?
+								(GeneralParameterValue[]) params.values().toArray(new GeneralParameterValue[params.values().size()])
+								: null
+				);
+			if (coverage == null || !(coverage instanceof GridCoverage2D))
+				throw new IOException(
+				"The requested coverage could not be found.");
 		} catch (InvalidParameterValueException e) {
 			throw new IOException(e.getMessage());
 		} catch (ParameterNotFoundException e) {

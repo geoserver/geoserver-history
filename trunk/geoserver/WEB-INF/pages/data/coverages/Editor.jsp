@@ -28,6 +28,18 @@
     </tr>
 	<tr>
       <td class="label">
+		<span class="help" title="<bean:message key="help.type.style"/>">
+          <bean:message key="label.style"/>:
+        </span>
+	  </td>
+	  <td class="datum">
+      	<html:select property="styleId">
+        	<html:options property="styles"/>
+		</html:select>
+	  </td>
+	</tr>    
+	<tr>
+      <td class="label">
 		<span class="help" title="<bean:message key="help.coverage.srsName"/>">
           <bean:message key="label.SRS"/>:
         </span>
@@ -35,6 +47,23 @@
 	  <td class="datum">
 		<html:text property="srsName" size="60"/>
 	</td></tr>
+	<!------------------------->
+	<!------ This puts in the SRS WKT definition --->
+	
+	<tr>
+	<td class="label">
+		<span class="help" title="<bean:message key="help.type.srswkt"/>">
+          <bean:message key="label.type.srswkt"/>:
+        </span>
+	  </td>
+	  <td class="greyedOut2">
+              <bean:write name="coveragesEditorForm" property="WKTString"/>
+			  <html:hidden property="WKTString"/>
+            </td>
+	</tr>
+	
+	
+	<!-------------------------->
 
     <tr>
       <td class="label">

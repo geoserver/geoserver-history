@@ -1415,6 +1415,16 @@ public class XMLConfigReader {
 
 		cv.setMetadataLink(loadMetaDataLink(ReaderUtils.getChildElement(
 				coverageRoot, "metadataLink")));
+		// /////////////////////////////////////////////////////////////////////
+		//
+		// DEAFULT STYLE
+		//
+		// /////////////////////////////////////////////////////////////////////
+		Element tmp = ReaderUtils.getChildElement(coverageRoot, "styles");
+
+		if (tmp != null) {
+			cv.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
+		}
 
 		// /////////////////////////////////////////////////////////////////////
 		//
@@ -1436,9 +1446,9 @@ public class XMLConfigReader {
 
 		} catch (FactoryException e) {
 			throw new ConfigurationException(e);
-
 		}
 		cv.setCrs(crs);
+		cv.setSrsWKT(crs.toWKT());
 		// /////////////////////////////////////////////////////////////////////
 		//
 		// ENVELOPE
