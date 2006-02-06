@@ -1,1 +1,1 @@
-wms?request=DescribeLayer&layers=states
+wms?request=DescribeLayer&layers=topp:states
