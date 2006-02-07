@@ -19,8 +19,11 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.AxisDirection;
+import org.opengis.referencing.cs.CoordinateSystem;
 import org.opengis.referencing.operation.CoordinateOperation;
 import org.opengis.referencing.operation.CoordinateOperationFactory;
+import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.MathTransform2D;
 import org.opengis.referencing.operation.OperationNotFoundException;
 import org.opengis.referencing.operation.TransformException;
@@ -431,39 +434,45 @@ public class WCSCapsTransformer extends TransformerBase {
 
         private void handleEnvelope(CoordinateReferenceSystem crs, Envelope envelope) {
 			try {
-				if( crs != null && crs.getName() != null && crs.getName().getCode() != null && !crs.getName().getCode().equalsIgnoreCase("WGS 84") ) {
-					//final CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+				if( crs != null ) {
 					final CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
 					final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
-/*					final CoordinateReferenceSystem targetCRS = crsFactory.createFromWKT(
-				    		"GEOGCS[\"WGS 84\",\n" 								 + 
-				    		"DATUM[\"WGS_1984\",\n"								 + 
-				    		"  SPHEROID[\"WGS 84\",\n" 							 + 
-				    		"    6378137.0, 298.257223563,\n" 					 + 
-				    		"    AUTHORITY[\"EPSG\",\"7030\"]],\n" 				 +
-				    		"  AUTHORITY[\"EPSG\",\"6326\"]],\n"				 + 
-				    		"  PRIMEM[\"Greenwich\", 0.0,\n" 					 +
-				    		"    AUTHORITY[\"EPSG\",\"8901\"]],\n"				 + 
-				    		"  UNIT[\"degree\", 0.017453292519943295],\n"		 + 
-				    		"  AXIS[\"Lon\", EAST],\n"							 +
-				    		"  AXIS[\"Lat\", NORTH],\n"							 +
-				    		"AUTHORITY[\"EPSG\",\"4326\"]]");
-*/
 					final CoordinateReferenceSystem targetCRS = crsFactory.createCoordinateReferenceSystem("EPSG:4326");
-					
-				    final CoordinateReferenceSystem sourceCRS = crs;
-				    
-				    final CoordinateOperation operation = opFactory.createOperation(sourceCRS, targetCRS);
-
-				    MathTransform2D mathTransform = (MathTransform2D) operation.getMathTransform();
-				    
+					final CoordinateReferenceSystem sourceCRS = crs;
+					final CoordinateOperation operation = opFactory.createOperation(sourceCRS, targetCRS);
+					MathTransform mathTransform = (MathTransform) operation.getMathTransform();
 					Envelope targetEnvelope = JTS.transform(envelope, mathTransform);
+
+			    	final CoordinateSystem cs = sourceCRS.getCoordinateSystem();
+			    	boolean lonFirst = true;
+			    	if (cs.getAxis(0).getDirection().absolute().equals(AxisDirection.NORTH)) {
+			    		lonFirst = false;
+			    	}
+			    	boolean swapXY = lonFirst;
+
+			    	// latitude index
+			        final int latIndex = lonFirst ? 1 : 0;
+
+			        final AxisDirection latitude = cs.getAxis(latIndex).getDirection();
+			        final AxisDirection longitude = cs.getAxis((latIndex + 1) % 2).getDirection();
+			        final boolean[] reverse = new boolean[] {
+			        		lonFirst ? !longitude.equals(AxisDirection.EAST) : !latitude.equals(AxisDirection.NORTH), 
+			        		lonFirst ? !latitude.equals(AxisDirection.NORTH) : !longitude.equals(AxisDirection.EAST)
+					};
 
 		        	AttributesImpl attributes = new AttributesImpl();
 					attributes.addAttribute("", "srsName", "srsName", "", "WGS84(DD)");
 		        	start("lonLatEnvelope", attributes);
-		        		element("gml:pos", targetEnvelope.getMinX() + " " + targetEnvelope.getMinY());
-		        		element("gml:pos", targetEnvelope.getMaxX() + " " + targetEnvelope.getMaxY());
+		        	element("gml:pos", 
+		        			(!swapXY ? (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinX() : targetEnvelope.getMaxX()) : (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinY() : targetEnvelope.getMaxY())) 
+							+ " " 
+							+ (!swapXY ? (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinY() : targetEnvelope.getMaxY()) : (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinX() : targetEnvelope.getMaxX()))
+		        	);
+		        	element("gml:pos",
+		        			(!swapXY ? (!reverse[latIndex] ? targetEnvelope.getMaxX() : targetEnvelope.getMinX()) : (!reverse[latIndex] ? targetEnvelope.getMaxY() : targetEnvelope.getMinY())) 
+							+ " " 
+							+ (!swapXY ? (!reverse[latIndex] ? targetEnvelope.getMaxY() : targetEnvelope.getMinY()) : (!reverse[latIndex] ? targetEnvelope.getMaxX() : targetEnvelope.getMinX()))
+		        	);
 		        	end("lonLatEnvelope");
 			    } else {
 		        	AttributesImpl attributes = new AttributesImpl();

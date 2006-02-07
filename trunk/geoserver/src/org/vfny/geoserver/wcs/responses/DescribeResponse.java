@@ -8,17 +8,22 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.geotools.factory.Hints;
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.JTS;
 import org.geotools.referencing.FactoryFinder;
+import org.geotools.resources.CRSUtilities;
 //import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.AxisDirection;
+import org.opengis.referencing.cs.CoordinateSystem;
 import org.opengis.referencing.datum.DatumFactory;
 import org.opengis.referencing.operation.CoordinateOperation;
 import org.opengis.referencing.operation.CoordinateOperationFactory;
+import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.MathTransform2D;
 import org.opengis.referencing.operation.MathTransformFactory;
 import org.opengis.referencing.operation.OperationNotFoundException;
@@ -235,57 +240,69 @@ public class DescribeResponse implements Response {
 			}
 
 			try {
-				if( !cv.getCrs().getName().getCode().equalsIgnoreCase("WGS 84")) {
-					final CoordinateReferenceSystem targetCRS = crsFactory.createFromWKT(
-				    		"GEOGCS[\"WGS 84\",\n" 								 + 
-				    		"DATUM[\"WGS_1984\",\n"								 + 
-				    		"  SPHEROID[\"WGS 84\",\n" 							 + 
-				    		"    6378137.0, 298.257223563,\n" 					 + 
-				    		"    AUTHORITY[\"EPSG\",\"7030\"]],\n" 				 +
-				    		"  AUTHORITY[\"EPSG\",\"6326\"]],\n"				 + 
-				    		"  PRIMEM[\"Greenwich\", 0.0,\n" 					 +
-				    		"    AUTHORITY[\"EPSG\",\"8901\"]],\n"				 + 
-				    		"  UNIT[\"degree\", 0.017453292519943295],\n"		 + 
-				    		"  AXIS[\"Lat\", NORTH],\n"							 +
-				    		"  AXIS[\"Lon\", EAST],\n"							 +
-				    		"AUTHORITY[\"EPSG\",\"4326\"]]");
-					
-					
-				    final CoordinateReferenceSystem sourceCRS = cv.getCrs();
-				    
-				    final CoordinateOperation operation = opFactory.createOperation(sourceCRS, targetCRS);
+				if(cv.getCrs() != null) {
+					final CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
+					final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
+					final CoordinateReferenceSystem targetCRS = crsFactory.createCoordinateReferenceSystem("EPSG:4326");
+					final CoordinateReferenceSystem sourceCRS = cv.getCrs();
+					final CoordinateOperation operation = opFactory.createOperation(sourceCRS, targetCRS);
+					final MathTransform mathTransform = (MathTransform) operation.getMathTransform();
+					final Envelope envelope = cv.getEnvelope();
+					final Envelope targetEnvelope = JTS.transform(envelope, mathTransform);
+			    	final CoordinateSystem cs = sourceCRS.getCoordinateSystem();
 
-				    MathTransform2D mathTransform = (MathTransform2D) operation.getMathTransform();
-				    
-					Envelope envelope = cv.getEnvelope();
-					Envelope targetEnvelope = JTS.transform(envelope, mathTransform);
+			    	boolean lonFirst = true;
+			    	if (cs.getAxis(0).getDirection().absolute().equals(AxisDirection.NORTH)) {
+			    		lonFirst = false;
+			    	}
+			    	boolean swapXY = lonFirst;
+
+			    	// latitude index
+			        final int latIndex = lonFirst ? 1 : 0;
+
+			        final AxisDirection latitude = cs.getAxis(latIndex).getDirection();
+			        final AxisDirection longitude = cs.getAxis((latIndex + 1) % 2).getDirection();
+			        final boolean[] reverse = new boolean[] {
+			        		lonFirst ? !longitude.equals(AxisDirection.EAST) : !latitude.equals(AxisDirection.NORTH), 
+			        		lonFirst ? !latitude.equals(AxisDirection.NORTH) : !longitude.equals(AxisDirection.EAST)
+					};
+
+					tempResponse.append("\n  <lonLatEnvelope" 
+							+ " srsName=\"WGS84(DD)\""
+							+">");
+					tempResponse.append("\n   <gml:pos>" 
+							+ (!swapXY ? (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinX() : targetEnvelope.getMaxX()) : (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinY() : targetEnvelope.getMaxY())) 
+							+ " " 
+							+ (!swapXY ? (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinY() : targetEnvelope.getMaxY()) : (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinX() : targetEnvelope.getMaxX())) 
+							+ "</gml:pos>");
+					tempResponse.append("\n   <gml:pos>" 
+							+ (!swapXY ? (!reverse[latIndex] ? targetEnvelope.getMaxX() : targetEnvelope.getMinX()) : (!reverse[latIndex] ? targetEnvelope.getMaxY() : targetEnvelope.getMinY())) 
+							+ " " 
+							+ (!swapXY ? (!reverse[latIndex] ? targetEnvelope.getMaxY() : targetEnvelope.getMinY()) : (!reverse[latIndex] ? targetEnvelope.getMaxX() : targetEnvelope.getMinX()))
+							+ "</gml:pos>");
+					tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+					tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+					tempResponse.append("\n  </lonLatEnvelope>");
+				} else {
+					final Envelope envelope = cv.getEnvelope();
 					
 					tempResponse.append("\n  <lonLatEnvelope" 
 							+ " srsName=\"WGS84(DD)\""
 							+">");
 					tempResponse.append("\n   <gml:pos>" 
-							+ targetEnvelope.getMinX() + " " + targetEnvelope.getMinY() 
+							+ envelope.getMinX() 
+							+ " " 
+							+ envelope.getMinY() 
 							+ "</gml:pos>");
 					tempResponse.append("\n   <gml:pos>" 
-							+ targetEnvelope.getMaxX() + " " + targetEnvelope.getMaxY() 
+							+ envelope.getMaxX() 
+							+ " " 
+							+ envelope.getMaxY()
 							+ "</gml:pos>");
 					tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
 					tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
 					tempResponse.append("\n  </lonLatEnvelope>");
-			    } else {
-			    	tempResponse.append("\n  <lonLatEnvelope" 
-			    			+ " srsName=\"WGS84(DD)\""
-			    			+">");
-			    	tempResponse.append("\n   <gml:pos>" 
-			    			+ (cv.getEnvelope() != null ? cv.getEnvelope().getMinX() + " " + cv.getEnvelope().getMinY() : "") 
-			    			+ "</gml:pos>");
-			    	tempResponse.append("\n   <gml:pos>" 
-			    			+ (cv.getEnvelope() != null ? cv.getEnvelope().getMaxX() + " " + cv.getEnvelope().getMaxY() : "") 
-			    			+ "</gml:pos>");
-			    	tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-			    	tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-			    	tempResponse.append("\n  </lonLatEnvelope>");
-			    }
+				}
 			} catch (OperationNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
