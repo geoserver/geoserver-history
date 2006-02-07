@@ -538,8 +538,6 @@ public class CoverageUtils {
 							((GridCoverage2D)coverage).getSampleDimensions(),
 							null,
 							((PropertySourceImpl)coverage).getProperties());
-					
-					//delegate.prepare(outputFormat, subCoverage);
 				}
 			} else if( meta.getEnvelope().contains(request.getEnvelope()) ) {
 				ParameterBlock pbCrop = new ParameterBlock();
@@ -580,8 +578,6 @@ public class CoverageUtils {
 							gSEnvelope, 
 							((GridCoverage2D)coverage).getName().toString()
 					); 
-				
-				//delegate.prepare(outputFormat, subCoverage);
 			}
 		} else {
 			RenderedImage image = ((GridCoverage2D)coverage).getRenderedImage();

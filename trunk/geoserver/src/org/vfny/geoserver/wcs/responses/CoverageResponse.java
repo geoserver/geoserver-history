@@ -203,7 +203,8 @@ public class CoverageResponse implements Response {
 				throw new IOException(
 				"The requested coverage could not be found.");
 			
-			delegate.prepare(outputFormat, CoverageUtils.getCroppedCoverage(request, meta, coverage));
+			final GridCoverage2D finalCoverage = CoverageUtils.getCroppedCoverage(request, meta, coverage);
+			delegate.prepare(outputFormat, finalCoverage);
 		} catch (IOException e) {
 			throw new WcsException(e, "problem with CoverageResults",
 					request.getHandle());

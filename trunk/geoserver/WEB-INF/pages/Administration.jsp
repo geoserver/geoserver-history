@@ -59,5 +59,25 @@
         <%= ClassLoader.getSystemClassLoader().getResource("javax/media/jai/buildVersion") != null %>
       </td>      
     </tr>
+    <tr>
+    <td class="label">
+		<span class="help" title="<bean:message key="help.jai.memory.capacity"/>">
+			<bean:message key="label.jai.memory.capacity"/>:
+		</span>
+    </td>
+    <td class="datum">
+      <%= request.getAttribute("JAI_MEM_CAPACITY") %>K
+    </td>      
+	</tr>
+    <tr>
+    <td class="label">
+		<span class="help" title="<bean:message key="help.jai.memory.threshold"/>">
+			<bean:message key="label.jai.memory.threshold"/>:
+		</span>
+    </td>
+    <td class="datum">
+    	<%= request.getAttribute("JAI_MEM_THRESHOLD") %>%
+    </td>      
+	</tr>
   </tbody>
 </table>

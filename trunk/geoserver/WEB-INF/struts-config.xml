@@ -229,6 +229,10 @@
         	path="/admin/index.do"/>
 
         <forward 
+        	name="admin.main"
+        	path="/admin/main.do"/>
+
+        <forward 
         	name="admin.freeLocks"
         	path="/admin/freeLocks.do"/>
         	
@@ -236,6 +240,10 @@
         	name="admin.freeMemory"
         	path="/admin/freeMemory.do"/>
         	
+        <forward 
+        	name="admin.freeJAIMemory"
+        	path="/admin/freeJAIMemory.do"/>
+
         <forward 
         	name="login"
         	path="/admin/login.do"/>        
@@ -476,11 +484,18 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="admin"
         	name="blankBean"/>        	
+
         <action
         	path ="/admin"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="admin"
         	name="blankBean"/>       
+
+        <action
+        	path ="/admin/main"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="admin.main"
+        	name="blankBean"/>        	
 
         <action
         	path ="/admin/freeLocks"
@@ -494,6 +509,12 @@
         	parameter="admin.freeMemory"
         	name="blankBean"/>
         	        	
+        <action
+        	path ="/admin/freeJAIMemory"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="admin.freeJAIMemory"
+        	name="blankBean"/>
+
 		<action
 			path ="/admin/login"
         	type="org.apache.struts.actions.ForwardAction"
@@ -758,6 +779,11 @@
 			
 		<!-- Admin Actions -->
         <action
+        	path="/admin/index"
+        	type="org.vfny.geoserver.action.AdminIndexAction"
+        	name="blankBean"/>
+
+        <action
         	path="/admin/freeLocks"
         	type="org.vfny.geoserver.action.FreeLocksAction"
         	name="blankBean"/>
@@ -765,6 +791,11 @@
         <action
         	path="/admin/freeMemory"
         	type="org.vfny.geoserver.action.FreeMemoryAction"
+        	name="blankBean"/>
+
+        <action
+        	path="/admin/freeJAIMemory"
+        	type="org.vfny.geoserver.action.FreeJAIMemoryAction"
         	name="blankBean"/>
         	        	
         <!-- Config Actions -->
