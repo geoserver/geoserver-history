@@ -54,4 +54,9 @@
 	<bean:message key="text.visitDemoPage"/>
 </p>
 
+<p>
+	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs?request=GetCapabilities&service=WFS&version=1.0.0">WFS GetCapabilities</a><br>
+	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms?request=GetCapabilities&service=WMS&version=1.0.0">WMS GetCapabilities</a>
+</p>
+
 <br>
