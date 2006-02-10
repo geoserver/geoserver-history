@@ -14,17 +14,18 @@ import javax.units.Unit;
 import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.data.coverage.grid.GridFormatFinder;
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.InternationalString;
+import org.vfny.geoserver.action.data.DataFormatUtils;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageCategory;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
+import org.vfny.geoserver.util.CoverageUtils;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -32,8 +33,10 @@ import com.vividsolutions.jts.geom.Envelope;
  * User interface Coverage staging area.
  * 
  * @author dzwiers, Refractions Research, Inc.
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  * @version $Id: FeatureTypeConfig.java,v 1.20 2004/03/09 10:59:56 jive Exp $
  */
 public class CoverageConfig {
@@ -175,107 +178,107 @@ public class CoverageConfig {
 	 */
 	private String defaultStyle;
 
+	/**
+	 * Package visible constructor for test cases
+	 */
+	CoverageConfig() {
+	}
 
-    /**
-     * Package visible constructor for test cases
-     */
-    CoverageConfig() {
-    }
-    
-    public CoverageConfig(String formatId, String formatType, GridCoverage2D gc, boolean generate) throws ConfigurationException {
-        if ((formatId == null) || (formatId.length() == 0)) {
-            throw new IllegalArgumentException(
-                "formatId is required for CoverageConfig");
-        }
+	/**
+	 * 
+	 * @param formatId
+	 * @param format
+	 * @param gc
+	 * @throws ConfigurationException
+	 * 
+	 * TODO check the envelope with the axis order
+	 */
+	public CoverageConfig(String formatId, Format format, GridCoverage2D gc)
+			throws ConfigurationException {
+		if ((formatId == null) || (formatId.length() == 0)) {
+			throw new IllegalArgumentException(
+					"formatId is required for CoverageConfig");
+		}
+		if (format == null) {
+			throw new ConfigurationException("Cannot handle format: "
+					+ formatId);
+		}
+		this.formatId = formatId;
+		crs = gc.getCoordinateReferenceSystem();
+		srsName = (crs != null ? crs.getName().toString() : "WGS84");//TODO This does not look like good
+		srsWKT = (crs != null ? crs.toWKT() : "");
+		envelope = DataFormatUtils.adjustEnvelope(crs, (GeneralEnvelope) gc
+				.getEnvelope());
 
-        this.formatId = formatId;
-        envelope = new Envelope();
-        GeneralEnvelope gEnvelope=(GeneralEnvelope)gc.getEnvelope();
-        if( generate ) {
-        	envelope.init(gEnvelope.getLowerCorner().getOrdinate(0),
-        			gEnvelope.getUpperCorner().getOrdinate(0),
-        			gEnvelope.getLowerCorner().getOrdinate(1),
-        			gEnvelope.getUpperCorner().getOrdinate(1)) ;
-        }
-        
 		grid = gc.getGridGeometry();
 		try {
 			dimensions = parseCoverageDimesions(gc.getSampleDimensions());
 		} catch (UnsupportedEncodingException e) {
-			throw new ConfigurationException("Coverage dimensions: " + e.toString());
+			throw new ConfigurationException("Coverage dimensions: "
+					+ e.toString());
 		}
 		dimentionNames = gc.getDimensionNames();
-        crs = gc.getCoordinateReferenceSystem2D();
-        srsName = (crs != null ? crs.getName().toString() : "WGS84");
-        srsWKT = (crs != null ? crs.toWKT() : "");
 
-        Format[] formats = GridFormatFinder.getFormatArray();
-		Format format = null;
-    	for( int i = 0; i < formats.length; i++ ) {
-    		if( formats[i].getName().equals(formatType) ) {
-    			format = formats[i];
-    			break;
-    		}
-    	}
-    	
-        if (format == null) {
-        	throw new ConfigurationException("Cannot handle format: " + formatId);
-        }
+		name = gc.getName().toString();
+		label = new StringBuffer(name).append(" is a ").append(
+				format.getDescription()).toString();
+		description = new StringBuffer("Generated from ").append(formatId)
+				.toString();
+		metadataLink = new MetaDataLink();
+		metadataLink.setAbout(format.getDocURL());
+		metadataLink.setMetadataType("other");
+		keywords = new LinkedList();
+		keywords.add("WCS");
+		keywords.add(formatId);
+		keywords.add(name);
+		nativeFormat = format.getName(); // ?
+		dirName = new StringBuffer(formatId).append("_").append(name)
+				.toString();
+		requestCRSs = new LinkedList(); // ?
+		responseCRSs = new LinkedList(); // ?
+		supportedFormats = new LinkedList(); // ?
+		defaultInterpolationMethod = "nearest neighbor"; // TODO make me
+		// parametric
+		interpolationMethods = new LinkedList(); // ?
+		defaultStyle = "";
+	}
 
-		// TODO change the coverage config in order to reflect real name of a
-		// coverage and real description
-        name = gc.getName().toString() + "_Coverage";
-        label = format.getName() + "_Type";
-        description = "Generated from " + formatId;
-        metadataLink = new MetaDataLink();
-        metadataLink.setAbout(format.getDocURL());
-        metadataLink.setMetadataType("other");
-        keywords = new LinkedList();
-        keywords.add("WCS");
-        keywords.add(formatId);
-        keywords.add(name);
-        nativeFormat = format.getName(); // ?
-        dirName = formatId + "_" + name;
-        requestCRSs = new LinkedList(); // ?
-        responseCRSs = new LinkedList(); // ?
-        supportedFormats = new LinkedList(); // ?
-        defaultInterpolationMethod = "nearest neighbor"; // ?
-        interpolationMethods = new LinkedList(); // ?
-        defaultStyle = "";
-    }
-
-    /**
+	/**
 	 * @param sampleDimensions
 	 * @return
-     * @throws UnsupportedEncodingException
+	 * @throws UnsupportedEncodingException
 	 */
-	private CoverageDimension[] parseCoverageDimesions(GridSampleDimension[] sampleDimensions) throws UnsupportedEncodingException {
-		final int length=sampleDimensions.length;
+	private CoverageDimension[] parseCoverageDimesions(
+			GridSampleDimension[] sampleDimensions)
+			throws UnsupportedEncodingException {
+		final int length = sampleDimensions.length;
 		CoverageDimension[] dims = new CoverageDimension[length];
-		
-		for(int i=0;i<length;i++) {
+
+		for (int i = 0; i < length; i++) {
 			dims[i] = new CoverageDimension();
 			dims[i].setName("dim_".intern() + i);
-			StringBuffer label=new StringBuffer("GridSampleDimension".intern());
-			final Unit uom=sampleDimensions[i].getUnits();
-			if(uom!=null)
-			{
-				
+			StringBuffer label = new StringBuffer("GridSampleDimension"
+					.intern());
+			final Unit uom = sampleDimensions[i].getUnits();
+			if (uom != null) {
+
 				label.append("(".intern());
-				parseUom(label,uom);
+				parseUom(label, uom);
 				label.append(")".intern());
 			}
 			label.append("[".intern());
 			label.append(sampleDimensions[i].getMinimumValue());
 			label.append(",".intern());
 			label.append(sampleDimensions[i].getMaximumValue());
-			label.append("]".intern());	
+			label.append("]".intern());
 			dims[i].setDescription(label.toString());
-			final int numCategories=sampleDimensions[i].getCategories().size();
+			final int numCategories = sampleDimensions[i].getCategories()
+					.size();
 			Category[] cats = new Category[numCategories];
 			CoverageCategory[] dimCats = new CoverageCategory[numCategories];
-			int j=0;
-			for(Iterator c_iT=sampleDimensions[i].getCategories().iterator();c_iT.hasNext();j++) {
+			int j = 0;
+			for (Iterator c_iT = sampleDimensions[i].getCategories().iterator(); c_iT
+					.hasNext(); j++) {
 				Category cat = (Category) c_iT.next();
 				dimCats[j] = new CoverageCategory();
 				dimCats[j].setName(cat.getName().toString());
@@ -284,16 +287,16 @@ public class CoverageConfig {
 			}
 			dims[i].setCategories(dimCats);
 			double[] nTemp = sampleDimensions[i].getNoDataValues();
-			if(nTemp != null) {
-				final int ntLength=nTemp.length;
+			if (nTemp != null) {
+				final int ntLength = nTemp.length;
 				Double[] nulls = new Double[ntLength];
-				for(int nd=0;nd<ntLength;nd++) {
+				for (int nd = 0; nd < ntLength; nd++) {
 					nulls[nd] = new Double(nTemp[nd]);
 				}
 				dims[i].setNullValues(nulls);
 			}
 		}
-		
+
 		return dims;
 	}
 
@@ -304,81 +307,79 @@ public class CoverageConfig {
 	 * @param uom
 	 */
 	private void parseUom(StringBuffer label2, Unit uom) {
-		
-		String uomString=uom.toString();
-		uomString=uomString.replaceAll("²","^2");
-		uomString=uomString.replaceAll("³","^3");
-		uomString=uomString.replaceAll("Å","A");
-		uomString=uomString.replaceAll("°","");
+
+		String uomString = uom.toString();
+		uomString = uomString.replaceAll("²", "^2");
+		uomString = uomString.replaceAll("³", "^3");
+		uomString = uomString.replaceAll("Å", "A");
+		uomString = uomString.replaceAll("°", "");
 		label2.append(uomString);
-		
+
 	}
 
 	public CoverageConfig(CoverageInfoDTO dto) {
-        if (dto == null) {
-            throw new NullPointerException(
-                "Non null CoverageInfoDTO required");
-        }
+		if (dto == null) {
+			throw new NullPointerException("Non null CoverageInfoDTO required");
+		}
 
-        formatId = dto.getFormatId();
-        name = dto.getName();
-        label = dto.getLabel();
-        description = dto.getDescription();
-        metadataLink = dto.getMetadataLink();
-        keywords = dto.getKeywords();
-        crs = dto.getCrs();
-        srsName = dto.getSrsName();
-        srsWKT = dto.getSrsWKT();
-        envelope = dto.getEnvelope();
+		formatId = dto.getFormatId();
+		name = dto.getName();
+		label = dto.getLabel();
+		description = dto.getDescription();
+		metadataLink = dto.getMetadataLink();
+		keywords = dto.getKeywords();
+		crs = dto.getCrs();
+		srsName = dto.getSrsName();
+		srsWKT = dto.getSrsWKT();
+		envelope = dto.getEnvelope();
 		grid = dto.getGrid();
 		dimensions = dto.getDimensions();
 		dimentionNames = dto.getDimensionNames();
-        nativeFormat = dto.getNativeFormat();
-        dirName = dto.getDirName();
-        requestCRSs = dto.getRequestCRSs();
-        responseCRSs = dto.getResponseCRSs();
-        supportedFormats = dto.getSupportedFormats();
-        defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
-        interpolationMethods = dto.getInterpolationMethods();
-        defaultStyle = dto.getDefaultStyle();
-    }
+		nativeFormat = dto.getNativeFormat();
+		dirName = dto.getDirName();
+		requestCRSs = dto.getRequestCRSs();
+		responseCRSs = dto.getResponseCRSs();
+		supportedFormats = dto.getSupportedFormats();
+		defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
+		interpolationMethods = dto.getInterpolationMethods();
+		defaultStyle = dto.getDefaultStyle();
+	}
 
-    public CoverageInfoDTO toDTO() {
-    	CoverageInfoDTO c = new CoverageInfoDTO();
-        c.setFormatId(formatId);
-        c.setName(name);
-        c.setLabel(label);
-        c.setDescription(description);
-        c.setMetadataLink(metadataLink);
-        c.setKeywords(keywords);
-        c.setCrs(crs);
-        c.setSrsName(srsName);
-        c.setSrsWKT(srsWKT);
-        c.setEnvelope(envelope);
+	public CoverageInfoDTO toDTO() {
+		CoverageInfoDTO c = new CoverageInfoDTO();
+		c.setFormatId(formatId);
+		c.setName(name);
+		c.setLabel(label);
+		c.setDescription(description);
+		c.setMetadataLink(metadataLink);
+		c.setKeywords(keywords);
+		c.setCrs(crs);
+		c.setSrsName(srsName);
+		c.setSrsWKT(srsWKT);
+		c.setEnvelope(envelope);
 		c.setGrid(grid);
 		c.setDimensions(dimensions);
 		c.setDimensionNames(dimentionNames);
-        c.setNativeFormat(nativeFormat);
-        c.setDirName(dirName);
-        c.setRequestCRSs(requestCRSs);
-        c.setResponseCRSs(responseCRSs);
-        c.setSupportedFormats(supportedFormats);
-        c.setDefaultInterpolationMethod(defaultInterpolationMethod);
-        c.setInterpolationMethods(interpolationMethods);
-        c.setDefaultStyle(defaultStyle);
+		c.setNativeFormat(nativeFormat);
+		c.setDirName(dirName);
+		c.setRequestCRSs(requestCRSs);
+		c.setResponseCRSs(responseCRSs);
+		c.setSupportedFormats(supportedFormats);
+		c.setDefaultInterpolationMethod(defaultInterpolationMethod);
+		c.setInterpolationMethods(interpolationMethods);
+		c.setDefaultStyle(defaultStyle);
 
-        return c;
-    }
+		return c;
+	}
 
+	public String getKey() {
+		return getFormatId() + DataConfig.SEPARATOR + getName();
+	}
 
-    public String getKey() {
-        return getFormatId() + DataConfig.SEPARATOR + getName();
-    }    
-
-    public String toString() {
-	return "CoverageConfig[name: " + name + " dewcription: " + description
-	    + " srsName: " + srsName + "]";
-    }
+	public String toString() {
+		return "CoverageConfig[name: " + name + " dewcription: " + description
+				+ " srsName: " + srsName + "]";
+	}
 
 	/**
 	 * @return Returns the defaultInterpolationMethod.
@@ -390,7 +391,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param defaultInterpolationMethod The defaultInterpolationMethod to set.
+	 * @param defaultInterpolationMethod
+	 *            The defaultInterpolationMethod to set.
 	 * 
 	 * @uml.property name="defaultInterpolationMethod"
 	 */
@@ -408,7 +410,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param description The description to set.
+	 * @param description
+	 *            The description to set.
 	 * 
 	 * @uml.property name="description"
 	 */
@@ -426,7 +429,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param dirName The dirName to set.
+	 * @param dirName
+	 *            The dirName to set.
 	 * 
 	 * @uml.property name="dirName"
 	 */
@@ -444,7 +448,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param envelope The envelope to set.
+	 * @param envelope
+	 *            The envelope to set.
 	 * 
 	 * @uml.property name="envelope"
 	 */
@@ -462,7 +467,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param formatId The formatId to set.
+	 * @param formatId
+	 *            The formatId to set.
 	 * 
 	 * @uml.property name="formatId"
 	 */
@@ -480,7 +486,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param interpolationMethods The interpolationMethods to set.
+	 * @param interpolationMethods
+	 *            The interpolationMethods to set.
 	 * 
 	 * @uml.property name="interpolationMethods"
 	 */
@@ -498,7 +505,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param keywords The keywords to set.
+	 * @param keywords
+	 *            The keywords to set.
 	 * 
 	 * @uml.property name="keywords"
 	 */
@@ -516,7 +524,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param label The label to set.
+	 * @param label
+	 *            The label to set.
 	 * 
 	 * @uml.property name="label"
 	 */
@@ -534,7 +543,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param metadataLink The metadataLink to set.
+	 * @param metadataLink
+	 *            The metadataLink to set.
 	 * 
 	 * @uml.property name="metadataLink"
 	 */
@@ -552,7 +562,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param name The name to set.
+	 * @param name
+	 *            The name to set.
 	 * 
 	 * @uml.property name="name"
 	 */
@@ -570,7 +581,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param nativeFormat The nativeFormat to set.
+	 * @param nativeFormat
+	 *            The nativeFormat to set.
 	 * 
 	 * @uml.property name="nativeFormat"
 	 */
@@ -588,7 +600,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param requestCRSs The requestCRSs to set.
+	 * @param requestCRSs
+	 *            The requestCRSs to set.
 	 * 
 	 * @uml.property name="requestCRSs"
 	 */
@@ -606,7 +619,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param responseCRSs The responseCRSs to set.
+	 * @param responseCRSs
+	 *            The responseCRSs to set.
 	 * 
 	 * @uml.property name="responseCRSs"
 	 */
@@ -624,7 +638,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param srsName The srsName to set.
+	 * @param srsName
+	 *            The srsName to set.
 	 * 
 	 * @uml.property name="srsName"
 	 */
@@ -642,7 +657,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param supportedFormats The supportedFormats to set.
+	 * @param supportedFormats
+	 *            The supportedFormats to set.
 	 * 
 	 * @uml.property name="supportedFormats"
 	 */
@@ -708,7 +724,8 @@ public class CoverageConfig {
 	}
 
 	/**
-	 * @param dimensions The dimensions to set.
+	 * @param dimensions
+	 *            The dimensions to set.
 	 * 
 	 * @uml.property name="dimensions"
 	 */
@@ -719,12 +736,15 @@ public class CoverageConfig {
 	public String getDefaultStyle() {
 		return defaultStyle;
 	}
+
 	public void setDefaultStyle(String defaultStyle) {
 		this.defaultStyle = defaultStyle;
 	}
+
 	public String getSrsWKT() {
 		return srsWKT;
 	}
+
 	public void setSrsWKT(String srsWKT) {
 		this.srsWKT = srsWKT;
 	}

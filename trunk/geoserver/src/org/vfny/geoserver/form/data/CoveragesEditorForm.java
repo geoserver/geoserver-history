@@ -28,12 +28,13 @@ import org.vfny.geoserver.util.Requests;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-
 /**
  * DOCUMENT ME!
- *
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * 
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  */
 public class CoveragesEditorForm extends ActionForm {
 
@@ -68,8 +69,11 @@ public class CoveragesEditorForm extends ActionForm {
 	private String metadataLink;
 
 	private String latLonBoundingBoxMinX;
+
 	private String latLonBoundingBoxMinY;
+
 	private String latLonBoundingBoxMaxX;
+
 	private String latLonBoundingBoxMaxY;
 
 	/**
@@ -132,50 +136,41 @@ public class CoveragesEditorForm extends ActionForm {
 	 */
 	private String newCoverage;
 
-
 	/**
 	 * Set up CoverageEditor from from Web Container.
 	 * 
 	 * <p>
-	 * The key DataConfig.SELECTED_COVERAGE is used to look up the selected
-	 * from the web container.
+	 * The key DataConfig.SELECTED_COVERAGE is used to look up the selected from
+	 * the web container.
 	 * </p>
-	 *
+	 * 
 	 * @param mapping
 	 * @param request
 	 */
 	public void reset(ActionMapping mapping, HttpServletRequest request) {
 		super.reset(mapping, request);
 
-        action = "";
-        newCoverage = "";
+		action = "";
+		newCoverage = "";
+		final DataConfig config = ConfigRequests.getDataConfig(request);
+		final UserContainer user = Requests.getUserContainer(request);
+		final CoverageConfig type = user.getCoverageConfig();
 
-		ServletContext context = getServlet().getServletContext();
-		DataConfig config = ConfigRequests.getDataConfig(request);
-		
-		UserContainer user = Requests.getUserContainer(request);
+		if (type == null) {
 
-		CoverageConfig type = user.getCoverageConfig();
+			// TODO Not sure what to do, user must have bookmarked?
+			return; // Action should redirect to Select screen?
+		}
 
-        if (type == null) {
-            System.out.println("Coverage is not there");
+		this.formatId = type.getFormatId();
+		this.styleId = type.getDefaultStyle();
 
-            // Not sure what to do, user must have bookmarked?
-            return; // Action should redirect to Select screen?
-        }
-
-        this.formatId = type.getFormatId();
-        this.styleId = type.getDefaultStyle();
-
-		// Richard can we please use this to store stuff?
-		CoverageConfig cvConfig; //= user.getCoverageConfig();
-		
-		cvConfig = (CoverageConfig) request.getSession().getAttribute(DataConfig.SELECTED_COVERAGE);
-		
-		Envelope bounds = cvConfig.getEnvelope();
+		final CoverageConfig cvConfig= (CoverageConfig) request.getSession().getAttribute(
+				DataConfig.SELECTED_COVERAGE);
+		final Envelope bounds = cvConfig.getEnvelope();
 		srsName = cvConfig.getSrsName();
 		WKTString = cvConfig.getSrsWKT();
-		
+
 		if (bounds.isNull()) {
 			latLonBoundingBoxMinX = "";
 		} else {
@@ -184,142 +179,143 @@ public class CoveragesEditorForm extends ActionForm {
 			latLonBoundingBoxMaxX = Double.toString(bounds.getMaxX());
 			latLonBoundingBoxMaxY = Double.toString(bounds.getMaxY());
 		}
-		
+
 		name = cvConfig.getName();
 		label = cvConfig.getLabel();
 		description = cvConfig.getDescription();
-		metadataLink = (cvConfig.getMetadataLink() != null ? 
-				cvConfig.getMetadataLink().getAbout() : null);
+		metadataLink = (cvConfig.getMetadataLink() != null ? cvConfig
+				.getMetadataLink().getAbout() : null);
 		nativeFormat = cvConfig.getNativeFormat();
 		defaultInterpolationMethod = cvConfig.getDefaultInterpolationMethod();
-		
+
 		StringBuffer buf = new StringBuffer();
 		// Keywords
-		if( cvConfig.getKeywords() != null ) {
+		if (cvConfig.getKeywords() != null) {
 			for (Iterator i = cvConfig.getKeywords().iterator(); i.hasNext();) {
 				String keyword = (String) i.next();
 				buf.append(keyword);
-				
+
 				if (i.hasNext()) {
 					buf.append(" ");
 				}
 			}
-			
+
 			this.keywords = buf.toString();
 		}
-		
-		if( cvConfig.getRequestCRSs() != null ) {
+
+		if (cvConfig.getRequestCRSs() != null) {
 			buf = new StringBuffer();
 			// RequestCRSs
 			for (Iterator i = cvConfig.getRequestCRSs().iterator(); i.hasNext();) {
 				String CRS = (String) i.next();
 				buf.append(CRS);
-				
+
 				if (i.hasNext()) {
 					buf.append(",");
 				}
 			}
-			
+
 			this.requestCRSs = buf.toString();
 		}
-		
-		if( cvConfig.getResponseCRSs() != null ) {
+
+		if (cvConfig.getResponseCRSs() != null) {
 			buf = new StringBuffer();
 			// ResponseCRSs
-			for (Iterator i = cvConfig.getResponseCRSs().iterator(); i.hasNext();) {
+			for (Iterator i = cvConfig.getResponseCRSs().iterator(); i
+					.hasNext();) {
 				String CRS = (String) i.next();
 				buf.append(CRS);
-				
+
 				if (i.hasNext()) {
 					buf.append(",");
 				}
 			}
-			
+
 			this.responseCRSs = buf.toString();
 		}
-		
-		if( cvConfig.getSupportedFormats() != null ) {
+
+		if (cvConfig.getSupportedFormats() != null) {
 			buf = new StringBuffer();
 			// SupportedFormats
-			for (Iterator i = cvConfig.getSupportedFormats().iterator(); i.hasNext();) {
+			for (Iterator i = cvConfig.getSupportedFormats().iterator(); i
+					.hasNext();) {
 				String format = (String) i.next();
 				buf.append(format);
-				
+
 				if (i.hasNext()) {
 					buf.append(",");
 				}
 			}
-			
+
 			this.supportedFormats = buf.toString();
 		}
-		
-		if( cvConfig.getInterpolationMethods() != null ) {
+
+		if (cvConfig.getInterpolationMethods() != null) {
 			buf = new StringBuffer();
 			// InterpolationMethods
-			for (Iterator i = cvConfig.getInterpolationMethods().iterator(); i.hasNext();) {
+			for (Iterator i = cvConfig.getInterpolationMethods().iterator(); i
+					.hasNext();) {
 				String intMethod = (String) i.next();
 				buf.append(intMethod);
-				
+
 				if (i.hasNext()) {
 					buf.append(",");
 				}
 			}
-			
+
 			this.interpolationMethods = buf.toString();
 		}
 
-        styles = new TreeSet();
+		styles = new TreeSet();
+		for (Iterator i = config.getStyles().values().iterator(); i.hasNext();) {
+			StyleConfig sc = (StyleConfig) i.next();
+			styles.add(sc.getId());
 
-        for (Iterator i = config.getStyles().values().iterator(); i.hasNext();) {
-            StyleConfig sc = (StyleConfig) i.next();
-            styles.add(sc.getId());
+			if (sc.isDefault()) {
+				if ((styleId == null) || styleId.equals("")) {
+					styleId.equals(sc.getId());
+				}
+			}
+		}
 
-            if (sc.isDefault()) {
-                if ((styleId == null) || styleId.equals("")) {
-                    styleId.equals(sc.getId());
-                }
-            }
-        }
+		Object attribute = styles;
 
-        Object attribute = styles;
-
-        if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) {
-            ;
-        }
+		if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) {
+			// TODO why I am here?
+		}
 	}
-	
+
 	public ActionErrors validate(ActionMapping mapping,
 			HttpServletRequest request) {
-        ActionErrors errors = new ActionErrors();
+		ActionErrors errors = new ActionErrors();
 
-        Locale locale = (Locale) request.getLocale();
-        MessageResources messages = servlet.getResources();
-        final String ENVELOPE = HTMLEncoder.decode(messages.getMessage(locale,
-                    "config.data.calculateBoundingBox.label"));
+		Locale locale = (Locale) request.getLocale();
+		MessageResources messages = servlet.getResources();
+		final String ENVELOPE = HTMLEncoder.decode(messages.getMessage(locale,
+				"config.data.calculateBoundingBox.label"));
 
-        // Pass Attribute Management Actions through without
-        // much validation.
-        if (action.startsWith("Up") || action.startsWith("Down")
-                || action.startsWith("Remove") || action.equals(ENVELOPE)) {
-            return errors;
-        }
-		
+		// Pass Attribute Management Actions through without
+		// much validation.
+		if (action.startsWith("Up") || action.startsWith("Down")
+				|| action.startsWith("Remove") || action.equals(ENVELOPE)) {
+			return errors;
+		}
+
 		DataConfig data = ConfigRequests.getDataConfig(request);
-        // Check selected style exists
+		// Check selected style exists
 
-        if (!(data.getStyles().containsKey(styleId) || "".equals(styleId))) {
-            errors.add("styleId",
-                new ActionError("error.styleId.notFound", styleId));
-        }
-		
+		if (!(data.getStyles().containsKey(styleId) || "".equals(styleId))) {
+			errors.add("styleId", new ActionError("error.styleId.notFound",
+					styleId));
+		}
+
 		// check name exists in current DataStore?
 		if ("".equals(latLonBoundingBoxMinX)
 				|| "".equals(latLonBoundingBoxMinY)
 				|| "".equals(latLonBoundingBoxMaxX)
 				|| "".equals(latLonBoundingBoxMaxY)) {
-			
-			errors.add("envelope",
-					new ActionError("error.envelope.required"));
+
+			errors.add("envelope", new ActionError("error.envelope.required"));
 		} else {
 			try {
 				double minX = Double.parseDouble(latLonBoundingBoxMinX);
@@ -327,20 +323,17 @@ public class CoveragesEditorForm extends ActionForm {
 				double maxX = Double.parseDouble(latLonBoundingBoxMaxX);
 				double maxY = Double.parseDouble(latLonBoundingBoxMaxY);
 			} catch (NumberFormatException badNumber) {
-				errors.add("envelope",
-						new ActionError("error.envelope.invalid",
-								badNumber));
+				errors.add("envelope", new ActionError(
+						"error.envelope.invalid", badNumber));
 			}
 		}
 
 		if ("".equals(name)) {
-			errors.add("name",
-					new ActionError("error.coverage.name.required"));
-		} else if( name.indexOf(" ") > 0 ) {
-			errors.add("name",
-					new ActionError("error.coverage.name.invalid"));
+			errors.add("name", new ActionError("error.coverage.name.required"));
+		} else if (name.indexOf(" ") > 0) {
+			errors.add("name", new ActionError("error.coverage.name.invalid"));
 		}
-		
+
 		return errors;
 	}
 
@@ -352,7 +345,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param defaultInterpolationMethod The defaultInterpolationMethod to set.
+	 * @param defaultInterpolationMethod
+	 *            The defaultInterpolationMethod to set.
 	 */
 	public void setDefaultInterpolationMethod(String defaultInterpolationMethod) {
 		this.defaultInterpolationMethod = defaultInterpolationMethod;
@@ -366,7 +360,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param description The description to set.
+	 * @param description
+	 *            The description to set.
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -380,7 +375,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param keywords The keywords to set.
+	 * @param keywords
+	 *            The keywords to set.
 	 */
 	public void setKeywords(String keywords) {
 		this.keywords = keywords;
@@ -394,7 +390,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param label The label to set.
+	 * @param label
+	 *            The label to set.
 	 */
 	public void setLabel(String label) {
 		this.label = label;
@@ -406,44 +403,55 @@ public class CoveragesEditorForm extends ActionForm {
 	public String getMaxX() {
 		return latLonBoundingBoxMaxX;
 	}
+
 	/**
-	 * @param latLonBoundingBoxMaxX The latLonBoundingBoxMaxX to set.
+	 * @param latLonBoundingBoxMaxX
+	 *            The latLonBoundingBoxMaxX to set.
 	 */
 	public void setMaxX(String latLonBoundingBoxMaxX) {
 		this.latLonBoundingBoxMaxX = latLonBoundingBoxMaxX;
 	}
+
 	/**
 	 * @return Returns the latLonBoundingBoxMaxY.
 	 */
 	public String getMaxY() {
 		return latLonBoundingBoxMaxY;
 	}
+
 	/**
-	 * @param latLonBoundingBoxMaxY The latLonBoundingBoxMaxY to set.
+	 * @param latLonBoundingBoxMaxY
+	 *            The latLonBoundingBoxMaxY to set.
 	 */
 	public void setMaxY(String latLonBoundingBoxMaxY) {
 		this.latLonBoundingBoxMaxY = latLonBoundingBoxMaxY;
 	}
+
 	/**
 	 * @return Returns the latLonBoundingBoxMinX.
 	 */
 	public String getMinX() {
 		return latLonBoundingBoxMinX;
 	}
+
 	/**
-	 * @param latLonBoundingBoxMinX The latLonBoundingBoxMinX to set.
+	 * @param latLonBoundingBoxMinX
+	 *            The latLonBoundingBoxMinX to set.
 	 */
 	public void setMinX(String latLonBoundingBoxMinX) {
 		this.latLonBoundingBoxMinX = latLonBoundingBoxMinX;
 	}
+
 	/**
 	 * @return Returns the latLonBoundingBoxMinY.
 	 */
 	public String getMinY() {
 		return latLonBoundingBoxMinY;
 	}
+
 	/**
-	 * @param latLonBoundingBoxMinY The latLonBoundingBoxMinY to set.
+	 * @param latLonBoundingBoxMinY
+	 *            The latLonBoundingBoxMinY to set.
 	 */
 	public void setMinY(String latLonBoundingBoxMinY) {
 		this.latLonBoundingBoxMinY = latLonBoundingBoxMinY;
@@ -457,7 +465,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param name The name to set.
+	 * @param name
+	 *            The name to set.
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -471,7 +480,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param nativeFormat The nativeFormat to set.
+	 * @param nativeFormat
+	 *            The nativeFormat to set.
 	 */
 	public void setNativeFormat(String nativeFormat) {
 		this.nativeFormat = nativeFormat;
@@ -485,7 +495,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param srsName The srsName to set.
+	 * @param srsName
+	 *            The srsName to set.
 	 */
 	public void setSrsName(String srsName) {
 		this.srsName = srsName;
@@ -499,7 +510,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param metadataLink The metadataLink to set.
+	 * @param metadataLink
+	 *            The metadataLink to set.
 	 */
 	public void setMetadataLink(String metadataLink) {
 		this.metadataLink = metadataLink;
@@ -513,7 +525,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param interpolationMethods The interpolationMethods to set.
+	 * @param interpolationMethods
+	 *            The interpolationMethods to set.
 	 */
 	public void setInterpolationMethods(String interpolationMethods) {
 		this.interpolationMethods = interpolationMethods;
@@ -527,7 +540,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param requestCRSs The requestCRSs to set.
+	 * @param requestCRSs
+	 *            The requestCRSs to set.
 	 */
 	public void setRequestCRSs(String requestCRSs) {
 		this.requestCRSs = requestCRSs;
@@ -541,7 +555,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param responseCRSs The responseCRSs to set.
+	 * @param responseCRSs
+	 *            The responseCRSs to set.
 	 */
 	public void setResponseCRSs(String responseCRSs) {
 		this.responseCRSs = responseCRSs;
@@ -555,7 +570,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param supportedFormats The supportedFormats to set.
+	 * @param supportedFormats
+	 *            The supportedFormats to set.
 	 */
 	public void setSupportedFormats(String supportedFormats) {
 		this.supportedFormats = supportedFormats;
@@ -569,7 +585,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param action The action to set.
+	 * @param action
+	 *            The action to set.
 	 */
 	public void setAction(String action) {
 		this.action = action;
@@ -583,7 +600,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param formatId The formatId to set.
+	 * @param formatId
+	 *            The formatId to set.
 	 */
 	public void setFormatId(String formatId) {
 		this.formatId = formatId;
@@ -597,7 +615,8 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @param newCoverage The newCoverage to set.
+	 * @param newCoverage
+	 *            The newCoverage to set.
 	 */
 	public void setNewCoverage(String newCoverage) {
 		this.newCoverage = newCoverage;
@@ -606,18 +625,23 @@ public class CoveragesEditorForm extends ActionForm {
 	public SortedSet getStyles() {
 		return styles;
 	}
+
 	public void setStyles(SortedSet styles) {
 		this.styles = styles;
 	}
+
 	public String getStyleId() {
 		return styleId;
 	}
+
 	public void setStyleId(String styleId) {
 		this.styleId = styleId;
 	}
+
 	public String getWKTString() {
 		return WKTString;
 	}
+
 	public void setWKTString(String string) {
 		WKTString = string;
 	}

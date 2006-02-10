@@ -48,6 +48,7 @@ import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.AttributeForm;
 import org.vfny.geoserver.form.data.TypesEditorForm;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.util.DataStoreUtils;
 
 import com.vividsolutions.jts.geom.Envelope;
 

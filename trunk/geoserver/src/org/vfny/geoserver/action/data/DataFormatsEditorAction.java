@@ -65,7 +65,6 @@ public class DataFormatsEditorAction extends ConfigAction {
 		String dataFormatID = dataFormatsForm.getDataFormatId();
 		String type = dataFormatsForm.getType();
 		String url = dataFormatsForm.getUrl();
-		FormFile formatFile = dataFormatsForm.getUrlFile();
 		String description = dataFormatsForm.getDescription();
 		
 		DataConfig dataConfig = (DataConfig) getDataConfig();

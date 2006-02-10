@@ -17,7 +17,7 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.vfny.geoserver.action.data.DataStoreUtils;
+import org.vfny.geoserver.util.DataStoreUtils;
 
 
 /**

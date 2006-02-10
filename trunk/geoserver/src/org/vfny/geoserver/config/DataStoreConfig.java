@@ -12,8 +12,8 @@ import javax.servlet.ServletContext;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
-import org.vfny.geoserver.action.data.DataStoreUtils;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.util.DataStoreUtils;
 
 
 /**

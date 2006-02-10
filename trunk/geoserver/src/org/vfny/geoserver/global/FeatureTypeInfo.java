@@ -30,7 +30,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.LegendURLDTO;
-import org.vfny.geoserver.action.data.DataStoreUtils;
+import org.vfny.geoserver.util.DataStoreUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 

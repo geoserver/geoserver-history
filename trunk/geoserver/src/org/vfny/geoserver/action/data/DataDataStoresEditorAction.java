@@ -28,6 +28,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.form.data.DataDataStoresEditorForm;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.util.DataStoreUtils;
 
 
 /**

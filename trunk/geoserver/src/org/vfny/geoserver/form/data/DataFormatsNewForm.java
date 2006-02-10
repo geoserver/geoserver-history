@@ -17,17 +17,23 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.data.DataFormatUtils;
 
-
 /**
  * Used to accept information from user for a New DataFormat Action.
  * 
  * @author User, Refractions Research, Inc.
  * @author jive
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  */
 public class DataFormatsNewForm extends ActionForm {
-    private static final Pattern idPattern = Pattern.compile("^\\a$");
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7723738069176272163L;
+
+
 
 	/**
 	 * Description provided by selected Dataformat Factory
@@ -39,52 +45,53 @@ public class DataFormatsNewForm extends ActionForm {
 	 */
 	private String dataFormatID;
 
+	private List formatDescriptions;
 
-    private List formatDescriptions;
-    
-    /**
-     * Default state of New form
-     *
-     * @param mapping DOCUMENT ME!
-     * @param request DOCUMENT ME!
-     */
-    public void reset(ActionMapping mapping, HttpServletRequest request) {
-        super.reset(mapping, request);
-        selectedDescription = "";
-        dataFormatID = "";
-        formatDescriptions = DataFormatUtils.listDataFormatsDescriptions();
-    }
+	/**
+	 * Default state of New form
+	 * 
+	 * @param mapping
+	 *            DOCUMENT ME!
+	 * @param request
+	 *            DOCUMENT ME!
+	 */
+	public void reset(ActionMapping mapping, HttpServletRequest request) {
+		super.reset(mapping, request);
+		selectedDescription = "";
+		dataFormatID = "";
+		formatDescriptions = DataFormatUtils.listDataFormatsDescriptions();
+	}
 
+	/**
+	 * Check NewForm for correct use
+	 * 
+	 * @param mapping
+	 *            DOCUMENT ME!
+	 * @param request
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public ActionErrors validate(ActionMapping mapping,
+			HttpServletRequest request) {
+		ActionErrors errors = new ActionErrors();
 
-    /**
-     * Check NewForm for correct use
-     *
-     * @param mapping DOCUMENT ME!
-     * @param request DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
-        ActionErrors errors = new ActionErrors();
+		if (!getDataFormatDescriptions().contains(getSelectedDescription())) {
+			errors.add("selectedDescription",
+					new ActionError("error.dataFormatFactory.invalid",
+							getSelectedDescription()));
+		}
 
-        if (!getDataFormatDescriptions().contains(getSelectedDescription())) {
-            errors.add("selectedDescription",
-                new ActionError("error.dataFormatFactory.invalid",
-                    getSelectedDescription()));
-        }
+		if ((getDataFormatID() == null) || getDataFormatID().equals("")) {
+			errors.add("dataFormatID", new ActionError(
+					"error.dataFormatId.required", getDataFormatID()));
+		} else if (!Pattern.matches("^[a-zA-Z](\\w|\\.)*$", getDataFormatID())) {
+			errors.add("dataFormatID", new ActionError(
+					"error.dataFormatId.invalid", getDataFormatID()));
+		}
 
-        if ((getDataFormatID() == null) || getDataFormatID().equals("")) {
-            errors.add("dataFormatID",
-                new ActionError("error.dataFormatId.required", getDataFormatID()));
-        } else if (!Pattern.matches("^[a-zA-Z](\\w|\\.)*$", getDataFormatID())) {
-            errors.add("dataFormatID",
-                    new ActionError("error.dataFormatId.invalid", getDataFormatID()));
-        }
-        
-
-        return errors;
-    }
+		return errors;
+	}
 
 	/**
 	 * 
@@ -114,10 +121,10 @@ public class DataFormatsNewForm extends ActionForm {
 		selectedDescription = string;
 	}
 
-    /*
-     * Allows the JSP page to easily access the list of dataFormat Descriptions
-     */
-    public SortedSet getDataFormatDescriptions() {
-        return new TreeSet(formatDescriptions);
-    }
+	/*
+	 * Allows the JSP page to easily access the list of dataFormat Descriptions
+	 */
+	public SortedSet getDataFormatDescriptions() {
+		return new TreeSet(formatDescriptions);
+	}
 }

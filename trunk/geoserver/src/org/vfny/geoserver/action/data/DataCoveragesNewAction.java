@@ -58,7 +58,7 @@ import org.vfny.geoserver.util.CoverageUtils;
  * </p>
  * 
  * <pre><code>
- *    DataCoveragesNewAction x = new DataCoveragesNewAction(...);
+ *     DataCoveragesNewAction x = new DataCoveragesNewAction(...);
  * </code></pre>
  * 
  * @author rgould, Refractions Research, Inc.
@@ -72,57 +72,63 @@ import org.vfny.geoserver.util.CoverageUtils;
  */
 public class DataCoveragesNewAction extends ConfigAction {
 	public final static String NEW_COVERAGE_KEY = "newCoverage";
-	
+
 	public ActionForward execute(ActionMapping mapping,
 			ActionForm incomingForm, UserContainer user,
 			HttpServletRequest request, HttpServletResponse response)
-	throws ConfigurationException {
-		
+			throws ConfigurationException {
+
 		DataCoveragesNewForm form = (DataCoveragesNewForm) incomingForm;
 		String selectedNewCoverage = form.getSelectedNewCoverage();
 		DataConfig dataConfig = (DataConfig) request.getSession()
-		.getServletContext().getAttribute(DataConfig.CONFIG_KEY);
+				.getServletContext().getAttribute(DataConfig.CONFIG_KEY);
 		String formatID = selectedNewCoverage;
-		
+
 		DataFormatConfig dfConfig = dataConfig.getDataFormat(formatID);
 		GridCoverage gc = null;
-		
+
+		final ServletContext sc = getServlet().getServletContext();
+		final URL url;
 		try {
-			final ServletContext sc = getServlet().getServletContext();
-			final URL url = CoverageUtils.getResource(dfConfig.getUrl(), sc.getRealPath("/"));
-			
-			final Format format = dfConfig.getFactory();
-			final GridCoverageReader reader = ((AbstractGridFormat) format)
-			.getReader(url);
-			
-			final ParameterValueGroup params = format.getReadParameters();
-			
-			if (params != null) {
-				final List list = params.values();
-				final Iterator it = list.iterator();
-				while (it.hasNext()) {
-					final ParameterValue param = ((ParameterValue) it.next());
-					final ParameterDescriptor descr = (ParameterDescriptor) param
-					.getDescriptor();
-					
-					final String key = descr.getName().toString();
-					Object value = CoverageUtils.getCvParamValue(key, param, dfConfig.getParameters());
-					
-					if (value != null)
-						params.parameter(key).setValue(value);
-				}
+			url = CoverageUtils.getResource(dfConfig.getUrl(), sc
+					.getRealPath("/"));
+		} catch (MalformedURLException e) {
+			throw new ConfigurationException(e);
+		}
+
+		final Format format = dfConfig.getFactory();
+		final GridCoverageReader reader = ((AbstractGridFormat) format)
+				.getReader(url);
+
+		final ParameterValueGroup params = format.getReadParameters();
+
+		if (params != null) {
+			final List list = params.values();
+			final Iterator it = list.iterator();
+			while (it.hasNext()) {
+				final ParameterValue param = ((ParameterValue) it.next());
+				final ParameterDescriptor descr = (ParameterDescriptor) param
+						.getDescriptor();
+
+				final String key = descr.getName().toString();
+				Object value = CoverageUtils.getCvParamValue(key, param,
+						dfConfig.getParameters());
+
+				if (value != null)
+					params.parameter(key).setValue(value);
 			}
-			
+		}
+		try {
 			// trying to read the created coverage in order to check the entered
 			// parameters
 			gc = reader.read(params != null ? (GeneralParameterValue[]) params
 					.values().toArray(
 							new GeneralParameterValue[params.values().size()])
-							: null);
-			
+					: null);
+
 			if (gc == null || !(gc instanceof GridCoverage2D))
 				throw new IOException(
-				"The requested coverage could not be found.");
+						"The requested coverage could not be found.");
 		} catch (InvalidParameterValueException e) {
 			throw new ConfigurationException(e);
 		} catch (ParameterNotFoundException e) {
@@ -136,14 +142,14 @@ public class DataCoveragesNewAction extends ConfigAction {
 		} catch (IOException e) {
 			throw new ConfigurationException(e);
 		}
-		
-		final GridCoverage2D finalCoverage=(GridCoverage2D) gc;
-		CoverageConfig cvConfig = new CoverageConfig(formatID, dfConfig.getType(), finalCoverage, true);
-		
+
+		final GridCoverage2D finalCoverage = (GridCoverage2D) gc;
+		CoverageConfig cvConfig = new CoverageConfig(formatID,format, finalCoverage);
+
 		request.setAttribute(NEW_COVERAGE_KEY, "true");
 		request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE,
 				cvConfig);
-		
+
 		user.setCoverageConfig(cvConfig);
 		return mapping.findForward("config.data.coverage.editor");
 	}
