@@ -1,7 +1,16 @@
 <project xmlns:j="jelly:core" xmlns:u="jelly:util" xmlns:ant="jelly:ant" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="info">
 	
 	<goal name="info">
-
+		<echo message="GeoServer Build Script ${geoserver.version}"/>
+		<echo message="-----------------------------"/>
+		<echo message=""/>
+		<echo message="Targets:"/>
+		<echo message="  build: Compiles and tests all modules"/>
+		<echo message="  release: Builds release artifacts for all modules"/>
+		<echo message="  deployAll: Compiles and deploys all modules"/>
+		<echo message="  cleanAll: Cleans all modules"/> 
+		<echo message="  eclipseAll: Generated eclipse .classpath and .project for all modules"/> 
+		
 	</goal>
 	
 	<!-- build task, compiles all modules and runs tests -->
@@ -19,6 +28,22 @@
 			<ant:fileset dir="." includes="**/TEST-*.xml"/>
 		</ant:copy>
 	</postGoal>
+
+	<goal name="release">
+	</goal>
+
+	<!-- module level binary release goal -->
+	<goal name="releaseBin">
+		<!--echo message="${maven.build.dir}"/>
+		<echo message="${gs.release.bin.dir}"/>	
+		<echo message="${gs.bin.dir}"/-->
+		<maven:makeRelativePath path="${maven.build.dir}" var="build.dir" basedir="${basedir}"/>
+		<echo message="${build.dir}"/>
+		<maven:makeAbsolutePath path="${build.dir}" var="build.dir" basedir="${basedir}/.."/>
+		<echo message="${build.dir}"/>
+
+	</goal>
+
 
 	<goal name="cleanAll">
 		<!-- clean the root module -->
