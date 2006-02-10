@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.action.data;
+package org.vfny.geoserver.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public abstract class DataFormatUtils {
 		}
 	}
 
-	protected static Map getParams(Map m, ServletContext sc) {
+	public static Map getParams(Map m, ServletContext sc) {
 		String baseDir = sc.getRealPath("/");
 		return Collections.synchronizedMap(getParams(m, baseDir));
 	}
@@ -67,7 +67,7 @@ public abstract class DataFormatUtils {
 	/**
 	 * Get Connect params.
 	 */
-	protected static Map getParams(Map m, String baseDir) {
+	public static Map getParams(Map m, String baseDir) {
 		return Collections.synchronizedMap(FormatInfo.getParams(m, baseDir));
 	}
 

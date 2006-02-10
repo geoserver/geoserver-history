@@ -11,8 +11,8 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 
 import org.opengis.coverage.grid.*;
-import org.vfny.geoserver.action.data.DataFormatUtils;
 import org.vfny.geoserver.global.dto.FormatInfoDTO;
+import org.vfny.geoserver.util.DataFormatUtils;
 
 /**
  * DataFormatInfo purpose.

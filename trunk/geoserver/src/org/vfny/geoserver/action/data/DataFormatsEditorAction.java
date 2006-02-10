@@ -48,6 +48,7 @@ import org.vfny.geoserver.config.DataFormatConfig;
 import org.vfny.geoserver.form.data.DataFormatsEditorForm;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageUtils;
+import org.vfny.geoserver.util.DataFormatUtils;
 
 
 /**

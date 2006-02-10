@@ -35,11 +35,11 @@ import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.action.data.DataFormatUtils;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataFormatConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageUtils;
+import org.vfny.geoserver.util.DataFormatUtils;
 import org.vfny.geoserver.util.Requests;
 
 /**

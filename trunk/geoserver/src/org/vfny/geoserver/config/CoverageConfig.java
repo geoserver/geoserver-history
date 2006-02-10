@@ -19,13 +19,13 @@ import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.InternationalString;
-import org.vfny.geoserver.action.data.DataFormatUtils;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageCategory;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.util.CoverageUtils;
+import org.vfny.geoserver.util.DataFormatUtils;
 
 import com.vividsolutions.jts.geom.Envelope;
 

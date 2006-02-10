@@ -15,7 +15,7 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.vfny.geoserver.action.data.DataFormatUtils;
+import org.vfny.geoserver.util.DataFormatUtils;
 
 /**
  * Used to accept information from user for a New DataFormat Action.

@@ -46,6 +46,7 @@ import org.vfny.geoserver.form.data.CoveragesEditorForm;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageUtils;
+import org.vfny.geoserver.util.DataFormatUtils;
 
 import com.vividsolutions.jts.geom.Envelope;
 

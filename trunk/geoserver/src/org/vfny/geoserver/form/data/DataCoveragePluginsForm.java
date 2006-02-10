@@ -15,7 +15,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.opengis.coverage.grid.Format;
-import org.vfny.geoserver.action.data.DataFormatUtils;
+import org.vfny.geoserver.util.DataFormatUtils;
 
 
 /**
