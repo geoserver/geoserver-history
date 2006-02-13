@@ -36,7 +36,11 @@ import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.AxisDirection;
+import org.opengis.referencing.cs.CoordinateSystem;
+import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.CoverageConfig;
@@ -47,8 +51,6 @@ import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.DataFormatUtils;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * These Action handles all the buttons for the Coverage Editor.
@@ -197,7 +199,7 @@ public class CoveragesEditorAction extends ConfigAction {
 			final GeneralEnvelope gEnvelope = (GeneralEnvelope) gc
 					.getEnvelope();
 			final GeneralEnvelope targetEnvelope = gEnvelope;
-			final Envelope envelope = DataFormatUtils.adjustEnvelope(sourceCRS,
+			final GeneralEnvelope envelope = DataFormatUtils.adjustEnvelope(sourceCRS,
 					targetEnvelope);
 			if (!sourceCRS.getIdentifiers().isEmpty()) {
 				coverageForm.setSrsName(sourceCRS.getIdentifiers().toArray()[0]
@@ -206,13 +208,18 @@ public class CoveragesEditorAction extends ConfigAction {
 				coverageForm.setSrsName(sourceCRS.getName().toString());
 			}
 			coverageForm.setWKTString(sourceCRS.toWKT());
-			coverageForm.setMinX(Double.toString(envelope.getMinX()));
-			coverageForm.setMaxX(Double.toString(envelope.getMaxX()));
-			coverageForm.setMinY(Double.toString(envelope.getMinY()));
-			coverageForm.setMaxY(Double.toString(envelope.getMaxY()));
+			coverageForm.setMinX(Double.toString(envelope.getLowerCorner().getOrdinate(0)));
+			coverageForm.setMaxX(Double.toString(envelope.getUpperCorner().getOrdinate(0)));
+			coverageForm.setMinY(Double.toString(envelope.getLowerCorner().getOrdinate(1)));
+			coverageForm.setMaxY(Double.toString(envelope.getUpperCorner().getOrdinate(1)));
 		} catch (FactoryRegistryException e) {
 			throw new ServletException(e);
-
+		} catch (MismatchedDimensionException e) {
+			throw new ServletException(e);
+		} catch (IndexOutOfBoundsException e) {
+			throw new ServletException(e);
+		} catch (NoSuchAuthorityCodeException e) {
+			throw new ServletException(e);
 		}
 
 		return mapping.findForward("config.data.coverage.editor");
@@ -230,7 +237,6 @@ public class CoveragesEditorAction extends ConfigAction {
 		config.setDefaultInterpolationMethod(form
 				.getDefaultInterpolationMethod());
 		config.setDescription(form.getDescription());
-		config.setEnvelope(getEnvelope(form));
 		config.setInterpolationMethods(interpolationMethods(form));
 		config.setKeywords(keyWords(form));
 		config.setLabel(form.getLabel());
@@ -238,11 +244,10 @@ public class CoveragesEditorAction extends ConfigAction {
 		config.setNativeFormat(form.getNativeFormat());
 		config.setRequestCRSs(requestCRSs(form));
 		config.setResponseCRSs(responseCRSs(form));
-
 		config.setCrs(CRS.parseWKT(form.getWKTString()));
-
 		config.setSrsName(form.getSrsName());
 		config.setSrsWKT(form.getWKTString());
+		config.setEnvelope(getEnvelope(form, CRS.parseWKT(form.getWKTString())));
 		config.setSupportedFormats(supportedFormats(form));
 		config.setDefaultStyle(form.getStyleId());
 
@@ -294,14 +299,42 @@ public class CoveragesEditorAction extends ConfigAction {
 	 * 
 	 * 
 	 * @param coverageForm
+	 * @param system
 	 * 
 	 * @return Bounding box in lat long TODO is this correct
 	 */
-	private Envelope getEnvelope(CoveragesEditorForm coverageForm) {
-		return new Envelope(Double.parseDouble(coverageForm.getMinX()), Double
-				.parseDouble(coverageForm.getMaxX()), Double
-				.parseDouble(coverageForm.getMinY()), Double
-				.parseDouble(coverageForm.getMaxY()));
+	private GeneralEnvelope getEnvelope(CoveragesEditorForm coverageForm, CoordinateReferenceSystem crs) {
+		final double[] coordinates = new double[4];
+		final CoordinateSystem cs = crs.getCoordinateSystem();
+		boolean lonFirst = true;
+		if (cs.getAxis(0).getDirection().absolute().equals(AxisDirection.NORTH)) {
+			lonFirst = false;
+		}
+		boolean swapXY = !lonFirst;
+
+		// latitude index
+		final int latIndex = lonFirst ? 1 : 0;
+
+		final AxisDirection latitude = cs.getAxis(latIndex).getDirection();
+		final AxisDirection longitude = cs.getAxis((latIndex + 1) % 2)
+				.getDirection();
+		final boolean[] reverse = new boolean[] {
+				lonFirst ? !longitude.equals(AxisDirection.EAST) : !latitude.equals(AxisDirection.NORTH),
+				lonFirst ? !latitude.equals(AxisDirection.NORTH) : !longitude.equals(AxisDirection.EAST) };
+
+		coordinates[0] = (!reverse[(latIndex+1)%2] ? (!swapXY ? Double.parseDouble(coverageForm.getMinX()): Double.parseDouble(coverageForm.getMinY())) : (!swapXY ? Double.parseDouble(coverageForm.getMaxX()): Double.parseDouble(coverageForm.getMaxY()))); 
+		coordinates[1] = (!reverse[latIndex] ? (!swapXY ? Double.parseDouble(coverageForm.getMinY()): Double.parseDouble(coverageForm.getMinX())) : (!swapXY ? Double.parseDouble(coverageForm.getMaxY()): Double.parseDouble(coverageForm.getMaxX()))); 
+		coordinates[2] = (!reverse[(latIndex+1)%2] ? (!swapXY ? Double.parseDouble(coverageForm.getMaxX()): Double.parseDouble(coverageForm.getMaxY())) : (!swapXY ? Double.parseDouble(coverageForm.getMinX()): Double.parseDouble(coverageForm.getMinY()))); 
+		coordinates[3] = (!reverse[latIndex] ? (!swapXY ? Double.parseDouble(coverageForm.getMaxY()): Double.parseDouble(coverageForm.getMaxX())) : (!swapXY ? Double.parseDouble(coverageForm.getMinY()): Double.parseDouble(coverageForm.getMinX()))); 
+		
+		GeneralEnvelope envelope = new GeneralEnvelope(
+				new double[] {coordinates[0], coordinates[1]},
+				new double[] {coordinates[2], coordinates[3]}
+		);
+		
+		envelope.setCoordinateReferenceSystem(crs);
+		
+		return envelope;
 	}
 
 	private MetaDataLink metadataLink(CoveragesEditorForm coverageForm) {

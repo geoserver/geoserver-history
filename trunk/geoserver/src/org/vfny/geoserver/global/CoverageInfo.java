@@ -7,13 +7,15 @@ package org.vfny.geoserver.global;
 import java.util.List;
 import java.util.Map;
 
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-
-import com.vividsolutions.jts.geom.Envelope;
+import org.vfny.geoserver.util.DataFormatUtils;
 
 /**
  * DOCUMENT ME!
@@ -61,7 +63,12 @@ public class CoverageInfo extends GlobalLayerSupertype {
 	/**
 	 * 
 	 */
-	private Envelope envelope;
+	private GeneralEnvelope envelope;
+
+	/**
+	 * 
+	 */
+	private GeneralEnvelope latLonEnvelope;
 
 	/**
 	 * 
@@ -249,7 +256,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
 	/**
 	 * @return Returns the envelope.
 	 */
-	public Envelope getEnvelope() {
+	public GeneralEnvelope getEnvelope() {
 		return envelope;
 	}
 
@@ -380,5 +387,20 @@ public class CoverageInfo extends GlobalLayerSupertype {
 
 	public String getSrsWKT() {
 		return srsWKT;
+	}
+	public GeneralEnvelope getLatLonEnvelope() {
+		if(latLonEnvelope == null) {
+				try {
+					latLonEnvelope = DataFormatUtils.getLatLonEnvelope(this.envelope);
+				} catch (IndexOutOfBoundsException e) {
+					return null;
+				} catch (FactoryException e) {
+					return null;
+				} catch (TransformException e) {
+					return null;
+				}
+		}
+		
+		return latLonEnvelope;
 	}
 }

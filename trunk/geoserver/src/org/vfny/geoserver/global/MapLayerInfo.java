@@ -5,15 +5,12 @@
 package org.vfny.geoserver.global;
 
 
-import java.awt.Color;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,7 +19,6 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
-import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.DefaultFeature;
@@ -30,16 +26,11 @@ import org.geotools.feature.DefaultFeatureType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
-import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeBuilder;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.type.GeometricAttributeType;
-import org.geotools.filter.Filter;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.factory.epsg.DefaultFactory;
-//import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
@@ -50,14 +41,15 @@ import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
-import org.opengis.referencing.crs.CRSAuthorityFactory;
-import org.opengis.referencing.crs.CRSFactory;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataFormatConfig;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.util.CoverageUtils;
+import org.vfny.geoserver.util.DataFormatUtils;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequenceFactory;
@@ -183,7 +175,23 @@ public class MapLayerInfo extends GlobalLayerSupertype {
     	if( this.type == TYPE_VECTOR ) {
             return feature.getBoundingBox();
     	} else {
-    		return coverage.getEnvelope();
+    		GeneralEnvelope bounds = null;
+    		try {
+    			bounds = DataFormatUtils.adjustEnvelope(coverage.getEnvelope().getCoordinateReferenceSystem(), coverage.getEnvelope());
+    		} catch (MismatchedDimensionException e) {
+    			throw new IOException("Problems getting Coverage BoundingBox: " + e.getMessage());
+    		} catch (IndexOutOfBoundsException e) {
+    			throw new IOException("Problems getting Coverage BoundingBox: " + e.getMessage());
+    		} catch (NoSuchAuthorityCodeException e) {
+    			throw new IOException("Problems getting Coverage BoundingBox: " + e.getMessage());
+    		}
+    		
+    		return new Envelope(
+    				bounds.getLowerCorner().getOrdinate(0),
+    				bounds.getUpperCorner().getOrdinate(0),
+    				bounds.getLowerCorner().getOrdinate(1),
+    				bounds.getUpperCorner().getOrdinate(1)
+			);
     	}
     }
 

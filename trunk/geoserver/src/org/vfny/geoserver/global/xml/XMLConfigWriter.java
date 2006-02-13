@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.xml.transform.TransformerException;
 
 import org.geotools.filter.FilterTransformer;
+import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
@@ -1200,23 +1201,19 @@ public class XMLConfigWriter {
             }
 
 			if (cv.getEnvelope() != null) {
-				Envelope e = cv.getEnvelope();
+				GeneralEnvelope e = cv.getEnvelope();
 				m = new HashMap();
 				
 				if ((cv.getSrsName() != null) && (cv.getSrsName() != "")) {
 					m.put("srsName",cv.getSrsName());
 				}
 				
-				if ((cv.getCrs() != null)) {
-					m.put("crs", cv.getCrs().toWKT().replaceAll("\"","'"));
-				} else if ((cv.getSrsWKT() != null)) {
-					m.put("crs", cv.getSrsWKT().replaceAll("\"","'"));
-				}
+				m.put("crs", cv.getCrs().toWKT().replaceAll("\"","'"));
 				
 				if (!e.isNull()) {
 					cw.openTag("envelope", m);
-						cw.textTag("pos", e.getMinX() + " " + e.getMinY());
-						cw.textTag("pos", e.getMaxX() + " " + e.getMaxY());
+						cw.textTag("pos", e.getLowerCorner().getOrdinate(0) + " " + e.getLowerCorner().getOrdinate(1));
+						cw.textTag("pos", e.getUpperCorner().getOrdinate(0) + " " + e.getUpperCorner().getOrdinate(1));
 					cw.closeTag("envelope");
 				}
 			}

@@ -10,8 +10,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import javax.xml.transform.OutputKeys;
@@ -19,19 +17,23 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerIdentityImpl;
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.metadata.Identifier;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.LegendURL;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.util.DataFormatUtils;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
@@ -617,7 +619,24 @@ public class WMSCapsTransformer extends TransformerBase {
 				element("SRS", authority);
 			}
 
-			final Envelope bbox = coverage.getEnvelope();
+    		GeneralEnvelope bounds = null;
+    		try {
+    			bounds = DataFormatUtils.adjustEnvelope(coverage.getEnvelope().getCoordinateReferenceSystem(), coverage.getEnvelope());
+    		} catch (MismatchedDimensionException e) {
+    			// TODO Handle this Exception
+    		} catch (IndexOutOfBoundsException e) {
+    			// TODO Handle this Exception
+    		} catch (NoSuchAuthorityCodeException e) {
+    			// TODO Handle this Exception
+    		}
+    		
+			final Envelope bbox = new Envelope(
+    				bounds.getLowerCorner().getOrdinate(0),
+    				bounds.getUpperCorner().getOrdinate(0),
+    				bounds.getLowerCorner().getOrdinate(1),
+    				bounds.getUpperCorner().getOrdinate(1)
+			);
+			
 			handleLatLonBBox(bbox);
 			handleBBox(bbox, authority);
 

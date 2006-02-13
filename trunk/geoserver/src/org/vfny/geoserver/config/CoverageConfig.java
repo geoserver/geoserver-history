@@ -17,17 +17,16 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageCategory;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.DataFormatUtils;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * User interface Coverage staging area.
@@ -90,7 +89,14 @@ public class CoverageConfig {
 	 * @uml.property name="envelope"
 	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
-	private Envelope envelope;
+	private GeneralEnvelope envelope;
+
+	/**
+	 * 
+	 * @uml.property name="latLonEnvelope"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GeneralEnvelope latLonEnvelope;
 
 	/**
 	 * 
@@ -190,8 +196,6 @@ public class CoverageConfig {
 	 * @param format
 	 * @param gc
 	 * @throws ConfigurationException
-	 * 
-	 * TODO check the envelope with the axis order
 	 */
 	public CoverageConfig(String formatId, Format format, GridCoverage2D gc)
 			throws ConfigurationException {
@@ -205,10 +209,21 @@ public class CoverageConfig {
 		}
 		this.formatId = formatId;
 		crs = gc.getCoordinateReferenceSystem();
-		srsName = (crs != null ? crs.getName().toString() : "WGS84");//TODO This does not look like good
+		srsName = (crs != null && !crs.getIdentifiers().isEmpty() ? crs.getIdentifiers().toArray()[0].toString() : crs.getName().toString());
 		srsWKT = (crs != null ? crs.toWKT() : "");
-		envelope = DataFormatUtils.adjustEnvelope(crs, (GeneralEnvelope) gc
-				.getEnvelope());
+		envelope = (GeneralEnvelope) gc.getEnvelope();
+		try {
+			latLonEnvelope = DataFormatUtils.getLatLonEnvelope(envelope);
+		} catch (IndexOutOfBoundsException e) {
+			throw new ConfigurationException("Converting Envelope to Lat-Lon WGS84: "
+					+ e.toString());
+		} catch (FactoryException e) {
+			throw new ConfigurationException("Converting Envelope to Lat-Lon WGS84: "
+					+ e.toString());
+		} catch (TransformException e) {
+			throw new ConfigurationException("Converting Envelope to Lat-Lon WGS84: "
+					+ e.toString());
+		}
 
 		grid = gc.getGridGeometry();
 		try {
@@ -332,6 +347,7 @@ public class CoverageConfig {
 		srsName = dto.getSrsName();
 		srsWKT = dto.getSrsWKT();
 		envelope = dto.getEnvelope();
+		latLonEnvelope = dto.getLatLonEnvelope();
 		grid = dto.getGrid();
 		dimensions = dto.getDimensions();
 		dimentionNames = dto.getDimensionNames();
@@ -357,6 +373,7 @@ public class CoverageConfig {
 		c.setSrsName(srsName);
 		c.setSrsWKT(srsWKT);
 		c.setEnvelope(envelope);
+		c.setLatLonEnvelope(latLonEnvelope);
 		c.setGrid(grid);
 		c.setDimensions(dimensions);
 		c.setDimensionNames(dimentionNames);
@@ -443,7 +460,7 @@ public class CoverageConfig {
 	 * 
 	 * @uml.property name="envelope"
 	 */
-	public Envelope getEnvelope() {
+	public GeneralEnvelope getEnvelope() {
 		return envelope;
 	}
 
@@ -453,7 +470,7 @@ public class CoverageConfig {
 	 * 
 	 * @uml.property name="envelope"
 	 */
-	public void setEnvelope(Envelope envelope) {
+	public void setEnvelope(GeneralEnvelope envelope) {
 		this.envelope = envelope;
 	}
 
@@ -747,5 +764,8 @@ public class CoverageConfig {
 
 	public void setSrsWKT(String srsWKT) {
 		this.srsWKT = srsWKT;
+	}
+	public GeneralEnvelope getLatLonEnvelope() {
+		return latLonEnvelope;
 	}
 }

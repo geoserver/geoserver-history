@@ -52,11 +52,7 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.cs.CoordinateSystem;
-import org.opengis.referencing.operation.CoordinateOperation;
-import org.opengis.referencing.operation.CoordinateOperationFactory;
-import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.opengis.spatialschema.geometry.Envelope;
 import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.global.CoverageInfo;
@@ -299,54 +295,27 @@ public class CoverageUtils {
 	 * @throws WcsException
 	 * @throws IOException
 	 * @throws FactoryException
+	 * @throws TransformException
+	 * @throws IndexOutOfBoundsException
 	 */
 	public static GridCoverage2D getCroppedCoverage(
 			CoverageRequest request, 
 			CoverageInfo meta, 
 			GridCoverage coverage
-	) throws WcsException, IOException, FactoryException {
+	) throws WcsException, IOException, IndexOutOfBoundsException, FactoryException, TransformException {
 		
 		GridCoverage2D subCoverage =null;
 		
 		if( request.getEnvelope() != null ) {
 			com.vividsolutions.jts.geom.Envelope envelope = new com.vividsolutions.jts.geom.Envelope();
-			GeneralEnvelope gEnvelope = (GeneralEnvelope) coverage.getEnvelope();
-
-			final CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-			final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
-			final CoordinateReferenceSystem targetCRS = crsFactory.createCoordinateReferenceSystem("EPSG:4326");
-			final CoordinateReferenceSystem sourceCRS = gEnvelope.getCoordinateReferenceSystem();
-			final CoordinateOperation operation = opFactory.createOperation(sourceCRS, targetCRS);
-			MathTransform mathTransform = (MathTransform) operation.getMathTransform();
-			GeneralEnvelope targetEnvelope ;
-/*			if( !mathTransform.isIdentity() )
-				targetEnvelope = CRSUtilities.transform(mathTransform, gEnvelope);
-			else
-*/				targetEnvelope = gEnvelope;
-
-	    	final CoordinateSystem cs = sourceCRS.getCoordinateSystem(); //targetCRS.getCoordinateSystem();
-	    	boolean lonFirst = true;
-	    	if (cs.getAxis(0).getDirection().absolute().equals(AxisDirection.NORTH)) {
-	    		lonFirst = false;
-	    	}
-	    	boolean swapXY = !lonFirst;
-
-	    	// latitude index
-	        final int latIndex = lonFirst ? 1 : 0;
-
-	        final AxisDirection latitude = cs.getAxis(latIndex).getDirection();
-	        final AxisDirection longitude = cs.getAxis((latIndex + 1) % 2).getDirection();
-	        final boolean[] reverse = new boolean[] {
-	        		lonFirst ? !longitude.equals(AxisDirection.EAST) : !latitude.equals(AxisDirection.NORTH), 
-	        		lonFirst ? !latitude.equals(AxisDirection.NORTH) : !longitude.equals(AxisDirection.EAST)
-			};
-			envelope.init(
-					reverse[(latIndex + 1) % 2] ? targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 1 : 0) : targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 1 : 0),
-					reverse[(latIndex + 1) % 2] ? targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 1 : 0) : targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 1 : 0),
-					reverse[latIndex] ? targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 0 : 1) : targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 0 : 1),
-					reverse[latIndex] ? targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 0 : 1) : targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 0 : 1));
-
+			GeneralEnvelope gEnvelope = DataFormatUtils.getLatLonEnvelope((GeneralEnvelope) coverage.getEnvelope());
 			
+			envelope.init(
+					gEnvelope.getLowerCorner().getOrdinate(0),
+					gEnvelope.getUpperCorner().getOrdinate(0),
+					gEnvelope.getLowerCorner().getOrdinate(1),
+					gEnvelope.getUpperCorner().getOrdinate(1)
+			);
 			
 			com.vividsolutions.jts.geom.Envelope subEnvelope = request.getEnvelope();
 			GeneralEnvelope gSEnvelope = new GeneralEnvelope(new Rectangle2D.Double(
@@ -383,13 +352,13 @@ public class CoverageUtils {
 			final int cnX = new Double(lonIndex2 - lonIndex1).intValue();
 			final int cnY = new Double(latIndex2 - latIndex1).intValue();
 			
-			if( !meta.getEnvelope().intersects(request.getEnvelope()) ) {
+			if( !envelope.intersects(request.getEnvelope()) ) {
 				/**
 				 * In such a case we have a requested envelope that is completely outside
 				 * the Coverage envelope.
 				 */
 				throw new WcsException("Invalid Requested Envelope: " + request.getEnvelope());
-			} else if( !meta.getEnvelope().contains(request.getEnvelope()) ) {
+			} else if( !envelope.contains(request.getEnvelope()) ) {
 				/**
 				 * The requested envelope is bigger than the Coverage one or intersects that.
 				 * We should perform the following steps:
@@ -539,7 +508,7 @@ public class CoverageUtils {
 							null,
 							((PropertySourceImpl)coverage).getProperties());
 				}
-			} else if( meta.getEnvelope().contains(request.getEnvelope()) ) {
+			} else if( envelope.contains(request.getEnvelope()) ) {
 				ParameterBlock pbCrop = new ParameterBlock();
 				pbCrop.addSource((PlanarImage) image);
 				pbCrop.add(new Double(lonIndex1).floatValue());//x origin

@@ -10,7 +10,6 @@ import java.util.Locale;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
@@ -18,15 +17,17 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
+import org.geotools.geometry.GeneralEnvelope;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.util.DataFormatUtils;
 import org.vfny.geoserver.util.Requests;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * DOCUMENT ME!
@@ -167,17 +168,30 @@ public class CoveragesEditorForm extends ActionForm {
 
 		final CoverageConfig cvConfig= (CoverageConfig) request.getSession().getAttribute(
 				DataConfig.SELECTED_COVERAGE);
-		final Envelope bounds = cvConfig.getEnvelope();
+		GeneralEnvelope bounds = null;
+		try {
+			bounds = DataFormatUtils.adjustEnvelope(cvConfig.getCrs(), cvConfig.getEnvelope());
+		} catch (MismatchedDimensionException e) {
+			// TODO Not sure what to do, user must have bookmarked?
+			return; // Action should redirect to Select screen?
+		} catch (IndexOutOfBoundsException e) {
+			// TODO Not sure what to do, user must have bookmarked?
+			return; // Action should redirect to Select screen?
+		} catch (NoSuchAuthorityCodeException e) {
+			// TODO Not sure what to do, user must have bookmarked?
+			return; // Action should redirect to Select screen?
+		}
+		
 		srsName = cvConfig.getSrsName();
 		WKTString = cvConfig.getSrsWKT();
 
 		if (bounds.isNull()) {
 			latLonBoundingBoxMinX = "";
 		} else {
-			latLonBoundingBoxMinX = Double.toString(bounds.getMinX());
-			latLonBoundingBoxMinY = Double.toString(bounds.getMinY());
-			latLonBoundingBoxMaxX = Double.toString(bounds.getMaxX());
-			latLonBoundingBoxMaxY = Double.toString(bounds.getMaxY());
+			latLonBoundingBoxMinX = Double.toString(bounds.getLowerCorner().getOrdinate(0));
+			latLonBoundingBoxMinY = Double.toString(bounds.getLowerCorner().getOrdinate(1));
+			latLonBoundingBoxMaxX = Double.toString(bounds.getUpperCorner().getOrdinate(0));
+			latLonBoundingBoxMaxY = Double.toString(bounds.getUpperCorner().getOrdinate(1));
 		}
 
 		name = cvConfig.getName();

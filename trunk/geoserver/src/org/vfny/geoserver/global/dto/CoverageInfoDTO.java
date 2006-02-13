@@ -7,14 +7,13 @@ package org.vfny.geoserver.global.dto;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * DOCUMENT ME!
@@ -73,7 +72,12 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	 * @uml.property name="envelope"
 	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
-	private Envelope envelope;
+	private GeneralEnvelope envelope;
+
+	/**
+	 * 
+	 */
+	private GeneralEnvelope latLonEnvelope;
 
 	/**
 	 * 
@@ -182,7 +186,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
         crs = dto.getCrs();
         srsName = dto.getSrsName(); 
         srsWKT = dto.getSrsWKT();
-        envelope = CloneLibrary.clone(dto.getEnvelope());
+        envelope = dto.getEnvelope(); //CloneLibrary.clone(dto.getEnvelope());
+        latLonEnvelope = dto.getLatLonEnvelope();
 		grid = dto.getGrid();
 		dimensions = dto.getDimensions();
 		dimensionNames = dto.getDimensionNames();
@@ -521,7 +526,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	 * 
 	 * @uml.property name="envelope"
 	 */
-	public Envelope getEnvelope() {
+	public GeneralEnvelope getEnvelope() {
 		return envelope;
 	}
 
@@ -530,7 +535,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	 * 
 	 * @uml.property name="envelope"
 	 */
-	public void setEnvelope(Envelope envelope) {
+	public void setEnvelope(GeneralEnvelope envelope) {
 		this.envelope = envelope;
 	}
 
@@ -755,5 +760,11 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 	public void setSrsWKT(String srsWKT) {
 		this.srsWKT = srsWKT;
+	}
+	public GeneralEnvelope getLatLonEnvelope() {
+		return latLonEnvelope;
+	}
+	public void setLatLonEnvelope(GeneralEnvelope latLonEnvelope) {
+		this.latLonEnvelope = latLonEnvelope;
 	}
 }

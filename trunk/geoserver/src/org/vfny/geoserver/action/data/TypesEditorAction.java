@@ -31,7 +31,6 @@ import org.geotools.feature.FeatureType;
 import org.geotools.geometry.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.factory.epsg.DefaultFactory;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;

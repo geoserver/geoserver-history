@@ -41,9 +41,11 @@ import org.geotools.util.NameFactory;
 import org.geotools.util.NumberRange;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageCategory;
@@ -66,6 +68,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
 import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
+import org.vfny.geoserver.util.DataFormatUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -1454,8 +1457,17 @@ public class XMLConfigReader {
 		// ENVELOPE
 		//
 		// /////////////////////////////////////////////////////////////////////
-		Envelope gcEnvelope = loadEnvelope(envelope);
+		GeneralEnvelope gcEnvelope = loadEnvelope(envelope, crs);
 		cv.setEnvelope(gcEnvelope);
+		try {
+			cv.setLatLonEnvelope(DataFormatUtils.adjustEnvelope(crs, gcEnvelope));
+		} catch (MismatchedDimensionException e) {
+			throw new ConfigurationException(e);
+		} catch (IndexOutOfBoundsException e) {
+			throw new ConfigurationException(e);
+		} catch (NoSuchAuthorityCodeException e) {
+			throw new ConfigurationException(e);
+		}
 
 		// /////////////////////////////////////////////////////////////////////
 		//
@@ -1560,10 +1572,10 @@ public class XMLConfigReader {
 	 * @return
 	 * @throws ConfigurationException
 	 */
-	protected Envelope loadEnvelope(Element envelopeElem)
+	protected GeneralEnvelope loadEnvelope(Element envelopeElem, CoordinateReferenceSystem crs)
 			throws ConfigurationException {
 		if (envelopeElem == null) {
-			return new Envelope();
+			return new GeneralEnvelope(crs);
 		}
 
 		final NodeList positions = envelopeElem.getElementsByTagName("pos");
@@ -1585,7 +1597,10 @@ public class XMLConfigReader {
 			}
 		}
 
-		return new Envelope(coords[0].x, coords[1].x, coords[0].y, coords[1].y);
+		GeneralEnvelope envelope = new GeneralEnvelope(new double[] {coords[0].x, coords[0].y}, new double[] {coords[1].x, coords[1].y});
+		envelope.setCoordinateReferenceSystem(crs);
+		
+		return envelope;
 	}
 
 	/**
@@ -1598,13 +1613,13 @@ public class XMLConfigReader {
 	 * @return
 	 * @throws ConfigurationException
 	 */
-	protected GridGeometry loadGrid(Element gridElem, Envelope envelope,
+	protected GridGeometry loadGrid(Element gridElem, GeneralEnvelope envelope,
 			CoordinateReferenceSystem crs) throws ConfigurationException {
 
 		final GeneralEnvelope gcEnvelope = new GeneralEnvelope(
-				new GeneralDirectPosition(envelope.getMinX(), envelope
-						.getMinY()), new GeneralDirectPosition(envelope
-						.getMaxX(), envelope.getMaxY()));
+				new GeneralDirectPosition(envelope.getLowerCorner().getOrdinate(0), envelope
+						.getLowerCorner().getOrdinate(1)), new GeneralDirectPosition(envelope
+						.getUpperCorner().getOrdinate(0), envelope.getUpperCorner().getOrdinate(1)));
 
 		gcEnvelope.setCoordinateReferenceSystem(crs);
 

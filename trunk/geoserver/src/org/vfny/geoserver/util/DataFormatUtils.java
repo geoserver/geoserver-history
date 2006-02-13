@@ -16,16 +16,27 @@ import javax.servlet.ServletContext;
 
 import org.geotools.data.coverage.grid.GridFormatFactorySpi;
 import org.geotools.data.coverage.grid.GridFormatFinder;
+import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.FactoryFinder;
+import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.cs.CoordinateSystem;
+import org.opengis.referencing.operation.CoordinateOperation;
+import org.opengis.referencing.operation.CoordinateOperationFactory;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.opengis.spatialschema.geometry.Envelope;
+import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.global.FormatInfo;
 
 /**
@@ -276,10 +287,39 @@ public abstract class DataFormatUtils {
 	 * @param targetEnvelope
 	 * @return
 	 * @throws IndexOutOfBoundsException
+	 * @throws FactoryException
+	 * @throws TransformException
 	 */
-	public static com.vividsolutions.jts.geom.Envelope adjustEnvelope(
+	public static GeneralEnvelope getLatLonEnvelope(GeneralEnvelope envelope) throws IndexOutOfBoundsException, FactoryException, TransformException {
+		final CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
+		final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
+		final CoordinateReferenceSystem targetCRS = crsFactory.createCoordinateReferenceSystem("EPSG:4326");
+		final CoordinateReferenceSystem sourceCRS = envelope.getCoordinateReferenceSystem();
+		final CoordinateOperation operation = opFactory.createOperation(sourceCRS, targetCRS);
+		MathTransform mathTransform = (MathTransform) operation.getMathTransform();
+		GeneralEnvelope targetEnvelope ;
+		if( !mathTransform.isIdentity() )
+			targetEnvelope = CRSUtilities.transform(mathTransform, envelope);
+		else
+			targetEnvelope = envelope;
+
+		targetEnvelope = adjustEnvelope(targetCRS, targetEnvelope);
+		targetEnvelope.setCoordinateReferenceSystem(targetCRS);
+		
+		return targetEnvelope;
+	}
+	
+	/**
+	 * @param sourceCRS
+	 * @param targetEnvelope
+	 * @return
+	 * @throws IndexOutOfBoundsException
+	 * @throws NoSuchAuthorityCodeException
+	 * @throws MismatchedDimensionException
+	 */
+	public static GeneralEnvelope adjustEnvelope(
 			final CoordinateReferenceSystem sourceCRS,
-			GeneralEnvelope targetEnvelope) throws IndexOutOfBoundsException {
+			GeneralEnvelope targetEnvelope) throws IndexOutOfBoundsException, MismatchedDimensionException, NoSuchAuthorityCodeException {
 		final CoordinateSystem cs = sourceCRS.getCoordinateSystem();
 		boolean lonFirst = true;
 		if (cs.getAxis(0).getDirection().absolute().equals(AxisDirection.NORTH)) {
@@ -299,19 +339,17 @@ public abstract class DataFormatUtils {
 				lonFirst ? !latitude.equals(AxisDirection.NORTH) : !longitude
 						.equals(AxisDirection.EAST) };
 
-		com.vividsolutions.jts.geom.Envelope envelope = new com.vividsolutions.jts.geom.Envelope();
-		envelope.init(reverse[(latIndex + 1) % 2] ? targetEnvelope
-				.getUpperCorner().getOrdinate(swapXY ? 1 : 0) : targetEnvelope
-				.getLowerCorner().getOrdinate(swapXY ? 1 : 0),
-				reverse[(latIndex + 1) % 2] ? targetEnvelope.getLowerCorner()
-						.getOrdinate(swapXY ? 1 : 0) : targetEnvelope
-						.getUpperCorner().getOrdinate(swapXY ? 1 : 0),
-				reverse[latIndex] ? targetEnvelope.getUpperCorner()
-						.getOrdinate(swapXY ? 0 : 1) : targetEnvelope
-						.getLowerCorner().getOrdinate(swapXY ? 0 : 1),
-				reverse[latIndex] ? targetEnvelope.getLowerCorner()
-						.getOrdinate(swapXY ? 0 : 1) : targetEnvelope
-						.getUpperCorner().getOrdinate(swapXY ? 0 : 1));
+		GeneralEnvelope envelope = new GeneralEnvelope(
+				new double[] {
+						reverse[(latIndex + 1) % 2] ? targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 1 : 0) : targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 1 : 0),
+						reverse[latIndex] ? targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 0 : 1) : targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 0 : 1)
+						     },
+				new double[] {
+						reverse[(latIndex + 1) % 2] ? targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 1 : 0) : targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 1 : 0),
+						reverse[latIndex] ? targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 0 : 1) : targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 0 : 1)
+						     }
+		);
+
 		return envelope;
 	}
 }

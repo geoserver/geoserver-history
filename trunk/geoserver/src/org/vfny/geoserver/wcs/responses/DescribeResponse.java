@@ -9,25 +9,15 @@ import java.util.logging.Logger;
 
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.geometry.JTS;
 import org.geotools.referencing.FactoryFinder;
-import org.geotools.resources.CRSUtilities;
-//import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.opengis.coverage.grid.GridGeometry;
-import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.cs.CoordinateSystem;
 import org.opengis.referencing.datum.DatumFactory;
-import org.opengis.referencing.operation.CoordinateOperation;
 import org.opengis.referencing.operation.CoordinateOperationFactory;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.MathTransform2D;
 import org.opengis.referencing.operation.MathTransformFactory;
-import org.opengis.referencing.operation.OperationNotFoundException;
-import org.opengis.referencing.operation.TransformException;
+import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -37,10 +27,9 @@ import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WCS;
+import org.vfny.geoserver.util.DataFormatUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.DescribeRequest;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * DOCUMENT ME!
@@ -239,80 +228,24 @@ public class DescribeResponse implements Response {
 				tempResponse.append("\n  <label>" + tmp + "</label>");
 			}
 
-			try {
-				if(cv.getCrs() != null) {
-					final CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-					final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
-					final CoordinateReferenceSystem targetCRS = crsFactory.createCoordinateReferenceSystem("EPSG:4326");
-					final CoordinateReferenceSystem sourceCRS = cv.getCrs();
-					final CoordinateOperation operation = opFactory.createOperation(sourceCRS, targetCRS);
-					final MathTransform mathTransform = (MathTransform) operation.getMathTransform();
-					final Envelope envelope = cv.getEnvelope();
-					final Envelope targetEnvelope = JTS.transform(envelope, mathTransform);
-			    	final CoordinateSystem cs = sourceCRS.getCoordinateSystem();
-
-			    	boolean lonFirst = true;
-			    	if (cs.getAxis(0).getDirection().absolute().equals(AxisDirection.NORTH)) {
-			    		lonFirst = false;
-			    	}
-			    	boolean swapXY = lonFirst;
-
-			    	// latitude index
-			        final int latIndex = lonFirst ? 1 : 0;
-
-			        final AxisDirection latitude = cs.getAxis(latIndex).getDirection();
-			        final AxisDirection longitude = cs.getAxis((latIndex + 1) % 2).getDirection();
-			        final boolean[] reverse = new boolean[] {
-			        		lonFirst ? !longitude.equals(AxisDirection.EAST) : !latitude.equals(AxisDirection.NORTH), 
-			        		lonFirst ? !latitude.equals(AxisDirection.NORTH) : !longitude.equals(AxisDirection.EAST)
-					};
-
-					tempResponse.append("\n  <lonLatEnvelope" 
-							+ " srsName=\"WGS84(DD)\""
-							+">");
-					tempResponse.append("\n   <gml:pos>" 
-							+ (!swapXY ? (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinX() : targetEnvelope.getMaxX()) : (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinY() : targetEnvelope.getMaxY())) 
-							+ " " 
-							+ (!swapXY ? (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinY() : targetEnvelope.getMaxY()) : (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinX() : targetEnvelope.getMaxX())) 
-							+ "</gml:pos>");
-					tempResponse.append("\n   <gml:pos>" 
-							+ (!swapXY ? (!reverse[latIndex] ? targetEnvelope.getMaxX() : targetEnvelope.getMinX()) : (!reverse[latIndex] ? targetEnvelope.getMaxY() : targetEnvelope.getMinY())) 
-							+ " " 
-							+ (!swapXY ? (!reverse[latIndex] ? targetEnvelope.getMaxY() : targetEnvelope.getMinY()) : (!reverse[latIndex] ? targetEnvelope.getMaxX() : targetEnvelope.getMinX()))
-							+ "</gml:pos>");
-					tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-					tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-					tempResponse.append("\n  </lonLatEnvelope>");
-				} else {
-					final Envelope envelope = cv.getEnvelope();
-					
-					tempResponse.append("\n  <lonLatEnvelope" 
-							+ " srsName=\"WGS84(DD)\""
-							+">");
-					tempResponse.append("\n   <gml:pos>" 
-							+ envelope.getMinX() 
-							+ " " 
-							+ envelope.getMinY() 
-							+ "</gml:pos>");
-					tempResponse.append("\n   <gml:pos>" 
-							+ envelope.getMaxX() 
-							+ " " 
-							+ envelope.getMaxY()
-							+ "</gml:pos>");
-					tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-					tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-					tempResponse.append("\n  </lonLatEnvelope>");
-				}
-			} catch (OperationNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (FactoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (TransformException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			final GeneralEnvelope envelope = cv.getLatLonEnvelope();
+			
+			tempResponse.append("\n  <lonLatEnvelope" 
+					+ " srsName=\"WGS84(DD)\""
+					+">");
+			tempResponse.append("\n   <gml:pos>" 
+					+ envelope.getLowerCorner().getOrdinate(0) 
+					+ " " 
+					+ envelope.getLowerCorner().getOrdinate(1)
+					+ "</gml:pos>");
+			tempResponse.append("\n   <gml:pos>" 
+					+ envelope.getUpperCorner().getOrdinate(0)
+					+ " " 
+					+ envelope.getUpperCorner().getOrdinate(1)
+					+ "</gml:pos>");
+			tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+			tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+			tempResponse.append("\n  </lonLatEnvelope>");
 			
 			if( (cv.getKeywords() != null) && (cv.getKeywords().size() > 0) ) {
 				tempResponse.append("\n  <keywords>");
@@ -322,6 +255,19 @@ public class DescribeResponse implements Response {
 				tempResponse.append("\n  </keywords>");
 			}
 
+			GeneralEnvelope cvEnvelope = cv.getEnvelope();
+			try {
+				cvEnvelope = DataFormatUtils.adjustEnvelope(cv.getEnvelope().getCoordinateReferenceSystem(), cv.getEnvelope());
+			} catch (MismatchedDimensionException e) {
+				// TODO Handle this Exception...
+				e.printStackTrace();
+			} catch (IndexOutOfBoundsException e) {
+				// TODO Handle this Exception...
+				e.printStackTrace();
+			} catch (NoSuchAuthorityCodeException e) {
+				// TODO Handle this Exception...
+				e.printStackTrace();
+			} 
 			tempResponse.append("\n  <domainSet>");
 				tempResponse.append("\n   <spatialDomain>");
 					// Envelope
@@ -329,10 +275,10 @@ public class DescribeResponse implements Response {
 							+ (cv.getSrsName() != null && cv.getSrsName() != "" ? " srsName=\"" + cv.getSrsName() + "\"" : "")
 							+">");
 						tempResponse.append("\n       <gml:pos>" 
-								+ (cv.getEnvelope() != null ? cv.getEnvelope().getMinX() + " " + cv.getEnvelope().getMinY() : "") 
+								+ (cvEnvelope != null ? cvEnvelope.getLowerCorner().getOrdinate(0) + " " + cvEnvelope.getLowerCorner().getOrdinate(1) : "") 
 								+ "</gml:pos>");
 						tempResponse.append("\n       <gml:pos>" 
-								+ (cv.getEnvelope() != null ? cv.getEnvelope().getMaxX() + " " + cv.getEnvelope().getMaxY() : "") 
+								+ (cvEnvelope != null ? cvEnvelope.getUpperCorner().getOrdinate(0) + " " + cvEnvelope.getUpperCorner().getOrdinate(1) : "") 
 								+ "</gml:pos>");
 					tempResponse.append("\n    </gml:Envelope>");
 					
@@ -354,10 +300,10 @@ public class DescribeResponse implements Response {
 						tempResponse.append("\n       <gml:limits>");
 							tempResponse.append("\n         <gml:GridEnvelope>");
 								tempResponse.append("\n         <gml:low>" 
-										+ (cv.getEnvelope() != null ? lowers : "") 
+										+ (cvEnvelope != null ? lowers : "") 
 										+ "</gml:low>");
 								tempResponse.append("\n         <gml:high>" 
-										+ (cv.getEnvelope() != null ? upers : "") 
+										+ (cvEnvelope != null ? upers : "") 
 										+ "</gml:high>");
 							tempResponse.append("\n         </gml:GridEnvelope>");
 						tempResponse.append("\n       </gml:limits>");
@@ -366,11 +312,11 @@ public class DescribeResponse implements Response {
 								tempResponse.append("\n       <gml:axisName>" + dimNames[dn] +"</gml:axisName>");
 						tempResponse.append("\n       <gml:origin>");
 							tempResponse.append("\n       <gml:pos>" 
-									+ (cv.getEnvelope() != null ? cv.getEnvelope().getMinX() + " " + cv.getEnvelope().getMaxY() : "") 
+									+ (cvEnvelope != null ? cvEnvelope.getLowerCorner().getOrdinate(0) + " " + cvEnvelope.getUpperCorner().getOrdinate(1) : "") 
 									+ "</gml:pos>");
 						tempResponse.append("\n       </gml:origin>");
-						tempResponse.append("\n       <gml:offsetVector>" + (cv.getEnvelope() != null ? (cv.getEnvelope().getMaxX() - cv.getEnvelope().getMinX())/(g.getGridRange().getUpper(0) - g.getGridRange().getLower(0)) : 0.0) + " 0.0</gml:offsetVector>");
-						tempResponse.append("\n       <gml:offsetVector>0.0 " + (cv.getEnvelope() != null ? (cv.getEnvelope().getMinY() - cv.getEnvelope().getMaxY())/(g.getGridRange().getUpper(1) - g.getGridRange().getLower(1)) : -0.0) + "</gml:offsetVector>");
+						tempResponse.append("\n       <gml:offsetVector>" + (cvEnvelope != null ? (cvEnvelope.getUpperCorner().getOrdinate(0) - cvEnvelope.getLowerCorner().getOrdinate(0))/(g.getGridRange().getUpper(0) - g.getGridRange().getLower(0)) : 0.0) + " 0.0</gml:offsetVector>");
+						tempResponse.append("\n       <gml:offsetVector>0.0 " + (cvEnvelope != null ? (cvEnvelope.getLowerCorner().getOrdinate(1) - cvEnvelope.getUpperCorner().getOrdinate(1))/(g.getGridRange().getUpper(1) - g.getGridRange().getLower(1)) : -0.0) + "</gml:offsetVector>");
 					tempResponse.append("\n    </gml:RectifiedGrid>");
 					
 					//Grid
@@ -386,10 +332,10 @@ public class DescribeResponse implements Response {
 						tempResponse.append("\n       <gml:limits>");
 							tempResponse.append("\n         <gml:GridEnvelope>");
 								tempResponse.append("\n         <gml:low>" 
-										+ (cv.getEnvelope() != null ? lowers : "") 
+										+ (cvEnvelope != null ? lowers : "") 
 										+ "</gml:low>");
 								tempResponse.append("\n         <gml:high>" 
-										+ (cv.getEnvelope() != null ? upers : "") 
+										+ (cvEnvelope != null ? upers : "") 
 										+ "</gml:high>");
 							tempResponse.append("\n         </gml:GridEnvelope>");
 						tempResponse.append("\n       </gml:limits>");
@@ -452,6 +398,7 @@ public class DescribeResponse implements Response {
 					tempResponse.append("\n  </rangeSet>");
 				}
 			} catch(Exception e) {
+				// TODO Handle this exceptions ...
 				e.printStackTrace();
 			}
 			

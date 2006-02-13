@@ -8,25 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.geotools.factory.Hints;
-import org.geotools.geometry.JTS;
-import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.factory.epsg.DefaultFactory;
-//import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CRSAuthorityFactory;
-import org.opengis.referencing.crs.CRSFactory;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.cs.CoordinateSystem;
-import org.opengis.referencing.operation.CoordinateOperation;
-import org.opengis.referencing.operation.CoordinateOperationFactory;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.MathTransform2D;
-import org.opengis.referencing.operation.OperationNotFoundException;
-import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.MetaDataLink;
@@ -36,8 +20,6 @@ import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -432,66 +414,13 @@ public class WCSCapsTransformer extends TransformerBase {
         private void handleVendorSpecifics(WCS config) {
         }
 
-        private void handleEnvelope(CoordinateReferenceSystem crs, Envelope envelope) {
-			try {
-				if( crs != null ) {
-					final CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-					final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
-					final CoordinateReferenceSystem targetCRS = crsFactory.createCoordinateReferenceSystem("EPSG:4326");
-					final CoordinateReferenceSystem sourceCRS = crs;
-					final CoordinateOperation operation = opFactory.createOperation(sourceCRS, targetCRS);
-					MathTransform mathTransform = (MathTransform) operation.getMathTransform();
-					Envelope targetEnvelope = JTS.transform(envelope, mathTransform);
-
-			    	final CoordinateSystem cs = sourceCRS.getCoordinateSystem();
-			    	boolean lonFirst = true;
-			    	if (cs.getAxis(0).getDirection().absolute().equals(AxisDirection.NORTH)) {
-			    		lonFirst = false;
-			    	}
-			    	boolean swapXY = lonFirst;
-
-			    	// latitude index
-			        final int latIndex = lonFirst ? 1 : 0;
-
-			        final AxisDirection latitude = cs.getAxis(latIndex).getDirection();
-			        final AxisDirection longitude = cs.getAxis((latIndex + 1) % 2).getDirection();
-			        final boolean[] reverse = new boolean[] {
-			        		lonFirst ? !longitude.equals(AxisDirection.EAST) : !latitude.equals(AxisDirection.NORTH), 
-			        		lonFirst ? !latitude.equals(AxisDirection.NORTH) : !longitude.equals(AxisDirection.EAST)
-					};
-
-		        	AttributesImpl attributes = new AttributesImpl();
-					attributes.addAttribute("", "srsName", "srsName", "", "WGS84(DD)");
-		        	start("lonLatEnvelope", attributes);
-		        	element("gml:pos", 
-		        			(!swapXY ? (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinX() : targetEnvelope.getMaxX()) : (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinY() : targetEnvelope.getMaxY())) 
-							+ " " 
-							+ (!swapXY ? (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinY() : targetEnvelope.getMaxY()) : (!reverse[(latIndex + 1) % 2] ? targetEnvelope.getMinX() : targetEnvelope.getMaxX()))
-		        	);
-		        	element("gml:pos",
-		        			(!swapXY ? (!reverse[latIndex] ? targetEnvelope.getMaxX() : targetEnvelope.getMinX()) : (!reverse[latIndex] ? targetEnvelope.getMaxY() : targetEnvelope.getMinY())) 
-							+ " " 
-							+ (!swapXY ? (!reverse[latIndex] ? targetEnvelope.getMaxY() : targetEnvelope.getMinY()) : (!reverse[latIndex] ? targetEnvelope.getMaxX() : targetEnvelope.getMinX()))
-		        	);
-		        	end("lonLatEnvelope");
-			    } else {
-		        	AttributesImpl attributes = new AttributesImpl();
-					attributes.addAttribute("", "srsName", "srsName", "", "WGS84(DD)");
-		        	start("lonLatEnvelope", attributes);
-		        		element("gml:pos", envelope.getMinX() + " " + envelope.getMinY());
-		        		element("gml:pos", envelope.getMaxX() + " " + envelope.getMaxY());
-		        	end("lonLatEnvelope");
-			    }
-			} catch (OperationNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (FactoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (TransformException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        private void handleEnvelope(GeneralEnvelope envelope) {
+        	AttributesImpl attributes = new AttributesImpl();
+        	attributes.addAttribute("", "srsName", "srsName", "", "WGS84(DD)");
+        	start("lonLatEnvelope", attributes);
+        	element("gml:pos", envelope.getLowerCorner().getOrdinate(0) + " " + envelope.getLowerCorner().getOrdinate(1));
+        	element("gml:pos", envelope.getUpperCorner().getOrdinate(0) + " " + envelope.getUpperCorner().getOrdinate(1));
+        	end("lonLatEnvelope");
         }
         
         /**
@@ -555,7 +484,7 @@ public class WCSCapsTransformer extends TransformerBase {
                 	if ((tmp != null) && (tmp != "")) {
                 		element("label", tmp);
                 	}
-                    handleEnvelope(cv.getCrs(), cv.getEnvelope());
+                    handleEnvelope(cv.getLatLonEnvelope());
                     handleKeywords(cv.getKeywords());
                     
                 end("CoverageOfferingBrief");
