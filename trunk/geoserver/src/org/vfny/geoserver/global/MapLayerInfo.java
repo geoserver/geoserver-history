@@ -371,11 +371,6 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 
 			String realPath = request.getRealPath("/");
 			URL url = CoverageUtils.getResource(dfConfig.getUrl(), realPath);
-
-//			GridCoverageExchange gce = new StreamGridCoverageExchange();
-//			GridCoverageReader reader = gce.getReader(url);
-//			Format format = reader.getFormat();
-
 			Format format = dfConfig.getFactory();
 			GridCoverageReader reader = ((AbstractGridFormat) format).getReader(url);
 
@@ -397,11 +392,7 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 				}
 			}
 			
-			coverage = /*(GridCoverage2D) reader.read(
-					params != null ?
-					(GeneralParameterValue[]) params.values().toArray(new GeneralParameterValue[params.values().size()])
-					: null
-					);*/
+			coverage = 
 				reader.read(
 						params != null ?
 								(GeneralParameterValue[]) params.values().toArray(new GeneralParameterValue[params.values().size()])

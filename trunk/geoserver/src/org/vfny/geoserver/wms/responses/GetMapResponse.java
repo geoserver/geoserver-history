@@ -126,7 +126,8 @@ public class GetMapResponse implements Response {
 			MapLayer layer;
 			
 			FeatureSource source;
-			for (int i = 0; i < layers.length; i++) {
+			final int length=layers.length;
+			for (int i = 0; i < length; i++) {
 				Style style = styles[i];
 				
 				if( layers[i].getType() == MapLayerInfo.TYPE_VECTOR ) {
