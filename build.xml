@@ -1098,6 +1098,14 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 		<include name="**/*" />
 	</fileset>
 </copy>
+
+	<!-- replacement index.html file -->
+<copy todir="${basedir}/docs/">
+	<fileset dir="${dir.doc}/..">
+		<include name="index.html" />
+	</fileset>
+</copy>
+	
 <zip destfile="${basedir}/geoserver-${name.release}-docs.zip">
 	<zipfileset dir="${basedir}/docs/" prefix="geoserver-docs">
 		<include name="**/*" />
