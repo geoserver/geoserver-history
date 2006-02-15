@@ -1109,6 +1109,7 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 <zip destfile="${basedir}/geoserver-${name.release}-docs.zip">
 	<zipfileset dir="${basedir}/docs/" prefix="geoserver-docs">
 		<include name="**/*" />
+		<exclude name="index.html"/>
 	</zipfileset>
 </zip>
 <copy file="${basedir}/geoserver-${name.release}-docs.zip" todir="${dir.release}" />
