@@ -131,7 +131,7 @@ public class SVGWriter extends OutputStreamWriter {
     	writers.put(LinearRing.class, new LineStringWriter());
     	writers.put(Polygon.class, new PolygonWriter());
     	writers.put(MultiPoint.class, new MultiPointWriter());
-    	writers.put(MultiLineString.class, new MultiPointWriter());
+    	writers.put(MultiLineString.class, new MultiLineStringWriter());
     	writers.put(MultiPolygon.class, new MultiPolygonWriter());
     }
     
