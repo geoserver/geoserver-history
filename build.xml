@@ -843,9 +843,6 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	</style-->
 	
 	<!--copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css" /-->
-	<copy todir="${dir.doc}" file="${dir.doc}/../user/DataStoreUserGuide.pdf" failonerror="false" />
-	<copy todir="${dir.doc}" file="${dir.doc}/../user/ValidationUserGuide.pdf" failonerror="false" />
-	<copy todir="${dir.doc}" file="${dir.doc}/../user/FeatureTypeUserGuide.pdf" failonerror="false" />
 	
 	<!-- Convert docbook to html -->
 	<!--style basedir="${dir.doc}/../user" destdir="${dir.doc}/user" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" processor="trax">
