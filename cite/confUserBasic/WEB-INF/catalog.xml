@@ -33,6 +33,7 @@ parameters repository for all featuretypes it holds.
 <connectionParams>
 <parameter value = "file:data/featureTypes/tasmania_roads/tasmania_roads.shp" name = "url"  />
 </connectionParams>
+</datastore>
 <datastore namespace = "topp" enabled = "true" id = "tasmania_state_boundaries" >
 <connectionParams>
 <parameter value = "file:data/featureTypes/tasmania_state_boundaries/tasmania_state_boundaries.shp" name = "url"  />
