@@ -18,6 +18,8 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
+import org.geotools.feature.impl.AttributeFactoryImpl;
+import org.geotools.feature.type.TypeFactoryImpl;
 import org.geotools.renderer.lite.LiteShape2;
 import org.geotools.renderer.lite.StyledShapePainter;
 import org.geotools.renderer.style.SLDStyleFactory;
@@ -31,6 +33,8 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
+import org.opengis.feature.AttributeFactory;
+import org.opengis.feature.type.TypeFactory;
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
@@ -394,6 +398,9 @@ public abstract class DefaultRasterLegendProducer
         throws WmsException {
         Feature sampleFeature;
 
+        AttributeFactoryImpl af = new AttributeFactoryImpl();
+        sampleFeature = (Feature)af.create(schema, null);
+        /*
         try {
             AttributeType[] atts = schema.getAttributeTypes();
             Object[] attributes = new Object[atts.length];
@@ -406,6 +413,7 @@ public abstract class DefaultRasterLegendProducer
             e.printStackTrace();
             throw new WmsException(e);
         }
+        */
 
         return sampleFeature;
     }
