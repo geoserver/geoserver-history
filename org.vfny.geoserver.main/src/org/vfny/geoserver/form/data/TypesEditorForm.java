@@ -265,7 +265,8 @@ dataMaxY="";
             addList = new ArrayList(featureType.getAttributeCount());
 
             for (int i = 0; i < featureType.getAttributeCount(); i++) {
-                String attributeName = featureType.getAttributeType(i).getName();
+                String attributeName = 
+                	featureType.getAttributeType(i).getName().getLocalPart();
 
                 if (lookUpAttribute(attributeName) == null) {
                     addList.add(attributeName);

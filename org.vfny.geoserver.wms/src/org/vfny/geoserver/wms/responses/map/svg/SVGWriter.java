@@ -313,7 +313,7 @@ public class SVGWriter extends OutputStreamWriter {
 
         try {
             FeatureType featureType = reader.getFeatureType();
-            Class gtype = featureType.getDefaultGeometry().getType();
+            Class gtype = featureType.getDefaultGeometry().getBinding();
 
             boolean doCollect = false;
             /*
@@ -451,7 +451,8 @@ public class SVGWriter extends OutputStreamWriter {
          */
         public void startGeometry(SVGFeatureWriter featureWriter, Feature ft)
             throws IOException {
-            featureWriter.startGeometry(ft.getDefaultGeometry());
+        	//JD: bad cast
+            featureWriter.startGeometry((Geometry)ft.getDefaultGeometry());
         }
 
         /**
@@ -464,7 +465,8 @@ public class SVGWriter extends OutputStreamWriter {
          */
         public void writeGeometry(SVGFeatureWriter featureWriter, Feature ft)
             throws IOException {
-            featureWriter.writeGeometry(ft.getDefaultGeometry());
+        	//JD: bad cast
+            featureWriter.writeGeometry((Geometry) ft.getDefaultGeometry());
         }
 
         /**
@@ -477,7 +479,8 @@ public class SVGWriter extends OutputStreamWriter {
          */
         public void endGeometry(SVGFeatureWriter featureWriter, Feature ft)
             throws IOException {
-            featureWriter.endGeometry(ft.getDefaultGeometry());
+        	//JD: bad cast
+            featureWriter.endGeometry((Geometry)ft.getDefaultGeometry());
         }
     }
 
@@ -508,7 +511,7 @@ public class SVGWriter extends OutputStreamWriter {
          * @throws IOException DOCUMENT ME!
          */
         public void writeFeature(Feature ft) throws IOException {
-            featureWriter.writeGeometry(ft.getDefaultGeometry());
+            featureWriter.writeGeometry((Geometry)ft.getDefaultGeometry());
             write('\n');
         }
     }
@@ -581,7 +584,8 @@ public class SVGWriter extends OutputStreamWriter {
             throws IOException {
             handler.startFeature(featureWriter, ft);
 
-            Geometry geom = ft.getDefaultGeometry();
+            //JD: bad cast
+            Geometry geom = (Geometry) ft.getDefaultGeometry();
             Envelope env = geom.getEnvelopeInternal();
             write(" bounds=\"");
             write(env.getMinX());
@@ -633,7 +637,7 @@ public class SVGWriter extends OutputStreamWriter {
 
                 if ((value != null) && !(value instanceof Geometry)) {
                     write(' ');
-                    write(type.getAttributeType(i).getName());
+                    write(type.getAttributeType(i).getName().getLocalPart());
                     write("=\"");
                     encodeAttribute(String.valueOf(value));
                     write('\"');
@@ -975,7 +979,8 @@ public class SVGWriter extends OutputStreamWriter {
     	
     	protected void startElement(Feature feature) throws IOException {
     		
-    		Geometry g = feature.getDefaultGeometry();
+    		//JD: bad cast
+    		Geometry g = (Geometry) feature.getDefaultGeometry();
     		delegate = null;
     		if (g != null) {
     			delegate = (SVGFeatureWriter) writers.get(g.getClass());	

@@ -18,6 +18,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 /**
@@ -154,8 +155,9 @@ public class FeatureTypeConfig {
             // pardon? Does this not make you a table?
             SRS = -1;
         } else {
-            GeometryFactory geometryFactory = schema.getDefaultGeometry()
-                                                    .getGeometryFactory();
+        	//JD: bad cast, remove
+            GeometryFactory geometryFactory = 
+            	((Geometry)schema.getDefaultGeometry()).getFactory();
 
             if (geometryFactory == null) {
                 // Assume Cartisian Coordiantes

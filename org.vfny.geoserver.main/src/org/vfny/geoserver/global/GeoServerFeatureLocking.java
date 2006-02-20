@@ -10,7 +10,7 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.Query;
-import org.geotools.data.postgis.PostgisFeatureLocking;
+//import org.geotools.data.postgis.PostgisFeatureLocking;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
@@ -31,7 +31,7 @@ import org.geotools.filter.Filter;
  * so? It would need to support writing and locking though.
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Roldï¿½n
  * @version $Id: GeoServerFeatureLocking.java,v 1.5 2004/02/09 23:29:42 dmzwiers Exp $
  */
 public class GeoServerFeatureLocking extends GeoServerFeatureStore
@@ -101,9 +101,10 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore
      * @throws IOException DOCUMENT ME!
      */
     public int lockFeature(Feature feature) throws IOException {
-        if (source instanceof PostgisFeatureLocking) {
-            return ((PostgisFeatureLocking) source).lockFeature(feature);
-        }
+    	//JD: uncomment, took out temporarily to remove postgis dependency
+//        if (source instanceof PostgisFeatureLocking) {
+//            return ((PostgisFeatureLocking) source).lockFeature(feature);
+//        }
 
         throw new IOException(
             "FeatureTypeConfig does not support single FeatureLock");

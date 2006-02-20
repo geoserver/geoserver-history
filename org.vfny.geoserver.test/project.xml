@@ -37,12 +37,13 @@
 
 	<build>
 		<unitTest>
-			<excludes>		
+			<!-- comment this out to disable tests which require a gui -->
+			<!--excludes>		
 				<exclude>**/GIFMapProducerTest.*</exclude>
 				<exclude>**/DefaultRasterLegendProducerTest.*</exclude>
 				<exclude>**/DefaultRasterMapProducerTest.*</exclude>
 				<exclude>**/Abstract*Test.*</exclude>
-			</excludes>
+			</excludes-->
 		</unitTest>
 	</build>
 

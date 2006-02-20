@@ -20,6 +20,7 @@ import org.vfny.geoserver.global.xml.NameSpaceTranslator;
 import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
 
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
@@ -54,16 +55,16 @@ public class DataTransferObjectFactory {
      */
     public static AttributeTypeInfoDTO create(String schemaBase, AttributeType attributeType) {            
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
-        dto.setName( attributeType.getName() );
-        dto.setMinOccurs( isManditory(schemaBase, attributeType.getName() ) ? 1: 0 );
+        dto.setName( attributeType.getName().getLocalPart() );
+        dto.setMinOccurs( isManditory(schemaBase, attributeType.getName().getLocalPart() ) ? 1: 0 );
         dto.setMaxOccurs( 1 );
-        dto.setNillable( attributeType.isNillable() );
+        dto.setNillable( attributeType.isNillable().booleanValue() );
         NameSpaceTranslator xs = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");        
         NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
         NameSpaceElement element;
         
-        element = xs.getElement( attributeType.getType(), attributeType.getName() );                
-        if(element == null) element = gml.getElement( attributeType.getType(), attributeType.getName() );
+        element = xs.getElement( attributeType.getType(), attributeType.getName().getLocalPart() );                
+        if(element == null) element = gml.getElement( attributeType.getType(), attributeType.getName().getLocalPart() );
         if(element == null) element = xs.getElement( "string" );
         
 //		element = xs.getElement( attributeType.getName() );                
@@ -141,7 +142,8 @@ public class DataTransferObjectFactory {
         
         dto.setSchemaName( dataStoreId.toUpperCase() + "_"
             + schema.getTypeName().toUpperCase() + "_TYPE");
-        dto.setSRS(schema.getDefaultGeometry().getGeometryFactory().getSRID());
+        //JD: bad cast, remove
+        dto.setSRS(((Geometry)schema.getDefaultGeometry()).getFactory().getSRID());
         dto.setTitle(schema.getNamespace() + " " + schema.getTypeName());
         return dto;
     }

@@ -16,7 +16,6 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Expression;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.map.MapLayer;
@@ -135,7 +134,7 @@ public class EncodeKML {
         int nLayers = layers.length;
         int defMaxDecimals = writer.getMaximunFractionDigits();
         
-        FilterFactory fFac = FilterFactoryFinder.createFilterFactory();
+        FilterFactory fFac = FilterFactory.createFilterFactory();
         for (int i = 0; i < nLayers; i++) {
             MapLayer layer = layers[i];
             FeatureReader featureReader = null;
@@ -147,7 +146,7 @@ public class EncodeKML {
                 GeometryFilter bboxFilter = fFac.createGeometryFilter(FilterType.GEOMETRY_INTERSECTS);
                 bboxFilter.addLeftGeometry(bboxExpression);
                 bboxFilter.addRightGeometry(fFac.createAttributeExpression(
-                        schema, schema.getDefaultGeometry().getName()));
+                        schema, schema.getDefaultGeometry().getName().getLocalPart()));
                 
                 Query bboxQuery = new DefaultQuery(schema.getTypeName(),
                         bboxFilter);

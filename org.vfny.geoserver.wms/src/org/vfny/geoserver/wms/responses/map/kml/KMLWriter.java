@@ -202,7 +202,7 @@ public class KMLWriter extends OutputStreamWriter {
         
         try {
             FeatureType featureType = features.getSchema();
-            Class gtype = featureType.getDefaultGeometry().getType();
+            Class gtype = featureType.getDefaultGeometry().getBinding();
             
             setUpWriterHandler(featureType);
             startFolder(null, null);
@@ -347,7 +347,7 @@ public class KMLWriter extends OutputStreamWriter {
                 }
                 //REVISIT: once scaleDemominator can actualy be determined re-evaluate sensible ranges for GE
                 NumberRange scaleRange = new NumberRange(scaleDenominator, scaleDenominator);
-                FeatureIterator reader = features.features();
+                Iterator reader = features.features();
                 
                 while( true ) {
                     try {
@@ -361,7 +361,7 @@ public class KMLWriter extends OutputStreamWriter {
                         }
                         
                         boolean doElse = true;
-                        Feature feature = reader.next();
+                        Feature feature = (Feature) reader.next();
                         
                         
                         // applicable rules
@@ -478,7 +478,7 @@ public class KMLWriter extends OutputStreamWriter {
         Geometry geom;
         
         if (geomName == null) {
-            geom = f.getDefaultGeometry();
+            geom = (Geometry) f.getDefaultGeometry();
         } else {
             geom = (com.vividsolutions.jts.geom.Geometry) f.getAttribute(geomName);
         }

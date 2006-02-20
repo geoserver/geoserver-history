@@ -22,9 +22,11 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.type.GeometricAttributeType;
+import org.geotools.feature.type.GeometryTypeImpl;
 import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
+import org.opengis.feature.type.GeometryType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.data.DataStoreUtils;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -828,9 +830,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     
                     //DJB: added this to set SRS
                     if (Geometry.class.isAssignableFrom(attributes[count].getType())) {
-                    	GeometricAttributeType old = (GeometricAttributeType) attributes[count];
+                    	GeometryType old = (GeometryType) attributes[count];
                     	try {
-                    		attributes[count] = new GeometricAttributeType(old,getSRS(SRS)) ;
+                    		//attributes[count] = new GeometryTypeImpl(old,getSRS(SRS)) ;
+                    		attributes[count] = new GeometryTypeImpl(old);
                     	}
                     	catch (Exception e)
 						{

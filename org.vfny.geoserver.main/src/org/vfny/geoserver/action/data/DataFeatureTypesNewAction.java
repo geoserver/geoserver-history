@@ -105,7 +105,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
 			
 			// attempt to get a better SRS
 			try {
-				CoordinateReferenceSystem crs = featureType.getDefaultGeometry().getCoordinateSystem();
+				CoordinateReferenceSystem crs = featureType.getDefaultGeometry().getCRS();
 				Set idents = crs.getIdentifiers();
 				Iterator it = idents.iterator();
 				while (it.hasNext())

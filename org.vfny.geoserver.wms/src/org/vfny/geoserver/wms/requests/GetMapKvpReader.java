@@ -36,7 +36,7 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleAttributeExtractor;
 import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyleFactoryFinder;
+
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
@@ -158,7 +158,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             "org.vfny.geoserver.requests.readers.wms");
 
     /** Used to parse SLD documents from SLD and SLD_BODY parameters */
-    private static final StyleFactory styleFactory = StyleFactoryFinder
+    private static final StyleFactory styleFactory = StyleFactory
         .createStyleFactory();
 
     /**
@@ -916,7 +916,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 		
 		if (layer instanceof NamedLayer)
 		{
-			ftcs = ((NamedLayer) layer).getLayerFeatureConstraints();
+			ftcs = ((NamedLayer) layer).getLayerFeatureConstrains();
 			layerStyles = ((NamedLayer) layer).getStyles();
 		}
 		else if (layer instanceof UserLayer)

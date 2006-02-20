@@ -32,7 +32,7 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyleFactoryFinder;
+import org.geotools.styling.StyleFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 
@@ -88,7 +88,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * used to create default styles for cite types loading them from
      * test-data/styles/&lt;cite-typename&gt;.sld
      */
-    private static final StyleFactory sFac = StyleFactoryFinder.createStyleFactory();
+    private static final StyleFactory sFac = StyleFactory.createStyleFactory();
 
     /** DOCUMENT ME! */
     private static final int SHOW_TIMEOUT = 200;

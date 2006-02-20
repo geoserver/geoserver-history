@@ -18,7 +18,8 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
+import org.geotools.filter.FilterFactoryImpl;
+
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 
@@ -61,7 +62,7 @@ abstract public class KvpRequestReader {
     protected static final String INNER_DELIMETER = ",";
 
     /** Holds mappings between HTTP and ASCII encodings */
-    protected static FilterFactory factory = FilterFactoryFinder.createFilterFactory();
+    protected static FilterFactory factory = FilterFactory.createFilterFactory();
 
     /** KVP pair listing; stores all data from the KVP request */
     protected Map kvpPairs = new HashMap();

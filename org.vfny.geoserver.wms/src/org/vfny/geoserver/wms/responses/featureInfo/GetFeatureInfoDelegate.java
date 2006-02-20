@@ -15,7 +15,6 @@ import org.geotools.filter.BBoxExpression;
 import org.geotools.filter.Expression;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.vfny.geoserver.Request;
@@ -27,6 +26,7 @@ import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
@@ -175,7 +175,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
         Query[] queries = new Query[nLayers];
         GetFeatureInfoRequest infoRequest = getRequest();
         Envelope requestExtent = infoRequest.getGetMapRequest().getBbox();
-        FilterFactory ffactory = FilterFactoryFinder.createFilterFactory();
+        FilterFactory ffactory = FilterFactory.createFilterFactory();
 
         try {
             Filter finalLayerFilter;
@@ -221,7 +221,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
 
         BBoxExpression bboxExpr = ffactory.createBBoxExpression(requestExtent);
         Expression geomAttExpr = ffactory.createAttributeExpression(schema,
-                schema.getDefaultGeometry().getName());
+                schema.getDefaultGeometry().getName().getLocalPart());
         bboxFilter.addLeftGeometry(geomAttExpr);
         bboxFilter.addRightGeometry(bboxExpr);
 
@@ -263,7 +263,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
         throws java.io.IOException {
         FeatureType type = layer.getFeatureType();
         List atts = new ArrayList();
-        String geom_name = type.getDefaultGeometry().getName();
+        //JD: bad cast
+        String geom_name = ((Geometry)type.getDefaultGeometry()).getGeometryType();
 
         if (!atts.contains(geom_name)) {
             atts.add(geom_name);

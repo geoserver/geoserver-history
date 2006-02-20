@@ -168,7 +168,7 @@ public class AttributeTypeInfoConfig {
      * @param attributeType GeoTools2 attributeType used for configuration
      */
     public AttributeTypeInfoConfig(AttributeType attributeType) {
-        name = attributeType.getName();
+        name = attributeType.getName().getLocalPart();
         minOccurs = 1;
         maxOccurs = 1;
 

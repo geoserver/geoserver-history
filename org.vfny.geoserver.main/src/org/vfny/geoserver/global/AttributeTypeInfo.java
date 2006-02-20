@@ -89,7 +89,7 @@ public class AttributeTypeInfo {
     	String r = typeName;
 
         if (r==null && type != null) {
-            r = type.getName();
+            r = type.getName().getLocalPart();
         }
 
         return r;

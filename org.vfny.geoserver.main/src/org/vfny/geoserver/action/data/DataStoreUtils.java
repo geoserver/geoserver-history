@@ -250,7 +250,8 @@ public abstract class DataStoreUtils {
         Envelope ev = fs.getBounds();
         if(ev == null || ev.isNull()){
             try{
-                ev = fs.getFeatures().getBounds();
+            	//JD: bad cast, remove
+                ev = (Envelope) fs.getFeatures().getBounds();
             }catch(Throwable t){
                 ev = new Envelope();
             }

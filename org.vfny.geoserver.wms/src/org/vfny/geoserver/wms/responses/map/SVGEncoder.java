@@ -369,7 +369,7 @@ public class SVGEncoder {
 
         for (int i = 0; i < nLayers; i++) {
             Class geometryClass = layers[i].getFeatureType().getDefaultGeometry()
-                                           .getType();
+                                           .getBinding();
 
             if ((geometryClass == MultiPoint.class)
                     || (geometryClass == Point.class)) {
@@ -397,7 +397,8 @@ public class SVGEncoder {
             int nLayers = results.length;
 
             for (int i = 0; i < nLayers; i++) {
-                Envelope layerBounds = results[i].getBounds();
+            	//JD: bad cast
+                Envelope layerBounds = (Envelope) results[i].getBounds();
 
                 if (layerBounds == null) {
                     throw new IOException(
@@ -431,7 +432,7 @@ public class SVGEncoder {
             int prevSkipCount = coordsSkipCount;
             coordsSkipCount = 0;
 
-            Class gtype = featureType.getDefaultGeometry().getType();
+            Class gtype = featureType.getDefaultGeometry().getBinding();
             boolean doCollect = collectGeometries && (gtype != Point.class)
                 && (gtype != MultiPoint.class);
 
@@ -547,7 +548,7 @@ public class SVGEncoder {
      * @throws IOException si algo ocurre escribiendo a <code>out</code>
      */
     private void writeGeometry(Feature ft) throws IOException {
-        Geometry geom = ft.getDefaultGeometry();
+        Geometry geom = (Geometry) ft.getDefaultGeometry();
 
         if ((geom == null) || geom.isEmpty()) {
             return;
@@ -592,7 +593,7 @@ public class SVGEncoder {
             att = currentFeature.getAttribute(i);
 
             if (!(att instanceof Geometry)) {
-                writer.writeAttribute(featureType.getAttributeType(i).getName(),
+                writer.writeAttribute(featureType.getAttributeType(i).getName().getLocalPart(),
                     att);
             }
         }

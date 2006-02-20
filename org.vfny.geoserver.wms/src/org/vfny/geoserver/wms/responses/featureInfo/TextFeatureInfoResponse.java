@@ -93,12 +93,12 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
 	                            //writer.println(types[j].getName() + " = [GEOMETRY] = "+g.toText() ); 
 	                        	
 	                        	//DJB: decided that all the geometry info was too much - they should use GML version if they want those details
-	                        	Geometry g = (Geometry) f.getAttribute(types[j].getName());
+	                        	Geometry g = (Geometry) f.getAttribute(types[j].getName().getLocalPart());
 	                        	writer.println(types[j].getName() + " = [GEOMETRY ("+g.getGeometryType()+") with "+g.getNumPoints()+" points]"); 
 	                        	
 	                        } else {
 	                            writer.println(types[j].getName() + " = "
-	                                + f.getAttribute(types[j].getName()));
+	                                + f.getAttribute(types[j].getName().getLocalPart()));
 	                        }                                         
 	                    }
 	                    writer.println("--------------------------------------------");

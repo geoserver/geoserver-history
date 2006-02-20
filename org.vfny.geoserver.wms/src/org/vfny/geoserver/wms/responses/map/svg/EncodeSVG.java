@@ -16,10 +16,10 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.Expression;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.map.MapLayer;
+import org.opengis.feature.type.GeometryType;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -151,8 +151,8 @@ public class EncodeSVG {
      * @throws IOException DOCUMENT ME!
      */
     private void writeDefs(FeatureType layer) throws IOException {
-        GeometryAttributeType gtype = layer.getDefaultGeometry();
-        Class geometryClass = gtype.getType();
+        GeometryType gtype = layer.getDefaultGeometry();
+        Class geometryClass = gtype.getBinding();
 
         if ((geometryClass == MultiPoint.class)
                 || (geometryClass == Point.class)) {
@@ -185,7 +185,7 @@ public class EncodeSVG {
         // FeatureTypeInfo layerInfo = null;
         int defMaxDecimals = writer.getMaximunFractionDigits();
 
-        FilterFactory fFac = FilterFactoryFinder.createFilterFactory();
+        FilterFactory fFac = FilterFactory.createFilterFactory();
 
         for (int i = 0; i < nLayers; i++) {
             MapLayer layer = layers[i];
@@ -199,7 +199,7 @@ public class EncodeSVG {
                 GeometryFilter bboxFilter = fFac.createGeometryFilter(FilterType.GEOMETRY_INTERSECTS);
                 bboxFilter.addLeftGeometry(bboxExpression);
                 bboxFilter.addRightGeometry(fFac.createAttributeExpression(
-                        schema, schema.getDefaultGeometry().getName()));
+                        schema, schema.getDefaultGeometry().getName().getLocalPart()));
 
                 Query bboxQuery = new DefaultQuery(schema.getTypeName(),
                         bboxFilter);

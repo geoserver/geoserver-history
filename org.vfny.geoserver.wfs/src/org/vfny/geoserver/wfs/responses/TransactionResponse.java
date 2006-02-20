@@ -40,7 +40,7 @@ import org.geotools.feature.SchemaException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
+
 import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
@@ -189,8 +189,8 @@ public class TransactionResponse implements Response {
             if (element instanceof InsertRequest) {
                 // Option 1: Guess FeatureStore based on insert request
                 //
-                Feature feature = ((InsertRequest) element).getFeatures()
-                                   .features().next();
+                Feature feature = 
+                	(Feature) ((InsertRequest) element).getFeatures().features().next();
  
                 if (feature != null) {
                     String name = feature.getFeatureType().getTypeName();
@@ -330,7 +330,8 @@ public class TransactionResponse implements Response {
                                 delete.getTypeName(), filter));
 
                     if (damaged == null) {
-                        damaged = store.getFeatures(filter).getBounds();
+                    	//JD: bad cast
+                        damaged = (Envelope) store.getFeatures(filter).getBounds();
                     }
 
                     if ((request.getLockId() != null)
@@ -367,8 +368,7 @@ public class TransactionResponse implements Response {
                             // extra work when doing release mode ALL.
                             // 
                             DataStore data = store.getDataStore();
-                            FilterFactory factory = FilterFactoryFinder
-                                .createFilterFactory();
+                            FilterFactory factory = FilterFactory.createFilterFactory();
                             FeatureWriter writer;                            
                             writer = data.getFeatureWriter(typeName, filter,
                                     transaction);
@@ -431,8 +431,9 @@ public class TransactionResponse implements Response {
                     build.addInsertResult(element.getHandle(), fids);
 
                     //
-                    // Add to validation check envelope                                
-                    envelope.expandToInclude(collection.getBounds());
+                    // Add to validation check envelope    
+                    //JD: bad cast
+                    envelope.expandToInclude((Envelope)collection.getBounds());
                 } catch (IOException ioException) {
                     throw new WfsTransactionException(ioException,
                         element.getHandle(), request.getHandle());
@@ -466,7 +467,8 @@ public class TransactionResponse implements Response {
                         while( preprocess.hasNext() ){
                             Feature feature = preprocess.next();
                             fids.add( feature.getID() );
-                            envelope.expandToInclude( feature.getBounds() );
+                            //JD: bad cast
+                            envelope.expandToInclude( (Envelope) feature.getBounds() );
                         }
                     } catch (NoSuchElementException e) {
                         throw new ServiceException( "Could not aquire FeatureIDs", e );
@@ -506,11 +508,12 @@ public class TransactionResponse implements Response {
                     //
                     if( !fids.isEmpty() ) {
                         LOGGER.finer("Post process update for boundary update and featureValidation");
-                        FidFilter modified = FilterFactoryFinder.createFilterFactory().createFidFilter();
+                        FidFilter modified = FilterFactory.createFilterFactory().createFidFilter();
                         modified.addAllFids( fids );
                     
                         FeatureCollection changed = store.getFeatures( modified ).collection();
-                        envelope.expandToInclude( changed.getBounds() );
+                        //JD: bad cast
+                        envelope.expandToInclude( (Envelope) changed.getBounds() );
                     
                         FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(element.getTypeName());
                         featureValidation(typeInfo.getDataStoreInfo().getId(),store.getSchema(), changed);                    

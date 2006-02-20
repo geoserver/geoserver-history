@@ -92,7 +92,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
                             writer.println("</td>");
                         } else {
                             writer.println("<td>");
-                            writer.print(f.getAttribute(types[j].getName()));
+                            writer.print(f.getAttribute(types[j].getName().getLocalPart()));
                             writer.println("</td>");
                         }
                     }

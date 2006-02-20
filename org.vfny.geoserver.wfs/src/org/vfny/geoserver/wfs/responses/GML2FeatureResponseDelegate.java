@@ -147,7 +147,8 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         transformer.setIndentation(config.isVerbose() ? INDENT_SIZE
                                                       : (NO_FORMATTING));
         transformer.setNumDecimals(config.getNumDecimals());
-        transformer.setFeatureBounding(request.getWFS().isFeatureBounding());
+        //JD: uncomment, we need to merge the boundedBy stuff onto this branch
+        //transformer.setFeatureBounding(request.getWFS().isFeatureBounding());
         transformer.setEncoding(request.getWFS().getGeoServer().getCharSet());
 
         String wfsSchemaLoc = request.getSchemaBaseUrl()
