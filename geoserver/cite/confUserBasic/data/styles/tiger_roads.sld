@@ -46,7 +46,23 @@
             </Rule> 
             
 	     
-           
+<!-- for when you're zoomed out -->
+            <Rule>  
+	                    <MinScaleDenominator>32000</MinScaleDenominator>
+	                   <LineSymbolizer>
+	    		       <Stroke>
+	    				<CssParameter name="stroke">
+	    					<ogc:Literal>#000000</ogc:Literal>
+	    				</CssParameter>
+	    				<CssParameter name="stroke-width">
+	    					<ogc:Literal>1</ogc:Literal>
+	    				</CssParameter>
+	    			</Stroke>
+	                   </LineSymbolizer>
+	     
+            </Rule> 
+            
+	                
             
 
     
