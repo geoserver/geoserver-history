@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
@@ -157,7 +158,7 @@ public class FeatureTypeConfig {
         } else {
         	//JD: bad cast, remove
             GeometryFactory geometryFactory = 
-            	((Geometry)schema.getDefaultGeometry()).getFactory();
+            	((GeometryAttributeType)schema.getDefaultGeometry()).getGeometryFactory();
 
             if (geometryFactory == null) {
                 // Assume Cartisian Coordiantes
