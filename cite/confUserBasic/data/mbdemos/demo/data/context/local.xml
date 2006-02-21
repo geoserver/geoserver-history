@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<ViewContext version="1.0.0"
+			    id="eos_data_gateways"
+			    xmlns="http://www.opengis.net/context"
+			    xmlns:xlink="http://www.w3.org/1999/xlink"
+			    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			    xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd">
+	<General>
+		<Window width="500" height="300" />
+    <BoundingBox SRS="EPSG:4326" minx="489154" miny="5433017" maxx="505234" maxy="5448023"/>
+		<!--BoundingBox SRS="EPSG:4326" minx="-180.000000" miny="-90.000000" maxx="180.000000" maxy="90.000000"/-->
+		<Title>http://localhost:8080/geoserver</Title>
+		<KeywordList>
+			<Keyword>EOS</Keyword>
+			<Keyword>EOSDIS</Keyword>
+			<Keyword>NASA</Keyword>
+			<Keyword>CCRS</Keyword>
+			<Keyword>CEOS</Keyword>
+			<Keyword>OGC</Keyword>
+		</KeywordList>
+    <Abstract>Users default Geoserver http://geoserver.sf.net WMS/WFS</Abstract>
+	</General>
+	<LayerList>
+		<Layer queryable="1" hidden="0">
+			<Server service="OGC:WMS" version="1.1.1" title="Local">
+				<OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+			</Server>
+			<Name>topp:states</Name>
+			<Title>USA Population</Title>
+      <Abstract>USA census data.</Abstract>
+			<SRS>EPSG:4326</SRS>
+			<FormatList>
+				<Format current="1">image/png</Format>
+			</FormatList>
+			<StyleList>
+				<Style current="1">
+					<Name>population</Name>
+					<Title>population</Title>
+				</Style>
+			</StyleList>
+		</Layer>
+		<Layer queryable="1" hidden="0">
+			<Server service="OGC:WMS" version="1.1.1" title="Local">
+				<OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+			</Server>
+			<Name>topp:bc_roads</Name>
+			<Title>BC Roads</Title>
+			<Abstract>Some roads in British Columbia</Abstract>
+			<SRS>EPSG:27354</SRS>
+			<FormatList>
+				<Format current="1">image/png</Format>
+			</FormatList>
+			<StyleList>
+				<Style current="1">
+					<Name>normal</Name>
+					<Title>default</Title>
+				</Style>
+			</StyleList>
+		</Layer>
+	</LayerList>
+</ViewContext> 
