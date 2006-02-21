@@ -46,23 +46,6 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/*-applicationContext.xml</param-value>
 	</context-param>
-	<listener>
-	  <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-	
-	<!-- spring web mvc dispatcher servlet, dispatches incoming requests to controllers -->
-	<servlet>
-		<servlet-name>org.openplans.geoserver</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>	
-	</servlet>
-	
-	
- <!--
-	  <context-param>
-		   <param-name>GEOSERVER_DATA_DIR</param-name>
-		    <param-value>C:\eclipse\workspace\geoserver_trunk\cite\confCiteWFSPostGIS</param-value>
-	  </context-param> 
-   -->
 
   <filter>
     <filter-name>Set Character Encoding</filter-name>
@@ -77,6 +60,24 @@
     <filter-name>Set Character Encoding</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+
+	<listener>
+	  <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<!-- spring web mvc dispatcher servlet, dispatches incoming requests to controllers -->
+	<servlet>
+		<servlet-name>org.openplans.geoserver</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>	
+	</servlet>
+	
+ <!--
+	  <context-param>
+		   <param-name>GEOSERVER_DATA_DIR</param-name>
+		    <param-value>C:\eclipse\workspace\geoserver_trunk\cite\confCiteWFSPostGIS</param-value>
+	  </context-param> 
+   -->
+
   
    <!-- Struts config needs to load before all the other servlets. -->
    <servlet>
