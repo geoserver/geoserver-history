@@ -22,20 +22,15 @@ import org.vfny.geoserver.config.ConfigRequests;
 /**
  * Select current DataStore for edit or delete Action.
  *
-<<<<<<< DataDataStoresSelectForm.java
  * @author rgould, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
+ * @author bowens, TOPP
  * @version $Id: DataDataStoresSelectForm.java,v 1.9 2004/03/16 19:57:40 emperorkefka Exp $
-=======
- * @author User, Refractions Research, Inc.
- * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataDataStoresSelectForm.java,v 1.9 2004/03/16 19:57:40 emperorkefka Exp $
->>>>>>> 1.4
  */
 public class DataDataStoresSelectForm extends ActionForm {
     /** Action that spawned us must be "edit" or "delete" */
     private String buttonAction;
-
+    
     /** Selection from list - will be a dataStoreId */
     private String selectedDataStoreId;
     private List dataStoreIds;
@@ -74,6 +69,9 @@ public class DataDataStoresSelectForm extends ActionForm {
         MessageResources messages = servlet.getResources();
         String EDIT = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
         String DELETE = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
+        
+        if (getSelectedDataStoreId() == null)
+        	return errors;	// no data in the list, so return
         
         if (!getDataStoreIds().contains(getSelectedDataStoreId())) {
             errors.add("selectedDataStoreId",
