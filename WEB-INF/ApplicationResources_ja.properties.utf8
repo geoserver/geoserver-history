@@ -363,6 +363,9 @@ welcome.demo.requests.short=ã?“ã?®ãƒšãƒ¼ã‚¸ã?¯ã€?ä½¿ç”¨ã‚„è©¦é¨“ã€?å¤‰æ›´ã?Œã?§ã
 welcome.demo.documentation.title=ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³
 welcome.demo.documentation.label=ãƒ¡ã‚¤ãƒ³ãƒ»ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆãƒšãƒ¼ã‚¸
 welcome.demo.documentation.short=ã?“ã‚Œã?ŒGeoserverã?®ãƒ¡ã‚¤ãƒ³ãƒ»ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆãƒšãƒ¼ã‚¸ã?§ã?™ã€‚ã??ã‚Œã?¯ ã€?ã?‚ã‚‰ã‚†ã‚‹ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã‚„ã‚¦ã‚©ãƒ¼ã‚¯ã‚¹ãƒ«ãƒ¼ã€?ãƒ?ãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã€?ã?¾ã?Ÿã?¯ä»–ã?®ãƒ¦ãƒ¼ã‚¶ã?®ã?Ÿã‚?ã?«ã?ªã‚‹ã?¨æ€?ã‚?ã‚Œã‚‹æƒ…å ±ç­‰ã‚’åŠ ã?ˆã‚‹ã?“ã?¨ã?Œè‡ªç”±ã?ªWIKIã?§ã?™ã€‚
+welcome.demo.wfst.title=WFS-T demo
+welcome.demo.wfst.label=Example WFS-T (transactional) page
+welcome.demo.wfst.short=This page, powered by MapBuilder, is an example of WFS-T (transactional) requests that you can use. It allows you to insert points and lines into the various layers of the map.
 
 welcome.demoRequest.label=ãƒ‡ãƒ¢ãƒ»ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
 welcome.demoRequest.title=ãƒ‡ãƒ¢ãƒ»ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
