@@ -41,6 +41,17 @@
 		<tr>
 			<td width=70/>
 			<td width=600 class="label" valign="top">
+			<center><u><b><font size=+2><a href="../../../data/wfs-t_demo/index.html"><bean:message key="welcome.demo.wfst.title"/></a></font></b></u><br>
+			<p>
+			<bean:message key="welcome.demo.wfst.short"/>
+			</p>
+			</center>
+			</td>
+		</tr>
+		
+		<tr>
+			<td width=70/>
+			<td width=600 class="label" valign="top">
 			<center><u><b><font size=+2><a href="http://docs.codehaus.org/display/GEOSDOC/Documentation" target="newwindow"><bean:message key="welcome.demo.documentation.title"/></a></font></b></u><br>
 			<p>
 			<bean:message key="welcome.demo.documentation.short"/>
