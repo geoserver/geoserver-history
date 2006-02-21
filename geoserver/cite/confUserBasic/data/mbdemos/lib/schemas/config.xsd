@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<xs:schema targetNamespace="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:mb="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" version="0.2.1">
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Tom Kralidis (NRCAN CCRs) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mb="http://mapbuilder.sourceforge.net/mapbuilder" targetNamespace="http://mapbuilder.sourceforge.net/mapbuilder" elementFormDefault="qualified" version="0.2.1">
   <xs:annotation>
-    <xs:appinfo>$Id: config.xsd,v 1.14 2004/12/20 10:02:45 camerons Exp $</xs:appinfo>
+    <xs:appinfo>$Id: config.xsd,v 1.22 2005/11/01 13:45:24 cappelaere Exp $</xs:appinfo>
     <xs:documentation xml:lang="en">
       <xs:description>Application schema for Mapbuilder runtime configuration</xs:description>
-      <xs:copyright>License: GPL as per: http://www.gnu.org/copyleft/gpl.html</xs:copyright>
+      <xs:copyright>License: LGPL as per: http://www.gnu.org/copyleft/lesser.html</xs:copyright>
     </xs:documentation>
   </xs:annotation>
   <!-- imports -->
@@ -19,6 +20,8 @@
         <xs:extension base="mb:AbstractModelType">
           <xs:sequence>
             <xs:element name="skinDir" type="mb:urlPathType" minOccurs="0"/>
+            <xs:element name="languages" type="xs:string" minOccurs="0"/>
+            <xs:element name="widgetTextUrl" type="mb:urlPathType" minOccurs="0"/>
             <xs:element name="proxyUrl" type="mb:urlPathType" minOccurs="0"/>
             <xs:element name="serializeUrl" type="mb:urlPathType" minOccurs="0"/>
           </xs:sequence>
@@ -48,6 +51,14 @@
       <xs:extension base="mb:AbstractModelType"/>
     </xs:complexContent>
   </xs:complexType>
+  <xs:complexType name="GeoRSSType">
+    <xs:annotation>
+      <xs:documentation>GeoRSS</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:ModelType"/>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:complexType name="ContextCollectionType">
     <xs:annotation>
       <xs:documentation>A collection of Web Map Context document URLs as specified by the Open GeoSpatial Consortium (http://www.opengeospatial.org/docs/03-036r2.pdf)</xs:documentation>
@@ -72,9 +83,25 @@
       <xs:extension base="mb:AbstractModelType"/>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="GetMap">
+  <xs:complexType name="WpsCapabilitiesType">
+    <xs:annotation>
+      <xs:documentation/>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractModelType"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="GetMapType">
     <xs:annotation>
       <xs:documentation>A response from a WMS for a GetMap operation -  the model in this case is an image</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractModelType"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="WpsDescribeProcessType">
+    <xs:annotation>
+      <xs:documentation/>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="mb:AbstractModelType"/>
@@ -85,7 +112,11 @@
       <xs:documentation>A response from a WMS for a GetFeatureInfo operation</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
-      <xs:extension base="mb:AbstractModelType"/>
+      <xs:extension base="mb:AbstractButtonType">
+        <xs:sequence>
+          <xs:element name="context" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
     </xs:complexContent>
   </xs:complexType>
   <xs:complexType name="FeatureCollectionType">
@@ -131,6 +162,7 @@
           <xs:element name="fixedWidth" type="xs:integer" minOccurs="0"/>
           <xs:element name="fixedHeight" type="xs:integer" minOccurs="0"/>
           <xs:element name="loadHidden" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="extraAttributes" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -140,7 +172,11 @@
       <xs:documentation>A widget which displays the model URL in a form which also allows the URL to be modified</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
-      <xs:extension base="mb:AbstractWidgetType"/>
+      <xs:extension base="mb:AbstractWidgetType">
+        <xs:sequence>
+          <xs:element name="defaultUrl" type="mb:urlPathType" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
     </xs:complexContent>
   </xs:complexType>
   <xs:complexType name="LegendType">
@@ -159,6 +195,12 @@
       <xs:extension base="mb:AbstractWidgetType">
         <xs:sequence>
           <xs:element name="mouseHandler" type="xs:string"/>
+          <xs:element name="showXY" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="showPx" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="showDMS" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="showLatLong" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="showMGRS" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="precision" type="xs:integer" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -236,6 +278,19 @@
       <xs:extension base="mb:AbstractMapWidgetType"/>
     </xs:complexContent>
   </xs:complexType>
+  <xs:complexType name="GmlPointRendererType">
+    <xs:annotation>
+      <xs:documentation>A widget to render GML. </xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractMapWidgetType">
+        <xs:sequence>
+          <xs:element name="normalImage" type="mb:urlPathType"/>
+          <xs:element name="highlightImage" type="mb:urlPathType"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:complexType name="GmlRendererWZType">
     <xs:annotation>
       <xs:documentation>A widget to render GML document using the wz_jsgraphics JavaScript library in a map container widget</xs:documentation>
@@ -245,20 +300,13 @@
         <xs:sequence>
           <xs:element name="lineColor"/>
           <xs:element name="lineWidth"/>
+          <xs:element name="fill"/>
           <xs:element name="pointDiameter" type="xs:integer"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
   <xs:complexType name="Gml2RenderType">
-    <xs:complexContent>
-      <xs:extension base="mb:AbstractWidgetType"/>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="ButtonBarType">
-    <xs:annotation>
-      <xs:documentation>A widget to display a set of buttons listed in  the config document</xs:documentation>
-    </xs:annotation>
     <xs:complexContent>
       <xs:extension base="mb:AbstractWidgetType"/>
     </xs:complexContent>
@@ -270,17 +318,9 @@
     <xs:complexContent>
       <xs:extension base="mb:AbstractWidgetType">
         <xs:sequence>
-          <xs:element name="webServiceUrl" type="xs:anyURI"/>
+          <xs:element name="webServiceUrl" type="xs:anyURI" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="GetFeatureRequestType">
-    <xs:annotation>
-      <xs:documentation>to be deprecated by WebServiceRequest tools</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="mb:AbstractWidgetType"/>
     </xs:complexContent>
   </xs:complexType>
   <xs:complexType name="AoiBoxWZType">
@@ -293,6 +333,201 @@
           <xs:element name="lineColor" type="xs:string" minOccurs="0"/>
           <xs:element name="lineWidth" type="xs:integer" minOccurs="0"/>
           <xs:element name="crossSize" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="TimeSeriesType">
+    <xs:annotation>
+      <xs:documentation/>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractMapWidgetType"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Caps2ContextType">
+    <xs:annotation>
+      <xs:documentation>A tool which builds a Web Map Context document from a Web Map Capabilities document.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractToolType"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="EditContextType">
+    <xs:annotation>
+      <xs:documentation>Tool which manipulates the Layer list of a Web Map Context document.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractToolType"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="MovieLoopType">
+    <xs:annotation>
+      <xs:documentation/>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractToolType">
+        <xs:sequence>
+          <xs:element name="framesPerSecond" type="xs:integer" minOccurs="0"/>
+          <xs:element name="maxFrames" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="AoiBoxDHTMLType">
+    <xs:annotation>
+      <xs:documentation>A widget to display a map container model's AOI box</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractMapWidgetType">
+        <xs:sequence>
+          <xs:element name="lineColor" type="xs:string" minOccurs="0"/>
+          <xs:element name="lineWidth" type="xs:integer" minOccurs="0"/>
+          <xs:element name="crossSize" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ResourceDropDownType">
+    <xs:annotation>
+      <xs:documentation/>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractWidgetType">
+        <xs:sequence>
+          <xs:element name="scriptFile" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ButtonType">
+    <xs:annotation>
+      <xs:documentation>A generic instance of a ButonBase object</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractButtonType"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="EditButtonType">
+    <xs:annotation>
+      <xs:documentation>After this button is selected, clicks on a MapPane will add a GML coord to a Line the targetModel FeatureCollection.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractButtonType">
+        <xs:sequence>
+          <xs:element name="featureXpath" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>Xpath of the gml:coordinates in the FeatureCollection that will be updated.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="defaultModelUrl" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>URL to an XML file which contains a default FeatureCollect.  The XML will be loaded into the targetModel when this button is selected.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="InsertFeatureType">
+    <xs:annotation>
+      <xs:documentation>When this button is selected, a WFS InsertFeature request is build from the targetModel and posted to the WFS.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractButtonType">
+        <xs:sequence>
+          <xs:element name="transactionResponseModel" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>The model which will be populated with the server response from a transaction request.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="webServiceUrl" type="mb:urlPathType" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>The base URL of the Web Service that will be queried.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="targetContext" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>After a feature has been successfully sent to the Web Service, the targetContext will send a "refresh" event which will cause the map layers to re-render themselves.  This will ensure a modified WFS feature will be re-redered correctly by the querying WMS.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="WfsGetFeatureType">
+    <xs:annotation>
+      <xs:documentation>After this button is selected, clicks on a MapPane will initiate a WFS GetFeature GET request and the result will be stored in the targetModel FeatureCollection.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractButtonType">
+        <xs:sequence>
+          <xs:element name="transactionResponseModel" type="xs:string" minOccurs="1">
+            <xs:annotation>
+              <xs:documentation>The model which will be populated with the server response.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="webServiceUrl" type="mb:urlPathType" minOccurs="1">
+            <xs:annotation>
+              <xs:documentation>The base URL of the Web Service that will be queried.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="typeName" type="xs:string" minOccurs="1">
+            <xs:annotation>
+              <xs:documentation>A commer seperated list of layers to query.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="tolerance" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>The number of pixels around the click point that are included in the query.  tollerance=0 means a Bbox of 1x1 pixel is queried, tollerance=1 means a Bbox of 3x3 is queried, tolerance=2 means a Bbo of 5x5 is queried.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="maxFeatures" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>The maximum number of features returned by the query.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ProcessArgumentsFormType">
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractWidgetType">
+        <xs:sequence>
+          <xs:element name="scriptFile" type="xs:string" minOccurs="0"/>
+          <xs:element name="mapModel" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ShowProcessResultType">
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractWidgetType">
+        <xs:sequence>
+          <xs:element name="scriptFile" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="TabbedContentType">
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractWidgetType">
+        <xs:sequence>
+          <xs:element name="htmlWorkspace" type="xs:string" minOccurs="0"/>
+          <xs:element name="tab" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SaveType">
+      <xs:annotation>
+        <xs:documentation>After this button is selected, the Web Map Context is saved on the users local computer.</xs:documentation>
+      </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractButtonType">
+        <xs:sequence>
+          <xs:element name="popupWindowName" type="xs:string"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -344,72 +579,20 @@
       <xs:extension base="mb:AbstractToolType"/>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="ZoomInType">
+  <xs:complexType name="WebServiceRequestType">
+    <xs:annotation>
+      <xs:documentation>A tool which will generate web service requests from a node from the paranet model</xs:documentation>
+    </xs:annotation>
     <xs:complexContent>
-      <xs:extension base="mb:AbstractButtonType"/>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="ZoomOutType">
-    <xs:complexContent>
-      <xs:extension base="mb:AbstractButtonType"/>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="DragPanType">
-    <xs:complexContent>
-      <xs:extension base="mb:AbstractButtonType"/>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="SetAoiType">
-    <xs:complexContent>
-      <xs:extension base="mb:AbstractButtonType"/>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="ResetType">
-    <xs:complexContent>
-      <xs:extension base="mb:AbstractButtonType"/>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="GetFeatureInfoToolType">
-    <xs:complexContent>
-      <xs:extension base="mb:AbstractButtonType">
+      <xs:extension base="mb:AbstractToolType">
         <xs:sequence>
-          <xs:element name="targetFeatureCollection" type="xs:string"/>
+          <xs:element name="requestName" type="xs:string"/>
+          <xs:element name="maxFeatures" type="xs:integer" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="EditPointType">
-    <xs:complexContent>
-      <xs:extension base="mb:AbstractButtonType">
-        <xs:sequence>
-          <xs:element name="targetGml" type="xs:string"/>
-          <xs:element name="defaultModelUrl" type="xs:string"/>
-          <xs:element name="featureXpath" type="xs:string"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="EditLineType">
-    <xs:complexContent>
-      <xs:extension base="mb:AbstractButtonType">
-        <xs:sequence>
-          <xs:element name="targetGml" type="xs:string"/>
-          <xs:element name="defaultModelUrl" type="xs:string"/>
-          <xs:element name="featureXpath" type="xs:string"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="SaveType">
-    <xs:complexContent>
-      <xs:extension base="mb:AbstractButtonType">
-        <xs:sequence>
-          <xs:element name="popupWindowName" type="xs:string"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <!--	document structure -->
+  <!--  document structure -->
   <xs:complexType name="modelsType">
     <xs:choice maxOccurs="unbounded">
       <xs:element name="Model" type="mb:ModelType">
@@ -417,23 +600,35 @@
           <xs:documentation>A generic model to represent an XML document where no specialized get or set methods are required</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ModelBase" type="mb:ModelType"/>
       <xs:element name="Context" type="mb:ContextType"/>
+      <xs:element name="OwsContext" type="mb:ContextType"/>
+      <xs:element name="GeoRSS" type="mb:GeoRSSType"/>
       <xs:element name="ContextCollection" type="mb:ContextCollectionType"/>
       <xs:element name="WmsCapabilities" type="mb:WmsCapabilitiesType"/>
       <xs:element name="WfsCapabilities" type="mb:WfsCapabilitiesType"/>
+      <xs:element name="WpsCapabilities" type="mb:WpsCapabilitiesType"/>
       <xs:element name="FeatureCollection" type="mb:FeatureCollectionType"/>
       <xs:element name="Transaction" type="mb:TransactionType"/>
       <xs:element name="DescribeFeatureType" type="mb:DescribeFeatureTypeType"/>
+      <xs:element name="GetMap" type="mb:GetMapType"/>
+      <xs:element name="WpsDescribeProcess" type="mb:WpsDescribeProcessType"/>
     </xs:choice>
   </xs:complexType>
   <xs:complexType name="widgetsType">
     <xs:choice maxOccurs="unbounded">
+      <xs:element name="TimeSeries" type="mb:TimeSeriesType"/>
+      <xs:element name="Widget" type="mb:WidgetType"/>
+      <xs:element name="Timestamp" type="mb:WidgetType"/>
+      <xs:element name="WidgetBase" type="mb:WidgetType"/>
       <xs:element name="MapPane" type="mb:MapPaneType"/>
+      <xs:element name="MapImage" type="mb:MapImageType"/>
       <xs:element name="ModelUrlInput" type="mb:ModelUrlInputType"/>
+      <xs:element name="AoiBoxDHTML" type="mb:AoiBoxDHTMLType"/>
+      <xs:element name="ResourceDropDown" type="mb:ResourceDropDownType"/>
       <xs:element name="AoiBoxWZ" type="mb:AoiBoxWZType"/>
       <xs:element name="CursorTrack" type="mb:CursorTrackType"/>
       <xs:element name="Legend" type="mb:LegendType"/>
-      <xs:element name="Widget" type="mb:WidgetType"/>
       <xs:element name="AoiForm" type="mb:AoiFormType"/>
       <xs:element name="MapScaleText" type="mb:MapScaleTextType"/>
       <xs:element name="SaveModel" type="mb:SaveModelType"/>
@@ -441,13 +636,31 @@
       <xs:element name="CollectionList" type="mb:CollectionListType"/>
       <xs:element name="FeatureList" type="mb:FeatureListType"/>
       <xs:element name="Locations" type="mb:LocationsType"/>
+      <xs:element name="GmlPointRenderer" type="mb:GmlPointRendererType"/>
       <xs:element name="GmlRendererTest" type="mb:GmlRendererTestType"/>
       <xs:element name="GmlRendererWZ" type="mb:GmlRendererWZType"/>
       <xs:element name="Gml2Render" type="mb:Gml2RenderType"/>
-      <xs:element name="ButtonBar" type="mb:ButtonBarType"/>
       <xs:element name="WebServiceForm" type="mb:WebServiceFormType"/>
-      <xs:element name="GetFeatureRequest" type="mb:GetFeatureRequestType"/>
       <xs:element name="ShowResponse" type="mb:WidgetType"/>
+      <xs:element name="TransactionResponse" type="mb:WidgetType"/>
+      <xs:element name="Button" type="mb:ButtonType"/>
+      <xs:element name="ZoomIn" type="mb:ButtonType"/>
+      <xs:element name="ZoomOut" type="mb:ButtonType"/>
+      <xs:element name="DragPan" type="mb:ButtonType"/>
+      <xs:element name="SetAoi" type="mb:ButtonType"/>
+      <xs:element name="Reset" type="mb:ButtonType"/>
+      <xs:element name="GetFeatureInfo" type="mb:GetFeatureInfoType"/>
+      <xs:element name="EditPoint" type="mb:EditButtonType"/>
+      <xs:element name="EditLine" type="mb:EditButtonType"/>
+      <xs:element name="InsertFeature" type="mb:InsertFeatureType"/>
+      <xs:element name="WfsGetFeature" type="mb:WfsGetFeatureType"/>
+      <xs:element name="Save" type="mb:SaveType"/>
+      <xs:element name="Loading" type="mb:WidgetType"/>
+      <xs:element name="LayerControl" type="mb:WidgetType"/>
+      <xs:element name="ModelStatus" type="mb:WidgetType"/>
+      <xs:element name="ProcessArgumentsForm" type="mb:ProcessArgumentsFormType"/>
+      <xs:element name="ShowProcessResult" type="mb:ShowProcessResultType"/>
+      <xs:element name="TabbedContent" type="mb:TabbedContentType"/>
     </xs:choice>
   </xs:complexType>
   <xs:complexType name="toolsType">
@@ -457,20 +670,16 @@
       <xs:element name="DragPanHandler" type="mb:DragPanHandlerType"/>
       <xs:element name="MouseClickHandler" type="mb:MouseClickHandlerType"/>
       <xs:element name="ZoomToAoi" type="mb:ZoomToAoiType"/>
-      <xs:element name="ZoomIn" type="mb:ZoomInType"/>
-      <xs:element name="ZoomOut" type="mb:ZoomOutType"/>
-      <xs:element name="DragPan" type="mb:DragPanType"/>
-      <xs:element name="SetAoi" type="mb:SetAoiType"/>
-      <xs:element name="Reset" type="mb:ResetType"/>
-      <xs:element name="GetFeatureInfo" type="mb:GetFeatureInfoToolType"/>
-      <xs:element name="EditPoint" type="mb:EditPointType"/>
-      <xs:element name="EditLine" type="mb:EditLineType"/>
-      <xs:element name="Save" type="mb:SaveType"/>
+      <xs:element name="WebServiceRequest" type="mb:WebServiceRequestType"/>
+      <xs:element name="Caps2Context" type="mb:Caps2ContextType"/>
+      <xs:element name="EditContext" type="mb:EditContextType"/>
+      <xs:element name="MovieLoop" type="mb:MovieLoopType"/>
     </xs:choice>
   </xs:complexType>
-  <!-- 	global base types -->
+  <!--  global base types -->
   <xs:complexType name="AbstractModelType" abstract="true">
     <xs:sequence>
+      <xs:element name="title" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultModelUrl" type="mb:urlPathType" minOccurs="0">
         <xs:annotation>
           <xs:documentation>The URL where the model gets loaded from.  If the method is HTTP GET, then include the full query string in the URL.  Optional, if present, the model will be loaded when the application loads.</xs:documentation>
@@ -504,6 +713,11 @@
       <xs:element name="namespace" type="xs:string" minOccurs="0">
         <xs:annotation>
           <xs:documentation>The namespace that will be used by Xpath queries on this model.  Optional.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="nodeSelectXpath" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation/>
         </xs:annotation>
       </xs:element>
     </xs:sequence>
@@ -542,9 +756,9 @@
           <xs:documentation>if this property has a value of "false", automatic refresh of the widget output is suppressed.  Optional, defaults to true</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="tools" type="mb:toolsType" minOccurs="0">
+      <xs:element name="toolId" type="xs:string" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>to be deprecated and moved to Model abstract type</xs:documentation>
+          <xs:documentation>i</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:sequence>
@@ -563,18 +777,30 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="AbstractToolType" abstract="true">
-    <xs:sequence>
-      <xs:element name="targetModel" type="xs:string" minOccurs="0"/>
-      <xs:element name="mouseHandler" type="xs:string" minOccurs="0"/>
-      <xs:element name="enabled" type="xs:boolean" minOccurs="0"/>
-    </xs:sequence>
-    <xs:attribute name="id" type="mb:idType" use="optional"/>
+  <xs:complexType name="MapImageType">
+    <xs:complexContent>
+      <xs:extension base="mb:AbstractMapWidgetType"/>
+    </xs:complexContent>
   </xs:complexType>
   <xs:complexType name="AbstractButtonType" abstract="true">
     <xs:complexContent>
-      <xs:extension base="mb:AbstractToolType">
+      <xs:extension base="mb:AbstractWidgetType">
         <xs:sequence>
+          <xs:element name="buttonBar" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>equivalent to the htmlTagId property for placing buttons in a page.  Buttons get appended to this HTML element in sequence.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="targetModel" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Target Model</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="mouseHandler" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>the id of a tool object on which to register mouse events.  Optional, if absent, not mouse events are handled and the action is the doSelect function</xs:documentation>
+            </xs:annotation>
+          </xs:element>
           <xs:element name="class" type="xs:string" minOccurs="0">
             <xs:annotation>
               <xs:documentation>specifies the type of button.  Permitted values include "Button" and "RadioButton".  A Button class will execute it's action immediately when pressed.  A "RadioButton" has enabled and disabled state and only one button in a buttonBar group can be enabled at any one time.</xs:documentation>
@@ -595,14 +821,39 @@
               <xs:documentation>partial skin path to graphic source when this button is not selected</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element name="tooltip" type="mb:tooltipType" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="tooltip" type="mb:tooltipType" minOccurs="0">
             <xs:annotation>
               <xs:documentation>text to be used when the mouse hovers over this button.  Muliple langauges are supported by using an "xml:lang" attribute on this property.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="action" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation/>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="cursor" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation/>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="AbstractToolType" abstract="true">
+    <xs:sequence>
+      <xs:element name="targetModel" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>the id of a model object which this tool acts on.  Optional, if absent the action happens on the parent model of this tool.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="enabled" type="xs:boolean" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>a flag to indicate if this tool should initially be enabled.  Optional, accepts values of true and false.  Tools are enabled by default.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="id" type="mb:idType" use="optional"/>
   </xs:complexType>
   <!--utility types-->
   <xs:simpleType name="idType">

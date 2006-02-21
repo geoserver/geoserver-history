@@ -1,27 +1,27 @@
-/*
-Author:       Cameron Shorter cameronAtshorter.net
-License:      GPL as per: http://www.gnu.org/copyleft/gpl.html
-
-$Id: MapImage.js,v 1.1 2005/01/13 05:24:52 madair1 Exp $
-*/
-
-// Ensure this object's dependancies are loaded.
 mapbuilder.loadScript(baseDir+"/widget/MapContainerBase.js");
-
-/**
- * Widget to render a map from an OGC context document.
- * @constructor
- * @base MapContainerBase
- * @param widgetNode  The widget's XML object node from the configuration document.
- * @param model       The model object that this widget belongs to.
- */
-function MapImage(widgetNode, model) {
-  var base = new MapContainerBase(this,widgetNode,model);
-  this.paintMethod = "image2html";
-
-  this.prePaint = function(objRef) {
-    objRef.model.doc.width = objRef.containerModel.getWindowWidth();
-    objRef.model.doc.height = objRef.containerModel.getWindowHeight();
-  }
-
+function MapImage(widgetNode,model){
+WidgetBase.apply(this,new Array(widgetNode,model));
+this.paint=function(objRef){
+if(objRef.model.doc&&objRef.node){
+objRef.prePaint(objRef);
+var outputNode=document.getElementById(objRef.outputNodeId);
+var tempNode=document.createElement("DIV");
+tempNode.style.position="absolute";
+tempNode.style.top=0;
+tempNode.style.left=0;
+tempNode.appendChild(objRef.model.doc);tempNode.setAttribute("id",objRef.outputNodeId);
+if(outputNode){
+objRef.node.replaceChild(tempNode,outputNode);
+}else{
+objRef.node.appendChild(tempNode);
+}
+objRef.postPaint(objRef);
+}
+}
+this.model.addListener("refresh",this.paint,this);
+MapContainerBase.apply(this,new Array(widgetNode,model));
+this.prePaint=function(objRef){
+objRef.model.doc.width=objRef.containerModel.getWindowWidth();
+objRef.model.doc.height=objRef.containerModel.getWindowHeight();
+}
 }
