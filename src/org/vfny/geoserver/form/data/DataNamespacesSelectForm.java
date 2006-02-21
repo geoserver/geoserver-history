@@ -59,6 +59,9 @@ public class DataNamespacesSelectForm extends ActionForm {
             HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
+        if (getSelectedNamespace() == null || getSelectedNamespace().equalsIgnoreCase(""))
+        	return errors;	// no data in the list, so return
+        
         return errors;
     }
     
