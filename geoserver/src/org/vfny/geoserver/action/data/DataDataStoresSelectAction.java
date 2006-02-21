@@ -31,12 +31,15 @@ import org.vfny.geoserver.global.UserContainer;
  * @version $Id: DataDataStoresSelectAction.java,v 1.12 2004/02/25 21:51:11 dmzwiers Exp $
  */
 public class DataDataStoresSelectAction extends ConfigAction {
+	
     public ActionForward execute(ActionMapping mapping,
-        ActionForm incomingForm, UserContainer user, HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
-
+    	ActionForm incomingForm, UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException 
+    {
         DataDataStoresSelectForm form = (DataDataStoresSelectForm) incomingForm;
-
+        if (form.getSelectedDataStoreId() == null)// no datastores to edit
+			return mapping.findForward("config.data.store"); // stay in the same page
+        
         String buttonAction = form.getButtonAction();
 
         DataConfig dataConfig = (DataConfig) getDataConfig();
@@ -63,7 +66,7 @@ public class DataDataStoresSelectAction extends ConfigAction {
 
             return mapping.findForward("config.data.store");
         }
-        
+    
         throw new ServletException(
             "Action '"+buttonAction+"'must be '"+editLabel+"' or '"+deleteLabel+"'");
     }
