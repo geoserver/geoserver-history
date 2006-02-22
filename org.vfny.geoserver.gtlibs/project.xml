@@ -15,6 +15,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
 		<dependency>
@@ -23,6 +24,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -31,6 +33,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -39,6 +42,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -47,6 +51,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -55,6 +60,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -63,6 +69,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -71,6 +78,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -79,6 +87,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
  		<dependency>
@@ -87,6 +96,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -95,6 +105,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -103,6 +114,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -111,6 +123,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -119,6 +132,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -127,6 +141,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -135,6 +150,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -143,6 +159,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -151,6 +168,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -159,6 +177,7 @@
       <version>1.9.0</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
     <dependency>
@@ -167,6 +186,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
 		<dependency>
@@ -175,6 +195,7 @@
       <version>2.2.x</version>
 			<properties>
 				<war.bundle>true</war.bundle>
+				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
 			</properties>
     </dependency>
 
