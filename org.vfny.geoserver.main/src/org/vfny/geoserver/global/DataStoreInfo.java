@@ -4,6 +4,9 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,10 +15,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
-import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 
 
 /**
@@ -27,7 +26,6 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  * @version $Id: DataStoreInfo.java,v 1.14 2004/06/26 19:51:24 jive Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype {
-
     /** DataStoreInfo we are representing */
     private DataStore dataStore = null;
 
@@ -119,10 +117,16 @@ public class DataStoreInfo extends GlobalLayerSupertype {
         return id;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     protected Map getParams() {
         Map params = new HashMap(connectionParams);
-	params.put("namespace", getNameSpace().getURI());
-	return getParams(params, data.getBaseDir().toString());
+        params.put("namespace", getNameSpace().getURI());
+
+        return getParams(params, data.getBaseDir().toString());
     }
 
     /**
@@ -134,54 +138,60 @@ public class DataStoreInfo extends GlobalLayerSupertype {
      * sensitve isses dataStores tend to have.
      * </p>
      *
+     * @param m DOCUMENT ME!
+     * @param baseDir DOCUMENT ME!
+     *
      * @return DOCUMENT ME!
      *
      * @task REVISIT: cache these?
      */
-
     public static Map getParams(Map m, String baseDir) {
         Map params = Collections.synchronizedMap(new HashMap(m));
 
         for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
-            String key = (String) entry.getKey();
             Object value = entry.getValue();
 
             try {
-            	//TODO: this code is a pretty big hack, using the name to 
-            	// determine if the key is a url, could be named something else
-            	// and still be a url
-                if (key != null && key.matches(".* *url") && value instanceof String) {
+                //TODO: this code is a pretty big hack, using the name to 
+                // determine if the key is a url, could be named something else
+                // and still be a url
+                //if ((key != null) && key.matches(".* *url") && value instanceof String) {
+            	//GR: actually checking if path starts with file:data/ is more indicative
+            	//that the expected value is a file that if the key contains "*url"
+            	if (value instanceof String) {
                     String path = (String) value;
                     LOGGER.finer("in string url");
+
                     if (path.startsWith("file:data/")) {
                         path = path.substring(5); // remove 'file:' prefix
 
                         File file = new File(baseDir, path);
                         entry.setValue(file.toURL().toExternalForm());
                     }
-		    //Not sure about this
+
+                    //Not sure about this
                 } else if (value instanceof URL
                         && ((URL) value).getProtocol().equals("file")) {
-		    LOGGER.finer("in URL url");
+                    LOGGER.finer("in URL url");
+
                     URL url = (URL) value;
                     String path = url.getPath();
-		    LOGGER.finer("path is " + path);
-		    if (path.startsWith("data/")){
-			File file = new File(baseDir, path);
-			entry.setValue(file.toURL());
-		    }
-                } /*else if ("dbtype".equals(key) && value instanceof String) {
-                    String val = (String) value;
+                    LOGGER.finer("path is " + path);
 
-                    if ((val != null) && val.equals("postgis")) {
-                        if (!params.containsKey("charset")) {
-                            params.put("charset",
-                                data.getGeoServer().getCharSet().toString());
-                        }
+                    if (path.startsWith("data/")) {
+                        File file = new File(baseDir, path);
+                        entry.setValue(file.toURL());
                     }
-		    } */
-            } catch (MalformedURLException ignore) {
+                } /*else if ("dbtype".equals(key) && value instanceof String) {
+                   String val = (String) value;
+                   if ((val != null) && val.equals("postgis")) {
+                       if (!params.containsKey("charset")) {
+                           params.put("charset",
+                               data.getGeoServer().getCharSet().toString());
+                       }
+                   }
+                   } */} catch (MalformedURLException ignore) {
                 // ignore attempt to fix relative paths
             }
         }
@@ -228,9 +238,9 @@ public class DataStoreInfo extends GlobalLayerSupertype {
             }
 
             if (dataStore == null) {
-            	 // If datastore is not present, then disable it
+                // If datastore is not present, then disable it
                 // (although no change in config).
-                enabled=false;
+                enabled = false;
                 LOGGER.fine("failed to establish connection with " + toString());
                 throw new NoSuchElementException(
                     "No datastore found capable of managing " + toString());

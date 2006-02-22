@@ -4,6 +4,14 @@
  */
 package org.vfny.geoserver.action.data;
 
+import com.vividsolutions.jts.geom.Envelope;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataStoreFactorySpi.Param;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.FeatureSource;
+import org.vfny.geoserver.global.DataStoreInfo;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,18 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.ServletContext;
-
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.DataStoreFactorySpi.Param;
-import org.vfny.geoserver.global.DataStoreInfo;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -33,36 +30,64 @@ import com.vividsolutions.jts.geom.Envelope;
  * @version $Id: DataStoreUtils.java,v 1.12 2004/09/21 21:14:48 cholmesny Exp $
  */
 public abstract class DataStoreUtils {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param params DOCUMENT ME!
+     * @param sc DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     */
     public static DataStore acquireDataStore(Map params, ServletContext sc)
         throws IOException {
-    	//DJB: changed this for geoserver_data_dir   	
-    	//String baseDir = sc.getRealPath("/");
-    	File baseDir =GeoserverDataDirectory.getGeoserverDataDirectory(sc);
-    	
-       	DataStore store = DataStoreFinder.getDataStore(getParams(params,baseDir.getAbsolutePath()));
+        //DJB: changed this for geoserver_data_dir   	
+        //String baseDir = sc.getRealPath("/");
+        File baseDir = GeoserverDataDirectory
+            .getGeoserverDataDirectory(sc);
+
+        DataStore store = DataStoreFinder.getDataStore(getParams(params,
+                    baseDir.getAbsolutePath()));
+
         if (store == null) {
             //TODO: this should throw an exception, but the classes using
             //this class aren't ready to actually get it...
             return null;
-	} else {
-	    return store;
-	}
+        } else {
+            return store;
+        }
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param m DOCUMENT ME!
+     * @param sc DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     protected static Map getParams(Map m, ServletContext sc) {
-	String baseDir = sc.getRealPath("/");
-	return getParams(m, baseDir);
+        String baseDir = sc.getRealPath("/");
+
+        return getParams(m, baseDir);
     }
 
     /**
      * Get Connect params.
+     * 
      * <p>
-     * This is used to smooth any relative path kind of issues for any
-     * file URLS. This code should be expanded to deal with any other context
+     * This is used to smooth any relative path kind of issues for any file
+     * URLS. This code should be expanded to deal with any other context
      * sensitve isses dataStores tend to have.
      * </p>
+     *
+     * @param m DOCUMENT ME!
+     * @param baseDir DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
      */
-    protected static Map getParams(Map m, String baseDir){
+    protected static Map getParams(Map m, String baseDir) {
         return DataStoreInfo.getParams(m, baseDir);
     }
 
@@ -91,8 +116,8 @@ public abstract class DataStoreUtils {
     }
 
     /**
-     * After user has selected Description can aquire Factory based on
-     * display name.
+     * After user has selected Description can aquire Factory based on display
+     * name.
      * 
      * <p>
      * Use factory for:
@@ -108,7 +133,7 @@ public abstract class DataStoreUtils {
      * </ul>
      * 
      *
-     * @param diplayName
+     * @param displayName
      *
      * @return
      */
@@ -180,10 +205,24 @@ public abstract class DataStoreUtils {
         return list;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param description DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public static Map defaultParams(String description) {
         return defaultParams(aquireFactory(description));
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param factory DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public static Map defaultParams(DataStoreFactorySpi factory) {
         Map defaults = new HashMap();
         Param[] params = factory.getParametersInfo();
@@ -194,16 +233,18 @@ public abstract class DataStoreUtils {
             String value = null;
 
             //if (param.required ) {
-                if( param.sample != null){
-                    // Required params may have nice sample values
-                    //
-                    value = param.text( param.sample );
-                }
-                if (value == null ) {
-                    // or not
-                    value = "";
-                }
-		//}
+            if (param.sample != null) {
+                // Required params may have nice sample values
+                //
+                value = param.text(param.sample);
+            }
+
+            if (value == null) {
+                // or not
+                value = "";
+            }
+
+            //}
             if (value != null) {
                 defaults.put(key, value);
             }
@@ -245,17 +286,29 @@ public abstract class DataStoreUtils {
 
         return map;
     }
- 
-    public static Envelope getBoundingBoxEnvelope(FeatureSource fs) throws IOException {
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param fs DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     */
+    public static Envelope getBoundingBoxEnvelope(FeatureSource fs)
+        throws IOException {
         Envelope ev = fs.getBounds();
-        if(ev == null || ev.isNull()){
-            try{
-            	//JD: bad cast, remove
+
+        if ((ev == null) || ev.isNull()) {
+            try {
+                //JD: bad cast, remove
                 ev = (Envelope) fs.getFeatures().getBounds();
-            }catch(Throwable t){
+            } catch (Throwable t) {
                 ev = new Envelope();
             }
         }
+
         return ev;
     }
 }
