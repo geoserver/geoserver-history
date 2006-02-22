@@ -438,5 +438,15 @@
          <war.bundle>true</war.bundle>
        </properties>
      </dependency-->
+
+		<!-- complex -->
+		<dependency>
+			<groupId>jaxp</groupId>
+			<artifactId>jaxp-api</artifactId>
+			<version>1.4</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
 	</dependencies>
 </project>
