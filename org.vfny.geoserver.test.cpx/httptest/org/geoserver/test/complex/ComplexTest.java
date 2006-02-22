@@ -69,7 +69,7 @@ public class ComplexTest extends AbstractGeoserverHttpTest {
 			  "xmlns:ogc=\"http://www.opengis.net/ogc\" " + 
 			  "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " + 
 			  "xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd\">" +
-			  "<wfs:Query typeName=\"topp:states\"></wfs:Query>" + 
+			  "<wfs:Query typeName=\"topp:RoadSegment\"></wfs:Query>" + 
 			"</wfs:GetFeature>";
 		
 		InputStream in = new ByteArrayInputStream(s.getBytes());
