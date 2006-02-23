@@ -189,7 +189,7 @@ public abstract class AbstractService extends HttpServlet {
 
         try {
             String qString = request.getQueryString();
-            LOGGER.fine("reading request: " + qString);
+            LOGGER.fine(new StringBuffer("reading request: ").append(qString).toString());
 
             //Map requestParams = KvpRequestReader.parseKvpSet(qString);
             Map requestParams = new HashMap();
@@ -206,8 +206,7 @@ public abstract class AbstractService extends HttpServlet {
             KvpRequestReader requestReader = getKvpReader(requestParams);
 
             serviceRequest = requestReader.getRequest(request);
-            LOGGER.finer("serviceRequest provided with HttpServletRequest: "
-                + request);
+            LOGGER.finer(new StringBuffer("serviceRequest provided with HttpServletRequest: ").append(request).toString());
 
             //serviceRequest.setHttpServletRequest(request);
         } catch (ServiceException se) {

@@ -3,13 +3,14 @@
  * application directory.
  */
 package org.vfny.geoserver.wcs.responses;
- 
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -36,17 +37,18 @@ import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
 
-
 /**
  * DOCUMENT ME!
  * 
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  */
 public class CoverageResponse implements Response {
 	/** Standard logging instance for class */
-	private static final Logger LOGGER = Logger.getLogger(
-	"org.vfny.geoserver.responses");
+	private static final Logger LOGGER = Logger
+			.getLogger("org.vfny.geoserver.responses");
 
 	/**
 	 * 
@@ -72,29 +74,29 @@ public class CoverageResponse implements Response {
 	 */
 	private CoverageRequest request;
 
-	
 	/**
 	 * Empty constructor
 	 */
 	public CoverageResponse() {
 		request = null;
 	}
-	
+
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param gs DOCUMENT ME!
-	 *
+	 * 
+	 * @param gs
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public String getContentType(GeoServer gs) {
 		return delegate.getContentType(gs);
 	}
-	
+
 	public String getContentEncoding() {
 		return delegate.getContentEncoding();
 	}
-	
+
 	public String getContentDisposition() {
 		return delegate.getContentDisposition();
 	}
@@ -111,138 +113,147 @@ public class CoverageResponse implements Response {
 	 * I am providing a mirror of the existing desing: - execute gathers the
 	 * resultList - sets up the header
 	 * </p>
-	 *
-	 * @param out DOCUMENT ME!
-	 *
-	 * @throws WcsException DOCUMENT ME!
-	 * @throws IOException DOCUMENT ME!
-	 * @throws IllegalStateException DOCUMENT ME!
+	 * 
+	 * @param out
+	 *            DOCUMENT ME!
+	 * 
+	 * @throws WcsException
+	 *             DOCUMENT ME!
+	 * @throws IOException
+	 *             DOCUMENT ME!
+	 * @throws IllegalStateException
+	 *             DOCUMENT ME!
 	 */
 	public void writeTo(OutputStream out) throws ServiceException, IOException {
 		if ((request == null) || (delegate == null)) {
 			throw new IllegalStateException(
-			"execute has not been called prior to writeTo");
+					"execute has not been called prior to writeTo");
 		}
-		
+
 		delegate.encode(out);
 	}
-	
+
 	/**
 	 * Executes FeatureRequest.
 	 * 
 	 * <p>
 	 * Willing to execute a FetureRequest, or FeatureRequestWith Lock.
 	 * </p>
-	 *
-	 * @param req DOCUMENT ME!
-	 *
-	 * @throws WcsException DOCUMENT ME!
+	 * 
+	 * @param req
+	 *            DOCUMENT ME!
+	 * 
+	 * @throws WcsException
+	 *             DOCUMENT ME!
 	 */
 	public void execute(Request req) throws WcsException {
 		execute((CoverageRequest) req);
 	}
-	
+
 	public void execute(CoverageRequest request) throws WcsException {
-		LOGGER.finest("execute CoverageRequest response. Called request is: "
-				+ request);
+		if (LOGGER.isLoggable(Level.FINEST))
+			LOGGER.finest(new StringBuffer(
+					"execute CoverageRequest response. Called request is: ")
+					.append(request).toString());
 		this.request = request;
-		
-		String outputFormat = request.getOutputFormat();
-		
+		final String outputFormat = request.getOutputFormat();
+
 		try {
 			delegate = CoverageResponseDelegateFactory.encoderFor(outputFormat);
 		} catch (NoSuchElementException ex) {
-			throw new WcsException("output format: " + outputFormat + " not "
-					+ "supported by geoserver", ex);
+			throw new WcsException(new StringBuffer("output format: ").append(
+					outputFormat).append(" not ").append(
+					"supported by geoserver").toString(), ex);
 		}
-		
-		GeoServer config = request.getWCS().getGeoServer();
-		Data catalog = request.getWCS().getData();
+
+		final Data catalog = request.getWCS().getData();
 		CoverageInfo meta = null;
 		GridCoverage coverage = null;
-		
+
 		try {
 			meta = catalog.getCoverageInfo(request.getCoverage());
+			final String formatID = meta.getFormatId();
+			final DataConfig dataConfig = (DataConfig) request
+					.getHttpServletRequest().getSession().getServletContext()
+					.getAttribute(DataConfig.CONFIG_KEY);
+			final DataFormatConfig dfConfig = dataConfig
+					.getDataFormat(formatID);
+			final String realPath = request.getHttpServletRequest()
+					.getRealPath("/");
+			final URL url = CoverageUtils.getResource(dfConfig.getUrl(),
+					realPath);
 
-			String formatID = meta.getFormatId();
-			DataConfig dataConfig = (DataConfig) request.getHttpServletRequest()
-						.getSession()
-						.getServletContext()
-						.getAttribute(DataConfig.CONFIG_KEY);
-			DataFormatConfig dfConfig = dataConfig.getDataFormat(formatID);
+			final Format format = dfConfig.getFactory();
+			final GridCoverageReader reader = ((AbstractGridFormat) format)
+					.getReader(url);
 
-			String realPath = request.getHttpServletRequest().getRealPath("/");
-			URL url = CoverageUtils.getResource(dfConfig.getUrl(), realPath);
+			final ParameterValueGroup params = format.getReadParameters();
+			if (params != null) {
+				List list = params.values();
+				Iterator it = list.iterator();
+				while (it.hasNext()) {
+					ParameterValue param = ((ParameterValue) it.next());
+					ParameterDescriptor descr = (ParameterDescriptor) param
+							.getDescriptor();
 
-			Format format = dfConfig.getFactory();
-			GridCoverageReader reader = ((AbstractGridFormat) format).getReader(url);
-
-			ParameterValueGroup params = format.getReadParameters();
-			
-			if( params != null ) {
-				List list=params.values();
-				Iterator it=list.iterator();
-				while(it.hasNext())
-				{
-					ParameterValue param=((ParameterValue)it.next());
-					ParameterDescriptor descr=(ParameterDescriptor)param.getDescriptor();
-					
 					String key = descr.getName().toString();
-					Object value = CoverageUtils.getCvParamValue(key, param, dfConfig.getParameters());
-					
-					if( value != null )
+					Object value = CoverageUtils.getCvParamValue(key, param,
+							dfConfig.getParameters());
+
+					if (value != null)
 						params.parameter(key).setValue(value);
 				}
 			}
-			
-			coverage = reader.read(
-					params != null ?
-							(GeneralParameterValue[]) params.values().toArray(new GeneralParameterValue[params.values().size()])
-							: null
-			);
+
+			coverage = reader
+					.read(params != null ? (GeneralParameterValue[]) params
+							.values().toArray(
+									new GeneralParameterValue[params.values()
+											.size()]) : null);
 			if (coverage == null || !(coverage instanceof GridCoverage2D))
 				throw new IOException(
-				"The requested coverage could not be found.");
-			
-			final GridCoverage2D finalCoverage = CoverageUtils.getCroppedCoverage(request, meta, coverage);
+						"The requested coverage could not be found.");
+
+			final GridCoverage2D finalCoverage = CoverageUtils
+					.getCroppedCoverage(request, meta, coverage);
 			delegate.prepare(outputFormat, finalCoverage);
 		} catch (IOException e) {
-			throw new WcsException(e, "problem with CoverageResults",
-					request.getHandle());
+			throw new WcsException(e, "problem with CoverageResults", request
+					.getHandle());
 		} catch (NoSuchElementException e) {
-			throw new WcsException(e, "problem with CoverageResults",
-					request.getHandle());
+			throw new WcsException(e, "problem with CoverageResults", request
+					.getHandle());
 		} catch (IllegalArgumentException e) {
-			throw new WcsException(e, "problem with CoverageResults",
-					request.getHandle());
+			throw new WcsException(e, "problem with CoverageResults", request
+					.getHandle());
 		} catch (SecurityException e) {
-			throw new WcsException(e, "problem with CoverageResults",
-					request.getHandle());
+			throw new WcsException(e, "problem with CoverageResults", request
+					.getHandle());
 		} catch (WcsException e) {
-			throw new WcsException(e, "problem with CoverageResults",
-					request.getHandle());
+			throw new WcsException(e, "problem with CoverageResults", request
+					.getHandle());
 		} catch (FactoryException e) {
-			throw new WcsException(e, "problem with CoverageResults",
-					request.getHandle());
+			throw new WcsException(e, "problem with CoverageResults", request
+					.getHandle());
 		} catch (IndexOutOfBoundsException e) {
-			throw new WcsException(e, "problem with CoverageResults",
-					request.getHandle());
+			throw new WcsException(e, "problem with CoverageResults", request
+					.getHandle());
 		} catch (TransformException e) {
-			throw new WcsException(e, "problem with CoverageResults",
-					request.getHandle());
+			throw new WcsException(e, "problem with CoverageResults", request
+					.getHandle());
 		}
 	}
 
 	/**
 	 * Release locks if we are into that sort of thing.
-	 *
+	 * 
 	 * @see org.vfny.geoserver.responses.Response#abort()
 	 */
 	public void abort(Service gs) {
 		if (request == null) {
 			return; // request was not attempted
 		}
-		
+
 		Data catalog = gs.getData();
 	}
 }

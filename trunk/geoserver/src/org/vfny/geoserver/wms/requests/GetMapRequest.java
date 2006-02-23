@@ -233,17 +233,7 @@ public class GetMapRequest extends WMSRequest {
         this.mandatoryParams.width = width;
     }
 
-    /**
-     * decodes a color of the form <code>#FFFFFF</code> into a
-     * <code>java.awt.Color</code> object
-     *
-     * @param hexColor DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    private static final Color decodeColor(String hexColor) {
-        return Color.decode(hexColor);
-    }
+
 
 /** * DOCUMENT ME! *  * @author Gabriel Roldan, Axios Engineering * @version $Id$ */
     private class MandatoryParameters {

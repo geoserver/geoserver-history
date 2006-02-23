@@ -188,7 +188,7 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
         final int height = map.getMapHeight();
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("setting up " + width + "x" + height + " image");
+            LOGGER.fine(new StringBuffer("setting up ").append( width).append("x").append(height).append(" image").toString());
         }
 
          BufferedImage curImage = new BufferedImage(width, height,BufferedImage.TYPE_4BYTE_ABGR);
