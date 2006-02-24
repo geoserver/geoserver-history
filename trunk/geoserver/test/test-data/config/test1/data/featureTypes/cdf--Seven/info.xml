@@ -1,9 +1,0 @@
-<featureType datastore="cdf">
-	<name>Seven</name>
-	<SRS>32615</SRS>
-	<title>The cite:Seven layer</title>
-	<abstract>Test features for the CITE project</abstract>
-	<keywords>Fifteen CITE Geometry</keywords>
-	<latLonBoundingBox dynamic="false" minx="-1" miny="-1" maxx="1" maxy="1"/>
-        <styles default="normal"/>
-</featureType>
