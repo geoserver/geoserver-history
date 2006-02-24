@@ -22,7 +22,10 @@ import org.vfny.geoserver.global.dto.WMSDTO;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -67,11 +70,11 @@ public class XMLConfigWriter {
         }
 
         WriterUtils.initFile(root, true);
-	boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
-	//We're just checking if it's actually a data_dir, not trying to
-	//to do backwards compatibility.  So if an old data_dir is made in
-	//the old way, on save it'll come to the new way.
-	File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
+		boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
+		//We're just checking if it's actually a data_dir, not trying to
+		//to do backwards compatibility.  So if an old data_dir is made in
+		//the old way, on save it'll come to the new way.
+		File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
         File configDir = WriterUtils.initFile(fileDir, true);
 
         File catalogFile = WriterUtils.initWriteFile(new File(configDir,
@@ -84,12 +87,12 @@ public class XMLConfigWriter {
         } catch (IOException e) {
             throw new ConfigurationException("Store" + root, e);
         }
-	File dataDir;
-	if (!inDataDir) { 
-	    dataDir = WriterUtils.initFile(new File(root, "data/"), true);
-	} else {
-	    dataDir = root;
-	}
+		File dataDir;
+		if (!inDataDir) { 
+		    dataDir = WriterUtils.initFile(new File(root, "data/"), true);
+		} else {
+		    dataDir = root;
+		}
         File featureTypeDir = WriterUtils.initFile(new File(dataDir,
                     "featureTypes/"), true);
         storeFeatures(featureTypeDir, data);
@@ -310,7 +313,6 @@ public class XMLConfigWriter {
         LOGGER.finer("In method storeService");
 
         ServiceDTO s = null;
-        String u = null;
         String t = "";
         
         boolean fBounds = false;
@@ -650,8 +652,16 @@ public class XMLConfigWriter {
                                                              .get(s);
 
             if (ft != null) {
+            	String ftDirName = ft.getDirName();
+            	
+            	try {	// encode the file name (this is to catch colons in FT names)
+            		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
+					LOGGER.info("Writing encoded URL: "+ftDirName);
+				} catch (UnsupportedEncodingException e1) {
+					throw new ConfigurationException(e1);
+				}
                 File dir2 = WriterUtils.initWriteFile(new File(dir,
-                            ft.getDirName()), true);
+                            ftDirName), true);
 
                 storeFeature(ft, dir2);
 
@@ -690,8 +700,14 @@ public class XMLConfigWriter {
 
             while ((fti == null) && i.hasNext()) {
                 FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) i.next();
-
-                if (ft.getDirName().equals(fa[j].getName())) {
+                String ftDirName = ft.getDirName();
+                try {	// encode the file name (this is to catch colons in FT names)
+            		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
+					LOGGER.info("Decoded URL: "+ftDirName);
+				} catch (UnsupportedEncodingException e1) {
+					throw new ConfigurationException(e1);
+				}
+                if (ftDirName.equals(fa[j].getName())) {
                     fti = ft;
                 }
             }
