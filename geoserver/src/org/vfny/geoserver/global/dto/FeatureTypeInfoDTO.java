@@ -611,10 +611,10 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * getDirName purpose.
      * 
      * <p>
-     * Description ...
+     * Returns the featuretype directory name.
      * </p>
      *
-     * @return
+     * @return the featuretype directory name
      */
     public String getDirName() {
         return dirName;
