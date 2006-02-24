@@ -1175,7 +1175,7 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/JGriB1-0.9.x.jar" file="${dir.maven}/JGriB1/jars/JGriB1-0.9.x.jar" />
 	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/Beam-1.0.jar" file="${dir.maven}/beam/jars/beam-1.0.jar" />
 	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/hsqldb-1.8.0.1.jar" file="${dir.maven}/hsql/jars/hsqldb-1.8.0.1.jar" />
-	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/jdom.jar" file="${dir.maven}/jdom/jars/jdom.jar" />
+	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/jdom-1.0.jar" file="${dir.maven}/jdom/jars/jdom.jar" />
 
 	
 <!-- added by DJB to be more complete. -->
