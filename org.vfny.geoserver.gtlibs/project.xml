@@ -5,14 +5,14 @@
 
 	<groupId>org.vfny</groupId>
   <artifactId>org.vfny.geoserver.gtlibs</artifactId>
-	<currentVersion>2.2.x</currentVersion>
+	<currentVersion>${geotools.version}</currentVersion>
   <name>Geotools Libraries</name>
 
 	<dependencies>
  		<dependency>
       <groupId>gt2</groupId>
       <artifactId>api</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -21,7 +21,7 @@
 		<dependency>
       <groupId>gt2</groupId>
       <artifactId>arcgrid</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -30,7 +30,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>arcsde</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>coverage</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -48,7 +48,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>epsg-wkt</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -57,7 +57,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>gml</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -66,7 +66,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>graph</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -75,7 +75,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>image</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -84,7 +84,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>indexed-shapefile</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -93,7 +93,7 @@
  		<dependency>
       <groupId>gt2</groupId>
       <artifactId>main</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -102,7 +102,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>mysql</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -111,7 +111,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>oracle-spatial</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -120,7 +120,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>postgis</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -129,7 +129,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>property</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -138,7 +138,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>render</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -147,7 +147,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>referencing</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -156,7 +156,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>shapefile</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -165,7 +165,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>validation</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -183,7 +183,7 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>wfs</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -192,7 +192,7 @@
 		<dependency>
       <groupId>gt2</groupId>
       <artifactId>wms</artifactId>
-      <version>2.2.x</version>
+      <version>${geotools.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 				<eclipse.dependency>${eclipse.dependencies}</eclipse.dependency>
@@ -411,7 +411,7 @@
      <dependency>
        <groupId>log4j</groupId>
        <artifactId>log4j</artifactId>
-       <version>1.2.8</version>
+       <version>1.2.9</version>
        <properties>
          <war.bundle>true</war.bundle>
        </properties>
