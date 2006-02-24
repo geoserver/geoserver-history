@@ -168,7 +168,7 @@ Function echoJava
    Call findJavaPath
    Pop $1
    MessageBox MB_OK "Using Java Development Kit found in $1.  If you would \
-     like GeoServer to use another JDK then hit Cancel and set the JAVA_HOME \ 
+     like GeoServer to use another JDK then exit the installer and set the JAVA_HOME \ 
      environment variable the location of your preferred JDK.  If your JDK \
      is not version 1.4 then please download and install a new one from \ 
      http://java.sun.com/j2se/1.4.  NOTE: this must be JDK/SDK - not a JRE."
