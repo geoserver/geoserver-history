@@ -8,7 +8,9 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -476,8 +478,7 @@ public class XMLConfigWriter {
 
             while (i.hasNext()) {
                 String s = (String) i.next();
-                DataStoreInfoDTO ds = (DataStoreInfoDTO) data.getDataStores()
-                                                             .get(s);
+            DataStoreInfoDTO ds = (DataStoreInfoDTO) data.getDataStores().get(s);
 
                 if (ds != null) {
                     storeDataStore(cw, ds);
@@ -784,9 +785,17 @@ public class XMLConfigWriter {
 		.get(s);
 	    
             if (ft != null) {
+            	String ftDirName = ft.getDirName();
+            	
+            	try {	// encode the file name (this is to catch colons in FT names)
+            		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
+					LOGGER.info("Writing encoded URL: "+ftDirName);
+				} catch (UnsupportedEncodingException e1) {
+					throw new ConfigurationException(e1);
+				}
                 File dir2 = WriterUtils.initWriteFile(new File(dir,
-							       ft.getDirName()), true);
-                
+                            ftDirName), true);
+
                 storeFeature(ft, dir2);
                 
                 if (ft.getSchemaAttributes() != null) {
@@ -824,8 +833,14 @@ public class XMLConfigWriter {
 
             while ((fti == null) && i.hasNext()) {
                 FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) i.next();
-
-                if (ft.getDirName().equals(fa[j].getName())) {
+                String ftDirName = ft.getDirName();
+                try {	// encode the file name (this is to catch colons in FT names)
+            		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
+					LOGGER.info("Decoded URL: "+ftDirName);
+				} catch (UnsupportedEncodingException e1) {
+					throw new ConfigurationException(e1);
+				}
+                if (ftDirName.equals(fa[j].getName())) {
                     fti = ft;
                 }
             }

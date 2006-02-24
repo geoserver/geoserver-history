@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -108,9 +109,10 @@ public class MapPreviewAction extends Action
 			Envelope bbox = layer.getLatLongBoundingBox();
 			if (layer.isEnabled()) 
 			{
+				String ftName = layer.getFeatureType().getTypeName().replaceAll(":","_");//URLEncoder.encode(layer.getFeatureType().getTypeName(), "UTF-8");
 				// prepare strings for web output
-				ftList.add(layer.getNameSpace().getPrefix()+"_"+layer.getFeatureType().getTypeName());	// FeatureType name
-				ftnsList.add(layer.getNameSpace().getPrefix()+":"+layer.getFeatureType().getTypeName() );
+				ftList.add(layer.getNameSpace().getPrefix()+"_"+ftName );	// FeatureType name
+				ftnsList.add(layer.getNameSpace().getPrefix()+":"+ftName );	// namespace
 				dsList.add(layer.getDataStoreInfo().getId());	// DataStore info
 				// bounding box of the FeatureType
 				bboxList.add(bbox.getMinX()+", "+bbox.getMinY()+", "+bbox.getMaxX()+", "+bbox.getMaxY());
@@ -194,22 +196,23 @@ public class MapPreviewAction extends Action
 	{
 		FeatureType featureType = layer.getFeatureType();
 		String ft_name = featureType.getTypeName();
+		String ft_name_file = featureType.getTypeName().replaceAll(":", "_");
 		String ft_namespace = layer.getNameSpace().getPrefix();
 		
-		File html_file = new File(previewDir, ft_namespace + "_"+ ft_name+".html");
-		File config_file = new File(previewDir, ft_namespace + "_"+ ft_name+"Config.xml");
-		File xml_file = new File(previewDir, ft_namespace + "_"+ ft_name+".xml");
+		File html_file = new File(previewDir, ft_namespace + "_"+ ft_name_file+".html");
+		File config_file = new File(previewDir, ft_namespace + "_"+ ft_name_file+"Config.xml");
+		File xml_file = new File(previewDir, ft_namespace + "_"+ ft_name_file+".xml");
 		
 		// *.html
 		FileOutputStream html_fos = new FileOutputStream(html_file);
 		PrintStream html_out = new PrintStream(html_fos);
-		createIndexHTML(html_out, ft_name, ft_namespace);
+		createIndexHTML(html_out, ft_name_file, ft_namespace);
 		html_out.close();
 		
 		// *Config.xml
 		FileOutputStream config_fos = new FileOutputStream(config_file);
 		PrintStream config_out = new PrintStream(config_fos);
-		createConfigXML(config_out, ft_name, ft_namespace);
+		createConfigXML(config_out, ft_name_file, ft_namespace);
 		config_out.close();
 		
 		// *.xml
@@ -313,7 +316,7 @@ public class MapPreviewAction extends Action
 		out.println("                 page.");
 		out.println("    Licence:     GPL as per: http://www.gnu.org/copyleft/gpl.html ");
 		out.println("");
-		out.println("    $Id: MapPreviewAction.java 4066 2006-01-10 01:59:45Z cholmes $");
+		out.println("    $Id: MapPreviewAction.java 4219 2006-02-24 02:34:12Z bowens $");
 		out.println("  -->");
 		out.println("  <!--");
 		out.println("    All static images should be relative to this URL.");

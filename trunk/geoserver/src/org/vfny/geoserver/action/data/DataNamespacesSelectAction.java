@@ -40,6 +40,7 @@ public class DataNamespacesSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             UserContainer user, HttpServletRequest request, HttpServletResponse response)
     throws IOException, ServletException {
+    	
         DataNamespacesSelectForm namespacesForm = (DataNamespacesSelectForm) form;
 
         String action = namespacesForm.getAction();
@@ -55,6 +56,10 @@ public class DataNamespacesSelectAction extends ConfigAction {
         String _default = HTMLEncoder.decode(messages.getMessage(locale, "label.default"));
 
         String nsSelected = namespacesForm.getSelectedNamespace();
+        
+        if (nsSelected == null || nsSelected.equalsIgnoreCase(""))	// if it is empty (nothing selected)
+        	return mapping.findForward("config.data.namespace");	// return to same page and do nothing
+        
         if(nsSelected.endsWith("*")){
         	nsSelected = nsSelected.substring(0,nsSelected.lastIndexOf("*"));
         }

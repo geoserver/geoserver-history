@@ -11,8 +11,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,7 +89,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Example Use:
  * 
  * <pre><code>
- * ModelConfig m = XMLConfigReader.load(new File(&quot;/conf/&quot;));
+ * ModelConfig m = XMLConfigReader.load(new File("/conf/"));
  * </code></pre>
  * 
  * </p>
@@ -1100,7 +1102,14 @@ public class XMLConfigReader {
 				LOGGER.finer("Info dir:" + info);
 
 				FeatureTypeInfoDTO dto = loadFeature(info);
-				map.put(dto.getKey(), dto);
+                String ftName = null;
+                try {	// Decode the URL of the FT. This is to catch colons used in filenames
+					ftName = URLDecoder.decode(dto.getKey(), "UTF-8");
+					LOGGER.info("Decoding file name: "+ftName);
+				} catch (UnsupportedEncodingException e) {
+					throw new ConfigurationException(e);
+				}
+                map.put(ftName, dto);
 			}
 		}
 
@@ -1247,20 +1256,20 @@ public class XMLConfigReader {
 			ft.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
 		}
 
-		// Modif C. Kolbowicz - 06/10/2004
-		Element legendURL = ReaderUtils.getChildElement(fTypeRoot, "LegendURL");
-		if (legendURL != null) {
-			LegendURLDTO legend = new LegendURLDTO();
-			legend.setWidth(Integer.parseInt(ReaderUtils.getAttribute(
-					legendURL, "width", true)));
-			legend.setHeight(Integer.parseInt(ReaderUtils.getAttribute(
-					legendURL, "height", true)));
-			legend.setFormat(ReaderUtils
-					.getChildText(legendURL, "Format", true));
-			legend.setOnlineResource(ReaderUtils.getAttribute(ReaderUtils
-					.getChildElement(legendURL, "OnlineResource", true),
-					"xlink:href", true));
-			ft.setLegendURL(legend);
+        // Modif C. Kolbowicz - 06/10/2004
+        Element legendURL = ReaderUtils.getChildElement(fTypeRoot, "LegendURL");
+
+        if (legendURL != null) {
+            LegendURLDTO legend = new LegendURLDTO();
+            legend.setWidth(Integer.parseInt(ReaderUtils.getAttribute(
+                        legendURL, "width", true)));
+            legend.setHeight(Integer.parseInt(ReaderUtils.getAttribute(
+                        legendURL, "height", true)));
+            legend.setFormat(ReaderUtils.getChildText(legendURL, "Format", true));
+            legend.setOnlineResource(ReaderUtils.getAttribute(
+                    ReaderUtils.getChildElement(legendURL, "OnlineResource",
+                        true), "xlink:href", true));
+            ft.setLegendURL(legend);
 		}
 
 		// -- Modif C. Kolbowicz - 06/10/2004
