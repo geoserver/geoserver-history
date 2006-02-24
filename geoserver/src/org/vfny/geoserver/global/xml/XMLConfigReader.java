@@ -34,8 +34,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -943,7 +945,14 @@ public class XMLConfigReader {
                 LOGGER.finer("Info dir:" + info);
 
                 FeatureTypeInfoDTO dto = loadFeature(info);
-                map.put(dto.getKey(), dto);
+                String ftName = null;
+                try {	// Decode the URL of the FT. This is to catch colons used in filenames
+					ftName = URLDecoder.decode(dto.getKey(), "UTF-8");
+					LOGGER.info("Decoding file name: "+ftName);
+				} catch (UnsupportedEncodingException e) {
+					throw new ConfigurationException(e);
+				}
+                map.put(ftName, dto);
             }
         }
 
