@@ -6,22 +6,22 @@ package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
 
-/** * ContactTest purpose. *  * <p> * Description of ContactTest ... * </p> *  * <p></p> *  * @author dzwiers, Refractions Research, Inc. * @version $Id: ContactTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $ */
+
+/**
+ * ContactTest purpose.
+ * 
+ * <p>
+ * Description of ContactTest ...
+ * </p>
+ * 
+ * <p></p>
+ *
+ * @author dzwiers, Refractions Research, Inc.
+ * @version $Id: ContactTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $
+ */
 public class ContactTest extends TestCase {
-
-	/**
-	 * 
-	 * @uml.property name="a"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private ContactConfig a;
-
-	/**
-	 * 
-	 * @uml.property name="b"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private ContactConfig b;
+    private ContactConfig a;
+    private ContactConfig b;
 
     /**
      * Constructor for ContactTest.

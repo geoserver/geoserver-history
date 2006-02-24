@@ -8,19 +8,17 @@ import junit.framework.TestCase;
 
 import org.vfny.geoserver.wms.GetMapProducer;
 
-/** * DOCUMENT ME!
- * 
- * @author gabriel TODO To change the template for this generated type comment
- *         go to Window - Preferences - Java - Code Style - Code Templates */
-public class GetMapResponseTest extends TestCase {
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @uml.property name="getMapResponse"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private GetMapResponse getMapResponse;
+
+/**
+ * DOCUMENT ME!
+ *
+ * @author gabriel TODO To change the template for this generated type comment
+ *         go to Window - Preferences - Java - Code Style - Code Templates
+ */
+public class GetMapResponseTest extends TestCase {
+    /** DOCUMENT ME!  */
+    private GetMapResponse getMapResponse;
 
     /**
      * Constructor for GetMapResponseTest.

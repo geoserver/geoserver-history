@@ -14,43 +14,40 @@ import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory2;
-import org.geotools.styling.StyleFactoryImpl;
+import org.geotools.styling.StyleFactory;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-/** * Tests that DefaultRasterMapProducerTest, which is based on LiteRenderer,
+
+/**
+ * Tests that DefaultRasterMapProducerTest, which is based on LiteRenderer,
  * correctly generates a raster map.
- * 
+ *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id$ */
+ * @version $Id$
+ */
 public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(DefaultRasterMapProducerTest.class.getPackage()
                                                                                             .getName());
 
     /** DOCUMENT ME! */
-    private static final FilterFactory filterFactory = new FilterFactoryImpl();
+    private static final FilterFactory filterFactory = FilterFactory
+        .createFilterFactory();
 
     /** DOCUMENT ME! */
-    private static final StyleFactory2 sFac = new StyleFactoryImpl();
+    private static final StyleFactory sFac = StyleFactory.createStyleFactory();
 
     /** DOCUMENT ME! */
     private static final Color BG_COLOR = Color.white;
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @uml.property name="rasterMapProducer"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private DefaultRasterMapProducer rasterMapProducer;
+    /** DOCUMENT ME! */
+    private DefaultRasterMapProducer rasterMapProducer;
 
     /**
      *

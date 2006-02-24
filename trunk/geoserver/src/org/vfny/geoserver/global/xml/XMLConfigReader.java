@@ -1222,7 +1222,8 @@ public class XMLConfigReader {
 		ft.setName(ReaderUtils.getChildText(fTypeRoot, "name", true));
 		ft.setTitle(ReaderUtils.getChildText(fTypeRoot, "title", true));
 		ft.setAbstract(ReaderUtils.getChildText(fTypeRoot, "abstract"));
-
+		ft.setWmsPath(ReaderUtils.getChildText(fTypeRoot, "wmspath"/*, true*/));
+		
 		String keywords = ReaderUtils.getChildText(fTypeRoot, "keywords");
 
 		if (keywords != null) {
@@ -1395,6 +1396,7 @@ public class XMLConfigReader {
 		CoverageInfoDTO cv = new CoverageInfoDTO();
 		cv.setFormatId(ReaderUtils.getAttribute(coverageRoot, "format", true));
 		cv.setName(ReaderUtils.getChildText(coverageRoot, "name", true));
+		cv.setWmsPath(ReaderUtils.getChildText(coverageRoot, "wmspath"/*, true*/));
 		cv.setLabel(ReaderUtils.getChildText(coverageRoot, "label", true));
 		cv
 				.setDescription(ReaderUtils.getChildText(coverageRoot,

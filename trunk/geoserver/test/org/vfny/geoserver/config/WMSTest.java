@@ -6,22 +6,22 @@ package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
 
-/** * WFSTest purpose. *  * <p> * Description of WFSTest ... * </p> *  * <p></p> *  * @author dzwiers, Refractions Research, Inc. * @version $Id: WMSTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $ */
+
+/**
+ * WFSTest purpose.
+ * 
+ * <p>
+ * Description of WFSTest ...
+ * </p>
+ * 
+ * <p></p>
+ *
+ * @author dzwiers, Refractions Research, Inc.
+ * @version $Id: WMSTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $
+ */
 public class WMSTest extends TestCase {
-
-	/**
-	 * 
-	 * @uml.property name="a"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private WMSConfig a;
-
-	/**
-	 * 
-	 * @uml.property name="b"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private WMSConfig b;
+    private WMSConfig a;
+    private WMSConfig b;
 
     /**
      * Constructor for WFSTest.

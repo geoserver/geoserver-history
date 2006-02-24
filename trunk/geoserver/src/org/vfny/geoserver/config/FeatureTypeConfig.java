@@ -76,6 +76,11 @@ public class FeatureTypeConfig {
 	private String name;
 
 	/**
+	 * 
+	 */
+	private String wmsPath;
+
+	/**
 	 * The schema name.
 	 * <p>
 	 * Usually  name + "_Type"                
@@ -220,6 +225,7 @@ public class FeatureTypeConfig {
         }
         defaultStyle = "";
         name = schema.getTypeName();
+		wmsPath = "/";
         title = schema.getTypeName() + "_Type";
         _abstract = "Generated from " + dataStoreId;
         keywords = new HashSet();
@@ -267,6 +273,7 @@ public class FeatureTypeConfig {
             }
         }
         name = dto.getName();
+		wmsPath = dto.getWmsPath();
         title = dto.getTitle();
         _abstract = dto.getAbstract();
         numDecimals = dto.getNumDecimals();
@@ -314,6 +321,7 @@ public class FeatureTypeConfig {
             f.setSchemaAttributes(s);            
         }        
         f.setName(name);
+        f.setWmsPath(wmsPath);
         f.setTitle(title);
         f.setAbstract(_abstract);
         f.setNumDecimals(numDecimals);
@@ -679,4 +687,10 @@ public class FeatureTypeConfig {
 	    + " SRS: " + SRS + " schemaAttributes: " + schemaAttributes + 
 	    " schemaBase " + schemaBase + "]";
     }
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
+	}
 }

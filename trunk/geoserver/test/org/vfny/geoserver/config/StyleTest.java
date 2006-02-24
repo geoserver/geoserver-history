@@ -8,23 +8,22 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
-/** * StyleTest purpose. *  * <p> * Description of StyleTest ... * </p> *  * <p></p> *  * @author dzwiers, Refractions Research, Inc. * @version $Id: StyleTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $ */
+
+/**
+ * StyleTest purpose.
+ * 
+ * <p>
+ * Description of StyleTest ...
+ * </p>
+ * 
+ * <p></p>
+ *
+ * @author dzwiers, Refractions Research, Inc.
+ * @version $Id: StyleTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $
+ */
 public class StyleTest extends TestCase {
-
-	/**
-	 * 
-	 * @uml.property name="a"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private StyleConfig a;
-
-	/**
-	 * 
-	 * @uml.property name="b"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private StyleConfig b;
-
+    private StyleConfig a;
+    private StyleConfig b;
     File f;
 
     /**

@@ -28,6 +28,16 @@
     </tr>
 	<tr>
       <td class="label">
+		<span class="help" title="<bean:message key="help.wms.path"/>">
+        <bean:message key="label.wms.path"/>:
+      </span>
+	  </td>
+	  <td class="datum">
+		<html:text property="wmsPath" size="60"/>
+	  </td>
+	</tr>    
+	<tr>
+      <td class="label">
 		<span class="help" title="<bean:message key="help.type.style"/>">
           <bean:message key="label.style"/>:
         </span>

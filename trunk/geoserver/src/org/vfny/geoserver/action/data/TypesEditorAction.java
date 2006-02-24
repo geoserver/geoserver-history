@@ -245,67 +245,68 @@ public class TypesEditorAction extends ConfigAction {
      * @param config
      */
     private void sync(TypesEditorForm form, FeatureTypeConfig config, 
-		      HttpServletRequest request) {
-        config.setName(form.getTypeName());
-        config.setAbstract(form.getAbstract());
-        config.setDefaultStyle(form.getStyleId());
-        config.setSRS(Integer.parseInt(form.getSRS()));
-        config.setTitle(form.getTitle());
-        config.setLatLongBBox(getBoundingBox(form));
-        config.setKeywords(keyWords(form));
+    		HttpServletRequest request) {
+    	config.setName(form.getTypeName());
+    	config.setAbstract(form.getAbstract());
+    	config.setDefaultStyle(form.getStyleId());
+    	config.setSRS(Integer.parseInt(form.getSRS()));
+    	config.setTitle(form.getTitle());
+    	config.setLatLongBBox(getBoundingBox(form));
+    	config.setKeywords(keyWords(form));
+		config.setWmsPath(form.getWmsPath());
 
-        String schemaBase = form.getSchemaBase();
-
-        if ((schemaBase == null) || schemaBase.equals("")
-                || schemaBase.equals("--")) {
-            config.setSchemaBase(null);
-            config.setSchemaName(null);
-            config.setSchemaAttributes(null);
-        } else {
-            config.setSchemaBase(schemaBase);
-	    
-            String schemaName = config.getSchemaName();
-            List schemaAttributes = config.getSchemaAttributes();
-            System.out.println("in non null sb, sname: " + schemaName + 
-			       ", satts: " + schemaAttributes);
-	    if ((schemaName == null) || (schemaName.trim().length() == 0)) {
-                schemaName = form.getTypeName() + "_Type";
-                //HACK: For some reason only when editing an already exisitng
-		//featureType, on the first time of switching to the editor
-		//it gets a full schemaAttribute list, and I can't find where
-		//so for now we are just relying on schemaName being null or
-		
-                schemaAttributes = null;
-		//System.out.println("testing on schemaAtts: " + schemaAttributes);               
-		config.setSchemaName(schemaName);
-	    } else {
-		config.setSchemaName(form.getSchemaName());
-	    }
-	    if (schemaAttributes == null || schemaAttributes.isEmpty()) {
-		    schemaAttributes = new ArrayList();
-		    List createList = form.getCreateableAttributes();
-		    System.out.println("schemaAtts null, createList: " + createList);
-		    FeatureType fType = getFeatureType(form, request);
-		    for (int i = 0; i < fType.getAttributeCount(); i++) {
-			AttributeType attType = fType.getAttributeType(i);
-			AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attType);
-	 		schemaAttributes.add(attributeConfig);
-		    //new ArrayList();
-		    //DataStoreConfig dsConfig = config.
-		    //FeatureType featureType = config.get
-		    }
-		    config.setSchemaAttributes(schemaAttributes);
-	    } else {
-		config.setSchemaAttributes(form.toSchemaAttributes());
-	    }
-	}
-		
-
-
-	    //            config.setSchemaAttributes(form.toSchemaAttributes());
-    
-	    LOGGER.fine("config schema atts is " + config.getSchemaAttributes());
-	    //config.setSchemaAttributes(form.toSchemaAttributes());
+    	String schemaBase = form.getSchemaBase();
+    	
+    	if ((schemaBase == null) || schemaBase.equals("")
+    			|| schemaBase.equals("--")) {
+    		config.setSchemaBase(null);
+    		config.setSchemaName(null);
+    		config.setSchemaAttributes(null);
+    	} else {
+    		config.setSchemaBase(schemaBase);
+    		
+    		String schemaName = config.getSchemaName();
+    		List schemaAttributes = config.getSchemaAttributes();
+    		System.out.println("in non null sb, sname: " + schemaName + 
+    				", satts: " + schemaAttributes);
+    		if ((schemaName == null) || (schemaName.trim().length() == 0)) {
+    			schemaName = form.getTypeName() + "_Type";
+    			//HACK: For some reason only when editing an already exisitng
+    			//featureType, on the first time of switching to the editor
+    			//it gets a full schemaAttribute list, and I can't find where
+    			//so for now we are just relying on schemaName being null or
+    			
+    			schemaAttributes = null;
+    			//System.out.println("testing on schemaAtts: " + schemaAttributes);               
+    			config.setSchemaName(schemaName);
+    		} else {
+    			config.setSchemaName(form.getSchemaName());
+    		}
+    		if (schemaAttributes == null || schemaAttributes.isEmpty()) {
+    			schemaAttributes = new ArrayList();
+    			List createList = form.getCreateableAttributes();
+    			System.out.println("schemaAtts null, createList: " + createList);
+    			FeatureType fType = getFeatureType(form, request);
+    			for (int i = 0; i < fType.getAttributeCount(); i++) {
+    				AttributeType attType = fType.getAttributeType(i);
+    				AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attType);
+    				schemaAttributes.add(attributeConfig);
+    				//new ArrayList();
+    				//DataStoreConfig dsConfig = config.
+    				//FeatureType featureType = config.get
+    			}
+    			config.setSchemaAttributes(schemaAttributes);
+    		} else {
+    			config.setSchemaAttributes(form.toSchemaAttributes());
+    		}
+    	}
+    	
+    	
+    	
+    	//            config.setSchemaAttributes(form.toSchemaAttributes());
+    	
+    	LOGGER.fine("config schema atts is " + config.getSchemaAttributes());
+    	//config.setSchemaAttributes(form.toSchemaAttributes());
     }
 
     private void executeAdd(ActionMapping mapping, TypesEditorForm form,

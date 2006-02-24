@@ -11,35 +11,31 @@ import java.util.logging.Logger;
 
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Fill;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory2;
-import org.geotools.styling.StyleFactoryImpl;
+import org.geotools.styling.StyleFactory;
 import org.geotools.styling.Symbolizer;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 
-/** * Tets the functioning of the abstract legend producer for raster formats,
+
+/**
+ * Tets the functioning of the abstract legend producer for raster formats,
  * which relies on Geotools' StyledShapePainter.
- * 
+ *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id$ */
+ * @version $Id$
+ */
 public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(DefaultRasterLegendProducerTest.class.getPackage()
                                                                                                .getName());
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @uml.property name="legendProducer"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private DefaultRasterLegendProducer legendProducer;
+    /** DOCUMENT ME! */
+    private DefaultRasterLegendProducer legendProducer;
 
     /**
      * DOCUMENT ME!
@@ -179,8 +175,8 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
      * @return
      */
     private Style createSampleStyleWithScale() {
-        FilterFactory ff = new FilterFactoryImpl();
-        StyleFactory2 sf = new StyleFactoryImpl();
+        FilterFactory ff = FilterFactory.createFilterFactory();
+        StyleFactory sf = StyleFactory.createStyleFactory();
         Style s = sf.createStyle();
 
         Rule rule1_1000 = sf.createRule();

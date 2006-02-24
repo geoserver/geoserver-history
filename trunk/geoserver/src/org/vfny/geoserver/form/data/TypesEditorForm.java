@@ -89,6 +89,11 @@ public class TypesEditorForm extends ActionForm {
 	private String typeName;
 
 	/**
+	 * 
+	 */
+	private String wmsPath;
+
+	/**
 	 * Representation of the Spatial Reference System.
 	 * 
 	 * <p>
@@ -264,11 +269,10 @@ public class TypesEditorForm extends ActionForm {
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
 
-
-dataMinX="";
-dataMinY="";
-dataMaxX="";
-dataMaxY="";
+        dataMinX="";
+        dataMinY="";
+        dataMaxX="";
+        dataMaxY="";
 
         action = "";
 
@@ -310,7 +314,8 @@ dataMaxY="";
 
         
         title = type.getTitle();
-
+        wmsPath = type.getWmsPath();
+        
         System.out.println("rest based on schemaBase: " + type.getSchemaBase());
 
         // Generate ReadOnly list of Attributes
@@ -1047,4 +1052,10 @@ dataMaxY="";
 		return dataMaxY;
 	}
 
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
+	}
 }

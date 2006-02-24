@@ -9,22 +9,22 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-/** * DataStoreTest purpose. *  * <p> * Description of DataStoreTest ... * </p> *  * <p></p> *  * @author dzwiers, Refractions Research, Inc. * @version $Id: DataStoreTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $ */
+
+/**
+ * DataStoreTest purpose.
+ * 
+ * <p>
+ * Description of DataStoreTest ...
+ * </p>
+ * 
+ * <p></p>
+ *
+ * @author dzwiers, Refractions Research, Inc.
+ * @version $Id: DataStoreTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $
+ */
 public class DataStoreTest extends TestCase {
-
-	/**
-	 * 
-	 * @uml.property name="a"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private DataStoreConfig a;
-
-	/**
-	 * 
-	 * @uml.property name="b"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private DataStoreConfig b;
+    private DataStoreConfig a;
+    private DataStoreConfig b;
 
     /**
      * Constructor for DataStoreTest.

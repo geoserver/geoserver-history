@@ -6,22 +6,22 @@ package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
 
-/** * NameSpaceTest purpose. *  * <p> * Description of NameSpaceTest ... * </p> *  * <p></p> *  * @author dzwiers, Refractions Research, Inc. * @version $Id: NameSpaceTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $ */
+
+/**
+ * NameSpaceTest purpose.
+ * 
+ * <p>
+ * Description of NameSpaceTest ...
+ * </p>
+ * 
+ * <p></p>
+ *
+ * @author dzwiers, Refractions Research, Inc.
+ * @version $Id: NameSpaceTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $
+ */
 public class NameSpaceTest extends TestCase {
-
-	/**
-	 * 
-	 * @uml.property name="a"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private NameSpaceConfig a;
-
-	/**
-	 * 
-	 * @uml.property name="b"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private NameSpaceConfig b;
+    private NameSpaceConfig a;
+    private NameSpaceConfig b;
 
     /**
      * Constructor for NameSpaceTest.

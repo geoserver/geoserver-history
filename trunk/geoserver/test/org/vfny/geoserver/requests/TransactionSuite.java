@@ -19,7 +19,6 @@ import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryImpl;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -32,7 +31,16 @@ import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
-/** * Tests the get feature request handling. *  * @author Chris Holmes, TOPP * @version $Id: TransactionSuite.java,v 1.9 2004/01/31 00:17:52 jive Exp $ *  * @task REVISIT: This should serve as the place for the sub transaction suites *       to run their tests. */
+
+/**
+ * Tests the get feature request handling.
+ *
+ * @author Chris Holmes, TOPP
+ * @version $Id: TransactionSuite.java,v 1.9 2004/01/31 00:17:52 jive Exp $
+ *
+ * @task REVISIT: This should serve as the place for the sub transaction suites
+ *       to run their tests.
+ */
 public class TransactionSuite extends RequestTestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
@@ -45,16 +53,10 @@ public class TransactionSuite extends RequestTestCase {
             "org.vfny.geoserver.requests");
 
     /** Holds mappings between HTTP and ASCII encodings */
-    protected static FilterFactory factory = new FilterFactoryImpl();
+    protected static FilterFactory factory = FilterFactory.createFilterFactory();
     protected FeatureType schema;
     protected Feature testFeature;
-
-	/**
-	 * 
-	 * @uml.property name="config"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	protected GeoServer config;
+    protected GeoServer config;
 
     /**
      * Constructor with super.

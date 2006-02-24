@@ -38,6 +38,10 @@ public class CoverageInfo extends GlobalLayerSupertype {
 	/**
 	 * 
 	 */
+	private String wmsPath;
+	/**
+	 * 
+	 */
 	private String label;
 
 	/**
@@ -152,6 +156,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
 
         formatId = dto.getFormatId();
         name = dto.getName();
+        wmsPath = dto.getWmsPath();
         label = dto.getLabel();
         description = dto.getDescription();
         metadataLink = dto.getMetadataLink();
@@ -178,6 +183,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
 
         dto.setFormatId(formatId);
         dto.setName(name);
+        dto.setWmsPath(wmsPath);
         dto.setLabel(label);
         dto.setDescription(description);
         dto.setMetadataLink(metadataLink);
@@ -402,5 +408,11 @@ public class CoverageInfo extends GlobalLayerSupertype {
 		}
 		
 		return latLonEnvelope;
+	}
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
 	}
 }

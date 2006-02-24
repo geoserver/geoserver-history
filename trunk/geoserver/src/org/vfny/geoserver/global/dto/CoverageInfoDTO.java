@@ -37,6 +37,11 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
 	/**
 	 * 
+	 */
+	private String wmsPath;
+
+	/**
+	 * 
 	 * @uml.property name="label" multiplicity="(0 1)"
 	 */
 	private String label;
@@ -174,6 +179,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
     	formatId = dto.getFormatId();
         name = dto.getName();
+        wmsPath = dto.getWmsPath();
         label = dto.getLabel();
         description = dto.getDescription();
         metadataLink = dto.getMetadataLink();
@@ -239,6 +245,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
         r = r && (srsWKT == f.getSrsWKT());
         r = r && (crs == f.getCrs());
         r = r && (name == f.getName());
+        r = r && (wmsPath == f.getWmsPath());
         r = r && (description == f.getDescription());
         r = r && (label == f.getLabel());
         r = r && (metadataLink == f.getMetadataLink());
@@ -766,5 +773,11 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 	public void setLatLonEnvelope(GeneralEnvelope latLonEnvelope) {
 		this.latLonEnvelope = latLonEnvelope;
+	}
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
 	}
 }

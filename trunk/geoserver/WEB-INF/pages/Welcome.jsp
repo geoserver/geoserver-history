@@ -85,9 +85,7 @@
 </code></pre>
 <ul>
   <li>
-    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs?request=GetCapabilities&service=WFS">
-      getCapabilities
-    </a>
+	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs?request=GetCapabilities&service=WFS&version=1.0.0">WFS GetCapabilities</a><br>
   </li>
   <li>
     <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs/TestWfsPost">
@@ -104,9 +102,7 @@
 
 <ul>
   <li>
-    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms?request=GetCapabilities&service=WMS">
-      getCapabilities
-    </a>
+	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms?request=GetCapabilities&service=WMS&version=1.0.0">WMS GetCapabilities</a>
   </li>
   <li>
   	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms?bbox=-130,24,-66,50&styles=raster,population&Format=image/png&request=GetMap&layers=Img_Sample,topp:states&width=550&height=250&srs=EPSG:4326">

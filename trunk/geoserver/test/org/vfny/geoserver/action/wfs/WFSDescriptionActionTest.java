@@ -41,23 +41,17 @@ import org.apache.struts.config.ModuleConfig;
 import org.apache.struts.config.PlugInConfig;
 import org.vfny.geoserver.form.wfs.WFSDescriptionForm;
 
-/** * DOCUMENT ME! *  * @author User To change the template for this generated type comment go to *         Window>Preferences>Java>Code Generation>Code and Comments */
+
+/**
+ * DOCUMENT ME!
+ *
+ * @author User To change the template for this generated type comment go to
+ *         Window>Preferences>Java>Code Generation>Code and Comments
+ */
 public class WFSDescriptionActionTest extends TestCase {
     private ActionMapping actionMapping;
-
-	/**
-	 * 
-	 * @uml.property name="form"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private WFSDescriptionForm form;
-
-	/**
-	 * 
-	 * @uml.property name="action"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	WFSDescriptionAction action;
+    private WFSDescriptionForm form;
+    WFSDescriptionAction action;
 
     /**
      * Constructor for WFSDescriptionActionTest.

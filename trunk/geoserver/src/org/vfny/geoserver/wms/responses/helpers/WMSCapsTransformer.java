@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.responses.helpers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -32,6 +33,9 @@ import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.LegendURL;
+import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.WCS;
+import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.DataFormatUtils;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
@@ -395,35 +399,33 @@ public class WMSCapsTransformer extends TransformerBase {
 		 */
 		private void handleLayers() {
 			WMS wms = request.getWMS();
+			WFS wfs = request.getWFS();
+			WCS wcs = request.getWCS();
 			start("Layer");
 
 			Data catalog = wms.getData();
 			Collection ftypes = catalog.getFeatureTypeInfos().values();
 			Collection coverages = catalog.getCoverageInfos().values();
-			FeatureTypeInfo fLayer;
-			CoverageInfo cLayer;
 
 			element("Title", wms.getTitle());
 			element("Abstract", wms.getAbstract());
 
-			handleRootSRSAndBbox(ftypes);
-
 			// now encode each layer individually
-			for (Iterator it = ftypes.iterator(); it.hasNext();) {
-				fLayer = (FeatureTypeInfo) it.next();
-
-				if (fLayer.isEnabled()) {
-					handleFeatureType(fLayer);
-				}
-			}
-
-			for (Iterator it = coverages.iterator(); it.hasNext();) {
-				cLayer = (CoverageInfo) it.next();
-
-				if (cLayer.isEnabled()) {
-					handleCoverage(cLayer);
-				}
-			}
+			start("Layer");
+			element("Title", "Vectorial Data");
+			element("Abstract", wfs.getAbstract());
+			handleRootSRSAndBbox(ftypes, MapLayerInfo.TYPE_VECTOR);
+			LayerTree featuresLayerTree = new LayerTree(ftypes);
+			handleFeaturesTree(featuresLayerTree);
+			end("Layer");
+			
+			start("Layer");
+			element("Title", "Raster/Gridded Data");
+			element("Abstract", wcs.getAbstract());
+			handleRootSRSAndBbox(coverages, MapLayerInfo.TYPE_RASTER);
+			LayerTree coveragesLayerTree = new LayerTree(coverages);
+			handleCoveragesTree(coveragesLayerTree);
+			end("Layer");
 
 			end("Layer");
 		}
@@ -440,6 +442,7 @@ public class WMSCapsTransformer extends TransformerBase {
 		 * 
 		 * @param ftypes
 		 *            DOCUMENT ME!
+		 * @param TYPE
 		 * 
 		 * @throws RuntimeException
 		 *             DOCUMENT ME!
@@ -447,73 +450,168 @@ public class WMSCapsTransformer extends TransformerBase {
 		 * @task TODO: figure out how to incorporate multiple SRS using the
 		 *       reprojection facilities from gt2
 		 */
-		private void handleRootSRSAndBbox(Collection ftypes) {
-			FeatureTypeInfo layer;
+		private void handleRootSRSAndBbox(Collection ftypes, int TYPE) {
 			String commonSRS = "";
 			boolean isCommonSRS = true;
 			Envelope latlonBbox = new Envelope();
 			Envelope layerBbox = null;
 			LOGGER.finer("Collecting summarized latlonbbox and common SRS...");
+			if( TYPE == MapLayerInfo.TYPE_VECTOR ) {
+				FeatureTypeInfo layer;
 
-			for (Iterator it = ftypes.iterator(); it.hasNext();) {
-				layer = (FeatureTypeInfo) it.next();
+				for (Iterator it = ftypes.iterator(); it.hasNext();) {
+					layer = (FeatureTypeInfo) it.next();
 
-				if (layer.isEnabled()) {
-					try {
-						layerBbox = layer.getLatLongBoundingBox();
-					} catch (IOException e) {
-						throw new RuntimeException(
-								"Can't obtain latLonBBox of " + layer.getName()
-										+ ": " + e.getMessage(), e);
-					}
+					if (layer.isEnabled()) {
+						try {
+							layerBbox = layer.getLatLongBoundingBox();
+						} catch (IOException e) {
+							throw new RuntimeException(
+									"Can't obtain latLonBBox of " + layer.getName()
+											+ ": " + e.getMessage(), e);
+						}
 
-					latlonBbox.expandToInclude(layerBbox);
+						latlonBbox.expandToInclude(layerBbox);
 
-					String layerSRS = layer.getSRS();
+						String layerSRS = layer.getSRS();
 
-					if ("".equals(commonSRS)) {
-						commonSRS = layerSRS;
-					} else if (!commonSRS.equals(layerSRS)) {
-						isCommonSRS = false;
-					}
-				}
-			}
-
-			if (isCommonSRS) {
-				commonSRS = EPSG + commonSRS;
-				LOGGER.fine("Common SRS is " + commonSRS);
-			} else {
-				commonSRS = "";
-				LOGGER
-						.fine("No common SRS, don't forget to incorporate reprojection support...");
-			}
-
-			if (!(commonSRS.equals(""))) {
-				comment("common SRS:");
-				element("SRS", commonSRS);
-			}
-
-			// okay - we've sent out the commonSRS, if it exists.
-
-			comment("All supported EPSG projections:");
-
-			try {
-				Set s = CRS.getSupportedCodes("EPSG");
-				Iterator it = s.iterator();
-				while (it.hasNext()) {
-					// do not output srs if it was output as common srs
-					// note, if commonSRS is "", this will not match
-					String currentSRS = it.next().toString();
-					if (!currentSRS.equals(commonSRS)) {
-						element("SRS", currentSRS);
+						if ("".equals(commonSRS)) {
+							commonSRS = layerSRS;
+						} else if (!commonSRS.equals(layerSRS)) {
+							isCommonSRS = false;
+						}
 					}
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 
-			LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
-			handleLatLonBBox(latlonBbox);
+				if (isCommonSRS) {
+					commonSRS = EPSG + commonSRS;
+					LOGGER.fine("Common SRS is " + commonSRS);
+				} else {
+					commonSRS = "";
+					LOGGER
+							.fine("No common SRS, don't forget to incorporate reprojection support...");
+				}
+
+				if (!(commonSRS.equals(""))) {
+					comment("common SRS:");
+					element("SRS", commonSRS);
+				}
+
+				// okay - we've sent out the commonSRS, if it exists.
+
+				comment("All supported EPSG projections:");
+
+				try {
+					Set s = CRS.getSupportedCodes("EPSG");
+					Iterator it = s.iterator();
+					while (it.hasNext()) {
+						// do not output srs if it was output as common srs
+						// note, if commonSRS is "", this will not match
+						String currentSRS = it.next().toString();
+						if (!currentSRS.equals(commonSRS)) {
+							element("SRS", currentSRS);
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
+				handleLatLonBBox(latlonBbox);
+			} else if( TYPE == MapLayerInfo.TYPE_RASTER ) {
+				CoverageInfo layer;
+				
+				for (Iterator it = ftypes.iterator(); it.hasNext();) {
+					layer = (CoverageInfo) it.next();
+
+					if (layer.isEnabled()) {
+						final GeneralEnvelope bbox = layer.getLatLonEnvelope(); 
+						layerBbox = new Envelope(
+								bbox.getLowerCorner().getOrdinate(0),
+								bbox.getUpperCorner().getOrdinate(0),
+								bbox.getLowerCorner().getOrdinate(1),
+								bbox.getUpperCorner().getOrdinate(1));
+
+						latlonBbox.expandToInclude(layerBbox);
+
+						String layerSRS = layer.getSrsName();
+
+						if ("".equals(commonSRS)) {
+							commonSRS = layerSRS;
+						} else if (!commonSRS.equals(layerSRS)) {
+							isCommonSRS = false;
+						}
+					}
+				}
+
+				if (isCommonSRS) {
+					commonSRS = EPSG + commonSRS;
+					LOGGER.fine("Common SRS is " + commonSRS);
+				} else {
+					commonSRS = "";
+					LOGGER
+							.fine("No common SRS, don't forget to incorporate reprojection support...");
+				}
+
+				if (!(commonSRS.equals(""))) {
+					comment("common SRS:");
+					element("SRS", commonSRS);
+				}
+
+				// okay - we've sent out the commonSRS, if it exists.
+
+				comment("All supported EPSG projections:");
+
+				try {
+					ArrayList SRSs = new ArrayList();
+					for (Iterator it = ftypes.iterator(); it.hasNext();) {
+						layer = (CoverageInfo) it.next();
+
+						if (layer.isEnabled()) {
+							List s = layer.getRequestCRSs();
+							Iterator it_1 = s.iterator();
+							while (it_1.hasNext()) {
+								// do not output srs if it was output as common srs
+								// note, if commonSRS is "", this will not match
+								String currentSRS = it_1.next().toString();
+								if (!currentSRS.equals(commonSRS) && !SRSs.contains(currentSRS)) {
+									SRSs.add(currentSRS);
+									element("SRS", currentSRS);
+								}
+							}
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
+				handleLatLonBBox(latlonBbox);
+			}
+		}
+
+		/**
+		 * @param featuresLayerTree
+		 */
+		private void handleFeaturesTree(LayerTree featuresLayerTree) {
+			final Collection data = featuresLayerTree.getData();
+			final Collection childrens = featuresLayerTree.getChildrens();
+			
+			for (Iterator it=data.iterator(); it.hasNext();) {
+				FeatureTypeInfo fLayer = (FeatureTypeInfo) it.next();
+				
+				if (fLayer.isEnabled())
+					handleFeatureType(fLayer);
+			}
+			
+			for (Iterator it=childrens.iterator(); it.hasNext();) {
+				LayerTree layerTree = (LayerTree) it.next();
+				start("Layer");
+				element("Name", layerTree.getName());
+				element("Title", layerTree.getName());
+				handleFeaturesTree(layerTree);
+				end("Layer");
+			}
 		}
 
 		/**
@@ -591,6 +689,30 @@ public class WMSCapsTransformer extends TransformerBase {
 			end("Layer");
 		}
 
+		/**
+		 * @param coveragesLayerTree
+		 */
+		private void handleCoveragesTree(LayerTree coveragesLayerTree) {
+			final Collection data = coveragesLayerTree.getData();
+			final Collection childrens = coveragesLayerTree.getChildrens();
+			
+			for (Iterator it=data.iterator(); it.hasNext();) {
+				CoverageInfo cLayer = (CoverageInfo) it.next();
+				
+				if (cLayer.isEnabled())
+					handleCoverage(cLayer);
+			}
+			
+			for (Iterator it=childrens.iterator(); it.hasNext();) {
+				LayerTree layerTree = (LayerTree) it.next();
+				start("Layer");
+				element("Name", layerTree.getName());
+				element("Title", layerTree.getName());
+				handleCoveragesTree(layerTree);
+				end("Layer");
+			}
+		}
+
 		protected void handleCoverage(CoverageInfo coverage) {
 			// HACK: by now all our layers are queryable, since they reference
 			// only featuretypes managed by this server
@@ -616,8 +738,10 @@ public class WMSCapsTransformer extends TransformerBase {
 								new Identifier[coverage.getCrs()
 										.getIdentifiers().size()]);
 				authority = idents[0].toString();
-				element("SRS", authority);
+			} else {
+				authority = "UNKNOWN";
 			}
+			element("SRS", authority);
 
     		GeneralEnvelope bounds = null;
     		try {
@@ -823,5 +947,124 @@ public class WMSCapsTransformer extends TransformerBase {
 
 			element("BoundingBox", null, bboxAtts);
 		}
+	}
+}
+
+/**
+ * A Class to manage the WMS Layer structure
+ * 
+ * @author fabiania
+ *
+ * TODO To change the template for this generated type comment go to
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+class LayerTree {
+	private String name;
+	private Collection childrens;
+	private Collection data;
+	
+	/**
+	 * @param name String
+	 */
+	public LayerTree(String name) {
+		this.name = name;
+		this.childrens = new ArrayList();
+		this.data = new ArrayList();
+	}
+
+	/**
+	 * @param c Collection
+	 */
+	public LayerTree(Collection c) {
+		this.name = "";
+		this.childrens = new ArrayList();
+		this.data = new ArrayList();
+		
+		for (Iterator it = c.iterator(); it.hasNext();) {
+			Object element = it.next();
+
+			if (element instanceof CoverageInfo) {
+				CoverageInfo cLayer = (CoverageInfo) element;
+				if (cLayer.isEnabled()) {
+					String wmsPath = (cLayer.getWmsPath() != null && cLayer.getWmsPath().length() > 0? cLayer.getWmsPath() : "/");
+					if (wmsPath.startsWith("/")) wmsPath = wmsPath.substring(1, wmsPath.length());
+					String[] treeStructure = wmsPath.split("/");
+					addToNode(this, treeStructure, cLayer);
+				}				
+			} else if (element instanceof FeatureTypeInfo) {
+				FeatureTypeInfo fLayer = (FeatureTypeInfo) element;
+				if (fLayer.isEnabled()) {
+					String wmsPath = (fLayer.getWmsPath() != null && fLayer.getWmsPath().length() > 0? fLayer.getWmsPath() : "/");
+					if (wmsPath.startsWith("/")) wmsPath = wmsPath.substring(1, wmsPath.length());
+					String[] treeStructure = wmsPath.split("/");
+					addToNode(this, treeStructure, fLayer);
+				}
+			}
+		}
+		
+	}
+
+	/**
+	 * @param tree
+	 * @param treeStructure
+	 * @param layer
+	 */
+	private void addToNode(LayerTree tree, String[] treeStructure, CoverageInfo layer) {
+		final int length = treeStructure.length;
+		if (length == 0 || treeStructure[0].length() == 0) {
+			tree.data.add(layer);
+		} else {
+			LayerTree node = tree.getNode(treeStructure[0]);
+			if (node == null) {
+				node = new LayerTree(treeStructure[0]);
+				tree.childrens.add(node);
+			}
+			String[] subTreeStructure = new String[length - 1];
+			System.arraycopy(treeStructure, 1, subTreeStructure, 0, length - 1);
+			addToNode(node, subTreeStructure, layer);
+		}
+	}
+
+	private void addToNode(LayerTree tree, String[] treeStructure, FeatureTypeInfo layer) {
+		final int length = treeStructure.length;
+		if (length == 0 || treeStructure[0].length() == 0) {
+			tree.data.add(layer);
+		} else {
+			LayerTree node = tree.getNode(treeStructure[0]);
+			if (node == null) {
+				node = new LayerTree(treeStructure[0]);
+				tree.childrens.add(node);
+			}
+			String[] subTreeStructure = new String[length - 1];
+			System.arraycopy(treeStructure, 1, subTreeStructure, 0, length - 1);
+			addToNode(node, subTreeStructure, layer);
+		}
+	}
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	public LayerTree getNode(String name) {
+		LayerTree node = null;
+		for (Iterator it=this.childrens.iterator(); it.hasNext();) {
+			LayerTree tmpNode = (LayerTree) it.next();
+			if (tmpNode.name.equals(name))
+				node = tmpNode;
+		}
+		
+		return node;
+	}
+	
+	public Collection getChildrens() {
+		return childrens;
+	}
+	
+	public Collection getData() {
+		return data;
+	}
+	
+	public String getName() {
+		return name;
 	}
 }

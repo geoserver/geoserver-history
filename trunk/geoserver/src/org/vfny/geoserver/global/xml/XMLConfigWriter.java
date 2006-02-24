@@ -900,6 +900,10 @@ public class XMLConfigWriter {
                 cw.textTag("abstract", ft.getAbstract());
             }
 
+            if ((ft.getWmsPath() != null) && (ft.getWmsPath() != "")) {
+                cw.textTag("wmspath", ft.getWmsPath());
+            }
+
             cw.valueTag("numDecimals", ft.getNumDecimals() + "");
 
             if ((ft.getKeywords() != null) && (ft.getKeywords().size() != 0)) {
@@ -1162,6 +1166,10 @@ public class XMLConfigWriter {
 			
 			if ((cv.getDescription() != null) && (cv.getDescription() != "")) {
 				cw.textTag("description", cv.getDescription());
+			}
+
+			if ((cv.getWmsPath() != null) && (cv.getWmsPath() != "")) {
+				cw.textTag("wmspath", cv.getWmsPath());
 			}
 
 			m = new HashMap();

@@ -57,6 +57,11 @@ public class CoveragesEditorForm extends ActionForm {
 	/**
 	 * 
 	 */
+	private String wmsPath;
+
+	/**
+	 * 
+	 */
 	private String label;
 
 	/**
@@ -195,6 +200,7 @@ public class CoveragesEditorForm extends ActionForm {
 		}
 
 		name = cvConfig.getName();
+		wmsPath = cvConfig.getWmsPath();
 		label = cvConfig.getLabel();
 		description = cvConfig.getDescription();
 		metadataLink = (cvConfig.getMetadataLink() != null ? cvConfig
@@ -658,5 +664,11 @@ public class CoveragesEditorForm extends ActionForm {
 
 	public void setWKTString(String string) {
 		WKTString = string;
+	}
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
 	}
 }

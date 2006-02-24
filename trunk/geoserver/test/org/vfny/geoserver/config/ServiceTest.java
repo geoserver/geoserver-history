@@ -6,22 +6,22 @@ package org.vfny.geoserver.config;
 
 import junit.framework.TestCase;
 
-/** * ServiceTest purpose. *  * <p> * Description of ServiceTest ... * </p> *  * <p></p> *  * @author dzwiers, Refractions Research, Inc. * @version $Id: ServiceTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $ */
+
+/**
+ * ServiceTest purpose.
+ * 
+ * <p>
+ * Description of ServiceTest ...
+ * </p>
+ * 
+ * <p></p>
+ *
+ * @author dzwiers, Refractions Research, Inc.
+ * @version $Id: ServiceTest.java,v 1.4 2004/01/31 00:17:53 jive Exp $
+ */
 public class ServiceTest extends TestCase {
-
-	/**
-	 * 
-	 * @uml.property name="a"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private ServiceConfig a;
-
-	/**
-	 * 
-	 * @uml.property name="b"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private ServiceConfig b;
+    private ServiceConfig a;
+    private ServiceConfig b;
 
     /**
      * Constructor for ServiceTest.

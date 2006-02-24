@@ -18,7 +18,13 @@ import com.k_int.util.RPNQueryRep.ComplexNode;
 import com.k_int.util.RPNQueryRep.QueryNode;
 import com.k_int.util.RPNQueryRep.RootNode;
 
-/** * Tests the RPNConverter helper methods. *  * @author Chris Holmes, TOPP * @version $Id: RPNConverterSuite.java,v 1.7 2004/01/31 00:17:51 jive Exp $ */
+
+/**
+ * Tests the RPNConverter helper methods.
+ *
+ * @author Chris Holmes, TOPP
+ * @version $Id: RPNConverterSuite.java,v 1.7 2004/01/31 00:17:51 jive Exp $
+ */
 public class RPNConverterSuite extends TestCase {
     // Initializes the logger. Uncomment to see log messages.
     //static {
@@ -40,14 +46,7 @@ public class RPNConverterSuite extends TestCase {
     //with a field that does not exist.
     private static final String ALL_FIELDS = "ALL";
     private Properties attrMap;
-
-	/**
-	 * 
-	 * @uml.property name="converter"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private RPNConverter converter;
-
+    private RPNConverter converter;
     private RootNode root1;
     private RootNode root2;
     private AttrPlusTermNode rpn1;

@@ -843,9 +843,6 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	</style-->
 	
 	<!--copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css" /-->
-	<copy todir="${dir.doc}" file="${dir.doc}/../user/DataStoreUserGuide.pdf" failonerror="false" />
-	<copy todir="${dir.doc}" file="${dir.doc}/../user/ValidationUserGuide.pdf" failonerror="false" />
-	<copy todir="${dir.doc}" file="${dir.doc}/../user/FeatureTypeUserGuide.pdf" failonerror="false" />
 	
 	<!-- Convert docbook to html -->
 	<!--style basedir="${dir.doc}/../user" destdir="${dir.doc}/user" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" processor="trax">
@@ -1098,9 +1095,18 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 		<include name="**/*" />
 	</fileset>
 </copy>
+
+	<!-- replacement index.html file -->
+<copy todir="${basedir}/docs/">
+	<fileset dir="${dir.doc}/..">
+		<include name="index.html" />
+	</fileset>
+</copy>
+	
 <zip destfile="${basedir}/geoserver-${name.release}-docs.zip">
 	<zipfileset dir="${basedir}/docs/" prefix="geoserver-docs">
 		<include name="**/*" />
+		<exclude name="index.html"/>
 	</zipfileset>
 </zip>
 <copy file="${basedir}/geoserver-${name.release}-docs.zip" todir="${dir.release}" />
@@ -1165,11 +1171,14 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 -->
 <target name="geotools" depends="init" description="Generate geotools2 jars for quick testing (use maven for jars you commit)">
 <copy overwrite="true" failonerror="true" toFile="${dir.lib}/geoapi-2.0.jar" file="${dir.maven}/geoapi/jars/geoapi-2.0.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/opengis-css-0.1.jar" file="${dir.maven}/opengis/jars/opengis-css-0.1.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/units-0.01.jar" file="${dir.maven}/units/jars/units-0.01.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_sdk-9.0.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_jpe_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_jpe_sdk-9.0.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_concurrent-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_concurrent-9.0.jar" />
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/opengis-css-0.1.jar" file="${dir.maven}/opengis/jars/opengis-css-0.1.jar" />
+<!--
+ <copy failonerror="false" toFile="${dir.lib}/opengis-legacy-0.1.jar" file="${dir.maven}/opengis/jars/opengis-legacy-0.1.jar" />
+  -->
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/units-0.01.jar" file="${dir.maven}/units/jars/units-0.01.jar" />
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_sdk-9.0.jar" />
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_jpe_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_jpe_sdk-9.0.jar" />
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_concurrent-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_concurrent-9.0.jar" />
 
 	<!-- added by Alex -->
 	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/JGriB1-0.9.x.jar" file="${dir.maven}/JGriB1/jars/JGriB1-0.9.x.jar" />

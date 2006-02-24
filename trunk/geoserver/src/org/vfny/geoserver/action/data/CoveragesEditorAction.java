@@ -252,6 +252,7 @@ public class CoveragesEditorAction extends ConfigAction {
 		config.setDefaultStyle(form.getStyleId());
 
 		config.setName(form.getName());
+		config.setWmsPath(form.getWmsPath());
 		final StringBuffer temp = new StringBuffer(config.getFormatId());
 		temp.append("_").append(form.getName());
 		config.setDirName(temp.toString());

@@ -54,6 +54,11 @@ public class CoverageConfig {
 
 	/**
 	 * 
+	 */
+	private String wmsPath;
+
+	/**
+	 * 
 	 * @uml.property name="label" multiplicity="(0 1)"
 	 */
 	private String label;
@@ -210,7 +215,7 @@ public class CoverageConfig {
 		this.formatId = formatId;
 		crs = gc.getCoordinateReferenceSystem();
 		srsName = (crs != null && !crs.getIdentifiers().isEmpty() ? crs.getIdentifiers().toArray()[0].toString() : crs.getName().toString());
-		srsWKT = (crs != null ? crs.toWKT() : "");
+		srsWKT = (crs != null ? crs.toWKT() : "UNKNOWN");
 		envelope = (GeneralEnvelope) gc.getEnvelope();
 		try {
 			latLonEnvelope = DataFormatUtils.getLatLonEnvelope(envelope);
@@ -235,6 +240,7 @@ public class CoverageConfig {
 		dimentionNames = gc.getDimensionNames();
 
 		name = gc.getName().toString();
+		wmsPath = "/";
 		label = new StringBuffer(name).append(" is a ").append(
 				format.getDescription()).toString();
 		description = new StringBuffer("Generated from ").append(formatId)
@@ -339,6 +345,7 @@ public class CoverageConfig {
 
 		formatId = dto.getFormatId();
 		name = dto.getName();
+		wmsPath = dto.getWmsPath();
 		label = dto.getLabel();
 		description = dto.getDescription();
 		metadataLink = dto.getMetadataLink();
@@ -365,6 +372,7 @@ public class CoverageConfig {
 		CoverageInfoDTO c = new CoverageInfoDTO();
 		c.setFormatId(formatId);
 		c.setName(name);
+		c.setWmsPath(wmsPath);
 		c.setLabel(label);
 		c.setDescription(description);
 		c.setMetadataLink(metadataLink);
@@ -767,5 +775,11 @@ public class CoverageConfig {
 	}
 	public GeneralEnvelope getLatLonEnvelope() {
 		return latLonEnvelope;
+	}
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
 	}
 }
