@@ -35,12 +35,6 @@
 	<param-value>50</param-value>
   </context-param>
   
-	<!-- logging configuration -->
-	<context-param>
-		<param-name>log4jConfigLocation</param-name>
-		<param-value>/WEB-INF/log4j.properties</param-value>
-	</context-param>
-	
 	<!-- pick up all spring application contexts -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
