@@ -36,7 +36,14 @@ import com.vividsolutions.jts.geom.Polygon;
  */
 public class GMLSchemaTranslator extends NameSpaceTranslator {
 
+	/**
+	 * 
+	 * @uml.property name="elements"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.global.xml.MultiPointPropertyElement"
+	 * multiplicity="(0 -1)"
+	 */
 	private HashSet elements;
+
 	
 	/**
 	 * XMLSchemaTranslator constructor.

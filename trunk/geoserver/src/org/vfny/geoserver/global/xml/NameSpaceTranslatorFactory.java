@@ -21,12 +21,25 @@ import java.util.Map;
  * @version $Id: NameSpaceTranslatorFactory.java,v 1.3 2004/02/09 18:00:02 dmzwiers Exp $
  */
 public class NameSpaceTranslatorFactory {
-	
-	/** map of namespace names as Strings -> Class representations of NameSpaceTranslators */
+
+	/**
+	 * map of namespace names as Strings -> Class representations of NameSpaceTranslators
+	 * 
+	 * @uml.property name="namespaceTranslators"
+	 * @uml.associationEnd qualifier="namespace:java.lang.String java.lang.Class" multiplicity=
+	 * "(0 1)"
+	 */
 	private Map namespaceTranslators;
-	
-	/** map of prefixs as String -> Instances of NameSpaceTranslators */
+
+	/**
+	 * map of prefixs as String -> Instances of NameSpaceTranslators
+	 * 
+	 * @uml.property name="namespaceTranslatorInstances"
+	 * @uml.associationEnd qualifier="prefix:java.lang.String org.vfny.geoserver.global.xml.NameSpaceTranslator"
+	 * multiplicity="(0 1)"
+	 */
 	private Map namespaceTranslatorInstances;
+
 	
 	/** the only instance */
 	private final static NameSpaceTranslatorFactory instance = new NameSpaceTranslatorFactory();

@@ -37,8 +37,14 @@ import java.util.Set;
  * @version $Id: NameSpaceTranslator.java,v 1.6 2004/04/15 19:28:46 dmzwiers Exp $
  */
 public abstract class NameSpaceTranslator{
-	/** the prefix for this translator instance*/
+
+	/**
+	 * the prefix for this translator instance
+	 * 
+	 * @uml.property name="prefix" multiplicity="(0 1)"
+	 */
 	private String prefix;
+
 	
 	/**
 	 * NameSpaceTranslator constructor.
@@ -168,15 +174,18 @@ public abstract class NameSpaceTranslator{
 		}
 		return false;
 	}
-	
+
 	/**
 	 * getElements purpose.
 	 * <p>
 	 * returns the set of elements.
 	 * </p>
 	 * @return Set
+	 * 
+	 * @uml.property name="elements" multiplicity="(0 1)"
 	 */
 	public abstract Set getElements();
+
 	
 	/**
 	 * getElements purpose.
@@ -291,24 +300,29 @@ public abstract class NameSpaceTranslator{
 		return (NameSpaceElement)posibilities.toArray()[0];
 		
 	}
-	
+
 	/**
 	 * getNameSpace purpose.
 	 * <p>
 	 * Returns the current namespace. Should be implemented as a constant.
 	 * </p>
 	 * @return String
+	 * 
+	 * @uml.property name="nameSpace" multiplicity="(0 1)"
 	 */
 	public abstract String getNameSpace();
-	
+
 	/**
 	 * getPrefix purpose.
 	 * <p>
 	 * Returns the prefix that this namespace represents.
 	 * </p>
 	 * @return String the prefix, null if it does not exist
+	 * 
+	 * @uml.property name="prefix"
 	 */
-	public final String getPrefix(){
+	public final String getPrefix() {
 		return prefix;
 	}
+
 }

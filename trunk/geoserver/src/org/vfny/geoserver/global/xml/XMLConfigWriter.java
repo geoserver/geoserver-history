@@ -4,33 +4,45 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.filter.FilterTransformer;
-import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
-import org.vfny.geoserver.global.dto.ContactDTO;
-import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
-import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
-import org.vfny.geoserver.global.dto.ServiceDTO;
-import org.vfny.geoserver.global.dto.StyleDTO;
-import org.vfny.geoserver.global.dto.WFSDTO;
-import org.vfny.geoserver.global.dto.WMSDTO;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import javax.xml.transform.TransformerException;
+
+import org.geotools.filter.FilterTransformer;
+import org.geotools.geometry.GeneralEnvelope;
+import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.util.InternationalString;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.CoverageCategory;
+import org.vfny.geoserver.global.CoverageDimension;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.MetaDataLink;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.CoverageInfoDTO;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.FormatInfoDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
+import org.vfny.geoserver.global.dto.ServiceDTO;
+import org.vfny.geoserver.global.dto.StyleDTO;
+import org.vfny.geoserver.global.dto.WCSDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -44,6 +56,8 @@ import javax.xml.transform.TransformerException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: XMLConfigWriter.java,v 1.32 2004/09/20 20:43:37 cholmesny Exp $
  */
 public class XMLConfigWriter {
@@ -70,11 +84,11 @@ public class XMLConfigWriter {
         }
 
         WriterUtils.initFile(root, true);
-		boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
-		//We're just checking if it's actually a data_dir, not trying to
-		//to do backwards compatibility.  So if an old data_dir is made in
-		//the old way, on save it'll come to the new way.
-		File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
+	boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
+	//We're just checking if it's actually a data_dir, not trying to
+	//to do backwards compatibility.  So if an old data_dir is made in
+	//the old way, on save it'll come to the new way.
+	File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
         File configDir = WriterUtils.initFile(fileDir, true);
 
         File catalogFile = WriterUtils.initWriteFile(new File(configDir,
@@ -87,18 +101,21 @@ public class XMLConfigWriter {
         } catch (IOException e) {
             throw new ConfigurationException("Store" + root, e);
         }
-		File dataDir;
-		if (!inDataDir) { 
-		    dataDir = WriterUtils.initFile(new File(root, "data/"), true);
-		} else {
-		    dataDir = root;
-		}
+	File dataDir;
+	if (!inDataDir) { 
+	    dataDir = WriterUtils.initFile(new File(root, "data/"), true);
+	} else {
+	    dataDir = root;
+	}
         File featureTypeDir = WriterUtils.initFile(new File(dataDir,
                     "featureTypes/"), true);
         storeFeatures(featureTypeDir, data);
+		File coverageDir = WriterUtils.initFile(new File(dataDir,
+		"coverages/"), true);
+		storeCoverages(coverageDir, data);
     }
 
-    public static void store(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
+	public static void store(WCSDTO wcs, WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
         File root) throws ConfigurationException {
         LOGGER.finest("In method store WMSDTO,WFSDTO, GeoServerDTO");
 
@@ -120,16 +137,16 @@ public class XMLConfigWriter {
 
         try {
             FileWriter fw = new FileWriter(configFile);
-            storeServices(new WriterHelper(fw), wms, wfs, geoServer);
+			storeServices(new WriterHelper(fw), wcs, wms, wfs, geoServer);
             fw.close();
         } catch (IOException e) {
             throw new ConfigurationException("Store" + root, e);
         }
     }
 
-    public static void store(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
+	public static void store(WCSDTO wcs, WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
         DataDTO data, File root) throws ConfigurationException {
-        store(wms, wfs, geoServer, root);
+		store(wcs, wms, wfs, geoServer, root);
         store(data, root);
     }
 
@@ -147,7 +164,7 @@ public class XMLConfigWriter {
      *
      * @throws ConfigurationException When an IO exception occurs.
      */
-    protected static void storeServices(WriterHelper cw, WMSDTO wms,
+	protected static void storeServices(WriterHelper cw, WCSDTO wcs, WMSDTO wms,
         WFSDTO wfs, GeoServerDTO geoServer) throws ConfigurationException {
         LOGGER.finer("In method storeServices");
         cw.writeln("<?config.xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -237,9 +254,11 @@ public class XMLConfigWriter {
             cw.closeTag("global");
         }
 
-        if (!((wfs == null) && (wms == null))) {
+		if (!((wcs == null) && (wfs == null) && (wms == null))) {
             cw.openTag("services");
-
+			if (wcs != null) {
+				storeService(wcs, cw);
+			}
             if (wfs != null) {
                 storeService(wfs, cw);
             }
@@ -290,6 +309,7 @@ public class XMLConfigWriter {
             cw.textTag("ContactVoiceTelephone", c.getContactVoice());
             cw.textTag("ContactFacsimileTelephone", c.getContactFacsimile());
             cw.textTag("ContactElectronicMailAddress", c.getContactEmail());
+			cw.textTag("ContactOnlineResource", c.getOnlineResource());
             cw.closeTag("ContactInformation");
         }
     }
@@ -313,6 +333,7 @@ public class XMLConfigWriter {
         LOGGER.finer("In method storeService");
 
         ServiceDTO s = null;
+        String u = null;
         String t = "";
         
         boolean fBounds = false;
@@ -321,8 +342,12 @@ public class XMLConfigWriter {
         String svgRenderer = null;
         boolean svgAntiAlias = false;
         boolean citeConformanceHacks = false;
-
-        if (obj instanceof WFSDTO) {
+		if (obj instanceof WCSDTO) {
+			WCSDTO w = (WCSDTO) obj;
+			s = w.getService();
+			t = "WCS";
+			//citeConformanceHacks = w.getCiteConformanceHacks();
+		}else if (obj instanceof WFSDTO) {
             WFSDTO w = (WFSDTO) obj;
             s = w.getService();
             t = "WFS";
@@ -338,7 +363,7 @@ public class XMLConfigWriter {
             svgRenderer = w.getSvgRenderer();
             svgAntiAlias = w.getSvgAntiAlias();
         } else {
-            throw new ConfigurationException("Invalid object: not WMS of WFS");
+			throw new ConfigurationException("Invalid object: not WMS or WFS or WCS");
         }
 
         Map atrs = new HashMap();
@@ -360,7 +385,14 @@ public class XMLConfigWriter {
         if ((s.getAbstract() != null) && (s.getAbstract() != "")) {
             cw.textTag("abstract", s.getAbstract());
         }
-
+		if (s.getMetadataLink() != null) {
+			MetaDataLink ml = s.getMetadataLink();
+			Map mlAttr = new HashMap();
+			mlAttr.put("about",ml.getAbout());
+			mlAttr.put("type",ml.getType());
+			mlAttr.put("metadataType",ml.getMetadataType());
+			cw.textTag("metadataLink", mlAttr, ml.getContent());
+		}
         if (s.getKeywords().length != 0) {
             cw.openTag("keywords");
 
@@ -389,30 +421,30 @@ public class XMLConfigWriter {
         }
 
         //if (srsXmlStyle) {
-        cw.valueTag("srsXmlStyle", srsXmlStyle + "");
+			cw.valueTag("srsXmlStyle", srsXmlStyle + "");
+			//}
 
-        //}
         if (serviceLevel != 0) {
             cw.valueTag("serviceLevel", serviceLevel + "");
         }
 
         if (obj instanceof WFSDTO) //DJB: this method (storeService) doesnt separate WFS and WMS very well!
-         {
-            cw.textTag("citeConformanceHacks", citeConformanceHacks + "");
+        {
+        	 cw.textTag("citeConformanceHacks", citeConformanceHacks + "");
         }
 
         if ((s.getMaintainer() != null) && (s.getMaintainer() != "")) {
             cw.textTag("maintainer", s.getMaintainer());
         }
-
+        
         if (svgRenderer != null) {
-            cw.textTag("svgRenderer", svgRenderer);
+        	cw.textTag("svgRenderer", svgRenderer);
         }
 
         if (obj instanceof WMSDTO) {
-            cw.textTag("svgAntiAlias", svgAntiAlias + "");
+        	cw.textTag("svgAntiAlias", svgAntiAlias+"");
         }
-
+        
         cw.closeTag("service");
     }
 
@@ -438,62 +470,80 @@ public class XMLConfigWriter {
         //DJB: this used to not put in a datastores tag if there were none defined.
         //     this caused the loader to blow up.  I changed it so it puts an empty <datastore> here!
         cw.openTag("datastores");
-        cw.comment(
-            "a datastore configuration element serves as a common data source connection\n"
-            + "parameters repository for all featuretypes it holds.");
+            cw.comment(
+                "a datastore configuration element serves as a common data source connection\n"
+                + "parameters repository for all featuretypes it holds.");
 
-        Iterator i = data.getDataStores().keySet().iterator();
+            Iterator i = data.getDataStores().keySet().iterator();
 
-        while (i.hasNext()) {
-            String s = (String) i.next();
+            while (i.hasNext()) {
+                String s = (String) i.next();
             DataStoreInfoDTO ds = (DataStoreInfoDTO) data.getDataStores().get(s);
 
-            if (ds != null) {
-                storeDataStore(cw, ds);
+                if (ds != null) {
+                    storeDataStore(cw, ds);
+                }
             }
-        }
 
         cw.closeTag("datastores");
+        
+     	//DJB: since datastore screws up if the tag is missing, I'm fixing it here too
+			cw.openTag("formats");
+			cw.comment(
+					"a format configuration element serves as a common data source\n"
+					+ "parameters repository for all coverages it holds.");
+			
+			i = data.getFormats().keySet().iterator();
+			
+			while (i.hasNext()) {
+				String s = (String) i.next();
+				FormatInfoDTO df = (FormatInfoDTO) data.getFormats()
+				.get(s);
+				
+				if (df != null) {
+					storeFormat(cw, df);
+				}
+			}
+			
+			cw.closeTag("formats");
+         cw.comment("Defines namespaces to be used by the datastores.");
+            cw.openTag("namespaces");
 
-        //DJB: since datastore screws up if the tag is missing, I'm fixing it here too
-        cw.comment("Defines namespaces to be used by the datastores.");
-        cw.openTag("namespaces");
+            i = data.getNameSpaces().keySet().iterator();
 
-        i = data.getNameSpaces().keySet().iterator();
-
-        while (i.hasNext()) {
-            String s = (String) i.next();
+            while (i.hasNext()) {
+                String s = (String) i.next();
             NameSpaceInfoDTO ns = (NameSpaceInfoDTO) data.getNameSpaces().get(s);
 
-            if (ns != null) {
-                storeNameSpace(cw, ns);
+                if (ns != null) {
+                    storeNameSpace(cw, ns);
+                }
             }
-        }
 
         cw.closeTag("namespaces");
-
-        //DJB: since datastore screws up if the tag is missing, I'm fixing it here too
+   
+    	//DJB: since datastore screws up if the tag is missing, I'm fixing it here too
         cw.openTag("styles");
-        cw.comment(
-            "Defines the style ids to be used by the wms.  The files must be\n"
-            + "contained in geoserver/misc/wms/styles.  We're working on finding\n"
-            + "a better place for them, but for now that's where you must put them\n"
-            + "if you want them on the server.");
+            cw.comment(
+                "Defines the style ids to be used by the wms.  The files must be\n"
+                + "contained in geoserver/misc/wms/styles.  We're working on finding\n"
+                + "a better place for them, but for now that's where you must put them\n"
+                + "if you want them on the server.");
 
-        i = data.getStyles().keySet().iterator();
+            i = data.getStyles().keySet().iterator();
 
-        while (i.hasNext()) {
-            String s = (String) i.next();
-            StyleDTO st = (StyleDTO) data.getStyles().get(s);
+            while (i.hasNext()) {
+                String s = (String) i.next();
+                StyleDTO st = (StyleDTO) data.getStyles().get(s);
 
-            if (st != null) {
-                storeStyle(cw, st);
+                if (st != null) {
+                    storeStyle(cw, st);
+                }
             }
-        }
 
-        cw.closeTag("styles");
+      cw.closeTag("styles");
 
-        cw.closeTag("catalog");
+      cw.closeTag("catalog");
     }
 
     /**
@@ -553,6 +603,89 @@ public class XMLConfigWriter {
         cw.closeTag("datastore");
     }
 
+    /**
+	 * storeFormat purpose.
+	 * 
+	 * <p>
+	 * Writes a FormatInfo into the WriterUtils provided.
+	 * </p>
+	 *
+	 * @param cw The Configuration Writer
+	 * @param ds The Format.
+	 *
+	 * @throws ConfigurationException When an IO exception occurs.
+	 */
+	protected static void storeFormat(WriterHelper cw, FormatInfoDTO df)
+	throws ConfigurationException {
+		LOGGER.fine("In method storeFormat");
+		
+		Map temp = new HashMap();
+		
+		if (df.getId() != null) {
+			temp.put("id", df.getId());
+		}
+		
+		temp.put("enabled", df.isEnabled() + "");
+		
+		//        if (df.getNameSpaceId() != null) {
+		//            temp.put("namespace", df.getNameSpaceId());
+		//        }
+		
+		cw.openTag("format", temp);
+		
+		if ((df.getAbstract() != null) && (df.getAbstract() != "")) {
+			cw.textTag("description", df.getAbstract());
+		}
+		
+		if ((df.getTitle() != null) && (df.getTitle() != "")) {
+			cw.textTag("title", df.getTitle());
+		}
+		
+		if ((df.getType() != null) && (df.getType() != "")) {
+			cw.textTag("type", df.getType());
+		}
+		
+		if ((df.getUrl() != null) && (df.getUrl() != "")) {
+			cw.textTag("url", df.getUrl());
+		}
+		
+		if (df.getParameters().size() != 0) {
+			cw.openTag("parameters");
+			
+			Iterator i = df.getParameters().keySet().iterator();
+			temp = new HashMap();
+			
+			while (i.hasNext()) {
+				String key = (String) i.next();
+				if( "values_palette".equalsIgnoreCase(key) ) {
+					String text = "";
+                	Object palVal = df.getParameters().get(key);
+                    if(palVal instanceof Color[]) {
+						for(int col=0; col<((Color[])palVal).length; col++ ) {
+							String colString = "#" +
+											(Integer.toHexString(((Color)((Color[])palVal)[col]).getRed()).length()>1 ? Integer.toHexString(((Color)((Color[])palVal)[col]).getRed()) : "0" + Integer.toHexString(((Color)((Color[])palVal)[col]).getRed()) ) + 
+											(Integer.toHexString(((Color)((Color[])palVal)[col]).getGreen()).length()>1 ? Integer.toHexString(((Color)((Color[])palVal)[col]).getGreen()) : "0" + Integer.toHexString(((Color)((Color[])palVal)[col]).getGreen()) ) + 
+											(Integer.toHexString(((Color)((Color[])palVal)[col]).getBlue()).length()>1 ? Integer.toHexString(((Color)((Color[])palVal)[col]).getBlue()) : "0" + Integer.toHexString(((Color)((Color[])palVal)[col]).getBlue()) );
+							text += (col>0?";":"") + colString;
+						}
+                    } else if (palVal instanceof String) {
+                        text = (String) palVal;
+                    }
+
+					temp.put("name", key);
+					temp.put("value", text);
+				} else {
+					temp.put("name", key);
+					temp.put("value", df.getParameters().get(key).toString().replaceAll("\"","'"));
+				}
+				cw.attrTag("parameter", temp);
+			}
+			
+			cw.closeTag("parameters");
+		}
+		
+		cw.closeTag("format");
+	}
     /**
      * storeNameSpace purpose.
      * 
@@ -642,15 +775,15 @@ public class XMLConfigWriter {
     protected static void storeFeatures(File dir, DataDTO data)
         throws ConfigurationException {
         LOGGER.finer("In method storeFeatures");
-
-        // write them
+	
+	// write them
         Iterator i = data.getFeaturesTypes().keySet().iterator();
 
         while (i.hasNext()) {
             String s = (String) i.next();
             FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) data.getFeaturesTypes()
-                                                             .get(s);
-
+		.get(s);
+	    
             if (ft != null) {
             	String ftDirName = ft.getDirName();
             	
@@ -664,7 +797,7 @@ public class XMLConfigWriter {
                             ftDirName), true);
 
                 storeFeature(ft, dir2);
-
+                
                 if (ft.getSchemaAttributes() != null) {
                     LOGGER.finer(ft.getKey() + " writing schema.xml w/ "
                         + ft.getSchemaAttributes().size());
@@ -672,13 +805,13 @@ public class XMLConfigWriter {
                 }
             }
         }
-
+        
         // delete old ones that are not overwritten
         //I'm changing this action, as it is directly leading to users not 
         //being able to create their own shapefiles in the web admin tool.
         //since their shit always gets deleted.  The behaviour has now changed
-        //to just getting rid of the geoserver config files, info.xml and 
-        //schema.xml and leaving any others.  We should revisit this, I 
+	//to just getting rid of the geoserver config files, info.xml and 
+	//schema.xml and leaving any others.  We should revisit this, I 
         //do think getting rid of stale featureTypes is a good thing.  For 1.3
         //I want to look into directly uploading shapefiles, and perhaps they
         //would then go in a 'shapefile' directory, next to featureTypes or
@@ -690,9 +823,9 @@ public class XMLConfigWriter {
         //if it's from another datastore.  Though I suppose that is not 
         //mutually exclusive, just a little wasting of space, for shapefiles
         //would be held twice.
-        File[] fa = dir.listFiles();
+	File[] fa = dir.listFiles();
 
-        for (int j = 0; j < fa.length; j++) {
+	for(int j=0;j<fa.length;j++){
             // find dir name
             i = data.getFeaturesTypes().values().iterator();
 
@@ -735,7 +868,7 @@ public class XMLConfigWriter {
             }
         }
     }
-
+    
     /**
      * storeStyle purpose.
      * 
@@ -780,6 +913,10 @@ public class XMLConfigWriter {
 
             if ((ft.getAbstract() != null) && (ft.getAbstract() != "")) {
                 cw.textTag("abstract", ft.getAbstract());
+            }
+
+            if ((ft.getWmsPath() != null) && (ft.getWmsPath() != "")) {
+                cw.textTag("wmspath", ft.getWmsPath());
             }
 
             cw.valueTag("numDecimals", ft.getNumDecimals() + "");
@@ -834,12 +971,12 @@ public class XMLConfigWriter {
                  * @REVISIT: strongly test this works.
                  */
                 /*
-                   StringWriter sw = new StringWriter();
-                   org.geotools.filter.XMLEncoder xe = new org.geotools.filter.XMLEncoder(sw);
-                   xe.encode(ft.getDefinitionQuery());
-                   cw.writeln(sw.toString());
-                   cw.closeTag("definitionQuery");
-                 */
+                StringWriter sw = new StringWriter();
+                org.geotools.filter.XMLEncoder xe = new org.geotools.filter.XMLEncoder(sw);
+                xe.encode(ft.getDefinitionQuery());
+                cw.writeln(sw.toString());
+                cw.closeTag("definitionQuery");
+                */
                 FilterTransformer ftransformer = new FilterTransformer();
                 ftransformer.setOmitXMLDeclaration(true);
                 ftransformer.setNamespaceDeclarationEnabled(false);
@@ -865,15 +1002,15 @@ public class XMLConfigWriter {
 
             return;
         }
-
-        if ((fs.getSchemaName() == null) || (fs.getSchemaName() == "")) {
+        
+        if ((fs.getSchemaName() == null) || (fs.getSchemaName() == "")) {                   
             // Should assume Null?
             //LOGGER.info( "No schema name" ); // Do we even have a field for this?
             LOGGER.finer(fs.getKey() + " has not schemaName");
 
             return;
         }
-
+        
         File f = WriterUtils.initWriteFile(new File(dir, "schema.xml"), false);
 
         try {
@@ -963,9 +1100,288 @@ public class XMLConfigWriter {
         cw.closeTag("xs:extension");
         cw.closeTag("xs:complexContent");
         cw.closeTag("xs:complexType");
-    }
+	}
+	protected static void storeCoverages(File dir, DataDTO data)
+	throws ConfigurationException {
+		LOGGER.fine("In method storeCoverages");
+		
+		// write them
+		Iterator i = data.getCoverages().keySet().iterator();
+		while (i.hasNext()) {
+			String s = (String) i.next();
+			CoverageInfoDTO cv = (CoverageInfoDTO) data.getCoverages()
+			.get(s);
+			
+			if (cv != null) {
+				File dir2 = WriterUtils.initWriteFile(new File(dir,
+						cv.getDirName()), true);
+				
+				storeCoverage(cv, dir2);
+			}
+		}
+		
+		File[] fa = dir.listFiles();
+		for(int j=0;j<fa.length;j++){
+			if(fa[j].isDirectory()) {
+				// find dir name
+				i = data.getCoverages().values().iterator();
+				CoverageInfoDTO cvi = null;
+				while(cvi==null && i.hasNext()){
+					CoverageInfoDTO cv = (CoverageInfoDTO)i.next();
+					if(cv.getDirName().equals(fa[j].getName())){
+						cvi = cv;
+					}
+				}
+				if(cvi == null){
+					//delete it
+					File[] t = fa[j].listFiles();
+					if (t != null) {
+						for(int x=0;x<t.length;x++) {
+							//hold on to the data, but be sure to get rid of the
+							//geoserver config shit, as these were deleted.
+							if (t[x].getName().equals("info.xml")) {
+								//sorry for the hardcodes, I don't remember if/where
+								//we have these file names.
+								t[x].delete();
+							}
+						}
+					}
+					if (fa[j].listFiles().length == 0) {
+						fa[j].delete();
+					}
+				}
+			}
+		}
+	}
+	
+	protected static void storeCoverage(CoverageInfoDTO cv, File dir)
+	throws ConfigurationException {
+		LOGGER.fine("In method storeCoverage");
+		
+		File f = WriterUtils.initWriteFile(new File(dir, "info.xml"), false);
+		
+		try {
+			FileWriter fw = new FileWriter(f);
+			WriterHelper cw = new WriterHelper(fw);
+			Map m = new HashMap();
+			
+			if ((cv.getFormatId() != null) && (cv.getFormatId() != "")) {
+				m.put("format", cv.getFormatId());
+			}
+			
+			cw.openTag("coverage", m);
+			
+			if ((cv.getName() != null) && (cv.getName() != "")) {
+				cw.textTag("name", cv.getName());
+			}
 
+			if ((cv.getLabel() != null) && (cv.getLabel() != "")) {
+				cw.textTag("label", cv.getLabel());
+			}
+			
+			if ((cv.getDescription() != null) && (cv.getDescription() != "")) {
+				cw.textTag("description", cv.getDescription());
+			}
 
+			if ((cv.getWmsPath() != null) && (cv.getWmsPath() != "")) {
+				cw.textTag("wmspath", cv.getWmsPath());
+			}
+
+			m = new HashMap();
+			
+			if ((cv.getMetadataLink() != null)) {
+				m.put("about", cv.getMetadataLink().getAbout());
+				m.put("type", cv.getMetadataLink().getType());
+				m.put("metadataType", cv.getMetadataLink().getMetadataType());
+				
+				cw.openTag("metadataLink", m);
+				cw.writeln(cv.getMetadataLink().getContent());
+				cw.closeTag("metadataLink");
+			}
+			
+			if ((cv.getKeywords() != null) && (cv.getKeywords().size() != 0)) {
+				String s = "";
+				Iterator i = cv.getKeywords().iterator();
+				
+				if (i.hasNext()) {
+					s = i.next().toString();
+					
+					while (i.hasNext()) {
+						s = s + "," + i.next().toString();
+					}
+				}
+				
+				cw.textTag("keywords", s);
+			}
+
+            if ((cv.getDefaultStyle() != null) && (cv.getDefaultStyle() != "")) {
+                cw.comment(
+                    "the default style this CoverageInfoDTO can be represented by.\n"
+                    + "at least must contain the \"default\" attribute ");
+                m = new HashMap();
+                m.put("default", cv.getDefaultStyle());
+                cw.attrTag("styles", m);
+            }
+
+			if (cv.getEnvelope() != null) {
+				GeneralEnvelope e = cv.getEnvelope();
+				m = new HashMap();
+				
+				if ((cv.getSrsName() != null) && (cv.getSrsName() != "")) {
+					m.put("srsName",cv.getSrsName());
+				}
+				
+				m.put("crs", cv.getCrs().toWKT().replaceAll("\"","'"));
+				
+				if (!e.isNull()) {
+					cw.openTag("envelope", m);
+						cw.textTag("pos", e.getLowerCorner().getOrdinate(0) + " " + e.getLowerCorner().getOrdinate(1));
+						cw.textTag("pos", e.getUpperCorner().getOrdinate(0) + " " + e.getUpperCorner().getOrdinate(1));
+					cw.closeTag("envelope");
+				}
+			}
+			
+			if(cv.getGrid() != null) {
+				GridGeometry g = cv.getGrid();
+				InternationalString[] dimNames = cv.getDimensionNames();
+				m = new HashMap();
+				
+				m.put("dimension", new Integer(g.getGridRange().getDimension()));
+				
+				String lowers = "", upers = "";
+				for(int r=0; r<g.getGridRange().getDimension(); r++) {
+					lowers += g.getGridRange().getLower(r) + " ";
+					upers += g.getGridRange().getUpper(r) + " ";
+				}
+				
+				cw.openTag("grid", m);
+					cw.textTag("low", lowers);
+					cw.textTag("high", upers);
+					if(dimNames!=null)
+						for(int dn=0;dn<dimNames.length;dn++)
+							cw.textTag("axisName", dimNames[dn].toString());
+				cw.closeTag("grid");
+			}
+			
+			if(cv.getDimensions() != null) {
+				CoverageDimension[] dims = cv.getDimensions();
+				
+				for(int d=0;d<dims.length;d++) {
+					CoverageCategory[] cats = dims[d].getCategories();
+					Double[] nulls = dims[d].getNullValues();
+					cw.openTag("CoverageDimension");
+						cw.textTag("name", dims[d].getName());
+						cw.textTag("description", dims[d].getDescription());
+						if(cats != null) {
+							for(int c=0;c<cats.length;c++) {
+								cw.openTag("Category");
+									cw.textTag("name", cats[c].getName());
+									cw.textTag("label", cats[c].getLabel());
+									if(cats[c].getInterval() != null) {
+										cw.openTag("interval");
+											cw.textTag("min", Double.toString(cats[c].getInterval().getMinimum(true)));
+											cw.textTag("max", Double.toString(cats[c].getInterval().getMaximum(true)));
+										cw.closeTag("interval");
+									}
+								cw.closeTag("Category");
+							}
+						}
+						
+						if(nulls != null) {
+							cw.openTag("nullValues");
+							for(int n=0;n<nulls.length;n++) {
+								cw.textTag("value", nulls[n].toString());
+							}
+							cw.closeTag("nullValues");
+						}
+					cw.closeTag("CoverageDimension");
+				}
+			}
+
+			cw.openTag("supportedCRSs");
+				if ((cv.getRequestCRSs() != null) && (cv.getRequestCRSs().size() != 0)) {
+					String s = "";
+					Iterator i = cv.getRequestCRSs().iterator();
+					
+					if (i.hasNext()) {
+						s = i.next().toString();
+						
+						while (i.hasNext()) {
+							s = s + "," + i.next().toString();
+						}
+					}
+					
+					cw.textTag("requestCRSs", s);
+				}
+
+				if ((cv.getResponseCRSs() != null) && (cv.getResponseCRSs().size() != 0)) {
+					String s = "";
+					Iterator i = cv.getResponseCRSs().iterator();
+					
+					if (i.hasNext()) {
+						s = i.next().toString();
+						
+						while (i.hasNext()) {
+							s = s + "," + i.next().toString();
+						}
+					}
+					
+					cw.textTag("responseCRSs", s);
+				}
+			cw.closeTag("supportedCRSs");
+
+			m = new HashMap();
+			
+			if ((cv.getNativeFormat() != null) && (cv.getNativeFormat() != "")) {
+				m.put("nativeFormat", cv.getNativeFormat());
+			}
+			
+			cw.openTag("supportedFormats", m);
+				if ((cv.getSupportedFormats() != null) && (cv.getSupportedFormats().size() != 0)) {
+					String s = "";
+					Iterator i = cv.getSupportedFormats().iterator();
+					
+					if (i.hasNext()) {
+						s = i.next().toString();
+						
+						while (i.hasNext()) {
+							s = s + "," + i.next().toString();
+						}
+					}
+					
+					cw.textTag("formats", s);
+				}
+			cw.closeTag("supportedFormats");
+
+			m = new HashMap();
+			
+			if ((cv.getDefaultInterpolationMethod() != null) && (cv.getDefaultInterpolationMethod() != "")) {
+				m.put("default", cv.getDefaultInterpolationMethod());
+			}
+			
+			cw.openTag("supportedInterpolations", m);
+				if ((cv.getInterpolationMethods() != null) && (cv.getInterpolationMethods().size() != 0)) {
+					String s = "";
+					Iterator i = cv.getInterpolationMethods().iterator();
+					
+					if (i.hasNext()) {
+						s = i.next().toString();
+						
+						while (i.hasNext()) {
+							s = s + "," + i.next().toString();
+						}
+					}
+					
+					cw.textTag("interpolationMethods", s);
+				}
+			cw.closeTag("supportedInterpolations");
+			
+			cw.closeTag("coverage");
+			fw.close();
+		} catch (IOException e) {
+			throw new ConfigurationException(e);
+		}
+	}
 
 /**
  * WriterUtils purpose.

@@ -51,7 +51,7 @@ public abstract class NameSpaceElement{
 	public NameSpaceElement(){
 		this.prefix=null;
 	}
-	
+
 	/**
 	 * getTypeDefName purpose.
 	 * <p>
@@ -75,9 +75,11 @@ public abstract class NameSpaceElement{
 	 * </code>
 	 * </p>
 	 * @return The type def. name, for the above example AbstractFeatureType.
+	 * 
+	 * @uml.property name="typeDefName" multiplicity="(0 1)"
 	 */
 	public abstract String getTypeDefName();
-	
+
 	/**
 	 * getTypeDefName purpose.
 	 * <p>
@@ -92,9 +94,11 @@ public abstract class NameSpaceElement{
 	 * </code>
 	 * </p>
 	 * @return The element name, for the above example string or lineStringProperty.
+	 * 
+	 * @uml.property name="typeRefName" multiplicity="(0 1)"
 	 */
 	public abstract String getTypeRefName();
-	
+
 	/**
 	 * getQualifiedTypeDefName purpose.
 	 * <p>
@@ -102,9 +106,11 @@ public abstract class NameSpaceElement{
 	 * </p>
 	 * @return the name if the default prefix is non null, null otherwise
 	 * @see getTypeDefName()
+	 * 
+	 * @uml.property name="qualifiedTypeDefName" multiplicity="(0 1)"
 	 */
 	public abstract String getQualifiedTypeDefName();
-	
+
 	/**
 	 * getQualifiedTypeRefName purpose.
 	 * <p>
@@ -112,8 +118,11 @@ public abstract class NameSpaceElement{
 	 * </p>
 	 * @return the name if the default prefix is non null, null otherwise
 	 * @see getTypeRefName()
+	 * 
+	 * @uml.property name="qualifiedTypeRefName" multiplicity="(0 1)"
 	 */
 	public abstract String getQualifiedTypeRefName();
+
 	
 	/**
 	 * getQualifiedTypeDefName purpose.
@@ -136,7 +145,7 @@ public abstract class NameSpaceElement{
 	 * @see getTypeRefName()
 	 */
 	public abstract String getQualifiedTypeRefName(String prefix);
-	
+
 	/**
 	 * getJavaClass purpose.
 	 * <p>
@@ -146,6 +155,8 @@ public abstract class NameSpaceElement{
 	 * for example an element of type xs:int would return <code>Integer.class</code>.
 	 * </p>
 	 * @return Class instance of the Class object which would best represent this element.
+	 * 
+	 * @uml.property name="javaClass" multiplicity="(0 1)"
 	 */
 	public abstract Class getJavaClass();
 
