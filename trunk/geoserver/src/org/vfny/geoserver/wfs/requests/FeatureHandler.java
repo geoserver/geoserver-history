@@ -37,8 +37,14 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");
 
-    /** Internal get feature request for construction. */
-    private FeatureRequest request = new FeatureRequest();
+	/**
+	 * Internal get feature request for construction.
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private FeatureRequest request = new FeatureRequest();
+
 
     /** Tracks tag we are currently inside: helps maintain state. */
     private String insideTag = new String();
@@ -46,8 +52,13 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     /** Boolean to flag whether or not we are inside a query */
     private boolean insideQuery = false;
 
-    /** Tracks current query */
-    private Query currentQuery = new Query();
+	/**
+	 * Tracks current query
+	 * 
+	 * @uml.property name="currentQuery"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private Query currentQuery = new Query();
 
     /**
      * Empty constructor.

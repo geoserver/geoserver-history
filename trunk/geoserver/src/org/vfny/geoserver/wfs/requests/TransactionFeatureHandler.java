@@ -44,7 +44,14 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
 
     /** Stores current feature attributes. */
     private Object[] attributes;
-    private List attributeNames = new Vector();
+
+	/**
+	 * 
+	 * @uml.property name="attributeNames"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List attributeNames = new Vector();
+
 
     /** Stores current feature attributes. */
     private boolean insideAttribute = false;
@@ -60,21 +67,50 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      * of the element's content (aka, at endElement())
      */
     private Object tempValue = null;
-	/** actual attribute value is built here since multiple calls to
+
+	/**
+	 * actual attribute value is built here since multiple calls to
 	 * {@linkplain #characters(char[], int, int)} may occur until the
-	 * whole attribute value gets completely parsed. 
+	 * whole attribute value gets completely parsed.
+	 * 
+	 * @uml.property name="processingAttributeValue"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
 	private StringBuffer processingAttributeValue;
+
     private String attName = "";
 
     //private FeatureSchema metadata = new FeatureSchema();
     private String typeName = "GenericFeature";
-    private TransactionFilterHandler parent;
 
-    //private TypeRepository typeRepo = TypeRepository.getInstance();
-    private Data catalog = null;
-    private FeatureType curFeatureType;
-    private AttributeType curAttributeType;
+	/**
+	 * 
+	 * @uml.property name="parent"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private TransactionFilterHandler parent;
+
+	/**
+	 * 
+	 * @uml.property name="catalog"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	//private TypeRepository typeRepo = TypeRepository.getInstance();
+	private Data catalog = null;
+
+	/**
+	 * 
+	 * @uml.property name="curFeatureType"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private FeatureType curFeatureType;
+
+	/**
+	 * 
+	 * @uml.property name="curAttributeType"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private AttributeType curAttributeType;
 
     /**
      * Constructor with parent, which must implement GMLHandlerJTS.

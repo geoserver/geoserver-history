@@ -30,11 +30,22 @@ public class InsertRequest extends SubTransactionRequest {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");
 
-    /** The list of features to be inserted. */
-    private FeatureCollection features;
+	/**
+	 * The list of features to be inserted.
+	 * 
+	 * @uml.property name="features"
+	 * @uml.associationEnd elementType="org.geotools.feature.Feature" multiplicity="(0
+	 * -1)"
+	 */
+	private FeatureCollection features;
 
-    /** flag to tell is all locked features should be released. */
-    private boolean releaseAll;
+	/**
+	 * flag to tell is all locked features should be released.
+	 * 
+	 * @uml.property name="releaseAll" multiplicity="(0 1)"
+	 */
+	private boolean releaseAll;
+
 
     /**
      * Empty constructor.
@@ -43,25 +54,30 @@ public class InsertRequest extends SubTransactionRequest {
         features = FeatureCollections.newCollection();
     }
 
-    /**
-     * Gets whether all locked features should be released after this
-     * transaction, or only those that were affected.
-     *
-     * @return <tt>true</tt> if all locked features should be released.
-     */
-    public boolean getReleaseAll() {
-        return releaseAll;
-    }
+	/**
+	 * Gets whether all locked features should be released after this
+	 * transaction, or only those that were affected.
+	 * 
+	 * @return <tt>true</tt> if all locked features should be released.
+	 * 
+	 * @uml.property name="releaseAll"
+	 */
+	public boolean getReleaseAll() {
+		return releaseAll;
+	}
 
-    /**
-     * Sets  whether all locked features should be released after this
-     * transaction, or only those that were affected.
-     *
-     * @param releaseAll whether all locked features should be released.
-     */
-    public void setReleaseAll(boolean releaseAll) {
-        this.releaseAll = releaseAll;
-    }
+	/**
+	 * Sets  whether all locked features should be released after this
+	 * transaction, or only those that were affected.
+	 * 
+	 * @param releaseAll whether all locked features should be released.
+	 * 
+	 * @uml.property name="releaseAll"
+	 */
+	public void setReleaseAll(boolean releaseAll) {
+		this.releaseAll = releaseAll;
+	}
+
 
     /**
      * Adds a feature to this insert request.  Currently fairly permissive,
@@ -144,14 +160,16 @@ public class InsertRequest extends SubTransactionRequest {
             this.typeName = typeName;
     }
 
-    /**
-     * Returns the features contained in this request.
-     *
-     * @return the array of features.
-     */
-    public FeatureCollection getFeatures() {
-        return features;
-    }
+	/**
+	 * Returns the features contained in this request.
+	 * 
+	 * @return the array of features.
+	 * 
+	 * @uml.property name="features"
+	 */
+	public FeatureCollection getFeatures() {
+		return features;
+	}
 
     /**
      * Filters can not be added to an insert request.  This is just an override

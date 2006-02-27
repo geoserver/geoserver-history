@@ -26,9 +26,20 @@ public class DescribeRequest extends WFSRequest {
     /** Flags whether or not all feature types were requested */
     protected boolean allRequested = true;
 
-    /** Stores all feature types */
-    protected List featureTypes = new ArrayList();
-    protected String outputFormat = "XMLSCHEMA";
+	/**
+	 * Stores all feature types
+	 * 
+	 * @uml.property name="featureTypes"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	protected List featureTypes = new ArrayList();
+
+	/**
+	 * 
+	 * @uml.property name="outputFormat" multiplicity="(0 1)"
+	 */
+	protected String outputFormat = "XMLSCHEMA";
+
 
     /**
      * Empty constructor.
@@ -55,15 +66,18 @@ public class DescribeRequest extends WFSRequest {
         return this.allRequested;
     }
 
-    /**
-     * Set requested feature types.
-     *
-     * @param featureTypes DOCUMENT ME!
-     */
-    public void setFeatureTypes(List featureTypes) {
-        this.featureTypes = featureTypes;
-        this.allRequested = false;
-    }
+	/**
+	 * Set requested feature types.
+	 * 
+	 * @param featureTypes DOCUMENT ME!
+	 * 
+	 * @uml.property name="featureTypes"
+	 */
+	public void setFeatureTypes(List featureTypes) {
+		this.featureTypes = featureTypes;
+		this.allRequested = false;
+	}
+
 
     /**
      * Adds a requested feature types to the list.
@@ -75,34 +89,40 @@ public class DescribeRequest extends WFSRequest {
         this.allRequested = false;
     }
 
-    /**
-     * Return requested feature types.
-     *
-     * @return DOCUMENT ME!
-     */
-    public List getFeatureTypes() {
-        return this.featureTypes;
-    }
+	/**
+	 * Return requested feature types.
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="featureTypes"
+	 */
+	public List getFeatureTypes() {
+		return this.featureTypes;
+	}
 
-    /**
-     * Sets the outputFormat.  Right now XMLSCHEMA is the only allowed format.
-     *
-     * @param outputFormat the new outputFormat
-     */
-    public void setOutputFormat(String outputFormat) {
-        if (!((outputFormat == null) || outputFormat.equals(""))) {
-            this.outputFormat = outputFormat;
-        }
-    }
+	/**
+	 * Sets the outputFormat.  Right now XMLSCHEMA is the only allowed format.
+	 * 
+	 * @param outputFormat the new outputFormat
+	 * 
+	 * @uml.property name="outputFormat"
+	 */
+	public void setOutputFormat(String outputFormat) {
+		if (!((outputFormat == null) || outputFormat.equals(""))) {
+			this.outputFormat = outputFormat;
+		}
+	}
 
-    /**
-     * Returns the format for printing the feature type.
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getOutputFormat() {
-        return outputFormat;
-    }
+	/**
+	 * Returns the format for printing the feature type.
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="outputFormat"
+	 */
+	public String getOutputFormat() {
+		return outputFormat;
+	}
 
     /* ***********************************************************************
      * OVERRIDES OF toString AND equals METHODS.                             *

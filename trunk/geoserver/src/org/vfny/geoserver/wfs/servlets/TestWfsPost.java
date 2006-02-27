@@ -4,8 +4,13 @@
  */
 package org.vfny.geoserver.wfs.servlets;
 
-import java.io.*;
-
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.URL;
 
 import javax.servlet.ServletConfig;
@@ -218,7 +223,8 @@ public class TestWfsPost extends HttpServlet {
                 //System.out.println("got encoding from acon: "
                 //    + acon.getContentType());
                 response.setContentType(acon.getContentType());
-
+                response.setHeader("content-disposition", acon.getHeaderField("content-disposition"));
+                
                 OutputStream output = response.getOutputStream();
                 int c;
                 InputStream in = acon.getInputStream();

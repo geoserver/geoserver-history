@@ -41,11 +41,21 @@ public class DeleteRequest extends SubTransactionRequest {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");
 
-    /** Specifies the features to lock. */
-    protected Filter filter = Filter.NONE;
+	/**
+	 * Specifies the features to lock.
+	 * 
+	 * @uml.property name="filter"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	protected Filter filter = Filter.NONE;
 
-    /** Whether all locks should be released after this transaction. */
-    protected boolean releaseAll = true;
+	/**
+	 * Whether all locks should be released after this transaction.
+	 * 
+	 * @uml.property name="releaseAll" multiplicity="(0 1)"
+	 */
+	protected boolean releaseAll = true;
+
 
     /**
      * Empty constructor.
@@ -71,41 +81,49 @@ public class DeleteRequest extends SubTransactionRequest {
         this.typeName = typeName;
     }
 
-    /**
-     * Gets the filter of what features should be returned.
-     *
-     * @return The geotools filter to query against.
-     */
-    public Filter getFilter() {
-        return filter;
-    }
+	/**
+	 * Gets the filter of what features should be returned.
+	 * 
+	 * @return The geotools filter to query against.
+	 * 
+	 * @uml.property name="filter"
+	 */
+	public Filter getFilter() {
+		return filter;
+	}
 
-    /**
-     * Sets the filter of what features should be returned.
-     *
-     * @param filter The geotools filter to query against.
-     */
-    public void setFilter(Filter filter) {
-        this.filter = filter;
-    }
+	/**
+	 * Sets the filter of what features should be returned.
+	 * 
+	 * @param filter The geotools filter to query against.
+	 * 
+	 * @uml.property name="filter"
+	 */
+	public void setFilter(Filter filter) {
+		this.filter = filter;
+	}
 
-    /**
-     * Gets whether all locks should be released after this transaction.
-     *
-     * @return <tt>true</tt> if all locks should be released.
-     */
-    public boolean getReleaseAll() {
-        return releaseAll;
-    }
+	/**
+	 * Gets whether all locks should be released after this transaction.
+	 * 
+	 * @return <tt>true</tt> if all locks should be released.
+	 * 
+	 * @uml.property name="releaseAll"
+	 */
+	public boolean getReleaseAll() {
+		return releaseAll;
+	}
 
-    /**
-     * Sets whether all locks should be released after this transaction.
-     *
-     * @param releaseAll if all locks should be released.
-     */
-    public void setReleaseAll(boolean releaseAll) {
-        this.releaseAll = releaseAll;
-    }
+	/**
+	 * Sets whether all locks should be released after this transaction.
+	 * 
+	 * @param releaseAll if all locks should be released.
+	 * 
+	 * @uml.property name="releaseAll"
+	 */
+	public void setReleaseAll(boolean releaseAll) {
+		this.releaseAll = releaseAll;
+	}
 
     /**
      * Returns what type of transaction operation this is.

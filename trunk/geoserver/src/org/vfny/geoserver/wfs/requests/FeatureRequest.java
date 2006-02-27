@@ -29,36 +29,41 @@ public class FeatureRequest extends WFSRequest {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /**
-     * The maximum returned if the user requests no limit of features at all,
-     * but the other request parameters don't restrict to below 500.
-     */
+	/**
+	 * The maximum returned if the user requests no limit of features at all,
+	 * but the other request parameters don't restrict to below 500.
+	 * 
+	 * @uml.property name="maxFeatures" multiplicity="(0 1)"
+	 */
+	protected int maxFeatures = Integer.MAX_VALUE; //SOFT_MAX_FEATURES;
 
-    //protected static final int SOFT_MAX_FEATURES = GeoServer.getInstance()
-    //                                                           .getGlobalConfig()
-    //                                                           .getMaxFeatures();
+	/**
+	 * Specifies the output format
+	 * 
+	 * @uml.property name="outputFormat" multiplicity="(0 1)"
+	 */
+	protected String outputFormat = "GML2";
 
-    /**
-     * This is the maximum that is returned if the user specifically requests
-     * more than the soft max.
-     */
+	/**
+	 * Specifices the user-defined name for the entire get feature request
+	 * 
+	 * @uml.property name="handle" multiplicity="(0 1)"
+	 */
+	protected String handle = null;
 
-    //protected static final int HARD_MAX_FEATURES = SOFT_MAX_FEATURES + 1000;
-
-    /** Creates a max features constraint for the entire request */
-    protected int maxFeatures = Integer.MAX_VALUE; //SOFT_MAX_FEATURES;
-
-    /** Specifies the output format */
-    protected String outputFormat = "GML2";
-
-    /** Specifices the user-defined name for the entire get feature request */
-    protected String handle = null;
 
     /** Creates an object version type */
     protected String featureVersion = null;
 
-    /** Creates a full list of queries */
-    protected List queries = new ArrayList();
+	/**
+	 * Creates a full list of queries
+	 * 
+	 * @uml.property name="queries"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.wfs.Query" multiplicity="(0
+	 * -1)"
+	 */
+	protected List queries = new ArrayList();
+
 
     /**
      * Empty constructor.
@@ -68,14 +73,17 @@ public class FeatureRequest extends WFSRequest {
         setRequest("GetFeature");
     }
 
-    /**
-     * Sets the entire set of queries for this GetFeature request.
-     *
-     * @param queries The Querys of this request.
-     */
-    public void setQueries(List queries) {
-        this.queries = queries;
-    }
+	/**
+	 * Sets the entire set of queries for this GetFeature request.
+	 * 
+	 * @param queries The Querys of this request.
+	 * 
+	 * @uml.property name="queries"
+	 */
+	public void setQueries(List queries) {
+		this.queries = queries;
+	}
+
 
     /**
      * Returns a specific query from this GetFeature request.
@@ -86,14 +94,17 @@ public class FeatureRequest extends WFSRequest {
         this.queries.add(query);
     }
 
-    /**
-     * Returns the entire set of queries for this GetFeature request.
-     *
-     * @return The List of Query objects for this request.
-     */
-    public List getQueries() {
-        return this.queries;
-    }
+	/**
+	 * Returns the entire set of queries for this GetFeature request.
+	 * 
+	 * @return The List of Query objects for this request.
+	 * 
+	 * @uml.property name="queries"
+	 */
+	public List getQueries() {
+		return this.queries;
+	}
+
 
     /**
      * Returns the number of queries for this GetFeature request.
@@ -115,41 +126,50 @@ public class FeatureRequest extends WFSRequest {
         return (Query) this.queries.get(i);
     }
 
-    /**
-     * Sets the output format for this GetFeature request.
-     *
-     * @param outputFormat only gml2 is currently supported.
-     */
-    public void setOutputFormat(String outputFormat) {
-        this.outputFormat = outputFormat;
-    }
+	/**
+	 * Sets the output format for this GetFeature request.
+	 * 
+	 * @param outputFormat only gml2 is currently supported.
+	 * 
+	 * @uml.property name="outputFormat"
+	 */
+	public void setOutputFormat(String outputFormat) {
+		this.outputFormat = outputFormat;
+	}
 
-    /**
-     * Gets the output format for this GetFeature request.
-     *
-     * @return "GML2"
-     */
-    public String getOutputFormat() {
-        return this.outputFormat;
-    }
+	/**
+	 * Gets the output format for this GetFeature request.
+	 * 
+	 * @return "GML2"
+	 * 
+	 * @uml.property name="outputFormat"
+	 */
+	public String getOutputFormat() {
+		return this.outputFormat;
+	}
 
-    /**
-     * Sets the user-defined name for this request.
-     *
-     * @param handle The string to be used in reporting errors.
-     */
-    public void setHandle(String handle) {
-        this.handle = handle;
-    }
+	/**
+	 * Sets the user-defined name for this request.
+	 * 
+	 * @param handle The string to be used in reporting errors.
+	 * 
+	 * @uml.property name="handle"
+	 */
+	public void setHandle(String handle) {
+		this.handle = handle;
+	}
 
-    /**
-     * Returns the user-defined name for the entire GetFeature request.
-     *
-     * @return The string to use in error reporting with this request.
-     */
-    public String getHandle() {
-        return this.handle;
-    }
+	/**
+	 * Returns the user-defined name for the entire GetFeature request.
+	 * 
+	 * @return The string to use in error reporting with this request.
+	 * 
+	 * @uml.property name="handle"
+	 */
+	public String getHandle() {
+		return this.handle;
+	}
+
 
     /**
      * Returns the version for the entire GetFeature request. Not currently
@@ -171,20 +191,23 @@ public class FeatureRequest extends WFSRequest {
         return this.version;
     }
 
-    /**
-     * Sets the maximum number of features this request should return.
-     *
-     * @param maxFeatures The maximum number of features to return.
-     */
-    public void setMaxFeatures(int maxFeatures) {
-        if (maxFeatures > 0) {
-            this.maxFeatures = maxFeatures;
-        }
+	/**
+	 * Sets the maximum number of features this request should return.
+	 * 
+	 * @param maxFeatures The maximum number of features to return.
+	 * 
+	 * @uml.property name="maxFeatures"
+	 */
+	public void setMaxFeatures(int maxFeatures) {
+		if (maxFeatures > 0) {
+			this.maxFeatures = maxFeatures;
+		}
 
-        //if (maxFeatures > HARD_MAX_FEATURES) {
-        //  this.maxFeatures = HARD_MAX_FEATURES;
-        //}
-    }
+		//if (maxFeatures > HARD_MAX_FEATURES) {
+		//  this.maxFeatures = HARD_MAX_FEATURES;
+		//}
+	}
+
 
     /**
      * Parses the GetFeature reqeust and returns a contentHandler.
@@ -198,14 +221,16 @@ public class FeatureRequest extends WFSRequest {
         }
     }
 
-    /**
-     * Returns the maximum number of features for this request.
-     *
-     * @return Maximum number of features this request will return.
-     */
-    public int getMaxFeatures() {
-        return this.maxFeatures;
-    }
+	/**
+	 * Returns the maximum number of features for this request.
+	 * 
+	 * @return Maximum number of features this request will return.
+	 * 
+	 * @uml.property name="maxFeatures"
+	 */
+	public int getMaxFeatures() {
+		return this.maxFeatures;
+	}
 
     /**
      * Standard override of toString()

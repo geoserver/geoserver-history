@@ -28,14 +28,30 @@ public class UpdateRequest extends SubTransactionRequest {
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");
 
-    /** The properties to be changed */
-    private List properties;
+	/**
+	 * The properties to be changed
+	 * 
+	 * @uml.property name="properties"
+	 * @uml.associationEnd inverse="this$0:org.vfny.geoserver.wfs.requests.UpdateRequest$Property"
+	 * multiplicity="(0 -1)"
+	 */
+	private List properties;
 
-    /** Specifies the features to change. */
-    private Filter filter = Filter.NONE;
+	/**
+	 * Specifies the features to change.
+	 * 
+	 * @uml.property name="filter"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private Filter filter = Filter.NONE;
 
-    /** Specifices the user-defined name for the entire get feature request */
-    protected boolean releaseAll = true;
+	/**
+	 * Specifices the user-defined name for the entire get feature request
+	 * 
+	 * @uml.property name="releaseAll" multiplicity="(0 1)"
+	 */
+	protected boolean releaseAll = true;
+
 
     /**
      * Constructor
@@ -91,43 +107,52 @@ public class UpdateRequest extends SubTransactionRequest {
         this.typeName = typeName;
     }
 
-    /**
-     * Gets whether all locked features should be released after this
-     * transaction, or only those that were affected.
-     *
-     * @return if all locks should be released.
-     */
-    public boolean getReleaseAll() {
-        return releaseAll;
-    }
+	/**
+	 * Gets whether all locked features should be released after this
+	 * transaction, or only those that were affected.
+	 * 
+	 * @return if all locks should be released.
+	 * 
+	 * @uml.property name="releaseAll"
+	 */
+	public boolean getReleaseAll() {
+		return releaseAll;
+	}
 
-    /**
-     * Sets  whether all locked features should be released after this
-     * transaction, or only those that were affected.
-     *
-     * @param releaseAll if all locks should be released.
-     */
-    public void setReleaseAll(boolean releaseAll) {
-        this.releaseAll = releaseAll;
-    }
+	/**
+	 * Sets  whether all locked features should be released after this
+	 * transaction, or only those that were affected.
+	 * 
+	 * @param releaseAll if all locks should be released.
+	 * 
+	 * @uml.property name="releaseAll"
+	 */
+	public void setReleaseAll(boolean releaseAll) {
+		this.releaseAll = releaseAll;
+	}
 
-    /**
-     * Sets the filter for this request.
-     *
-     * @param filter The geotools filter to query against.
-     */
-    public void setFilter(Filter filter) {
-        this.filter = filter;
-    }
+	/**
+	 * Sets the filter for this request.
+	 * 
+	 * @param filter The geotools filter to query against.
+	 * 
+	 * @uml.property name="filter"
+	 */
+	public void setFilter(Filter filter) {
+		this.filter = filter;
+	}
 
-    /**
-     * Gets the filter for this request
-     *
-     * @return The geotools filter to query against.
-     */
-    public Filter getFilter() {
-        return filter;
-    }
+	/**
+	 * Gets the filter for this request
+	 * 
+	 * @return The geotools filter to query against.
+	 * 
+	 * @uml.property name="filter"
+	 */
+	public Filter getFilter() {
+		return filter;
+	}
+
 
     /**
      * Gets the list of property values.
@@ -280,21 +305,37 @@ public class UpdateRequest extends SubTransactionRequest {
             LOGGER.finer("New property " + this.toString());
         }
 
-        public void setValue(Object value) {
-            this.value = value;
-        }
+		/**
+		 * 
+		 * @uml.property name="value"
+		 */
+		public void setValue(Object value) {
+			this.value = value;
+		}
 
-        public Object getValue() {
-            return value;
-        }
+		/**
+		 * 
+		 * @uml.property name="value"
+		 */
+		public Object getValue() {
+			return value;
+		}
 
-        public void setName(String name) {
-            this.name = name;
-        }
+		/**
+		 * 
+		 * @uml.property name="name"
+		 */
+		public void setName(String name) {
+			this.name = name;
+		}
 
-        public String getName() {
-            return name;
-        }
+		/**
+		 * 
+		 * @uml.property name="name"
+		 */
+		public String getName() {
+			return name;
+		}
 
         public boolean equals(Object obj) {
             if ((obj != null) && (obj.getClass() == this.getClass())) {
