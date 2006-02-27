@@ -14,8 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WmsException;
 
 
@@ -76,7 +78,7 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
         LOGGER.fine(catalog.toString());
 
         String layerName = null;
-        FeatureTypeInfo ftype = null;
+        MapLayerInfo layer = null;
 
         try {
             LOGGER.fine("looking featuretypeinfos");
@@ -84,13 +86,30 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
             for (int i = 0; i < layerCount; i++) {
                 layerName = (String) layers.get(i);
                 LOGGER.fine("Looking for layer " + layerName);
-                ftype = catalog.getFeatureTypeInfo(layerName);
-                req.addLayer(ftype);
+                FeatureTypeInfo ftype = catalog.getFeatureTypeInfo(layerName);
+                layer = new MapLayerInfo();
+                layer.setFeature(ftype);
+                req.addLayer(layer);
                 LOGGER.fine(layerName + " found");
             }
-        } catch (NoSuchElementException ex) {
-            throw new WmsException(ex,
-                layerName + ": no such layer on this server", "LayerNotDefined");
+        } catch (NoSuchElementException fex) {
+        	try {
+                LOGGER.fine("looking coverageinfos");
+
+                for (int i = 0; i < layerCount; i++) {
+                    layerName = (String) layers.get(i);
+                    LOGGER.fine("Looking for layer " + layerName);
+                    CoverageInfo cinfo = catalog.getCoverageInfo(layerName);
+                    layer = new MapLayerInfo();
+                    layer.setCoverage(cinfo);
+                    req.addLayer(layer);
+                    LOGGER.fine(layerName + " found");
+                }
+
+        	} catch (NoSuchElementException cex) {
+                throw new WmsException(cex,
+                        layerName + ": no such layer on this server", "LayerNotDefined");
+        	}
         }
 
         if (LOGGER.isLoggable(Level.FINE)) {

@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.io.StringBufferInputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -36,15 +35,18 @@ import org.geotools.styling.NamedStyle;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleAttributeExtractor;
-import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactory2;
+import org.geotools.styling.StyleFactoryImpl;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
@@ -158,18 +160,20 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             "org.vfny.geoserver.requests.readers.wms");
 
     /** Used to parse SLD documents from SLD and SLD_BODY parameters */
-    private static final StyleFactory styleFactory = StyleFactory
-        .createStyleFactory();
+    private static final StyleFactory2 styleFactory = new StyleFactoryImpl();
 
-    /**
-     * Indicates wether STYLES parameter must be parsed. Defaults to
-     * <code>true</code>, but can be set to false, for example, when parsing a
-     * GetFeatureInfo request, which shares most of the getmap parameter but
-     * not STYLES.
-     *
-     * @task TODO: refactor this so it dont stay _so_ ugly
-     */
-    private boolean stylesRequired = true;
+	/**
+	 * Indicates wether STYLES parameter must be parsed. Defaults to
+	 * <code>true</code>, but can be set to false, for example, when parsing a
+	 * GetFeatureInfo request, which shares most of the getmap parameter but
+	 * not STYLES.
+	 * 
+	 * @task TODO: refactor this so it dont stay _so_ ugly
+	 * 
+	 * @uml.property name="stylesRequired" multiplicity="(0 1)"
+	 */
+	private boolean stylesRequired = true;
+
 
     /**
      * Creates a new GetMapKvpReader object.
@@ -180,14 +184,16 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         super(kvpPairs);
     }
 
-    /**
-     * Sets wether the STYLES parameter must be parsed
-     *
-     * @param parseStyles
-     */
-    public void setStylesRequired(boolean parseStyles) {
-        this.stylesRequired = parseStyles;
-    }
+	/**
+	 * Sets wether the STYLES parameter must be parsed
+	 * 
+	 * @param parseStyles
+	 * 
+	 * @uml.property name="stylesRequired"
+	 */
+	public void setStylesRequired(boolean parseStyles) {
+		this.stylesRequired = parseStyles;
+	}
 
     /**
      * DOCUMENT ME!
@@ -510,7 +516,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *         requested layers
      */
     private List parseStylesParam(GetMapRequest request,
-        FeatureTypeInfo[] layers) throws WmsException {
+    		MapLayerInfo[] layers) throws WmsException {
         String rawStyles = getValue("STYLES");
         List styles = styles = new ArrayList(layers.length);
 
@@ -520,7 +526,11 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             LOGGER.finer("Assigning default style to all the requested layers");
 
             for (int i = 0; i < numLayers; i++)
-                styles.add(layers[i].getDefaultStyle());
+            	if( layers[i].getType() == MapLayerInfo.TYPE_VECTOR )
+            		styles.add(layers[i].getFeature().getDefaultStyle());
+            	else if( layers[i].getType() == MapLayerInfo.TYPE_RASTER ) {
+            		styles.add(layers[i].getCoverage().getDefaultStyle());
+            	}
         } else {
             List styleNames = readFlat(rawStyles, INNER_DELIMETER);
 
@@ -534,14 +544,15 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
             String currStyleName;
             Style currStyle;
-            FeatureTypeInfo currLayer;
+            MapLayerInfo currLayer;
 
             for (int i = 0; i < numLayers; i++) {
                 currStyleName = (String) styleNames.get(i);
                 currLayer = layers[i];
 
+                if( currLayer.getType() == MapLayerInfo.TYPE_VECTOR ) {
                 if ((null == currStyleName) || "".equals(currStyleName)) {
-                    currStyle = currLayer.getDefaultStyle();
+                        currStyle = currLayer.getFeature().getDefaultStyle();
                 } else {
                     currStyle = findStyle(request, currStyleName);
 
@@ -554,7 +565,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 }
 
                 try {
-                    checkStyle(currStyle, layers[i].getFeatureType());
+                        checkStyle(currStyle, layers[i].getFeature().getFeatureType());
                 } catch (IOException e) {
                     throw new WmsException(
                         "Error obtaining FeatureType for layer "
@@ -564,6 +575,25 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 LOGGER.fine("establishing " + currStyleName + " style for "
                     + layers[i].getName());
                 styles.add(currStyle);
+                } else if( currLayer.getType() == MapLayerInfo.TYPE_RASTER ) {
+                    if ((null == currStyleName) || "".equals(currStyleName)) {
+                        currStyle = currLayer.getCoverage().getDefaultStyle();
+                    } else {
+                        currStyle = findStyle(request, currStyleName);
+
+                        if (currStyle == null) {
+                            String msg = "No default style has been defined for "
+                                + currLayer.getName();
+                            throw new WmsException(msg,
+                                "GetMapKvpReader::parseStyles()");
+                        }
+                    }
+
+                    /**
+                     * @task TODO: Check for Style Coverage Compatibility ...
+                     */ 
+                    styles.add(currStyle);
+                }
             }
         }
 
@@ -636,7 +666,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             LOGGER.fine("Getting layers and styles from reomte SLD");
             parseSldParam(request);
         } else {
-            FeatureTypeInfo[] featureTypes = null;
+        	MapLayerInfo[] featureTypes = null;
             List styles = null;
             featureTypes = parseLayersParam(request);
 
@@ -814,7 +844,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      */
     private void parseStyledLayerDescriptor(final GetMapRequest request,
         final StyledLayerDescriptor sld) throws WmsException {
-        FeatureTypeInfo[] libraryModeLayers = null;
+        MapLayerInfo[] libraryModeLayers = null;
 
         if (null != getValue("LAYERS")) {
             LOGGER.info("request comes in \"library\" mode");
@@ -831,15 +861,18 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         final List layers = new ArrayList();
         final List styles = new ArrayList();
 
-        FeatureTypeInfo currLayer;
-        Style currStyle;
+        MapLayerInfo currLayer = null;
+        Style currStyle = null;
 
         if (null != libraryModeLayers) {
             int lCount = libraryModeLayers.length;
 
             for (int i = 0; i < lCount; i++) {
                 currLayer = libraryModeLayers[i];
-                currStyle = findStyleOf(request, currLayer, styledLayers); // DJB: this might not be 100% correct, but its close enough until someone complains
+                if( currLayer.getType() == MapLayerInfo.TYPE_VECTOR )
+                	currStyle = findStyleOf(request, currLayer.getFeature(), styledLayers);
+                else if( currLayer.getType() == MapLayerInfo.TYPE_RASTER )
+                	currStyle = findStyle(request, "raster");
                 layers.add(currLayer);
                 styles.add(currStyle);
             }
@@ -850,38 +883,48 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 String layerName = sl.getName();
                 if(null == layerName)
                 	throw new WmsException("A UserLayer without layer name was passed");
-
-
+                
+				currLayer = new MapLayerInfo(); 
                 	// handle the InLineFeature stuff
                     // TODO: add support for remote WFS here
                 if ((sl instanceof UserLayer) && (((UserLayer)sl)).getInlineFeatureDatastore()!=null )
                 {
                 	//SPECIAL CASE - we make the temporary version
                 	UserLayer ul = ((UserLayer)sl);
-                	currLayer = new TemporaryFeatureTypeInfo(ul.getInlineFeatureDatastore(), ul.getInlineFeatureType());
+                	currLayer.setFeature(new TemporaryFeatureTypeInfo(ul.getInlineFeatureDatastore(), ul.getInlineFeatureType()));
                 }
                 else
-                	currLayer = GetMapKvpReader.findLayer(request, layerName);
-                
-                
-               // currStyle = findStyleOf(request, currLayer, styledLayers); // DJB: this looks like a bug, we should get the style from styledLayers[i]
-                
-                 // the correct thing to do its grab the style from styledLayers[i]
-                 //   inside the styledLayers[i] will either be :
-                 //     a) nothing - in which case grab the layer's default style
-                 //     b) a set of:
-                 //             i) NameStyle -- grab it from the pre-loaded styles
-                 //             ii)UserStyle -- grab it from the sld the user uploaded
-                 //
-                // NOTE: we're going to get a set of layer->style pairs for (b).
-                
-                addStyles(request,currLayer,styledLayers[i],   layers,styles);
-                
-                //layers.add(currLayer);
-               // styles.add(currStyle);
+                {
+                    try {
+                    	currLayer.setFeature(GetMapKvpReader.findFeatureLayer(request, layerName));
+    				} catch (WmsException e) {
+                    	currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(request, layerName));
+    				}
+                }
+				
+                if( currLayer.getType() == MapLayerInfo.TYPE_VECTOR ) {
+                	// currStyle = findStyleOf(request, currLayer, styledLayers); // DJB: this looks like a bug, we should get the style from styledLayers[i]
+                	
+                	// the correct thing to do its grab the style from styledLayers[i]
+                	//   inside the styledLayers[i] will either be :
+                	//     a) nothing - in which case grab the layer's default style
+                	//     b) a set of:
+                	//             i) NameStyle -- grab it from the pre-loaded styles
+                	//             ii)UserStyle -- grab it from the sld the user uploaded
+                	//
+                	// NOTE: we're going to get a set of layer->style pairs for (b).
+                	
+                	addStyles(request,currLayer,styledLayers[i],layers,styles);
+                }
+                else if( currLayer.getType() == MapLayerInfo.TYPE_RASTER ) {
+                	currStyle = findStyle(request, "raster");
+                	
+                	layers.add(currLayer);
+                	styles.add(currStyle);
+                }
             }
         }
-        request.setLayers((FeatureTypeInfo[])layers.toArray(new FeatureTypeInfo[layers.size()]));
+        request.setLayers((MapLayerInfo[])layers.toArray(new MapLayerInfo[layers.size()]));
         request.setStyles(styles);
     }
 
@@ -905,8 +948,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 * @param layer
 	 * @param layers
 	 * @param styles
+	 * @throws WmsException
 	 */
-	public static void addStyles(GetMapRequest request, FeatureTypeInfo currLayer, StyledLayer layer, List layers, List styles) throws WmsException 
+	public static void addStyles(GetMapRequest request, MapLayerInfo currLayer, StyledLayer layer, List layers, List styles) throws WmsException 
 	{
 		if (currLayer == null)
 			return; // protection
@@ -916,7 +960,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 		
 		if (layer instanceof NamedLayer)
 		{
-			ftcs = ((NamedLayer) layer).getLayerFeatureConstrains();
+			ftcs = ((NamedLayer) layer).getLayerFeatureConstraints();
 			layerStyles = ((NamedLayer) layer).getStyles();
 		}
 		else if (layer instanceof UserLayer)
@@ -937,7 +981,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 							//taken from lite renderer
 						boolean matches ;
 						try{
-							matches = currLayer.getFeatureType().isDescendedFrom(null,ftc_name) || currLayer.getFeatureType().getTypeName().equalsIgnoreCase(ftc_name);
+							matches = currLayer.getFeature().getFeatureType().isDescendedFrom(null,ftc_name) || currLayer.getFeature().getFeatureType().getTypeName().equalsIgnoreCase(ftc_name);
 						}
 						catch(Exception e)
 						{
@@ -1044,7 +1088,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 			throw new RuntimeException("Error getting FeatureType, this should never happen!");
 		}
 		checkStyle(style, type);
-        return style;
+		return style;
     }
 
     /**
@@ -1057,9 +1101,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException
      */
-    private FeatureTypeInfo[] parseLayersParam(GetMapRequest request)
+    private MapLayerInfo[] parseLayersParam(GetMapRequest request)
         throws WmsException {
-        FeatureTypeInfo[] featureTypes;
+    	MapLayerInfo[] layers;
         String layersParam = getValue("LAYERS");
         List layerNames = layerNames = readFlat(layersParam, INNER_DELIMETER);
         int layerCount = layerNames.size();
@@ -1069,18 +1113,26 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 getClass().getName());
         }
 
-        featureTypes = new FeatureTypeInfo[layerCount];
+        layers = new MapLayerInfo[layerCount];
 
         String layerName = null;
 
         for (int i = 0; i < layerCount; i++) {
             layerName = (String) layerNames.get(i);
+        	layers[i] = new MapLayerInfo();
 
-            FeatureTypeInfo ftype = findLayer(request, layerName);
-            featureTypes[i] = ftype;
+            try {
+            	FeatureTypeInfo ftype = findFeatureLayer(request, layerName);
+            	
+            	layers[i].setFeature(ftype);
+            } catch (WmsException e) {
+            	CoverageInfo cv = findCoverageLayer(request, layerName);
+            	
+            	layers[i].setCoverage(cv);
+            }
         }
 
-        return featureTypes;
+        return layers;
     }
 
     /**
@@ -1093,7 +1145,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    public static FeatureTypeInfo findLayer(GetMapRequest request, String layerName)
+    public static FeatureTypeInfo findFeatureLayer(GetMapRequest request, String layerName)
         throws WmsException {
         Data catalog = request.getWMS().getData();
         FeatureTypeInfo ftype = null;
@@ -1109,6 +1161,21 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         return ftype;
     }
+
+    public static CoverageInfo findCoverageLayer(GetMapRequest request, String layerName)
+	    throws WmsException {
+	    Data catalog = request.getWMS().getData();
+	    CoverageInfo cv = null;
+	
+	    try {
+	        cv = catalog.getCoverageInfo(layerName);
+	    } catch (NoSuchElementException ex) {
+	        throw new WmsException(ex,
+	            layerName + ": no such layer on this server", "LayerNotDefined");
+	    }
+	
+	    return cv;
+	}
     
     /**
      * This method gets the correct input stream for a URL.

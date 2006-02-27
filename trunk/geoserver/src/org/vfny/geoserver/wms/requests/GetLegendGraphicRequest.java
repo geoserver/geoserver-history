@@ -72,54 +72,82 @@ public class GetLegendGraphicRequest extends WMSRequest {
      */
     public static final String DEFAULT_FORMAT = "image/png";
 
-    /** The featuretype of the requested LAYER */
-    private FeatureType layer;
+	/**
+	 * The featuretype of the requested LAYER
+	 * 
+	 * @uml.property name="layer"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private FeatureType layer;
 
-    /**
-     * The Style object for styling the legend graphic, or layer's default if
-     * not provided. This style can be aquired by evaluating the STYLE
-     * parameter, which provides one of the  layer's named styles, the SLD
-     * parameter, which provides a URL for an external SLD document, or the
-     * SLD_BODY parameter, which provides the SLD body in the request body.
-     */
-    private Style style;
+	/**
+	 * The Style object for styling the legend graphic, or layer's default if
+	 * not provided. This style can be aquired by evaluating the STYLE
+	 * parameter, which provides one of the  layer's named styles, the SLD
+	 * parameter, which provides a URL for an external SLD document, or the
+	 * SLD_BODY parameter, which provides the SLD body in the request body.
+	 * 
+	 * @uml.property name="style"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private Style style;
 
-    /**
-     * should hold FEATURETYPE parameter value, though not used by now, since
-     * GeoServer WMS still does not supports nested layers and layers has only
-     * a single feature type. This should change in the future.
-     */
-    private String featureType;
+	/**
+	 * should hold FEATURETYPE parameter value, though not used by now, since
+	 * GeoServer WMS still does not supports nested layers and layers has only
+	 * a single feature type. This should change in the future.
+	 * 
+	 * @uml.property name="featureType" multiplicity="(0 1)"
+	 */
+	private String featureType;
 
-    /** holds RULE parameter value, or <code>null</code> if not provided */
-    private Rule rule;
+	/**
+	 * holds RULE parameter value, or <code>null</code> if not provided
+	 * 
+	 * @uml.property name="rule"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private Rule rule;
 
-    /**
-     * holds the standarized scale denominator passed as the SCALE parameter
-     * value, or <code>-1.0</code> if not provided
-     */
-    private double scale = -1d;
+	/**
+	 * holds the standarized scale denominator passed as the SCALE parameter
+	 * value, or <code>-1.0</code> if not provided
+	 * 
+	 * @uml.property name="scale" multiplicity="(0 1)"
+	 */
+	private double scale = -1d;
 
-    /**
-     * the mime type of the file format in which to return the legend graphic,
-     * as requested by the FORMAT request parameter value.
-     */
-    private String format;
+	/**
+	 * the mime type of the file format in which to return the legend graphic,
+	 * as requested by the FORMAT request parameter value.
+	 * 
+	 * @uml.property name="format" multiplicity="(0 1)"
+	 */
+	private String format;
 
-    /**
-     * the width in pixels of the returned graphic, or
-     * <code>DEFAULT_WIDTH</code> if not provided
-     */
-    private int width = DEFAULT_WIDTH;
+	/**
+	 * the width in pixels of the returned graphic, or
+	 * <code>DEFAULT_WIDTH</code> if not provided
+	 * 
+	 * @uml.property name="width" multiplicity="(0 1)"
+	 */
+	private int width = DEFAULT_WIDTH;
 
-    /**
-     * the height in pixels of the returned graphic, or
-     * <code>DEFAULT_HEIGHT</code> if not provided
-     */
-    private int height = DEFAULT_HEIGHT;
+	/**
+	 * the height in pixels of the returned graphic, or
+	 * <code>DEFAULT_HEIGHT</code> if not provided
+	 * 
+	 * @uml.property name="height" multiplicity="(0 1)"
+	 */
+	private int height = DEFAULT_HEIGHT;
 
-    /** mime type of the format in which to return exceptions information. */
-    private String exceptionsFormat = GetMapRequest.SE_XML;
+	/**
+	 * mime type of the format in which to return exceptions information.
+	 * 
+	 * @uml.property name="exceptionsFormat" multiplicity="(0 1)"
+	 */
+	private String exceptionsFormat = GetMapRequest.SE_XML;
+
 
     /**
      * Creates a new GetLegendGraphicRequest object.
@@ -130,165 +158,202 @@ public class GetLegendGraphicRequest extends WMSRequest {
         setVersion(SLD_VERSION);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getExceptionsFormat() {
-        return exceptionsFormat;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="exceptionsFormat"
+	 */
+	public String getExceptionsFormat() {
+		return exceptionsFormat;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param exceptionsFormat DOCUMENT ME!
-     */
-    public void setExceptionsFormat(String exceptionsFormat) {
-        this.exceptionsFormat = exceptionsFormat;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param exceptionsFormat DOCUMENT ME!
+	 * 
+	 * @uml.property name="exceptionsFormat"
+	 */
+	public void setExceptionsFormat(String exceptionsFormat) {
+		this.exceptionsFormat = exceptionsFormat;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getFeatureType() {
-        return featureType;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="featureType"
+	 */
+	public String getFeatureType() {
+		return featureType;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param featureType DOCUMENT ME!
-     */
-    public void setFeatureType(String featureType) {
-        this.featureType = featureType;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param featureType DOCUMENT ME!
+	 * 
+	 * @uml.property name="featureType"
+	 */
+	public void setFeatureType(String featureType) {
+		this.featureType = featureType;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getFormat() {
-        return format;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="format"
+	 */
+	public String getFormat() {
+		return format;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param format DOCUMENT ME!
-     */
-    public void setFormat(String format) {
-        this.format = format;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param format DOCUMENT ME!
+	 * 
+	 * @uml.property name="format"
+	 */
+	public void setFormat(String format) {
+		this.format = format;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public int getHeight() {
-        return height;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="height"
+	 */
+	public int getHeight() {
+		return height;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param height DOCUMENT ME!
-     */
-    public void setHeight(int height) {
-        this.height = height;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param height DOCUMENT ME!
+	 * 
+	 * @uml.property name="height"
+	 */
+	public void setHeight(int height) {
+		this.height = height;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public FeatureType getLayer() {
-        return layer;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="layer"
+	 */
+	public FeatureType getLayer() {
+		return layer;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param layer DOCUMENT ME!
-     */
-    public void setLayer(FeatureType layer) {
-        this.layer = layer;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param layer DOCUMENT ME!
+	 * 
+	 * @uml.property name="layer"
+	 */
+	public void setLayer(FeatureType layer) {
+		this.layer = layer;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Rule getRule() {
-        return rule;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="rule"
+	 */
+	public Rule getRule() {
+		return rule;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param rule DOCUMENT ME!
-     */
-    public void setRule(Rule rule) {
-        this.rule = rule;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param rule DOCUMENT ME!
+	 * 
+	 * @uml.property name="rule"
+	 */
+	public void setRule(Rule rule) {
+		this.rule = rule;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public double getScale() {
-        return scale;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="scale"
+	 */
+	public double getScale() {
+		return scale;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param scale DOCUMENT ME!
-     */
-    public void setScale(double scale) {
-        this.scale = scale;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param scale DOCUMENT ME!
+	 * 
+	 * @uml.property name="scale"
+	 */
+	public void setScale(double scale) {
+		this.scale = scale;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Style getStyle() {
-        return style;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="style"
+	 */
+	public Style getStyle() {
+		return style;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param style DOCUMENT ME!
-     */
-    public void setStyle(Style style) {
-        this.style = style;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param style DOCUMENT ME!
+	 * 
+	 * @uml.property name="style"
+	 */
+	public void setStyle(Style style) {
+		this.style = style;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public int getWidth() {
-        return width;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="width"
+	 */
+	public int getWidth() {
+		return width;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param width DOCUMENT ME!
-     */
-    public void setWidth(int width) {
-        this.width = width;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param width DOCUMENT ME!
+	 * 
+	 * @uml.property name="width"
+	 */
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
 }

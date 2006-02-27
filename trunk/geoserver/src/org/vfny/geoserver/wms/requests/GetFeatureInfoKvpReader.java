@@ -34,11 +34,21 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.readers.wms");
 
-    /** the request wich will be built by getRequest method */
-    private GetFeatureInfoRequest request;
+	/**
+	 * the request wich will be built by getRequest method
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GetFeatureInfoRequest request;
 
-    /** GetMap request reader used to parse the map context parameters needed. */
-    private GetMapKvpReader getMapReader;
+	/**
+	 * GetMap request reader used to parse the map context parameters needed.
+	 * 
+	 * @uml.property name="getMapReader"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private GetMapKvpReader getMapReader;
 
     /**
      * Creates a new GetMapKvpReader object.

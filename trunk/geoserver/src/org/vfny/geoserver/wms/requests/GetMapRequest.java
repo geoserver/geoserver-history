@@ -8,7 +8,7 @@ import java.awt.Color;
 import java.util.List;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.MapLayerInfo;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -26,11 +26,24 @@ public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */
     public static final String SE_XML = "SE_XML";
 
-    /** set of mandatory request's parameters */
-    private MandatoryParameters mandatoryParams = new MandatoryParameters();
+	/**
+	 * set of mandatory request's parameters
+	 * 
+	 * @uml.property name="mandatoryParams"
+	 * @uml.associationEnd inverse="this$0:org.vfny.geoserver.wms.requests.GetMapRequest$MandatoryParameters"
+	 * multiplicity="(1 1)"
+	 */
+	private MandatoryParameters mandatoryParams = new MandatoryParameters();
 
-    /** set of optionals request's parameters */
-    private OptionalParameters optionalParams = new OptionalParameters();
+	/**
+	 * set of optionals request's parameters
+	 * 
+	 * @uml.property name="optionalParams"
+	 * @uml.associationEnd inverse="this$0:org.vfny.geoserver.wms.requests.GetMapRequest$OptionalParameters"
+	 * multiplicity="(1 1)"
+	 */
+	private OptionalParameters optionalParams = new OptionalParameters();
+
 
     /**
      * Creates a new GetMapRequest object.
@@ -59,12 +72,9 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * DJB: spec says SRS is *required*, so if they dont specify one, we should throw an error
-     *      instead we use "NONE" - which is no-projection.
-     *      Previous behavior was to the WSG84 lat/long (4326)
+     * DOCUMENT ME!
      *
-     * @return request CRS, or <code>null</code> if not set.
-     * TODO: make CRS manditory as for spec conformance
+     * @return DOCUMENT ME!
      */
     public CoordinateReferenceSystem getCrs() {
         return this.optionalParams.crs;
@@ -102,7 +112,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @return DOCUMENT ME!
      */
-    public FeatureTypeInfo[] getLayers() {
+    public MapLayerInfo[] getLayers() {
         return this.mandatoryParams.layers;
     }
 
@@ -192,7 +202,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @param layers DOCUMENT ME!
      */
-    public void setLayers(FeatureTypeInfo[] layers) {
+    public void setLayers(MapLayerInfo[] layers) {
         this.mandatoryParams.layers = layers;
     }
 
@@ -223,27 +233,23 @@ public class GetMapRequest extends WMSRequest {
         this.mandatoryParams.width = width;
     }
 
-    /**
-     * decodes a color of the form <code>#FFFFFF</code> into a
-     * <code>java.awt.Color</code> object
-     *
-     * @param hexColor DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    private static final Color decodeColor(String hexColor) {
-        return Color.decode(hexColor);
-    }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @author Gabriel Roldan, Axios Engineering
-     * @version $Id$
-     */
+
+/**
+ * DOCUMENT ME!
+ * 
+ * @author Gabriel Roldan, Axios Engineering
+ * @version $Id$
+ */
     private class MandatoryParameters {
-        /** ordered list of requested layers */
-        FeatureTypeInfo[] layers;
+
+		/**
+		 * ordered list of requested layers
+		 * 
+		 * @uml.property name="layers"
+		 * @uml.associationEnd multiplicity="(0 -1)"
+		 */
+		MapLayerInfo[] layers;
 
         /**
          * ordered list of requested layers' styles, in a one to one
