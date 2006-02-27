@@ -88,11 +88,21 @@ public class GeoSearchTask extends SearchTask
     /** The number of records */
     private int fragment_count = 0;
 
-    /** The jzkit representation of the query to evaluate */
-    private IRQuery q;
+	/**
+	 * The jzkit representation of the query to evaluate
+	 * 
+	 * @uml.property name="q"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private IRQuery q;
 
-    /** The lucene structure of records returned from a search. */
-    private Hits hits;
+	/**
+	 * The lucene structure of records returned from a search.
+	 * 
+	 * @uml.property name="hits"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private Hits hits;
 
     /** The mapping of use attribute names to numbers. */
     private Properties attrMap;
