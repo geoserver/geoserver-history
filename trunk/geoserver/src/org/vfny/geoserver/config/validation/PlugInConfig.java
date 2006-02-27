@@ -37,18 +37,37 @@ import org.geotools.validation.xml.ValidationException;
 public class PlugInConfig{
 	
 	public static final String CONFIG_KEY = "Validation.PlugIn";
-	
-	/** the plug-in name */
+
+	/**
+	 * the plug-in name
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
 	private String name;
 
-	/** the plug-in description */
+	/**
+	 * the plug-in description
+	 * 
+	 * @uml.property name="description" multiplicity="(0 1)"
+	 */
 	private String description;
 
-	/** the class name this plug-in represents */
+	/**
+	 * the class name this plug-in represents
+	 * 
+	 * @uml.property name="className" multiplicity="(0 1)"
+	 */
 	private String className;
-	
-	/** the default arguments */
+
+	/**
+	 * the default arguments
+	 * 
+	 * @uml.property name="args"
+	 * @uml.associationEnd qualifier="name:java.lang.String org.vfny.geoserver.config.validation.ArgumentConfig"
+	 * multiplicity="(0 1)"
+	 */
 	private Map args;
+
 
 	/**
 	 * PlugInConfig constructor.
@@ -226,11 +245,13 @@ public class PlugInConfig{
     	dto.setArgs(myArgs);
     	return dto;
     }
-    
+
 	/**
 	 * Access args property.
 	 * 
 	 * @return Returns the args.
+	 * 
+	 * @uml.property name="args"
 	 */
 	public Map getArgs() {
 		return args;
@@ -238,12 +259,15 @@ public class PlugInConfig{
 
 	/**
 	 * Set args to args.
-	 *
+	 * 
 	 * @param args The args to set.
+	 * 
+	 * @uml.property name="args"
 	 */
 	public void setArgs(Map args) {
 		this.args = args;
 	}
+
 	
 	/**
 	 * getArgStringValue purpose.
@@ -300,9 +324,9 @@ public class PlugInConfig{
 			try{
 				ac.setValue(ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(ac.getValue()),value));
 				return true;
-			}catch(Exception e){
+			}catch(ValidationException e){
 				e.printStackTrace();
-				// error, log it
+				//TODO error, log it
 				return false;
 			}
 		}
@@ -389,7 +413,9 @@ public class PlugInConfig{
 				Class plugIn = this.getClass().getClassLoader().loadClass(className);
 				BeanInfo bi = Introspector.getBeanInfo(plugIn);
 				return bi.getPropertyDescriptors();
+			//If an error occurs
 			}catch(Exception e){
+				//TODO log the error
 				e.printStackTrace();
 				return null;
 			}
@@ -418,6 +444,8 @@ public class PlugInConfig{
 	 * Access className property.
 	 * 
 	 * @return Returns the className.
+	 * 
+	 * @uml.property name="className"
 	 */
 	public String getClassName() {
 		return className;
@@ -425,8 +453,10 @@ public class PlugInConfig{
 
 	/**
 	 * Set className to className.
-	 *
+	 * 
 	 * @param className The className to set.
+	 * 
+	 * @uml.property name="className"
 	 */
 	public void setClassName(String className) {
 		this.className = className;
@@ -436,6 +466,8 @@ public class PlugInConfig{
 	 * Access description property.
 	 * 
 	 * @return Returns the description.
+	 * 
+	 * @uml.property name="description"
 	 */
 	public String getDescription() {
 		return description;
@@ -443,8 +475,10 @@ public class PlugInConfig{
 
 	/**
 	 * Set description to description.
-	 *
+	 * 
 	 * @param description The description to set.
+	 * 
+	 * @uml.property name="description"
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -454,6 +488,8 @@ public class PlugInConfig{
 	 * Access name property.
 	 * 
 	 * @return Returns the name.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public String getName() {
 		return name;
@@ -461,8 +497,10 @@ public class PlugInConfig{
 
 	/**
 	 * Set name to name.
-	 *
+	 * 
 	 * @param name The name to set.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public void setName(String name) {
 		this.name = name;

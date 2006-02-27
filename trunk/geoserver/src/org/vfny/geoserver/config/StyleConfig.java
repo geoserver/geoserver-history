@@ -24,11 +24,21 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * @version $Id: StyleConfig.java,v 1.7 2004/02/28 07:45:13 jive Exp $
  */
 public class StyleConfig {
-    /** The syle id. */
-    private String id = "";
 
-    /** The file which contains more information about the style. */
-    private File filename = null;
+	/**
+	 * The syle id.
+	 * 
+	 * @uml.property name="id" multiplicity="(0 1)"
+	 */
+	private String id = "";
+
+	/**
+	 * The file which contains more information about the style.
+	 * 
+	 * @uml.property name="filename" multiplicity="(0 1)"
+	 */
+	private File filename = null;
+
 
     /** whether this is the system's default style. */
     private boolean _default = false;
@@ -143,31 +153,36 @@ public class StyleConfig {
         return _default;
     }
 
-    /**
-     * getFilename purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public File getFilename() {
-        return filename;
-    }
+	/**
+	 * getFilename purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="filename"
+	 */
+	public File getFilename() {
+		return filename;
+	}
 
-    /**
-     * getId purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * getId purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="id"
+	 */
+	public String getId() {
+		return id;
+	}
+
 
     /**
      * setDefault purpose.
@@ -182,29 +197,34 @@ public class StyleConfig {
         _default = b;
     }
 
-    /**
-     * setFilename purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param file
-     */
-    public void setFilename(File file) {
-        filename = file;
-    }
+	/**
+	 * setFilename purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param file
+	 * 
+	 * @uml.property name="filename"
+	 */
+	public void setFilename(File file) {
+		filename = file;
+	}
 
-    /**
-     * setId purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setId(String string) {
-        id = string;
-    }
+	/**
+	 * setId purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="id"
+	 */
+	public void setId(String string) {
+		id = string;
+	}
+
 }

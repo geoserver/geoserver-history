@@ -39,27 +39,44 @@ import org.geotools.validation.xml.ValidationException;
 public class TestConfig{
     
     public final static String CURRENTLY_SELECTED_KEY = "selectedTest";
-    
-	/** the test name */
+
+	/**
+	 * the test name
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
 	private String name;
 
-	/** the test description */
+	/**
+	 * the test description
+	 * 
+	 * @uml.property name="description" multiplicity="(0 1)"
+	 */
 	private String description;
 
 	/**
 	 * The plug-in which contains the class definition and default runtime
 	 * values
+	 * 
+	 * @uml.property name="plugIn"
+	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private PlugInConfig plugIn;
 
+
 	/** lazily loaded */
 	private PropertyDescriptor[] pds;
-	
+
 	/**
 	 * The set of runtime args for this particular test to override the
 	 * defaults in the plug-in
+	 * 
+	 * @uml.property name="args"
+	 * @uml.associationEnd qualifier="name:java.lang.String org.vfny.geoserver.config.validation.ArgumentConfig"
+	 * multiplicity="(0 1)"
 	 */
 	private Map args;
+
 
 	/**
 	 * TestConfig constructor.
@@ -245,11 +262,13 @@ public class TestConfig{
     	dto.setArgs(myArgs);
     	return dto;
     }
-    
+
 	/**
 	 * Access args property.
 	 * 
 	 * @return Returns the args.
+	 * 
+	 * @uml.property name="args"
 	 */
 	public Map getArgs() {
 		return args;
@@ -257,16 +276,20 @@ public class TestConfig{
 
 	/**
 	 * Set args to args.
-	 *
+	 * 
 	 * @param args The args to set.
+	 * 
+	 * @uml.property name="args"
 	 */
 	public void setArgs(Map args) {
 		Iterator i = args.keySet().iterator();
-		while(i.hasNext())
-			if(((ArgumentConfig)args.get(i.next())).isFinal())
-				throw new IllegalArgumentException("Cannot include final arguments as part of a test.");
+		while (i.hasNext())
+			if (((ArgumentConfig) args.get(i.next())).isFinal())
+				throw new IllegalArgumentException(
+					"Cannot include final arguments as part of a test.");
 		this.args = args;
 	}
+
 	
 	/**
 	 * getArgStringValue purpose.
@@ -323,9 +346,9 @@ public class TestConfig{
 			try{
 				ac.setValue(ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(ac.getValue()),value));
 				return true;
-			}catch(Exception e){
+			} catch (ValidationException e) {
 				e.printStackTrace();
-				// error, log it
+				//TODO error, log it
 				return false;
 			}
 		}
@@ -455,6 +478,8 @@ public class TestConfig{
 	 * Access description property.
 	 * 
 	 * @return Returns the description.
+	 * 
+	 * @uml.property name="description"
 	 */
 	public String getDescription() {
 		return description;
@@ -462,8 +487,10 @@ public class TestConfig{
 
 	/**
 	 * Set description to description.
-	 *
+	 * 
 	 * @param description The description to set.
+	 * 
+	 * @uml.property name="description"
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -473,6 +500,8 @@ public class TestConfig{
 	 * Access name property.
 	 * 
 	 * @return Returns the name.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public String getName() {
 		return name;
@@ -480,8 +509,10 @@ public class TestConfig{
 
 	/**
 	 * Set name to name.
-	 *
+	 * 
 	 * @param name The name to set.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -491,6 +522,8 @@ public class TestConfig{
 	 * Access plugIn property.
 	 * 
 	 * @return Returns the plugIn.
+	 * 
+	 * @uml.property name="plugIn"
 	 */
 	public PlugInConfig getPlugIn() {
 		return plugIn;
@@ -498,8 +531,10 @@ public class TestConfig{
 
 	/**
 	 * Set plugIn to plugIn.
-	 *
+	 * 
 	 * @param plugIn The plugIn to set.
+	 * 
+	 * @uml.property name="plugIn"
 	 */
 	public void setPlugIn(PlugInConfig plugIn) {
 		this.plugIn = plugIn;

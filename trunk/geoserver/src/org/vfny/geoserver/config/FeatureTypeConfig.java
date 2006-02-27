@@ -27,102 +27,151 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * @version $Id: FeatureTypeConfig.java,v 1.20 2004/03/09 10:59:56 jive Exp $
  */
 public class FeatureTypeConfig {
-    /** The Id of the datastore which should be used to get this featuretype. */
-    private String dataStoreId;
 
-    /** A bounding box for this featuretype */
-    private Envelope latLongBBox;
+	/**
+	 * The Id of the datastore which should be used to get this featuretype.
+	 * 
+	 * @uml.property name="dataStoreId" multiplicity="(0 1)"
+	 */
+	private String dataStoreId;
 
-    /** native wich EPGS code for the FeatureTypeInfo */
-    private int SRS;
+	/**
+	 * A bounding box for this featuretype
+	 * 
+	 * @uml.property name="latLongBBox"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private Envelope latLongBBox;
 
-    /**
-     * This is an ordered list of AttributeTypeInfoConfig.
-     * <p>
-     * These attribtue have been defined by the user (or schema.xml file).
-     * Additional attribute may be assumed based on the schemaBase
-     * </p>
-     * <p>
-     * If this is <code>null</code>, all Attribtue information
-     * will be generated. An empty list is used to indicate that only
-     * attribtues indicated by the schemaBase will be returned.
-     * </p>
-     */
-    private List schemaAttributes;
+	/**
+	 * native wich EPGS code for the FeatureTypeInfo
+	 * 
+	 * @uml.property name="sRS" multiplicity="(0 1)"
+	 */
+	private int SRS;
 
-    /** Name (must match DataStore typeName). */
-    private String name;
+	/**
+	 * This is an ordered list of AttributeTypeInfoConfig.
+	 * <p>
+	 * These attribtue have been defined by the user (or schema.xml file).
+	 * Additional attribute may be assumed based on the schemaBase
+	 * </p>
+	 * <p>
+	 * If this is <code>null</code>, all Attribtue information
+	 * will be generated. An empty list is used to indicate that only
+	 * attribtues indicated by the schemaBase will be returned.
+	 * </p>
+	 * 
+	 * @uml.property name="schemaAttributes"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.config.AttributeTypeInfoConfig"
+	 * multiplicity="(0 -1)"
+	 */
+	private List schemaAttributes;
 
-    /**
-     * The schema name.
-     * <p>
-     * Usually  name + "_Type"                
-     * </p>
-     */
-    private String schemaName;
+	/**
+	 * Name (must match DataStore typeName).
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	private String name;
 
-    /**
-     * The schema base.
-     * <p>
-     * The schema base is used to indicate additional attribtues, not defined
-     * by the user. These attribute are fixed -not be edited by the user.
-     * </p>
-     * <p>
-     * This easiest is "AbstractFeatureType"
-     * </p>
-     */
-    private String schemaBase;
+	/**
+	 * 
+	 */
+	private String wmsPath;
 
-    /**
-     * The featuretype directory name.
-     * <p>
-     * This is used to write to, and is  stored because it may be longer than
-     * the name, as this often includes information about the source of the
-     * featuretype.
-     * </p>
-     * <p>
-     * A common naming convention is: <code>dataStoreId + "_" + name</code>
-     * </p>
-     */
-    private String dirName;
+	/**
+	 * The schema name.
+	 * <p>
+	 * Usually  name + "_Type"                
+	 * </p>
+	 * 
+	 * @uml.property name="schemaName" multiplicity="(0 1)"
+	 */
+	private String schemaName;
 
-    /**
-     * The featuretype title.
-     * <p>
-     * Not sure what this is used for - usually name+"_Type"
-     */
-    private String title;
+	/**
+	 * The schema base.
+	 * <p>
+	 * The schema base is used to indicate additional attribtues, not defined
+	 * by the user. These attribute are fixed -not be edited by the user.
+	 * </p>
+	 * <p>
+	 * This easiest is "AbstractFeatureType"
+	 * </p>
+	 * 
+	 * @uml.property name="schemaBase" multiplicity="(0 1)"
+	 */
+	private String schemaBase;
+
+	/**
+	 * The featuretype directory name.
+	 * <p>
+	 * This is used to write to, and is  stored because it may be longer than
+	 * the name, as this often includes information about the source of the
+	 * featuretype.
+	 * </p>
+	 * <p>
+	 * A common naming convention is: <code>dataStoreId + "_" + name</code>
+	 * </p>
+	 * 
+	 * @uml.property name="dirName" multiplicity="(0 1)"
+	 */
+	private String dirName;
+
+	/**
+	 * The featuretype title.
+	 * <p>
+	 * Not sure what this is used for - usually name+"_Type"
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
+
 
     /** The feature type abstract, short explanation of this featuretype. */
     private String _abstract;
 
-    /**
-     * A list of keywords to associate with this featuretype.
-     * <p>
-     * Keywords are destinct strings, often rendered surrounded by brackets
-     * to aid search engines.
-     * </p>
-     */
-    private Set keywords;
+	/**
+	 * A list of keywords to associate with this featuretype.
+	 * <p>
+	 * Keywords are destinct strings, often rendered surrounded by brackets
+	 * to aid search engines.
+	 * </p>
+	 * 
+	 * @uml.property name="keywords"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private Set keywords;
 
-    /** Configuration information used to specify numeric percision */
-    private int numDecimals;
+	/**
+	 * Configuration information used to specify numeric percision
+	 * 
+	 * @uml.property name="numDecimals" multiplicity="(0 1)"
+	 */
+	private int numDecimals;
 
-    /**
-     * Filter used to limit query.
-     * <p>
-     * TODO: Check the following comment - I don't belive it.
-     * The list of exposed attributes. If the list is empty or not present at
-     * all, all the FeatureTypeInfo's attributes are exposed, if is present,
-     * only those oattributes in this list will be exposed by the services
-     * </p>
-     */
-    private Filter definitionQuery = null;
+	/**
+	 * Filter used to limit query.
+	 * <p>
+	 * TODO: Check the following comment - I don't belive it.
+	 * The list of exposed attributes. If the list is empty or not present at
+	 * all, all the FeatureTypeInfo's attributes are exposed, if is present,
+	 * only those oattributes in this list will be exposed by the services
+	 * </p>
+	 * 
+	 * @uml.property name="definitionQuery"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private Filter definitionQuery = null;
 
-    /**
-     * The default style name.
-     */
-    private String defaultStyle;
+	/**
+	 * The default style name.
+	 * 
+	 * @uml.property name="defaultStyle" multiplicity="(0 1)"
+	 */
+	private String defaultStyle;
+
 
     /**
      * Package visible constructor for test cases
@@ -154,8 +203,7 @@ public class FeatureTypeConfig {
             // pardon? Does this not make you a table?
             SRS = -1;
         } else {
-            GeometryFactory geometryFactory = schema.getDefaultGeometry()
-                                                    .getGeometryFactory();
+        	GeometryFactory geometryFactory = schema.getDefaultGeometry().getGeometryFactory();
 
             if (geometryFactory == null) {
                 // Assume Cartisian Coordiantes
@@ -177,6 +225,7 @@ public class FeatureTypeConfig {
         }
         defaultStyle = "";
         name = schema.getTypeName();
+		wmsPath = "/";
         title = schema.getTypeName() + "_Type";
         _abstract = "Generated from " + dataStoreId;
         keywords = new HashSet();
@@ -224,6 +273,7 @@ public class FeatureTypeConfig {
             }
         }
         name = dto.getName();
+		wmsPath = dto.getWmsPath();
         title = dto.getTitle();
         _abstract = dto.getAbstract();
         numDecimals = dto.getNumDecimals();
@@ -271,6 +321,7 @@ public class FeatureTypeConfig {
             f.setSchemaAttributes(s);            
         }        
         f.setName(name);
+        f.setWmsPath(wmsPath);
         f.setTitle(title);
         f.setAbstract(_abstract);
         f.setNumDecimals(numDecimals);
@@ -344,219 +395,302 @@ public class FeatureTypeConfig {
     public void setAbstract(String _abstract) {
         this._abstract = _abstract;
     }
-    /**
-     * Access dataStoreId property.
-     * 
-     * @return Returns the dataStoreId.
-     */
-    public String getDataStoreId() {
-        return dataStoreId;
-    }
-    /**
-     * Set dataStoreId to dataStoreId.
-     *
-     * @param dataStoreId The dataStoreId to set.
-     */
-    public void setDataStoreId(String dataStoreId) {
-        this.dataStoreId = dataStoreId;
-    }
-    /**
-     * Access defaultStyle property.
-     * 
-     * @return Returns the defaultStyle.
-     */
-    public String getDefaultStyle() {
-        return defaultStyle;
-    }
-    /**
-     * Set defaultStyle to defaultStyle.
-     *
-     * @param defaultStyle The defaultStyle to set.
-     */
-    public void setDefaultStyle(String defaultStyle) {
-        this.defaultStyle = defaultStyle;
-    }
-    /**
-     * Access definitionQuery property.
-     * 
-     * @return Returns the definitionQuery.
-     */
-    public Filter getDefinitionQuery() {
-        return definitionQuery;
-    }
-    /**
-     * Set definitionQuery to definitionQuery.
-     *
-     * @param definitionQuery The definitionQuery to set.
-     */
-    public void setDefinitionQuery(Filter definitionQuery) {
-        this.definitionQuery = definitionQuery;
-    }
-    /**
-     * Access dirName property.
-     * 
-     * @return Returns the dirName.
-     */
-    public String getDirName() {
-        return dirName;
-    }
-    /**
-     * Set dirName to dirName.
-     *
-     * @param dirName The dirName to set.
-     */
-    public void setDirName(String dirName) {
-        this.dirName = dirName;
-    }
-    /**
-     * Access keywords property.
-     * 
-     * @return Returns the keywords.
-     */
-    public Set getKeywords() {
-        return keywords;
-    }
-    /**
-     * Set keywords to keywords.
-     *
-     * @param keywords The keywords to set.
-     */
-    public void setKeywords(Set keywords) {
-        this.keywords = keywords;
-    }
-    /**
-     * Access latLongBBox property.
-     * 
-     * @return Returns the latLongBBox.
-     */
-    public Envelope getLatLongBBox() {
-        return latLongBBox;
-    }
-    /**
-     * Set latLongBBox to latLongBBox.
-     *
-     * @param latLongBBox The latLongBBox to set.
-     */
-    public void setLatLongBBox(Envelope latLongBBox) {
-        this.latLongBBox = latLongBBox;
-    }
-    /**
-     * Access name property.
-     * 
-     * @return Returns the name.
-     */
-    public String getName() {
-        return name;
-    }
-    /**
-     * Set name to name.
-     *
-     * @param name The name to set.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-    /**
-     * Access numDecimals property.
-     * 
-     * @return Returns the numDecimals.
-     */
-    public int getNumDecimals() {
-        return numDecimals;
-    }
-    /**
-     * Set numDecimals to numDecimals.
-     *
-     * @param numDecimals The numDecimals to set.
-     */
-    public void setNumDecimals(int numDecimals) {
-        this.numDecimals = numDecimals;
-    }
-    
-    /**
-     * Access schemaAttributes property.
-     * 
-     * @return Returns the schemaAttributes.
-     */
-    public List getSchemaAttributes() {
-        return schemaAttributes;
-    }
-    /**
-     * Set schemaAttributes to schemaAttributes.
-     *
-     * @param schemaAttributes The schemaAttributes to set.
-     */
-    public void setSchemaAttributes(List schemaAttributes) {
-        this.schemaAttributes = schemaAttributes;    	
-    }
-    /**
-     * Access schemaBase property.
-     * 
-     * @return Returns the schemaBase.
-     */
-    public String getSchemaBase() {
-        return schemaBase;
-    }
-    /**
-     * Set schemaBase to schemaBase.
-     *
-     * @param schemaBase The schemaBase to set.
-     */
-    public void setSchemaBase(String schemaBase) {
-        this.schemaBase = schemaBase;
-    }
-    /**
-     * Access schemaName property.
-     * 
-     * @return Returns the schemaName.
-     */
-    public String getSchemaName() {
-        return schemaName;
-    }
-    /**
-     * Set schemaName to schemaName.
-     *
-     * @param schemaName The schemaName to set.
-     */
-    public void setSchemaName(String schemaName) {
-        this.schemaName = schemaName;
-    }
-    /**
-     * Access sRS property.
-     * 
-     * @return Returns the sRS.
-     */
-    public int getSRS() {
-        return SRS;
-    }
-    /**
-     * Set sRS to srs.
-     *
-     * @param srs The sRS to set.
-     */
-    public void setSRS(int srs) {
-        SRS = srs;
-    }
-    /**
-     * Access title property.
-     * 
-     * @return Returns the title.
-     */
-    public String getTitle() {
-        return title;
-    }
-    /**
-     * Set title to title.
-     *
-     * @param title The title to set.
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
+
+	/**
+	 * Access dataStoreId property.
+	 * 
+	 * @return Returns the dataStoreId.
+	 * 
+	 * @uml.property name="dataStoreId"
+	 */
+	public String getDataStoreId() {
+		return dataStoreId;
+	}
+
+	/**
+	 * Set dataStoreId to dataStoreId.
+	 * 
+	 * @param dataStoreId The dataStoreId to set.
+	 * 
+	 * @uml.property name="dataStoreId"
+	 */
+	public void setDataStoreId(String dataStoreId) {
+		this.dataStoreId = dataStoreId;
+	}
+
+	/**
+	 * Access defaultStyle property.
+	 * 
+	 * @return Returns the defaultStyle.
+	 * 
+	 * @uml.property name="defaultStyle"
+	 */
+	public String getDefaultStyle() {
+		return defaultStyle;
+	}
+
+	/**
+	 * Set defaultStyle to defaultStyle.
+	 * 
+	 * @param defaultStyle The defaultStyle to set.
+	 * 
+	 * @uml.property name="defaultStyle"
+	 */
+	public void setDefaultStyle(String defaultStyle) {
+		this.defaultStyle = defaultStyle;
+	}
+
+	/**
+	 * Access definitionQuery property.
+	 * 
+	 * @return Returns the definitionQuery.
+	 * 
+	 * @uml.property name="definitionQuery"
+	 */
+	public Filter getDefinitionQuery() {
+		return definitionQuery;
+	}
+
+	/**
+	 * Set definitionQuery to definitionQuery.
+	 * 
+	 * @param definitionQuery The definitionQuery to set.
+	 * 
+	 * @uml.property name="definitionQuery"
+	 */
+	public void setDefinitionQuery(Filter definitionQuery) {
+		this.definitionQuery = definitionQuery;
+	}
+
+	/**
+	 * Access dirName property.
+	 * 
+	 * @return Returns the dirName.
+	 * 
+	 * @uml.property name="dirName"
+	 */
+	public String getDirName() {
+		return dirName;
+	}
+
+	/**
+	 * Set dirName to dirName.
+	 * 
+	 * @param dirName The dirName to set.
+	 * 
+	 * @uml.property name="dirName"
+	 */
+	public void setDirName(String dirName) {
+		this.dirName = dirName;
+	}
+
+	/**
+	 * Access keywords property.
+	 * 
+	 * @return Returns the keywords.
+	 * 
+	 * @uml.property name="keywords"
+	 */
+	public Set getKeywords() {
+		return keywords;
+	}
+
+	/**
+	 * Set keywords to keywords.
+	 * 
+	 * @param keywords The keywords to set.
+	 * 
+	 * @uml.property name="keywords"
+	 */
+	public void setKeywords(Set keywords) {
+		this.keywords = keywords;
+	}
+
+	/**
+	 * Access latLongBBox property.
+	 * 
+	 * @return Returns the latLongBBox.
+	 * 
+	 * @uml.property name="latLongBBox"
+	 */
+	public Envelope getLatLongBBox() {
+		return latLongBBox;
+	}
+
+	/**
+	 * Set latLongBBox to latLongBBox.
+	 * 
+	 * @param latLongBBox The latLongBBox to set.
+	 * 
+	 * @uml.property name="latLongBBox"
+	 */
+	public void setLatLongBBox(Envelope latLongBBox) {
+		this.latLongBBox = latLongBBox;
+	}
+
+	/**
+	 * Access name property.
+	 * 
+	 * @return Returns the name.
+	 * 
+	 * @uml.property name="name"
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Set name to name.
+	 * 
+	 * @param name The name to set.
+	 * 
+	 * @uml.property name="name"
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * Access numDecimals property.
+	 * 
+	 * @return Returns the numDecimals.
+	 * 
+	 * @uml.property name="numDecimals"
+	 */
+	public int getNumDecimals() {
+		return numDecimals;
+	}
+
+	/**
+	 * Set numDecimals to numDecimals.
+	 * 
+	 * @param numDecimals The numDecimals to set.
+	 * 
+	 * @uml.property name="numDecimals"
+	 */
+	public void setNumDecimals(int numDecimals) {
+		this.numDecimals = numDecimals;
+	}
+
+	/**
+	 * Access schemaAttributes property.
+	 * 
+	 * @return Returns the schemaAttributes.
+	 * 
+	 * @uml.property name="schemaAttributes"
+	 */
+	public List getSchemaAttributes() {
+		return schemaAttributes;
+	}
+
+	/**
+	 * Set schemaAttributes to schemaAttributes.
+	 * 
+	 * @param schemaAttributes The schemaAttributes to set.
+	 * 
+	 * @uml.property name="schemaAttributes"
+	 */
+	public void setSchemaAttributes(List schemaAttributes) {
+		this.schemaAttributes = schemaAttributes;
+	}
+
+	/**
+	 * Access schemaBase property.
+	 * 
+	 * @return Returns the schemaBase.
+	 * 
+	 * @uml.property name="schemaBase"
+	 */
+	public String getSchemaBase() {
+		return schemaBase;
+	}
+
+	/**
+	 * Set schemaBase to schemaBase.
+	 * 
+	 * @param schemaBase The schemaBase to set.
+	 * 
+	 * @uml.property name="schemaBase"
+	 */
+	public void setSchemaBase(String schemaBase) {
+		this.schemaBase = schemaBase;
+	}
+
+	/**
+	 * Access schemaName property.
+	 * 
+	 * @return Returns the schemaName.
+	 * 
+	 * @uml.property name="schemaName"
+	 */
+	public String getSchemaName() {
+		return schemaName;
+	}
+
+	/**
+	 * Set schemaName to schemaName.
+	 * 
+	 * @param schemaName The schemaName to set.
+	 * 
+	 * @uml.property name="schemaName"
+	 */
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
+	}
+
+	/**
+	 * Access sRS property.
+	 * 
+	 * @return Returns the sRS.
+	 * 
+	 * @uml.property name="sRS"
+	 */
+	public int getSRS() {
+		return SRS;
+	}
+
+	/**
+	 * Set sRS to srs.
+	 * 
+	 * @param srs The sRS to set.
+	 * 
+	 * @uml.property name="sRS"
+	 */
+	public void setSRS(int srs) {
+		SRS = srs;
+	}
+
+	/**
+	 * Access title property.
+	 * 
+	 * @return Returns the title.
+	 * 
+	 * @uml.property name="title"
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * Set title to title.
+	 * 
+	 * @param title The title to set.
+	 * 
+	 * @uml.property name="title"
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
     public String toString() {
 	return "FeatureTypeConfig[name: " + name + " schemaName: " + schemaName
 	    + " SRS: " + SRS + " schemaAttributes: " + schemaAttributes + 
 	    " schemaBase " + schemaBase + "]";
     }
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
+	}
 }

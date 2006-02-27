@@ -12,8 +12,8 @@ import javax.servlet.ServletContext;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
-import org.vfny.geoserver.action.data.DataStoreUtils;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.util.DataStoreUtils;
 
 
 /**
@@ -30,26 +30,56 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  * @version $Id: DataStoreConfig.java,v 1.11 2004/04/30 02:49:24 sploreg Exp $
  */
 public class DataStoreConfig {
-    /** unique datasore identifier */
-    private String id;
 
-    /** unique namespace to refer to this datastore */
-    private String nameSpaceId;
+	/**
+	 * unique datasore identifier
+	 * 
+	 * @uml.property name="id" multiplicity="(0 1)"
+	 */
+	private String id;
 
-    /** wether this data store is enabled */
-    private boolean enabled = true;
+	/**
+	 * unique namespace to refer to this datastore
+	 * 
+	 * @uml.property name="nameSpaceId" multiplicity="(0 1)"
+	 */
+	private String nameSpaceId;
 
-    /** a short description about this data store */
-    private String title;
+	/**
+	 * wether this data store is enabled
+	 * 
+	 * @uml.property name="enabled" multiplicity="(0 1)"
+	 */
+	private boolean enabled = true;
+
+	/**
+	 * a short description about this data store
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
+
 
     /** a short description about this data store */
     private String _abstract;
 
-    /** connection parameters to create the DataStoreInfo */
-    private Map connectionParams;
+	/**
+	 * connection parameters to create the DataStoreInfo
+	 * 
+	 * @uml.property name="connectionParams"
+	 * @uml.associationEnd qualifier="key:java.lang.String java.lang.String" multiplicity=
+	 * "(0 1)"
+	 */
+	private Map connectionParams;
 
-    /** Config ONLY! DataStoreFactory used to test params */
-    private DataStoreFactorySpi factory;
+	/**
+	 * Config ONLY! DataStoreFactory used to test params
+	 * 
+	 * @uml.property name="factory"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private DataStoreFactorySpi factory;
+
 
     /**
      * Create a new DataStoreConfig from a dataStoreId and factoryDescription
@@ -184,18 +214,21 @@ public class DataStoreConfig {
         return _abstract;
     }
 
-    /**
-     * getConnectionParams purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public Map getConnectionParams() {
-        return connectionParams;
-    }
+	/**
+	 * getConnectionParams purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="connectionParams"
+	 */
+	public Map getConnectionParams() {
+		return connectionParams;
+	}
+
 
     /**
      * isEnabled purpose.
@@ -210,44 +243,51 @@ public class DataStoreConfig {
         return enabled;
     }
 
-    /**
-     * This is the DataStore ID
-     * 
-     * <p>
-     * 
-     * </p>
-     *
-     * @return
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * This is the DataStore ID
+	 * 
+	 * <p>
+	 * 
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="id"
+	 */
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * getNameSpace purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getNameSpaceId() {
-        return nameSpaceId;
-    }
+	/**
+	 * getNameSpace purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="nameSpaceId"
+	 */
+	public String getNameSpaceId() {
+		return nameSpaceId;
+	}
 
-    /**
-     * getTitle purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getTitle() {
-        return title;
-    }
+	/**
+	 * getTitle purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="title"
+	 */
+	public String getTitle() {
+		return title;
+	}
+
 
     /**
      * setAbstract purpose.
@@ -264,61 +304,70 @@ public class DataStoreConfig {
         }
     }
 
-    /**
-     * setConnectionParams purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param map
-     */
-    public void setConnectionParams(Map map) {
-        connectionParams = map;
-    }
+	/**
+	 * setConnectionParams purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param map
+	 * 
+	 * @uml.property name="connectionParams"
+	 */
+	public void setConnectionParams(Map map) {
+		connectionParams = map;
+	}
 
-    /**
-     * setEnabled purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setEnabled(boolean b) {
-        enabled = b;
-    }
+	/**
+	 * setEnabled purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="enabled"
+	 */
+	public void setEnabled(boolean b) {
+		enabled = b;
+	}
 
-    /**
-     * setNameSpace purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param support
-     */
-    public void setNameSpaceId(String support) {
-        if (support != null) {
-            nameSpaceId = support;
-        }
-    }
+	/**
+	 * setNameSpace purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param support
+	 * 
+	 * @uml.property name="nameSpaceId"
+	 */
+	public void setNameSpaceId(String support) {
+		if (support != null) {
+			nameSpaceId = support;
+		}
+	}
 
-    /**
-     * setTitle purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setTitle(String string) {
-        if (string != null) {
-            title = string;
-        }
-    }
+	/**
+	 * setTitle purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="title"
+	 */
+	public void setTitle(String string) {
+		if (string != null) {
+			title = string;
+		}
+	}
+
 
     // Access to Dyanmic Content
 
@@ -333,12 +382,15 @@ public class DataStoreConfig {
         return DataStoreUtils.acquireDataStore(connectionParams,sc);
     }
 
-    /**
-     * Get DataStoreFactorySpi used for this DataStoreConfig.
-     *
-     * @return DataStoreFactorySpi that this DataStoreConfig matches
-     */
-    public DataStoreFactorySpi getFactory() {
-        return factory;
-    }
+	/**
+	 * Get DataStoreFactorySpi used for this DataStoreConfig.
+	 * 
+	 * @return DataStoreFactorySpi that this DataStoreConfig matches
+	 * 
+	 * @uml.property name="factory"
+	 */
+	public DataStoreFactorySpi getFactory() {
+		return factory;
+	}
+
 }

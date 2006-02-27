@@ -32,15 +32,30 @@ public class TestSuiteConfig{
 
 	public static final String CONFIG_KEY = "Validation.TestSuite";
     public static final String CURRENTLY_SELECTED_KEY = "selectedTestSuite";
-	
-	/** the test suite name */
+
+	/**
+	 * the test suite name
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
 	private String name;
 
-	/** the test suite description */
+	/**
+	 * the test suite description
+	 * 
+	 * @uml.property name="description" multiplicity="(0 1)"
+	 */
 	private String description;
 
-	/** the list of tests - should never be null */
+	/**
+	 * the list of tests - should never be null
+	 * 
+	 * @uml.property name="tests"
+	 * @uml.associationEnd qualifier="getName:java.lang.String org.vfny.geoserver.config.validation.TestConfig"
+	 * multiplicity="(0 1)"
+	 */
 	private Map tests;
+
 	
 	/**
 	 * TestSuiteConfig constructor.
@@ -191,11 +206,13 @@ public class TestSuiteConfig{
     	ts.setTests(myTests);
     	return ts;
     }
-    
+
 	/**
 	 * Access description property.
 	 * 
 	 * @return Returns the description.
+	 * 
+	 * @uml.property name="description"
 	 */
 	public String getDescription() {
 		return description;
@@ -203,8 +220,10 @@ public class TestSuiteConfig{
 
 	/**
 	 * Set description to description.
-	 *
+	 * 
 	 * @param description The description to set.
+	 * 
+	 * @uml.property name="description"
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -214,6 +233,8 @@ public class TestSuiteConfig{
 	 * Access name property.
 	 * 
 	 * @return Returns the name.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public String getName() {
 		return name;
@@ -221,8 +242,10 @@ public class TestSuiteConfig{
 
 	/**
 	 * Set name to name.
-	 *
+	 * 
 	 * @param name The name to set.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -232,10 +255,13 @@ public class TestSuiteConfig{
 	 * Access tests property.
 	 * 
 	 * @return Returns the tests.
+	 * 
+	 * @uml.property name="tests"
 	 */
 	public Map getTests() {
 		return tests;
 	}
+
 
 	public Object removeTest(String name) {
 		return tests.remove(name);
@@ -247,8 +273,10 @@ public class TestSuiteConfig{
 
 	/**
 	 * Set tests to tests.
-	 *
+	 * 
 	 * @param tests The tests to set.
+	 * 
+	 * @uml.property name="tests"
 	 */
 	public void setTests(Map tests) {
 		this.tests = tests;

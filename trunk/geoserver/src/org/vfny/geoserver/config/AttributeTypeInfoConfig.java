@@ -77,84 +77,101 @@ public class AttributeTypeInfoConfig {
     /** Value of getType() used to indicate that fragement is in use */
     public static final String TYPE_FRAGMENT = "(xml fragment)";
 
-    /**
-     * XML Fragment used to define stuff.
-     * 
-     * <p>
-     * This property is only used with getType() is equals to "(xml fragment)".
-     * </p>
-     * 
-     * <p>
-     * baseGMLTypes can only be used in your XML fragment.
-     * </p>
-     */
-    private String fragment;
+	/**
+	 * XML Fragment used to define stuff.
+	 * 
+	 * <p>
+	 * This property is only used with getType() is equals to "(xml fragment)".
+	 * </p>
+	 * 
+	 * <p>
+	 * baseGMLTypes can only be used in your XML fragment.
+	 * </p>
+	 * 
+	 * @uml.property name="fragment" multiplicity="(0 1)"
+	 */
+	private String fragment;
 
-    /**
-     * Maxmium number of occurances of this attribute in a feature.
-     * 
-     * <p>
-     * For Features based on the Simple Feature Specification this should be a
-     * value of 1. If the attribute is optional it should still be 1, although
-     * often optional is represented by allowing the Attribute to be
-     * <code>nillable</code>.
-     * </p>
-     * 
-     * <p>
-     * Common Min..Max Occurs values:
-     * </p>
-     * 
-     * <ul>
-     * <li>
-     * 0..<b>1</b>: attribute is optional
-     * </li>
-     * <li>
-     * 1..<b>1</b>: attribute is required (usual for Simple Features)
-     * </li>
-     * <li>
-     * 0..<b>N</b>: attribute forms a list that may be empty
-     * </li>
-     * </ul>
-     * 
-     *
-     * @see AttributeTypeInfoDTO.isNillable
-     */
-    private int maxOccurs;
+	/**
+	 * Maxmium number of occurances of this attribute in a feature.
+	 * 
+	 * <p>
+	 * For Features based on the Simple Feature Specification this should be a
+	 * value of 1. If the attribute is optional it should still be 1, although
+	 * often optional is represented by allowing the Attribute to be
+	 * <code>nillable</code>.
+	 * </p>
+	 * 
+	 * <p>
+	 * Common Min..Max Occurs values:
+	 * </p>
+	 * 
+	 * <ul>
+	 * <li>
+	 * 0..<b>1</b>: attribute is optional
+	 * </li>
+	 * <li>
+	 * 1..<b>1</b>: attribute is required (usual for Simple Features)
+	 * </li>
+	 * <li>
+	 * 0..<b>N</b>: attribute forms a list that may be empty
+	 * </li>
+	 * </ul>
+	 * 
+	 * 
+	 * @see AttributeTypeInfoDTO.isNillable
+	 * 
+	 * @uml.property name="maxOccurs" multiplicity="(0 1)"
+	 */
+	private int maxOccurs;
 
-    /** attribute min occurs */
-    private int minOccurs;
+	/**
+	 * attribute min occurs
+	 * 
+	 * @uml.property name="minOccurs" multiplicity="(0 1)"
+	 */
+	private int minOccurs;
 
-    /** attribute name */
-    private final String name;
+	/**
+	 * attribute name
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	private final String name;
 
-    /**
-     * Indicate if the attribute is allowed to be <code>null</code>.
-     * 
-     * <p>
-     * Nillable is often used to indicate that an attribute is optional. The
-     * use of minOccurs and maxOccurs may be a more correct way to indicate
-     * optional attribtues.
-     * </p>
-     *
-     * @see AttributeTypeInfoDTO.minOccurs
-     * @see AttributeTypeInfoDTO.maxOccurs
-     */
-    private boolean nillable;
+	/**
+	 * Indicate if the attribute is allowed to be <code>null</code>.
+	 * 
+	 * <p>
+	 * Nillable is often used to indicate that an attribute is optional. The
+	 * use of minOccurs and maxOccurs may be a more correct way to indicate
+	 * optional attribtues.
+	 * </p>
+	 * 
+	 * @see AttributeTypeInfoDTO.minOccurs
+	 * @see AttributeTypeInfoDTO.maxOccurs
+	 * 
+	 * @uml.property name="nillable" multiplicity="(0 1)"
+	 */
+	private boolean nillable;
 
-    /**
-     * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
-     * 
-     * <p>
-     * If getType is equals to TYPE_FRAGMENT please consult getFragment() to
-     * examin the actual user's definition.
-     * </p>
-     * 
-     * <p>
-     * Other than that getType should be one of the constants defined by
-     * GMLUtils.
-     * </p>
-     */
-    public String type;
+	/**
+	 * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
+	 * 
+	 * <p>
+	 * If getType is equals to TYPE_FRAGMENT please consult getFragment() to
+	 * examin the actual user's definition.
+	 * </p>
+	 * 
+	 * <p>
+	 * Other than that getType should be one of the constants defined by
+	 * GMLUtils.
+	 * </p>
+	 * 
+	 * @uml.property name="type" multiplicity="(0 1)"
+	 */
+	public String type;
+
 
     /**
      * Set up AttributeTypeInfo based on attributeType.
@@ -220,80 +237,91 @@ public class AttributeTypeInfoConfig {
         nillable = dto.isNillable();
     }
 
-    /**
-     * XML Fragment used to define stuff.
-     * 
-     * <p>
-     * This property is only used with getType() is equals to "(xml fragment)".
-     * </p>
-     * 
-     * <p>
-     * baseGMLTypes can only be used in your XML fragment.
-     * </p>
-     *
-     * @return Returns the fragment.
-     */
-    public String getFragment() {
-        return fragment;
-    }
+	/**
+	 * XML Fragment used to define stuff.
+	 * 
+	 * <p>
+	 * This property is only used with getType() is equals to "(xml fragment)".
+	 * </p>
+	 * 
+	 * <p>
+	 * baseGMLTypes can only be used in your XML fragment.
+	 * </p>
+	 * 
+	 * @return Returns the fragment.
+	 * 
+	 * @uml.property name="fragment"
+	 */
+	public String getFragment() {
+		return fragment;
+	}
 
-    /**
-     * getMaxOccurs purpose.
-     * 
-     * <p>
-     * The max number of occurences for this element.
-     * </p>
-     *
-     * @return max number of occurences
-     */
-    public int getMaxOccurs() {
-        return maxOccurs;
-    }
+	/**
+	 * getMaxOccurs purpose.
+	 * 
+	 * <p>
+	 * The max number of occurences for this element.
+	 * </p>
+	 * 
+	 * @return max number of occurences
+	 * 
+	 * @uml.property name="maxOccurs"
+	 */
+	public int getMaxOccurs() {
+		return maxOccurs;
+	}
 
-    /**
-     * getMinOccurs purpose.
-     * 
-     * <p>
-     * the min number of occurences for this element
-     * </p>
-     *
-     * @return min number of occurences
-     */
-    public int getMinOccurs() {
-        return minOccurs;
-    }
+	/**
+	 * getMinOccurs purpose.
+	 * 
+	 * <p>
+	 * the min number of occurences for this element
+	 * </p>
+	 * 
+	 * @return min number of occurences
+	 * 
+	 * @uml.property name="minOccurs"
+	 */
+	public int getMinOccurs() {
+		return minOccurs;
+	}
 
-    /**
-     * getName purpose.
-     * 
-     * <p>
-     * returns the element name
-     * </p>
-     *
-     * @return the element name
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * getName purpose.
+	 * 
+	 * <p>
+	 * returns the element name
+	 * </p>
+	 * 
+	 * @return the element name
+	 * 
+	 * @uml.property name="name"
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
-     * 
-     * <p>
-     * If getType is equals to <code>TYPE_FRAGMENT</code> please consult
-     * getFragment() to examine the actual user's definition.
-     * </p>
-     * 
-     * <p>
-     * Other than that getType should be one of the constants defined by
-     * GMLUtils.
-     * </p>
-     *
-     * @return The element, or <code>TYPE_FRAGMENT</code>
-     */
-    public String getType() {
-        return type;
-    }
+	/**
+	 * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
+	 * 
+	 * <p>
+	 * If getType is equals to <code>TYPE_FRAGMENT</code> please consult
+	 * getFragment() to examine the actual user's definition.
+	 * </p>
+	 * 
+	 * <p>
+	 * Other than that getType should be one of the constants defined by
+	 * GMLUtils.
+	 * </p>
+	 * 
+	 * @return The element, or <code>TYPE_FRAGMENT</code>
+	 * 
+	 * @uml.property name="type"
+	 */
+	public String getType() {
+		return type;
+	}
+
 
     /**
      * Indicate if the attribute is allowed to be <code>null</code>.
@@ -314,123 +342,134 @@ public class AttributeTypeInfoConfig {
         return nillable;
     }
 
-    /**
-     * XML Fragment used to define stuff.
-     * 
-     * <p>
-     * This property is only used with getType() is equals to "(xml fragment)".
-     * </p>
-     * 
-     * <p>
-     * baseGMLTypes can only be used in your XML fragment.
-     * </p>
-     *
-     * @param fragment The fragment to set.
-     */
-    public void setFragment(String fragment) {
-        this.fragment = fragment;
-    }
+	/**
+	 * XML Fragment used to define stuff.
+	 * 
+	 * <p>
+	 * This property is only used with getType() is equals to "(xml fragment)".
+	 * </p>
+	 * 
+	 * <p>
+	 * baseGMLTypes can only be used in your XML fragment.
+	 * </p>
+	 * 
+	 * @param fragment The fragment to set.
+	 * 
+	 * @uml.property name="fragment"
+	 */
+	public void setFragment(String fragment) {
+		this.fragment = fragment;
+	}
 
-    /**
-     * Maxmium number of occurances of this attribute in a feature.
-     * 
-     * <p>
-     * For Features based on the Simple Feature Specification this should be a
-     * value of 1. If the attribute is optional it should still be 1, although
-     * often optional is represented by allowing the Attribute to be
-     * <code>nillable</code>.
-     * </p>
-     * 
-     * <p>
-     * Common Min..Max Occurs values:
-     * </p>
-     * 
-     * <ul>
-     * <li>
-     * 0..<b>1</b>: attribute is optional
-     * </li>
-     * <li>
-     * 1..<b>1</b>: attribute is required (usual for Simple Features)
-     * </li>
-     * <li>
-     * 0..<b>N</b>: attribute forms a list that may be empty
-     * </li>
-     * </ul>
-     * 
-     *
-     * @param max The maximum number of occurances
-     *
-     * @see AttributeTypeInfoDTO.isNillable
-     */
-    public void setMaxOccurs(int max) {
-        maxOccurs = max;
-    }
+	/**
+	 * Maxmium number of occurances of this attribute in a feature.
+	 * 
+	 * <p>
+	 * For Features based on the Simple Feature Specification this should be a
+	 * value of 1. If the attribute is optional it should still be 1, although
+	 * often optional is represented by allowing the Attribute to be
+	 * <code>nillable</code>.
+	 * </p>
+	 * 
+	 * <p>
+	 * Common Min..Max Occurs values:
+	 * </p>
+	 * 
+	 * <ul>
+	 * <li>
+	 * 0..<b>1</b>: attribute is optional
+	 * </li>
+	 * <li>
+	 * 1..<b>1</b>: attribute is required (usual for Simple Features)
+	 * </li>
+	 * <li>
+	 * 0..<b>N</b>: attribute forms a list that may be empty
+	 * </li>
+	 * </ul>
+	 * 
+	 * 
+	 * @param max The maximum number of occurances
+	 * 
+	 * @see AttributeTypeInfoDTO.isNillable
+	 * 
+	 * @uml.property name="maxOccurs"
+	 */
+	public void setMaxOccurs(int max) {
+		maxOccurs = max;
+	}
 
-    /**
-     * Minimum number of occrances of this attribute in a feature.
-     * 
-     * <p>
-     * For Features based on the Simple Feture Specification this should be a
-     * value of 1. If the attribute is optional is should be 0, although often
-     * optional is represented by allowing the attribute to be nillable.
-     * </p>
-     * Common Min..Max Occurs values:
-     * 
-     * <ul>
-     * <li>
-     * <b>0</b>..1: attribute is optional
-     * </li>
-     * <li>
-     * <b>1</b>..1: attribute is required (usual for Simple Features)
-     * </li>
-     * <li>
-     * <b>0</b>..N: attribute forms a list that may be empty
-     * </li>
-     * </ul>
-     * 
-     *
-     * @param min The minimum number of occurances
-     *
-     * @see AttributeTypeInfoDTO.isNillable
-     */
-    public void setMinOccurs(int min) {
-        minOccurs = min;
-    }
+	/**
+	 * Minimum number of occrances of this attribute in a feature.
+	 * 
+	 * <p>
+	 * For Features based on the Simple Feture Specification this should be a
+	 * value of 1. If the attribute is optional is should be 0, although often
+	 * optional is represented by allowing the attribute to be nillable.
+	 * </p>
+	 * Common Min..Max Occurs values:
+	 * 
+	 * <ul>
+	 * <li>
+	 * <b>0</b>..1: attribute is optional
+	 * </li>
+	 * <li>
+	 * <b>1</b>..1: attribute is required (usual for Simple Features)
+	 * </li>
+	 * <li>
+	 * <b>0</b>..N: attribute forms a list that may be empty
+	 * </li>
+	 * </ul>
+	 * 
+	 * 
+	 * @param min The minimum number of occurances
+	 * 
+	 * @see AttributeTypeInfoDTO.isNillable
+	 * 
+	 * @uml.property name="minOccurs"
+	 */
+	public void setMinOccurs(int min) {
+		minOccurs = min;
+	}
 
-    /**
-     * Indicate if the attribute is allowed to be <code>null</code>.
-     * 
-     * <p>
-     * Nillable is often used to indicate that an attribute is optional. The
-     * use of minOccurs and maxOccurs may be a more correct way to indicate
-     * optional attribtues.
-     * </p>
-     *
-     * @param nillable <code>true </code> to indicate attribute is alloed to be
-     *        <code>null</code>
-     *
-     * @see AttributeTypeInfoDTO.setMinOccurs
-     * @see AttributeTypeInfoDTO.setMaxOccurs
-     */
-    public void setNillable(boolean nillable) {
-        this.nillable = nillable;
-    }
+	/**
+	 * Indicate if the attribute is allowed to be <code>null</code>.
+	 * 
+	 * <p>
+	 * Nillable is often used to indicate that an attribute is optional. The
+	 * use of minOccurs and maxOccurs may be a more correct way to indicate
+	 * optional attribtues.
+	 * </p>
+	 * 
+	 * @param nillable <code>true </code> to indicate attribute is alloed to be
+	 *        <code>null</code>
+	 * 
+	 * @see AttributeTypeInfoDTO.setMinOccurs
+	 * @see AttributeTypeInfoDTO.setMaxOccurs
+	 * 
+	 * @uml.property name="nillable"
+	 */
+	public void setNillable(boolean nillable) {
+		this.nillable = nillable;
+	}
 
-    /**
-     * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
-     * 
-     * <p>
-     * If getType is equals to <code>TYPE_FRAGMENT</code> please consult
-     * getFragment() to examin the actual user's definition. <br>
-     * Other than that getType should be one of the constants defined by
-     * GMLUtils.
-     * </p>
-     *
-     * @param type DOCUMENT ME!
-     */
-    public void setType(String type) {
-        this.type = type;
-    }
+	/**
+	 * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
+	 * 
+	 * <p>
+	 * If getType is equals to <code>TYPE_FRAGMENT</code> please consult
+	 * getFragment() to examin the actual user's definition. <br>
+	 * Other than that getType should be one of the constants defined by
+	 * GMLUtils.
+	 * </p>
+	 * 
+	 * @param type DOCUMENT ME!
+	 * 
+	 * @uml.property name="type"
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
     
     public AttributeTypeInfoDTO toDTO(){
     	AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();

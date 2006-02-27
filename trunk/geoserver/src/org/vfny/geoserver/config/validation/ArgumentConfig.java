@@ -24,9 +24,21 @@ import org.geotools.validation.dto.ArgumentDTO;
  * @version $Id: ArgumentConfig.java,v 1.2 2004/04/07 19:37:48 dmzwiers Exp $
  */
 public class ArgumentConfig {
+
+	/**
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
 	private String name;
+
 	private boolean _final;
+
+	/**
+	 * 
+	 * @uml.property name="value" multiplicity="(0 1)"
+	 */
 	private Object value;
+
 	
 	/**
 	 * ArgumentConfig constructor.
@@ -107,6 +119,8 @@ public class ArgumentConfig {
 	 * Access name property.
 	 * 
 	 * @return Returns the name.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public String getName() {
 		return name;
@@ -114,8 +128,10 @@ public class ArgumentConfig {
 
 	/**
 	 * Set name to name.
-	 *
+	 * 
 	 * @param name The name to set.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -125,6 +141,8 @@ public class ArgumentConfig {
 	 * Access value property.
 	 * 
 	 * @return Returns the value.
+	 * 
+	 * @uml.property name="value"
 	 */
 	public Object getValue() {
 		return value;
@@ -132,12 +150,15 @@ public class ArgumentConfig {
 
 	/**
 	 * Set value to value.
-	 *
+	 * 
 	 * @param value The value to set.
+	 * 
+	 * @uml.property name="value"
 	 */
 	public void setValue(Object value) {
-		if(value == null)
-			throw new NullPointerException("value should only be set when it has a value");
+		if (value == null)
+			throw new NullPointerException(
+				"value should only be set when it has a value");
 		this.value = value;
 	}
 
