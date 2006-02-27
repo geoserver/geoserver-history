@@ -46,6 +46,8 @@ import java.util.NoSuchElementException;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: DataDTO.java,v 1.5 2004/02/09 18:02:23 dmzwiers Exp $
  *
  * @see DataSource
@@ -53,49 +55,91 @@ import java.util.NoSuchElementException;
  * @see StyleConfig
  */
 public final class DataDTO implements DataTransferObject {
-    /**
-     * DataStoreInfoDTO referenced by key "<code>dataStoreID</code>".
-     *
-     * @see org.vfny.geoserver.global.dto.DataStoreInfoDTO
-     */
-    private Map dataStores;
 
-    /**
-     * NamespaceDTO referenced by key "<code>prefix</code>".
-     *
-     * @see org.vfny.geoserver.global.dto.NameSpaceInfoDTO
-     */
-    private Map nameSpaces;
+	/**
+	 * DataStoreInfoDTO referenced by key "<code>dataStoreID</code>".
+	 * 
+	 * @see org.vfny.geoserver.global.dto.DataStoreInfoDTO
+	 * 
+	 * @uml.property name="dataStores"
+	 * @uml.associationEnd elementType="java.lang.String" qualifier="key:java.lang.String
+	 * org.vfny.geoserver.global.dto.DataStoreInfoDTO" multiplicity="(0 -1)" ordering=
+	 * "ordered"
+	 */
+	private Map dataStores;
 
-    /**
-     * FeatureTypesInfoDTO referenced by key
-     * "<code>dataStoreID.typeName</code>"
-     *
-     * @see org.vfny.geoserver.global.dto.FeatureTypeInfoDTO
-     */
-    private Map featuresTypes;
+	/**
+	 * FormatInfoDTO referenced by key "<code>formatID</code>".
+	 * 
+	 * @see org.vfny.geoserver.global.dto.FormatInfoDTO
+	 * 
+	 * @uml.property name="formats"
+	 * @uml.associationEnd elementType="java.lang.String" qualifier="getFormatId:java.lang.String
+	 * org.vfny.geoserver.global.dto.FormatInfoDTO" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private Map formats;
 
-    /**
-     * StyleDTO referenced by key "<code>id</code>"
-     *
-     * @see org.vfny.geoserver.global.dto.StyleDTO
-     */
-    private Map styles;
+	/**
+	 * NamespaceDTO referenced by key "<code>prefix</code>".
+	 * 
+	 * @see org.vfny.geoserver.global.dto.NameSpaceInfoDTO
+	 * 
+	 * @uml.property name="nameSpaces"
+	 * @uml.associationEnd elementType="java.lang.String" qualifier="key:java.lang.String
+	 * org.vfny.geoserver.global.dto.NameSpaceInfoDTO" multiplicity="(0 -1)" ordering=
+	 * "ordered"
+	 */
+	private Map nameSpaces;
 
-    /**
-     * The default namespace for the server instance.
-     * 
-     * <p>
-     * This may be <code>null</code> if a default has not been defined. the
-     * config files is supposed to use the "first" Namespace when a default is
-     * not defined - but we have lost all sense of order by placing this in a
-     * Map. For 99% of the time when no default has been provided it is
-     * because there is only one Namespace for the application.
-     * </p>
-     *
-     * @see org.vfny.geoserver.global.dto.NameSpaceInfo
-     */
-    private String defaultNameSpacePrefix;
+	/**
+	 * FeatureTypesInfoDTO referenced by key
+	 * "<code>dataStoreID.typeName</code>"
+	 * 
+	 * @see org.vfny.geoserver.global.dto.FeatureTypeInfoDTO
+	 * 
+	 * @uml.property name="featuresTypes"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.global.dto.AttributeTypeInfoDTO"
+	 * qualifier="key:java.lang.String org.vfny.geoserver.global.dto.FeatureTypeInfoDTO"
+	 * multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private Map featuresTypes;
+
+	/**
+	 * 
+	 * @uml.property name="coverages"
+	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.global.dto.DataTransferObject"
+	 * multiplicity="(0 1)"
+	 */
+	private Map coverages;
+
+	/**
+	 * StyleDTO referenced by key "<code>id</code>"
+	 * 
+	 * @see org.vfny.geoserver.global.dto.StyleDTO
+	 * 
+	 * @uml.property name="styles"
+	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.global.dto.DataTransferObject"
+	 * multiplicity="(0 1)"
+	 */
+	private Map styles;
+
+	/**
+	 * The default namespace for the server instance.
+	 * 
+	 * <p>
+	 * This may be <code>null</code> if a default has not been defined. the
+	 * config files is supposed to use the "first" Namespace when a default is
+	 * not defined - but we have lost all sense of order by placing this in a
+	 * Map. For 99% of the time when no default has been provided it is
+	 * because there is only one Namespace for the application.
+	 * </p>
+	 * 
+	 * @see org.vfny.geoserver.global.dto.NameSpaceInfo
+	 * 
+	 * @uml.property name="defaultNameSpacePrefix" multiplicity="(0 1)"
+	 */
+	private String defaultNameSpacePrefix;
+
 
     /**
      * Data constructor.
@@ -131,6 +175,12 @@ public final class DataDTO implements DataTransferObject {
         }
 
         try {
+            formats = CloneLibrary.clone(dto.getFormats());
+        } catch (Exception e) {
+        	formats = new HashMap();
+        }
+
+        try {
             nameSpaces = CloneLibrary.clone(dto.getNameSpaces());
         } catch (Exception e) {
             nameSpaces = new HashMap();
@@ -140,6 +190,12 @@ public final class DataDTO implements DataTransferObject {
             featuresTypes = CloneLibrary.clone(dto.getFeaturesTypes());
         } catch (Exception e) {
             featuresTypes = new HashMap();
+        }
+
+        try {
+            coverages = CloneLibrary.clone(dto.getCoverages());
+        } catch (Exception e) {
+            coverages = new HashMap();
         }
 
         try {
@@ -190,6 +246,12 @@ public final class DataDTO implements DataTransferObject {
             return false;
         }
 
+        if (formats != null) {
+            r = r && EqualsLibrary.equals(formats, c.getFormats());
+        } else if (c.getFormats() != null) {
+            return false;
+        }
+        
         if (nameSpaces != null) {
             r = r && EqualsLibrary.equals(nameSpaces, c.getNameSpaces());
         } else if (c.getNameSpaces() != null) {
@@ -199,6 +261,12 @@ public final class DataDTO implements DataTransferObject {
         if (featuresTypes != null) {
             r = r && EqualsLibrary.equals(featuresTypes, c.getFeaturesTypes());
         } else if (c.getFeaturesTypes() != null) {
+            return false;
+        }
+
+        if (coverages != null) {
+            r = r && EqualsLibrary.equals(coverages, c.getCoverages());
+        } else if (c.getCoverages() != null) {
             return false;
         }
 
@@ -232,6 +300,10 @@ public final class DataDTO implements DataTransferObject {
             r *= dataStores.hashCode();
         }
 
+        if (formats != null) {
+            r *= formats.hashCode();
+        }
+
         if (nameSpaces != null) {
             r *= nameSpaces.hashCode();
         }
@@ -244,157 +316,234 @@ public final class DataDTO implements DataTransferObject {
             r *= styles.hashCode();
         }
 
+        if (coverages != null) {
+            r *= coverages.hashCode();
+        }
+
         return r;
     }
 
-    /**
-     * Retrive a Map of DataStoreInfoDTO by "dataStoreID".
-     *
-     * @return Map of DataStoreInfoDTO by "dataStoreID"
-     */
-    public Map getDataStores() {
-        return dataStores;
-    }
+	/**
+	 * Retrive a Map of DataStoreInfoDTO by "dataStoreID".
+	 * 
+	 * @return Map of DataStoreInfoDTO by "dataStoreID"
+	 * 
+	 * @uml.property name="dataStores"
+	 */
+	public Map getDataStores() {
+		return dataStores;
+	}
 
-    /**
-     * Return the getDefaultNameSpace.
-     * 
-     * <p>
-     * May consider just returning the "prefix" of the default Namespace here.
-     * It is unclear what happens when we are starting out with a Empty
-     * DataDTO class.
-     * </p>
-     *
-     * @return Default namespace or <code>null</code>
-     */
-    public String getDefaultNameSpacePrefix() {
-        return defaultNameSpacePrefix;
-    }
+	/**
+	 * Retrive a Map of FormatInfoDTO by "formatID".
+	 * 
+	 * @return Map of FormatInfoDTO by "formatID"
+	 * 
+	 * @uml.property name="formats"
+	 */
+	public Map getFormats() {
+		return formats;
+	}
 
-    /**
-     * Retrive Map of FeatureTypeInfoDTO by "dataStoreID.typeName".
-     * 
-     *   DJB: I recommend that you use this.getKey() as the key for this hash
-     *
-     * @return Map of FeatureTypeInfoDTO by "dataStoreID.typeName"
-     */
-    public Map getFeaturesTypes() {
-        return featuresTypes;
-    }
+	/**
+	 * Return the getDefaultNameSpace.
+	 * 
+	 * <p>
+	 * May consider just returning the "prefix" of the default Namespace here.
+	 * It is unclear what happens when we are starting out with a Empty
+	 * DataDTO class.
+	 * </p>
+	 * 
+	 * @return Default namespace or <code>null</code>
+	 * 
+	 * @uml.property name="defaultNameSpacePrefix"
+	 */
+	public String getDefaultNameSpacePrefix() {
+		return defaultNameSpacePrefix;
+	}
 
-    /**
-     * Map of NamespaceDTO by "prefix".
-     *
-     * @return Map of NamespaceDTO by "prefix".
-     */
-    public Map getNameSpaces() {
-        return nameSpaces;
-    }
+	/**
+	 * Retrive Map of FeatureTypeInfoDTO by "dataStoreID.typeName".
+	 * 
+	 * @return Map of FeatureTypeInfoDTO by "dataStoreID.typeName"
+	 * 
+	 * @uml.property name="featuresTypes"
+	 */
+	public Map getFeaturesTypes() {
+		return featuresTypes;
+	}
 
-    /**
-     * Retrive Map of StyleDTO by "something?".  Key is Style.id
-     *
-     * @return Map of StyleDTO by "something"?
-     */
-    public Map getStyles() {
-        return styles;
-    }
+	/**
+	 * Map of NamespaceDTO by "prefix".
+	 * 
+	 * @return Map of NamespaceDTO by "prefix".
+	 * 
+	 * @uml.property name="nameSpaces"
+	 */
+	public Map getNameSpaces() {
+		return nameSpaces;
+	}
 
-    /**
-     * Replace DataStoreInfoDTO map.
-     *
-     * @param map Map of DataStoreInfoDTO by "dataStoreID"
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
-    public void setDataStores(Map map) {
-        if (map == null) {
-            throw new NullPointerException(
-                "DataStores map must not be null. Use Collections.EMPTY_MAP if you must");
-        }
+	/**
+	 * Retrive Map of StyleDTO by "something?".  Key is Style.id
+	 * 
+	 * @return Map of StyleDTO by "something"?
+	 * 
+	 * @uml.property name="styles"
+	 */
+	public Map getStyles() {
+		return styles;
+	}
 
-        dataStores = new HashMap(map);
+	/**
+	 * Replace DataStoreInfoDTO map.
+	 * 
+	 * @param map Map of DataStoreInfoDTO by "dataStoreID"
+	 * 
+	 * @throws NullPointerException DOCUMENT ME!
+	 * 
+	 * @uml.property name="dataStores"
+	 */
+	public void setDataStores(Map map) {
+		if (map == null) {
+			throw new NullPointerException(
+				"DataStores map must not be null. Use Collections.EMPTY_MAP if you must");
+		}
 
-        if (map != null) {
-            dataStores = map;
-        }
-    }
+		dataStores = new HashMap(map);
 
-    /**
-     * Sets the default namespace.
-     * 
-     * <p>
-     * Note the provided namespace must be present in the namespace map.
-     * </p>
-     *
-     * @param dnsp the default namespace prefix.
-     *
-     * @throws NoSuchElementException DOCUMENT ME!
-     */
-    public void setDefaultNameSpacePrefix(String dnsp) {
-        defaultNameSpacePrefix = dnsp;
+		if (map != null) {
+			dataStores = map;
+		}
+	}
 
-        if (!nameSpaces.containsKey(dnsp)) {
-            throw new NoSuchElementException(
-                "Invalid NameSpace Prefix for Default");
-        }
-    }
+	/**
+	 * Replace FormatInfoDTO map.
+	 * 
+	 * @param map Map of FormatInfoDTO by "formatID"
+	 * 
+	 * @throws NullPointerException DOCUMENT ME!
+	 * 
+	 * @uml.property name="formats"
+	 */
+	public void setFormats(Map map) {
+		if (map == null) {
+			throw new NullPointerException(
+				"Formats map must not be null. Use Collections.EMPTY_MAP if you must");
+		}
 
-    /**
-     * Set the FeatureTypeInfoDTO map.
-     * 
-     * <p>
-     * The dataStoreID used for the map must be in datastores.
-     * </p>
-     * 
-     *   DJB: I recommend that you use this.getKey() as the key for this hash
-     *
-     * @param map of FeatureTypeInfoDTO by "dataStoreID.typeName"
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
-    public void setFeaturesTypes(Map map) {
-        if (map == null) {
-            throw new NullPointerException(
-                "FeatureTypeInfoDTO map must not be null. Use Collections.EMPTY_MAP if you must");
-        }
+		formats = new HashMap(map);
 
-        featuresTypes = map;
-    }
+		if (map != null) {
+			formats = map;
+		}
+	}
 
-    /**
-     * Sets the NameSpaceInfoDTO map.
-     * 
-     * <p>
-     * The default prefix is not changed by this operation.
-     * </p>
-     *
-     * @param map of NameSpaceInfoDTO by "prefix"
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
-    public void setNameSpaces(Map map) {
-        if (map == null) {
-            throw new NullPointerException(
-                "NameSpaceDTO map must not be null. Use Collections.EMPTY_MAP if you must");
-        }
+	/**
+	 * Sets the default namespace.
+	 * 
+	 * <p>
+	 * Note the provided namespace must be present in the namespace map.
+	 * </p>
+	 * 
+	 * @param dnsp the default namespace prefix.
+	 * 
+	 * @throws NoSuchElementException DOCUMENT ME!
+	 * 
+	 * @uml.property name="defaultNameSpacePrefix"
+	 */
+	public void setDefaultNameSpacePrefix(String dnsp) {
+		defaultNameSpacePrefix = dnsp;
 
-        nameSpaces = map;
-    }
+		if (!nameSpaces.containsKey(dnsp)) {
+			throw new NoSuchElementException(
+				"Invalid NameSpace Prefix for Default");
+		}
+	}
 
-    /**
-     * Set map of StyleDTO by "something?".
-     *
-     * @param map Map of StyleDTO by "someKey"?
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
-    public void setStyles(Map map) {
-        if (map == null) {
-            throw new NullPointerException(
-                "StyleInfoDTO map must not be null. Use Collections.EMPTY_MAP if you must");
-        }
+	/**
+	 * Set the FeatureTypeInfoDTO map.
+	 * 
+	 * <p>
+	 * The dataStoreID used for the map must be in datastores.
+	 * </p>
+	 * 
+	 * @param map of FeatureTypeInfoDTO by "dataStoreID.typeName"
+	 * 
+	 * @throws NullPointerException DOCUMENT ME!
+	 * 
+	 * @uml.property name="featuresTypes"
+	 */
+	public void setFeaturesTypes(Map map) {
+		if (map == null) {
+			throw new NullPointerException(
+				"FeatureTypeInfoDTO map must not be null. Use Collections.EMPTY_MAP if you must");
+		}
 
-        styles = map;
-    }
+		featuresTypes = map;
+	}
+
+	/**
+	 * Sets the NameSpaceInfoDTO map.
+	 * 
+	 * <p>
+	 * The default prefix is not changed by this operation.
+	 * </p>
+	 * 
+	 * @param map of NameSpaceInfoDTO by "prefix"
+	 * 
+	 * @throws NullPointerException DOCUMENT ME!
+	 * 
+	 * @uml.property name="nameSpaces"
+	 */
+	public void setNameSpaces(Map map) {
+		if (map == null) {
+			throw new NullPointerException(
+				"NameSpaceDTO map must not be null. Use Collections.EMPTY_MAP if you must");
+		}
+
+		nameSpaces = map;
+	}
+
+	/**
+	 * Set map of StyleDTO by "something?".
+	 * 
+	 * @param map Map of StyleDTO by "someKey"?
+	 * 
+	 * @throws NullPointerException DOCUMENT ME!
+	 * 
+	 * @uml.property name="styles"
+	 */
+	public void setStyles(Map map) {
+		if (map == null) {
+			throw new NullPointerException(
+				"StyleInfoDTO map must not be null. Use Collections.EMPTY_MAP if you must");
+		}
+
+		styles = map;
+	}
+
+	/**
+	 * @return Returns the coverages.
+	 * 
+	 * @uml.property name="coverages"
+	 */
+	public Map getCoverages() {
+		return coverages;
+	}
+
+	/**
+	 * @param coverages The coverages to set.
+	 * 
+	 * @uml.property name="coverages"
+	 */
+	public void setCoverages(Map coverages) {
+		if (coverages == null) {
+			throw new NullPointerException(
+				"CoverageInfoDTO map must not be null. Use Collections.EMPTY_MAP if you must");
+		}
+
+		this.coverages = coverages;
+	}
+
 }

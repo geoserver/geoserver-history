@@ -30,6 +30,8 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  *
  * @author Gabriel Rold?n
  * @author dzwiers
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: GeoServer.java,v 1.23 2004/09/09 16:54:19 cholmesny Exp $
  */
 public class GeoServer extends GlobalLayerSupertype {
@@ -43,14 +45,14 @@ public class GeoServer extends GlobalLayerSupertype {
      * </p>
      */
     public static final String WEB_CONTAINER_KEY = "GeoServer";
-    private String title;
-    private int maxFeatures = Integer.MAX_VALUE;
+	private String title;
+	private int maxFeatures = Integer.MAX_VALUE;
     private boolean verbose = true;
-    private int numDecimals = 4;
-    private Charset charSet = Charset.forName("UTF-8");
-    private String adminUserName = "admin";
-    private String adminPassword;
-    private String schemaBaseUrl;
+	private int numDecimals = 4;
+	private Charset charSet = Charset.forName("UTF-8");
+	private String adminUserName = "admin";
+	private String adminPassword;
+	private String schemaBaseUrl;
     private String contactPerson;
     private String contactOrganization;
     private String contactPosition;
@@ -63,13 +65,14 @@ public class GeoServer extends GlobalLayerSupertype {
     private String contactVoice;
     private String contactFacsimile;
     private String contactEmail;
-    
+    private String onlineResource;
+
     /** Should we throw the stack traces back in responses? */
-    private boolean verboseExceptions = false;
+	private boolean verboseExceptions = false;
 
     /** Default Logging level */
-    private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
-                                       .getLevel();
+	private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
+		.getLevel();
     
     /** to log or not to log **/
     private boolean logToFile = false;
@@ -166,13 +169,13 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return Charset the default charset for this server instance.
      */
-    public Charset getCharSet() {
-        if (charSet != null) {
-            return charSet;
-        }
+	public Charset getCharSet() {
+		if (charSet != null) {
+			return charSet;
+		}
 
-        return Charset.forName("UTF-8");
-    }
+		return Charset.forName("UTF-8");
+	}
 
     /**
      * getContactEmail purpose.
@@ -253,17 +256,32 @@ public class GeoServer extends GlobalLayerSupertype {
     }
 
     /**
-     * getLoggingLevel purpose.
+     * getOnlineResource purpose.
      * 
      * <p>
-     * Returns the Logging Level.
+     * Returns the online Resource.
      * </p>
      *
-     * @return String the Logging Level.
+     * @return String the online Resource.
      */
-    public Level getLoggingLevel() {
-        return loggingLevel;
+    public String getOnlineResource() {
+        return notNull(onlineResource);
     }
+
+	/**
+	 * getLoggingLevel purpose.
+	 * 
+	 * <p>
+	 * Returns the Logging Level.
+	 * </p>
+	 * 
+	 * @return String the Logging Level.
+	 * 
+	 * @uml.property name="loggingLevel"
+	 */
+	public Level getLoggingLevel() {
+		return loggingLevel;
+	}
 
     /**
      * getMaxFeatures purpose.
@@ -274,9 +292,9 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return String the max number of features supported.
      */
-    public int getMaxFeatures() {
-        return maxFeatures;
-    }
+	public int getMaxFeatures() {
+		return maxFeatures;
+	}
 
     /**
      * getMimeType purpose.
@@ -300,9 +318,9 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return int the default number of decimals allowed in the data.
      */
-    public int getNumDecimals() {
-        return numDecimals;
-    }
+	public int getNumDecimals() {
+		return numDecimals;
+	}
 
     /**
      * getSchemaBaseUrl purpose.
@@ -354,7 +372,7 @@ public class GeoServer extends GlobalLayerSupertype {
      */
     public void load(GeoServerDTO dto, ServletContext context) throws ConfigurationException {
         if (dto != null) {
-        	address = dto.getContact().getAddress();
+            address = dto.getContact().getAddress();
             addressCity = dto.getContact().getAddressCity();
             addressCountry = dto.getContact().getAddressCountry();
             addressPostalCode = dto.getContact().getAddressPostalCode();
@@ -381,6 +399,7 @@ public class GeoServer extends GlobalLayerSupertype {
             
             maxFeatures = dto.getMaxFeatures();
             numDecimals = dto.getNumDecimals();
+            onlineResource = dto.getContact().getOnlineResource();
             schemaBaseUrl = dto.getSchemaBaseUrl();
             verbose = dto.isVerbose();
             adminUserName = dto.getAdminUserName();
@@ -501,7 +520,7 @@ public class GeoServer extends GlobalLayerSupertype {
         dto.setVerboseExceptions(verboseExceptions);
         dto.setLoggingToFile(loggingToFile);
         dto.setLogLocation(logLocation);
-        
+
         ContactDTO cdto = new ContactDTO();
         dto.setContact(cdto);
 
@@ -517,6 +536,7 @@ public class GeoServer extends GlobalLayerSupertype {
         cdto.setContactPerson(contactPerson);
         cdto.setContactPosition(contactPosition);
         cdto.setContactVoice(contactVoice);
+        cdto.setOnlineResource(onlineResource);
 
         return dto;
     }
@@ -526,18 +546,18 @@ public class GeoServer extends GlobalLayerSupertype {
      *
      * @return Returns the title.
      */
-    public String getTitle() {
-        return title;
-    }
+	public String getTitle() {
+		return title;
+	}
 
     /**
      * DOCUMENT ME!
      *
      * @param title The title to set.
      */
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
     /**
      * Property representing the contact party (person, position or
@@ -568,13 +588,13 @@ public class GeoServer extends GlobalLayerSupertype {
         return null;
     }
 
-    public String getAdminUserName() {
-        return adminUserName;
-    }
+	public String getAdminUserName() {
+		return adminUserName;
+	}
 
-    public String getAdminPassword() {
-        return adminPassword;
-    }
+	public String getAdminPassword() {
+		return adminPassword;
+	}
 
     public String toString() {
         StringBuffer geoserver = new StringBuffer("[GeoServer: \n");

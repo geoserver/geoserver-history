@@ -28,20 +28,49 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  */
 public class DataStoreInfo extends GlobalLayerSupertype {
 
-    /** DataStoreInfo we are representing */
-    private DataStore dataStore = null;
+	/**
+	 * DataStoreInfo we are representing
+	 * 
+	 * @uml.property name="dataStore"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private DataStore dataStore = null;
 
-    /** ref to the parent class's collection */
-    private Data data;
-    private String id;
+	/**
+	 * ref to the parent class's collection
+	 * 
+	 * @uml.property name="data"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private Data data;
+
+	/**
+	 * 
+	 * @uml.property name="id" multiplicity="(0 1)"
+	 */
+	private String id;
+
     private String nameSpaceId;
     private boolean enabled;
-    private String title;
+
+	/**
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
+
     private String _abstract;
     private Map connectionParams;
 
-    /** Storage for metadata */
-    private Map meta;
+	/**
+	 * Storage for metadata
+	 * 
+	 * @uml.property name="meta"
+	 * @uml.associationEnd elementType="java.lang.Object" qualifier="key:java.lang.String
+	 * java.lang.Object" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private Map meta;
+
 
     /**
      * Directory associated with this DataStore.
@@ -106,18 +135,21 @@ public class DataStoreInfo extends GlobalLayerSupertype {
         return dto;
     }
 
-    /**
-     * getId purpose.
-     * 
-     * <p>
-     * Returns the dataStore's id.
-     * </p>
-     *
-     * @return String the id.
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * getId purpose.
+	 * 
+	 * <p>
+	 * Returns the dataStore's id.
+	 * </p>
+	 * 
+	 * @return String the id.
+	 * 
+	 * @uml.property name="id"
+	 */
+	public String getId() {
+		return id;
+	}
+
 
     protected Map getParams() {
         Map params = new HashMap(connectionParams);
@@ -153,7 +185,7 @@ public class DataStoreInfo extends GlobalLayerSupertype {
             	// and still be a url
                 if (key != null && key.matches(".* *url") && value instanceof String) {
                     String path = (String) value;
-                    LOGGER.finer("in string url");
+		    LOGGER.finer("in string url");
                     if (path.startsWith("file:data/")) {
                         path = path.substring(5); // remove 'file:' prefix
 
@@ -189,25 +221,27 @@ public class DataStoreInfo extends GlobalLayerSupertype {
         return params;
     }
 
-    /**
-     * By now just uses DataStoreFinder to find a new instance of a
-     * DataStoreInfo capable of process <code>connectionParams</code>. In the
-     * future we can see if it is better to cache or pool DataStores for
-     * performance, but definitely we shouldn't maintain a single
-     * DataStoreInfo as instance variable for synchronizing reassons
-     * 
-     * <p>
-     * JG: Umm we actually require a single DataStoreInfo for for locking &
-     * transaction support to work. DataStoreInfo is expected to be thread
-     * aware (that is why it has Transaction Support).
-     * </p>
-     *
-     * @return DataStore
-     *
-     * @throws IllegalStateException if this DataStoreInfo is disabled by
-     *         configuration
-     * @throws NoSuchElementException if no DataStoreInfo is found
-     */
+	/**
+	 * By now just uses DataStoreFinder to find a new instance of a
+	 * DataStoreInfo capable of process <code>connectionParams</code>. In the
+	 * future we can see if it is better to cache or pool DataStores for
+	 * performance, but definitely we shouldn't maintain a single
+	 * DataStoreInfo as instance variable for synchronizing reassons
+	 * 
+	 * <p>
+	 * JG: Umm we actually require a single DataStoreInfo for for locking &
+	 * transaction support to work. DataStoreInfo is expected to be thread
+	 * aware (that is why it has Transaction Support).
+	 * </p>
+	 * 
+	 * @return DataStore
+	 * 
+	 * @throws IllegalStateException if this DataStoreInfo is disabled by
+	 *         configuration
+	 * @throws NoSuchElementException if no DataStoreInfo is found
+	 * 
+	 * @uml.property name="dataStore"
+	 */
     public synchronized DataStore getDataStore()
         throws IllegalStateException, NoSuchElementException {
         if (!isEnabled()) {
@@ -238,20 +272,22 @@ public class DataStoreInfo extends GlobalLayerSupertype {
         }
 
         return dataStore;
-    }
+	}
 
-    /**
-     * getTitle purpose.
-     * 
-     * <p>
-     * Returns the dataStore's title.
-     * </p>
-     *
-     * @return String the title.
-     */
-    public String getTitle() {
-        return title;
-    }
+	/**
+	 * getTitle purpose.
+	 * 
+	 * <p>
+	 * Returns the dataStore's title.
+	 * </p>
+	 * 
+	 * @return String the title.
+	 * 
+	 * @uml.property name="title"
+	 */
+	public String getTitle() {
+		return title;
+	}
 
     /**
      * getAbstract purpose.

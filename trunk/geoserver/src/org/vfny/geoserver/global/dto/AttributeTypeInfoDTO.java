@@ -51,23 +51,42 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.global.dto");
 
-    /** attribute name */
-    private String name;
+	/**
+	 * attribute name
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	private String name;
 
-    /** attribute min occurs */
-    private int minOccurs = 0;
+	/**
+	 * attribute min occurs
+	 * 
+	 * @uml.property name="minOccurs" multiplicity="(0 1)"
+	 */
+	private int minOccurs = 0;
 
-    /** attribute max occurs */
-    private int maxOccurs = 1;
+	/**
+	 * attribute max occurs
+	 * 
+	 * @uml.property name="maxOccurs" multiplicity="(0 1)"
+	 */
+	private int maxOccurs = 1;
 
-    /** true when nillable */
-    private boolean nillable = true;
+	/**
+	 * true when nillable
+	 * 
+	 * @uml.property name="nillable" multiplicity="(0 1)"
+	 */
+	private boolean nillable = true;
 
-    /**
-     * if is ref and a name is specified, then treat like a simple type (same
-     * thing ...) otherwise this is a complex type.
-     */
-    private String type;
+	/**
+	 * if is ref and a name is specified, then treat like a simple type (same
+	 * thing ...) otherwise this is a complex type.
+	 * 
+	 * @uml.property name="type" multiplicity="(0 1)"
+	 */
+	private String type;
+
 
     /**
      * This is true when type is complex.
@@ -194,44 +213,51 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
         return isComplex;
     }
 
-    /**
-     * getMaxOccurs purpose.
-     * 
-     * <p>
-     * The max number of occurences for this element.
-     * </p>
-     *
-     * @return max number of occurences
-     */
-    public int getMaxOccurs() {
-        return maxOccurs;
-    }
+	/**
+	 * getMaxOccurs purpose.
+	 * 
+	 * <p>
+	 * The max number of occurences for this element.
+	 * </p>
+	 * 
+	 * @return max number of occurences
+	 * 
+	 * @uml.property name="maxOccurs"
+	 */
+	public int getMaxOccurs() {
+		return maxOccurs;
+	}
 
-    /**
-     * getMinOccurs purpose.
-     * 
-     * <p>
-     * the min number of occurences for this element
-     * </p>
-     *
-     * @return min number of occurences
-     */
-    public int getMinOccurs() {
-        return minOccurs;
-    }
+	/**
+	 * getMinOccurs purpose.
+	 * 
+	 * <p>
+	 * the min number of occurences for this element
+	 * </p>
+	 * 
+	 * @return min number of occurences
+	 * 
+	 * @uml.property name="minOccurs"
+	 */
+	public int getMinOccurs() {
+		return minOccurs;
+	}
 
-    /**
-     * getName purpose.
-     * 
-     * <p>
-     * returns the element name
-     * </p>
-     *
-     * @return the element name
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * getName purpose.
+	 * 
+	 * <p>
+	 * returns the element name
+	 * </p>
+	 * 
+	 * @return the element name
+	 * 
+	 * @uml.property name="name"
+	 */
+	public String getName() {
+		return name;
+	}
+
 
     /**
      * isNillable purpose.
@@ -246,20 +272,23 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
         return nillable;
     }
 
-    /**
-     * getType purpose.
-     * 
-     * <p>
-     * returns the element type. This is an XML fragment if isRef() returns
-     * false.
-     * </p>
-     *
-     * @return the element type. This is an XML fragment if isRef() returns
-     *         false.
-     */
-    public String getType() {
-        return type;
-    }
+	/**
+	 * getType purpose.
+	 * 
+	 * <p>
+	 * returns the element type. This is an XML fragment if isRef() returns
+	 * false.
+	 * </p>
+	 * 
+	 * @return the element type. This is an XML fragment if isRef() returns
+	 *         false.
+	 * 
+	 * @uml.property name="type"
+	 */
+	public String getType() {
+		return type;
+	}
+
 
     /**
      * setRef purpose.
@@ -274,72 +303,82 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
         isComplex = b;
     }
 
-    /**
-     * setMaxOccurs purpose.
-     * 
-     * <p>
-     * Stores the max occurs for the element
-     * </p>
-     *
-     * @param i the max occurs for the element
-     */
-    public void setMaxOccurs(int i) {
-        maxOccurs = i;
-    }
+	/**
+	 * setMaxOccurs purpose.
+	 * 
+	 * <p>
+	 * Stores the max occurs for the element
+	 * </p>
+	 * 
+	 * @param i the max occurs for the element
+	 * 
+	 * @uml.property name="maxOccurs"
+	 */
+	public void setMaxOccurs(int i) {
+		maxOccurs = i;
+	}
 
-    /**
-     * setMinOccurs purpose.
-     * 
-     * <p>
-     * Stores the min occurs for the element
-     * </p>
-     *
-     * @param i the min occurs for the element
-     */
-    public void setMinOccurs(int i) {
-        minOccurs = i;
-    }
+	/**
+	 * setMinOccurs purpose.
+	 * 
+	 * <p>
+	 * Stores the min occurs for the element
+	 * </p>
+	 * 
+	 * @param i the min occurs for the element
+	 * 
+	 * @uml.property name="minOccurs"
+	 */
+	public void setMinOccurs(int i) {
+		minOccurs = i;
+	}
 
-    /**
-     * setName purpose.
-     * 
-     * <p>
-     * Stores the name for the element
-     * </p>
-     *
-     * @param string the name for the element
-     */
-    public void setName(String string) {
-        name = string;
-    }
+	/**
+	 * setName purpose.
+	 * 
+	 * <p>
+	 * Stores the name for the element
+	 * </p>
+	 * 
+	 * @param string the name for the element
+	 * 
+	 * @uml.property name="name"
+	 */
+	public void setName(String string) {
+		name = string;
+	}
 
-    /**
-     * setNillable purpose.
-     * 
-     * <p>
-     * Stores if this element is nillable
-     * </p>
-     *
-     * @param b true when this element is nillable
-     */
-    public void setNillable(boolean b) {
-        nillable = b;
-    }
+	/**
+	 * setNillable purpose.
+	 * 
+	 * <p>
+	 * Stores if this element is nillable
+	 * </p>
+	 * 
+	 * @param b true when this element is nillable
+	 * 
+	 * @uml.property name="nillable"
+	 */
+	public void setNillable(boolean b) {
+		nillable = b;
+	}
 
-    /**
-     * setType purpose.
-     * 
-     * <p>
-     * Stores the type for this element. This is an XML fragment when isRef()
-     * returns false.
-     * </p>
-     *
-     * @param string type for this element. This is an XML fragment when
-     *        isRef() returns false.
-     */
-    public void setType(String string) {
-        type = string;
-    }
+	/**
+	 * setType purpose.
+	 * 
+	 * <p>
+	 * Stores the type for this element. This is an XML fragment when isRef()
+	 * returns false.
+	 * </p>
+	 * 
+	 * @param string type for this element. This is an XML fragment when
+	 *        isRef() returns false.
+	 * 
+	 * @uml.property name="type"
+	 */
+	public void setType(String string) {
+		type = string;
+	}
 
     public String toString() {
         return "[AttributeTypeInfoDTO " + name + " minOccurs=" + minOccurs

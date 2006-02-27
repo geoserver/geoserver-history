@@ -37,44 +37,103 @@ package org.vfny.geoserver.global.dto;
  * </code></pre>
  *
  * @author David Zwiers, Refractions Research, Inc.
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: ContactDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
  */
 public final class ContactDTO implements DataTransferObject {
-    /** The name of the contact person */
-    private String contactPerson;
 
-    /** The name of the organization with which the contact is affiliated. */
-    private String contactOrganization;
+	/**
+	 * The name of the contact person
+	 * 
+	 * @uml.property name="contactPerson" multiplicity="(0 1)"
+	 */
+	private String contactPerson;
 
-    /** The position of the contact within their organization. */
-    private String contactPosition;
+	/**
+	 * The name of the organization with which the contact is affiliated.
+	 * 
+	 * @uml.property name="contactOrganization" multiplicity="(0 1)"
+	 */
+	private String contactOrganization;
 
-    /** The type of address specified, such as postal. */
-    private String addressType;
+	/**
+	 * The position of the contact within their organization.
+	 * 
+	 * @uml.property name="contactPosition" multiplicity="(0 1)"
+	 */
+	private String contactPosition;
 
-    /** The actual street address. */
-    private String address;
+	/**
+	 * The type of address specified, such as postal.
+	 * 
+	 * @uml.property name="addressType" multiplicity="(0 1)"
+	 */
+	private String addressType;
 
-    /** The city of the address. */
-    private String addressCity;
+	/**
+	 * The actual street address.
+	 * 
+	 * @uml.property name="address" multiplicity="(0 1)"
+	 */
+	private String address;
 
-    /** The state/prov. of the address. */
-    private String addressState;
+	/**
+	 * The city of the address.
+	 * 
+	 * @uml.property name="addressCity" multiplicity="(0 1)"
+	 */
+	private String addressCity;
 
-    /** The postal code for the address. */
-    private String addressPostalCode;
+	/**
+	 * The state/prov. of the address.
+	 * 
+	 * @uml.property name="addressState" multiplicity="(0 1)"
+	 */
+	private String addressState;
 
-    /** The country of the address. */
-    private String addressCountry;
+	/**
+	 * The postal code for the address.
+	 * 
+	 * @uml.property name="addressPostalCode" multiplicity="(0 1)"
+	 */
+	private String addressPostalCode;
 
-    /** The contact phone number. */
-    private String contactVoice;
+	/**
+	 * The country of the address.
+	 * 
+	 * @uml.property name="addressCountry" multiplicity="(0 1)"
+	 */
+	private String addressCountry;
 
-    /** The contact Fax number. */
-    private String contactFacsimile;
+	/**
+	 * The contact phone number.
+	 * 
+	 * @uml.property name="contactVoice" multiplicity="(0 1)"
+	 */
+	private String contactVoice;
 
-    /** The contact email address. */
-    private String contactEmail;
+	/**
+	 * The contact Fax number.
+	 * 
+	 * @uml.property name="contactFacsimile" multiplicity="(0 1)"
+	 */
+	private String contactFacsimile;
+
+	/**
+	 * The contact email address.
+	 * 
+	 * @uml.property name="contactEmail" multiplicity="(0 1)"
+	 */
+	private String contactEmail;
+
+	/**
+	 * The contact online resource.
+	 * 
+	 * @uml.property name="onlineResource" multiplicity="(0 1)"
+	 */
+	private String onlineResource;
+
 
     /**
      * ContactConfig constructor.
@@ -114,6 +173,7 @@ public final class ContactDTO implements DataTransferObject {
         contactVoice = c.getContactVoice();
         contactFacsimile = c.getContactFacsimile();
         contactEmail = c.getContactEmail();
+        onlineResource = c.getOnlineResource();
     }
 
     /**
@@ -164,7 +224,8 @@ public final class ContactDTO implements DataTransferObject {
         && ((addressCountry == c.getAddressCountry())
         && ((contactVoice == c.getContactVoice())
         && ((contactFacsimile == c.getContactFacsimile())
-        && (contactEmail == c.getContactEmail()))))))))))));
+        && ((onlineResource == c.getOnlineResource())
+        && (contactEmail == c.getContactEmail())))))))))))));
     }
 
     public int hashCode() {
@@ -189,339 +250,408 @@ public final class ContactDTO implements DataTransferObject {
         return i;
     }
 
-    /**
-     * getAddress purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getAddress() {
-        return address;
-    }
+	/**
+	 * getAddress purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="address"
+	 */
+	public String getAddress() {
+		return address;
+	}
 
-    /**
-     * getAddressCity purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getAddressCity() {
-        return addressCity;
-    }
+	/**
+	 * getAddressCity purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="addressCity"
+	 */
+	public String getAddressCity() {
+		return addressCity;
+	}
 
-    /**
-     * getAddressCountry purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getAddressCountry() {
-        return addressCountry;
-    }
+	/**
+	 * getAddressCountry purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="addressCountry"
+	 */
+	public String getAddressCountry() {
+		return addressCountry;
+	}
 
-    /**
-     * getAddressPostalCode purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getAddressPostalCode() {
-        return addressPostalCode;
-    }
+	/**
+	 * getAddressPostalCode purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="addressPostalCode"
+	 */
+	public String getAddressPostalCode() {
+		return addressPostalCode;
+	}
 
-    /**
-     * getAddressState purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getAddressState() {
-        return addressState;
-    }
+	/**
+	 * getAddressState purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="addressState"
+	 */
+	public String getAddressState() {
+		return addressState;
+	}
 
-    /**
-     * getAddressType purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getAddressType() {
-        return addressType;
-    }
+	/**
+	 * getAddressType purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="addressType"
+	 */
+	public String getAddressType() {
+		return addressType;
+	}
 
-    /**
-     * getContactEmail purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getContactEmail() {
-        return contactEmail;
-    }
+	/**
+	 * getContactEmail purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="contactEmail"
+	 */
+	public String getContactEmail() {
+		return contactEmail;
+	}
 
-    /**
-     * getContactFacsimile purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getContactFacsimile() {
-        return contactFacsimile;
-    }
+	/**
+	 * getContactFacsimile purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="contactFacsimile"
+	 */
+	public String getContactFacsimile() {
+		return contactFacsimile;
+	}
 
-    /**
-     * getContactOrganization purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getContactOrganization() {
-        return contactOrganization;
-    }
+	/**
+	 * getContactOrganization purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="contactOrganization"
+	 */
+	public String getContactOrganization() {
+		return contactOrganization;
+	}
 
-    /**
-     * getContactPerson purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getContactPerson() {
-        return contactPerson;
-    }
+	/**
+	 * getContactPerson purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="contactPerson"
+	 */
+	public String getContactPerson() {
+		return contactPerson;
+	}
 
-    /**
-     * getContactPosition purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getContactPosition() {
-        return contactPosition;
-    }
+	/**
+	 * getContactPosition purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="contactPosition"
+	 */
+	public String getContactPosition() {
+		return contactPosition;
+	}
 
-    /**
-     * getContactVoice purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getContactVoice() {
-        return contactVoice;
-    }
+	/**
+	 * getContactVoice purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="contactVoice"
+	 */
+	public String getContactVoice() {
+		return contactVoice;
+	}
 
-    /**
-     * setAddress purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setAddress(String string) {
-        if (string != null) {
-            address = string;
-        }
-    }
+	/**
+	 * setAddress purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="address"
+	 */
+	public void setAddress(String string) {
+		if (string != null) {
+			address = string;
+		}
+	}
 
-    /**
-     * setAddressCity purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setAddressCity(String string) {
-        if (string != null) {
-            addressCity = string;
-        }
-    }
+	/**
+	 * setAddressCity purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="addressCity"
+	 */
+	public void setAddressCity(String string) {
+		if (string != null) {
+			addressCity = string;
+		}
+	}
 
-    /**
-     * setAddressCountry purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setAddressCountry(String string) {
-        if (string != null) {
-            addressCountry = string;
-        }
-    }
+	/**
+	 * setAddressCountry purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="addressCountry"
+	 */
+	public void setAddressCountry(String string) {
+		if (string != null) {
+			addressCountry = string;
+		}
+	}
 
-    /**
-     * setAddressPostalCode purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setAddressPostalCode(String string) {
-        if (string != null) {
-            addressPostalCode = string;
-        }
-    }
+	/**
+	 * setAddressPostalCode purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="addressPostalCode"
+	 */
+	public void setAddressPostalCode(String string) {
+		if (string != null) {
+			addressPostalCode = string;
+		}
+	}
 
-    /**
-     * setAddressState purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setAddressState(String string) {
-        if (string != null) {
-            addressState = string;
-        }
-    }
+	/**
+	 * setAddressState purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="addressState"
+	 */
+	public void setAddressState(String string) {
+		if (string != null) {
+			addressState = string;
+		}
+	}
 
-    /**
-     * setAddressType purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setAddressType(String string) {
-        if (string != null) {
-            addressType = string;
-        }
-    }
+	/**
+	 * setAddressType purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="addressType"
+	 */
+	public void setAddressType(String string) {
+		if (string != null) {
+			addressType = string;
+		}
+	}
 
-    /**
-     * setContactEmail purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setContactEmail(String string) {
-        if (string != null) {
-            contactEmail = string;
-        }
-    }
+	/**
+	 * setContactEmail purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="contactEmail"
+	 */
+	public void setContactEmail(String string) {
+		if (string != null) {
+			contactEmail = string;
+		}
+	}
 
-    /**
-     * setContactFacsimile purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setContactFacsimile(String string) {
-        if (string != null) {
-            contactFacsimile = string;
-        }
-    }
+	/**
+	 * setContactFacsimile purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="contactFacsimile"
+	 */
+	public void setContactFacsimile(String string) {
+		if (string != null) {
+			contactFacsimile = string;
+		}
+	}
 
-    /**
-     * setContactOrganization purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setContactOrganization(String string) {
-        if (string != null) {
-            contactOrganization = string;
-        }
-    }
+	/**
+	 * setContactOrganization purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="contactOrganization"
+	 */
+	public void setContactOrganization(String string) {
+		if (string != null) {
+			contactOrganization = string;
+		}
+	}
 
-    /**
-     * setContactPerson purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setContactPerson(String string) {
-        if (string != null) {
-            contactPerson = string;
-        }
-    }
+	/**
+	 * setContactPerson purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="contactPerson"
+	 */
+	public void setContactPerson(String string) {
+		if (string != null) {
+			contactPerson = string;
+		}
+	}
 
-    /**
-     * setContactPosition purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setContactPosition(String string) {
-        if (string != null) {
-            contactPosition = string;
-        }
-    }
+	/**
+	 * setContactPosition purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="contactPosition"
+	 */
+	public void setContactPosition(String string) {
+		if (string != null) {
+			contactPosition = string;
+		}
+	}
 
-    /**
-     * setContactVoice purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setContactVoice(String string) {
-        if (string != null) {
-            contactVoice = string;
-        }
-    }
+	/**
+	 * setContactVoice purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="contactVoice"
+	 */
+	public void setContactVoice(String string) {
+		if (string != null) {
+			contactVoice = string;
+		}
+	}
+
+	/**
+	 * @return Returns the onlineResource.
+	 * 
+	 * @uml.property name="onlineResource"
+	 */
+	public String getOnlineResource() {
+		return onlineResource;
+	}
+
+	/**
+	 * @param onlineResource The onlineResource to set.
+	 * 
+	 * @uml.property name="onlineResource"
+	 */
+	public void setOnlineResource(String onlineResource) {
+		if (onlineResource != null) {
+			this.onlineResource = onlineResource;
+		}
+	}
+
 }

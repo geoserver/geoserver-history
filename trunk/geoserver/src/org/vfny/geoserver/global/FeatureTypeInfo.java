@@ -30,7 +30,7 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.LegendURLDTO;
-import org.vfny.geoserver.action.data.DataStoreUtils;
+import org.vfny.geoserver.util.DataStoreUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
@@ -56,13 +56,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * Id used to locate parent DataStoreInfo using Data Catalog.
      */
     private String dataStoreId;
-    /**
-     * Bounding box in Lat Long of the extent of this FeatureType.
-     * <p>
-     * Note reprojection may be required to derive this value.
-     * </p>
-     */
-    private Envelope latLongBBox;
+
+	/**
+	 * Bounding box in Lat Long of the extent of this FeatureType.
+	 * <p>
+	 * Note reprojection may be required to derive this value.
+	 * </p>
+	 * 
+	 * @uml.property name="latLongBBox"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private Envelope latLongBBox;
+
     /**
      * SRS number used to locate Coordidate Reference Systems
      * <p>
@@ -70,72 +75,120 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * </p>
      */
     private int SRS;
-    
-    /**
-     * List of AttributeTypeInfo representing the schema.xml information.
-     * <p>
-     * Used to define the order and manditoryness of FeatureType attributes
-     * during query (re)construction.
-     * </p> 
-     */
-    private List schema;
-    
-    /** Name of elment that is an instance of schemaBase */
-    private String schemaName;
-    
-    /** Base schema (usually NullType) defining manditory attribtues */
-    private String schemaBase;
-    
-    /** typeName as defined by gt2 DataStore */
-    private String typeName;
-    
-    /**
-     * Directory where featureType is loaded from.
-     * 
-     * This may contain metadata files.
-     */
-    private String dirName;
+
+	/**
+	 * List of AttributeTypeInfo representing the schema.xml information.
+	 * <p>
+	 * Used to define the order and manditoryness of FeatureType attributes
+	 * during query (re)construction.
+	 * </p>
+	 * 
+	 * @uml.property name="schema"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.global.AttributeTypeInfo" multiplicity=
+	 * "(0 -1)"
+	 */
+	private List schema;
+
+	/**
+	 * Name of elment that is an instance of schemaBase
+	 * 
+	 * @uml.property name="schemaName" multiplicity="(0 1)"
+	 */
+	private String schemaName;
+
+	/**
+	 * Base schema (usually NullType) defining manditory attribtues
+	 * 
+	 * @uml.property name="schemaBase" multiplicity="(0 1)"
+	 */
+	private String schemaBase;
+
+	/**
+	 * typeName as defined by gt2 DataStore
+	 * 
+	 * @uml.property name="typeName" multiplicity="(0 1)"
+	 */
+	private String typeName;
+
+	/**
+	 * 
+	 */
+	private String wmsPath;
+	
+	/**
+	 * Directory where featureType is loaded from.
+	 * 
+	 * This may contain metadata files.
+	 * 
+	 * @uml.property name="dirName" multiplicity="(0 1)"
+	 */
+	private String dirName;
+
     /**
      * Abstract used to describe FeatureType
      */
     private String _abstract;
-    /**
-     * List of keywords for Web Register Services
-     */
-    private List keywords;
-    /**
-     * Number of decimals used in GML output.
-     */
-    private int numDecimals;
-    /**
-     * Magic query used to limit scope of this FeatureType.
-     */
-    private Filter definitionQuery = null;
+
+	/**
+	 * List of keywords for Web Register Services
+	 * 
+	 * @uml.property name="keywords" multiplicity="(0 1)"
+	 */
+	private List keywords;
+
+	/**
+	 * Number of decimals used in GML output.
+	 * 
+	 * @uml.property name="numDecimals" multiplicity="(0 1)"
+	 */
+	private int numDecimals;
+
+	/**
+	 * Magic query used to limit scope of this FeatureType.
+	 * 
+	 * @uml.property name="definitionQuery"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private Filter definitionQuery = null;
+
     /**
      * Default style used to render this FeatureType with WMS
      */
     private String defaultStyle;
-    /**
-     * Title of this FeatureType as presented to End-Users.
-     * <p>
-     * Think of this as the display name on the off chance that typeName
-     * is considered ugly.
-     * </p>
-     */
-    private String title;
 
-    /**
-     * ref to parent set of datastores.
-     * <p>
-     * This backpointer to our Catalog can be used to locate our DataStore
-     * using the dataStoreId.
-     * </p>
-     */
-    private Data data;
-    /**
-     * MetaData used by apps to squirel information away for a rainy day.
-     */
-    private Map meta;
+	/**
+	 * Title of this FeatureType as presented to End-Users.
+	 * <p>
+	 * Think of this as the display name on the off chance that typeName
+	 * is considered ugly.
+	 * </p>
+	 * 
+	 * @uml.property name="title" multiplicity="(0 1)"
+	 */
+	private String title;
+
+	/**
+	 * ref to parent set of datastores.
+	 * <p>
+	 * This backpointer to our Catalog can be used to locate our DataStore
+	 * using the dataStoreId.
+	 * </p>
+	 * 
+	 * @uml.property name="data"
+	 * @uml.associationEnd inverse="featureTypes:org.vfny.geoserver.global.Data" multiplicity=
+	 * "(0 1)"
+	 */
+	private Data data;
+
+	/**
+	 * MetaData used by apps to squirel information away for a rainy day.
+	 * 
+	 * @uml.property name="meta"
+	 * @uml.associationEnd elementType="java.lang.Object" qualifier="key:java.lang.String
+	 * java.lang.Object" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private Map meta;
+
 
     /**
      * AttributeTypeInfo by attribute name.
@@ -148,23 +201,35 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     private String xmlSchemaFrag;
 
-    /**
-     * The real geotools2 featureType cached for sanity checks.
-     * <p>
-     * This will be lazily created so use the accessors
-     * </p>
-     */
-    private FeatureType ft;
+	/**
+	 * The real geotools2 featureType cached for sanity checks.
+	 * <p>
+	 * This will be lazily created so use the accessors
+	 * </p>
+	 * 
+	 * @uml.property name="ft"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private FeatureType ft;
 
-    // Modif C. Kolbowicz - 07/10/2004
-    /**
-     * Holds value of property legendURL.
-     */
-    private LegendURL legendURL;
-    //-- Modif C. Kolbowicz - 07/10/2004
+	// Modif C. Kolbowicz - 07/10/2004
+	/**
+	 * Holds value of property legendURL.
+	 * 
+	 * @uml.property name="legendURL"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private LegendURL legendURL;
 
-    /** Holds the location of the file that contains schema information. */
-    private File schemaFile;
+	//-- Modif C. Kolbowicz - 07/10/2004
+
+	/**
+	 * Holds the location of the file that contains schema information.
+	 * 
+	 * @uml.property name="schemaFile" multiplicity="(0 1)"
+	 */
+	private File schemaFile;
+
     
     /** 
      * dont use this unless you know what you're doing.  its for TemporaryFeatureTypeInfo.
@@ -204,6 +269,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         keywords = dto.getKeywords();
         latLongBBox = dto.getLatLongBBox();
         typeName = dto.getName();
+        wmsPath = dto.getWmsPath();
         numDecimals = dto.getNumDecimals();
         List tmp = dto.getSchemaAttributes();
         schema = new LinkedList();
@@ -250,6 +316,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         dto.setKeywords(keywords);
         dto.setLatLongBBox(latLongBBox);
         dto.setName(typeName);
+        dto.setWmsPath(wmsPath);
         dto.setNumDecimals(numDecimals);
 
         List tmp = new LinkedList();
@@ -268,18 +335,21 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         return dto;
     }
 
-    /**
-     * getNumDecimals purpose.
-     * 
-     * <p>
-     * The default number of decimals allowed in the data.
-     * </p>
-     *
-     * @return int the default number of decimals allowed in the data.
-     */
-    public int getNumDecimals() {
-        return numDecimals;
-    }
+	/**
+	 * getNumDecimals purpose.
+	 * 
+	 * <p>
+	 * The default number of decimals allowed in the data.
+	 * </p>
+	 * 
+	 * @return int the default number of decimals allowed in the data.
+	 * 
+	 * @uml.property name="numDecimals"
+	 */
+	public int getNumDecimals() {
+		return numDecimals;
+	}
+
 
     /**
      * getDataStore purpose.
@@ -447,18 +517,21 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         return DataStoreUtils.getBoundingBoxEnvelope(realSource);
     }
 
-    /**
-     * getDefinitionQuery purpose.
-     * 
-     * <p>
-     * Returns the definition query for this feature source
-     * </p>
-     *
-     * @return Filter the definition query
-     */
-    public Filter getDefinitionQuery() {
-        return definitionQuery;
-    }
+	/**
+	 * getDefinitionQuery purpose.
+	 * 
+	 * <p>
+	 * Returns the definition query for this feature source
+	 * </p>
+	 * 
+	 * @return Filter the definition query
+	 * 
+	 * @uml.property name="definitionQuery"
+	 */
+	public Filter getDefinitionQuery() {
+		return definitionQuery;
+	}
+
 
     /**
      * getLatLongBoundingBox purpose.
@@ -674,98 +747,113 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         return _abstract;
     }
 
-    /**
-     * Keywords describing content of FeatureType.
-     * 
-     * <p>
-     * Keywords are often used by Search engines or Catalog services.
-     * </p>
-     *
-     * @return List the FeatureTypeInfo keywords
-     */
-    public List getKeywords() {
-        return keywords;
-    }
+	/**
+	 * Keywords describing content of FeatureType.
+	 * 
+	 * <p>
+	 * Keywords are often used by Search engines or Catalog services.
+	 * </p>
+	 * 
+	 * @return List the FeatureTypeInfo keywords
+	 * 
+	 * @uml.property name="keywords"
+	 */
+	public List getKeywords() {
+		return keywords;
+	}
 
-    /**
-     * getTitle purpose.
-     * 
-     * <p>
-     * returns the FeatureTypeInfo title
-     * </p>
-     *
-     * @return String the FeatureTypeInfo title
-     */
-    public String getTitle() {
-        return title;
-    }
+	/**
+	 * getTitle purpose.
+	 * 
+	 * <p>
+	 * returns the FeatureTypeInfo title
+	 * </p>
+	 * 
+	 * @return String the FeatureTypeInfo title
+	 * 
+	 * @uml.property name="title"
+	 */
+	public String getTitle() {
+		return title;
+	}
 
-    /**
-     * A valid schema name for this FeatureType.
-     * 
-     * @return schemaName if provided or typeName+"_Type"
-     */
-    public String getSchemaName() {
-        if( schemaName == null ){
-            return typeName + "_Type";
-        }
-        return schemaName;
-    }
+	/**
+	 * A valid schema name for this FeatureType.
+	 * 
+	 * @return schemaName if provided or typeName+"_Type"
+	 * 
+	 * @uml.property name="schemaName"
+	 */
+	public String getSchemaName() {
+		if (schemaName == null) {
+			return typeName + "_Type";
+		}
+		return schemaName;
+	}
 
-    /**
-     * setSchemaName purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setSchemaName(String string) {
-        schemaName = string;
-    }
+	/**
+	 * setSchemaName purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="schemaName"
+	 */
+	public void setSchemaName(String string) {
+		schemaName = string;
+	}
 
-    /**
-     * getSchemaName purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getSchemaBase() {
-        return schemaBase;
-    }
+	/**
+	 * getSchemaName purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="schemaBase"
+	 */
+	public String getSchemaBase() {
+		return schemaBase;
+	}
 
-    /**
-     * setSchemaName purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setSchemaBase(String string) {
-        schemaBase = string;
-    }
+	/**
+	 * setSchemaName purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="schemaBase"
+	 */
+	public void setSchemaBase(String string) {
+		schemaBase = string;
+	}
 
-    //
-    // FeatureTypeMetaData Interface
-    //
-    /**
-     * Access the name of this FeatureType.
-     * <p>
-     * This is the typeName as provided by the real gt2 DataStore.
-     * </p>
-     *
-     * @return String getName()
-     * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
-     */
-    public String getTypeName() {
-        return typeName;
-    }
+	//
+	// FeatureTypeMetaData Interface
+	//
+	/**
+	 * Access the name of this FeatureType.
+	 * <p>
+	 * This is the typeName as provided by the real gt2 DataStore.
+	 * </p>
+	 * 
+	 * @return String getName()
+	 * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
+	 * 
+	 * @uml.property name="typeName"
+	 */
+	public String getTypeName() {
+		return typeName;
+	}
+
 
     /**
      * Access real geotools2 FeatureType.
@@ -825,7 +913,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     String attName = ati.getName();
                     attributes[count] = ft.getAttributeType(attName);
                     
-                    if (attributes[count].isGeometry())  //DJB: added this to set SRS
+                    /*
+                     * TODO Align with GeoTolls 2.1.1 ASAP
+                     */
+                    //if (attributes[count].isGeometry())  //DJB: added this to set SRS
+                    if (attributes[count] instanceof GeometricAttributeType)
                     {
                     	GeometricAttributeType old = (GeometricAttributeType) attributes[count];
                     	try {
@@ -1013,33 +1105,39 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     public Object getMetaData(String key) {
         return meta.get(key);
     }
-    
-    /**
-     * getLegendURL purpose.
-     * 
-     * <p>
-     * returns the FeatureTypeInfo legendURL
-     * </p>
-     *
-     * @return String the FeatureTypeInfo legendURL
-     */
-    // Modif C. Kolbowicz - 07/10/2004
-    public LegendURL getLegendURL() {
-        return this.legendURL;
-    }        
-    //-- Modif C. Kolbowicz - 07/10/2004
 
-    /**
-     * Gets the schema.xml file associated with this FeatureType.  This is set
-     * during the reading of configuration, it is not persisted as an element
-     * of the FeatureTypeInfoDTO, since it is just whether the schema.xml file
-     * was persisted, and its location.  If there is no schema.xml file then
-     * this method will return a File object with the location where the schema
-     * file would be located, but the file will return false for exists().
-     */
-    public File getSchemaFile() {
-	return this.schemaFile;
-    }
+	/**
+	 * getLegendURL purpose.
+	 * 
+	 * <p>
+	 * returns the FeatureTypeInfo legendURL
+	 * </p>
+	 * 
+	 * @return String the FeatureTypeInfo legendURL
+	 * 
+	 * @uml.property name="legendURL"
+	 */
+	// Modif C. Kolbowicz - 07/10/2004
+	public LegendURL getLegendURL() {
+		return this.legendURL;
+	}
+
+	//-- Modif C. Kolbowicz - 07/10/2004
+
+	/**
+	 * Gets the schema.xml file associated with this FeatureType.  This is set
+	 * during the reading of configuration, it is not persisted as an element
+	 * of the FeatureTypeInfoDTO, since it is just whether the schema.xml file
+	 * was persisted, and its location.  If there is no schema.xml file then
+	 * this method will return a File object with the location where the schema
+	 * file would be located, but the file will return false for exists().
+	 * 
+	 * @uml.property name="schemaFile"
+	 */
+	public File getSchemaFile() {
+		return this.schemaFile;
+	}
+
     
     /**
      *  simple way of getting epsg #.
@@ -1055,11 +1153,28 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     	if (result == null)
     	{
     		//make and add to hash
-    		result = CRS.decode("EPSG:"+epsg);
+    		//result = CRS.decode(/*"EPSG:"+*/String.valueOf(epsg));
+			//CRSAuthorityFactory crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
+			result = CRS.decode("EPSG:"+epsg); //(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:"+epsg);
+
     		SRSLookup.put( new Integer(epsg)  , result);
     	}
     	return result;
     }
 
+	/**
+	 * 
+	 * @uml.property name="dirName"
+	 */
+	public String getDirName() {
+		return dirName;
+	}
+
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
+	}
 }
  

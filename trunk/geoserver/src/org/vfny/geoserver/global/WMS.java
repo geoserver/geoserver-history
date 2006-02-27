@@ -24,7 +24,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * System.out.println(wms.getAbstract());
  * </p>
  *
- * @author Gabriel Roldï¿½n
+ * @author Gabriel Roldán
  * @version $Id: WMS.java,v 1.7 2004/02/24 02:08:50 cholmesny Exp $
  */
 public class WMS extends Service {
@@ -151,8 +151,6 @@ public class WMS extends Service {
      * Informs the user that this WMS supports SLD.  We don't currently
      * handle sld, still needs to be rolled in from geotools, so this now
      * must be false.
-     * 
-     *  //djb: we support it now
      *
      * @return false
      */
@@ -184,6 +182,6 @@ public class WMS extends Service {
      * @return false
      */
     public boolean supportsRemoteWFS() {
-        return false;  //djb: hopefully this will change soon.
+        return false;
     }
 }

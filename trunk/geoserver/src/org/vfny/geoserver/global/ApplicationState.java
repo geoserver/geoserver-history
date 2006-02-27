@@ -38,28 +38,71 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter.WriterUtils;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: ApplicationState.java,v 1.15 2004/04/03 13:13:03 cholmesny Exp $
  */
 public class ApplicationState implements PlugIn {
     /** The key used to store this value in the Web Container */
     public static final String WEB_CONTAINER_KEY = "GeoServer.ApplicationState";
 
-    /** Non null if configuration has been edited (but not applied) */
-    private Date configTimestamp;
-    
-    /** Non null if the geoserve setup has been changed (but not saved) */
-    private Date appTimestamp;
-    
-    /** Non null if the modification date of the xml files is known */
-    private Date xmlTimestamp;
+	/**
+	 * Non null if configuration has been edited (but not applied)
+	 * 
+	 * @uml.property name="configTimestamp" multiplicity="(0 1)"
+	 */
+	private Date configTimestamp;
+
+	/**
+	 * Non null if the geoserve setup has been changed (but not saved)
+	 * 
+	 * @uml.property name="appTimestamp" multiplicity="(0 1)"
+	 */
+	private Date appTimestamp;
+
+	/**
+	 * Non null if the modification date of the xml files is known
+	 * 
+	 * @uml.property name="xmlTimestamp" multiplicity="(0 1)"
+	 */
+	private Date xmlTimestamp;
+
     
     /** magic, be very careful with this array. defined below in loadStatus() */
     private int[] geoserverStatus = new int[13];
-    private Map geoserverNSErrors;
-    private Map geoserverDSErrors;
-    private Map geoserverVPErrors;
-    
-    private ServletContext sc;
+
+	/**
+	 * 
+	 * @uml.property name="geoserverNSErrors"
+	 * @uml.associationEnd elementType="org.geotools.validation.dto.TestSuiteDTO" qualifier=
+	 * "key:java.lang.String java.util.Map$Entry" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private Map geoserverNSErrors;
+
+	/**
+	 * 
+	 * @uml.property name="geoserverDSErrors"
+	 * @uml.associationEnd elementType="org.geotools.validation.dto.TestSuiteDTO" qualifier=
+	 * "key:java.lang.String java.util.Map$Entry" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private Map geoserverDSErrors;
+
+	/**
+	 * 
+	 * @uml.property name="geoserverVPErrors"
+	 * @uml.associationEnd qualifier="key:java.lang.String java.lang.Exception" multiplicity=
+	 * "(0 1)"
+	 */
+	private Map geoserverVPErrors;
+
+	/**
+	 * 
+	 * @uml.property name="sc"
+	 * @uml.associationEnd elementType="org.geotools.validation.dto.TestSuiteDTO" qualifier=
+	 * "key:java.lang.Object java.util.Map$Entry" multiplicity="(0 -1)" ordering="ordered"
+	 */
+	private ServletContext sc;
+
     /**
      * Clean up the Configuration State during application exit.
      * 
@@ -150,6 +193,25 @@ public class ApplicationState implements PlugIn {
      */
     public void notifyConfigChanged() {
         configTimestamp = new Date();
+    }
+    /** Q: what is this supposed to do? */
+    public int getWcsGood(){
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0)){
+    		loadStatus();
+    	}
+    	return geoserverStatus[4];
+    }
+    /** q: What foul manner of magic is this? */
+    public int getWcsBad() {
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    		loadStatus();
+    	return geoserverStatus[5];
+    }
+    /** q: This does not make a lot of sense - did you want to consult both ConfigChanged and GeoServer changed? */
+    public int getWcsDisabled() {
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    		loadStatus();
+    	return geoserverStatus[6];
     }
     /** Q: what is this supposed to do? */
     public int getWfsGood(){
@@ -471,6 +533,14 @@ public class ApplicationState implements PlugIn {
     	return new LinkedList(getValidationErrors().values());
     }
     
+    public Map getWCSErrors(){
+    	return getNameSpaceErrors();
+    }
+    
+    public List getWCSErrorKeys(){
+    	return getNameSpaceErrorKeys();
+    }
+
     public Map getWFSErrors(){
     	return getNameSpaceErrors();
     }
@@ -486,22 +556,28 @@ public class ApplicationState implements PlugIn {
     public List getWMSErrorKeys(){
     	return getNameSpaceErrorKeys();
     }
-    /**
-     * Access appTimestamp property.
-     * 
-     * @return Returns the appTimestamp.
-     */
-    public Date getAppTimestamp() {
-        return appTimestamp;
-    }
-    /**
-     * Access configTimestamp property.
-     * 
-     * @return Returns the configTimestamp.
-     */
-    public Date getConfigTimestamp() {
-        return configTimestamp;
-    }
+
+	/**
+	 * Access appTimestamp property.
+	 * 
+	 * @return Returns the appTimestamp.
+	 * 
+	 * @uml.property name="appTimestamp"
+	 */
+	public Date getAppTimestamp() {
+		return appTimestamp;
+	}
+
+	/**
+	 * Access configTimestamp property.
+	 * 
+	 * @return Returns the configTimestamp.
+	 * 
+	 * @uml.property name="configTimestamp"
+	 */
+	public Date getConfigTimestamp() {
+		return configTimestamp;
+	}
     /**
      * Access xmlTimestamp property.
      * 

@@ -68,7 +68,7 @@ public class GeoserverDataDirectory
 		if (prop != null && !prop.equals(""))
 		{
 			 //its defined!!
-		    isTrueDataDir = true;
+		        isTrueDataDir = true;
 			dataDir = new File(prop);
 			return dataDir;
 		}
@@ -79,7 +79,7 @@ public class GeoserverDataDirectory
 		if (loc != null)
 		{
 			//its defined!!
-		    isTrueDataDir = true;
+		        isTrueDataDir = true;
 			dataDir = new File(loc);
 			return dataDir;
 		}
@@ -88,7 +88,7 @@ public class GeoserverDataDirectory
                 isTrueDataDir = false;
 		String rootDir = servContext.getRealPath("/");
 		dataDir = new File (rootDir);
-	    }
+	    } 
 	    return dataDir;
 	}
 

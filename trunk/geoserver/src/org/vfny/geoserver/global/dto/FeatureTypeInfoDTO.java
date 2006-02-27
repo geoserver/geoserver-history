@@ -69,10 +69,13 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * Often related to the title - like bc_roads_Type
      * </p>
      */
-    private String name;
+	private String name;
 
-    /**
-     * The featuretype directory name. This is used to write to, and is  stored
+
+	private String wmsPath;
+
+	/**
+	 * The featuretype directory name. This is used to write to, and is  stored
      * because it may be longer than the name, as this often includes
      * information about the source of the featuretype.
      */
@@ -144,6 +147,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         SRS = dto.getSRS();
         schema = dto.getSchemaAttributes();
         name = dto.getName();
+        wmsPath = dto.getWmsPath();
         title = dto.getTitle();
         _abstract = dto.getAbstract();
         numDecimals = dto.getNumDecimals();
@@ -224,6 +228,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         //-- Modif C. Kolbowicz - 06/10/2004 
         r = r && (defaultStyle == f.getDefaultStyle());
         r = r && (name == f.getName());
+        r = r && (wmsPath == f.getWmsPath());
         r = r && (title == f.getTitle());
         r = r && (_abstract == f.getAbstract());
         r = r && (numDecimals == f.getNumDecimals());
@@ -736,4 +741,10 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         + ", title: " + title + "\n  definitionQuery: " + definitionQuery
         + ", defaultStyle: " + defaultStyle + ", legend icon: " + legendURL;
     }
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
+	}
 }

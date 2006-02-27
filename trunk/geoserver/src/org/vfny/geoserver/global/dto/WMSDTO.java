@@ -25,11 +25,21 @@ package org.vfny.geoserver.global.dto;
  * @version $Id: WMSDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
  */
 public final class WMSDTO implements DataTransferObject {
-    /** For the writer! */
-    private boolean gmlPrefixing;
 
-    /** The service parameters for this instance. */
-    private ServiceDTO service;
+	/**
+	 * For the writer!
+	 * 
+	 * @uml.property name="gmlPrefixing" multiplicity="(0 1)"
+	 */
+	private boolean gmlPrefixing;
+
+	/**
+	 * The service parameters for this instance.
+	 * 
+	 * @uml.property name="service"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private ServiceDTO service;
 
     /** The current svg renderer **/
     private String svgRenderer;
@@ -111,7 +121,6 @@ public final class WMSDTO implements DataTransferObject {
         	}
         	else equals = svgRenderer.equals(dto.getSvgRenderer());
         }
-        
 
         return equals;
     }
@@ -124,43 +133,48 @@ public final class WMSDTO implements DataTransferObject {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return (gmlPrefixing ? 1 : 0) 
+        return (gmlPrefixing ? 1 : 0)
         | (svgAntiAlias ? 1 : 0)
         | ((service == null) ? 0 : service.hashCode()) 
         | ((svgRenderer == null) ? 0 : svgRenderer.hashCode());
     }
 
-    /**
-     * getService purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public ServiceDTO getService() {
-        return service;
-    }
+	/**
+	 * getService purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="service"
+	 */
+	public ServiceDTO getService() {
+		return service;
+	}
 
-    /**
-     * setService purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param service
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
-    public void setService(ServiceDTO service) {
-        if (service == null) {
-            throw new NullPointerException("ServiceDTO required");
-        }
+	/**
+	 * setService purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param service
+	 * 
+	 * @throws NullPointerException DOCUMENT ME!
+	 * 
+	 * @uml.property name="service"
+	 */
+	public void setService(ServiceDTO service) {
+		if (service == null) {
+			throw new NullPointerException("ServiceDTO required");
+		}
 
-        this.service = service;
-    }
+		this.service = service;
+	}
+
 
     /**
      * isGmlPrefixing purpose.
@@ -175,18 +189,20 @@ public final class WMSDTO implements DataTransferObject {
         return gmlPrefixing;
     }
 
-    /**
-     * setGmlPrefixing purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setGmlPrefixing(boolean b) {
-        gmlPrefixing = b;
-    }
+	/**
+	 * setGmlPrefixing purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="gmlPrefixing"
+	 */
+	public void setGmlPrefixing(boolean b) {
+		gmlPrefixing = b;
+	}
     
     /**
      * @return The constant identifying the current svg renderer.

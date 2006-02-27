@@ -33,10 +33,22 @@ import org.w3c.dom.Element;
 import com.vividsolutions.jts.geom.Envelope;
 
 public class TemporaryFeatureTypeInfo extends FeatureTypeInfo
-{    
-	
+{
+
+	/**
+	 * 
+	 * @uml.property name="ds"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
 	private DataStore ds;
+
+	/**
+	 * 
+	 * @uml.property name="ft"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
 	private FeatureType ft;
+
     /**
      * 
      * @param ds
