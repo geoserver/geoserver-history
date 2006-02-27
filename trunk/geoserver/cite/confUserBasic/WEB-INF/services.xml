@@ -58,56 +58,97 @@ Defines the password of the administrator for log in
 to the web based administration tool.
 -->
 <adminPassword>geoserver</adminPassword>
-</global>
-<services>
-<service type = "WFS" enabled = "true" >
+     <ContactInformation>
+       <ContactPersonPrimary>
+         <ContactPerson></ContactPerson>
+         <ContactOrganization></ContactOrganization>
+       </ContactPersonPrimary>
+       <ContactPosition></ContactPosition>
+       <ContactAddress>
+         <AddressType></AddressType>
+         <Address></Address>
+         <City></City>
+         <StateOrProvince></StateOrProvince>
+         <PostCode></PostCode>
+         <Country></Country>
+       </ContactAddress>
+       <ContactVoiceTelephone></ContactVoiceTelephone>
+       <ContactFacsimileTelephone></ContactFacsimileTelephone>
+       <ContactElectronicMailAddress></ContactElectronicMailAddress>
+     </ContactInformation>
+  </global>
+  <services>
+
+      <service type="WCS" enabled="true">
+      <!-- Service elements, needed for the capabilities document -->
+      <!-- Title and OnlineResource are the two required -->
+      <name>My GeoServer WCS</name>
+      <title>My GeoServer WCS</title>
+      <abstract>
+This is a description of your Web Coverage Server.
+     </abstract>
+      <keywords>
+        <keyword>WCS</keyword>
+        <keyword>WMS</keyword>
+        <keyword>GEOSERVER</keyword>
+      </keywords>
+      <metadataLink about="http://geoserver.sourceforge.net/html/index.php" type="undef" metadataType="other">
+	NONE
+      </metadataLink>
+      <onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
+      <fees>NONE</fees>
+      <accessConstraints>NONE</accessConstraints>
+      <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
+    </service>
+    
+    <service type="WFS" enabled="true">
 <!--
 ServiceDTO elements, needed for the capabilities document
 Title and OnlineResource are the two required
 -->
-<name>My GeoServer WFS</name>
-<title>My GeoServer WFS</title>
-<abstract>
+      <name>My GeoServer WFS</name>
+      <title>My GeoServer WFS</title>
+      <abstract>
 This is a description of your Web Feature Server.
 
 The GeoServer is a full transactional Web Feature Server, you may wish to limit
 GeoServer to a Basic service level to prevent modificaiton of your geographic
 data.
      </abstract>
-<keywords>
-<keyword>WFS</keyword>
-<keyword>WMS</keyword>
-<keyword>GEOSERVER</keyword>
-</keywords>
-<onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
-<fees>NONE</fees>
-<accessConstraints>NONE</accessConstraints>
+      <keywords>
+        <keyword>WFS</keyword>
+        <keyword>WMS</keyword>
+        <keyword>GEOSERVER</keyword>
+      </keywords>
+      <onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
+      <fees>NONE</fees>
+      <accessConstraints>NONE</accessConstraints>
 <srsXmlStyle value = "true" />
 <serviceLevel value = "31" />
 <citeConformanceHacks>false</citeConformanceHacks>
 <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
 </service>
-<service type = "WMS" enabled = "true" >
+    <service type="WMS" enabled="true">
 <!--
 ServiceDTO elements, needed for the capabilities document
 Title and OnlineResource are the two required
 -->
-<name>My GeoServer WMS</name>
-<title>My GeoServer WMS</title>
-<abstract>
+      <name>My GeoServer WMS</name>
+      <title>My GeoServer WMS</title>
+      <abstract>
 This is a description of your Web Map Server.
      </abstract>
-<keywords>
-<keyword>WFS</keyword>
-<keyword>WMS</keyword>
-<keyword>GEOSERVER</keyword>
-</keywords>
-<onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
-<fees>NONE</fees>
-<accessConstraints>NONE</accessConstraints>
+      <keywords>
+        <keyword>WFS</keyword>
+        <keyword>WMS</keyword>
+        <keyword>GEOSERVER</keyword>
+      </keywords>
+      <onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
+      <fees>NONE</fees>
+      <accessConstraints>NONE</accessConstraints>
 <srsXmlStyle value = "false" />
-<maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
+      <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
 <svgAntiAlias>true</svgAntiAlias>
-</service>
-</services>
+    </service>
+  </services>
 </serverConfiguration>

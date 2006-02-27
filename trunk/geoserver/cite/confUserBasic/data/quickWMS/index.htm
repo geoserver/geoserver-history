@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>quickWMS - Web Map Server Client JavaScript Classes</title>
+
+</head>
+
+<body>
+<link rel="stylesheet" href="help.css">
+<table width="700"><tr><td>
+<!-- WEBpage Information -->
+<tr><td align="justify">
+
+<img src="images/logo.gif" width=62 height=64 border=0 alt="" align="middle">
+ &nbsp;&nbsp;<img src="images/quickWMS.gif" width=121 height=23 border=0 alt="">
+
+<div align="right">
+&copy; Pedro Pereira Gon&ccedil;alves <br>(<a href="mailto:pedro&#064;inovagis.org">pedro&#064;inovagis.org</a>)<br>
+</div>
+<hr noshade>
+</td></tr><tr><td>
+<img src="images/quickWMS.jpg" align="right" width=200 height=123 border=0 alt="">
+<BR>JavaScript classes for creating Web Map clients and interfacing WMS servers according to 
+<a href="http://www.opengis.org/wmt/">OpenGIS Web Mapping Specification</a> (versions 0.7 to 1.1).
+<br>The goal of this project is to enable the fast creation of web mapping clients using javascript. 
+The target browsers are Internet Explorer (version 5.5 and up) and Netscape/Mozilla (7.00 and up) both for Windows, Mac and Linux.
+<br><br>
+
+		<center>
+			<img src="images/netscape47.gif" width="32" height="32" border="0" alt="Netscape 4.7 Compatible"> &nbsp;&nbsp;
+			<img src="images/netscape7.gif" width="32" height="32" border="0" alt="Netscape 7 and 7.1 Compatible">	&nbsp;&nbsp;
+			<img src="images/mozilla.gif" width="32" height="33" border="0" alt="Mozilla 1.4 Compatible">&nbsp;&nbsp;
+			<img src="images/firebird.gif" width="32" height="28" border="0" alt="Mozilla Firebird 0.6.1 Compatible">&nbsp;&nbsp;
+			<img src="images/camino.gif" width="32" height="32" border="0" alt="Mozilla Camino 0.7 Compatible">&nbsp;&nbsp;
+			<img src="images/ie.gif" width="30" height="32" border="0" alt="Internet Explorer Compatible">&nbsp;&nbsp;
+			
+		</center>
+ <a href="nav001.htm"><img src="images/quickwms_nav.jpg" width="225" height="120" border="0" alt=""  align="right"></a>
+<br>
+<b>Author</b> : Pedro Pereira Gonçalves (pedro&#064;inovagis.org)<br>
+<b>Version</b> : 0.3 <br>
+<b>License</b> : <a href="license.txt">LGPL</a> <br>
+<b>Last Change </b>: 2003-11-27
+<br><b>Discussion forum</b>: <a href="http://www.quickwms.net">quickwms.net</a> available at the inovaGIS site.
+<br><b style="color:red">Note</b>: none
+<br><b>Browser Support</b>: check <a href="support.htm">support.htm</a>
+
+<br><br>
+<b>Examples:</b>
+<UL>
+<LI> single layer request example [<a href="layer002.htm">view</a>]
+<LI> multiple layer request example [<a href="map012.htm">view</a>]
+<LI> multiple layer request with mouse events and toolbar example [<a href="quick002.htm">view</a>]
+<LI> multiple layer request with mouse events and toolbar example with layers from DEMIS[<a href="demis001.htm">view</a>]
+<LI> multiple layer request with error handling events [<a href="quickerror001.htm">view</a>]
+<LI> multiple layer request with mouse events, toolbar and dynamic auxiliary map example [<a href="nav001.htm">view</a>]
+</ul>
+
+
+<b>External Examples:</b>
+<UL>
+<LI> Moskito WMS from Moskito GIS [<a href="http://www.moskito-gis.de/html/FR02.html">view</a>] <img src="images/moskito.gif" width="80" height="25" border="0" alt="" align=center><br clear="all">
+<LI> Dutch National Aerospace Laboratory (NLR) Remote Sensing Department  [<a href="http://remotesensing.nlr.nl">view</a>]<img src="images/nlrlogo.gif" width="38" height="49" border="0" alt="" align=center><br clear="all">
+<LI> GeoS@KDVZ  - Computer centre for 52 cities in North Rhine-Westphalia (Germany) [<a href="http://www.geos.kdvz.de/qwms/index.html">view</a>]
+<img src="images/kdvz.gif" width="59" height="20" border="0" alt="" align=center><br clear="all">
+<br>
+<LI> add your own ... (send me a <a href="mailto:pedro&#064;inovagis.org">email</a>)
+</ul>
+
+
+<br>
+<b>Documentation:</b>
+
+<ul>
+	<li> <a href="layerwms.htm">layerWMS</a> : Image-type class that makes a single request and OGC WMS server with one or more layers.<br><br>
+	<li> <a href="mapwms.htm">mapWMS</a> : Class containing an array of layerWMS and includes request information status, generic control functions and extented events.<br><br>
+	<li> <a href="quickwms.htm">quickWMS</a> : Quick and full Web Map client (descendent of mapWMS) that accepts mouse events to zoom, selection and query.<br><br>
+	<li> <a href="navwms.htm">navWMS</a> : Class defining the auxiliary windows for map navigation (descendent of mapWMS) that links to a main mapWMS.<br><br>
+</ul>
+<br>
+<b>Download:</b>
+<ul>
+	<li> Entire packcage (with the javascript include files, documentation and examples) [<a href="quickWMS.zip">quickWMS.zip</a> 89Kb]
+	<li> Just the Javascript include files [<a href="quickWMS.js.zip">quickWMS.js.zip</a> 32Kb]
+</ul>	
+<br>
+<b>Release Notes (version 0.3)</b>
+<ul>
+	<li> 2003-10-24: The loading of images can be direct to the browser using the directLoading parameter (this will not use the transportIMG internal variable) - also Bart Adriaanse suggestion<br> By default is false in all browsers except in IE 6 (because this browsers will always recall the image even if it has an object in memory)
+	<b>Action</b>: <font face="" color="Green"><b>Accepted</b></font>
+		<br><br>
+	<li> 2003-07-02: Creation of an navigationWMS class for the navigation display of a main map.<br>
+	<b>Action</b>: <font face="" color="Green"><b>Accepted</b></font>
+		<br><br>
+	<li> 2003-07-02: Bart Adriaanse from DEMIS proposed that the <FONT color=brown>layerWMS</font> function <FONT color=brown>url</font>() checks if the <FONT color=brown>wmsUrl</font> (base url or prefix according to point 6.2.5.1.1 on version 1.0.0 and point 6.2.2 on version 1.1.1) 
+	contains already the ? symbol and only adds this if not. In this case it also needs to check if it is necessary to add the & at the end.
+	<br>
+	<b>Action</b>: <font face="" color="Green"><b>Accepted</b></font> for OGC WMS version 1.0.0 and up. In fact, OGC WMS version 1.1.1 states:
+	<ul><i> The URL prefix shall end in either a '?' (in the absence of additional server-specific
+parameters) or a '&'. In practice, however, Clients should be prepared to add a necessary
+trailing '?' or '&' before appending the Operation parameters defined in this specification
+in order to construct a valid request URL.</i></ul><br>
+
+</ul>
+
+<b>Proposed Changes  (to appear on version 0.4):</b>
+<br>Post your suggestions and comments at the <a href="http://www.quickwms.net">quickWMS forum</a> available at the inovaGIS site.
+<ul>
+		
+<!--	
+	<li> YYYY-MM-DD:  <br>
+	<b>Action</b>: 
+	<font face="" color="Green"><b>Accepted</b></font>
+	<font face="" color="Olive"><b>In Consideration</b></font>
+	<font face="" color="Red"><b> Rejected</b>	</font>
+	<br><br>
+-->
+	<li> 2003-08-20: Matthis Schurmann (from KDVZ) proposed the following updates: 
+		<ul>
+			<li> Smooth Panning 	  <br>
+			<img src="images/recentre.gif" width="36" height="36" border="0" alt="" align=right>
+			<b>Action</b>: <font face="" color="Green"><b>Accepted</b></font>. A new button bar is on developement with panning buttons (left, right, top and bootom and probably also the diagonals). Another option that should be considered is a panning tool with the mouse movement. 
+		<br><br>
+			<li> Active/Deactivate Layer 
+			<br>
+			<b>Action</b>: <font face="" color="Green"><b>Accepted</b></font>. This is already possible with the visible property of the layer. Nevertheless a specific example will be developed.
+		<br><br>
+			<li> Scale Bar
+			<br>
+			<b>Action</b>: <font face="" color="Olive"><b>In Consideration</b></font>
+		<br><br>
+			<li> Change the layer creation method by adding the opacity parameter 	(<b>file:</b>WMSlayer.js ; <b>function:</b> layerWMS)
+			<br>
+			<b>Action</b>: <font face="" color="Olive"><b>In Consideration</b></font>: I think that may be it is better that this function behaves in a dynamic way so that the user can choose (e.g. in a scrollbar) the opacity level. Nevertheless, I see no problem in adding this optinal parameter to the function
+		<br><br>
+			<li> Make the wmsLayers and the format optional when building the url (<b>file:</b>WMSlayer.js ; <b>function:</b> url)
+			<br>
+			<b>Action</b>: <font face="" color="Olive"><b>In Consideration</b></font>: I think we shouldn't do that because they are required parameters.
+		<br><br>
+			<li> Add the homeBBox in the quickWMS class to define the first BBOX (<b>file:</b>WMSquick.js ; <b>function:</b> quickWMS)
+			<br>
+			<b>Action</b>: <font face="" color="Olive"><b>In Consideration</b></font>: I think that there is no need for this function because the parent class (mapWMS) already has a equivalent property (initBBox).
+		<br><br>
+			<li> Include a German version of the status text (<b>file:</b>WMSbrowsers.js;)
+			<br>
+			<b>Action</b>: <font face="" color="Green"><b>Accepted</b></font>. We should probably define a lang parameter when creating the class.
+
+		<br>
+	</ul>
+	<br><br>
+		
+	
+		
+	<li> 2003-07-02: Creation of an treeListWMS class for dealing a list of WMS servers, layers names and corresponding styles.<br>
+	<b>Action</b>: <font face="" color="Green"><b>Accepted</b></font>
+	<br><br>
+	<li> 2003-07-02: Creation of an iconWMS class for dealing with the tools menu, icon maps, and layers list and their differents skins.<br>
+	<b>Action</b>: <font face="" color="Green"><b>Accepted</b></font>
+	<br><br>
+	<li> 2003-07-02: Question - Should we drop the Netscape 4.7 support ? <br> For this and other questions I think its beter to setup a discussion forum.
+	<br>
+	<b>Action</b>: <font face="" color="olive"><b>In Consideration</b></font>. Please go to the <a href="http://www.quickwms.net">quickWMS forum</a> available at the inovaGIS site and post your opinion.
+	<br><br><li> 2003-07-01: Bart van den Eijnden asks for the GetFeatureInfo support.
+	<br>
+	<b>Action</b>: <font face="" color="olive"><b>In Consideration</b></font>. I think this is possible but only if the response format is simple text or text/html. 
+	From my experience is quite difficult to deal with xml in javascript across a wide range of browsers.
+
+	<br>
+</ul>	
+
+<hr noshade>
+
+</td></tr></table>
+</body>
+</html>

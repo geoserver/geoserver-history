@@ -1,0 +1,60 @@
+<coverage format = "gtopo30" >
+<name>gtopo30_Coverage</name>
+<label>DTED Example (W020N90)</label>
+<description>Generated from gtopo30</description>
+<metadataLink about = "http://edcdaac.usgs.gov/gtopo30/gtopo30.asp" metadataType = "other" >
+null
+</metadataLink>
+<keywords>WCS,gtopo30,gtopo30_Coverage</keywords>
+<!--
+the default style this CoverageInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "raster"  />
+<envelope crs = "GEOGCS['WGS84', 
+  DATUM['WGS84', 
+    SPHEROID['WGS84', 6378137.0, 298.257223563]], 
+  PRIMEM['Greenwich', 0.0], 
+  UNIT['degree', 0.017453292519943295], 
+  AXIS['Geodetic longitude', EAST], 
+  AXIS['Geodetic latitude', NORTH]]" srsName = "WGS84" >
+<pos>-19.999999999999996 40.000000000019995</pos>
+<pos>19.99999999998401 90.0</pos>
+</envelope>
+<grid dimension = "2" >
+<low>0 0 </low>
+<high>4800 6000 </high>
+<axisName>Lon</axisName>
+<axisName>Lat</axisName>
+</grid>
+<CoverageDimension>
+<name>dim_0</name>
+<description>GridSampleDimension(m)[-9999.0,4535.999999999999]</description>
+<Category>
+<name>nodata</name>
+<label>GeophysicsCategory("nodata":[-9999.0 .. -9999.0])</label>
+<interval>
+<min>-9999.0</min>
+<max>-9999.0</max>
+</interval>
+</Category>
+<Category>
+<name>values</name>
+<label>GeophysicsCategory("values":[-407.0 .. 4535.999999999999])</label>
+<interval>
+<min>-407.0</min>
+<max>4536.0</max>
+</interval>
+</Category>
+</CoverageDimension>
+<supportedCRSs>
+<requestCRSs>EPSG:4326</requestCRSs>
+<responseCRSs>EPSG:4326</responseCRSs>
+</supportedCRSs>
+<supportedFormats nativeFormat = "Gtopo30" >
+<formats>Gtopo30,GeoTIFF,PNG,GIF,TIFF</formats>
+</supportedFormats>
+<supportedInterpolations default = "nearest neighbor" >
+<interpolationMethods>nearest neighbor</interpolationMethods>
+</supportedInterpolations>
+</coverage>
