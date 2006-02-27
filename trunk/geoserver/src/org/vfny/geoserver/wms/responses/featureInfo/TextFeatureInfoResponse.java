@@ -58,7 +58,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         
         int featuresPrinted = 0;  // how many features we've actually printed so far!
         int maxfeatures = getRequest().getFeatureCount(); // will default to 1 if not specified in the request
-        
+
         FeatureReader reader = null;
         try {
             for (int i = 0; i < results.size(); i++)  //for each layer queried
@@ -114,7 +114,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
 		{
         	if (reader != null)
         		reader.close();
-		}
+        }
         
         if (featuresPrinted ==0)
         {
@@ -122,4 +122,12 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         }
         writer.flush();
     }
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

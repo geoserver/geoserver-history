@@ -15,6 +15,7 @@ import org.geotools.filter.BBoxExpression;
 import org.geotools.filter.Expression;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.vfny.geoserver.Request;
@@ -26,7 +27,6 @@ import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
-
 
 /**
  * Base class for GetFeatureInfo delegates responsible of creating
@@ -77,14 +77,21 @@ import com.vividsolutions.jts.geom.Envelope;
  * </li>
  * </ul>
  * </p>
- *
+ * 
  * @author Gabriel Roldan, Axios Engineering
  * @author Chris Holmes
  * @version $Id: GetFeatureInfoDelegate.java,v 1.1 2004/07/15 21:13:14 jmacgill Exp $
  */
 public abstract class GetFeatureInfoDelegate implements Response {
-    /** DOCUMENT ME!  */
-    private GetFeatureInfoRequest request;
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GetFeatureInfoRequest request;
+
 
     /**
      * Creates a new GetMapDelegate object.
@@ -174,7 +181,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
         Query[] queries = new Query[nLayers];
         GetFeatureInfoRequest infoRequest = getRequest();
         Envelope requestExtent = infoRequest.getGetMapRequest().getBbox();
-        FilterFactory ffactory = FilterFactory.createFilterFactory();
+        FilterFactory ffactory = new FilterFactoryImpl();
 
         try {
             Filter finalLayerFilter;
@@ -273,15 +280,18 @@ public abstract class GetFeatureInfoDelegate implements Response {
         return properties;
     }
 
-    /**
-     * Gets the map request.  Used by delegate children to find out more
-     * information about the request.
-     *
-     * @return The request to be processed.
-     */
-    protected GetFeatureInfoRequest getRequest() {
-        return this.request;
-    }
+	/**
+	 * Gets the map request.  Used by delegate children to find out more
+	 * information about the request.
+	 * 
+	 * @return The request to be processed.
+	 * 
+	 * @uml.property name="request"
+	 */
+	protected GetFeatureInfoRequest getRequest() {
+		return this.request;
+	}
+
 
     /**
      * Evaluates if this GetFeatureInfo producer can generate the map format
@@ -296,10 +306,13 @@ public abstract class GetFeatureInfoDelegate implements Response {
         return getSupportedFormats().contains(mapFormat);
     }
 
-    /**
-     * Gets A list of the formats this delegate supports.
-     *
-     * @return A list of strings of the formats supported.
-     */
-    public abstract List getSupportedFormats();
+	/**
+	 * Gets A list of the formats this delegate supports.
+	 * 
+	 * @return A list of strings of the formats supported.
+	 * 
+	 * @uml.property name="supportedFormats" multiplicity="(0 1)"
+	 */
+	public abstract List getSupportedFormats();
+
 }

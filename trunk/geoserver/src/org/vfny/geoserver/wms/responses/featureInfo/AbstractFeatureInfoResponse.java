@@ -18,6 +18,7 @@ import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.vfny.geoserver.ServiceException;
@@ -58,10 +59,29 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
     protected static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.featureinfo");
 
-    /** The formats supported by this map delegate. */
-    protected List supportedFormats = null;
-    protected List results;
-    protected List metas;
+	/**
+	 * The formats supported by this map delegate.
+	 * 
+	 * @uml.property name="supportedFormats" multiplicity="(0 1)"
+	 */
+	protected List supportedFormats = null;
+
+	/**
+	 * 
+	 * @uml.property name="results"
+	 * @uml.associationEnd elementType="org.geotools.data.FeatureResults" multiplicity=
+	 * "(0 -1)"
+	 */
+	protected List results;
+
+	/**
+	 * 
+	 * @uml.property name="metas"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.global.FeatureTypeInfo" multiplicity=
+	 * "(0 -1)"
+	 */
+	protected List metas;
+
 
     /**
      * setted in execute() from the requested output format, it's holded just
@@ -107,14 +127,16 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
     public abstract void writeTo(OutputStream out)
         throws ServiceException, IOException;
 
-    /**
-     * The formats this delegate supports.
-     *
-     * @return The list of the supported formats
-     */
-    public List getSupportedFormats() {
-        return supportedFormats;
-    }
+	/**
+	 * The formats this delegate supports.
+	 * 
+	 * @return The list of the supported formats
+	 * 
+	 * @uml.property name="supportedFormats"
+	 */
+	public List getSupportedFormats() {
+		return supportedFormats;
+	}
 
     /**
      * DOCUMENT ME!
@@ -192,7 +214,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
         Polygon pixelRect = geomFac.createPolygon(boundary, null);
 
-        FilterFactory filterFac = FilterFactory.createFilterFactory();
+        FilterFactory filterFac = new FilterFactoryImpl();
 
         GeometryFilter getFInfoFilter = null;
 
