@@ -8,9 +8,7 @@ import java.util.Set;
 
 import org.geotools.factory.Factory;
 
-
-/**
- * Constructs a live GetLegendGraphicProducer.
+/** * Constructs a live GetLegendGraphicProducer.
  * 
  * <p>
  * An instance of this interface should exist for all legend producers which
@@ -62,25 +60,29 @@ import org.geotools.factory.Factory;
  *  producer.writeTo(out);
  * </code></pre>
  * </p>
- *
+ * 
  * @author Gabriel Roldan, Axios Engineering
- * @version $Revision: 1.1 $
- */
+ * @version $Revision: 1.1 $ */
 public interface GetLegendGraphicProducerSpi extends Factory {
-    /**
-     * Returns a descriptive name for the factory instance.
-     *
-     * @return a descriptive name for the factory instance
-     */
-    String getName();
 
-    /**
-     * Returns a <code>java.util.Set&lt;String&gt;</code> of the MIME types the
-     * legend producers this factory can create are able to handle.
-     *
-     * @return the Set of supported output image mime types.
-     */
-    Set getSupportedFormats();
+	/**
+	 * Returns a descriptive name for the factory instance.
+	 * 
+	 * @return a descriptive name for the factory instance
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	String getName();
+
+	/**
+	 * Returns a <code>java.util.Set&lt;String&gt;</code> of the MIME types the
+	 * legend producers this factory can create are able to handle.
+	 * 
+	 * @return the Set of supported output image mime types.
+	 * 
+	 * @uml.property name="supportedFormats" multiplicity="(0 1)"
+	 */
+	Set getSupportedFormats();
 
     /**
      * Checks if the GetLegendGraphicProducer instances this factory serves

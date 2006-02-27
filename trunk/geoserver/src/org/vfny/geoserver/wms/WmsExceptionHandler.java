@@ -16,7 +16,13 @@ import org.vfny.geoserver.ServiceException;
 public class WmsExceptionHandler implements ExceptionHandler {
     /** DOCUMENT ME! */
     private static final WmsExceptionHandler instance = new WmsExceptionHandler();
-    private WmsException lnkWmsException;
+
+	/**
+	 * 
+	 * @uml.property name="lnkWmsException"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private WmsException lnkWmsException;
 
     private WmsExceptionHandler() {
     }

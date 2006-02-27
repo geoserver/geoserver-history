@@ -10,9 +10,7 @@ import java.io.OutputStream;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 
-
-/**
- * Provides the skeleton for producers of a legend image, as required by the
+/** * Provides the skeleton for producers of a legend image, as required by the
  * GetLegendGraphic WMS request.
  * 
  * <p>
@@ -28,10 +26,9 @@ import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
  * should raise an exception if are called in the wrong order (which is
  * produceLegendGraphic -> getContentType -> writeTo)
  * </p>
- *
+ * 
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id$
- */
+ * @version $Id$ */
 public interface GetLegendGraphicProducer {
     /**
      * Asks this legend graphic producer to create a graphic for the
@@ -60,16 +57,18 @@ public interface GetLegendGraphicProducer {
      */
     void writeTo(OutputStream out) throws IOException, ServiceException;
 
-    /**
-     * Returns the MIME type of the content to be writen at
-     * <code>writeTo(OutputStream)</code>
-     *
-     * @return the output format
-     *
-     * @throws java.lang.IllegalStateException if this method is called before
-     *         {@linkplain #produceLegendGraphic(GetLegendGraphicRequest)}.
-     */
-    String getContentType() throws java.lang.IllegalStateException;
+	/**
+	 * Returns the MIME type of the content to be writen at
+	 * <code>writeTo(OutputStream)</code>
+	 * 
+	 * @return the output format
+	 * 
+	 * @throws java.lang.IllegalStateException if this method is called before
+	 *         {@linkplain #produceLegendGraphic(GetLegendGraphicRequest)}.
+	 * 
+	 * @uml.property name="contentType" multiplicity="(0 1)"
+	 */
+	String getContentType() throws java.lang.IllegalStateException;
 
     /**
      * asks the legend graphic producer to stop processing since it will be no

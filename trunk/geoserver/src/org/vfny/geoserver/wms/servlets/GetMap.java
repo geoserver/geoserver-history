@@ -4,24 +4,25 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
-import org.vfny.geoserver.Request;
-import org.vfny.geoserver.Response;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.config.WMSConfig;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.wms.requests.GetMapKvpReader;
-import org.vfny.geoserver.wms.requests.GetMapXmlReader;
-import org.vfny.geoserver.wms.responses.GetMapResponse;
-
 import java.io.IOException;
 import java.io.Reader;
-
+import java.util.Enumeration;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.Response;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.config.WMSConfig;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.wms.requests.GetMapKvpReader;
+import org.vfny.geoserver.wms.requests.GetMapXmlReader;
+import org.vfny.geoserver.wms.responses.GetMapResponse;
 
 
 /**
@@ -63,13 +64,13 @@ public class GetMap extends WMService {
             response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             return;
         }
-
+        
         //we need to construct an approriate serviceRequest from the GetMap XML POST.
-        try {
-            GetMapXmlReader xmlPostReader = new GetMapXmlReader();
-
-            Reader xml = request.getReader();
-            serviceRequest = xmlPostReader.read(xml, request);
+        try{
+        	 GetMapXmlReader xmlPostReader = new GetMapXmlReader();
+        	
+        	 Reader xml =  request.getReader();
+        	 serviceRequest= xmlPostReader.read(xml,request);
         } catch (ServiceException se) {
             sendError(response, se);
             return;
@@ -89,7 +90,7 @@ public class GetMap extends WMService {
     protected Response getResponseHandler() {
         WMSConfig config = (WMSConfig) getServletContext().getAttribute(WMSConfig.CONFIG_KEY);
 
-        return new GetMapResponse(config);
+    	return new GetMapResponse(config);
     }
 
     /**
@@ -118,7 +119,7 @@ public class GetMap extends WMService {
     protected KvpRequestReader getKvpReader(Map params) {
         return new GetMapKvpReader(params);
     }
-
+    
     /**
      * A method that decides if a request is a multipart request.
      * <p>

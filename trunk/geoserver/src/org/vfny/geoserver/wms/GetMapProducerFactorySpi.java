@@ -10,8 +10,7 @@ import org.geotools.factory.Factory;
 import org.vfny.geoserver.config.WMSConfig;
 
 
-/**
- * Constructs a live GetMapProducer.
+/** * Constructs a live GetMapProducer.
  * 
  * <p>
  * An instance of this interface should exist for all map producers which want
@@ -46,8 +45,6 @@ import org.vfny.geoserver.config.WMSConfig;
  * 
  * <p>
  * <pre><code>
- * 	WMSConfig config = getServletContext().getAttribute(WMSConfig.CONFIG_KEY);
- * 
  *  GetMapProducerSpi gmpf = null;
  *  Iterator it = FactoryFinder.factories(GeMapProducerFactorySpi.class);
  *  while (it.hasNext()) {
@@ -65,25 +62,29 @@ import org.vfny.geoserver.config.WMSConfig;
  *  producer.writeTo(out);
  * </code></pre>
  * </p>
- *
+ * 
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id$
- */
+ * @version $Id$ */
 public interface GetMapProducerFactorySpi extends Factory {
-    /**
-     * Returns a descriptive name for the factory instance.
-     *
-     * @return a descriptive name for the factory instance
-     */
-    String getName();
 
-    /**
-     * Returns a <code>java.util.Set&lt;String&gt;</code> of the MIME types the
-     * map producers this factory can create are able to handle.
-     *
-     * @return the Set of supported output image mime types.
-     */
-    Set getSupportedFormats();
+	/**
+	 * Returns a descriptive name for the factory instance.
+	 * 
+	 * @return a descriptive name for the factory instance
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	String getName();
+
+	/**
+	 * Returns a <code>java.util.Set&lt;String&gt;</code> of the MIME types the
+	 * map producers this factory can create are able to handle.
+	 * 
+	 * @return the Set of supported output image mime types.
+	 * 
+	 * @uml.property name="supportedFormats" multiplicity="(0 1)"
+	 */
+	Set getSupportedFormats();
 
     /**
      * Checks if the GetMapProducer instances this factory serves will be able
@@ -112,8 +113,7 @@ public interface GetMapProducerFactorySpi extends Factory {
      * in the specified image format.
      *
      * @param mapFormat the MIME type of the desired image
-     * @param wmsConfig the wms configuration
-     * 
+     *
      * @return a GetMapProducer capable of creating maps in <code>format</code>
      *         image format.
      *
