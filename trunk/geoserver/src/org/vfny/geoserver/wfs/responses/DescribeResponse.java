@@ -102,7 +102,7 @@ public class DescribeResponse implements Response {
             //characters and whatnot, unless we can get rid of formatting
             //when we read the file, which could be worth looking into if
             //this slows things down.
-        	xmlResponse = xmlResponse.replaceAll(">\n[ \\t\\n]*", ">");
+            xmlResponse = xmlResponse.replaceAll(">\n[ \\t\\n]*", ">");
             xmlResponse = xmlResponse.replaceAll("\n[ \\t\\n]*", " ");
         }
     }
@@ -411,7 +411,7 @@ public class DescribeResponse implements Response {
         //if (prefixDelimPos > 0) {
         //String tableName = typeName.substring(prefixDelimPos + 1);
         //  }
-    	return "\n  <xs:element name='" + type.getTypeName() + "' type='"
+        return "\n  <xs:element name='" + type.getTypeName() + "' type='"
         + type.getPrefix()+":"+type.getSchemaName() + "' substitutionGroup='gml:_Feature'/>";
     }
 
@@ -516,4 +516,12 @@ public class DescribeResponse implements Response {
     public void abort(Service gs) {
         // nothing to undo
     }
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

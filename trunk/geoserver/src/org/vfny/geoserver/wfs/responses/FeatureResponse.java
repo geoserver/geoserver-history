@@ -27,6 +27,7 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -55,30 +56,42 @@ public class FeatureResponse implements Response {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
-    FeatureResponseDelegate delegate;
 
-    /**
-     * This is the request provided to the execute( Request ) method.
-     * 
-     * <p>
-     * We save it so we can access the handle provided by the user for error
-     * reporting during the writeTo( OutputStream ) opperation.
-     * </p>
-     * 
-     * <p>
-     * This value will be <code>null</code> until execute is called.
-     * </p>
-     */
-    private FeatureRequest request;
+	/**
+	 * 
+	 * @uml.property name="delegate"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	FeatureResponseDelegate delegate;
 
-    /**
-     * This is the FeatureLock provided by execute( Request ) method.
-     * 
-     * <p>
-     * This will only be non null if RequestFeatureWithLock.
-     * </p>
-     */
-    FeatureLock featureLock;
+	/**
+	 * This is the request provided to the execute( Request ) method.
+	 * 
+	 * <p>
+	 * We save it so we can access the handle provided by the user for error
+	 * reporting during the writeTo( OutputStream ) opperation.
+	 * </p>
+	 * 
+	 * <p>
+	 * This value will be <code>null</code> until execute is called.
+	 * </p>
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private FeatureRequest request;
+
+	/**
+	 * This is the FeatureLock provided by execute( Request ) method.
+	 * 
+	 * <p>
+	 * This will only be non null if RequestFeatureWithLock.
+	 * </p>
+	 * 
+	 * @uml.property name="featureLock"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	FeatureLock featureLock;
 
     /**
      * Empty constructor
@@ -145,8 +158,6 @@ public class FeatureResponse implements Response {
     public void execute(Request req) throws ServiceException {
         execute((FeatureRequest) req);
     }
-    
-    
     /** 
      * use the SPI mechanism to get a FeatureResponseDelegate for the
      * specified output format.
@@ -251,7 +262,7 @@ public class FeatureResponse implements Response {
         FeatureSource source;
         Feature feature;
         String fid;
-        FilterFactory filterFactory = FilterFactory.createFilterFactory();
+        FilterFactory filterFactory = new FilterFactoryImpl();
         FidFilter fidFilter;
         int numberLocked;
 
@@ -495,4 +506,12 @@ public class FeatureResponse implements Response {
         //
         catalog.lockRelease(featureLock.getAuthorization());
     }
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

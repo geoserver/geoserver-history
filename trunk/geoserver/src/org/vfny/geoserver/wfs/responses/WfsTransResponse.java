@@ -72,20 +72,37 @@ public class WfsTransResponse {
     /** Status of the transaction represented by this response. */
     public final short status;
 
-    /** Handle of the transaction request */
-    private String handle;
+	/**
+	 * Handle of the transaction request
+	 * 
+	 * @uml.property name="handle" multiplicity="(0 1)"
+	 */
+	private String handle;
 
-    /**
-     * Optional element, Used in the case of an error, to figure out which
-     * transaction failed.
-     */
-    private String locator = null;
+	/**
+	 * Optional element, Used in the case of an error, to figure out which
+	 * transaction failed.
+	 * 
+	 * @uml.property name="locator" multiplicity="(0 1)"
+	 */
+	private String locator = null;
 
-    /** Message element used to report any error messages */
-    private String message = null;
+	/**
+	 * Message element used to report any error messages
+	 * 
+	 * @uml.property name="message" multiplicity="(0 1)"
+	 */
+	private String message = null;
 
-    /** Holds the feature identifiers of newly created features from an insert */
-    private List insertResults;
+	/**
+	 * Holds the feature identifiers of newly created features from an insert
+	 * 
+	 * @uml.property name="insertResults"
+	 * @uml.associationEnd inverse="this$0:org.vfny.geoserver.wfs.responses.WfsTransResponse$InsertResult"
+	 * multiplicity="(0 -1)"
+	 */
+	private List insertResults;
+
 
     /**
      * Only constructor, as status is mandatory
@@ -116,34 +133,40 @@ public class WfsTransResponse {
         offset = (verbose) ? V_OFFSET : "";
     }
 
-    /**
-     * Sets the handle for this response.
-     *
-     * @param handle the handle of the response.  Should be the same as the
-     *        handle of the transaction request.
-     */
-    public void setHandle(String handle) {
-        this.handle = handle;
-    }
+	/**
+	 * Sets the handle for this response.
+	 * 
+	 * @param handle the handle of the response.  Should be the same as the
+	 *        handle of the transaction request.
+	 * 
+	 * @uml.property name="handle"
+	 */
+	public void setHandle(String handle) {
+		this.handle = handle;
+	}
 
-    /**
-     * Sets the string to indicate which part of the transaction failed. Should
-     * be the handle of the sub-request that failed.
-     *
-     * @param locator the handle of the failed transaction.
-     */
-    public void setLocator(String locator) {
-        this.locator = locator;
-    }
+	/**
+	 * Sets the string to indicate which part of the transaction failed. Should
+	 * be the handle of the sub-request that failed.
+	 * 
+	 * @param locator the handle of the failed transaction.
+	 * 
+	 * @uml.property name="locator"
+	 */
+	public void setLocator(String locator) {
+		this.locator = locator;
+	}
 
-    /**
-     * Sets the string to give a message about a failure.
-     *
-     * @param message to give the user information about the failure.
-     */
-    public void setMessage(String message) {
-        this.message = message;
-    }
+	/**
+	 * Sets the string to give a message about a failure.
+	 * 
+	 * @param message to give the user information about the failure.
+	 * 
+	 * @uml.property name="message"
+	 */
+	public void setMessage(String message) {
+		this.message = message;
+	}
 
     /**
      * adds an insert result for a successful insert operation.

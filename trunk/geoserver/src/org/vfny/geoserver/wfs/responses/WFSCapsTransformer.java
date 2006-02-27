@@ -63,8 +63,14 @@ public class WFSCapsTransformer extends TransformerBase {
     /** DOCUMENT ME! */
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
-    /** DOCUMENT ME! */
-    protected Request request;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected Request request;
+
 
     /**
      * Creates a new WFSCapsTransformer object.
@@ -85,18 +91,21 @@ public class WFSCapsTransformer extends TransformerBase {
         return new WFSCapsTranslator(handler);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @author Gabriel Roldan, Axios Engineering
-     * @version $Id
-     */
+/** * DOCUMENT ME!
+ * 
+ * @author Gabriel Roldan, Axios Engineering
+ * @version $Id */
     private static class WFSCapsTranslator extends TranslatorSupport {
         /** DOCUMENT ME!  */
         private static final String EPSG = "EPSG:";
 
-        /** DOCUMENT ME! */
-        private CapabilitiesRequest request;
+		/**
+		 * DOCUMENT ME!
+		 * 
+		 * @uml.property name="request"
+		 * @uml.associationEnd multiplicity="(0 1)"
+		 */
+		private CapabilitiesRequest request;
 
         /**
          * Creates a new WFSCapsTranslator object.

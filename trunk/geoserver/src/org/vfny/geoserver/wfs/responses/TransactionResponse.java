@@ -40,6 +40,7 @@ import org.geotools.feature.SchemaException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
@@ -72,14 +73,29 @@ public class TransactionResponse implements Response {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
 
-    /** Response to be streamed during writeTo */
-    private WfsTransResponse response;
+	/**
+	 * Response to be streamed during writeTo
+	 * 
+	 * @uml.property name="response"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private WfsTransResponse response;
 
-    /** Request provided to Execute method */
-    private TransactionRequest request;
+	/**
+	 * Request provided to Execute method
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private TransactionRequest request;
 
-    /** Geotools2 transaction used for this opperations */
-    protected Transaction transaction;
+	/**
+	 * Geotools2 transaction used for this opperations
+	 * 
+	 * @uml.property name="transaction"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected Transaction transaction;
 
     /**
      * Constructor
@@ -366,8 +382,7 @@ public class TransactionResponse implements Response {
                             // extra work when doing release mode ALL.
                             // 
                             DataStore data = store.getDataStore();
-                            FilterFactory factory = FilterFactory
-                                .createFilterFactory();
+                            FilterFactory factory = new FilterFactoryImpl();
                             FeatureWriter writer;                            
                             writer = data.getFeatureWriter(typeName, filter,
                                     transaction);
@@ -505,7 +520,7 @@ public class TransactionResponse implements Response {
                     //
                     if( !fids.isEmpty() ) {
                         LOGGER.finer("Post process update for boundary update and featureValidation");
-                        FidFilter modified = FilterFactory.createFilterFactory().createFidFilter();
+                        FidFilter modified = new FilterFactoryImpl().createFidFilter();
                         modified.addAllFids( fids );
                     
                         FeatureCollection changed = store.getFeatures( modified ).collection();
@@ -526,14 +541,16 @@ public class TransactionResponse implements Response {
             }
         }
 
-        // All opperations have worked thus far
-        // 
-        // Time for some global Validation Checks against envelope
-        //
         try {
-            integrityValidation(stores2, envelope);
-        } catch (Exception invalid) {
+        	// All opperations have worked thus far
+        	// 
+        	// Time for some global Validation Checks against envelope
+        	//
+        	integrityValidation(stores2, envelope);
+        } catch (WfsTransactionException invalid) {
             throw new WfsTransactionException(invalid);
+        } catch (IOException io) {
+            throw new WfsException(io);
         }
 
         // we will commit in the writeTo method
@@ -586,7 +603,7 @@ public class TransactionResponse implements Response {
         } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
             throw new DataSourceException("Validation Failed", badIdea);
-        }
+		}
 
         if (failed.isEmpty()) {
             return; // everything worked out
@@ -848,5 +865,9 @@ public class TransactionResponse implements Response {
 
         request = null;
         response = null;
+    }
+    
+    public String getContentDisposition() {
+    	return null;
     }
 }

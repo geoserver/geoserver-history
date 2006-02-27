@@ -27,23 +27,43 @@ import org.vfny.geoserver.wfs.requests.FeatureRequest;
  * @version $Id: GetFeatureResults.java,v 1.1 2004/03/10 23:39:06 groldan Exp $
  */
 public class GetFeatureResults {
-    /**
-     * the GetFeature or GetFeatureWithLock request who's processing has
-     * originated this results
-     */
-    private final FeatureRequest request;
 
-    /** the lock object created from a GetFeatureWithLock request */
-    private FeatureLock featureLock;
+	/**
+	 * the GetFeature or GetFeatureWithLock request who's processing has
+	 * originated this results
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private final FeatureRequest request;
 
-    /**
-     * List of FeatureResults obtained from excecuting the queries from the
-     * GetFeature request
-     */
-    private List features;
+	/**
+	 * the lock object created from a GetFeatureWithLock request
+	 * 
+	 * @uml.property name="featureLock"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private FeatureLock featureLock;
 
-    /** List of FeatureTypeInfo objects for the queries featuretypes */
-    private List typeInfo;
+	/**
+	 * List of FeatureResults obtained from excecuting the queries from the
+	 * GetFeature request
+	 * 
+	 * @uml.property name="features"
+	 * @uml.associationEnd elementType="org.geotools.data.FeatureResults" multiplicity=
+	 * "(0 -1)"
+	 */
+	private List features;
+
+	/**
+	 * List of FeatureTypeInfo objects for the queries featuretypes
+	 * 
+	 * @uml.property name="typeInfo"
+	 * @uml.associationEnd elementType="org.vfny.geoserver.global.FeatureTypeInfo" multiplicity=
+	 * "(0 -1)"
+	 */
+	private List typeInfo;
+
 
     /**
      * Creates a new GetFeatureResults object.
@@ -57,30 +77,37 @@ public class GetFeatureResults {
         typeInfo = new ArrayList(2);
     }
 
-    /**
-     * returns the GetFeature or GetFeatureWithLock request who's processing
-     * has originated this results
-     *
-     * @return the GetFeature or GetFeatureWithLock request who's processing
-     *         has originated this results
-     */
-    public FeatureRequest getRequest() {
-        return request;
-    }
+	/**
+	 * returns the GetFeature or GetFeatureWithLock request who's processing
+	 * has originated this results
+	 * 
+	 * @return the GetFeature or GetFeatureWithLock request who's processing
+	 *         has originated this results
+	 * 
+	 * @uml.property name="request"
+	 */
+	public FeatureRequest getRequest() {
+		return request;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public FeatureLock getFeatureLock() {
-        return featureLock;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @uml.property name="featureLock"
+	 */
+	public FeatureLock getFeatureLock() {
+		return featureLock;
+	}
 
-    public void setFeatureLock(FeatureLock featureLock)
-    {
-      this.featureLock = featureLock;
-    }
+	/**
+	 * 
+	 * @uml.property name="featureLock"
+	 */
+	public void setFeatureLock(FeatureLock featureLock) {
+		this.featureLock = featureLock;
+	}
 
     /**
      * returns the number of resultsets this object holds

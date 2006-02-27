@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 
-
 /**
  * After a succeful execution of a GetFeature or GetFeatureWithLock request,
  * FeatureResponse will instantiate an implementation of this interface to
@@ -26,7 +25,7 @@ import org.vfny.geoserver.global.GeoServer;
  * for the traslation of that results to the desired outputformat using
  * <code>encode(OutputStream)</code>
  * </p>
- *
+ * 
  * @author Gabriel Rold?n
  * @version $Id: FeatureResponseDelegate.java,v 1.2 2004/03/12 10:19:44 cholmesny Exp $
  */
@@ -38,7 +37,11 @@ public interface FeatureResponseDelegate {
 
     String getContentType(GeoServer gs);
 
-    String getContentEncoding();
+	/**
+	 * 
+	 * @uml.property name="contentEncoding" multiplicity="(0 1)"
+	 */
+	String getContentEncoding();
 
     void encode(OutputStream output) throws ServiceException, IOException;
 }
