@@ -19,6 +19,8 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * incoming XML stream.
  *
  * @author Rob Hranac, TOPP
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: CapabilitiesHandler.java,v 1.9 2004/02/13 19:30:39 dmzwiers Exp $
  */
 public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler {
@@ -26,9 +28,18 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** Internal Capabilities request for construction. */
-    private CapabilitiesRequest request = new CapabilitiesRequest("WFS");
+	/**
+	 * Internal Capabilities request for construction.
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private CapabilitiesRequest request;
 
+    public CapabilitiesHandler(String serviceType) {
+    	request = new CapabilitiesRequest(serviceType);
+    }
+    
     /**
      * Returns the GetCapabilities request.
      *

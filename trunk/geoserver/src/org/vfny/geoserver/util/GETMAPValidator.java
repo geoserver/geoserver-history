@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class GETMAPValidator
         try {       	
         	return validateGETMAP(xml,schemaFile.toURL().toString());
         }
-        catch (Exception e)
+        catch (MalformedURLException e)
 		{
         	ArrayList al = new ArrayList();
         	al.add(new SAXException(e));
@@ -90,7 +91,7 @@ public class GETMAPValidator
 	       try {
 	       	return validateGETMAP(xml,schemaFile.toURL().toString());
 	       }
-	       catch (Exception e)
+	       catch (MalformedURLException e)
 			{
 	        	ArrayList al = new ArrayList();
 	        	al.add(new SAXException(e));

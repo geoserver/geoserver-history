@@ -42,7 +42,8 @@ import javax.servlet.http.HttpServletResponse;
  * -close() will NOT flush remaining bytes to the output stream, as per the contract 
  * with OutputStream. Close will remove any references to OutputStreams and its 
  * HttpServletResponse.
- * -fush() will NOT flush if the buffer is not full.
+ * -flush() will flush the buffer first and then any information stored in the underlying 
+ * OutputStream. Everything will be flushed when flush is called.
  * -abort() will succeed if the buffer is not full yet. If the buffer has been filled and
  * the information has been written out to response's OutputStream, the abort reports as
  * having failed. The point of this PartialBufferedOutputStream is to allow an abort before 
@@ -165,8 +166,8 @@ public class PartialBufferedOutputStream extends OutputStream
 	/* (non-Javadoc)
 	 * @see java.io.OutputStream#flush()
 	 * 
-	 * If the buffer is not maxed yet, don't flush. If a flush is really really needed,
-	 * call forceFlush().
+	 * Flush when the user says to. Even if the buffer is not maxed out yet.
+	 * We need to revisit this.
 	 */
 	public synchronized void flush() throws IOException 
 	{

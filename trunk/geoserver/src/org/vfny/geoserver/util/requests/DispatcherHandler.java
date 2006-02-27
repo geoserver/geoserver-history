@@ -25,6 +25,8 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * </p>
  *
  * @author Chris Holmes, TOPP
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: DispatcherHandler.java,v 1.5 2004/07/15 21:13:12 jmacgill Exp $
  */
 public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
@@ -32,32 +34,45 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** Stores internal request type */
-    private int requestType = Dispatcher.UNKNOWN;
+	/**
+	 * Stores internal request type
+	 * 
+	 * @uml.property name="requestType" multiplicity="(0 1)"
+	 */
+	private int requestType = Dispatcher.UNKNOWN;
 
-    /** Stores internal service type. */
-    private int serviceType = Dispatcher.UNKNOWN;
+	/**
+	 * Stores internal service type.
+	 * 
+	 * @uml.property name="serviceType" multiplicity="(0 1)"
+	 */
+	private int serviceType = Dispatcher.UNKNOWN;
+
 
     /** Flags whether or not type has been set */
     private boolean gotType = false;
 
-    /**
-     * Gets the request type.  See Dispatcher for the available types.
-     *
-     * @return an int of the request type.
-     */
-    public int getRequestType() {
-        return requestType;
-    }
+	/**
+	 * Gets the request type.  See Dispatcher for the available types.
+	 * 
+	 * @return an int of the request type.
+	 * 
+	 * @uml.property name="requestType"
+	 */
+	public int getRequestType() {
+		return requestType;
+	}
 
-    /**
-     * Gets the service type, for now either WMS or WFS types of Dispatcher.
-     *
-     * @return an int of the service type.
-     */
-    public int getServiceType() {
-        return serviceType;
-    }
+	/**
+	 * Gets the service type, for now either WMS or WFS types of Dispatcher.
+	 * 
+	 * @return an int of the service type.
+	 * 
+	 * @uml.property name="serviceType"
+	 */
+	public int getServiceType() {
+		return serviceType;
+	}
 
     /**
      * Notes the start of the element and checks for request type.
@@ -75,6 +90,10 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
             // if at a query element, empty the current query, set insideQuery flag, and get query typeNames
             if (localName.equals("GetCapabilities")) {
                 this.requestType = Dispatcher.GET_CAPABILITIES_REQUEST;
+            } else if (localName.equals("DescribeCoverage")) {
+                this.requestType = Dispatcher.DESCRIBE_COVERAGE_REQUEST;
+            } else if (localName.equals("GetCoverage")) {
+                this.requestType = Dispatcher.GET_COVERAGE_REQUEST;
             } else if (localName.equals("DescribeFeatureType")) {
                 this.requestType = Dispatcher.DESCRIBE_FEATURE_TYPE_REQUEST;
             } else if (localName.equals("GetFeature")) {
@@ -98,7 +117,9 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
             if (atts.getLocalName(i).equals("service")) {
                 String service = atts.getValue(i);
 
-                if (service.equals("WFS")) {
+                if (service.equals("WCS")) {
+                    this.serviceType = Dispatcher.WCS_SERVICE;
+                } else if (service.equals("WFS")) {
                     this.serviceType = Dispatcher.WFS_SERVICE;
                 } else if (service.equals("WMS")) {
                     this.serviceType = Dispatcher.WMS_SERVICE;
