@@ -29,7 +29,7 @@
 
 <ul>
   <li>
-    <a href="http://geoserver.sourceforge.net/documentation/1.3.0">
+    <a href="http://geoserver.sourceforge.net/documentation/1.3.0-WCS">
       Documentation
     </a>
   </li>
@@ -50,13 +50,95 @@
   </li>
 </ul>
 
-<p>
-	<bean:message key="text.visitDemoPage"/>
-</p>
+<h2>
+  <bean:write name="WCS" property="title"/>
+</h2>
+<pre><code><bean:write name="WCS" property="abstract"/>
+</code></pre>
+<ul>
+  <li>
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs?request=GetCapabilities&service=WCS">
+      getCapabilities
+    </a>
+  </li>
+  <li>
+	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs/DescribeCoverage?coveragename=Arc_Sample">
+	  describeCoverage
+	</a>
+  </li>
+  <li>
+  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs/GetCoverage?coverage=Arc_Sample&format=png">
+  	  getCoverage
+  	</a>
+  </li>
+</ul>
 
 <p>
-	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs?request=GetCapabilities&service=WFS&version=1.0.0">WFS GetCapabilities</a><br>
-	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms?request=GetCapabilities&service=WMS&version=1.0.0">WMS GetCapabilities</a>
+	<bean:message key="text.newFeatureLogo"/>&nbsp;
+	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>mapPreview.do"/><bean:message key="text.newFeature1"/></a>
 </p>
+
+<h2>
+  <bean:write name="WFS" property="title"/>
+</h2>
+<pre><code><bean:write name="WFS" property="abstract"/>
+</code></pre>
+<ul>
+  <li>
+	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs?request=GetCapabilities&service=WFS&version=1.0.0">WFS GetCapabilities</a><br>
+  </li>
+  <li>
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wfs/TestWfsPost">
+      TestWfsPost
+    </a>
+  </li>
+</ul>
+
+<h2>
+  <bean:write name="WMS" property="title"/>
+</h2>
+<pre><code><bean:write name="WMS" property="abstract"/>
+</code></pre>
+
+<ul>
+  <li>
+	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms?request=GetCapabilities&service=WMS&version=1.0.0">WMS GetCapabilities</a>
+  </li>
+  <li>
+  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wms?bbox=-130,24,-66,50&styles=raster,population&Format=image/png&request=GetMap&layers=Img_Sample,topp:states&width=550&height=250&srs=EPSG:4326">
+  	  getMap
+  	</a>
+  </li>
+  <li>
+  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>data/quickWMS/demo.jsp">
+  	  <strong>quickWMS</strong>
+  	</a>
+  </li>
+</ul>
+
+<p>
+	<bean:message key="text.visitDemoPage"/>
+<bean:message key="text.welcome4"/>
+</p>
+
+<h2>
+  <bean:message key="text.welcome.mapbuilder"/>
+</h2>
+
+<p>
+<bean:message key="text.welcome.mapbuilder.detail"/>
+</p>
+<ul>
+  <li>
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>data/mbdemos/demo/wfs-t/index.html">
+      Mapbuilder/Geoserver (Tasmania)
+    </a>
+  </li>
+  <li>
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>data/mbdemos/demo/cite/index.html">
+      Mapbuilder/Geoserver (CITE)
+    </a>
+  </li>
+</ul>
 
 <br>

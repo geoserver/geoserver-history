@@ -20,7 +20,6 @@
 		<html:checkbox property="srsXmlStyle"/>
 	</td></tr>
 	
-
 	<tr><td align="right">
 		<span class="help" title="<bean:message key="help.citeConformanceHacks"/>">
 			<bean:message key="label.citeConformanceHacks"/>:
