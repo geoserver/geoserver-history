@@ -87,14 +87,14 @@ public class DataDataStoresSelectForm extends ActionForm {
         return errors;
     }
 
-    /**
-     * List of current DataStoreIds
-     *
-     * @return DOCUMENT ME!
+	/**
+	 * List of current DataStoreIds
+	 * 
+	 * @return DOCUMENT ME!
      */
-    public List getDataStoreIds() {
-        return dataStoreIds;
-    }
+	public List getDataStoreIds() {
+		return dataStoreIds;
+	}
 
     /**
      * DataStoreID selected by User.
@@ -106,9 +106,9 @@ public class DataDataStoresSelectForm extends ActionForm {
      *
      * @return Selected DataStoreID or <code>null</code> if nothing is selected
      */
-    public String getSelectedDataStoreId() {
-        return selectedDataStoreId;
-    }
+	public String getSelectedDataStoreId() {
+		return selectedDataStoreId;
+	}
 
     /**
      * The button the user hit to submit this form.
@@ -120,15 +120,15 @@ public class DataDataStoresSelectForm extends ActionForm {
      *
      * @return Either <code>edit</code> or <code>delete</code>
      */
-    public String getButtonAction() {
-        return buttonAction;
-    }
+	public String getButtonAction() {
+		return buttonAction;
+	}
 
-    public void setButtonAction(String string) {
-        buttonAction = string;
-    }
+	public void setButtonAction(String string) {
+		buttonAction = string;
+	}
 
-    public void setSelectedDataStoreId(String string) {
-        selectedDataStoreId = string;
-    }
+	public void setSelectedDataStoreId(String string) {
+		selectedDataStoreId = string;
+	}
 }

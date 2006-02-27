@@ -25,20 +25,35 @@ import org.vfny.geoserver.config.WMSConfig;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class WMSContentForm extends ActionForm {
-    private boolean enabled;
-    private String onlineResource;
 
-    /*
-     * Because of the way that STRUTS works, if the user does not check the enabled box,
-     * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()
-     * to see if it doesn't get called. This must be accessible, as ActionForms need to
-     * know about it -- there is no way we can tell whether we are about to be passed to
-     * an ActionForm or not.
-     *
-     * Probably a better way to do this, but I can't think of one.
-     * -rgould
-     */
-    private boolean enabledChecked = false;
+	/**
+	 * 
+	 * @uml.property name="enabled" multiplicity="(0 1)"
+	 */
+	private boolean enabled;
+
+	/**
+	 * 
+	 * @uml.property name="onlineResource" multiplicity="(0 1)"
+	 */
+	private String onlineResource;
+
+	/**
+	 * 
+	 * @uml.property name="enabledChecked" multiplicity="(0 1)"
+	 */
+	/*
+	 * Because of the way that STRUTS works, if the user does not check the enabled box,
+	 * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()
+	 * to see if it doesn't get called. This must be accessible, as ActionForms need to
+	 * know about it -- there is no way we can tell whether we are about to be passed to
+	 * an ActionForm or not.
+	 *
+	 * Probably a better way to do this, but I can't think of one.
+	 * -rgould
+	 */
+	private boolean enabledChecked = false;
+
 
     /**
      * DOCUMENT ME!
@@ -49,33 +64,40 @@ public class WMSContentForm extends ActionForm {
         return enabled;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getOnlineResource() {
-        return onlineResource;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="onlineResource"
+	 */
+	public String getOnlineResource() {
+		return onlineResource;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param b
-     */
-    public void setEnabled(boolean b) {
-        enabledChecked = true;
-        enabled = b;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="enabled"
+	 */
+	public void setEnabled(boolean b) {
+		enabledChecked = true;
+		enabled = b;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setOnlineResource(String string) {
-        onlineResource = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="onlineResource"
+	 */
+	public void setOnlineResource(String string) {
+		onlineResource = string;
+	}
+
 
     public void reset(ActionMapping arg0, HttpServletRequest arg1) {
         super.reset(arg0, arg1);
@@ -124,12 +146,15 @@ public class WMSContentForm extends ActionForm {
         return enabledChecked;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param b
-     */
-    public void setEnabledChecked(boolean b) {
-        enabledChecked = b;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="enabledChecked"
+	 */
+	public void setEnabledChecked(boolean b) {
+		enabledChecked = b;
+	}
+
 }

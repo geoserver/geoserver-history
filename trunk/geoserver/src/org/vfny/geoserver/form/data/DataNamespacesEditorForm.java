@@ -28,25 +28,48 @@ import org.vfny.geoserver.util.Requests;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class DataNamespacesEditorForm extends ActionForm {
-    private String URI;
-    private boolean _default;
-    private String prefix;
 
+	/**
+	 * 
+	 * @uml.property name="uRI" multiplicity="(0 1)"
+	 */
+	private String URI;
 
+	/**
+	 * 
+	 * @uml.property name="_default" multiplicity="(0 1)"
+	 */
+	private boolean _default;
 
-    private HttpServletRequest request;
+	/**
+	 * 
+	 * @uml.property name="prefix" multiplicity="(0 1)"
+	 */
+	private String prefix;
 
-    /*
-     * Because of the way that STRUTS works, if the user does not check the default box,
-     * or unchecks it, set_default() is never called, thus we must monitor set_default()
-     * to see if it doesn't get called. This must be accessible, as ActionForms need to
-     * know about it -- there is no way we can tell whether we are about to be passed to
-     * an ActionForm or not.
-     *
-     * Probably a better way to do this, but I can't think of one.
-     * -rgould
-     */
-    private boolean defaultChecked = false;
+	/**
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private HttpServletRequest request;
+
+	/**
+	 * 
+	 * @uml.property name="defaultChecked" multiplicity="(0 1)"
+	 */
+	/*
+	 * Because of the way that STRUTS works, if the user does not check the default box,
+	 * or unchecks it, set_default() is never called, thus we must monitor set_default()
+	 * to see if it doesn't get called. This must be accessible, as ActionForms need to
+	 * know about it -- there is no way we can tell whether we are about to be passed to
+	 * an ActionForm or not.
+	 *
+	 * Probably a better way to do this, but I can't think of one.
+	 * -rgould
+	 */
+	private boolean defaultChecked = false;
+
 
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -103,51 +126,62 @@ public class DataNamespacesEditorForm extends ActionForm {
         return _default;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getPrefix() {
-        return prefix;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="prefix"
+	 */
+	public String getPrefix() {
+		return prefix;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public String getURI() {
-        return URI;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="uRI"
+	 */
+	public String getURI() {
+		return URI;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param b
-     */
-    public void set_default(boolean b) {
-        defaultChecked = true;
-        _default = b;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="_default"
+	 */
+	public void set_default(boolean b) {
+		defaultChecked = true;
+		_default = b;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setPrefix(String string) {
-        prefix = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="prefix"
+	 */
+	public void setPrefix(String string) {
+		prefix = string;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param string
-     */
-    public void setURI(String string) {
-        URI = string;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="uRI"
+	 */
+	public void setURI(String string) {
+		URI = string;
+	}
+
 
     /**
      * DOCUMENT ME!
@@ -158,16 +192,15 @@ public class DataNamespacesEditorForm extends ActionForm {
         return defaultChecked;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param b
-     */
-    public void setDefaultChecked(boolean b) {
-        defaultChecked = b;
-    }
-
-
-
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="defaultChecked"
+	 */
+	public void setDefaultChecked(boolean b) {
+		defaultChecked = b;
+	}
 
 }

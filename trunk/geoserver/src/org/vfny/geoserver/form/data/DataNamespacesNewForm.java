@@ -25,7 +25,13 @@ import org.apache.struts.action.ActionMapping;
  * @version $Id: DataNamespacesNewForm.java,v 1.4 2004/03/02 10:06:42 jive Exp $
  */
 public class DataNamespacesNewForm extends ActionForm {
-    private String prefix;
+
+	/**
+	 * 
+	 * @uml.property name="prefix" multiplicity="(0 1)"
+	 */
+	private String prefix;
+
     
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -60,6 +66,8 @@ public class DataNamespacesNewForm extends ActionForm {
 	 * Access prefix property.
 	 * 
 	 * @return Returns the prefix.
+	 * 
+	 * @uml.property name="prefix"
 	 */
 	public String getPrefix() {
 		return prefix;
@@ -67,8 +75,10 @@ public class DataNamespacesNewForm extends ActionForm {
 
 	/**
 	 * Set prefix to prefix.
-	 *
+	 * 
 	 * @param prefix The prefix to set.
+	 * 
+	 * @uml.property name="prefix"
 	 */
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;

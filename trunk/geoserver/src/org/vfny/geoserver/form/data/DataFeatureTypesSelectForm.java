@@ -23,8 +23,19 @@ import org.vfny.geoserver.config.DataConfig;
  *         Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class DataFeatureTypesSelectForm extends ActionForm {
-    private String selectedFeatureTypeName;
-    private String buttonAction;
+
+	/**
+	 * 
+	 * @uml.property name="selectedFeatureTypeName" multiplicity="(0 1)"
+	 */
+	private String selectedFeatureTypeName;
+
+	/**
+	 * 
+	 * @uml.property name="buttonAction" multiplicity="(0 1)"
+	 */
+	private String buttonAction;
+
 
     public void reset(ActionMapping arg0, HttpServletRequest arg1) {
         super.reset(arg0, arg1);
@@ -37,23 +48,28 @@ public class DataFeatureTypesSelectForm extends ActionForm {
         return errors;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return Returns the selectedFeatureTypeName.
-     */
-    public String getSelectedFeatureTypeName() {
-        return selectedFeatureTypeName;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return Returns the selectedFeatureTypeName.
+	 * 
+	 * @uml.property name="selectedFeatureTypeName"
+	 */
+	public String getSelectedFeatureTypeName() {
+		return selectedFeatureTypeName;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param selectedFeatureTypeName The selectedFeatureTypeName to set.
-     */
-    public void setSelectedFeatureTypeName(String selectedFeatureTypeName) {
-        this.selectedFeatureTypeName = selectedFeatureTypeName;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param selectedFeatureTypeName The selectedFeatureTypeName to set.
+	 * 
+	 * @uml.property name="selectedFeatureTypeName"
+	 */
+	public void setSelectedFeatureTypeName(String selectedFeatureTypeName) {
+		this.selectedFeatureTypeName = selectedFeatureTypeName;
+	}
+
 
     public Set getTypeNames() {
         ServletContext context = getServlet().getServletContext();
@@ -62,21 +78,26 @@ public class DataFeatureTypesSelectForm extends ActionForm {
         return config.getFeaturesTypes().keySet();
     }
 
-    /**
-     * Access buttonAction property.
-     *
-     * @return Returns the buttonAction.
-     */
-    public String getButtonAction() {
-        return buttonAction;
-    }
+	/**
+	 * Access buttonAction property.
+	 * 
+	 * @return Returns the buttonAction.
+	 * 
+	 * @uml.property name="buttonAction"
+	 */
+	public String getButtonAction() {
+		return buttonAction;
+	}
 
-    /**
-     * Set buttonAction to buttonAction.
-     *
-     * @param buttonAction The buttonAction to set.
-     */
-    public void setButtonAction(String buttonAction) {
-        this.buttonAction = buttonAction;
-    }
+	/**
+	 * Set buttonAction to buttonAction.
+	 * 
+	 * @param buttonAction The buttonAction to set.
+	 * 
+	 * @uml.property name="buttonAction"
+	 */
+	public void setButtonAction(String buttonAction) {
+		this.buttonAction = buttonAction;
+	}
+
 }

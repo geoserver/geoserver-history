@@ -42,12 +42,26 @@ import org.vfny.geoserver.config.validation.ValidationConfig;
  * @version $Id: ValidationTestNewForm.java,v 1.3 2004/04/19 22:36:57 emperorkefka Exp $
  */
 public class ValidationTestNewForm extends ActionForm {
-    
-    private String newName;
-    private String selectedPlugIn;
-    
-    //Key is the PlugIn name, Value is the description
-    private Collection plugInConfigs;
+
+	/**
+	 * 
+	 * @uml.property name="newName" multiplicity="(0 1)"
+	 */
+	private String newName;
+
+	/**
+	 * 
+	 * @uml.property name="selectedPlugIn" multiplicity="(0 1)"
+	 */
+	private String selectedPlugIn;
+
+	/**
+	 * 
+	 * @uml.property name="plugInConfigs" multiplicity="(0 1)"
+	 */
+	//Key is the PlugIn name, Value is the description
+	private Collection plugInConfigs;
+
     private Set plugInNames;
     
     public void reset(ActionMapping arg0, HttpServletRequest request) {
@@ -65,20 +79,27 @@ public class ValidationTestNewForm extends ActionForm {
         ActionErrors errors = new ActionErrors();
 
         return errors;
-    }    
-    
-    public Collection getPlugInConfigs(){
-        return plugInConfigs;
     }
+
+	/**
+	 * 
+	 * @uml.property name="plugInConfigs"
+	 */
+	public Collection getPlugInConfigs() {
+		return plugInConfigs;
+	}
+
     
     public Set getPlugIns() {
     	return plugInNames;
     }
-    
+
 	/**
 	 * Access newName property.
 	 * 
 	 * @return Returns the newName.
+	 * 
+	 * @uml.property name="newName"
 	 */
 	public String getNewName() {
 		return newName;
@@ -86,8 +107,10 @@ public class ValidationTestNewForm extends ActionForm {
 
 	/**
 	 * Set newName to newName.
-	 *
+	 * 
 	 * @param newName The newName to set.
+	 * 
+	 * @uml.property name="newName"
 	 */
 	public void setNewName(String newName) {
 		this.newName = newName;
@@ -97,6 +120,8 @@ public class ValidationTestNewForm extends ActionForm {
 	 * Access selectedPlugIn property.
 	 * 
 	 * @return Returns the selectedPlugIn.
+	 * 
+	 * @uml.property name="selectedPlugIn"
 	 */
 	public String getSelectedPlugIn() {
 		return selectedPlugIn;
@@ -104,8 +129,10 @@ public class ValidationTestNewForm extends ActionForm {
 
 	/**
 	 * Set selectedPlugIn to selectedPlugIn.
-	 *
+	 * 
 	 * @param selectedPlugIn The selectedPlugIn to set.
+	 * 
+	 * @uml.property name="selectedPlugIn"
 	 */
 	public void setSelectedPlugIn(String selectedPlugIn) {
 		this.selectedPlugIn = selectedPlugIn;

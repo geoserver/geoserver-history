@@ -34,15 +34,52 @@ import org.vfny.geoserver.config.validation.ValidationConfig;
  * @version $Id: ValidationTestEditorForm.java,v 1.5 2004/04/21 21:30:51 emperorkefka Exp $
  */
 public class ValidationTestEditorForm extends ActionForm {
+
+	/**
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	private String name;
+
+	/**
+	 * 
+	 * @uml.property name="description" multiplicity="(0 1)"
+	 */
+	private String description;
+
+	/**
+	 * 
+	 * @uml.property name="plugInName" multiplicity="(0 1)"
+	 */
+	private String plugInName;
+
+	/**
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private HttpServletRequest request;
+
+	/**
+	 * 
+	 * @uml.property name="attributeKeys"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List attributeKeys;
+
+	/**
+	 * 
+	 * @uml.property name="attributeHelps" multiplicity="(0 1)"
+	 */
+	private List attributeHelps;
+
+	/**
+	 * 
+	 * @uml.property name="attributeValues"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List attributeValues;
     
-    private String name;
-    private String description;
-    private String plugInName;
-    
-    private HttpServletRequest request;
-    private List attributeKeys;
-    private List attributeHelps;
-    private List attributeValues;    
     
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -128,25 +165,32 @@ public class ValidationTestEditorForm extends ActionForm {
         }
         return map;
     }
-    /**
-     * List of attribtue keys as text.
-     * <p>
-     * These keys are really the propertyName associated with a BeanInfo
-     * </p>
-     */
-    public List getAttributeKeys() {
-        return attributeKeys;
-    }
-    /**
-     * List of attribtue vales as text.
-     * <p>
-     * To convert this value to a real java object you will need to use
-     * a BeanInfo Property descriptor.
-     * </p>
-     */
-    public List getAttributeValues() {
-    	return attributeValues;        
-    }
+
+	/**
+	 * List of attribtue keys as text.
+	 * <p>
+	 * These keys are really the propertyName associated with a BeanInfo
+	 * </p>
+	 * 
+	 * @uml.property name="attributeKeys"
+	 */
+	public List getAttributeKeys() {
+		return attributeKeys;
+	}
+
+	/**
+	 * List of attribtue vales as text.
+	 * <p>
+	 * To convert this value to a real java object you will need to use
+	 * a BeanInfo Property descriptor.
+	 * </p>
+	 * 
+	 * @uml.property name="attributeValues"
+	 */
+	public List getAttributeValues() {
+		return attributeValues;
+	}
+
     /** Help text gernated from PropertyDescriptor.getShortDescription() */
     public String[] getAttributeHelps() {
     	return (String[]) attributeHelps.toArray(new String[attributeHelps.size()]);
@@ -154,20 +198,37 @@ public class ValidationTestEditorForm extends ActionForm {
     public String getAttributeKey(int index) {
     	return (String) attributeKeys.get(index);
     }
-    public void setAttributeValues(List list) {
-    	attributeValues = list;
-    }
-    public void setAttributeKeys(List list) {
-    	attributeKeys = list;
-    }
-    public void setAttributeHelps(List list) {
-    	attributeHelps = list;
-    }
-    
+
+	/**
+	 * 
+	 * @uml.property name="attributeValues"
+	 */
+	public void setAttributeValues(List list) {
+		attributeValues = list;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="attributeKeys"
+	 */
+	public void setAttributeKeys(List list) {
+		attributeKeys = list;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="attributeHelps"
+	 */
+	public void setAttributeHelps(List list) {
+		attributeHelps = list;
+	}
+
 	/**
 	 * Access description property.
 	 * 
 	 * @return Returns the description.
+	 * 
+	 * @uml.property name="description"
 	 */
 	public String getDescription() {
 		return description;
@@ -175,8 +236,10 @@ public class ValidationTestEditorForm extends ActionForm {
 
 	/**
 	 * Set description to description.
-	 *
+	 * 
 	 * @param description The description to set.
+	 * 
+	 * @uml.property name="description"
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -186,6 +249,8 @@ public class ValidationTestEditorForm extends ActionForm {
 	 * Access name property.
 	 * 
 	 * @return Returns the name.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public String getName() {
 		return name;
@@ -193,8 +258,10 @@ public class ValidationTestEditorForm extends ActionForm {
 
 	/**
 	 * Set name to name.
-	 *
+	 * 
 	 * @param name The name to set.
+	 * 
+	 * @uml.property name="name"
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -204,10 +271,13 @@ public class ValidationTestEditorForm extends ActionForm {
 	 * Access plugInName property.
 	 * 
 	 * @return Returns the plugInName.
+	 * 
+	 * @uml.property name="plugInName"
 	 */
 	public String getPlugInName() {
 		return plugInName;
 	}
+
     
     public String getPlugInDescription() {
         ValidationConfig validationConfig = (ValidationConfig) this.getServlet().getServletContext().getAttribute(ValidationConfig.CONFIG_KEY);

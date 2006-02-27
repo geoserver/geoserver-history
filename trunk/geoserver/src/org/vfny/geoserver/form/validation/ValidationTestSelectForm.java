@@ -29,11 +29,26 @@ import org.vfny.geoserver.config.validation.ValidationConfig;
  * @version $Id: ValidationTestSelectForm.java,v 1.1 2004/01/31 00:27:28 jive Exp $
  */
 public class ValidationTestSelectForm extends ActionForm {
-    
-    private String selectedTest;
-    private String buttonAction;
-    
-    private HttpServletRequest request;
+
+	/**
+	 * 
+	 * @uml.property name="selectedTest" multiplicity="(0 1)"
+	 */
+	private String selectedTest;
+
+	/**
+	 * 
+	 * @uml.property name="buttonAction" multiplicity="(0 1)"
+	 */
+	private String buttonAction;
+
+	/**
+	 * 
+	 * @uml.property name="request"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private HttpServletRequest request;
+
     
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -55,10 +70,13 @@ public class ValidationTestSelectForm extends ActionForm {
         TestSuiteConfig suiteConfig = (TestSuiteConfig) request.getSession().getAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
         return new TreeSet(suiteConfig.getTests().keySet());
     }
+
 	/**
 	 * Access selectedTest property.
 	 * 
 	 * @return Returns the selectedTest.
+	 * 
+	 * @uml.property name="selectedTest"
 	 */
 	public String getSelectedTest() {
 		return selectedTest;
@@ -66,8 +84,10 @@ public class ValidationTestSelectForm extends ActionForm {
 
 	/**
 	 * Set selectedTest to selectedTest.
-	 *
+	 * 
 	 * @param selectedTest The selectedTest to set.
+	 * 
+	 * @uml.property name="selectedTest"
 	 */
 	public void setSelectedTest(String selectedTest) {
 		this.selectedTest = selectedTest;
@@ -77,6 +97,8 @@ public class ValidationTestSelectForm extends ActionForm {
 	 * Access buttonAction property.
 	 * 
 	 * @return Returns the buttonAction.
+	 * 
+	 * @uml.property name="buttonAction"
 	 */
 	public String getButtonAction() {
 		return buttonAction;
@@ -84,8 +106,10 @@ public class ValidationTestSelectForm extends ActionForm {
 
 	/**
 	 * Set buttonAction to buttonAction.
-	 *
+	 * 
 	 * @param buttonAction The buttonAction to set.
+	 * 
+	 * @uml.property name="buttonAction"
 	 */
 	public void setButtonAction(String buttonAction) {
 		this.buttonAction = buttonAction;

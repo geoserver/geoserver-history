@@ -39,7 +39,12 @@ import org.apache.struts.action.ActionMapping;
  */
 public class ValidationTestSuiteNewForm extends ActionForm {
 
-    private String newName;
+	/**
+	 * 
+	 * @uml.property name="newName" multiplicity="(0 1)"
+	 */
+	private String newName;
+
     
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -52,11 +57,14 @@ public class ValidationTestSuiteNewForm extends ActionForm {
         ActionErrors errors = new ActionErrors();
 
         return errors;
-    }    
+    }
+
 	/**
 	 * Access newName property.
 	 * 
 	 * @return Returns the newName.
+	 * 
+	 * @uml.property name="newName"
 	 */
 	public String getNewName() {
 		return newName;
@@ -64,8 +72,10 @@ public class ValidationTestSuiteNewForm extends ActionForm {
 
 	/**
 	 * Set newName to newName.
-	 *
+	 * 
 	 * @param newName The newName to set.
+	 * 
+	 * @uml.property name="newName"
 	 */
 	public void setNewName(String newName) {
 		this.newName = newName;

@@ -27,9 +27,29 @@ import org.apache.struts.util.MessageResources;
  * @version $Id: LoginForm.java,v 1.2 2004/02/09 23:30:06 dmzwiers Exp $
  */
 public class LoginForm extends ActionForm {
+	/**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3258410616858358324L;
+
+	/**
+	 * 
+	 * @uml.property name="username" multiplicity="(0 1)"
+	 */
 	private String username;
-    private String password;
-    private String confirm;
+
+	/**
+	 * 
+	 * @uml.property name="password" multiplicity="(0 1)"
+	 */
+	private String password;
+
+	/**
+	 * 
+	 * @uml.property name="confirm" multiplicity="(0 1)"
+	 */
+	private String confirm;
+
 
     /**
      * 
@@ -92,10 +112,13 @@ public class LoginForm extends ActionForm {
 
         return errors;
     }
+
 	/**
 	 * Access password property.
 	 * 
 	 * @return Returns the password.
+	 * 
+	 * @uml.property name="password"
 	 */
 	public String getPassword() {
 		return password;
@@ -103,8 +126,10 @@ public class LoginForm extends ActionForm {
 
 	/**
 	 * Set password to password.
-	 *
+	 * 
 	 * @param password The password to set.
+	 * 
+	 * @uml.property name="password"
 	 */
 	public void setPassword(String password) {
 		this.password = password;
@@ -114,6 +139,8 @@ public class LoginForm extends ActionForm {
 	 * Access username property.
 	 * 
 	 * @return Returns the username.
+	 * 
+	 * @uml.property name="username"
 	 */
 	public String getUsername() {
 		return username;
@@ -121,18 +148,29 @@ public class LoginForm extends ActionForm {
 
 	/**
 	 * Set username to username.
-	 *
+	 * 
 	 * @param username The username to set.
+	 * 
+	 * @uml.property name="username"
 	 */
-    public void setUsername(String username) {
-	this.username = username;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public String getConfirm() {
-	return confirm;
-    }
+	/**
+	 * 
+	 * @uml.property name="confirm"
+	 */
+	public String getConfirm() {
+		return confirm;
+	}
 
-    public void setConfirm(String confirm) {
-    	this.confirm = confirm;
-    }
+	/**
+	 * 
+	 * @uml.property name="confirm"
+	 */
+	public void setConfirm(String confirm) {
+		this.confirm = confirm;
+	}
+
 }

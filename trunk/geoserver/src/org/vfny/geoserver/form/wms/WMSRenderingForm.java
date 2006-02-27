@@ -59,7 +59,6 @@ public class WMSRenderingForm extends ActionForm {
         svgAntiAlias = config.getSvgAntiAlias();
 	}
 
-	
     public ActionErrors validate(ActionMapping mapping,
         HttpServletRequest request) {
         

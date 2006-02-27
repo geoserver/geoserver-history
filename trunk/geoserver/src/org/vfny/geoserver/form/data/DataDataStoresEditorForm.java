@@ -26,10 +26,10 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFactorySpi.Param;
-import org.vfny.geoserver.action.data.DataStoreUtils;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.util.DataStoreUtils;
 import org.vfny.geoserver.util.Requests;
 
 
@@ -45,32 +45,62 @@ import org.vfny.geoserver.util.Requests;
  * @author Richard Gould, Refractions Research
  */
 public class DataDataStoresEditorForm extends ActionForm {
-    /** Help text for Params if available */
-    private ArrayList paramHelp;
 
-    /**
-     * Used to identify the DataStore being edited. Maybe we should grab this
-     * from session?
-     */
-    private String dataStoreId;
+	/**
+	 * Help text for Params if available
+	 * 
+	 * @uml.property name="paramHelp"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private ArrayList paramHelp;
 
-    /** Enabled status of DataStore */
-    private boolean enabled;
+	/**
+	 * Used to identify the DataStore being edited. Maybe we should grab this
+	 * from session?
+	 * 
+	 * @uml.property name="dataStoreId" multiplicity="(0 1)"
+	 */
+	private String dataStoreId;
 
-    /* NamespaceID used for DataStore content */
-    private String namespaceId;
+	/**
+	 * Enabled status of DataStore
+	 * 
+	 * @uml.property name="enabled" multiplicity="(0 1)"
+	 */
+	private boolean enabled;
 
-    /* Description of DataStore (abstract?) */
-    private String description;
+	/**
+	 * 
+	 * @uml.property name="namespaceId" multiplicity="(0 1)"
+	 */
+	/* NamespaceID used for DataStore content */
+	private String namespaceId;
 
-    // These are not stored in a single map so we can access them
-    // easily from JSP page
-    //
+	/**
+	 * 
+	 * @uml.property name="description" multiplicity="(0 1)"
+	 */
+	/* Description of DataStore (abstract?) */
+	private String description;
 
-    /** String representation of connection parameter keys */
-    private List paramKeys;
+	// These are not stored in a single map so we can access them
+	// easily from JSP page
+	//
 
-    /** String representation of connection parameter values */
+	/**
+	 * String representation of connection parameter keys
+	 * 
+	 * @uml.property name="paramKeys"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
+	private List paramKeys;
+
+	/**
+	 * String representation of connection parameter values
+	 * 
+	 * @uml.property name="paramValues"
+	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+	 */
     private List paramValues;
 
     /** String representation of connection paramter types */
@@ -83,17 +113,20 @@ public class DataDataStoresEditorForm extends ActionForm {
     //
 
     /** Available NamespaceIds */
-    private SortedSet namespaces;
+	private SortedSet namespaces;
 
-    /**
-     * Because of the way that STRUTS works, if the user does not check the
-     * enabled box, or unchecks it, setEnabled() is never called, thus we must
-     * monitor setEnabled() to see if it doesn't get called. This must be
-     * accessible, as ActionForms need to know about it -- there is no way we
-     * can tell whether we are about to be passed to an ActionForm or not.
-     * Probably a better way to do this, but I can't think of one. -rgould
-     */
-    private boolean enabledChecked = false;
+	/**
+	 * Because of the way that STRUTS works, if the user does not check the
+	 * enabled box, or unchecks it, setEnabled() is never called, thus we must
+	 * monitor setEnabled() to see if it doesn't get called. This must be
+	 * accessible, as ActionForms need to know about it -- there is no way we
+	 * can tell whether we are about to be passed to an ActionForm or not.
+	 * Probably a better way to do this, but I can't think of one. -rgould
+	 * 
+	 * @uml.property name="enabledChecked" multiplicity="(0 1)"
+	 */
+	private boolean enabledChecked = false;
+
 
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
@@ -225,7 +258,7 @@ public class DataDataStoresEditorForm extends ActionForm {
             try {
                 value = param.lookUp(getParams());
                 if(value instanceof String)
-                	value = param.parse((String)value);
+                value = param.parse((String)value);
             } catch (IOException erp) {
                 errors.add("paramValue[" + i + "]",
                     new ActionError("error.dataStoreEditor.param.parse", key,
@@ -304,14 +337,17 @@ public class DataDataStoresEditorForm extends ActionForm {
         return map;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public List getParamKeys() {
-        return paramKeys;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="paramKeys"
+	 */
+	public List getParamKeys() {
+		return paramKeys;
+	}
+
 
     /**
      * DOCUMENT ME!
@@ -345,31 +381,36 @@ public class DataDataStoresEditorForm extends ActionForm {
         paramValues.set(index, value);
     }
 
-    /**
-     * getDataStoreId purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getDataStoreId() {
-        return dataStoreId;
-    }
+	/**
+	 * getDataStoreId purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="dataStoreId"
+	 */
+	public String getDataStoreId() {
+		return dataStoreId;
+	}
 
-    /**
-     * getDescription purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getDescription() {
-        return description;
-    }
+	/**
+	 * getDescription purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="description"
+	 */
+	public String getDescription() {
+		return description;
+	}
+
 
     /**
      * isEnabled purpose.
@@ -384,110 +425,127 @@ public class DataDataStoresEditorForm extends ActionForm {
         return enabled;
     }
 
-    /**
-     * getNamespaces purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public SortedSet getNamespaces() {
-        return namespaces;
-    }
+	/**
+	 * getNamespaces purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="namespaces"
+	 */
+	public SortedSet getNamespaces() {
+		return namespaces;
+	}
 
-    /**
-     * getParamValues purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public List getParamValues() {
-        return paramValues;
-    }
+	/**
+	 * getParamValues purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="paramValues"
+	 */
+	public List getParamValues() {
+		return paramValues;
+	}
 
-    /**
-     * setDescription purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setDescription(String string) {
-        description = string;
-    }
+	/**
+	 * setDescription purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="description"
+	 */
+	public void setDescription(String string) {
+		description = string;
+	}
 
-    /**
-     * setEnabled purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param b
-     */
-    public void setEnabled(boolean b) {
-        setEnabledChecked(true);
-        enabled = b;
-    }
+	/**
+	 * setEnabled purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param b
+	 * 
+	 * @uml.property name="enabled"
+	 */
+	public void setEnabled(boolean b) {
+		setEnabledChecked(true);
+		enabled = b;
+	}
 
-    /**
-     * setParamKeys purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param list
-     */
-    public void setParamKeys(List list) {
-        paramKeys = list;
-    }
+	/**
+	 * setParamKeys purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param list
+	 * 
+	 * @uml.property name="paramKeys"
+	 */
+	public void setParamKeys(List list) {
+		paramKeys = list;
+	}
 
-    /**
-     * setParamValues purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param list
-     */
-    public void setParamValues(List list) {
-        paramValues = list;
-    }
+	/**
+	 * setParamValues purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param list
+	 * 
+	 * @uml.property name="paramValues"
+	 */
+	public void setParamValues(List list) {
+		paramValues = list;
+	}
 
-    /**
-     * getNamespaceId purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     */
-    public String getNamespaceId() {
-        return namespaceId;
-    }
+	/**
+	 * getNamespaceId purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @return
+	 * 
+	 * @uml.property name="namespaceId"
+	 */
+	public String getNamespaceId() {
+		return namespaceId;
+	}
 
-    /**
-     * setNamespaceId purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param string
-     */
-    public void setNamespaceId(String string) {
-        namespaceId = string;
-    }
+	/**
+	 * setNamespaceId purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param string
+	 * 
+	 * @uml.property name="namespaceId"
+	 */
+	public void setNamespaceId(String string) {
+		namespaceId = string;
+	}
+
 
     /**
      * enabledChecked property
@@ -498,14 +556,16 @@ public class DataDataStoresEditorForm extends ActionForm {
         return enabledChecked;
     }
 
-    /**
-     * enabledChecked property
-     *
-     * @param b DOCUMENT ME!
-     */
-    public void setEnabledChecked(boolean b) {
-        enabledChecked = b;
-    }
+	/**
+	 * enabledChecked property
+	 * 
+	 * @param b DOCUMENT ME!
+	 * 
+	 * @uml.property name="enabledChecked"
+	 */
+	public void setEnabledChecked(boolean b) {
+		enabledChecked = b;
+	}
 
     /**
      * Index property paramHelp
