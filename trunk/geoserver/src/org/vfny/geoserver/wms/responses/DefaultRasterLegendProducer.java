@@ -10,9 +10,14 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
 
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
@@ -26,11 +31,14 @@ import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.PolygonSymbolizer;
+import org.geotools.styling.RasterSymbolizer;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
@@ -114,8 +122,13 @@ public abstract class DefaultRasterLegendProducer
     /** top & bottom padding percentaje factor for the legend */
     private static final float vpaddingFactor = 0.15f;
 
-    /** The image produced at <code>produceLegendGraphic</code> */
-    private BufferedImage legendGraphic;
+	/**
+	 * The image produced at <code>produceLegendGraphic</code>
+	 * 
+	 * @uml.property name="legendGraphic" multiplicity="(0 1)"
+	 */
+	private BufferedImage legendGraphic;
+
 
     /**
      * set to <code>true</code> when <code>abort()</code> gets called,
@@ -124,23 +137,33 @@ public abstract class DefaultRasterLegendProducer
      */
     private boolean renderingStopRequested;
 
-    /**
-     * Just a holder to avoid creating many polygon shapes from inside
-     * <code>getSampleShape()</code>
-     */
-    private LiteShape2 sampleRect;
+	/**
+	 * Just a holder to avoid creating many polygon shapes from inside
+	 * <code>getSampleShape()</code>
+	 * 
+	 * @uml.property name="sampleRect"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private LiteShape2 sampleRect;
 
-    /**
-     * Just a holder to avoid creating many line shapes from inside
-     * <code>getSampleShape()</code>
-     */
-    private LiteShape2 sampleLine;
+	/**
+	 * Just a holder to avoid creating many line shapes from inside
+	 * <code>getSampleShape()</code>
+	 * 
+	 * @uml.property name="sampleLine"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private LiteShape2 sampleLine;
 
-    /**
-     * Just a holder to avoid creating many point shapes from inside
-     * <code>getSampleShape()</code>
-     */
-    private LiteShape2 samplePoint;
+	/**
+	 * Just a holder to avoid creating many point shapes from inside
+	 * <code>getSampleShape()</code>
+	 * 
+	 * @uml.property name="samplePoint"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private LiteShape2 samplePoint;
+
 
     /**
      * Default constructor. Subclasses may provide its own with a String
@@ -206,11 +229,27 @@ public abstract class DefaultRasterLegendProducer
 
             for (int sIdx = 0; sIdx < symbolizers.length; sIdx++) {
                 Symbolizer symbolizer = symbolizers[sIdx];
-                Style2D style2d = styleFactory.createStyle(sampleFeature,
-                        symbolizer, scaleRange);
+                if ( symbolizer instanceof RasterSymbolizer ) {
+            		BufferedImage imgShape = new BufferedImage(w, h,
+                            BufferedImage.TYPE_INT_ARGB);
+                	try {
+                		imgShape = ImageIO.read(new URL(request.getBaseUrl() + "images/rasterLegend.png"));
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+						throw new WmsException(e);
+					} catch (IOException e) {
+						e.printStackTrace();
+						throw new WmsException(e);
+					}
+					
+					graphics.drawImage(imgShape,0 , 0, w, h, null);
+                } else {
+                    Style2D style2d = styleFactory.createStyle(sampleFeature,
+                            symbolizer, scaleRange);
                 LiteShape2 shape = getSampleShape(symbolizer, w, h);
 
-                shapePainter.paint(graphics, shape, style2d, scaleDenominator);
+					shapePainter.paint(graphics, shape, style2d, scaleDenominator);
+                }
             }
 
             legendsStack.add(image);
@@ -303,6 +342,8 @@ public abstract class DefaultRasterLegendProducer
      * @return an appropiate Line2D, Rectangle2D or LiteShape(Point) for the
      *         symbolizer, wether it is a LineSymbolizer, a PolygonSymbolizer,
      *         or a Point ot Text Symbolizer
+     * @throws FactoryException
+     * @throws TransformException
      *
      * @throws IllegalArgumentException if an unknown symbolizer impl was
      *         passed in.
@@ -331,7 +372,7 @@ public abstract class DefaultRasterLegendProducer
             }
 
             sampleShape = this.sampleLine;
-        } else if (symbolizer instanceof PolygonSymbolizer) {
+        } else if ( (symbolizer instanceof PolygonSymbolizer) || (symbolizer instanceof RasterSymbolizer) ) {
             if (this.sampleRect == null) {
                 final float w = legendWidth - (2 * hpad);
                 final float h = legendHeight - (2 * vpad);
@@ -468,20 +509,22 @@ public abstract class DefaultRasterLegendProducer
         && ((r.getMaxScaleDenominator() + TOLERANCE) > scaleDenominator));
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     *
-     * @throws IllegalStateException DOCUMENT ME!
-     */
-    public BufferedImage getLegendGraphic() {
-        if (this.legendGraphic == null) {
-            throw new IllegalStateException();
-        }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return
+	 * 
+	 * @throws IllegalStateException DOCUMENT ME!
+	 * 
+	 * @uml.property name="legendGraphic"
+	 */
+	public BufferedImage getLegendGraphic() {
+		if (this.legendGraphic == null) {
+			throw new IllegalStateException();
+		}
 
-        return this.legendGraphic;
-    }
+		return this.legendGraphic;
+	}
 
     /**
      * Asks the rendering to stop processing.

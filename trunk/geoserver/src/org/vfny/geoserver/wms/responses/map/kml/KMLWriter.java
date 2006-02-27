@@ -4,12 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
 import java.awt.Color;
 import java.awt.Paint;
 import java.io.IOException;
@@ -18,44 +12,47 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.media.jai.util.Range;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerException;
 
 import org.geotools.data.DataSourceException;
-import org.geotools.data.FeatureReader;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.IllegalAttributeException;
+import org.geotools.filter.Filter;
+import org.geotools.gml.producer.GeometryTransformer;
 import org.geotools.renderer.style.PolygonStyle2D;
 import org.geotools.renderer.style.SLDStyleFactory;
+import org.geotools.renderer.style.Style2D;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.PolygonSymbolizer;
+import org.geotools.styling.RasterSymbolizer;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
+import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
 import org.vfny.geoserver.wms.WMSMapContext;
-import com.vividsolutions.jts.geom.Envelope;
-import java.util.Iterator;
-import javax.xml.transform.TransformerException;
-import org.geotools.filter.Filter;
-import org.geotools.gml.producer.GeometryTransformer;
 
-import org.geotools.renderer.style.Style2D;
-import org.geotools.styling.RasterSymbolizer;
-import org.geotools.styling.TextSymbolizer;
-import org.opengis.referencing.operation.MathTransform2D;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
 
 
 /**
@@ -125,7 +122,7 @@ public class KMLWriter extends OutputStreamWriter {
         this.mapContext = mapContext;
         
         transformer = new GeometryTransformer();
-        transformer.setUseDummyZ(true);
+        //transformer.setUseDummyZ(true);
         transformer.setOmitXMLDeclaration(true);
         transformer.setNamespaceDeclarationEnabled(true);
     }

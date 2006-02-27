@@ -88,8 +88,12 @@ public class PngEncoder extends Object {
     /** The left bytes. */
     protected byte[] leftBytes;
 
-    /** The image. */
-    protected Image image;
+	/**
+	 * The image.
+	 * 
+	 * @uml.property name="image" multiplicity="(0 1)"
+	 */
+	protected Image image;
 
     /** The width. */
     protected int width, height;
@@ -103,17 +107,31 @@ public class PngEncoder extends Object {
     /** The CRC value. */
     protected long crcValue;
 
-    /** Encode alpha? */
-    protected boolean encodeAlpha;
+	/**
+	 * Encode alpha?
+	 * 
+	 * @uml.property name="encodeAlpha" multiplicity="(0 1)"
+	 */
+	protected boolean encodeAlpha;
 
-    /** The filter type. */
-    protected int filter;
+	/**
+	 * The filter type.
+	 * 
+	 * @uml.property name="filter" multiplicity="(0 1)"
+	 */
+	protected int filter;
+
 
     /** The bytes-per-pixel. */
     protected int bytesPerPixel;
 
-    /** The compression level. */
-    protected int compressionLevel;
+	/**
+	 * The compression level.
+	 * 
+	 * @uml.property name="compressionLevel" multiplicity="(0 1)"
+	 */
+	protected int compressionLevel;
+
 
     /**
      * Class constructor
@@ -175,17 +193,20 @@ public class PngEncoder extends Object {
         }
     }
 
-    /**
-     * Set the image to be encoded
-     *
-     * @param image A Java Image object which uses the DirectColorModel
-     * @see java.awt.Image
-     * @see java.awt.image.DirectColorModel
-     */
-    public void setImage(Image image) {
-        this.image = image;
-        pngBytes = null;
-    }
+	/**
+	 * Set the image to be encoded
+	 * 
+	 * @param image A Java Image object which uses the DirectColorModel
+	 * @see java.awt.Image
+	 * @see java.awt.image.DirectColorModel
+	 * 
+	 * @uml.property name="image"
+	 */
+	public void setImage(Image image) {
+		this.image = image;
+		pngBytes = null;
+	}
+
 
     /**
      * Creates an array of bytes that is the PNG equivalent of the current image, specifying
@@ -238,64 +259,76 @@ public class PngEncoder extends Object {
         return pngEncode(encodeAlpha);
     }
 
-    /**
-     * Set the alpha encoding on or off.
-     *
-     * @param encodeAlpha  false=no, true=yes
-     */
-    public void setEncodeAlpha(boolean encodeAlpha) {
-        this.encodeAlpha = encodeAlpha;
-    }
+	/**
+	 * Set the alpha encoding on or off.
+	 * 
+	 * @param encodeAlpha  false=no, true=yes
+	 * 
+	 * @uml.property name="encodeAlpha"
+	 */
+	public void setEncodeAlpha(boolean encodeAlpha) {
+		this.encodeAlpha = encodeAlpha;
+	}
 
-    /**
-     * Retrieve alpha encoding status.
-     *
-     * @return boolean false=no, true=yes
-     */
-    public boolean getEncodeAlpha() {
-        return encodeAlpha;
-    }
+	/**
+	 * Retrieve alpha encoding status.
+	 * 
+	 * @return boolean false=no, true=yes
+	 * 
+	 * @uml.property name="encodeAlpha"
+	 */
+	public boolean getEncodeAlpha() {
+		return encodeAlpha;
+	}
 
-    /**
-     * Set the filter to use
-     *
-     * @param whichFilter from constant list
-     */
-    public void setFilter(int whichFilter) {
-        this.filter = FILTER_NONE;
-        if (whichFilter <= FILTER_LAST) {
-            this.filter = whichFilter;
-        }
-    }
+	/**
+	 * Set the filter to use
+	 * 
+	 * @param whichFilter from constant list
+	 * 
+	 * @uml.property name="filter"
+	 */
+	public void setFilter(int whichFilter) {
+		this.filter = FILTER_NONE;
+		if (whichFilter <= FILTER_LAST) {
+			this.filter = whichFilter;
+		}
+	}
 
-    /**
-     * Retrieve filtering scheme
-     *
-     * @return int (see constant list)
-     */
-    public int getFilter() {
-        return filter;
-    }
+	/**
+	 * Retrieve filtering scheme
+	 * 
+	 * @return int (see constant list)
+	 * 
+	 * @uml.property name="filter"
+	 */
+	public int getFilter() {
+		return filter;
+	}
 
-    /**
-     * Set the compression level to use
-     *
-     * @param level 0 through 9
-     */
-    public void setCompressionLevel(int level) {
-        if (level >= 0 && level <= 9) {
-            this.compressionLevel = level;
-        }
-    }
+	/**
+	 * Set the compression level to use
+	 * 
+	 * @param level 0 through 9
+	 * 
+	 * @uml.property name="compressionLevel"
+	 */
+	public void setCompressionLevel(int level) {
+		if (level >= 0 && level <= 9) {
+			this.compressionLevel = level;
+		}
+	}
 
-    /**
-     * Retrieve compression level
-     *
-     * @return int in range 0-9
-     */
-    public int getCompressionLevel() {
-        return compressionLevel;
-    }
+	/**
+	 * Retrieve compression level
+	 * 
+	 * @return int in range 0-9
+	 * 
+	 * @uml.property name="compressionLevel"
+	 */
+	public int getCompressionLevel() {
+		return compressionLevel;
+	}
 
     /**
      * Increase or decrease the length of a byte array.

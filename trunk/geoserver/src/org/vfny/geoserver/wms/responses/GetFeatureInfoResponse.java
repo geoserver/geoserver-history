@@ -62,10 +62,14 @@ public class GetFeatureInfoResponse implements Response {
         delegates.add(producer);
     }
 
-    /**
-     * A delegate specialized in producing the required output format.
-     */
-    private GetFeatureInfoDelegate delegate;
+	/**
+	 * A delegate specialized in producing the required output format.
+	 * 
+	 * @uml.property name="delegate"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GetFeatureInfoDelegate delegate;
+
     
     /**
      * Creates a new GetMapResponse object.
@@ -222,4 +226,12 @@ public class GetFeatureInfoResponse implements Response {
     public static List getFormats() {
         return supportedMimeTypes;
     }
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

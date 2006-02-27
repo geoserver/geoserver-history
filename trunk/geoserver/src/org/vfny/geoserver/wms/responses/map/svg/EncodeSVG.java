@@ -15,6 +15,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.Expression;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.map.MapLayer;
@@ -182,7 +183,7 @@ public class EncodeSVG {
         // FeatureTypeInfo layerInfo = null;
         int defMaxDecimals = writer.getMaximunFractionDigits();
 
-        FilterFactory fFac = FilterFactory.createFilterFactory();
+        FilterFactory fFac = new FilterFactoryImpl();
 
         for (int i = 0; i < nLayers; i++) {
             MapLayer layer = layers[i];

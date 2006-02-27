@@ -28,8 +28,14 @@ import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
  * @version $Id$
  */
 public class GetLegendGraphicResponse implements Response {
-    /** DOCUMENT ME! */
-    private GetLegendGraphicProducer producer;
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="producer"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private GetLegendGraphicProducer producer;
 
     /**
      *
@@ -164,4 +170,12 @@ public class GetLegendGraphicResponse implements Response {
 
         return allFormats;
     }
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

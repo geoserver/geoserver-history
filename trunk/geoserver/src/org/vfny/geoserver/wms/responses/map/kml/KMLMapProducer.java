@@ -30,9 +30,15 @@ class KMLMapProducer implements GetMapProducer {
     /** standard logger */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.kml");
-    
-    /** encoder instance which does all the hard work */
-    private EncodeKML kmlEncoder;
+
+	/**
+	 * encoder instance which does all the hard work
+	 * 
+	 * @uml.property name="kmlEncoder"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private EncodeKML kmlEncoder;
+
     
     /** lag between 'encode' call and 'writeTo' requires temporary storage' */
     private File temp;

@@ -14,17 +14,15 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.Expression;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.map.MapLayer;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Point;
 
 
 /**
@@ -42,12 +40,23 @@ public class EncodeKML {
     
     /** the KML closing element */
     private static final String KML_FOOTER = "</kml>\n";
-    
-    /** Map context document - layers, styles aoi etc. */
-    private WMSMapContext mapContext;
-    
-    /** Actualy writes the KML out */
-    private KMLWriter writer;
+
+	/**
+	 * Map context document - layers, styles aoi etc.
+	 * 
+	 * @uml.property name="mapContext"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private WMSMapContext mapContext;
+
+	/**
+	 * Actualy writes the KML out
+	 * 
+	 * @uml.property name="writer"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private KMLWriter writer;
+
     
     /** Flag to be monotored by writer loops */
     private boolean abortProcess;
@@ -137,7 +146,7 @@ public class EncodeKML {
         int nLayers = layers.length;
         int defMaxDecimals = writer.getMaximunFractionDigits();
         
-        FilterFactory fFac = FilterFactory.createFilterFactory();
+        FilterFactory fFac = new FilterFactoryImpl();
         for (int i = 0; i < nLayers; i++) {
             MapLayer layer = layers[i];
             FeatureReader featureReader = null;
