@@ -41,7 +41,6 @@ import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 
-
 /**
  * Represents a service that all others extend from.  Subclasses should provide
  * response and exception handlers as appropriate.
@@ -95,10 +94,12 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
  * TODO: We need to call Response.abort() if anything goes wrong to allow the
  * Response a chance to cleanup after itself.
  * </p>
- *
+ * 
  * @author Gabriel Rold?n
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: AbstractService.java,v 1.23 2004/09/08 17:34:38 cholmesny Exp $
  */
 public abstract class AbstractService extends HttpServlet {
@@ -139,8 +140,14 @@ public abstract class AbstractService extends HttpServlet {
     /** Controls the Safty Mode used when using execute/writeTo. */
     private static Class safetyMode;
 
-    /** DOCUMENT ME!  */
-    protected HttpServletRequest curRequest;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="curRequest"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected HttpServletRequest curRequest;
+
 
     /**
      * loads the "serviceStrategy" servlet context parameter and checks it if
@@ -242,7 +249,7 @@ public abstract class AbstractService extends HttpServlet {
 
         try {
             String qString = request.getQueryString();
-            LOGGER.fine("reading request: " + qString);
+            LOGGER.fine(new StringBuffer("reading request: ").append(qString).toString());
 
             //Map requestParams = KvpRequestReader.parseKvpSet(qString);
             Map requestParams = new HashMap();
@@ -259,8 +266,7 @@ public abstract class AbstractService extends HttpServlet {
             KvpRequestReader requestReader = getKvpReader(requestParams);
 
             serviceRequest = requestReader.getRequest(request);
-            LOGGER.finer("serviceRequest provided with HttpServletRequest: "
-                + request);
+            LOGGER.finer(new StringBuffer("serviceRequest provided with HttpServletRequest: ").append(request).toString());
 
             //serviceRequest.setHttpServletRequest(request);
         } catch (ServiceException se) {
@@ -326,7 +332,6 @@ public abstract class AbstractService extends HttpServlet {
         // implements the main request/response logic
         try {
             XmlRequestReader requestReader = getXmlRequestReader();
-            
             //JD: GEOS-323, adding support for character encoding detection
             // Reader xml = (requestXml != null) ? requestXml : request.getReader();
             Reader xml;
@@ -437,7 +442,9 @@ public abstract class AbstractService extends HttpServlet {
 
         Service s = null;
 
-        if ("WFS".equals(serviceRequest.getService())) {
+        if ("WCS".equals(serviceRequest.getService())) {
+            s = serviceRequest.getWCS();
+        } else if ("WFS".equals(serviceRequest.getService())) {
             s = serviceRequest.getWFS();
         } else {
             s = serviceRequest.getWMS();
@@ -475,6 +482,13 @@ public abstract class AbstractService extends HttpServlet {
             String mimeType = serviceResponse.getContentType(s.getGeoServer());
             LOGGER.fine("mime type is: " + mimeType);
             response.setContentType(mimeType);
+
+            String disposition = serviceResponse.getContentDisposition();
+
+            if (disposition != null) {
+                LOGGER.fine("content disposition is: " + disposition);
+                response.setHeader("content-disposition", disposition);
+            }
 
             String encoding = serviceResponse.getContentEncoding();
 
@@ -543,6 +557,7 @@ public abstract class AbstractService extends HttpServlet {
         // By this time serviceResponse has finished successfully
         // and strategy is also finished
         //
+        
         try {
             response.getOutputStream().flush();
             response.getOutputStream().close();
@@ -562,14 +577,18 @@ public abstract class AbstractService extends HttpServlet {
         LOGGER.info("Service handled");
     }
 
-    /**
-     * Gets the response class that should handle the request of this service.
-     * All subclasses must implement.
-     *
-     * @return The response that the request read by this servlet should be
-     *         passed to.
-     */
-    protected abstract Response getResponseHandler();
+	/**
+	 * Gets the response class that should handle the request of this service.
+	 * All subclasses must implement.
+	 * 
+	 * @return The response that the request read by this servlet should be
+	 *         passed to.
+	 * 
+	 * @uml.property name="responseHandler"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected abstract Response getResponseHandler();
+
 
     /**
      * Gets a reader that will figure out the correct Key Vaule Pairs for this
@@ -581,19 +600,26 @@ public abstract class AbstractService extends HttpServlet {
      */
     protected abstract KvpRequestReader getKvpReader(Map params);
 
-    /**
-     * Gets a reader that will handle a posted xml request for this servlet.
-     *
-     * @return An XmlRequestReader appropriate to this service.
-     */
-    protected abstract XmlRequestReader getXmlRequestReader();
+	/**
+	 * Gets a reader that will handle a posted xml request for this servlet.
+	 * 
+	 * @return An XmlRequestReader appropriate to this service.
+	 * 
+	 * @uml.property name="xmlRequestReader"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected abstract XmlRequestReader getXmlRequestReader();
 
-    /**
-     * Gets the exception handler for this service.
-     *
-     * @return The correct ExceptionHandler
-     */
-    protected abstract ExceptionHandler getExceptionHandler();
+	/**
+	 * Gets the exception handler for this service.
+	 * 
+	 * @return The correct ExceptionHandler
+	 * 
+	 * @uml.property name="exceptionHandler"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected abstract ExceptionHandler getExceptionHandler();
+
 
     /**
      * Instantiates a given strategy class and throws the proper exceptions.
@@ -954,14 +980,22 @@ class SpeedStrategy implements AbstractService.ServiceStrategy {
  * between SpeedStrategy and FileStrategy
  * </p>
  *
- * @author jgarnett
+ * @author jgarnett To change the template for this generated type comment go
+ *         to Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and
+ *         Comments
  */
 class BufferStrategy implements AbstractService.ServiceStrategy {
     /** DOCUMENT ME!  */
     ByteArrayOutputStream buffer = null;
 
-    /** DOCUMENT ME!  */
-    private HttpServletResponse response;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @uml.property name="response"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private HttpServletResponse response;
+
 
     /**
      * Provides a ByteArrayOutputStream for writeTo.
@@ -1027,8 +1061,13 @@ class FileStrategy implements AbstractService.ServiceStrategy {
     protected static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
 
-    /** Response being targeted */
-    private HttpServletResponse response;
+	/**
+	 * Response being targeted
+	 * 
+	 * @uml.property name="response"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private HttpServletResponse response;
 
     /** OutputStream provided to writeTo method */
     private OutputStream safe;

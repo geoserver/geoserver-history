@@ -33,6 +33,8 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: Dispatcher.java,v 1.13 2004/07/15 21:13:12 jmacgill Exp $
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
@@ -40,7 +42,12 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
  * @task TODO: move the post dispatcher work from WfsDispatcher up here.
  */
 public class Dispatcher extends HttpServlet {
-    /** Class logger */
+    /**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3544954350763257913L;
+
+	/** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
 
@@ -49,6 +56,9 @@ public class Dispatcher extends HttpServlet {
 
     /** Map get capabilities request type */
     public static final int GET_CAPABILITIES_REQUEST = 1;
+
+    public static final int DESCRIBE_COVERAGE_REQUEST = 2;
+    public static final int GET_COVERAGE_REQUEST = 3;
 
     /** Map describe feature type request type */
     public static final int DESCRIBE_FEATURE_TYPE_REQUEST = 2;
@@ -79,13 +89,20 @@ public class Dispatcher extends HttpServlet {
 
     public static final short WMS_SERVICE = 101;
     public static final short WFS_SERVICE = 102;
+    public static final short WCS_SERVICE = 103;
 
     /** Map get feature  request type */
     public static final int UNKNOWN = -1;
 
     /** Map get feature  request type */
     public static final int ERROR = -2;
-    protected ServletConfig servletConfig;
+
+	/**
+	 * 
+	 * @uml.property name="servletConfig"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	protected ServletConfig servletConfig;
 
     //HACK! This is just to fix instances where the first request is a 
     //dispatcher, and the strategy hasn't been inited yet.  This can be
