@@ -10,20 +10,19 @@ import java.io.OutputStream;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 
-
 /**
  * The Response interface serves as a common denominator for all service
  * operations that generates content.
- *
+ * 
  * <p>
  * The work flow for this kind of objects is divided in two parts: the first is
  * executing a request and the second writing the result to an OuputStream.
  * </p>
- *
+ * 
  * <ol>
  * <li>
  * Execute: execute(Request)
- *
+ * 
  * <ul>
  * <li>
  * Executing the request means taking a Request object and, based on it's set
@@ -46,22 +45,22 @@ import org.vfny.geoserver.global.Service;
  * Transaction Document with provisions for reporting error information.
  * </li>
  * </ul>
- *
+ * 
  * </li>
  * <li>
  * ContentType: getContentType()
- *
+ * 
  * <ul>
  * <li>
  * Called to set the response type. Depending on the stratagy used by
  * AbstractService the framework may be commited to returning this type.
  * </li>
  * </ul>
- *
+ * 
  * </li>
  * <li>
  * Writing: writeTo(OutputStream)
- *
+ * 
  * <ul>
  * <li>
  * Write the response to the provided output stream.
@@ -71,25 +70,25 @@ import org.vfny.geoserver.global.Service;
  * useable form. You should assume you are writing directly to the client.
  * </li>
  * </ul>
- *
+ * 
  * </li>
  * </ol>
- *
+ * 
  * <p>
  * <b>Note:</b> abort() will be called as part of error handling giving your
  * response subclass a chance to clean up any temporary resources it may have
  * required in execute() for use in writeTo().
  * </p>
- *
+ * 
  * <p>
  * This is specially usefull for streamed responses such as wfs GetFeature or
  * WMS GetMap, where the execution process can be used to parse parameters,
  * execute queries upon the corresponding data sources and leave things ready
  * to generate a streamed response when the consumer calls writeTo.
  * </p>
- *
+ * 
  * <p></p>
- *
+ * 
  * @author Gabriel Rold?n
  * @version $Id: Response.java,v 1.9 2004/03/10 23:39:06 groldan Exp $
  */
@@ -165,13 +164,25 @@ public interface Response {
      */
     public String getContentType(GeoServer gs) throws IllegalStateException;
 
-    /**
-     * Returns any special content encoding this response will encode its
-     * contents to, such as "gzip" or "deflate"
-     *
-     * @return the content encoding writeTo will encode with, or null if none
-     */
-    public String getContentEncoding();
+	/**
+	 * Returns any special content encoding this response will encode its
+	 * contents to, such as "gzip" or "deflate"
+	 * 
+	 * @return the content encoding writeTo will encode with, or null if none
+	 * 
+	 * @uml.property name="contentEncoding" multiplicity="(0 1)"
+	 */
+	public String getContentEncoding();
+
+	/**
+	 * Returns any special content disposition this response will encode its
+	 * contents to, such as "filename" and "attachement"
+	 * 
+	 * @return the content disposition writeTo will encode with, or null if none
+	 * 
+	 * @uml.property name="contentDisposition" multiplicity="(0 1)"
+	 */
+	public String getContentDisposition();
 
     /**
      * Writes this respone to the provided output stream.
