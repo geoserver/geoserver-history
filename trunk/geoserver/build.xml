@@ -23,7 +23,7 @@
 	<!--These should be defined in the build.properties file, which will -->
 	<!-- override these values -->
 
-	
+
 	<!--property name="version.geotools" value="2.1.1" /-->
 	<property name="version.geotools" value="2.2.x" />
 
@@ -82,8 +82,8 @@
 	<property name="test.name" value="config.ConfigSuite" />
 	<property name="jetty.run" value="${basedir}/documents/admin.xml ${basedir}/documents/jetty.xml" />
 	<property name="jetty.jvmarg" value="-Djetty.home=${basedir}" />
-	<property environment="env"/>
-        <property name="data_dir.jvmarg" value="-DGEOSERVER_DATA_DIR=${env.GEOSERVER_DATA_DIR}"/>
+	<property environment="env" />
+	<property name="data_dir.jvmarg" value="-DGEOSERVER_DATA_DIR=${env.GEOSERVER_DATA_DIR}" />
 	<!-- Chris this fails on eclipse 2 or M7 but not on M8 - w/ unexpected element "available" -->
 	<available file="${basedir}/conf" type="dir" property="conf.folder.present" />
 	<available file="${basedir}/server/geoserver" type="dir" property="server.built" />
@@ -98,8 +98,8 @@
             <pathelement location="${dir.lib}/nsisant-1.0.jar"/>
         </classpath>
     </taskdef-->
-	
-	
+
+
 	<!-- paths -->
 	<path id="path.lib">
 		<fileset dir="${dir.lib}">
@@ -184,7 +184,7 @@
 		<mkdir dir="${dir.server}" />
 		<tstamp>
 			<format property="date.current" pattern="MM.dd.yyyy" />
-			<format property="date.yesterday" pattern="MM.dd.yyyy" offset="-1" unit="day"/>
+			<format property="date.yesterday" pattern="MM.dd.yyyy" offset="-1" unit="day" />
 		</tstamp>
 	</target>
 
@@ -194,17 +194,17 @@
 		<javac srcdir="${dir.src}" destdir="${dir.build}" includes="**" classpathref="path.build" deprecation="off" debug="on" />
 		<copy todir="${dir.build}">
 			<fileset dir="${dir.src}">
-				<include name="**/META-INF"/>
-				<include name="**/META-INF/services"/>
-				<include name="**/META-INF/services/**"/>
+				<include name="**/META-INF" />
+				<include name="**/META-INF/services" />
+				<include name="**/META-INF/services/**" />
 				<include name="**/*.properties" />
 				<include name="**/*.config" />
 			</fileset>
 		</copy>
 		<jar jarfile="${dir.lib}/geoserver.jar">
 			<fileset dir="${dir.build}">
-				<include name="META-INF/services/**"/>
-				<include name="**/*.class"/>
+				<include name="META-INF/services/**" />
+				<include name="**/*.class" />
 				<exclude name="geoserver.war" />
 				<exclude name="**/servlets/*" />
 				<exclude name="**/mortbay/**" />
@@ -245,18 +245,18 @@
 	</target>
 
 	<target name="compile-tests" depends="all">
-  	<javac srcdir="${dir.test}" destdir="${dir.build}" classpathref="path.build" deprecation="off" debug="on" >
-			<include name="**/*.java"/>
+		<javac srcdir="${dir.test}" destdir="${dir.build}" classpathref="path.build" deprecation="off" debug="on">
+			<include name="**/*.java" />
 		</javac>
-  	<javac srcdir="${dir.httptest}" destdir="${dir.build}" classpathref="path.build" deprecation="off" debug="on" >
-			<include name="**/*.java"/>
+		<javac srcdir="${dir.httptest}" destdir="${dir.build}" classpathref="path.build" deprecation="off" debug="on">
+			<include name="**/*.java" />
 		</javac>
 		<!-- copy over any additional resources -->
-		<copy todir="${dir.build}"> 
-			<fileset dir="${dir.test}" includes="**/*.xml" excludes="test-data/**"/>
-			<fileset dir="${dir.httptest}" includes="**/*.xml"/>
+		<copy todir="${dir.build}">
+			<fileset dir="${dir.test}" includes="**/*.xml" excludes="test-data/**" />
+			<fileset dir="${dir.httptest}" includes="**/*.xml" />
 		</copy>
-		
+
 	</target>
 
 	<target name="unit-all" depends="unit-requests">
@@ -287,14 +287,14 @@
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
-			
+
 			<test fork="true" name="org.vfny.geoserver.requests.FeatureSuite" />
-				
+
 			<test fork="true" name="org.vfny.geoserver.requests.CapabilitiesSuite" />
 			<test fork="true" name="org.vfny.geoserver.requests.DescribeSuite" />
 			<test fork="true" name="org.vfny.geoserver.requests.TransactionSuite" />
 			<test fork="true" name="org.vfny.geoserver.requests.LockSuite" />
-			
+
 		</junit>
 	</target>
 
@@ -305,23 +305,23 @@
 		<antcall target="all" />
 
 		<junit fork="false" printsummary="on">
-      <formatter type="plain" usefile="false" />
+			<formatter type="plain" usefile="false" />
 
-      <classpath>
-        <fileset dir="${dir.lib}">
-          <include name="*.jar" />
-        </fileset>
-				<fileset dir="${dir.build}" includes="**/*.xml"/>
-      </classpath>
+			<classpath>
+				<fileset dir="${dir.lib}">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${dir.build}" includes="**/*.xml" />
+			</classpath>
 
-			<batchtest fork="yes"> 
+			<batchtest fork="yes">
 				<fileset dir="${dir.httptest}">
-					<include name="**/*Test.java"/>
-					<exclude name="**/Abstract*Test.java"/>
+					<include name="**/*Test.java" />
+					<exclude name="**/Abstract*Test.java" />
 				</fileset>
 			</batchtest>
 
-    </junit>
+		</junit>
 
 	</target>
 
@@ -372,8 +372,7 @@
   
   To stop please just hit terminate on your console view.
   -->
-	<target name="test from ide" depends="init, all"
-	    description="Deploy and run with jetty without forking">
+	<target name="test from ide" depends="init, all" description="Deploy and run with jetty without forking">
 		<!-- no longer needed, as work is in geoserver/WEB-INF -->
 		<!--mkdir dir="${dir.server}/work"/-->
 
@@ -401,8 +400,7 @@
   After the first time you can just reuse your debug configuration.   
   To stop please hit "Terminate" on your eclipse Console view.
 	-->
-	<target name="debug from ide" depends="init, all"
-	    description="Deploy and run with jetty without forking">
+	<target name="debug from ide" depends="init, all" description="Deploy and run with jetty without forking">
 		<!-- no longer needed, as work is in geoserver/WEB-INF -->
 		<!--mkdir dir="${dir.server}/work"/-->
 
@@ -417,18 +415,17 @@
 		<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
 		<!--  <delete dir="${dir.build}" /> -->
 	</target>
-	
+
 	<!-- copies the geoserver jar from lib to the server WEB-INF/lib directory -->
-	<target name="geoserver.jar_move" depends="all"
-	    description="Copies the Geoserver jar from">
-		
+	<target name="geoserver.jar_move" depends="all" description="Copies the Geoserver jar from">
+
 		<copy todir="${dir.jarcopy}">
 			<fileset dir="${dir.lib}">
-				<include name="geoserver.jar"/>
+				<include name="geoserver.jar" />
 			</fileset>
 		</copy>
-   	</target>
-		
+	</target>
+
 	<!-- Prepares embedded server, server.built isn't working, so users must
       run this manually -->
 	<target name="prepareEmbedded" depends="init" unless="server.built">
@@ -439,18 +436,17 @@
 
 	<!-- set data.dir to default if not already set -->
 	<target name="setDataDir" unless="data.dir">
-		<property name="data.dir" value="${dir.data_dirs}/userBasic"/>
+		<property name="data.dir" value="${dir.data_dirs}/userBasic" />
 	</target>
 
 	<!-- set data.dir if env.GEOSERVER_DATA_DIR is available -->
 	<target name="checkDataDir" if="env.GEOSERVER_DATA_DIR">
-		<property name="data.dir" value="${env.GEOSERVER_DATA_DIR}"/>
+		<property name="data.dir" value="${env.GEOSERVER_DATA_DIR}" />
 	</target>
 
 	<!-- runs the server -->
-	<target name="run" depends="prepareEmbedded,init,checkDataDir,setDataDir" if="data.dir"
-		description="Runs the jetty servlet container in the background, use ant stop to halt">
-		<echo message="Data dir is: ${data.dir}"/>
+	<target name="run" depends="prepareEmbedded,init,checkDataDir,setDataDir" if="data.dir" description="Runs the jetty servlet container in the background, use ant stop to halt">
+		<echo message="Data dir is: ${data.dir}" />
 		<java classname="org.mortbay.jetty.Server" dir="${basedir}" fork="yes" failonerror="yes">
 			<classpath>
 				<path refid="path.jetty" />
@@ -544,13 +540,13 @@
 				<include name="geoserver.log" />
 				<include name="z3950-geo.map" />
 			</fileset>
-               
+
 		</copy>
 
 
-		<!-- populate base directory. Er, this doesn't seem to get --> 
-                <!-- used at all?  To build the war it's not used. -ch -->
-                <!-- should remove it, but we're right before 1.3, so wait -->
+		<!-- populate base directory. Er, this doesn't seem to get -->
+		<!-- used at all?  To build the war it's not used. -ch -->
+		<!-- should remove it, but we're right before 1.3, so wait -->
 
 		<mkdir dir="${basedir}/data" />
 		<copy todir="${basedir}/data">
@@ -565,13 +561,13 @@
 			</fileset>
 		</copy-->
 
- 
+
 		<copy todir="${dir.build}">
 			<fileset dir="${basedir}/documents">
 				<include name="log4j.properties" />
 			</fileset>
 		</copy>
-                <!-- making a work directory ensures the compiled jsps get -->
+		<!-- making a work directory ensures the compiled jsps get -->
 		<!-- saved there, instead of some random temp location -->
 		<mkdir dir="${dir.webinf}/work" />
 		<!-- war file -->
@@ -591,10 +587,10 @@
 			</classes>
 
 			<webinf dir="${conf.path}/WEB-INF">
-							<include name="services.xml" />
-							<include name="catalog.xml" />
+				<include name="services.xml" />
+				<include name="catalog.xml" />
 			</webinf>
-			
+
 			<webinf dir="${basedir}/data">
 				<include name="*.html" />
 				<include name="*.png" />
@@ -623,7 +619,7 @@
 			<fileset dir="${basedir}">
 				<include name="data/**" />
 				<include name="documents/api/**" />
-                                <include name="schemas/**"/>
+				<include name="schemas/**" />
 				<exclude name="**/catalog.xml" />
 				<exclude name="**/services.xml" />
 			</fileset>
@@ -640,9 +636,9 @@
 
 		<!-- clean-up -->
 		<delete file="${dir.build}/log4j.properties" failonerror="true" />
-		
-		
-		 
+
+
+
 		<delete dir="${basedir}/data" failonerror="true" />
 
 	</target>
@@ -697,7 +693,7 @@
 				<exclude name="services.xml" />
 				<exclude name="catalog.xml" />
 			</webinf>
-			
+
 			<webinf dir="${basedir}/data">
 				<include name="*.html" />
 				<include name="*.png" />
@@ -743,11 +739,11 @@
 
 		<!-- clean-up -->
 		<delete file="${dir.upgrade}/log4j.properties" failonerror="true" />
-		
+
 		<delete dir="${basedir}/data" failonerror="true" />
 
 	</target>
-	
+
 	<!-- BUILD JARS FOR SCRIPTS -->
 	<target name="script-jars" depends="start.jar, stop.jar" />
 
@@ -807,59 +803,59 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
  -->
 <target name="generate-docbook" depends="init">
 
-	<!-- copy wiki docs -->
-	<mkdir dir="${dir.doc}/temp"/>
-	<copy todir="${dir.doc}/temp" failonerror="true">
-		<fileset dir="${dir.doc}/../GEOSDOC">
-			<date datetime="${date.yesterday}" pattern="MM.dd.yyyy" when="after" checkdirs="true"/>
-		</fileset>
-	</copy>
-	<!-- this is the test to see if anything was copied -->
-	<echo>If it dies here, you need to download a new version of the DOCS from the Wiki.</echo>
-	<copy todir="${dir.doc}/GEOSDOC" file="${dir.doc}/temp/index.html" failonerror="true"/>
-	<copy todir="${dir.doc}/GEOSDOC" failonerror="true">
-		<fileset dir="${dir.doc}/temp/">
-			<include name="**/*" />
-		</fileset>
-	</copy>
-	<delete dir="${dir.doc}/temp"/>
-	
-	
-	<!--copy todir="${dir.doc}/" file="${dir.doc}/../docbook-xsl/lib/html.css" />
+<!-- copy wiki docs -->
+<mkdir dir="${dir.doc}/temp" />
+<copy todir="${dir.doc}/temp" failonerror="true">
+	<fileset dir="${dir.doc}/../GEOSDOC">
+		<date datetime="${date.yesterday}" pattern="MM.dd.yyyy" when="after" checkdirs="true" />
+	</fileset>
+</copy>
+<!-- this is the test to see if anything was copied -->
+<echo>If it dies here, you need to download a new version of the DOCS from the Wiki.</echo>
+<copy todir="${dir.doc}/GEOSDOC" file="${dir.doc}/temp/index.html" failonerror="true" />
+<copy todir="${dir.doc}/GEOSDOC" failonerror="true">
+	<fileset dir="${dir.doc}/temp/">
+		<include name="**/*" />
+	</fileset>
+</copy>
+<delete dir="${dir.doc}/temp" />
+
+
+<!--copy todir="${dir.doc}/" file="${dir.doc}/../docbook-xsl/lib/html.css" />
 	<copy todir="${dir.doc}/" file="${dir.doc}/../index.html" /-->
-	
-	<!-- Convert docbook to html -->
-	<!--style basedir="${dir.doc}/../" destdir="${dir.doc}/" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" excludes="jetty.xml admin.xml jalopy.geoserver.xml" processor="trax">
+
+<!-- Convert docbook to html -->
+<!--style basedir="${dir.doc}/../" destdir="${dir.doc}/" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" excludes="jetty.xml admin.xml jalopy.geoserver.xml" processor="trax">
 		<param name="section.autolabel" expression="1" />
 		<param name="toc.section.depth" expression="4" />
 	</style-->
-	
-	<!--copy todir="${dir.doc}/developer" file="${dir.doc}/../docbook-xsl/lib/html.css" /-->
-	
-	<!-- Convert docbook to html -->
-	<!--style basedir="${dir.doc}/../developer" destdir="${dir.doc}/developer" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" processor="trax">
+
+<!--copy todir="${dir.doc}/developer" file="${dir.doc}/../docbook-xsl/lib/html.css" /-->
+
+<!-- Convert docbook to html -->
+<!--style basedir="${dir.doc}/../developer" destdir="${dir.doc}/developer" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" processor="trax">
 		<param name="section.autolabel" expression="1" />
 		<param name="toc.section.depth" expression="4" />
 	</style-->
-	
-	<!--copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css" /-->
-	
-	<!-- Convert docbook to html -->
-	<!--style basedir="${dir.doc}/../user" destdir="${dir.doc}/user" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" processor="trax">
+
+<!--copy todir="${dir.doc}/user" file="${dir.doc}/../docbook-xsl/lib/html.css" /-->
+
+<!-- Convert docbook to html -->
+<!--style basedir="${dir.doc}/../user" destdir="${dir.doc}/user" extension=".html" style="${dir.doc}/../docbook-xsl/html/docbook.xsl" includes="*.xml" processor="trax">
 		<param name="section.autolabel" expression="1" />
 		<param name="toc.section.depth" expression="4" />
 	</style-->
 </target>
 
-	
+
 <!-- RELEASE -->
 <!-- builds a release version of the application -->
 <!-- MAKE SURE!: -->
 <!-- Set up an environment variable called NSIS_PATH that points to your NSIS -->
 <!--   install directory. You can download Nullsoft Scriptable Install System -->
 <!--   here: http://nsis.sourceforge.net/-->
-<target name="release-all" depends="release-common, release-binary,release-war, release-src, release-docs" >
-	<!--antcall target="release-installer-win"/>
+<target name="release-all" depends="release-common, release-binary,release-war, release-src, release-docs">
+<!--antcall target="release-installer-win"/>
 	<delete dir="${dir.build}/installer"/-->
 </target>
 
@@ -989,22 +985,22 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 <delete file="${basedir}/geoserver-${name.release}-src.zip" failonerror="true" />
 <delete file="${basedir}/license.txt" failonerror="true" />
 </target>
-	
+
 
 <target name="release-war" depends="clean, all" description="Genearte the Geoserver.war war release (includes UserBasic)">
 <antcall target="build-war">
 	<param name="conf.path" value="${basedir}/cite/confUserBasic" />
 </antcall>
-	<!-- .war build, stick it in a geoserver-<version>-war.zip -->
-	<zip destfile="${basedir}/geoserver-${name.release}-war.zip">
-		<zipfileset dir="${dir.build}">
-			<include name="geoserver.war" />
-		</zipfileset>
-	</zip>
-	
+<!-- .war build, stick it in a geoserver-<version>-war.zip -->
+<zip destfile="${basedir}/geoserver-${name.release}-war.zip">
+	<zipfileset dir="${dir.build}">
+		<include name="geoserver.war" />
+	</zipfileset>
+</zip>
+
 <move file="${basedir}/geoserver-${name.release}-war.zip" todir="${dir.release}" />
-	<delete file="${dir.build}/geoserver.war" failonerror="true" />
-	
+<delete file="${dir.build}/geoserver.war" failonerror="true" />
+
 </target>
 
 <target name="release-binary" depends="release-common">
@@ -1013,7 +1009,7 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 		<include name="RUNNING.txt" />
 	</fileset>
 </copy>
-	<!--
+<!--
 	<copy todir="${dir.build}">
 		<fileset dir="${basedir}/bin">
 		<include name="**/*" />
@@ -1026,14 +1022,14 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 		<exclude name="api/**" />
 	</fileset>
 </copy>
-	
-	<copy todir="${dir.build}/bin/" failonerror="false">
-		<fileset dir="${dir.bin}">
-			<include name="**/*" />
-		</fileset>
-	</copy>
-	
-	
+
+<copy todir="${dir.build}/bin/" failonerror="false">
+	<fileset dir="${dir.bin}">
+		<include name="**/*" />
+	</fileset>
+</copy>
+
+
 <copy todir="${dir.build}/documents">
 	<fileset dir="${basedir}/documents">
 		<include name="jetty.xml" />
@@ -1041,9 +1037,9 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	</fileset>
 </copy>
 <copy todir="${dir.build}/conf">
-        <fileset dir="${basedir}/data_dirs/userBasic">
-                <include name="**/*"/>
-        </fileset>
+	<fileset dir="${basedir}/data_dirs/userBasic">
+		<include name="**/*" />
+	</fileset>
 </copy>
 
 <antcall target="build-war">
@@ -1052,40 +1048,40 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 <!--copy todir="${dir.build}/server/" file="${dir.build}/geoserver.war"/-->
 <unwar src="${dir.build}/geoserver.war" dest="${dir.build}/server/geoserver/" />
 
-	
+
 <!--JD(GEOS-385) fix the end of line for shell scripts -->
-<fixcrlf srcdir="${dir.build}" includes="**/*.sh" eol="unix"/>
+<fixcrlf srcdir="${dir.build}" includes="**/*.sh" eol="unix" />
 <tar destfile="${basedir}/geoserver-${name.release}-bin.tar">
 	<tarfileset dir="${dir.build}" prefix="geoserver">
 		<include name="**/*" />
 		<exclude name="geoserver.war" />
 		<exclude name="org/**" />
-                <exclude name="META-INF/**"/>
-		<exclude name="bin/*.sh"/>
+		<exclude name="META-INF/**" />
+		<exclude name="bin/*.sh" />
 	</tarfileset>
 
 	<!-- JD(GEOS-385)include bin seperatly in order to get permission right -->
 	<tarfileset dir="${dir.build}" prefix="geoserver" mode="755">
-		<include name="bin/*.sh"/>
+		<include name="bin/*.sh" />
 	</tarfileset>
 </tar>
 
 <gzip src="${basedir}/geoserver-${name.release}-bin.tar" zipfile="${basedir}/geoserver-${name.release}-bin.tar.gz" />
 
 <copy file="${basedir}/geoserver-${name.release}-bin.tar.gz" todir="${dir.release}" />
-	
-	<delete file="${basedir}/geoserver-${name.release}-bin.tar.gz" failonerror="true" />
-	<delete file="${basedir}/geoserver-${name.release}-bin.tar" failonerror="true" />
 
-	
+<delete file="${basedir}/geoserver-${name.release}-bin.tar.gz" failonerror="true" />
+<delete file="${basedir}/geoserver-${name.release}-bin.tar" failonerror="true" />
 
-	<delete dir="${dir.build}" failonerror="false" />
+
+
+<delete dir="${dir.build}" failonerror="false" />
 <!--
 <delete file="${basedir}/geoserver-${name.release}-bin.zip" failonerror="true" />
  -->
 
 </target>
-	
+
 
 
 <target name="release-docs" depends="document">
@@ -1096,17 +1092,17 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	</fileset>
 </copy>
 
-	<!-- replacement index.html file -->
+<!-- replacement index.html file -->
 <copy todir="${basedir}/docs/">
 	<fileset dir="${dir.doc}/..">
 		<include name="index.html" />
 	</fileset>
 </copy>
-	
+
 <zip destfile="${basedir}/geoserver-${name.release}-docs.zip">
 	<zipfileset dir="${basedir}/docs/" prefix="geoserver-docs">
 		<include name="**/*" />
-		<exclude name="index.html"/>
+		<exclude name="index.html" />
 	</zipfileset>
 </zip>
 <copy file="${basedir}/geoserver-${name.release}-docs.zip" todir="${dir.release}" />
@@ -1115,34 +1111,34 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 <delete dir="${basedir}/docs" failonerror="true" />
 </target>
 
-	
+
 <!-- HOW TO RUN -->
 <!-- Set up an environment variable called NSIS_PATH that points to your NSIS -->
 <!--   install directory. -->
 <target name="release-installer-win">
-	
-	<delete dir="${dir.build}/installer"/>
-	<mkdir dir="${dir.build}/installer" />
-	
-	<gunzip src="${dir.release}/geoserver-${name.release}-bin.tar.gz" dest="${dir.build}/installer" />
-	<untar src="${dir.build}/installer/geoserver-${name.release}-bin.tar" dest="${dir.build}/installer"/>
-	<delete file="${dir.build}/installer/${dir.upgrade}/geoserver-${name.release}-bin.tar"/>
-	
-	<copy file="${dir.documents}/geoserver.nsi" todir="${dir.build}/installer/geoserver" />
-	<copy file="${dir.documents}/dataDirPage.ini" todir="${dir.build}/installer/geoserver" />
-	<copy file="${dir.documents}/splash.bmp" todir="${dir.build}/installer/geoserver" />
-	
-	<property environment="env"/>
-	<exec executable="${env.NSIS_PATH}/makensis.exe">
-		<arg line="${dir.build}/installer/geoserver/geoserver.nsi"/>
-	</exec>
-	
-	<!-- copy over the exe to release -->
-	<copy file="${dir.build}/installer/geoserver/geoserver-${name.release}.exe" todir="${dir.release}" />
-	<delete dir="${dir.build}/installer"/>
+
+<delete dir="${dir.build}/installer" />
+<mkdir dir="${dir.build}/installer" />
+
+<gunzip src="${dir.release}/geoserver-${name.release}-bin.tar.gz" dest="${dir.build}/installer" />
+<untar src="${dir.build}/installer/geoserver-${name.release}-bin.tar" dest="${dir.build}/installer" />
+<delete file="${dir.build}/installer/${dir.upgrade}/geoserver-${name.release}-bin.tar" />
+
+<copy file="${dir.documents}/geoserver.nsi" todir="${dir.build}/installer/geoserver" />
+<copy file="${dir.documents}/dataDirPage.ini" todir="${dir.build}/installer/geoserver" />
+<copy file="${dir.documents}/splash.bmp" todir="${dir.build}/installer/geoserver" />
+
+<property environment="env" />
+<exec executable="${env.NSIS_PATH}/makensis.exe">
+	<arg line="${dir.build}/installer/geoserver/geoserver.nsi" />
+</exec>
+
+<!-- copy over the exe to release -->
+<copy file="${dir.build}/installer/geoserver/geoserver-${name.release}.exe" todir="${dir.release}" />
+<delete dir="${dir.build}/installer" />
 </target>
-	
-	
+
+
 <!-- ====================================================================== -->
 <!-- ADMIN TARGETS                                                          -->
 <!-- ====================================================================== -->
@@ -1180,52 +1176,58 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 <copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_jpe_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_jpe_sdk-9.0.jar" />
 <copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_concurrent-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_concurrent-9.0.jar" />
 
-	<!-- added by Alex -->
-	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/JGriB1-0.9.x.jar" file="${dir.maven}/JGriB1/jars/JGriB1-0.9.x.jar" />
-	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/Beam-1.0.jar" file="${dir.maven}/beam/jars/beam-1.0.jar" />
-	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/hsqldb-1.8.0.1.jar" file="${dir.maven}/hsql/jars/hsqldb-1.8.0.1.jar" />
-	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/jdom-1.0.jar" file="${dir.maven}/jdom/jars/jdom.jar" />
+<!-- added by Alex -->
+<copy overwrite="true" failonerror="false" toFile="${dir.lib}/JGriB1-0.9.x.jar" file="${dir.maven}/JGriB1/jars/JGriB1-0.9.x.jar" />
+<copy overwrite="true" failonerror="false" toFile="${dir.lib}/Beam-1.0.jar" file="${dir.maven}/beam/jars/beam-1.0.jar" />
+<copy overwrite="true" failonerror="false" toFile="${dir.lib}/hsqldb-1.8.0.1.jar" file="${dir.maven}/hsql/jars/hsqldb-1.8.0.1.jar" />
+<copy overwrite="true" failonerror="false" toFile="${dir.lib}/jdom-1.0.jar" file="${dir.maven}/jdom/jars/jdom.jar" />
 
-	
+
 <!-- added by DJB to be more complete. -->
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-main.jar" file="${dir.maven}/gt2/jars/main-${version.geotools}.jar" />
-	
-	<!-- added by Alex -->
-	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-arcgrid.jar" file="${dir.maven}/gt2/jars/arcgrid-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-gtopo30.jar" file="${dir.maven}/gt2/jars/gtopo30-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-image.jar" file="${dir.maven}/gt2/jars/image-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-grib.jar" file="${dir.maven}/gt2/jars/GriB1-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-geotiff.jar" file="${dir.maven}/gt2/jars/geotiff-${version.geotools}.jar" />
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-main.jar" file="${dir.maven}/gt2/jars/main-${version.geotools}.jar" />
 
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2/jars/arcsde-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-hsql-${version.geotools}.jar" />
-	<delete file="${dir.lib}/gt2-api.jar" failonerror="false" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-api.jar" file="${dir.maven}/gt2/jars/api-${version.geotools}.jar" />
-	<delete file="${dir.lib}/gt2-coverage.jar" failonerror="false" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-coverage.jar" file="${dir.maven}/gt2/jars/coverage-${version.geotools}.jar" />
-	<delete file="${dir.lib}/gt2-referencing.jar" failonerror="false" />
-	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-referencing.jar" file="${dir.maven}/gt2/jars/referencing-${version.geotools}.jar" />
-	<delete file="${dir.lib}/gt2-render.jar" failonerror="false" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-render.jar" file="${dir.maven}/gt2/jars/render-${version.geotools}.jar" />
+<!-- added by Alex -->
+	<delete file="${dir.lib}/gt2-arcgrid.jar" failonerror="false" />
+<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-arcgrid.jar" file="${dir.maven}/gt2/jars/arcgrid-${version.geotools}.jar" />
+	<delete file="${dir.lib}/gt2-gtopo30.jar" failonerror="false" />
+<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-gtopo30.jar" file="${dir.maven}/gt2/jars/gtopo30-${version.geotools}.jar" />
+	<delete file="${dir.lib}/gt2-image.jar" failonerror="false" />
+<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-image.jar" file="${dir.maven}/gt2/jars/image-${version.geotools}.jar" />
+	<delete file="${dir.lib}/gt2-grib.jar" failonerror="false" />
+<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-grib.jar" file="${dir.maven}/gt2/jars/GriB1-${version.geotools}.jar" />
+	<delete file="${dir.lib}/gt2-geotiff.jar" failonerror="false" />
+<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-geotiff.jar" file="${dir.maven}/gt2/jars/geotiff-${version.geotools}.jar" />
 
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" />
-	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-vpf.jar" file="${dir.maven}/gt2/jars/vpf-1.9.0.jar" /-->
-	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-db2.jar" file="${dir.maven}/gt2/jars/db2-${version.geotools}.jar" /-->
-	<!--<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-experiment.jar" file="${dir.maven}/gt2/jars/experiment-${version.geotools}.jar" />-->
-	<!--<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" /-->	
-	<!--<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" />-->
-	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wfs.jar" file="${dir.maven}/gt2/jars/wfs-${version.geotools}.jar" /-->
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wms.jar" file="${dir.maven}/gt2/jars/wms-${version.geotools}.jar" />
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2/jars/arcsde-${version.geotools}.jar" />
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />
+<delete file="${dir.lib}/gt2-epsg.jar" failonerror="false" />
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-hsql-${version.geotools}.jar" />
+<delete file="${dir.lib}/gt2-api.jar" failonerror="false" />
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-api.jar" file="${dir.maven}/gt2/jars/api-${version.geotools}.jar" />
+<delete file="${dir.lib}/gt2-coverage.jar" failonerror="false" />
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-coverage.jar" file="${dir.maven}/gt2/jars/coverage-${version.geotools}.jar" />
+<delete file="${dir.lib}/gt2-referencing.jar" failonerror="false" />
+<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-referencing.jar" file="${dir.maven}/gt2/jars/referencing-${version.geotools}.jar" />
+<delete file="${dir.lib}/gt2-render.jar" failonerror="false" />
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-render.jar" file="${dir.maven}/gt2/jars/render-${version.geotools}.jar" />
+
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
+<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" />
+<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-vpf.jar" file="${dir.maven}/gt2/jars/vpf-1.9.0.jar" /-->
+<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-db2.jar" file="${dir.maven}/gt2/jars/db2-${version.geotools}.jar" /-->
+<!--<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-experiment.jar" file="${dir.maven}/gt2/jars/experiment-${version.geotools}.jar" />-->
+<!--<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" /-->
+<!--<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" />-->
+<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wfs.jar" file="${dir.maven}/gt2/jars/wfs-${version.geotools}.jar" /-->
+<!--	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wms.jar" file="${dir.maven}/gt2/jars/wms-${version.geotools}.jar" />-->
 
 
-	
-	<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/oracle-spatial-${version.geotools}.jar" toFile="${dir.lib}/gt2-oracle-spatial.jar" />
-	<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/postgis-${version.geotools}.jar" toFile="${dir.lib}/gt2-postgis.jar" />
-	<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-shapefile.jar" />
-	<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" toFile="${dir.lib}/gt2-validation.jar" />
-	<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/property-${version.geotools}.jar" toFile="${dir.lib}/gt2-property.jar" />
+
+<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/oracle-spatial-${version.geotools}.jar" toFile="${dir.lib}/gt2-oracle-spatial.jar" />
+<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/postgis-${version.geotools}.jar" toFile="${dir.lib}/gt2-postgis.jar" />
+<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-shapefile.jar" />
+<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" toFile="${dir.lib}/gt2-validation.jar" />
+<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/property-${version.geotools}.jar" toFile="${dir.lib}/gt2-property.jar" />
 <copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/indexed-shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-indexed-shapefile.jar" />
 <copy overwrite="true" failonerror="true" file="${dir.maven}/batik/jars/batik-util-1.1.1.jar" toFile="${dir.lib}/batik-util-1.1.1.jar" />
 <copy overwrite="true" failonerror="true" file="${dir.maven}/batik/jars/batik-svggen-1.1.1.jar" toFile="${dir.lib}/batik-svggen-1.1.1.jar" />

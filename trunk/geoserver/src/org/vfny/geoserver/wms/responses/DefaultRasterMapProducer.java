@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.media.jai.GraphicsJAI;
+
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.lite.RendererUtilities;
@@ -194,8 +196,8 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
          BufferedImage curImage = new BufferedImage(width, height,BufferedImage.TYPE_4BYTE_ABGR);
   
   
-
-         final Graphics2D graphic = curImage.createGraphics();
+         //simboss: this should help out with coverages
+         final Graphics2D graphic = GraphicsJAI.createGraphicsJAI(curImage.createGraphics(),null);
         
  
         if (!map.isTransparent()) {

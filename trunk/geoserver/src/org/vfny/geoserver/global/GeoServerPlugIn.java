@@ -20,6 +20,7 @@ import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
 import org.geotools.image.jai.Registry;
+import org.geotools.referencing.factory.OrderedAxisAuthorityFactory;
 import org.geotools.validation.xml.XMLReader;
 import org.vfny.geoserver.global.xml.XMLConfigReader;
 
@@ -90,11 +91,13 @@ public class GeoServerPlugIn implements PlugIn {
 		}
 
 		//
-		// TODO think about how to handle me properly
-		JAI.getDefaultInstance().getTileCache().setMemoryCapacity(400*1024*1024);
+		// @task TODO think about how to handle me properly
+		JAI.getDefaultInstance().getTileCache().setMemoryCapacity(
+				400 * 1024 * 1024);
+		OrderedAxisAuthorityFactory.register("EPSG");
 		//
 		//
-		
+
 		final ServletContext sc = as.getServletContext();
 		final File geoserverDataDir = GeoserverDataDirectory
 				.getGeoserverDataDirectory(sc); // geoserver_home fix

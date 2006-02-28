@@ -113,7 +113,6 @@ public class GetMapResponse implements Response {
 		// with the user supplied SRS parameter
 
 		// if there's a crs in the request, use that. If not, assume its 4326
-
 		CoordinateReferenceSystem mapcrs = request.getCrs();
 
 		// DJB: added this to be nicer about the "NONE" srs.
@@ -203,6 +202,9 @@ public class GetMapResponse implements Response {
 			Runtime.getRuntime().gc();
 			Runtime.getRuntime().gc();
 			Runtime.getRuntime().gc();
+			
+			
+
 		}
 	}
 
