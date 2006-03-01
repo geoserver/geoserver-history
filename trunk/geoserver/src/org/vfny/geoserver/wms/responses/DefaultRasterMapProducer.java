@@ -245,6 +245,7 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 
         if (this.abortRequested)
         {
+        	graphic.dispose();
             return;
         }
       
