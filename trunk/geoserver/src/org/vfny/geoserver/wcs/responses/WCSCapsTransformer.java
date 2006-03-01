@@ -21,37 +21,32 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * DOCUMENT ME!
  * 
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  */
 public class WCSCapsTransformer extends TransformerBase {
-    /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(WCSCapsTransformer.class.getPackage()
-                                                                                  .getName());
+	/** DOCUMENT ME! */
+	private static final Logger LOGGER = Logger
+			.getLogger(WCSCapsTransformer.class.getPackage().getName());
 
-    protected static final String WCS_URI = "http://www.opengis.net/wcs";
+	protected static final String WCS_URI = "http://www.opengis.net/wcs";
 
-    /** DOCUMENT ME! */
-    private static final String HTTP_GET = "Get";
+	/** DOCUMENT ME! */
+	protected static final String WFS_URI = "http://www.opengis.net/wcs";
 
-    /** DOCUMENT ME! */
-    private static final String HTTP_POST = "Post";
+	/** DOCUMENT ME! */
+	protected static final String CUR_VERSION = "1.0.0";
 
-    /** DOCUMENT ME! */
-    protected static final String WFS_URI = "http://www.opengis.net/wcs";
+	/** DOCUMENT ME! */
+	protected static final String XSI_PREFIX = "xsi";
 
-    /** DOCUMENT ME! */
-    protected static final String CUR_VERSION = "1.0.0";
-
-    /** DOCUMENT ME! */
-    protected static final String XSI_PREFIX = "xsi";
-
-    /** DOCUMENT ME! */
-    protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
+	/** DOCUMENT ME! */
+	protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
 	/**
 	 * DOCUMENT ME!
@@ -61,33 +56,33 @@ public class WCSCapsTransformer extends TransformerBase {
 	 */
 	protected Request request;
 
+	/**
+	 * Creates a new WFSCapsTransformer object.
+	 */
+	public WCSCapsTransformer() {
+		super();
+		setNamespaceDeclarationEnabled(false);
+	}
 
-    /**
-     * Creates a new WFSCapsTransformer object.
-     */
-    public WCSCapsTransformer() {
-        super();
-        setNamespaceDeclarationEnabled(false);
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param handler
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public Translator createTranslator(ContentHandler handler) {
+		return new WCSCapsTranslator(handler);
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param handler DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Translator createTranslator(ContentHandler handler) {
-        return new WCSCapsTranslator(handler);
-    }
-
-/** * DOCUMENT ME!
- * 
- * @author Gabriel Roldan, Axios Engineering
- * @version $Id */
-    private static class WCSCapsTranslator extends TranslatorSupport {
-        /** DOCUMENT ME!  */
-        private static final String EPSG = "EPSG:";
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @author Gabriel Roldan, Axios Engineering
+	 * @version $Id
+	 */
+	private static class WCSCapsTranslator extends TranslatorSupport {
 
 		/**
 		 * DOCUMENT ME!
@@ -97,398 +92,429 @@ public class WCSCapsTransformer extends TransformerBase {
 		 */
 		private CapabilitiesRequest request;
 
-        /**
-         * Creates a new WFSCapsTranslator object.
-         *
-         * @param handler DOCUMENT ME!
-         */
-        public WCSCapsTranslator(ContentHandler handler) {
-            super(handler, null, null);
-        }
+		/**
+		 * Creates a new WFSCapsTranslator object.
+		 * 
+		 * @param handler
+		 *            DOCUMENT ME!
+		 */
+		public WCSCapsTranslator(ContentHandler handler) {
+			super(handler, null, null);
+		}
 
-        /**
-         * Encode the object.
-         *
-         * @param o The Object to encode.
-         *
-         * @throws IllegalArgumentException if the Object is not encodeable.
-         */
-        public void encode(Object o) throws IllegalArgumentException {
-            if (!(o instanceof CapabilitiesRequest)) {
-                throw new IllegalArgumentException(
-                    "Not a CapabilitiesRequest: " + o);
-            }
+		/**
+		 * Encode the object.
+		 * 
+		 * @param o
+		 *            The Object to encode.
+		 * 
+		 * @throws IllegalArgumentException
+		 *             if the Object is not encodeable.
+		 */
+		public void encode(Object o) throws IllegalArgumentException {
+			if (!(o instanceof CapabilitiesRequest)) {
+				throw new IllegalArgumentException(new StringBuffer(
+						"Not a CapabilitiesRequest: ").append(o).toString());
+			}
 
-            this.request = (CapabilitiesRequest) o;
+			this.request = (CapabilitiesRequest) o;
 
-            AttributesImpl attributes = new AttributesImpl();
-            attributes.addAttribute("", "version", "version", "", CUR_VERSION);
-            attributes.addAttribute("", "xmlns", "xmlns", "", WCS_URI);
+			final AttributesImpl attributes = new AttributesImpl();
+			attributes.addAttribute("", "version", "version", "", CUR_VERSION);
+			attributes.addAttribute("", "xmlns", "xmlns", "", WCS_URI);
 
-            attributes.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
-            	"http://www.w3.org/1999/xlink");
-            attributes.addAttribute("", "xmlns:ogc", "xmlns:ogc", "",
-                "http://www.opengis.net/ogc");
-            attributes.addAttribute("", "xmlns:gml", "xmlns:gml", "",
-            	"http://www.opengis.net/gml");
+			attributes.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
+					"http://www.w3.org/1999/xlink");
+			attributes.addAttribute("", "xmlns:ogc", "xmlns:ogc", "",
+					"http://www.opengis.net/ogc");
+			attributes.addAttribute("", "xmlns:gml", "xmlns:gml", "",
+					"http://www.opengis.net/gml");
 
-            String prefixDef = "xmlns:" + XSI_PREFIX;
-            attributes.addAttribute("", prefixDef, prefixDef, "", XSI_URI);
+			final String prefixDef = new StringBuffer("xmlns:").append(
+					XSI_PREFIX).toString();
+			attributes.addAttribute("", prefixDef, prefixDef, "", XSI_URI);
 
-            String locationAtt = XSI_PREFIX + ":schemaLocation";
-            String locationDef = WCS_URI + " " + request.getSchemaBaseUrl()
-                + "wcs/1.0.0/" + "wcsCapabilities.xsd";
-            attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
-            start("WCS_Capabilities", attributes);
+			final String locationAtt = new StringBuffer(XSI_PREFIX).append(
+					":schemaLocation").toString();
+			final String locationDef = new StringBuffer(WCS_URI).append(" ")
+					.append(request.getSchemaBaseUrl()).append("wcs/1.0.0/")
+					.append("wcsCapabilities.xsd").toString();
+			attributes.addAttribute("", locationAtt, locationAtt, "",
+					locationDef);
+			start("WCS_Capabilities", attributes);
 
-            handleService();
-            handleCapabilities();
+			handleService();
+			handleCapabilities();
 
-            end("WCS_Capabilities");
-        }
+			end("WCS_Capabilities");
+		}
 
-        
-        /**
-         * Handles the service section of the capabilities document.
-         *
-         * @param config The OGC service to transform.
-         *
-         * @throws SAXException For any errors.
-         */
-        private void handleService() {
-        	WCS wcs = request.getWCS();
-            AttributesImpl attributes = new AttributesImpl();
-            attributes.addAttribute("", "version", "version", "", CUR_VERSION);
-            start("Service", attributes);
-            handleMetadataLink(wcs.getMetadataLink());
-            element("description", wcs.getAbstract());
-            element("name", wcs.getName());
-            element("label", wcs.getTitle());
-            handleKeywords(wcs.getKeywords());
-            handleContact(wcs);
+		/**
+		 * Handles the service section of the capabilities document.
+		 * 
+		 * @param config
+		 *            The OGC service to transform.
+		 * 
+		 * @throws SAXException
+		 *             For any errors.
+		 */
+		private void handleService() {
+			final WCS wcs = request.getWCS();
+			AttributesImpl attributes = new AttributesImpl();
+			attributes.addAttribute("", "version", "version", "", CUR_VERSION);
+			start("Service", attributes);
+			handleMetadataLink(wcs.getMetadataLink());
+			element("description", wcs.getAbstract());
+			element("name", wcs.getName());
+			element("label", wcs.getTitle());
+			handleKeywords(wcs.getKeywords());
+			handleContact(wcs);
 
-            String fees = wcs.getFees();
-            if ((fees == null) || "".equals(fees)) {
-                fees = "NONE";
-            }
-            element("fees", fees);
+			String fees = wcs.getFees();
+			if ((fees == null) || "".equals(fees)) {
+				fees = "NONE";
+			}
+			element("fees", fees);
 
-            String accessConstraints = wcs.getAccessConstraints();
-            if ((accessConstraints == null) || "".equals(accessConstraints)) {
-                accessConstraints = "NONE";
-            }
-            element("accessConstraints", accessConstraints);
-            end("Service");
-        }
+			String accessConstraints = wcs.getAccessConstraints();
+			if ((accessConstraints == null) || "".equals(accessConstraints)) {
+				accessConstraints = "NONE";
+			}
+			element("accessConstraints", accessConstraints);
+			end("Service");
+		}
 
-        /**
-         * DOCUMENT ME!
-         *
-         * @param serviceConfig DOCUMENT ME!
-         *
-         * @throws SAXException DOCUMENT ME!
-         */
-        private void handleCapabilities() {
-        	WCS wcs = request.getWCS();
-            start("Capability");
-            handleRequest(wcs);
-    		handleExceptions(wcs);
-            handleVendorSpecifics(wcs);
-            end("Capability");
-            
-            handleContentMetadata(wcs);
-        }
-        
-        /**
-         * Handles the request portion of the document, printing out the
-         * capabilities and where to bind to them.
-         *
-         * @param config The global wms.
-         *
-         * @throws SAXException For any problems.
-         */
-        private void handleRequest(WCS config) {
-            start("Request");
-            handleCapability(config, "GetCapabilities");
-            handleCapability(config, "DescribeCoverage");
-            handleCapability(config, "GetCoverage");
-            end("Request");
-        }
-        
-        private void handleCapability(WCS config, String capabilityName) {
-        AttributesImpl attributes = new AttributesImpl();
-        start(capabilityName);
+		/**
+		 * DOCUMENT ME!
+		 * 
+		 * @param serviceConfig
+		 *            DOCUMENT ME!
+		 * 
+		 * @throws SAXException
+		 *             DOCUMENT ME!
+		 */
+		private void handleCapabilities() {
+			final WCS wcs = request.getWCS();
+			start("Capability");
+			handleRequest(wcs);
+			handleExceptions(wcs);
+			handleVendorSpecifics(wcs);
+			end("Capability");
 
-        start("DCPType");
-        start("HTTP");
+			handleContentMetadata(wcs);
+		}
 
-        String url = "";
-        String baseUrl = request.getBaseUrl() + "wcs";
+		/**
+		 * Handles the request portion of the document, printing out the
+		 * capabilities and where to bind to them.
+		 * 
+		 * @param config
+		 *            The global wms.
+		 * 
+		 * @throws SAXException
+		 *             For any problems.
+		 */
+		private void handleRequest(WCS config) {
+			start("Request");
+			handleCapability(config, "GetCapabilities");
+			handleCapability(config, "DescribeCoverage");
+			handleCapability(config, "GetCoverage");
+			end("Request");
+		}
 
-        if (request.isDispatchedRequest()) {
-            url = baseUrl + "?";
-        } else {
-            url = baseUrl + "/" + capabilityName + "?";
-        }
+		private void handleCapability(WCS config, String capabilityName) {
+			AttributesImpl attributes = new AttributesImpl();
+			start(capabilityName);
 
-    	attributes.addAttribute("","xlink:href","xlink:href","",url);
+			start("DCPType");
+			start("HTTP");
 
-        start("Get");
-        	start("OnlineResource", attributes);
-        	end("OnlineResource");
-        end("Get");
-        end("HTTP");
-        end("DCPType");
+			String url = "";
+			String baseUrl = request.getBaseUrl() + "wcs";
 
-        attributes = new AttributesImpl();
+			if (request.isDispatchedRequest()) {
+				url = new StringBuffer(baseUrl).append("?").toString();
+			} else {
+				url = new StringBuffer(baseUrl).append("/").append(
+						capabilityName).append("?").toString();
+			}
 
-        if (request.isDispatchedRequest()) {
-            url = baseUrl;
-        } else {
-            url = baseUrl + "/" + capabilityName;
-        }
+			attributes.addAttribute("", "xlink:href", "xlink:href", "", url);
 
-    	attributes.addAttribute("","xlink:href","xlink:href","",url);
+			start("Get");
+			start("OnlineResource", attributes);
+			end("OnlineResource");
+			end("Get");
+			end("HTTP");
+			end("DCPType");
 
-    	start("DCPType");
-        start("HTTP");
-        start("Post");
-    		start("OnlineResource", attributes);
-    		end("OnlineResource");
-        end("Post");
-        end("HTTP");
-        end("DCPType");
-        end(capabilityName);
-    }
-        
-        /**
-         * DOCUMENT ME!
-         *
-         * @param kwords DOCUMENT ME!
-         *
-         * @throws SAXException DOCUMENT ME!
-         */
-        private void handleKeywords(List kwords) {
-            start("keywords");
+			attributes = new AttributesImpl();
 
-            if (kwords != null) {
-                for (Iterator it = kwords.iterator(); it.hasNext();) {
-                	element("keyword", it.next().toString());
-                }
-            }
+			if (request.isDispatchedRequest()) {
+				url = baseUrl;
+			} else {
+				url = new StringBuffer(baseUrl).append("/").append(
+						capabilityName).toString();
+			}
 
-            end("keywords");
-        }
+			attributes.addAttribute("", "xlink:href", "xlink:href", "", url);
 
-        /**
-         * Handles contacts.
-         *
-         * @param config the service.
-         */
-        private void handleContact(Service config) {
-            String tmp = "";
+			start("DCPType");
+			start("HTTP");
+			start("Post");
+			start("OnlineResource", attributes);
+			end("OnlineResource");
+			end("Post");
+			end("HTTP");
+			end("DCPType");
+			end(capabilityName);
+		}
 
-            if (((config.getGeoServer().getContactPerson() != null) && (config.getGeoServer().getContactPerson() != "")) || ((config.getGeoServer().getContactOrganization() != null) && (config.getGeoServer().getContactOrganization() != ""))) {
-                start("responsibleParty");
+		/**
+		 * DOCUMENT ME!
+		 * 
+		 * @param kwords
+		 *            DOCUMENT ME!
+		 * 
+		 * @throws SAXException
+		 *             DOCUMENT ME!
+		 */
+		private void handleKeywords(List kwords) {
+			start("keywords");
 
-                tmp = config.getGeoServer().getContactPerson();
-                if ((tmp != null) && (tmp != "")) {
-                    element("individualName", tmp);
-                    
-                    tmp = config.getGeoServer().getContactOrganization();
-                    if ((tmp != null) && (tmp != "")) {
-                        element("organisationName", tmp);
-                    }
-                } else {
-                    tmp = config.getGeoServer().getContactOrganization();
-                    if ((tmp != null) && (tmp != "")) {
-                        element("organisationName", tmp);
-                    }
-                }
+			if (kwords != null) {
+				for (Iterator it = kwords.iterator(); it.hasNext();) {
+					element("keyword", it.next().toString());
+				}
+			}
 
-                tmp = config.getGeoServer().getContactPosition();
-                if ((tmp != null) && (tmp != "")) {
-                    element("positionName", tmp);
-                }
+			end("keywords");
+		}
 
-                start("contactInfo");
-                
-    	            start("phone");
-    		            tmp = config.getGeoServer().getContactVoice();
-    		            if ((tmp != null) && (tmp != "")) {
-    		                element("voice", tmp);
-    		            }
-    		
-    		            tmp = config.getGeoServer().getContactFacsimile();
-    		            if ((tmp != null) && (tmp != "")) {
-    		                element("facsimile", tmp);
-    		            }
-    	            end("phone");
-    	
-    	            start("address");
-    		            tmp = config.getGeoServer().getAddressType();
-    		            if ((tmp != null) && (tmp != "")) {
-    		            	String addr = "";
-    			            addr = config.getGeoServer().getAddress();
-    			            if ((addr != null) && (addr != "")) {
-    			                element("deliveryPoint", tmp + " " + addr);
-    			            }	
-    		            } else {
-    		            	tmp = config.getGeoServer().getAddress();
-    			            if ((tmp != null) && (tmp != "")) {
-    			                element("deliveryPoint", tmp);
-    			            }	
-    		            }
+		/**
+		 * Handles contacts.
+		 * 
+		 * @param config
+		 *            the service.
+		 */
+		private void handleContact(Service config) {
+			String tmp = "";
 
-    	            	tmp = config.getGeoServer().getAddressCity();
-    		            if ((tmp != null) && (tmp != "")) {
-    		                element("city", tmp);
-    		            }
+			if (((config.getGeoServer().getContactPerson() != null) && (config
+					.getGeoServer().getContactPerson() != ""))
+					|| ((config.getGeoServer().getContactOrganization() != null) && (config
+							.getGeoServer().getContactOrganization() != ""))) {
+				start("responsibleParty");
 
-    		            tmp = config.getGeoServer().getAddressState();
-    		            if ((tmp != null) && (tmp != "")) {
-    		                element("administrativeArea", tmp);
-    		            }
+				tmp = config.getGeoServer().getContactPerson();
+				if ((tmp != null) && (tmp != "")) {
+					element("individualName", tmp);
 
-    		            tmp = config.getGeoServer().getAddressPostalCode();
-    		            if ((tmp != null) && (tmp != "")) {
-    		                element("postalCode", tmp);
-    		            }
+					tmp = config.getGeoServer().getContactOrganization();
+					if ((tmp != null) && (tmp != "")) {
+						element("organisationName", tmp);
+					}
+				} else {
+					tmp = config.getGeoServer().getContactOrganization();
+					if ((tmp != null) && (tmp != "")) {
+						element("organisationName", tmp);
+					}
+				}
 
-    		            tmp = config.getGeoServer().getAddressCountry();
-    		            if ((tmp != null) && (tmp != "")) {
-    		                element("country", tmp);
-    		            }
+				tmp = config.getGeoServer().getContactPosition();
+				if ((tmp != null) && (tmp != "")) {
+					element("positionName", tmp);
+				}
 
-    		            tmp = config.getGeoServer().getContactEmail();
-    		            if ((tmp != null) && (tmp != "")) {
-    		                element("electronicMailAddress", tmp);
-    		            }
-    	            end("address");
-    	            
-    	            tmp = config.getGeoServer().getOnlineResource();
-    	            if ((tmp != null) && (tmp != "")) {
-    	            	AttributesImpl attributes = new AttributesImpl();
-    	            	attributes.addAttribute("","xlink:href","xlink:href","",tmp);
-    	            	start("onlineResource", attributes);
-    	            	end("onlineResource");
-    	            }
-    		            
-                end("contactInfo");
+				start("contactInfo");
 
-                end("responsibleParty");
-            }
-        }
+				start("phone");
+				tmp = config.getGeoServer().getContactVoice();
+				if ((tmp != null) && (tmp != "")) {
+					element("voice", tmp);
+				}
 
-        /**
-         * Handles the printing of the exceptions information, prints the formats
-         * that GeoServer can return exceptions in.
-         *
-         * @param config The wms service global config.
-         *
-         * @throws SAXException For any problems.
-         */
-        private void handleExceptions(WCS config) {
-            start("Exception");
+				tmp = config.getGeoServer().getContactFacsimile();
+				if ((tmp != null) && (tmp != "")) {
+					element("facsimile", tmp);
+				}
+				end("phone");
 
-            String[] formats = config.getExceptionFormats();
+				start("address");
+				tmp = config.getGeoServer().getAddressType();
+				if ((tmp != null) && (tmp != "")) {
+					String addr = "";
+					addr = config.getGeoServer().getAddress();
+					if ((addr != null) && (addr != "")) {
+						element("deliveryPoint", tmp + " " + addr);
+					}
+				} else {
+					tmp = config.getGeoServer().getAddress();
+					if ((tmp != null) && (tmp != "")) {
+						element("deliveryPoint", tmp);
+					}
+				}
 
-            for (int i = 0; i < formats.length; i++) {
-                element("Format", formats[i]);
+				tmp = config.getGeoServer().getAddressCity();
+				if ((tmp != null) && (tmp != "")) {
+					element("city", tmp);
+				}
 
-                if (i < (formats.length - 1)) {
-                }
-            }
+				tmp = config.getGeoServer().getAddressState();
+				if ((tmp != null) && (tmp != "")) {
+					element("administrativeArea", tmp);
+				}
 
-            end("Exception");
-        }
+				tmp = config.getGeoServer().getAddressPostalCode();
+				if ((tmp != null) && (tmp != "")) {
+					element("postalCode", tmp);
+				}
 
-        /**
-         * Handles the vendor specific capabilities.  Right now there are none, so
-         * we do nothing.
-         *
-         * @param config The global config that may contain vendor specifics.
-         *
-         * @throws SAXException For any problems.
-         */
-        private void handleVendorSpecifics(WCS config) {
-        }
+				tmp = config.getGeoServer().getAddressCountry();
+				if ((tmp != null) && (tmp != "")) {
+					element("country", tmp);
+				}
 
-        private void handleEnvelope(GeneralEnvelope envelope) {
-        	AttributesImpl attributes = new AttributesImpl();
-        	attributes.addAttribute("", "srsName", "srsName", "", "WGS84(DD)");
-        	start("lonLatEnvelope", attributes);
-        	element("gml:pos", envelope.getLowerCorner().getOrdinate(0) + " " + envelope.getLowerCorner().getOrdinate(1));
-        	element("gml:pos", envelope.getUpperCorner().getOrdinate(0) + " " + envelope.getUpperCorner().getOrdinate(1));
-        	end("lonLatEnvelope");
-        }
-        
-        /**
-         * DOCUMENT ME!
-         *
-         * @param metadataLink DOCUMENT ME!
-         *
-         * @throws SAXException DOCUMENT ME!
-         */
-        private void handleMetadataLink(MetaDataLink mdl) {
-        	if( mdl != null ) {
-                AttributesImpl attributes = new AttributesImpl();
-                if( mdl.getAbout() != null && mdl.getAbout() != "" ) {
-                    attributes.addAttribute("", "about", "about", "", mdl.getAbout());
-                }
+				tmp = config.getGeoServer().getContactEmail();
+				if ((tmp != null) && (tmp != "")) {
+					element("electronicMailAddress", tmp);
+				}
+				end("address");
 
-//                if( mdl.getType() != null && mdl.getType() != "" ) {
-//                    attributes.addAttribute("", "type", "type", "", mdl.getType());
-//                }
+				tmp = config.getGeoServer().getOnlineResource();
+				if ((tmp != null) && (tmp != "")) {
+					AttributesImpl attributes = new AttributesImpl();
+					attributes.addAttribute("", "xlink:href", "xlink:href", "",
+							tmp);
+					start("onlineResource", attributes);
+					end("onlineResource");
+				}
 
-                if( mdl.getMetadataType() != null && mdl.getMetadataType() != "" ) {
-                    attributes.addAttribute("", "metadataType", "metadataType", "", mdl.getMetadataType());
-                }
+				end("contactInfo");
 
-                start("metadataLink", attributes);
-//                characters(mdl.getContent());
-                end("metadataLink");
-        	}
-        }
-        
-        private String getBboxElementName() {
-            return "LatLongBoundingBox";
-        }
+				end("responsibleParty");
+			}
+		}
 
-        private void handleContentMetadata(WCS config) {
-            AttributesImpl attributes = new AttributesImpl();
-            attributes.addAttribute("", "version", "version", "", CUR_VERSION);
+		/**
+		 * Handles the printing of the exceptions information, prints the
+		 * formats that GeoServer can return exceptions in.
+		 * 
+		 * @param config
+		 *            The wms service global config.
+		 * 
+		 * @throws SAXException
+		 *             For any problems.
+		 */
+		private void handleExceptions(WCS config) {
+			start("Exception");
 
-            start("ContentMetadata", attributes);
-            for (Iterator i = config.getData().getCoverageInfos().keySet().iterator(); i.hasNext(); ) {
-            	handleCoverageOfferingBrief(config, (CoverageInfo) config.getData().getCoverageInfos().get(i.next()));
-            }
-            end("ContentMetadata");
-        }
+			final String[] formats = config.getExceptionFormats();
+			final int length = formats.length;
+			for (int i = 0; i < length; i++) {
+				element("Format", formats[i]);
 
-        private void handleCoverageOfferingBrief(WCS config, CoverageInfo cv) {
-        	if( cv.isEnabled() ) {
-                start("CoverageOfferingBrief");
-                String tmp;
-                
-                	handleMetadataLink(cv.getMetadataLink());
-                	tmp = cv.getDescription();
-                	if ((tmp != null) && (tmp != "")) {
-                		element("description", tmp);
-                	}
-                	tmp = cv.getName();
-                	if ((tmp != null) && (tmp != "")) {
-                		element("name", tmp);
-                	}
-                	tmp = cv.getLabel();
-                	if ((tmp != null) && (tmp != "")) {
-                		element("label", tmp);
-                	}
-                    handleEnvelope(cv.getLatLonEnvelope());
-                    handleKeywords(cv.getKeywords());
-                    
-                end("CoverageOfferingBrief");
-        	}
-        }
-    }
+			}
+
+			end("Exception");
+		}
+
+		/**
+		 * Handles the vendor specific capabilities. Right now there are none,
+		 * so we do nothing.
+		 * 
+		 * @param config
+		 *            The global config that may contain vendor specifics.
+		 * 
+		 * @throws SAXException
+		 *             For any problems.
+		 */
+		private void handleVendorSpecifics(WCS config) {
+		}
+
+		private void handleEnvelope(GeneralEnvelope envelope) {
+			AttributesImpl attributes = new AttributesImpl();
+			attributes.addAttribute("", "srsName", "srsName", "", "WGS84(DD)");
+			start("lonLatEnvelope", attributes);
+			element("gml:pos", new StringBuffer(Double.toString(envelope
+					.getLowerCorner().getOrdinate(0))).append(" ").append(
+					envelope.getLowerCorner().getOrdinate(1)).toString());
+			element("gml:pos", new StringBuffer(Double.toString(envelope
+					.getUpperCorner().getOrdinate(0))).append(" ").append(
+					envelope.getUpperCorner().getOrdinate(1)).toString());
+			end("lonLatEnvelope");
+		}
+
+		/**
+		 * DOCUMENT ME!
+		 * 
+		 * @param metadataLink
+		 *            DOCUMENT ME!
+		 * 
+		 * @throws SAXException
+		 *             DOCUMENT ME!
+		 */
+		private void handleMetadataLink(MetaDataLink mdl) {
+			if (mdl != null) {
+				AttributesImpl attributes = new AttributesImpl();
+				if (mdl.getAbout() != null && mdl.getAbout() != "") {
+					attributes.addAttribute("", "about", "about", "", mdl
+							.getAbout());
+				}
+
+				// if( mdl.getType() != null && mdl.getType() != "" ) {
+				// attributes.addAttribute("", "type", "type", "",
+				// mdl.getType());
+				// }
+
+				if (mdl.getMetadataType() != null
+						&& mdl.getMetadataType() != "") {
+					attributes.addAttribute("", "metadataType", "metadataType",
+							"", mdl.getMetadataType());
+				}
+
+				start("metadataLink", attributes);
+				// characters(mdl.getContent());
+				end("metadataLink");
+			}
+		}
+
+		private void handleContentMetadata(WCS config) {
+			AttributesImpl attributes = new AttributesImpl();
+			attributes.addAttribute("", "version", "version", "", CUR_VERSION);
+
+			start("ContentMetadata", attributes);
+			for (Iterator i = config.getData().getCoverageInfos().keySet()
+					.iterator(); i.hasNext();) {
+				handleCoverageOfferingBrief(config, (CoverageInfo) config
+						.getData().getCoverageInfos().get(i.next()));
+			}
+			end("ContentMetadata");
+		}
+
+		private void handleCoverageOfferingBrief(WCS config, CoverageInfo cv) {
+			if (cv.isEnabled()) {
+				start("CoverageOfferingBrief");
+				String tmp;
+
+				handleMetadataLink(cv.getMetadataLink());
+				tmp = cv.getDescription();
+				if ((tmp != null) && (tmp != "")) {
+					element("description", tmp);
+				}
+				tmp = cv.getName();
+				if ((tmp != null) && (tmp != "")) {
+					element("name", tmp);
+				}
+				tmp = cv.getLabel();
+				if ((tmp != null) && (tmp != "")) {
+					element("label", tmp);
+				}
+				handleEnvelope(cv.getLatLonEnvelope());
+				handleKeywords(cv.getKeywords());
+
+				end("CoverageOfferingBrief");
+			}
+		}
+	}
 }

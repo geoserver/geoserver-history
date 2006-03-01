@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.factory.Hints;
@@ -34,26 +35,42 @@ import org.vfny.geoserver.wcs.requests.DescribeRequest;
 /**
  * DOCUMENT ME!
  * 
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  */
 public class DescribeResponse implements Response {
-	private static final Logger LOGGER = Logger.getLogger(
-	"org.vfny.geoserver.responses");
-	
-	private static final String CURR_VER = "\"1.0.0\"";
-	private static final String WCS_URL = "http://www.opengis.net/wcs";
-	private static final String WCS_NAMESPACE = "\n  xmlns=\"" + WCS_URL + "\"";
-	private static final String XLINK_URL = "\"http://www.w3.org/1999/xlink\"";
-	private static final String XLINK_NAMESPACE = "\n  xmlns:xlink=" + XLINK_URL;
-	private static final String OGC_URL = "\"http://www.opengis.net/ogc\"";
-	private static final String OGC_NAMESPACE = "\n  xmlns:ogc=" + OGC_URL;
-	private static final String GML_URL = "\"http://www.opengis.net/gml\"";
-	private static final String GML_NAMESPACE = "\n  xmlns:gml=" + GML_URL;
-	private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema-instance\"";
-	private static final String XSI_NAMESPACE = "\n  xmlns:xsi=" + SCHEMA_URI;
+	private static final Logger LOGGER = Logger
+			.getLogger("org.vfny.geoserver.responses");
 
-	
+	private static final String CURR_VER = "\"1.0.0\"";
+
+	private static final String WCS_URL = "http://www.opengis.net/wcs";
+
+	private static final String WCS_NAMESPACE = new StringBuffer("\n  xmlns=\"")
+			.append(WCS_URL).append("\"").toString();
+
+	private static final String XLINK_URL = "\"http://www.w3.org/1999/xlink\"";
+
+	private static final String XLINK_NAMESPACE = new StringBuffer(
+			"\n  xmlns:xlink=").append(XLINK_URL).toString();
+
+	private static final String OGC_URL = "\"http://www.opengis.net/ogc\"";
+
+	private static final String OGC_NAMESPACE = new StringBuffer(
+			"\n  xmlns:ogc=").append(OGC_URL).toString();
+
+	private static final String GML_URL = "\"http://www.opengis.net/gml\"";
+
+	private static final String GML_NAMESPACE = new StringBuffer(
+			"\n  xmlns:gml=").append(GML_URL).toString();
+
+	private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema-instance\"";
+
+	private static final String XSI_NAMESPACE = new StringBuffer(
+			"\n  xmlns:xsi=").append(SCHEMA_URI).toString();
+
 	/** Fixed return footer information */
 	private static final String FOOTER = "\n</CoverageDescription>";
 
@@ -64,7 +81,6 @@ public class DescribeResponse implements Response {
 	 */
 	private DescribeRequest request;
 
-	
 	/** Main XML class for interpretation and response. */
 	private String xmlResponse = new String();
 
@@ -75,14 +91,17 @@ public class DescribeResponse implements Response {
 	 * @uml.associationEnd multiplicity="(1 1)"
 	 */
 	protected final DatumFactory datumFactory = FactoryFinder
-		.getDatumFactory(null);
+			.getDatumFactory(null);
 
-
-    /**
-     * The default coordinate reference system factory.
-     */
-    //protected  final static CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-    protected  final static CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,CRSAuthorityFactory.class));
+	/**
+	 * The default coordinate reference system factory.
+	 */
+	// protected final static CRSFactory crsFactory =
+	// FactoryFinder.getCRSFactory(new
+	// Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+	protected final static CRSFactory crsFactory = FactoryFinder
+			.getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,
+					CRSAuthorityFactory.class));
 
 	/**
 	 * The default math transform factory.
@@ -91,52 +110,55 @@ public class DescribeResponse implements Response {
 	 * @uml.associationEnd multiplicity="(1 1)"
 	 */
 	protected final MathTransformFactory mtFactory = FactoryFinder
-		.getMathTransformFactory(null);
+			.getMathTransformFactory(null);
 
-    /**
-     * The default transformations factory.
-     */
-    protected  final static CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
+	/**
+	 * The default transformations factory.
+	 */
+	protected final static CoordinateOperationFactory opFactory = FactoryFinder
+			.getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT,
+					Boolean.TRUE));
 
 	public void execute(Request request) throws WcsException {
 		if (!(request instanceof DescribeRequest)) {
-			throw new WcsException(
-					"illegal request type, expected DescribeRequest, got "
-					+ request);
+			throw new WcsException(new StringBuffer(
+					"illegal request type, expected DescribeRequest, got ")
+					.append(request).toString());
 		}
-		
+
 		DescribeRequest wcsRequest = (DescribeRequest) request;
 		this.request = wcsRequest;
 		LOGGER.finer("processing describe request" + wcsRequest);
-		
+
 		String outputFormat = wcsRequest.getOutputFormat();
-		
+
 		if (!outputFormat.equalsIgnoreCase("XMLSCHEMA")) {
-			throw new WcsException("output format: " + outputFormat + " not "
-					+ "supported by geoserver");
+			throw new WcsException(new StringBuffer("output format: ").append(
+					outputFormat).append(" not ").append(
+					"supported by geoserver").toString());
 		}
-		
+
 		// generates response, using general function
 		xmlResponse = generateCoverages(wcsRequest);
-		
+
 		if (!request.getWCS().getGeoServer().isVerbose()) {
 			xmlResponse = xmlResponse.replaceAll(">\n[ \\t\\n]*", ">");
 			xmlResponse = xmlResponse.replaceAll("\n[ \\t\\n]*", " ");
 		}
 	}
-	
+
 	public String getContentType(GeoServer gs) {
 		return gs.getMimeType();
 	}
-	
+
 	public String getContentEncoding() {
 		return null;
 	}
-	
+
 	public String getContentDisposition() {
 		return null;
 	}
-	
+
 	public void writeTo(OutputStream out) throws WcsException {
 		try {
 			byte[] content = xmlResponse.getBytes();
@@ -145,310 +167,352 @@ public class DescribeResponse implements Response {
 			throw new WcsException(ex, "", getClass().getName());
 		}
 	}
-	
+
 	private final String generateCoverages(DescribeRequest wcsRequest)
-	throws WcsException {
+			throws WcsException {
 		List requestedTypes = wcsRequest.getCoverages();
-		
+
 		// Initialize return information and intermediate return objects
 		StringBuffer tempResponse = new StringBuffer();
-		
-		//ComplexType table = new ComplexType();
+
+		// ComplexType table = new ComplexType();
 		if (requestedTypes.size() == 0) {
-			//if there are no specific requested types then get all.
+			// if there are no specific requested types then get all.
 			requestedTypes = new ArrayList(wcsRequest.getWCS().getData()
-					.getCoverageInfos()
-					.keySet());
+					.getCoverageInfos().keySet());
 		}
-		
-		tempResponse.append("<?xml version=\"1.0\" encoding=\""
-				+ wcsRequest.getGeoServer().getCharSet().displayName() + "\"?>"
-				+ "\n<CoverageDescription version=" + CURR_VER + " ");
-		
+
+		tempResponse.append("<?xml version=\"1.0\" encoding=\"").append(
+				wcsRequest.getGeoServer().getCharSet().displayName()).append(
+				"\"?>").append("\n<CoverageDescription version=").append(
+				CURR_VER).append(" ").toString();
+
 		tempResponse.append(WCS_NAMESPACE);
 		tempResponse.append(XLINK_NAMESPACE);
 		tempResponse.append(OGC_NAMESPACE);
 		tempResponse.append(GML_NAMESPACE);
 		tempResponse.append(XSI_NAMESPACE);
-		tempResponse.append(" xsi:schemaLocation=\"" + WCS_URL + " " + request.getSchemaBaseUrl()
-				+ "wcs/1.0.0/describeCoverage.xsd\">\n\n");
+		tempResponse.append(" xsi:schemaLocation=\"").append(WCS_URL).append(
+				" ").append(request.getSchemaBaseUrl()).append(
+				"wcs/1.0.0/describeCoverage.xsd\">\n\n");
 
 		tempResponse.append(generateSpecifiedCoverages(requestedTypes,
 				wcsRequest.getWCS()));
-		
+
 		tempResponse.append(FOOTER);
-		
+
 		return tempResponse.toString();
 	}
-	
+
 	private String generateSpecifiedCoverages(List requestedTypes, WCS gs)
-	throws WcsException {
+			throws WcsException {
 		String tempResponse = new String();
 		String curCoverageName = new String();
-		
-		for (int i = 0; i < requestedTypes.size(); i++) {
+
+		final int length = requestedTypes.size();
+		CoverageInfo meta;
+		for (int i = 0; i < length; i++) {
 			curCoverageName = requestedTypes.get(i).toString();
-			
-			CoverageInfo meta = gs.getData().getCoverageInfo(curCoverageName);
-			
+
+			meta = gs.getData().getCoverageInfo(curCoverageName);
+
 			if (meta == null) {
-				throw new WcsException("Coverage " + curCoverageName + " does "
-						+ "not exist on this server");
+				throw new WcsException(new StringBuffer("Coverage ").append(
+						curCoverageName).append(" does ").append(
+						"not exist on this server").toString());
 			}
-			
+
 			tempResponse = tempResponse + printElement(meta);
 		}
-		
+
 		tempResponse = tempResponse + "\n\n";
-		
+
 		return tempResponse;
 	}
-	
+
 	private static String printElement(CoverageInfo cv) {
 		StringBuffer tempResponse = new StringBuffer();
 
 		tempResponse.append("\n <CoverageOffering>");
-			if( cv.getMetadataLink() != null ) {
-				tempResponse.append("\n  <metadataLink about=\"" + cv.getMetadataLink().getAbout() 
-						+ "\" metadataType=\"" + cv.getMetadataLink().getMetadataType() + "\"/>");				
-			}
-			
-			String tmp = cv.getDescription();
-			if( (tmp != null) && (tmp != "") ) {
-				tempResponse.append("\n  <description>" + tmp + "</description>");
-			}
-			
-			tmp = cv.getName();
-			if( (tmp != null) && (tmp != "") ) {
-				tempResponse.append("\n  <name>" + tmp + "</name>");
-			}
+		if (cv.getMetadataLink() != null) {
+			tempResponse.append("\n  <metadataLink about=\"").append(
+					cv.getMetadataLink().getAbout()).append(
+					"\" metadataType=\"").append(
+					cv.getMetadataLink().getMetadataType()).append("\"/>");
+		}
 
-			tmp = cv.getLabel();
-			if( (tmp != null) && (tmp != "") ) {
-				tempResponse.append("\n  <label>" + tmp + "</label>");
-			}
+		String tmp = cv.getDescription();
+		if ((tmp != null) && (tmp != "")) {
+			tempResponse.append("\n  <description>").append(tmp).append(
+					"</description>");
+		}
 
-			final GeneralEnvelope envelope = cv.getLatLonEnvelope();
-			
-			tempResponse.append("\n  <lonLatEnvelope" 
-					+ " srsName=\"WGS84(DD)\""
-					+">");
-			tempResponse.append("\n   <gml:pos>" 
-					+ envelope.getLowerCorner().getOrdinate(0) 
-					+ " " 
-					+ envelope.getLowerCorner().getOrdinate(1)
-					+ "</gml:pos>");
-			tempResponse.append("\n   <gml:pos>" 
-					+ envelope.getUpperCorner().getOrdinate(0)
-					+ " " 
-					+ envelope.getUpperCorner().getOrdinate(1)
-					+ "</gml:pos>");
-			tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-			tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-			tempResponse.append("\n  </lonLatEnvelope>");
-			
-			if( (cv.getKeywords() != null) && (cv.getKeywords().size() > 0) ) {
-				tempResponse.append("\n  <keywords>");
-				for( int i=0; i<cv.getKeywords().size(); i++)
-					tempResponse.append("\n   <keyword>" + cv.getKeywords().get(i) 
-							+ "</keyword>");
-				tempResponse.append("\n  </keywords>");
-			}
+		tmp = cv.getName();
+		if ((tmp != null) && (tmp != "")) {
+			tempResponse.append("\n  <name>").append(tmp).append("</name>");
+		}
 
-			GeneralEnvelope cvEnvelope = cv.getEnvelope();
-			try {
-				cvEnvelope = DataFormatUtils.adjustEnvelope(cv.getEnvelope().getCoordinateReferenceSystem(), cv.getEnvelope());
-			} catch (MismatchedDimensionException e) {
-				// TODO Handle this Exception...
-				e.printStackTrace();
-			} catch (IndexOutOfBoundsException e) {
-				// TODO Handle this Exception...
-				e.printStackTrace();
-			} catch (NoSuchAuthorityCodeException e) {
-				// TODO Handle this Exception...
-				e.printStackTrace();
-			} 
-			tempResponse.append("\n  <domainSet>");
-				tempResponse.append("\n   <spatialDomain>");
-					// Envelope
-					tempResponse.append("\n    <gml:Envelope" 
-							+ (cv.getSrsName() != null && cv.getSrsName() != "" ? " srsName=\"" + cv.getSrsName() + "\"" : "")
-							+">");
-						tempResponse.append("\n       <gml:pos>" 
-								+ (cvEnvelope != null ? cvEnvelope.getLowerCorner().getOrdinate(0) + " " + cvEnvelope.getLowerCorner().getOrdinate(1) : "") 
-								+ "</gml:pos>");
-						tempResponse.append("\n       <gml:pos>" 
-								+ (cvEnvelope != null ? cvEnvelope.getUpperCorner().getOrdinate(0) + " " + cvEnvelope.getUpperCorner().getOrdinate(1) : "") 
-								+ "</gml:pos>");
-					tempResponse.append("\n    </gml:Envelope>");
-					
-					// Grid
-					GridGeometry g = cv.getGrid();
-					InternationalString[] dimNames = cv.getDimensionNames();
-					final int gridDimension = g.getGridRange().getDimension();
-					
-					//RectifiedGrid
-					tempResponse.append("\n    <gml:RectifiedGrid"
-							+ (g != null ? " dimension=\"" + gridDimension + "\"" : "")
-							+">");
-					
-						String lowers = "", upers = "";
-						for(int r=0; r<gridDimension; r++) {
-							lowers += g.getGridRange().getLower(r) + " ";
-							upers += g.getGridRange().getUpper(r) + " ";
+		tmp = cv.getLabel();
+		if ((tmp != null) && (tmp != "")) {
+			tempResponse.append("\n  <label>").append(tmp).append("</label>");
+		}
+
+		final GeneralEnvelope envelope = cv.getLatLonEnvelope();
+
+		tempResponse.append("\n  <lonLatEnvelope" + " srsName=\"WGS84(DD)\"")
+				.append(">");
+		tempResponse.append("\n   <gml:pos>").append(
+				envelope.getLowerCorner().getOrdinate(0)).append(" ").append(
+				envelope.getLowerCorner().getOrdinate(1)).append("</gml:pos>");
+		tempResponse.append("\n   <gml:pos>").append(
+				envelope.getUpperCorner().getOrdinate(0)).append(" ").append(
+				envelope.getUpperCorner().getOrdinate(1)).append("</gml:pos>");
+		tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+		tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+		tempResponse.append("\n  </lonLatEnvelope>");
+
+		if ((cv.getKeywords() != null) && (cv.getKeywords().size() > 0)) {
+			tempResponse.append("\n  <keywords>");
+			for (int i = 0; i < cv.getKeywords().size(); i++)
+				tempResponse.append("\n   <keyword>" + cv.getKeywords().get(i)
+						+ "</keyword>");
+			tempResponse.append("\n  </keywords>");
+		}
+
+		// TODO we need to signal somehow that something went wrong
+		GeneralEnvelope cvEnvelope = cv.getEnvelope();
+		try {
+			cvEnvelope = DataFormatUtils.adjustEnvelope(cv.getEnvelope()
+					.getCoordinateReferenceSystem(), cv.getEnvelope());
+		} catch (MismatchedDimensionException e) {
+			LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),
+					"private static String printElement(CoverageInfo cv)", e
+							.getLocalizedMessage(), e);
+
+		} catch (IndexOutOfBoundsException e) {
+			LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),
+					"private static String printElement(CoverageInfo cv)", e
+							.getLocalizedMessage(), e);
+		} catch (NoSuchAuthorityCodeException e) {
+			LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),
+					"private static String printElement(CoverageInfo cv)", e
+							.getLocalizedMessage(), e);
+		}
+		tempResponse.append("\n  <domainSet>");
+		tempResponse.append("\n   <spatialDomain>");
+		// Envelope
+		tempResponse
+				.append("\n    <gml:Envelope")
+				.append(
+						(cv.getSrsName() != null && cv.getSrsName() != "" ? new StringBuffer(
+								" srsName=\"").append(cv.getSrsName()).append(
+								"\"").toString()
+								: "")).append(">");
+		tempResponse.append("\n       <gml:pos>").append(
+				cvEnvelope != null ? new StringBuffer(Double
+						.toString(cvEnvelope.getLowerCorner().getOrdinate(0)))
+						.append(" ").append(
+								cvEnvelope.getLowerCorner().getOrdinate(1))
+						.toString() : "").append("</gml:pos>");
+		tempResponse.append("\n       <gml:pos>").append(
+				cvEnvelope != null ? new StringBuffer(Double
+						.toString(cvEnvelope.getUpperCorner().getOrdinate(0)))
+						.append(" ").append(
+								cvEnvelope.getUpperCorner().getOrdinate(1))
+						.toString() : "").append("</gml:pos>");
+		tempResponse.append("\n    </gml:Envelope>");
+
+		// Grid
+		GridGeometry g = cv.getGrid();
+		InternationalString[] dimNames = cv.getDimensionNames();
+		final int gridDimension = g.getGridRange().getDimension();
+
+		// RectifiedGrid
+		tempResponse.append("\n    <gml:RectifiedGrid").append(
+				g != null ? new StringBuffer(" dimension=\"").append(
+						gridDimension).append("\"").toString() : "")
+				.append(">");
+
+		String lowers = "", upers = "";
+		for (int r = 0; r < gridDimension; r++) {
+			lowers += g.getGridRange().getLower(r) + " ";
+			upers += g.getGridRange().getUpper(r) + " ";
+		}
+		tempResponse.append("\n       <gml:limits>");
+		tempResponse.append("\n         <gml:GridEnvelope>");
+		tempResponse.append("\n         <gml:low>"
+				+ (cvEnvelope != null ? lowers : "") + "</gml:low>");
+		tempResponse.append("\n         <gml:high>"
+				+ (cvEnvelope != null ? upers : "") + "</gml:high>");
+		tempResponse.append("\n         </gml:GridEnvelope>");
+		tempResponse.append("\n       </gml:limits>");
+		if (dimNames != null)
+			for (int dn = 0; dn < dimNames.length; dn++)
+				tempResponse.append("\n       <gml:axisName>" + dimNames[dn]
+						+ "</gml:axisName>");
+		tempResponse.append("\n       <gml:origin>");
+		tempResponse
+				.append("\n       <gml:pos>"
+						+ (cvEnvelope != null ? cvEnvelope.getLowerCorner()
+								.getOrdinate(0)
+								+ " "
+								+ cvEnvelope.getUpperCorner().getOrdinate(1)
+								: "") + "</gml:pos>");
+		tempResponse.append("\n       </gml:origin>");
+		tempResponse.append("\n       <gml:offsetVector>"
+				+ (cvEnvelope != null ? (cvEnvelope.getUpperCorner()
+						.getOrdinate(0) - cvEnvelope.getLowerCorner()
+						.getOrdinate(0))
+						/ (g.getGridRange().getUpper(0) - g.getGridRange()
+								.getLower(0)) : 0.0)
+				+ " 0.0</gml:offsetVector>");
+		tempResponse.append("\n       <gml:offsetVector>0.0 "
+				+ (cvEnvelope != null ? (cvEnvelope.getLowerCorner()
+						.getOrdinate(1) - cvEnvelope.getUpperCorner()
+						.getOrdinate(1))
+						/ (g.getGridRange().getUpper(1) - g.getGridRange()
+								.getLower(1)) : -0.0) + "</gml:offsetVector>");
+		tempResponse.append("\n    </gml:RectifiedGrid>");
+
+		// Grid
+		/*
+		 * tempResponse.append("\n <gml:Grid" + (g != null ? " dimension=\"" +
+		 * g.getGridRange().getDimension() + "\"" : "") +">");
+		 * 
+		 * String lowers = "", upers = ""; for(int r=0; r<g.getGridRange().getDimension();
+		 * r++) { lowers += g.getGridRange().getLower(r) + " "; upers +=
+		 * g.getGridRange().getUpper(r) + " "; } tempResponse.append("\n
+		 * <gml:limits>"); tempResponse.append("\n <gml:GridEnvelope>");
+		 * tempResponse.append("\n <gml:low>" + (cvEnvelope != null ? lowers :
+		 * "") + "</gml:low>"); tempResponse.append("\n <gml:high>" +
+		 * (cvEnvelope != null ? upers : "") + "</gml:high>");
+		 * tempResponse.append("\n </gml:GridEnvelope>");
+		 * tempResponse.append("\n </gml:limits>"); if(dimNames!=null) for(int
+		 * dn=0;dn<dimNames.length;dn++) tempResponse.append("\n
+		 * <gml:axisName>" + dimNames[dn] +"</gml:axisName>");
+		 * tempResponse.append("\n </gml:Grid>");
+		 */
+		tempResponse.append("\n   </spatialDomain>");
+		tempResponse.append("\n  </domainSet>");
+
+		// rangeSet
+		CoverageDimension[] dims = cv.getDimensions();
+		TreeSet nodataValues = new TreeSet();
+		 try {
+		if (dims != null) {
+			int numSampleDimensions = dims.length;
+			tempResponse.append("\n  <rangeSet>");
+			tempResponse.append("\n   <RangeSet>");
+			tempResponse.append("\n    <name>" + cv.getName() + "</name>");
+			tempResponse.append("\n    <label>" + cv.getLabel() + "</label>");
+			for (int sample = 0; sample < numSampleDimensions; sample++) {
+				CoverageCategory[] categories = dims[sample].getCategories();
+				final int length=categories.length;
+				for (int c = 0; c < length; c++) {
+					CoverageCategory cat = categories[c];
+					tempResponse.append("\n      <axisDescription>");
+					tempResponse.append("\n        <AxisDescription>");
+					tempResponse.append("\n          <name>"
+							+ dims[sample].getName() + ":Category("
+							+ cat.getName() + ")</name>");
+					tempResponse.append("\n          <label>"
+							+ dims[sample].getDescription() + "</label>");
+					tempResponse.append("\n          <values>");
+					tempResponse.append("\n            <interval>");
+					tempResponse.append("\n              <min>"
+							+ cat.getInterval().getMinimum(true) + "</min>");
+					tempResponse.append("\n              <max>"
+							+ cat.getInterval().getMaximum(true) + "</max>");
+					tempResponse.append("\n            </interval>");
+					tempResponse.append("\n          </values>");
+					tempResponse.append("\n        </AxisDescription>");
+					tempResponse.append("\n      </axisDescription>");
+				}
+				Double[] nodata = dims[sample].getNullValues();
+				if (nodata != null)
+					for (int nd = 0; nd < nodata.length; nd++) {
+						if (!nodataValues.contains(nodata[nd])) {
+							nodataValues.add(nodata[nd]);
 						}
-						tempResponse.append("\n       <gml:limits>");
-							tempResponse.append("\n         <gml:GridEnvelope>");
-								tempResponse.append("\n         <gml:low>" 
-										+ (cvEnvelope != null ? lowers : "") 
-										+ "</gml:low>");
-								tempResponse.append("\n         <gml:high>" 
-										+ (cvEnvelope != null ? upers : "") 
-										+ "</gml:high>");
-							tempResponse.append("\n         </gml:GridEnvelope>");
-						tempResponse.append("\n       </gml:limits>");
-						if(dimNames!=null)
-							for(int dn=0;dn<dimNames.length;dn++)
-								tempResponse.append("\n       <gml:axisName>" + dimNames[dn] +"</gml:axisName>");
-						tempResponse.append("\n       <gml:origin>");
-							tempResponse.append("\n       <gml:pos>" 
-									+ (cvEnvelope != null ? cvEnvelope.getLowerCorner().getOrdinate(0) + " " + cvEnvelope.getUpperCorner().getOrdinate(1) : "") 
-									+ "</gml:pos>");
-						tempResponse.append("\n       </gml:origin>");
-						tempResponse.append("\n       <gml:offsetVector>" + (cvEnvelope != null ? (cvEnvelope.getUpperCorner().getOrdinate(0) - cvEnvelope.getLowerCorner().getOrdinate(0))/(g.getGridRange().getUpper(0) - g.getGridRange().getLower(0)) : 0.0) + " 0.0</gml:offsetVector>");
-						tempResponse.append("\n       <gml:offsetVector>0.0 " + (cvEnvelope != null ? (cvEnvelope.getLowerCorner().getOrdinate(1) - cvEnvelope.getUpperCorner().getOrdinate(1))/(g.getGridRange().getUpper(1) - g.getGridRange().getLower(1)) : -0.0) + "</gml:offsetVector>");
-					tempResponse.append("\n    </gml:RectifiedGrid>");
-					
-					//Grid
-/*					tempResponse.append("\n    <gml:Grid"
-							+ (g != null ? " dimension=\"" + g.getGridRange().getDimension() + "\"" : "")
-							+">");
-					
-						String lowers = "", upers = "";
-						for(int r=0; r<g.getGridRange().getDimension(); r++) {
-							lowers += g.getGridRange().getLower(r) + " ";
-							upers += g.getGridRange().getUpper(r) + " ";
-						}
-						tempResponse.append("\n       <gml:limits>");
-							tempResponse.append("\n         <gml:GridEnvelope>");
-								tempResponse.append("\n         <gml:low>" 
-										+ (cvEnvelope != null ? lowers : "") 
-										+ "</gml:low>");
-								tempResponse.append("\n         <gml:high>" 
-										+ (cvEnvelope != null ? upers : "") 
-										+ "</gml:high>");
-							tempResponse.append("\n         </gml:GridEnvelope>");
-						tempResponse.append("\n       </gml:limits>");
-						if(dimNames!=null)
-							for(int dn=0;dn<dimNames.length;dn++)
-								tempResponse.append("\n       <gml:axisName>" + dimNames[dn] +"</gml:axisName>");
-					tempResponse.append("\n    </gml:Grid>");
-*/				
-				tempResponse.append("\n   </spatialDomain>");
-			tempResponse.append("\n  </domainSet>");
-			
-			// rangeSet
-			CoverageDimension[] dims = cv.getDimensions();
-			TreeSet nodataValues = new TreeSet();
-			try {
-				if(dims!=null) {
-					int numSampleDimensions = dims.length;
-					tempResponse.append("\n  <rangeSet>");
-						tempResponse.append("\n   <RangeSet>");
-							tempResponse.append("\n    <name>" + cv.getName() + "</name>");
-							tempResponse.append("\n    <label>" + cv.getLabel() + "</label>");
-							for(int sample=0;sample<numSampleDimensions;sample++) {
-								CoverageCategory[] categories = dims[sample].getCategories();
-								for(int c=0;c<categories.length;c++) {
-									CoverageCategory cat = categories[c];
-									tempResponse.append("\n      <axisDescription>");
-										tempResponse.append("\n        <AxisDescription>");
-											tempResponse.append("\n          <name>" + dims[sample].getName() + ":Category(" + cat.getName() + ")</name>");
-											tempResponse.append("\n          <label>" + dims[sample].getDescription() + "</label>");
-											tempResponse.append("\n          <values>");
-												tempResponse.append("\n            <interval>");
-													tempResponse.append("\n              <min>" + cat.getInterval().getMinimum(true) + "</min>");
-													tempResponse.append("\n              <max>" + cat.getInterval().getMaximum(true) + "</max>");
-												tempResponse.append("\n            </interval>");
-											tempResponse.append("\n          </values>");
-										tempResponse.append("\n        </AxisDescription>");
-									tempResponse.append("\n      </axisDescription>");
-								}
-								Double[] nodata = dims[sample].getNullValues();
-								if(nodata!=null)
-									for(int nd=0;nd<nodata.length;nd++) {
-										if(!nodataValues.contains(nodata[nd])) {
-											nodataValues.add(nodata[nd]);
-										}
-									}
-							}
-							if(nodataValues.size() > 0) {
-								tempResponse.append("\n      <nullValues>");
-								if(nodataValues.size() == 1) {
-									tempResponse.append("\n        <singleValue>" + (Double) nodataValues.first() + "</singleValue>");								
-								} else {
-									tempResponse.append("\n        <interval>");								
-										tempResponse.append("\n          <min>" + (Double) nodataValues.first() + "</min>");								
-										tempResponse.append("\n          <max>" + (Double) nodataValues.last() + "</max>");								
-									tempResponse.append("\n        <interval>");								
-								}
-								tempResponse.append("\n      </nullValues>");
-							}
-						tempResponse.append("\n   </RangeSet>");
-					tempResponse.append("\n  </rangeSet>");
+					}
+			}
+			if (nodataValues.size() > 0) {
+				tempResponse.append("\n      <nullValues>");
+				if (nodataValues.size() == 1) {
+					tempResponse.append("\n        <singleValue>"
+							+ (Double) nodataValues.first() + "</singleValue>");
+				} else {
+					tempResponse.append("\n        <interval>");
+					tempResponse.append("\n          <min>"
+							+ (Double) nodataValues.first() + "</min>");
+					tempResponse.append("\n          <max>"
+							+ (Double) nodataValues.last() + "</max>");
+					tempResponse.append("\n        <interval>");
 				}
-			} catch(Exception e) {
-				// TODO Handle this exceptions ...
-				e.printStackTrace();
+				tempResponse.append("\n      </nullValues>");
 			}
-			
-			if( ((cv.getRequestCRSs() != null) && (cv.getRequestCRSs().size() > 0)) 
-					|| ((cv.getResponseCRSs() != null) && (cv.getResponseCRSs().size() > 0)) ) {
-				tempResponse.append("\n  <supportedCRSs>");
-				if( (cv.getRequestCRSs() != null) && (cv.getRequestCRSs().size() > 0) ) {
-					for( int i=0; i<cv.getRequestCRSs().size(); i++)
-						tempResponse.append("\n    <requestCRSs>" + cv.getRequestCRSs().get(i)
-								+ "</requestCRSs>");
-				}
-				if( (cv.getResponseCRSs() != null) && (cv.getResponseCRSs().size() > 0) ) {
-					for( int i=0; i<cv.getResponseCRSs().size(); i++)
-						tempResponse.append("\n    <responseCRSs>" + cv.getResponseCRSs().get(i)
-								+ "</responseCRSs>");
-				}
-				tempResponse.append("\n  </supportedCRSs>");
+			tempResponse.append("\n   </RangeSet>");
+			tempResponse.append("\n  </rangeSet>");
+		}
+		 } catch (Exception e) {
+			// TODO Handle this exceptions ...
+			e.printStackTrace();
+		 }
+
+		if (((cv.getRequestCRSs() != null) && (cv.getRequestCRSs().size() > 0))
+				|| ((cv.getResponseCRSs() != null) && (cv.getResponseCRSs()
+						.size() > 0))) {
+			tempResponse.append("\n  <supportedCRSs>");
+			if ((cv.getRequestCRSs() != null)
+					&& (cv.getRequestCRSs().size() > 0)) {
+				for (int i = 0; i < cv.getRequestCRSs().size(); i++)
+					tempResponse.append("\n    <requestCRSs>"
+							+ cv.getRequestCRSs().get(i) + "</requestCRSs>");
 			}
-			
-			if( ((cv.getSupportedFormats() != null) && (cv.getSupportedFormats().size() > 0)) ) {
-				tempResponse.append("\n  <supportedFormats" 
-						+ (cv.getNativeFormat() != null && cv.getNativeFormat() != "" 
-							? " nativeFormat=\"" + cv.getNativeFormat() + "\"" 
-							: "") 
-						+ ">");
-				for( int i=0; i<cv.getSupportedFormats().size(); i++)
-					tempResponse.append("\n    <formats>" + cv.getSupportedFormats().get(i)
-							+ "</formats>");
-				tempResponse.append("\n  </supportedFormats>");
+			if ((cv.getResponseCRSs() != null)
+					&& (cv.getResponseCRSs().size() > 0)) {
+				for (int i = 0; i < cv.getResponseCRSs().size(); i++)
+					tempResponse.append("\n    <responseCRSs>"
+							+ cv.getResponseCRSs().get(i) + "</responseCRSs>");
 			}
-			
-			if( ((cv.getInterpolationMethods() != null) && (cv.getInterpolationMethods().size() > 0)) ) {
-				tempResponse.append("\n  <supportedInterpolations" 
-						+ (cv.getDefaultInterpolationMethod() != null && cv.getDefaultInterpolationMethod() != "" 
-							? " default=\"" + cv.getDefaultInterpolationMethod() + "\"" 
-							: "") 
-						+ ">");
-				for( int i=0; i<cv.getInterpolationMethods().size(); i++)
-					tempResponse.append("\n    <interpolationMethod>" + cv.getInterpolationMethods().get(i)
-							+ "</interpolationMethod>");
-				tempResponse.append("\n  </supportedInterpolations>");
-			}
-			
+			tempResponse.append("\n  </supportedCRSs>");
+		}
+
+		if (((cv.getSupportedFormats() != null) && (cv.getSupportedFormats()
+				.size() > 0))) {
+			tempResponse.append("\n  <supportedFormats"
+					+ (cv.getNativeFormat() != null
+							&& cv.getNativeFormat() != "" ? " nativeFormat=\""
+							+ cv.getNativeFormat() + "\"" : "") + ">");
+			for (int i = 0; i < cv.getSupportedFormats().size(); i++)
+				tempResponse.append("\n    <formats>"
+						+ cv.getSupportedFormats().get(i) + "</formats>");
+			tempResponse.append("\n  </supportedFormats>");
+		}
+
+		if (((cv.getInterpolationMethods() != null) && (cv
+				.getInterpolationMethods().size() > 0))) {
+			tempResponse
+					.append("\n  <supportedInterpolations"
+							+ (cv.getDefaultInterpolationMethod() != null
+									&& cv.getDefaultInterpolationMethod() != "" ? " default=\""
+									+ cv.getDefaultInterpolationMethod() + "\""
+									: "") + ">");
+			for (int i = 0; i < cv.getInterpolationMethods().size(); i++)
+				tempResponse.append("\n    <interpolationMethod>"
+						+ cv.getInterpolationMethods().get(i)
+						+ "</interpolationMethod>");
+			tempResponse.append("\n  </supportedInterpolations>");
+		}
+
 		tempResponse.append("\n </CoverageOffering>");
 		return tempResponse.toString();
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.vfny.geoserver.responses.Response#abort()
-	 */
+	} /*
+		 * (non-Javadoc)
+		 * 
+		 * @see org.vfny.geoserver.responses.Response#abort()
+		 */
+
 	public void abort(Service gs) {
 		// nothing to undo
 	}

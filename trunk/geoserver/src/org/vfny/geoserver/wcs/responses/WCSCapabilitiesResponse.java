@@ -19,118 +19,131 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wcs.WcsException;
 
-
 /**
  * DOCUMENT ME!
  * 
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  */
 public class WCSCapabilitiesResponse implements Response {
-    /** package's logger */
-    private static final Logger LOGGER = Logger.getLogger(WCSCapabilitiesResponse.class.getPackage()
-                                                                                       .getName());
+	/** package's logger */
+	private static final Logger LOGGER = Logger
+			.getLogger(WCSCapabilitiesResponse.class.getPackage().getName());
 
-    /**
-     * Byte array holding the raw content of the capabilities document,
-     * generated in <code>execute()</code>
-     */
-    private byte[] rawResponse;
+	/**
+	 * Byte array holding the raw content of the capabilities document,
+	 * generated in <code>execute()</code>
+	 */
+	private byte[] rawResponse;
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param request DOCUMENT ME!
-     *
-     * @throws ServiceException DOCUMENT ME!
-     * @throws IllegalArgumentException DOCUMENT ME!
-     * @throws WCSException DOCUMENT ME!
-     */
-    public void execute(Request request) throws ServiceException {
-        if (!(request instanceof CapabilitiesRequest)) {
-            throw new IllegalArgumentException("Not a GetCapabilities Request");
-        }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param request
+	 *            DOCUMENT ME!
+	 * 
+	 * @throws ServiceException
+	 *             DOCUMENT ME!
+	 * @throws IllegalArgumentException
+	 *             DOCUMENT ME!
+	 * @throws WCSException
+	 *             DOCUMENT ME!
+	 */
+	public void execute(Request request) throws ServiceException {
+		if (!(request instanceof CapabilitiesRequest)) {
+			throw new IllegalArgumentException("Not a GetCapabilities Request");
+		}
 
-        WCSCapsTransformer transformer = new WCSCapsTransformer();
-            
-        transformer.setIndentation(2);
+		WCSCapsTransformer transformer = new WCSCapsTransformer();
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+		transformer.setIndentation(2);
 
-        try {
-            transformer.transform(request, out);
-        } catch (TransformerException e) {
-            throw new WcsException(e);
-        }
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        this.rawResponse = out.toByteArray();
-    }
+		try {
+			transformer.transform(request, out);
+		} catch (TransformerException e) {
+			throw new WcsException(e);
+		}
 
-    /**
-     * Returns the fixed capabilities MIME type  (application/vnd.ogc.WCS_xml)
-     * as specified in whe WCS spec, version 1.1.1, section 6.5.3, table 3.
-     *
-     * @param gs DOCUMENT ME!
-     *
-     * @return the capabilities document MIME type.
-     *
-     * @throws IllegalStateException if the response was not yet produced.
-     */
-    public String getContentType(GeoServer gs) throws IllegalStateException {
-        if (rawResponse == null) {
-            throw new IllegalStateException(
-                "execute() not called or not succeed.");
-        }
+		this.rawResponse = out.toByteArray();
+	}
 
-        return gs.getMimeType();
-    }
+	/**
+	 * Returns the fixed capabilities MIME type (application/vnd.ogc.WCS_xml) as
+	 * specified in whe WCS spec, version 1.1.1, section 6.5.3, table 3.
+	 * 
+	 * @param gs
+	 *            DOCUMENT ME!
+	 * 
+	 * @return the capabilities document MIME type.
+	 * 
+	 * @throws IllegalStateException
+	 *             if the response was not yet produced.
+	 */
+	public String getContentType(GeoServer gs) throws IllegalStateException {
+		if (rawResponse == null) {
+			throw new IllegalStateException(
+					"execute() not called or not succeed.");
+		}
 
-    /**
-     * Just returns <code>null</code>, since no special encoding is applyed to
-     * the output data.
-     *
-     * @return <code>null</code>
-     */
-    public String getContentEncoding() {
-        return null;
-    }
+		return gs.getMimeType();
+	}
 
-    /**
-     * Just returns <code>null</code>, since no special encoding is applyed to
-     * the output data.
-     *
-     * @return <code>null</code>
-     */
-    public String getContentDisposition() {
-        return null;
-    }
+	/**
+	 * Just returns <code>null</code>, since no special encoding is applyed
+	 * to the output data.
+	 * 
+	 * @return <code>null</code>
+	 */
+	public String getContentEncoding() {
+		return null;
+	}
 
-    /**
-     * Writes the capabilities document generated in <code>execute()</code> to
-     * the given output stream.
-     *
-     * @param out the capabilities document destination
-     *
-     * @throws ServiceException never, since the whole content was aquired in
-     *         <code>execute()</code>
-     * @throws IOException if it is thrown while writing to <code>out</code>
-     * @throws IllegalStateException if <code>execute()</code> was not
-     *         called/succeed before this method is called.
-     */
-    public void writeTo(OutputStream out) throws ServiceException, IOException {
-        if (rawResponse == null) {
-            throw new IllegalStateException("");
-        }
+	/**
+	 * Just returns <code>null</code>, since no special encoding is applyed
+	 * to the output data.
+	 * 
+	 * @return <code>null</code>
+	 */
+	public String getContentDisposition() {
+		return null;
+	}
 
-        out.write(rawResponse);
-    }
+	/**
+	 * Writes the capabilities document generated in <code>execute()</code> to
+	 * the given output stream.
+	 * 
+	 * @param out
+	 *            the capabilities document destination
+	 * 
+	 * @throws ServiceException
+	 *             never, since the whole content was aquired in
+	 *             <code>execute()</code>
+	 * @throws IOException
+	 *             if it is thrown while writing to <code>out</code>
+	 * @throws IllegalStateException
+	 *             if <code>execute()</code> was not called/succeed before
+	 *             this method is called.
+	 */
+	public void writeTo(OutputStream out) throws ServiceException, IOException {
+		if (rawResponse == null) {
+			throw new IllegalStateException(
+			"execute() not called or not succeed.");
+		}
 
-    /**
-     * Does nothing, since no processing is done after <code>execute()</code>
-     * has returned.
-     *
-     * @param gs the service instance
-     */
-    public void abort(Service gs) {
-    }
+		out.write(rawResponse);
+	}
+
+	/**
+	 * Does nothing, since no processing is done after <code>execute()</code>
+	 * has returned.
+	 * 
+	 * @param gs
+	 *            the service instance
+	 */
+	public void abort(Service gs) {
+	}
 }

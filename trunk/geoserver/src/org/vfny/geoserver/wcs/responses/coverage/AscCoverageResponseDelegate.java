@@ -20,8 +20,10 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 /**
  * DOCUMENT ME!
  * 
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  */
 public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
 
@@ -32,80 +34,79 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
 	 */
 	private GridCoverage2D sourceCoverage;
 
-	private String outputFormat;
-    private boolean compressOutput = false;
-	
+	private boolean compressOutput = false;
+
 	public AscCoverageResponseDelegate() {
 	}
-	
+
 	public boolean canProduce(String outputFormat) {
-		return "ArcGrid".equalsIgnoreCase(outputFormat) 
-			|| "ArcGrid-GZIP".equalsIgnoreCase(outputFormat);
+		return "ArcGrid".equalsIgnoreCase(outputFormat)
+				|| "ArcGrid-GZIP".equalsIgnoreCase(outputFormat);
 	}
-	
+
 	public void prepare(String outputFormat, GridCoverage2D coverage)
-	throws IOException {
-        this.compressOutput = "ArcGrid-GZIP".equalsIgnoreCase(outputFormat);
-		this.outputFormat = outputFormat;
+			throws IOException {
+		this.compressOutput = "ArcGrid-GZIP".equalsIgnoreCase(outputFormat);
 		this.sourceCoverage = coverage;
 	}
-	
+
 	public String getContentType(GeoServer gs) {
 		// return gs.getMimeType();
 		return compressOutput ? "application/x-gzip" : "text/plain";
 	}
-	
+
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public String getContentEncoding() {
-		//return compressOutput ? "gzip" : null;
+		// return compressOutput ? "gzip" : null;
 		return null;
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public String getContentDisposition() {
-		return compressOutput ? "attachment;filename="+this.sourceCoverage.getName()+".asc.gz" : null;
+		return compressOutput ? "attachment;filename="
+				+ this.sourceCoverage.getName() + ".asc.gz" : null;
 	}
 
-	public void encode(OutputStream output)
-	throws ServiceException, IOException {
+	public void encode(OutputStream output) throws ServiceException,
+			IOException {
 		if (sourceCoverage == null) {
-			throw new IllegalStateException(
-					"It seems prepare() has not been called"
-					+ " or has not succeed");
+			throw new IllegalStateException(new StringBuffer(
+					"It seems prepare() has not been called").append(
+					" or has not succeed").toString());
 		}
 
-        GZIPOutputStream gzipOut = null;
-
-        if (compressOutput) {
-            gzipOut = new GZIPOutputStream(output);
-            output = gzipOut;
-        }
+		GZIPOutputStream gzipOut = null;
+		if (compressOutput) {
+			gzipOut = new GZIPOutputStream(output);
+			output = gzipOut;
+		}
 
 		try {
-			GridCoverageWriter writer = new ArcGridWriter(output);
-			ParameterValueGroup params = writer.getFormat().getWriteParameters();
-		    params.parameter("Compressed").setValue(compressOutput);
-		    writer.write(sourceCoverage, null);
-			
-            if (gzipOut != null) {
-                gzipOut.finish();
-                gzipOut.flush();
-            }
-    		//freeing everything
-    		writer.dispose();
-    		writer=null;
-    		this.sourceCoverage.dispose();
-    		this.sourceCoverage=null;            
+			final GridCoverageWriter writer = new ArcGridWriter(output);
+			final ParameterValueGroup params = writer.getFormat()
+					.getWriteParameters();
+			params.parameter("Compressed").setValue(compressOutput);
+			writer.write(sourceCoverage, null);
+
+			if (gzipOut != null) {
+				gzipOut.finish();
+				gzipOut.flush();
+			}
+			// freeing everything
+			writer.dispose();
+			this.sourceCoverage.dispose();
+			this.sourceCoverage = null;
 		} catch (Exception e) {
-			throw new WcsException("Problems Rendering Image"+ e.getMessage());
+			throw new WcsException(new StringBuffer("Problems Rendering Image")
+					.append(e.getMessage()).toString(), e);
 		}
 	}
 }
