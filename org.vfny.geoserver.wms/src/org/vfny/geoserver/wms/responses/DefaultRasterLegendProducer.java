@@ -19,6 +19,7 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.impl.AttributeFactoryImpl;
+import org.geotools.feature.schema.NodeImpl;
 import org.geotools.feature.type.TypeFactoryImpl;
 import org.geotools.renderer.lite.LiteShape2;
 import org.geotools.renderer.lite.StyledShapePainter;
@@ -399,7 +400,7 @@ public abstract class DefaultRasterLegendProducer
         Feature sampleFeature;
 
         AttributeFactoryImpl af = new AttributeFactoryImpl();
-        sampleFeature = (Feature)af.create(schema, null);
+        sampleFeature = (Feature)af.create(new NodeImpl(schema), null);
         /*
         try {
             AttributeType[] atts = schema.getAttributeTypes();
