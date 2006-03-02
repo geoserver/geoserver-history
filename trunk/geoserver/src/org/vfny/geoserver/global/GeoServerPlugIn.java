@@ -94,7 +94,7 @@ public class GeoServerPlugIn implements PlugIn {
 		// @task TODO think about how to handle me properly
 		JAI.getDefaultInstance().getTileCache().setMemoryCapacity(
 				400 * 1024 * 1024);
-		OrderedAxisAuthorityFactory.register("EPSG");
+//		OrderedAxisAuthorityFactory.register("EPSG");
 		//
 		//
 
