@@ -23,6 +23,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
+import org.xml.sax.helpers.NamespaceSupport;
 
 
 /**
@@ -107,7 +108,9 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         GeoServer config = request.getWFS().getGeoServer();
         transformer = new FeatureTransformer();
 
-        FeatureTypeNamespaces ftNames = transformer.getFeatureTypeNamespaces();
+        //FeatureTypeNamespaces ftNames = transformer.getFeatureTypeNamespaces();
+        NamespaceSupport namespaces = transformer.getFeatureNamespaces();
+        
         int maxFeatures = request.getMaxFeatures();
         int serverMaxFeatures = config.getMaxFeatures();
 
@@ -128,9 +131,14 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
             namespace = meta.getDataStoreInfo().getNameSpace();
 
             String uri = namespace.getUri();
+            
+            //@todo: this method of declaring namespace throws an exception
+            /*
             ftNames.declareNamespace(features.getSchema(),
                 namespace.getPrefix(), uri);
-
+            */
+            namespaces.declarePrefix(namespace.getPrefix(), uri);
+            
             if (ftNamespaces.containsKey(uri)) {
                 String location = (String) ftNamespaces.get(uri);
                 ftNamespaces.put(uri, location + "," + meta.getName());
