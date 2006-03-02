@@ -411,21 +411,11 @@ public class WMSCapsTransformer extends TransformerBase {
 			element("Abstract", wms.getAbstract());
 
 			// now encode each layer individually
-			start("Layer");
-			element("Title", "Vectorial Data");
-			element("Abstract", wfs.getAbstract());
-			handleRootSRSAndBbox(ftypes, MapLayerInfo.TYPE_VECTOR);
 			LayerTree featuresLayerTree = new LayerTree(ftypes);
 			handleFeaturesTree(featuresLayerTree);
-			end("Layer");
-			
-			start("Layer");
-			element("Title", "Raster/Gridded Data");
-			element("Abstract", wcs.getAbstract());
-			handleRootSRSAndBbox(coverages, MapLayerInfo.TYPE_RASTER);
+
 			LayerTree coveragesLayerTree = new LayerTree(coverages);
 			handleCoveragesTree(coveragesLayerTree);
-			end("Layer");
 
 			end("Layer");
 		}
@@ -456,7 +446,7 @@ public class WMSCapsTransformer extends TransformerBase {
 			Envelope latlonBbox = new Envelope();
 			Envelope layerBbox = null;
 			LOGGER.finer("Collecting summarized latlonbbox and common SRS...");
-			if( TYPE == MapLayerInfo.TYPE_VECTOR ) {
+			if (TYPE == MapLayerInfo.TYPE_VECTOR) {
 				FeatureTypeInfo layer;
 
 				for (Iterator it = ftypes.iterator(); it.hasNext();) {
@@ -467,8 +457,9 @@ public class WMSCapsTransformer extends TransformerBase {
 							layerBbox = layer.getLatLongBoundingBox();
 						} catch (IOException e) {
 							throw new RuntimeException(
-									"Can't obtain latLonBBox of " + layer.getName()
-											+ ": " + e.getMessage(), e);
+									"Can't obtain latLonBBox of "
+											+ layer.getName() + ": "
+											+ e.getMessage(), e);
 						}
 
 						latlonBbox.expandToInclude(layerBbox);
@@ -518,19 +509,19 @@ public class WMSCapsTransformer extends TransformerBase {
 
 				LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
 				handleLatLonBBox(latlonBbox);
-			} else if( TYPE == MapLayerInfo.TYPE_RASTER ) {
+			} else if (TYPE == MapLayerInfo.TYPE_RASTER) {
 				CoverageInfo layer;
-				
+
 				for (Iterator it = ftypes.iterator(); it.hasNext();) {
 					layer = (CoverageInfo) it.next();
 
 					if (layer.isEnabled()) {
-						final GeneralEnvelope bbox = layer.getLatLonEnvelope(); 
-						layerBbox = new Envelope(
-								bbox.getLowerCorner().getOrdinate(0),
-								bbox.getUpperCorner().getOrdinate(0),
-								bbox.getLowerCorner().getOrdinate(1),
-								bbox.getUpperCorner().getOrdinate(1));
+						final GeneralEnvelope bbox = layer.getLatLonEnvelope();
+						layerBbox = new Envelope(bbox.getLowerCorner()
+								.getOrdinate(0), bbox.getUpperCorner()
+								.getOrdinate(0), bbox.getLowerCorner()
+								.getOrdinate(1), bbox.getUpperCorner()
+								.getOrdinate(1));
 
 						latlonBbox.expandToInclude(layerBbox);
 
@@ -571,10 +562,12 @@ public class WMSCapsTransformer extends TransformerBase {
 							List s = layer.getRequestCRSs();
 							Iterator it_1 = s.iterator();
 							while (it_1.hasNext()) {
-								// do not output srs if it was output as common srs
+								// do not output srs if it was output as common
+								// srs
 								// note, if commonSRS is "", this will not match
 								String currentSRS = it_1.next().toString();
-								if (!currentSRS.equals(commonSRS) && !SRSs.contains(currentSRS)) {
+								if (!currentSRS.equals(commonSRS)
+										&& !SRSs.contains(currentSRS)) {
 									SRSs.add(currentSRS);
 									element("SRS", currentSRS);
 								}
@@ -596,15 +589,15 @@ public class WMSCapsTransformer extends TransformerBase {
 		private void handleFeaturesTree(LayerTree featuresLayerTree) {
 			final Collection data = featuresLayerTree.getData();
 			final Collection childrens = featuresLayerTree.getChildrens();
-			
-			for (Iterator it=data.iterator(); it.hasNext();) {
+
+			for (Iterator it = data.iterator(); it.hasNext();) {
 				FeatureTypeInfo fLayer = (FeatureTypeInfo) it.next();
-				
+
 				if (fLayer.isEnabled())
 					handleFeatureType(fLayer);
 			}
-			
-			for (Iterator it=childrens.iterator(); it.hasNext();) {
+
+			for (Iterator it = childrens.iterator(); it.hasNext();) {
 				LayerTree layerTree = (LayerTree) it.next();
 				start("Layer");
 				element("Name", layerTree.getName());
@@ -695,15 +688,15 @@ public class WMSCapsTransformer extends TransformerBase {
 		private void handleCoveragesTree(LayerTree coveragesLayerTree) {
 			final Collection data = coveragesLayerTree.getData();
 			final Collection childrens = coveragesLayerTree.getChildrens();
-			
-			for (Iterator it=data.iterator(); it.hasNext();) {
+
+			for (Iterator it = data.iterator(); it.hasNext();) {
 				CoverageInfo cLayer = (CoverageInfo) it.next();
-				
+
 				if (cLayer.isEnabled())
 					handleCoverage(cLayer);
 			}
-			
-			for (Iterator it=childrens.iterator(); it.hasNext();) {
+
+			for (Iterator it = childrens.iterator(); it.hasNext();) {
 				LayerTree layerTree = (LayerTree) it.next();
 				start("Layer");
 				element("Name", layerTree.getName());
@@ -730,7 +723,7 @@ public class WMSCapsTransformer extends TransformerBase {
 			/**
 			 * TODO REVISIT: should getSRS() return the full URL?
 			 */
-    		String authority = "";
+			String authority = "";
 			if (coverage.getCrs() != null
 					&& !coverage.getCrs().getIdentifiers().isEmpty()) {
 				Identifier[] idents = (Identifier[]) coverage.getCrs()
@@ -743,24 +736,25 @@ public class WMSCapsTransformer extends TransformerBase {
 			}
 			element("SRS", authority);
 
-    		GeneralEnvelope bounds = null;
-    		try {
-    			bounds = DataFormatUtils.adjustEnvelope(coverage.getEnvelope().getCoordinateReferenceSystem(), coverage.getEnvelope());
-    		} catch (MismatchedDimensionException e) {
-    			// TODO Handle this Exception
-    		} catch (IndexOutOfBoundsException e) {
-    			// TODO Handle this Exception
-    		} catch (NoSuchAuthorityCodeException e) {
-    			// TODO Handle this Exception
-    		}
-    		
-			final Envelope bbox = new Envelope(
-    				bounds.getLowerCorner().getOrdinate(0),
-    				bounds.getUpperCorner().getOrdinate(0),
-    				bounds.getLowerCorner().getOrdinate(1),
-    				bounds.getUpperCorner().getOrdinate(1)
-			);
-			
+			GeneralEnvelope bounds = null;
+			try {
+				bounds = DataFormatUtils
+						.adjustEnvelope(coverage.getEnvelope()
+								.getCoordinateReferenceSystem(), coverage
+								.getEnvelope());
+			} catch (MismatchedDimensionException e) {
+				// TODO Handle this Exception
+			} catch (IndexOutOfBoundsException e) {
+				// TODO Handle this Exception
+			} catch (NoSuchAuthorityCodeException e) {
+				// TODO Handle this Exception
+			}
+
+			final Envelope bbox = new Envelope(bounds.getLowerCorner()
+					.getOrdinate(0), bounds.getUpperCorner().getOrdinate(0),
+					bounds.getLowerCorner().getOrdinate(1), bounds
+							.getUpperCorner().getOrdinate(1));
+
 			handleLatLonBBox(bbox);
 			handleBBox(bbox, authority);
 
@@ -954,17 +948,20 @@ public class WMSCapsTransformer extends TransformerBase {
  * A Class to manage the WMS Layer structure
  * 
  * @author fabiania
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * 
+ * TODO To change the template for this generated type comment go to Window -
+ * Preferences - Java - Code Style - Code Templates
  */
 class LayerTree {
 	private String name;
+
 	private Collection childrens;
+
 	private Collection data;
-	
+
 	/**
-	 * @param name String
+	 * @param name
+	 *            String
 	 */
 	public LayerTree(String name) {
 		this.name = name;
@@ -973,35 +970,42 @@ class LayerTree {
 	}
 
 	/**
-	 * @param c Collection
+	 * @param c
+	 *            Collection
 	 */
 	public LayerTree(Collection c) {
 		this.name = "";
 		this.childrens = new ArrayList();
 		this.data = new ArrayList();
-		
+
 		for (Iterator it = c.iterator(); it.hasNext();) {
 			Object element = it.next();
 
 			if (element instanceof CoverageInfo) {
 				CoverageInfo cLayer = (CoverageInfo) element;
 				if (cLayer.isEnabled()) {
-					String wmsPath = (cLayer.getWmsPath() != null && cLayer.getWmsPath().length() > 0? cLayer.getWmsPath() : "/");
-					if (wmsPath.startsWith("/")) wmsPath = wmsPath.substring(1, wmsPath.length());
+					String wmsPath = (cLayer.getWmsPath() != null
+							&& cLayer.getWmsPath().length() > 0 ? cLayer
+							.getWmsPath() : "/");
+					if (wmsPath.startsWith("/"))
+						wmsPath = wmsPath.substring(1, wmsPath.length());
 					String[] treeStructure = wmsPath.split("/");
 					addToNode(this, treeStructure, cLayer);
-				}				
+				}
 			} else if (element instanceof FeatureTypeInfo) {
 				FeatureTypeInfo fLayer = (FeatureTypeInfo) element;
 				if (fLayer.isEnabled()) {
-					String wmsPath = (fLayer.getWmsPath() != null && fLayer.getWmsPath().length() > 0? fLayer.getWmsPath() : "/");
-					if (wmsPath.startsWith("/")) wmsPath = wmsPath.substring(1, wmsPath.length());
+					String wmsPath = (fLayer.getWmsPath() != null
+							&& fLayer.getWmsPath().length() > 0 ? fLayer
+							.getWmsPath() : "/");
+					if (wmsPath.startsWith("/"))
+						wmsPath = wmsPath.substring(1, wmsPath.length());
 					String[] treeStructure = wmsPath.split("/");
 					addToNode(this, treeStructure, fLayer);
 				}
 			}
 		}
-		
+
 	}
 
 	/**
@@ -1009,7 +1013,8 @@ class LayerTree {
 	 * @param treeStructure
 	 * @param layer
 	 */
-	private void addToNode(LayerTree tree, String[] treeStructure, CoverageInfo layer) {
+	private void addToNode(LayerTree tree, String[] treeStructure,
+			CoverageInfo layer) {
 		final int length = treeStructure.length;
 		if (length == 0 || treeStructure[0].length() == 0) {
 			tree.data.add(layer);
@@ -1025,7 +1030,8 @@ class LayerTree {
 		}
 	}
 
-	private void addToNode(LayerTree tree, String[] treeStructure, FeatureTypeInfo layer) {
+	private void addToNode(LayerTree tree, String[] treeStructure,
+			FeatureTypeInfo layer) {
 		final int length = treeStructure.length;
 		if (length == 0 || treeStructure[0].length() == 0) {
 			tree.data.add(layer);
@@ -1047,23 +1053,23 @@ class LayerTree {
 	 */
 	public LayerTree getNode(String name) {
 		LayerTree node = null;
-		for (Iterator it=this.childrens.iterator(); it.hasNext();) {
+		for (Iterator it = this.childrens.iterator(); it.hasNext();) {
 			LayerTree tmpNode = (LayerTree) it.next();
 			if (tmpNode.name.equals(name))
 				node = tmpNode;
 		}
-		
+
 		return node;
 	}
-	
+
 	public Collection getChildrens() {
 		return childrens;
 	}
-	
+
 	public Collection getData() {
 		return data;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
