@@ -5,6 +5,7 @@
 package org.vfny.geoserver.global;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -17,6 +18,7 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
+import org.geotools.feature.Descriptors;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
@@ -25,6 +27,8 @@ import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryImpl;
 
 import org.geotools.filter.LogicFilter;
+import org.opengis.feature.schema.AttributeDescriptor;
+import org.opengis.feature.schema.Descriptor;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -127,7 +131,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      *         definitionQuery
      */
     protected Query makeDefinitionQuery(Query query) throws IOException {
-        if ((query == Query.ALL) || query.equals(Query.ALL)) {
+        if (Query.ALL.equals(query) || query.retrieveAllProperties() ) {
             return query;
         }
 
@@ -168,12 +172,14 @@ public class GeoServerFeatureSource implements FeatureSource {
      */
     private String[] extractAllowedAttributes(Query query) {
         String[] propNames = null;
-
         if (query.retrieveAllProperties()) {
-            propNames = new String[schema.getAttributeCount()];
 
-            for (int i = 0; i < schema.getAttributeCount(); i++) {
-                propNames[i] = schema.getAttributeType(i).getName().getLocalPart();
+        	final List atts = Descriptors.nodes(schema.getDescriptor());
+            propNames = new String[atts.size()];
+            int i = 0;
+            for (Iterator it = atts.iterator(); it.hasNext(); i++) {
+            	AttributeDescriptor att = (AttributeDescriptor)it.next();
+            	propNames[i] = att.getName().getLocalPart();
             }
         } else {
             String[] queriedAtts = query.getPropertyNames();
@@ -181,7 +187,10 @@ public class GeoServerFeatureSource implements FeatureSource {
             List allowedAtts = new LinkedList();
 
             for (int i = 0; i < queriedAttCount; i++) {
-                if (schema.getAttributeType(queriedAtts[i]) != null) {
+            	Descriptor ftypeSchema = schema.getDescriptor();
+            	String attName = queriedAtts[i];
+            	AttributeDescriptor att = Descriptors.node(ftypeSchema, attName);
+                if (att != null) {
                     allowedAtts.add(queriedAtts[i]);
                 } else {
                     LOGGER.info("queried a not allowed property: "

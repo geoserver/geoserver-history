@@ -14,11 +14,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.geotools.feature.AttributeType;
+import org.geotools.feature.Descriptors;
 import org.geotools.feature.FeatureType;
+import org.opengis.feature.schema.AttributeDescriptor;
 import org.vfny.geoserver.global.xml.NameSpaceElement;
 import org.vfny.geoserver.global.xml.NameSpaceTranslator;
 import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
 
+import com.sun.org.omg.CORBA.AttributeDescription;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -155,13 +158,25 @@ public class DataTransferObjectFactory {
      * @return
      */
     public static List generateAttributes(FeatureType schema) {
-        AttributeType[] attributes = schema.getAttributeTypes();
+    	List attributes = Descriptors.nodes(schema.getDescriptor());
+        List list = new ArrayList(attributes.size());
+
+        for (Iterator it = attributes.iterator(); it.hasNext();) {
+        	AttributeDescriptor descriptor = (AttributeDescriptor)it.next();
+        	String attName = descriptor.getName().getLocalPart();
+            list.add(create("AbstractFeatureType", attName));
+        }
+        return list;
+        
+    	/*
+    	AttributeType[] attributes = schema.getAttributeTypes();
         List list = new ArrayList(attributes.length);
 
         for (int i = 0; i < attributes.length; i++) {
             list.add(create("AbstractFeatureType",attributes[i]));
         }
         return list;
+        */
     }
     /**
      * List of attribtue DTO information generated from schemaBase.
