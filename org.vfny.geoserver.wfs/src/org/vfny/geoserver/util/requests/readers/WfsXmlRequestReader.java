@@ -33,6 +33,12 @@ public abstract class WfsXmlRequestReader extends XmlRequestReader {
         // translate string into a proper SAX input source
         InputSource requestSource = new InputSource(rawRequest);
 
+        //GR: we need to set sax parser to crimson because xerces truncates large
+        //attribute names that could be pressent in attribute expressions.
+        //This is a temporal wrokaround though, since it means we're going to
+        //get stuck to be run on a 1.4 sun JDK
+        System.setProperty("javax.xml.parsers.SAXParserFactory", "org.apache.crimson.jaxp.SAXParserFactoryImpl");
+
         // instantiante parsers and content handlers
         FilterHandlerImpl contentHandler = new FilterHandlerImpl();
         FilterFilter filterParser = new FilterFilter(contentHandler, null);
@@ -60,9 +66,10 @@ public abstract class WfsXmlRequestReader extends XmlRequestReader {
                 XmlRequestReader.class.getName());
         }
 
-        LOGGER.fine("passing filter: " + contentHandler.getFilter());
+        Filter filter = contentHandler.getFilter();
+        LOGGER.fine("passing filter: " + filter);
 
-        return contentHandler.getFilter();
+        return filter;
     }
 
 }
