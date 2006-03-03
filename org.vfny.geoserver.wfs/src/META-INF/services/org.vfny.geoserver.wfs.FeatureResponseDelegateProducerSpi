@@ -1,2 +1,3 @@
 org.vfny.geoserver.wfs.responses.GML2FeatureResponseDelegateFactory
 org.vfny.geoserver.wfs.responses.ShapefileFeatureResponseDelegateFactory
+org.vfny.geoserver.wfs.responses.GML3FeatureResponseDelegateFactory
