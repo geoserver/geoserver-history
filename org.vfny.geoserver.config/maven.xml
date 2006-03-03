@@ -1,14 +1,31 @@
 <project xmlns:j="jelly:core" xmlns:u="jelly:util" xmlns:ant="jelly:ant" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="config">
-	
+
 	<preGoal name="java:compile">
-		<attainGoal name="config"/>
+		<attainGoal name="config" />
 	</preGoal>
 
+
 	<goal name="config">
-		<ant:delete dir="${maven.war.src}"/>
-		<ant:mkdir dir="${maven.war.src}"/>
-		<ant:get src="${config.repo}/${config.id}.zip" dest="${basedir}/${config.id}.zip"/>
-		<ant:unzip src="${basedir}/${config.id}.zip" dest="${maven.war.src}"/>
+		<ant:delete dir="${maven.war.src}" />
+		<ant:mkdir dir="${maven.war.src}" />
+
+		<!--
+		<ant:available property="config-present" file="${basedir}/${config.id}.zip" />
+		<ant:echo>Checking if ${config.id}.zip needs to be downloaded: ${config-present}</ant:echo>
+
+		<ant:available property="config-present" file="${basedir}/${config.id}.zip" />
+		<j:choose>
+			<j:when test="${config-present}">
+				<ant:echo>Config bundle already present, not downloading</ant:echo>
+			</j:when>
+			<j:otherwise>
+				<ant:echo>Downloading config bundle distribution.</ant:echo>
+				<ant:get src="${config.repo}/${config.id}.zip" dest="${basedir}/${config.id}.zip" />
+			</j:otherwise>
+		</j:choose>
+		-->
+		
+		<ant:unzip src="${basedir}/${config.id}.zip" dest="${maven.war.src}" />
 	</goal>
 
 </project>
