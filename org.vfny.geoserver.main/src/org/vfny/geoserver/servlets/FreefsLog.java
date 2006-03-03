@@ -118,7 +118,7 @@ public class FreefsLog extends HttpServlet {
             closeMethod.invoke(pfInstance, new Object[0]);
             LOGGER.info("just asked SDE datasource to release connections");
         } catch (ClassNotFoundException cnfe) {
-            LOGGER.fine("No SDE datasource found");
+            //no op, arcsde plugin is not in the class path
         } catch (Exception ex) {
             ex.printStackTrace();
         }
