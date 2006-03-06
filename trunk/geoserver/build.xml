@@ -1167,9 +1167,7 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 <target name="geotools" depends="init" description="Generate geotools2 jars for quick testing (use maven for jars you commit)">
 <copy overwrite="true" failonerror="true" toFile="${dir.lib}/geoapi-2.0.jar" file="${dir.maven}/geoapi/jars/geoapi-2.0.jar" />
 <copy overwrite="true" failonerror="true" toFile="${dir.lib}/opengis-css-0.1.jar" file="${dir.maven}/opengis/jars/opengis-css-0.1.jar" />
-<!--
- <copy failonerror="false" toFile="${dir.lib}/opengis-legacy-0.1.jar" file="${dir.maven}/opengis/jars/opengis-legacy-0.1.jar" />
-  -->
+
 <copy overwrite="true" failonerror="true" toFile="${dir.lib}/units-0.01.jar" file="${dir.maven}/units/jars/units-0.01.jar" />
 <copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_sdk-9.0.jar" />
 <copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_jpe_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_jpe_sdk-9.0.jar" />
