@@ -1,12 +1,12 @@
-<coverage format = "sample_grib" >
+<coverage format = "prova_grib" >
 <name>GriB_Temperature_041820050000</name>
 <label>GriB_Temperature_041820050000 is a GRIB edition 1 Format</label>
-<description>Generated from sample_grib</description>
+<description>Generated from prova_grib</description>
 <wmspath>/</wmspath>
 <metadataLink about = "http://www-lehre.inf.uos.de/~fbstark/diplom/docs/data/GRIB/" metadataType = "other" >
 null
 </metadataLink>
-<keywords>WCS,sample_grib,GriB_Temperature_041820050000</keywords>
+<keywords>WCS,prova_grib,GriB_Temperature_041820050000</keywords>
 <!--
 the default style this CoverageInfoDTO can be represented by.
 at least must contain the "default" attribute 
@@ -42,8 +42,8 @@ at least must contain the "default" attribute
 </interval>
 </Category>
 <Category>
-<name>nodata</name>
-<label>GeophysicsCategory("nodata":[NaN(0...0)])</label>
+<name>No Data</name>
+<label>GeophysicsCategory("No Data":[NaN(0...0)])</label>
 <interval>
 <min>NaN</min>
 <max>NaN</max>
@@ -55,7 +55,7 @@ at least must contain the "default" attribute
 <responseCRSs>EPSG:4326</responseCRSs>
 </supportedCRSs>
 <supportedFormats nativeFormat = "GRIB1" >
-<formats>GRIB1,geotiff,png,tiff</formats>
+<formats>GRIB1,geotiff,itff,png,gif</formats>
 </supportedFormats>
 <supportedInterpolations default = "nearest neighbor" >
 <interpolationMethods>nearest neighbor</interpolationMethods>
