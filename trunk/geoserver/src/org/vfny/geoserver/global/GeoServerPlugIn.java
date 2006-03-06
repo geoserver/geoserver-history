@@ -97,7 +97,7 @@ public class GeoServerPlugIn implements PlugIn {
 		final JAI jaiDef = JAI.getDefaultInstance();
 		final TileCache cache = jaiDef.getTileCache();
 		cache.setMemoryCapacity(
-				400 * 1024 * 1024);
+				200 * 1024 * 1024);
 		// setting JAI wide hints
 		jaiDef.setRenderingHint(JAI.KEY_CACHED_TILE_RECYCLING_ENABLED,
 				Boolean.TRUE);
