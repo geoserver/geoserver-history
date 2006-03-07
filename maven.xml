@@ -70,7 +70,7 @@
 			<ant:fileset dir="." includes="**/*.war"/>
 		</ant:unwar-->
 		<ant:jar destfile="${maven.build.dir}/${pom.artifactId}.war"
-			 basedir="${maven.build.dir}/${pom.artifactId}"/>
+			 basedir="${gs.release.war.dir}"/>
   </goal>
 
 	<!-- module level goal to deploy a single module -->
