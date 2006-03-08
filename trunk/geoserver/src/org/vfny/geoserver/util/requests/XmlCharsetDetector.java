@@ -99,15 +99,15 @@ public class XmlCharsetDetector {
         if (LOGGER.isLoggable(Level.FINE)) {
            // Such number of concatenating strings makes me sick.
            // But using StringBuffer will make this uglier, not?
-            LOGGER.fine("First 4 bytes of XML doc are : "
-                + Integer.toHexString((int) b4[0] & 0xff).toUpperCase()
-                 + " ('" + (char) b4[0] + "') "
-                + Integer.toHexString((int) b4[1] & 0xff).toUpperCase()
-                 + " ('" + (char) b4[1] + "') "
-                + Integer.toHexString((int) b4[2] & 0xff).toUpperCase()
-                 + " ('" + (char) b4[2] + "') "
-                + Integer.toHexString((int) b4[3] & 0xff).toUpperCase()
-                 + " ('" + (char) b4[3] + "')"
+            LOGGER.fine(new StringBuffer("First 4 bytes of XML doc are : ").
+                append(Integer.toHexString((int) b4[0] & 0xff).toUpperCase()).
+                append(" ('").append((char) b4[0]).append("') ").
+                append(Integer.toHexString((int) b4[1] & 0xff).toUpperCase()).
+                append(" ('").append((char) b4[1]).append("') ").
+                append(Integer.toHexString((int) b4[2] & 0xff).toUpperCase()).
+                append(" ('").append((char) b4[2]).append("') ").
+                append(Integer.toHexString((int) b4[3] & 0xff).toUpperCase()).
+                append(" ('").append((char) b4[3]).append("')").toString()
             );
         }
 
@@ -130,8 +130,8 @@ public class XmlCharsetDetector {
         encInfo.copyFrom(getEncodingName(b4, count));
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("Charset detection phase 1. Inferred encoding: " +
-                        encInfo.toString());
+            LOGGER.fine(new StringBuffer("Charset detection phase 1. Inferred encoding: ").
+                        append(encInfo.toString()).toString());
         }
 
        // Rewinding to beginning of data
@@ -216,8 +216,8 @@ public class XmlCharsetDetector {
         String declEncoding = getXmlEncoding(reader);
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("Charset detection phase 2. Charset in XML declaration "
-                       + "is `" + declEncoding + "`.");
+            LOGGER.fine(new StringBuffer("Charset detection phase 2. Charset in XML declaration is '").
+                       append(declEncoding).append("'.").toString());
         }
 
         stream.reset();
@@ -242,9 +242,9 @@ public class XmlCharsetDetector {
             */
             if (!declEncoding.equals("ISO-10646-UCS-2")) {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine("Declared charset differs from inferred one. "
-                               + "Trying to construct InputStreamReader for `"
-                               + declEncoding + "`.");
+                    LOGGER.fine(new StringBuffer("Declared charset differs from inferred one. ").
+                               append("Trying to construct InputStreamReader for `").
+                               append(declEncoding).append("`.").toString());
                 }
                 reader = new InputStreamReader(stream, declEncoding);
                 encInfo.setEncoding(declEncoding);
@@ -309,8 +309,8 @@ public class XmlCharsetDetector {
         }
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("Trying to create reader basing on existing charset "
-                       + "information: `" + encInfo + "`.");
+            LOGGER.fine(new StringBuffer("Trying to create reader basing on existing charset ").
+                       append("information: `").append(encInfo).append("`.").toString());
         }
 
         Reader reader = null;
@@ -486,8 +486,8 @@ public class XmlCharsetDetector {
             */
             if ((6 > count) || (!"<?xml ".equals(sw.toString()))) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning("Invalid(?) XML declaration: "
-                                  + sw.toString() + ".");
+                    LOGGER.warning(new StringBuffer("Invalid(?) XML declaration: ").
+                                  append(sw.toString()).append(".").toString());
                 }
                 return null;
             }
@@ -517,8 +517,8 @@ public class XmlCharsetDetector {
 
         } catch (IOException e) {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("Failed to extract charset info from XML "
-                        + "declaration due to IOException: " + e.getMessage());
+                LOGGER.warning(new StringBuffer("Failed to extract charset info from XML ").
+                        append("declaration due to IOException: ").append(e.getMessage()).toString());
             }
             return null;
         }

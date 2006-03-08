@@ -31,7 +31,19 @@ response.setHeader("Cache-Control", "no-cache");
 	  <td class="datum">
 		<html:checkbox property="enabled"/>
 	  </td>
-	</tr>	
+	</tr>
+	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.dataFormat_nameSpace"/>">
+			<bean:message key="label.namespace"/>:
+		</span>
+      </td>
+	  <td class="datum">
+		<html:select property="namespaceId">
+			<html:options property="namespaces"/>
+		</html:select>
+	  </td>
+	</tr>		
 	<tr>
 	  <td class="label">
 		<span class="help" title="<bean:message key="help.dataFormat_type"/>">
@@ -44,6 +56,7 @@ response.setHeader("Cache-Control", "no-cache");
 	</tr>	
 	<tr>
 	  <td class="label">
+	    <font color="red">*</font>
 		<span class="help" title="<bean:message key="help.dataFormat_url"/>">
 			<bean:message key="label.url"/>:
 		</span>
@@ -114,3 +127,5 @@ response.setHeader("Cache-Control", "no-cache");
   </table>
 </html:form>
 </logic:present>
+<br>
+&nbsp;&nbsp;<font color="red">*</font> = <bean:message key="config.data.format.editor.requiredField"/>

@@ -15,6 +15,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.util.DataFormatUtils;
 
 /**
@@ -308,11 +309,32 @@ public class CoverageInfo extends GlobalLayerSupertype {
 		return metadataLink;
 	}
 
+    /**
+     * @return String the namespace prefix.
+     */
+    public String getPrefix() {
+        return getFormatInfo().getNameSpace().getPrefix();
+    }
+
+    /**
+     * @return NameSpaceInfo the namespace specified for the specified
+     *         FormatInfo (by ID)
+     *
+     * @throws IllegalStateException Thrown when disabled.
+     */
+    public NameSpaceInfo getNameSpace() {
+        if (!isEnabled()) {
+            throw new IllegalStateException("This coverage is not "
+                + "enabled");
+        }
+        return getFormatInfo().getNameSpace();
+    }
+
 	/**
 	 * @return Returns the name.
 	 */
 	public String getName() {
-		return name;
+		return getPrefix() + ":" + name;
 	}
 
 	/**

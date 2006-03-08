@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.util.requests;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,7 +69,9 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
     public void startElement(String namespaceURI, String localName,
         String rawName, Attributes atts) throws SAXException {
         if (localName.equals("GetCapabilities")) {
-            LOGGER.finer("found capabilities start.");
+        	if (LOGGER.isLoggable(Level.FINER)) {
+        		LOGGER.finer("found capabilities start.");
+        	}
 
             for (int i = 0, n = atts.getLength(); i < n; i++) {
                 if (atts.getLocalName(i).equals("version")) {

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -42,6 +43,11 @@ public class FormatInfo extends GlobalLayerSupertype {
 	 * 
 	 */
 	private String id;
+
+	/**
+	 * 
+	 */
+	private String nameSpaceId;
 
 	/**
 	 * 
@@ -104,6 +110,7 @@ public class FormatInfo extends GlobalLayerSupertype {
 		parameters = config.getParameters();
 		enabled = config.isEnabled();
 		id = config.getId();
+		nameSpaceId = config.getNameSpaceId();
 		type = config.getType();
 		url = config.getUrl();
 		title = config.getTitle();
@@ -127,6 +134,7 @@ public class FormatInfo extends GlobalLayerSupertype {
 		dto.setParameters(parameters);
 		dto.setEnabled(enabled);
 		dto.setId(id);
+		dto.setNameSpaceId(nameSpaceId);
 		dto.setType(type);
 		dto.setUrl(url);
 		dto.setTitle(title);
@@ -170,7 +178,9 @@ public class FormatInfo extends GlobalLayerSupertype {
 			try {
 				if ("url".equals(key) && value instanceof String) {
 					String path = (String) value;
-					LOGGER.info("in string url");
+					if (LOGGER.isLoggable(Level.INFO)) {
+						LOGGER.info("in string url");
+					}
 					if (path.startsWith("file:data/")) {
 						path = path.substring(5); // remove 'file:' prefix
 						
@@ -180,10 +190,14 @@ public class FormatInfo extends GlobalLayerSupertype {
 					//Not sure about this
 				} else if (value instanceof URL
 						&& ((URL) value).getProtocol().equals("file")) {
-					LOGGER.info("in URL url");
+					if (LOGGER.isLoggable(Level.INFO)) {
+						LOGGER.info("in URL url");
+					}
 					URL url = (URL) value;
 					String path = url.getPath();
-					LOGGER.info("path is " + path);
+					if (LOGGER.isLoggable(Level.INFO)) {
+						LOGGER.info(new StringBuffer("path is ").append(path).toString());
+					}
 					if (path.startsWith("data/")){
 						File file = new File(baseDir, path);
 						entry.setValue(file.toURL());
@@ -363,5 +377,23 @@ public class FormatInfo extends GlobalLayerSupertype {
 	public String getUrl() {
 		return url;
 	}
+
+    /**
+     * getNameSpace purpose.
+     * 
+     * @return NameSpaceInfo the namespace for this format.
+     */
+    public NameSpaceInfo getNameSpace() {
+        return (NameSpaceInfo) data.getNameSpace(getNamesSpacePrefix());
+    }
+
+    /**
+     * Access namespace id
+     *
+     * @return DOCUMENT ME!
+     */
+    public String getNamesSpacePrefix() {
+        return nameSpaceId;
+    }
 
 }

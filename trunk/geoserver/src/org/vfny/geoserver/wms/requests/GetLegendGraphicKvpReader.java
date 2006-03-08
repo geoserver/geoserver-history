@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -203,21 +204,29 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 		String sldUrl = getValue("SLD");
 		String sldBody = getValue("SLD_BODY");
 
-		LOGGER.fine("looking for style " + styleName);
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine(new StringBuffer("looking for style ").append(styleName).toString());
+		}
 
         Style sldStyle = null;
 
 		if (sldUrl != null) {
-			LOGGER.finer("taking style from SLD parameter");
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer("taking style from SLD parameter");
+			}
 			Style[] styles = loadRemoteStyle(sldUrl); // may throw an
 			// exception
 			sldStyle = findStyle(styleName, styles);
 		} else if (sldBody != null) {
-			LOGGER.finer("taking style from SLD_BODY parameter");
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer("taking style from SLD_BODY parameter");
+			}
 			Style[] styles = parseSldBody(sldBody); // may throw an exception
 			sldStyle = findStyle(styleName, styles);
 		} else if ((styleName != null) && !"".equals(styleName)) {
-			LOGGER.finer("taking style from STYLE parameter");
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer("taking style from STYLE parameter");
+			}
 			sldStyle = req.getWMS().getData().getStyle(styleName);
 		} else {
         	
@@ -258,10 +267,14 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 					"No styles have been provided to search for " + styleName);
 		}
 		if(styleName == null){
-			LOGGER.finer("styleName is null, request in literal mode, returning first style");
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer("styleName is null, request in literal mode, returning first style");
+			}
 			return styles[0];
 		}
-		LOGGER.finer("request in library mode, looking for style " + styleName);
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("request in library mode, looking for style ").append(styleName).toString());
+		}
 		StringBuffer noMatchNames = new StringBuffer();
 		for (int i = 0; i < styles.length; i++) {
 			if (styles[i] != null && styleName.equals(styles[i].getName())) {
@@ -365,7 +378,9 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
                 for (int r = 0; r < rules.length; r++) {
                     if (rule.equalsIgnoreCase(rules[r].getName())) {
                         sldRule = rules[r];
-                        LOGGER.fine("found requested rule: " + rule);
+                        if (LOGGER.isLoggable(Level.FINE)) {
+                        	LOGGER.fine(new StringBuffer("found requested rule: ").append(rule).toString());
+                        }
 
                         break;
                     }

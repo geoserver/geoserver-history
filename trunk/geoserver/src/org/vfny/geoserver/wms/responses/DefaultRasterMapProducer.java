@@ -204,7 +204,9 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
             graphic.setColor(map.getBgColor());
             graphic.fillRect(0, 0, width, height);
         } else {
-            LOGGER.fine("setting to transparent");
+        	if (LOGGER.isLoggable(Level.FINE)) {
+        		LOGGER.fine("setting to transparent");
+        	}
             
             int type = AlphaComposite.SRC;
             graphic.setComposite(AlphaComposite.getInstance(type));

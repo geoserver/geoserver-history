@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -86,12 +87,16 @@ public class TypesEditorAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         UserContainer user, HttpServletRequest request,
         HttpServletResponse response) throws IOException, ServletException {
-        LOGGER.finer("form bean:" + form.getClass().getName());
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("form bean:").append(form.getClass().getName()).toString());
+		}
 
         TypesEditorForm typeForm = (TypesEditorForm) form;
 
         String action = typeForm.getAction();
-        LOGGER.finer("TypesEditorAction is " + action);
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("TypesEditorAction is ").append(action).toString());
+		}
 
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = servlet.getResources();
@@ -101,7 +106,9 @@ public class TypesEditorAction extends ConfigAction {
                     "label.add"));
         final String BBOX = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
-        LOGGER.finer("BBOX: " + BBOX);
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("BBOX: ").append(BBOX).toString());
+		}
 
         if (action.equals(SUBMIT)) {
             return executeSubmit(mapping, typeForm, user, request);
@@ -160,12 +167,16 @@ public class TypesEditorAction extends ConfigAction {
         FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
         FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
         
-        LOGGER.fine("calculating bbox for their dataset" );
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine(new StringBuffer("calculating bbox for their dataset").toString());
+		}
         Envelope envelope = DataStoreUtils.getBoundingBoxEnvelope(fs);
         
         if (envelope.isNull()) // there's no data in the featuretype!!
         {
-        	LOGGER.fine("FeatureType '"+featureType.getTypeName()+"' has a null bounding box" );
+    		if (LOGGER.isLoggable(Level.FINE)) {
+    			LOGGER.fine(new StringBuffer("FeatureType '").append(featureType.getTypeName()).append("' has a null bounding box").toString());
+    		}
       	    ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,
                 new ActionError("error.data.nullBBOX",featureType.getTypeName() ));
@@ -207,8 +218,10 @@ public class TypesEditorAction extends ConfigAction {
         }
         catch (NoSuchAuthorityCodeException e)
 		{
-        	  LOGGER.fine(e.getLocalizedMessage() );
-        	  LOGGER.fine(e.getStackTrace().toString());
+    		if (LOGGER.isLoggable(Level.FINE)) {
+    			LOGGER.fine(e.getLocalizedMessage() );
+    			LOGGER.fine(e.getStackTrace().toString());
+    		}
         	  ActionErrors errors = new ActionErrors();
               errors.add(ActionErrors.GLOBAL_ERROR,
                   new ActionError("error.data.couldNotFindSRSAuthority", e.getLocalizedMessage(), e.getAuthorityCode() ));
@@ -217,8 +230,10 @@ public class TypesEditorAction extends ConfigAction {
 		}
         catch (FactoryException fe)
 		{
-          LOGGER.fine(fe.getLocalizedMessage() );
-      	  LOGGER.fine(fe.getStackTrace().toString());
+    		if (LOGGER.isLoggable(Level.FINE)) {
+	          LOGGER.fine(fe.getLocalizedMessage() );
+	      	  LOGGER.fine(fe.getStackTrace().toString());
+    		}
       	  ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,
                 new ActionError("error.data.factoryException",fe.getLocalizedMessage()));
@@ -227,8 +242,10 @@ public class TypesEditorAction extends ConfigAction {
 		}
         catch (TransformException te)
 		{
-          LOGGER.fine(te.getLocalizedMessage() );
-      	  LOGGER.fine(te.getStackTrace().toString());
+    		if (LOGGER.isLoggable(Level.FINE)) {
+	          LOGGER.fine(te.getLocalizedMessage() );
+	      	  LOGGER.fine(te.getStackTrace().toString());
+    		}
       	  ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,
                 new ActionError("error.data.transformException"));

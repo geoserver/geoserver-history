@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.requests;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
@@ -52,7 +53,9 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
             ParserAdapter adapter = new ParserAdapter(parser.getParser());
             adapter.setContentHandler(currentRequest);
             adapter.parse(requestSource);
-            LOGGER.fine("just parsed: " + requestSource);
+            if (LOGGER.isLoggable(Level.FINE)) {
+            	LOGGER.fine(new StringBuffer("just parsed: ").append(requestSource).toString());
+            }
         } catch (SAXException e) {
             throw new WmsException(e, "XML capabilities request parsing error",
                 getClass().getName());

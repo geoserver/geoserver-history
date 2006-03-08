@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.servlets;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -102,28 +103,38 @@ public class FreefsLog extends HttpServlet {
             Class sdepfClass = Class.forName(
                     "org.geotools.data.arcsde.ConnectionPoolFactory");
 
-            LOGGER.fine("SDE datasource found, releasing resources");
+            if (LOGGER.isLoggable(Level.FINE)) {
+            	LOGGER.fine("SDE datasource found, releasing resources");
+            }
 
             java.lang.reflect.Method m = sdepfClass.getMethod("getInstance",
                     new Class[0]);
             Object pfInstance = m.invoke(sdepfClass, new Object[0]);
 
-            LOGGER.fine("got sde connection pool factory instance: "
-                + pfInstance);
+            if (LOGGER.isLoggable(Level.FINE)) {
+            	LOGGER.fine(new StringBuffer("got sde connection pool factory instance: ").
+                append(pfInstance).toString());
+            }
 
             java.lang.reflect.Method closeMethod = pfInstance.getClass()
                                                              .getMethod("closeAll",
                     new Class[0]);
 
             closeMethod.invoke(pfInstance, new Object[0]);
-            LOGGER.info("just asked SDE datasource to release connections");
+            if (LOGGER.isLoggable(Level.INFO)) {
+            	LOGGER.info("just asked SDE datasource to release connections");
+            }
         } catch (ClassNotFoundException cnfe) {
-            LOGGER.fine("No SDE datasource found");
+        	if (LOGGER.isLoggable(Level.FINE)) {
+        		LOGGER.fine("No SDE datasource found");
+        	}
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        LOGGER.finer("shutting down zserver");
+        if (LOGGER.isLoggable(Level.FINER)) {
+        	LOGGER.finer("shutting down zserver");
+        }
 
         if (server != null) {
             server.shutdown(1);

@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.transform.OutputKeys;
@@ -178,7 +179,9 @@ public class WMSCapsTransformer extends TransformerBase {
 			}
 
 			this.request = (CapabilitiesRequest) o;
-			LOGGER.fine("producing a capabilities document for " + request);
+			if (LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.fine(new StringBuffer("producing a capabilities document for ").append(request).toString());
+			}
 			start("WMT_MS_Capabilities", wmsVersion);
 			handleService();
 			handleCapability();
@@ -409,7 +412,8 @@ public class WMSCapsTransformer extends TransformerBase {
 
 			element("Title", wms.getTitle());
 			element("Abstract", wms.getAbstract());
-
+			handleRootSRSAndBbox(ftypes, MapLayerInfo.TYPE_VECTOR);
+			
 			// now encode each layer individually
 			LayerTree featuresLayerTree = new LayerTree(ftypes);
 			handleFeaturesTree(featuresLayerTree);
@@ -445,7 +449,9 @@ public class WMSCapsTransformer extends TransformerBase {
 			boolean isCommonSRS = true;
 			Envelope latlonBbox = new Envelope();
 			Envelope layerBbox = null;
-			LOGGER.finer("Collecting summarized latlonbbox and common SRS...");
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer("Collecting summarized latlonbbox and common SRS...");
+			}
 			if (TYPE == MapLayerInfo.TYPE_VECTOR) {
 				FeatureTypeInfo layer;
 
@@ -476,11 +482,14 @@ public class WMSCapsTransformer extends TransformerBase {
 
 				if (isCommonSRS) {
 					commonSRS = EPSG + commonSRS;
-					LOGGER.fine("Common SRS is " + commonSRS);
+					if (LOGGER.isLoggable(Level.FINE)) {
+						LOGGER.fine(new StringBuffer("Common SRS is ").append(commonSRS).toString());
+					}
 				} else {
 					commonSRS = "";
-					LOGGER
-							.fine("No common SRS, don't forget to incorporate reprojection support...");
+					if (LOGGER.isLoggable(Level.FINE)) {
+						LOGGER.fine("No common SRS, don't forget to incorporate reprojection support...");
+					}
 				}
 
 				if (!(commonSRS.equals(""))) {
@@ -507,7 +516,9 @@ public class WMSCapsTransformer extends TransformerBase {
 					e.printStackTrace();
 				}
 
-				LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
+				if (LOGGER.isLoggable(Level.FINE)) {
+					LOGGER.fine(new StringBuffer("Summarized LatLonBBox is ").append(latlonBbox).toString());
+				}
 				handleLatLonBBox(latlonBbox);
 			} else if (TYPE == MapLayerInfo.TYPE_RASTER) {
 				CoverageInfo layer;
@@ -536,12 +547,15 @@ public class WMSCapsTransformer extends TransformerBase {
 				}
 
 				if (isCommonSRS) {
-					commonSRS = EPSG + commonSRS;
-					LOGGER.fine("Common SRS is " + commonSRS);
+					//commonSRS = EPSG + commonSRS;
+					if (LOGGER.isLoggable(Level.FINE)) {
+						LOGGER.fine(new StringBuffer("Common SRS is ").append(commonSRS).toString());
+					}
 				} else {
 					commonSRS = "";
-					LOGGER
-							.fine("No common SRS, don't forget to incorporate reprojection support...");
+					if (LOGGER.isLoggable(Level.FINE)) {
+						LOGGER.fine("No common SRS, don't forget to incorporate reprojection support...");
+					}
 				}
 
 				if (!(commonSRS.equals(""))) {
@@ -800,7 +814,9 @@ public class WMSCapsTransformer extends TransformerBase {
 			}
 
 			if (legend != null) {
-				LOGGER.config("using user supplied legend URL");
+				if (LOGGER.isLoggable(Level.CONFIG)) {
+					LOGGER.config("using user supplied legend URL");
+				}
 
 				AttributesImpl attrs = new AttributesImpl();
 				attrs.addAttribute("", "width", "width", "", String
@@ -827,15 +843,19 @@ public class WMSCapsTransformer extends TransformerBase {
 				String defaultFormat = GetLegendGraphicRequest.DEFAULT_FORMAT;
 
 				if (!GetLegendGraphicResponse.supportsFormat(defaultFormat)) {
-					LOGGER
-							.warning("Default legend format ("
-									+ defaultFormat
-									+ ")is not supported (jai not available?), can't add LegendURL element");
+					if (LOGGER.isLoggable(Level.WARNING)) {
+						LOGGER.warning(new StringBuffer("Default legend format (").
+							append(defaultFormat).
+							append(")is not supported (jai not available?), can't add LegendURL element").
+							toString());
+					}
 
 					return;
 				}
 
-				LOGGER.config("Adding GetLegendGraphic call as LegendURL");
+				if (LOGGER.isLoggable(Level.CONFIG)) {
+					LOGGER.config("Adding GetLegendGraphic call as LegendURL");
+				}
 
 				AttributesImpl attrs = new AttributesImpl();
 				attrs.addAttribute("", "width", "width", "", String

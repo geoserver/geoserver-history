@@ -7,6 +7,7 @@ package org.vfny.geoserver.util.requests.readers;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -105,7 +106,9 @@ public class DispatcherXmlReader {
      * @return Request type.
      */
     public int getRequestType() {
-        LOGGER.info("getting request type from " + currentRequest);
+    	if (LOGGER.isLoggable(Level.INFO)) {
+    		LOGGER.info(new StringBuffer("getting request type from ").append(currentRequest).toString());
+    	}
 
         return currentRequest.getRequestType();
     }

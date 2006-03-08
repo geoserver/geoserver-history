@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.units.Unit;
 
 import org.geotools.coverage.Category;
@@ -202,7 +203,7 @@ public class CoverageConfig {
 	 * @param gc
 	 * @throws ConfigurationException
 	 */
-	public CoverageConfig(String formatId, Format format, GridCoverage2D gc)
+	public CoverageConfig(String formatId, Format format, GridCoverage2D gc, HttpServletRequest request)
 			throws ConfigurationException {
 		if ((formatId == null) || (formatId.length() == 0)) {
 			throw new IllegalArgumentException(
@@ -239,7 +240,21 @@ public class CoverageConfig {
 		}
 		dimentionNames = gc.getDimensionNames();
 
-		name = gc.getName().toString();
+		final DataConfig config = ConfigRequests.getDataConfig(request);
+		StringBuffer cvName = new StringBuffer(gc.getName().toString());
+		int count = 0;
+		while (true) {
+			final StringBuffer key = new StringBuffer(gc.getName().toString());
+			if (count>0)
+				key.append("[").append(count).append("]");
+			if (!config.getCoverages().containsKey(formatId + ":" + key)) {
+				cvName = key;
+				break;
+			} else {
+				count++;
+			}
+		}
+		name = cvName.toString();
 		wmsPath = "/";
 		label = new StringBuffer(name).append(" is a ").append(
 				format.getDescription()).toString();

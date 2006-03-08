@@ -144,7 +144,7 @@ public class DataCoveragesNewAction extends ConfigAction {
 		}
 
 		final GridCoverage2D finalCoverage = (GridCoverage2D) gc;
-		CoverageConfig cvConfig = new CoverageConfig(formatID,format, finalCoverage);
+		CoverageConfig cvConfig = new CoverageConfig(formatID, format, finalCoverage, request);
 
 		request.setAttribute(NEW_COVERAGE_KEY, "true");
 		request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE,

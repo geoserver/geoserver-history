@@ -5,6 +5,7 @@
 package org.vfny.geoserver.util.requests.readers;
 
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vfny.geoserver.servlets.Dispatcher;
@@ -33,7 +34,9 @@ public class DispatcherKvpReader {
      */
     public static int getRequestType(Map kvPairs) {
         String responseType = ((String) kvPairs.get("REQUEST"));
-        LOGGER.finer("dispatcher got request " + responseType);
+        if (LOGGER.isLoggable(Level.FINER)) {
+        	LOGGER.finer(new StringBuffer("dispatcher got request ").append(responseType).toString());
+        }
 
         if (responseType != null) {
             responseType = responseType.toUpperCase();

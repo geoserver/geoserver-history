@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.util.requests;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.filter.Filter;
@@ -45,7 +46,9 @@ public class FilterHandlerImpl extends XMLFilterImpl implements ContentHandler,
      * @param filter (OGC WFS) Filter from (SAX) filter..
      */
     public void filter(Filter filter) {
-        LOGGER.finest("found filter: " + filter.toString());
+    	if (LOGGER.isLoggable(Level.FINEST)) {
+    		LOGGER.finest(new StringBuffer("found filter: ").append(filter.toString()).toString());
+    	}
         currentFilter = filter;
     }
 

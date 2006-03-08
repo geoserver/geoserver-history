@@ -6,6 +6,7 @@ package org.vfny.geoserver;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -109,7 +110,9 @@ public class ServiceException extends Exception {
     public ServiceException(String message) {
         super(message);
 
-        LOGGER.fine(this.getMessage());
+        if (LOGGER.isLoggable(Level.FINE)) {
+        	LOGGER.fine(this.getMessage());
+        }
     }
 
     /**
@@ -130,7 +133,9 @@ public class ServiceException extends Exception {
     public ServiceException(Throwable e) {
         super(e);
 
-        LOGGER.fine(this.getMessage());
+        if (LOGGER.isLoggable(Level.FINE)) {
+        	LOGGER.fine(this.getMessage());
+        }
     }
 
     /**
@@ -144,7 +149,9 @@ public class ServiceException extends Exception {
 
         this.locator = locator;
 
-        LOGGER.fine("> [" + this.locator + "]:\n  " + this.getMessage());
+        if (LOGGER.isLoggable(Level.FINE)) {
+        	LOGGER.fine(new StringBuffer("> [").append(this.locator).append("]:\n  ").append(this.getMessage()).toString());
+        }
     }
 
     /**
@@ -263,8 +270,10 @@ public class ServiceException extends Exception {
         //Perhaps not the best place to do this, but it's by far the best place to ensure
         //that all logged errors get recorded in the same way, as there all must return
         //xml responses.
-        LOGGER.warning("encountered error: " + getMessage() + "\nStackTrace: "
-            + createStackTrace());
+    	if (LOGGER.isLoggable(Level.WARNING)) {
+    		LOGGER.warning(new StringBuffer("encountered error: ").append(getMessage()).append("\nStackTrace: ").
+            append(createStackTrace()).toString());
+    	}
 
         String indent = "   ";
 
@@ -304,7 +313,9 @@ public class ServiceException extends Exception {
 
         returnXml.append("</ServiceExceptionReport>");
 
-        LOGGER.fine("return wfs exception is " + returnXml);
+        if (LOGGER.isLoggable(Level.FINE)) {
+        	LOGGER.fine(new StringBuffer("return wfs exception is ").append(returnXml).toString());
+        }
 
         return returnXml.toString();
     }

@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.servlet.ServletContext;
@@ -83,6 +85,12 @@ public class DataFormatsEditorForm extends ActionForm {
 	/**
 	 * 
 	 */
+	/* NamespaceID used for DataStore content */
+	private String namespaceId;
+
+	/**
+	 * 
+	 */
 	private String type;
 
 	/**
@@ -115,6 +123,9 @@ public class DataFormatsEditorForm extends ActionForm {
 	 */
 	private List paramValues;
 
+    /** Available NamespaceIds */
+	private SortedSet namespaces;
+
 	/**
 	 * Because of the way that STRUTS works, if the user does not check the
 	 * enabled box, or unchecks it, setEnabled() is never called, thus we must
@@ -129,7 +140,13 @@ public class DataFormatsEditorForm extends ActionForm {
 		super.reset(mapping, request);
 
 		enabledChecked = false;
-		DataFormatConfig dfConfig = Requests.getUserContainer(request)
+
+        ServletContext context = getServlet().getServletContext();
+        DataConfig config = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+
+        namespaces = new TreeSet(config.getNameSpaces().keySet());
+
+        DataFormatConfig dfConfig = Requests.getUserContainer(request)
 				.getDataFormatConfig();
 
 		if (dfConfig == null) {
@@ -144,7 +161,12 @@ public class DataFormatsEditorForm extends ActionForm {
 		dataFormatId = dfConfig.getId();
 		description = dfConfig.getAbstract();
 		enabled = dfConfig.isEnabled();
-		url = dfConfig.getUrl();
+        namespaceId = dfConfig.getNameSpaceId();
+        if (namespaceId.equals("")) {
+        	namespaceId = config.getDefaultNameSpace().getPrefix();
+        }
+
+        url = dfConfig.getUrl();
 
 		// Retrieve connection params
 		Format factory = dfConfig.getFactory();
@@ -588,6 +610,18 @@ public class DataFormatsEditorForm extends ActionForm {
 	 */
 	public void setUrlFile(FormFile filename) {
 		this.urlFile = filename;
+	}
+
+	public String getNamespaceId() {
+		return namespaceId;
+	}
+
+	public void setNamespaceId(String namespaceId) {
+		this.namespaceId = namespaceId;
+	}
+
+	public SortedSet getNamespaces() {
+		return namespaces;
 	}
 
 }

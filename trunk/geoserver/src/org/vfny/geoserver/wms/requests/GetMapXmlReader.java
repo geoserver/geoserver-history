@@ -246,7 +246,9 @@ public class GetMapXmlReader extends XmlRequestReader {
         HttpServletRequest request = getMapRequest.getHttpServletRequest();
 
         String qString = request.getQueryString();
-        LOGGER.fine("reading request: " + qString);
+        if (LOGGER.isLoggable(Level.FINE)) {
+        	LOGGER.fine(new StringBuffer("reading request: ").append(qString).toString());
+        }
 
         //Map requestParams = KvpRequestReader.parseKvpSet(qString);
         Map requestParams = new HashMap();
@@ -597,8 +599,10 @@ public class GetMapXmlReader extends XmlRequestReader {
                 throw new WmsException(SLDValidator.getErrorMessage(in, errors));
             }
         } catch (IOException e) {
-            String msg = "Creating remote SLD url: " + e.getMessage();
-            LOGGER.log(Level.WARNING, msg, e);
+            String msg = new StringBuffer("Creating remote SLD url: ").append(e.getMessage()).toString();
+            if (LOGGER.isLoggable(Level.WARNING)) {
+            	LOGGER.log(Level.WARNING, msg, e);
+            }
             throw new WmsException(e, msg, "parseSldParam");
         }
     }
@@ -638,8 +642,10 @@ public class GetMapXmlReader extends XmlRequestReader {
                         errors));
             }
         } catch (IOException e) {
-            String msg = "Creating remote GETMAP url: " + e.getMessage();
-            LOGGER.log(Level.WARNING, msg, e);
+            String msg = new StringBuffer("Creating remote GETMAP url: ").append(e.getMessage()).toString();
+            if (LOGGER.isLoggable(Level.WARNING)) {
+            	LOGGER.log(Level.WARNING, msg, e);
+            }
             throw new WmsException(e, msg, "GETMAP validator");
         }
     }

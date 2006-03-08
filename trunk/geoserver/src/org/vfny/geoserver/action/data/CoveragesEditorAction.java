@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -77,15 +78,21 @@ public class CoveragesEditorAction extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			UserContainer user, HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ServletException {
-		LOGGER.finer("form bean:" + form.getClass().getName());
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("form bean:").append(form.getClass().getName()).toString());			
+		}
 
 		CoveragesEditorForm coverageForm = (CoveragesEditorForm) form;
 
 		String action = coverageForm.getAction();
-		LOGGER.finer("CoveragesEditorAction is " + action);
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("CoveragesEditorAction is ").append(action).toString());			
+		}
 
 		String newCoverage = coverageForm.getNewCoverage();
-		LOGGER.finer("CoveragesEditorNew is " + newCoverage);
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("CoveragesEditorNew is ").append(newCoverage).toString());			
+		}
 
 		Locale locale = (Locale) request.getLocale();
 		MessageResources messages = servlet.getResources();
@@ -93,14 +100,18 @@ public class CoveragesEditorAction extends ConfigAction {
 				"label.submit"));
 		final String ENVELOPE = HTMLEncoder.decode(messages.getMessage(locale,
 				"config.data.calculateBoundingBox.label"));
-		LOGGER.finer("ENVELOPE: " + ENVELOPE);
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("ENVELOPE: ").append(ENVELOPE).toString());			
+		}
 
 		if (action.equals(SUBMIT)) {
 			return executeSubmit(mapping, coverageForm, user, request);
 		}
 
 		if (newCoverage != null && newCoverage.equals("true")) {
-			LOGGER.finer("NEW COVERAGE: " + newCoverage);
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer(new StringBuffer("NEW COVERAGE: ").append(newCoverage).toString());			
+			}
 			request.setAttribute(DataCoveragesNewAction.NEW_COVERAGE_KEY,
 					"true");
 		}

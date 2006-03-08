@@ -7,6 +7,7 @@ package org.vfny.geoserver.global;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.data.DataSourceException;
@@ -197,8 +198,10 @@ public class GeoServerFeatureSource implements FeatureSource {
                 if (schema.getAttributeType(queriedAtts[i]) != null) {
                     allowedAtts.add(queriedAtts[i]);
                 } else {
-                    LOGGER.info("queried a not allowed property: "
-                        + queriedAtts[i] + ". Ommitting it from query");
+                	if (LOGGER.isLoggable(Level.INFO)) {
+                		LOGGER.info(new StringBuffer("queried a not allowed property: ").
+                				append(queriedAtts[i]).append(". Ommitting it from query").toString());
+                	}
                 }
             }
 

@@ -237,7 +237,9 @@ public class XMLConfigReader {
      * @throws ConfigurationException When an error occurs.
      */
     protected void loadServices(File configFile) throws ConfigurationException {
-        LOGGER.config("Loading configuration file: " + configFile);
+    	if (LOGGER.isLoggable(Level.CONFIG)) {
+    		LOGGER.config(new StringBuffer("Loading configuration file: ").append(configFile).toString());
+    	}
 
 		Element configElem = null;
 
@@ -251,7 +253,9 @@ public class XMLConfigReader {
 			throw new ConfigurationException(e);
 		}
 
-        LOGGER.config("parsing configuration documents");
+		if (LOGGER.isLoggable(Level.CONFIG)) {
+			LOGGER.config("parsing configuration documents");
+		}
 
         Element elem = (Element) configElem.getElementsByTagName("global").item(0);
 		loadGlobal(elem);
@@ -299,7 +303,9 @@ public class XMLConfigReader {
 		Element catalogElem = null;
 
 		try {
-        	LOGGER.config("Loading configuration file: " + catalogFile);
+			if (LOGGER.isLoggable(Level.CONFIG)) {
+				LOGGER.config(new StringBuffer("Loading configuration file: ").append(catalogFile).toString());
+			}
 			FileReader fr = new FileReader(catalogFile);
 			catalogElem = ReaderUtils.loadConfig(fr);
 			fr.close();
@@ -343,7 +349,9 @@ public class XMLConfigReader {
 
 			if (ns.isDefault()) {
 				data.setDefaultNameSpacePrefix(ns.getPrefix());
-				LOGGER.finer("set default namespace pre to " + ns.getPrefix());
+				if (LOGGER.isLoggable(Level.FINER)) {
+					LOGGER.finer(new StringBuffer("set default namespace pre to ").append(ns.getPrefix()).toString());
+				}
 
 				return;
 			}
@@ -376,11 +384,14 @@ public class XMLConfigReader {
 			try {
 				level = Level.parse(levelName);
 			} catch (IllegalArgumentException ex) {
-				LOGGER.warning("illegal loggingLevel name: " + levelName);
+				if (LOGGER.isLoggable(Level.WARNING)) {
+					LOGGER.warning(new StringBuffer("illegal loggingLevel name: ").append(levelName).toString());
+				}
 			}
 		} else {
-			LOGGER.config("No loggingLevel found, using default "
-					+ "logging.properties setting");
+			if (LOGGER.isLoggable(Level.CONFIG)) {
+				LOGGER.config("No loggingLevel found, using default logging.properties setting");
+			}
 		}
 
 		return level;
@@ -401,7 +412,9 @@ public class XMLConfigReader {
 	 */
 	protected void loadGlobal(Element globalElem) throws ConfigurationException {
 		geoServer = new GeoServerDTO();
-		LOGGER.finer("parsing global configuration parameters");
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer("parsing global configuration parameters");
+		}
 
 		Level loggingLevel = getLoggingLevel(globalElem);
 		geoServer.setLoggingLevel(loggingLevel);
@@ -428,10 +441,14 @@ public class XMLConfigReader {
 			throw new ConfigurationException(e);
 		}
 
-		LOGGER.config("logging level is " + loggingLevel);
+		if (LOGGER.isLoggable(Level.CONFIG)) {
+			LOGGER.config(new StringBuffer("logging level is ").append(loggingLevel).toString());
+		}
 
 		if (logLocation != null) {
-			LOGGER.config("logging to " + logLocation);
+			if (LOGGER.isLoggable(Level.CONFIG)) {
+				LOGGER.config(new StringBuffer("logging to ").append(logLocation).toString());
+			}
 		}
 
 		elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
@@ -452,7 +469,9 @@ public class XMLConfigReader {
 					true, geoServer.getMaxFeatures()));
 		}
 
-		LOGGER.config("maxFeatures is " + geoServer.getMaxFeatures());
+		if (LOGGER.isLoggable(Level.CONFIG)) {
+			LOGGER.config(new StringBuffer("maxFeatures is ").append(geoServer.getMaxFeatures()).toString());
+		}
 		elem = ReaderUtils.getChildElement(globalElem, "numDecimals");
 
 		if (elem != null) {
@@ -460,7 +479,9 @@ public class XMLConfigReader {
 					true, geoServer.getNumDecimals()));
 		}
 
-		LOGGER.config("numDecimals returning is " + geoServer.getNumDecimals());
+		if (LOGGER.isLoggable(Level.CONFIG)) {
+			LOGGER.config(new StringBuffer("numDecimals returning is ").append(geoServer.getNumDecimals()).toString());
+		}
 		elem = ReaderUtils.getChildElement(globalElem, "charSet");
 
 		if (elem != null) {
@@ -469,13 +490,19 @@ public class XMLConfigReader {
 			try {
 				Charset cs = Charset.forName(chSet);
 				geoServer.setCharSet(cs);
-				LOGGER.finer("charSet: " + cs.displayName());
+				if (LOGGER.isLoggable(Level.FINER)) {
+					LOGGER.finer(new StringBuffer("charSet: ").append(cs.displayName()).toString());
+				}
 			} catch (Exception ex) {
-				LOGGER.info(ex.getMessage());
+				if (LOGGER.isLoggable(Level.INFO)) {
+					LOGGER.info(ex.getMessage());
+				}
 			}
 		}
 
-		LOGGER.config("charSet is " + geoServer.getCharSet());
+		if (LOGGER.isLoggable(Level.CONFIG)) {
+			LOGGER.config(new StringBuffer("charSet is ").append(geoServer.getCharSet()).toString());
+		}
 
 		// Schema base doesn't work - this root thing is wrong. So for 1.2.0 I'm
 		// just going to leave it out. The GeoServer.getSchemaBaseUrl is never
@@ -619,13 +646,16 @@ public class XMLConfigReader {
 
         Element elem = ReaderUtils.getChildElement(wfsElement, "srsXmlStyle",
                 false);
-        LOGGER.config("reading srsXmlStyle: " + elem);
+        if (LOGGER.isLoggable(Level.CONFIG)) {
+        	LOGGER.config(new StringBuffer("reading srsXmlStyle: ").append(elem).toString());
+        }
 
         if (elem != null) {
             wfs.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem, "value",
                     false, true));
-            LOGGER.fine("set srsXmlStyle to "
-                + ReaderUtils.getBooleanAttribute(elem, "value", false, true));
+            if (LOGGER.isLoggable(Level.FINE)) {
+            	LOGGER.fine(new StringBuffer("set srsXmlStyle to ").append(ReaderUtils.getBooleanAttribute(elem, "value", false, true)).toString());
+            }
         }
 
 		String serviceLevelValue = ReaderUtils.getChildText(wfsElement,
@@ -633,7 +663,9 @@ public class XMLConfigReader {
 		int serviceLevel = WFSDTO.COMPLETE;
 
 		if ((serviceLevelValue != null) && !serviceLevelValue.equals("")) {
-			LOGGER.finer("reading serviceLevel: " + serviceLevelValue);
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer(new StringBuffer("reading serviceLevel: ").append(serviceLevelValue).toString());
+			}
 
 			if (serviceLevelValue.equalsIgnoreCase("basic")) {
 				serviceLevel = WFSDTO.BASIC;
@@ -657,7 +689,9 @@ public class XMLConfigReader {
 					false, WFSDTO.COMPLETE);
 		}
 
-		LOGGER.finer("setting service level to " + serviceLevel);
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("setting service level to ").append(serviceLevel).toString());
+		}
 		wfs.setServiceLevel(serviceLevel);
 
 		// get the conformance hacks attribute
@@ -671,8 +705,10 @@ public class XMLConfigReader {
 					"citeConformanceHacks");
             boolean citeConformanceHacks = Boolean.valueOf(text).booleanValue(); // just get the value and parse it
 			wfs.setCiteConformanceHacks(citeConformanceHacks);
-			LOGGER.finer("setting citeConformanceHacks to "
-					+ citeConformanceHacks);
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer(new StringBuffer("setting citeConformanceHacks to ").
+					append(citeConformanceHacks).toString());
+			}
 		}
 
 		// } catch (Exception e) {
@@ -773,7 +809,9 @@ public class XMLConfigReader {
 			ns.setPrefix(ReaderUtils.getAttribute(elem, "prefix", true));
             ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default",
                     false, false) || (nsCount == 1));
-            LOGGER.config("added namespace " + ns);
+            if (LOGGER.isLoggable(Level.CONFIG)) {
+            	LOGGER.config(new StringBuffer("added namespace ").append(ns).toString());
+            }
 			nameSpaces.put(ns.getPrefix(), ns);
 		}
 
@@ -827,7 +865,9 @@ public class XMLConfigReader {
                     false, false));
             styles.put(s.getId(), s);
             
-            LOGGER.config("Loaded style " + s.getId());
+            if (LOGGER.isLoggable(Level.CONFIG)) {
+            	LOGGER.config(new StringBuffer("Loaded style ").append(s.getId()).toString());
+            }
 		}
 
 		return styles;
@@ -862,7 +902,7 @@ public class XMLConfigReader {
 
 			if (formats.containsKey(fmConfig.getId())) {
 				throw new ConfigurationException("duplicated format id: "
-						+ fmConfig.getId());
+						+ data.getNameSpaces().get(fmConfig.getNameSpaceId()));
 			}
 
 			formats.put(fmConfig.getId(), fmConfig);
@@ -890,20 +930,21 @@ public class XMLConfigReader {
 			throws ConfigurationException {
 		FormatInfoDTO fm = new FormatInfoDTO();
 
-		LOGGER.finer("creating a new FormatDTO configuration");
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer("creating a new FormatDTO configuration");
+		}
 		fm.setId(ReaderUtils.getAttribute(fmElem, "id", true));
 
-		// String namespacePrefix = ReaderUtils.getAttribute(fmElem,
-		// "namespace",
-		// true);
-		//
-		// if (data.getNameSpaces().containsKey(namespacePrefix)) {
-		// fm.setNameSpaceId(namespacePrefix);
-		// } else {
-		// String msg = "there is no namespace defined for format '"
-		// + namespacePrefix + "'";
-		// throw new ConfigurationException(msg);
-		// }
+		String namespacePrefix = ReaderUtils.getAttribute(fmElem, "namespace",
+				true);
+
+		if (data.getNameSpaces().containsKey(namespacePrefix)) {
+			fm.setNameSpaceId(namespacePrefix);
+		} else {
+			String msg = "there is no namespace defined for coveragestore '"
+					+ namespacePrefix + "'";
+			throw new ConfigurationException(msg);
+		}
 
 		fm.setType(ReaderUtils.getChildText(fmElem, "type", true));
 		fm.setUrl(ReaderUtils.getChildText(fmElem, "url", false));
@@ -911,7 +952,9 @@ public class XMLConfigReader {
 				true));
 		fm.setTitle(ReaderUtils.getChildText(fmElem, "title", false));
 		fm.setAbstract(ReaderUtils.getChildText(fmElem, "description", false));
-		LOGGER.finer("loading parameters for FormatDTO " + fm.getId());
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("loading parameters for FormatDTO ").append(fm.getId()).toString());
+		}
 		fm.setParameters(loadConnectionParams(ReaderUtils.getChildElement(
 				fmElem, "parameters", false)));
 
@@ -972,7 +1015,9 @@ public class XMLConfigReader {
 			throws ConfigurationException {
 		DataStoreInfoDTO ds = new DataStoreInfoDTO();
 
-		LOGGER.finer("creating a new DataStoreDTO configuration");
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer("creating a new DataStoreDTO configuration");
+		}
 		ds.setId(ReaderUtils.getAttribute(dsElem, "id", true));
 
 		String namespacePrefix = ReaderUtils.getAttribute(dsElem, "namespace",
@@ -990,12 +1035,16 @@ public class XMLConfigReader {
 				true));
 		ds.setTitle(ReaderUtils.getChildText(dsElem, "title", false));
 		ds.setAbstract(ReaderUtils.getChildText(dsElem, "description", false));
-		LOGGER.finer("loading connection parameters for DataStoreDTO "
-				+ ds.getNameSpaceId());
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("loading connection parameters for DataStoreDTO ").
+				append(ds.getNameSpaceId()).toString());
+		}
         ds.setConnectionParams(loadConnectionParams(ReaderUtils.getChildElement(
                     dsElem, "connectionParams", true)));
 
-        LOGGER.config("Loaded datastore " + ds.getId());
+        if (LOGGER.isLoggable(Level.CONFIG)) {
+        	LOGGER.config(new StringBuffer("Loaded datastore ").append(ds.getId()).toString());
+        }
 		return ds;
 	}
 
@@ -1032,8 +1081,10 @@ public class XMLConfigReader {
 				paramValue = ReaderUtils.getAttribute(param, "value", false);
 				connectionParams
 						.put(paramKey, paramValue.replaceAll("'", "\""));
-				LOGGER.finer("added parameter " + paramKey + ": '"
-						+ paramValue.replaceAll("'", "\"") + "'");
+				if (LOGGER.isLoggable(Level.FINER)) {
+					LOGGER.finer(new StringBuffer("added parameter ").append(paramKey).append(": '").
+						append(paramValue.replaceAll("'", "\"")).append("'").toString());
+				}
 			}
 		}
 
@@ -1079,8 +1130,10 @@ public class XMLConfigReader {
      */
 	protected Map loadFeatureTypes(File featureTypeRoot)
 			throws ConfigurationException {
-		LOGGER.finest("examining: " + featureTypeRoot.getAbsolutePath());
-		LOGGER.finest("is dir: " + featureTypeRoot.isDirectory());
+		if (LOGGER.isLoggable(Level.FINEST)) {
+			LOGGER.finest(new StringBuffer("examining: ").append(featureTypeRoot.getAbsolutePath()).toString());
+			LOGGER.finest(new StringBuffer("is dir: ").append(featureTypeRoot.isDirectory()).toString());
+		}
 
 		if (!featureTypeRoot.isDirectory()) {
 			throw new IllegalArgumentException(
@@ -1099,13 +1152,17 @@ public class XMLConfigReader {
 			File info = new File(directories[i], "info.xml");
 
 			if (info.exists() && info.isFile()) {
-				LOGGER.finer("Info dir:" + info);
+				if (LOGGER.isLoggable(Level.FINER)) {
+					LOGGER.finer(new StringBuffer("Info dir:").append(info).toString());
+				}
 
 				FeatureTypeInfoDTO dto = loadFeature(info);
                 String ftName = null;
                 try {	// Decode the URL of the FT. This is to catch colons used in filenames
 					ftName = URLDecoder.decode(dto.getKey(), "UTF-8");
-					LOGGER.info("Decoding file name: "+ftName);
+					if (LOGGER.isLoggable(Level.INFO)) {
+						LOGGER.info(new StringBuffer("Decoding file name: ").append(ftName).toString());
+					}
 				} catch (UnsupportedEncodingException e) {
 					throw new ConfigurationException(e);
 				}
@@ -1168,7 +1225,9 @@ public class XMLConfigReader {
 		Element featureElem = null;
 
 		try {
-        	LOGGER.config("Loading configuration file: " + infoFile);
+			if (LOGGER.isLoggable(Level.CONFIG)) {
+				LOGGER.config(new StringBuffer("Loading configuration file: ").append(infoFile).toString());
+			}
 			Reader reader = null;
 			reader = new FileReader(infoFile);
 			featureElem = ReaderUtils.loadConfig(reader);
@@ -1193,7 +1252,9 @@ public class XMLConfigReader {
 		if (schemaFile.exists() && schemaFile.isFile()) {
 			// attempt to load optional schema information
 			//
-			LOGGER.finest("process schema file " + infoFile);
+			if (LOGGER.isLoggable(Level.FINEST)) {
+				LOGGER.finest(new StringBuffer("process schema file ").append(infoFile).toString());
+			}
 
 			try {
 				loadSchema(schemaFile, dto);
@@ -1205,7 +1266,9 @@ public class XMLConfigReader {
 			dto.setSchemaAttributes(Collections.EMPTY_LIST);
 		}
 
-        LOGGER.config("added featureType " + dto.getName());
+		if (LOGGER.isLoggable(Level.CONFIG)) {
+			LOGGER.config(new StringBuffer("added featureType ").append(dto.getName()).toString());
+		}
 
 		return dto;
 	}
@@ -1300,8 +1363,10 @@ public class XMLConfigReader {
 	 */
 	protected Map loadCoverages(File coverageRoot)
 			throws ConfigurationException {
-		LOGGER.finest("examining: " + coverageRoot.getAbsolutePath());
-		LOGGER.finest("is dir: " + coverageRoot.isDirectory());
+		if (LOGGER.isLoggable(Level.FINEST)) {
+			LOGGER.finest(new StringBuffer("examining: ").append(coverageRoot.getAbsolutePath()).toString());
+			LOGGER.finest(new StringBuffer("is dir: ").append(coverageRoot.isDirectory()).toString());
+		}
 
 		if (!coverageRoot.isDirectory()) {
 			throw new IllegalArgumentException(
@@ -1322,7 +1387,9 @@ public class XMLConfigReader {
 			info = new File(directories[i], "info.xml");
 
 			if (info.exists() && info.isFile()) {
-				LOGGER.finer("Info dir:" + info);
+				if (LOGGER.isLoggable(Level.FINER)) {
+					LOGGER.finer(new StringBuffer("Info dir:").append(info).toString());
+				}
 
 				dto = loadCoverage(info);
 				map.put(dto.getKey(), dto);
@@ -1378,7 +1445,9 @@ public class XMLConfigReader {
 		File parentDir = infoFile.getParentFile();
 		dto.setDirName(parentDir.getName());
 
-		LOGGER.finer("added coverageType " + dto.getName());
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("added coverageType ").append(dto.getName()).toString());
+		}
 
 		return dto;
 	}
@@ -1881,7 +1950,9 @@ public class XMLConfigReader {
 		org.geotools.filter.Filter filter = null;
 
 		if (defQNode != null) {
-			LOGGER.finer("definitionQuery element found, looking for Filter");
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer("definitionQuery element found, looking for Filter");
+			}
 
 			Element filterNode = ReaderUtils.getChildElement(defQNode,
 					"Filter", false);
@@ -1894,7 +1965,9 @@ public class XMLConfigReader {
                 return filter;
             }
 
-			LOGGER.finer("No Filter definition query found");
+            if (LOGGER.isLoggable(Level.FINER)) {
+            	LOGGER.finer("No Filter definition query found");
+            }
 		}
 
 		return filter;
@@ -1948,13 +2021,17 @@ public class XMLConfigReader {
 		}
 
 		try {
-        	LOGGER.config("Loading configuration file: " + schemaFile);
+			if (LOGGER.isLoggable(Level.CONFIG)) {
+				LOGGER.config(new StringBuffer("Loading configuration file: ").append(schemaFile).toString());
+			}
 			Reader reader;
 			reader = new FileReader(schemaFile);
 			elem = ReaderUtils.loadConfig(reader);
 			reader.close();
 		} catch (FileNotFoundException e) {
-			LOGGER.log(Level.FINEST, e.getMessage(), e);
+			if (LOGGER.isLoggable(Level.FINEST)) {
+				LOGGER.log(Level.FINEST, e.getMessage(), e);
+			}
 			throw new ConfigurationException("Could not open schema file:"
 					+ schemaFile, e);
 		} catch (Exception erk) {

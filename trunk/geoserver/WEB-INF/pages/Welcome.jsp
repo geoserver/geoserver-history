@@ -57,9 +57,7 @@
 </code></pre>
 <ul>
   <li>
-    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs?request=GetCapabilities&service=WCS">
-      getCapabilities
-    </a>
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs?request=GetCapabilities&service=WCS&version=1.0.0">WCS GetCapabilities</a>
   </li>
   <li>
 	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs/DescribeCoverage?coveragename=Arc_Sample">

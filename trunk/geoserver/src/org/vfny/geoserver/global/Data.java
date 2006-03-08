@@ -255,10 +255,13 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 			map.put(id, formatInfo);
 			
 			if (formatDTO.isEnabled()) {
-				LOGGER.finer("Register Format '" + id + "'");
+	    		if (LOGGER.isLoggable(Level.FINE)) {
+	    			LOGGER.fine(new StringBuffer("Register Format '").append(id).append("'").toString());
+	    		}
 			} else {
-				LOGGER.fine("Did not Register Format '" + id
-						+ "' as it was not enabled");
+	    		if (LOGGER.isLoggable(Level.FINE)) {
+	    			LOGGER.fine(new StringBuffer("Did not Register Format '").append(id).append("' as it was not enabled").toString());
+	    		}
 			}
 		}
 		
@@ -304,10 +307,13 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 			map.put(id, dataStoreInfo);
 			
 			if (dataStoreDTO.isEnabled()) {
-				LOGGER.finer("Register DataStore '" + id + "'");
+	    		if (LOGGER.isLoggable(Level.FINE)) {
+	    			LOGGER.fine(new StringBuffer("Register DataStore '").append(id).append("'").toString());
+	    		}
 			} else {
-				LOGGER.fine("Did not Register DataStore '" + id
-						+ "' as it was not enabled");
+	    		if (LOGGER.isLoggable(Level.FINE)) {
+	    			LOGGER.fine(new StringBuffer("Did not Register DataStore '").append(id).append("' as it was not enabled").toString());
+	    		}
 			}
 		}
 		
@@ -375,10 +381,13 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 			map.put(id, coverageInfo);
 			
 			if ( dto.getFormats().get(coverageDTO.getFormatId()) != null ) {
-				LOGGER.finer("Register Coverage '" + id + "'");
+	    		if (LOGGER.isLoggable(Level.FINE)) {
+	    			LOGGER.fine(new StringBuffer("Register Coverage '").append(id).append("'").toString());
+	    		}
 			} else {
-				LOGGER.fine("Did not Register Coverage '" + id
-						+ "' as didn't exist a valid Format");
+	    		if (LOGGER.isLoggable(Level.FINE)) {
+	    			LOGGER.fine(new StringBuffer("Did not Register Coverage '").append(id).append("' as didn't exist a valid Format").toString());
+	    		}
 			}
 		}
 		
@@ -428,25 +437,30 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 				FeatureTypeInfoDTO featureTypeDTO = (FeatureTypeInfoDTO) i.next();
 				
 				if (featureTypeDTO == null) {
-					LOGGER.warning("Ignore null FeatureTypeInfo DTO!");
+		    		if (LOGGER.isLoggable(Level.WARNING)) {
+		    			LOGGER.warning(new StringBuffer("Ignore null FeatureTypeInfo DTO!").toString());
+		    		}
 					
 					continue;
 				}
 				
 				String key = featureTypeDTO.getKey(); // dataStoreId:typeName
 				
-				LOGGER.finer("FeatureType " + key
-						+ ": loading feature type info dto:" + featureTypeDTO);
+	    		if (LOGGER.isLoggable(Level.FINER)) {
+	    			LOGGER.finer(new StringBuffer("FeatureType ").append(key).append(": loading feature type info dto:").append(featureTypeDTO).toString());
+	    		}
 				
 				String dataStoreId = featureTypeDTO.getDataStoreId();
-				LOGGER.finest("FeatureType " + key + " looking up :" + dataStoreId);
+	    		if (LOGGER.isLoggable(Level.FINEST)) {
+	    			LOGGER.finest(new StringBuffer("FeatureType ").append(key).append(" looking up :").append(dataStoreId).toString());
+	    		}
 				
 				DataStoreInfo dataStoreInfo = (DataStoreInfo) dataStores.get(dataStoreId);
 				
 				if (dataStoreInfo == null) {
-					LOGGER.severe("FeatureTypeInfo " + key
-							+ " could not be used - DataStore " + dataStoreId
-							+ " is not defined!");
+		    		if (LOGGER.isLoggable(Level.SEVERE)) {
+		    			LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(key).append(" could not be used - DataStore ").append(dataStoreId).append(" is not defined!").toString());
+		    		}
 					
 					DataStoreInfoDTO tmp = (DataStoreInfoDTO) dto.getDataStores()
 					.get(dataStoreId);
@@ -462,14 +476,17 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 					
 					continue;
 				} else {
-					LOGGER.finest(key + " datastore found :" + dataStoreInfo);
+		    		if (LOGGER.isLoggable(Level.FINEST)) {
+		    			LOGGER.finest(new StringBuffer(key).append(" datastore found :").append(dataStoreInfo).toString());
+		    		}
 				}
 				
 				Style s = getStyle(featureTypeDTO.getDefaultStyle());
 				
 				if (s == null) {
-					LOGGER.severe("FeatureTypeInfo " + key + " ignored - Style '"
-							+ featureTypeDTO.getDefaultStyle() + "' not found!");
+		    		if (LOGGER.isLoggable(Level.SEVERE)) {
+		    			LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(key).append(" ignored - Style '").append(featureTypeDTO.getDefaultStyle()).append("' not found!").toString());
+		    		}
 					
 					errors.put(featureTypeDTO,
 							new ConfigurationException("FeatureTypeInfo " + key
@@ -498,7 +515,9 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 					//AttributeTypeInfoDTO's (once again, I hate these) from the FeatureType
 					//of the real datastore.
 					//boolean createAttrDTO = (featureTypeDTO.getSchemaAttributes().size() == 0);
-					LOGGER.fine("loading datastore " + typeName);
+		    		if (LOGGER.isLoggable(Level.FINE)) {
+		    			LOGGER.fine(new StringBuffer("locading datastore ").append(typeName).toString());
+		    		}
 					
 					boolean createAttrDTO;
 					
@@ -511,9 +530,9 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 					if (createAttrDTO) {
 						List attributeDTOs = createAttrDTOsFromSchema(featureType);
 						featureTypeDTO.setSchemaAttributes(attributeDTOs);
-						LOGGER.finer(
-								"No schema found, setting featureTypeDTO with "
-								+ attributeDTOs);
+			    		if (LOGGER.isLoggable(Level.FINER)) {
+			    			LOGGER.finer(new StringBuffer("No schema found, setting featureTypeDTO with ").append(attributeDTOs).toString());
+			    		}
 					} else {
 						for (int index = 0;
 						index < featureType.getAttributeCount(); index++) {
@@ -533,14 +552,13 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 								if (!attributeNames.contains(attributeName)) {
 									if (ATTRIBUTENames.contains(
 											attributeName.toUpperCase())) {
-										LOGGER.severe("FeatureTypeInfo " + key
-												+ " ignored - attribute '"
-												+ attributeName
-												+ "' not found - please check captialization");
+							    		if (LOGGER.isLoggable(Level.SEVERE)) {
+							    			LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(key).append(" ignored - attribute '").append(attributeName).append("' not found - please check captialization").toString());
+							    		}
 									} else {
-										LOGGER.severe("FeatureTypeInfo " + key
-												+ " ignored - attribute '"
-												+ attributeName + "' not found!");
+							    		if (LOGGER.isLoggable(Level.SEVERE)) {
+							    			LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(key).append(" ignored - attribute '").append(attributeName).append("' not found!").toString());
+							    		}
 										
 										String names = "";
 										Iterator x = attributeNames.iterator();
@@ -552,16 +570,15 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 										while (x.hasNext())
 											names = ":::" + x.next().toString();
 										
-										LOGGER.severe(
-												"Valid attribute names include :::"
-												+ names);
+							    		if (LOGGER.isLoggable(Level.SEVERE)) {
+							    			LOGGER.severe(new StringBuffer("Valid attribute names include :::").append(names).toString());
+							    		}
 									}
 									
 									errors.put(featureTypeDTO,
 											new ConfigurationException(
-													"FeatureTypeInfo " + key
-													+ " could not be used - DataStore "
-													+ dataStoreId + " is not defined!"));
+													new StringBuffer("FeatureTypeInfo ").append(key).append(" could not be used - DataStore ").
+													append(dataStoreId).append(" is not defined!").toString()));
 									
 									continue SCHEMA;
 								}
@@ -569,26 +586,36 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 						}
 					}
 				} catch (IllegalStateException illegalState) {
-					LOGGER.severe("FeatureTypeInfo " + key
-							+ " ignored - as DataStore " + dataStoreId
-							+ " is disabled!");
+		    		if (LOGGER.isLoggable(Level.SEVERE)) {
+		    			LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(key).append(" ignored - as DataStore ").append(dataStoreId).append(" is disabled!").toString());
+		    		}
 					errors.put(featureTypeDTO, Boolean.FALSE);
 					
 					continue;
 				} catch (IOException ioException) {
-					LOGGER.log(Level.SEVERE,
-							"FeatureTypeInfo " + key + " ignored - as DataStore "
-							+ dataStoreId + " is unavailable:" + ioException);
-					LOGGER.log(Level.FINEST, key + " unavailable", ioException);
+		    		if (LOGGER.isLoggable(Level.SEVERE)) {
+						LOGGER.log(Level.SEVERE,
+								new StringBuffer("FeatureTypeInfo ").append(key).append(" ignored - as DataStore ").append(dataStoreId).
+								append(" is unavailable:").append(ioException).toString());
+		    		}
+		    		if (LOGGER.isLoggable(Level.FINEST)) {
+						LOGGER.log(Level.FINEST,
+								new StringBuffer(key).append(" unavailable").toString(), ioException);
+		    		}
 					errors.put(featureTypeDTO, ioException);
 					
 					continue;
 				} catch (Throwable unExpected) {
-					LOGGER.log(Level.SEVERE,
-							"FeatureTypeInfo " + key + " ignored - as DataStore "
-							+ dataStoreId + " is broken:" + unExpected);
+		    		if (LOGGER.isLoggable(Level.SEVERE)) {
+						LOGGER.log(Level.SEVERE,
+								new StringBuffer("FeatureTypeInfo ").append(key).append(" ignored - as DataStore ").append(dataStoreId).
+								append(" is broken:").append(unExpected).toString());
+		    		}
 					unExpected.printStackTrace();
-					LOGGER.log(Level.FINEST, key + " unavailable", unExpected);
+		    		if (LOGGER.isLoggable(Level.FINEST)) {
+						LOGGER.log(Level.FINEST,
+								new StringBuffer(key).append(" unavailable").toString(), unExpected);
+		    		}
 					
 					errors.put(featureTypeDTO, unExpected);
 					
@@ -597,18 +624,24 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 				
 				String prefix = dataStoreInfo.getNamesSpacePrefix();
 				
-				LOGGER.finest("FeatureType " + key
-						+ " creating FeatureTypeInfo for " + prefix + ":" + typeName);
+	    		if (LOGGER.isLoggable(Level.FINEST)) {
+					LOGGER.finest(new StringBuffer("FeatureType ").append(key).
+							append(" creating FeatureTypeInfo for ").append(prefix).append(":").append(typeName).toString());
+	    		}
 				
 				FeatureTypeInfo featureTypeInfo = null;
 				
 				try {
 					featureTypeInfo = new FeatureTypeInfo(featureTypeDTO, this);
 				} catch (ConfigurationException configException) {
-					LOGGER.log(Level.SEVERE,
-							"FeatureTypeInfo " + key
-							+ " ignored - configuration problem:" + configException);
-					LOGGER.log(Level.FINEST, key + " unavailable", configException);
+		    		if (LOGGER.isLoggable(Level.SEVERE)) {
+						LOGGER.log(Level.SEVERE,
+								new StringBuffer("FeatureTypeInfo ").append(key).
+								append(" ignored - configuration problem:").append(configException).toString());
+		    		}
+		    		if (LOGGER.isLoggable(Level.FINEST)) {
+						LOGGER.log(Level.FINEST, new StringBuffer(key).append(" unavailable").toString(), configException);
+		    		}
 					errors.put(featureTypeDTO, configException);
 					
 					continue;
@@ -617,18 +650,24 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 				String key2 = prefix + ":" + typeName;
 				
 				if (map.containsKey(key2)) {
-					LOGGER.severe("FeatureTypeInfo '" + key2
-							+ "' already defined - you must have duplicate defined?");
+		    		if (LOGGER.isLoggable(Level.SEVERE)) {
+						LOGGER.severe(new StringBuffer("FeatureTypeInfo '").append(key2).
+								append("' already defined - you must have duplicate defined?").toString());
+		    		}
 					errors.put(featureTypeDTO,
 							new ConfigurationException("FeatureTypeInfo '" + key2
 									+ "' already defined - you must have duplicate defined?"));
 				} else {
-					LOGGER.finest("FeatureTypeInfo " + key2
-							+ " has been created...");
+		    		if (LOGGER.isLoggable(Level.FINEST)) {
+						LOGGER.finest(new StringBuffer("FeatureTypeInfo ").append(key2).
+								append(" has been created...").toString());
+		    		}
 					map.put(key2, featureTypeInfo);
 					
-					LOGGER.finest("FeatureTypeInfo '" + key2 + "' is registered:"
-							+ dataStoreInfo);
+		    		if (LOGGER.isLoggable(Level.FINEST)) {
+						LOGGER.finest(new StringBuffer("FeatureTypeInfo '").append(key2).append("' is registered:").
+								append(dataStoreInfo).toString());
+		    		}
 					errors.put(featureTypeDTO, Boolean.TRUE);
 				}
 			}
@@ -685,8 +724,10 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 				//use the style's name out of the styles directory.
 				style.setName(id);
 			} catch (Exception ioException) { // was IOException
-				LOGGER.log(Level.SEVERE, "Could not load style " + id,
-						ioException);
+	    		if (LOGGER.isLoggable(Level.SEVERE)) {
+	    			LOGGER.log(Level.SEVERE, new StringBuffer("Could not load style ").append(id).toString(),
+	    					ioException);
+	    		}
 				
 				continue;
 			}
@@ -695,8 +736,9 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 			map.put(id, style);
 		}
 		
-		LOGGER.finer("returning styles " + map + "\n and set map " + stFiles);
-		
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("returning styles ").append(map).append("\n and set map ").append(stFiles).toString());
+		}		
 		return map;
 	}
 	
@@ -707,7 +749,9 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 	 * @param status DOCUMENT ME!
 	 */
 	static final void outputStatus(String title, Map status) {
-		LOGGER.info(title);
+		if (LOGGER.isLoggable(Level.INFO)) {
+			LOGGER.info(title);
+		}
 		
 		for (Iterator i = status.entrySet().iterator(); i.hasNext();) {
 			Map.Entry entry = (Map.Entry) i.next();
@@ -715,12 +759,18 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 			Object value = entry.getValue();
 			
 			if (value == Boolean.TRUE) {
-				LOGGER.fine(key + ": ready");
+	    		if (LOGGER.isLoggable(Level.FINE)) {
+	    			LOGGER.fine(new StringBuffer(key).append(": ready").toString());
+	    		}
 			} else if (value instanceof Throwable) {
 				Throwable t = (Throwable) value;
-				LOGGER.log(Level.SEVERE, key + " not ready", t);
+	    		if (LOGGER.isLoggable(Level.SEVERE)) {
+	    			LOGGER.log(Level.SEVERE, new StringBuffer(key).append(" not ready").toString(), t);
+	    		}
 			} else {
-				LOGGER.warning(key + ": '" + value + "'");
+	    		if (LOGGER.isLoggable(Level.WARNING)) {
+	    			LOGGER.warning(new StringBuffer(key).append(": '").append(value).append("'").toString());
+	    		}
 			}
 		}
 	}
@@ -822,7 +872,9 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 			tmp.put(id, sdto);
 		}
 		
-		LOGGER.finer("setting styles to: " + tmp);
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("setting styles to: ").append(tmp).toString());
+		}
 		dto.setStyles(tmp);
 		
 		tmp = new HashMap();
@@ -1003,7 +1055,9 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 	 */
 	public FeatureTypeInfo getFeatureTypeInfo(String name)
 	throws NoSuchElementException {
-		LOGGER.fine("getting type " + name);
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine(new StringBuffer("getting type ").append(name).toString());
+		}
 		
 		FeatureTypeInfo found = null;
 		
@@ -1094,6 +1148,13 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 			return found;
 		}
 		
+		String defaultPrefix = defaultNameSpace.getPrefix();
+		found = (CoverageInfo) coverages.get(defaultPrefix + ":" + name);
+		
+		if (found != null) {
+			return found;
+		}
+		
 		for (Iterator i = coverages.values().iterator(); i.hasNext();) {
 			CoverageInfo cvo = (CoverageInfo) i.next();
 			
@@ -1109,7 +1170,25 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 		throw new NoSuchElementException("Could not locate CoverageConfig '"
 				+ name + "'");
 	}
-	
+
+	public CoverageInfo getCoverageInfo(String name, String uri) {
+		for (Iterator it = coverages.values().iterator(); it.hasNext();) {
+			CoverageInfo cvo = (CoverageInfo) it.next();
+			
+			if (cvo.isEnabled()) {
+				String cvId = cvo.getNameSpace().getPrefix() + ":"
+				+ name;
+				boolean t1 = cvo.getName().equals(cvId);
+				boolean t2 = cvo.getNameSpace().getUri().equals(uri);
+				
+                if (t1) {
+					return cvo;
+				}
+			}
+		}
+		
+		return null;
+	}
 	
 	/**
 	 * Retrieve map of FeatureTypeInfo by prefix:typeName.
@@ -1332,13 +1411,17 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 					refresh = true;
 				}
 			} catch (IOException e) {
-				LOGGER.log(Level.WARNING, e.getMessage(), e);
+				if (LOGGER.isLoggable(Level.WARNING)) {
+					LOGGER.log(Level.WARNING, e.getMessage(), e);
+				}
 			} finally {
 				try {
 					t.close();
 				} catch (IOException closeException) {
-					LOGGER.log(Level.FINEST, closeException.getMessage(),
+					if (LOGGER.isLoggable(Level.FINEST)) {
+						LOGGER.log(Level.FINEST, closeException.getMessage(),
 							closeException);
+					}
 				}
 			}
 		}
@@ -1391,13 +1474,17 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 					refresh = true;
 				}
 			} catch (IOException e) {
-				LOGGER.log(Level.WARNING, e.getMessage(), e);
+				if (LOGGER.isLoggable(Level.WARNING)) {
+					LOGGER.log(Level.WARNING, e.getMessage(), e);
+				}
 			} finally {
 				try {
 					t.close();
 				} catch (IOException closeException) {
-					LOGGER.log(Level.FINEST, closeException.getMessage(),
+					if (LOGGER.isLoggable(Level.FINEST)) {
+						LOGGER.log(Level.FINEST, closeException.getMessage(),
 							closeException);
+					}
 				}
 			}
 		}

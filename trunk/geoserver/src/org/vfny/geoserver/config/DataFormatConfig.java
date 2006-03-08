@@ -38,6 +38,14 @@ public class DataFormatConfig {
 	 */
 	private String id;
 
+	/**
+	 * unique namespace to refer to this format
+	 * 
+	 * @uml.property name="nameSpaceId" multiplicity="(0 1)"
+	 */
+	private String nameSpaceId;
+
+
 	private String type;
 
 	private String url;
@@ -87,7 +95,8 @@ public class DataFormatConfig {
 	public DataFormatConfig(String dataFormatId, Format factory) {
 		this.factory = factory;
 		id = dataFormatId;
-		type = factory.getName();
+        nameSpaceId = "";
+        type = factory.getName();
 		url = "file:data/coverages/";
 		enabled = true;
 		title = "";
@@ -128,6 +137,7 @@ public class DataFormatConfig {
 				.getType());
 
 		id = dto.getId();
+        nameSpaceId = dto.getNameSpaceId();
 		type = dto.getType();
 		url = dto.getUrl();
 		enabled = dto.isEnabled();
@@ -157,6 +167,7 @@ public class DataFormatConfig {
 		}
 
 		id = df.getId();
+		nameSpaceId = df.getNameSpaceId();
 		type = df.getType();
 		url = df.getUrl();
 		enabled = df.isEnabled();
@@ -183,6 +194,7 @@ public class DataFormatConfig {
 	public FormatInfoDTO toDTO() {
 		FormatInfoDTO ds = new FormatInfoDTO();
 		ds.setId(id);
+		ds.setNameSpaceId(nameSpaceId);
 		ds.setType(type);
 		ds.setUrl(url);
 		ds.setEnabled(enabled);
@@ -377,6 +389,14 @@ public class DataFormatConfig {
 	 */
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getNameSpaceId() {
+		return nameSpaceId;
+	}
+
+	public void setNameSpaceId(String nameSpaceId) {
+		this.nameSpaceId = nameSpaceId;
 	}
 
 }

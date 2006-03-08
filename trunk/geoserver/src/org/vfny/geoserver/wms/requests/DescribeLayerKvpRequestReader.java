@@ -62,10 +62,14 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
         req.setHttpServletRequest(request);
 
         String layersParam = getValue("LAYERS");
-        LOGGER.fine(layersParam);
+        if (LOGGER.isLoggable(Level.FINE)) {
+        	LOGGER.fine(layersParam);
+        }
 
         List layers = layers = readFlat(layersParam, INNER_DELIMETER);
-        LOGGER.fine(layers.toString());
+        if (LOGGER.isLoggable(Level.FINE)) {
+        	LOGGER.fine(layers.toString());
+        }
 
         int layerCount = layers.size();
 
@@ -75,35 +79,49 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
         }
 
         Data catalog = req.getWMS().getData();
-        LOGGER.fine(catalog.toString());
+        if (LOGGER.isLoggable(Level.FINE)) {
+        	LOGGER.fine(catalog.toString());
+        }
 
         String layerName = null;
         MapLayerInfo layer = null;
 
         try {
-            LOGGER.fine("looking featuretypeinfos");
+        	if (LOGGER.isLoggable(Level.FINE)) {
+        		LOGGER.fine("looking featuretypeinfos");
+        	}
 
             for (int i = 0; i < layerCount; i++) {
                 layerName = (String) layers.get(i);
-                LOGGER.fine("Looking for layer " + layerName);
+                if (LOGGER.isLoggable(Level.FINE)) {
+                	LOGGER.fine(new StringBuffer("Looking for layer ").append(layerName).toString());
+                }
                 FeatureTypeInfo ftype = catalog.getFeatureTypeInfo(layerName);
                 layer = new MapLayerInfo();
                 layer.setFeature(ftype);
                 req.addLayer(layer);
-                LOGGER.fine(layerName + " found");
+                if (LOGGER.isLoggable(Level.FINE)) {
+                	LOGGER.fine(new StringBuffer(layerName).append(" found").toString());
+                }
             }
         } catch (NoSuchElementException fex) {
         	try {
-                LOGGER.fine("looking coverageinfos");
+        		if (LOGGER.isLoggable(Level.FINE)) {
+        			LOGGER.fine("looking coverageinfos");
+        		}
 
                 for (int i = 0; i < layerCount; i++) {
                     layerName = (String) layers.get(i);
-                    LOGGER.fine("Looking for layer " + layerName);
+                    if (LOGGER.isLoggable(Level.FINE)) {
+                    	LOGGER.fine(new StringBuffer("Looking for layer ").append(layerName).toString());
+                    }
                     CoverageInfo cinfo = catalog.getCoverageInfo(layerName);
                     layer = new MapLayerInfo();
                     layer.setCoverage(cinfo);
                     req.addLayer(layer);
-                    LOGGER.fine(layerName + " found");
+                    if (LOGGER.isLoggable(Level.FINE)) {
+                    	LOGGER.fine(new StringBuffer(layerName).append(" found").toString());
+                    }
                 }
 
         	} catch (NoSuchElementException cex) {
@@ -113,7 +131,7 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
         }
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("parsed request " + req);
+            LOGGER.fine(new StringBuffer("parsed request ").append(req).toString());
         }
 
         return req;

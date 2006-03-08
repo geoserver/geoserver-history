@@ -60,28 +60,28 @@ parameters repository for all featuretypes it holds.
 a format configuration element serves as a common data source
 parameters repository for all coverages it holds.
 -->
-<format enabled = "true" id = "gtopo30" >
+<format namespace = "nurc" enabled = "true" id = "gtopo30" >
 <description>gtopo30 dem file from usgs</description>
 <type>Gtopo30</type>
 <url>file:data/coverages/gtopo_sample/W020N90.DEM</url>
 </format>
-<format enabled = "true" id = "sample_geotiff" >
+<format namespace = "nurc" enabled = "true" id = "sample_geotiff" >
 <description></description>
 <type>GeoTIFFWritingUtilities</type>
 <url>file:data/coverages/geotiff_sample/~gtiff172030523_192_106_197_2_0.tiff</url>
 </format>
-<format enabled = "true" id = "prova_grib" >
+<format namespace = "nurc" enabled = "true" id = "prova_grib" >
 <type>GRIB1</type>
 <url>file:data/coverages/grib_sample/grid_RLM13_050418.070949_11_1_00-06.ggsbin</url>
 <parameters>
 <parameter value = "#0000ff;#00ff00;#ff0000" name = "values_palette"  />
 </parameters>
 </format>
-<format enabled = "true" id = "worldImageSample" >
+<format namespace = "nurc" enabled = "true" id = "worldImageSample" >
 <type>WorldImage</type>
 <url>file:data/coverages/img_sample/usa.png</url>
 </format>
-<format enabled = "true" id = "arcGridSample" >
+<format namespace = "nurc" enabled = "true" id = "arcGridSample" >
 <description>A test ArcGrid Coverage</description>
 <type>ArcGrid</type>
 <url>file:data/coverages/arc_sample/a.asc.gz</url>
@@ -99,6 +99,7 @@ Defines namespaces to be used by the datastores.
 <namespace uri = "http://geoserver.sf.net" prefix = "sde"  />
 <namespace uri = "http://www.census.gov" prefix = "tiger"  />
 <namespace uri = "http://www.opengeospatial.net/cite" prefix = "cite"  />
+<namespace uri = "http://www.nurc.nato.int" prefix = "nurc"  />
 </namespaces>
 <styles>
 <!--

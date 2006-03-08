@@ -6,6 +6,7 @@ package org.vfny.geoserver.util.requests.readers;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,7 +80,9 @@ public abstract class XmlRequestReader {
 
             adapter.setContentHandler(documentFilter);
             adapter.parse(requestSource);
-            LOGGER.fine("just parsed: " + requestSource);
+            if (LOGGER.isLoggable(Level.FINE)) {
+            	LOGGER.fine(new StringBuffer("just parsed: ").append(requestSource).toString());
+            }
         } catch (SAXException e) {
             throw new WfsException(e,
                 "XML getFeature request SAX parsing error",
@@ -92,7 +95,9 @@ public abstract class XmlRequestReader {
                 XmlRequestReader.class.getName());
         }
 
-        LOGGER.fine("passing filter: " + contentHandler.getFilter());
+        if (LOGGER.isLoggable(Level.FINE)) {
+        	LOGGER.fine(new StringBuffer("passing filter: ").append(contentHandler.getFilter()).toString());
+        }
 
         return contentHandler.getFilter();
     }

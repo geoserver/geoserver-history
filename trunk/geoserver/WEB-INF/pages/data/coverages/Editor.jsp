@@ -17,13 +17,9 @@
         </span>
       </td>
       <td class="datum">
-      	<logic:present name="newCoverage">
-      		<html:text property="name" size="60" readonly="false"/>
-			<html:hidden property="newCoverage" value="true"/>
-      	</logic:present>
-      	<logic:notPresent name="newCoverage">
-  			<html:text property="name" size="60" readonly="true"/>
-  		</logic:notPresent>
+		<bean:write name="coveragesEditorForm" property="name"/>
+		<html:hidden property="name"/>
+		<html:hidden property="newCoverage" value="false"/>
       </td>
     </tr>
 	<tr>

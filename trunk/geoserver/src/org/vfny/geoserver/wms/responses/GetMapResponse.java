@@ -125,7 +125,9 @@ public class GetMapResponse implements Response {
 		map.setBgColor(request.getBgColor());
 		map.setTransparent(request.isTransparent());
 
-		LOGGER.fine("setting up map");
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine("setting up map");
+		}
 
 		try { // mapcontext can leak memory -- we make sure we done (see
 			// finally block)
@@ -140,8 +142,10 @@ public class GetMapResponse implements Response {
 					try {
 						source = layers[i].getFeature().getFeatureSource();
 					} catch (IOException exp) {
-						LOGGER.log(Level.SEVERE, "Getting feature source: "
-								+ exp.getMessage(), exp);
+						if (LOGGER.isLoggable(Level.SEVERE)) {
+							LOGGER.log(Level.SEVERE, new StringBuffer("Getting feature source: ").
+								append(exp.getMessage()).toString(), exp);
+						}
 						throw new WmsException(null, new StringBuffer(
 								"Internal error : ").append(exp.getMessage())
 								.toString());
@@ -173,15 +177,19 @@ public class GetMapResponse implements Response {
 
 			this.delegate.produceMap(map);
 		} catch (DataSourceException e) {
-			LOGGER.log(Level.SEVERE, new StringBuffer(
+			if (LOGGER.isLoggable(Level.SEVERE)) {
+				LOGGER.log(Level.SEVERE, new StringBuffer(
 					"Getting feature source: ").append(e.getMessage())
 					.toString(), e);
+			}
 			throw new WmsException(null, new StringBuffer("Internal error : ")
 					.append(e.getMessage()).toString());
 		} catch (ClassCastException e) {
-			LOGGER.log(Level.SEVERE, new StringBuffer(
+			if (LOGGER.isLoggable(Level.SEVERE)) {
+				LOGGER.log(Level.SEVERE, new StringBuffer(
 					"Getting feature source: ").append(e.getMessage())
 					.toString(), e);
+			}
 			throw new WmsException(null, new StringBuffer("Internal error : ")
 					.append(e.getMessage()).toString());
 		} finally {
@@ -190,9 +198,11 @@ public class GetMapResponse implements Response {
 				map.clearLayerList();
 			} catch (Exception e) // we dont want to propogate a new error
 			{
-				LOGGER.log(Level.SEVERE, new StringBuffer(
+				if (LOGGER.isLoggable(Level.SEVERE)) {
+					LOGGER.log(Level.SEVERE, new StringBuffer(
 						"Getting feature source: ").append(e.getMessage())
 						.toString(), e);
+				}
 			}
 
 			// call the Garbage Collector six times to be sure he hears us.
@@ -234,7 +244,9 @@ public class GetMapResponse implements Response {
 	 * @return DOCUMENT ME!
 	 */
 	public String getContentEncoding() {
-		LOGGER.finer("returning content encoding null");
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer("returning content encoding null");
+		}
 
 		return null;
 	}
@@ -247,7 +259,9 @@ public class GetMapResponse implements Response {
 	 */
 	public void abort(Service gs) {
 		if (this.delegate != null) {
-			LOGGER.fine("asking delegate for aborting the process");
+			if (LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.fine("asking delegate for aborting the process");
+			}
 			this.delegate.abort();
 		}
 	}
@@ -279,17 +293,18 @@ public class GetMapResponse implements Response {
 						"No GetMapDelegate is setted, make sure you have called execute and it has succeed");
 			}
 
-			LOGGER.finer(new StringBuffer("asking delegate for write to ")
-					.append(out).toString());
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer(new StringBuffer("asking delegate for write to ").append(out).toString());
+			}
 			this.delegate.writeTo(out);
 		} finally {
 			try {
 				map.clearLayerList();
 			} catch (Exception e) // we dont want to propogate a new error
 			{
-				LOGGER.log(Level.SEVERE, new StringBuffer(
-						"Getting feature source: ").append(e.getMessage())
-						.toString(), e);
+				if (LOGGER.isLoggable(Level.SEVERE)) {
+					LOGGER.log(Level.SEVERE, new StringBuffer("Getting feature source: ").append(e.getMessage()).toString(), e);
+				}
 			}
 		}
 
@@ -313,7 +328,9 @@ public class GetMapResponse implements Response {
 	 */
 	static GetMapProducer getDelegate(String outputFormat, WMSConfig config)
 			throws WmsException {
-		LOGGER.finer("request format is " + outputFormat);
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("request format is ").append(outputFormat).toString());
+		}
 
 		GetMapProducerFactorySpi mpf = null;
 		Iterator mpfi = FactoryFinder.factories(GetMapProducerFactorySpi.class);

@@ -161,35 +161,47 @@ public abstract class AbstractService extends HttpServlet {
      */
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        LOGGER.info("Looking for configured service responses' strategy");
+        if (LOGGER.isLoggable(Level.INFO)) {
+        	LOGGER.info("Looking for configured service responses' strategy");
+        }
 
         ServletContext servContext = config.getServletContext();
         String stgyKey = servContext.getInitParameter("serviceStratagy");
         Class stgyClass = BufferStrategy.class;
 
         if (stgyKey == null) {
-            LOGGER.info("No service strategy configured, defaulting to BUFFER");
+        	if (LOGGER.isLoggable(Level.INFO)) {
+        		LOGGER.info("No service strategy configured, defaulting to BUFFER");
+        	}
         } else {
-            LOGGER.info("Looking for configured service strategy " + stgyKey);
+        	if (LOGGER.isLoggable(Level.INFO)) {
+        		LOGGER.info(new StringBuffer("Looking for configured service strategy ").append(stgyKey).toString());
+        	}
 
             Class configurefStgyClass = (Class) serviceStrategys.get(stgyKey);
 
             if (configurefStgyClass == null) {
-                LOGGER.info("No service strategy named " + stgyKey
-                    + "found, defaulting to BUFFER. Please check your config");
+            	if (LOGGER.isLoggable(Level.INFO)) {
+            		LOGGER.info(new StringBuffer("No service strategy named ").append(stgyKey).
+                    append("found, defaulting to BUFFER. Please check your config").toString());
+            	}
             } else {
                 stgyClass = configurefStgyClass;
             }
         }
 
-        LOGGER.fine("verifying configured strategy");
+        if (LOGGER.isLoggable(Level.FINE)) {
+        	LOGGER.fine("verifying configured strategy");
+        }
 
         if (!(ServiceStrategy.class.isAssignableFrom(stgyClass))) {
             throw new ServletException("the configured service strategy "
                 + stgyClass + " is not a ServiceStrategy derivate");
         }
 
-        LOGGER.info("Using service strategy " + stgyClass);
+        if (LOGGER.isLoggable(Level.INFO)) {
+        	LOGGER.info(new StringBuffer("Using service strategy ").append(stgyClass).toString());
+        }
         AbstractService.safetyMode = stgyClass;
         
         if (stgyClass == PartialBufferStrategy.class)
@@ -205,10 +217,14 @@ public abstract class AbstractService extends HttpServlet {
 					//... convert string to # ...
 					Integer i = new Integer(size);
 					buffSize = i.intValue();
-					LOGGER.info("Set buffer size to " + buffSize);
+					if (LOGGER.isLoggable(Level.INFO)) {
+						LOGGER.info(new StringBuffer("Set buffer size to ").append(buffSize).toString());
+					}
 				}
 				catch (Exception e) {
-					LOGGER.warning("Invalid default buffer size for PARTIAL-BUFFER: " + size);
+					if (LOGGER.isLoggable(Level.WARNING)) {
+						LOGGER.warning(new StringBuffer("Invalid default buffer size for PARTIAL-BUFFER: ").append(size).toString());
+					}
 				}
         	}
         	
@@ -249,7 +265,9 @@ public abstract class AbstractService extends HttpServlet {
 
         try {
             String qString = request.getQueryString();
-            LOGGER.fine(new StringBuffer("reading request: ").append(qString).toString());
+            if (LOGGER.isLoggable(Level.FINE)) {
+            	LOGGER.fine(new StringBuffer("reading request: ").append(qString).toString());
+            }
 
             //Map requestParams = KvpRequestReader.parseKvpSet(qString);
             Map requestParams = new HashMap();
@@ -266,7 +284,9 @@ public abstract class AbstractService extends HttpServlet {
             KvpRequestReader requestReader = getKvpReader(requestParams);
 
             serviceRequest = requestReader.getRequest(request);
-            LOGGER.finer(new StringBuffer("serviceRequest provided with HttpServletRequest: ").append(request).toString());
+            if (LOGGER.isLoggable(Level.FINER)) {
+            	LOGGER.finer(new StringBuffer("serviceRequest provided with HttpServletRequest: ").append(request).toString());
+            }
 
             //serviceRequest.setHttpServletRequest(request);
         } catch (ServiceException se) {
@@ -415,7 +435,9 @@ public abstract class AbstractService extends HttpServlet {
     protected void doService(HttpServletRequest request,
         HttpServletResponse response, Request serviceRequest)
         throws ServletException {
-        LOGGER.info("handling request: " + serviceRequest);
+    	if (LOGGER.isLoggable(Level.INFO)) {
+    		LOGGER.info(new StringBuffer("handling request: ").append(serviceRequest).toString());
+    	}
 
         if (!isServiceEnabled(request)) {
             try {
@@ -432,7 +454,9 @@ public abstract class AbstractService extends HttpServlet {
 
         try {
             strategy = getServiceStrategy();
-            LOGGER.fine("strategy is: " + strategy);
+            if (LOGGER.isLoggable(Level.FINE)) {
+            	LOGGER.fine(new StringBuffer("strategy is: ").append(strategy).toString());
+            }
             serviceResponse = getResponseHandler();
         } catch (Throwable t) {
             sendError(response, t);
@@ -452,12 +476,18 @@ public abstract class AbstractService extends HttpServlet {
 
         try {
             // execute request
-            LOGGER.finer("executing request");
+        	if (LOGGER.isLoggable(Level.FINER)) {
+        		LOGGER.finer("executing request");
+        	}
             serviceResponse.execute(serviceRequest);
-            LOGGER.finer("execution succeed");
+            if (LOGGER.isLoggable(Level.FINER)) {
+            	LOGGER.finer("execution succeed");
+            }
         } catch (ServiceException serviceException) {
-            LOGGER.warning("service exception while executing request: "
-                + serviceRequest + "\ncause: " + serviceException.getMessage());
+        	if (LOGGER.isLoggable(Level.WARNING)) {
+        		LOGGER.warning(new StringBuffer("service exception while executing request: ").
+        		append(serviceRequest).append("\ncause: ").append(serviceException.getMessage()).toString());
+        	}
             serviceResponse.abort(s);
             sendError(response, serviceException);
 
@@ -474,32 +504,43 @@ public abstract class AbstractService extends HttpServlet {
 
         //obtain the strategy output stream
         try {
-            LOGGER.finest("getting strategy output");
+        	if (LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest("getting strategy output");
+        	}
             strategyOuput = strategy.getDestination(response);
-            LOGGER.finer("strategy output is: "
-                + strategyOuput.getClass().getName());
+            if (LOGGER.isLoggable(Level.FINER)) {
+            	LOGGER.finer(new StringBuffer("strategy output is: ").
+                append(strategyOuput.getClass().getName()).toString());
+            }
 
             String mimeType = serviceResponse.getContentType(s.getGeoServer());
-            LOGGER.fine("mime type is: " + mimeType);
+            if (LOGGER.isLoggable(Level.FINE)) {
+            	LOGGER.fine(new StringBuffer("mime type is: ").append(mimeType).toString());
+            }
             response.setContentType(mimeType);
 
             String disposition = serviceResponse.getContentDisposition();
 
             if (disposition != null) {
-                LOGGER.fine("content disposition is: " + disposition);
+            	if (LOGGER.isLoggable(Level.FINE)) {
+            		LOGGER.fine(new StringBuffer("content disposition is: ").append(disposition).toString());
+            	}
                 response.setHeader("content-disposition", disposition);
             }
 
             String encoding = serviceResponse.getContentEncoding();
 
             if (encoding != null) {
-                LOGGER.fine("content encoding is: " + encoding);
+            	if (LOGGER.isLoggable(Level.FINE)) {
+            		LOGGER.fine(new StringBuffer("content encoding is: ").append(encoding).toString());
+            	}
                 response.setHeader("content-encoding", encoding);
             }
         } catch (SocketException socketException) {
-            LOGGER.fine(
-                "it seems that the user has closed the request stream: "
-                + socketException.getMessage());
+        	if (LOGGER.isLoggable(Level.FINE)) {
+        		LOGGER.fine(new StringBuffer("it seems that the user has closed the request stream: ").
+                append(socketException.getMessage()).toString());
+        	}
 
             // It seems the user has closed the request stream
             // Apparently this is a "cancel" and will quietly go away
@@ -562,19 +603,25 @@ public abstract class AbstractService extends HttpServlet {
             response.getOutputStream().flush();
             response.getOutputStream().close();
         } catch (SocketException sockEx) { // user cancel
-            LOGGER.warning("Could not send completed response to user:"
-                + sockEx);
+        	if (LOGGER.isLoggable(Level.WARNING)) {
+        		LOGGER.warning(new StringBuffer("Could not send completed response to user:").
+                append(sockEx).toString());
+        	}
 
             return;
         } catch (IOException ioException) {
             // This is bad, the user did not get the completed response
-            LOGGER.warning("Could not send completed response to user:"
-                + ioException);
+        	if (LOGGER.isLoggable(Level.WARNING)) {
+        		LOGGER.warning(new StringBuffer("Could not send completed response to user:").
+                append(ioException).toString());
+        	}
 
             return;
         }
 
-        LOGGER.info("Service handled");
+        if (LOGGER.isLoggable(Level.INFO)) {
+        	LOGGER.info("Service handled");
+        }
     }
 
 	/**
@@ -737,7 +784,9 @@ public abstract class AbstractService extends HttpServlet {
             response.setContentType(mimeType);
             response.getWriter().write(content.toString());
         } catch (IOException ex) { //stream closed by client, do nothing
-            LOGGER.fine(ex.getMessage());
+        	if (LOGGER.isLoggable(Level.FINE)) {
+        		LOGGER.fine(ex.getMessage());
+        	}
         }
     }
 
@@ -766,7 +815,9 @@ public abstract class AbstractService extends HttpServlet {
             return;
         }
 
-        LOGGER.info("Had an undefined error: " + t.getMessage());
+        if (LOGGER.isLoggable(Level.INFO)) {
+        	LOGGER.info(new StringBuffer("Had an undefined error: ").append(t.getMessage()).toString());
+        }
 
         //TODO: put the stack trace in the logger.
         //t.printStackTrace();
@@ -811,8 +862,9 @@ public abstract class AbstractService extends HttpServlet {
         try {
             responseOut = response.getOutputStream();
         } catch (IOException ex) { //stream closed, do nothing.
-            LOGGER.info("apparently client has closed stream: "
-                + ex.getMessage());
+        	if (LOGGER.isLoggable(Level.INFO)) {
+        		LOGGER.info(new StringBuffer("apparently client has closed stream: ").append(ex.getMessage()).toString());
+        	}
         }
 
         OutputStream out = new BufferedOutputStream(responseOut);
@@ -826,7 +878,9 @@ public abstract class AbstractService extends HttpServlet {
             responseOut.flush();
         } catch (IOException ioe) {
             //user just closed the socket stream, do nothing
-            LOGGER.fine("connection closed by user: " + ioe.getMessage());
+        	if (LOGGER.isLoggable(Level.FINE)) {
+        		LOGGER.fine(new StringBuffer("connection closed by user: ").append(ioe.getMessage()).toString());
+        	}
         } catch (ServiceException ex) {
             sendError(response, ex);
         }
@@ -850,10 +904,9 @@ public abstract class AbstractService extends HttpServlet {
         }
 
         if (LOGGER.isLoggable(Level.CONFIG)) {
-            LOGGER.config("user-agent=" + request.getHeader("user-agent"));
-            LOGGER.config("accept=" + request.getHeader("accept"));
-            LOGGER.config("accept-encoding="
-                + request.getHeader("accept-encoding"));
+            LOGGER.config(new StringBuffer("user-agent=").append(request.getHeader("user-agent")).toString());
+            LOGGER.config(new StringBuffer("accept=").append(request.getHeader("accept")).toString());
+            LOGGER.config(new StringBuffer("accept-encoding=").append(request.getHeader("accept-encoding")).toString());
         }
 
         return supportsGzip;
@@ -1124,8 +1177,10 @@ class FileStrategy implements AbstractService.ServiceStrategy {
     public void flush() throws IOException {
         if ((temp == null) || (response == null) || (safe == null)
                 || !temp.exists()) {
-            LOGGER.fine("temp is " + temp + ", response is " + response
-                + " safe is " + safe + ", temp exists " + temp.exists());
+        	if (LOGGER.isLoggable(Level.FINE)) {
+        		LOGGER.fine(new StringBuffer("temp is ").append(temp).append(", response is ").append(response).
+                append(" safe is ").append(safe).append(", temp exists ").append(temp.exists()).toString());
+        	}
             throw new IllegalStateException(
                 "flush should only be called after getDestination");
         }
@@ -1257,11 +1312,17 @@ class PartialBufferStrategy implements AbstractService.ServiceStrategy
 		{
 			try {
 				if (out.abort())
-					LOGGER.info("OutputStream was successfully aborted.");
+					if (LOGGER.isLoggable(Level.INFO)) {
+						LOGGER.info("OutputStream was successfully aborted.");
+					}
 				else
-					LOGGER.warning("OutputStream could not be aborted in time. An error has occurred and could not be sent to the user.");
+					if (LOGGER.isLoggable(Level.WARNING)) {
+						LOGGER.warning("OutputStream could not be aborted in time. An error has occurred and could not be sent to the user.");
+					}
 			} catch (IOException e) {
-				LOGGER.warning("Error aborting OutputStream");
+				if (LOGGER.isLoggable(Level.WARNING)) {
+					LOGGER.warning("Error aborting OutputStream");
+				}
 				e.printStackTrace();
 			}
 		}

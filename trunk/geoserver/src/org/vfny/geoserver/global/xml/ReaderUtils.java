@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -95,18 +96,24 @@ public class ReaderUtils {
         } catch (IOException ioe) {
             String message = "problem reading file " + configFile + "due to: "
                 + ioe.getMessage();
-            LOGGER.warning(message);
+            if (LOGGER.isLoggable(Level.WARNING)) {
+            	LOGGER.warning(message);
+            }
             throw new ConfigurationException(message, ioe);
         } catch (ParserConfigurationException pce) {
             String message =
                 "trouble with parser to read org.vfny.geoserver.global.xml, make sure class"
                 + "path is correct, reading file " + configFile;
-            LOGGER.warning(message);
+            if (LOGGER.isLoggable(Level.WARNING)) {
+            	LOGGER.warning(message);
+            }
             throw new ConfigurationException(message, pce);
         } catch (SAXException saxe) {
             String message = "trouble parsing XML in " + configFile + ": "
                 + saxe.getMessage();
-            LOGGER.warning(message);
+            if (LOGGER.isLoggable(Level.WARNING)) {
+            	LOGGER.warning(message);
+            }
             throw new ConfigurationException(message, saxe);
         }
     }
@@ -141,7 +148,9 @@ public class ReaderUtils {
             throw new ConfigurationException("File is not valid:" + file);
         }
 
-        LOGGER.finer("File is valid: " + file);
+        if (LOGGER.isLoggable(Level.FINER)) {
+        	LOGGER.finer(new StringBuffer("File is valid: ").append(file).toString());
+        }
 
         return file;
     }
@@ -437,7 +446,9 @@ public class ReaderUtils {
         throws ConfigurationException {
         String value = null;
 
-        LOGGER.finer("getting element text for " + elem);
+        if (LOGGER.isLoggable(Level.FINER)) {
+        	LOGGER.finer(new StringBuffer("getting element text for ").append(elem).toString());
+        }
 
         if (elem != null) {
             Node child;

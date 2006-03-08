@@ -14,6 +14,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
@@ -77,7 +78,9 @@ public class XMLConfigWriter {
 
     public static void store(DataDTO data, File root)
         throws ConfigurationException {
-        LOGGER.fine("In method store DataDTO");
+    	if (LOGGER.isLoggable(Level.FINE)) {
+    		LOGGER.fine("In method store DataDTO");
+    	}
 
         if (data == null) {
             throw new ConfigurationException("DataDTO is null: cannot write.");
@@ -117,11 +120,13 @@ public class XMLConfigWriter {
 
 	public static void store(WCSDTO wcs, WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
         File root) throws ConfigurationException {
-        LOGGER.finest("In method store WMSDTO,WFSDTO, GeoServerDTO");
+		if (LOGGER.isLoggable(Level.FINEST)) {
+			LOGGER.finest("In method store WCSDTO,WMSDTO,WFSDTO, GeoServerDTO");
+		}
 
         if (geoServer == null) {
             throw new ConfigurationException(
-                "null parameter in store(WFSDTO,WMSDTO, GeoServerDTO): cannot write.");
+                "null parameter in store(WCSDTO,WMSDTO,WFSDTO, GeoServerDTO): cannot write.");
         }
 
         WriterUtils.initFile(root, true);
@@ -166,7 +171,9 @@ public class XMLConfigWriter {
      */
 	protected static void storeServices(WriterHelper cw, WCSDTO wcs, WMSDTO wms,
         WFSDTO wfs, GeoServerDTO geoServer) throws ConfigurationException {
-        LOGGER.finer("In method storeServices");
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer("In method storeServices");
+		}
         cw.writeln("<?config.xml version=\"1.0\" encoding=\"UTF-8\"?>");
         cw.comment("Service level configuration");
         cw.openTag("serverConfiguration");
@@ -289,7 +296,9 @@ public class XMLConfigWriter {
      */
     protected static void storeContact(ContactDTO c, WriterHelper cw)
         throws ConfigurationException {
-        LOGGER.finer("In method storeContact");
+    	if (LOGGER.isLoggable(Level.FINER)) {
+    		LOGGER.finer("In method storeContact");
+    	}
 
         if ((c != null) && !c.equals(new ContactDTO())) {
             cw.openTag("ContactInformation");
@@ -330,7 +339,9 @@ public class XMLConfigWriter {
      */
     protected static void storeService(Object obj, WriterHelper cw)
         throws ConfigurationException {
-        LOGGER.finer("In method storeService");
+    	if (LOGGER.isLoggable(Level.FINER)) {
+    		LOGGER.finer("In method storeService");
+    	}
 
         ServiceDTO s = null;
         String u = null;
@@ -463,7 +474,9 @@ public class XMLConfigWriter {
      */
     protected static void storeCatalog(WriterHelper cw, DataDTO data)
         throws ConfigurationException {
-        LOGGER.finer("In method storeCatalog");
+    	if (LOGGER.isLoggable(Level.FINER)) {
+    		LOGGER.finer("In method storeCatalog");
+    	}
         cw.writeln("<?config.xml version=\"1.0\" encoding=\"UTF-8\"?>");
         cw.openTag("catalog");
 
@@ -560,7 +573,9 @@ public class XMLConfigWriter {
      */
     protected static void storeDataStore(WriterHelper cw, DataStoreInfoDTO ds)
         throws ConfigurationException {
-        LOGGER.finer("In method storeDataStore");
+    	if (LOGGER.isLoggable(Level.FINER)) {
+    		LOGGER.finer("In method storeDataStore");
+    	}
 
         Map temp = new HashMap();
 
@@ -617,7 +632,9 @@ public class XMLConfigWriter {
 	 */
 	protected static void storeFormat(WriterHelper cw, FormatInfoDTO df)
 	throws ConfigurationException {
-		LOGGER.fine("In method storeFormat");
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine("In method storeFormat");
+		}
 		
 		Map temp = new HashMap();
 		
@@ -627,9 +644,9 @@ public class XMLConfigWriter {
 		
 		temp.put("enabled", df.isEnabled() + "");
 		
-		//        if (df.getNameSpaceId() != null) {
-		//            temp.put("namespace", df.getNameSpaceId());
-		//        }
+		if (df.getNameSpaceId() != null) {
+			temp.put("namespace", df.getNameSpaceId());
+		}
 		
 		cw.openTag("format", temp);
 		
@@ -700,7 +717,9 @@ public class XMLConfigWriter {
      */
     protected static void storeNameSpace(WriterHelper cw, NameSpaceInfoDTO ns)
         throws ConfigurationException {
-        LOGGER.finer("In method storeNameSpace");
+    	if (LOGGER.isLoggable(Level.FINER)) {
+    		LOGGER.finer("In method storeNameSpace");
+    	}
 
         Map attr = new HashMap();
 
@@ -735,7 +754,9 @@ public class XMLConfigWriter {
      */
     protected static void storeStyle(WriterHelper cw, StyleDTO s)
         throws ConfigurationException {
-        LOGGER.finer("In method storeStyle: " + s);
+    	if (LOGGER.isLoggable(Level.FINER)) {
+    		LOGGER.finer(new StringBuffer("In method storeStyle: ").append(s).toString());
+    	}
 
         Map attr = new HashMap();
 
@@ -751,7 +772,9 @@ public class XMLConfigWriter {
             attr.put("default", "true");
         }
 
-        LOGGER.finer("storing style " + attr);
+        if (LOGGER.isLoggable(Level.FINER)) {
+        	LOGGER.finer(new StringBuffer("storing style ").append(attr).toString());
+        }
 
         if (attr.size() != 0) {
             cw.attrTag("style", attr);
@@ -774,7 +797,9 @@ public class XMLConfigWriter {
      */
     protected static void storeFeatures(File dir, DataDTO data)
         throws ConfigurationException {
-        LOGGER.finer("In method storeFeatures");
+    	if (LOGGER.isLoggable(Level.FINER)) {
+    		LOGGER.finer("In method storeFeatures");
+    	}
 	
 	// write them
         Iterator i = data.getFeaturesTypes().keySet().iterator();
@@ -789,7 +814,9 @@ public class XMLConfigWriter {
             	
             	try {	// encode the file name (this is to catch colons in FT names)
             		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
-					LOGGER.info("Writing encoded URL: "+ftDirName);
+            		if (LOGGER.isLoggable(Level.INFO)) {
+            			LOGGER.info(new StringBuffer("Writing encoded URL: ").append(ftDirName).toString());
+            		}
 				} catch (UnsupportedEncodingException e1) {
 					throw new ConfigurationException(e1);
 				}
@@ -799,8 +826,10 @@ public class XMLConfigWriter {
                 storeFeature(ft, dir2);
                 
                 if (ft.getSchemaAttributes() != null) {
-                    LOGGER.finer(ft.getKey() + " writing schema.xml w/ "
-                        + ft.getSchemaAttributes().size());
+                	if (LOGGER.isLoggable(Level.FINER)) {
+                		LOGGER.finer(new StringBuffer(ft.getKey()).append(" writing schema.xml w/ ").
+                        append(ft.getSchemaAttributes().size()).toString());
+                	}
                     storeFeatureSchema(ft, dir2);
                 }
             }
@@ -836,7 +865,9 @@ public class XMLConfigWriter {
                 String ftDirName = ft.getDirName();
                 try {	// encode the file name (this is to catch colons in FT names)
             		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
-					LOGGER.info("Decoded URL: "+ftDirName);
+            		if (LOGGER.isLoggable(Level.INFO)) {
+            			LOGGER.info(new StringBuffer("Decoded URL: ").append(ftDirName).toString());
+            		}
 				} catch (UnsupportedEncodingException e1) {
 					throw new ConfigurationException(e1);
 				}
@@ -885,7 +916,9 @@ public class XMLConfigWriter {
      */
     protected static void storeFeature(FeatureTypeInfoDTO ft, File dir)
         throws ConfigurationException {
-        LOGGER.finer("In method storeFeature");
+    	if (LOGGER.isLoggable(Level.FINER)) {
+    		LOGGER.finer("In method storeFeature");
+    	}
 
         File f = WriterUtils.initWriteFile(new File(dir, "info.xml"), false);
 
@@ -998,7 +1031,9 @@ public class XMLConfigWriter {
         throws ConfigurationException {
         if ((fs.getSchemaBase() == null) || (fs.getSchemaBase() == "")) {
             //LOGGER.info( "No schema base" );
-            LOGGER.finer(fs.getKey() + " has not schemaBase");
+        	if (LOGGER.isLoggable(Level.FINER)) {
+        		LOGGER.finer(new StringBuffer(fs.getKey()).append(" has not schemaBase").toString());
+        	}
 
             return;
         }
@@ -1006,7 +1041,9 @@ public class XMLConfigWriter {
         if ((fs.getSchemaName() == null) || (fs.getSchemaName() == "")) {                   
             // Should assume Null?
             //LOGGER.info( "No schema name" ); // Do we even have a field for this?
-            LOGGER.finer(fs.getKey() + " has not schemaName");
+        	if (LOGGER.isLoggable(Level.FINER)) {
+        		LOGGER.finer(new StringBuffer(fs.getKey()).append(" has not schemaName").toString());
+        	}
 
             return;
         }
@@ -1103,7 +1140,9 @@ public class XMLConfigWriter {
 	}
 	protected static void storeCoverages(File dir, DataDTO data)
 	throws ConfigurationException {
-		LOGGER.fine("In method storeCoverages");
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine("In method storeCoverages");
+		}
 		
 		// write them
 		Iterator i = data.getCoverages().keySet().iterator();
@@ -1156,7 +1195,9 @@ public class XMLConfigWriter {
 	
 	protected static void storeCoverage(CoverageInfoDTO cv, File dir)
 	throws ConfigurationException {
-		LOGGER.fine("In method storeCoverage");
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine("In method storeCoverage");
+		}
 		
 		File f = WriterUtils.initWriteFile(new File(dir, "info.xml"), false);
 		
@@ -1430,7 +1471,9 @@ public static class WriterUtils {
     public static File initFile(File f, boolean isDir)
         throws ConfigurationException {
         if (!f.exists()) {
-            LOGGER.finer("Creating File: " + f.toString());
+        	if (LOGGER.isLoggable(Level.FINER)) {
+        		LOGGER.finer(new StringBuffer("Creating File: ").append(f.toString()).toString());
+        	}
 
             if (isDir) {
                 if (!f.mkdir()) {
@@ -1440,7 +1483,9 @@ public static class WriterUtils {
                 }
             } else {
                 try {
-                	LOGGER.severe("Attempting to create file:" + f.getAbsolutePath());
+                	if (LOGGER.isLoggable(Level.SEVERE)) {
+                		LOGGER.severe(new StringBuffer("Attempting to create file:").append(f.getAbsolutePath()).toString());
+                	}
                     if (!f.createNewFile()) {
                         throw new ConfigurationException(
                             "Path specified does not have a valid file.\n" + f
@@ -1462,7 +1507,9 @@ public static class WriterUtils {
                 "Path specified does not have a valid file.\n" + f + "\n\n");
         }
 
-        LOGGER.finer("File is valid: " + f);
+        if (LOGGER.isLoggable(Level.FINER)) {
+        	LOGGER.finer(new StringBuffer("File is valid: ").append(f).toString());
+        }
 
         return f;
     }

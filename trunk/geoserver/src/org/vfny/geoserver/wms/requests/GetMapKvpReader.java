@@ -380,7 +380,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     private List parseAttributes(FeatureTypeInfo[] layers)
         throws WmsException {
         String rawAtts = getValue("ATTRIBUTES");
-        LOGGER.finer("parsing attributes " + rawAtts);
+        if (LOGGER.isLoggable(Level.FINER)) {
+        	LOGGER.finer(new StringBuffer("parsing attributes ").append(rawAtts).toString());
+        }
 
         if ((rawAtts == null) || "".equals(rawAtts)) {
             return Collections.EMPTY_LIST;
@@ -413,12 +415,15 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                     String attName = (String) attIt.next();
 
                     if (attName.length() > 0) {
-                        LOGGER.finer("checking that " + attName + " is valid");
+                    	if (LOGGER.isLoggable(Level.FINER)) {
+                    		LOGGER.finer(new StringBuffer("checking that ").append(attName).append(" is valid").toString());
+                    	}
 
                         if ("#FID".equalsIgnoreCase(attName)
                                 || "#BOUNDS".equalsIgnoreCase(attName)) {
-                            LOGGER.finer("special attribute name requested: "
-                                + attName);
+                        	if (LOGGER.isLoggable(Level.FINER)) {
+                        		LOGGER.finer(new StringBuffer("special attribute name requested: ").append(attName).toString());
+                        	}
 
                             continue;
                         }
@@ -429,14 +434,17 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                                 + schema.getTypeName() + " does not exists");
                         }
                     } else {
-                        LOGGER.finest(
-                            "removing empty attribute name from request");
+                    	if (LOGGER.isLoggable(Level.FINEST)) {
+                    		LOGGER.finest("removing empty attribute name from request");
+                    	}
                         attIt.remove();
                     }
                 }
 
-                LOGGER.finest("attributes requested for "
-                    + schema.getTypeName() + " checked: " + rawAtts);
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                	LOGGER.finest(new StringBuffer("attributes requested for ").
+                     append(schema.getTypeName()).append(" checked: ").append(rawAtts).toString());
+                }
             } catch (java.io.IOException e) {
                 throw new WmsException(e);
             }
@@ -523,7 +531,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         int numLayers = layers.length;
 
         if ("".equals(rawStyles)) {
-            LOGGER.finer("Assigning default style to all the requested layers");
+        	if (LOGGER.isLoggable(Level.FINER)) {
+        		LOGGER.finer("Assigning default style to all the requested layers");
+        	}
 
             for (int i = 0; i < numLayers; i++)
             	if( layers[i].getType() == MapLayerInfo.TYPE_VECTOR )
@@ -572,8 +582,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                         + layers[i].getName());
                 }
 
-                LOGGER.fine("establishing " + currStyleName + " style for "
-                    + layers[i].getName());
+                if (LOGGER.isLoggable(Level.FINE)) {
+                	LOGGER.fine(new StringBuffer("establishing ").append(currStyleName).append(" style for ").
+                    append(layers[i].getName()).toString());
+                }
                 styles.add(currStyle);
                 } else if( currLayer.getType() == MapLayerInfo.TYPE_RASTER ) {
                     if ((null == currStyleName) || "".equals(currStyleName)) {
@@ -660,10 +672,14 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         String sldBodyParam = getValue("SLD_BODY");
 
         if (sldBodyParam != null) {
-            LOGGER.fine("Getting layers and styles from SLD_BODY");
+        	if (LOGGER.isLoggable(Level.FINE)) {
+        		LOGGER.fine("Getting layers and styles from SLD_BODY");
+        	}
             parseSldBodyParam(request);
         } else if (sldParam != null) {
-            LOGGER.fine("Getting layers and styles from reomte SLD");
+        	if (LOGGER.isLoggable(Level.FINE)) {
+        		LOGGER.fine("Getting layers and styles from reomte SLD");
+        	}
             parseSldParam(request);
         } else {
         	MapLayerInfo[] featureTypes = null;
@@ -696,7 +712,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         final String sldBody = getValue("SLD_BODY");
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("About to parse SLD body: " + sldBody);
+            LOGGER.fine(new StringBuffer("About to parse SLD body: ").append(sldBody).toString());
         }
                 
         
@@ -766,7 +782,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         String urlValue = getValue("SLD");               
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("about to load remote SLD document: '" + urlValue + "'");
+            LOGGER.fine(new StringBuffer("about to load remote SLD document: '").append(urlValue).append("'").toString());
         }
 
         URL sldUrl;
@@ -774,8 +790,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         try {
             sldUrl = new URL(urlValue);
         } catch (MalformedURLException e) {
-            String msg = "Creating remote SLD url: " + e.getMessage();
-            LOGGER.log(Level.WARNING, msg, e);
+            String msg = new StringBuffer("Creating remote SLD url: ").append(e.getMessage()).toString();
+            if (LOGGER.isLoggable(Level.WARNING)) {
+            	LOGGER.log(Level.WARNING, msg, e);
+            }
             throw new WmsException(e, msg, "parseSldParam");
         }
 
@@ -796,8 +814,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         	}
         	catch (IOException e)
 			{
-        		String msg = "Creating remote SLD url: " + e.getMessage();
-                LOGGER.log(Level.WARNING, msg, e);
+        		String msg = new StringBuffer("Creating remote SLD url: ").append(e.getMessage()).toString();
+        		if (LOGGER.isLoggable(Level.WARNING)) {
+        			LOGGER.log(Level.WARNING, msg, e);
+        		}
                 throw new WmsException(e, msg, "parseSldParam");
 			}
         }
@@ -808,8 +828,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     		// to do compression
             parser = new SLDParser(styleFactory, getInputStream( sldUrl));
         } catch (IOException e) {
-            String msg = "Creating remote SLD url: " + e.getMessage();
-            LOGGER.log(Level.WARNING, msg, e);
+            String msg = new StringBuffer("Creating remote SLD url: ").append(e.getMessage()).toString();
+            if (LOGGER.isLoggable(Level.WARNING)) {
+            	LOGGER.log(Level.WARNING, msg, e);
+            }
             throw new WmsException(e, msg, "parseSldParam");
         }
 
@@ -847,7 +869,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         MapLayerInfo[] libraryModeLayers = null;
 
         if (null != getValue("LAYERS")) {
-            LOGGER.info("request comes in \"library\" mode");
+        	if (LOGGER.isLoggable(Level.INFO)) {
+        		LOGGER.info("request comes in \"library\" mode");
+        	}
             libraryModeLayers = parseLayersParam(request);
         }
 

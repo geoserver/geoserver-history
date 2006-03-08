@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -64,7 +65,8 @@ public class DataFormatsEditorAction extends ConfigAction {
 		DataFormatsEditorForm dataFormatsForm = (DataFormatsEditorForm) form;
 		
 		String dataFormatID = dataFormatsForm.getDataFormatId();
-		String type = dataFormatsForm.getType();
+        String namespace = dataFormatsForm.getNamespaceId();
+        String type = dataFormatsForm.getType();
 		String url = dataFormatsForm.getUrl();
 		String description = dataFormatsForm.getDescription();
 		
@@ -144,14 +146,18 @@ public class DataFormatsEditorAction extends ConfigAction {
 //
 //		        File coverageDir = new File(rootDir, "data/coverages/" + dataFormatID);
 //
-//		        LOGGER.fine("new format dir is: " + coverageDir.getName() + ", exists: " + coverageDir.exists());
+//				if (LOGGER.isLoggable(Level.FINE)) {
+//					LOGGER.fine(new StringBuffer("new format dir is: ").append(coverageDir.getName()).append(", exists: ").append(coverageDir.exists()).toString());
+//				}
 //		        
 //		        boolean dirAvailable = false;
 //		        if(!coverageDir.exists()) {
 //		        	if(coverageDir.mkdir()) {
 //		        		dirAvailable = true;
 //		        	} else {
-//		        		LOGGER.fine("Cannot create Coverage Format Dir.");
+//						if (LOGGER.isLoggable(Level.FINE)) {
+//							LOGGER.fine(new StringBuffer("Cannot create Coverage Format Dir.").toString());
+//						}
 //						ActionErrors errors = new ActionErrors();
 //						errors.add(ActionErrors.GLOBAL_ERROR,
 //								new ActionError("error.coveragedir.create", coverageDir.getPath()));
@@ -162,7 +168,9 @@ public class DataFormatsEditorAction extends ConfigAction {
 //		        } else if(coverageDir.isDirectory()) {
 //		        	dirAvailable = true;
 //		        } else {
-//	        		LOGGER.fine("Cannot write into Coverage Format Dir.");
+//					if (LOGGER.isLoggable(Level.FINE)) {
+//						LOGGER.fine(new StringBuffer("Cannot write into Coverage Format Dir.").toString());
+//					}
 //					ActionErrors errors = new ActionErrors();
 //					errors.add(ActionErrors.GLOBAL_ERROR,
 //							new ActionError("error.coveragedir.write", coverageDir.getPath()));
@@ -219,7 +227,7 @@ public class DataFormatsEditorAction extends ConfigAction {
 		}
 		
 		config.setEnabled(enabled);
-		//config.setNameSpaceId(namespace);
+		config.setNameSpaceId(namespace);
 		config.setType(type);
 		config.setUrl(url);
 		config.setAbstract(description);

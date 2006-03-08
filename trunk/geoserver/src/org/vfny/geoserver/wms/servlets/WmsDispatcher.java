@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.servlets;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -73,7 +74,9 @@ public class WmsDispatcher extends Dispatcher {
         //BufferedReader tempReader = request.getReader();
         //String tempResponse = new String();
         //int targetRequest = 0;
-        LOGGER.finer("got to post request");
+    	if (LOGGER.isLoggable(Level.FINER)) {
+    		LOGGER.finer("got to post request");
+    	}
        
         
         //DJB: adding parital POST support for SLD-POST.
@@ -119,7 +122,9 @@ public class WmsDispatcher extends Dispatcher {
         HttpServletResponse response, int req_type)
         throws ServletException, IOException {
         HttpServlet dispatched;
-        LOGGER.finer("req_type is " + req_type);
+        if (LOGGER.isLoggable(Level.FINER)) {
+        	LOGGER.finer(new StringBuffer("req_type is ").append(req_type).toString());
+        }
 
         switch (req_type) {
         case GET_CAPABILITIES_REQUEST:

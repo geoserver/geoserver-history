@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
@@ -185,7 +186,9 @@ public class DataStoreInfo extends GlobalLayerSupertype {
             	// and still be a url
                 if (key != null && key.matches(".* *url") && value instanceof String) {
                     String path = (String) value;
-		    LOGGER.finer("in string url");
+                    if (LOGGER.isLoggable(Level.FINER)) {
+                    	LOGGER.finer("in string url");
+                    }
                     if (path.startsWith("file:data/")) {
                         path = path.substring(5); // remove 'file:' prefix
 
@@ -195,10 +198,14 @@ public class DataStoreInfo extends GlobalLayerSupertype {
 		    //Not sure about this
                 } else if (value instanceof URL
                         && ((URL) value).getProtocol().equals("file")) {
-		    LOGGER.finer("in URL url");
+                	if (LOGGER.isLoggable(Level.FINER)) {
+                		LOGGER.finer("in URL url");
+                	}
                     URL url = (URL) value;
                     String path = url.getPath();
-		    LOGGER.finer("path is " + path);
+                    if (LOGGER.isLoggable(Level.FINER)) {
+                    	LOGGER.finer(new StringBuffer("path is ").append(path).toString());
+                    }
 		    if (path.startsWith("data/")){
 			File file = new File(baseDir, path);
 			entry.setValue(file.toURL());
@@ -254,7 +261,9 @@ public class DataStoreInfo extends GlobalLayerSupertype {
         if (dataStore == null) {
             try {
                 dataStore = DataStoreFinder.getDataStore(m);
-                LOGGER.fine("connection established by " + toString());
+                if (LOGGER.isLoggable(Level.FINE)) {
+                	LOGGER.fine(new StringBuffer("connection established by ").append(toString()).toString());
+                }
             } catch (Throwable ex) {
                 throw new IllegalStateException("can't create the datastore "
                     + getId() + ": " + ex.getClass().getName() + ": "
@@ -265,7 +274,9 @@ public class DataStoreInfo extends GlobalLayerSupertype {
             	 // If datastore is not present, then disable it
                 // (although no change in config).
                 enabled=false;
-                LOGGER.fine("failed to establish connection with " + toString());
+                if (LOGGER.isLoggable(Level.FINE)) {
+                	LOGGER.fine(new StringBuffer("failed to establish connection with ").append(toString()).toString());
+                }
                 throw new NoSuchElementException(
                     "No datastore found capable of managing " + toString());
             }

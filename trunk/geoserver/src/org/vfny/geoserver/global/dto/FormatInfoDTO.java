@@ -39,6 +39,13 @@ public final class FormatInfoDTO implements DataTransferObject {
 	 * @uml.property name="id" multiplicity="(0 1)"
 	 */
 	private String id;
+	
+	/**
+	 * unique namespace to refer to this format
+	 * 
+	 * @uml.property name="nameSpaceId" multiplicity="(0 1)"
+	 */
+	private String nameSpaceId;
 
 	/**
 	 * 
@@ -113,6 +120,7 @@ public final class FormatInfoDTO implements DataTransferObject {
         }
 
         id = dto.getId();
+        nameSpaceId = dto.getNameSpaceId();
         type = dto.getType();
         url = dto.getUrl();
         enabled = dto.isEnabled();
@@ -158,6 +166,7 @@ public final class FormatInfoDTO implements DataTransferObject {
         FormatInfoDTO ds = (FormatInfoDTO) obj;
         boolean r = true;
         r = r && (id == ds.getId());
+        r = r && (nameSpaceId == ds.getNameSpaceId());
         r = r && (type == ds.getType());
         r = r && (url == ds.getUrl());
         r = r && (enabled == ds.isEnabled());
@@ -184,6 +193,10 @@ public final class FormatInfoDTO implements DataTransferObject {
 
         if (id != null) {
             r *= id.hashCode();
+        }
+
+        if (nameSpaceId != null) {
+            r *= nameSpaceId.hashCode();
         }
 
         if (type != null) {
@@ -359,6 +372,14 @@ public final class FormatInfoDTO implements DataTransferObject {
 	 */
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getNameSpaceId() {
+		return nameSpaceId;
+	}
+
+	public void setNameSpaceId(String nameSpaceId) {
+		this.nameSpaceId = nameSpaceId;
 	}
 
 }

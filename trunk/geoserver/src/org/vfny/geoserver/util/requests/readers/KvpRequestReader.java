@@ -150,11 +150,15 @@ abstract public class KvpRequestReader {
 
             while (innerIterator.hasNext()) {
                 String fid = innerIterator.next().toString();
-                LOGGER.finer("looking at featureId" + fid);
+                if (LOGGER.isLoggable(Level.FINER)) {
+                	LOGGER.finer(new StringBuffer("looking at featureId").append(fid).toString());
+                }
 
                 int pos = fid.indexOf(".");
                 String typeName = fid.substring(0, fid.lastIndexOf("."));
-                LOGGER.finer("adding typename: " + typeName + " from fid");
+                if (LOGGER.isLoggable(Level.FINER)) {
+                	LOGGER.finer(new StringBuffer("adding typename: ").append(typeName).append(" from fid").toString());
+                }
                 typeList.add(typeName);
             }
         }
@@ -209,7 +213,7 @@ abstract public class KvpRequestReader {
                     token = rawList.substring(0, index);
 
                     if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.finest("adding simple element " + token);
+                        LOGGER.finest(new StringBuffer("adding simple element ").append(token).toString());
                     }
 
                     kvpList.add(token);
@@ -220,7 +224,9 @@ abstract public class KvpRequestReader {
                 kvpList = new ArrayList(kvps.countTokens());
 
                 while (kvps.hasMoreTokens()) {
-                    LOGGER.finest("adding simple element");
+                	if (LOGGER.isLoggable(Level.FINEST)) {
+                		LOGGER.finest("adding simple element");
+                	}
                     kvpList.add(kvps.nextToken());
                 }
             }
@@ -243,29 +249,39 @@ abstract public class KvpRequestReader {
      * @throws WfsException When the string structure cannot be read.
      */
     protected static List readNested(String rawList) throws WfsException {
-        LOGGER.finest("reading nested: " + rawList);
+    	if (LOGGER.isLoggable(Level.FINEST)) {
+    		LOGGER.finest(new StringBuffer("reading nested: ").append(rawList).toString());
+    	}
 
         List kvpList = new ArrayList();
 
         // handles implicit unconstrained case
         if (rawList == null) {
-            LOGGER.finest("found implicit all requested");
+        	if (LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest("found implicit all requested");
+        	}
 
             return kvpList;
 
             // handles explicit unconstrained case
         } else if (rawList.equals("*")) {
-            LOGGER.finest("found explicit all requested");
+        	if (LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest("found explicit all requested");
+        	}
 
             return kvpList;
 
             // handles explicit, constrained element lists
         } else {
-            LOGGER.finest("found explicit requested");
+        	if (LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest("found explicit requested");
+        	}
 
             // handles multiple elements list case
             if (rawList.startsWith("(")) {
-                LOGGER.finest("reading complex list");
+            	if (LOGGER.isLoggable(Level.FINEST)) {
+            		LOGGER.finest("reading complex list");
+            	}
 
                 List outerList = readFlat(rawList, OUTER_DELIMETER);
                 Iterator i = outerList.listIterator();
@@ -276,7 +292,9 @@ abstract public class KvpRequestReader {
 
                 // handles single element list case
             } else {
-                LOGGER.finest("reading simple list");
+            	if (LOGGER.isLoggable(Level.FINEST)) {
+            		LOGGER.finest("reading simple list");
+            	}
                 kvpList.add(readFlat(rawList, INNER_DELIMETER));
             }
 
@@ -305,7 +323,9 @@ abstract public class KvpRequestReader {
 
         // handles feature id(es) case
         if ((fid != null) && (filter == null) && (bbox == null)) {
-            LOGGER.finest("reading fid filter: " + fid);
+        	if (LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest(new StringBuffer("reading fid filter: ").append(fid).toString());
+        	}
             unparsed = readNested(fid);
             i = unparsed.listIterator();
 
@@ -317,7 +337,9 @@ abstract public class KvpRequestReader {
                     FidFilter fidFilter = factory.createFidFilter();
                     fidFilter.addFid((String) innerIterator.next());
                     filters.add(fidFilter);
-                    LOGGER.finest("added fid filter: " + fidFilter);
+                    if (LOGGER.isLoggable(Level.FINEST)) {
+                    	LOGGER.finest(new StringBuffer("added fid filter: ").append(fidFilter).toString());
+                    }
                 }
             }
 
@@ -325,7 +347,9 @@ abstract public class KvpRequestReader {
 
             // handles filter(s) case
         } else if ((filter != null) && (fid == null) && (bbox == null)) {
-            LOGGER.finest("reading filter: " + filter);
+        	if (LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest(new StringBuffer("reading filter: ").append(filter).toString());
+        	}
             unparsed = readFlat(filter, OUTER_DELIMETER);
             i = unparsed.listIterator();
 
@@ -338,7 +362,9 @@ abstract public class KvpRequestReader {
 
             // handles bounding box(s) case
         } else if ((bbox != null) && (fid == null) && (filter == null)) {
-            LOGGER.finest("bbox filter: " + bbox);
+        	if (LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest(new StringBuffer("bbox filter: ").append(bbox).toString());
+        	}
 
             double[] rawCoords = new double[4];
             unparsed = readFlat(bbox, INNER_DELIMETER);
@@ -430,7 +456,9 @@ abstract public class KvpRequestReader {
     public static Map parseKvpSet(String qString) {
         // uses the request cleaner to remove HTTP junk
         String cleanRequest = clean(qString);
-        LOGGER.fine("clean request is " + cleanRequest);
+        if (LOGGER.isLoggable(Level.FINE)) {
+        	LOGGER.fine(new StringBuffer("clean request is ").append(cleanRequest).toString());
+        }
 
         Map kvps = new HashMap();
 
@@ -453,7 +481,9 @@ abstract public class KvpRequestReader {
 
                 //int index = filterVal.lastIndexOf("</Filter>");
                 //String filt2 = kvpPair.subString
-                LOGGER.finest("putting filter value " + filterVal);
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                	LOGGER.finest(new StringBuffer("putting filter value ").append(filterVal).toString());
+                }
                 kvps.put("FILTER", filterVal);
             } else {
                 // handles all other standard cases by looking for the correct
@@ -470,14 +500,18 @@ abstract public class KvpRequestReader {
                     if (requestValues.hasMoreTokens()) {
                         // assign value and store in hash with key
                         value = requestValues.nextToken();
-                        LOGGER.finest("putting kvp pair: " + key + ": " + value);
+                        if (LOGGER.isLoggable(Level.FINEST)) {
+                        	LOGGER.finest(new StringBuffer("putting kvp pair: ").append(key).append(": ").append(value).toString());
+                        }
                         kvps.put(key, value);
                     }
                 }
             }
         }
 
-        LOGGER.fine("returning parsed " + kvps);
+        if (LOGGER.isLoggable(Level.FINE)) {
+        	LOGGER.fine(new StringBuffer("returning parsed ").append(kvps).toString());
+        }
 
         return kvps;
     }
@@ -490,7 +524,9 @@ abstract public class KvpRequestReader {
      * @return The string with the url escape characters replaced.
      */
     private static String clean(String raw) {
-        LOGGER.finest("raw request: " + raw);
+    	if (LOGGER.isLoggable(Level.FINEST)) {
+    		LOGGER.finest(new StringBuffer("raw request: ").append(raw).toString());
+    	}
 
         String clean = null;
 
@@ -498,13 +534,17 @@ abstract public class KvpRequestReader {
             try {
                 clean = java.net.URLDecoder.decode(raw, "UTF-8");
             } catch (java.io.UnsupportedEncodingException e) {
-                LOGGER.finer("Bad encoding for decoder " + e);
+            	if (LOGGER.isLoggable(Level.FINER)) {
+            		LOGGER.finer(new StringBuffer("Bad encoding for decoder ").append(e).toString());
+            	}
             }
         } else {
             return "";
         }
 
-        LOGGER.finest("cleaned request: " + raw);
+        if (LOGGER.isLoggable(Level.FINEST)) {
+        	LOGGER.finest(new StringBuffer("cleaned request: ").append(raw).toString());
+        }
 
         return clean;
     }

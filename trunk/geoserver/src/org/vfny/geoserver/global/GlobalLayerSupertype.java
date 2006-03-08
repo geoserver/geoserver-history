@@ -307,7 +307,9 @@ abstract class GlobalLayerSupertype {
             try {
                 return Class.forName((String) value);
             } catch (ClassNotFoundException e) {
-                LOGGER.log(Level.FINEST, e.getMessage(), e);
+            	if (LOGGER.isLoggable(Level.FINEST)) {
+            		LOGGER.log(Level.FINEST, e.getMessage(), e);
+            	}
             }
         }
 

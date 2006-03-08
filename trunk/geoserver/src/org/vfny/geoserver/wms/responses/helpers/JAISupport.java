@@ -68,7 +68,9 @@ public final class JAISupport {
 
 			String[] mimeTypes = ImageIO.getWriterMIMETypes();
 			if (mimeTypes == null) {
-				LOGGER.info("renderer was null, so jai not found");
+				if (LOGGER.isLoggable(Level.INFO)) {
+					LOGGER.info("renderer was null, so jai not found");
+				}
 				supportedFormats = Collections.EMPTY_SET;
 			} else {
 				supportedFormats = new HashSet();

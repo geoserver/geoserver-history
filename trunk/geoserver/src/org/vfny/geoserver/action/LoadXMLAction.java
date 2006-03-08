@@ -7,6 +7,7 @@ package org.vfny.geoserver.action;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -144,8 +145,10 @@ public class LoadXMLAction extends ConfigAction {
         // We need to stash the current page?
         // or can we use null or something?
         //
-        LOGGER.finer("request:" + request.getServletPath());
-        LOGGER.finer("forward:" + mapping.getForward());
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer(new StringBuffer("request: ").append(request.getServletPath()).toString());
+			LOGGER.finer(new StringBuffer("forward: ").append(mapping.getForward()).toString());
+		}
 
         return mapping.findForward("config");
     }

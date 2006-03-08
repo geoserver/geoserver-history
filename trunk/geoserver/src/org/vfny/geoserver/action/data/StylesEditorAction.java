@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -98,7 +99,9 @@ public class StylesEditorAction extends ConfigAction {
 	try {
 	    styleDir = GeoserverDataDirectory.findConfigDir(rootDir, "styles");
 	} catch (ConfigurationException cfe) {
-            LOGGER.warning("no style dir found, creating new one");
+			if (LOGGER.isLoggable(Level.WARNING)) {
+				LOGGER.warning(new StringBuffer("no style dir found, creating new one").toString());
+			}
             //if for some bizarre reason we don't fine the dir, make a new one.
             styleDir = new File(rootDir, "styles");
 	}
@@ -109,8 +112,9 @@ public class StylesEditorAction extends ConfigAction {
 
         //here we do a check to see if the file we are trying to upload is
         //overwriting another style file. 
-        LOGGER.fine("new sld file is: " + newSldFile + ", exists: "
-            + newSldFile.exists());
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine(new StringBuffer("new sld file is: ").append(newSldFile).append(", exists: ").append(newSldFile.exists()).toString());
+		}
 
         if (newSldFile.exists()) {
             StyleConfig styleForID = config.getStyle(styleID);
@@ -128,7 +132,9 @@ public class StylesEditorAction extends ConfigAction {
                 //update is being performed on the correct style id, so we see if the
                 //file in the system is the same as this one.  
                 File oldFile = styleForID.getFilename();
-                LOGGER.fine("old file: " + oldFile + ", newFile: " + newSldFile);
+        		if (LOGGER.isLoggable(Level.FINE)) {
+        			LOGGER.fine(new StringBuffer("old file: ").append(oldFile).append(", newFile: ").append(newSldFile).toString());
+        		}
 
                 if (!oldFile.equals(newSldFile)) {
                     doFileExistsError(newSldFile, request);
@@ -181,7 +187,9 @@ public class StylesEditorAction extends ConfigAction {
             }
 
             newStyle = readStyles[0];
-            LOGGER.fine("sld is " + newStyle);
+    		if (LOGGER.isLoggable(Level.FINE)) {
+    			LOGGER.fine(new StringBuffer("sld is ").append(newStyle).toString());
+    		}
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -329,7 +337,9 @@ public class StylesEditorAction extends ConfigAction {
      */
     private void doStyleParseError(String message, File newSldFile,
         HttpServletRequest request) {
-        LOGGER.fine("parse error message is: " + message);
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine(new StringBuffer("parse error message is: ").append(message).toString());
+		}
 
         ActionErrors errors = new ActionErrors();
         errors.add(ActionErrors.GLOBAL_ERROR,
