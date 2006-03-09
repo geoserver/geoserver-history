@@ -7,6 +7,7 @@
 package org.vfny.geoserver.action;
 
 import javax.media.jai.JAI;
+import javax.media.jai.TileCache;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,17 +35,24 @@ public class FreeJAIMemoryAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             UserContainer user, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-    	long before = JAI.getDefaultInstance().getTileCache().getMemoryCapacity();
+    	final JAI deafultJAI=JAI.getDefaultInstance();
+    	final TileCache JAICache=deafultJAI.getTileCache();
+    	long before = JAICache.getMemoryCapacity();
 
-    	JAI.getDefaultInstance().getTileCache().flush();
-        
-        long after = JAI.getDefaultInstance().getTileCache().getMemoryCapacity();
-        long difference = (before - after)/ 1024;
-        
+    	JAICache.flush();
+    	JAICache.setMemoryCapacity(0);//to be sure we realease all tiles
+    	System.gc();
+    	System.gc();
+    	System.gc();
+    	System.gc();
+    	System.gc();
+    	System.gc();
+    	JAICache.setMemoryCapacity(before);
+    	
         // Provide status message
         //
         ActionErrors errors = new ActionErrors();
-        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("message.JAI.memory",new Long(difference)));        
+        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("message.JAI.memory",new Long(before)));        
         request.setAttribute(Globals.ERROR_KEY, errors);
         
     	// return back to the admin screen
