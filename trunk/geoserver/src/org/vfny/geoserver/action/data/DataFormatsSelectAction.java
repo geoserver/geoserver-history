@@ -24,48 +24,55 @@ import org.vfny.geoserver.global.UserContainer;
 
 /**
  * Select a Format for editing.
- *
+ * 
  * @author User, Refractions Research, Inc.
  * @author dmzwiers
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: DataFormatsSelectAction.java,v 1.12 2004/02/25 21:51:11 dmzwiers Exp $
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
+ * @version $Id: DataFormatsSelectAction.java,v 1.12 2004/02/25 21:51:11
+ *          dmzwiers Exp $
  */
 public class DataFormatsSelectAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping,
-        ActionForm incomingForm, UserContainer user, HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+	public ActionForward execute(ActionMapping mapping,
+			ActionForm incomingForm, UserContainer user,
+			HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
 
-        DataFormatsSelectForm form = (DataFormatsSelectForm) incomingForm;
+		DataFormatsSelectForm form = (DataFormatsSelectForm) incomingForm;
 
-        String buttonAction = form.getButtonAction();
+		String buttonAction = form.getButtonAction();
 
-        DataConfig dataConfig = (DataConfig) getDataConfig();
-        DataFormatConfig dfConfig = null;
-        
-        Locale locale = (Locale) request.getLocale();
-        MessageResources messages = servlet.getResources();
-        
-        String editLabel = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
-        String deleteLabel = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
-        
-        if (editLabel.equals(buttonAction)) {
-            dfConfig = (DataFormatConfig) dataConfig.getDataFormat(form
-                    .getSelectedDataFormatId());
-           
-            getUserContainer(request).setDataFormatConfig(dfConfig);
+		DataConfig dataConfig = (DataConfig) getDataConfig();
+		DataFormatConfig dfConfig = null;
 
-            return mapping.findForward("config.data.format.editor");
-        } else if (deleteLabel.equals(buttonAction)) {
-            dataConfig.removeDataFormat(form.getSelectedDataFormatId());
-            getUserContainer(request).setDataFormatConfig(null);
+		Locale locale = (Locale) request.getLocale();
+		MessageResources messages = servlet.getResources();
 
-            form.reset(mapping, request);
+		String editLabel = HTMLEncoder.decode(messages.getMessage(locale,
+				"label.edit"));
+		String deleteLabel = HTMLEncoder.decode(messages.getMessage(locale,
+				"label.delete"));
 
-            return mapping.findForward("config.data.format");
-        }
-        
-        throw new ServletException(
-            "Action '"+buttonAction+"'must be '"+editLabel+"' or '"+deleteLabel+"'");
-    }
+		if (editLabel.equals(buttonAction)) {
+			dfConfig = (DataFormatConfig) dataConfig.getDataFormat(form
+					.getSelectedDataFormatId());
+
+			getUserContainer(request).setDataFormatConfig(dfConfig);
+
+			return mapping.findForward("config.data.format.editor");
+		} else if (deleteLabel.equals(buttonAction)) {
+			dataConfig.removeDataFormat(form.getSelectedDataFormatId());
+			getUserContainer(request).setDataFormatConfig(null);
+
+			form.reset(mapping, request);
+
+			return mapping.findForward("config.data.format");
+		}
+
+		throw new ServletException(new StringBuffer("Action '").append(
+				buttonAction).append("'must be '").append(editLabel).append(
+				"' or '").append(deleteLabel).append("'").toString());
+	}
 }

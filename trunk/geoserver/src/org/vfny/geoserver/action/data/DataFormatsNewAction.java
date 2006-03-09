@@ -36,14 +36,11 @@ public class DataFormatsNewAction extends ConfigAction {
         UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
 
-        DataFormatsNewForm newForm = (DataFormatsNewForm) form;
-        DataFormatConfig newFormatConfig;
-
+        final DataFormatsNewForm newForm = (DataFormatsNewForm) form;
+        final DataFormatConfig newFormatConfig;
         newFormatConfig = new DataFormatConfig(newForm.getDataFormatID(),
                 newForm.getSelectedDescription());
-
         getUserContainer(request).setDataFormatConfig(newFormatConfig);
-
         return mapping.findForward("config.data.format.editor");
     }
 }

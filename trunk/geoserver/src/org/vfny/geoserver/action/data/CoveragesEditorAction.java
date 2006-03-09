@@ -82,7 +82,7 @@ public class CoveragesEditorAction extends ConfigAction {
 			LOGGER.finer(new StringBuffer("form bean:").append(form.getClass().getName()).toString());			
 		}
 
-		CoveragesEditorForm coverageForm = (CoveragesEditorForm) form;
+		final CoveragesEditorForm coverageForm = (CoveragesEditorForm) form;
 
 		String action = coverageForm.getAction();
 		if (LOGGER.isLoggable(Level.FINER)) {
