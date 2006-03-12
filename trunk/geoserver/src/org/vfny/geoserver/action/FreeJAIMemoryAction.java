@@ -53,8 +53,8 @@ public class FreeJAIMemoryAction extends ConfigAction {
     	final  long usageAfter=JAICache.getCacheMemoryUsed();
         // Provide status message
         //
-        ActionErrors errors = new ActionErrors();
-        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("message.JAI.memory",new Long(usageAfter-usageBefore)));        
+        final ActionErrors errors = new ActionErrors();
+        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("message.JAI.memory",new Long(usageBefore-usageAfter)));        
         request.setAttribute(Globals.ERROR_KEY, errors);
         
     	// return back to the admin screen

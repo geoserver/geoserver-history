@@ -30,7 +30,7 @@ public class AdminIndexAction extends ConfigAction {
             UserContainer user, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
 
-    	long memCapacity = JAI.getDefaultInstance().getTileCache().getMemoryCapacity()/ 1024;
+    	final long memCapacity = JAI.getDefaultInstance().getTileCache().getMemoryCapacity()/ 1024;
     	float memThreshold = JAI.getDefaultInstance().getTileCache().getMemoryThreshold()* 100;
     	
     	request.setAttribute("JAI_MEM_CAPACITY", new Long(memCapacity));
