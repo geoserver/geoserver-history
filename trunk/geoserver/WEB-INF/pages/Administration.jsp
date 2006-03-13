@@ -71,6 +71,16 @@
 	</tr>
     <tr>
     <td class="label">
+		<span class="help" title="<bean:message key="help.jai.memory.used"/>">
+			<bean:message key="label.jai.memory.used"/>:
+		</span>
+    </td>
+    <td class="datum">
+      <%= request.getAttribute("JAI_MEM_USED") %>K
+    </td>      
+	</tr>
+    <tr>
+    <td class="label">
 		<span class="help" title="<bean:message key="help.jai.memory.threshold"/>">
 			<bean:message key="label.jai.memory.threshold"/>:
 		</span>

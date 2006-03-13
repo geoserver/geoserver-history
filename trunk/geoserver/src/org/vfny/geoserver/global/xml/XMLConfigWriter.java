@@ -196,6 +196,9 @@ public class XMLConfigWriter {
                 cw.textTag("logLocation", g.getLogLocation());
             }
 
+            cw.valueTag("JaiMemoryCapacity", "" + g.getJaiMemoryCapacity());
+            cw.valueTag("JaiRecycling", "" + g.getJaiRecycling());
+            
             /*if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){
                cw.comment("The base URL where this servlet will run.  If running locally\n"+
                "then http://localhost:8080 (or whatever port you're running on)\n"+

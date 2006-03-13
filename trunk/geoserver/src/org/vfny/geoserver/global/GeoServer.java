@@ -9,20 +9,20 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Iterator;
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
+import javax.media.jai.JAI;
+import javax.media.jai.RecyclingTileFactory;
 import javax.servlet.ServletContext;
 
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
+
+import com.sun.media.jai.util.SunTileCache;
 
 
 /**
@@ -50,6 +50,8 @@ public class GeoServer extends GlobalLayerSupertype {
     private boolean verbose = true;
 	private int numDecimals = 4;
 	private Charset charSet = Charset.forName("UTF-8");
+	private final JAI jaiDef = JAI.getDefaultInstance();
+	private SunTileCache jaiCache;
 	private String adminUserName = "admin";
 	private String adminPassword;
 	private String schemaBaseUrl;
@@ -66,7 +68,9 @@ public class GeoServer extends GlobalLayerSupertype {
     private String contactFacsimile;
     private String contactEmail;
     private String onlineResource;
-
+    private long memoryCapacity;
+    private Boolean recycling;
+    
     /** Should we throw the stack traces back in responses? */
 	private boolean verboseExceptions = false;
 
@@ -396,6 +400,11 @@ public class GeoServer extends GlobalLayerSupertype {
             catch (IOException e) {
             	throw new ConfigurationException(e);
 			}
+
+            memoryCapacity = dto.getJaiMemoryCapacity();
+            recycling = dto.getJaiRecycling();
+            
+            initJAI(memoryCapacity, recycling);
             
             maxFeatures = dto.getMaxFeatures();
             numDecimals = dto.getNumDecimals();
@@ -496,6 +505,21 @@ public class GeoServer extends GlobalLayerSupertype {
         		Logger.getLogger("org.geotools").addHandler(handler);
         }
     }
+    
+    public void initJAI(final long memCapacity, final Boolean recycling) {
+		// setting JAI wide hints
+		jaiDef.setRenderingHint(JAI.KEY_CACHED_TILE_RECYCLING_ENABLED, recycling);
+		// tile factory and recycler
+		final RecyclingTileFactory recyclingFactory = new RecyclingTileFactory();
+		jaiDef.setRenderingHint(JAI.KEY_TILE_FACTORY, recyclingFactory);
+		jaiDef.setRenderingHint(JAI.KEY_TILE_RECYCLER, recyclingFactory);
+
+		// Setting up Cache Capacity
+		jaiCache = (SunTileCache) jaiDef.getTileCache();
+		// TODO check -> (TileCache + 4Mb < RuntimeMemory)
+		jaiCache.setMemoryCapacity(memCapacity);
+    }
+    
     /**
      * toDTO purpose.
      * 
@@ -520,7 +544,9 @@ public class GeoServer extends GlobalLayerSupertype {
         dto.setVerboseExceptions(verboseExceptions);
         dto.setLoggingToFile(loggingToFile);
         dto.setLogLocation(logLocation);
-
+        dto.setJaiMemoryCapacity(memoryCapacity);
+        dto.setJaiRecycling(recycling);
+        
         ContactDTO cdto = new ContactDTO();
         dto.setContact(cdto);
 
@@ -659,5 +685,21 @@ public class GeoServer extends GlobalLayerSupertype {
 	 */
 	public void setLoggingToFile(boolean loggingToFile) {
 		this.loggingToFile = loggingToFile;
+	}
+
+	public JAI getJAIDefault() {
+		return jaiDef;
+	}
+
+	public SunTileCache getJaiCache() {
+		return jaiCache;
+	}
+
+	public long getMemoryCapacity() {
+		return memoryCapacity;
+	}
+
+	public Boolean getRecycling() {
+		return recycling;
 	}
 }

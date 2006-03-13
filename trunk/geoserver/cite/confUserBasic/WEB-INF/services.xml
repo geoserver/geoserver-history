@@ -10,6 +10,8 @@ WARNING, INFO, CONFIG, FINER, FINEST, in order of
 Increasing statements logged.
 -->
 <loggingLevel>CONFIG</loggingLevel>
+<JaiMemoryCapacity value = "209715200" />
+<JaiRecycling value = "true" />
 <!--
 Sets the max number of Features returned by GetFeature
 -->

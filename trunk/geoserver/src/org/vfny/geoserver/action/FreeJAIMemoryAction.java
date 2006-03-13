@@ -7,6 +7,7 @@
 package org.vfny.geoserver.action;
 
 import javax.media.jai.JAI;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,6 +17,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 
 import com.sun.media.jai.util.SunTileCache;
@@ -36,25 +38,27 @@ public class FreeJAIMemoryAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             UserContainer user, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-    	final JAI defaultJAI=JAI.getDefaultInstance();
-    	final SunTileCache JAICache=(SunTileCache)defaultJAI.getTileCache();
-    	final long capacityBefore = JAICache.getMemoryCapacity();
-    	final long usageBefore=JAICache.getCacheMemoryUsed();
+    	ServletContext sc = request.getSession().getServletContext();
     	
-    	JAICache.flush();
-    	JAICache.setMemoryCapacity(0);//to be sure we realease all tiles
+    	final JAI jaiDef = ((GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY)).getJAIDefault();
+    	final SunTileCache jaiCache = ((GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY)).getJaiCache();
+    	final long capacityBefore = jaiCache.getMemoryCapacity();
+    	final long usageBefore=jaiCache.getCacheMemoryUsed();
+    	
+    	jaiCache.flush();
+    	jaiCache.setMemoryCapacity(0);//to be sure we realease all tiles
     	System.gc();
     	System.gc();
     	System.gc();
     	System.gc();
     	System.gc();
     	System.gc();
-    	JAICache.setMemoryCapacity(capacityBefore);
-    	final  long usageAfter=JAICache.getCacheMemoryUsed();
+    	jaiCache.setMemoryCapacity(capacityBefore);
+    	final  long usageAfter=jaiCache.getCacheMemoryUsed();
         // Provide status message
         //
         final ActionErrors errors = new ActionErrors();
-        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("message.JAI.memory",new Long(usageBefore-usageAfter)));        
+        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("message.JAI.memory",new Long((usageBefore-usageAfter)/ 1024)));        
         request.setAttribute(Globals.ERROR_KEY, errors);
         
     	// return back to the admin screen

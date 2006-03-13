@@ -7,13 +7,17 @@
 package org.vfny.geoserver.action;
 
 import javax.media.jai.JAI;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
+
+import com.sun.media.jai.util.SunTileCache;
 
 /**
  * Admin Index Action. 
@@ -29,11 +33,16 @@ public class AdminIndexAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             UserContainer user, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-
-    	final long memCapacity = JAI.getDefaultInstance().getTileCache().getMemoryCapacity()/ 1024;
-    	float memThreshold = JAI.getDefaultInstance().getTileCache().getMemoryThreshold()* 100;
+    	ServletContext sc = request.getSession().getServletContext();
+    	
+    	final JAI jaiDef = ((GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY)).getJAIDefault();
+    	final SunTileCache jaiCache = ((GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY)).getJaiCache();
+    	final long memCapacity = jaiCache.getMemoryCapacity()/ 1024;
+    	final long memUsed = jaiCache.getCacheMemoryUsed()/ 1024;
+    	final float memThreshold = jaiCache.getMemoryThreshold()* 100;
     	
     	request.setAttribute("JAI_MEM_CAPACITY", new Long(memCapacity));
+    	request.setAttribute("JAI_MEM_USED", new Long(memUsed));
     	request.setAttribute("JAI_MEM_THRESHOLD", new Float(memThreshold));
     	
     	// return back to the admin screen

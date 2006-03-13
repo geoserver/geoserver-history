@@ -130,6 +130,28 @@
 
 		</td>
     </tr>	
+
+	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiMemoryCapacity"/>">
+			<bean:message key="label.jaiMemoryCapacity"/>:
+		</span>
+      </td>
+	  <td class="datum">
+		<html:text property="jaiMemoryCapacity" size="60"/>
+	  </td>
+	</tr>
+
+    <tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiRecycling"/>">
+			<bean:message key="label.jaiRecycling"/>:
+		</span>
+      </td>
+	  <td class="datum">
+	  	<html:checkbox property="jaiRecycling"/>
+	  </td>
+	 </tr> 
     
   </tbody>
 </table>

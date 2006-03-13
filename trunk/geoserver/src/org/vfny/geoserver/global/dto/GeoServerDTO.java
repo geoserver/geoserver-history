@@ -67,6 +67,10 @@ public final class GeoServerDTO implements DataTransferObject {
 		/** Default logging location on disk **/
 		public static final String LogLocation = null;
 		
+		public static final long JaiMemoryCapacity = 200 * 1024 * 1024;
+		
+		public static final Boolean JaiRecycling = Boolean.TRUE;
+		
 	}
 	
     /** Sets the max number of Features returned by GetFeature */
@@ -172,6 +176,10 @@ public final class GeoServerDTO implements DataTransferObject {
     /** Where on disk the server should log to **/
     private String logLocation = Defaults.LogLocation;
     
+    private long jaiMemoryCapacity = Defaults.JaiMemoryCapacity;
+    
+    private Boolean jaiRecycling = Defaults.JaiRecycling;
+    
     /**
      * GlobalConfig constructor.
      * 
@@ -210,6 +218,9 @@ public final class GeoServerDTO implements DataTransferObject {
         
         loggingToFile = g.getLoggingToFile();
         logLocation = g.getLogLocation();
+        
+        jaiMemoryCapacity = g.getJaiMemoryCapacity();
+        jaiRecycling = g.getJaiRecycling();
         
         if (g.getContact() != null) {
             contact = (ContactDTO) (g.getContact().clone());
@@ -278,6 +289,10 @@ public final class GeoServerDTO implements DataTransferObject {
         }
         else if (g.getLogLocation() != null)
         	return false;
+        
+        r = r && (jaiMemoryCapacity == g.getJaiMemoryCapacity()) ;
+        
+        r = r && (jaiRecycling == g.getJaiRecycling());
         
         return r;
     }
@@ -609,5 +624,21 @@ public final class GeoServerDTO implements DataTransferObject {
 
         return dto.toString();
     }
+
+	public long getJaiMemoryCapacity() {
+		return jaiMemoryCapacity;
+	}
+
+	public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
+		this.jaiMemoryCapacity = jaiMemoryCapacity;
+	}
+
+	public Boolean getJaiRecycling() {
+		return jaiRecycling;
+	}
+
+	public void setJaiRecycling(Boolean jaiRecycling) {
+		this.jaiRecycling = jaiRecycling;
+	}
 
 }

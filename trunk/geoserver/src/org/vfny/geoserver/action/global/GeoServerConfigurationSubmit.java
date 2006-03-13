@@ -117,6 +117,12 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
 			}
 		}
 		
+		long jaiMemoryCapacity = form.getJaiMemoryCapacity();
+		boolean jaiRecycling = form.getJaiRecycling();
+        if (form.isJaiRecyclingChecked() == false) {
+        	jaiRecycling = false;
+        }
+		
 		GlobalConfig globalConfig = getGlobalConfig();
         globalConfig.setMaxFeatures(maxFeatures);
         globalConfig.setVerbose(verbose);
@@ -130,6 +136,8 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setLoggingToFile(loggingToFile);
         globalConfig.setLogLocation(logLocation);
         globalConfig.setVerboseExceptions(verboseExceptions);
+        globalConfig.setJaiMemoryCapacity(jaiMemoryCapacity);
+        globalConfig.setJaiRecycling(jaiRecycling);
         
         ContactConfig contactConfig = globalConfig.getContact();
         contactConfig.setContactPerson( form.getContactPerson() );

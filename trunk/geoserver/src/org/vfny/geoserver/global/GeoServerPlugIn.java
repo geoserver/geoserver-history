@@ -13,8 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.media.jai.JAI;
-import javax.media.jai.RecyclingTileFactory;
-import javax.media.jai.TileCache;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
@@ -22,7 +20,6 @@ import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
 import org.geotools.image.jai.Registry;
-import org.geotools.referencing.factory.OrderedAxisAuthorityFactory;
 import org.geotools.validation.xml.XMLReader;
 import org.vfny.geoserver.global.xml.XMLConfigReader;
 
@@ -92,19 +89,6 @@ public class GeoServerPlugIn implements PlugIn {
 			return;
 		}
 
-		//
-		// @task TODO think about how to handle me properly
-		final JAI jaiDef = JAI.getDefaultInstance();
-		final TileCache cache = jaiDef.getTileCache();
-		cache.setMemoryCapacity(
-				200 * 1024 * 1024);
-		// setting JAI wide hints
-		jaiDef.setRenderingHint(JAI.KEY_CACHED_TILE_RECYCLING_ENABLED,
-				Boolean.TRUE);
-		// tile factory and recycler
-		final RecyclingTileFactory recyclingFactory = new RecyclingTileFactory();
-		jaiDef.setRenderingHint(JAI.KEY_TILE_FACTORY, recyclingFactory);
-		jaiDef.setRenderingHint(JAI.KEY_TILE_RECYCLER, recyclingFactory);
 //		OrderedAxisAuthorityFactory.register("EPSG");
 		//
 		//

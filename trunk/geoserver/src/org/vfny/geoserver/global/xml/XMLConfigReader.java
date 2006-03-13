@@ -451,6 +451,21 @@ public class XMLConfigReader {
 			}
 		}
 
+		long jaiMemoryCapacity = 0;
+		elem = ReaderUtils.getChildElement(globalElem, "JaiMemoryCapacity", false);
+		if (elem != null) {
+			jaiMemoryCapacity = (long)ReaderUtils.getDoubleAttribute(elem, "value", false);
+		}
+
+		Boolean jaiRecycling = Boolean.FALSE;
+		elem = ReaderUtils.getChildElement(globalElem, "JaiRecycling", false);
+		if (elem != null) {
+			jaiRecycling = Boolean.valueOf(ReaderUtils.getBooleanAttribute(elem, "value", false, false));
+		}
+
+		geoServer.setJaiMemoryCapacity(jaiMemoryCapacity);
+		geoServer.setJaiRecycling(jaiRecycling);
+
 		elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
 		geoServer.setContact(loadContact(elem));
 

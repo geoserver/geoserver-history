@@ -8,8 +8,10 @@ package org.vfny.geoserver.form.global;
 
 import java.util.logging.Level;
 
+import javax.media.jai.JAI;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -98,6 +100,10 @@ public class GeoServerConfigurationForm extends ActionForm {
 	private boolean loggingToFile;
 	private boolean loggingToFileChecked;
 	private String logLocation;
+	
+	private long jaiMemoryCapacity;
+	private boolean jaiRecycling;
+	private boolean jaiRecyclingChecked;
 	 
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -125,6 +131,10 @@ public class GeoServerConfigurationForm extends ActionForm {
         loggingToFileChecked = false;
         logLocation = globalConfig.getLogLocation();
         
+        jaiMemoryCapacity = globalConfig.getJaiMemoryCapacity();
+        jaiRecycling = globalConfig.isJaiRecycling();
+        jaiRecyclingChecked =  false;
+        
         ContactConfig contactConfig = globalConfig.getContact();
         contactPerson = contactConfig.getContactPerson();
         contactOrganization = contactConfig.getContactOrganization();
@@ -146,6 +156,12 @@ public class GeoServerConfigurationForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping,
             HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
+        
+        final long maxMemoryAvailable = Runtime.getRuntime().maxMemory() - (4 * 1024 * 1024);
+        if( jaiMemoryCapacity > maxMemoryAvailable ) {
+        	errors.add("jaiMemCapacity",
+        			new ActionError("error.geoserver.JAIMemCapacity", Long.valueOf(maxMemoryAvailable)));
+        }
 
         return errors;
     }
@@ -611,4 +627,38 @@ public class GeoServerConfigurationForm extends ActionForm {
 		this.loggingToFileChecked = loggingToFileChecked;
 	}
 
+	public long getJaiMemoryCapacity() {
+		return jaiMemoryCapacity;
+	}
+
+	public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
+		this.jaiMemoryCapacity = jaiMemoryCapacity;
+	}
+
+	public boolean getJaiRecycling() {
+		return jaiRecycling;
+	}
+
+	public void setJaiRecycling(boolean jaiRecycling) {
+		jaiRecyclingChecked = true;
+		this.jaiRecycling = jaiRecycling;
+	}
+	
+	/**
+		 * Access verboseChecked property.
+		 * 
+		 * @return Returns the verboseChecked.
+		 */
+		public boolean isJaiRecyclingChecked() {
+			return jaiRecyclingChecked;
+		}
+
+		/**
+		 * Set verboseChecked to verboseChecked.
+		 *
+		 * @param verboseChecked The verboseChecked to set.
+		 */
+		public void setJaiRecyclingChecked(boolean jaiRecyclingChecked) {
+			this.jaiRecyclingChecked = jaiRecyclingChecked;
+		}
 }

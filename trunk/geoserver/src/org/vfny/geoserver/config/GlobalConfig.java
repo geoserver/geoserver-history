@@ -142,6 +142,10 @@ public class GlobalConfig {
     /** location on disk to log to **/
     private String logLocation = null;
 
+    
+    private long jaiMemoryCapacity;
+    private boolean jaiRecycling;
+    
     /**
      * GlobalConfig constructor.
      * 
@@ -193,6 +197,9 @@ public class GlobalConfig {
         loggingToFile = g.getLoggingToFile();
         logLocation = g.getLogLocation();
         
+        jaiMemoryCapacity = g.getJaiMemoryCapacity();
+        jaiRecycling = g.getJaiRecycling().booleanValue();
+        
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
         } else {
@@ -231,6 +238,9 @@ public class GlobalConfig {
 		loggingToFile = g.getLoggingToFile();
 		logLocation = g.getLogLocation();
         
+        jaiMemoryCapacity = g.getJaiMemoryCapacity();
+        jaiRecycling = g.getJaiRecycling().booleanValue();
+        
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
         } else {
@@ -263,6 +273,8 @@ public class GlobalConfig {
         g.setContact((ContactDTO) contact.toDTO());
         g.setLoggingToFile(loggingToFile);
         g.setLogLocation(logLocation);
+        g.setJaiMemoryCapacity(jaiMemoryCapacity);
+        g.setJaiRecycling(Boolean.valueOf(jaiRecycling));
 
         return g;
     }
@@ -568,5 +580,21 @@ public class GlobalConfig {
 	 */
 	public void setLoggingToFile(boolean loggingToFile) {
 		this.loggingToFile = loggingToFile;
+	}
+
+	public long getJaiMemoryCapacity() {
+		return jaiMemoryCapacity;
+	}
+
+	public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
+		this.jaiMemoryCapacity = jaiMemoryCapacity;
+	}
+
+	public boolean isJaiRecycling() {
+		return jaiRecycling;
+	}
+
+	public void setJaiRecycling(boolean jaiRecycling) {
+		this.jaiRecycling = jaiRecycling;
 	}
 }
