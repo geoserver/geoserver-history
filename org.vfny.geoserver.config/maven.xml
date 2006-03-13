@@ -5,10 +5,20 @@
 	</preGoal>
 
 	<goal name="config">
-		<ant:delete dir="${maven.war.src}"/>
-		<ant:mkdir dir="${maven.war.src}"/>
-		<ant:get src="${config.repo}/${config.id}.zip" dest="${basedir}/${config.id}.zip"/>
-		<ant:unzip src="${basedir}/${config.id}.zip" dest="${maven.war.src}"/>
+		<ant:available property="config.present" file="${basedir}/${config.id}.zip"/>
+		<j:choose>
+			<j:when test="${config.present}">
+				<ant:echo>Not downloading config</ant:echo>
+			</j:when>
+			<j:otherwise>
+				<ant:echo>Downloading config</ant:echo>
+				<ant:delete dir="${maven.war.src}"/>
+				<ant:mkdir dir="${maven.war.src}"/>
+				<ant:get src="${config.repo}/${config.id}.zip" dest="${basedir}/${config.id}.zip"/>
+				<ant:unzip src="${basedir}/${config.id}.zip" dest="${maven.war.src}"/>
+			</j:otherwise>
+		</j:choose>
+
 	</goal>
 
 </project>
