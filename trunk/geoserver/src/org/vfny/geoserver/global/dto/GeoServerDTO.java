@@ -69,6 +69,8 @@ public final class GeoServerDTO implements DataTransferObject {
 		
 		public static final long JaiMemoryCapacity = 200 * 1024 * 1024;
 		
+		public static final double JaiMemoryThreshold = 0.75;
+		
 		public static final Boolean JaiRecycling = Boolean.TRUE;
 		
 	}
@@ -178,6 +180,8 @@ public final class GeoServerDTO implements DataTransferObject {
     
     private long jaiMemoryCapacity = Defaults.JaiMemoryCapacity;
     
+    private double jaiMemoryThreshold = Defaults.JaiMemoryThreshold;
+    
     private Boolean jaiRecycling = Defaults.JaiRecycling;
     
     /**
@@ -220,6 +224,7 @@ public final class GeoServerDTO implements DataTransferObject {
         logLocation = g.getLogLocation();
         
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
+        jaiMemoryThreshold = g.getJaiMemoryThreshold();
         jaiRecycling = g.getJaiRecycling();
         
         if (g.getContact() != null) {
@@ -291,6 +296,7 @@ public final class GeoServerDTO implements DataTransferObject {
         	return false;
         
         r = r && (jaiMemoryCapacity == g.getJaiMemoryCapacity()) ;
+        r = r && (jaiMemoryThreshold == g.getJaiMemoryThreshold()) ;
         
         r = r && (jaiRecycling == g.getJaiRecycling());
         
@@ -641,4 +647,10 @@ public final class GeoServerDTO implements DataTransferObject {
 		this.jaiRecycling = jaiRecycling;
 	}
 
+	public double getJaiMemoryThreshold() {
+		return jaiMemoryThreshold;
+	}
+	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
+		this.jaiMemoryThreshold = jaiMemoryThreshold;
+	}
 }

@@ -144,6 +144,7 @@ public class GlobalConfig {
 
     
     private long jaiMemoryCapacity;
+    private double jaiMemoryThreshold;
     private boolean jaiRecycling;
     
     /**
@@ -198,6 +199,7 @@ public class GlobalConfig {
         logLocation = g.getLogLocation();
         
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
+        jaiMemoryThreshold = g.getJaiMemoryThreshold();
         jaiRecycling = g.getJaiRecycling().booleanValue();
         
         if (g.getContact() != null) {
@@ -239,6 +241,7 @@ public class GlobalConfig {
 		logLocation = g.getLogLocation();
         
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
+        jaiMemoryThreshold = g.getJaiMemoryThreshold();
         jaiRecycling = g.getJaiRecycling().booleanValue();
         
         if (g.getContact() != null) {
@@ -274,6 +277,7 @@ public class GlobalConfig {
         g.setLoggingToFile(loggingToFile);
         g.setLogLocation(logLocation);
         g.setJaiMemoryCapacity(jaiMemoryCapacity);
+        g.setJaiMemoryThreshold(jaiMemoryThreshold);
         g.setJaiRecycling(Boolean.valueOf(jaiRecycling));
 
         return g;
@@ -596,5 +600,11 @@ public class GlobalConfig {
 
 	public void setJaiRecycling(boolean jaiRecycling) {
 		this.jaiRecycling = jaiRecycling;
+	}
+	public double getJaiMemoryThreshold() {
+		return jaiMemoryThreshold;
+	}
+	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
+		this.jaiMemoryThreshold = jaiMemoryThreshold;
 	}
 }

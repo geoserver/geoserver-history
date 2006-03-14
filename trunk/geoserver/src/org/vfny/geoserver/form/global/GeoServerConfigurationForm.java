@@ -8,7 +8,6 @@ package org.vfny.geoserver.form.global;
 
 import java.util.logging.Level;
 
-import javax.media.jai.JAI;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
@@ -102,6 +101,7 @@ public class GeoServerConfigurationForm extends ActionForm {
 	private String logLocation;
 	
 	private long jaiMemoryCapacity;
+	private double jaiMemoryThreshold;
 	private boolean jaiRecycling;
 	private boolean jaiRecyclingChecked;
 	 
@@ -132,6 +132,7 @@ public class GeoServerConfigurationForm extends ActionForm {
         logLocation = globalConfig.getLogLocation();
         
         jaiMemoryCapacity = globalConfig.getJaiMemoryCapacity();
+        jaiMemoryThreshold = globalConfig.getJaiMemoryThreshold();
         jaiRecycling = globalConfig.isJaiRecycling();
         jaiRecyclingChecked =  false;
         
@@ -160,9 +161,14 @@ public class GeoServerConfigurationForm extends ActionForm {
         final long maxMemoryAvailable = Runtime.getRuntime().maxMemory() - (4 * 1024 * 1024);
         if( jaiMemoryCapacity > maxMemoryAvailable ) {
         	errors.add("jaiMemCapacity",
-        			new ActionError("error.geoserver.JAIMemCapacity", Long.valueOf(maxMemoryAvailable)));
+        			new ActionError("error.geoserver.JAIMemCapacity", new Long(maxMemoryAvailable)));
         }
 
+        if( jaiMemoryThreshold < 0.0 || jaiMemoryThreshold > 1.0) {
+        	errors.add("jaiMemThreshold",
+        			new ActionError("error.geoserver.JAIMemThreshold"));
+        }
+        
         return errors;
     }
 	/**
@@ -661,4 +667,10 @@ public class GeoServerConfigurationForm extends ActionForm {
 		public void setJaiRecyclingChecked(boolean jaiRecyclingChecked) {
 			this.jaiRecyclingChecked = jaiRecyclingChecked;
 		}
+	public double getJaiMemoryThreshold() {
+		return jaiMemoryThreshold;
+	}
+	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
+		this.jaiMemoryThreshold = jaiMemoryThreshold;
+	}
 }

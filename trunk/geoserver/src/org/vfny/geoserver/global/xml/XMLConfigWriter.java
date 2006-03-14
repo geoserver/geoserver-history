@@ -197,6 +197,7 @@ public class XMLConfigWriter {
             }
 
             cw.valueTag("JaiMemoryCapacity", "" + g.getJaiMemoryCapacity());
+            cw.valueTag("JaiMemoryThreshold", "" + g.getJaiMemoryThreshold());
             cw.valueTag("JaiRecycling", "" + g.getJaiRecycling());
             
             /*if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){

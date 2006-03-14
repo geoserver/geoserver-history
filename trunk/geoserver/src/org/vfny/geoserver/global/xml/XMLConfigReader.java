@@ -457,6 +457,12 @@ public class XMLConfigReader {
 			jaiMemoryCapacity = (long)ReaderUtils.getDoubleAttribute(elem, "value", false);
 		}
 
+		double jaiMemoryThreshold = 0.0;
+		elem = ReaderUtils.getChildElement(globalElem, "JaiMemoryThreshold", false);
+		if (elem != null) {
+			jaiMemoryThreshold = ReaderUtils.getDoubleAttribute(elem, "value", false);
+		}
+
 		Boolean jaiRecycling = Boolean.FALSE;
 		elem = ReaderUtils.getChildElement(globalElem, "JaiRecycling", false);
 		if (elem != null) {

@@ -142,7 +142,18 @@
 	  </td>
 	</tr>
 
-    <tr>
+	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiMemoryThreshold"/>">
+			<bean:message key="label.jaiMemoryThreshold"/>:
+		</span>
+    </td>
+	  <td class="datum">
+		<html:text property="jaiMemoryThreshold" size="60"/>
+	  </td>
+	</tr>
+
+	<tr>
       <td class="label">
 		<span class="help" title="<bean:message key="help.global.jaiRecycling"/>">
 			<bean:message key="label.jaiRecycling"/>:

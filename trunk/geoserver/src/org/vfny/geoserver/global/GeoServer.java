@@ -69,6 +69,7 @@ public class GeoServer extends GlobalLayerSupertype {
     private String contactEmail;
     private String onlineResource;
     private long memoryCapacity;
+    private double memoryThreshold;
     private Boolean recycling;
     
     /** Should we throw the stack traces back in responses? */
@@ -402,9 +403,10 @@ public class GeoServer extends GlobalLayerSupertype {
 			}
 
             memoryCapacity = dto.getJaiMemoryCapacity();
+            memoryThreshold = dto.getJaiMemoryThreshold();
             recycling = dto.getJaiRecycling();
             
-            initJAI(memoryCapacity, recycling);
+            initJAI(memoryCapacity, memoryThreshold, recycling);
             
             maxFeatures = dto.getMaxFeatures();
             numDecimals = dto.getNumDecimals();
@@ -506,7 +508,7 @@ public class GeoServer extends GlobalLayerSupertype {
         }
     }
     
-    public void initJAI(final long memCapacity, final Boolean recycling) {
+    public void initJAI(final long memCapacity, final double memoryThreshold, final Boolean recycling) {
 		// setting JAI wide hints
 		jaiDef.setRenderingHint(JAI.KEY_CACHED_TILE_RECYCLING_ENABLED, recycling);
 		// tile factory and recycler
@@ -516,8 +518,10 @@ public class GeoServer extends GlobalLayerSupertype {
 
 		// Setting up Cache Capacity
 		jaiCache = (SunTileCache) jaiDef.getTileCache();
-		// TODO check -> (TileCache + 4Mb < RuntimeMemory)
 		jaiCache.setMemoryCapacity(memCapacity);
+		
+		// Setting up Cahce Threshold
+		jaiCache.setMemoryThreshold((float)memoryThreshold);
     }
     
     /**
@@ -545,6 +549,7 @@ public class GeoServer extends GlobalLayerSupertype {
         dto.setLoggingToFile(loggingToFile);
         dto.setLogLocation(logLocation);
         dto.setJaiMemoryCapacity(memoryCapacity);
+        dto.setJaiMemoryThreshold(memoryThreshold);
         dto.setJaiRecycling(recycling);
         
         ContactDTO cdto = new ContactDTO();
@@ -701,5 +706,8 @@ public class GeoServer extends GlobalLayerSupertype {
 
 	public Boolean getRecycling() {
 		return recycling;
+	}
+	public double getMemoryThreshold() {
+		return memoryThreshold;
 	}
 }

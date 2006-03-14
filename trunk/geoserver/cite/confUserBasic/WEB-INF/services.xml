@@ -11,6 +11,7 @@ Increasing statements logged.
 -->
 <loggingLevel>CONFIG</loggingLevel>
 <JaiMemoryCapacity value = "209715200" />
+<JaiMemoryThreshold value = "0.75" />
 <JaiRecycling value = "true" />
 <!--
 Sets the max number of Features returned by GetFeature

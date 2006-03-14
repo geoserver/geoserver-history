@@ -118,6 +118,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
 		}
 		
 		long jaiMemoryCapacity = form.getJaiMemoryCapacity();
+		double jaiMemoryThreshold = form.getJaiMemoryThreshold();
 		boolean jaiRecycling = form.getJaiRecycling();
         if (form.isJaiRecyclingChecked() == false) {
         	jaiRecycling = false;
@@ -137,6 +138,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setLogLocation(logLocation);
         globalConfig.setVerboseExceptions(verboseExceptions);
         globalConfig.setJaiMemoryCapacity(jaiMemoryCapacity);
+        globalConfig.setJaiMemoryThreshold(jaiMemoryThreshold);
         globalConfig.setJaiRecycling(jaiRecycling);
         
         ContactConfig contactConfig = globalConfig.getContact();
