@@ -49,7 +49,7 @@ CREATE TABLE "Seven" (
 	CHECK (((geometrytype("pointProperty") = 'POINT'::text) OR ("pointProperty" IS NULL))),
 	CHECK ((srid("boundedBy") = 32615)),
 	CHECK (((geometrytype("boundedBy") = 'POLYGON'::text) OR ("boundedBy" IS NULL)))
-);
+) WITH OIDS;
 
 
 --
@@ -69,7 +69,7 @@ CREATE TABLE "Nulls" (
 	CHECK (((geometrytype("pointProperty") = 'POINT'::text) OR ("pointProperty" IS NULL))),
 	CHECK ((srid("boundedBy") = 32615)),
 	CHECK (((geometrytype("boundedBy") = 'POLYGON'::text) OR ("boundedBy" IS NULL)))
-);
+) WITH OIDS;
 
 --
 -- TOC Entry ID 25 (OID 312300)
@@ -86,7 +86,7 @@ CREATE TABLE "Deletes" (
 	CHECK ((srid("boundedBy") = 32615)),
 	CHECK (((geometrytype("boundedBy") = 'POLYGON'::text) OR ("boundedBy" IS NULL)))
 
-);
+) WITH OIDS;
 
 --
 -- TOC Entry ID 26 (OID 312305)
@@ -102,7 +102,7 @@ CREATE TABLE "Inserts" (
 	CHECK (((geometrytype("pointProperty") = 'POINT'::text) OR ("pointProperty" IS NULL))),
 	CHECK ((srid("boundedBy") = 32615)),
 	CHECK (((geometrytype("boundedBy") = 'POLYGON'::text) OR ("boundedBy" IS NULL)))
-);
+) WITH OIDS;
 
 
 --
@@ -119,7 +119,7 @@ CREATE TABLE "Updates" (
 	CHECK (((geometrytype("pointProperty") = 'POINT'::text) OR ("pointProperty" IS NULL))),
 	CHECK ((srid("boundedBy") = 32615)),
 	CHECK (((geometrytype("boundedBy") = 'POLYGON'::text) OR ("boundedBy" IS NULL)))
-);
+) WITH OIDS;
 
 --
 -- TOC Entry ID 28 (OID 312315)
@@ -132,7 +132,7 @@ CREATE TABLE "Points" (
 	"pointProperty" geometry,
 	CHECK ((srid("pointProperty") = 32615)),
 	CHECK (((geometrytype("pointProperty") = 'POINT'::text) OR ("pointProperty" IS NULL)))
-);
+) WITH OIDS;
 
 --
 -- TOC Entry ID 29 (OID 312322)
@@ -145,7 +145,7 @@ CREATE TABLE "Lines" (
 	"lineStringProperty" geometry,
 	CHECK ((srid("lineStringProperty") = 32615)),
 	CHECK (((geometrytype("lineStringProperty") = 'LINESTRING'::text) OR ("lineStringProperty" IS NULL)))
-);
+) WITH OIDS;
 
 --
 -- TOC Entry ID 30 (OID 312329)
@@ -158,7 +158,7 @@ CREATE TABLE "Polygons" (
 	"polygonProperty" geometry,
 	CHECK ((srid("polygonProperty") = 32615)),
 	CHECK (((geometrytype("polygonProperty") = 'POLYGON'::text) OR ("polygonProperty" IS NULL)))
-);
+) WITH OIDS;
 
 --
 -- TOC Entry ID 31 (OID 312335)
@@ -171,7 +171,7 @@ CREATE TABLE "MPoints" (
 	"multiPointProperty" geometry,
 	CHECK ((srid("multiPointProperty") = 32615)),
 	CHECK (((geometrytype("multiPointProperty") = 'MULTIPOINT'::text) OR ("multiPointProperty" IS NULL)))
-);
+) WITH OIDS;
 
 --
 -- TOC Entry ID 32 (OID 312341)
@@ -184,7 +184,7 @@ CREATE TABLE "MLines" (
 	"multiLineStringProperty" geometry,
 	CHECK ((srid("multiLineStringProperty") = 32615)),
 	CHECK (((geometrytype("multiLineStringProperty") = 'MULTILINESTRING'::text) OR ("multiLineStringProperty" IS NULL)))
-);
+) WITH OIDS;
 
 --
 -- TOC Entry ID 33 (OID 312348)
@@ -197,7 +197,7 @@ CREATE TABLE "MPolygons" (
 	"multiPolygonProperty" geometry,
 	CHECK ((srid("multiPolygonProperty") = 32615)),
 	CHECK (((geometrytype("multiPolygonProperty") = 'MULTIPOLYGON'::text) OR ("multiPolygonProperty" IS NULL)))
-);
+) WITH OIDS;
 
 --
 -- TOC Entry ID 34 (OID 312391)
@@ -212,7 +212,7 @@ CREATE TABLE "Fifteen" (
 	CHECK (((geometrytype("pointProperty") = 'POINT'::text) OR ("pointProperty" IS NULL))),
 	CHECK ((srid("boundedBy") = 32615)),
 	CHECK (((geometrytype("boundedBy") = 'POLYGON'::text) OR ("boundedBy" IS NULL)))
-);
+) WITH OIDS;
 
 --
 -- TOC Entry ID 35 (OID 312430)
@@ -228,7 +228,7 @@ CREATE TABLE "Locks" (
 	CHECK (((geometrytype("pointProperty") = 'POINT'::text) OR ("pointProperty" IS NULL))),
 	CHECK ((srid("boundedBy") = 32615)),
 	CHECK (((geometrytype("boundedBy") = 'POLYGON'::text) OR ("boundedBy" IS NULL)))
-);
+) WITH OIDS;
 
 --
 -- TOC Entry ID 36 (OID 312570)
@@ -249,7 +249,7 @@ CREATE TABLE "Other" (
 	CHECK (((geometrytype("pointProperty") = 'POINT'::text) OR ("pointProperty" IS NULL))),
 	CHECK ((srid("boundedBy") = 32615)),
 	CHECK (((geometrytype("boundedBy") = 'POLYGON'::text) OR ("boundedBy" IS NULL)))
-);
+) WITH OIDS;
 
 --
 -- Data for TOC Entry ID 37 (OID 16560)
