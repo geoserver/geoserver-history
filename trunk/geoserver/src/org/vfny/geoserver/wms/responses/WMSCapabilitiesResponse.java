@@ -62,7 +62,7 @@ public class WMSCapabilitiesResponse implements Response {
 
 		WMSCapsTransformer transformer = new WMSCapsTransformer(request
 				.getSchemaBaseUrl());
-		transformer.setIndentation(2);
+		//transformer.setIndentation(2);
 
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

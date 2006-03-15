@@ -142,8 +142,8 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         System.setProperty("javax.xml.transform.TransformerFactory",
             "org.apache.xalan.processor.TransformerFactoryImpl");
 
-        transformer.setIndentation(config.isVerbose() ? INDENT_SIZE
-                                                      : (NO_FORMATTING));
+        /*transformer.setIndentation(config.isVerbose() ? INDENT_SIZE
+                                                      : (NO_FORMATTING));*/
         transformer.setNumDecimals(config.getNumDecimals());
         /**
          * TODO

@@ -53,7 +53,7 @@ public class WFSCapabilitiesResponse implements Response {
 
         WFSCapsTransformer transformer = new WFSCapsTransformer();
             
-        transformer.setIndentation(2);
+        //transformer.setIndentation(2);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 

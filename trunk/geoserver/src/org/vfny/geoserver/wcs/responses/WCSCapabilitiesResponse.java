@@ -58,7 +58,7 @@ public class WCSCapabilitiesResponse implements Response {
 
 		WCSCapsTransformer transformer = new WCSCapsTransformer();
 
-		transformer.setIndentation(2);
+		//transformer.setIndentation(2);
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 

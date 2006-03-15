@@ -387,7 +387,7 @@ public class DescribeResponse implements Response {
         try {
             StringWriter writer = new StringWriter();
             FeatureTypeTransformer t = new FeatureTypeTransformer();
-            t.setIndentation(4);
+            //t.setIndentation(4);
             t.setOmitXMLDeclaration(true);
             t.transform(schema, writer);
 
