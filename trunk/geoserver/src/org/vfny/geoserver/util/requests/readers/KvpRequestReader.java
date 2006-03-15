@@ -25,7 +25,7 @@ import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
-import org.geotools.filter.LiteralExpression;
+import org.geotools.filter.expression.LiteralExpression;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wfs.WfsException;

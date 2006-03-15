@@ -14,11 +14,11 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.Expression;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
+import org.geotools.filter.expression.Expression;
 import org.geotools.map.MapLayer;
 import org.vfny.geoserver.wms.WMSMapContext;
 
