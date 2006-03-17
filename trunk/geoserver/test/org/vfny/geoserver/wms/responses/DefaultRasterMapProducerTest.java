@@ -100,8 +100,8 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
         final FeatureSource basicPolygons = ds.getFeatureSource(BASIC_POLYGONS_TYPE);
         final Envelope env = basicPolygons.getBounds();
 
-        LOGGER.info("about to create map ctx for BasicPolygons with bounds "
-            + env);
+//        LOGGER.info("about to create map ctx for BasicPolygons with bounds "
+//            + env);
 
         final WMSMapContext map = new WMSMapContext();
         map.setAreaOfInterest(env);
@@ -114,9 +114,9 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
         map.addLayer(basicPolygons, basicStyle);
 
         this.rasterMapProducer.setOutputFormat(mapFormat);
+        
         this.rasterMapProducer.produceMap(map);
-
-
+      
         assertNotBlank("testSimpleGetMapQuery", this.rasterMapProducer);
     }
 
@@ -188,7 +188,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
 
         this.rasterMapProducer.setOutputFormat("image/png");
         this.rasterMapProducer.produceMap(map);
-
+    
         assertNotBlank("testBlueLake", this.rasterMapProducer);
     }
 
@@ -247,7 +247,9 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
         map.setTransparent(false);
 
         this.rasterMapProducer.setOutputFormat("image/png");
+   
         this.rasterMapProducer.produceMap(map);
+        
 
         BufferedImage image = this.rasterMapProducer.getImage();
 

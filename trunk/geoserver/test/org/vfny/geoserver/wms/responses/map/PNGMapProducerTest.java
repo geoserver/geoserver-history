@@ -1,6 +1,5 @@
 package org.vfny.geoserver.wms.responses.map;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -18,8 +17,8 @@ public class PNGMapProducerTest extends DefaultRasterMapProducerTest {
 	}
 
 	protected DefaultRasterMapProducer getProducerInstance() {
-		return new GIFMapProducer("image/png"); // DJB: set content enconding
-												// correctly
+		return new PNGMapProducer("image/png"); // DJB: set content enconding
+		// correctly
 	}
 
 	/**
@@ -33,25 +32,24 @@ public class PNGMapProducerTest extends DefaultRasterMapProducerTest {
 	protected void assertNotBlank(String testName,
 			DefaultRasterMapProducer producer) {
 
-	
-		
 		try {
-			final File tmpPNG = File.createTempFile("temporaryPNGFIles",".png");
-			
+			final File tmpPNG = File
+					.createTempFile("temporaryPNGFile", ".png");
+
 			// tmpGif.deleteOnExit();
 			OutputStream out = new FileOutputStream(tmpPNG);
 			producer.writeTo(out);
-			final long iniT=System.currentTimeMillis();
+			final long iniT = System.currentTimeMillis();
 			out.flush();
 			out.close();
-			System.out.println("******** "+(System.currentTimeMillis()-iniT)+"  ********");
-			showImage(tmpPNG.getAbsolutePath(),ImageIO.read(tmpPNG));
-			
+			System.out.println("******** "
+					+ (System.currentTimeMillis() - iniT) + "  ********");
+			showImage(tmpPNG.getAbsolutePath(), ImageIO.read(tmpPNG));
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
 
-	
 	}
 }

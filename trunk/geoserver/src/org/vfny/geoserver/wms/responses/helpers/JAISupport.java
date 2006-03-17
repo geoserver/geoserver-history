@@ -24,6 +24,10 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageOutputStream;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
+import javax.media.jai.PlanarImage;
+
+import org.geotools.resources.image.ImageUtilities;
 
 /**
  * Helper class to deal with JAI availability and image encoding
@@ -157,11 +161,11 @@ public final class JAISupport {
 		}
 
 		final ImageWriter writer = (ImageWriter) it.next();
-		ImageOutputStream ioutstream = null;
-
+		final ImageOutputStream ioutstream = new MemoryCacheImageOutputStream(
+				outStream);
+		final ImageWriteParam param = writer.getDefaultWriteParam();
 		IIOMetadata meta = writer.getDefaultStreamMetadata(writer
 				.getDefaultWriteParam());
-		ImageWriteParam param = writer.getDefaultWriteParam();
 
 		// DJB: jpeg does not support ARGB (alpha) colour
 		// this converts the image from ARGB to RGB
@@ -173,28 +177,26 @@ public final class JAISupport {
 			param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 			param.setCompressionQuality(0.9f); // DJB: only do this for jpegs -
 			// png freaks when you do this!
+			// final BufferedImage curImage = new
+			// BufferedImage(image.getWidth(), image
+			// .getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+			// Graphics2D g = (Graphics2D) curImage.createGraphics();
+			// g.drawImage(image, 0, 0, null);
+			// image = curImage;
 
-			meta = writer.getDefaultStreamMetadata(param);
-
-
-			BufferedImage curImage = new BufferedImage(image.getWidth(), image
-					.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-			Graphics2D g = (Graphics2D) curImage.createGraphics();
-			g.drawImage(image, 0, 0, null);
-
-			image = curImage;
-
-			ioutstream = ImageIO.createImageOutputStream(outStream);
 			writer.setOutput(ioutstream);
-			writer.write(image);
+			writer.write(ImageUtilities
+					.reformatColorModel2ComponentColorModel(PlanarImage
+							.wrapRenderedImage(image)));
+			ioutstream.flush();
 			ioutstream.close();
 			writer.dispose();
 			return;
 		}
 
-		ioutstream = ImageIO.createImageOutputStream(outStream);
+		//tiff
 		writer.setOutput(ioutstream);
-		writer.write(meta, new IIOImage(image, null, meta), param);
+		writer.write(new IIOImage(image, null, meta));
 		ioutstream.close();
 		writer.dispose();
 	}
