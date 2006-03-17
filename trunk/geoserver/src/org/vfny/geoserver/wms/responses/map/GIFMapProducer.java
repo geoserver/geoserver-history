@@ -8,8 +8,13 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
+import javax.media.jai.PlanarImage;
 
 
+
+import org.geotools.resources.image.ImageUtilities;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
@@ -44,29 +49,33 @@ class GIFMapProducer extends DefaultRasterMapProducer {
     protected void formatImageOutputStream(String format, BufferedImage image,
         OutputStream outStream) throws WmsException, IOException {
 
-    	WMSMapContext mapCtx = getMapContext();
-
-        if (mapCtx.isTransparent()) 
-        {
-            //GIFOutputStream.writeGIF(outStream, image,GIFOutputStream.STANDARD_256_COLORS, mapCtx.getBgColor());
-        	    //DJB: note I had to make colorTable in the encoder source public to do this!
-        	    //DJB: to add a function "return colorTable.ciLookup.getPaletteIndex(rgb);" to Gif89Encoder
-        	
-        	Gif89Encoder gifenc = new Gif89Encoder(image,mapCtx.getBgColor(),2 ); // 2= colour reduction pixel sample factor (1=look at all pixels, but its slow) 
-            gifenc.setComments("produced by Geoserver");
-            
-            gifenc.getFrameAt(0).setInterlaced(false);
-            gifenc.encode(outStream);
-        } 
-        else 
-        {
-           // GIFOutputStream.writeGIF(outStream, image);
-        	Gif89Encoder gifenc = new Gif89Encoder(image,null,2);// 2= colour reduction pixel sample factor (1=look at all pixels, but its slow)
-            gifenc.setComments("produced by Geoserver");
-           // gifenc.setTransparentIndex(transparent_index);
-            gifenc.getFrameAt(0).setInterlaced(false);
-            gifenc.encode(outStream);
-            
-        }
+    	final MemoryCacheImageOutputStream memOutStream= new MemoryCacheImageOutputStream(outStream);
+    	final PlanarImage encodedImage=PlanarImage.wrapRenderedImage(image);
+    	ImageIO.write(ImageUtilities.componentColorModel2IndexColorModel4GIF(encodedImage),"gif",memOutStream);
+    	
+//    	WMSMapContext mapCtx = getMapContext();
+//
+//        if (mapCtx.isTransparent()) 
+//        {
+//            //GIFOutputStream.writeGIF(outStream, image,GIFOutputStream.STANDARD_256_COLORS, mapCtx.getBgColor());
+//        	    //DJB: note I had to make colorTable in the encoder source public to do this!
+//        	    //DJB: to add a function "return colorTable.ciLookup.getPaletteIndex(rgb);" to Gif89Encoder
+//        	
+//        	Gif89Encoder gifenc = new Gif89Encoder(image,mapCtx.getBgColor(),2 ); // 2= colour reduction pixel sample factor (1=look at all pixels, but its slow) 
+//            gifenc.setComments("produced by Geoserver");
+//            
+//            gifenc.getFrameAt(0).setInterlaced(false);
+//            gifenc.encode(outStream);
+//        } 
+//        else 
+//        {
+//           // GIFOutputStream.writeGIF(outStream, image);
+//        	Gif89Encoder gifenc = new Gif89Encoder(image,null,2);// 2= colour reduction pixel sample factor (1=look at all pixels, but its slow)
+//            gifenc.setComments("produced by Geoserver");
+//           // gifenc.setTransparentIndex(transparent_index);
+//            gifenc.getFrameAt(0).setInterlaced(false);
+//            gifenc.encode(outStream);
+//            
+//        }
     }
 }

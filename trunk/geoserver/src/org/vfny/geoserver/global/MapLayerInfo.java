@@ -30,10 +30,7 @@ import org.geotools.feature.FeatureTypeBuilder;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.type.GeometricAttributeType;
-import org.geotools.filter.Filter;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.referencing.crs.DefaultGeocentricCRS;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.CRSUtilities;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.Format;
@@ -57,8 +54,6 @@ import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.DataFormatUtils;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateSequenceFactory;
-import com.vividsolutions.jts.geom.DefaultCoordinateSequenceFactory;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -165,7 +160,6 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 	 * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
 	 */
 	Object toDTO() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -192,14 +186,23 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 								.getCoordinateReferenceSystem(), coverage
 								.getEnvelope());
 			} catch (MismatchedDimensionException e) {
-				throw new IOException("Problems getting Coverage BoundingBox: "
-						+ e.getMessage());
+				final IOException ex = new IOException(new StringBuffer(
+						"Problems getting Coverage BoundingBox: ").append(
+						e.getLocalizedMessage()).toString());
+				ex.initCause(e);
+				throw ex;
 			} catch (IndexOutOfBoundsException e) {
-				throw new IOException("Problems getting Coverage BoundingBox: "
-						+ e.getMessage());
+				final IOException ex = new IOException(new StringBuffer(
+						"Problems getting Coverage BoundingBox: ").append(
+						e.getLocalizedMessage()).toString());
+				ex.initCause(e);
+				throw ex;
 			} catch (NoSuchAuthorityCodeException e) {
-				throw new IOException("Problems getting Coverage BoundingBox: "
-						+ e.getMessage());
+				final IOException ex = new IOException(new StringBuffer(
+						"Problems getting Coverage BoundingBox: ").append(
+						e.getLocalizedMessage()).toString());
+				ex.initCause(e);
+				throw ex;
 			}
 
 			return new Envelope(bounds.getLowerCorner().getOrdinate(0), bounds
@@ -364,9 +367,7 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 			coord[2] = new Coordinate(rect.getMaxX(), rect.getMaxY());
 			coord[3] = new Coordinate(rect.getMinX(), rect.getMaxY());
 			coord[4] = new Coordinate(rect.getMinX(), rect.getMinY());
-		}
-		else
-		{
+		} else {
 			coord[0] = new Coordinate(rect.getMinY(), rect.getMinX());
 			coord[1] = new Coordinate(rect.getMaxY(), rect.getMinX());
 			coord[2] = new Coordinate(rect.getMaxY(), rect.getMaxX());
@@ -439,17 +440,35 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 				throw new IOException(
 						"The requested coverage could not be found.");
 		} catch (InvalidParameterValueException e) {
-			throw new IOException(e.getMessage());
+			final IOException ex = new IOException(e.getLocalizedMessage());
+			ex.initCause(e);
+
+			throw ex;
 		} catch (ParameterNotFoundException e) {
-			throw new IOException(e.getMessage());
+			final IOException ex = new IOException(e.getLocalizedMessage());
+			ex.initCause(e);
+
+			throw ex;
 		} catch (MalformedURLException e) {
-			throw new IOException(e.getMessage());
+			final IOException ex = new IOException(e.getLocalizedMessage());
+			ex.initCause(e);
+
+			throw ex;
 		} catch (IllegalArgumentException e) {
-			throw new IOException(e.getMessage());
+			final IOException ex = new IOException(e.getLocalizedMessage());
+			ex.initCause(e);
+
+			throw ex;
 		} catch (SecurityException e) {
-			throw new IOException(e.getMessage());
+			final IOException ex = new IOException(e.getLocalizedMessage());
+			ex.initCause(e);
+
+			throw ex;
 		} catch (IOException e) {
-			throw new IOException(e.getMessage());
+			final IOException ex = new IOException(e.getLocalizedMessage());
+			ex.initCause(e);
+
+			throw ex;
 		}
 
 		return coverage;
@@ -462,13 +481,34 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		try {
 			GridCoverage gridCoverage = getGridCoverage(request, this.coverage);
 			collection.add(wrapGcInFeature(gridCoverage));
-		} catch (Exception e) {
-			throw new DataSourceException("IO error", e);
+		} catch (IOException e) {
+			final DataSourceException ex = new DataSourceException(
+					"IO error when getting a grid coverage", e);
+			
+
+			throw ex;
+
+		} catch (IllegalAttributeException e) {
+			final DataSourceException ex = new DataSourceException(
+					"IO error when getting a grid coverage", e);
+			
+
+			throw ex;
+		} catch (SchemaException e) {
+			final DataSourceException ex = new DataSourceException(
+					"IO error when getting a grid coverage", e);
+	
+
+			throw ex;
+		} catch (TransformException e) {
+			final DataSourceException ex = new DataSourceException(
+					"IO error when getting a grid coverage", e);
+			
+
+			throw ex;
 		}
 
-		final FeatureSource source = DataUtilities.source(collection);
-
-		return source;
+		return DataUtilities.source(collection);
 	}
 
 	public GridCoverage getCoverageToLayer(HttpServletRequest request)
@@ -476,8 +516,13 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		GridCoverage gridCoverage = null;
 		try {
 			gridCoverage = getGridCoverage(request, this.coverage);
-		} catch (Exception e) {
-			throw new DataSourceException("IO error", e);
+		} catch (IOException e) {
+			final DataSourceException ex = new DataSourceException(
+					"IO error when getting a grid coverage", e);
+			ex.initCause(e);
+
+			throw ex;
+
 		}
 
 		return gridCoverage;
