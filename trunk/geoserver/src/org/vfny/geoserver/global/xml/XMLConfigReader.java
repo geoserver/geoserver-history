@@ -50,7 +50,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.CoverageCategory;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
@@ -470,6 +469,7 @@ public class XMLConfigReader {
 		}
 
 		geoServer.setJaiMemoryCapacity(jaiMemoryCapacity);
+		geoServer.setJaiMemoryThreshold(jaiMemoryThreshold);
 		geoServer.setJaiRecycling(jaiRecycling);
 
 		elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
@@ -1816,33 +1816,17 @@ public class XMLConfigReader {
 								.getElementText((Element) ((Element) dimElems
 										.item(dim)).getElementsByTagName(
 										"description").item(0)));
-				NodeList categories = ((Element) dimElems.item(dim))
-						.getElementsByTagName("Category");
-				CoverageCategory[] cats = new CoverageCategory[categories
-						.getLength()];
-				for (int cat = 0; cat < categories.getLength(); cat++) {
-					cats[cat] = new CoverageCategory();
-					cats[cat].setName(ReaderUtils
-							.getElementText((Element) ((Element) categories
-									.item(cat)).getElementsByTagName("name")
-									.item(0)));
-					cats[cat].setLabel(ReaderUtils
-							.getElementText((Element) ((Element) categories
-									.item(cat)).getElementsByTagName("label")
-									.item(0)));
-					NodeList interval = ((Element) categories.item(cat))
-							.getElementsByTagName("interval");
-					double min = Double.parseDouble(ReaderUtils
-							.getElementText((Element) ((Element) interval
-									.item(0)).getElementsByTagName("min").item(
-									0)));
-					double max = Double.parseDouble(ReaderUtils
-							.getElementText((Element) ((Element) interval
-									.item(0)).getElementsByTagName("max").item(
-									0)));
-					cats[cat].setInterval(new NumberRange(min, max));
-				}
-				dimensions[dim].setCategories(cats);
+				NodeList interval = ((Element) dimElems.item(dim))
+					.getElementsByTagName("interval");
+				double min = Double.parseDouble(ReaderUtils
+						.getElementText((Element) ((Element) interval
+								.item(0)).getElementsByTagName("min").item(
+										0)));
+				double max = Double.parseDouble(ReaderUtils
+						.getElementText((Element) ((Element) interval
+								.item(0)).getElementsByTagName("max").item(
+										0)));
+				dimensions[dim].setRange(new NumberRange(min, max));
 				NodeList nullValues = ((Element) dimElems.item(dim))
 						.getElementsByTagName("nullValues");
 				if (nullValues != null && nullValues.getLength() > 0) {

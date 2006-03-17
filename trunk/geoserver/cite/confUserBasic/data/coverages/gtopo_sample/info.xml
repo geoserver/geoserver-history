@@ -31,24 +31,12 @@ at least must contain the "default" attribute
 <axisName>Lat</axisName>
 </grid>
 <CoverageDimension>
-<name>dim_0</name>
+<name>digital elevation</name>
 <description>GridSampleDimension(m)[-9999.0,4535.999999999999]</description>
-<Category>
-<name>nodata</name>
-<label>GeophysicsCategory("nodata":[-9999.0 .. -9999.0])</label>
 <interval>
 <min>-9999.0</min>
-<max>-9999.0</max>
-</interval>
-</Category>
-<Category>
-<name>values</name>
-<label>GeophysicsCategory("values":[-407.0 .. 4535.999999999999])</label>
-<interval>
-<min>-407.0</min>
 <max>4536.0</max>
 </interval>
-</Category>
 </CoverageDimension>
 <supportedCRSs>
 <requestCRSs>EPSG:4326</requestCRSs>

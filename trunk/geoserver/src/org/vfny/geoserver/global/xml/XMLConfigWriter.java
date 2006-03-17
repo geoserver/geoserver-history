@@ -24,7 +24,6 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.CoverageCategory;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MetaDataLink;
@@ -1312,26 +1311,16 @@ public class XMLConfigWriter {
 				CoverageDimension[] dims = cv.getDimensions();
 				
 				for(int d=0;d<dims.length;d++) {
-					CoverageCategory[] cats = dims[d].getCategories();
 					Double[] nulls = dims[d].getNullValues();
 					cw.openTag("CoverageDimension");
 						cw.textTag("name", dims[d].getName());
 						cw.textTag("description", dims[d].getDescription());
-						if(cats != null) {
-							for(int c=0;c<cats.length;c++) {
-								cw.openTag("Category");
-									cw.textTag("name", cats[c].getName());
-									cw.textTag("label", cats[c].getLabel());
-									if(cats[c].getInterval() != null) {
-										cw.openTag("interval");
-											cw.textTag("min", Double.toString(cats[c].getInterval().getMinimum(true)));
-											cw.textTag("max", Double.toString(cats[c].getInterval().getMaximum(true)));
-										cw.closeTag("interval");
-									}
-								cw.closeTag("Category");
-							}
+						if(dims[d].getRange() != null) {
+							cw.openTag("interval");
+							cw.textTag("min", Double.toString(dims[d].getRange().getMinimum(true)));
+							cw.textTag("max", Double.toString(dims[d].getRange().getMaximum(true)));
+							cw.closeTag("interval");
 						}
-						
 						if(nulls != null) {
 							cw.openTag("nullValues");
 							for(int n=0;n<nulls.length;n++) {

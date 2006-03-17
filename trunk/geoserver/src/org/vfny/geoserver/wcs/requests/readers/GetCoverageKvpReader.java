@@ -4,7 +4,9 @@
  */
 package org.vfny.geoserver.wcs.requests.readers;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,67 +41,118 @@ public class GetCoverageKvpReader extends KvpRequestReader {
         throws WcsException {
         CoverageRequest currentRequest = new CoverageRequest();
         currentRequest.setHttpServletRequest(srequest);
-
-        if (keyExists("REQUEST")) {
-            String request = getValue("REQUEST");
-
-            currentRequest.setRequest(request);
+        Map parameters = new HashMap();
+        parameters.putAll(kvpPairs);
+        
+        // set global request parameters
+        if(LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest("setting global request parameters");
         }
 
-        // set global request parameters
-        LOGGER.finest("setting global request parameters");
-
         if (keyExists("SERVICE")) {
-            currentRequest.setService(getValue("SERVICE"));
+        	final String service = getValue("SERVICE");
+        	if (service.equalsIgnoreCase("WCS")) {
+        		currentRequest.setService(service);
+        	} else {
+        		throw new WcsException("SERVICE parameter is wrong.");
+        	}
+        	parameters.remove("SERVICE");
+        } else {
+        	throw new WcsException("SERVICE parameter is mandatory.");
         }
 
         if (keyExists("VERSION")) {
-            currentRequest.setVersion(getValue("VERSION"));
+        	final String version = getValue("VERSION");
+        	if (version.equals("1.0.0")) {
+        		currentRequest.setVersion(version);
+        	} else {
+        		throw new WcsException("VERSION parameter is wrong.");
+        	}
+        	parameters.remove("VERSION");
+        } else {
+        	throw new WcsException("VERSION parameter is mandatory.");
         }
 
         if (keyExists("REQUEST")) {
-            currentRequest.setRequest(getValue("REQUEST"));
+        	final String request = getValue("REQUEST");
+        	if (request.equalsIgnoreCase("GetCoverage") ) {
+        		currentRequest.setRequest(request);
+        	} else {
+        		throw new WcsException("REQUEST parameter is wrong.");
+        	}
+        	parameters.remove("REQUEST");
+        } else {
+        	throw new WcsException("REQUEST parameter is mandatory.");
         }
 
         if (keyExists("COVERAGE")) {
             currentRequest.setCoverage(getValue("COVERAGE"));
+            parameters.remove("COVERAGE");
+        } else {
+        	throw new WcsException("COVERAGE parameter is mandatory.");
         }
 
         if (keyExists("COVERAGEVERSION")) {
             currentRequest.setCoverageVersion(getValue("COVERAGEVERSION"));
+            parameters.remove("COVERAGEVERSION");
         }
 
         if (keyExists("FORMAT")) {
             currentRequest.setOutputFormat(getValue("FORMAT"));
+            parameters.remove("FORMAT");
+        } else {
+        	throw new WcsException("FORMAT parameter is mandatory.");
         }
+
+    	if (keyExists("CRS") ) {
+    		currentRequest.setCRS(getValue("CRS"));
+    		parameters.remove("CRS");
+    	} else {
+        	throw new WcsException("CRS parameter is mandatory.");
+    	}
+
+    	if (keyExists("RESPONSE_CRS") ) {
+    		currentRequest.setResponseCRS(getValue("RESPONSE_CRS"));
+    		parameters.remove("RESPONSE_CRS");
+    	} else {
+    		currentRequest.setResponseCRS(getValue("CRS"));
+    	}
 
         if (keyExists("BBOX")) {
-            currentRequest.setEnvelope(getValue("BBOX"));
-        }
-
-        if (keyExists("ENVELOPE")) {
-            currentRequest.setEnvelope(getValue("ENVELOPE"));
-        }
+    		currentRequest.setEnvelope(getValue("BBOX"));
+    		parameters.remove("BBOX");
+    	} else {
+        	throw new WcsException("BBOX parameter is mandatory.");
+    	}
 
         if (keyExists("WIDTH") && keyExists("HEIGHT")) {
             currentRequest.setGridOrigin(new Double[] {new Double(0.0), new Double(0.0)});
             currentRequest.setGridLow(new Double[] {new Double(0.0), new Double(0.0)});
             currentRequest.setGridHigh(new Double[] {Double.valueOf(getValue("WIDTH")), Double.valueOf(getValue("HEIGHT"))});
+            parameters.remove("WIDTH");
+            parameters.remove("HEIGHT");
         } else if(currentRequest.getEnvelope() != null && (keyExists("RESX") && keyExists("RESY"))) {
         	final Envelope envelope = currentRequest.getEnvelope();
         	final double envWidth = Math.abs(envelope.getMaxX() - envelope.getMinX());
         	final double envHeight = Math.abs(envelope.getMaxY() - envelope.getMinY());
         	final double width = envWidth / Math.abs(Double.parseDouble(getValue("RESX")));
         	final double height = envHeight / Math.abs(Double.parseDouble(getValue("RESY")));
-            currentRequest.setGridOrigin(new Double[] {new Double(0.0), new Double(0.0)});
-            currentRequest.setGridLow(new Double[] {new Double(0.0), new Double(0.0)});
-            currentRequest.setGridHigh(new Double[] {new Double(width), new Double(height)});
+        	if (width >= 1.0 && height >= 1.0) {
+        		currentRequest.setGridOrigin(new Double[] {new Double(0.0), new Double(0.0)});
+        		currentRequest.setGridLow(new Double[] {new Double(0.0), new Double(0.0)});
+        		currentRequest.setGridHigh(new Double[] {new Double(width), new Double(height)});
+        	}
+        	parameters.remove("RESX");
+        	parameters.remove("RESY");
         }
 
         if (keyExists("INTERPOLATION")) {
             currentRequest.setInterpolation(getValue("INTERPOLATION"));
+            parameters.remove("INTERPOLATION");
         }
 
+        currentRequest.setParameters(parameters);
+        
         return currentRequest;
     }
 }

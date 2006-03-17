@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.units.Unit;
@@ -23,7 +24,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.CoverageCategory;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
@@ -292,7 +292,7 @@ public class CoverageConfig {
 
 		for (int i = 0; i < length; i++) {
 			dims[i] = new CoverageDimension();
-			dims[i].setName("dim_".intern() + i);
+			dims[i].setName(sampleDimensions[i].getDescription().toString(Locale.getDefault()));
 			StringBuffer label = new StringBuffer("GridSampleDimension"
 					.intern());
 			final Unit uom = sampleDimensions[i].getUnits();
@@ -308,20 +308,7 @@ public class CoverageConfig {
 			label.append(sampleDimensions[i].getMaximumValue());
 			label.append("]".intern());
 			dims[i].setDescription(label.toString());
-			final int numCategories = sampleDimensions[i].getCategories()
-					.size();
-			Category[] cats = new Category[numCategories];
-			CoverageCategory[] dimCats = new CoverageCategory[numCategories];
-			int j = 0;
-			for (Iterator c_iT = sampleDimensions[i].getCategories().iterator(); c_iT
-					.hasNext(); j++) {
-				Category cat = (Category) c_iT.next();
-				dimCats[j] = new CoverageCategory();
-				dimCats[j].setName(cat.getName().toString());
-				dimCats[j].setLabel(cat.toString());
-				dimCats[j].setInterval(cat.getRange());
-			}
-			dims[i].setCategories(dimCats);
+			dims[i].setRange(sampleDimensions[i].getRange());
 			double[] nTemp = sampleDimensions[i].getNoDataValues();
 			if (nTemp != null) {
 				final int ntLength = nTemp.length;

@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.util.NumberRange;
+
 /**
  * Represents a CoverageDimension Attribute.
  *
@@ -28,10 +30,7 @@ public class CoverageDimension extends GlobalLayerSupertype {
 	 */
 	private Double[] nullValues;
 
-	/**
-	 * 
-	 */
-	private CoverageCategory[] categories;
+	private NumberRange range;
 
 	
 	/* (non-Javadoc)
@@ -39,20 +38,6 @@ public class CoverageDimension extends GlobalLayerSupertype {
 	 */
 	Object toDTO() {
 		return null;
-	}
-
-	/**
-	 * @return Returns the categories.
-	 */
-	public CoverageCategory[] getCategories() {
-		return categories;
-	}
-
-	/**
-	 * @param categories The categories to set.
-	 */
-	public void setCategories(CoverageCategory[] categories) {
-		this.categories = categories;
 	}
 
 	/**
@@ -97,4 +82,14 @@ public class CoverageDimension extends GlobalLayerSupertype {
 		this.nullValues = nullValues;
 	}
 
+	/**
+	 * @param range
+	 */
+	public void setRange(NumberRange range) {
+		this.range = range;
+	}
+
+	public NumberRange getRange() {
+		return range;
+	}
 }

@@ -31,24 +31,12 @@ at least must contain the "default" attribute
 <axisName>Geodetic longitude</axisName>
 </grid>
 <CoverageDimension>
-<name>dim_0</name>
+<name>GriB_Temperature_041820050000</name>
 <description>GridSampleDimension(K)[254.2439727783203,290.4051055908203]</description>
-<Category>
-<name>values</name>
-<label>GeophysicsCategory("values":[254.2439727783203 ... 290.4051055908203])</label>
 <interval>
 <min>254.2439727783203</min>
 <max>290.4051055908203</max>
 </interval>
-</Category>
-<Category>
-<name>No Data</name>
-<label>GeophysicsCategory("No Data":[NaN(0...0)])</label>
-<interval>
-<min>NaN</min>
-<max>NaN</max>
-</interval>
-</Category>
 </CoverageDimension>
 <supportedCRSs>
 <requestCRSs>EPSG:4326</requestCRSs>

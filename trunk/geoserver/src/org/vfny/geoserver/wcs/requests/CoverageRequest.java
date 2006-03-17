@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wcs.requests;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -30,8 +31,12 @@ public class CoverageRequest extends WCSRequest {
 	 * 
 	 * @uml.property name="outputFormat" multiplicity="(0 1)"
 	 */
-	protected String outputFormat = "GML";
+	protected String outputFormat = null;
 
+	protected String CRS = null;
+	
+	protected String ResponseCRS = null;
+	
 	/**
 	 * 
 	 * @uml.property name="envelope"
@@ -77,6 +82,8 @@ public class CoverageRequest extends WCSRequest {
 	 * @uml.property name="gridOrigin" multiplicity="(0 1)"
 	 */
 	private Double[] gridOrigin;
+
+	private Map parameters;
 
 
 	public CoverageRequest() {
@@ -157,8 +164,6 @@ public class CoverageRequest extends WCSRequest {
 			isEqual = false;
 		}
 		
-		LOGGER.finest("checking version equality: " + isEqual);
-		
 		if ((this.version == null) && (request.getVersion() == null)) {
 			isEqual = isEqual && true;
 		} else if ((this.version == null) || (request.getVersion() == null)) {
@@ -169,8 +174,6 @@ public class CoverageRequest extends WCSRequest {
 			isEqual = false;
 		}
 		
-		LOGGER.finest("checking version equality: " + isEqual);
-		
 		if ((this.handle == null) && (request.getHandle() == null)) {
 			isEqual = isEqual && true;
 		} else if ((this.handle == null) || (request.getHandle() == null)) {
@@ -180,8 +183,6 @@ public class CoverageRequest extends WCSRequest {
 		} else {
 			isEqual = false;
 		}
-		
-		LOGGER.finest("checking handle equality: " + isEqual);
 		
 		if ((this.outputFormat == null) && (request.getOutputFormat() == null)) {
 			isEqual = isEqual && true;
@@ -194,8 +195,6 @@ public class CoverageRequest extends WCSRequest {
 			isEqual = false;
 		}
 		
-		LOGGER.finest("checking output format equality: " + isEqual);
-		
 		if ((this.envelope == null) && (request.getEnvelope() == null)) {
 			isEqual = isEqual && true;
 		} else if ((this.envelope == null)
@@ -207,8 +206,6 @@ public class CoverageRequest extends WCSRequest {
 			isEqual = false;
 		}
 		
-		LOGGER.finest("checking envelope equality: " + isEqual);
-		
 		if ((this.interpolation == null) && (request.getInterpolation() == null)) {
 			isEqual = isEqual && true;
 		} else if ((this.interpolation == null)
@@ -219,8 +216,6 @@ public class CoverageRequest extends WCSRequest {
 		} else {
 			isEqual = false;
 		}
-		
-		LOGGER.finest("checking interpolation equality: " + isEqual);
 		
 		return isEqual;
 	}
@@ -397,4 +392,26 @@ public class CoverageRequest extends WCSRequest {
 		return gridOrigin;
 	}
 
+	public String getCRS() {
+		return CRS;
+	}
+	public void setCRS(String crs) {
+		CRS = crs;
+	}
+	public String getResponseCRS() {
+		return ResponseCRS;
+	}
+	public void setResponseCRS(String responseCRS) {
+		ResponseCRS = responseCRS;
+	}
+
+	/**
+	 * @param kvpPairs
+	 */
+	public void setParameters(Map kvpPairs) {
+		this.parameters = kvpPairs;
+	}
+	public Map getParameters() {
+		return parameters;
+	}
 }

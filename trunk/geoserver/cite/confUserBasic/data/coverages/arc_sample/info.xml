@@ -30,24 +30,12 @@ at least must contain the "default" attribute
 <axisName>Lat</axisName>
 </grid>
 <CoverageDimension>
-<name>dim_0</name>
+<name>a.asc</name>
 <description>GridSampleDimension[-0.16735346615314484,0.4730517566204071]</description>
-<Category>
-<name>values</name>
-<label>GeophysicsCategory("values":[-0.16735346615314484 .. 0.4730517566204071])</label>
 <interval>
 <min>-0.16735346615314484</min>
 <max>0.4730517566204071</max>
 </interval>
-</Category>
-<Category>
-<name>nodata</name>
-<label>GeophysicsCategory("nodata":[NaN(0..0)])</label>
-<interval>
-<min>NaN</min>
-<max>NaN</max>
-</interval>
-</Category>
 </CoverageDimension>
 <supportedCRSs>
 <requestCRSs>EPSG:4326</requestCRSs>

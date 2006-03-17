@@ -114,10 +114,8 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
         map.addLayer(basicPolygons, basicStyle);
 
         this.rasterMapProducer.setOutputFormat(mapFormat);
-        final long before = new Date().getTime();
         this.rasterMapProducer.produceMap(map);
-        final long after = new Date().getTime();
-        LOGGER.info(new StringBuffer("TIME: ").append(after - before).append("ms").toString());
+
 
         assertNotBlank("testSimpleGetMapQuery", this.rasterMapProducer);
     }
@@ -189,10 +187,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
         map.setAreaOfInterest(env);
 
         this.rasterMapProducer.setOutputFormat("image/png");
-        final long before = new Date().getTime();
         this.rasterMapProducer.produceMap(map);
-        final long after = new Date().getTime();
-        LOGGER.info(new StringBuffer("TIME: ").append(after - before).append("ms").toString());
 
         assertNotBlank("testBlueLake", this.rasterMapProducer);
     }
@@ -252,10 +247,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
         map.setTransparent(false);
 
         this.rasterMapProducer.setOutputFormat("image/png");
-        final long before = new Date().getTime();
         this.rasterMapProducer.produceMap(map);
-        final long after = new Date().getTime();
-        LOGGER.info(new StringBuffer("TIME: ").append(after - before).append("ms").toString());
 
         BufferedImage image = this.rasterMapProducer.getImage();
 

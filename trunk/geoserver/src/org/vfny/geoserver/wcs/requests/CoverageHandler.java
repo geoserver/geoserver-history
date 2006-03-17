@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wcs.requests;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -143,16 +144,30 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
 
         // if inside a property element, add the element
         if (currentTag.equals("sourceCoverage")) {
-            LOGGER.finest("found Coverage name: " + s);
+        	if(LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest(new StringBuffer("found Coverage name: ").append(s).toString());
+        	}
             request.setCoverage(s);
         } else if (currentTag.equals("interpolationMethod")) {
-            LOGGER.finest("found Interpolation Method: " + s);
+        	if(LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest(new StringBuffer("found Interpolation Method: ").append(s).toString());
+        	}
             request.setInterpolation(s);
+        } else if (currentTag.equals("crs")) {
+        	if(LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest(new StringBuffer("found Output CRS: ").append(s).toString());
+        	}
+            request.setCRS(s);
+            request.setResponseCRS(s);
         } else if (currentTag.equals("format")) {
-            LOGGER.finest("found Output Format: " + s);
+        	if(LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest(new StringBuffer("found Output Format: ").append(s).toString());
+        	}
             request.setOutputFormat(s);
         } else if (currentTag.equals("pos") && insideEnvelope) {        	
-            LOGGER.finer("found Envelope Coordinate: " + s);
+        	if(LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest(new StringBuffer("found Envelope Coordinates: ").append(s).toString());
+        	}
             if( coordinates[0] == null ) {
             	String[] coords = s.split(" ");
             	try {
@@ -186,7 +201,9 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
             	}
             }
         } else if (currentTag.equals("low") && insideGrid) {        	
-            LOGGER.finer("found Grid Low: " + s);
+        	if(LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest(new StringBuffer("found Grid Lowers: ").append(s).toString());
+        	}
         	String[] coords = s.split(" ");
         	try {
         		double arg0 = Double.parseDouble(coords[0]);
@@ -201,7 +218,9 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
         		lowers[1] = null;
         	}
         } else if (currentTag.equals("high") && insideGrid) {        	
-            LOGGER.finer("found Grid High: " + s);
+        	if(LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest(new StringBuffer("found Grid Highers: ").append(s).toString());
+        	}
         	String[] coords = s.split(" ");
         	try {
         		double arg0 = Double.parseDouble(coords[0]);
@@ -216,7 +235,9 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
         		highers[1] = null;
         	}
         } else if (currentTag.equals("pos") && insideGrid) {        	
-            LOGGER.finer("found Grid Origin: " + s);
+        	if(LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest(new StringBuffer("found Grid Origin: ").append(s).toString());
+        	}
         	String[] coords = s.split(" ");
         	try {
         		double arg0 = Double.parseDouble(coords[0]);
@@ -231,7 +252,9 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
         		origin[1] = null;
         	}
         } else if (currentTag.equals("offsetVector") && insideGrid) {        	
-            LOGGER.finer("found Grid OffsetVector: " + s);
+        	if(LOGGER.isLoggable(Level.FINEST)) {
+        		LOGGER.finest(new StringBuffer("found Grid Offset-Vector: ").append(s).toString());
+        	}
         	String[] coords = s.split(" ");
         	try {
         		double arg0 = Double.parseDouble(coords[0]);

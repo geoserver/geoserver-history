@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -167,8 +168,9 @@ public class WcsDispatcher extends Dispatcher {
         // Examine the incoming request and create appropriate server objects
         //  to deal with each request
         //              try {
-        if (request.getQueryString() != null) {
-            Map kvPairs = KvpRequestReader.parseKvpSet(request.getQueryString());
+        final String queryString = request.getQueryString();
+        if (queryString != null) {
+            Map kvPairs = KvpRequestReader.parseKvpSet(queryString);
             targetRequest = DispatcherKvpReader.getRequestType(kvPairs);
         } else {
             targetRequest = UNKNOWN;
@@ -206,7 +208,9 @@ public class WcsDispatcher extends Dispatcher {
         HttpServletResponse response, int req_type)
         throws ServletException, IOException {
         AbstractService dispatched;
-        LOGGER.info("req_type is " + req_type);
+        if (LOGGER.isLoggable(Level.INFO)) {
+        	LOGGER.info(new StringBuffer("req_type is ").append(req_type).toString());
+        }
 
         switch (req_type) {
         case GET_CAPABILITIES_REQUEST:

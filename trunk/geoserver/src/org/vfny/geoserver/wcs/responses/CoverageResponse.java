@@ -161,9 +161,10 @@ public class CoverageResponse implements Response {
 		try {
 			delegate = CoverageResponseDelegateFactory.encoderFor(outputFormat);
 		} catch (NoSuchElementException ex) {
-			throw new WcsException(new StringBuffer("output format: ").append(
+			final WcsException newEx = new WcsException(new StringBuffer("output format: ").append(
 					outputFormat).append(" not ").append(
 					"supported by geoserver").toString(), ex);
+			throw newEx;
 		}
 
 		final Data catalog = request.getWCS().getData();
@@ -218,29 +219,37 @@ public class CoverageResponse implements Response {
 					.getCroppedCoverage(request, meta, coverage);
 			delegate.prepare(outputFormat, finalCoverage);
 		} catch (IOException e) {
-			throw new WcsException(e, "problem with CoverageResults", request
+			final WcsException newEx = new WcsException(e, "problem with CoverageResults", request
 					.getHandle());
+			throw newEx;
 		} catch (NoSuchElementException e) {
-			throw new WcsException(e, "problem with CoverageResults", request
+			final WcsException newEx = new WcsException(e, "problem with CoverageResults", request
 					.getHandle());
+			throw newEx;
 		} catch (IllegalArgumentException e) {
-			throw new WcsException(e, "problem with CoverageResults", request
+			final WcsException newEx = new WcsException(e, "problem with CoverageResults", request
 					.getHandle());
+			throw newEx;
 		} catch (SecurityException e) {
-			throw new WcsException(e, "problem with CoverageResults", request
+			final WcsException newEx = new WcsException(e, "problem with CoverageResults", request
 					.getHandle());
+			throw newEx;
 		} catch (WcsException e) {
-			throw new WcsException(e, "problem with CoverageResults", request
+			final WcsException newEx = new WcsException(e, "problem with CoverageResults", request
 					.getHandle());
+			throw newEx;
 		} catch (FactoryException e) {
-			throw new WcsException(e, "problem with CoverageResults", request
+			final WcsException newEx = new WcsException(e, "problem with CoverageResults", request
 					.getHandle());
+			throw newEx;
 		} catch (IndexOutOfBoundsException e) {
-			throw new WcsException(e, "problem with CoverageResults", request
+			final WcsException newEx = new WcsException(e, "problem with CoverageResults", request
 					.getHandle());
+			throw newEx;
 		} catch (TransformException e) {
-			throw new WcsException(e, "problem with CoverageResults", request
+			final WcsException newEx = new WcsException(e, "problem with CoverageResults", request
 					.getHandle());
+			throw newEx;
 		}
 	}
 

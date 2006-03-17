@@ -57,15 +57,15 @@
 </code></pre>
 <ul>
   <li>
-    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs?request=GetCapabilities&service=WCS&version=1.0.0">WCS GetCapabilities</a>
+    <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs?service=WCS&version=1.0.0&request=GetCapabilities">WCS GetCapabilities</a>
   </li>
   <li>
-	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs/DescribeCoverage?coveragename=Arc_Sample">
+	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs?service=WCS&version=1.0.0&request=DescribeCoverage&coveragename=Arc_Sample">
 	  describeCoverage
 	</a>
   </li>
   <li>
-  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs/GetCoverage?coverage=Arc_Sample&format=png">
+  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs?service=WCS&version=1.0.0&request=GetCoverage&coverage=Arc_Sample&BBOX=9.42,42.2,11.82,43.9&format=png&crs=EPSG:4326&response_crs=EPSG:32626&interpolation=nearest_neighbor">
   	  getCoverage
   	</a>
   </li>

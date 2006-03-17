@@ -30,40 +30,28 @@ at least must contain the "default" attribute
 <axisName>Lat</axisName>
 </grid>
 <CoverageDimension>
-<name>dim_0</name>
+<name>Red band</name>
 <description>GridSampleDimension[0.0,255.0]</description>
-<Category>
-<name>values</name>
-<label>Category("values":[0.0 .. 255.0])</label>
 <interval>
 <min>0.0</min>
 <max>255.0</max>
 </interval>
-</Category>
 </CoverageDimension>
 <CoverageDimension>
-<name>dim_1</name>
+<name>Green band</name>
 <description>GridSampleDimension[0.0,255.0]</description>
-<Category>
-<name>values</name>
-<label>Category("values":[0.0 .. 255.0])</label>
 <interval>
 <min>0.0</min>
 <max>255.0</max>
 </interval>
-</Category>
 </CoverageDimension>
 <CoverageDimension>
-<name>dim_2</name>
+<name>Blue band</name>
 <description>GridSampleDimension[0.0,255.0]</description>
-<Category>
-<name>values</name>
-<label>Category("values":[0.0 .. 255.0])</label>
 <interval>
 <min>0.0</min>
 <max>255.0</max>
 </interval>
-</Category>
 </CoverageDimension>
 <supportedCRSs>
 <requestCRSs>EPSG:4326</requestCRSs>

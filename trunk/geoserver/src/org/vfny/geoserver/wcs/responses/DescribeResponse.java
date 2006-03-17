@@ -22,7 +22,6 @@ import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.CoverageCategory;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -373,25 +372,6 @@ public class DescribeResponse implements Response {
 						/ (g.getGridRange().getUpper(1) - g.getGridRange()
 								.getLower(1)) : -0.0) + "</gml:offsetVector>");
 		tempResponse.append("\n    </gml:RectifiedGrid>");
-
-		// Grid
-		/*
-		 * tempResponse.append("\n <gml:Grid" + (g != null ? " dimension=\"" +
-		 * g.getGridRange().getDimension() + "\"" : "") +">");
-		 * 
-		 * String lowers = "", upers = ""; for(int r=0; r<g.getGridRange().getDimension();
-		 * r++) { lowers += g.getGridRange().getLower(r) + " "; upers +=
-		 * g.getGridRange().getUpper(r) + " "; } tempResponse.append("\n
-		 * <gml:limits>"); tempResponse.append("\n <gml:GridEnvelope>");
-		 * tempResponse.append("\n <gml:low>" + (cvEnvelope != null ? lowers :
-		 * "") + "</gml:low>"); tempResponse.append("\n <gml:high>" +
-		 * (cvEnvelope != null ? upers : "") + "</gml:high>");
-		 * tempResponse.append("\n </gml:GridEnvelope>");
-		 * tempResponse.append("\n </gml:limits>"); if(dimNames!=null) for(int
-		 * dn=0;dn<dimNames.length;dn++) tempResponse.append("\n
-		 * <gml:axisName>" + dimNames[dn] +"</gml:axisName>");
-		 * tempResponse.append("\n </gml:Grid>");
-		 */
 		tempResponse.append("\n   </spatialDomain>");
 		tempResponse.append("\n  </domainSet>");
 
@@ -406,28 +386,20 @@ public class DescribeResponse implements Response {
 			tempResponse.append("\n    <name>" + cv.getName() + "</name>");
 			tempResponse.append("\n    <label>" + cv.getLabel() + "</label>");
 			for (int sample = 0; sample < numSampleDimensions; sample++) {
-				CoverageCategory[] categories = dims[sample].getCategories();
-				final int length=categories.length;
-				for (int c = 0; c < length; c++) {
-					CoverageCategory cat = categories[c];
-					tempResponse.append("\n      <axisDescription>");
-					tempResponse.append("\n        <AxisDescription>");
-					tempResponse.append("\n          <name>"
-							+ dims[sample].getName() + ":Category("
-							+ cat.getName() + ")</name>");
-					tempResponse.append("\n          <label>"
-							+ dims[sample].getDescription() + "</label>");
-					tempResponse.append("\n          <values>");
-					tempResponse.append("\n            <interval>");
-					tempResponse.append("\n              <min>"
-							+ cat.getInterval().getMinimum(true) + "</min>");
-					tempResponse.append("\n              <max>"
-							+ cat.getInterval().getMaximum(true) + "</max>");
-					tempResponse.append("\n            </interval>");
-					tempResponse.append("\n          </values>");
-					tempResponse.append("\n        </AxisDescription>");
+				tempResponse.append("\n      <axisDescription>");
+				tempResponse.append("\n        <AxisDescription>");
+				tempResponse.append("\n          <name>" + dims[sample].getName() + "</name>");
+				tempResponse.append("\n          <label>" + dims[sample].getDescription() + "</label>");
+				tempResponse.append("\n          <values>");
+				tempResponse.append("\n            <interval>");
+				tempResponse.append("\n              <min>"
+						+ dims[sample].getRange().getMinimum(true) + "</min>");
+				tempResponse.append("\n              <max>"
+						+ dims[sample].getRange().getMaximum(true) + "</max>");
+				tempResponse.append("\n            </interval>");
+				tempResponse.append("\n          </values>");
+				tempResponse.append("\n        </AxisDescription>");
 					tempResponse.append("\n      </axisDescription>");
-				}
 				Double[] nodata = dims[sample].getNullValues();
 				if (nodata != null)
 					for (int nd = 0; nd < nodata.length; nd++) {
