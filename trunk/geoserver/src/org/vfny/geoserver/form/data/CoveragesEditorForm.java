@@ -228,7 +228,7 @@ public class CoveragesEditorForm extends ActionForm {
 			// RequestCRSs
 			for (Iterator i = cvConfig.getRequestCRSs().iterator(); i.hasNext();) {
 				String CRS = (String) i.next();
-				buf.append(CRS);
+				buf.append(CRS.toUpperCase());
 
 				if (i.hasNext()) {
 					buf.append(",");
@@ -244,7 +244,7 @@ public class CoveragesEditorForm extends ActionForm {
 			for (Iterator i = cvConfig.getResponseCRSs().iterator(); i
 					.hasNext();) {
 				String CRS = (String) i.next();
-				buf.append(CRS);
+				buf.append(CRS.toUpperCase());
 
 				if (i.hasNext()) {
 					buf.append(",");
@@ -260,7 +260,7 @@ public class CoveragesEditorForm extends ActionForm {
 			for (Iterator i = cvConfig.getSupportedFormats().iterator(); i
 					.hasNext();) {
 				String format = (String) i.next();
-				buf.append(format);
+				buf.append(format.toUpperCase());
 
 				if (i.hasNext()) {
 					buf.append(",");
@@ -276,7 +276,7 @@ public class CoveragesEditorForm extends ActionForm {
 			for (Iterator i = cvConfig.getInterpolationMethods().iterator(); i
 					.hasNext();) {
 				String intMethod = (String) i.next();
-				buf.append(intMethod);
+				buf.append(intMethod.toLowerCase());
 
 				if (i.hasNext()) {
 					buf.append(",");

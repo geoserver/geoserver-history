@@ -161,9 +161,10 @@ public class CoverageResponse implements Response {
 		try {
 			delegate = CoverageResponseDelegateFactory.encoderFor(outputFormat);
 		} catch (NoSuchElementException ex) {
-			final WcsException newEx = new WcsException(new StringBuffer("output format: ").append(
+			WcsException newEx = new WcsException(new StringBuffer("output format: ").append(
 					outputFormat).append(" not ").append(
 					"supported by geoserver").toString(), ex);
+			newEx.initCause(ex);
 			throw newEx;
 		}
 
@@ -173,6 +174,14 @@ public class CoverageResponse implements Response {
 
 		try {
 			meta = catalog.getCoverageInfo(request.getCoverage());
+			
+			if (!meta.getSupportedFormats().contains(outputFormat.toUpperCase())) {
+				WcsException newEx = new WcsException(new StringBuffer("output format: ").append(
+						outputFormat).append(" not ").append(
+						"supported by geoserver").toString());
+				throw newEx;
+			}
+			
 			final String formatID = meta.getFormatId();
 			final DataConfig dataConfig = (DataConfig) request
 					.getHttpServletRequest().getSession().getServletContext()
