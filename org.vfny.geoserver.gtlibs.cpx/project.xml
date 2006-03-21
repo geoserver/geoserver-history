@@ -19,7 +19,7 @@
     </dependency>
     <dependency>
       <groupId>gt2</groupId>
-      <artifactId>epsg-wkt</artifactId>
+      <artifactId>epsg-hsql</artifactId>
       <version>2.2.x-complex_branch</version>
       <properties>
         <war.bundle>true</war.bundle>
@@ -36,6 +36,14 @@
     <dependency>
       <groupId>gt2</groupId>
       <artifactId>main</artifactId>
+      <version>2.2.x-complex_branch</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+     <dependency>
+      <groupId>gt2</groupId>
+      <artifactId>sqlds</artifactId>
       <version>2.2.x-complex_branch</version>
       <properties>
         <war.bundle>true</war.bundle>
@@ -91,6 +99,20 @@
     </dependency>
 
     <!-- libs depended on by geotools -->
+    <dependency>
+      <id>hsqldb</id>
+      <version>1.8.0.1</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>jsqlparser</id>
+      <version>0.3.14</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
     <dependency>
       <id>geoapi</id>
       <version>02282006</version>
@@ -339,6 +361,10 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+    <!--
+    commenting this out since its the offending jar that makes
+    imposible to deploy on tomcat. Its used by postgis datastore,
+    whick we're not maintaining on this branch anyway
     <dependency>
       <groupId>wkb4j</groupId>
       <artifactId>wkb4j</artifactId>
@@ -347,6 +373,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+    -->
     <dependency>
       <groupId>sun</groupId>
       <artifactId>jlfgr</artifactId>
