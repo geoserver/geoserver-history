@@ -195,7 +195,8 @@
       </span>
 	  </td>
 	  <td class="datum">
-		<html:text property="nativeFormat" size="60"/>
+		<bean:write name="coveragesEditorForm" property="nativeFormat"/>
+		<html:hidden property="nativeFormat"/>
 	  </td>
 	</tr>
 
@@ -217,7 +218,8 @@
       </span>
 	  </td>
 	  <td class="datum">
-		<html:text property="defaultInterpolationMethod" size="60"/>
+		<bean:write name="coveragesEditorForm" property="defaultInterpolationMethod"/>
+		<html:hidden property="defaultInterpolationMethod"/>
 	  </td>
 	</tr>
 

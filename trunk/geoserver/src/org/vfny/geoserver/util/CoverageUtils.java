@@ -342,6 +342,7 @@ public class CoverageUtils {
 					: 
 					new GeneralEnvelope(destinationEnvelope);
 		destinationEnvelopeInSourceCRS.setCoordinateReferenceSystem(cvCRS);
+
 		// ///////////////////////////////////////////////////////////////////
 		//
 		// BAND SELECT
@@ -371,7 +372,12 @@ public class CoverageUtils {
 		for (int b=0; b<length; b++) {
 			bands[b] = ((Integer)selectedBands.get(b)).intValue();
 		}
-		Coverage bandSelectedCoverage = Operations.DEFAULT.selectSampleDimension(coverage, bands);
+		
+		Coverage bandSelectedCoverage;
+		if (bands != null && bands.length > 0)
+			bandSelectedCoverage = Operations.DEFAULT.selectSampleDimension(coverage, bands);
+		else
+			bandSelectedCoverage = coverage;
 
 		// ///////////////////////////////////////////////////////////////////
 		//

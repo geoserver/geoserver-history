@@ -9,17 +9,24 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.units.Unit;
 
 import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.processing.CannotReprojectException;
+import org.geotools.coverage.processing.Operations;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.metadata.Identifier;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
@@ -210,8 +217,8 @@ public class CoverageConfig {
 					"formatId is required for CoverageConfig");
 		}
 		if (format == null) {
-			throw new ConfigurationException("Cannot handle format: "
-					+ formatId);
+			throw new ConfigurationException(
+					new StringBuffer("Cannot handle format: ").append(formatId).toString());
 		}
 		this.formatId = formatId;
 		crs = gc.getCoordinateReferenceSystem();
@@ -221,22 +228,34 @@ public class CoverageConfig {
 		try {
 			latLonEnvelope = DataFormatUtils.getLatLonEnvelope(envelope);
 		} catch (IndexOutOfBoundsException e) {
-			throw new ConfigurationException("Converting Envelope to Lat-Lon WGS84: "
-					+ e.toString());
+			ConfigurationException newEx = new ConfigurationException(
+					new StringBuffer("Converting Envelope to Lat-Lon WGS84: ").
+					append(e.toString()).toString());
+			newEx.initCause(e);
+			throw newEx;
 		} catch (FactoryException e) {
-			throw new ConfigurationException("Converting Envelope to Lat-Lon WGS84: "
-					+ e.toString());
+			ConfigurationException newEx = new ConfigurationException(
+					new StringBuffer("Converting Envelope to Lat-Lon WGS84: ").
+					append(e.toString()).toString());
+			newEx.initCause(e);
+			throw newEx;
 		} catch (TransformException e) {
-			throw new ConfigurationException("Converting Envelope to Lat-Lon WGS84: "
-					+ e.toString());
+			ConfigurationException newEx = new ConfigurationException(
+					new StringBuffer("Converting Envelope to Lat-Lon WGS84: ").
+					append(e.toString()).toString());
+			newEx.initCause(e);
+			throw newEx;
 		}
 
 		grid = gc.getGridGeometry();
 		try {
 			dimensions = parseCoverageDimesions(gc.getSampleDimensions());
 		} catch (UnsupportedEncodingException e) {
-			throw new ConfigurationException("Coverage dimensions: "
-					+ e.toString());
+			ConfigurationException newEx = new ConfigurationException(
+					new StringBuffer("Coverage dimensions: ").
+					append(e.toString()).toString());
+			newEx.initCause(e);
+			throw newEx;
 		}
 		dimentionNames = gc.getDimensionNames();
 
@@ -267,16 +286,61 @@ public class CoverageConfig {
 		keywords.add("WCS");
 		keywords.add(formatId);
 		keywords.add(name);
-		nativeFormat = format.getName(); // ?
+		nativeFormat = format.getName();
 		dirName = new StringBuffer(formatId).append("_").append(name)
 				.toString();
-		requestCRSs = new LinkedList(); // ?
-		responseCRSs = new LinkedList(); // ?
-		supportedFormats = new LinkedList(); // ?
+		requestCRSs = new LinkedList();
+		requestCRSs.add(((Identifier)gc.getCoordinateReferenceSystem2D().getIdentifiers().toArray()[0]).toString());
+		responseCRSs = new LinkedList();
+			/*final CoordinateReferenceSystem sourceCRS = gc.getCoordinateReferenceSystem();
+			Set s = CRS.getSupportedCodes("EPSG");
+			Iterator it = s.iterator();
+			while (it.hasNext()) {
+				String currentSRS = new StringBuffer("EPSG:").append(it.next().toString()).toString();
+				try {
+					CoordinateReferenceSystem targetCRS = CRS.decode(currentSRS);
+					//Operations.DEFAULT.resample(gc, targetCRS);
+					responseCRSs.add(new StringBuffer("EPSG:").append(currentSRS).toString());
+				} catch (NoSuchAuthorityCodeException e) {
+					// TODO Auto-generated catch block
+				} catch (CannotReprojectException e) {
+					
+				}
+			}*/
+		responseCRSs.add(((Identifier)gc.getCoordinateReferenceSystem2D().getIdentifiers().toArray()[0]).toString());
+		supportedFormats = new LinkedList();
+		final List formats = DataFormatUtils.listDataFormats();
+		for(Iterator i = formats.iterator(); i.hasNext();) {
+        	final Format fTmp = (Format) i.next();
+        	final String fName = fTmp.getName();
+        	if (fName.equalsIgnoreCase("WorldImage")) {
+        		/*final String[] formatNames = ImageIO.getReaderFormatNames();
+        		final int length = formatNames.length;
+        		for (int f=0; f<length; f++) {
+                	// TODO check if coverage can encode Format
+                	supportedFormats.add(formatNames[f]);        		
+        		}*/
+            	// TODO check if coverage can encode Format
+            	supportedFormats.add("GIF");
+            	supportedFormats.add("PNG");
+            	supportedFormats.add("JPEG");
+            	supportedFormats.add("TIFF");
+        	} else if (fName.toLowerCase().startsWith("geotiff")) {
+            	// TODO check if coverage can encode Format
+            	supportedFormats.add("GeoTIFF");        		
+        	} else {
+            	// TODO check if coverage can encode Format
+            	supportedFormats.add(fName);
+        	}
+		}
 		defaultInterpolationMethod = "nearest neighbor"; // TODO make me
 		// parametric
-		interpolationMethods = new LinkedList(); // ?
-		defaultStyle = "";
+		interpolationMethods = new LinkedList();
+		interpolationMethods.add("nearest neighbor");
+		interpolationMethods.add("bilinear");
+		interpolationMethods.add("bicubic");
+		interpolationMethods.add("bicubic_2");
+		defaultStyle = "raster";
 	}
 
 	/**
