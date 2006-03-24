@@ -8,6 +8,7 @@ import java.awt.Color;
 
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapLayer;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 /**
  * Extends DefaultMapContext to provide the whole set of request parameters a
@@ -65,6 +66,8 @@ public class WMSMapContext extends DefaultMapContext {
 	 */
 	private boolean transparent;
 
+	private GetMapRequest request;
+
     /**
      *
      */
@@ -80,6 +83,14 @@ public class WMSMapContext extends DefaultMapContext {
     public WMSMapContext(MapLayer[] layers) {
         super(layers);
     }
+
+	/**
+	 * @param req
+	 */
+	public WMSMapContext(GetMapRequest req) {
+		super();
+		this.request = req;
+	}
 
 	/**
 	 * DOCUMENT ME!
@@ -167,4 +178,10 @@ public class WMSMapContext extends DefaultMapContext {
 		this.transparent = transparent;
 	}
 
+	public GetMapRequest getRequest() {
+		return request;
+	}
+	public void setRequest(GetMapRequest request) {
+		this.request = request;
+	}
 }

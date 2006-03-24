@@ -4,13 +4,14 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipOutputStream;
 
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Service;
@@ -20,14 +21,15 @@ import org.vfny.geoserver.wms.WmsException;
 
 
 /**
- * Handles a GetMap request that spects a map in KML format.
+ * Handles a GetMap request that spects a map in KMZ format.
  *
- * @author James Macgill
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $
  */
-class KMLMapProducer implements GetMapProducer {
+class KMZMapProducer implements GetMapProducer {
     /** standard logger */
     private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wms.kml");
+            "org.vfny.geoserver.responses.wms.kmz");
 
 	/**
 	 * encoder instance which does all the hard work
@@ -56,17 +58,19 @@ class KMLMapProducer implements GetMapProducer {
      * @return String containing official MIME type for this format.
      */
     public String getContentType() {
-        return KMLMapProducerFactory.MIME_TYPE;
+        return KMZMapProducerFactory.MIME_TYPE;
     }
    
     /**
      * aborts the encoding.
      */
     public void abort() {
-        LOGGER.fine("aborting KML map response");
+        if (LOGGER.isLoggable(Level.FINE))
+        	LOGGER.fine("aborting KMZ map response");
         
         if (this.kmlEncoder != null) {
-            LOGGER.info("aborting KML encoder");
+        	if (LOGGER.isLoggable(Level.INFO))
+        		LOGGER.info("aborting KMZ encoder");
             this.kmlEncoder.abort();
         }
     }
@@ -84,11 +88,10 @@ class KMLMapProducer implements GetMapProducer {
         try{
             temp = File.createTempFile("kml",null);
             this.kmlEncoder = new EncodeKML(map);
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(temp));
-            kmlEncoder.encode(bos);
-            bos.flush();
-            bos.close();
-            
+            final ZipOutputStream outZ = new ZipOutputStream(new FileOutputStream(temp));
+            kmlEncoder.encode2(outZ);
+            outZ.flush();
+            outZ.close();
         } catch(IOException ioe){
             WmsException we  = new WmsException(ioe.getMessage());
             we.initCause(ioe);

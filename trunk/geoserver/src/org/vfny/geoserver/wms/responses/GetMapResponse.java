@@ -98,7 +98,7 @@ public class GetMapResponse implements Response {
 
 		// JD:make instance variable in order to release resources later
 		// final WMSMapContext map = new WMSMapContext();
-		map = new WMSMapContext();
+		map = new WMSMapContext(request);
 
 		// DJB: the WMS spec says that the request must not be 0 area
 		// if it is, throw a service exception!
@@ -152,7 +152,8 @@ public class GetMapResponse implements Response {
 					}
 
 					layer = new DefaultMapLayer(source, style);
-
+					layer.setTitle(layers[i].getName());
+					
 					Filter definitionFilter = layers[i].getFeature()
 							.getDefinitionQuery();
 
@@ -169,6 +170,7 @@ public class GetMapResponse implements Response {
 							.getHttpServletRequest());
 
 					layer = new DefaultMapLayer(source, style);
+					layer.setTitle(layers[i].getName());
 					layer.setQuery(Query.ALL);
 
 					map.addLayer(layer);
