@@ -25,7 +25,7 @@ import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.FormatInfoDTO;
+import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 
@@ -62,7 +62,7 @@ public class DataConfig {
 	 * @see org.vfny.geoserver.config.data.FormatInfo
 	 * 
 	 * @uml.property name="dataFormats"
-	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.DataFormatConfig"
+	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.CoverageStoreConfig"
 	 * multiplicity="(0 1)"
 	 */
 	private Map dataFormats;
@@ -235,8 +235,8 @@ public class DataConfig {
         while (i.hasNext()) {
             Object key = i.next();
             dataFormats.put(key,
-                new DataFormatConfig(
-                    (FormatInfoDTO) data.getFormats().get(key)));
+                new CoverageStoreConfig(
+                    (CoverageStoreInfoDTO) data.getFormats().get(key)));
         }
 
         i = data.getDataStores().keySet().iterator();
@@ -308,7 +308,7 @@ public class DataConfig {
 
         while (i.hasNext()) {
             Object key = i.next();
-            tmp.put(key, ((DataFormatConfig) dataFormats.get(key)).toDTO());
+            tmp.put(key, ((CoverageStoreConfig) dataFormats.get(key)).toDTO());
         }
 
         tmp = new HashMap();
@@ -425,8 +425,8 @@ public class DataConfig {
      *
      * @return
      */
-    public DataFormatConfig getDataFormat(String key) {
-        return (DataFormatConfig) dataFormats.get(key);
+    public CoverageStoreConfig getDataFormat(String key) {
+        return (CoverageStoreConfig) dataFormats.get(key);
     }
 
 	/**
@@ -601,7 +601,7 @@ public class DataConfig {
     }
 
     /**
-     * Add a new DataFormatConfig for the user to edit
+     * Add a new CoverageStoreConfig for the user to edit
      * 
      * <p>
      * The DataFormatCondig will be added under its id name
@@ -609,7 +609,7 @@ public class DataConfig {
      *
      * @param dataFormatConfig
      */
-    public void addDataFormat(DataFormatConfig dataFormatConfig) {
+    public void addDataFormat(CoverageStoreConfig dataFormatConfig) {
         if (dataFormats == null) {
             dataFormats = new HashMap();
         }
@@ -628,12 +628,12 @@ public class DataConfig {
      *
      * @return DOCUMENT ME!
      */
-    public DataFormatConfig removeDataFormat(String key) {
+    public CoverageStoreConfig removeDataFormat(String key) {
         if (dataFormats == null) {
             dataFormats = new HashMap();
         }
 
-        return (DataFormatConfig) dataFormats.remove(key);
+        return (CoverageStoreConfig) dataFormats.remove(key);
     }
 
 	/**
@@ -943,7 +943,7 @@ public class DataConfig {
         TreeSet set = new TreeSet();
 
         for (Iterator iter = dataFormats.values().iterator(); iter.hasNext();) {
-            DataFormatConfig dataFormatConfig = (DataFormatConfig) iter.next();
+            CoverageStoreConfig dataFormatConfig = (CoverageStoreConfig) iter.next();
 
             set.add(dataFormatConfig.getId());
         }

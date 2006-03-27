@@ -27,7 +27,7 @@ import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WCS;
-import org.vfny.geoserver.util.DataFormatUtils;
+import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.DescribeRequest;
 
@@ -281,7 +281,7 @@ public class DescribeResponse implements Response {
 		// TODO we need to signal somehow that something went wrong
 		GeneralEnvelope cvEnvelope = cv.getEnvelope();
 		try {
-			cvEnvelope = DataFormatUtils.adjustEnvelope(cv.getEnvelope()
+			cvEnvelope = CoverageStoreUtils.adjustEnvelope(cv.getEnvelope()
 					.getCoordinateReferenceSystem(), cv.getEnvelope());
 		} catch (MismatchedDimensionException e) {
 			LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),

@@ -28,7 +28,7 @@ import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataFormatConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
@@ -186,7 +186,7 @@ public class CoverageResponse implements Response {
 			final DataConfig dataConfig = (DataConfig) request
 					.getHttpServletRequest().getSession().getServletContext()
 					.getAttribute(DataConfig.CONFIG_KEY);
-			final DataFormatConfig dfConfig = dataConfig
+			final CoverageStoreConfig dfConfig = dataConfig
 					.getDataFormat(formatID);
 			final String realPath = request.getHttpServletRequest()
 					.getRealPath("/");

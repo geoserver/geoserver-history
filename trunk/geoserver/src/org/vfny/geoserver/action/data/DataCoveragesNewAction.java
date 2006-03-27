@@ -32,7 +32,7 @@ import org.opengis.parameter.ParameterValueGroup;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataFormatConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.form.data.DataCoveragesNewForm;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.UserContainer;
@@ -84,7 +84,7 @@ public class DataCoveragesNewAction extends ConfigAction {
 				.getServletContext().getAttribute(DataConfig.CONFIG_KEY);
 		String formatID = selectedNewCoverage;
 
-		DataFormatConfig dfConfig = dataConfig.getDataFormat(formatID);
+		CoverageStoreConfig dfConfig = dataConfig.getDataFormat(formatID);
 		GridCoverage gc = null;
 
 		final ServletContext sc = getServlet().getServletContext();

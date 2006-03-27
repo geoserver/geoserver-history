@@ -34,7 +34,7 @@ import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-import org.vfny.geoserver.util.DataFormatUtils;
+import org.vfny.geoserver.util.CoverageStoreUtils;
 
 /**
  * User interface Coverage staging area.
@@ -226,7 +226,7 @@ public class CoverageConfig {
 		srsWKT = (crs != null ? crs.toWKT() : "UNKNOWN");
 		envelope = (GeneralEnvelope) gc.getEnvelope();
 		try {
-			latLonEnvelope = DataFormatUtils.getLatLonEnvelope(envelope);
+			latLonEnvelope = CoverageStoreUtils.getLatLonEnvelope(envelope);
 		} catch (IndexOutOfBoundsException e) {
 			ConfigurationException newEx = new ConfigurationException(
 					new StringBuffer("Converting Envelope to Lat-Lon WGS84: ").
@@ -309,7 +309,7 @@ public class CoverageConfig {
 			}*/
 		responseCRSs.add(((Identifier)gc.getCoordinateReferenceSystem2D().getIdentifiers().toArray()[0]).toString());
 		supportedFormats = new LinkedList();
-		final List formats = DataFormatUtils.listDataFormats();
+		final List formats = CoverageStoreUtils.listDataFormats();
 		for(Iterator i = formats.iterator(); i.hasNext();) {
         	final Format fTmp = (Format) i.next();
         	final String fName = fTmp.getName();

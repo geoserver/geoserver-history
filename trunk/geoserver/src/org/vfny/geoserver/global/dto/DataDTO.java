@@ -69,13 +69,13 @@ public final class DataDTO implements DataTransferObject {
 	private Map dataStores;
 
 	/**
-	 * FormatInfoDTO referenced by key "<code>formatID</code>".
+	 * CoverageStoreInfoDTO referenced by key "<code>formatID</code>".
 	 * 
-	 * @see org.vfny.geoserver.global.dto.FormatInfoDTO
+	 * @see org.vfny.geoserver.global.dto.CoverageStoreInfoDTO
 	 * 
 	 * @uml.property name="formats"
 	 * @uml.associationEnd elementType="java.lang.String" qualifier="getFormatId:java.lang.String
-	 * org.vfny.geoserver.global.dto.FormatInfoDTO" multiplicity="(0 -1)" ordering="ordered"
+	 * org.vfny.geoserver.global.dto.CoverageStoreInfoDTO" multiplicity="(0 -1)" ordering="ordered"
 	 */
 	private Map formats;
 
@@ -335,9 +335,9 @@ public final class DataDTO implements DataTransferObject {
 	}
 
 	/**
-	 * Retrive a Map of FormatInfoDTO by "formatID".
+	 * Retrive a Map of CoverageStoreInfoDTO by "formatID".
 	 * 
-	 * @return Map of FormatInfoDTO by "formatID"
+	 * @return Map of CoverageStoreInfoDTO by "formatID"
 	 * 
 	 * @uml.property name="formats"
 	 */
@@ -418,9 +418,9 @@ public final class DataDTO implements DataTransferObject {
 	}
 
 	/**
-	 * Replace FormatInfoDTO map.
+	 * Replace CoverageStoreInfoDTO map.
 	 * 
-	 * @param map Map of FormatInfoDTO by "formatID"
+	 * @param map Map of CoverageStoreInfoDTO by "formatID"
 	 * 
 	 * @throws NullPointerException DOCUMENT ME!
 	 * 

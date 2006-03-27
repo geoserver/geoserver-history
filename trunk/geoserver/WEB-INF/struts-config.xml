@@ -105,13 +105,13 @@
 
     	<form-bean
     		name="dataFormatsSelectForm"
-    		type="org.vfny.geoserver.form.data.DataFormatsSelectForm"/>
+    		type="org.vfny.geoserver.form.data.CoverageStoresSelectForm"/>
     	<form-bean
     		name="dataFormatsNewForm"
-    		type="org.vfny.geoserver.form.data.DataFormatsNewForm"/>
+    		type="org.vfny.geoserver.form.data.CoverageStoresNewForm"/>
     	<form-bean
     		name="dataFormatsEditorForm"
-    		type="org.vfny.geoserver.form.data.DataFormatsEditorForm"/>
+    		type="org.vfny.geoserver.form.data.CoverageStoresEditorForm"/>
 
     	<form-bean
     		name="dataDataStoresSelectForm"
@@ -876,7 +876,7 @@
        	<!-- DATA Formats Actions -->
         <action
         	path="/config/data/formatSubmit"
-        	type="org.vfny.geoserver.action.data.DataFormatsEditorAction"
+        	type="org.vfny.geoserver.action.data.CoverageStoresEditorAction"
         	name="dataFormatsEditorForm"
         	scope="request"
         	validate="true"
@@ -884,7 +884,7 @@
         	
         <action
         	path="/config/data/formatSelect"
-        	type="org.vfny.geoserver.action.data.DataFormatsSelectAction"
+        	type="org.vfny.geoserver.action.data.CoverageStoresSelectAction"
         	name="dataFormatsSelectForm"
         	scope="request"
         	validate="true"
@@ -892,7 +892,7 @@
 
         <action
         	path="/config/data/formatNewSubmit"
-        	type="org.vfny.geoserver.action.data.DataFormatsNewAction"
+        	type="org.vfny.geoserver.action.data.CoverageStoresNewAction"
         	name="dataFormatsNewForm"
         	scope="request"
         	validate="true"

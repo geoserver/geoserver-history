@@ -38,10 +38,10 @@ import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataFormatConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageUtils;
-import org.vfny.geoserver.util.DataFormatUtils;
+import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.Requests;
 
 /**
@@ -59,7 +59,7 @@ import org.vfny.geoserver.util.Requests;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
  */
-public class DataFormatsEditorForm extends ActionForm {
+public class CoverageStoresEditorForm extends ActionForm {
 
 	/**
 	 * 
@@ -146,7 +146,7 @@ public class DataFormatsEditorForm extends ActionForm {
 
         namespaces = new TreeSet(config.getNameSpaces().keySet());
 
-        DataFormatConfig dfConfig = Requests.getUserContainer(request)
+        CoverageStoreConfig dfConfig = Requests.getUserContainer(request)
 				.getDataFormatConfig();
 
 		if (dfConfig == null) {
@@ -266,10 +266,10 @@ public class DataFormatsEditorForm extends ActionForm {
 		// }
 		// Requests.getApplicationState(request);
 
-		// Selected DataFormatConfig is in session
+		// Selected CoverageStoreConfig is in session
 		//
 		UserContainer user = Requests.getUserContainer(request);
-		DataFormatConfig dfConfig = user.getDataFormatConfig();
+		CoverageStoreConfig dfConfig = user.getDataFormatConfig();
 		//
 		// dsConfig is the only way to get a factory
 		Format factory = dfConfig.getFactory();
@@ -283,7 +283,7 @@ public class DataFormatsEditorForm extends ActionForm {
 			for (int i = 0; i < paramKeys.size(); i++) {
 				String key = (String) getParamKey(i);
 
-				ParameterValue param = DataFormatUtils.find(info, key);
+				ParameterValue param = CoverageStoreUtils.find(info, key);
 
 				if (param == null) {
 					errors.add("paramValue[" + i + "]", new ActionError(

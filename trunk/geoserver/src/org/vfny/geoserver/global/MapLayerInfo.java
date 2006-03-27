@@ -47,11 +47,11 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataFormatConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.util.CoverageUtils;
-import org.vfny.geoserver.util.DataFormatUtils;
+import org.vfny.geoserver.util.CoverageStoreUtils;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -181,7 +181,7 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		} else {
 			GeneralEnvelope bounds = null;
 			try {
-				bounds = DataFormatUtils
+				bounds = CoverageStoreUtils
 						.adjustEnvelope(coverage.getEnvelope()
 								.getCoordinateReferenceSystem(), coverage
 								.getEnvelope());
@@ -404,7 +404,7 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 			String formatID = meta.getFormatId();
 			DataConfig dataConfig = (DataConfig) request.getSession()
 					.getServletContext().getAttribute(DataConfig.CONFIG_KEY);
-			DataFormatConfig dfConfig = dataConfig.getDataFormat(formatID);
+			CoverageStoreConfig dfConfig = dataConfig.getDataFormat(formatID);
 
 			String realPath = request.getRealPath("/");
 			URL url = CoverageUtils.getResource(dfConfig.getUrl(), realPath);

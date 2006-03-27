@@ -48,9 +48,9 @@ import org.vfny.geoserver.global.FormatInfo;
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
- * @version $Id: DataFormatUtils.java,v 1.12 2004/09/21 21:14:48 cholmesny Exp $
+ * @version $Id: CoverageStoreUtils.java,v 1.12 2004/09/21 21:14:48 cholmesny Exp $
  */
-public abstract class DataFormatUtils {
+public abstract class CoverageStoreUtils {
 	public static Format acquireFormat(String type, ServletContext sc)
 			throws IOException {
 		Format[] formats = GridFormatFinder.getFormatArray();

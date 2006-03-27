@@ -16,7 +16,7 @@ import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.util.DataFormatUtils;
+import org.vfny.geoserver.util.CoverageStoreUtils;
 
 /**
  * DOCUMENT ME!
@@ -419,7 +419,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
 	public GeneralEnvelope getLatLonEnvelope() {
 		if(latLonEnvelope == null) {
 				try {
-					latLonEnvelope = DataFormatUtils.getLatLonEnvelope(this.envelope);
+					latLonEnvelope = CoverageStoreUtils.getLatLonEnvelope(this.envelope);
 				} catch (IndexOutOfBoundsException e) {
 					return null;
 				} catch (FactoryException e) {

@@ -15,7 +15,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.opengis.coverage.grid.Format;
-import org.vfny.geoserver.util.DataFormatUtils;
+import org.vfny.geoserver.util.CoverageStoreUtils;
 
 
 /**
@@ -51,7 +51,7 @@ public class DataCoveragePluginsForm extends ActionForm {
      */
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
-        formats = DataFormatUtils.listDataFormats();
+        formats = CoverageStoreUtils.listDataFormats();
         formatDescriptions = new ArrayList();
         formatIDs = new ArrayList();
         

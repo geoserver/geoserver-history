@@ -60,7 +60,7 @@ import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.FormatInfoDTO;
+import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
@@ -69,7 +69,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
 import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-import org.vfny.geoserver.util.DataFormatUtils;
+import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -914,7 +914,7 @@ public class XMLConfigReader {
 
 		NodeList fmElements = fmRoot.getElementsByTagName("format");
 		int fmCnt = fmElements.getLength();
-		FormatInfoDTO fmConfig;
+		CoverageStoreInfoDTO fmConfig;
 		Element fmElem;
 
 		for (int i = 0; i < fmCnt; i++) {
@@ -947,9 +947,9 @@ public class XMLConfigReader {
 	 * @throws ConfigurationException
 	 *             When an error occurs.
 	 */
-	protected FormatInfoDTO loadFormat(Element fmElem)
+	protected CoverageStoreInfoDTO loadFormat(Element fmElem)
 			throws ConfigurationException {
-		FormatInfoDTO fm = new FormatInfoDTO();
+		CoverageStoreInfoDTO fm = new CoverageStoreInfoDTO();
 
 		if (LOGGER.isLoggable(Level.FINER)) {
 			LOGGER.finer("creating a new FormatDTO configuration");
@@ -1561,7 +1561,7 @@ public class XMLConfigReader {
 		GeneralEnvelope gcEnvelope = loadEnvelope(envelope, crs);
 		cv.setEnvelope(gcEnvelope);
 		try {
-			cv.setLatLonEnvelope(DataFormatUtils.adjustEnvelope(crs, gcEnvelope));
+			cv.setLatLonEnvelope(CoverageStoreUtils.adjustEnvelope(crs, gcEnvelope));
 		} catch (MismatchedDimensionException e) {
 			throw new ConfigurationException(e);
 		} catch (IndexOutOfBoundsException e) {

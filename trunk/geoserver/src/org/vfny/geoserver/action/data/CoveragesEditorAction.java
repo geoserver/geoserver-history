@@ -46,12 +46,12 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataFormatConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.form.data.CoveragesEditorForm;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageUtils;
-import org.vfny.geoserver.util.DataFormatUtils;
+import org.vfny.geoserver.util.CoverageStoreUtils;
 
 /**
  * These Action handles all the buttons for the Coverage Editor.
@@ -154,7 +154,7 @@ public class CoveragesEditorAction extends ConfigAction {
 			CoveragesEditorForm coverageForm, UserContainer user,
 			HttpServletRequest request) throws IOException, ServletException {
 		final DataConfig dataConfig = getDataConfig();
-		final DataFormatConfig dfConfig = dataConfig.getDataFormat(coverageForm
+		final CoverageStoreConfig dfConfig = dataConfig.getDataFormat(coverageForm
 				.getFormatId());
 		GridCoverage gc;
 
@@ -210,7 +210,7 @@ public class CoveragesEditorAction extends ConfigAction {
 			final GeneralEnvelope gEnvelope = (GeneralEnvelope) gc
 					.getEnvelope();
 			final GeneralEnvelope targetEnvelope = gEnvelope;
-			final GeneralEnvelope envelope = DataFormatUtils.adjustEnvelope(sourceCRS,
+			final GeneralEnvelope envelope = CoverageStoreUtils.adjustEnvelope(sourceCRS,
 					targetEnvelope);
 			if (!sourceCRS.getIdentifiers().isEmpty()) {
 				coverageForm.setSrsName(sourceCRS.getIdentifiers().toArray()[0]

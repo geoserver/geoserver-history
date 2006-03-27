@@ -26,7 +26,7 @@ import org.vfny.geoserver.config.ConfigRequests;
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
-public class DataFormatsSelectForm extends ActionForm {
+public class CoverageStoresSelectForm extends ActionForm {
 
 	/**
 	 * Action that spawned us must be "edit" or "delete"

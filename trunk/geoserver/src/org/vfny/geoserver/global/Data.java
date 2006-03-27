@@ -34,7 +34,7 @@ import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.FormatInfoDTO;
+import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 
@@ -248,7 +248,7 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 		Map map = new HashMap();
 		
 		for (Iterator i = dto.getFormats().values().iterator(); i.hasNext();) {
-			FormatInfoDTO formatDTO = (FormatInfoDTO) i.next();
+			CoverageStoreInfoDTO formatDTO = (CoverageStoreInfoDTO) i.next();
 			String id = formatDTO.getId();
 			
 			FormatInfo formatInfo = new FormatInfo(formatDTO, this);

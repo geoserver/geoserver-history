@@ -18,8 +18,8 @@ import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataFormatConfig;
-import org.vfny.geoserver.form.data.DataFormatsSelectForm;
+import org.vfny.geoserver.config.CoverageStoreConfig;
+import org.vfny.geoserver.form.data.CoverageStoresSelectForm;
 import org.vfny.geoserver.global.UserContainer;
 
 /**
@@ -31,21 +31,21 @@ import org.vfny.geoserver.global.UserContainer;
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
- * @version $Id: DataFormatsSelectAction.java,v 1.12 2004/02/25 21:51:11
+ * @version $Id: CoverageStoresSelectAction.java,v 1.12 2004/02/25 21:51:11
  *          dmzwiers Exp $
  */
-public class DataFormatsSelectAction extends ConfigAction {
+public class CoverageStoresSelectAction extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
 			ActionForm incomingForm, UserContainer user,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 
-		DataFormatsSelectForm form = (DataFormatsSelectForm) incomingForm;
+		CoverageStoresSelectForm form = (CoverageStoresSelectForm) incomingForm;
 
 		String buttonAction = form.getButtonAction();
 
 		DataConfig dataConfig = (DataConfig) getDataConfig();
-		DataFormatConfig dfConfig = null;
+		CoverageStoreConfig dfConfig = null;
 
 		Locale locale = (Locale) request.getLocale();
 		MessageResources messages = servlet.getResources();
@@ -56,7 +56,7 @@ public class DataFormatsSelectAction extends ConfigAction {
 				"label.delete"));
 
 		if (editLabel.equals(buttonAction)) {
-			dfConfig = (DataFormatConfig) dataConfig.getDataFormat(form
+			dfConfig = (CoverageStoreConfig) dataConfig.getDataFormat(form
 					.getSelectedDataFormatId());
 
 			getUserContainer(request).setDataFormatConfig(dfConfig);

@@ -21,7 +21,7 @@ import java.util.Map;
  * application and its configuration and persistent layers. As such the class
  * is final - to allow for its future use as an on-the-wire message.
  * </p>
- * Example:<code> FormatInfoDTO dsiDto = new FormatInfoDTO();
+ * Example:<code> CoverageStoreInfoDTO dsiDto = new CoverageStoreInfoDTO();
  * dsiDto.setIde("myFormat"); dsiDto.setEnabled(true); dsiDto.setTile("My
  * Data Store"); Map m = new HashMap(); m.put("key","param");
  * dsiDto.setConnectionParams(m); </code>
@@ -29,9 +29,9 @@ import java.util.Map;
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: FormatInfoDTO.java,v 1.5 2004/02/02 08:56:45 jive Exp $
+ * @version $Id: CoverageStoreInfoDTO.java,v 1.5 2004/02/02 08:56:45 jive Exp $
  */
-public final class FormatInfoDTO implements DataTransferObject {
+public final class CoverageStoreInfoDTO implements DataTransferObject {
 
 	/**
 	 * unique Format identifier
@@ -98,7 +98,7 @@ public final class FormatInfoDTO implements DataTransferObject {
      * does nothing
      * </p>
      */
-    public FormatInfoDTO() {
+    public CoverageStoreInfoDTO() {
     }
 
     /**
@@ -114,7 +114,7 @@ public final class FormatInfoDTO implements DataTransferObject {
      *
      * @throws NullPointerException DOCUMENT ME!
      */
-    public FormatInfoDTO(FormatInfoDTO dto) {
+    public CoverageStoreInfoDTO(CoverageStoreInfoDTO dto) {
         if (dto == null) {
             throw new NullPointerException("Non-Null FormatDTO is requried");
         }
@@ -141,7 +141,7 @@ public final class FormatInfoDTO implements DataTransferObject {
      * @see java.lang.Object#clone()
      */
     public Object clone() {
-        return new FormatInfoDTO(this);
+        return new CoverageStoreInfoDTO(this);
     }
 
     /**
@@ -159,11 +159,11 @@ public final class FormatInfoDTO implements DataTransferObject {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        if ((obj == null) || !(obj instanceof FormatInfoDTO)) {
+        if ((obj == null) || !(obj instanceof CoverageStoreInfoDTO)) {
             return false;
         }
 
-        FormatInfoDTO ds = (FormatInfoDTO) obj;
+        CoverageStoreInfoDTO ds = (CoverageStoreInfoDTO) obj;
         boolean r = true;
         r = r && (id == ds.getId());
         r = r && (nameSpaceId == ds.getNameSpaceId());
@@ -317,7 +317,7 @@ public final class FormatInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * Sets the unique identifier for this FormatInfoDTO.
+	 * Sets the unique identifier for this CoverageStoreInfoDTO.
 	 * 
 	 * @param identifier non<code>null</code> identifier for Format
 	 * 

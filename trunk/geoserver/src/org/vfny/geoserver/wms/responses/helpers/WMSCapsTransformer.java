@@ -38,7 +38,7 @@ import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.util.DataFormatUtils;
+import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
@@ -752,7 +752,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
 			GeneralEnvelope bounds = null;
 			try {
-				bounds = DataFormatUtils
+				bounds = CoverageStoreUtils
 						.adjustEnvelope(coverage.getEnvelope()
 								.getCoordinateReferenceSystem(), coverage
 								.getEnvelope());

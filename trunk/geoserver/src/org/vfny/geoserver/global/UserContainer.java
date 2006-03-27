@@ -16,7 +16,7 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.CoverageConfig;
-import org.vfny.geoserver.config.DataFormatConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
@@ -93,12 +93,12 @@ public class UserContainer implements HttpSessionBindingListener {
 	private String prefix;
 
 	/**
-	 * Selected DataFormatConfig held in session for creation/editing.
+	 * Selected CoverageStoreConfig held in session for creation/editing.
 	 * 
 	 * @uml.property name="dataFormatConfig"
 	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
-	private DataFormatConfig dataFormatConfig;
+	private CoverageStoreConfig dataFormatConfig;
 
 	/**
 	 * Selected DataStoreConfig held in session for creation/editing.
@@ -589,7 +589,7 @@ public class UserContainer implements HttpSessionBindingListener {
 	 * 
 	 * @uml.property name="dataFormatConfig"
 	 */
-	public DataFormatConfig getDataFormatConfig() {
+	public CoverageStoreConfig getDataFormatConfig() {
 		return dataFormatConfig;
 	}
 
@@ -598,7 +598,7 @@ public class UserContainer implements HttpSessionBindingListener {
 	 * 
 	 * @uml.property name="dataFormatConfig"
 	 */
-	public void setDataFormatConfig(DataFormatConfig dataFormatConfig) {
+	public void setDataFormatConfig(CoverageStoreConfig dataFormatConfig) {
 		this.dataFormatConfig = dataFormatConfig;
 	}
 

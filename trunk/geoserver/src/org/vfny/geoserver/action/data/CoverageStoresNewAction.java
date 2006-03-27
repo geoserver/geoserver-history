@@ -8,8 +8,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
-import org.vfny.geoserver.config.DataFormatConfig;
-import org.vfny.geoserver.form.data.DataFormatsNewForm;
+import org.vfny.geoserver.config.CoverageStoreConfig;
+import org.vfny.geoserver.form.data.CoverageStoresNewForm;
 import org.vfny.geoserver.global.UserContainer;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Create a new DataFormatConfig based on user's input.
+ * Create a new CoverageStoreConfig based on user's input.
  * 
  * <p>
  * Will need to update the current DataFormatId as stored in session context.
@@ -29,16 +29,16 @@ import javax.servlet.http.HttpServletResponse;
  * @author dmzwiers
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: DataFormatsNewAction.java,v 1.12 2004/02/25 21:51:11 dmzwiers Exp $
+ * @version $Id: CoverageStoresNewAction.java,v 1.12 2004/02/25 21:51:11 dmzwiers Exp $
  */
-public class DataFormatsNewAction extends ConfigAction {
+public class CoverageStoresNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
 
-        final DataFormatsNewForm newForm = (DataFormatsNewForm) form;
-        final DataFormatConfig newFormatConfig;
-        newFormatConfig = new DataFormatConfig(newForm.getDataFormatID(),
+        final CoverageStoresNewForm newForm = (CoverageStoresNewForm) form;
+        final CoverageStoreConfig newFormatConfig;
+        newFormatConfig = new CoverageStoreConfig(newForm.getDataFormatID(),
                 newForm.getSelectedDescription());
         getUserContainer(request).setDataFormatConfig(newFormatConfig);
         return mapping.findForward("config.data.format.editor");

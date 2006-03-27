@@ -27,11 +27,11 @@ import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataFormatConfig;
-import org.vfny.geoserver.form.data.DataFormatsEditorForm;
+import org.vfny.geoserver.config.CoverageStoreConfig;
+import org.vfny.geoserver.form.data.CoverageStoresEditorForm;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageUtils;
-import org.vfny.geoserver.util.DataFormatUtils;
+import org.vfny.geoserver.util.CoverageStoreUtils;
 
 /**
  * DOCUMENT ME!
@@ -41,11 +41,11 @@ import org.vfny.geoserver.util.DataFormatUtils;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
  */
-public class DataFormatsEditorAction extends ConfigAction {
+public class CoverageStoresEditorAction extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			UserContainer user, HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ServletException {
-		DataFormatsEditorForm dataFormatsForm = (DataFormatsEditorForm) form;
+		CoverageStoresEditorForm dataFormatsForm = (CoverageStoresEditorForm) form;
 
 		String dataFormatID = dataFormatsForm.getDataFormatId();
 		String namespace = dataFormatsForm.getNamespaceId();
@@ -54,15 +54,15 @@ public class DataFormatsEditorAction extends ConfigAction {
 		String description = dataFormatsForm.getDescription();
 
 		DataConfig dataConfig = (DataConfig) getDataConfig();
-		DataFormatConfig config = null;
+		CoverageStoreConfig config = null;
 
-		config = (DataFormatConfig) dataConfig.getDataFormat(dataFormatID);
+		config = (CoverageStoreConfig) dataConfig.getDataFormat(dataFormatID);
 
 		if (config == null) {
 			// we are creating a new one.
 			dataConfig.addDataFormat(getUserContainer(request)
 					.getDataFormatConfig());
-			config = (DataFormatConfig) dataConfig.getDataFormat(dataFormatID);
+			config = (CoverageStoreConfig) dataConfig.getDataFormat(dataFormatID);
 		}
 
 		// After extracting params into a map
@@ -79,7 +79,7 @@ public class DataFormatsEditorAction extends ConfigAction {
 		for (Iterator i = params.keySet().iterator(); i.hasNext();) {
 			String key = (String) i.next();
 
-			ParameterValue param = DataFormatUtils.find(info, key);
+			ParameterValue param = CoverageStoreUtils.find(info, key);
 
 			if (param == null) {
 
@@ -106,7 +106,7 @@ public class DataFormatsEditorAction extends ConfigAction {
 
 		try {
 			ServletContext sc = request.getSession().getServletContext();
-			Map niceParams = DataFormatUtils.getParams(parameters, sc);
+			Map niceParams = CoverageStoreUtils.getParams(parameters, sc);
 			Format victim = factory;
 			String[] typeNames = null;
 			ParameterValueGroup vicParams = victim.getReadParameters();

@@ -26,7 +26,7 @@ import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.util.DataFormatUtils;
+import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.Requests;
 
 /**
@@ -175,7 +175,7 @@ public class CoveragesEditorForm extends ActionForm {
 				DataConfig.SELECTED_COVERAGE);
 		GeneralEnvelope bounds = null;
 		try {
-			bounds = DataFormatUtils.adjustEnvelope(cvConfig.getCrs(), cvConfig.getEnvelope());
+			bounds = CoverageStoreUtils.adjustEnvelope(cvConfig.getCrs(), cvConfig.getEnvelope());
 		} catch (MismatchedDimensionException e) {
 			// TODO Not sure what to do, user must have bookmarked?
 			return; // Action should redirect to Select screen?

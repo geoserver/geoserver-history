@@ -33,7 +33,7 @@ import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.FormatInfoDTO;
+import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.ServiceDTO;
@@ -513,7 +513,7 @@ public class XMLConfigWriter {
 			
 			while (i.hasNext()) {
 				String s = (String) i.next();
-				FormatInfoDTO df = (FormatInfoDTO) data.getFormats()
+				CoverageStoreInfoDTO df = (CoverageStoreInfoDTO) data.getFormats()
 				.get(s);
 				
 				if (df != null) {
@@ -633,7 +633,7 @@ public class XMLConfigWriter {
 	 *
 	 * @throws ConfigurationException When an IO exception occurs.
 	 */
-	protected static void storeFormat(WriterHelper cw, FormatInfoDTO df)
+	protected static void storeFormat(WriterHelper cw, CoverageStoreInfoDTO df)
 	throws ConfigurationException {
 		if (LOGGER.isLoggable(Level.FINE)) {
 			LOGGER.fine("In method storeFormat");

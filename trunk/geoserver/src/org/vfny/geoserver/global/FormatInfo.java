@@ -6,7 +6,7 @@ package org.vfny.geoserver.global;
 
 import org.opengis.coverage.grid.*;
 import org.geotools.data.coverage.grid.GridFormatFinder;
-import org.vfny.geoserver.global.dto.FormatInfoDTO;
+import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -100,10 +100,10 @@ public class FormatInfo extends GlobalLayerSupertype {
 	 * Stores the specified data for later use.
 	 * </p>
 	 *
-	 * @param config FormatInfoDTO the current configuration to use.
+	 * @param config CoverageStoreInfoDTO the current configuration to use.
 	 * @param data Data a ref to use later to look up related informtion
 	 */
-	public FormatInfo(FormatInfoDTO config, Data data) {
+	public FormatInfo(CoverageStoreInfoDTO config, Data data) {
 		this.data = data;
 		meta = new HashMap();
 		
@@ -126,10 +126,10 @@ public class FormatInfo extends GlobalLayerSupertype {
 	 * extreme caution.
 	 * </p>
 	 *
-	 * @return FormatInfoDTO the generated object
+	 * @return CoverageStoreInfoDTO the generated object
 	 */
 	Object toDTO() {
-		FormatInfoDTO dto = new FormatInfoDTO();
+		CoverageStoreInfoDTO dto = new CoverageStoreInfoDTO();
 		dto.setAbstract(_abstract);
 		dto.setParameters(parameters);
 		dto.setEnabled(enabled);

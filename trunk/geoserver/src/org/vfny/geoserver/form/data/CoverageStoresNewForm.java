@@ -15,7 +15,7 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.vfny.geoserver.util.DataFormatUtils;
+import org.vfny.geoserver.util.CoverageStoreUtils;
 
 /**
  * Used to accept information from user for a New DataFormat Action.
@@ -27,7 +27,7 @@ import org.vfny.geoserver.util.DataFormatUtils;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
  */
-public class DataFormatsNewForm extends ActionForm {
+public class CoverageStoresNewForm extends ActionForm {
 	/**
 	 * 
 	 */
@@ -59,7 +59,7 @@ public class DataFormatsNewForm extends ActionForm {
 		super.reset(mapping, request);
 		selectedDescription = "";
 		dataFormatID = "";
-		formatDescriptions = DataFormatUtils.listDataFormatsDescriptions();
+		formatDescriptions = CoverageStoreUtils.listDataFormatsDescriptions();
 	}
 
 	/**
