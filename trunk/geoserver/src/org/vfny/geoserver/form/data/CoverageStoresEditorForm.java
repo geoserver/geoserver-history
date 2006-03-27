@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Vector;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -25,23 +24,15 @@ import org.apache.struts.config.ControllerConfig;
 import org.apache.struts.upload.CommonsMultipartRequestHandler;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.upload.MultipartRequestHandler;
-import org.geotools.factory.Hints;
-import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.factory.epsg.DefaultFactory;
-// import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
 import org.opengis.coverage.grid.Format;
 import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
-import org.opengis.referencing.crs.CRSAuthorityFactory;
-import org.opengis.referencing.crs.CRSFactory;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.CoverageStoreConfig;
+import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.CoverageStoreUtils;
+import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.Requests;
 
 /**
@@ -200,8 +191,13 @@ public class CoverageStoresEditorForm extends ActionForm {
 					Object value = dfConfig.getParameters().get(key);
 					String text = "";
 
+					/**
+					 * values_palette, CRS and envelope params no more handled by Coverage Store.
+					 * They should be managed by the Coverage Editor instead.
+					 */
 					if ("values_palette".equals(key)) {
-						Object palVal = value;
+						continue;
+						/*Object palVal = value;
 						if (palVal instanceof Color[]) {
 							for (int i = 0; i < ((Color[]) palVal).length; i++) {
 								String colString = "#"
@@ -236,7 +232,11 @@ public class CoverageStoresEditorForm extends ActionForm {
 							}
 						} else if (palVal instanceof String) {
 							text = (String) palVal;
-						}
+						}*/
+					} else if ("CRS".equalsIgnoreCase(key)) {
+						continue;
+					} else if ("envelope".equalsIgnoreCase(key)) {
+						continue;
 					} else {
 						if (value == null) {
 							text = null;
