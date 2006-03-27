@@ -773,7 +773,7 @@ public class KMLWriter extends OutputStreamWriter {
         	styleString.append("<PolyStyle><color>");
             Paint p = ((PolygonStyle2D)style).getFill();
             if(p instanceof Color){
-            	styleString.append("aa"+colorToHex((Color)p));//transparancy needs to come from the opacity value.
+            	styleString.append("aa").append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
             } else{
             	styleString.append("ffaaaaaa");//should not occure in normal parsing
             }
@@ -782,33 +782,35 @@ public class KMLWriter extends OutputStreamWriter {
 
             write(styleString.toString());
         } else if(style instanceof LineStyle2D){
-            write("<Style id=\"GeoServerStyle"+id+"\">");
-            write("<LineStyle><color>");
+        	final StringBuffer styleString = new StringBuffer();
+        	styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
+        	styleString.append("<LineStyle><color>");
             Paint p = ((LineStyle2D)style).getContour();
             if(p instanceof Color){
-                write("aa"+colorToHex((Color)p));//transparancy needs to come from the opacity value.
+            	styleString.append("aa").append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
             } else{
-                write("ffaaaaaa");//should not occure in normal parsing
+            	styleString.append("ffaaaaaa");//should not occure in normal parsing
             }
-            write("</color>" +
-            		"<width>2</width>" +
-            		"</LineStyle>");
-            write("</Style>");
+            styleString.append("</color><width>2</width></LineStyle>");
+            styleString.append("</Style>");
+
+            write(styleString.toString());
         }
     }
     
     private void writeRasterStyle(final String href, final String id) throws IOException {
-    	write("<Style id=\"GeoServerStyle"+id+"\">");
-        write("<IconStyle>" +
-        		"<Icon>" +
-        		"<href>"+href+"</href>" +
-        		"<viewRefreshMode>never</viewRefreshMode>" +
-        		"<viewBoundScale>0.75</viewBoundScale>" +
-				"<w>"+this.mapContext.getMapWidth()+"</w><h>"+this.mapContext.getMapHeight()+"</h>" +
-        		"</Icon>" +
-        		"</IconStyle>");
-        write("<PolyStyle><fill>0</fill><outline>0</outline></PolyStyle>");
-        write("</Style>");
+    	final StringBuffer styleString = new StringBuffer();
+    	styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
+    	styleString.append("<IconStyle><Icon><href>").
+			append(href).append("</href><viewRefreshMode>never</viewRefreshMode>").
+        	append("<viewBoundScale>0.75</viewBoundScale><w>").
+			append(this.mapContext.getMapWidth()).append("</w><h>").
+			append(this.mapContext.getMapHeight()).
+			append("</h></Icon></IconStyle>");
+    	styleString.append("<PolyStyle><fill>0</fill><outline>0</outline></PolyStyle>");
+    	styleString.append("</Style>");
+    	
+    	write(styleString.toString());
     }
     
     private boolean isWithinScale(Rule r){
