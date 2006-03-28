@@ -9,7 +9,7 @@
 <!-- test.type directory to be something other than UserBasic.              -->
 <!-- ====================================================================== -->
 
-<project name="geoserver"  default="help" basedir=".">
+<project name="geoserver"   default="help" basedir=".">
 
 	<!-- ====================================================================== -->
 	<!-- LOCAL PROPERTIES                                                       -->
