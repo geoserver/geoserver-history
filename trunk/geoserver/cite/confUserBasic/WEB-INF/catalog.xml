@@ -67,7 +67,7 @@ parameters repository for all coverages it holds.
 </format>
 <format namespace = "nurc" enabled = "true" id = "sample_geotiff" >
 <description></description>
-<type>GeoTIFFWritingUtilities</type>
+<type>GeoTIFF</type>
 <url>file:data/coverages/geotiff_sample/~gtiff172030523_192_106_197_2_0.tiff</url>
 </format>
 <format namespace = "nurc" enabled = "true" id = "prova_grib" >
@@ -120,6 +120,7 @@ if you want them on the server.
 <style filename = "simpleRoads.sld" id = "simple_roads"  />
 <style filename = "popshade.sld" id = "population"  />
 <style filename = "raster.sld" id = "raster"  />
+<style filename = "dem.sld" id = "dem"  />
 <style filename = "poi.sld" id = "poi"  />
 <style filename = "Lakes.sld" id = "cite_lakes"  />
 </styles>

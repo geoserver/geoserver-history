@@ -1193,7 +1193,8 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-image.jar" file="${dir.maven}/gt2/jars/image-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-grib.jar" file="${dir.maven}/gt2/jars/GriB1-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-geotiff.jar" file="${dir.maven}/gt2/jars/geotiff-${version.geotools}.jar" />
-
+	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-mosaic.jar" file="${dir.maven}/gt2/jars/ImageMosaic-${version.geotools}.jar" />
+	
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2/jars/arcsde-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-hsql-${version.geotools}.jar" />
