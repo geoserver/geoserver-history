@@ -17,6 +17,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.Expression;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.map.MapLayer;
@@ -137,7 +138,7 @@ public class EncodeKML {
         int nLayers = layers.length;
         int defMaxDecimals = writer.getMaximunFractionDigits();
         
-        FilterFactory fFac = FilterFactory.createFilterFactory();
+        FilterFactory fFac = FilterFactoryFinder.createFilterFactory();
         for (int i = 0; i < nLayers; i++) {
             MapLayer layer = layers[i];
             FeatureReader featureReader = null;
