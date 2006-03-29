@@ -24,8 +24,8 @@
 	<!-- override these values -->
 
 	
-	 <property name="version.geotools" value="2.1.1" />  
-	<!-- <property name="version.geotools" value="2.2.x" /> -->
+	
+	<property name="version.geotools" value="2.2.x" />
 
 	<!-- If you don't have your own conf directory then define one of -->
 	<!-- these test.type's in your build.properties file-->
@@ -1183,10 +1183,14 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	
 <!-- added by DJB to be more complete. -->
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-main.jar" file="${dir.maven}/gt2/jars/main-${version.geotools}.jar" />
-	
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-render.jar" file="${dir.maven}/gt2/jars/render-${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-coverage.jar" file="${dir.maven}/gt2/jars/coverage-${version.geotools}.jar" />
+
 	<!-- delete it so you dont have 2 org.geotools.referencing in you lib/ -->
 	<delete file="${dir.lib}/gt2-referencing.jar" failonerror="false" />
 	
+	
+	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-api.jar" file="${dir.maven}/gt2/jars/api-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-referencing.jar" file="${dir.maven}/gt2/jars/referencing-${version.geotools}.jar" />
 
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2/jars/arcsde-${version.geotools}.jar" />
@@ -1195,7 +1199,7 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 
 <copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
 	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" /-->	
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" />
+	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" /-->
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" />
 	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-vpf.jar" file="${dir.maven}/gt2/jars/vpf-1.9.0.jar" /-->
 	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-db2.jar" file="${dir.maven}/gt2/jars/db2-${version.geotools}.jar" /-->
