@@ -10,14 +10,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-fileupload.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-lang.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-validator.jar"/>
-	<classpathentry exported="true" sourcepath="/arcsde" kind="lib" path="lib/gt2-arcsde.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gt2-experiment.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gt2-gml.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gt2-graph.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gt2-oracle-spatial.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gt2-property.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gt2-utils.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gt2-wms.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jakarta-oro.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jdbcPostgres.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jsde_concurrent-9.0.jar"/>
@@ -37,9 +29,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/xalan.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-httpclient-2.0.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gt2-main.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/geoapi-2.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gt2-indexed-shapefile.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mockrunner-servlet.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-awt-util-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-util-1.1.1.jar"/>
@@ -48,13 +38,22 @@
 	<classpathentry kind="lib" path="lib/servlet.jar"/>
 	<classpathentry kind="lib" path="lib/JTS-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="lib/batik-svggen-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.5.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-arcsde.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-epsg.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-postgis.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-gml.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-graph.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-indexed-shapefile.jar"/>
+	<classpathentry sourcepath="/g2_2_1_x" kind="lib" path="lib/gt2-main.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-oracle-spatial.jar"/>
+	<classpathentry sourcepath="/g2_2_1_x" kind="lib" path="lib/gt2-postgis.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-property.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-referencing.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-shapefile.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-validation.jar"/>
-	<classpathentry kind="lib" path="lib/batik-svggen-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-arcgrid.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-image.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.5.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-wms.jar"/>
+	<classpathentry sourcepath="C:/eclipse/workspace2/2.2.x" kind="lib" path="lib/gt2-api.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-render.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
