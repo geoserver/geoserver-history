@@ -4,8 +4,11 @@
  */
 package org.vfny.geoserver.global.dto;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.GridGeometry;
@@ -166,6 +169,12 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	 */
 	private String defaultStyle;
 
+	private ArrayList paramHelp;
+
+	private List paramKeys;
+
+	private List paramValues;
+
 
 
     public CoverageInfoDTO() {
@@ -221,6 +230,9 @@ public final class CoverageInfoDTO implements DataTransferObject {
 		}
 		
 		defaultStyle = dto.getDefaultStyle();
+		paramHelp = dto.getParamHelp();
+		paramKeys = dto.getParamKeys();
+		paramValues = dto.getParamValues();
     }
 
     public Object clone() {
@@ -779,5 +791,65 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 	public void setWmsPath(String wmsPath) {
 		this.wmsPath = wmsPath;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getParamHelp() {
+		return paramHelp;
+	}
+
+	/**
+	 * @return
+	 */
+	public List getParamKeys() {
+		return paramKeys;
+	}
+
+	/**
+	 * @return
+	 */
+	public List getParamValues() {
+		return paramValues;
+	}
+
+	/**
+	 * @param paramHelp
+	 */
+	public void setParamHelp(ArrayList paramHelp) {
+		this.paramHelp = paramHelp;
+	}
+
+	/**
+	 * @param paramKeys
+	 */
+	public void setParamKeys(List paramKeys) {
+		this.paramKeys = paramKeys;
+	}
+
+	/**
+	 * @param paramValues
+	 */
+	public void setParamValues(List paramValues) {
+		this.paramValues = paramValues;
+	}
+
+	/**
+	 * @param map
+	 */
+	public void setParameters(Map map) {
+		if (map != null) {
+			this.paramHelp = new ArrayList();
+			this.paramKeys = new ArrayList();
+			this.paramValues = new ArrayList();
+			
+			for(Iterator p_iT=map.keySet().iterator(); p_iT.hasNext();) {
+				final String key = (String) p_iT.next();
+				paramHelp.add(key);
+				paramKeys.add(key);
+				paramValues.add(map.get(key));
+			}
+		}
 	}
 }

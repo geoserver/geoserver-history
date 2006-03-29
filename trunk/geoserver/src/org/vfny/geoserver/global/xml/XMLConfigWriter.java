@@ -1410,6 +1410,46 @@ public class XMLConfigWriter {
 				}
 			cw.closeTag("supportedInterpolations");
 			
+			// ///////////////////////////////////////////////////////////////////////
+			//
+			// STORING READ PARAMETERS
+			//
+			// ///////////////////////////////////////////////////////////////////////
+			if (cv.getParamKeys().size() != 0) {
+				cw.openTag("parameters");
+				
+				final Iterator i = cv.getParamKeys().iterator();
+				final HashMap temp = new HashMap();
+				int index = 0;
+				while (i.hasNext()) {
+					String key = (String) i.next();
+					if( "values_palette".equalsIgnoreCase(key) ) {
+						String text = "";
+	                	Object palVal = cv.getParamValues().get(index);
+	                    if(palVal instanceof Color[]) {
+							for(int col=0; col<((Color[])palVal).length; col++ ) {
+								String colString = "#" +
+												(Integer.toHexString(((Color)((Color[])palVal)[col]).getRed()).length()>1 ? Integer.toHexString(((Color)((Color[])palVal)[col]).getRed()) : "0" + Integer.toHexString(((Color)((Color[])palVal)[col]).getRed()) ) + 
+												(Integer.toHexString(((Color)((Color[])palVal)[col]).getGreen()).length()>1 ? Integer.toHexString(((Color)((Color[])palVal)[col]).getGreen()) : "0" + Integer.toHexString(((Color)((Color[])palVal)[col]).getGreen()) ) + 
+												(Integer.toHexString(((Color)((Color[])palVal)[col]).getBlue()).length()>1 ? Integer.toHexString(((Color)((Color[])palVal)[col]).getBlue()) : "0" + Integer.toHexString(((Color)((Color[])palVal)[col]).getBlue()) );
+								text += (col>0?";":"") + colString;
+							}
+	                    } else if (palVal instanceof String) {
+	                        text = (String) palVal;
+	                    }
+
+						temp.put("name", key);
+						temp.put("value", text);
+					} else {
+						temp.put("name", key);
+						temp.put("value", cv.getParamValues().get(index).toString().replaceAll("\"","'"));
+					}
+					cw.attrTag("parameter", temp);
+					index++;
+				}
+				
+				cw.closeTag("parameters");
+			}			
 			cw.closeTag("coverage");
 			fw.close();
 		} catch (IOException e) {

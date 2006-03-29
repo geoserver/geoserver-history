@@ -234,6 +234,42 @@
 	  </td>
     </tr>
 
+
+    <logic:notEmpty name="coveragesEditorForm"
+                   property="paramKeys">
+    <logic:iterate id="param"
+                   indexId="ctr"
+                   name="coveragesEditorForm"
+                   property="paramKeys">
+    <logic:notEqual name="coveragesEditorForm"
+                    property='<%= "paramKey[" + ctr + "]"%>'
+                    value="dbtype">
+        <tr>
+    	  <td class="label">
+            <span class="help"
+    		      title="<bean:write name="coveragesEditorForm"
+    		      property='<%= "paramHelp[" + ctr + "]" %>'/>">
+              <bean:write name="coveragesEditorForm"
+                          property='<%= "paramKey[" + ctr + "]"%>'/>:
+    		</span>
+          </td>
+    	  <td class="datum">
+    <logic:notEqual name="coveragesEditorForm"
+    	    	        property='<%= "paramKey[" + ctr + "]"%>'
+    			        value="passwd">
+              <html:text property='<%= "paramValues[" + ctr + "]"%>' size="60"/>
+    </logic:notEqual>
+    <logic:equal name="coveragesEditorForm"
+       		     property='<%= "paramKey[" + ctr + "]"%>'
+                 value="passwd">
+              <html:password property='<%= "paramValues[" + ctr + "]"%>' size="12"/>
+    </logic:equal>			             
+    	  </td>
+    	</tr>
+    </logic:notEqual>
+    </logic:iterate>
+    </logic:notEmpty>
+
     <tr>
       <td class="label">
         &nbsp;

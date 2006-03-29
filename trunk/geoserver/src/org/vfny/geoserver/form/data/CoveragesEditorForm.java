@@ -5,8 +5,12 @@
 
 package org.vfny.geoserver.form.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -16,17 +20,25 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.config.ControllerConfig;
+import org.apache.struts.upload.CommonsMultipartRequestHandler;
+import org.apache.struts.upload.MultipartRequestHandler;
 import org.apache.struts.util.MessageResources;
 import org.geotools.geometry.GeneralEnvelope;
+import org.opengis.coverage.grid.Format;
+import org.opengis.parameter.ParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.CoverageConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageStoreUtils;
+import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.Requests;
 
 /**
@@ -141,6 +153,12 @@ public class CoveragesEditorForm extends ActionForm {
 	 * 
 	 */
 	private String newCoverage;
+
+	private ArrayList paramHelp;
+
+	private List paramKeys;
+
+	private List paramValues;
 
 	/**
 	 * Set up CoverageEditor from from Web Container.
@@ -303,6 +321,10 @@ public class CoveragesEditorForm extends ActionForm {
 		if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) {
 			// TODO why I am here?
 		}
+		
+		this.paramHelp = type.getParamHelp();
+		this.paramKeys = type.getParamKeys();
+		this.paramValues = type.getParamValues();
 	}
 
 	public ActionErrors validate(ActionMapping mapping,
@@ -354,8 +376,102 @@ public class CoveragesEditorForm extends ActionForm {
 			errors.add("name", new ActionError("error.coverage.name.invalid"));
 		}
 
+		
+		/**
+		 * ReadParameters ...
+		 */
+		final DataConfig dataConfig = getDataConfig(request);
+		final CoverageStoreConfig cvConfig = dataConfig.getDataFormat(formatId);
+		if (cvConfig == null) {
+			// something is horribly wrong no FormatID selected!
+			// The JSP needs to not include us if there is no
+			// selected Format
+			//
+			throw new RuntimeException(
+					"selectedDataFormatId required in Session");
+		}
+		
+		// Retrieve connection params
+		final Format factory = cvConfig.getFactory();
+		final String type = (cvConfig.getType() != null && cvConfig.getType().length() > 0 ? cvConfig
+				.getType()
+				: factory.getName());
+		ParameterValueGroup info = factory.getReadParameters();
+
+		Map connectionParams = new HashMap();
+
+		// Convert Params into the kind of Map we actually need
+		//
+		if (paramKeys != null) {
+			for (int i = 0; i < paramKeys.size(); i++) {
+				String key = (String) getParamKey(i);
+
+				ParameterValue param = CoverageStoreUtils.find(info, key);
+
+				if (param == null) {
+					errors.add("paramValue[" + i + "]", new ActionError(
+							"error.dataFormatEditor.param.missing", key,
+							factory.getDescription()));
+
+					continue;
+				}
+
+				Boolean maxSize = (Boolean) request
+						.getAttribute(MultipartRequestHandler.ATTRIBUTE_MAX_LENGTH_EXCEEDED);
+				if ((maxSize != null) && (maxSize.booleanValue())) {
+					String size = null;
+					ControllerConfig cc = mapping.getModuleConfig()
+							.getControllerConfig();
+					if (cc == null) {
+						size = Long
+								.toString(CommonsMultipartRequestHandler.DEFAULT_SIZE_MAX);
+					} else {
+						size = cc.getMaxFileSize();// struts-config :
+													// <controller
+													// maxFileSize="nK" />
+					}
+					errors.add("styleID", new ActionError(
+							"error.file.maxLengthExceeded", size));
+					return errors;
+				}
+
+				Object value = CoverageUtils.getCvParamValue(key, param,
+						paramValues, i);
+
+				// if ((value == null) && param.required) {
+				// errors.add("paramValue[" + i + "]",
+				// new ActionError("error.dataStoreEditor.param.required",
+				// key));
+				//
+				// continue;
+				// }
+
+				if (value != null) {
+					connectionParams.put(key, value);
+				}
+			}
+		}
+
+		//dump("form", connectionParams);
+		// Factory will provide even more stringent checking
+		//
+		// if (!factory.canProcess( connectionParams )) {
+		// errors.add("paramValue",
+		// new ActionError("error.datastoreEditor.validation"));
+		// }
+
 		return errors;
 	}
+
+	/**
+     * Access Catalog Configuration Model from the WebContainer.
+	 * @param request
+     *
+     * @return Configuration model for Catalog information.
+     */
+    protected DataConfig getDataConfig(HttpServletRequest request) {
+        return (DataConfig) request.getSession().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
+    }
 
 	/**
 	 * @return Returns the defaultInterpolationMethod.
@@ -670,5 +786,105 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 	public void setWmsPath(String wmsPath) {
 		this.wmsPath = wmsPath;
+	}
+
+	/**
+	 * @param paramHelp The paramHelp to set.
+	 */
+	public void setParamHelp(ArrayList paramHelp) {
+		this.paramHelp = paramHelp;
+	}
+	/**
+	 * @return Returns the paramKeys.
+	 */
+	public List getParamKeys() {
+		return paramKeys;
+	}
+	/**
+	 * @param paramKeys The paramKeys to set.
+	 */
+	public void setParamKeys(List paramKeys) {
+		this.paramKeys = paramKeys;
+	}
+	/**
+	 * @return Returns the paramValues.
+	 */
+	public List getParamValues() {
+		return paramValues;
+	}
+	/**
+	 * @param paramValues The paramValues to set.
+	 */
+	public void setParamValues(List paramValues) {
+		this.paramValues = paramValues;
+	}
+	
+	public Map getParams() {
+		Map map = new HashMap();
+
+		if (paramKeys != null) {
+			for (int i = 0; i < paramKeys.size(); i++) {
+				map.put(paramKeys.get(i), paramValues.get(i));
+
+			}
+		}
+
+		return map;
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param index
+	 *            DOCUMENT ME!
+	 * 
+	 * @return
+	 */
+	public String getParamKey(int index) {
+		return (String) paramKeys.get(index);
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param index
+	 *            DOCUMENT ME!
+	 * 
+	 * @return
+	 */
+	public String getParamValue(int index) {
+		return (String) paramValues.get(index);
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param index
+	 * @param value
+	 *            DOCUMENT ME!
+	 */
+	public void setParamValues(int index, String value) {
+		paramValues.set(index, value);
+	}
+	
+	/**
+	 * Index property paramHelp
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public String[] getParamHelp() {
+		return (String[]) paramHelp.toArray(new String[paramHelp.size()]);
+	}
+
+	/**
+	 * Index property paramHelp
+	 * 
+	 * @param index
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public String getParamHelp(int index) {
+		return (String) paramHelp.get(index);
 	}
 }

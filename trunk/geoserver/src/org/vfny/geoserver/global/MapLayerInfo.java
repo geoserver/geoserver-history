@@ -424,7 +424,7 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 
 					String key = descr.getName().toString();
 					Object value = CoverageUtils.getCvParamValue(key, param,
-							dfConfig.getParameters());
+							meta.getParameters());
 
 					if (value != null)
 						params.parameter(key).setValue(value);

@@ -4,6 +4,9 @@
  */
 package org.vfny.geoserver.global;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +18,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.util.CoverageStoreUtils;
 
 /**
@@ -150,6 +152,12 @@ public class CoverageInfo extends GlobalLayerSupertype {
      * Default style used to render this Coverage with WMS
      */
     private String defaultStyle;
+
+	private ArrayList paramHelp;
+
+	private List paramKeys;
+
+	private List paramValues;
     
     public CoverageInfo(CoverageInfoDTO dto, Data data)
         throws ConfigurationException {
@@ -177,6 +185,9 @@ public class CoverageInfo extends GlobalLayerSupertype {
         defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
         interpolationMethods = dto.getInterpolationMethods();
         defaultStyle = dto.getDefaultStyle();
+        paramHelp = dto.getParamHelp();
+        paramKeys = dto.getParamKeys();
+        paramValues = dto.getParamValues();
     }
 
     Object toDTO() {
@@ -204,6 +215,9 @@ public class CoverageInfo extends GlobalLayerSupertype {
         dto.setDefaultInterpolationMethod(defaultInterpolationMethod);
         dto.setInterpolationMethods(interpolationMethods);
         dto.setDefaultStyle(defaultStyle);
+        dto.setParamHelp(paramHelp);
+        dto.setParamKeys(paramKeys);
+        dto.setParamValues(paramValues);
 
         return dto;
     }
@@ -436,5 +450,40 @@ public class CoverageInfo extends GlobalLayerSupertype {
 	}
 	public void setWmsPath(String wmsPath) {
 		this.wmsPath = wmsPath;
+	}
+	/**
+	 * @return Returns the paramHelp.
+	 */
+	public ArrayList getParamHelp() {
+		return paramHelp;
+	}
+	/**
+	 * @return Returns the paramKeys.
+	 */
+	public List getParamKeys() {
+		return paramKeys;
+	}
+	/**
+	 * @return Returns the paramValues.
+	 */
+	public List getParamValues() {
+		return paramValues;
+	}
+
+	/**
+	 * @return
+	 */
+	public Map getParameters() {
+		final HashMap params = new HashMap();
+		
+		if (this.paramKeys != null) {
+			int index = 0;
+			for (Iterator p_iT=this.paramKeys.iterator(); p_iT.hasNext();) {
+				params.put(p_iT.next(), this.paramValues.get(index));
+				index++;
+			}
+		}
+		
+		return params;
 	}
 }

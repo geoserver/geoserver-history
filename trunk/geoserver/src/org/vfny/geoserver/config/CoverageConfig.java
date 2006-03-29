@@ -4,29 +4,29 @@
  */
 package org.vfny.geoserver.config;
 
+import java.awt.Color;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.units.Unit;
 
-import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.processing.CannotReprojectException;
-import org.geotools.coverage.processing.Operations;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.metadata.Identifier;
+import org.opengis.parameter.ParameterDescriptor;
+import org.opengis.parameter.ParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
@@ -198,6 +198,21 @@ public class CoverageConfig {
 	private String defaultStyle;
 
 	/**
+	 * String representation of connection parameter keys
+	 */
+	private List paramKeys;
+
+	/**
+	 * String representation of connection parameter values
+	 */
+	private List paramValues;
+
+	/**
+	 * Help text for Params if available
+	 */
+	private ArrayList paramHelp;
+
+	/**
 	 * Package visible constructor for test cases
 	 */
 	CoverageConfig() {
@@ -266,7 +281,17 @@ public class CoverageConfig {
 			final StringBuffer key = new StringBuffer(gc.getName().toString());
 			if (count>0)
 				key.append("[").append(count).append("]");
-			if (!config.getCoverages().containsKey(formatId + ":" + key)) {
+			
+			final Map coverages = config.getCoverages();
+			final Set cvKeySet = coverages.keySet(); 
+			boolean key_exists = /*cvKeySet.contains(key.toString())*/false;
+			for (Iterator it = cvKeySet.iterator(); it.hasNext();) {
+				final String cvKey = ((String) it.next()).toLowerCase();
+				if (cvKey.endsWith(key.toString().toLowerCase())) {
+					key_exists = true;
+				}
+			}
+			if (!key_exists) {
 				cvName = key;
 				break;
 			} else {
@@ -341,6 +366,106 @@ public class CoverageConfig {
 		interpolationMethods.add("bicubic");
 		interpolationMethods.add("bicubic_2");
 		defaultStyle = "raster";
+		
+		/**
+		 * ReadParameters ...
+		 */
+		final DataConfig dataConfig = getDataConfig(request);
+		final CoverageStoreConfig cvConfig = dataConfig.getDataFormat(formatId);
+		if (cvConfig == null) {
+			// something is horribly wrong no FormatID selected!
+			// The JSP needs to not include us if there is no
+			// selected Format
+			//
+			throw new RuntimeException(
+					"selectedDataFormatId required in Session");
+		}
+		
+		// Retrieve connection params
+		final Format factory = cvConfig.getFactory();
+		final String type = (cvConfig.getType() != null && cvConfig.getType().length() > 0 ? cvConfig
+				.getType()
+				: factory.getName());
+		ParameterValueGroup params = factory.getReadParameters();
+
+		if (params != null && params.values().size() > 0) {
+			paramKeys = new ArrayList(params.values().size());
+			paramValues = new ArrayList(params.values().size());
+			paramHelp = new ArrayList(params.values().size());
+
+			List list = params.values();
+			Iterator it = list.iterator();
+			ParameterDescriptor descr = null;
+			ParameterValue val = null;
+			while (it.hasNext()) {
+				val = (ParameterValue) it.next();
+				if (val != null) {
+					descr = (ParameterDescriptor) val.getDescriptor();
+					String key = descr.getName().toString();
+
+					if ("namespace".equals(key)) {
+						// skip namespace as it is *magic* and
+						// appears to be an entry used in all dataformats?
+						//
+						continue;
+					}
+
+					Object value = cvConfig.getParameters().get(key);
+					String text = "";
+
+					if ("values_palette".equals(key)) {
+						Object palVal = value;
+						if (palVal instanceof Color[]) {
+							for (int i = 0; i < ((Color[]) palVal).length; i++) {
+								String colString = "#"
+										+ (Integer.toHexString(
+												((Color) ((Color[]) palVal)[i])
+														.getRed()).length() > 1 ? Integer
+												.toHexString(((Color) ((Color[]) palVal)[i])
+														.getRed())
+												: "0"
+														+ Integer
+																.toHexString(((Color) ((Color[]) palVal)[i])
+																		.getRed()))
+										+ (Integer.toHexString(
+												((Color) ((Color[]) palVal)[i])
+														.getGreen()).length() > 1 ? Integer
+												.toHexString(((Color) ((Color[]) palVal)[i])
+														.getGreen())
+												: "0"
+														+ Integer
+																.toHexString(((Color) ((Color[]) palVal)[i])
+																		.getGreen()))
+										+ (Integer.toHexString(
+												((Color) ((Color[]) palVal)[i])
+														.getBlue()).length() > 1 ? Integer
+												.toHexString(((Color) ((Color[]) palVal)[i])
+														.getBlue())
+												: "0"
+														+ Integer
+																.toHexString(((Color) ((Color[]) palVal)[i])
+																		.getBlue()));
+								text += (i > 0 ? ";" : "") + colString;
+							}
+						} else if (palVal instanceof String) {
+							text = (String) palVal;
+						}
+					} else {
+						if (value == null) {
+							text = null;
+						} else if (value instanceof String) {
+							text = (String) value;
+						} else {
+							text = value.toString();
+						}
+					}
+
+					paramKeys.add(key);
+					paramValues.add((text != null) ? text : "");
+					paramHelp.add(key);
+				}
+			}
+		}
 	}
 
 	/**
@@ -432,6 +557,9 @@ public class CoverageConfig {
 		defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
 		interpolationMethods = dto.getInterpolationMethods();
 		defaultStyle = dto.getDefaultStyle();
+		paramHelp = dto.getParamHelp();
+		paramKeys = dto.getParamKeys();
+		paramValues = dto.getParamValues();
 	}
 
 	public CoverageInfoDTO toDTO() {
@@ -459,9 +587,22 @@ public class CoverageConfig {
 		c.setDefaultInterpolationMethod(defaultInterpolationMethod);
 		c.setInterpolationMethods(interpolationMethods);
 		c.setDefaultStyle(defaultStyle);
+		c.setParamHelp(paramHelp);
+		c.setParamKeys(paramKeys);
+		c.setParamValues(paramValues);
 
 		return c;
 	}
+	
+	/**
+     * Access Catalog Configuration Model from the WebContainer.
+	 * @param request
+     *
+     * @return Configuration model for Catalog information.
+     */
+    protected DataConfig getDataConfig(HttpServletRequest request) {
+        return (DataConfig) request.getSession().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
+    }
 
 	public String getKey() {
 		return getFormatId() + DataConfig.SEPARATOR + getName();
@@ -847,5 +988,41 @@ public class CoverageConfig {
 	}
 	public void setWmsPath(String wmsPath) {
 		this.wmsPath = wmsPath;
+	}
+	/**
+	 * @return Returns the paramHelp.
+	 */
+	public ArrayList getParamHelp() {
+		return paramHelp;
+	}
+	/**
+	 * @param paramHelp The paramHelp to set.
+	 */
+	public void setParamHelp(ArrayList paramHelp) {
+		this.paramHelp = paramHelp;
+	}
+	/**
+	 * @return Returns the paramKeys.
+	 */
+	public List getParamKeys() {
+		return paramKeys;
+	}
+	/**
+	 * @param paramKeys The paramKeys to set.
+	 */
+	public void setParamKeys(List paramKeys) {
+		this.paramKeys = paramKeys;
+	}
+	/**
+	 * @return Returns the paramValues.
+	 */
+	public List getParamValues() {
+		return paramValues;
+	}
+	/**
+	 * @param paramValues The paramValues to set.
+	 */
+	public void setParamValues(List paramValues) {
+		this.paramValues = paramValues;
 	}
 }

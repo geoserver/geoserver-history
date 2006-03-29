@@ -1661,6 +1661,14 @@ public class XMLConfigReader {
 
 			cv.setInterpolationMethods(l);
 		}
+		
+		// /////////////////////////////////////////////////////////////////////
+		//
+		// READ PARAMETERS
+		//
+		// /////////////////////////////////////////////////////////////////////
+		cv.setParameters(loadConnectionParams(ReaderUtils.getChildElement(
+				coverageRoot, "parameters", false)));
 
 		return cv;
 	}
