@@ -53,7 +53,7 @@ import org.vfny.geoserver.wfs.WfsException;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WfsDispatcher.java,v 1.8 2004/09/08 17:35:15 cholmesny Exp $
+ * @version $Id: WfsDispatcher.java,v 1.9 2006/03/03 10:51:55 cholmesny Exp $
  */
 public class WfsDispatcher extends Dispatcher {
     /** Class logger */
@@ -69,7 +69,7 @@ public class WfsDispatcher extends Dispatcher {
         Pattern.compile("encoding\\s*\\=\\s*\"([^\"]+)\"");
 
     /** Temporary file used to store the request */
-    private File temp;
+    //private File temp;
 
     /**
      * This figures out a dispatched post request.  It writes the request to a
@@ -91,7 +91,7 @@ public class WfsDispatcher extends Dispatcher {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         int targetRequest = 0;
-
+        File temp;
         try {
             InputStream is = new BufferedInputStream(request.getInputStream());
 
