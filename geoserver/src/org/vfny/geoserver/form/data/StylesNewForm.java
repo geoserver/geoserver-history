@@ -46,7 +46,7 @@ public class StylesNewForm extends ActionForm {
         if ((styleID == null) || styleID.equals("")) {
             errors.add("styleID",
             new ActionError("error.styleID.required", styleID));
-        } else if (!Pattern.matches("^\\w*$", styleID)) {
+        } else if (!Pattern.matches("^[-\\w.:]*$", styleID)) {
             errors.add("styleID",
             new ActionError("error.styleID.invalid", styleID));
         }      
