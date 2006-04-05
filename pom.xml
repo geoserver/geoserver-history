@@ -5,7 +5,7 @@
 
   <groupId>org.openplans</groupId>
   <artifactId>geoserver</artifactId>
-	<packaging>pom</packaging>
+  <packaging>pom</packaging>
   <version>0.1</version>
   <name>GeoServer</name>
 
@@ -24,6 +24,14 @@
   </licenses>
 
   <repositories>
+    <repository>
+      <id>repos</id>
+      <name>Repo Repository</name>
+      <url>file://R:/m2/repository </url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
     <repository>
       <id>ibiblio</id>
       <name>Ibiblio - the public's library and digital archive</name>
@@ -62,6 +70,84 @@
   </repositories>
 
   <dependencies>
+ 	        <!--dependency>
+	        	<groupId>org.geotools</groupId>
+	        	<artifactId>gt2-main</artifactId>
+	           	<version>2.3-SNAPSHOT</version>
+	           	<type>jar</type>
+	           	<scope>compile</scope>
+	        </dependency--> 	        
+	        <dependency>
+	        	<groupId>org.geotools</groupId>
+	        	<artifactId>gt2-main</artifactId>
+	           	<version>2.3</version>
+	           	<type>jar</type>
+	           	<scope>compile</scope>
+	        </dependency>
+ 	        <dependency>
+	        	<groupId>org.geotools</groupId>
+	        	<artifactId>gt2-referencing</artifactId>
+	           	<version>2.3.x</version>
+	           	<type>jar</type>
+	           	<scope>compile</scope>
+	        </dependency>
+ 	        <dependency>
+	        	<groupId>org.geotools</groupId>
+	        	<artifactId>gt2-main</artifactId>
+	           	<version>2.3</version>
+	           	<type>jar</type>
+	           	<scope>compile</scope>
+	        </dependency>
+ 	        <dependency>
+	        	<groupId>org.geotools</groupId>
+	        	<artifactId>gt2-validation</artifactId>
+	           	<version>2.3.x</version>
+	           	<type>jar</type>
+	           	<scope>compile</scope>
+	        </dependency>
+ 	        <dependency>
+	        	<groupId>org.geotools</groupId>
+	        	<artifactId>gt2-api</artifactId>
+	           	<version>2.3.x</version>
+	           	<type>jar</type>
+	           	<scope>compile</scope>
+	        </dependency>
+ 	        <dependency>
+	        	<groupId>org.geotools</groupId>
+	        	<artifactId>gt2-main</artifactId>
+	           	<version>2.3-SNAPSHOT</version>
+	           	<type>jar</type>
+	           	<scope>compile</scope>
+	        </dependency>
+ 	        <dependency>
+	        	<groupId>org.geotools</groupId>
+	        	<artifactId>gt2-main</artifactId>
+	           	<version>2.3</version>
+	           	<type>jar</type>
+	           	<scope>compile</scope>
+	        </dependency>
+		<dependency>
+        		<groupId>org.geotools</groupId>
+        		<artifactId>gt2-postgis</artifactId>
+        		<version>2.3.x</version>
+	           	<type>jar</type>
+	           	<scope>compile</scope>
+      		</dependency>
+		<dependency>
+        		<groupId>org.opengis</groupId>
+        		<artifactId>geoapi</artifactId>
+        		<version>pending-SNAPSHOT</version>
+	           	<type>jar</type>
+	           	<scope>compile</scope>
+      		</dependency>
+ 	        <dependency>
+	        	<groupId>JTS</groupId>
+	        	<artifactId>JTS</artifactId>
+	           	<version>1.7</version>
+	           	<type>jar</type>
+	           	<scope>compile</scope>
+	        </dependency>
+<!-- delete this line -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -165,7 +251,9 @@
 
 
   <modules>
-    <module>org.openplans.geoserver.gtlibs</module>
+    <module>org.vfny.geoserver.gtlibs</module>
+    <module>org.vfny.geoserver.main</module>
+    <module>org.vfny.geoserver.wfs</module>
   </modules>
 
 
