@@ -107,10 +107,23 @@ public class GML3FeatureResponseDelegate implements FeatureResponseDelegate {
 
         FeatureRequest request = results.getRequest();
         GeoServer config = request.getWFS().getGeoServer();
+        NameSpaceInfo []serverNamespaces = request.getWFS().getData().getNameSpaces();
+        
         transformer = new GML3FeatureTransformer();
 
-        //FeatureTypeNamespaces ftNames = transformer.getFeatureTypeNamespaces();
         NamespaceSupport namespaces = transformer.getFeatureNamespaces();
+        
+        //GR: by now just declare all de namespaces configured on catalog.xml, since
+        //there is not an easy way of looking for only the ones used by the given
+        //featuretypes. And given the potential use of substituable elements from
+        //other namespaces (which is usual when working with complex datastore) it 
+        //gets even harder to figure out which ones are to be used.
+        for(int i = 0; i < serverNamespaces.length; i++){
+        	NameSpaceInfo nsi = serverNamespaces[i];
+        	String prefix = nsi.getPrefix();
+        	String uri = nsi.getURI();
+        	namespaces.declarePrefix(prefix, uri);
+        }
         
         int maxFeatures = request.getMaxFeatures();
         int serverMaxFeatures = config.getMaxFeatures();
@@ -134,10 +147,9 @@ public class GML3FeatureResponseDelegate implements FeatureResponseDelegate {
             String uri = namespace.getUri();
             
             //@todo: this method of declaring namespace throws an exception
-            /*
-            ftNames.declareNamespace(features.getSchema(),
-                namespace.getPrefix(), uri);
-            */
+            //ftNames.declareNamespace(features.getSchema(),
+            //    namespace.getPrefix(), uri);
+            
             namespaces.declarePrefix(namespace.getPrefix(), uri);
             
             if (ftNamespaces.containsKey(uri)) {
@@ -148,6 +160,10 @@ public class GML3FeatureResponseDelegate implements FeatureResponseDelegate {
                     request.getBaseUrl() + "wfs/"
                     + "DescribeFeatureType?typeName=" + meta.getName());
             }
+        }
+        for (Iterator it = ftNamespaces.keySet().iterator(); it.hasNext();) {
+            String uri = (String) it.next();
+            transformer.addSchemaLocation(uri, (String) ftNamespaces.get(uri));
         }
 
         System.setProperty("javax.xml.transform.TransformerFactory",
@@ -164,11 +180,6 @@ public class GML3FeatureResponseDelegate implements FeatureResponseDelegate {
             + "wfs/1.0.0/WFS-basic.xsd";
 
         transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
-
-        for (Iterator it = ftNamespaces.keySet().iterator(); it.hasNext();) {
-            String uri = (String) it.next();
-            transformer.addSchemaLocation(uri, (String) ftNamespaces.get(uri));
-        }
 
         transformer.setGmlPrefixing(request.getWFS().getCiteConformanceHacks());
 
