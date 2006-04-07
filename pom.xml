@@ -26,15 +26,6 @@
 	
 	<repositories>
 		<repository>
-			<id>repos</id>
-			<name>Repo Repository</name>
-			<url>file://R:/m2/repository
-			</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
 			<id>ibiblio</id>
 			<name>Ibiblio - the public's library and digital archive</name>
 			<url>http://www.ibiblio.org/maven2</url>
