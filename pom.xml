@@ -1,240 +1,504 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <groupId>org.openplans</groupId>
-  <artifactId>geoserver</artifactId>
-  <packaging>pom</packaging>
-  <version>0.1</version>
-  <name>GeoServer</name>
-
-  <organization>
-    <name>The Open Planning Project</name>
-    <url>http://www.openplans.org</url>
-  </organization>
-  <inceptionYear>2005</inceptionYear>
-
-  <licenses>
-    <license>
-      <name>Lesser General Public License (LGPL)</name>
-      <url>http://www.gnu.org/copyleft/lesser.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <repositories>
-    <repository>
-      <id>repos</id>
-      <name>Repo Repository</name>
-      <url>file://R:/m2/repository </url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>ibiblio</id>
-      <name>Ibiblio - the public's library and digital archive</name>
-      <url>http://www.ibiblio.org/maven2</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>espace</id>
-      <name>Repository from the Sicade laboratory in New-Caledonia</name>
-      <url>http://maven.espace.ird.nc</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>geotools</id>
-      <name>Repository serving Geotools libraries hosted by Refractions</name>
-      <url>http://lists.refractions.net/geotools</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>org.vfny</groupId>
+	<artifactId>geoserver</artifactId>
+	<packaging>pom</packaging>
+	<version>0.1</version>
+	<name>GeoServer</name>
+	
+	<organization>
+		<name>The Open Planning Project</name>
+		<url>http://www.openplans.org</url>
+	</organization>
+	<inceptionYear>2005</inceptionYear>
+	
+	<licenses>
+		<license>
+			<name>Lesser General Public License (LGPL)</name>
+			<url>http://www.gnu.org/copyleft/lesser.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<repositories>
+		<repository>
+			<id>repos</id>
+			<name>Repo Repository</name>
+			<url>file://R:/m2/repository
+			</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>ibiblio</id>
+			<name>Ibiblio - the public's library and digital archive</name>
+			<url>http://www.ibiblio.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>espace</id>
+			<name>Repository from the Sicade laboratory in New-Caledonia</name>
+			<url>http://maven.espace.ird.nc</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>geotools</id>
+			<name>Repository serving Geotools libraries hosted by Refractions</name>
+			<url>http://lists.refractions.net/geotools</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 			<layout>legacy</layout>
-    </repository>
-
-    <repository>
-      <id>codehaus</id>
-      <name>Repository serving Geoserver libraries hosted by Codehaus</name>
-      <url>http://dist.codehaus.org/geoserver</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
+		</repository>
+		
+		<repository>
+			<id>codehaus</id>
+			<name>Repository serving Geoserver libraries hosted by Codehaus</name>
+			<url>http://dist.codehaus.org/geoserver</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 			<layout>legacy</layout>
-    </repository>
-  </repositories>
-
-  <dependencies>
- 	        <!--dependency>
-	        	<groupId>org.geotools</groupId>
-	        	<artifactId>gt2-main</artifactId>
-	           	<version>2.3-SNAPSHOT</version>
-	           	<type>jar</type>
-	           	<scope>compile</scope>
-	        </dependency--> 	        
-	        <dependency>
-	        	<groupId>org.geotools</groupId>
-	        	<artifactId>gt2-main</artifactId>
-	           	<version>2.3</version>
-	           	<type>jar</type>
-	           	<scope>compile</scope>
-	        </dependency>
- 	        <dependency>
-	        	<groupId>org.geotools</groupId>
-	        	<artifactId>gt2-referencing</artifactId>
-	           	<version>2.3.x</version>
-	           	<type>jar</type>
-	           	<scope>compile</scope>
-	        </dependency>
- 	        <dependency>
-	        	<groupId>org.geotools</groupId>
-	        	<artifactId>gt2-main</artifactId>
-	           	<version>2.3</version>
-	           	<type>jar</type>
-	           	<scope>compile</scope>
-	        </dependency>
- 	        <dependency>
-	        	<groupId>org.geotools</groupId>
-	        	<artifactId>gt2-validation</artifactId>
-	           	<version>2.3.x</version>
-	           	<type>jar</type>
-	           	<scope>compile</scope>
-	        </dependency>
- 	        <dependency>
-	        	<groupId>org.geotools</groupId>
-	        	<artifactId>gt2-api</artifactId>
-	           	<version>2.3.x</version>
-	           	<type>jar</type>
-	           	<scope>compile</scope>
-	        </dependency>
- 	        <dependency>
-	        	<groupId>org.geotools</groupId>
-	        	<artifactId>gt2-main</artifactId>
-	           	<version>2.3-SNAPSHOT</version>
-	           	<type>jar</type>
-	           	<scope>compile</scope>
-	        </dependency>
- 	        <dependency>
-	        	<groupId>org.geotools</groupId>
-	        	<artifactId>gt2-main</artifactId>
-	           	<version>2.3</version>
-	           	<type>jar</type>
-	           	<scope>compile</scope>
-	        </dependency>
-		<dependency>
-        		<groupId>org.geotools</groupId>
-        		<artifactId>gt2-postgis</artifactId>
-        		<version>2.3.x</version>
-	           	<type>jar</type>
-	           	<scope>compile</scope>
-      		</dependency>
-		<dependency>
-        		<groupId>org.opengis</groupId>
-        		<artifactId>geoapi</artifactId>
-        		<version>pending-SNAPSHOT</version>
-	           	<type>jar</type>
-	           	<scope>compile</scope>
-      		</dependency>
- 	        <dependency>
-	        	<groupId>JTS</groupId>
-	        	<artifactId>JTS</artifactId>
-	           	<version>1.7</version>
-	           	<type>jar</type>
-	           	<scope>compile</scope>
-	        </dependency>
-<!-- delete this line -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.4</version>
-		</dependency>
-		<dependency>
-			<groupId>springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>1.2.5</version>
-		</dependency>
-		<dependency>
-			<groupId>springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>1.2.5</version>
-		</dependency>
-		<dependency>
-			<groupId>springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>1.2.5</version>
-		</dependency>
-		<dependency>
-			<groupId>springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>1.2.5</version>
-		</dependency>
-		<dependency>
-      <groupId>springframework</groupId>
-      <artifactId>spring-mock</artifactId>
-      <version>1.2.5</version>
-    </dependency>
-		<dependency>
-      <groupId>jstl</groupId>
-			<artifactId>jstl</artifactId>
-      <version>1.1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>taglibs</groupId>
-      <artifactId>standard</artifactId>
-      <version>1.1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-      <version>1.2.9</version>
-    </dependency>
-		<dependency>
-      <groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-      <version>3.8.1</version>
-    </dependency>
-  </dependencies>
-
+		</repository>
+	</repositories>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2</artifactId>
+				<version>2.2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-api</artifactId>
+				<version>2.2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-main</artifactId>
+				<version>2.2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-shapefile</artifactId>
+				<version>2.2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-validation</artifactId>
+				<version>2.2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-render</artifactId>
+				<version>2.2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>struts</groupId>
+				<artifactId>struts</artifactId>
+				<version>1.2.8</version>
+			</dependency>
+			<dependency>
+				<groupId>batik</groupId>
+				<artifactId>batik-svggen</artifactId>
+				<version>1.1.1</version>
+				<type>jar</type>
+			</dependency>
+			<dependency>
+				<groupId>batik</groupId>
+				<artifactId>batik-awt-util</artifactId>
+				<version>1.1.1</version>
+				<type>jar</type>
+			</dependency>
+			<dependency>
+				<groupId>batik</groupId>
+				<artifactId>batik-util</artifactId>
+				<version>1.1.1</version>
+				<type>jar</type>
+			</dependency>
+			<dependency>
+				<groupId>ki</groupId>
+				<artifactId>ki-jzkit-iface</artifactId>
+				<version>X</version>
+			</dependency>
+			<dependency>
+				<groupId>ki</groupId>
+				<artifactId>ki-jzkit-z3950</artifactId>
+				<version>X</version>
+			</dependency>
+			<dependency>
+				<groupId>ki</groupId>
+				<artifactId>ki-util</artifactId>
+				<version>X</version>
+			</dependency>
+			<dependency>
+				<groupId>ki</groupId>
+				<artifactId>a2jruntime</artifactId>
+				<version>X</version>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.9</version>
+			</dependency>
+			<dependency>
+				<groupId>xml-apis</groupId>
+				<artifactId>xml-apis</artifactId>
+				<version>1.0.b2</version>
+			</dependency>
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>2.4.0</version>
+			</dependency>
+			<dependency>
+				<groupId>xalan</groupId>
+				<artifactId>xalan</artifactId>
+				<version>2.7.0</version>
+			</dependency>
+			<dependency>
+				<groupId>lucene</groupId>
+				<artifactId>lucene</artifactId>
+				<version>1.4.3</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>1.7.0</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-digester</groupId>
+				<artifactId>commons-digester</artifactId>
+				<version>1.7</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-httpclient</groupId>
+				<artifactId>commons-httpclient</artifactId>
+				<version>2.0</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-lang</groupId>
+				<artifactId>commons-lang</artifactId>
+				<version>2.1</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-validator</groupId>
+				<artifactId>commons-validator</artifactId>
+				<version>1.1.4</version>
+			</dependency>
+			<dependency>
+				<groupId>jakarta-oro</groupId>
+				<artifactId>jakarta-oro</artifactId>
+				<version>2.0.6</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mockrunner</groupId>
+				<artifactId>mockrunner</artifactId>
+				<version>0.3.1</version>
+			</dependency>
+			<dependency>
+				<groupId>mockobjects</groupId>
+				<artifactId>mockobjects-jdk1.4-j2ee1.3</artifactId>
+				<version>0.09</version>
+			</dependency>
+			<dependency>
+				<groupId>httpunit</groupId>
+				<artifactId>httpunit</artifactId>
+				<version>1.6</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>1.2.5</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>1.2.5</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>1.2.5</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-jxpath</groupId>
+				<artifactId>commons-jxpath</artifactId>
+				<version>1.2</version>
+			</dependency>
+			<dependency>
+				<groupId>JTS</groupId>
+				<artifactId>JTS</artifactId>
+				<version>1.6</version>
+			</dependency>
+			<dependency>
+				<groupId>opengis</groupId>
+				<artifactId>opengis-legacy</artifactId>
+				<version>0.2</version>
+			</dependency>
+			<dependency>
+				<groupId>XDO</groupId>
+				<artifactId>XDO</artifactId>
+				<version>beta</version>
+			</dependency>
+			<dependency>
+				<groupId>units</groupId>
+				<artifactId>units</artifactId>
+				<version>0.01</version>
+			</dependency>
+			<dependency>
+				<groupId>vecmath</groupId>
+				<artifactId>vecmath</artifactId>
+				<version>1.3</version>
+			</dependency>
+			<dependency>
+				<groupId>mailapi</groupId>
+				<artifactId>mailapi</artifactId>
+				<version>1.3</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>3.8.1</version>
+			</dependency>
+			<dependency>
+				<groupId>batik</groupId>
+				<artifactId>batik</artifactId>
+				<version>1.5.1</version>
+			</dependency>
+			<dependency>
+				<groupId>batik</groupId>
+				<artifactId>batik-gvt</artifactId>
+				<version>1.5.1</version>
+			</dependency>
+			<dependency>
+				<groupId>batik</groupId>
+				<artifactId>batik-svg-dom</artifactId>
+				<version>1.5.1</version>
+			</dependency>
+			<dependency>
+				<groupId>batik</groupId>
+				<artifactId>batik-rasterizer</artifactId>
+				<version>1.5.1</version>
+			</dependency>
+			<dependency>
+				<groupId>batik</groupId>
+				<artifactId>batik-dom</artifactId>
+				<version>1.5.1</version>
+			</dependency>
+			<dependency>
+				<groupId>batik</groupId>
+				<artifactId>batik-bridge</artifactId>
+				<version>1.5</version>
+			</dependency>
+			<dependency>
+				<groupId>batik</groupId>
+				<artifactId>batik-css</artifactId>
+				<version>1.5.1</version>
+			</dependency>
+			<dependency>
+				<groupId>batik</groupId>
+				<artifactId>batik-xml</artifactId>
+				<version>1.5</version>
+			</dependency>
+			<dependency>
+				<groupId>batik</groupId>
+				<artifactId>batik-transcoder</artifactId>
+				<version>1.5.1</version>
+			</dependency>
+			<dependency>
+				<groupId>jai</groupId>
+				<artifactId>jai-core</artifactId>
+				<version>1.1.3-alpha</version>
+			</dependency>
+			<dependency>
+				<groupId>jai</groupId>
+				<artifactId>jai_imageio</artifactId>
+				<version>1.1-alpha</version>
+			</dependency>
+			<dependency>
+				<groupId>jai</groupId>
+				<artifactId>jai_codec</artifactId>
+				<version>1.1.3-alpha</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-jelly</groupId>
+				<artifactId>commons-jelly-tags-velocity</artifactId>
+				<version>20030303.205659</version>
+			</dependency>
+			<dependency>
+				<groupId>velocity</groupId>
+				<artifactId>velocity</artifactId>
+				<version>1.3</version>
+			</dependency>
+			<dependency>
+				<groupId>geoapi</groupId>
+				<artifactId>geoapi</artifactId>
+				<version>2.0</version>
+			</dependency>
+			<dependency>
+				<groupId>jdom</groupId>
+				<artifactId>jdom</artifactId>
+				<version>b10</version>
+			</dependency>
+			<dependency>
+				<groupId>postgis-driver</groupId>
+				<artifactId>postgis-driver</artifactId>
+				<version>1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>74.213</version>
+			</dependency>
+			<dependency>
+				<groupId>wkb4j</groupId>
+				<artifactId>wkb4j</artifactId>
+				<version>1.0-RC1</version>
+			</dependency>
+			<dependency>
+				<groupId>sun</groupId>
+				<artifactId>jlfgr</artifactId>
+				<version>1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-cli</groupId>
+				<artifactId>commons-cli</artifactId>
+				<version>1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>batik</groupId>
+				<artifactId>batik-svggen</artifactId>
+				<version>1.1.1</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>2.1</version>
+			</dependency>
+			<dependency>
+				<groupId>oracle</groupId>
+				<artifactId>dummy_spatial</artifactId>
+				<version>8.1.8</version>
+			</dependency>
+			<dependency>
+				<groupId>arcsde</groupId>
+				<artifactId>jsde_sdk</artifactId>
+				<version>9.0</version>
+			</dependency>
+			<dependency>
+				<groupId>arcsde</groupId>
+				<artifactId>jsde_concurrent</artifactId>
+				<version>9.0</version>
+			</dependency>
+			<dependency>
+				<groupId>arcsde</groupId>
+				<artifactId>jsde_jpe_sdk</artifactId>
+				<version>9.0</version>
+			</dependency>
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>3.0.9</version>
+			</dependency>
+			
+		</dependencies>
+	</dependencyManagement>
+	
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>test/unit</testSourceDirectory>
-
+		<testSourceDirectory>test</testSourceDirectory>
 		<resources>
-      <resource>
-          <directory>web/WEB-INF</directory>
-          <includes>
-						<include>**/*.xml</include>
-					</includes>
-      </resource>
-    </resources>
-
+			<resource>
+				<directory>src</directory>
+				<includes>
+					<include>**/*.txt</include>
+					<include>**/*.sql</include>
+					<include>**/*.xml</include>
+					<include>**/*.utf</include>
+					<include>**/*.properties</include>
+					<include>**/*.serialized</include>
+					<include>META-INF/*.jai</include>
+					<include>META-INF/services/**</include>
+				</includes>
+				<excludes>
+					<exclude>**/doc-files/**</exclude>
+					<exclude>
+						org/geotools/resources/i18n/**/*.properties</exclude>
+				</excludes>
+			</resource>
+		</resources>
 		<testResources>
-			 <testResource>
-          <directory>test</directory>
-          <includes>
-						<include>**/*.xml</include>
-					</includes>
-        </testResource>
-        <testResource>
-          <directory>web/WEB-INF</directory>
-          <includes>
-						<include>**/*.xml</include>
-					</includes>
-        </testResource>
+			<testResource>
+				<directory>test</directory>
+				<includes>
+					<include>META-INF/services/**</include>
+					<include>**/test-data/**</include>
+					<include>**/*.xml</include>
+					<include>**/*.xsd</include>
+					<include>**/*.csv</include>
+					<include>**/*.sld</include>
+					<include>**/*.svg</include>
+					<include>**/*.gml</include>
+					<include>**/*.wkt</include>
+					<include>**/*.txt</include>
+					<include>**/*.sql</include>
+					<include>**/*.png</include>
+					<include>**/*.properties</include>
+					<include>**/*.serialized</include>
+				</includes>
+				<excludes>
+					<exclude>**/doc-files/**</exclude>
+				</excludes>
+			</testResource>
 		</testResources>
-
+		
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+					<excludes>
+						<exclude>**/*OnlineTest.java</exclude>
+					</excludes>
+					<forkMode>once</forkMode>
+					<argLine>-Xmx512M -enableassertions</argLine>
+					<printSummary>false</printSummary>
+					<!-- Make the build less verbose -->
+					<!-- Ignores test failure only if we are generating a report for publication on
+					
+					
+					the web site. See the profiles section at the begining of this pom.xml file. -->
+					<testFailureIgnore>
+						${allow.test.failure.ignore}</testFailureIgnore>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
-
+	
 	<profiles>
-
+		
 		<profile>
 			<id>devel</id>
-
+			
 			<build>
 				<plugins>
 					<plugin>
@@ -244,17 +508,16 @@
 					</plugin>
 				</plugins>
 			</build>
-
+			
 		</profile>
-
+		
 	</profiles>
-
-
-  <modules>
-    <module>org.vfny.geoserver.gtlibs</module>
-    <module>org.vfny.geoserver.main</module>
-    <module>org.vfny.geoserver.wfs</module>
-  </modules>
-
-
+	
+	<modules>
+		<module>org.vfny.geoserver.gtlibs</module>
+		<module>org.vfny.geoserver.main</module>
+		<module>org.vfny.geoserver.wfs</module>
+		<module>org.vfny.geoserver.wms</module>
+	</modules>
+	
 </project>

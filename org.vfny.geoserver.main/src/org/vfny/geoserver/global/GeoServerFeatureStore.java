@@ -12,6 +12,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 
@@ -72,6 +73,10 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource
      */
     public Set addFeatures(FeatureReader reader) throws IOException {
         return store().addFeatures(reader);
+    }
+    
+    public Set addFeatures(FeatureCollection collection) throws IOException {
+        return store().addFeatures(collection);
     }
 
     /**

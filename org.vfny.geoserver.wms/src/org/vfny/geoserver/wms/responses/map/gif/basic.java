@@ -100,8 +100,8 @@ public class basic
 
         // This shows how to get the oid of a just inserted row
         st.executeUpdate("insert into basic values (4,1)");
-        long insertedOID = ((org.postgresql.PGStatement)st).getLastOID();
-        System.out.println("Inserted row with oid " + insertedOID);
+//        long insertedOID = ((org.postgresql.PGStatement)st).getLastOID();
+//        System.out.println("Inserted row with oid " + insertedOID);
 
         // Now change the value of b from 1 to 8
         st.executeUpdate("update basic set b=8");

@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.openplans</groupId>
+		<groupId>org.vfny</groupId>
 		<artifactId>geoserver</artifactId>
 		<version>0.1</version>
 	</parent>
@@ -16,106 +16,113 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.openplans</groupId>
-			<artifactId>org.openplans.geoserver.gtlibs</artifactId>
-			<version>2.2.x</version>
-		</dependency>
-		<dependency>
 			<groupId>struts</groupId>
 			<artifactId>struts</artifactId>
-			<version>1.2.8</version>
 		</dependency>
 		<dependency>
 			<groupId>ki</groupId>
 			<artifactId>ki-jzkit-iface</artifactId>
-			<version>X</version>
 		</dependency>
 		<dependency>
 			<groupId>ki</groupId>
 			<artifactId>ki-jzkit-z3950</artifactId>
-			<version>X</version>
 		</dependency>
 		<dependency>
 			<groupId>ki</groupId>
 			<artifactId>ki-util</artifactId>
-			<version>X</version>
 		</dependency>
 		<dependency>
 			<groupId>ki</groupId>
 			<artifactId>a2jruntime</artifactId>
-			<version>X</version>
 		</dependency>
 		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
-			<version>2.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>xerces</groupId>
-			<artifactId>xerces</artifactId>
-			<version>2.4.0</version>
+			<artifactId>xercesImpl</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>xalan</groupId>
 			<artifactId>xalan</artifactId>
-			<version>2.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>lucene</groupId>
 			<artifactId>lucene</artifactId>
-			<version>1.4.3</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
-			<version>1.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-digester</groupId>
 			<artifactId>commons-digester</artifactId>
-			<version>1.7</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
-			<version>2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
-			<version>1.1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>jakarta-oro</groupId>
 			<artifactId>jakarta-oro</artifactId>
-			<version>2.0.6</version>
 		</dependency>
 		<dependency>
 			<groupId>com.mockrunner</groupId>
 			<artifactId>mockrunner</artifactId>
-			<version>0.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>mockobjects</groupId>
 			<artifactId>mockobjects-jdk1.4-j2ee1.3</artifactId>
-			<version>0.09</version>
 		</dependency>
 		<dependency>
 			<groupId>httpunit</groupId>
 			<artifactId>httpunit</artifactId>
-			<version>1.6</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-main</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-shapefile</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-validation</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>
