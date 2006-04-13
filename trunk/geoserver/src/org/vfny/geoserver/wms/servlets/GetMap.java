@@ -139,6 +139,6 @@ public class GetMap extends WMService {
         }
 
         //If it starts with multipart/ then it is multipart
-        return contentType.toLowerCase().equals(URLENCODED);
+        return contentType.toLowerCase().startsWith(URLENCODED);
     }
 }

@@ -25,6 +25,7 @@
 
 	
 	<property name="version.geotools" value="2.3.x" />
+	<!-- <property name="version.geotools" value="2.2.x" /> -->
 
 	<!-- If you don't have your own conf directory then define one of -->
 	<!-- these test.type's in your build.properties file-->

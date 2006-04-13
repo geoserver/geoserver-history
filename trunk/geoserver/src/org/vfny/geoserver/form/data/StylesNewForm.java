@@ -21,14 +21,9 @@ import org.apache.struts.action.ActionMapping;
  * @version $Id: StylesNewForm.java,v 1.1 2004/02/28 07:45:00 jive Exp $
  */
 public class StylesNewForm extends ActionForm {
-
-	/**
-	 * StyleID entered by user
-	 * 
-	 * @uml.property name="styleID" multiplicity="(0 1)"
-	 */
-	private String styleID;
-
+    
+    /** StyleID entered by user */
+    private String styleID;
     
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -51,33 +46,26 @@ public class StylesNewForm extends ActionForm {
         if ((styleID == null) || styleID.equals("")) {
             errors.add("styleID",
             new ActionError("error.styleID.required", styleID));
-        } else if (!Pattern.matches("^\\w*$", styleID)) {
+        } else if (!Pattern.matches("^[-\\w.:]*$", styleID)) {
             errors.add("styleID",
             new ActionError("error.styleID.invalid", styleID));
         }      
         return errors;
+    }    
+    /**
+     * Access styleID property.
+     * 
+     * @return Returns the styleID.
+     */
+    public String getStyleID() {
+        return styleID;
     }
-
-	/**
-	 * Access styleID property.
-	 * 
-	 * @return Returns the styleID.
-	 * 
-	 * @uml.property name="styleID"
-	 */
-	public String getStyleID() {
-		return styleID;
-	}
-
-	/**
-	 * Set styleID to styleID.
-	 * 
-	 * @param styleID The styleID to set.
-	 * 
-	 * @uml.property name="styleID"
-	 */
-	public void setStyleID(String styleID) {
-		this.styleID = styleID;
-	}
-
+    /**
+     * Set styleID to styleID.
+     *
+     * @param styleID The styleID to set.
+     */
+    public void setStyleID(String styleID) {
+        this.styleID = styleID;
+    }
 }
