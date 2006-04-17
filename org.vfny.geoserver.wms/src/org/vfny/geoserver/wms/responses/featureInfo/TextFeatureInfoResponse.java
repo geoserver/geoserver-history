@@ -9,13 +9,21 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.feature.AttributeType;
+import org.geotools.feature.Descriptors;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
+import org.opengis.feature.Attribute;
+import org.opengis.feature.AttributeName;
+import org.opengis.feature.ComplexAttribute;
+import org.opengis.feature.type.ComplexType;
+import org.opengis.feature.type.GeometryType;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -75,31 +83,15 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
                 while (reader.hasNext()) 
                 {
                     Feature f = reader.next();
-
-                    FeatureType schema = f.getFeatureType();
-                    AttributeType[] types = schema.getAttributeTypes();
-
+                    List attributes = f.getAttributes();
+                    
                     if (featuresPrinted<maxfeatures)
 					{
                     	writer.println("--------------------------------------------");
-	                    for (int j = 0; j < types.length; j++) //for each column in the featuretype
-	                    {     	
-	                        if (Geometry.class.isAssignableFrom(types[j].getType())) 
-	                        {
-	                            //writer.println(types[j].getName() + " = [GEOMETRY]"); 
-	                        	
-	                        	//DJB: changed this to print out WKT - its very nice for users
-	                        	//Geometry g = (Geometry) f.getAttribute(types[j].getName());
-	                            //writer.println(types[j].getName() + " = [GEOMETRY] = "+g.toText() ); 
-	                        	
-	                        	//DJB: decided that all the geometry info was too much - they should use GML version if they want those details
-	                        	Geometry g = (Geometry) f.getAttribute(types[j].getName().getLocalPart());
-	                        	writer.println(types[j].getName() + " = [GEOMETRY ("+g.getGeometryType()+") with "+g.getNumPoints()+" points]"); 
-	                        	
-	                        } else {
-	                            writer.println(types[j].getName() + " = "
-	                                + f.getAttribute(types[j].getName().getLocalPart()));
-	                        }                                         
+	                    for (Iterator it = attributes.iterator(); it.hasNext();) //for each attribute in the Feature
+	                    {   
+	                    	Attribute att = (Attribute)it.next();
+	                    	handleAttribute(att, 0, writer);
 	                    }
 	                    writer.println("--------------------------------------------");
 	                    featuresPrinted++;
@@ -122,4 +114,40 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         }
         writer.flush();
     }
+    
+    
+    private void handleAttribute(Attribute att, int indentLevel, PrintWriter writer){
+    	AttributeName name = att.getDescriptor().getName();
+    	org.opengis.feature.type.AttributeType type = att.getDescriptor().getType();
+    	Object value = att.get();
+    	if(type instanceof GeometryType){
+            //writer.println(types[j].getName() + " = [GEOMETRY]"); 
+        	
+        	//DJB: changed this to print out WKT - its very nice for users
+        	//Geometry g = (Geometry) f.getAttribute(types[j].getName());
+            //writer.println(types[j].getName() + " = [GEOMETRY] = "+g.toText() ); 
+        	
+        	//DJB: decided that all the geometry info was too much - they should use GML version if they want those details
+        	Geometry g = (Geometry) value;
+        	write(writer, indentLevel, name + " = " + (g == null? "null value" : ("[GEOMETRY (" + g.getGeometryType() + ") with "+
+        				g.getNumPoints()+" points]"))); 
+        	
+        } else if(type instanceof ComplexType){
+        	write(writer, indentLevel, name + ":");
+        	for(Iterator it = ((ComplexAttribute)att).getAttributes().iterator(); it.hasNext();){
+        		Attribute child = (Attribute)it.next();
+        		handleAttribute(child, indentLevel + 1, writer);
+        	}
+        } else{
+        	write(writer, indentLevel, name.getLocalPart() + " = " + value);
+        }                                         
+    }
+    
+    private void write(PrintWriter writer, int indentLevel, String message){
+    	for(int i = 0; i < indentLevel; i++){
+    		writer.print('\t');
+    	}
+    	writer.println(message);
+    }
+    
 }

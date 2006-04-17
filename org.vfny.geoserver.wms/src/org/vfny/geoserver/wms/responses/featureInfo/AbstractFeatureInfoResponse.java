@@ -10,6 +10,7 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -17,12 +18,15 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
 import org.geotools.feature.AttributeType;
+import org.geotools.feature.Descriptors;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
+import org.opengis.feature.schema.AttributeDescriptor;
+import org.opengis.feature.type.GeometryType;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -159,8 +163,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      *
      * @throws WmsException For any problems.
      */
-    protected void execute(FeatureTypeInfo[] requestedLayers, Query[] queries,
-        int x, int y) throws WmsException {
+    protected void execute(FeatureTypeInfo[] requestedLayers, int x, int y) throws WmsException {
         GetFeatureInfoRequest request = getRequest();
         this.format = request.getInfoFormat();
 
@@ -208,12 +211,32 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
             for (int i = 0; i < layerCount; i++) {
                 FeatureTypeInfo finfo = requestedLayers[i];
 
-/*
                 try {
                     getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
                     FeatureType type = finfo.getFeatureType();
                     org.opengis.feature.type.AttributeType defaultGeom = type.getDefaultGeometry();
+                    /**
+                     * HACK: on FM getDefaultGeometry is fixed, but for now we can't 
+                     * find the geometry attribute name so easily
                     getFInfoFilter.addLeftGeometry(filterFac.createAttributeExpression(type, defaultGeom.getName().getLocalPart()));
+                    */
+                    //so lets find the first geometry attribute
+                    List nodes = Descriptors.nodes(type.getDescriptor());
+                    AttributeDescriptor ad = null;
+                    for(Iterator it = nodes.iterator(); it.hasNext(); ){
+                    	ad = (AttributeDescriptor)it.next();
+                    	if(ad.getType() instanceof GeometryType){
+                    		break;
+                    	}
+                    	ad = null;
+                    }
+                    if(ad == null){
+                    	throw new IllegalStateException(type.getName() + " has no default geometry");
+                    }
+                    String geometryName = ad.getName().getLocalPart();
+                    getFInfoFilter.addLeftGeometry(filterFac.createAttributeExpression(type, geometryName));
+                    
+                    
                     getFInfoFilter.addRightGeometry(filterFac.createLiteralExpression(
                             pixelRect));
                 } catch (IllegalFilterException e) {
@@ -223,8 +246,6 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
                 
                 Query q = new DefaultQuery( finfo.getTypeName(), null, getFInfoFilter,request.getFeatureCount(), Query.ALL_NAMES, null ); 
-  */
-  		Query q = queries[i];
   		
                 FeatureResults match = finfo.getFeatureSource().getFeatures(q);
 

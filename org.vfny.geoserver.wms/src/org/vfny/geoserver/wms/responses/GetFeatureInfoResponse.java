@@ -55,7 +55,8 @@ public class GetFeatureInfoResponse implements Response {
 
         producer = new HTMLTableFeatureInfoResponse();
         supportedMimeTypes.addAll(producer.getSupportedFormats());
-        delegates.add(producer);
+        //REVISIT: add again once it handles complex features
+        //delegates.add(producer);
 
         producer = new GmlFeatureInfoResponse();
         supportedMimeTypes.addAll(producer.getSupportedFormats());

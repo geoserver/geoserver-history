@@ -15,6 +15,7 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
 import org.vfny.geoserver.wfs.responses.GML2FeatureResponseDelegate;
+import org.vfny.geoserver.wfs.responses.GML3FeatureResponseDelegate;
 import org.vfny.geoserver.wfs.responses.GetFeatureResults;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 
@@ -81,8 +82,13 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
             getFeatureResults.addFeatures(finfo, fresults);
         }
 
+        /*
         GML2FeatureResponseDelegate encoder = new GML2FeatureResponseDelegate();
         encoder.prepare("GML2", getFeatureResults);
+        encoder.encode(out);
+        */
+        GML3FeatureResponseDelegate encoder = new GML3FeatureResponseDelegate();
+        encoder.prepare("GML3", getFeatureResults);
         encoder.encode(out);
     }
 }
