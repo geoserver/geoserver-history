@@ -6,10 +6,14 @@ package org.vfny.geoserver.wms.responses.featureInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureType;
+import org.opengis.feature.schema.AttributeDescriptor;
+import org.opengis.feature.type.GeometryType;
+import org.geotools.feature.Descriptors;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.BBoxExpression;
 import org.geotools.filter.Expression;
@@ -216,18 +220,56 @@ public abstract class GetFeatureInfoDelegate implements Response {
      */
     private Filter buildFilter(Envelope requestExtent, FilterFactory ffactory,
         FeatureType schema) throws IllegalFilterException {
-        GeometryFilter bboxFilter;
-        bboxFilter = ffactory.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
-
-        BBoxExpression bboxExpr = ffactory.createBBoxExpression(requestExtent);
-        Expression geomAttExpr = ffactory.createAttributeExpression(schema,
-                schema.getDefaultGeometry().getName().getLocalPart());
-        bboxFilter.addLeftGeometry(geomAttExpr);
-        bboxFilter.addRightGeometry(bboxExpr);
-
-        return bboxFilter;
+ 
+        String attName = getGeomName(schema);
+        
+ 	if( attName != null )
+ 	{	
+        
+	        GeometryFilter bboxFilter;
+	        bboxFilter = ffactory.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
+	
+	        BBoxExpression bboxExpr = ffactory.createBBoxExpression(requestExtent);
+	   
+	       Expression geomAttExpr = ffactory.createAttributeExpression(schema, attName);
+	 
+	   
+	        bboxFilter.addLeftGeometry(geomAttExpr);
+	        bboxFilter.addRightGeometry(bboxExpr);
+	
+	        return bboxFilter;
+	  
+	}
+	
+	 throw new IllegalFilterException("Could not find default geometry in the FeatureType ("+schema.getTypeName()+")");
+  
     }
 
+
+    /*
+      //RA: should be provided by getDefaultGeometry I guess - dont know how to get name from the type returned.
+      
+    */
+    private String getGeomName(FeatureType schema){
+    
+         List attributes = Descriptors.nodes(schema.getDescriptor());
+        AttributeDescriptor attribute;
+        String attName;
+        
+        for( Iterator it = attributes.iterator(); it.hasNext();) {
+        	attribute = (AttributeDescriptor)it.next();
+            attName = attribute.getName().getLocalPart();
+           
+            //DJB: added this for better error messages!
+            if (attribute == null)
+               return null;
+               
+            if (attribute.getType() instanceof GeometryType) {
+  	        return attName;
+ 	    }
+	}
+	return null;
+    }
     /**
      * Tries to guesss exactly wich property names are needed to query for a
      * given FeatureTypeInfo and the Filter that will be applied to it. By
@@ -264,7 +306,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
         FeatureType type = layer.getFeatureType();
         List atts = new ArrayList();
         //JD: bad cast
-        String geom_name = ((Geometry)type.getDefaultGeometry()).getGeometryType();
+        String geom_name = getGeomName(type);
 
         if (!atts.contains(geom_name)) {
             atts.add(geom_name);
@@ -275,6 +317,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
         return properties;
     }
 
+ 
     /**
      * Gets the map request.  Used by delegate children to find out more
      * information about the request.

@@ -208,6 +208,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
             for (int i = 0; i < layerCount; i++) {
                 FeatureTypeInfo finfo = requestedLayers[i];
 
+/*
                 try {
                     getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
                     FeatureType type = finfo.getFeatureType();
@@ -222,6 +223,9 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
                 
                 Query q = new DefaultQuery( finfo.getTypeName(), null, getFInfoFilter,request.getFeatureCount(), Query.ALL_NAMES, null ); 
+  */
+  		Query q = queries[i];
+  		
                 FeatureResults match = finfo.getFeatureSource().getFeatures(q);
 
                 //this was crashing Gml2FeatureResponseDelegate due to not setting
