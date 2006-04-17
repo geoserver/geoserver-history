@@ -21,9 +21,9 @@
 
     </global>
 
+    <!-- An example form
     <formset>
 
-        <!-- An example form
         <form name="logonForm">
             <field
                 property="username"
@@ -40,9 +40,8 @@
             </var>
          </field>
         </form>
-        end example form -->
-
     </formset>
+    end example form -->
 
     <!-- An example formset for another locale
     <formset language="fr">
