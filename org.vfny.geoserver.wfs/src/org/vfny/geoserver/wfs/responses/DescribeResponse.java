@@ -344,6 +344,15 @@ public class DescribeResponse implements Response {
                             if ((gType2 != null) && (gType2 != "")) {
                                 generatedType = gType2;
                             }
+                            // Loop through requested tables again to add elements
+                            // NOT VERY EFFICIENT - PERHAPS THE MYSQL ABSTRACTION CAN FIX THIS;
+                            //  STORE IN HASH?
+                            for (Iterator it = validTypes.iterator(); it.hasNext();) {
+                                // Print element representation of table
+                                tempResponse = tempResponse
+                                    + printElement((FeatureTypeInfo) it.next());
+                            }
+                       
                        }
                 } catch (IOException e) {
                     generatedType = "";
@@ -356,14 +365,6 @@ public class DescribeResponse implements Response {
             }
         }
 
-        // Loop through requested tables again to add elements
-        // NOT VERY EFFICIENT - PERHAPS THE MYSQL ABSTRACTION CAN FIX THIS;
-        //  STORE IN HASH?
-        for (Iterator i = validTypes.iterator(); i.hasNext();) {
-            // Print element representation of table
-            tempResponse = tempResponse
-                + printElement((FeatureTypeInfo) i.next());
-        }
 
         tempResponse = tempResponse + "\n\n";
 
