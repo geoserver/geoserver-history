@@ -146,6 +146,12 @@ public class WmsDispatcher extends Dispatcher {
             dispatched = new GetLegendGraphic();
 
             break;   
+            
+        case PUT_STYLES_REQUEST:
+        	dispatched = new PutStyles(servletConfig.getServletContext());
+        	
+        	break;
+        	
         default:
             dispatched = null;
         }

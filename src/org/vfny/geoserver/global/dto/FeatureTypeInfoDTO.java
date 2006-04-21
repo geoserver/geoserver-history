@@ -5,6 +5,7 @@
 package org.vfny.geoserver.global.dto;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -99,7 +100,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /** The default style name. */
     private String defaultStyle;
-
+    /** List of all styles for the feature type */
+    private List styles;
+    
     // Modif C. Kolbowicz - 06/10/2004 
 
     /** The legend icon description. */
@@ -160,6 +163,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         }
 
         defaultStyle = dto.getDefaultStyle();
+        styles = dto.getStyles();
 
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
@@ -228,6 +232,10 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         r = r && (_abstract == f.getAbstract());
         r = r && (numDecimals == f.getNumDecimals());
 
+        if (styles != null) {
+        	r = r && styles.equals(f.getStyles());
+        }
+        
         if (definitionQuery != null) {
             r = r && definitionQuery.equals(f.getDefinitionQuery());
         } else if (f.getDefinitionQuery() != null) {
@@ -568,19 +576,42 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         return defaultStyle;
     }
 
-    /**
-     * setDefaultStyle purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
+       /**
+     * Set defaultStyle to defaultStyle.
      *
-     * @param string
+     * @param defaultStyle The defaultStyle to set.
      */
-    public void setDefaultStyle(String string) {
-        defaultStyle = string;
+    public void setDefaultStyle(String defaultStyle) {
+        this.defaultStyle = defaultStyle;
+        addStyle(defaultStyle);
     }
-
+    
+    /**
+     * Adds a style to the feature type.
+     * @param style id of the style.
+     */
+    public void addStyle(String style) {
+    	if (styles == null) {
+    		styles = new ArrayList();
+    	}
+    	if (!styles.contains(style))
+    		styles.add(style);
+    }
+    
+    /**
+     * Returns the list of styles for a layer.
+     */
+    public List getStyles() {
+    	return styles;
+    }
+    
+    /**
+     * Sets the list of styles for a layer.
+     */
+    public void setStyles(List styles) {
+    	this.styles = styles;
+    }
+    
     /**
      * getSchema purpose.
      * 

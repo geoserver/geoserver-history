@@ -117,6 +117,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     private String defaultStyle;
     /**
+     * List of styles for the feature type with WMS
+     */
+    private List styles;
+    
+    /**
      * Title of this FeatureType as presented to End-Users.
      * <p>
      * Think of this as the display name on the off chance that typeName
@@ -194,6 +199,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         _abstract = dto.getAbstract();
         dataStoreId = dto.getDataStoreId();
         defaultStyle = dto.getDefaultStyle();        
+        styles = dto.getStyles();
         
         // Modif C. Kolbowicz - 07/10/2004
         if (dto.getLegendURL() != null) {
@@ -311,6 +317,19 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     public Style getDefaultStyle(){
     	return data.getStyle(defaultStyle);
+    }
+    
+    /**
+     * Returns the list of styles for a layer.
+     */
+    public List getStyles() {
+    	ArrayList styles = new ArrayList();
+    	for (Iterator itr = this.styles.iterator(); itr.hasNext();) {
+    		String style = (String) itr.next();
+    		styles.add(data.getStyle(style));
+    	}
+    	
+    	return styles;
     }
     
     /**

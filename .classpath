@@ -54,6 +54,6 @@
 	<classpathentry kind="lib" path="lib/gt2-validation.jar"/>
 	<classpathentry kind="lib" path="lib/gt2-wms.jar"/>
 	<classpathentry sourcepath="C:/eclipse/workspace2/2.2.x" kind="lib" path="lib/gt2-api.jar"/>
-	<classpathentry kind="lib" path="lib/gt2-render.jar"/>
+	<classpathentry sourcepath="/render" kind="lib" path="lib/gt2-render.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

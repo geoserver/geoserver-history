@@ -1094,6 +1094,13 @@ public class XMLConfigReader {
         Element tmp = ReaderUtils.getChildElement(fTypeRoot, "styles");
 
         if (tmp != null) {
+        	List styles = new ArrayList();
+        	NodeList children = tmp.getElementsByTagName("style");
+        	for (int i = 0; i < children.getLength(); i++) {
+        		Element styleElement = (Element)children.item(i);
+        		styles.add(styleElement.getFirstChild().getTextContent());
+        	}
+        	
             ft.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
         }
 

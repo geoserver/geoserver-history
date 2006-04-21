@@ -58,7 +58,10 @@ public class DispatcherKvpReader {
                 return Dispatcher.DESCRIBE_LAYER_REQUEST;
             }else if (responseType.equals("GETLEGENDGRAPHIC")) {
                 return Dispatcher.GET_LEGEND_GRAPHIC_REQUEST;
+            }else if (responseType.equals("PUTSTYLES")) {
+            	return Dispatcher.PUT_STYLES_REQUEST;
             }
+            
             else {
                 return Dispatcher.UNKNOWN;
             }

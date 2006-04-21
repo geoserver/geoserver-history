@@ -269,6 +269,13 @@ public class WMSCapsTransformer extends TransformerBase {
             handleDcpType(serviceUrl, null);
             end("GetLegendGraphic");
 
+            start("PutStyles");
+        	for (int i = 0; i < wms.getPutStyleFormats().length; i++) {
+        		element("Format", wms.getPutStyleFormats()[i]);
+        	}
+        	handleDcpType(serviceUrl,null);
+        	end("PutStyles");
+            
             end("Request");
         }
 
@@ -544,15 +551,28 @@ public class WMSCapsTransformer extends TransformerBase {
 
             handleLatLonBBox(bbox);
 
-            //add the layer style
-            start("Style");
-
-            Style ftStyle = ftype.getDefaultStyle();
-            element("Name", ftStyle.getName());
-            element("Title", ftStyle.getTitle());
-            element("Abstract", ftStyle.getAbstract());
-            handleLegendURL(ftype);
-            end("Style");
+            //add the layer styles
+            
+            List styles = ftype.getStyles();
+            for (Iterator itr = styles.iterator(); itr.hasNext();) {
+            	Style style = (Style) itr.next();
+            	
+            	start("Style");
+            	element("Name", style.getName());
+	            element("Title", style.getTitle());
+	            element("Abstract", style.getAbstract());
+	            handleLegendURL(ftype);
+	            end("Style");
+            }
+            
+//            start("Style");
+//
+//            Style ftStyle = ftype.getDefaultStyle();
+//            element("Name", ftStyle.getName());
+//            element("Title", ftStyle.getTitle());
+//            element("Abstract", ftStyle.getAbstract());
+//            handleLegendURL(ftype);
+//            end("Style");
 
             end("Layer");
         }

@@ -22,6 +22,7 @@ import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 
 
+import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Style;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
@@ -91,7 +92,30 @@ public class GetMapResponse implements Response {
 
         final FeatureTypeInfo[] layers = request.getLayers();
         final Style[] styles = (Style[])request.getStyles().toArray(new Style[]{});
-
+        
+        //JD: this is a hack, take out later
+        for (int i = 0; i < layers.length; i++) {
+        	FeatureTypeInfo ftInfo = layers[i];
+        	Style style = styles[i];
+        	
+        	if (style.getFeatureTypeStyles() == null || style.getFeatureTypeStyles().length == 0)
+        		continue;
+        	
+        	boolean match = false;
+        	for (int j = 0 ; j < style.getFeatureTypeStyles().length; j++) {
+        		FeatureTypeStyle ftStyle = style.getFeatureTypeStyles()[j];
+        		if (ftStyle.getFeatureTypeName() != null) {
+        			match = ftStyle.getFeatureTypeName().equals(ftInfo.getTypeName());
+				}
+        		else match = true;
+        	}
+        	
+        	if (!match) {
+        		style.getFeatureTypeStyles()[0].setFeatureTypeName(ftInfo.getTypeName());
+        	}
+        }
+        //
+        
         //JD:make instance variable in order to release resources later
         //final WMSMapContext map = new WMSMapContext();
         map = new WMSMapContext();

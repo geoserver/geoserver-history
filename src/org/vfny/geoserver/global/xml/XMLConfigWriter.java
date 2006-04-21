@@ -824,7 +824,13 @@ public class XMLConfigWriter {
                     + "at least must contain the \"default\" attribute ");
                 m = new HashMap();
                 m.put("default", ft.getDefaultStyle());
-                cw.attrTag("styles", m);
+                cw.openTag("styles",m);
+                for (Iterator itr = ft.getStyles().iterator(); itr.hasNext();) {
+                	String style = (String)itr.next();
+                	cw.textTag("style",new HashMap(),style);
+                }
+                cw.closeTag("styles");
+                //cw.attrTag("styles", m);
             }
 
             if (ft.getDefinitionQuery() != null) {

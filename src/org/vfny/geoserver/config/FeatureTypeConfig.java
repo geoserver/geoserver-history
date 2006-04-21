@@ -125,6 +125,11 @@ public class FeatureTypeConfig {
     private String defaultStyle;
 
     /**
+     * List of all styles.
+     */
+    private List styles;
+    
+    /**
      * Package visible constructor for test cases
      */
     FeatureTypeConfig() {
@@ -176,6 +181,7 @@ public class FeatureTypeConfig {
             this.schemaAttributes = null;        
         }
         defaultStyle = "";
+        styles = new ArrayList();
         name = schema.getTypeName();
         title = schema.getTypeName() + "_Type";
         _abstract = "Generated from " + dataStoreId;
@@ -236,6 +242,7 @@ public class FeatureTypeConfig {
         }
 
         defaultStyle = dto.getDefaultStyle();
+        styles = dto.getStyles();
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
         schemaBase = dto.getSchemaBase();        
@@ -283,6 +290,7 @@ public class FeatureTypeConfig {
         }
 
         f.setDefaultStyle(defaultStyle);
+        f.setStyles(styles);
         f.setDirName(dirName);
         f.setSchemaBase(schemaBase);
         f.setSchemaName(schemaName);
@@ -375,7 +383,28 @@ public class FeatureTypeConfig {
      */
     public void setDefaultStyle(String defaultStyle) {
         this.defaultStyle = defaultStyle;
+        addStyle(defaultStyle);
     }
+    
+    /**
+     * Adds a style to the feature type.
+     * @param style id of the style.
+     */
+    public void addStyle(String style) {
+    	if (styles == null) {
+    		styles = new ArrayList();
+    	}
+    	if (!styles.contains(style))
+    		styles.add(style);
+    }
+    
+    /**
+     * Returns the list of styles for a layer.
+     */
+    public List getStyles() {
+    	return styles;
+    }
+    
     /**
      * Access definitionQuery property.
      * 

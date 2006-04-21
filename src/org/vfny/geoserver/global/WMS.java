@@ -42,6 +42,10 @@ public class WMS extends Service {
         //  "application/vnd.ogc.se_blank"
     };
     
+    private static final String[] PUT_STYLE_FORMATS = {
+    	"application/vnd.ogc.sld+xml",
+    };
+    
     public static final String WEB_CONTAINER_KEY = "WMS";
 
     /** svg Renderer to use **/
@@ -126,6 +130,17 @@ public class WMS extends Service {
      */
     public String[] getExceptionFormats() {
         return EXCEPTION_FORMATS;
+    }
+    
+    /**
+     * <p>
+     * Returns a static list of PutStyle Formats in as Strings
+     * </p>
+     *
+     * @return String[] a static list of PutStyle Formats
+     */
+    public String[] getPutStyleFormats() {
+    	return PUT_STYLE_FORMATS;
     }
 
     /**
