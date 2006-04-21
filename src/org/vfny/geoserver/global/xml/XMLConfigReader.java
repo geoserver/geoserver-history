@@ -1098,7 +1098,7 @@ public class XMLConfigReader {
         	NodeList children = tmp.getElementsByTagName("style");
         	for (int i = 0; i < children.getLength(); i++) {
         		Element styleElement = (Element)children.item(i);
-        		styles.add(styleElement.getFirstChild().getTextContent());
+        		styles.add(styleElement.getFirstChild().getNodeValue());
         	}
         	
             ft.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
