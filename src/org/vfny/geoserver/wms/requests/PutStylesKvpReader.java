@@ -18,6 +18,8 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
@@ -133,6 +135,7 @@ public class PutStylesKvpReader extends WmsKvpRequestReader {
 
         }
 
+        
         Reader reader = getReaderFromString(sldBody);
         SLDParser parser = new SLDParser(styleFactory, reader);
         StyledLayerDescriptor sld = parser.parseSLD();

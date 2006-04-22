@@ -62,6 +62,10 @@ public class PutStylesResponse implements Response {
 		this.context = context;
 	}
 	
+	private boolean empty(String s) {
+		return s == null || s.trim().equals("");
+	}
+	
 	public void execute(Request req) throws ServiceException {
 		PutStylesRequest request = (PutStylesRequest) req;
 		
@@ -134,6 +138,11 @@ public class PutStylesResponse implements Response {
 						String ftName = ftStyle.getFeatureTypeName();
 						if (ftName == null)
 							continue;
+						
+						//check for namespace prefix
+						if (ftName.indexOf(":") != -1) {
+							ftName = ftName.split(":")[1];
+						}
 						
 						for (Iterator itr = config.getFeaturesTypes().values().iterator(); itr.hasNext();) {
 							FeatureTypeConfig ftConfig = (FeatureTypeConfig) itr.next();
@@ -216,18 +225,16 @@ public class PutStylesResponse implements Response {
 	}
 	
 	public String getContentType(GeoServer gs) throws IllegalStateException {
-		
-		return null;
+		return "application/vnd.ogc.success+xml";
 	}
 
 	public String getContentEncoding() {
-		// TODO Auto-generated method stub
+//		return "application/vnd.ogc.success+xml"
 		return null;
 	}
 
 	public void writeTo(OutputStream out) throws ServiceException, IOException {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void abort(Service gs) {
