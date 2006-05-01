@@ -6,6 +6,8 @@ package org.vfny.geoserver.global;
  */
 
 import java.io.File;
+import java.util.logging.Logger;
+
 import javax.servlet.ServletContext;
 import org.vfny.geoserver.global.xml.ReaderUtils;
 
@@ -38,7 +40,8 @@ import org.vfny.geoserver.global.xml.ReaderUtils;
  */
 public class GeoserverDataDirectory
 {
-
+	private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+	
     //caches the dataDir
     private static File dataDir;
 
@@ -63,32 +66,35 @@ public class GeoserverDataDirectory
 	    //_and_ webapp options with relative data/ links -ch
 	    if (dataDir == null) {
 	    	
-		//see if there's a system property
-		String prop = System.getProperty("GEOSERVER_DATA_DIR");
-		if (prop != null && !prop.equals(""))
-		{
-			 //its defined!!
-		    isTrueDataDir = true;
-			dataDir = new File(prop);
-			return dataDir;
-		}
-		
-		
-		//try the webxml
-		String loc = servContext.getInitParameter("GEOSERVER_DATA_DIR");
-		if (loc != null)
-		{
-			//its defined!!
-		    isTrueDataDir = true;
-			dataDir = new File(loc);
-			return dataDir;
-		}
-		
-		//return default
-                isTrueDataDir = false;
-		String rootDir = servContext.getRealPath("/");
-		dataDir = new File (rootDir);
+			//see if there's a system property
+			String prop = System.getProperty("GEOSERVER_DATA_DIR");
+			if (prop != null && !prop.equals(""))
+			{
+				 //its defined!!
+			    isTrueDataDir = true;
+				dataDir = new File(prop);
+				LOGGER.info("Data_dir: " + dataDir.getPath());
+				return dataDir;
+			}
+			
+			
+			//try the webxml
+			String loc = servContext.getInitParameter("GEOSERVER_DATA_DIR");
+			if (loc != null)
+			{
+				//its defined!!
+			    isTrueDataDir = true;
+				dataDir = new File(loc);
+				LOGGER.info("Data_dir: " + dataDir.getPath());
+				return dataDir;
+			}
+			
+			//return default
+	        isTrueDataDir = false;
+			String rootDir = servContext.getRealPath("/");
+			dataDir = new File (rootDir);
 	    }
+	    LOGGER.info("Data_dir: " + dataDir.getPath());
 	    return dataDir;
 	}
 
