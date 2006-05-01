@@ -919,18 +919,18 @@ public class XMLConfigWriter {
             m.put("minOccurs", "" + ati.getMinOccurs());
             m.put("maxOccurs", "" + ati.getMaxOccurs());
 
-            NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance()
+            NameSpaceTranslator nst_xs = NameSpaceTranslatorFactory.getInstance()
                                                                  .getNameSpaceTranslator("xs");
-            NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance()
+            NameSpaceTranslator nst_gml = NameSpaceTranslatorFactory.getInstance()
                                                                  .getNameSpaceTranslator("gml");
 
             if (!ati.isComplex()) {
                 if (ati.getName() == ati.getType()) {
                     String r = "";
-                    NameSpaceElement nse = nst1.getElement(ati.getType());
+                    NameSpaceElement nse = nst_xs.getElement(ati.getType());
 
                     if (nse == null) {
-                        nse = nst2.getElement(ati.getType());
+                        nse = nst_gml.getElement(ati.getType());
                     }
 
                     r = nse.getQualifiedTypeRefName();
@@ -939,13 +939,14 @@ public class XMLConfigWriter {
                     m.put("name", ati.getName());
 
                     String r = "";
-                    NameSpaceElement nse = nst1.getElement(ati.getType());
+                    NameSpaceElement nse = nst_xs.getElement(ati.getType());
 
                     if (nse == null) {
-                        nse = nst2.getElement(ati.getType());
+                        nse = nst_gml.getElement(ati.getType());
+                        r = nse.getQualifiedTypeDefName();	// Def
                     }
-
-                    r = nse.getQualifiedTypeRefName();
+                    else
+                    	r = nse.getQualifiedTypeRefName();	// Ref
 
                     m.put("type", r);
                 }
