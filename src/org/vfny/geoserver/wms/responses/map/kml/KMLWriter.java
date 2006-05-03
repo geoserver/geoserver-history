@@ -9,6 +9,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import java.awt.Color;
 import java.awt.Paint;
@@ -417,34 +418,55 @@ public class KMLWriter extends OutputStreamWriter {
             final Symbolizer[] symbolizers, Range scaleRange ) throws IOException, TransformerException {
         
         String title=null;
+        write("<Placemark>");
+	Geometry g = null; //HACK, this will only do one geometry for all the
+	//symbolizers, will fail if SLD's are doing complex things off of
+	//multiple geometries, like if label placement draws it's value
+        //from another geom.  That would require smarts to figure out
+        //when the symbolizer is using the default geometry, and then
+	// have it write out a new geometry only when it isn't the default.
         for( int m = 0; m < symbolizers.length; m++ ) {
             LOGGER.finer("applying symbolizer " + symbolizers[m]);
             
             if (symbolizers[m] instanceof RasterSymbolizer) {
                 //for now we are out of luck.
             } else{
-                Geometry g = findGeometry(feature, symbolizers[m]);
+               g = findGeometry(feature, symbolizers[m]);
                 //TODO: come back and sort out crs transformation
                 //  CoordinateReferenceSystem crs = findGeometryCS(feature, symbolizers[m]);              
                 if( symbolizers[m] instanceof TextSymbolizer ){
                     title = (String)((TextSymbolizer) symbolizers[m]).getLabel().getValue(feature);
-                } else{
-                    Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
-                    write("<Placemark>");
+		}
+                Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
+
                     if(title != null){
                         write("<Name>"+title+"</Name>");
+                        write("<Description>"+title+"</Description>");
+			title = null;
                     }
                     writeStyle(style);
    
-                    write("<GeometryCollection>");
-                    writeGeometry(g,transformer);
-                    write("</GeometryCollection>");
-                    write("</Placemark>");
-                    newline();
-                }
+                
             }
         }
+        write("<GeometryCollection>");
+	boolean notPoint = false;
+        if (!(g instanceof Point)) {
+	    write("<MultiGeometry>");
+	    notPoint = true;
+	    writeGeometry(g.getCentroid(),transformer);
+	}
+        writeGeometry(g,transformer);
+	if (notPoint) {
+	    write("</MultiGeometry>");
+	}
+        write("</GeometryCollection>");
+        write("</Placemark>");
+        newline();
+
     }
+
+
     
     private void writeStyle(Style2D style) throws IOException {
         if(style instanceof PolygonStyle2D){
