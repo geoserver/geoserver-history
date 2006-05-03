@@ -1099,7 +1099,7 @@ public class XMLConfigReader {
         
         Element cacheInfo = ReaderUtils.getChildElement(fTypeRoot, "cacheinfo");
         if (cacheInfo != null) {
-        	ft.setCacheMaxAge(ReaderUtils.getAttribute(cacheInfo, "maxage", true));
+        	ft.setCacheMaxAge(ReaderUtils.getAttribute(cacheInfo, "maxage", false));// not mandatory
         	ft.setCachingEnabled((new Boolean(ReaderUtils.getAttribute(cacheInfo, "enabled", true))).booleanValue());
         }
 
