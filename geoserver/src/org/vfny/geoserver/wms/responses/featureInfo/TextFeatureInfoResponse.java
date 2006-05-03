@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.Collections;
+import java.util.HashMap;
 
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
@@ -38,6 +39,14 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         supportedFormats = Collections.singletonList("text/plain");
     }
 
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+    	return null;
+    }
+    
     /**
      * Writes the feature information to the client in text/plain format.
      *
