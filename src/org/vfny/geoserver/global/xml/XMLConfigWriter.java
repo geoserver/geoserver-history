@@ -826,6 +826,17 @@ public class XMLConfigWriter {
                 m.put("default", ft.getDefaultStyle());
                 cw.attrTag("styles", m);
             }
+            
+            m = new HashMap();
+            if (ft.getCacheMaxAge() != null) {
+            	m.put("maxage",ft.getCacheMaxAge());
+            }
+            if (ft.isCachingEnabled()) {
+            	m.put("enabled", "true");
+            } else {
+            	m.put("enabled", "false");
+            }
+            cw.attrTag("cacheinfo", m);
 
             if (ft.getDefinitionQuery() != null) {
                 cw.openTag("definitionQuery");
