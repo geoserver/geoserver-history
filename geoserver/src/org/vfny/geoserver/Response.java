@@ -6,6 +6,7 @@ package org.vfny.geoserver;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
@@ -172,6 +173,17 @@ public interface Response {
      * @return the content encoding writeTo will encode with, or null if none
      */
     public String getContentEncoding();
+    
+    /**
+     * Returns any extra headers that this Response might wish to have set in the
+     * HTTP response object.
+     * 
+     * In particular, a WMS might wish to have some external caching information added
+     * to the HTTP response, so that caches can hang onto this map for a while and ligten
+     * the load on geoserver.
+     * @return
+     */
+    public HashMap getResponseHeaders();
 
     /**
      * Writes this respone to the provided output stream.
