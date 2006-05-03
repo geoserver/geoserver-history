@@ -1219,8 +1219,6 @@ This directory is the exported geoserver wiki page. If it does not exist, it wil
 	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wfs.jar" file="${dir.maven}/gt2/jars/wfs-${version.geotools}.jar" /-->
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wms.jar" file="${dir.maven}/gt2/jars/wms-${version.geotools}.jar" />
 
-
-	
 	<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/oracle-spatial-${version.geotools}.jar" toFile="${dir.lib}/gt2-oracle-spatial.jar" />
 	<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/postgis-${version.geotools}.jar" toFile="${dir.lib}/gt2-postgis.jar" />
 	<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-shapefile.jar" />

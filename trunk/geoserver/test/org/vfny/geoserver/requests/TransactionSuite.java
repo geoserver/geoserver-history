@@ -19,7 +19,6 @@ import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -54,7 +53,7 @@ public class TransactionSuite extends RequestTestCase {
             "org.vfny.geoserver.requests");
 
     /** Holds mappings between HTTP and ASCII encodings */
-    protected static FilterFactory factory = FilterFactoryFinder.createFilterFactory();
+    protected static FilterFactory factory = FilterFactory.createFilterFactory();
     protected FeatureType schema;
     protected Feature testFeature;
     protected GeoServer config;

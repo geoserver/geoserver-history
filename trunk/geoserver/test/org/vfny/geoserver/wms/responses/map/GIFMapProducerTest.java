@@ -8,7 +8,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Date;
 
 import javax.imageio.ImageIO;
 
@@ -49,16 +48,11 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
         
         BufferedImage product = null;
         File tmpGif = null;
-        long initT=0,finalT=0;
         try {
 			tmpGif = new File("/tmp/" + testName + ".gif");
 			//tmpGif.deleteOnExit();
 			OutputStream out = new FileOutputStream(tmpGif);
-			initT=System.currentTimeMillis();
 			producer.writeTo(out);
-			finalT=System.currentTimeMillis()-initT;
-			System.out.println("####################     "+finalT+ "  ###########");
-	
 			out.flush();
 			out.close();
 			
@@ -75,7 +69,7 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
         assertEquals(w, product.getWidth());
         assertEquals(h, product.getHeight());
         
-    
+        System.out.println("width=" + w + ", height=" + h);
 
         showImage(testName, product);
     }
