@@ -88,6 +88,14 @@ public class TransactionResponse implements Response {
         transaction = null;
     }
 
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+    	return null;
+    }
+    
     public void execute(Request request) throws ServiceException, WfsException {
         if (!(request instanceof TransactionRequest)) {
             throw new WfsException(

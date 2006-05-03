@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -68,6 +69,14 @@ public class DescribeResponse implements Response {
     /** Main XML class for interpretation and response. */
     private String xmlResponse = new String();
 
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+    	return null;
+    }
+    
     /**
      * Constructor with request.
      *
