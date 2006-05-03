@@ -1096,6 +1096,12 @@ public class XMLConfigReader {
         if (tmp != null) {
             ft.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
         }
+        
+        Element cacheInfo = ReaderUtils.getChildElement(fTypeRoot, "cacheinfo");
+        if (cacheInfo != null) {
+        	ft.setCacheMaxAge(ReaderUtils.getAttribute(cacheInfo, "maxage", true));
+        	ft.setCachingEnabled((new Boolean(ReaderUtils.getAttribute(cacheInfo, "enabled", true))).booleanValue());
+        }
 
         // Modif C. Kolbowicz - 06/10/2004
         Element legendURL = ReaderUtils.getChildElement(fTypeRoot, "LegendURL");
