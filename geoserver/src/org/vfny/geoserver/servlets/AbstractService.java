@@ -14,11 +14,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -457,6 +460,9 @@ public abstract class AbstractService extends HttpServlet {
             return;
         } catch (Throwable t) {
             //we can safelly send errors here, since we have not touched response yet
+        	LOGGER.severe("Uncaught general exception while executing request: " + t.getMessage());
+        	if (LOGGER.isLoggable(Level.FINE))
+        		t.printStackTrace();
             serviceResponse.abort(s);
             sendError(response, t);
 
@@ -482,6 +488,17 @@ public abstract class AbstractService extends HttpServlet {
                 LOGGER.fine("content encoding is: " + encoding);
                 response.setHeader("content-encoding", encoding);
             }
+            // write any further custom headers
+        	if (serviceResponse.getResponseHeaders() != null) {
+        		HashMap headers = serviceResponse.getResponseHeaders();
+        		Iterator iHeaders = headers.keySet().iterator();
+        		String curKey;
+        		while (iHeaders.hasNext()) {
+        			curKey = iHeaders.next().toString();
+        			response.addHeader(curKey, headers.get(curKey).toString());
+        		}
+        			
+        	}
         } catch (SocketException socketException) {
             LOGGER.fine(
                 "it seems that the user has closed the request stream: "
@@ -742,8 +759,9 @@ public abstract class AbstractService extends HttpServlet {
 
         LOGGER.info("Had an undefined error: " + t.getMessage());
 
-        //TODO: put the stack trace in the logger.
-        //t.printStackTrace();
+        StringWriter s = new StringWriter();
+        t.printStackTrace(new PrintWriter(s));
+        LOGGER.info(s.getBuffer().toString());
         //String pre = "UNCAUGHT EXCEPTION";
         ExceptionHandler exHandler = getExceptionHandler();
         ServiceException se = exHandler.newServiceException(t);
