@@ -174,6 +174,19 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     {
     	
     }
+    
+    /**
+     * This value is added the headers of generated maps, marking them as being both
+     * "cache-able" and designating the time for which they are to remain valid.
+     *  The specific header added is "Cache-Control: max-age="
+     */
+    private String cacheMaxAge;
+    
+    /**
+     * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
+     */
+    private boolean cachingEnabled;
+    
     /**
      * FeatureTypeInfo constructor.
      * 
@@ -221,6 +234,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         schemaFile = dto.getSchemaFile();
         SRS = dto.getSRS();
         title = dto.getTitle();
+        
+        cacheMaxAge = dto.getCacheMaxAge();
+        cachingEnabled = dto.isCachingEnabled();
     }
 
     /**
@@ -265,6 +281,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         dto.setSRS(SRS);
         dto.setTitle(title);
 
+        dto.setCacheMaxAge(cacheMaxAge);
+        dto.setCachingEnabled(cachingEnabled);
+        
         return dto;
     }
 
@@ -1061,5 +1080,37 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     	return result;
     }
 
+    /**
+     * This value is added the headers of generated maps, marking them as being both
+     * "cache-able" and designating the time for which they are to remain valid.
+     *  The specific header added is "Cache-Control: max-age="
+     * @return a string representing the number of seconds to be added to the "Cache-Control: max-age=" header
+     */
+	public String getCacheMaxAge() {
+		return cacheMaxAge;
+	}
+    /**
+     * 
+     * @param cacheMaxAge a string representing the number of seconds to be added to the "Cache-Control: max-age=" header
+     */
+	public void setCacheMaxAge(String cacheMaxAge) {
+		this.cacheMaxAge = cacheMaxAge;
+	}
+	
+	/**
+	 * Should we add the cache-control: max-age header to maps containing this layer?
+	 * @return true if we should, false if we should omit the header
+	 */
+	public boolean isCachingEnabled() {
+		return cachingEnabled;
+	}
+	/**
+	 * Sets whether we should add the cache-control: max-age header to maps containing this layer
+	 * @param cachingEnabled true if we should add the header, false if we should omit the header
+	 */
+	public void setCachingEnabled(boolean cachingEnabled) {
+		this.cachingEnabled = cachingEnabled;
+	}
+    
 }
  
