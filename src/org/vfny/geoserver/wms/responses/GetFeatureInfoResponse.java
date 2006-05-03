@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,6 +72,14 @@ public class GetFeatureInfoResponse implements Response {
      * Creates a new GetMapResponse object.
      */
     public GetFeatureInfoResponse() {
+    }
+    
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+    	return null;
     }
 
     /**

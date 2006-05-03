@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -68,12 +69,25 @@ public class GetMapResponse implements Response {
     private WMSConfig config;
     
     /**
+     * custom response headers
+     */
+    private HashMap responseHeaders;
+    
+    /**
      * Creates a new GetMapResponse object.
      */
     public GetMapResponse(WMSConfig config) {
         this.config = config;
+        responseHeaders = new HashMap();
     }
 
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     */
+    public HashMap getResponseHeaders() {
+    	return responseHeaders;
+    }
+    
     /**
      * DOCUMENT ME!
      *
@@ -125,9 +139,25 @@ public class GetMapResponse implements Response {
 
          
         MapLayer layer;
+        
+        // track the external caching strategy for any map layers
+        boolean cachingPossible = request.getHttpServletRequest().getMethod().equals("GET");
+        int maxAge = Integer.MAX_VALUE;
 
         FeatureSource source;
         for (int i = 0; i < layers.length; i++) {
+        	if (cachingPossible) {
+        		if (layers[i].isCachingEnabled()) {
+        			int nma = Integer.parseInt(layers[i].getCacheMaxAge());
+        			//suppose the map contains multiple cachable layers...we can only cache the combined map for the
+        			//time specified by the shortest-cached layer.
+        			if (nma < maxAge)
+        				maxAge = nma;
+        		} else {
+        			//if one layer isn't cachable, then we can't cache any of them.  Disable caching.
+        			cachingPossible = false;
+        		}
+        	}
             Style style = styles[i];
 
             try {
@@ -154,6 +184,8 @@ public class GetMapResponse implements Response {
         }
 
         this.delegate.produceMap(map);
+        if (cachingPossible)
+        	responseHeaders.put("Cache-Control: max-age",maxAge + "s" );
     }
 
     /**

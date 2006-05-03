@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
@@ -51,6 +52,14 @@ public class DescribeLayerResponse implements Response {
     /** the raw XML content ready to be sent to the client */
     private byte[] content;
 
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+    	return null;
+    }
+    
     /**
      * DOCUMENT ME!
      *
