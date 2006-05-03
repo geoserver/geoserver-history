@@ -1,0 +1,32 @@
+.mbButton
+img{ 
+filter:progid:DXImageTransform.Microsoft.Alpha(opacity=60);
+-moz-opacity: 0.6;
+margin: 0px;
+border:0px;
+ 
+}
+
+.mbButton:hover 
+img{
+filter:progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+-moz-opacity: 1;
+margin: 0px;
+border:0px;
+}
+
+.mbButton:active, .mbButtonSelected
+img{ 
+filter:progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+-moz-opacity: 1;
+margin: 0px;
+border:0px;
+}
+
+.mbButtonSelected:hover
+img{ 
+filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);
+-moz-opacity: 0.8;
+margin: 0px;
+border:0px;
+}
