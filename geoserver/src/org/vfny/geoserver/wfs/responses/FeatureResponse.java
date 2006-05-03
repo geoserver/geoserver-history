@@ -6,6 +6,7 @@ package org.vfny.geoserver.wfs.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -88,6 +89,14 @@ public class FeatureResponse implements Response {
         featureLock = null;
     }
 
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+    	return null;
+    }
+    
     /**
      * DOCUMENT ME!
      *
