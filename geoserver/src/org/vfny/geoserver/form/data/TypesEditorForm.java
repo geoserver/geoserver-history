@@ -111,6 +111,12 @@ public class TypesEditorForm extends ActionForm {
     /** FeatureType abstract */
     private String description;
 
+    /** The amount of time to use for the CacheControl: max-age parameter in maps generated from this featuretype **/
+    private String cacheMaxAge;
+    /** Should we add the CacheControl: max-age header to maps generated from this featureType? **/
+    private boolean cachingEnabled;
+    private boolean cachingEnabledChecked = false;
+    
     /**
      * One of a select list - simplest is AbstractBaseClass.
      * 
@@ -174,10 +180,10 @@ public class TypesEditorForm extends ActionForm {
         super.reset(mapping, request);
 
 
-dataMinX="";
-dataMinY="";
-dataMaxX="";
-dataMaxY="";
+		dataMinX="";
+		dataMinY="";
+		dataMaxX="";
+		dataMaxY="";
 
         action = "";
 
@@ -199,6 +205,10 @@ dataMaxY="";
         this.styleId = type.getDefaultStyle();
 
         description = type.getAbstract();
+        
+        this.cacheMaxAge = type.getCacheMaxAge();
+        this.cachingEnabled = type.isCachingEnabled();
+        cachingEnabledChecked = false;
 
         Envelope bounds = type.getLatLongBBox();
 
@@ -438,6 +448,14 @@ dataMaxY="";
                 errors.add("latlongBoundingBox",
                     new ActionError("error.latLonBoundingBox.invalid", badNumber));
             }
+        }
+        
+        try {
+        	Integer.parseInt(cacheMaxAge);
+        } catch (NumberFormatException nfe) {
+        	errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.malformed", nfe));
+        } catch (Throwable t) {
+        	errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.error", t));
         }
 
         return errors;
@@ -853,4 +871,25 @@ dataMaxY="";
     {
     	return dataMaxY;
     }
+    
+    public String getCacheMaxAge() {
+		return cacheMaxAge;
+	}
+
+	public void setCacheMaxAge(String cacheMaxAge) {
+		this.cacheMaxAge = cacheMaxAge;
+	}
+
+	public boolean isCachingEnabled() {
+		return cachingEnabled;
+	}
+
+	public void setCachingEnabled(boolean cachingEnabled) {
+		cachingEnabledChecked = true;
+		this.cachingEnabled = cachingEnabled;
+	}
+
+	public boolean isCachingEnabledChecked() {
+		return cachingEnabledChecked;
+	}
 }
