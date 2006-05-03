@@ -57,9 +57,9 @@ public class GeoserverDataDirectory
 	 */
 	static public File getGeoserverDataDirectory(ServletContext servContext)
 	{
-            //caching this, so we're not looking up everytime, and more 
+        //caching this, so we're not looking up everytime, and more 
 	    //importantly, so we can actually look up this stuff without
-            //having to pass in a ServletContext. This should be fine, since we
+        //having to pass in a ServletContext. This should be fine, since we
 	    //don't allow a set method, as we recommend restarting GeoServer,
 	    //so it should always get a ServletContext in the startup routine.
 	    //If this assumption can't be made, then we can't allow data_dir
@@ -94,7 +94,7 @@ public class GeoserverDataDirectory
 			String rootDir = servContext.getRealPath("/");
 			dataDir = new File (rootDir);
 	    }
-	    LOGGER.info("Data_dir: " + dataDir.getPath());
+	    //LOGGER.info("Data_dir: " + dataDir.getPath());
 	    return dataDir;
 	}
 
