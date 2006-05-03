@@ -93,8 +93,9 @@ public class GeoserverDataDirectory
 	        isTrueDataDir = false;
 			String rootDir = servContext.getRealPath("/");
 			dataDir = new File (rootDir);
+			LOGGER.info("Data_dir: " + dataDir.getPath());
 	    }
-	    //LOGGER.info("Data_dir: " + dataDir.getPath());
+	    
 	    return dataDir;
 	}
 
