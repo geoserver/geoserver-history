@@ -566,6 +566,9 @@
 			<include name="**/*" />
 			<exclude name="**/data/**" />
 		</fileset>
+		<fileset dir="${conf.path}/data">
+			<include name="**/*" />
+		</fileset>
 	</copy>
 		
  
