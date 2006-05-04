@@ -44,6 +44,10 @@
 	        	<groupId>batik</groupId>
 	        	<artifactId>batik-util</artifactId>
 	        </dependency>
+		<dependency>
+	        	<groupId>itext</groupId>
+			<artifactId>itext</artifactId>
+	        </dependency>
 	</dependencies>
 
 </project>
