@@ -131,7 +131,7 @@ public class KMLWriter extends OutputStreamWriter {
         this.mapContext = mapContext;
         
         transformer = new GeometryTransformer();
-        //transformer.setUseDummyZ(true);
+        transformer.setUseDummyZ(true);
         transformer.setOmitXMLDeclaration(true);
         transformer.setNamespaceDeclarationEnabled(true);
     }
