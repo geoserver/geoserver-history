@@ -3,6 +3,7 @@ package org.vfny.geoserver.wcs.responses;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -91,6 +92,14 @@ public class DescribeResponse implements Response {
 	 */
 	protected final DatumFactory datumFactory = FactoryFinder
 			.getDatumFactory(null);
+
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+        return null;
+    }
 
 	/**
 	 * The default coordinate reference system factory.

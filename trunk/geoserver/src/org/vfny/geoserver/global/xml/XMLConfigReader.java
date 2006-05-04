@@ -1329,8 +1329,7 @@ public class XMLConfigReader {
 			ft.setKeywords(l);
 		}
 
-		ft.setDataStoreId(ReaderUtils
-				.getAttribute(fTypeRoot, "datastore", true));
+        ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore", true));
 		ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot, "SRS",
 				true)));
 
@@ -1338,7 +1337,13 @@ public class XMLConfigReader {
 
 		if (tmp != null) {
 			ft.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
-		}
+        }
+        
+        Element cacheInfo = ReaderUtils.getChildElement(fTypeRoot, "cacheinfo");
+        if (cacheInfo != null) {
+        	ft.setCacheMaxAge(ReaderUtils.getAttribute(cacheInfo, "maxage", false));// not mandatory
+        	ft.setCachingEnabled((new Boolean(ReaderUtils.getAttribute(cacheInfo, "enabled", true))).booleanValue());
+        }
 
         // Modif C. Kolbowicz - 06/10/2004
         Element legendURL = ReaderUtils.getChildElement(fTypeRoot, "LegendURL");

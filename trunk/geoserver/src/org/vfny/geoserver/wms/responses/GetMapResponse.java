@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -20,6 +21,9 @@ import org.geotools.factory.FactoryFinder;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
+import org.geotools.referencing.CRS;
+
+
 import org.geotools.styling.Style;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
@@ -67,13 +71,26 @@ public class GetMapResponse implements Response {
 	 */
 	private WMSConfig config;
 
-	/**
-	 * Creates a new GetMapResponse object.
-	 */
-	public GetMapResponse(WMSConfig config) {
-		this.config = config;
-	}
+    /**
+     * custom response headers
+     */
+    private HashMap responseHeaders;
+    
+    /**
+     * Creates a new GetMapResponse object.
+     */
+    public GetMapResponse(WMSConfig config) {
+        this.config = config;
+        responseHeaders = new HashMap();
+    }
 
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     */
+    public HashMap getResponseHeaders() {
+    	return responseHeaders;
+    }
+    
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -131,15 +148,31 @@ public class GetMapResponse implements Response {
 
 		try { // mapcontext can leak memory -- we make sure we done (see
 			// finally block)
-			MapLayer layer;
+        MapLayer layer;
+        
+        // track the external caching strategy for any map layers
+        boolean cachingPossible = request.getHttpServletRequest().getMethod().equals("GET");
+        int maxAge = Integer.MAX_VALUE;
 
-			FeatureSource source;
-			final int length = layers.length;
-			for (int i = 0; i < length; i++) {
-				Style style = styles[i];
+        FeatureSource source;
+        for (int i = 0; i < layers.length; i++) {
+            Style style = styles[i];
 
 				if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
-					try {
+                    if (cachingPossible) {
+                        if (layers[i].getFeature().isCachingEnabled()) {
+                            int nma = Integer.parseInt(layers[i].getFeature().getCacheMaxAge());
+                            //suppose the map contains multiple cachable layers...we can only cache the combined map for the
+                            //time specified by the shortest-cached layer.
+                            if (nma < maxAge)
+                                maxAge = nma;
+                        } else {
+                            //if one layer isn't cachable, then we can't cache any of them.  Disable caching.
+                            cachingPossible = false;
+                        }
+                    }
+
+                    try {
 						source = layers[i].getFeature().getFeatureSource();
 					} catch (IOException exp) {
 						if (LOGGER.isLoggable(Level.SEVERE)) {
@@ -178,6 +211,8 @@ public class GetMapResponse implements Response {
 			}
 
 			this.delegate.produceMap(map);
+        if (cachingPossible)
+        	responseHeaders.put("Cache-Control: max-age",maxAge + "s" );
 		} catch (DataSourceException e) {
 			if (LOGGER.isLoggable(Level.SEVERE)) {
 				LOGGER.log(Level.SEVERE, new StringBuffer(

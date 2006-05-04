@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
@@ -19,6 +20,7 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.helpers.WMSCapsTransformer;
+
 
 /**
  * Processes a WMS GetCapabilities request.
@@ -42,6 +44,14 @@ public class WMSCapabilitiesResponse implements Response {
 	 */
 	private byte[] rawResponse;
 
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+    	return null;
+    }
+    
 	/**
 	 * DOCUMENT ME!
 	 * 

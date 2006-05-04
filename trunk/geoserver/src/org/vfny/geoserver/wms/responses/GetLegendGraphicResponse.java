@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -28,14 +29,8 @@ import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
  * @version $Id$
  */
 public class GetLegendGraphicResponse implements Response {
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @uml.property name="producer"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private GetLegendGraphicProducer producer;
+    /** DOCUMENT ME! */
+    private GetLegendGraphicProducer producer;
 
     /**
      *
@@ -44,6 +39,14 @@ public class GetLegendGraphicResponse implements Response {
         super();
     }
 
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+    	return null;
+    }
+    
     /**
      * DOCUMENT ME!
      *

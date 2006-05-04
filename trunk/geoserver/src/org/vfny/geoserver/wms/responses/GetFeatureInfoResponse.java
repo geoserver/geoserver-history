@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,19 +64,23 @@ public class GetFeatureInfoResponse implements Response {
         delegates.add(producer);
     }
 
-	/**
-	 * A delegate specialized in producing the required output format.
-	 * 
-	 * @uml.property name="delegate"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private GetFeatureInfoDelegate delegate;
-
+    /**
+     * A delegate specialized in producing the required output format.
+     */
+    private GetFeatureInfoDelegate delegate;
     
     /**
      * Creates a new GetMapResponse object.
      */
     public GetFeatureInfoResponse() {
+    }
+    
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+    	return null;
     }
 
     /**

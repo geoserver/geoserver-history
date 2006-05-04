@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 
+
 /**
  * After a succeful execution of a GetFeature or GetFeatureWithLock request,
  * FeatureResponse will instantiate an implementation of this interface to
@@ -37,10 +38,6 @@ public interface FeatureResponseDelegate {
 
     String getContentType(GeoServer gs);
 
-	/**
-	 * 
-	 * @uml.property name="contentEncoding" multiplicity="(0 1)"
-	 */
 	String getContentEncoding();
 
     void encode(OutputStream output) throws ServiceException, IOException;

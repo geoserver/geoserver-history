@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,27 +42,26 @@ public class DescribeLayerResponse implements Response {
 
     public static final String DESCLAYER_MIME_TYPE = "application/vnd.ogc.wms_xml";
 
-	/**
-	 * the request holding the required FeatureTypeInfo's
-	 * 
-	 * @uml.property name="request"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private DescribeLayerRequest request;
+    /** the request holding the required FeatureTypeInfo's */
+    private DescribeLayerRequest request;
 
-	/**
-	 * the transformer wich takes care of xmlencoding the
-	 * DescribeLayer response
-	 * 
-	 * @uml.property name="transformer"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private DescribeLayerTransformer transformer;
+    /** the transformer wich takes care of xmlencoding the
+     * DescribeLayer response
+     */
+    private DescribeLayerTransformer transformer;
 
     /** the raw XML content ready to be sent to the client */
     private byte[] content;
 
     /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+    	return null;
+    }
+    
+    /*
      * DOCUMENT ME!
      *
      * @param request DOCUMENT ME!

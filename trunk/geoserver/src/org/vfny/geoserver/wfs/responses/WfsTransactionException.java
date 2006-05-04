@@ -29,13 +29,8 @@ public class WfsTransactionException extends WfsException {
     /** the standard exception that was thrown */
     protected Exception standardException = new Exception();
 
-	/**
-	 * handle of the transaction request
-	 * 
-	 * @uml.property name="handle" multiplicity="(0 1)"
-	 */
-	protected String handle = new String();
-
+    /** handle of the transaction request */
+    protected String handle = new String();
 
     /**
      * Empty constructor.
@@ -96,16 +91,14 @@ public class WfsTransactionException extends WfsException {
         super(e, preMessage, locator);
     }
 
-	/**
-	 * sets the handle, can be used when the initial handle is wrong.
-	 * 
-	 * @param handle DOCUMENT ME!
-	 * 
-	 * @uml.property name="handle"
-	 */
-	public void setHandle(String handle) {
-		this.handle = handle;
-	}
+    /**
+     * sets the handle, can be used when the initial handle is wrong.
+     *
+     * @param handle DOCUMENT ME!
+     */
+    public void setHandle(String handle) {
+        this.handle = handle;
+    }
 
     /**
      * Returns a WFS_TransactionResponse xml string indicating the failure.

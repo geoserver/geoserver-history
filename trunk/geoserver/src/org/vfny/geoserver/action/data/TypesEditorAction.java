@@ -271,6 +271,11 @@ public class TypesEditorAction extends ConfigAction {
     	config.setLatLongBBox(getBoundingBox(form));
     	config.setKeywords(keyWords(form));
 		config.setWmsPath(form.getWmsPath());
+        config.setCacheMaxAge(form.getCacheMaxAge());
+        config.setCachingEnabled(form.isCachingEnabled());
+        if (!form.isCachingEnabledChecked()) {
+        	config.setCachingEnabled(false);
+        }
 
     	String schemaBase = form.getSchemaBase();
     	

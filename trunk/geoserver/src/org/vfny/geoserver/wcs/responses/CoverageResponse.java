@@ -7,6 +7,7 @@ package org.vfny.geoserver.wcs.responses;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -80,6 +81,14 @@ public class CoverageResponse implements Response {
 	public CoverageResponse() {
 		request = null;
 	}
+
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+        return null;
+    }
 
 	/**
 	 * DOCUMENT ME!

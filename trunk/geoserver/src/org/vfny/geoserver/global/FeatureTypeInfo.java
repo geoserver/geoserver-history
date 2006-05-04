@@ -239,6 +239,19 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     {
     	
     }
+    
+    /**
+     * This value is added the headers of generated maps, marking them as being both
+     * "cache-able" and designating the time for which they are to remain valid.
+     *  The specific header added is "Cache-Control: max-age="
+     */
+    private String cacheMaxAge;
+    
+    /**
+     * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
+     */
+    private boolean cachingEnabled;
+    
     /**
      * FeatureTypeInfo constructor.
      * 
@@ -287,6 +300,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         schemaFile = dto.getSchemaFile();
         SRS = dto.getSRS();
         title = dto.getTitle();
+        
+        cacheMaxAge = dto.getCacheMaxAge();
+        cachingEnabled = dto.isCachingEnabled();
     }
 
     /**
@@ -332,24 +348,24 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         dto.setSRS(SRS);
         dto.setTitle(title);
 
+        dto.setCacheMaxAge(cacheMaxAge);
+        dto.setCachingEnabled(cachingEnabled);
+        
         return dto;
     }
 
-	/**
-	 * getNumDecimals purpose.
-	 * 
-	 * <p>
-	 * The default number of decimals allowed in the data.
-	 * </p>
-	 * 
-	 * @return int the default number of decimals allowed in the data.
-	 * 
-	 * @uml.property name="numDecimals"
-	 */
-	public int getNumDecimals() {
-		return numDecimals;
-	}
-
+    /**
+     * getNumDecimals purpose.
+     * 
+     * <p>
+     * The default number of decimals allowed in the data.
+     * </p>
+     *
+     * @return int the default number of decimals allowed in the data.
+     */
+    public int getNumDecimals() {
+        return numDecimals;
+    }
 
     /**
      * getDataStore purpose.
@@ -517,21 +533,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         return DataStoreUtils.getBoundingBoxEnvelope(realSource);
     }
 
-	/**
-	 * getDefinitionQuery purpose.
-	 * 
-	 * <p>
-	 * Returns the definition query for this feature source
-	 * </p>
-	 * 
-	 * @return Filter the definition query
-	 * 
-	 * @uml.property name="definitionQuery"
-	 */
-	public Filter getDefinitionQuery() {
-		return definitionQuery;
-	}
-
+    /**
+     * getDefinitionQuery purpose.
+     * 
+     * <p>
+     * Returns the definition query for this feature source
+     * </p>
+     *
+     * @return Filter the definition query
+     */
+    public Filter getDefinitionQuery() {
+        return definitionQuery;
+    }
 
     /**
      * getLatLongBoundingBox purpose.
@@ -747,113 +760,98 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         return _abstract;
     }
 
-	/**
-	 * Keywords describing content of FeatureType.
-	 * 
-	 * <p>
-	 * Keywords are often used by Search engines or Catalog services.
-	 * </p>
-	 * 
-	 * @return List the FeatureTypeInfo keywords
-	 * 
-	 * @uml.property name="keywords"
-	 */
-	public List getKeywords() {
-		return keywords;
-	}
+    /**
+     * Keywords describing content of FeatureType.
+     * 
+     * <p>
+     * Keywords are often used by Search engines or Catalog services.
+     * </p>
+     *
+     * @return List the FeatureTypeInfo keywords
+     */
+    public List getKeywords() {
+        return keywords;
+    }
 
-	/**
-	 * getTitle purpose.
-	 * 
-	 * <p>
-	 * returns the FeatureTypeInfo title
-	 * </p>
-	 * 
-	 * @return String the FeatureTypeInfo title
-	 * 
-	 * @uml.property name="title"
-	 */
-	public String getTitle() {
-		return title;
-	}
+    /**
+     * getTitle purpose.
+     * 
+     * <p>
+     * returns the FeatureTypeInfo title
+     * </p>
+     *
+     * @return String the FeatureTypeInfo title
+     */
+    public String getTitle() {
+        return title;
+    }
 
-	/**
-	 * A valid schema name for this FeatureType.
-	 * 
-	 * @return schemaName if provided or typeName+"_Type"
-	 * 
-	 * @uml.property name="schemaName"
-	 */
-	public String getSchemaName() {
-		if (schemaName == null) {
-			return typeName + "_Type";
-		}
-		return schemaName;
-	}
+    /**
+     * A valid schema name for this FeatureType.
+     * 
+     * @return schemaName if provided or typeName+"_Type"
+     */
+    public String getSchemaName() {
+        if( schemaName == null ){
+            return typeName + "_Type";
+        }
+        return schemaName;
+    }
 
-	/**
-	 * setSchemaName purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param string
-	 * 
-	 * @uml.property name="schemaName"
-	 */
-	public void setSchemaName(String string) {
-		schemaName = string;
-	}
+    /**
+     * setSchemaName purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setSchemaName(String string) {
+        schemaName = string;
+    }
 
-	/**
-	 * getSchemaName purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 * 
-	 * @uml.property name="schemaBase"
-	 */
-	public String getSchemaBase() {
-		return schemaBase;
-	}
+    /**
+     * getSchemaName purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public String getSchemaBase() {
+        return schemaBase;
+    }
 
-	/**
-	 * setSchemaName purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param string
-	 * 
-	 * @uml.property name="schemaBase"
-	 */
-	public void setSchemaBase(String string) {
-		schemaBase = string;
-	}
+    /**
+     * setSchemaName purpose.
+     * 
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setSchemaBase(String string) {
+        schemaBase = string;
+    }
 
-	//
-	// FeatureTypeMetaData Interface
-	//
-	/**
-	 * Access the name of this FeatureType.
-	 * <p>
-	 * This is the typeName as provided by the real gt2 DataStore.
-	 * </p>
-	 * 
-	 * @return String getName()
-	 * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
-	 * 
-	 * @uml.property name="typeName"
-	 */
-	public String getTypeName() {
-		return typeName;
-	}
-
+    //
+    // FeatureTypeMetaData Interface
+    //
+    /**
+     * Access the name of this FeatureType.
+     * <p>
+     * This is the typeName as provided by the real gt2 DataStore.
+     * </p>
+     *
+     * @return String getName()
+     * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
+     */
+    public String getTypeName() {
+        return typeName;
+    }
 
     /**
      * Access real geotools2 FeatureType.
@@ -913,10 +911,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     String attName = ati.getName();
                     attributes[count] = ft.getAttributeType(attName);
                     
-                    /*
-                     * TODO Align with GeoTolls 2.1.1 ASAP
-                     */
-                    //if (attributes[count].isGeometry())  //DJB: added this to set SRS
                     if (attributes[count] instanceof GeometricAttributeType)
                     {
                     	GeometricAttributeType old = (GeometricAttributeType) attributes[count];
@@ -1106,38 +1100,32 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         return meta.get(key);
     }
 
-	/**
-	 * getLegendURL purpose.
-	 * 
-	 * <p>
-	 * returns the FeatureTypeInfo legendURL
-	 * </p>
-	 * 
-	 * @return String the FeatureTypeInfo legendURL
-	 * 
-	 * @uml.property name="legendURL"
-	 */
-	// Modif C. Kolbowicz - 07/10/2004
-	public LegendURL getLegendURL() {
-		return this.legendURL;
-	}
+    /**
+     * getLegendURL purpose.
+     * 
+     * <p>
+     * returns the FeatureTypeInfo legendURL
+     * </p>
+     *
+     * @return String the FeatureTypeInfo legendURL
+     */
+    // Modif C. Kolbowicz - 07/10/2004
+    public LegendURL getLegendURL() {
+        return this.legendURL;
+    }        
+    //-- Modif C. Kolbowicz - 07/10/2004
 
-	//-- Modif C. Kolbowicz - 07/10/2004
-
-	/**
-	 * Gets the schema.xml file associated with this FeatureType.  This is set
-	 * during the reading of configuration, it is not persisted as an element
-	 * of the FeatureTypeInfoDTO, since it is just whether the schema.xml file
-	 * was persisted, and its location.  If there is no schema.xml file then
-	 * this method will return a File object with the location where the schema
-	 * file would be located, but the file will return false for exists().
-	 * 
-	 * @uml.property name="schemaFile"
-	 */
-	public File getSchemaFile() {
-		return this.schemaFile;
-	}
-
+    /**
+     * Gets the schema.xml file associated with this FeatureType.  This is set
+     * during the reading of configuration, it is not persisted as an element
+     * of the FeatureTypeInfoDTO, since it is just whether the schema.xml file
+     * was persisted, and its location.  If there is no schema.xml file then
+     * this method will return a File object with the location where the schema
+     * file would be located, but the file will return false for exists().
+     */
+    public File getSchemaFile() {
+	return this.schemaFile;
+    }
     
     /**
      *  simple way of getting epsg #.
@@ -1176,5 +1164,38 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 	public void setWmsPath(String wmsPath) {
 		this.wmsPath = wmsPath;
 	}
+
+    /**
+     * This value is added the headers of generated maps, marking them as being both
+     * "cache-able" and designating the time for which they are to remain valid.
+     *  The specific header added is "Cache-Control: max-age="
+     * @return a string representing the number of seconds to be added to the "Cache-Control: max-age=" header
+     */
+	public String getCacheMaxAge() {
+		return cacheMaxAge;
+	}
+    /**
+     * 
+     * @param cacheMaxAge a string representing the number of seconds to be added to the "Cache-Control: max-age=" header
+     */
+	public void setCacheMaxAge(String cacheMaxAge) {
+		this.cacheMaxAge = cacheMaxAge;
+	}
+	
+	/**
+	 * Should we add the cache-control: max-age header to maps containing this layer?
+	 * @return true if we should, false if we should omit the header
+	 */
+	public boolean isCachingEnabled() {
+		return cachingEnabled;
+	}
+	/**
+	 * Sets whether we should add the cache-control: max-age header to maps containing this layer
+	 * @param cachingEnabled true if we should add the header, false if we should omit the header
+	 */
+	public void setCachingEnabled(boolean cachingEnabled) {
+		this.cachingEnabled = cachingEnabled;
+	}
+    
 }
  

@@ -999,6 +999,17 @@ public class XMLConfigWriter {
                 m.put("default", ft.getDefaultStyle());
                 cw.attrTag("styles", m);
             }
+            
+            m = new HashMap();
+            if (ft.getCacheMaxAge() != null) {
+            	m.put("maxage",ft.getCacheMaxAge());
+            }
+            if (ft.isCachingEnabled()) {
+            	m.put("enabled", "true");
+            } else {
+            	m.put("enabled", "false");
+            }
+            cw.attrTag("cacheinfo", m);
 
             if (ft.getDefinitionQuery() != null) {
                 cw.openTag("definitionQuery");
@@ -1096,18 +1107,18 @@ public class XMLConfigWriter {
             m.put("minOccurs", "" + ati.getMinOccurs());
             m.put("maxOccurs", "" + ati.getMaxOccurs());
 
-            NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance()
+            NameSpaceTranslator nst_xs = NameSpaceTranslatorFactory.getInstance()
                                                                  .getNameSpaceTranslator("xs");
-            NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance()
+            NameSpaceTranslator nst_gml = NameSpaceTranslatorFactory.getInstance()
                                                                  .getNameSpaceTranslator("gml");
 
             if (!ati.isComplex()) {
                 if (ati.getName() == ati.getType()) {
                     String r = "";
-                    NameSpaceElement nse = nst1.getElement(ati.getType());
+                    NameSpaceElement nse = nst_xs.getElement(ati.getType());
 
                     if (nse == null) {
-                        nse = nst2.getElement(ati.getType());
+                        nse = nst_gml.getElement(ati.getType());
                     }
 
                     r = nse.getQualifiedTypeRefName();
@@ -1116,12 +1127,13 @@ public class XMLConfigWriter {
                     m.put("name", ati.getName());
 
                     String r = "";
-                    NameSpaceElement nse = nst1.getElement(ati.getType());
+                    NameSpaceElement nse = nst_xs.getElement(ati.getType());
 
                     if (nse == null) {
-                        nse = nst2.getElement(ati.getType());
+                        nse = nst_gml.getElement(ati.getType());
+                        r = nse.getQualifiedTypeDefName();	// Def
                     }
-
+                    else
                     r = nse.getQualifiedTypeRefName();
 
                     m.put("type", r);

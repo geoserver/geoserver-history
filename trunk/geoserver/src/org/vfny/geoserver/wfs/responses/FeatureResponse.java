@@ -6,6 +6,7 @@ package org.vfny.geoserver.wfs.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -56,41 +57,29 @@ public class FeatureResponse implements Response {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
-
-	/**
-	 * 
-	 * @uml.property name="delegate"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
 	FeatureResponseDelegate delegate;
 
-	/**
-	 * This is the request provided to the execute( Request ) method.
-	 * 
-	 * <p>
-	 * We save it so we can access the handle provided by the user for error
-	 * reporting during the writeTo( OutputStream ) opperation.
-	 * </p>
-	 * 
-	 * <p>
-	 * This value will be <code>null</code> until execute is called.
-	 * </p>
-	 * 
-	 * @uml.property name="request"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
+    /**
+     * This is the request provided to the execute( Request ) method.
+     * 
+     * <p>
+     * We save it so we can access the handle provided by the user for error
+     * reporting during the writeTo( OutputStream ) opperation.
+     * </p>
+     * 
+     * <p>
+     * This value will be <code>null</code> until execute is called.
+     * </p>
+     */
 	private FeatureRequest request;
 
-	/**
-	 * This is the FeatureLock provided by execute( Request ) method.
-	 * 
-	 * <p>
-	 * This will only be non null if RequestFeatureWithLock.
-	 * </p>
-	 * 
-	 * @uml.property name="featureLock"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
+    /**
+     * This is the FeatureLock provided by execute( Request ) method.
+     * 
+     * <p>
+     * This will only be non null if RequestFeatureWithLock.
+     * </p>
+     */
 	FeatureLock featureLock;
 
     /**
@@ -101,6 +90,14 @@ public class FeatureResponse implements Response {
         featureLock = null;
     }
 
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+    	return null;
+    }
+    
     /**
      * DOCUMENT ME!
      *
@@ -158,6 +155,8 @@ public class FeatureResponse implements Response {
     public void execute(Request req) throws ServiceException {
         execute((FeatureRequest) req);
     }
+    
+    
     /** 
      * use the SPI mechanism to get a FeatureResponseDelegate for the
      * specified output format.

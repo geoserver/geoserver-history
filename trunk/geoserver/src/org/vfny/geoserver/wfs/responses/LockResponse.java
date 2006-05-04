@@ -6,6 +6,7 @@ package org.vfny.geoserver.wfs.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -61,20 +62,8 @@ public class LockResponse implements Response {
 
     /** temporal, it will disappear when the response streaming be implemented */
     private String xmlResponse = null;
-
-	/**
-	 * 
-	 * @uml.property name="featureLock"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	FeatureLock featureLock;
-
-	/**
-	 * 
-	 * @uml.property name="request"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	LockRequest request;
+    FeatureLock featureLock;
+    LockRequest request;
 
     /**
      * Constructor
@@ -86,6 +75,14 @@ public class LockResponse implements Response {
         request = null;
         verbose = gs.isVerbose();
         nl = verbose ? "\n" : "";
+    }
+    
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
+    public HashMap getResponseHeaders() {
+    	return null;
     }
 
     public void execute(Request req) throws WfsException {

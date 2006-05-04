@@ -166,14 +166,12 @@ public interface Response {
      */
     public String getContentType(GeoServer gs) throws IllegalStateException;
 
-	/**
-	 * Returns any special content encoding this response will encode its
-	 * contents to, such as "gzip" or "deflate"
-	 * 
-	 * @return the content encoding writeTo will encode with, or null if none
-	 * 
-	 * @uml.property name="contentEncoding" multiplicity="(0 1)"
-	 */
+    /**
+     * Returns any special content encoding this response will encode its
+     * contents to, such as "gzip" or "deflate"
+     *
+     * @return the content encoding writeTo will encode with, or null if none
+     */
 	public String getContentEncoding();
 
 	/**
