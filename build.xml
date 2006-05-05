@@ -145,11 +145,11 @@
 	<echo message="    war:          builds geoserver war file" />
 	<echo message="    document:     generates all javadocs for project" />
 	<echo message="    clean:        rebuilds all classes" />
-	<echo message="    release - all:      makes a full release build" />
+	<echo message="    release-all:      makes a full release build" />
 	<echo message="                    -param: name.release=[release]" />
-	<echo message="    release - binary:   makes a release of the binary files" />
-	<echo message="    release - src:      makes a release of the source code" />
-	<echo message="    release - docs:     makes a release of the documents" />
+	<echo message="    release-binary:   makes a release of the binary files" />
+	<echo message="    release-src:      makes a release of the source code" />
+	<echo message="    release-docs:     makes a release of the documents" />
 	<echo message="" />
 	<echo message=" ADMIN TARGETS" />
 	<echo message="    help | ?:     displays this message" />
@@ -346,12 +346,12 @@
      appropriate for testing of this sort, as you'll want to configure
      in the conf directory, since whenever you start with this it blows
      away changes the ui might have done. -->
-	<antcall target="build - war">
+	<antcall target="build-war">
 		<!--param name="conf.path" value="${basedir}/cite/confCite${test.type}.zip"/-->
 	</antcall>
 	<delete dir="${dir.server}/geoserver" />
 	<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
-	<antcall target="run" />
+	<antcall target="run-from-ide" />
 </target>
 
 	<!-- Eclipse instructions:  
@@ -372,36 +372,35 @@
      appropriate for testing of this sort, as you'll want to configure
      in the conf directory, since whenever you start with this it blows
      away changes the ui might have done. -->
-	<antcall target="build - war">
+	<antcall target="build-war">
 		<!--param name="conf.path" value="${basedir}/cite/confCite${test.type}.zip"/-->
 	</antcall>
 	<delete dir="${dir.server}/geoserver" />
 	<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
-	<antcall target="run from ide" />
+	<antcall target="run-from-ide" />
 </target>
 <!--
 	  To debug you will need to:
-  1) Right click on "debug from ide" and choose "Ant Build ..."
-     - this will compile and set everything up for ...
-  2) Right click on "debug from ide" and choose "Debug..."
-  2) You will need to set up a new debug configuration:
-     - the above j2sdk tools.jar
-     - project:geoserver
-     - Main Class: org.mortbay.start.Main
+  1) Right click on "deploy-full" and choose "Ant Build ..."
+     - this will compile and set everything up for debugging/running.
+     - It will copy all the needed files to server/geoserver/
+     - Now Geoserver will be ready to run with jetty from your server/geoserver folder.
+     - This does not automatically run geoserver.
+  2) In Eclipse set up a 'run' or 'debug' target that uses the org.mortbay.start.Main
+  3) Once the target is set up, hit 'Run' from eclipse and it will run Geoserver
+      from the server/geoserver directory.
   
   After the first time you can just reuse your debug configuration.   
   To stop please hit "Terminate" on your eclipse Console view.
-	-->
-<target name="deploy - full" depends="init, all"
-    description="Deploy and run with jetty without forking">
-	<!-- no longer needed, as work is in geoserver/WEB-INF -->
-	<!--mkdir dir="${dir.server}/work"/-->
+-->
+<target name="deploy-full" depends="init, all"
+    description="Deploy geoserver">
 
 	<!-- This will now build with the users directory, which I think is
      appropriate for testing of this sort, as you'll want to configure
      in the conf directory, since whenever you start with this it blows
      away changes the ui might have done. -->
-	<antcall target="build - war">
+	<antcall target="build-war">
 		<param name="conf.path" value="${basedir}/data_dirs/userBasic"/>
 	</antcall>
 	<delete dir="${dir.server}/geoserver" />
@@ -410,7 +409,7 @@
 </target>
 
 <!-- copies the geoserver jar from lib to the server WEB-INF/lib directory -->
-<target name="deploy - jar" depends="all"
+<target name="deploy-jar" depends="all"
     description="Copies the Geoserver jar from">
 	
 	<copy todir="${dir.jarcopy}">
@@ -421,7 +420,7 @@
 </target>
 	
 <!-- copies the JSPs from WEB-INF/pages to the server/geoserver/WEB-INF/pages directory -->
-<target name="deploy - jsp" depends="all"
+<target name="deploy-jsp" depends="all"
     description="Copies the JSPs">
 	
 	<copy todir="${dir.server}/geoserver/WEB-INF/pages/">
@@ -438,7 +437,7 @@
 <!-- Prepares embedded server, server.built isn't working, so users must
   run this manually -->
 <target name="prepareEmbedded" depends="init" unless="server.built">
-	<antcall target="war" />
+	<antcall target="build-war" />
 	<mkdir dir="${dir.server}/geoserver" />
 	<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
 </target>
@@ -454,7 +453,7 @@
 </target>
 
 <!-- run/debug from and IDE like eclipse -->
-<target name="run from ide" depends="prepareEmbedded, init" description="Run from eclipse, so process can be terminated">
+<target name="run-from-ide" depends="prepareEmbedded, init" description="Run from eclipse, so process can be terminated">
 	<echo message="Please be sure that either prepareEmbedded or" />
 	<echo message="test has been run before using this target" />
 
@@ -468,7 +467,7 @@
 </target>
 	
 <!-- runs the server -->
-<target name="run jetty" depends="prepareEmbedded,init,checkDataDir,setDataDir" if="data.dir"
+<target name="run-jetty" depends="prepareEmbedded,init,checkDataDir,setDataDir" if="data.dir"
 	description="Runs the jetty servlet container in the background, use ant stop to halt">
 	<echo message="Data dir is: ${data.dir}"/>
 	<java classname="org.mortbay.jetty.Server" dir="${basedir}" fork="yes" failonerror="yes">
@@ -492,7 +491,7 @@
 </target>
 
 <!-- EXTERNAL TEST -->
-<target name="test-ext" depends="init, build - war" description="deploys application to the test server located at dir.container">
+<target name="test-ext" depends="init, build-war" description="deploys application to the test server located at dir.container">
 	<!-- copy to test server -->
 	<delete includeEmptyDirs="true" failonerror="false">
 		<fileset dir="${dir.container}/geoserver" />
@@ -509,14 +508,14 @@
 </target>
 
 <!--target name="misc_conf" depends="init" if="test.type">
-	<antcall target="build - war">
+	<antcall target="build-war">
 		<param name="conf.path" value="${basedir}/cite/conf${test.type}" />
 	</antcall>
 </target>
 
 <target name="user_conf" depends="init" unless="test.type">
 	<antcall target="build-conf-dir" />
-	<antcall target="build - war">
+	<antcall target="build-war">
 		<param name="conf.path" value="${basedir}/conf" />
 	</antcall>
 </target-->
@@ -535,13 +534,13 @@
 	
 	
 <!-- only one of the two will execute -->
-<!--target name="war" depends="init" description="generate geoserver.war (with your choice of conf directory)">
+<!--target name="build-war" depends="init" description="generate geoserver.war (with your choice of conf directory)">
 	<antcall target="user_conf" />
 	<antcall target="misc_conf" />
 </target-->
 
 <!-- BUILD WAR -->
-<target name="build - war" depends="all">
+<target name="build-war" depends="all">
 	<!-- preparation -->
 	<property name="conf.path" value="${basedir}/data_dirs/${test.type}" />
 	
@@ -654,10 +653,10 @@
 
 	
 <!-- BUILD JARS FOR SCRIPTS -->
-<target name="build - script-jars" depends="build - start.jar, build - stop.jar" />
+<target name="build-script-jars" depends="build-start.jar, build-stop.jar" />
 
 <!-- START JAR -->
-<target name="build - start.jar" depends="all" description="generates the start.jar to run the start-up scripts">
+<target name="build-start.jar" depends="all" description="generates the start.jar to run the start-up scripts">
 	<jar jarfile="${dir.bin}/start.jar" basedir="${dir.build}">
 		<manifest>
 			<attribute name="Main-Class" value="org.mortbay.start.Main" />
@@ -667,7 +666,7 @@
 </target>
 
 <!-- STOP JAR generates the stop.jar to run the shutdown scripts -->
-<target name="build - stop.jar" depends="all">
+<target name="build-stop.jar" depends="all">
 	<jar jarfile="${dir.bin}/stop.jar" basedir="${dir.build}">
 		<manifest>
 			<attribute name="Main-Class" value="org.mortbay.stop.Main" />
@@ -683,7 +682,7 @@
 	        
 	     Building with maven is required before commit changed jar files.
 	-->
-	<target name="build - geotools jars" depends="init" description="Generate geotools2 jars for quick testing (use maven for jars you commit)">
+	<target name="build-geotools.jars" depends="init" description="Generate geotools2 jars for quick testing (use maven for jars you commit)">
 		<copy overwrite="true" failonerror="true" toFile="${dir.lib}/geoapi-2.0.jar" file="${dir.maven}/geoapi/jars/geoapi-2.0.jar" />
 		<copy overwrite="true" failonerror="true" toFile="${dir.lib}/opengis-css-0.1.jar" file="${dir.maven}/opengis/jars/opengis-css-0.1.jar" />
 		<!--
@@ -730,13 +729,13 @@
 		<copy overwrite="true" failonerror="true" file="${dir.maven}/batik/jars/batik-awt-util-1.1.1.jar" toFile="${dir.lib}/batik-awt-util-1.1.1.jar" />
 	</target>
 
-	<target name="build - gt-validation jars" depends="init" description="Generate gt2-validation.jar for quick testing (use maven for jars you commit)">
+	<target name="build-gt-validation.jars" depends="init" description="Generate gt2-validation.jar for quick testing (use maven for jars you commit)">
 		<!-- Validation support, include META-INF -->
 		<copy file="${dir.geotools}/ext/validation/target/validation-${version.geotools}.jar" toFile="${dir.lib}/gt2-validation.jar" />
 	</target>
 	
 	<!-- DOCUMENTATION -->
-<target name="build - documents" depends="init" description="generate all project documentation">
+<target name="build-documents" depends="init" description="generate all project documentation">
 	<mkdir dir="${dir.doc}" />
 	<javadoc sourcepath="${dir.src}" destdir="${dir.doc}/javadoc" private="true" windowtitle="GeoServer Documentation" stylesheetfile="${basedir}/documents/stylesheet.css" overview="${dir.src}/overview.html">
 		<package name="org.vfny.geoserver.*" />
@@ -773,14 +772,14 @@
 <!--   here: http://nsis.sourceforge.net/-->
 <!-- You must change the documents/geoserver.nsi script's version variable in it to match 
 	 the current version of geoserver -->
-<target name="release - all" depends="release - common, release - binary,release - war, release - src, release - docs" >
-	<antcall target="release - installer-win"/>
+<target name="release-all" depends="release-common, release-binary,release-war, release-src, release-docs" >
+	<antcall target="release-installer-win"/>
 	<delete dir="${dir.build}/installer"/>
 </target>
 
 
 
-<target name="release - common" depends="clean, all" description="Performs the release operations common to binary and source">
+<target name="release-common" depends="clean, all" description="Performs the release operations common to binary and source">
 	<delete dir="${basedir}/data" failonerror="false" />
 	<copy todir="${dir.build}">
 		<fileset dir="${basedir}/documents">
@@ -809,7 +808,7 @@
 	
 
 
-<target name="release - src" depends="release - common">
+<target name="release-src" depends="release-common">
 	<delete file="${basedir}/geoserver-${name.release}-src.tar.gz" failonerror="false" />
 	<delete file="${basedir}/geoserver-${name.release}-src.tar" failonerror="false" />
 	
@@ -929,8 +928,8 @@
 </target>
 	
 
-<target name="release - war" depends="clean, all" description="Genearte the Geoserver.war war release (includes UserBasic)">
-	<antcall target="build - war">
+<target name="release-war" depends="clean, all" description="Genearte the Geoserver.war war release (includes UserBasic)">
+	<antcall target="build-war">
 		<param name="conf.path" value="${basedir}/data_dirs/${test.type}" />
 	</antcall>
 	<!-- .war build, stick it in a geoserver-<version>-war.zip -->
@@ -945,7 +944,7 @@
 	
 </target>
 
-<target name="release - binary" depends="release - common">
+<target name="release-binary" depends="release-common">
 	<copy todir="${dir.build}">
 		<fileset dir="${basedir}/documents">
 			<include name="RUNNING.txt" />
@@ -979,7 +978,7 @@
 	    </fileset>
 	</copy>
 
-	<antcall target="build - war">
+	<antcall target="build-war">
 		<!--param name="conf.path" value="${basedir}/cite/confMin" /-->
 		<param name="conf.path" value="${basedir}/data_dirs/userBasic" />
 	</antcall>
@@ -1025,7 +1024,7 @@
 	This task is expecting a GEOSDOC directory in [geoserver]\documents
 	This directory is the exported geoserver wiki page. If it does not exist, it will die.
 -->
-<target name="release - docs" depends="build - documents">
+<target name="release-docs" depends="build-documents">
 	<!-- copy wiki docs -->
 	<mkdir dir="${dir.doc}/temp"/>
 	<copy todir="${dir.doc}/temp" failonerror="true">
@@ -1075,7 +1074,7 @@
 <!--   install directory. "eg: C:\NSIS" -->
 <!-- You can download Nullsoft Scriptable Install System -->
 <!--   here: http://nsis.sourceforge.net/-->
-<target name="release - installer-win">
+<target name="release-installer-win">
 	
 	<delete dir="${dir.build}/installer"/>
 	<mkdir dir="${dir.build}/installer" />
