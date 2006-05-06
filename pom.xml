@@ -34,14 +34,15 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>espace</id>
-			<name>Repository from the Sicade laboratory in New-Caledonia</name>
-			<url>http://maven.espace.ird.nc</url>
+			<id>geotools</id>
+			<name>Repository serving Geotools libraries built against 2.2.x branch</name>
+			<url>http://maven.geotools.fr/repository/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
+			<layout>legacy</layout>
 		</repository>
-                <repository>
+		<repository>
 			<id>refractions</id>
 			<name>Repository from Refractions research, Victoria, Canada</name>
 			<url>http://lists.refractions.net/m2/</url>
@@ -50,16 +51,6 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>geotools</id>
-			<name>Repository serving Geotools libraries hosted by Refractions</name>
-			<url>http://lists.refractions.net/geotools</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<layout>legacy</layout>
-		</repository>
-		
-		<repository>
 			<id>codehaus</id>
 			<name>Repository serving Geoserver libraries hosted by Codehaus</name>
 			<url>http://dist.codehaus.org/geoserver</url>
@@ -67,6 +58,14 @@
 				<enabled>false</enabled>
 			</snapshots>
 			<layout>legacy</layout>
+		</repository>
+		<repository>
+			<id>espace</id>
+			<name>Repository from the Sicade laboratory in New-Caledonia</name>
+			<url>http://maven.espace.ird.nc</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 	
@@ -103,29 +102,6 @@
 				<version>2.2-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>struts</groupId>
-				<artifactId>struts</artifactId>
-				<version>1.2.8</version>
-			</dependency>
-			<dependency>
-				<groupId>batik</groupId>
-				<artifactId>batik-svggen</artifactId>
-				<version>1.1.1</version>
-				<type>jar</type>
-			</dependency>
-			<dependency>
-				<groupId>batik</groupId>
-				<artifactId>batik-awt-util</artifactId>
-				<version>1.1.1</version>
-				<type>jar</type>
-			</dependency>
-			<dependency>
-				<groupId>batik</groupId>
-				<artifactId>batik-util</artifactId>
-				<version>1.1.1</version>
-				<type>jar</type>
-			</dependency>
-			<dependency>
 				<groupId>ki</groupId>
 				<artifactId>ki-jzkit-iface</artifactId>
 				<version>X</version>
@@ -146,9 +122,9 @@
 				<version>X</version>
 			</dependency>
 			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>1.2.9</version>
+				<groupId>httpunit</groupId>
+				<artifactId>httpunit</artifactId>
+				<version>1.6</version>
 			</dependency>
 			<dependency>
 				<groupId>xml-apis</groupId>
@@ -169,6 +145,21 @@
 				<groupId>lucene</groupId>
 				<artifactId>lucene</artifactId>
 				<version>1.4.3</version>
+			</dependency>
+			<dependency>
+				<groupId>struts</groupId>
+				<artifactId>struts</artifactId>
+				<version>1.2.8</version>
+			</dependency>
+			<dependency>
+				<groupId>oro</groupId>
+				<artifactId>oro</artifactId>
+				<version>2.0.8</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mockrunner</groupId>
+				<artifactId>mockrunner</artifactId>
+				<version>0.3.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-beanutils</groupId>
@@ -201,24 +192,9 @@
 				<version>1.1.4</version>
 			</dependency>
 			<dependency>
-				<groupId>jakarta-oro</groupId>
-				<artifactId>jakarta-oro</artifactId>
-				<version>2.0.6</version>
-			</dependency>
-			<dependency>
-				<groupId>com.mockrunner</groupId>
-				<artifactId>mockrunner</artifactId>
-				<version>0.3.1</version>
-			</dependency>
-			<dependency>
 				<groupId>mockobjects</groupId>
 				<artifactId>mockobjects-jdk1.4-j2ee1.3</artifactId>
 				<version>0.09</version>
-			</dependency>
-			<dependency>
-				<groupId>httpunit</groupId>
-				<artifactId>httpunit</artifactId>
-				<version>1.6</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -236,191 +212,33 @@
 				<version>1.2.5</version>
 			</dependency>
 			<dependency>
-				<groupId>commons-jxpath</groupId>
-				<artifactId>commons-jxpath</artifactId>
-				<version>1.2</version>
-			</dependency>
-			<dependency>
-				<groupId>JTS</groupId>
-				<artifactId>JTS</artifactId>
-				<version>1.6</version>
-			</dependency>
-			<dependency>
-				<groupId>opengis</groupId>
-				<artifactId>opengis-legacy</artifactId>
-				<version>0.2</version>
-			</dependency>
-			<dependency>
-				<groupId>XDO</groupId>
-				<artifactId>XDO</artifactId>
-				<version>beta</version>
-			</dependency>
-			<dependency>
-				<groupId>units</groupId>
-				<artifactId>units</artifactId>
-				<version>0.01</version>
-			</dependency>
-			<dependency>
-				<groupId>vecmath</groupId>
-				<artifactId>vecmath</artifactId>
-				<version>1.3</version>
-			</dependency>
-			<dependency>
-				<groupId>mailapi</groupId>
-				<artifactId>mailapi</artifactId>
-				<version>1.3</version>
-			</dependency>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>3.8.1</version>
-			</dependency>
-			<dependency>
-				<groupId>batik</groupId>
-				<artifactId>batik</artifactId>
-				<version>1.5.1</version>
-			</dependency>
-			<dependency>
-				<groupId>batik</groupId>
-				<artifactId>batik-gvt</artifactId>
-				<version>1.5.1</version>
-			</dependency>
-			<dependency>
-				<groupId>batik</groupId>
-				<artifactId>batik-svg-dom</artifactId>
-				<version>1.5.1</version>
-			</dependency>
-			<dependency>
-				<groupId>batik</groupId>
-				<artifactId>batik-rasterizer</artifactId>
-				<version>1.5.1</version>
-			</dependency>
-			<dependency>
-				<groupId>batik</groupId>
-				<artifactId>batik-dom</artifactId>
-				<version>1.5.1</version>
-			</dependency>
-			<dependency>
-				<groupId>batik</groupId>
-				<artifactId>batik-bridge</artifactId>
-				<version>1.5</version>
-			</dependency>
-			<dependency>
-				<groupId>batik</groupId>
-				<artifactId>batik-css</artifactId>
-				<version>1.5.1</version>
-			</dependency>
-			<dependency>
-				<groupId>batik</groupId>
-				<artifactId>batik-xml</artifactId>
-				<version>1.5</version>
-			</dependency>
-			<dependency>
-				<groupId>batik</groupId>
-				<artifactId>batik-transcoder</artifactId>
-				<version>1.5.1</version>
-			</dependency>
-			<dependency>
-				<groupId>jai</groupId>
-				<artifactId>jai-core</artifactId>
-				<version>1.1.3-alpha</version>
-			</dependency>
-			<dependency>
-				<groupId>jai</groupId>
-				<artifactId>jai_imageio</artifactId>
-				<version>1.1-alpha</version>
-			</dependency>
-			<dependency>
-				<groupId>jai</groupId>
-				<artifactId>jai_codec</artifactId>
-				<version>1.1.3-alpha</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-jelly</groupId>
-				<artifactId>commons-jelly-tags-velocity</artifactId>
-				<version>20030303.205659</version>
-			</dependency>
-			<dependency>
-				<groupId>velocity</groupId>
-				<artifactId>velocity</artifactId>
-				<version>1.3</version>
-			</dependency>
-			<dependency>
-				<groupId>geoapi</groupId>
-				<artifactId>geoapi</artifactId>
-				<version>2.0</version>
-			</dependency>
-			<dependency>
-				<groupId>jdom</groupId>
-				<artifactId>jdom</artifactId>
-				<version>b10</version>
-			</dependency>
-			<dependency>
-				<groupId>postgis-driver</groupId>
-				<artifactId>postgis-driver</artifactId>
-				<version>1.0</version>
-			</dependency>
-			<dependency>
-				<groupId>postgresql</groupId>
-				<artifactId>postgresql</artifactId>
-				<version>74.213</version>
-			</dependency>
-			<dependency>
-				<groupId>wkb4j</groupId>
-				<artifactId>wkb4j</artifactId>
-				<version>1.0-RC1</version>
-			</dependency>
-			<dependency>
-				<groupId>sun</groupId>
-				<artifactId>jlfgr</artifactId>
-				<version>1.0</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-cli</groupId>
-				<artifactId>commons-cli</artifactId>
-				<version>1.0</version>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.9</version>
 			</dependency>
 			<dependency>
 				<groupId>batik</groupId>
 				<artifactId>batik-svggen</artifactId>
-				<version>1.1.1</version>
+				<version>1.6</version>
+				<type>jar</type>
 			</dependency>
 			<dependency>
-				<groupId>commons-collections</groupId>
-				<artifactId>commons-collections</artifactId>
-				<version>2.1</version>
+				<groupId>batik</groupId>
+				<artifactId>batik-awt-util</artifactId>
+				<version>1.6</version>
+				<type>jar</type>
 			</dependency>
 			<dependency>
-				<groupId>oracle</groupId>
-				<artifactId>dummy_spatial</artifactId>
-				<version>8.1.8</version>
+				<groupId>batik</groupId>
+				<artifactId>batik-util</artifactId>
+				<version>1.6</version>
+				<type>jar</type>
 			</dependency>
 			<dependency>
-				<groupId>arcsde</groupId>
-				<artifactId>jsde_sdk</artifactId>
-				<version>9.0</version>
-			</dependency>
-			<dependency>
-				<groupId>arcsde</groupId>
-				<artifactId>jsde_concurrent</artifactId>
-				<version>9.0</version>
-			</dependency>
-			<dependency>
-				<groupId>arcsde</groupId>
-				<artifactId>jsde_jpe_sdk</artifactId>
-				<version>9.0</version>
-			</dependency>
-			<dependency>
-				<groupId>mysql</groupId>
-				<artifactId>mysql-connector-java</artifactId>
-				<version>3.0.9</version>
-			</dependency>
-                        <dependency>
-                                <groupId>itext</groupId>
+				<groupId>itext</groupId>
 				<artifactId>itext</artifactId>
 				<version>1.3</version>
-                        </dependency>
-			
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	
