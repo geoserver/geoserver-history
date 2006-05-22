@@ -6,8 +6,8 @@ package org.vfny.geoserver;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.Requests;
 
 /**
@@ -44,13 +44,17 @@ abstract public class Request {
     /** Request version */
     protected String version = "";
 
+    /** service reference */
+    protected AbstractService serviceRef;
+    
     /**
      * ServiceConfig indentifying constructor.
      *
      * @param serviceType Name of services (like wms)
+     * @deprecated use {@link #Request(String, String, AbstractService)}
      */
     protected Request(String serviceType) {
-        this.service = serviceType;
+        this(serviceType,null,null);
     }
     
     /**
@@ -58,13 +62,27 @@ abstract public class Request {
      *
      * @param serviceType Name of services (like wfs)
      * @param requestType Name of request (like Transaction)
+     * 
+     * @deprecated use {@link #Request(String, String, AbstractService)}
      */
     protected Request(String serviceType, String requestType) {
-        this.service = serviceType;
-        this.request = requestType;
+        this(serviceType,requestType,null);
     }
 
-     
+    /**
+     * ServiceType,RequestType,ServiceRef constructor.
+     * 
+     * @param serviceType Name of hte service (example, WFS)
+     * @param requestType Name of the request (example, GetCapabilties)
+     * @param serviceRef The servlet for the request.
+     */
+    protected Request(String serviceType, String requestType, AbstractService serviceRef) {
+    		this.service = serviceType;
+    		this.request = requestType;
+    		this.serviceRef = serviceRef;
+    }
+    
+    
     /**
      * Gets requested service.
      *
@@ -126,6 +144,20 @@ abstract public class Request {
         this.version = version;
     }
 
+    /**
+     * Sets the reference to the service.
+     */
+    public void setServiceRef(AbstractService serviceRef) {
+    		this.serviceRef = serviceRef;
+    }
+    
+    /**
+     * @return the reference the service.
+     */
+    public AbstractService getServiceRef() {
+    		return serviceRef;
+    }
+    
     public boolean equals(Object o) {
         if (!(o instanceof Request)) {
             return false;
@@ -182,10 +214,10 @@ abstract public class Request {
 		return vp;
 	}
 	
-	public WFS getWFS(){
-		WFS vp = Requests.getWFS( getHttpServletRequest() );
-		return vp;
-	}
+//	public WFS getWFS(){
+//		WFS vp = Requests.getWFS( getHttpServletRequest() );
+//		return vp;
+//	}
 
 	
 	public String getRootDir(){

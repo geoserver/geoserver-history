@@ -18,7 +18,7 @@ import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.global.GeoServerPlugIn;
-import org.vfny.geoserver.global.WFS;
+
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
@@ -72,35 +72,36 @@ public class ConfigPlugIn implements PlugIn {
      */
     public void init(ActionServlet arg0, ModuleConfig arg1)
         throws ServletException {
-        ServletContext sc = arg0.getServletContext();
-        WMS wms = (WMS) sc.getAttribute(WMS.WEB_CONTAINER_KEY);
-        WFS wfs = (WFS) sc.getAttribute(WFS.WEB_CONTAINER_KEY);
-
-        if (wms == null || wfs == null) {
-            GeoServerPlugIn gspi = new GeoServerPlugIn();
-            gspi.init(arg0, arg1);
-            wms = (WMS) sc.getAttribute(WMS.WEB_CONTAINER_KEY);
-            wfs = (WFS) sc.getAttribute(WFS.WEB_CONTAINER_KEY);
-
-            if (wms == null || wfs == null) {
-                throw new ServletException(
-                    "GeoServerPlugIn Failed. Thus ConfigPlugIn cannot run.");
-            }
-        }
-
-        sc.setAttribute(WMSConfig.CONFIG_KEY, new WMSConfig((WMSDTO)wms.toDTO()));
-        sc.setAttribute(WFSConfig.CONFIG_KEY, new WFSConfig((WFSDTO)wfs.toDTO()));
-        sc.setAttribute(GlobalConfig.CONFIG_KEY,
-            new GlobalConfig((GeoServerDTO)wfs.getGeoServer().toDTO()));
-        sc.setAttribute(DataConfig.CONFIG_KEY, new DataConfig((DataDTO)wfs.getData().toDTO()));
-        
-        ValidationConfig vc = null;
-		try{
-			vc = new ValidationConfig((Map)wfs.getValidation().toPlugInDTO(), (Map)wfs.getValidation().toTestSuiteDTO());
-		}catch(Exception e){
-			//load error
-			vc = new ValidationConfig();
-		}
-        sc.setAttribute(ValidationConfig.CONFIG_KEY, vc);
+    //JD: delete this	
+//        ServletContext sc = arg0.getServletContext();
+//        WMS wms = (WMS) sc.getAttribute(WMS.WEB_CONTAINER_KEY);
+//        WFS wfs = (WFS) sc.getAttribute(WFS.WEB_CONTAINER_KEY);
+//
+//        if (wms == null || wfs == null) {
+//            GeoServerPlugIn gspi = new GeoServerPlugIn();
+//            gspi.init(arg0, arg1);
+//            wms = (WMS) sc.getAttribute(WMS.WEB_CONTAINER_KEY);
+//            wfs = (WFS) sc.getAttribute(WFS.WEB_CONTAINER_KEY);
+//
+//            if (wms == null || wfs == null) {
+//                throw new ServletException(
+//                    "GeoServerPlugIn Failed. Thus ConfigPlugIn cannot run.");
+//            }
+//        }
+//
+//        sc.setAttribute(WMSConfig.CONFIG_KEY, new WMSConfig((WMSDTO)wms.toDTO()));
+//        sc.setAttribute(WFSConfig.CONFIG_KEY, new WFSConfig((WFSDTO)wfs.toDTO()));
+//        sc.setAttribute(GlobalConfig.CONFIG_KEY,
+//            new GlobalConfig((GeoServerDTO)wfs.getGeoServer().toDTO()));
+//        sc.setAttribute(DataConfig.CONFIG_KEY, new DataConfig((DataDTO)wfs.getData().toDTO()));
+//        
+//        ValidationConfig vc = null;
+//		try{
+//			vc = new ValidationConfig((Map)wfs.getValidation().toPlugInDTO(), (Map)wfs.getValidation().toTestSuiteDTO());
+//		}catch(Exception e){
+//			//load error
+//			vc = new ValidationConfig();
+//		}
+//        sc.setAttribute(ValidationConfig.CONFIG_KEY, vc);
     }
 }

@@ -5,6 +5,10 @@
 
 package org.vfny.geoserver.form.data;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
@@ -55,11 +59,14 @@ public class DataFeatureTypesSelectForm extends ActionForm {
         this.selectedFeatureTypeName = selectedFeatureTypeName;
     }
 
-    public Set getTypeNames() {
+    public List getTypeNames() {
         ServletContext context = getServlet().getServletContext();
         DataConfig config = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 
-        return config.getFeaturesTypes().keySet();
+        ArrayList ret = new ArrayList(config.getFeaturesTypes().keySet());
+        Object[] sortable = ret.toArray();
+        Arrays.sort(sortable);
+        return Arrays.asList(sortable);
     }
 
     /**

@@ -4,10 +4,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>org.vfny</groupId>
+	<groupId>org.geoserver</groupId>
 	<artifactId>geoserver</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1</version>
+	<version>1.4.x</version>
 	<name>GeoServer</name>
 	
 	<organization>
@@ -47,7 +47,7 @@
 			<name>Repository from Refractions research, Victoria, Canada</name>
 			<url>http://lists.refractions.net/m2/</url>
 			<snapshots>
-				<enabled>false</enabled>
+				<enabled>true</enabled>
 			</snapshots>
 		</repository>
 		<repository>
@@ -147,6 +147,11 @@
 				<version>1.4.3</version>
 			</dependency>
 			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>2.3</version>
+			</dependency>
+			<dependency>
 				<groupId>struts</groupId>
 				<artifactId>struts</artifactId>
 				<version>1.2.8</version>
@@ -212,6 +217,11 @@
 				<version>1.2.5</version>
 			</dependency>
 			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>1.2.5</version>
+			</dependency>
+			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>1.2.9</version>
@@ -242,12 +252,39 @@
 		</dependencies>
 	</dependencyManagement>
 	
+	<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>struts</groupId>
+			<artifactId>struts</artifactId>
+		</dependency>
+			<dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+      </dependency>
+	</dependencies>
+
 	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>test</testSourceDirectory>
+		<!--sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test</testSourceDirectory-->
 		<resources>
 			<resource>
-				<directory>src</directory>
+				<directory>${basedir}/src/main/java</directory>
 				<includes>
 					<include>**/*.txt</include>
 					<include>**/*.sql</include>
@@ -257,6 +294,7 @@
 					<include>**/*.serialized</include>
 					<include>META-INF/*.jai</include>
 					<include>META-INF/services/**</include>
+					<include>applicationContext.xml</include>
 				</includes>
 				<excludes>
 					<exclude>**/doc-files/**</exclude>
@@ -267,7 +305,7 @@
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>test</directory>
+				<directory>${testSourceDirectory}</directory>
 				<includes>
 					<include>META-INF/services/**</include>
 					<include>**/test-data/**</include>
@@ -291,6 +329,17 @@
 		</testResources>
 		
 		<plugins>
+  		<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+           <excludes>
+             <exclude>org/vfny/geoserver/action/**/*.java</exclude>
+             <exclude>org/vfny/geoserver/form/**/*.java</exclude>
+           </excludes>
+        </configuration>
+      </plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -304,42 +353,32 @@
 					<forkMode>once</forkMode>
 					<argLine>-Xmx512M -enableassertions</argLine>
 					<printSummary>false</printSummary>
-					<!-- Make the build less verbose -->
-					<!-- Ignores test failure only if we are generating a report for publication on
-					
-					
-					the web site. See the profiles section at the begining of this pom.xml file. -->
-					<testFailureIgnore>
-						${allow.test.failure.ignore}</testFailureIgnore>
+					<testFailureIgnore>${allow.test.failure.ignore}</testFailureIgnore>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 	
-	<profiles>
+	<!--profiles>
 		
 		<profile>
 			<id>devel</id>
 			
 			<build>
 				<plugins>
-					<plugin>
-						<inherited>true</inherited>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-					</plugin>
 				</plugins>
 			</build>
 			
 		</profile>
-		
-	</profiles>
+		</profiles-->
 	
 	<modules>
-		<module>org.vfny.geoserver.gtlibs</module>
-		<module>org.vfny.geoserver.main</module>
-		<module>org.vfny.geoserver.wfs</module>
-		<module>org.vfny.geoserver.wms</module>
+		<module>main</module>
+		<!--module>wfs</module-->
+	  <!--module>wms</module-->
+		<module>web</module>
+		<module>config</module>
 	</modules>
 	
 </project>

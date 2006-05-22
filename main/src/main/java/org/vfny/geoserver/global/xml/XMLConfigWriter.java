@@ -7,7 +7,9 @@ package org.vfny.geoserver.global.xml;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -70,11 +72,11 @@ public class XMLConfigWriter {
         }
 
         WriterUtils.initFile(root, true);
-	boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
-	//We're just checking if it's actually a data_dir, not trying to
-	//to do backwards compatibility.  So if an old data_dir is made in
-	//the old way, on save it'll come to the new way.
-	File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
+		boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
+		//We're just checking if it's actually a data_dir, not trying to
+		//to do backwards compatibility.  So if an old data_dir is made in
+		//the old way, on save it'll come to the new way.
+		File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
         File configDir = WriterUtils.initFile(fileDir, true);
 
         File catalogFile = WriterUtils.initWriteFile(new File(configDir,
@@ -87,12 +89,12 @@ public class XMLConfigWriter {
         } catch (IOException e) {
             throw new ConfigurationException("Store" + root, e);
         }
-	File dataDir;
-	if (!inDataDir) { 
-	    dataDir = WriterUtils.initFile(new File(root, "data/"), true);
-	} else {
-	    dataDir = root;
-	}
+		File dataDir;
+		if (!inDataDir) { 
+		    dataDir = WriterUtils.initFile(new File(root, "data/"), true);
+		} else {
+		    dataDir = root;
+		}
         File featureTypeDir = WriterUtils.initFile(new File(dataDir,
                     "featureTypes/"), true);
         storeFeatures(featureTypeDir, data);
@@ -313,7 +315,6 @@ public class XMLConfigWriter {
         LOGGER.finer("In method storeService");
 
         ServiceDTO s = null;
-        String u = null;
         String t = "";
         
         boolean fBounds = false;
@@ -414,6 +415,14 @@ public class XMLConfigWriter {
             cw.textTag("svgAntiAlias", svgAntiAlias + "");
         }
 
+        if ((s.getStrategy() != null) && !"".equals(s.getStrategy())) {
+        		cw.textTag("serviceStrategy", s.getStrategy());
+        }
+        
+        if (s.getPartialBufferSize() != 0) {
+        		cw.textTag("partialBufferSize", s.getPartialBufferSize() + "");
+        }
+        
         cw.closeTag("service");
     }
 
@@ -653,8 +662,16 @@ public class XMLConfigWriter {
                                                              .get(s);
 
             if (ft != null) {
+            	String ftDirName = ft.getDirName();
+            	
+            	try {	// encode the file name (this is to catch colons in FT names)
+            		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
+					LOGGER.info("Writing encoded URL: "+ftDirName);
+				} catch (UnsupportedEncodingException e1) {
+					throw new ConfigurationException(e1);
+				}
                 File dir2 = WriterUtils.initWriteFile(new File(dir,
-                            ft.getDirName()), true);
+                            ftDirName), true);
 
                 storeFeature(ft, dir2);
 
@@ -693,8 +710,14 @@ public class XMLConfigWriter {
 
             while ((fti == null) && i.hasNext()) {
                 FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) i.next();
-
-                if (ft.getDirName().equals(fa[j].getName())) {
+                String ftDirName = ft.getDirName();
+                try {	// encode the file name (this is to catch colons in FT names)
+            		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
+					LOGGER.info("Decoded URL: "+ftDirName);
+				} catch (UnsupportedEncodingException e1) {
+					throw new ConfigurationException(e1);
+				}
+                if (ftDirName.equals(fa[j].getName())) {
                     fti = ft;
                 }
             }
@@ -813,6 +836,17 @@ public class XMLConfigWriter {
                 m.put("default", ft.getDefaultStyle());
                 cw.attrTag("styles", m);
             }
+            
+            m = new HashMap();
+            if (ft.getCacheMaxAge() != null) {
+            	m.put("maxage",ft.getCacheMaxAge());
+            }
+            if (ft.isCachingEnabled()) {
+            	m.put("enabled", "true");
+            } else {
+            	m.put("enabled", "false");
+            }
+            cw.attrTag("cacheinfo", m);
 
             if (ft.getDefinitionQuery() != null) {
                 cw.openTag("definitionQuery");
@@ -906,18 +940,18 @@ public class XMLConfigWriter {
             m.put("minOccurs", "" + ati.getMinOccurs());
             m.put("maxOccurs", "" + ati.getMaxOccurs());
 
-            NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance()
+            NameSpaceTranslator nst_xs = NameSpaceTranslatorFactory.getInstance()
                                                                  .getNameSpaceTranslator("xs");
-            NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance()
+            NameSpaceTranslator nst_gml = NameSpaceTranslatorFactory.getInstance()
                                                                  .getNameSpaceTranslator("gml");
 
             if (!ati.isComplex()) {
                 if (ati.getName() == ati.getType()) {
                     String r = "";
-                    NameSpaceElement nse = nst1.getElement(ati.getType());
+                    NameSpaceElement nse = nst_xs.getElement(ati.getType());
 
                     if (nse == null) {
-                        nse = nst2.getElement(ati.getType());
+                        nse = nst_gml.getElement(ati.getType());
                     }
 
                     r = nse.getQualifiedTypeRefName();
@@ -926,13 +960,14 @@ public class XMLConfigWriter {
                     m.put("name", ati.getName());
 
                     String r = "";
-                    NameSpaceElement nse = nst1.getElement(ati.getType());
+                    NameSpaceElement nse = nst_xs.getElement(ati.getType());
 
                     if (nse == null) {
-                        nse = nst2.getElement(ati.getType());
+                        nse = nst_gml.getElement(ati.getType());
+                        r = nse.getQualifiedTypeDefName();	// Def
                     }
-
-                    r = nse.getQualifiedTypeRefName();
+                    else
+                    	r = nse.getQualifiedTypeRefName();	// Ref
 
                     m.put("type", r);
                 }

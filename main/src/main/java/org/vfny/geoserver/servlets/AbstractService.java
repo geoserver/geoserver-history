@@ -19,6 +19,7 @@ import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,13 +31,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.web.context.WebApplicationContext;
 import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.util.PartialBufferedOutputStream;
+
 import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -101,113 +106,203 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
  * @author Jody Garnett, Refractions Research
  * @version $Id: AbstractService.java,v 1.23 2004/09/08 17:34:38 cholmesny Exp $
  */
-public abstract class AbstractService extends HttpServlet {
+public abstract class AbstractService extends HttpServlet 
+	implements ApplicationContextAware {
+	
     /** Class logger */
     protected static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
 
-    /** DOCUMENT ME! */
-
-    //protected static final GeoServer config = GeoServer.getInstance();
-
-    /** Specifies mime type */
-
-    //protected static final String MIME_TYPE = config.getMimeType();
-    private static Map context;
-
     /**
-     * GR: if SPEED, FILE and BUFFER are static instances, so their methods
-     * should be synchronized, ending in a not multiuser server, so I made
-     * safetyMode dynamically instantiated in init() and the strategy choosed
-     * at server config level in web.xml. If I'm wrong, just tell me. If this
-     * is correct, may be it will be better to allow for user customized
-     * ServiceStrategy implementations to be parametrized by a servlet context
-     * param JG: You are exactly right! My-Bad, I was just trying to
-     * understand what chris was talking about.
+     * Servivce group (maps to 'SERVICE' parameter in OGC service urls)
      */
-    public static final Map serviceStrategys = new HashMap();
-
-    static {
-    	serviceStrategys.put("PARTIAL-BUFFER", PartialBufferStrategy.class);
-        serviceStrategys.put("SPEED", SpeedStrategy.class);
-        serviceStrategys.put("FILE", FileStrategy.class);
-        serviceStrategys.put("BUFFER", BufferStrategy.class);
-    }
-
-    public static int BUFFER_SIZE;
+    String service;
     
-    /** Controls the Safty Mode used when using execute/writeTo. */
-    private static Class safetyMode;
-
+    /**
+     * Request type (maps to 'REQUEST' parameter in OGC service urls)
+     */
+    String request; 
+    
+    /**
+     * Application context used to look up "Services"
+     */
+    WebApplicationContext context;
+    
+    /**
+     * Reference to the global geoserver instnace.
+     */
+    GeoServer geoServer;
+    
+    /**
+     * Id of the service strategy to use.
+     */
+    String serviceStrategy;
+    
+    /**
+     * buffer size to use when PARTIAL-BUFFER is being used 
+     */
+    int partialBufferSize;
+    
+    /**
+     * Cached service strategy object
+     */
+    ServiceStrategy strategy;
+    
+    /**
+     * Reference to the service
+     */
+    Service serviceRef;
+    
     /** DOCUMENT ME!  */
     protected HttpServletRequest curRequest;
 
     /**
-     * loads the "serviceStrategy" servlet context parameter and checks it if
-     * reffers to a valid ServiceStrategy (by now, one of SPEED, FILE or
-     * BUFFER); if no, just sets the strategy to BUFFER as default
-     *
-     * @param config the servlet environment
-     *
-     * @throws ServletException if the configured strategy class is not a
-     *         derivate of ServiceStrategy or it is thrown by the parent class
+     * Constructor for abstract service.
+     * 
+     * @param service The service group the service falls into (WFS,WMS,...)
+     * @param request The service being requested (GetCapabilities, GetMap, ...)
+     * @param serviceRef The global service this "servlet" falls into
      */
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        LOGGER.info("Looking for configured service responses' strategy");
-
-        ServletContext servContext = config.getServletContext();
-        String stgyKey = servContext.getInitParameter("serviceStratagy");
-        Class stgyClass = BufferStrategy.class;
-
-        if (stgyKey == null) {
-            LOGGER.info("No service strategy configured, defaulting to BUFFER");
-        } else {
-            LOGGER.info("Looking for configured service strategy " + stgyKey);
-
-            Class configurefStgyClass = (Class) serviceStrategys.get(stgyKey);
-
-            if (configurefStgyClass == null) {
-                LOGGER.info("No service strategy named " + stgyKey
-                    + "found, defaulting to BUFFER. Please check your config");
-            } else {
-                stgyClass = configurefStgyClass;
-            }
-        }
-
-        LOGGER.fine("verifying configured strategy");
-
-        if (!(ServiceStrategy.class.isAssignableFrom(stgyClass))) {
-            throw new ServletException("the configured service strategy "
-                + stgyClass + " is not a ServiceStrategy derivate");
-        }
-
-        LOGGER.info("Using service strategy " + stgyClass);
-        AbstractService.safetyMode = stgyClass;
-        
-        if (stgyClass == PartialBufferStrategy.class)
-        {
-        	// this is a little hacky cause we are still dealing with a class and not an object
-        	
-        	// get the default value of the buffer size
-        	int buffSize = PartialBufferStrategy.DEFAULT_BUFFER_SIZE();
-        	String size = servContext.getInitParameter("PARTIAL_BUFFER_STRATEGY_SIZE");
-        	if (size != null)
-        	{
-				try {
-					//... convert string to # ...
-					Integer i = new Integer(size);
-					buffSize = i.intValue();
-					LOGGER.info("Set buffer size to " + buffSize);
-				}
-				catch (Exception e) {
-					LOGGER.warning("Invalid default buffer size for PARTIAL-BUFFER: " + size);
-				}
-        	}
-        	
-        	BUFFER_SIZE = buffSize;
-        }
+    public AbstractService(String service, String request, Service serviceRef) {
+    		this.service = service;
+    		this.request = request;
+    		this.serviceRef = serviceRef;
     }
+    
+    /**
+     * @return Returns the "service group" that this service falls into.
+     */
+    public String getService() {
+		return service;
+	}
+    
+    /**
+     * @return Returns the "request" this service maps to.
+     */
+    public String getRequest() {
+		return request;
+	}
+    
+    /**
+     * Sets a refeference to the global service instance.
+     */
+    public void setServiceRef(Service serviceRef) {
+		this.serviceRef = serviceRef;
+	}
+    
+    /**
+     * @return The reference to the global service instance.
+     */
+    public Service getServiceRef() {
+		return serviceRef;
+	}
+    
+    /**
+     * Sets the application context.
+     * <p>
+     * Used to process the {@link Service} extension point.
+     * </p>
+     */
+    public void setApplicationContext(ApplicationContext context) throws BeansException {
+    		this.context = (WebApplicationContext) context;
+    }
+    
+    /**
+     * Sets the reference to the global geoserver instance.
+     */
+    public void setGeoServer(GeoServer geoServer) {
+    		this.geoServer = geoServer;
+    	}
+    
+    /**
+     * @return the reference to the global geoserver instance.
+     */
+    public GeoServer getGeoServer() {
+    		return geoServer;
+    }
+    
+    /**
+     * @return The id used to identify the service strategy to be used.
+     * @see ServiceStrategy#getId()
+     */
+    public String getServiceStrategy() {
+    		return serviceStrategy;
+    }
+    
+    /**
+     * Sets the id used to identify the service strategy to be used.
+     */
+    public void setServiceStrategy(String serviceStrategy) {
+    		this.serviceStrategy = serviceStrategy;
+    }
+    
+    //JD:  kill this
+//    /**
+//     * loads the "serviceStrategy" servlet context parameter and checks it if
+//     * reffers to a valid ServiceStrategy (by now, one of SPEED, FILE or
+//     * BUFFER); if no, just sets the strategy to BUFFER as default
+//     *
+//     * @param config the servlet environment
+//     *
+//     * @throws ServletException if the configured strategy class is not a
+//     *         derivate of ServiceStrategy or it is thrown by the parent class
+//     */
+//    public void init(ServletConfig config) throws ServletException {
+//        super.init(config);
+//        LOGGER.info("Looking for configured service responses' strategy");
+//
+//        ServletContext servContext = config.getServletContext();
+//        String stgyKey = servContext.getInitParameter("serviceStratagy");
+//        Class stgyClass = BufferStrategy.class;
+//
+//        if (stgyKey == null) {
+//            LOGGER.info("No service strategy configured, defaulting to BUFFER");
+//        } else {
+//            LOGGER.info("Looking for configured service strategy " + stgyKey);
+//
+//            Class configurefStgyClass = (Class) serviceStrategys.get(stgyKey);
+//
+//            if (configurefStgyClass == null) {
+//                LOGGER.info("No service strategy named " + stgyKey
+//                    + "found, defaulting to BUFFER. Please check your config");
+//            } else {
+//                stgyClass = configurefStgyClass;
+//            }
+//        }
+//
+//        LOGGER.fine("verifying configured strategy");
+//
+//        if (!(ServiceStrategy.class.isAssignableFrom(stgyClass))) {
+//            throw new ServletException("the configured service strategy "
+//                + stgyClass + " is not a ServiceStrategy derivate");
+//        }
+//
+//        LOGGER.info("Using service strategy " + stgyClass);
+//        AbstractService.safetyMode = stgyClass;
+//        
+//        if (stgyClass == PartialBufferStrategy.class)
+//        {
+//        	// this is a little hacky cause we are still dealing with a class and not an object
+//        	
+//        	// get the default value of the buffer size
+//        	int buffSize = PartialBufferStrategy.DEFAULT_BUFFER_SIZE();
+//        	String size = servContext.getInitParameter("PARTIAL_BUFFER_STRATEGY_SIZE");
+//        	if (size != null)
+//        	{
+//				try {
+//					//... convert string to # ...
+//					Integer i = new Integer(size);
+//					buffSize = i.intValue();
+//					LOGGER.info("Set buffer size to " + buffSize);
+//				}
+//				catch (Exception e) {
+//					LOGGER.warning("Invalid default buffer size for PARTIAL-BUFFER: " + size);
+//				}
+//        	}
+//        	
+//        	BUFFER_SIZE = buffSize;
+//        }
+//    }
 
     /**
      * DOCUMENT ME!
@@ -426,8 +521,8 @@ public abstract class AbstractService extends HttpServlet {
         Response serviceResponse = null;
 
         try {
-            strategy = getServiceStrategy();
-            LOGGER.fine("strategy is: " + strategy);
+            strategy = createServiceStrategy();
+            LOGGER.fine("strategy is: " + strategy.getId());
             serviceResponse = getResponseHandler();
         } catch (Throwable t) {
             sendError(response, t);
@@ -435,13 +530,24 @@ public abstract class AbstractService extends HttpServlet {
             return;
         }
 
+        Map services = context.getBeansOfType(Service.class);
         Service s = null;
-
-        if ("WFS".equals(serviceRequest.getService())) {
-            s = serviceRequest.getWFS();
-        } else {
-            s = serviceRequest.getWMS();
+        for (Iterator itr = services.values().iterator(); itr.hasNext();) {
+        		Service service = (Service) itr.next();
+        		
+        		//TODO: need a better comparison of name
+        		if (service.getName().endsWith(serviceRequest.getService())) {
+        			s = service;
+        			break;
+        		}
+        			
         }
+        
+//        if ("WFS".equals(serviceRequest.getService())) {
+//            s = serviceRequest.getWFS();
+//        } else {
+//            s = serviceRequest.getWMS();
+//        }
 
         try {
             // execute request
@@ -596,36 +702,6 @@ public abstract class AbstractService extends HttpServlet {
     protected abstract ExceptionHandler getExceptionHandler();
 
     /**
-     * Instantiates a given strategy class and throws the proper exceptions.
-     * Used as a helper class to create service strategies, since the
-     * hierarchy for inner classes and whatnot is a bit funky.
-     *
-     * @param strategyClass the strategy to instantiate.
-     *
-     * @return The Service Strategy insantiated.
-     *
-     * @throws ServiceException for any instantiation problems.
-     *
-     * @see #getServiceStrategy
-     */
-    protected AbstractService.ServiceStrategy getServiceStrategy(
-        Class strategyClass) throws ServiceException {
-        ServiceStrategy strategy = null;
-
-        try {
-            strategy = (ServiceStrategy) strategyClass.newInstance();
-        } catch (InstantiationException ex) {
-            throw new ServiceException(strategy
-                + " is not a valid ServiceStrategy", ex);
-        } catch (IllegalAccessException ex) {
-            throw new ServiceException(strategy
-                + " is not a valid ServiceStrategy", ex);
-        }
-
-        return strategy;
-    }
-
-    /**
      * Gets the strategy for outputting the response.  This method gets the
      * strategy from the serviceStrategy param in the web.xml file.  This is
      * sort of odd behavior, as all other such parameters are set in the
@@ -657,20 +733,62 @@ public abstract class AbstractService extends HttpServlet {
      *
      * @see #init() for the code that sets the serviceStrategy.
      */
-    protected AbstractService.ServiceStrategy getServiceStrategy()
-        throws ServiceException {
-        ServletContext servContext = getServletContext();
-        GeoServer geoServer = (GeoServer) servContext.getAttribute(GeoServer.WEB_CONTAINER_KEY);
-
+    protected ServiceStrategy createServiceStrategy() throws ServiceException {
         //If verbose exceptions is on then lets make sure they actually get the
         //exception by using the file strategy.
-        if (geoServer.isVerboseExceptions()) {
-            return getServiceStrategy(FileStrategy.class);
-        } else {
-            return getServiceStrategy(safetyMode);
+    		if (geoServer.isVerboseExceptions()) {
+        		strategy = (ServiceStrategy) context.getBean("fileServiceStrategy");
+        	} 
+        else {
+    			//do we have a prototype?
+        		if (strategy != null) {
+        			//yes, make sure it still matched up with id set
+        			if (!strategy.getId().equals(serviceStrategy)) {
+        				
+        				//clear prototype to force another lookup
+        				strategy = null;
+        			}
+        		}
+        		
+        		if (strategy == null) {
+        			//do a lookup
+        			Map strategies = context.getBeansOfType(ServiceStrategy.class);
+        			for (Iterator itr = strategies.values().iterator(); itr.hasNext();) {
+        				ServiceStrategy bean = (ServiceStrategy) itr.next();
+        				if (bean.getId().equals(serviceStrategy)) {
+        					strategy = bean;
+        					break;
+        				}
+        					
+        			}
+        		}
+        		
+        		if (strategy == null) {
+        			//default to buffer
+        			strategy = 
+        				(ServiceStrategy) context.getBean("bufferServiceStrategy");
+        		}
+        	}
+        
+        ServiceStrategy theStrategy = null;
+        try {
+        		theStrategy = (ServiceStrategy) strategy.clone();	
         }
+        catch(CloneNotSupportedException e) {
+        		String msg = 
+        			"Service strategy: " + strategy.getId() + " not cloneable";
+        		throw new ServiceException(msg,e);
+        	}
+        
+        //TODO: this hack should be removed once modules have their own config
+        if (theStrategy instanceof PartialBufferStrategy) {
+        		((PartialBufferStrategy)theStrategy).setBufferSize(partialBufferSize);
+        }
+        return theStrategy;
+        
     }
 
+    
     /**
      * DOCUMENT ME!
      *
@@ -762,9 +880,7 @@ public abstract class AbstractService extends HttpServlet {
      * @param se DOCUMENT ME!
      */
     protected void sendError(HttpServletResponse response, ServiceException se) {
-        GeoServer geoServer = (GeoServer) this.getServletConfig()
-                                              .getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
-
+    	
         String mimeType = se.getMimeType(geoServer);
 
         send(response,
@@ -832,404 +948,5 @@ public abstract class AbstractService extends HttpServlet {
 
         return supportsGzip;
     }
-
-    /**
-     * Interface used for ServiceMode strategy objects.
-     * 
-     * <p>
-     * While this interface resembles the Enum idiom in that only three
-     * instances are available SPEED, BUFFER and FILE, we are using this class
-     * to plug-in the implementation for our doService request in the manner
-     * of the strategy pattern.
-     * </p>
-     *
-     * @author Jody Garnett, Refractions Research
-     */
-    static public interface ServiceStrategy {
-        /**
-         * Get a OutputStream we can use to add content.
-         * 
-         * <p>
-         * JG - Can we replace this with a Writer?
-         * </p>
-         *
-         * @param response
-         *
-         * @return
-         *
-         * @throws IOException
-         */
-        public OutputStream getDestination(HttpServletResponse response)
-            throws IOException;
-
-        /**
-         * Complete opperation in the positive.
-         * 
-         * <p>
-         * Gives service a chance to finish with destination, and clean up any
-         * resources.
-         * </p>
-         *
-         * @throws IOException DOCUMENT ME!
-         */
-        public void flush() throws IOException;
-
-        /**
-         * Complete opperation in the negative.
-         * 
-         * <p>
-         * Gives ServiceConfig a chance to clean up resources
-         * </p>
-         */
-        public void abort();
-    }
 }
 
-
-/**
- * Fast and Dangeroud service strategy.
- * 
- * <p>
- * Will fail when a ServiceException is encountered on writeTo, and will not
- * tell the user about it!
- * </p>
- * 
- * <p>
- * This is the worst case scenario, you are trading speed for danger by using
- * this ServiceStrategy.
- * </p>
- *
- * @author jgarnett
- */
-class SpeedStrategy implements AbstractService.ServiceStrategy {
-    /** DOCUMENT ME!  */
-    private OutputStream out = null;
-
-    /**
-     * Works against the real output stream provided by the response.
-     * 
-     * <p>
-     * This is dangerous of course, but fast and exciting.
-     * </p>
-     *
-     * @param response Response provided by doService
-     *
-     * @return An OutputStream that works against, the response output stream.
-     *
-     * @throws IOException If response output stream could not be aquired
-     */
-    public OutputStream getDestination(HttpServletResponse response)
-        throws IOException {
-        out = response.getOutputStream();
-        out = new BufferedOutputStream(out);
-
-        return out;
-    }
-
-    /**
-     * Completes writing to Response.getOutputStream.
-     *
-     * @throws IOException If Response.getOutputStream not available.
-     */
-    public void flush() throws IOException {
-        if (out != null) {
-            out.flush();
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#abort()
-     */
-    public void abort() {
-        // out.close();
-    }
-}
-
-
-/**
- * A safe Service strategy that buffers output until writeTo completes.
- * 
- * <p>
- * This strategy wastes memory, for saftey. It represents a middle ground
- * between SpeedStrategy and FileStrategy
- * </p>
- *
- * @author jgarnett
- */
-class BufferStrategy implements AbstractService.ServiceStrategy {
-    /** DOCUMENT ME!  */
-    ByteArrayOutputStream buffer = null;
-
-    /** DOCUMENT ME!  */
-    private HttpServletResponse response;
-
-    /**
-     * Provides a ByteArrayOutputStream for writeTo.
-     *
-     * @param response Response being processed.
-     *
-     * @return A ByteArrayOutputStream for writeTo opperation.
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    public OutputStream getDestination(HttpServletResponse response)
-        throws IOException {
-        this.response = response;
-        buffer = new ByteArrayOutputStream(1024 * 1024);
-
-        return buffer;
-    }
-
-    /**
-     * Copies Buffer to Response output output stream.
-     *
-     * @throws IOException If the response outputt stream is unavailable.
-     */
-    public void flush() throws IOException {
-        if ((buffer == null) || (response == null)) {
-            return; // should we throw an Exception here
-        }
-
-        OutputStream out = response.getOutputStream();
-        BufferedOutputStream buffOut = new BufferedOutputStream(out, 1024 * 1024);
-        buffer.writeTo(buffOut);
-        buffOut.flush();
-    }
-
-    /**
-     * Clears the buffer with out writing anything out to response.
-     *
-     * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#abort()
-     */
-    public void abort() {
-        if (buffer == null) {
-            return;
-        }
-    }
-}
-
-
-/**
- * A safe ServiceConfig strategy that uses a temporary file until writeTo
- * completes.
- *
- * @author $author$
- * @version $Revision: 1.23 $
- */
-class FileStrategy implements AbstractService.ServiceStrategy {
-    /** Buffer size used to copy safe to response.getOutputStream() */
-    private static int BUFF_SIZE = 4096;
-
-    /** Temporary file number */
-    static int sequence = 0;
-
-    /** Class logger */
-    protected static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.servlets");
-
-    /** Response being targeted */
-    private HttpServletResponse response;
-
-    /** OutputStream provided to writeTo method */
-    private OutputStream safe;
-
-    /** Temporary file used by safe */
-    private File temp;
-
-    /**
-     * Provides a outputs stream on a temporary file.
-     * 
-     * <p>
-     * I have changed this to use a BufferedWriter to agree with SpeedStrategy.
-     * </p>
-     *
-     * @param response Response being handled
-     *
-     * @return Outputstream for a temporary file
-     *
-     * @throws IOException If temporary file could not be created.
-     */
-    public OutputStream getDestination(HttpServletResponse response)
-        throws IOException {
-        // REVISIT: Should do more than sequence here
-        // (In case we are running two GeoServers at once)
-        // - Could we use response.getHandle() in the filename?
-        // - ProcessID is traditional, I don't know how to find that in Java
-        this.response = response;
-        sequence++;
-        // lets check for file permissions first so we can throw a clear error
-        try {
-        	temp = File.createTempFile("wfs" + sequence, "tmp");
-        	if (!temp.canRead() || !temp.canWrite())
-        	{
-        		String errorMsg = "Temporary-file permission problem for location: " + temp.getPath();
-            	throw new IOException(errorMsg);
-        	}
-        } catch (IOException e) {
-        	String errorMsg = "Possible file permission problem. Root cause: \n" + e.toString();
-        	IOException newE = new IOException(errorMsg);
-        	throw newE;
-        }
-        temp.deleteOnExit();
-        safe = new BufferedOutputStream(new FileOutputStream(temp));
-
-        return safe;
-    }
-
-    /**
-     * Closes safe output stream, copies resulting file to response.
-     *
-     * @throws IOException If temporay file or response is unavailable
-     * @throws IllegalStateException if flush is called before getDestination
-     */
-    public void flush() throws IOException {
-        if ((temp == null) || (response == null) || (safe == null)
-                || !temp.exists()) {
-            LOGGER.fine("temp is " + temp + ", response is " + response
-                + " safe is " + safe + ", temp exists " + temp.exists());
-            throw new IllegalStateException(
-                "flush should only be called after getDestination");
-        }
-
-        InputStream copy = null;
-
-        try {
-            safe.flush();
-            safe.close();
-            safe = null;
-
-            // service succeeded in producing a response!
-            // copy result to the real output stream
-            copy = new BufferedInputStream(new FileInputStream(temp));
-
-            OutputStream out = response.getOutputStream();
-            out = new BufferedOutputStream(out, 1024 * 1024);
-
-            byte[] buffer = new byte[BUFF_SIZE];
-            int b;
-
-            while ((b = copy.read(buffer, 0, BUFF_SIZE)) > 0) {
-                out.write(buffer, 0, b);
-            }
-
-            // Speed Writer closes output Stream
-            // I would prefer to leave that up to doService...
-            out.flush();
-
-            // out.close();
-        } catch (IOException ioe) {
-            throw ioe;
-        } finally {
-            if (copy != null) {
-                try {
-                    copy.close();
-                } catch (Exception ex) {
-                }
-            }
-
-            copy = null;
-
-            if ((temp != null) && temp.exists()) {
-                temp.delete();
-            }
-
-            temp = null;
-            response = null;
-            safe = null;
-        }
-    }
-
-    /**
-     * Clean up after writeTo fails.
-     *
-     * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#abort()
-     */
-    public void abort() {
-        if (safe != null) {
-            try {
-                safe.close();
-            } catch (IOException ioException) {
-            }
-
-            safe = null;
-        }
-
-        if ((temp != null) && temp.exists()) {
-            temp.delete();
-        }
-
-        temp = null;
-        response = null;
-    }
-    
-}
-
-/**
- * <b>PartialBufferStrategy</b><br>
- * Oct 19, 2005<br>
- * 
- * <b>Purpose:</b><br>
- * This strategy will buffer the response before it starts streaming it to the user. This 
- * will allow for errors to be caught early so a proper error message can be sent to the
- * user. Right now it buffers the first 20KB, enough for a full getCapabilities document.
- * 
- * @author Brent Owens (The Open Planning Project)
- * @version 
- */
-class PartialBufferStrategy implements AbstractService.ServiceStrategy 
-{
-    /** Class logger */
-    protected static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.servlets");
-
-    private PartialBufferedOutputStream out = null;
-
-	/* (non-Javadoc)
-	 * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#getDestination(javax.servlet.http.HttpServletResponse)
-	 */
-	public OutputStream getDestination(HttpServletResponse response) throws IOException 
-	{
-		out = new PartialBufferedOutputStream(response, AbstractService.BUFFER_SIZE);
-		return out;
-	}
-
-	public static int DEFAULT_BUFFER_SIZE() {
-		return PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#flush()
-	 */
-	public void flush() throws IOException 
-	{
-		if (out != null)
-		{
-            out.forceFlush();
-            out = null;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#abort()
-	 */
-	public void abort() 
-	{
-		if (out != null)
-		{
-			try {
-				if (out.abort())
-					LOGGER.info("OutputStream was successfully aborted.");
-				else
-					LOGGER.warning("OutputStream could not be aborted in time. An error has occurred and could not be sent to the user.");
-			} catch (IOException e) {
-				LOGGER.warning("Error aborting OutputStream");
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	
-	
-	
-	
-}

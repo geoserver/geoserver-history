@@ -102,7 +102,7 @@ public class StylesEditorForm extends ActionForm {
             errors.add("styleID", new ActionError("error.styleID.required", styleID));
             return errors;
         }
-        if (!Pattern.matches("^\\w*$", styleID)) {
+        if (!Pattern.matches("^[-\\w.:]*$", styleID)) {
             errors.add("styleID", new ActionError("error.styleID.invalid", styleID));
             return errors;
         }

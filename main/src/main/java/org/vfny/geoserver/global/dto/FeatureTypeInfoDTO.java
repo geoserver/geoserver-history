@@ -121,6 +121,18 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
+     * This value is added the headers of generated maps, marking them as being both
+     * "cache-able" and designating the time for which they are to remain valid.
+     *  The specific header added is "Cache-Control: max-age="
+     */
+    private String cacheMaxAge;
+    
+    /**
+     * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
+     */
+    private boolean cachingEnabled;
+    
+    /**
      * FeatureTypeInfo constructor.
      * 
      * <p>
@@ -164,6 +176,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
         schemaBase = dto.getSchemaBase();
+        
+        cachingEnabled = dto.isCachingEnabled();
+        cacheMaxAge = dto.getCacheMaxAge();
     }
 
     /**
@@ -244,6 +259,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         r = r && (schemaName == f.getSchemaName());
         r = r && (schemaBase == f.getSchemaBase());
 
+        r = r && (isCachingEnabled() == f.isCachingEnabled());
+        r = r && (getCacheMaxAge() != null && getCacheMaxAge().equals(f.getCacheMaxAge()));
+        
         return r;
     }
 
@@ -279,6 +297,13 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
             r = SRS % r;
         }
 
+        if (cacheMaxAge != null) {
+        	r *= cacheMaxAge.hashCode();
+        }
+                
+        if (cachingEnabled)
+        	r += 1;
+        	
         return r;
     }
 
@@ -611,10 +636,10 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * getDirName purpose.
      * 
      * <p>
-     * Description ...
+     * Returns the featuretype directory name.
      * </p>
      *
-     * @return
+     * @return the featuretype directory name
      */
     public String getDirName() {
         return dirName;
@@ -734,6 +759,23 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         + ", latLongBBOX: " + latLongBBox + "\n  SRS: " + SRS + ", schema:"
         + schema + ", schemaName: " + schemaName + ", dirName: " + dirName
         + ", title: " + title + "\n  definitionQuery: " + definitionQuery
-        + ", defaultStyle: " + defaultStyle + ", legend icon: " + legendURL;
+        + ", defaultStyle: " + defaultStyle + ", legend icon: " + legendURL
+        + ", caching?: " + cachingEnabled + ", max-age: " + cacheMaxAge;
     }
+    
+    public boolean isCachingEnabled() {
+		return cachingEnabled;
+	}
+
+	public void setCachingEnabled(boolean cachingEnabled) {
+		this.cachingEnabled = cachingEnabled;
+	}
+
+	public String getCacheMaxAge() {
+		return cacheMaxAge;
+	}
+
+	public void setCacheMaxAge(String cacheMaxAge) {
+		this.cacheMaxAge = cacheMaxAge;
+	}
 }

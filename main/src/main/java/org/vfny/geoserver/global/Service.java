@@ -20,7 +20,7 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  * System.out.println(serv.getName());
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @author Chris Holmes
  * @version $Id: Service.java,v 1.7 2004/02/09 23:29:42 dmzwiers Exp $
  *
@@ -38,6 +38,8 @@ public abstract class Service extends GlobalLayerSupertype {
 	private String fees;
 	private String accessConstraints;
 	private String maintainer;
+	private String strategy;
+	private int partialBufferSize;
 	
 	private GeoServer gs;
 	private Data dt;
@@ -67,6 +69,8 @@ public abstract class Service extends GlobalLayerSupertype {
         accessConstraints = dto.getAccessConstraints();
         maintainer = dto.getMaintainer();
         onlineResource = dto.getOnlineResource();
+        strategy = dto.getStrategy();
+        partialBufferSize = dto.getPartialBufferSize();
     }
     
     /**
@@ -90,6 +94,9 @@ public abstract class Service extends GlobalLayerSupertype {
     	accessConstraints = dto.getAccessConstraints();
     	maintainer = dto.getMaintainer();
     	onlineResource = dto.getOnlineResource();
+    	strategy = dto.getStrategy();
+    	partialBufferSize = dto.getPartialBufferSize();
+    	
     }
 
     /**
@@ -215,18 +222,51 @@ public abstract class Service extends GlobalLayerSupertype {
         return title;
     }
     
+    /**
+     * Sets the strategy used by the service when performing a response.
+     * 
+     */
+    public void setStrategy(String strategy) {
+    		this.strategy = strategy;
+    }
+    
+    /**
+     * @return The strategy used by the service when performing a response.
+     */
+    public String getStrategy() {
+    		return strategy;
+    }
+   
+    /**
+     * @return The size of the buffer used by the PARTIAL-BUFFER strategy.
+     * TODO: this should be factored out when config is splittable among modules.
+     */
+    public int getPartialBufferSize() {
+    		return partialBufferSize;
+    }
+    
+    /**
+     * Sets the size of the buffer used by the PARTIAL-BUFFER strategy.
+     * TODO: this should be factored out when config is splittable among modules.
+     */
+    public void setPartialBufferSize(int partialBufferSize) {
+    		this.partialBufferSize = partialBufferSize;
+    }
+    
     Object toDTO(){
-    	ServiceDTO dto = new ServiceDTO();
-    	dto.setAccessConstraints(accessConstraints);
-    	dto.setEnabled(enabled);
-    	dto.setFees(fees);
-    	dto.setKeywords(keywords);
-    	dto.setMaintainer(maintainer);
-    	dto.setName(name);
-    	dto.setOnlineResource(onlineResource);
-    	dto.setAbstract(serverAbstract);
-    	dto.setTitle(title);
-    	return dto;
+	    	ServiceDTO dto = new ServiceDTO();
+	    	dto.setAccessConstraints(accessConstraints);
+	    	dto.setEnabled(enabled);
+	    	dto.setFees(fees);
+	    	dto.setKeywords(keywords);
+	    	dto.setMaintainer(maintainer);
+	    	dto.setName(name);
+	    	dto.setOnlineResource(onlineResource);
+	    	dto.setAbstract(serverAbstract);
+	    	dto.setTitle(title);
+	    	dto.setStrategy(strategy);
+	    	dto.setPartialBufferSize(partialBufferSize);
+	    	return dto;
     }
 	/**
 	 * Access dt property.

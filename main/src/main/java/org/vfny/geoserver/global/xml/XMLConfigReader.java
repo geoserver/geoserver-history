@@ -11,8 +11,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +32,7 @@ import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.geotools.filter.FilterDOMParser;
+import org.springframework.beans.factory.InitializingBean;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
@@ -142,7 +145,7 @@ public class XMLConfigReader {
         initialized = true;
         
     }
-
+    
     public boolean isInitialized() {
         return initialized;
     }
@@ -664,7 +667,9 @@ public class XMLConfigReader {
         s.setMaintainer(ReaderUtils.getChildText(serviceRoot, "maintainer"));
         s.setEnabled(ReaderUtils.getBooleanAttribute(serviceRoot, "enabled",
                 false, true));
-
+        s.setStrategy(ReaderUtils.getChildText(serviceRoot,"serviceStrategy"));
+        s.setPartialBufferSize(ReaderUtils.getIntAttribute(serviceRoot,"partialBufferSize",false,0));
+        
         try {
             s.setOnlineResource(new URL(ReaderUtils.getChildText(serviceRoot,
                         "onlineResource", true)));
@@ -943,7 +948,14 @@ public class XMLConfigReader {
                 LOGGER.finer("Info dir:" + info);
 
                 FeatureTypeInfoDTO dto = loadFeature(info);
-                map.put(dto.getKey(), dto);
+                String ftName = null;
+                try {	// Decode the URL of the FT. This is to catch colons used in filenames
+					ftName = URLDecoder.decode(dto.getKey(), "UTF-8");
+					LOGGER.info("Decoding file name: "+ftName);
+				} catch (UnsupportedEncodingException e) {
+					throw new ConfigurationException(e);
+				}
+                map.put(ftName, dto);
             }
         }
 
@@ -1086,6 +1098,12 @@ public class XMLConfigReader {
 
         if (tmp != null) {
             ft.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
+        }
+        
+        Element cacheInfo = ReaderUtils.getChildElement(fTypeRoot, "cacheinfo");
+        if (cacheInfo != null) {
+        	ft.setCacheMaxAge(ReaderUtils.getAttribute(cacheInfo, "maxage", false));// not mandatory
+        	ft.setCachingEnabled((new Boolean(ReaderUtils.getAttribute(cacheInfo, "enabled", true))).booleanValue());
         }
 
         // Modif C. Kolbowicz - 06/10/2004
@@ -1454,4 +1472,6 @@ public class XMLConfigReader {
     public WMSDTO getWms() {
         return wms;
     }
+
+	
 }

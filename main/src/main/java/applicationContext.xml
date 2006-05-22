@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- data directory -->
+	<bean id="dataDirectory" 
+		class="java.io.File">
+		<constructor-arg type="java.lang.String"
+			value="/home/jdeolive/devel/geoserver/1.4.x/web/src/main/webapp/data"/>
+	</bean>
+	<!-- 
+		core modules
+	 -->
+	 
+	<!-- configuratoin module -->
+	<bean id="config"
+		class="org.vfny.geoserver.global.Config"/>
+		
+	<!-- geoserver module -->
+	<bean id="geoServer"
+		class="org.vfny.geoserver.global.GeoServer">
+		<constructor-arg ref="config"/>
+	</bean>
+	
+	<!-- data module -->
+	<bean id="data"
+		class="org.vfny.geoserver.global.Data">
+
+		<constructor-arg ref="config"/>
+		<constructor-arg ref="geoServer"/>
+		<constructor-arg ref="dataDirectory"/>
+		
+	</bean>
+		
+	<!-- 
+		service strategies 
+	-->
+	
+	<bean id="speedServiceStrategy"
+		class="org.vfny.geoserver.servlets.SpeedStrategy"/>
+		
+	<bean id="fileServiceStrategy"
+		class="org.vfny.geoserver.servlets.FileStrategy"/>
+		
+	<bean id="bufferServiceStrategy"
+		class="org.vfny.geoserver.servlets.BufferStrategy"/>
+		
+	<bean id="partialBufferServiceStrategy"
+		class="org.vfny.geoserver.servlets.PartialBufferStrategy"/>
+		
+</beans>

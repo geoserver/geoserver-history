@@ -1,0 +1,5 @@
+<project>
+	<target name="config">
+		<unzip src="${configId}.zip" dest="${webappDirectory}"/>
+	</target>
+</project>

@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.varia.DenyAllFilter;
+//import org.apache.log4j.BasicConfigurator;
+//import org.apache.log4j.ConsoleAppender;
+//import org.apache.log4j.PatternLayout;
+//import org.apache.log4j.varia.DenyAllFilter;
 import org.geotools.data.jdbc.ConnectionPoolManager;
 import org.vfny.geoserver.zserver.GeoZServer;
 
@@ -45,11 +45,13 @@ public class FreefsLog extends HttpServlet {
     	// we deny all logging, this is really just to prevent log4j 
     	// initilization warnings
     	// TODO: this is a hack, log config should be cleaner 
-    	ConsoleAppender appender = new ConsoleAppender(new PatternLayout());
-    	appender.addFilter(new DenyAllFilter());
     	
-    	BasicConfigurator.configure(appender);
-    	
+    	//JD: Commenting out
+//    	ConsoleAppender appender = new ConsoleAppender(new PatternLayout());
+//    	appender.addFilter(new DenyAllFilter());
+//    	
+//    	BasicConfigurator.configure(appender);
+    //	
         //HACK: java.util.prefs are awful.  See
         //http://www.allaboutbalance.com/disableprefs.  When the site comes
         //back up we should implement their better way of fixing the problem.

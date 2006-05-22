@@ -75,6 +75,21 @@ public class GeoServer extends GlobalLayerSupertype {
     private String logLocation = null;
     
 
+    public GeoServer () {
+    	
+    }
+    
+    /**
+     * Creates a GeoServer instance and loads its configuration.
+     * 
+     * @throws ConfigurationException
+     */
+    public GeoServer ( Config config ) throws ConfigurationException {
+    		LOGGER.fine("Creating GeoServer");
+    		load( config.getXMLReader().getGeoServer() );
+    }
+    
+    
     /**
      * getAddress purpose.
      * 
@@ -338,56 +353,74 @@ public class GeoServer extends GlobalLayerSupertype {
     }
 
     /**
+     * <p>
+     * Loads the GeoServerDTO into the current instance as a GeoServer object
+     * </p>
+     * 
+     * @param dto
+     * @throws ConfigurationException
+     */
+    public void load ( GeoServerDTO dto ) throws ConfigurationException {
+    	 	if (dto != null) {
+     		address = dto.getContact().getAddress();
+         addressCity = dto.getContact().getAddressCity();
+         addressCountry = dto.getContact().getAddressCountry();
+         addressPostalCode = dto.getContact().getAddressPostalCode();
+         addressState = dto.getContact().getAddressState();
+         addressType = dto.getContact().getAddressType();
+         charSet = dto.getCharSet();
+         contactEmail = dto.getContact().getContactEmail();
+         contactFacsimile = dto.getContact().getContactFacsimile();
+         contactOrganization = dto.getContact().getContactOrganization();
+         contactPerson = dto.getContact().getContactPerson();
+         contactPosition = dto.getContact().getContactPosition();
+         contactVoice = dto.getContact().getContactVoice();
+         loggingLevel = dto.getLoggingLevel();
+         
+         loggingToFile = dto.getLoggingToFile();
+         logLocation = dto.getLogLocation();
+         
+         //TODO: logging needs to be revisited and done a better way
+//         try {
+//				initLogging(loggingLevel,loggingToFile,logLocation,context);
+//			} 
+//         catch (IOException e) {
+//         	throw new ConfigurationException(e);
+//			}
+         
+         maxFeatures = dto.getMaxFeatures();
+         numDecimals = dto.getNumDecimals();
+         schemaBaseUrl = dto.getSchemaBaseUrl();
+         verbose = dto.isVerbose();
+         adminUserName = dto.getAdminUserName();
+         adminPassword = dto.getAdminPassword();
+         verboseExceptions = dto.isVerboseExceptions();
+         
+         
+     } else {
+         throw new ConfigurationException(
+             "load(GeoServerDTO) expected a non-null value");
+     }
+    }
+    
+    /**
+     * 
      * load purpose.
      * 
      * <p>
-     * Loads the GeoServerDTO into the current instance as a GeoServer object
+     * Loads the GeoServerDTO into the current instance as a GeoServer object.
+     * As GeoServer moves to Spring, we want to move away from storing state
+     * in the servlet context, so this method is deprecated.
      * </p>
      *
      * @param dto GeoServerDTO
      *
      * @throws ConfigurationException If an error occurs
+     * 
+     * @deprecated use {@link #load(GeoServerDTO)}
      */
-    public void load(GeoServerDTO dto, ServletContext context) throws ConfigurationException {
-        if (dto != null) {
-        	address = dto.getContact().getAddress();
-            addressCity = dto.getContact().getAddressCity();
-            addressCountry = dto.getContact().getAddressCountry();
-            addressPostalCode = dto.getContact().getAddressPostalCode();
-            addressState = dto.getContact().getAddressState();
-            addressType = dto.getContact().getAddressType();
-            charSet = dto.getCharSet();
-            contactEmail = dto.getContact().getContactEmail();
-            contactFacsimile = dto.getContact().getContactFacsimile();
-            contactOrganization = dto.getContact().getContactOrganization();
-            contactPerson = dto.getContact().getContactPerson();
-            contactPosition = dto.getContact().getContactPosition();
-            contactVoice = dto.getContact().getContactVoice();
-            loggingLevel = dto.getLoggingLevel();
-            
-            loggingToFile = dto.getLoggingToFile();
-            logLocation = dto.getLogLocation();
-            
-            try {
-				initLogging(loggingLevel,loggingToFile,logLocation,context);
-			} 
-            catch (IOException e) {
-            	throw new ConfigurationException(e);
-			}
-            
-            maxFeatures = dto.getMaxFeatures();
-            numDecimals = dto.getNumDecimals();
-            schemaBaseUrl = dto.getSchemaBaseUrl();
-            verbose = dto.isVerbose();
-            adminUserName = dto.getAdminUserName();
-            adminPassword = dto.getAdminPassword();
-            verboseExceptions = dto.isVerboseExceptions();
-            
-            
-        } else {
-            throw new ConfigurationException(
-                "load(GeoServerDTO) expected a non-null value");
-        }
+    public final void load(GeoServerDTO dto, ServletContext context) throws ConfigurationException {
+       load(dto);
     }
 
     /**

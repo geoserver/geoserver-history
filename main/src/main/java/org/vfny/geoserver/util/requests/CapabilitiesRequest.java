@@ -5,6 +5,8 @@
 package org.vfny.geoserver.util.requests;
 
 import org.vfny.geoserver.Request;
+import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.servlets.AbstractService;
 
 /**
  * This class enforces a standard interface for GetCapabilities requests.
@@ -18,14 +20,17 @@ public class CapabilitiesRequest extends Request {
     /**
      * Empty constructor.
      *
-     * @param serviceType DOCUMENT ME!
+     * @deprecated use {@link #CapabilitiesRequest(String, AbstractService)}
      */
     public CapabilitiesRequest(String serviceType) {
-        super(serviceType);
-        setRequest("GetCapabilities");
+        this(serviceType,null);
     }
-
-    /**
+    
+    public CapabilitiesRequest ( String serviceType, AbstractService service ) {
+    		super(serviceType, "GetCapabilities", service);
+    	}
+    
+   /**
      * Returns a string representation of this CapabilitiesRequest.
      *
      * @return a string of with the service and version.

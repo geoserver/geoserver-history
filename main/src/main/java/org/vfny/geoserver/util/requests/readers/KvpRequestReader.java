@@ -21,6 +21,8 @@ import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.servlets.AbstractService;
 
 /**
  * Base class for all KVP readers, with some generalized convenience methods.
@@ -65,14 +67,29 @@ abstract public class KvpRequestReader {
 
     /** KVP pair listing; stores all data from the KVP request */
     protected Map kvpPairs = new HashMap();
-
+    
+    /** Reference to the service using the reader */
+    protected AbstractService service;
+    
     /**
      * Constructor with kvp request parameters.
      *
      * @param kvpPairs map of key/value pairs
+     * @deprecated use {@link #
      */
     public KvpRequestReader(Map kvpPairs) {
         this.kvpPairs = kvpPairs;
+    }
+    
+    /**
+     * Creates a reader from paramters and a service.
+     * 
+     * @param kvpPairs The key-value pairs.
+     * @param service The service using the reader.
+     */
+    public KvpRequestReader(Map kvpPairs, AbstractService service) {
+    		this.kvpPairs = kvpPairs;
+    		this.service = service;
     }
 
     /**

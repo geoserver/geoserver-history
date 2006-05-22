@@ -125,6 +125,18 @@ public class FeatureTypeConfig {
     private String defaultStyle;
 
     /**
+     * A featureType-specific override for the defaultMaxAge defined in WMSConfig.  This value is added the
+     * headers of generated maps, marking them as being both "cache-able" and designating the time for which
+     * they are to remain valid.  The specific header added is "CacheControl: max-age="
+     */
+    private String cacheMaxAge;
+    
+    /**
+     * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
+     */
+    private boolean cachingEnabled;
+    
+    /**
      * Package visible constructor for test cases
      */
     FeatureTypeConfig() {
@@ -187,6 +199,9 @@ public class FeatureTypeConfig {
         dirName = dataStoreId + "_" + name;
         schemaName = name + "_Type";        
         schemaBase = "gml:AbstractFeatureType";
+        
+        cachingEnabled = false;
+        cacheMaxAge = null;
     }
 
     /**
@@ -238,7 +253,10 @@ public class FeatureTypeConfig {
         defaultStyle = dto.getDefaultStyle();
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
-        schemaBase = dto.getSchemaBase();        
+        schemaBase = dto.getSchemaBase();
+        
+        cachingEnabled = dto.isCachingEnabled();
+        cacheMaxAge = dto.getCacheMaxAge();        
     }
 
     /**
@@ -286,6 +304,10 @@ public class FeatureTypeConfig {
         f.setDirName(dirName);
         f.setSchemaBase(schemaBase);
         f.setSchemaName(schemaName);
+        
+        f.setCachingEnabled(cachingEnabled);
+        f.setCacheMaxAge(cacheMaxAge);
+        
         return f;
     }
 
@@ -559,4 +581,20 @@ public class FeatureTypeConfig {
 	    + " SRS: " + SRS + " schemaAttributes: " + schemaAttributes + 
 	    " schemaBase " + schemaBase + "]";
     }
+    
+    public boolean isCachingEnabled() {
+		return cachingEnabled;
+	}
+
+	public void setCachingEnabled(boolean cachingEnabled) {
+		this.cachingEnabled = cachingEnabled;
+	}
+
+	public String getCacheMaxAge() {
+		return cacheMaxAge;
+	}
+
+	public void setCacheMaxAge(String cacheMaxAge) {
+		this.cacheMaxAge = cacheMaxAge;
+	}
 }

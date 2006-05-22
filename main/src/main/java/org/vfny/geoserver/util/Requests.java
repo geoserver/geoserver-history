@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.global.WFS;
+
 import org.vfny.geoserver.global.WMS;
 
 
@@ -35,6 +35,7 @@ import org.vfny.geoserver.global.WMS;
  * @author Jody Garnett
  */
 public final class Requests {
+	//JD: remove these methods that are commented out
     /**
      * Aquire GeoServer from Web Container.
      * 
@@ -72,13 +73,14 @@ public final class Requests {
      *
      * @return WFS instance for the current Web Application
      */
-    public static WFS getWFS(HttpServletRequest request) {
-    	ServletRequest req = request;
-    	HttpSession session = request.getSession();
-    	ServletContext context = session.getServletContext();
-
-    	return (WFS) context.getAttribute(WFS.WEB_CONTAINER_KEY);
-    }
+//    public static WFS getWFS(HttpServletRequest request) {
+//    	ServletRequest req = request;
+//    	HttpSession session = request.getSession();
+//    	ServletContext context = session.getServletContext();
+//
+//    	return (WFS) context.getAttribute(WFS.WEB_CONTAINER_KEY);
+//    }
+	
     /**
      * Aquire WMS from Web Container.
      * 

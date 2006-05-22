@@ -25,10 +25,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFactorySpi.Param;
-import org.vfny.geoserver.action.data.DataStoreUtils;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.util.DataStoreUtils;
 import org.vfny.geoserver.util.Requests;
 
 

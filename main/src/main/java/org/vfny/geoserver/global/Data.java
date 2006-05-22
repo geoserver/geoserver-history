@@ -105,28 +105,21 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
         gs = g;
     }
 
+    public Data ( Config config, GeoServer g, File data ) throws ConfigurationException {
+    		this(config.getXMLReader().getData(), data, g);
+    }
+    
     GeoServer getGeoServer() {
         return gs;
     }
 
-    /**
-     * Data constructor.
-     * 
-     * <p>
-     * package only constructor for GeoServer to call.
-     * </p>
-     *
-     * @param config DOCUMENT ME!
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
-
-    /*Data() {
-       nameSpaces = new HashMap();
-       styles = new HashMap();
-       featureTypes = new HashMap();
-       dataStores = new HashMap();
-       }*/
+    public void setDataDirectory(File dataDirectory) {
+    		this.baseDir = dataDirectory;
+    }
+    
+    public File getDataDirectory() {
+    		return baseDir;
+    }
 
     /**
      * Places the data in this container and innitializes it. Complex tests are
