@@ -4,24 +4,23 @@
   <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.vfny</groupId>
+		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>0.1</version>
+		<version>1.4.x</version>
 	</parent>
 
-	<groupId>org.vfny</groupId>
-  <artifactId>org.vfny.geoserver.wfs</artifactId>
+	<groupId>org.geoserver</groupId>
+  <artifactId>wfs</artifactId>
 	<packaging>jar</packaging>
-  <name>GeoServer WFS Module</name>
+  <name>GeoServer Web Feature Service Module</name>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.vfny</groupId>
-			<artifactId>org.vfny.geoserver.main</artifactId>
-			<version>0.1</version>
+			<groupId>org.geoserver</groupId>
+			<artifactId>main</artifactId>
+			<version>1.4.x</version>
 		</dependency>
-	        
-		
 	</dependencies>
+
 
 </project>
