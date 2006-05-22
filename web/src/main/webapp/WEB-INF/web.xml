@@ -38,9 +38,16 @@
 	<!-- pick up all spring application contexts -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/*-applicationContext.xml</param-value>
+		<param-value>classpath*:/applicationContext.xml</param-value>
 	</context-param>
 
+   <!--
+	  <context-param>
+		   <param-name>GEOSERVER_DATA_DIR</param-name>
+		    <param-value>C:\eclipse\workspace\geoserver_trunk\cite\confCiteWFSPostGIS</param-value>
+	  </context-param> 
+   -->
+   
   <filter>
     <filter-name>Set Character Encoding</filter-name>
     <filter-class>org.vfny.geoserver.filters.SetCharacterEncodingFilter</filter-class>
@@ -55,26 +62,18 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-	<listener>
-	  <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
 	
-	<!-- spring web mvc dispatcher servlet, dispatches incoming requests to controllers -->
-	<servlet>
-		<servlet-name>org.openplans.geoserver</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>	
-	</servlet>
+  <!-- spring dispatcher servlet, dispatches incoming requests to controllers -->
+  <servlet>
+    <servlet-name>dispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>	
+  </servlet>
 	
- <!--
-	  <context-param>
-		   <param-name>GEOSERVER_DATA_DIR</param-name>
-		    <param-value>C:\eclipse\workspace\geoserver_trunk\cite\confCiteWFSPostGIS</param-value>
-	  </context-param> 
-   -->
-
-  
    <!-- Struts config needs to load before all the other servlets. -->
-   <servlet>
+   <!--servlet>
     <servlet-name>action</servlet-name>
     <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
     <init-param>
@@ -90,9 +89,9 @@
       <param-value>2</param-value>
     </init-param>
     <load-on-startup>2</load-on-startup>
-  </servlet>
+  </servlet-->
   
-  <servlet>
+  <!--servlet>
     <servlet-name>DescribeFeatureType</servlet-name>
     <servlet-class>org.vfny.geoserver.wfs.servlets.Describe</servlet-class>
   </servlet>
@@ -160,22 +159,32 @@
   <servlet>
    <servlet-name>JSPCompiler</servlet-name>
    <servlet-class>org.vfny.geoserver.servlets.JSPCompiler</servlet-class>
-  </servlet>
+  </servlet-->
 
-	<servlet-mapping>
-		<servlet-name>org.openplans.geoserver</servlet-name>
-		<url-pattern>*.gs</url-pattern>
-	</servlet-mapping>
-	
-  <servlet-mapping>
+  
+  <!--servlet-mapping>
     <servlet-name>WfsDispatcher</servlet-name>
     <url-pattern>/wfs/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>WmsDispatcher</servlet-name>
+    <servlet-name>WmsDispatcher</serv
+    let-name>
     <url-pattern>/wms/*</url-pattern>
+  </servlet-mapping-->
+  <!-- servlet-mapping>
+    <servlet-name>action</servlet-name>
+    <url-pattern>*.do</url-pattern>
+   </servlet-mapping-->
+  <servlet-mapping>
+  	<servlet-name>dispatcher</servlet-name>
+	<url-pattern>/wms/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+  	<servlet-name>dispatcher</servlet-name>
+	<url-pattern>/wfs/*</url-pattern>
+  </servlet-mapping>
+    
+  <!-- servlet-mapping>
     <servlet-name>FreefsLog</servlet-name>
     <url-pattern>/FreefsLog</url-pattern>
   </servlet-mapping>
@@ -234,11 +243,8 @@
   <servlet-mapping>
    <servlet-name>JSPCompiler</servlet-name>
    <url-pattern>/JSPCompiler</url-pattern>
-  </servlet-mapping>
-   <servlet-mapping>
-    <servlet-name>action</servlet-name>
-    <url-pattern>*.do</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping-->
+
   
   <mime-mapping>
    <extension>xsl</extension>
