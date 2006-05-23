@@ -49,7 +49,7 @@ public abstract class DataStoreUtils {
 	}
     }
 
-    protected static Map getParams(Map m, ServletContext sc) {
+    public static Map getParams(Map m, ServletContext sc) {
 	String baseDir = sc.getRealPath("/");
 	return getParams(m, baseDir);
     }

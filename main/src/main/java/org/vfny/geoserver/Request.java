@@ -6,7 +6,6 @@ package org.vfny.geoserver;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.Requests;
 
@@ -209,11 +208,12 @@ abstract public class Request {
 		return httpServletRequest;
 	}
 	
-	public WMS getWMS(){
-		WMS vp = Requests.getWMS( getHttpServletRequest() );
-		return vp;
-	}
-	
+	//JD: delete this
+//	public WMS getWMS(){
+//		WMS vp = Requests.getWMS( getHttpServletRequest() );
+//		return vp;
+//	}
+//	
 //	public WFS getWFS(){
 //		WFS vp = Requests.getWFS( getHttpServletRequest() );
 //		return vp;

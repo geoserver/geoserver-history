@@ -169,7 +169,7 @@ public class WMSCapsTransformer extends TransformerBase {
          * Encodes the service metadata section of a WMS capabilities document.
          */
         private void handleService() {
-            WMS wms = request.getWMS();
+            WMS wms = (WMS) request.getServiceRef().getServiceRef();
             start("Service");
 
             element("Name", "OGC:WMS");
@@ -223,7 +223,7 @@ public class WMSCapsTransformer extends TransformerBase {
          * DOCUMENT ME!
          */
         private void handleRequest() {
-            WMS wms = request.getWMS();
+            WMS wms = (WMS) request.getServiceRef().getServiceRef();
             start("Request");
 
             start("GetCapabilities");
@@ -313,7 +313,8 @@ public class WMSCapsTransformer extends TransformerBase {
         private void handleException() {
             start("Exception");
 
-            Iterator it = Arrays.asList(request.getWMS().getExceptionFormats())
+            WMS wms = (WMS) request.getServiceRef().getServiceRef();
+            Iterator it = Arrays.asList(wms.getExceptionFormats())
                                 .iterator();
 
             while (it.hasNext()) {
@@ -328,7 +329,7 @@ public class WMSCapsTransformer extends TransformerBase {
          */
         private void handleSLD() {
             AttributesImpl sldAtts = new AttributesImpl();
-            WMS config = request.getWMS();
+            WMS config = (WMS) request.getServiceRef().getServiceRef();
             String supportsSLD = config.supportsSLD() ? "1" : "0";
             String supportsUserLayer = config.supportsUserLayer() ? "1" : "0";
             String supportsUserStyle = config.supportsUserStyle() ? "1" : "0";
@@ -375,7 +376,7 @@ public class WMSCapsTransformer extends TransformerBase {
          *       gridcoverages, etc)
          */
         private void handleLayers() {
-            WMS wms = request.getWMS();
+            WMS wms = (WMS) request.getServiceRef().getServiceRef();
             start("Layer");
 
             Data catalog = wms.getData();

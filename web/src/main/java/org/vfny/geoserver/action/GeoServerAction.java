@@ -112,7 +112,9 @@ public class GeoServerAction extends Action {
      * @return WMS instance for this Web Application
      */
     public WMS getWMS(HttpServletRequest request) {
-        return Requests.getWMS(request);
+    		//JD: fix when we get to injection
+    		//return Requests.getWMS(request);
+    		throw new UnsupportedOperationException();
     }
 
     /**
@@ -129,7 +131,8 @@ public class GeoServerAction extends Action {
      * @return WFS instance for this Web Application
      */
     public WFS getWFS(HttpServletRequest request) {
-    	return Requests.getWFS(request);
+    		//return Requests.getWFS(request);
+    		throw new UnsupportedOperationException();
     }
 
     /**

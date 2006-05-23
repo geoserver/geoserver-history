@@ -81,7 +81,7 @@ public class MapPreviewAction extends Action
 		// 1) get the capabilities info so we can find out our feature types
 		CapabilitiesRequest capRequest = new CapabilitiesRequest("WMS");
 		capRequest.setHttpServletRequest(request);
-		WMS wms = capRequest.getWMS();
+		WMS wms = (WMS) capRequest.getServiceRef().getServiceRef();
 		Data catalog = wms.getData();
 		Collection ftypes = catalog.getFeatureTypeInfos().values();
 		FeatureTypeInfo layer;
@@ -422,7 +422,7 @@ public class MapPreviewAction extends Action
 		out.println("      <enabledSrc>/images/ZoomOutEnable.gif</enabledSrc>");
 		out.println("      <disabledSrc>/images/ZoomOutDisable.gif</disabledSrc>");
 		out.println("      <tooltip xml:lang=\"en\">click to zoom out</tooltip>");
-		out.println("      <tooltip xml:lang=\"fr\">cliquer pour r�e</tooltip>");
+		out.println("      <tooltip xml:lang=\"fr\">cliquer pour r???e</tooltip>");
 		out.println("    </ZoomOut>");
 		out.println("    <DragPan id=\"dragPan\">");
 		out.println("      <buttonBar>mainButtonBar</buttonBar>");
@@ -440,7 +440,7 @@ public class MapPreviewAction extends Action
 		out.println("      <class>Button</class>");
 		out.println("      <disabledSrc>/images/ResetExtentDisable.gif</disabledSrc>");
 		out.println("      <tooltip xml:lang=\"en\">reset the map to full extent</tooltip>");
-		out.println("      <tooltip xml:lang=\"fr\">redonner la carte ses dimensions compl�ts</tooltip>");
+		out.println("      <tooltip xml:lang=\"fr\">redonner la carte ses dimensions compl???ts</tooltip>");
 		out.println("    </Reset>");
 		out.println("  </widgets>");
 		out.println("  <skinDir>../mbdemos/lib/skin/default</skinDir>");

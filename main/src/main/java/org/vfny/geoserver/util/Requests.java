@@ -12,9 +12,6 @@ import javax.servlet.http.HttpSession;
 import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.UserContainer;
 
-import org.vfny.geoserver.global.WMS;
-
-
 /**
  * Utility methods helpful when processing GeoServer Requests.
  * 
@@ -73,6 +70,7 @@ public final class Requests {
      *
      * @return WFS instance for the current Web Application
      */
+	//JD: delete this
 //    public static WFS getWFS(HttpServletRequest request) {
 //    	ServletRequest req = request;
 //    	HttpSession session = request.getSession();
@@ -98,13 +96,14 @@ public final class Requests {
      *
      * @return WMS instance for the current Web Application
      */
-    public static WMS getWMS(HttpServletRequest request) {
-    	ServletRequest req = request;
-    	HttpSession session = request.getSession();
-    	ServletContext context = session.getServletContext();
-
-    	return (WMS) context.getAttribute(WMS.WEB_CONTAINER_KEY);
-    }
+//	JD: delete this
+//    public static WMS getWMS(HttpServletRequest request) {
+//    	ServletRequest req = request;
+//    	HttpSession session = request.getSession();
+//    	ServletContext context = session.getServletContext();
+//
+//    	return (WMS) context.getAttribute(WMS.WEB_CONTAINER_KEY);
+//    }
 
     /**
      * Get base url used - it is not any more assumed to be http://server:port/geoserver/
