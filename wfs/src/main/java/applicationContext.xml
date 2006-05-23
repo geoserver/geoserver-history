@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- declare the wfs service. -->
+	<bean id="wfs"
+		class="org.vfny.geoserver.global.WFS">
+		<constructor-arg ref="config"/>
+		<constructor-arg ref="data"/>
+		<constructor-arg ref="geoServer"/>
+	</bean>
+		
+	<!-- 
+		servlets for handling incoming requests 
+	-->
+	
+	<!-- the abstract base bean -->
+	<bean id="wfsAbstractService" abstract="true"
+		class="org.vfny.geoserver.servlets.AbstractService">
+		<!--  reference to geoserver bean defined in the 'main' context -->
+		<property name="geoServer" ref="geoServer"/>
+	</bean>
+
+	<!-- the abstract wfs specific bean  -->
+	<bean id="wfsService" abstract="true"
+		class="org.vfny.geoserver.wfs.servlets.WFService"
+		parent="wfsAbstractService">
+		<!-- reference to wfs bean in this context -->
+		<property name="WFS" ref="wfs"/>
+	</bean>
+		
+	<bean id="wfsGetCapabilities" 
+		class="org.vfny.geoserver.wfs.servlets.Capabilities"
+		parent="wfsService">
+		<property name="serviceRef" ref="wfs"/>
+	</bean>
+
+	<bean id="wfsDescribeFeatureType"
+		class="org.vfny.geoserver.wfs.servlets.Describe"
+		parent="wfsService">
+		<property name="WFS" ref="wfs"/>
+	</bean>
+		
+	<bean id="wfsGetFeature"
+		class="org.vfny.geoserver.wfs.servlets.Feature"
+		parent="wfsService">
+		<property name="WFS" ref="wfs"/>
+	</bean>
+		
+	<bean id="wfsGetFeatureWithLock"
+		class="org.vfny.geoserver.wfs.servlets.FeatureWithLock"
+		parent="wfsService">
+		<property name="WFS" ref="wfs"/>
+	</bean>	
+		
+	<bean id="wfsTransaction"
+		class="org.vfny.geoserver.wfs.servlets.Transaction"
+		parent="wfsService">
+		<property name="WFS" ref="wfs"/>
+		
+		<!-- always use file strategy -->
+		<property name="fileStrategy" ref="fileServiceStrategy"/>
+	</bean>	
+</beans>
