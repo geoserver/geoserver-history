@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.wms.servlets.WMService;
 
 
 /**
@@ -20,6 +21,13 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
  */
 public class DescribeLayerRequest extends WMSRequest {
 
+	/**
+	 * Creates a new DescribeLayerRequest
+	 * @param service the service that handles the request
+	 */
+	public DescribeLayerRequest(WMService service){
+		super("DescribeLayer",  service);
+	}
 	/**
 	 * Holds the FeatureTypes parsed from the
 	 * request's <code>LAYERS</code> parameter.

@@ -4,12 +4,12 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.vfny.geoserver.ExceptionHandler;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WmsExceptionHandler;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -26,11 +26,43 @@ import org.vfny.geoserver.wms.WmsExceptionHandler;
 abstract public class WMService extends AbstractService {
 	
 	
-    public WMService(String request) {
-		super("WMS", request);
+	/**
+	 * Constructor for WMS service.
+	 * 
+	 * @param request The service request being made (GetCaps,GetFeature,...)
+	 * @deprecated use {@link #WMService(String, WMS)}
+	 */
+     public WMService(String request) {
+		this(request, null);
 	}
 
-	/**
+     /**
+ 	 * Constructor for WMS service.
+ 	 * 
+ 	 * @param request The service request being made (GetCaps,GetFeature,...)
+ 	 * @param wms The WMS service reference.
+ 	 */
+     public WMService(String request, WMS wms) {
+     		super("WMS",request,wms);
+     }
+     
+     /**
+      * @return The wms service ref.
+      */
+     public WMS getWMS() {
+     		return (WMS) getServiceRef();
+     }
+     
+     /**
+      * Sets the wms service ref.
+      * @param wms
+      */
+     public void setWMS(WMS wms) {
+     		setServiceRef(wms);
+     }
+     
+     
+     /**
      * returns a Web Map ServiceConfig exception handler
      *
      * @return WmsExceptionHandler
@@ -40,6 +72,6 @@ abstract public class WMService extends AbstractService {
     }
     
     protected boolean isServiceEnabled(HttpServletRequest req){
-    	return Requests.getWMS(req).isEnabled();
+    	return getWMS().isEnabled();
     }
 }

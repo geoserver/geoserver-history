@@ -7,7 +7,7 @@
 	<bean id="dataDirectory" 
 		class="java.io.File">
 		<constructor-arg type="java.lang.String"
-			value="/home/jdeolive/devel/geoserver/1.4.x/web/src/main/webapp/data"/>
+			value="c:/projects/geoserver/1.4.x/web/src/main/webapp/data"/>
 	</bean>
 	<!-- 
 		core modules

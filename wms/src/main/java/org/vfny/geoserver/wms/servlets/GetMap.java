@@ -16,6 +16,8 @@ import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.config.WMSConfig;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetMapKvpReader;
@@ -38,11 +40,12 @@ public class GetMap extends WMService {
 
     /**
      * Creates a new GetMap object.
+     *  
      */
     public GetMap() {
     		super("GetMap");
     }
-
+       
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
     	
@@ -66,7 +69,7 @@ public class GetMap extends WMService {
 
         //we need to construct an approriate serviceRequest from the GetMap XML POST.
         try {
-            GetMapXmlReader xmlPostReader = new GetMapXmlReader();
+            GetMapXmlReader xmlPostReader = new GetMapXmlReader(this);
 
             Reader xml = request.getReader();
             serviceRequest = xmlPostReader.read(xml, request);
@@ -87,9 +90,7 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected Response getResponseHandler() {
-        WMSConfig config = (WMSConfig) getServletContext().getAttribute(WMSConfig.CONFIG_KEY);
-
-        return new GetMapResponse(config);
+       return new GetMapResponse(getWMS());
     }
 
     /**
@@ -116,7 +117,7 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new GetMapKvpReader(params);
+        return new GetMapKvpReader(params, this);
     }
 
     /**

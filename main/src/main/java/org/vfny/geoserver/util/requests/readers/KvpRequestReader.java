@@ -104,6 +104,7 @@ abstract public class KvpRequestReader {
         return (String) kvpPairs.get(key);
     }
 
+    
     /**
      * DOCUMENT ME!
      *
@@ -368,4 +369,18 @@ abstract public class KvpRequestReader {
 
         return clean;
     }
+
+	/**
+	 * Returns the service handling request.
+	 */
+	public AbstractService getServiceRef() {
+		return service;
+	}
+	
+	/**
+	 * sets the service handling request.
+	 */
+	public void setServiceRef(AbstractService service) {
+		this.service = service;
+	}
 }

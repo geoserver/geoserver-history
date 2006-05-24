@@ -9,6 +9,9 @@ import java.util.List;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wfs.servlets.WFService;
+import org.vfny.geoserver.wms.servlets.WMService;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -26,6 +29,8 @@ public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */
     public static final String SE_XML = "SE_XML";
 
+	private static final String TRANSACTION_REQUEST_TYPE = "GetMap";
+
     /** set of mandatory request's parameters */
     private MandatoryParameters mandatoryParams = new MandatoryParameters();
 
@@ -34,11 +39,22 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Creates a new GetMapRequest object.
+     * @deprecated use {@link #GetMapRequest(WMService)}
      */
     public GetMapRequest() {
         super();
-        setRequest("GetMap");
+        setRequest( TRANSACTION_REQUEST_TYPE );
     }
+    
+    /**
+     * Creates a GetMapRequest request.
+     * 
+     * @param service The service handling the request.
+     */
+    public GetMapRequest(WMService service) {
+    	super(TRANSACTION_REQUEST_TYPE, service);
+    }
+
 
     /**
      * DOCUMENT ME!

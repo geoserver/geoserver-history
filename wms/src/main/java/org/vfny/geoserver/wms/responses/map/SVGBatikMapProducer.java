@@ -23,6 +23,7 @@ import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
@@ -40,10 +41,10 @@ import com.vividsolutions.jts.geom.Envelope;
 public class SVGBatikMapProducer implements GetMapProducer {
 
 	StreamingRenderer renderer;
-	WMSConfig config;
+	WMS wms;
 	
-	public SVGBatikMapProducer(WMSConfig config) {
-		this.config = config;
+	public SVGBatikMapProducer(WMS wms) {
+		this.wms = wms;
 	}
 	
 	public void abort() {
@@ -106,7 +107,7 @@ public class SVGBatikMapProducer implements GetMapProducer {
 			g.setSVGCanvasSize(new Dimension((int)width,(int)height));
 		
 			//turn off/on anti aliasing
-			if (config.getSvgAntiAlias())
+			if (wms.isSvgAntiAlias())
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 			else g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
 			

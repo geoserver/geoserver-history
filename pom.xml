@@ -35,7 +35,8 @@
 		</repository>
 		<repository>
 			<id>geotools</id>
-			<name>Repository serving Geotools libraries built against 2.2.x branch</name>
+			<name>Repository serving Geotools libraries built against 2.2.x
+				branch</name>
 			<url>http://maven.geotools.fr/repository/</url>
 			<snapshots>
 				<enabled>false</enabled>
@@ -99,6 +100,11 @@
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-render</artifactId>
+				<version>2.2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-epsg-wkt</artifactId>
 				<version>2.2-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -261,24 +267,24 @@
 			<groupId>struts</groupId>
 			<artifactId>struts</artifactId>
 		</dependency>
-			<dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-beans</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-core</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-context</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-webmvc</artifactId>
-      </dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
 	</dependencies>
-
+	
 	<build>
 		<!--sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test</testSourceDirectory-->
@@ -329,17 +335,17 @@
 		</testResources>
 		
 		<plugins>
-  		<plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-           <excludes>
-             <exclude>org/vfny/geoserver/action/**/*.java</exclude>
-             <exclude>org/vfny/geoserver/form/**/*.java</exclude>
-           </excludes>
-        </configuration>
-      </plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>org/vfny/geoserver/action/**/*.java</exclude>
+						<exclude>org/vfny/geoserver/form/**/*.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -353,10 +359,11 @@
 					<forkMode>once</forkMode>
 					<argLine>-Xmx512M -enableassertions</argLine>
 					<printSummary>false</printSummary>
-					<testFailureIgnore>${allow.test.failure.ignore}</testFailureIgnore>
+					<testFailureIgnore>
+						${allow.test.failure.ignore}</testFailureIgnore>
 				</configuration>
 			</plugin>
-
+			
 			<plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.1</version>
@@ -375,7 +382,7 @@
 	<modules>
 		<module>main</module>
 		<module>wfs</module>
-	  <!--module>wms</module-->
+		<module>wms</module>
 		<module>web</module>
 		<module>config</module>
 	</modules>

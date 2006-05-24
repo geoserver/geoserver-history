@@ -34,11 +34,11 @@
 			<artifactId>wfs</artifactId>
 			<version>1.4.x</version>
 		</dependency>
-		<!--dependency>
+		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wms</artifactId>
 			<version>1.4.x</version>
-		</dependency-->
+		</dependency>
 
 		<dependency>
 			<groupId>ki</groupId>

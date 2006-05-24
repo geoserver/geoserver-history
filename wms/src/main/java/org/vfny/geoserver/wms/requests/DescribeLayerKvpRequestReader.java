@@ -17,6 +17,7 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.servlets.WMService;
 
 
 /**
@@ -36,9 +37,19 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
      * Constructs a new DescribeLayer request parser.
      *
      * @param params
+     * @deprecated use {@link #DescribeLayerKvpRequestReader(Map, WMService)}
      */
     public DescribeLayerKvpRequestReader(Map params) {
         super(params);
+    }
+    
+    /**
+     * Constructs a new DescribeLayer request parser.
+     * @param params
+     * @param service The service that handles the request
+     */
+    public DescribeLayerKvpRequestReader (Map params, WMService service){
+    	super(params, service);
     }
 
     /**
@@ -56,7 +67,7 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
      */
     public Request getRequest(HttpServletRequest request)
         throws ServiceException {
-        DescribeLayerRequest req = new DescribeLayerRequest();
+        DescribeLayerRequest req = new DescribeLayerRequest( (WMService)service );
         req.setHttpServletRequest(request);
 
         String layersParam = getValue("LAYERS");

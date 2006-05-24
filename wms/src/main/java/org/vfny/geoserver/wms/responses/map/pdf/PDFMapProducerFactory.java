@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.responses.map.pdf;
 
 import org.vfny.geoserver.config.WMSConfig;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import java.util.Collections;
@@ -103,7 +104,7 @@ public class PDFMapProducerFactory implements GetMapProducerFactorySpi {
      *
      * @throws IllegalArgumentException if mapFormat is not supported
      */
-    public GetMapProducer createMapProducer(String mapFormat, WMSConfig config)
+    public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
         if (!canProduce(mapFormat)) {
             throw new IllegalArgumentException(mapFormat

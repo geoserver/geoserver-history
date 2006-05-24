@@ -48,6 +48,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.servlets.WMService;
 import org.xml.sax.InputSource;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -175,9 +176,19 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * Creates a new GetMapKvpReader object.
      *
      * @param kvpPairs DOCUMENT ME!
+     * @deprecated use {@link #GetMapKvpReader(Map, WMService)}
      */
     public GetMapKvpReader(Map kvpPairs) {
         super(kvpPairs);
+    }
+    
+    /**
+     * Creates a new GetMapKvpReader object.
+     * @param kvpPairs Key Values pairs of the request 
+     * @param service The service handling the request
+     */
+    public GetMapKvpReader(Map kvpPairs, WMService service){
+    	super(kvpPairs, service);
     }
 
     /**
@@ -212,7 +223,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      */
     public Request getRequest(HttpServletRequest httpRequest)
         throws ServiceException {
-        GetMapRequest request = new GetMapRequest();
+        GetMapRequest request = new GetMapRequest( (WMService) service);
         request.setHttpServletRequest(httpRequest);
 
         String version = getRequestVersion();

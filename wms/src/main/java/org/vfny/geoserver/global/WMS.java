@@ -5,6 +5,7 @@
 package org.vfny.geoserver.global;
 
 import org.vfny.geoserver.global.dto.ServiceDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
 
@@ -64,8 +65,27 @@ public class WMS extends Service {
         svgRenderer = config.getSvgRenderer();
         svgAntiAlias = config.getSvgAntiAlias();
     }
-
+    
+    
     /**
+     * Creates the WMS service by getting the WMSDTO object from the 
+     * config and calling {@link #WMS(WMSDTO)}.
+     *  
+     * @param config
+     * @param data
+     * @param geoServer
+     * @throws ConfigurationException
+     */
+    public WMS( Config config, Data data, GeoServer geoServer )  throws ConfigurationException {
+		this( config.getXMLReader().getWms() );
+		setData(data);
+		setGeoServer(geoServer);
+    	
+	}
+
+
+
+	/**
      * load purpose.
      * <p>
      * loads a new instance of data into this object.
@@ -186,4 +206,33 @@ public class WMS extends Service {
     public boolean supportsRemoteWFS() {
         return false;  //djb: hopefully this will change soon.
     }
+    
+    /**
+     * @return the id of the SVG renderer being used by the wms.
+     */
+    public String getSvgRenderer() {
+	   return svgRenderer;
+    }
+    
+    /**
+     * Sets the id of the SVG renderer being used by the wms.
+     */
+    public void setSvgRenderer(String svgRenderer) {
+		this.svgRenderer = svgRenderer;
+	}
+    
+    /**
+     * @return Flag indicating wether the svg renderer should anti-alias or not.
+     */
+    public boolean isSvgAntiAlias() {
+		return svgAntiAlias;
+	}
+    
+    /**
+     * Sets the Flag indicating wether the svg renderer should anti-alias or not.
+     */
+    public void setSvgAntiAlias(boolean svgAntiAlias) {
+		this.svgAntiAlias = svgAntiAlias;
+	}
+    
 }

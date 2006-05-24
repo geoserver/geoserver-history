@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.vfny.geoserver.config.WMSConfig;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 
@@ -101,14 +102,15 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
      *
      * @throws IllegalArgumentException DOCUMENT ME!
      */
-    public GetMapProducer createMapProducer(String mapFormat, WMSConfig config)
+    public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
         
-    	if (config != null) {
-    		if (WMSConfig.SVG_SIMPLE.equals(config.getSvgRenderer()))
+    	if (wms != null) {
+    		
+    		if (WMSConfig.SVG_SIMPLE.equals(wms.getSvgRenderer()))
 				return new SVGMapProducer();
-    		if (WMSConfig.SVG_BATIK.equals(config.getSvgRenderer()))
-    			return new SVGBatikMapProducer(config);
+    		if (WMSConfig.SVG_BATIK.equals(wms.getSvgRenderer()))
+    			return new SVGBatikMapProducer(wms);
     	}
     
     	//do the default

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
 		<version>1.4.x</version>
 	</parent>
-
+	
 	<groupId>org.geoserver</groupId>
-  <artifactId>wms</artifactId>
+	<artifactId>wms</artifactId>
 	<packaging>jar</packaging>
-  <name>GeoServer Web Map Service Module</name>
-
+	<name>GeoServer Web Map Service Module</name>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.geoserver</groupId>
@@ -26,25 +27,29 @@
 			<version>1.4.x</version>
 		</dependency>
 		<dependency>
-	     	<groupId>org.geotools</groupId>
-	     	<artifactId>gt2-render</artifactId>
-	  </dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-render</artifactId>
+		</dependency>
 		<dependency>
-	  	<groupId>batik</groupId>
-	   	<artifactId>batik-svggen</artifactId>
-	  </dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-epsg-wkt</artifactId>
+		</dependency>
 		<dependency>
-	   	<groupId>batik</groupId>
-	   	<artifactId>batik-awt-util</artifactId>
-	  </dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-svggen</artifactId>
+		</dependency>
 		<dependency>
-	   	<groupId>batik</groupId>
-	   	<artifactId>batik-util</artifactId>
-	  </dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-awt-util</artifactId>
+		</dependency>
 		<dependency>
-	   	<groupId>itext</groupId>
+			<groupId>batik</groupId>
+			<artifactId>batik-util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>itext</groupId>
 			<artifactId>itext</artifactId>
-	  </dependency>
+		</dependency>
 	</dependencies>
-
+	
 </project>

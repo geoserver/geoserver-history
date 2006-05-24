@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.servlets.AbstractService;
 
 
 /**
@@ -27,7 +28,10 @@ public abstract class XmlRequestReader {
     protected static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.readers");
 
-    /**
+	/** The service handling the request **/
+    private AbstractService service;
+	
+	/**
      * DOCUMENT ME!
      *
      * @param reader DOCUMENT ME!
@@ -37,5 +41,38 @@ public abstract class XmlRequestReader {
      * @throws ServiceException DOCUMENT ME!
      */
     public abstract Request read(Reader reader, HttpServletRequest req) throws ServiceException;
+    
+    /**
+     * This will create a new XmlRequestReader
+     * @param service The service handling the request
+     */
+    public XmlRequestReader(AbstractService service) {
+    	this.service = service;
+	}
+    /**
+     * This will create a new XmlRequestReader
+     * @deprecated use {@link #XmlRequestReader(AbstractService)}
+     */
+    public XmlRequestReader() {
+    	this(null);
+    }
+
+	/**
+	 * @return the service handling the request
+	 */
+    public AbstractService getServiceRef() {
+		return service;
+	}
+
+	/**
+	 * sets the service handling the request
+	 */
+    public void setServiceRef(AbstractService service) {
+		this.service = service;
+	}
+    
+    
+    
+    
 
 }

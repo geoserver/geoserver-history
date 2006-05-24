@@ -30,6 +30,7 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.servlets.WMService;
 
 /**
  * Key/Value pair set parsed for a GetLegendGraphic request. When calling
@@ -62,9 +63,19 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 	 * @param params
 	 *            map of key/value pairs with the parameters for a
 	 *            GetLegendGraphic request
+	 * @deprecated use {@link #GetLegendGraphicKvpReader(Map, WMService)}
 	 */
 	public GetLegendGraphicKvpReader(Map params) {
 		super(params);
+	}
+	
+	/**
+	 * Creates a new GetLegendGraphicKvpReader object.
+	 * @param params map of key/value pairs with the parameters for a GetLegendGraphic request
+	 * @param service service handle request
+	 */
+	public GetLegendGraphicKvpReader(Map params, WMService service){
+		super(params, service);
 	}
 
 	/**
@@ -82,7 +93,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 	 */
 	public Request getRequest(HttpServletRequest httpRequest)
 			throws ServiceException {
-		GetLegendGraphicRequest request = new GetLegendGraphicRequest();
+		GetLegendGraphicRequest request = new GetLegendGraphicRequest((WMService) getServiceRef());
 		// TODO: we should really get rid of the HttpServletRequest dependency
 		// beyond the HTTP facade. Neither the request readers should depend on
 		// it

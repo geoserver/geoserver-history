@@ -29,6 +29,7 @@ import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -61,9 +62,9 @@ public class GetMapResponse implements Response {
      */
     private WMSMapContext map;
     /**
-     * WMS configuration
+     * WMS module
      */
-    private WMSConfig config;
+    private WMS wms;
     
     /**
      * custom response headers
@@ -73,8 +74,8 @@ public class GetMapResponse implements Response {
     /**
      * Creates a new GetMapResponse object.
      */
-    public GetMapResponse(WMSConfig config) {
-        this.config = config;
+    public GetMapResponse(WMS wms) {
+        this.wms = wms;
         responseHeaders = new HashMap();
     }
 
@@ -98,7 +99,7 @@ public class GetMapResponse implements Response {
         
         final String outputFormat = request.getFormat();
 
-        this.delegate = getDelegate(outputFormat, config);
+        this.delegate = getDelegate(outputFormat, wms);
 
         final FeatureTypeInfo[] layers = request.getLayers();
         final Style[] styles = (Style[])request.getStyles().toArray(new Style[]{});
@@ -279,7 +280,7 @@ public class GetMapResponse implements Response {
      *         format specified in <code>request</code> or if it can't be
      *         instantiated
      */
-    static GetMapProducer getDelegate(String outputFormat, WMSConfig config)
+    static GetMapProducer getDelegate(String outputFormat, WMS wms)
         throws WmsException {
         LOGGER.finer("request format is " + outputFormat);
 
@@ -302,7 +303,7 @@ public class GetMapResponse implements Response {
         }
 
         
-        GetMapProducer producer = mpf.createMapProducer(outputFormat,config);
+        GetMapProducer producer = mpf.createMapProducer(outputFormat,wms);
 
         return producer;
     }

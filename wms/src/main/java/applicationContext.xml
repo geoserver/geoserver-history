@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- declare the wms service. -->
+	<bean id="wms"
+		class="org.vfny.geoserver.global.WMS">
+		<constructor-arg ref="config"/>
+		<constructor-arg ref="data"/>
+		<constructor-arg ref="geoServer"/>
+	</bean>
+		
+	<!-- 
+		servlets for handling incoming requests 
+	-->
+	
+	<!-- the abstract base bean -->
+	<bean id="wmsAbstractService" abstract="true"
+		class="org.vfny.geoserver.servlets.AbstractService">
+		<!--  reference to geoserver bean defined in the 'main' context -->
+		<property name="geoServer" ref="geoServer"/>
+	</bean>
+
+	<!-- the abstract wms specific bean  -->
+	<bean id="wmsService" abstract="true"
+		class="org.vfny.geoserver.wms.servlets.WMService"
+		parent="wmsAbstractService">
+		<!-- reference to wms bean in this context -->
+		<property name="WMS" ref="wms"/>
+	</bean>
+		
+	<bean id="wmsGetCapabilities" 
+		class="org.vfny.geoserver.wms.servlets.Capabilities"
+		parent="wmsService">
+		<property name="serviceRef" ref="wms"/>
+	</bean>
+
+	<bean id="wmsDescribeFeatureType"
+		class="org.vfny.geoserver.wms.servlets.DescribeLayer"
+		parent="wmsService">
+		<property name="WMS" ref="wms"/>
+	</bean>
+		
+	<bean id="wmsGetFeatureInfo"
+		class="org.vfny.geoserver.wms.servlets.GetFeatureInfo"
+		parent="wmsService">
+		<property name="WMS" ref="wms"/>
+	</bean>
+		
+	<bean id="wmsGetLegendGraphic"
+		class="org.vfny.geoserver.wms.servlets.GetLegendGraphic"
+		parent="wmsService">
+		<property name="WMS" ref="wms"/>
+	</bean>	
+		
+	<bean id="wmsGetMap"
+		class="org.vfny.geoserver.wms.servlets.GetMap"
+		parent="wmsService">
+		<property name="WMS" ref="wms"/>
+	</bean>	
+</beans>

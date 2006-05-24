@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.servlets;
 import java.util.Map;
 
 import org.vfny.geoserver.Response;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.CapabilitiesKvpReader;
@@ -34,7 +35,7 @@ public class Capabilities extends WMService {
      * @return DOCUMENT ME!
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new CapabilitiesKvpReader(params);
+        return new CapabilitiesKvpReader(params, this);
     }
 
     /**

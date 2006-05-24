@@ -39,6 +39,7 @@ import org.vfny.geoserver.util.GETMAPValidator;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.servlets.WMService;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -58,13 +59,23 @@ import com.vividsolutions.jts.geom.Coordinate;
 public class GetMapXmlReader extends XmlRequestReader {
     private static final StyleFactory styleFactory = StyleFactoryFinder
         .createStyleFactory();
-
+    
     /**
      * Creates a new GetMapXmlReader object.
+     * @deprecated use {@link GetMapXmlReader(WMService)}
      */
     public GetMapXmlReader() {
     }
-
+    
+    /**
+     * Creates a new GetMapXmlReader object.
+     * @param service this is the service that handles the request
+     */
+    public GetMapXmlReader(WMService service){
+    	super(service);
+    	
+    }
+      
     /**
      * Reads the GetMap XML request into a GetMap Request object.
      *
@@ -77,7 +88,7 @@ public class GetMapXmlReader extends XmlRequestReader {
      */
     public Request read(Reader reader, HttpServletRequest req)
         throws WmsException {
-        GetMapRequest getMapRequest = new GetMapRequest();
+        GetMapRequest getMapRequest = new GetMapRequest( (WMService) getServiceRef() );
         getMapRequest.setHttpServletRequest(req);
 
         boolean validateSchema = wantToValidate(req);
@@ -260,7 +271,7 @@ public class GetMapXmlReader extends XmlRequestReader {
             requestParams.put(paramName.toUpperCase(), paramValue);
         }
 
-        GetMapKvpReader kvpReader = new GetMapKvpReader(requestParams);
+        GetMapKvpReader kvpReader = new GetMapKvpReader(requestParams, (WMService) getServiceRef());
 
         String version = kvpReader.getRequestVersion();
         getMapRequest.setVersion(version);

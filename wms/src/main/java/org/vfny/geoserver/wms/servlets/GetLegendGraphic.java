@@ -43,7 +43,7 @@ public class GetLegendGraphic extends WMService {
      * @return a GetLegendGraphic request parser
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new GetLegendGraphicKvpReader(params);
+        return new GetLegendGraphicKvpReader(params, this);
     }
 
     /**

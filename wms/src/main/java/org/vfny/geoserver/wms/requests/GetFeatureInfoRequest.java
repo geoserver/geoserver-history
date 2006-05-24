@@ -5,6 +5,9 @@
 package org.vfny.geoserver.wms.requests;
 
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.wms.servlets.WMService;
+
+import com.k_int.gen.RecordSyntax_explain.superAttributes_inline86_codec;
 
 
 /**
@@ -67,10 +70,19 @@ public class GetFeatureInfoRequest extends WMSRequest {
 
     /**
      * Creates a new GetMapRequest object.
+     * @deprecated use {@link #GetFeatureInfoRequest(WMService)}
      */
     public GetFeatureInfoRequest() {
         super();
         setRequest("GetFeatureInfo");
+    }
+    
+    /**
+     * Creates a new GetMapRequest object.
+     * @param service The service that will handle the request
+     */
+    public GetFeatureInfoRequest(WMService service){
+    	super("GetFeatureInfo", service);
     }
     
 	/**

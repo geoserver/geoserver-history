@@ -16,6 +16,7 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.servlets.WMService;
 
 
 /**
@@ -43,13 +44,22 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
     /**
      * Creates a new GetMapKvpReader object.
      *
-     * @param kvpPairs DOCUMENT ME!
+     * @param kvpPairs Key Values pairs of the request 
+     * @deprecated use {@link #GetFeatureInfoKvpReader(Map, WMService)}
      */
     public GetFeatureInfoKvpReader(Map kvpPairs) {
-        super(kvpPairs);
-        getMapReader = new GetMapKvpReader(kvpPairs);
+    	this(kvpPairs, null);
     }
 
+    /**
+     * Creates a new GetMapKvpReader object.
+     * @param kvpPairs Key Values pairs of the request 
+     * @param service The service handling the request
+     */
+    public GetFeatureInfoKvpReader( Map kvpPairs, WMService service ){
+    	super(kvpPairs, service);
+    	getMapReader = new GetMapKvpReader(kvpPairs, service);    	
+    }
     /**
      * Produces a <code>GetMapRequest</code> instance by parsing the GetMap
      * mandatory, optional and custom parameters.
@@ -65,7 +75,7 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
      */
     public Request getRequest(HttpServletRequest httpRequest)
         throws ServiceException {
-        request = new GetFeatureInfoRequest();
+        request = new GetFeatureInfoRequest( (WMService) getServiceRef());
         request.setHttpServletRequest(httpRequest);
 
         String version = getRequestVersion();

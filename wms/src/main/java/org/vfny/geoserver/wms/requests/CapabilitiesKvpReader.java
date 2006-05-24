@@ -13,6 +13,7 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.wms.servlets.WMService;
 
 /**
  * This utility reads in a GetCapabilities KVP request and turns it into an
@@ -27,11 +28,24 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
      * Constructor with raw request string.  Calls parent.
      *
      * @param kvPairs The raw string of a capabilities kvp request.
+     * @deprecated use {@link #CapabilitiesKvpReader(Map, WMService)}
+     * 
      */
     public CapabilitiesKvpReader(Map kvPairs) {
         super(kvPairs);
     }
 
+   /**
+    * Constructor with raw request string.  Calls parent.
+    *
+    * @param kvPairs The raw string of a capabilities kvp request.
+    * 
+    * 
+    */
+    public CapabilitiesKvpReader(Map kvPairs, WMService service) {
+        super(kvPairs, service);
+    }
+    
     /**
      * Get Capabilities request.
      *
@@ -40,7 +54,7 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
      * @throws ServiceException DOCUMENT ME!
      */
     public Request getRequest(HttpServletRequest request) throws ServiceException {
-        CapabilitiesRequest currentRequest = new CapabilitiesRequest("WMS");
+        CapabilitiesRequest currentRequest = new CapabilitiesRequest("WMS",service);
         currentRequest.setHttpServletRequest(request);
         String reqVersion = WMS.getVersion();
 

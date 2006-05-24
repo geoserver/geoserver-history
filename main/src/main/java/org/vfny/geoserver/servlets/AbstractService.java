@@ -351,7 +351,7 @@ public abstract class AbstractService extends HttpServlet
                 requestParams.put(paramName.toUpperCase(), paramValue);
             }
 
-            KvpRequestReader requestReader = getKvpReader(requestParams);
+            KvpRequestReader requestReader = getKvpReader(requestParams );
 
             serviceRequest = requestReader.getRequest(request);
             LOGGER.finer("serviceRequest provided with HttpServletRequest: "

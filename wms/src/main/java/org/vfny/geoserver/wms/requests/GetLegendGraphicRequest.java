@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.requests;
 import org.geotools.feature.FeatureType;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
+import org.vfny.geoserver.wms.servlets.WMService;
 
 
 /**
@@ -123,6 +124,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * Creates a new GetLegendGraphicRequest object.
+     * @deprecated use {@link #GetLegendGraphicRequest(WMService)}
      */
     public GetLegendGraphicRequest() {
         super();
@@ -130,6 +132,14 @@ public class GetLegendGraphicRequest extends WMSRequest {
         setVersion(SLD_VERSION);
     }
 
+    /**
+     * Creates a new GetLegendGraphicRequest object.
+     * @param service The service that will handle the request
+     */
+    public GetLegendGraphicRequest(WMService service){
+    	super("GetLegendGraphic", service);
+    	
+    }
     /**
      * DOCUMENT ME!
      *

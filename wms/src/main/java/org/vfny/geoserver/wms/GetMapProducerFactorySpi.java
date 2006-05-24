@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.geotools.factory.Factory;
 import org.vfny.geoserver.config.WMSConfig;
+import org.vfny.geoserver.global.WMS;
 
 
 /**
@@ -112,7 +113,7 @@ public interface GetMapProducerFactorySpi extends Factory {
      * in the specified image format.
      *
      * @param mapFormat the MIME type of the desired image
-     * @param wmsConfig the wms configuration
+     * @param wms the WMS module
      * 
      * @return a GetMapProducer capable of creating maps in <code>format</code>
      *         image format.
@@ -120,6 +121,6 @@ public interface GetMapProducerFactorySpi extends Factory {
      * @throws IllegalArgumentException if <code>format</code> is not one of
      *         the MIME types this producer can create images in.
      */
-    GetMapProducer createMapProducer(String mapFormat, WMSConfig wmsConfig)
+    GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException;
 }
