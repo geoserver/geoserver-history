@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.config.WMSConfig;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -82,7 +83,7 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
      *
      * @throws IllegalArgumentException DOCUMENT ME!
      */
-    public GetMapProducer createMapProducer(String mapFormat, WMSConfig config)
+    public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
         if (!canProduce(mapFormat)) {
             throw new IllegalArgumentException();

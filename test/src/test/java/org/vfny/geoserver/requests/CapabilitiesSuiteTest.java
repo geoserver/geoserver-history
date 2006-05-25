@@ -16,7 +16,6 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.readers.CapabilitiesKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.CapabilitiesXmlReader;
 
-
 /**
  * Tests the get capabilities request handling.
  *

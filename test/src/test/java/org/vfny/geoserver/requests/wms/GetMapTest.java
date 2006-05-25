@@ -23,6 +23,9 @@ public class GetMapTest extends AbstractGeoserverHttpTest {
 	String layers = "states";
 	
 	public void testImage() throws Exception {
+		if (isOffline())
+			return ;
+		
 		WebConversation conversation = new WebConversation();
 		WebRequest request = 
         	new GetMethodWebRequest(
@@ -52,6 +55,9 @@ public class GetMapTest extends AbstractGeoserverHttpTest {
 	}
 	
 	public void testSldBody() throws Exception {
+		if (isOffline())
+			return ;
+		
 		WebConversation conversation = new WebConversation();
 		WebRequest request = 
         	new GetMethodWebRequest(
@@ -82,6 +88,9 @@ public class GetMapTest extends AbstractGeoserverHttpTest {
 	}
 	
 	public void testSldBodyPost() throws Exception {
+		if (isOffline())
+			return ;
+		
 		InputStream in = 
 			new ByteArrayInputStream(STATES_SLD.getBytes());
 		

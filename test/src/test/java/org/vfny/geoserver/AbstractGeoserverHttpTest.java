@@ -1,7 +1,17 @@
 package org.vfny.geoserver;
 
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.MalformedURLException;
 import java.util.PropertyResourceBundle;
+
+import org.xml.sax.SAXException;
+
+import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.WebConversation;
+import com.meterware.httpunit.WebRequest;
+import com.meterware.httpunit.WebResponse;
 
 import junit.framework.TestCase;
 
@@ -39,5 +49,21 @@ public abstract class AbstractGeoserverHttpTest extends TestCase {
 	public String getBaseUrl() {
 		return getProtocol() + "://" + getServer() + ":" + getPort() + 
 		"/" + getContext();
+	}
+	
+	protected boolean isOffline() {
+		try {
+			WebConversation conversation = new WebConversation();
+	        WebRequest request = 
+	        	new GetMethodWebRequest(getBaseUrl()+"/wfs?request=getCapabilities");
+	        
+	        WebResponse response = conversation.getResponse( request );
+		}
+		catch(Exception e) {
+			return true;
+		} 
+		
+		return false;
+		
 	}
 }

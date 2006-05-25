@@ -13,6 +13,9 @@ import com.meterware.httpunit.WebResponse;
 public class CapabiltiesTest extends AbstractGeoserverHttpTest {
 
 	public void testGetCapabilities() throws Exception {
+		if (isOffline())
+			return ;
+		
 		WebConversation conversation = new WebConversation();
         WebRequest request = 
         	new GetMethodWebRequest(getBaseUrl()+"/wms?request=getCapabilities");

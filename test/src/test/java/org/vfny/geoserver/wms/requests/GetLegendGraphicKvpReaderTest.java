@@ -7,8 +7,17 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.geotools.styling.Style;
+import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.Config;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.testdata.MockUtils;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.wms.servlets.WMService;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
 
@@ -30,8 +39,12 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
 	/** both required and optional parameters joint up */
 	Map allParameters;
 
+	/** mock request */
 	MockHttpServletRequest httpRequest;
 
+	/** mock servlet */
+	WMService dummy;
+	
 	/**
 	 * Remainder:
 	 * <ul>
@@ -72,15 +85,39 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
 
 		this.requestReader = new GetLegendGraphicKvpReader(allParameters);
 		this.httpRequest = MockUtils.newHttpRequest(allParameters, true);
+		
+		Data data = MockUtils.createTestCiteData(new GeoServer());
+		WMS wms = new WMS(
+			MockUtils.newWmsDto()
+		);
+		wms.setData(data);
+		
+		dummy = new WMService("dummy", wms) {
+
+			protected Response getResponseHandler() {
+				return null;
+			}
+
+			protected KvpRequestReader getKvpReader(Map params) {
+				return null;
+			}
+
+			protected XmlRequestReader getXmlRequestReader() {
+				return null;
+			}
+			
+		};
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 
-	public void testVersion() throws ServiceException {
+	public void testVersion() throws Exception {
 		requiredParameters.put("VERSION", "WRONG");
-		this.requestReader = new GetLegendGraphicKvpReader(requiredParameters);
+		
+		this.requestReader = 
+			new GetLegendGraphicKvpReader(requiredParameters, dummy);
 		try {
 			requestReader.getRequest(httpRequest);
 			fail("Expected ServiceException due to wrong VERSION parameter");
@@ -107,7 +144,7 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
 
 		this.allParameters.put("LAYER", "cite:Ponds");
 		this.allParameters.put("STYLE", "Ponds");
-		requestReader = new GetLegendGraphicKvpReader(this.allParameters);
+		requestReader = new GetLegendGraphicKvpReader(this.allParameters,dummy);
 		GetLegendGraphicRequest request = (GetLegendGraphicRequest)requestReader.getRequest(httpRequest);
 		
 		//the style names Ponds is declared in third position on the sld doc
@@ -118,7 +155,7 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
 	
 		this.allParameters.put("LAYER", "cite:Lakes");
 		this.allParameters.put("STYLE", "Lakes");
-		requestReader = new GetLegendGraphicKvpReader(this.allParameters);
+		requestReader = new GetLegendGraphicKvpReader(this.allParameters,dummy);
 		request = (GetLegendGraphicRequest)requestReader.getRequest(httpRequest);
 		
 		//the style names Ponds is declared in third position on the sld doc
