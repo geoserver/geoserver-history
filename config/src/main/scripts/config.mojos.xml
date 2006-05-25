@@ -35,5 +35,24 @@
 			</parameters>
 
 		</mojo>
+
+		<mojo>
+      <goal>clean</goal>
+      <call>clean</call> 
+      <requiresProject>true</requiresProject>
+
+			<parameters>
+  			<parameter>
+          <name>webappDirectory</name>
+          <property>webappDirectory</property>
+          <required>true</required>
+          <type>java.io.File</type>
+          <defaultValue>${basedir}/src/main/webapp</defaultValue>
+          <description>
+          The webapp directory, same as from the maven war plugin.
+          </description>
+        </parameter>
+			</parameters>
+		</mojo>
 	</mojos>
 </pluginMetadata>
