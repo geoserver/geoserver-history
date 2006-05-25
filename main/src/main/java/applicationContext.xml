@@ -3,17 +3,11 @@
 
 <beans>
 
-	<!-- data directory -->
-	<bean id="dataDirectory" 
-		class="java.io.File">
-		<constructor-arg type="java.lang.String"
-			value="c:/projects/geoserver/1.4.x/web/src/main/webapp/data"/>
-	</bean>
 	<!-- 
 		core modules
 	 -->
 	 
-	<!-- configuratoin module -->
+	<!-- configuration module -->
 	<bean id="config"
 		class="org.vfny.geoserver.global.Config"/>
 		
@@ -29,8 +23,7 @@
 
 		<constructor-arg ref="config"/>
 		<constructor-arg ref="geoServer"/>
-		<constructor-arg ref="dataDirectory"/>
-		
+
 	</bean>
 		
 	<!-- 

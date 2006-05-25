@@ -29,9 +29,9 @@ public class DescribeKvpReader extends KvpRequestReader {
      * @param kvPairs the key/value pairs containing DESCRIBE
      * @deprecated use {@link #DescribeKvpReader(Map, AbstractService)}
      */
-//    public DescribeKvpReader(Map kvPairs) {
-//       this(kvPairs,null);
-//    }
+    public DescribeKvpReader(Map kvPairs) {
+       this(kvPairs,null);
+    }
 
     /**
      * Constructor with raw request string and servlet handling

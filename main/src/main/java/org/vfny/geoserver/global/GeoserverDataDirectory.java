@@ -68,7 +68,8 @@ public class GeoserverDataDirectory
 	    //If this assumption can't be made, then we can't allow data_dir
 	    //_and_ webapp options with relative data/ links -ch
 	    if (dataDir == null) {
-	    	
+	    
+	    		
 			//see if there's a system property
 			String prop = System.getProperty("GEOSERVER_DATA_DIR");
 			if (prop != null && !prop.equals(""))

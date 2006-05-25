@@ -25,7 +25,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  * System.out.println(wms.getAbstract());
  * </p>
  *
- * @author Gabriel Rold�n
+ * @author Gabriel Rold???n
  * @version $Id: WMS.java,v 1.7 2004/02/24 02:08:50 cholmesny Exp $
  */
 public class WMS extends Service {
@@ -83,9 +83,7 @@ public class WMS extends Service {
     	
 	}
 
-
-
-	/**
+    	/**
      * load purpose.
      * <p>
      * loads a new instance of data into this object.

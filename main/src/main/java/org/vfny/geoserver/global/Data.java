@@ -105,8 +105,8 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
         gs = g;
     }
 
-    public Data ( Config config, GeoServer g, File data ) throws ConfigurationException {
-    		this(config.getXMLReader().getData(), data, g);
+    public Data ( Config config, GeoServer g ) throws ConfigurationException {
+    		this(config.getXMLReader().getData(), config.dataDirectory(), g);
     }
     
     GeoServer getGeoServer() {

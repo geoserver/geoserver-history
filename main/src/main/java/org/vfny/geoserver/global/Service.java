@@ -282,7 +282,7 @@ public abstract class Service extends GlobalLayerSupertype {
 	 *
 	 * @param dt The dt to set.
 	 */
-	void setData(Data dt) {
+	public void setData(Data dt) {
 		this.dt = dt;
 	}
 

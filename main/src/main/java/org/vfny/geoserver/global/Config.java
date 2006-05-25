@@ -21,14 +21,19 @@ public class Config implements ApplicationContextAware {
 		return reader;
 	}
 	
+	public File dataDirectory() {
+		ServletContext sc = this.context.getServletContext();
+		return GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+	}
+	
 	public void setApplicationContext(ApplicationContext context) throws BeansException {
 		this.context = (WebApplicationContext) context;
 		
+		
 		ServletContext sc = this.context.getServletContext();
-		File data = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
 		
 		try {
-			reader = new XMLConfigReader(data,sc);
+			reader = new XMLConfigReader(dataDirectory(),sc);
 		} 
 		catch (ConfigurationException e) {
 			String msg = "Error creating xml config reader";
