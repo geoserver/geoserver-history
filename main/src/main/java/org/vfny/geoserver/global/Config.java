@@ -11,6 +11,12 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.vfny.geoserver.global.xml.XMLConfigReader;
 
+/**
+ * The application configuratoin facade.
+ *
+ * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ *
+ */
 public class Config implements ApplicationContextAware {
 
 	WebApplicationContext context;
@@ -40,6 +46,10 @@ public class Config implements ApplicationContextAware {
 			throw new BeanInitializationException(msg,e);
 		}
 		
+	}
+	
+	public WebApplicationContext getApplictionContext() {
+		return context;
 	}
 	
 }

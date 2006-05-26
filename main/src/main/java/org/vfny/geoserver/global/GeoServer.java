@@ -87,7 +87,7 @@ public class GeoServer extends GlobalLayerSupertype {
     public GeoServer ( Config config ) throws ConfigurationException {
     		LOGGER.fine("Creating GeoServer");
     		load( config.getXMLReader().getGeoServer() );
-    }
+    	}
     
     
     /**

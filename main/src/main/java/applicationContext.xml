@@ -25,7 +25,37 @@
 		<constructor-arg ref="geoServer"/>
 
 	</bean>
+
+	<!--  application state module -->
+	<bean id="applicationState"
+		class="org.vfny.geoserver.global.ApplicationState">
 		
+	</bean>
+
+	<!-- this registers the above modules with the servlet context
+		 it is around to keep the struts app happy as we move away from 
+		 servlets  -->
+	<bean id="dataRegisterar"
+		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
+		
+		<constructor-arg type="java.lang.String" value="DATA"/>
+ 		<constructor-arg ref="data"/>
+ 	</bean>
+	
+	<bean id="geoServerRegisterar"
+		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
+		
+		<constructor-arg type="java.lang.String" value="GeoServer"/>
+ 		<constructor-arg ref="geoServer"/>
+ 	</bean>
+ 		
+	<bean id="applicationStateRegisterar"
+		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
+		
+		<constructor-arg type="java.lang.String" value="GeoServer.ApplicationState"/>
+ 		<constructor-arg ref="applicationState"/>
+ 	</bean>
+ 	
 	<!-- 
 		service strategies 
 	-->

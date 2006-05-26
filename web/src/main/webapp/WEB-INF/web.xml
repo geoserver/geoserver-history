@@ -73,7 +73,7 @@
   </servlet>
 	
    <!-- Struts config needs to load before all the other servlets. -->
-   <!--servlet>
+   <servlet>
     <servlet-name>action</servlet-name>
     <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
     <init-param>
@@ -89,7 +89,7 @@
       <param-value>2</param-value>
     </init-param>
     <load-on-startup>2</load-on-startup>
-  </servlet-->
+  </servlet>
   
   <!--servlet>
     <servlet-name>DescribeFeatureType</servlet-name>
@@ -171,10 +171,10 @@
     let-name>
     <url-pattern>/wms/*</url-pattern>
   </servlet-mapping-->
-  <!-- servlet-mapping>
+  <servlet-mapping>
     <servlet-name>action</servlet-name>
     <url-pattern>*.do</url-pattern>
-   </servlet-mapping-->
+   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>dispatcher</servlet-name>
 	<url-pattern>/wms/*</url-pattern>

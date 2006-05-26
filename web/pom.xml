@@ -205,9 +205,9 @@
           <execution>
 						<id>configPackage</id>
 						<configuration>
-							<configId>basic</configId>
+							<configId>demo</configId>
 						</configuration>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>config</goal>
             </goals>

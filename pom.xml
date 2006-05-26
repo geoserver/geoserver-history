@@ -328,16 +328,6 @@
 		</testResources>
 		
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>org/vfny/geoserver/action/**/*.java</exclude>
-						<exclude>org/vfny/geoserver/form/**/*.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
 			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -384,18 +374,6 @@
           <outputDirectory>${project.build.directory}/release</outputDirectory>
         </configuration>
       </plugin>
-
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>clean</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 
 		</plugins>
 	</build>
