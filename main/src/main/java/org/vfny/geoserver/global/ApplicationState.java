@@ -21,6 +21,7 @@ import org.apache.struts.config.ModuleConfig;
 import org.geotools.validation.dto.PlugInDTO;
 import org.geotools.validation.dto.TestDTO;
 import org.geotools.validation.dto.TestSuiteDTO;
+import org.springframework.beans.factory.InitializingBean;
 import org.vfny.geoserver.global.xml.XMLConfigWriter.WriterUtils;
 
 /**
@@ -40,7 +41,7 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter.WriterUtils;
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: ApplicationState.java,v 1.15 2004/04/03 13:13:03 cholmesny Exp $
  */
-public class ApplicationState implements PlugIn {
+public class ApplicationState implements PlugIn, InitializingBean  {
     /** The key used to store this value in the Web Container */
     public static final String WEB_CONTAINER_KEY = "GeoServer.ApplicationState";
 
@@ -59,7 +60,39 @@ public class ApplicationState implements PlugIn {
     private Map geoserverDSErrors;
     private Map geoserverVPErrors;
     
-    private ServletContext sc;
+    /**
+     * Data module
+     */
+    Data data;
+    /**
+     * Validation module
+     */
+    GeoValidator validator;
+    /**
+     * Configuration module
+     */
+    Config config;
+    
+    /**
+     * 
+     * @deprecated use {@link #ApplicationState(Data, GeoValidator, Config)}
+     */
+    public ApplicationState() {
+    		this( null, null, null );
+    }
+    
+    /**
+     * Creates a new appliction state.
+     * 
+     * @param data The data modle.
+     * @param validator The validation module
+     */
+    public ApplicationState ( Data data, GeoValidator validator, Config config ) {
+    		this.data = data;
+    		this.validator = validator;
+    		this.config = config;
+    }
+    
     /**
      * Clean up the Configuration State during application exit.
      * 
@@ -87,17 +120,28 @@ public class ApplicationState implements PlugIn {
      *
      * @see org.apache.struts.action.PlugIn#init(org.apache.struts.action.ActionServlet,
      *      org.apache.struts.config.ModuleConfig)
+     *      
+     * @deprecated This class is no longer loaded with struts,
+     *  use {@link #afterPropertiesSet()}
      */
     public void init(ActionServlet actionServlet, ModuleConfig moduleConfig)
         throws ServletException {
-        actionServlet.getServletContext().setAttribute(WEB_CONTAINER_KEY, this);
-        sc = actionServlet.getServletContext();
-        
-        configTimestamp = getXmlTimestamp();
+      
+    		try {
+			afterPropertiesSet();
+		} 
+    		catch (Exception e) {
+			throw new ServletException(e);
+		}
+    }
+    
+    public void afterPropertiesSet() throws Exception {
+    		configTimestamp = getXmlTimestamp();
         appTimestamp = configTimestamp;
         
-        geoserverStatus[0]=-1;
+        geoserverStatus[0]=-1;	
     }
+    
 
     /**
      * True if the user has changed the Configuration and not yet applied them.
@@ -255,19 +299,15 @@ public class ApplicationState implements PlugIn {
     	//
     	// And all this madness is a cut and paste mistake?
     	geoserverStatus[0] = (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0);
-    	Data dt = (Data) sc.getAttribute(Data.WEB_CONTAINER_KEY);
-    	GeoValidator gv = (GeoValidator) sc.getAttribute(GeoValidator.WEB_CONTAINER_KEY);
-    	if (dt == null || gv==null)
-    		return;
-    	
-    	// setup geoserverNSErrors
-    	geoserverNSErrors = dt.statusNamespaces();
+	   
+    // setup geoserverNSErrors
+    	geoserverNSErrors = data.statusNamespaces();
     	
     	// setup geoserverDSErrors
-    	geoserverDSErrors = dt.statusDataStores();
+    	geoserverDSErrors = data.statusDataStores();
 
     	// setup geoserverVPErrors
-    	Map tmpVP = gv.getErrors();
+    	Map tmpVP = validator.getErrors();
     	
     	int g = 0;
     	int b = 0;
@@ -511,7 +551,7 @@ public class ApplicationState implements PlugIn {
         if( xmlTimestamp == null){
         	//DJB: changed for geoserver_data_dir
         
-            File dataDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+            File dataDir = config.dataDirectory();
             boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
             //We're just checking if it's actually a data_dir, not trying to
             //to do backwards compatibility.  So if an old data_dir is made in
