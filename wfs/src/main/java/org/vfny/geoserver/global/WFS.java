@@ -61,10 +61,11 @@ public class WFS extends Service {
      *  
      * @throws ConfigurationException
      */
-    public WFS ( Config config, Data data, GeoServer geoServer) throws ConfigurationException {
+    public WFS ( Config config, Data data, GeoServer geoServer, GeoValidator validator) throws ConfigurationException {
     		this( config.getXMLReader().getWfs() );
     		setData(data);
     		setGeoServer(geoServer);
+    		setValidation(validator);
     	}
     
     /**

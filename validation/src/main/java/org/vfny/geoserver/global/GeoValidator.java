@@ -6,11 +6,14 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.IntegrityValidation;
@@ -22,6 +25,7 @@ import org.geotools.validation.dto.PlugInDTO;
 import org.geotools.validation.dto.TestDTO;
 import org.geotools.validation.dto.TestSuiteDTO;
 import org.geotools.validation.xml.ValidationException;
+import org.geotools.validation.xml.XMLReader;
 
 /**
  * GeoValidator purpose.
@@ -46,7 +50,53 @@ public class GeoValidator extends ValidationProcessor {
 	public GeoValidator() {
 		super();
 	}
+	
+	/**
+	 * Creates a new geo validator.
+	 * 
+	 * @param config The configuration module.
+	 */
+	public GeoValidator( Config config ) {
+		loadPlugins( config.dataDirectory() );
+	}
 
+	/**
+	 * Loads validations plugins.
+	 * 
+	 * @param dataDir The data directory.
+	 */
+	protected void loadPlugins( File dataDir ) {
+	   Map plugIns = null;
+       Map testSuites = null;
+       
+       try {
+    	   		File plugInDir = GeoserverDataDirectory.findConfigDir(dataDir,"plugIns");
+    	   		File validationDir = GeoserverDataDirectory.findConfigDir(dataDir, "validation");
+           	
+    	   		if(plugInDir.exists()){
+				plugIns = XMLReader.loadPlugIns(plugInDir);
+				if(validationDir.exists()){
+					testSuites = XMLReader.loadValidations(validationDir, plugIns);
+				}
+				testSuites = new HashMap();
+			}
+			else{
+				plugIns = new HashMap();
+			}
+		
+       } 
+	   catch (Exception e) {
+		   Logger.getLogger("org.vfny.geoserver.global").log(
+			   Level.WARNING, "loading plugins", e
+		   );
+		   
+		   testSuites = new HashMap();
+		   plugIns = new HashMap();
+       }
+       
+       load(testSuites,plugIns);
+	}
+	
 	/**
 	 * ValidationProcessor constructor.
 	 * 

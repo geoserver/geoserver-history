@@ -124,8 +124,7 @@ public class StylesEditorForm extends ActionForm {
             return errors;
         }
         filename= this.getSldFile().getFileName();
-        Requests.getApplicationState(request);
-
+        
         return errors;
     }
 

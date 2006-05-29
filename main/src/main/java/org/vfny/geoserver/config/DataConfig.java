@@ -21,12 +21,14 @@ import javax.servlet.ServletContext;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultRepository;
 import org.geotools.data.Repository;
+import org.vfny.geoserver.global.Config;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
-
 
 /**
  * Data purpose.
@@ -162,7 +164,16 @@ public class DataConfig {
 //        }
 		update(data);
     }
-
+    
+    /**
+     * Instantiates the data config from the data module.
+     * 
+     * @param data The data module.
+     */
+    public DataConfig ( Data data ) {
+    		this ( (DataDTO) data.toDTO() );
+    }
+ 
     /**
      * Implement loadDTO.
      * 

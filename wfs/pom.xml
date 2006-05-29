@@ -20,6 +20,12 @@
 			<artifactId>main</artifactId>
 			<version>1.4.x</version>
 		</dependency>
+		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>validation</artifactId>
+			<version>1.4.x</version>
+		</dependency>
+		
 	</dependencies>
 
 

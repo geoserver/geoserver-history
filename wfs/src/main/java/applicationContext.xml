@@ -3,15 +3,22 @@
 
 <beans>
 
-	<!-- declare the wfs service. -->
+	<!-- the wfs service. -->
 	<bean id="wfs"
 		class="org.vfny.geoserver.global.WFS">
 		<constructor-arg ref="config"/>
 		<constructor-arg ref="data"/>
 		<constructor-arg ref="geoServer"/>
+		<constructor-arg ref="validation"/>
 	</bean>
 	
-	<!-- this registers the above modules with the servlet context
+	<!-- the wfs service config -->
+	<bean id="wfsConfig"
+		class="org.vfny.geoserver.config.WFSConfig">
+		<constructor-arg ref="wfs"/>
+	</bean>
+	
+	<!-- this registers the above beans with the servlet context
 	 it is around to keep the struts app happy as we move away from 
 	 servlets  -->
 	<bean id="wfsRegisterar"
@@ -20,6 +27,14 @@
 		<constructor-arg type="java.lang.String" value="WFS"/>
  		<constructor-arg ref="wfs"/>
  	</bean>
+ 	
+ 	<bean id="wfsConfigRegisterar"
+		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
+		
+		<constructor-arg type="java.lang.String" value="Config.WFS"/>
+ 		<constructor-arg ref="wfsConfig"/>
+ 	</bean>
+ 	
 		
 	<!-- 
 		servlets for handling incoming requests 
@@ -35,7 +50,7 @@
 	<!-- the abstract wfs specific bean  -->
 	<bean id="wfsService" abstract="true"
 		class="org.vfny.geoserver.wfs.servlets.WFService"
-		parent="wfsAbstractService">
+		parent="wfsAbstractService">	
 		<!-- reference to wfs bean in this context -->
 		<property name="WFS" ref="wfs"/>
 	</bean>

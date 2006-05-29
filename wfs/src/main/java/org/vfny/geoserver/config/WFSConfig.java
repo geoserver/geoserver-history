@@ -4,6 +4,9 @@
  */
 package org.vfny.geoserver.config;
 
+import org.vfny.geoserver.global.Config;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 
@@ -59,6 +62,16 @@ public class WFSConfig extends ServiceConfig {
         featureBounding = w.isFeatureBounding();
     }
 
+    /**
+     * Creates the WFSConfig.
+     * 
+     * @param wfs The wfs module.
+     * 
+     */ 
+    public WFSConfig( WFS wfs ) {
+    		this( (WFSDTO) wfs.toDTO() );
+    }
+    
     /**
      * Implement loadDTO.
      * 

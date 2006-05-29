@@ -8,21 +8,11 @@
  */
 package org.vfny.geoserver.config;
 
-import java.util.Map;
-
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
-import org.vfny.geoserver.config.validation.ValidationConfig;
-import org.vfny.geoserver.global.GeoServerPlugIn;
-
-import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
-import org.vfny.geoserver.global.dto.WFSDTO;
-import org.vfny.geoserver.global.dto.WMSDTO;
 
 
 /**

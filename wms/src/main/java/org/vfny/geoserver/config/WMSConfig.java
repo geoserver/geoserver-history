@@ -4,6 +4,9 @@
  */
 package org.vfny.geoserver.config;
 
+import org.vfny.geoserver.global.Config;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
@@ -66,6 +69,15 @@ public class WMSConfig extends ServiceConfig {
         svgAntiAlias = w.getSvgAntiAlias();
     }
 
+    /**
+     * Creates the WMSConfig.
+     * 
+     * @param wms The wms module.
+     */
+    public WMSConfig( WMS wms )  {
+    		this( (WMSDTO) wms.toDTO() );
+    }
+    
     /**
      * Implement loadDTO.
      * 

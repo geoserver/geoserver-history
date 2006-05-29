@@ -11,6 +11,11 @@
 		<constructor-arg ref="geoServer"/>
 	</bean>
 		
+	<bean id="wmsConfig"
+		class="org.vfny.geoserver.config.WMSConfig">
+		<constructor-arg ref="wms"/>
+	</bean>
+	
 	<!-- this registers the above modules with the servlet context
 		 it is around to keep the struts app happy as we move away from 
 		 servlets  -->
@@ -19,6 +24,12 @@
 		
 		<constructor-arg type="java.lang.String" value="WMS"/>
  		<constructor-arg ref="wms"/>
+ 	</bean>
+	<bean id="wmsConfigRegisterar"
+		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
+		
+		<constructor-arg type="java.lang.String" value="Config.WMS"/>
+ 		<constructor-arg ref="wmsConfig"/>
  	</bean>
  	
 	<!-- 

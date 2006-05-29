@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.Action;
+import org.springframework.web.struts.ActionSupport;
 import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.WFS;
@@ -57,7 +58,7 @@ import org.vfny.geoserver.util.Requests;
  * @author $Author: cholmesny $ (last modification)
  * @version $Id: GeoServerAction.java,v 1.7 2004/04/16 16:33:31 cholmesny Exp $
  */
-public class GeoServerAction extends Action {
+public class GeoServerAction extends ActionSupport {
     
 	/** Class logger */
 	protected static Logger LOGGER = Logger.getLogger(
@@ -112,9 +113,7 @@ public class GeoServerAction extends Action {
      * @return WMS instance for this Web Application
      */
     public WMS getWMS(HttpServletRequest request) {
-    		//JD: fix when we get to injection
-    		//return Requests.getWMS(request);
-    		throw new UnsupportedOperationException();
+    		return (WMS) getWebApplicationContext().getBean("wms");
     }
 
     /**
@@ -131,8 +130,7 @@ public class GeoServerAction extends Action {
      * @return WFS instance for this Web Application
      */
     public WFS getWFS(HttpServletRequest request) {
-    		//return Requests.getWFS(request);
-    		throw new UnsupportedOperationException();
+    		 return (WFS) getWebApplicationContext().getBean("wfs");
     }
 
     /**
@@ -143,6 +141,6 @@ public class GeoServerAction extends Action {
      * @return Configuration model for Catalog information.
      */
     protected ApplicationState getApplicationState(HttpServletRequest request) {
-        return Requests.getApplicationState(request);
+        return (ApplicationState) getWebApplicationContext().getBean("applicationRequest");
     }
 }

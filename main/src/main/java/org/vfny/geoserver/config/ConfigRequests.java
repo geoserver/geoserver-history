@@ -43,12 +43,13 @@ public class ConfigRequests {
      *
      * @return Configuration information for the Web Map Server
      */
-    public static WMSConfig getWMSConfig(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        ServletContext context = session.getServletContext();
-
-        return (WMSConfig) context.getAttribute(WMSConfig.CONFIG_KEY);
-    }
+	//JD: kill this
+//    public static WMSConfig getWMSConfig(HttpServletRequest request) {
+//        HttpSession session = request.getSession();
+//        ServletContext context = session.getServletContext();
+//
+//        return (WMSConfig) context.getAttribute(WMSConfig.CONFIG_KEY);
+//    }
 
     /**
      * Access Web Feature Server Configuration Model from the WebContainer.
@@ -62,12 +63,13 @@ public class ConfigRequests {
      *
      * @return Configuration information for Web Feature Server
      */
-    public static WFSConfig getWFSConfig(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        ServletContext context = session.getServletContext();
-
-        return (WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
-    }
+//	JD: kill this
+//    public static WFSConfig getWFSConfig(HttpServletRequest request) {
+//        HttpSession session = request.getSession();
+//        ServletContext context = session.getServletContext();
+//
+//        return (WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
+//    }
 
     /**
      * Access Web Map Server Configuration Model from the WebContainer.

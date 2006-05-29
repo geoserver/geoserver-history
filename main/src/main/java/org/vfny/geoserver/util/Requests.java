@@ -9,7 +9,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.vfny.geoserver.global.ApplicationState;
+
 import org.vfny.geoserver.global.UserContainer;
 
 /**
@@ -192,13 +192,14 @@ public final class Requests {
      *
      * @return Configuration model for Catalog information.
      */
-    public static ApplicationState getApplicationState(
-        HttpServletRequest request) {
-
-        ServletRequest req = request;
-        HttpSession session = request.getSession();
-        ServletContext context = session.getServletContext();
-
-        return (ApplicationState) context.getAttribute(ApplicationState.WEB_CONTAINER_KEY);
-    }
+    //JD: kill this
+//    public static ApplicationState getApplicationState(
+//        HttpServletRequest request) {
+//
+//        ServletRequest req = request;
+//        HttpSession session = request.getSession();
+//        ServletContext context = session.getServletContext();
+//
+//        return (ApplicationState) context.getAttribute(ApplicationState.WEB_CONTAINER_KEY);
+//    }
 }
