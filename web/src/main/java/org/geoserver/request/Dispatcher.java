@@ -10,8 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.mvc.ServletWrappingController;
+import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+
+import com.sun.corba.se.internal.core.SendingContextServiceContext;
 
 /**
  * Root dispatcher which handles all incoming requests.
@@ -36,13 +39,26 @@ public class Dispatcher extends AbstractController {
 			String service = (String) kvp.get("SERVICE");
 			String request = (String) kvp.get("REQUEST");
 	        
+			if (service == null && request == null) {
+				//lookup in context path, (http://.../geoserver/service/request?)
+				
+				String path = httpRequest.getContextPath();
+				String uri = httpRequest.getRequestURI();
+				uri = uri.substring(path.length()+1);
+				
+				int index = uri.indexOf('/'); 
+				if ( index != -1 ) {
+					service = uri.substring(0,index);
+					request = uri.substring(index+1);
+				}
+			}
+			
 			//map request parameters to a Request bean to handle it 
 			Map requests = 
 				//getApplicationContext().getBeansOfType(AbstractService.class);
 				getApplicationContext().getParent().getBeansOfType(AbstractService.class);
 			
 			AbstractService target = null;
-			
 			
 			for (Iterator itr = requests.entrySet().iterator(); itr.hasNext();) {
 				Map.Entry entry = (Entry) itr.next();
@@ -75,7 +91,9 @@ public class Dispatcher extends AbstractController {
 				
 			}
 			else {
-				
+				String msg = "Could not locate service mapping to: (" 
+					+ service + "," + request + ")";
+				throw new ServiceException( msg );
 			}
 		}
 		
