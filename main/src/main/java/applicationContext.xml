@@ -23,7 +23,7 @@
 		<constructor-arg ref="config"/>
 		<constructor-arg ref="geoServer"/>
 	</bean>
-	<bean id="dataConfi g"
+	<bean id="dataConfig"
 		class="org.vfny.geoserver.config.DataConfig">
 		<constructor-arg ref="data"/>
 	</bean>	
