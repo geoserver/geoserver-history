@@ -279,8 +279,8 @@
 	</dependencyManagement>
 	
 	<build>
-		<!--sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>test</testSourceDirectory-->
+		<!-- TODO: the resources stuff hardcodes paths to source + test directories,
+		     we should be able to use some properties here -->
 		<resources>
 			<resource>
 				<directory>${basedir}/src/main/java</directory>
@@ -304,7 +304,7 @@
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>${testSourceDirectory}</directory>
+				<directory>${basedir}/src/test/java</directory>
 				<includes>
 					<include>META-INF/services/**</include>
 					<include>**/test-data/**</include>
@@ -365,9 +365,9 @@
         <version>2.1</version>
         <configuration>
           <descriptors>
-							<!--descriptor>release/src.xml</descriptor>
+							<descriptor>release/src.xml</descriptor>
 							<descriptor>release/war.xml</descriptor>
-							<descriptor>release/javadoc.xml</descriptor-->
+							<descriptor>release/javadoc.xml</descriptor>
 							<descriptor>release/bin.xml</descriptor>
 					</descriptors>
           <finalName>geoserver</finalName>
