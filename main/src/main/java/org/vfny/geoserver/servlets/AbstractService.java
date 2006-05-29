@@ -532,23 +532,25 @@ public abstract class AbstractService extends HttpServlet
 
         Map services = context.getBeansOfType(Service.class);
         Service s = null;
-        for (Iterator itr = services.values().iterator(); itr.hasNext();) {
-        		Service service = (Service) itr.next();
+        for (Iterator itr = services.entrySet().iterator(); itr.hasNext();) {
+        		Map.Entry entry = (Map.Entry) itr.next();
+        		String id = (String) entry.getKey();
+        		Service service = (Service) entry.getValue();
         		
-        		//TODO: need a better comparison of name
-        		if (service.getName().endsWith(serviceRequest.getService())) {
+        		if (id.equalsIgnoreCase(serviceRequest.getService())) {
         			s = service;
         			break;
         		}
         			
         }
-        
-//        if ("WFS".equals(serviceRequest.getService())) {
-//            s = serviceRequest.getWFS();
-//        } else {
-//            s = serviceRequest.getWMS();
-//        }
 
+        if (s == null) {
+        		String msg = "No service found matching: " +
+        			serviceRequest.getService();
+        		sendError(response,new ServiceException ( msg ));
+        		return;
+        }
+        	
         try {
             // execute request
             LOGGER.finer("executing request");
