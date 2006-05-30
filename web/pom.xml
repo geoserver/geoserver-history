@@ -189,7 +189,7 @@
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty6-plugin</artifactId>
-				<version>6.0-SNAPSHOT</version>
+				<version>6.0.0beta16</version>
 				<configuration>
 					<contextPath>geoserver</contextPath>
 					<systemProperties>
@@ -210,7 +210,7 @@
           <execution>
 						<id>configPackage</id>
 						<configuration>
-							<configId>demo</configId>
+							<configId>basic</configId>
 						</configuration>
             <phase>install</phase>
             <goals>
