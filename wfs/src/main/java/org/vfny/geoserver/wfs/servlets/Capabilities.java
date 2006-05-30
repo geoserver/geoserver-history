@@ -45,7 +45,7 @@ public class Capabilities extends WFService {
      * @return DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
-        return new CapabilitiesXmlReader();
+        return new CapabilitiesXmlReader(this);
     }
 
     /**

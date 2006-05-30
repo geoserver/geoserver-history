@@ -19,6 +19,7 @@ import org.vfny.geoserver.Request;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.FeatureHandler;
+import org.vfny.geoserver.wfs.servlets.WFService;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
@@ -34,8 +35,11 @@ import org.xml.sax.helpers.ParserAdapter;
 public class GetFeatureXmlReader extends XmlRequestReader {
     /**
      * Creates a new GetFeatureXmlReader object.
+     * 
+     * @param The WFS Service handling the request.
      */
-    public GetFeatureXmlReader() {
+    public GetFeatureXmlReader(WFService service) {
+    		super( service );
     }
 
     /**

@@ -42,6 +42,7 @@ import org.vfny.geoserver.wms.WmsException;
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
  */
+//JD: kill this class
 public class WmsDispatcher extends Dispatcher {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(

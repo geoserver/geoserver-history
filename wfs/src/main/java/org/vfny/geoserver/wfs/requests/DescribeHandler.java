@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.vfny.geoserver.servlets.AbstractService;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -34,18 +35,27 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
             "org.vfny.geoserver.requests.wfs");
 
     /** Internal GetCapabilities request for construction. */
-    private DescribeRequest request = new DescribeRequest();
+    private DescribeRequest request = null;
 
     /** Local variable to track current tag */
     private String currentTag = new String();
 
+    /**
+     * Creates a new describe request handler.
+     * 
+     * @param request The describe request.
+     */
+    public DescribeHandler(DescribeRequest request) {
+    		this.request = request;
+    }
+    
     /**
      * Returns the GetCapabilities request.
      *
      * @return GetCapabilities request.
      */
     public DescribeRequest getRequest(HttpServletRequest req) {
-    	request.setHttpServletRequest(req);
+    		request.setHttpServletRequest(req);
         return request;
     }
 

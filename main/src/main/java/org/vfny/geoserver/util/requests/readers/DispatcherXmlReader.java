@@ -12,8 +12,9 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.xerces.parsers.SAXParser;
+import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.util.requests.DispatcherHandler;
-import org.vfny.geoserver.wfs.WfsException;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -64,10 +65,10 @@ public class DispatcherXmlReader {
      * @param reader A reader of the request from the http client.
      * @param req The actual request made.
      *
-     * @throws WfsException DOCUMENT ME!
+     * @throws ServiceException DOCUMENT ME!
      */
     public void read(Reader reader, HttpServletRequest req)
-        throws WfsException {
+        throws ServiceException {
         //InputSource requestSource = new InputSource((Reader) tempReader);
         InputSource requestSource = new InputSource(reader);
 
@@ -80,28 +81,43 @@ public class DispatcherXmlReader {
             parser.setContentHandler(currentRequest);
             parser.parse(requestSource);
         } catch (SAXException e) {
-            throw new WfsException(e,
-                "XML get capabilities request parsing error",
+            throw new ServiceException(e,
+                "XML request parsing error",
                 DispatcherXmlReader.class.getName());
         } catch (IOException e) {
-            throw new WfsException(e,
-                "XML get capabilities request input error",
+            throw new ServiceException(e,
+                "XML request input error",
                 DispatcherXmlReader.class.getName());
         }
     }
 
     /**
-     * Returns the guessed request type..
-     *
-     * @return Request type.
+     * @return The service, WFS,WMS,WCS,etc...
      */
-    public int getRequestType() {
-        LOGGER.info("getting request type from " + currentRequest);
-
-        return currentRequest.getRequestType();
+    public String getService() {
+    		return currentRequest.getService();
     }
-
-    public int getServiceType() {
-        return currentRequest.getServiceType();
+    
+    /**
+     * @return The request, GetCapabilities,GetMap,etc...
+     */
+    public String getRequest() {
+    		LOGGER.info("getting request type from " + currentRequest);
+    		return currentRequest.getRequest();
     }
+    //JD: kill these
+//    /**
+//     * Returns the guessed request type..
+//     *
+//     * @return Request type.
+//     */
+//    public int getRequestType() {
+//        
+//
+//        return currentRequest.getRequestType();
+//    }
+//
+//    public int getServiceType() {
+//        return currentRequest.getServiceType();
+//    }
 }

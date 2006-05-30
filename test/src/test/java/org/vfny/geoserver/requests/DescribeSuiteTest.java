@@ -15,6 +15,7 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.DescribeRequest;
 import org.vfny.geoserver.wfs.requests.readers.DescribeKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.DescribeXmlReader;
+import org.vfny.geoserver.wfs.servlets.Describe;
 
 
 /**
@@ -35,6 +36,8 @@ public class DescribeSuiteTest extends RequestTestCase {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
+    /** Describe request */
+    private Describe service = null;
     /** Base request for comparison */
     private DescribeRequest[] baseRequest = new DescribeRequest[10];
 
@@ -54,10 +57,12 @@ public class DescribeSuiteTest extends RequestTestCase {
     }
 
     public void setUp() {
+    		service = new Describe();
+    		
         baseRequest[0] = new DescribeRequest();
         baseRequest[0].addFeatureType("rail");
         baseRequest[0].setVersion("0.0.15");
-
+        
         baseRequest[1] = new DescribeRequest();
         baseRequest[1].addFeatureType("rail");
         baseRequest[1].addFeatureType("roads");
@@ -65,7 +70,7 @@ public class DescribeSuiteTest extends RequestTestCase {
     }
 
     protected XmlRequestReader getXmlReader() {
-        return new DescribeXmlReader();
+        return new DescribeXmlReader(service);
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {

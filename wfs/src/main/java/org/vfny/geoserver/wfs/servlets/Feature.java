@@ -56,6 +56,6 @@ public class Feature extends WFService {
      * @return DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
-        return new GetFeatureXmlReader();
+        return new GetFeatureXmlReader(this);
     }
 }

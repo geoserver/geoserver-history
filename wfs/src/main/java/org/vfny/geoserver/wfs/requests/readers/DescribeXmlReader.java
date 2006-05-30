@@ -16,6 +16,8 @@ import org.vfny.geoserver.Request;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.DescribeHandler;
+import org.vfny.geoserver.wfs.requests.DescribeRequest;
+import org.vfny.geoserver.wfs.servlets.WFService;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
@@ -31,10 +33,13 @@ import org.xml.sax.helpers.ParserAdapter;
 public class DescribeXmlReader extends XmlRequestReader {
     /**
      * Creates a new DescribeXmlReader object.
+     * 
+     * @param service The service handling the request.
      */
-    public DescribeXmlReader() {
+    public DescribeXmlReader(WFService service) {
+    		super(service);
     }
-
+    
     /**
      * DOCUMENT ME!
      *
@@ -49,7 +54,8 @@ public class DescribeXmlReader extends XmlRequestReader {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        DescribeHandler contentHandler = new DescribeHandler();
+        DescribeRequest request = new DescribeRequest( (WFService) getServiceRef() );
+        DescribeHandler contentHandler = new DescribeHandler( request );
 
         // read in XML file and parse to content handler
         try {

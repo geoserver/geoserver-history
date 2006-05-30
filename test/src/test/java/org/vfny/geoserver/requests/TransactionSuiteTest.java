@@ -26,6 +26,7 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.TransactionRequest;
 import org.vfny.geoserver.wfs.requests.readers.DeleteKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.TransactionXmlReader;
+import org.vfny.geoserver.wfs.servlets.Transaction;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -122,7 +123,7 @@ public class TransactionSuiteTest extends RequestTestCase {
     }
 
     protected XmlRequestReader getXmlReader() {
-        return new TransactionXmlReader();
+        return new TransactionXmlReader(new Transaction());
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {

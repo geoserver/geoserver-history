@@ -87,4 +87,6 @@
 		<!-- always use file strategy -->
 		<property name="fileStrategy" ref="fileServiceStrategy"/>
 	</bean>	
+	
+	
 </beans>

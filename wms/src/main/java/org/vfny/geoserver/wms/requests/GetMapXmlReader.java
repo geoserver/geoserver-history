@@ -62,18 +62,10 @@ public class GetMapXmlReader extends XmlRequestReader {
     
     /**
      * Creates a new GetMapXmlReader object.
-     * @deprecated use {@link GetMapXmlReader(WMService)}
-     */
-    public GetMapXmlReader() {
-    }
-    
-    /**
-     * Creates a new GetMapXmlReader object.
      * @param service this is the service that handles the request
      */
     public GetMapXmlReader(WMService service){
-    	super(service);
-    	
+    		super(service);
     }
       
     /**

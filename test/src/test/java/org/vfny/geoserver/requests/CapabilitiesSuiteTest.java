@@ -10,11 +10,14 @@ import java.util.logging.Logger;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.testdata.MockUtils;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.readers.CapabilitiesKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.CapabilitiesXmlReader;
+import org.vfny.geoserver.wfs.servlets.Capabilities;
 
 /**
  * Tests the get capabilities request handling.
@@ -34,6 +37,9 @@ public class CapabilitiesSuiteTest extends RequestTestCase {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
+    /** capabilities servlte */
+    private Capabilities service;
+    
     /** Base request for comparison */
     private CapabilitiesRequest[] baseRequest = new CapabilitiesRequest[10];
 
@@ -53,17 +59,25 @@ public class CapabilitiesSuiteTest extends RequestTestCase {
     }
 
     public void setUp() {
-        baseRequest[0] = new CapabilitiesRequest("WFS");
-
-        //baseRequest[0].setService("WFS");
+    		
+    		WFS wfs = new WFS(MockUtils.newWfsDto());
+    		Capabilities service = new Capabilities();
+    		
+    		service.setServiceRef( wfs );
+        
+    		baseRequest[0] = new CapabilitiesRequest("WFS");
+        
+    		//baseRequest[0].setService("WFS");
         baseRequest[0].setVersion("1.0.0");
-
+        	baseRequest[0].setServiceRef(service);
+        	
         baseRequest[1] = new CapabilitiesRequest("WFS");
         baseRequest[1].setVersion("0.0.14");
+        baseRequest[1].setServiceRef(service);
     }
 
     protected XmlRequestReader getXmlReader() {
-        return new CapabilitiesXmlReader();
+        return new CapabilitiesXmlReader(service);
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {

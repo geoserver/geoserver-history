@@ -91,6 +91,12 @@
     <load-on-startup>2</load-on-startup>
   </servlet>
   
+  <!-- wfs test post servlet -->
+  <servlet>
+   <servlet-name>TestWfsPost</servlet-name>
+   <servlet-class>org.vfny.geoserver.wfs.servlets.TestWfsPost</servlet-class>
+  </servlet>
+  
   <!--servlet>
     <servlet-name>DescribeFeatureType</servlet-name>
     <servlet-class>org.vfny.geoserver.wfs.servlets.Describe</servlet-class>
@@ -153,10 +159,6 @@
     <servlet-class>org.vfny.geoserver.wms.servlets.GetLegendGraphic</servlet-class>
   </servlet>
   <servlet>
-   <servlet-name>TestWfsPost</servlet-name>
-   <servlet-class>org.vfny.geoserver.wfs.servlets.TestWfsPost</servlet-class>
-  </servlet>
-  <servlet>
    <servlet-name>JSPCompiler</servlet-name>
    <servlet-class>org.vfny.geoserver.servlets.JSPCompiler</servlet-class>
   </servlet-->
@@ -182,6 +184,10 @@
   <servlet-mapping>
   	<servlet-name>dispatcher</servlet-name>
 	<url-pattern>/wfs/*</url-pattern>
+  </servlet-mapping>
+   <servlet-mapping>
+   <servlet-name>TestWfsPost</servlet-name>
+   <url-pattern>/TestWfsPost/*</url-pattern>
   </servlet-mapping>
     
   <!-- servlet-mapping>
@@ -237,14 +243,10 @@
     <url-pattern>/wms/GetLegendGraphic</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-   <servlet-name>TestWfsPost</servlet-name>
-   <url-pattern>/wfs/TestWfsPost/*</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
    <servlet-name>JSPCompiler</servlet-name>
    <url-pattern>/JSPCompiler</url-pattern>
   </servlet-mapping-->
-
+ 
   
   <mime-mapping>
    <extension>xsl</extension>

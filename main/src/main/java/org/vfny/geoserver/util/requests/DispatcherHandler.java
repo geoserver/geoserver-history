@@ -38,26 +38,48 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     /** Stores internal service type. */
     private int serviceType = Dispatcher.UNKNOWN;
 
+    /** Stores the internal request type as string */
+    private String request = null;
+    
+    /** Stores hte internal service type as string */
+    private String service = null;
+     
     /** Flags whether or not type has been set */
     private boolean gotType = false;
 
     /**
+     * @return the service type. 
+     */
+    public String getService() {
+		return service;
+	}
+    
+    /**
+     * @return The request type.
+     */
+    public String getRequest() {
+		return request;
+	}
+    
+    //JD: kill these methods
+    /**
      * Gets the request type.  See Dispatcher for the available types.
      *
      * @return an int of the request type.
+     * 
      */
-    public int getRequestType() {
-        return requestType;
-    }
+//    public int getRequestType() {
+//        return requestType;
+//    }
 
     /**
      * Gets the service type, for now either WMS or WFS types of Dispatcher.
      *
      * @return an int of the service type.
      */
-    public int getServiceType() {
-        return serviceType;
-    }
+//    public int getServiceType() {
+//        return serviceType;
+//    }
 
     /**
      * Notes the start of the element and checks for request type.
@@ -71,40 +93,44 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
      */
     public void startElement(String namespaceURI, String localName,
         String rawName, Attributes atts) throws SAXException {
-        if (!gotType) {
-            // if at a query element, empty the current query, set insideQuery flag, and get query typeNames
-            if (localName.equals("GetCapabilities")) {
-                this.requestType = Dispatcher.GET_CAPABILITIES_REQUEST;
-            } else if (localName.equals("DescribeFeatureType")) {
-                this.requestType = Dispatcher.DESCRIBE_FEATURE_TYPE_REQUEST;
-            } else if (localName.equals("GetFeature")) {
-                this.requestType = Dispatcher.GET_FEATURE_REQUEST;
-            } else if (localName.equals("Transaction")) {
-                this.requestType = Dispatcher.TRANSACTION_REQUEST;
-            } else if (localName.equals("GetFeatureWithLock")) {
-                this.requestType = Dispatcher.GET_FEATURE_LOCK_REQUEST;
-            } else if (localName.equals("LockFeature")) {
-                this.requestType = Dispatcher.LOCK_REQUEST;
-            } else if (localName.equals("GetMap")) {
-                this.requestType = Dispatcher.GET_MAP_REQUEST;
-            } else if (localName.equals("GetFeatureInfo")) {
-                this.requestType = Dispatcher.GET_FEATURE_INFO_REQUEST;
-            } else {
-                this.requestType = Dispatcher.UNKNOWN;
-            }
-        }
+    		if (gotType)
+    			return;
+    		
+    		this.request = localName;
+            
+            //JD: kill this
+//            if (localName.equals("GetCapabilities")) {
+//                this.requestType = Dispatcher.GET_CAPABILITIES_REQUEST;
+//            } else if (localName.equals("DescribeFeatureType")) {
+//                this.requestType = Dispatcher.DESCRIBE_FEATURE_TYPE_REQUEST;
+//            } else if (localName.equals("GetFeature")) {
+//                this.requestType = Dispatcher.GET_FEATURE_REQUEST;
+//            } else if (localName.equals("Transaction")) {
+//                this.requestType = Dispatcher.TRANSACTION_REQUEST;
+//            } else if (localName.equals("GetFeatureWithLock")) {
+//                this.requestType = Dispatcher.GET_FEATURE_LOCK_REQUEST;
+//            } else if (localName.equals("LockFeature")) {
+//                this.requestType = Dispatcher.LOCK_REQUEST;
+//            } else if (localName.equals("GetMap")) {
+//                this.requestType = Dispatcher.GET_MAP_REQUEST;
+//            } else if (localName.equals("GetFeatureInfo")) {
+//                this.requestType = Dispatcher.GET_FEATURE_INFO_REQUEST;
+//            } else {
+//                this.requestType = Dispatcher.UNKNOWN;
+//            }
+        
 
         for (int i = 0, n = atts.getLength(); i < n; i++) {
             if (atts.getLocalName(i).equals("service")) {
-                String service = atts.getValue(i);
-
-                if (service.equals("WFS")) {
-                    this.serviceType = Dispatcher.WFS_SERVICE;
-                } else if (service.equals("WMS")) {
-                    this.serviceType = Dispatcher.WMS_SERVICE;
-                }
-            } else {
-                this.serviceType = Dispatcher.UNKNOWN;
+                this.service = atts.getValue(i);
+//JD: kill this
+//                if (service.equals("WFS")) {
+//                    this.serviceType = Dispatcher.WFS_SERVICE;
+//                } else if (service.equals("WMS")) {
+//                    this.serviceType = Dispatcher.WMS_SERVICE;
+//                }
+//            } else {
+//                this.serviceType = Dispatcher.UNKNOWN;
             }
         }
 

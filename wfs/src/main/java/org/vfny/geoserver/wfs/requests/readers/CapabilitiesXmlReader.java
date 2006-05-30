@@ -16,6 +16,7 @@ import org.vfny.geoserver.Request;
 import org.vfny.geoserver.util.requests.CapabilitiesHandler;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
+import org.vfny.geoserver.wfs.servlets.WFService;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
@@ -31,6 +32,16 @@ import org.xml.sax.helpers.ParserAdapter;
  * @task TODO: see if it must be refactored to read WMS GetCapabilities too
  */
 public class CapabilitiesXmlReader extends XmlRequestReader {
+	
+	/**
+	 * Constructs a new reader.
+	 * 
+	 * @param service The WFS service handling the request.
+	 */
+	public CapabilitiesXmlReader( WFService service ) {
+		super( service );
+	}
+	
     /**
      * Reads the Capabilities XML request into a CapabilitiesRequest object.
      *

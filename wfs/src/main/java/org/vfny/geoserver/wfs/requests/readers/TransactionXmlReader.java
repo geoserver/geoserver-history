@@ -20,6 +20,7 @@ import org.vfny.geoserver.wfs.requests.TransactionFeatureHandler;
 import org.vfny.geoserver.wfs.requests.TransactionFilterHandler;
 import org.vfny.geoserver.wfs.requests.TransactionHandler;
 import org.vfny.geoserver.wfs.responses.WfsTransactionException;
+import org.vfny.geoserver.wfs.servlets.WFService;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
@@ -33,6 +34,16 @@ import org.xml.sax.helpers.ParserAdapter;
  * @version $Id: TransactionXmlReader.java,v 1.8 2004/02/13 19:30:39 dmzwiers Exp $
  */
 public class TransactionXmlReader extends XmlRequestReader {
+	
+	/**
+	 * Creates a new reader.
+	 * 
+	 * @param service The WFS service handling the request.
+	 */
+	public TransactionXmlReader( WFService service ) {
+		super( service );
+	}
+	
     /**
      * Reads the Transaction XML request into a TransactionRequest object.
      *

@@ -21,6 +21,7 @@ import org.vfny.geoserver.wfs.Query;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
 import org.vfny.geoserver.wfs.requests.readers.GetFeatureKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.GetFeatureXmlReader;
+import org.vfny.geoserver.wfs.servlets.Feature;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -56,7 +57,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     protected XmlRequestReader getXmlReader() {
-        return new GetFeatureXmlReader();
+    		
+        return new GetFeatureXmlReader(new Feature());
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {

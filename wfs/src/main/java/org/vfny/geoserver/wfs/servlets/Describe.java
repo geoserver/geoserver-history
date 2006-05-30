@@ -56,6 +56,6 @@ public class Describe extends WFService {
      * @return DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
-        return new DescribeXmlReader();
+        return new DescribeXmlReader(this);
     }
 }

@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.servlets.Dispatcher;
@@ -51,6 +52,7 @@ import org.vfny.geoserver.wfs.WfsException;
  * @author Chris Holmes, TOPP
  * @version $Id: WfsDispatcher.java,v 1.9 2006/03/03 10:51:55 cholmesny Exp $
  */
+//JD: kill this class
 public class WfsDispatcher extends Dispatcher {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
@@ -160,8 +162,13 @@ public class WfsDispatcher extends Dispatcher {
             
             if (disReader != null) {
                 DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
-                requestTypeAnalyzer.read(disReader, request);
-                targetRequest = requestTypeAnalyzer.getRequestType();
+                try {
+					requestTypeAnalyzer.read(disReader, request);
+				} 
+                catch (ServiceException e) {
+                		throw new WfsException(e);
+				}
+                //targetRequest = requestTypeAnalyzer.getRequestType();
             } else {
                 targetRequest = UNKNOWN;
             }

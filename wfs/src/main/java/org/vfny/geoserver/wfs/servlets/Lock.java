@@ -59,6 +59,6 @@ public class Lock extends WFService {
      * @return DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
-        return new LockXmlReader();
+        return new LockXmlReader(this);
     }
 }

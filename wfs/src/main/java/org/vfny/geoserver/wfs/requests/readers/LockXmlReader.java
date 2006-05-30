@@ -19,6 +19,7 @@ import org.vfny.geoserver.Request;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.LockHandler;
+import org.vfny.geoserver.wfs.servlets.WFService;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
@@ -34,8 +35,11 @@ import org.xml.sax.helpers.ParserAdapter;
 public class LockXmlReader extends XmlRequestReader {
     /**
      * Creates a new LockXmlReader object.
+     * 
+     * @param service The WFS service handling the request.
      */
-    public LockXmlReader() {
+    public LockXmlReader(WFService service) {
+    		super(service);
     }
 
     /**

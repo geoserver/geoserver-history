@@ -86,7 +86,7 @@ public class Transaction extends WFService {
      * @see TransactionXmlReader
      */
     protected XmlRequestReader getXmlRequestReader() {
-        return new TransactionXmlReader();
+        return new TransactionXmlReader(this);
     }
 
     /**

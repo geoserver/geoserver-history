@@ -18,6 +18,7 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.LockRequest;
 import org.vfny.geoserver.wfs.requests.readers.LockKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.LockXmlReader;
+import org.vfny.geoserver.wfs.servlets.Lock;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -53,7 +54,7 @@ public class LockSuiteTest extends RequestTestCase {
     }
 
     protected XmlRequestReader getXmlReader() {
-        return new LockXmlReader();
+        return new LockXmlReader(new Lock());
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {

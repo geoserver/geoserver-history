@@ -47,7 +47,7 @@ public abstract class XmlRequestReader {
      * @param service The service handling the request
      */
     public XmlRequestReader(AbstractService service) {
-    	this.service = service;
+    		this.service = service;
 	}
     /**
      * This will create a new XmlRequestReader

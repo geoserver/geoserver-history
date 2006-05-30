@@ -39,6 +39,7 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
  *       from ServletContext instead of having them hardcoded
  * @task TODO: move the post dispatcher work from WfsDispatcher up here.
  */
+//JD: kill this class
 public class Dispatcher extends HttpServlet {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(

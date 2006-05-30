@@ -44,7 +44,7 @@ public class Capabilities extends WMService {
      * @return DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
-        return new CapabilitiesXmlReader();
+        return new CapabilitiesXmlReader(this);
     }
 
     /**
