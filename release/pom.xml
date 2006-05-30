@@ -28,7 +28,12 @@
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty-util</artifactId>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jsp-2.1</artifactId>
+		</dependency>
+  </dependencies>
+
 	<build>
 		<plugins>
 			
