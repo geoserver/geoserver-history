@@ -224,13 +224,16 @@ public class WMSCapsTransformer extends TransformerBase {
          */
         private void handleRequest() {
             WMS wms = (WMS) request.getServiceRef().getServiceRef();
+            
             start("Request");
 
             start("GetCapabilities");
             element("Format", WMS_CAPS_MIME);
 
             //@HACK: pointer to the WMS dispatcher
-            String serviceUrl = request.getBaseUrl() + "wms?";
+            String serviceUrl = request.getBaseUrl() + "wms?"  + 
+            		"SERVICE=WMS&version=" + wms.getVersion();
+            
             handleDcpType(serviceUrl, serviceUrl);
             end("GetCapabilities");
 

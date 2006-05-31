@@ -71,6 +71,11 @@
 		parent="wfsService">
 	</bean>
 		
+	<bean id="wfsLockFeature"
+		class="org.vfny.geoserver.wfs.servlets.Lock"
+		parent="wfsService">
+	</bean>
+	
 	<bean id="wfsGetFeatureWithLock"
 		class="org.vfny.geoserver.wfs.servlets.FeatureWithLock"
 		parent="wfsService">
