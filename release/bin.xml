@@ -27,6 +27,13 @@
 			</includes>
 		</fileSet>
 		<fileSet>
+			<directory>release</directory>
+			<outputDirectory>geoserver</outputDirectory>
+			<includes>
+				<include>license.txt</include>
+			</includes>
+		</fileSet>
+		<fileSet>
 			<directory>release/jetty</directory>
 			<outputDirectory>geoserver</outputDirectory>
 			<includes>
