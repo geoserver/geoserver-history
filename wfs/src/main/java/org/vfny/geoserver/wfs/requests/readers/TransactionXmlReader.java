@@ -58,7 +58,8 @@ public class TransactionXmlReader extends XmlRequestReader {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        TransactionHandler contentHandler = new TransactionHandler();
+        TransactionHandler contentHandler = 
+        		new TransactionHandler((WFService) getServiceRef());
         TransactionFilterHandler filterParser = new TransactionFilterHandler(contentHandler,
                 null);
         TransactionFeatureHandler featureParser = new TransactionFeatureHandler(filterParser,

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
 import org.vfny.geoserver.wfs.Query;
+import org.vfny.geoserver.wfs.servlets.WFService;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -38,7 +39,7 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
             "org.vfny.geoserver.requests.wfs");
 
     /** Internal get feature request for construction. */
-    private FeatureRequest request = new FeatureRequest();
+    private FeatureRequest request = null;
 
     /** Tracks tag we are currently inside: helps maintain state. */
     private String insideTag = new String();
@@ -52,10 +53,12 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     /**
      * Empty constructor.
      */
-    public FeatureHandler() {
+    public FeatureHandler(WFService service) {
         super();
+        request = new FeatureRequest(service);
     }
 
+    
     /**
      * Returns the GetFeature request.
      *

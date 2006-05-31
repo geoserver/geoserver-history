@@ -56,7 +56,8 @@ public class GetFeatureXmlReader extends XmlRequestReader {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        FeatureHandler contentHandler = new FeatureHandler();
+        FeatureHandler contentHandler = 
+        		new FeatureHandler((WFService) getServiceRef());
         FilterFilter filterParser = new FilterFilter(contentHandler, null);
         GMLFilterGeometry geometryFilter = new GMLFilterGeometry(filterParser);
         GMLFilterDocument documentFilter = new GMLFilterDocument(geometryFilter);

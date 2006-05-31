@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
+import org.vfny.geoserver.wfs.servlets.WFService;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -36,7 +37,7 @@ public class LockHandler extends XMLFilterImpl implements ContentHandler,
             "org.vfny.geoserver.requests");
 
     /** Internal lock request for construction. */
-    private LockRequest request = new LockRequest();
+    private LockRequest request = null;
 
     /* ***********************************************************************
      *  Local tracking methods to deal with incoming XML stream              *
@@ -60,8 +61,9 @@ public class LockHandler extends XMLFilterImpl implements ContentHandler,
     /**
      * Empty constructor.
      */
-    public LockHandler() {
+    public LockHandler(WFService service) {
         super();
+        request = new LockRequest(service);
     }
 
     /**

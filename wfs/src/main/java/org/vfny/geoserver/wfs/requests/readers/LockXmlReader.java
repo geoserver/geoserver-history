@@ -56,7 +56,8 @@ public class LockXmlReader extends XmlRequestReader {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        LockHandler contentHandler = new LockHandler();
+        LockHandler contentHandler = 
+        		new LockHandler((WFService)getServiceRef());
         FilterFilter filterParser = new FilterFilter(contentHandler, null);
         GMLFilterGeometry geometryFilter = new GMLFilterGeometry(filterParser);
         GMLFilterDocument documentFilter = new GMLFilterDocument(geometryFilter);

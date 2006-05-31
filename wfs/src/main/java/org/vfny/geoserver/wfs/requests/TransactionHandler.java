@@ -16,6 +16,7 @@ import org.geotools.filter.FilterHandler;
 import org.geotools.gml.GMLHandlerFeature;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.responses.WfsTransactionException;
+import org.vfny.geoserver.wfs.servlets.WFService;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -62,7 +63,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
             "org.vfny.geoserver.requests.wfs");
 
     /** Internal transaction request for construction. */
-    private TransactionRequest request = new TransactionRequest();
+    private TransactionRequest request = null;
 
     /** Tracks current sub request */
     private SubTransactionRequest subRequest = null;
@@ -91,8 +92,9 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     /**
      * Empty constructor.
      */
-    public TransactionHandler() {
+    public TransactionHandler(WFService service) {
         super();
+        request = new TransactionRequest(service);
     }
 
     /**

@@ -31,7 +31,7 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
             "org.vfny.geoserver.requests");
 
     /** Internal Capabilities request for construction. */
-    private CapabilitiesRequest request = new CapabilitiesRequest("WFS", service);
+    private CapabilitiesRequest request = null;
     
     
     /**
@@ -40,9 +40,11 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
      */
     public CapabilitiesHandler(AbstractService service) {
 		this.service = service;
+		request = new CapabilitiesRequest("WFS", service);
 	}
     /**
      * Creates a new CapabilitiesHandler
+     * @deprecated use {@link #CapabilitiesHandler(AbstractService)}
      */
     public CapabilitiesHandler() {
 	}
