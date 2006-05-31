@@ -15,6 +15,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
 import org.vfny.geoserver.Request;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.TransactionFeatureHandler;
 import org.vfny.geoserver.wfs.requests.TransactionFilterHandler;
@@ -62,8 +63,9 @@ public class TransactionXmlReader extends XmlRequestReader {
         		new TransactionHandler((WFService) getServiceRef());
         TransactionFilterHandler filterParser = new TransactionFilterHandler(contentHandler,
                 null);
-        TransactionFeatureHandler featureParser = new TransactionFeatureHandler(filterParser,
-                req);
+        Data catalog = getServiceRef().getCatalog();
+        TransactionFeatureHandler featureParser = 
+        		new TransactionFeatureHandler(filterParser, req, catalog);
         GMLFilterGeometry geometryFilter = new GMLFilterGeometry(featureParser);
         GMLFilterDocument documentFilter = new GMLFilterDocument(geometryFilter);
 

@@ -45,6 +45,7 @@
 		class="org.vfny.geoserver.servlets.AbstractService">
 		<!--  reference to geoserver bean defined in the 'main' context -->
 		<property name="geoServer" ref="geoServer"/>
+		<property name="catalog" ref="data"/>
 	</bean>
 
 	<!-- the abstract wfs specific bean  -->

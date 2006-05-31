@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geotools.catalog.Catalog;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -39,6 +40,7 @@ import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 
@@ -134,6 +136,11 @@ public abstract class AbstractService extends HttpServlet
     GeoServer geoServer;
     
     /**
+     * Reference to the catalog.
+     */
+    Data catalog;
+    
+    /**
      * Id of the service strategy to use.
      */
     String serviceStrategy;
@@ -219,6 +226,21 @@ public abstract class AbstractService extends HttpServlet
      */
     public GeoServer getGeoServer() {
     		return geoServer;
+    }
+    
+    /**
+     * @return The reference to the global catalog instance.
+     */
+    public Data getCatalog() {
+    		return catalog;
+    }
+    
+    /**
+     * Sets the reference to the global catalog instance.
+     * 
+     */
+    public void setCatalog(Data catalog) {
+    		this.catalog = catalog;
     }
     
     /**

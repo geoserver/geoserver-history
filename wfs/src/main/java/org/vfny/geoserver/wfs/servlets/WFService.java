@@ -27,7 +27,6 @@ import org.vfny.geoserver.wfs.WfsExceptionHandler;
 abstract public class WFService extends AbstractService {
 	
 	
-
     /**
 	 * Constructor for WFS service.
 	 * 

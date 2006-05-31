@@ -82,11 +82,12 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      * @param parent The parent of this filter.
      * @param r DOCUMENT ME!
      */
-    public TransactionFeatureHandler(TransactionFilterHandler parent,
-        HttpServletRequest r) {
+    public TransactionFeatureHandler(
+    		TransactionFilterHandler parent, HttpServletRequest r, Data catalog
+	) {
         super(parent);
         this.parent = parent;
-        //catalog = Requests.getWFS(r).getData();
+        this.catalog = catalog;
     }
 
     /**
