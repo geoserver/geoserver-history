@@ -17,7 +17,7 @@
           <required>true</required>
           <type>java.lang.String</type>
           <description>
-					The id of hte configuration, used to locate the archive.
+					The id of the configuration, used to locate the archive.
           </description>
         </parameter>
 

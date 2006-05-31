@@ -210,7 +210,7 @@
           <execution>
 						<id>configPackage</id>
 						<configuration>
-							<configId>basic</configId>
+							<configId>${configId}</configId>
 						</configuration>
             <phase>install</phase>
             <goals>
@@ -230,4 +230,7 @@
 		</plugins>
 	</build>
 
+	<properties>
+		<configId>minimal</configId>
+	</properties>
 </project>
