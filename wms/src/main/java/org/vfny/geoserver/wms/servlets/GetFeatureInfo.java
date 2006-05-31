@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.vfny.geoserver.Response;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoKvpReader;
@@ -29,8 +30,8 @@ public class GetFeatureInfo extends WMService {
     /**
      * Creates a new GetMap object.
      */
-    public GetFeatureInfo() {
-    		super("GetFeatureInfo");
+    public GetFeatureInfo(WMS wms) {
+    		super("GetFeatureInfo",wms);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)

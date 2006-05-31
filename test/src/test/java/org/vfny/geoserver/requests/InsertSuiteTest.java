@@ -57,7 +57,7 @@ public class InsertSuiteTest extends TransactionSuiteTest {
         insert.setHandle("insert 1");
         insert.addFeature(testFeature);
 
-        TransactionRequest baseRequest = new TransactionRequest();
+        TransactionRequest baseRequest = new TransactionRequest(service);
         baseRequest.addSubRequest(insert);
         baseRequest.setHandle("my insert");
 
@@ -71,7 +71,7 @@ public class InsertSuiteTest extends TransactionSuiteTest {
         insert.setHandle("insert 2");
         insert.addFeature(testFeature);
 
-        TransactionRequest baseRequest = new TransactionRequest();
+        TransactionRequest baseRequest = new TransactionRequest(service);
         baseRequest.addSubRequest(insert);
 
         Coordinate[] points = {

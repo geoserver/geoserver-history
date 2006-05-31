@@ -17,6 +17,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
 import org.vfny.geoserver.wfs.responses.GML2FeatureResponseDelegate;
 import org.vfny.geoserver.wfs.responses.GetFeatureResults;
+import org.vfny.geoserver.wfs.servlets.WFService;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 
 
@@ -69,7 +70,7 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         GetFeatureInfoRequest fInfoReq = (GetFeatureInfoRequest) getRequest();
-        FeatureRequest freq = new FeatureRequest();
+        FeatureRequest freq = new FeatureRequest((WFService) fInfoReq.getServiceRef());
         freq.setHttpServletRequest(fInfoReq.getHttpServletRequest());
 
         freq.setRequest("GETFEATURE");

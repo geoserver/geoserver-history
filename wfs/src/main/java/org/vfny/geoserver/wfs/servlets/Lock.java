@@ -10,6 +10,7 @@ import javax.servlet.ServletContext;
 
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.readers.LockKvpReader;
@@ -27,8 +28,8 @@ import org.vfny.geoserver.wfs.responses.LockResponse;
  */
 public class Lock extends WFService {
     
-	public Lock() {
-		super("LockFeature");
+	public Lock(WFS wfs) {
+		super("LockFeature",wfs);
 	}
 
 	/**

@@ -15,6 +15,8 @@ import org.geotools.filter.Expression;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.LiteralExpression;
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.testdata.MockUtils;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.Query;
@@ -47,6 +49,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
+    Feature service;
+    
     /**
      * Constructor with super.
      *
@@ -56,13 +60,19 @@ public class FeatureSuiteTest extends RequestTestCase {
         super(testName);
     }
 
+    protected void setUp() throws Exception {
+    		WFS wfs = new WFS(MockUtils.newWfsDto());
+    		service = new Feature(wfs);
+    }
+    
+    
     protected XmlRequestReader getXmlReader() {
     		
-        return new GetFeatureXmlReader(new Feature());
+        return new GetFeatureXmlReader(service);
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {
-        return new GetFeatureKvpReader(kvps);
+        return new GetFeatureKvpReader(kvps,service);
     }
 
     /* ***********************************************************************
@@ -78,7 +88,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         Query query = new Query();
         query.setTypeName("rail");
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.addQuery(query);
 
         // run test
@@ -91,7 +101,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         query.setTypeName("rail");
         query.addFilter(factory.createFidFilter("123"));
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.addQuery(query);
 
         // run test       
@@ -100,7 +110,7 @@ public class FeatureSuiteTest extends RequestTestCase {
 
     public void test3() throws Exception {
         // make base comparison objects                
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         Query query = new Query();
         query.setTypeName("rail");
         query.addFilter(factory.createFidFilter("123"));
@@ -123,7 +133,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         query.setTypeName("rail");
         query.addFilter(tempFilter);
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.addQuery(query);
 
         // run test        
@@ -142,7 +152,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         query.addPropertyName("name");
         query.addPropertyName("tracks");
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.addQuery(query);
 
         // run test        
@@ -180,7 +190,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         query.addPropertyName("name");
         query.addPropertyName("id");
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.addQuery(query);
         baseRequest.setMaxFeatures(10000);
 
@@ -212,7 +222,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         tempFilter.addLeftGeometry(tempLeftExp);
         tempFilter.addRightGeometry(tempRightExp);
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         Query query = new Query();
         query.setTypeName("rail");
         query.addFilter(tempFilter);
@@ -255,7 +265,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         tempFilter.addLeftGeometry(tempLeftExp);
         tempFilter.addRightGeometry(tempRightExp);
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
 
         FidFilter temp1 = factory.createFidFilter("123");
         temp1.addFid("124");
@@ -346,7 +356,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         finalFilter = finalFilter.and(tempFilter);
         LOGGER.fine("filter: " + finalFilter);
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         Query query = new Query();
         query.setTypeName("Person");
         query.addFilter(finalFilter);
@@ -374,7 +384,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         Query query = new Query();
         query.setTypeName("rail");
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.addQuery(query);
         baseRequest.setVersion("0.0.14");
 
@@ -392,7 +402,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         query.addPropertyName("location");
         query.addPropertyName("id");
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.addQuery(query);
         baseRequest.setVersion("0.0.14");
 
@@ -409,7 +419,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         query.setTypeName("rail");
         query.addFilter(factory.createFidFilter("123"));
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.addQuery(query);
         baseRequest.setVersion("1.0.0");
 
@@ -431,7 +441,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         query.setTypeName("rail");
         query.addFilter(filter1);
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.addQuery(query);
         query = new Query();
         query.setTypeName("rail");
@@ -456,7 +466,7 @@ public class FeatureSuiteTest extends RequestTestCase {
             + "FEATUREID=rail1.123,rail2.456,rail3.789";
 
         // make base comparison objects        
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.setVersion("1.0.0");
 
         FidFilter filter1 = factory.createFidFilter("rail1.123");
@@ -515,7 +525,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         query.setTypeName("rail");
         query.addFilter(filter);
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.setVersion("1.0.0");
         baseRequest.addQuery(query);
 
@@ -528,7 +538,7 @@ public class FeatureSuiteTest extends RequestTestCase {
             + "REQUEST=GETFEATURE&" + "TYPENAME=rail,roads";
 
         // make base comparison objects        
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         Query query = new Query();
         query.setTypeName("rail");
         baseRequest.addQuery(query);
@@ -549,7 +559,7 @@ public class FeatureSuiteTest extends RequestTestCase {
             + "TYPENAME=rail,roads";
 
         // make base comparison objects        
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         Query query = new Query();
         query.setTypeName("rail");
         query.addPropertyName("loc1");
@@ -573,7 +583,7 @@ public class FeatureSuiteTest extends RequestTestCase {
             "FEATUREID=rail.123,rail.456";
 
         // make base comparison objects        
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.setVersion("1.0.0");
 
         FidFilter filter = factory.createFidFilter("rail.123");
@@ -598,7 +608,7 @@ public class FeatureSuiteTest extends RequestTestCase {
             "PROPERTYNAME=(loc1,id1)(loc2)&" + "FEATUREID=rail1.123,rail2.456";
 
         // make base comparison objects        
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.setVersion("1.0.0");
 
         FidFilter filter = factory.createFidFilter("rail1.123");
@@ -625,7 +635,7 @@ public class FeatureSuiteTest extends RequestTestCase {
             + "REQUEST=GETFEATURE&" + "TYPENAME=rail,roads&"
             + "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.setVersion("1.0.0");
 
         // make base comparison objects
@@ -668,7 +678,7 @@ public class FeatureSuiteTest extends RequestTestCase {
             + "PROPERTYNAME=(loc1,id1,cat1)(loc2)&"
             + "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.setVersion("1.0.0");
 
         // make base comparison objects
@@ -713,7 +723,7 @@ public class FeatureSuiteTest extends RequestTestCase {
         String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
             + "REQUEST=GETFEATURE&" + "TYPENAME=rail&" + "BBOX=10,10,20,20";
 
-        FeatureRequest baseRequest = new FeatureRequest();
+        FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.setVersion("1.0.0");
 
         // make base comparison objects

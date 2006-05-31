@@ -11,6 +11,7 @@ import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFilter;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
+import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.FilterHandlerImpl;
 import org.vfny.geoserver.wfs.WfsException;
 import org.xml.sax.InputSource;
@@ -18,6 +19,16 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
 
 public abstract class WfsXmlRequestReader extends XmlRequestReader {
+
+	
+	/**
+	 * Constructs the new wfs xml reader.
+	 * 
+	 * @param service Reference to the service handing a reuqest.
+	 */
+	public WfsXmlRequestReader(AbstractService service) {
+		super(service);
+	}
 
 	/**
      * Reads the Filter XML request into a geotools Feature object.

@@ -61,14 +61,6 @@ public class FeatureRequest extends WFSRequest {
     /** Creates a full list of queries */
     protected List queries = new ArrayList();
 
-    /**
-     * Empty constructor.
-     * @deprecated use {@link #FeatureRequest(WFService)}
-     */
-    public FeatureRequest() {
-        super();
-        setRequest("GetFeature");
-    }
     
     /**
      * Creates a new GetFeature request.

@@ -7,6 +7,7 @@ package org.vfny.geoserver.wfs.servlets;
 import java.util.Map;
 
 import org.vfny.geoserver.Response;
+import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.readers.DescribeKvpReader;
@@ -26,8 +27,8 @@ import org.vfny.geoserver.wfs.responses.DescribeResponse;
  */
 public class Describe extends WFService {
     
-	public Describe() {
-		super("DescribeFeatureType");
+	public Describe(WFS wfs) {
+		super("DescribeFeatureType",wfs);
 	}
 
 	/**

@@ -79,7 +79,7 @@ public class MapPreviewAction extends Action
 		ArrayList ftnsList = new ArrayList();
 		
 		// 1) get the capabilities info so we can find out our feature types
-		CapabilitiesRequest capRequest = new CapabilitiesRequest("WMS");
+		CapabilitiesRequest capRequest = new CapabilitiesRequest("WMS",null);
 		capRequest.setHttpServletRequest(request);
 		WMS wms = (WMS) capRequest.getServiceRef().getServiceRef();
 		Data catalog = wms.getData();

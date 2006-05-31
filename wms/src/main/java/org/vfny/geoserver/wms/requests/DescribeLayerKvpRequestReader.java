@@ -35,16 +35,6 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
 
     /**
      * Constructs a new DescribeLayer request parser.
-     *
-     * @param params
-     * @deprecated use {@link #DescribeLayerKvpRequestReader(Map, WMService)}
-     */
-    public DescribeLayerKvpRequestReader(Map params) {
-        super(params);
-    }
-    
-    /**
-     * Constructs a new DescribeLayer request parser.
      * @param params
      * @param service The service that handles the request
      */

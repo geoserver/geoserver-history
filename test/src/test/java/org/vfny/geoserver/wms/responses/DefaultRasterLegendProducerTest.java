@@ -20,8 +20,11 @@ import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
 import org.geotools.styling.Symbolizer;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
+import org.vfny.geoserver.testdata.MockUtils;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
+import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 
 
 /**
@@ -39,6 +42,9 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
     /** DOCUMENT ME! */
     private DefaultRasterLegendProducer legendProducer;
 
+    GetLegendGraphic service;
+    
+    
     /**
      * DOCUMENT ME!
      *
@@ -57,16 +63,19 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
     public void setUp() throws Exception {
         super.setUp();
         this.legendProducer = new DefaultRasterLegendProducer() {
-                    public void writeTo(OutputStream out)
-                        throws ServiceException, IOException {
-                        throw new UnsupportedOperationException();
-                    }
+            public void writeTo(OutputStream out)
+                throws ServiceException, IOException {
+                throw new UnsupportedOperationException();
+            }
 
-                    public String getContentType()
-                        throws java.lang.IllegalStateException {
-                        throw new UnsupportedOperationException();
-                    }
-                };
+            public String getContentType()
+                throws java.lang.IllegalStateException {
+                throw new UnsupportedOperationException();
+            }
+        };
+        
+        WMS wms = new WMS(MockUtils.newWmsDto());
+        service = new GetLegendGraphic(wms);
     }
 
     /**
@@ -78,29 +87,6 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
         this.legendProducer = null;
         super.tearDown();
     }
-
-//    /**
-//     * Tests the legend graphic production for some simple styles from the cite
-//     * dataset and their testing styles.
-//     *
-//     * @throws Exception
-//     */
-//    public void testSimpleStyles() throws Exception {
-//        //a single rule line based one
-//        testProduceLegendGraphic(DIVIDED_ROUTES_TYPE, 1);
-//
-//        //a two rules polygon one
-//        testProduceLegendGraphic(NAMED_PLACES_TYPE, 2);
-//
-//        //thrww rules, line based one
-//        testProduceLegendGraphic(ROAD_SEGMENTS_TYPE, 3);
-//
-//        //a single rule + graphic fill one
-//        testProduceLegendGraphic(FORESTS_TYPE, 1);
-//
-//        //a single rule, default point one
-//        testProduceLegendGraphic(BRIDGES_TYPE, 1);
-//    }
 
     /**
      * Tests that a legend is produced for the explicitly specified rule, when
@@ -116,7 +102,7 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
         LOGGER.info("testing single rule " + rule.getName() + " from style "
             + multipleRulesStyle.getName());
 
-        GetLegendGraphicRequest req = new GetLegendGraphicRequest();
+        GetLegendGraphicRequest req = new GetLegendGraphicRequest(service);
         req.setLayer(getCiteDataStore().getSchema(ROAD_SEGMENTS_TYPE));
         req.setStyle(multipleRulesStyle);
         req.setRule(rule);
@@ -225,7 +211,7 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
     private BufferedImage testProduceLegendGraphic(String citeTypeName,
         int ruleCount) throws Exception {
         FeatureType layer = getCiteDataStore().getSchema(citeTypeName);
-        GetLegendGraphicRequest req = new GetLegendGraphicRequest();
+        GetLegendGraphicRequest req = new GetLegendGraphicRequest(service);
         req.setLayer(layer);
         req.setStyle(getDefaultStyle(citeTypeName));
 

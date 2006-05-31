@@ -21,6 +21,8 @@ import org.geotools.feature.SchemaException;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.testdata.MockUtils;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.TransactionRequest;
@@ -60,6 +62,8 @@ public class TransactionSuiteTest extends RequestTestCase {
     protected Feature testFeature;
     protected GeoServer config;
 
+    Transaction service;
+    
     /**
      * Constructor with super.
      *
@@ -120,14 +124,17 @@ public class TransactionSuiteTest extends RequestTestCase {
         } catch (IllegalAttributeException ife) {
             LOGGER.warning("problem in setup " + ife);
         }
+        
+        WFS wfs = new WFS(MockUtils.newWfsDto());
+        service = new Transaction(wfs);
     }
 
     protected XmlRequestReader getXmlReader() {
-        return new TransactionXmlReader(new Transaction());
+        return new TransactionXmlReader(service);
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {
-        return new DeleteKvpReader(kvps);
+        return new DeleteKvpReader(kvps,service);
     }
 
     /**

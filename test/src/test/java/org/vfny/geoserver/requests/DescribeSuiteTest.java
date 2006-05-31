@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.testdata.MockUtils;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.DescribeRequest;
@@ -26,12 +28,6 @@ import org.vfny.geoserver.wfs.servlets.Describe;
  * @version $Id: DescribeSuite.java,v 1.8 2004/01/31 00:17:52 jive Exp $
  */
 public class DescribeSuiteTest extends RequestTestCase {
-    // Initializes the logger. Uncomment to see log messages.
-    //static {
-    //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
-    //java.util.logging.Level.FINE);
-    //}
-
     /** Standard logging instance */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
@@ -57,13 +53,15 @@ public class DescribeSuiteTest extends RequestTestCase {
     }
 
     public void setUp() {
-    		service = new Describe();
+    		WFS wfs = new WFS(MockUtils.newWfsDto());
     		
-        baseRequest[0] = new DescribeRequest();
+    		service = new Describe(wfs);
+    		
+        baseRequest[0] = new DescribeRequest(service);
         baseRequest[0].addFeatureType("rail");
         baseRequest[0].setVersion("0.0.15");
         
-        baseRequest[1] = new DescribeRequest();
+        baseRequest[1] = new DescribeRequest(service);
         baseRequest[1].addFeatureType("rail");
         baseRequest[1].addFeatureType("roads");
         baseRequest[1].setVersion("0.0.15");
@@ -74,7 +72,7 @@ public class DescribeSuiteTest extends RequestTestCase {
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {
-        return new DescribeKvpReader(kvps);
+        return new DescribeKvpReader(kvps,service);
     }
 
     /**

@@ -245,72 +245,73 @@ public class WfsDispatcher extends Dispatcher {
         AbstractService dispatched;
         LOGGER.info("req_type is " + req_type);
 
-        switch (req_type) {
-        case GET_CAPABILITIES_REQUEST:
-            dispatched = new Capabilities();
-
-            break;
-
-        case DESCRIBE_FEATURE_TYPE_REQUEST:
-            dispatched = new Describe();
-
-            break;
-
-        case GET_FEATURE_REQUEST:
-            dispatched = new Feature();
-
-            break;
-
-        case TRANSACTION_REQUEST:
-            dispatched = new Transaction();
-
-            break;
-
-        case GET_FEATURE_LOCK_REQUEST:
-            dispatched = new FeatureWithLock();
-
-            break;
-
-        case LOCK_REQUEST:
-            dispatched = new Lock();
-
-            break;
-
-        default:
-            dispatched = null;
-        }
-
-        if ((dispatched != null)) {
-            dispatched.init(servletConfig); //only really needed for init 
-
-            if (requestReader == null) {
-                dispatched.doGet(request, response);
-            } else {
-                dispatched.doPost(request, response, requestReader);
-            }
-        } else {
-            String message;
-
-            if (requestReader == null) {
-                message = "No request recognized.  The REQUEST parameter"
-                    + " must be one of GetFeature, GetFeatureWithLock, "
-                    + "DescribeFeatureType, LockFeature, or Transaction.";
-            } else {
-                message = "The proper request could not be extracted from the"
-                    + "the xml posted.  Make sure the case is correct.  The "
-                    + "request must be one of GetFeature, GetFeatureWithLock, "
-                    + "DescribeFeatureType, LockFeature, or Transaction";
-            }
-            HttpSession session = request.getSession();
-            ServletContext context = session.getServletContext();
-            GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
-            
-            WfsException wfse = new WfsException(message);
-            String tempResponse = wfse.getXmlResponse(geoServer.isVerboseExceptions(), request);
-
-            response.setContentType(geoServer.getCharSet().toString());
-            response.getWriter().write(tempResponse);
-        }
+        //JD: kill this
+//        switch (req_type) {
+//        case GET_CAPABILITIES_REQUEST:
+//            dispatched = new Capabilities();
+//
+//            break;
+//
+//        case DESCRIBE_FEATURE_TYPE_REQUEST:
+//            dispatched = new Describe();
+//
+//            break;
+//
+//        case GET_FEATURE_REQUEST:
+//            dispatched = new Feature();
+//
+//            break;
+//
+//        case TRANSACTION_REQUEST:
+//            dispatched = new Transaction();
+//
+//            break;
+//
+//        case GET_FEATURE_LOCK_REQUEST:
+//            dispatched = new FeatureWithLock();
+//
+//            break;
+//
+//        case LOCK_REQUEST:
+//            dispatched = new Lock();
+//
+//            break;
+//
+//        default:
+//            dispatched = null;
+//        }
+//
+//        if ((dispatched != null)) {
+//            dispatched.init(servletConfig); //only really needed for init 
+//
+//            if (requestReader == null) {
+//                dispatched.doGet(request, response);
+//            } else {
+//                dispatched.doPost(request, response, requestReader);
+//            }
+//        } else {
+//            String message;
+//
+//            if (requestReader == null) {
+//                message = "No request recognized.  The REQUEST parameter"
+//                    + " must be one of GetFeature, GetFeatureWithLock, "
+//                    + "DescribeFeatureType, LockFeature, or Transaction.";
+//            } else {
+//                message = "The proper request could not be extracted from the"
+//                    + "the xml posted.  Make sure the case is correct.  The "
+//                    + "request must be one of GetFeature, GetFeatureWithLock, "
+//                    + "DescribeFeatureType, LockFeature, or Transaction";
+//            }
+//            HttpSession session = request.getSession();
+//            ServletContext context = session.getServletContext();
+//            GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+//            
+//            WfsException wfse = new WfsException(message);
+//            String tempResponse = wfse.getXmlResponse(geoServer.isVerboseExceptions(), request);
+//
+//            response.setContentType(geoServer.getCharSet().toString());
+//            response.getWriter().write(tempResponse);
+//        }
     }
 
 // These methods have been commented out due to GEOS-323. Remove from file 

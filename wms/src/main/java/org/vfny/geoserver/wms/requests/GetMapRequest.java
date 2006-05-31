@@ -37,14 +37,6 @@ public class GetMapRequest extends WMSRequest {
     /** set of optionals request's parameters */
     private OptionalParameters optionalParams = new OptionalParameters();
 
-    /**
-     * Creates a new GetMapRequest object.
-     * @deprecated use {@link #GetMapRequest(WMService)}
-     */
-    public GetMapRequest() {
-        super();
-        setRequest( TRANSACTION_REQUEST_TYPE );
-    }
     
     /**
      * Creates a GetMapRequest request.

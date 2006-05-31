@@ -172,15 +172,6 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      */
     private boolean stylesRequired = true;
 
-    /**
-     * Creates a new GetMapKvpReader object.
-     *
-     * @param kvpPairs DOCUMENT ME!
-     * @deprecated use {@link #GetMapKvpReader(Map, WMService)}
-     */
-    public GetMapKvpReader(Map kvpPairs) {
-        super(kvpPairs);
-    }
     
     /**
      * Creates a new GetMapKvpReader object.

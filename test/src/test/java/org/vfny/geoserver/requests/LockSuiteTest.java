@@ -13,6 +13,8 @@ import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.LiteralExpression;
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.testdata.MockUtils;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.LockRequest;
@@ -44,6 +46,8 @@ public class LockSuiteTest extends RequestTestCase {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
+    Lock service;
+    
     /**
      * Constructor with super.
      *
@@ -53,35 +57,42 @@ public class LockSuiteTest extends RequestTestCase {
         super(testName);
     }
 
+    protected void setUp() throws Exception {
+    		WFS wfs = new WFS(MockUtils.newWfsDto());
+    		service = new Lock(wfs); 
+    }
+    
+    
+    
     protected XmlRequestReader getXmlReader() {
-        return new LockXmlReader(new Lock());
+        return new LockXmlReader(service);
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {
-        return new LockKvpReader(kvps);
+        return new LockKvpReader(kvps,service);
     }
 
     public void testXml1() throws Exception {
-        LockRequest request = new LockRequest();
+        LockRequest request = new LockRequest(service);
         request.setLockAll(false);
         addLock1(request);
         assertTrue(runXmlTest(request, "lock1", true));
     }
 
     public void testXml2() throws Exception {
-        LockRequest request = new LockRequest();
+        LockRequest request = new LockRequest(service);
         request.addLock("roads", null);
         assertTrue(runXmlTest(request, "lock2", true));
     }
 
     public void testXml3() throws Exception {
-        LockRequest request = new LockRequest();
+        LockRequest request = new LockRequest(service);
         addLock3(request);
         assertTrue(runXmlTest(request, "lock3", true));
     }
 
     public void testXml4() throws Exception {
-        LockRequest request = new LockRequest();
+        LockRequest request = new LockRequest(service);
         addLock3(request);
         addLock1(request);
         request.setExpiry(3);
@@ -132,7 +143,7 @@ public class LockSuiteTest extends RequestTestCase {
             + "SERVICE=WFS&" + "TYPENAME=rail";
 
         // make base comparison objects
-        LockRequest baseRequest = new LockRequest();
+        LockRequest baseRequest = new LockRequest(service);
         baseRequest.addLock("rail", null, null);
 
         // run test
@@ -147,7 +158,7 @@ public class LockSuiteTest extends RequestTestCase {
             + "SERVICE=WFS&" + "TYPENAME=rail&" + "featureID=123";
 
         // make base comparison objects
-        LockRequest baseRequest = new LockRequest();
+        LockRequest baseRequest = new LockRequest(service);
 
         // baseRequest.addFeatureType("rail");
         FidFilter filter = factory.createFidFilter("123");
@@ -167,7 +178,7 @@ public class LockSuiteTest extends RequestTestCase {
             + "SERVICE=WFS&" + "TYPENAME=rail,roads";
 
         // make base comparison objects
-        LockRequest baseRequest = new LockRequest();
+        LockRequest baseRequest = new LockRequest(service);
         baseRequest.addLock("rail", null);
         baseRequest.addLock("roads", null);
 
@@ -183,7 +194,7 @@ public class LockSuiteTest extends RequestTestCase {
             + "REQUEST=LockFEATURE&" + "LOCKACTION=all&"
             + "TYPENAME=rail,roads&"
             + "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";
-        LockRequest baseRequest = new LockRequest();
+        LockRequest baseRequest = new LockRequest(service);
         baseRequest.setVersion("1.0.0");
         baseRequest.setLockAll(true);
 

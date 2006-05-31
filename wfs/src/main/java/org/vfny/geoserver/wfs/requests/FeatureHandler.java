@@ -38,6 +38,9 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.wfs");
 
+    /** Service handling the request */
+    private WFService service;
+    
     /** Internal get feature request for construction. */
     private FeatureRequest request = null;
 
@@ -55,6 +58,7 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
      */
     public FeatureHandler(WFService service) {
         super();
+        this.service = service;
         request = new FeatureRequest(service);
     }
 
@@ -65,7 +69,7 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
      * @return The request read by this handler.
      */
     public FeatureRequest getRequest(HttpServletRequest req) {
-    	request.setHttpServletRequest(req);
+    		request.setHttpServletRequest(req);
         return request;
     }
 
@@ -105,9 +109,9 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
             }
         } else if (insideTag.startsWith("GetFeature")) {
             if (insideTag.equals("GetFeatureWithLock")) {
-                request = new FeatureWithLockRequest();
+                request = new FeatureWithLockRequest(service);
             } else {
-                request = new FeatureRequest();
+                request = new FeatureRequest(service);
             }
 
             for (int i = 0; i < atts.getLength(); i++) {

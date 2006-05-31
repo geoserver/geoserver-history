@@ -26,17 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 abstract public class WMService extends AbstractService {
 	
 	
-	/**
-	 * Constructor for WMS service.
-	 * 
-	 * @param request The service request being made (GetCaps,GetFeature,...)
-	 * @deprecated use {@link #WMService(String, WMS)}
-	 */
-     public WMService(String request) {
-		this(request, null);
-	}
-
-     /**
+	 /**
  	 * Constructor for WMS service.
  	 * 
  	 * @param request The service request being made (GetCaps,GetFeature,...)

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.servlets.FileStrategy;
 import org.vfny.geoserver.servlets.ServiceStrategy;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
@@ -33,8 +34,8 @@ public class Transaction extends WFService {
 	 */
 	FileStrategy fileStrategy;
 	
-	public Transaction() {
-		super("Transaction");
+	public Transaction(WFS wfs) {
+		super("Transaction",wfs);
 	}
 
 	/**

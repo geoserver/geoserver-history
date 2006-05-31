@@ -81,14 +81,6 @@ public class TransactionRequest extends WFSRequest {
     protected String handle = null;
 
     /**
-     * Create a WFS Transaction request. 
-     * @deprecated use {@link #TransactionRequest(WFService)}
-     */
-    public TransactionRequest() {
-        super( TRANSACTION_REQUEST_TYPE );        
-    }
-
-    /**
      * Creates a WFS transaction request.
      * 
      * @param service The wfs service handling the request.

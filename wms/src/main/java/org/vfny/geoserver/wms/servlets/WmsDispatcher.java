@@ -121,63 +121,63 @@ public class WmsDispatcher extends Dispatcher {
         throws ServletException, IOException {
         HttpServlet dispatched;
         LOGGER.finer("req_type is " + req_type);
-
-        switch (req_type) {
-        case GET_CAPABILITIES_REQUEST:
-            dispatched = new Capabilities();
-
-            break;
-
-        case GET_MAP_REQUEST:
-            dispatched = new GetMap();
-
-            break;
-            
-        case GET_FEATURE_INFO_REQUEST:
-            dispatched = new GetFeatureInfo();
-
-            break;   
-
-        case DESCRIBE_LAYER_REQUEST:
-            dispatched = new DescribeLayer();
-
-            break;   
-
-        case GET_LEGEND_GRAPHIC_REQUEST:
-            dispatched = new GetLegendGraphic();
-
-            break;   
-        default:
-            dispatched = null;
-        }
-
-        if ((dispatched != null))  //DJB: removed "&& !isPost" because we are partially supportin POST now
-        {
-            dispatched.init(servletConfig); //only needed for init hack, see
-            dispatched.service(request, response);
-        } else 
-        {
-            String message;
-
-            if (isPost) {
-                message = "Post requests are not supported with the dispatcher "
-                    + "servlet.  Please try the request using the appropriate "
-                    + "request servlet, such as GetCapabilities or GetFeature";
-            } else {
-                message = "No wms kvp request recognized.  The REQUEST parameter"
-                    + " must be one of GetMap or GetCapabilities";
-            }
-            
-            HttpSession session = request.getSession();
-            ServletContext context = session.getServletContext();
-
-            GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
-            
-            WmsException wmse = new WmsException(message);
-            String tempResponse = wmse.getXmlResponse(geoServer.isVerboseExceptions(), request);
-
-            response.setContentType(geoServer.getCharSet().toString());
-            response.getWriter().write(tempResponse);
-        }
+        //JD: kill this
+//        switch (req_type) {
+//        case GET_CAPABILITIES_REQUEST:
+//            dispatched = new Capabilities();
+//
+//            break;
+//
+//        case GET_MAP_REQUEST:
+//            dispatched = new GetMap();
+//
+//            break;
+//            
+//        case GET_FEATURE_INFO_REQUEST:
+//            dispatched = new GetFeatureInfo();
+//
+//            break;   
+//
+//        case DESCRIBE_LAYER_REQUEST:
+//            dispatched = new DescribeLayer();
+//
+//            break;   
+//
+//        case GET_LEGEND_GRAPHIC_REQUEST:
+//            dispatched = new GetLegendGraphic();
+//
+//            break;   
+//        default:
+//            dispatched = null;
+//        }
+//
+//        if ((dispatched != null))  //DJB: removed "&& !isPost" because we are partially supportin POST now
+//        {
+//            dispatched.init(servletConfig); //only needed for init hack, see
+//            dispatched.service(request, response);
+//        } else 
+//        {
+//            String message;
+//
+//            if (isPost) {
+//                message = "Post requests are not supported with the dispatcher "
+//                    + "servlet.  Please try the request using the appropriate "
+//                    + "request servlet, such as GetCapabilities or GetFeature";
+//            } else {
+//                message = "No wms kvp request recognized.  The REQUEST parameter"
+//                    + " must be one of GetMap or GetCapabilities";
+//            }
+//            
+//            HttpSession session = request.getSession();
+//            ServletContext context = session.getServletContext();
+//
+//            GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+//            
+//            WmsException wmse = new WmsException(message);
+//            String tempResponse = wmse.getXmlResponse(geoServer.isVerboseExceptions(), request);
+//
+//            response.setContentType(geoServer.getCharSet().toString());
+//            response.getWriter().write(tempResponse);
+//        }
     }
 }

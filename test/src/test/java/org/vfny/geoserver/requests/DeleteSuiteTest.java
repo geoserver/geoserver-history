@@ -43,6 +43,7 @@ public class DeleteSuiteTest extends TransactionSuiteTest {
         super(testName);
     }
 
+    
     public static Test suite() {
         TestSuite suite = new TestSuite("Delete tests");
         suite.addTestSuite(DeleteSuiteTest.class);
@@ -75,7 +76,7 @@ public class DeleteSuiteTest extends TransactionSuiteTest {
        }
        }*/
     protected KvpRequestReader getKvpReader(Map kvps) {
-        return new DeleteKvpReader(kvps);
+        return new DeleteKvpReader(kvps,service);
     }
 
     /* ********************************************************************
@@ -97,7 +98,7 @@ public class DeleteSuiteTest extends TransactionSuiteTest {
             + "featureID=123";
 
         // make base comparison objects        
-        TransactionRequest baseRequest = new TransactionRequest();
+        TransactionRequest baseRequest = new TransactionRequest(service);
         DeleteRequest internalRequest = new DeleteRequest();
         internalRequest.setTypeName("rail");
 
@@ -109,101 +110,12 @@ public class DeleteSuiteTest extends TransactionSuiteTest {
         assertTrue(runKvpTest(baseRequest, testRequest, true));
     }
 
-//    /**
-//     * Example 2 from the WFS 1.0 specification.
-//     *
-//     * @throws Exception DOCUMENT ME!
-//     */
-//    public void testKVP2() throws Exception {
-//        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-//            + "REQUEST=TRANSACTION&" + "OPERATION=delete&"
-//            + "TYPENAME=rail,roads&"
-//            + "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";
-//
-//        TransactionRequest baseRequest = new TransactionRequest();
-//        baseRequest.setVersion("1.0.0");
-//
-//        DeleteRequest internalRequest1 = new DeleteRequest();
-//        internalRequest1.setTypeName("rail");
-//
-//        //baseRequest.setReleaseAction(true);
-//        // make base comparison objects
-//        GeometryFilter filter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
-//        AttributeExpression leftExpression = factory.createAttributeExpression((AttributeType)null);
-//        leftExpression.setAttributePath("location");
-//
-//        // Creates coordinates for the linear ring
-//        Coordinate[] coords = new Coordinate[5];
-//        coords[0] = new Coordinate(10, 10);
-//        coords[1] = new Coordinate(10, 20);
-//        coords[2] = new Coordinate(20, 20);
-//        coords[3] = new Coordinate(20, 10);
-//        coords[4] = new Coordinate(10, 10);
-//
-//        LinearRing outerShell = new LinearRing(coords, new PrecisionModel(), 0);
-//        Polygon polygon = new Polygon(outerShell, new PrecisionModel(), 0);
-//        LiteralExpression rightExpression = factory.createLiteralExpression(polygon);
-//        filter.addLeftGeometry(leftExpression);
-//        filter.addRightGeometry(rightExpression);
-//
-//        internalRequest1.setFilter(filter);
-//
-//        DeleteRequest internalRequest2 = new DeleteRequest();
-//        internalRequest2.setTypeName("roads");
-//        internalRequest2.setFilter(filter);
-//
-//        baseRequest.addSubRequest(internalRequest1);
-//        baseRequest.addSubRequest(internalRequest2);
-//
-//        // run test       
-//        assertTrue(runKvpTest(baseRequest, testRequest, true));
-//    }
-
-//    /**
-//     * Example 3 from the WFS 1.0 specification.
-//     *
-//     * @throws Exception DOCUMENT ME!
-//     */
-//    public void testKVP3() throws Exception {
-//        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-//            + "REQUEST=TRANSACTION&" + "OPERATION=delete&" + "TYPENAME=rail&"
-//            + "BBOX=10,10,20,20";
-//
-//        TransactionRequest baseRequest = new TransactionRequest();
-//        baseRequest.setVersion("1.0.0");
-//
-//        DeleteRequest internalRequest1 = new DeleteRequest();
-//        internalRequest1.setTypeName("rail");
-//
-//        // make base comparison objects
-//        GeometryFilter filter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_BBOX);
-//
-//        // Creates coordinates for the linear ring
-//        Coordinate[] coords = new Coordinate[5];
-//        coords[0] = new Coordinate(10, 10);
-//        coords[1] = new Coordinate(10, 20);
-//        coords[2] = new Coordinate(20, 20);
-//        coords[3] = new Coordinate(20, 10);
-//        coords[4] = new Coordinate(10, 10);
-//
-//        LinearRing outerShell = new LinearRing(coords, new PrecisionModel(), 0);
-//        Polygon polygon = new Polygon(outerShell, new PrecisionModel(), 0);
-//        LiteralExpression rightExpression = factory.createLiteralExpression(polygon);
-//        filter.addRightGeometry(rightExpression);
-//
-//        internalRequest1.setFilter(filter);
-//        baseRequest.addSubRequest(internalRequest1);
-//
-//        // run test       
-//        assertTrue(runKvpTest(baseRequest, testRequest, true));
-//    }
-
-    public void testXml1() throws Exception {
+   public void testXml1() throws Exception {
         // make base comparison objects        
         DeleteRequest delete = new DeleteRequest();
         delete.setFilter(factory.createFidFilter("123"));
 
-        TransactionRequest baseRequest = new TransactionRequest();
+        TransactionRequest baseRequest = new TransactionRequest(service);
         baseRequest.addSubRequest(delete);
 
         // run test       
@@ -220,7 +132,7 @@ public class DeleteSuiteTest extends TransactionSuiteTest {
         tempFilter.addFid("5001");
         delete.setFilter(tempFilter);
 
-        TransactionRequest baseRequest = new TransactionRequest();
+        TransactionRequest baseRequest = new TransactionRequest(service);
         baseRequest.addSubRequest(delete);
 
         // run test       
@@ -244,7 +156,7 @@ public class DeleteSuiteTest extends TransactionSuiteTest {
         DeleteRequest delete3 = new DeleteRequest();
         delete3.setFilter(factory.createFidFilter("5001"));
 
-        TransactionRequest baseRequest = new TransactionRequest();
+        TransactionRequest baseRequest = new TransactionRequest(service);
         baseRequest.addSubRequest(delete1);
         baseRequest.addSubRequest(delete2);
         baseRequest.addSubRequest(delete3);

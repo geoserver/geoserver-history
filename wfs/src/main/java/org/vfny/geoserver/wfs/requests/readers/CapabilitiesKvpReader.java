@@ -23,16 +23,7 @@ import org.vfny.geoserver.wfs.servlets.WFService;
  * @version $Id: CapabilitiesKvpReader.java,v 1.7 2004/02/09 23:29:40 dmzwiers Exp $
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
-    /**
-     * Constructor with raw request string.  Calls parent.
-     *
-     * @param kvPairs The raw string of a capabilities kvp request.
-     * @deprecated use {@link #CapabilitiesKvpReader(Map, WFService)}
-     */
-    public CapabilitiesKvpReader(Map kvPairs) {
-        super(kvPairs);
-    }
-
+   
     /**
      * Creates a new reader from kvp pairs and service.
      * 

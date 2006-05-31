@@ -31,13 +31,7 @@ public abstract class WmsKvpRequestReader extends KvpRequestReader {
 
     //protected static final GeoServer config = GeoServer.getInstance();
 
-    /**
-     *@deprecated use {@link #WmsKvpRequestReader(Map, WmService)}
-     */
-    public WmsKvpRequestReader(Map params) {
-        super(params);
-    }
-
+    
 	/**
 	 * Creates a new kvp reader for a WMS request.
 	 * 

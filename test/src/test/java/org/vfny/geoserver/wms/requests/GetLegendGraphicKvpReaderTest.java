@@ -17,6 +17,7 @@ import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.testdata.MockUtils;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 import org.vfny.geoserver.wms.servlets.WMService;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
@@ -83,14 +84,17 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
 		allParameters = new HashMap(requiredParameters);
 		allParameters.putAll(optionalParameters);
 
-		this.requestReader = new GetLegendGraphicKvpReader(allParameters);
-		this.httpRequest = MockUtils.newHttpRequest(allParameters, true);
-		
 		Data data = MockUtils.createTestCiteData(new GeoServer());
 		WMS wms = new WMS(
 			MockUtils.newWmsDto()
 		);
 		wms.setData(data);
+		
+		GetLegendGraphic service = new GetLegendGraphic(wms);
+		this.requestReader = new GetLegendGraphicKvpReader(allParameters,service);
+		this.httpRequest = MockUtils.newHttpRequest(allParameters, true);
+		
+		
 		
 		dummy = new WMService("dummy", wms) {
 

@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.servlets;
 import java.util.Map;
 
 import org.vfny.geoserver.Response;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.DescribeLayerKvpRequestReader;
@@ -22,8 +23,8 @@ import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
  */
 public class DescribeLayer extends WMService {
 	
-	public DescribeLayer() {
-		super("DescribeLayer");
+	public DescribeLayer(WMS wms) {
+		super("DescribeLayer",wms);
 	}
 	
     /**

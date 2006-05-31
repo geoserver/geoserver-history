@@ -32,15 +32,7 @@ public class DeleteKvpReader extends WfsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.readers");
 
-    /**
-     * Constructor with raw request string.  Calls parent.
-     *
-     * @param kvPairs The raw request string from the servlet.
-     * @deprecated use {@link #DeleteKvpReader(Map, WFService)}
-     */
-    public DeleteKvpReader(Map kvPairs) {
-    		this(kvPairs,null);
-    }
+    
 
     /**
      * Constructor with raw request string, and servlet handling request.

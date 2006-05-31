@@ -26,15 +26,7 @@ import org.vfny.geoserver.wfs.WfsExceptionHandler;
  */
 abstract public class WFService extends AbstractService {
 	
-	/**
-	 * Constructor for WFS service.
-	 * 
-	 * @param request The service request being made (GetCaps,GetFeature,...)
-	 * @deprecated use {@link #WFService(String, WFS)}
-	 */
-    public WFService(String request) {
-		this(request,null);
-	}
+	
 
     /**
 	 * Constructor for WFS service.

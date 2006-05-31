@@ -20,24 +20,6 @@ abstract public class WFSRequest extends Request {
     public static final String WFS_SERVICE_TYPE = "WFS";
 
     /**
-     * A WFSRequest configured with WFS_SERVICE_TYPE
-     * @deprecated use {@link #WFSRequest(String, WFService)}
-     */
-    public WFSRequest() {
-        super(WFS_SERVICE_TYPE);
-    }
-
-    /**
-     * A WFSRequest configured with WFS_SERVICE_TYPE
-     *
-     * @param requestType DOCUMENT ME!
-     * @deprecated use {@link #WFSRequest(String, WFService)}
-     */
-    public WFSRequest(String requestType) {
-        super(WFS_SERVICE_TYPE, requestType);
-    }
-    
-    /**
      * Creates the new request, supplying the request name and the sevlet 
      * handling the request.
      * 

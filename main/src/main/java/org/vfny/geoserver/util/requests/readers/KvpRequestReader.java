@@ -72,16 +72,6 @@ abstract public class KvpRequestReader {
     protected AbstractService service;
     
     /**
-     * Constructor with kvp request parameters.
-     *
-     * @param kvpPairs map of key/value pairs
-     * @deprecated use {@link #
-     */
-    public KvpRequestReader(Map kvpPairs) {
-        this.kvpPairs = kvpPairs;
-    }
-    
-    /**
      * Creates a reader from paramters and a service.
      * 
      * @param kvpPairs The key-value pairs.

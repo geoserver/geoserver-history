@@ -43,22 +43,12 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
 
     /**
      * Creates a new GetMapKvpReader object.
-     *
-     * @param kvpPairs Key Values pairs of the request 
-     * @deprecated use {@link #GetFeatureInfoKvpReader(Map, WMService)}
-     */
-    public GetFeatureInfoKvpReader(Map kvpPairs) {
-    	this(kvpPairs, null);
-    }
-
-    /**
-     * Creates a new GetMapKvpReader object.
      * @param kvpPairs Key Values pairs of the request 
      * @param service The service handling the request
      */
     public GetFeatureInfoKvpReader( Map kvpPairs, WMService service ){
-    	super(kvpPairs, service);
-    	getMapReader = new GetMapKvpReader(kvpPairs, service);    	
+    		super(kvpPairs, service);
+    		getMapReader = new GetMapKvpReader(kvpPairs, service);    	
     }
     /**
      * Produces a <code>GetMapRequest</code> instance by parsing the GetMap

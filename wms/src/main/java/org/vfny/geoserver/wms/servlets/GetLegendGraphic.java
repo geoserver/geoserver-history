@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.servlets;
 import java.util.Map;
 
 import org.vfny.geoserver.Response;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicKvpReader;
@@ -22,8 +23,8 @@ import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
  */
 public class GetLegendGraphic extends WMService {
 	
-	public GetLegendGraphic() {
-		super("GetLegendGraphic");
+	public GetLegendGraphic(WMS wms) {
+		super("GetLegendGraphic",wms);
 	}
 	
     /**

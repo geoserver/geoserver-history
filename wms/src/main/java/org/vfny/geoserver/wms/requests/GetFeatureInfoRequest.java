@@ -70,15 +70,6 @@ public class GetFeatureInfoRequest extends WMSRequest {
 
     /**
      * Creates a new GetMapRequest object.
-     * @deprecated use {@link #GetFeatureInfoRequest(WMService)}
-     */
-    public GetFeatureInfoRequest() {
-        super();
-        setRequest("GetFeatureInfo");
-    }
-    
-    /**
-     * Creates a new GetMapRequest object.
      * @param service The service that will handle the request
      */
     public GetFeatureInfoRequest(WMService service){

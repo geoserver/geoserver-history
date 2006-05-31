@@ -37,15 +37,6 @@ public class LockRequest extends WFSRequest {
     protected List locks = new ArrayList();
 
     /**
-     * Empty constructor.
-     * @deprecated use {@link #LockRequest(WFService)}
-     */
-    public LockRequest() {
-        super();
-        setRequest("LockFeature");
-    }
-    
-    /**
      * Creates a LockFeature request.
      * 
      * @param service The wfs service handling the request.

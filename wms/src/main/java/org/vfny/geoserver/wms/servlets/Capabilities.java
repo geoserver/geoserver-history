@@ -23,8 +23,8 @@ import org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse;
  */
 public class Capabilities extends WMService {
 	
-	public Capabilities() {
-		super("GetCapabilities");
+	public Capabilities(WMS wms) {
+		super("GetCapabilities",wms);
 	}
 	
     /**

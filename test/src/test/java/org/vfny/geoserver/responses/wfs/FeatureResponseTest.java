@@ -60,11 +60,7 @@ public class FeatureResponseTest extends DataTestCase {
         super.tearDown();
     }
 
-    public void testFeatureResponse() {
-        FeatureRequest request = new FeatureRequest();
-        request.setHandle("FeatureRequest");
-    }
-
+   
     public void testGetContentType() {
     }
 

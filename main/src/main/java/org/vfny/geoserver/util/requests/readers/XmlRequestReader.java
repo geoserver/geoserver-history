@@ -49,14 +49,7 @@ public abstract class XmlRequestReader {
     public XmlRequestReader(AbstractService service) {
     		this.service = service;
 	}
-    /**
-     * This will create a new XmlRequestReader
-     * @deprecated use {@link #XmlRequestReader(AbstractService)}
-     */
-    public XmlRequestReader() {
-    	this(null);
-    }
-
+    
 	/**
 	 * @return the service handling the request
 	 */

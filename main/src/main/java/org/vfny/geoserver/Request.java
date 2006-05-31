@@ -46,29 +46,7 @@ abstract public class Request {
     /** service reference */
     protected AbstractService serviceRef;
     
-    /**
-     * ServiceConfig indentifying constructor.
-     *
-     * @param serviceType Name of services (like wms)
-     * @deprecated use {@link #Request(String, String, AbstractService)}
-     */
-    protected Request(String serviceType) {
-        this(serviceType,null,null);
-    }
-    
-    /**
-     * ServiceConfig & Request indentifying constructor.
-     *
-     * @param serviceType Name of services (like wfs)
-     * @param requestType Name of request (like Transaction)
-     * 
-     * @deprecated use {@link #Request(String, String, AbstractService)}
-     */
-    protected Request(String serviceType, String requestType) {
-        this(serviceType,requestType,null);
-    }
-
-    /**
+   /**
      * ServiceType,RequestType,ServiceRef constructor.
      * 
      * @param serviceType Name of hte service (example, WFS)

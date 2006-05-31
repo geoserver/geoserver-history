@@ -42,20 +42,14 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
 		this.service = service;
 		request = new CapabilitiesRequest("WFS", service);
 	}
-    /**
-     * Creates a new CapabilitiesHandler
-     * @deprecated use {@link #CapabilitiesHandler(AbstractService)}
-     */
-    public CapabilitiesHandler() {
-	}
-
+   
 	/**
      * Returns the GetCapabilities request.
      *
      * @return GetCapabilities request.
      */
     public CapabilitiesRequest getRequest(HttpServletRequest req) {
-    	request.setHttpServletRequest(req);
+    		request.setHttpServletRequest(req);
         return request;
     }
     

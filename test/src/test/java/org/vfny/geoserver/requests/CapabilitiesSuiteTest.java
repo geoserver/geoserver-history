@@ -61,17 +61,17 @@ public class CapabilitiesSuiteTest extends RequestTestCase {
     public void setUp() {
     		
     		WFS wfs = new WFS(MockUtils.newWfsDto());
-    		Capabilities service = new Capabilities();
+    		Capabilities service = new Capabilities(wfs);
     		
     		service.setServiceRef( wfs );
         
-    		baseRequest[0] = new CapabilitiesRequest("WFS");
+    		baseRequest[0] = new CapabilitiesRequest("WFS",service);
         
     		//baseRequest[0].setService("WFS");
         baseRequest[0].setVersion("1.0.0");
         	baseRequest[0].setServiceRef(service);
         	
-        baseRequest[1] = new CapabilitiesRequest("WFS");
+        baseRequest[1] = new CapabilitiesRequest("WFS",service);
         baseRequest[1].setVersion("0.0.14");
         baseRequest[1].setServiceRef(service);
     }
@@ -81,7 +81,7 @@ public class CapabilitiesSuiteTest extends RequestTestCase {
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {
-        return new CapabilitiesKvpReader(kvps);
+        return new CapabilitiesKvpReader(kvps,service);
     }
 
     /**

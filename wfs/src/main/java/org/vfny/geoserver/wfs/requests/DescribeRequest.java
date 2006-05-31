@@ -33,14 +33,6 @@ public class DescribeRequest extends WFSRequest {
     protected String outputFormat = "XMLSCHEMA";
 
     /**
-     * Empty constructor.
-     * @deprecated use {@link #DescribeRequest(WFService)}
-     */
-    public DescribeRequest() {
-        super();
-    }
-
-    /**
      * Creates a new DescribeFeatureType request.
      * 
      * @param service The wfs service handling the request.

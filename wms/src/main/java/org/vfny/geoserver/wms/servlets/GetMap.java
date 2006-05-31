@@ -42,8 +42,8 @@ public class GetMap extends WMService {
      * Creates a new GetMap object.
      *  
      */
-    public GetMap() {
-    		super("GetMap");
+    public GetMap(WMS wms) {
+    		super("GetMap",wms);
     }
        
     public void doPost(HttpServletRequest request, HttpServletResponse response)

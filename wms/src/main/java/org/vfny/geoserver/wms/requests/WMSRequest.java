@@ -19,24 +19,6 @@ public class WMSRequest extends Request {
     public static final String WMS_SERVICE_TYPE = "WMS";
     
     /**
-     * A WMSRequest configured with WMS_SERVICE_TYPE
-     * @deprecated use {@link #WMSRequest(String, WMService)}
-     */
-    public WMSRequest() {
-        super(WMS_SERVICE_TYPE);
-    }
-    
-    /**
-     * A WMSRequest configured with WMS_SERVICE_TYPE
-     *
-     * @param requestType DOCUMENT ME!
-     * @deprecated use {@link #WMSRequest(String, WMService)}
-     */
-    public WMSRequest(String requestType) {
-        super(WMS_SERVICE_TYPE, requestType);
-    }
-    
-    /**
      * Creates the new request, supplying the request name and the sevlet 
      * handling the request.
      * 

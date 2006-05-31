@@ -33,13 +33,6 @@ public class FeatureWithLockRequest extends FeatureRequest {
     protected int expiry = 0;
 
     /**
-     * @deprecated use {@link #FeatureWithLockRequest(WFService)}
-     */
-    public FeatureWithLockRequest() {
-        super();
-    }
-    
-    /**
      * Creates a new FeatureWithLock request.
      * 
      * @param service The service handling the request.
@@ -109,7 +102,8 @@ public class FeatureWithLockRequest extends FeatureRequest {
      *       a lot faster, even if it's not as pretty.
      */
     public LockRequest asLockRequest() {
-        LockRequest lockRequest = new LockRequest();
+        LockRequest lockRequest = 
+        		new LockRequest((WFService) getServiceRef());
         lockRequest.setExpiry(expiry);
 
         for (Iterator i = queries.iterator(); i.hasNext();) {
