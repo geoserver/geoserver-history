@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
-import org.vfny.geoserver.wms.responses.map.gif.GIFOutputStream;
 import org.vfny.geoserver.wms.responses.map.gif.Gif89Encoder;
 
 
@@ -48,10 +47,6 @@ class GIFMapProducer extends DefaultRasterMapProducer {
 
         if (mapCtx.isTransparent()) 
         {
-            //GIFOutputStream.writeGIF(outStream, image,GIFOutputStream.STANDARD_256_COLORS, mapCtx.getBgColor());
-        	    //DJB: note I had to make colorTable in the encoder source public to do this!
-        	    //DJB: to add a function "return colorTable.ciLookup.getPaletteIndex(rgb);" to Gif89Encoder
-        	
         	Gif89Encoder gifenc = new Gif89Encoder(image,mapCtx.getBgColor(),2 ); // 2= colour reduction pixel sample factor (1=look at all pixels, but its slow) 
             gifenc.setComments("produced by Geoserver");
             
@@ -60,7 +55,6 @@ class GIFMapProducer extends DefaultRasterMapProducer {
         } 
         else 
         {
-           // GIFOutputStream.writeGIF(outStream, image);
         	Gif89Encoder gifenc = new Gif89Encoder(image,null,2);// 2= colour reduction pixel sample factor (1=look at all pixels, but its slow)
             gifenc.setComments("produced by Geoserver");
            // gifenc.setTransparentIndex(transparent_index);

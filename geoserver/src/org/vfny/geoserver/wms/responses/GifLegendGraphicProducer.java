@@ -7,8 +7,10 @@ package org.vfny.geoserver.wms.responses;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import java.awt.Color;
+
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.wms.responses.map.gif.GIFOutputStream;
+import org.vfny.geoserver.wms.responses.map.gif.Gif89Encoder;
 
 
 /**
@@ -36,7 +38,13 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
      */
     public void writeTo(OutputStream out) throws IOException, ServiceException {
-        GIFOutputStream.writeGIF(out, super.getLegendGraphic());
+	//use same default background 
+	Gif89Encoder gifenc = new Gif89Encoder(super.getLegendGraphic(),BG_COLOR,2);// 2= colour reduction pixel sample factor (1=look at all pixels, but its slow)
+            gifenc.setComments("produced by Geoserver");
+           // gifenc.setTransparentIndex(transparent_index);
+            gifenc.getFrameAt(0).setInterlaced(false);
+            gifenc.encode(out);
+
     }
 
     /**
