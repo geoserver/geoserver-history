@@ -330,7 +330,7 @@ public class CoverageStoresEditorForm extends ActionForm {
 		}
 
 		dump("form", connectionParams);
-		// Factory will provide even more stringent checking
+		// GDSFactory will provide even more stringent checking
 		//
 		// if (!factory.canProcess( connectionParams )) {
 		// errors.add("paramValue",

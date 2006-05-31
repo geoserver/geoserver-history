@@ -175,6 +175,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
         srsName = dto.getSrsName(); 
         srsWKT = dto.getSrsWKT();
         envelope = dto.getEnvelope();
+        latLonEnvelope = dto.getLatLonEnvelope();
 		grid = dto.getGrid();
 		dimensions = dto.getDimensions();
 		dimensionNames = dto.getDimensionNames();
@@ -205,6 +206,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
         dto.setSrsName(srsName); 
         dto.setSrsWKT(srsWKT);
         dto.setEnvelope(envelope);
+        dto.setLatLonEnvelope(latLonEnvelope);
 		dto.setGrid(grid);
 		dto.setDimensions(dimensions);
 		dto.setDimensionNames(dimensionNames);
@@ -431,9 +433,9 @@ public class CoverageInfo extends GlobalLayerSupertype {
 		return srsWKT;
 	}
 	public GeneralEnvelope getLatLonEnvelope() {
-		if(latLonEnvelope == null) {
+		if(this.latLonEnvelope == null) {
 				try {
-					latLonEnvelope = CoverageStoreUtils.getLatLonEnvelope(this.envelope);
+                    this.latLonEnvelope = CoverageStoreUtils.getLatLonEnvelope(this.envelope);
 				} catch (IndexOutOfBoundsException e) {
 					return null;
 				} catch (FactoryException e) {
@@ -443,7 +445,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
 				}
 		}
 		
-		return latLonEnvelope;
+		return this.latLonEnvelope;
 	}
 	public String getWmsPath() {
 		return wmsPath;

@@ -14,7 +14,7 @@ import org.vfny.geoserver.wms.responses.helpers.JAISupport;
 
 
 /**
- * Factory of legend graphic producers for the <code>"image/gif"</code> format.
+ * GDSFactory of legend graphic producers for the <code>"image/gif"</code> format.
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$

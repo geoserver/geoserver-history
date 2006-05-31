@@ -290,7 +290,7 @@ public class DataDataStoresEditorForm extends ActionForm {
         //connectionParams.put("namespace", getNamespaceId());
 
         dump("form", connectionParams );
-        // Factory will provide even more stringent checking
+        // GDSFactory will provide even more stringent checking
         //
         if (!factory.canProcess( connectionParams )) {
             errors.add("paramValue",

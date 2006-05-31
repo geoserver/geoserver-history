@@ -36,7 +36,7 @@ public class DataDataStoresNewForm extends ActionForm {
     private static final Pattern idPattern = Pattern.compile("^\\a$");
 
 	/**
-	 * Description provided by selected Datastore Factory
+	 * Description provided by selected Datastore GDSFactory
 	 * 
 	 * @uml.property name="selectedDescription" multiplicity="(0 1)"
 	 */

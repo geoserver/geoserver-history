@@ -18,13 +18,19 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.geotools.data.DataUtilities;
+import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.Feature;
+import org.geotools.feature.IllegalAttributeException;
+import org.geotools.feature.SchemaException;
+import org.geotools.map.DefaultMapContext;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory2;
 import org.geotools.styling.StyleFactoryImpl;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.CoverageInfo;
@@ -32,6 +38,7 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.wms.WmsException;
 
 
@@ -49,7 +56,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 			.getLogger(GetLegendGraphicKvpReader.class.getPackage().getName());
 
     /**
-     * Factory to create styles from inline or remote SLD documents (aka, from
+     * GDSFactory to create styles from inline or remote SLD documents (aka, from
      * SLD_BODY or SLD parameters).
      */
     private static final StyleFactory2 styleFactory = new StyleFactoryImpl();
@@ -85,8 +92,8 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 		String version = super.getRequestVersion();
 
 		if (!GetLegendGraphicRequest.SLD_VERSION.equals(version)) {
-			throw new WmsException("Invalid SLD version number \"" + version
-					+ "\"");
+			throw new WmsException(new StringBuffer("Invalid SLD version number \"").append( version).append(
+					 "\"").toString());
 		}
 
 		String layer = getValue("LAYER");
@@ -95,6 +102,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         try {
 			WMS wms = request.getWMS();
 			Data catalog = wms.getData();
+			
             FeatureTypeInfo fti = catalog.getFeatureTypeInfo(layer);
             mli.setFeature(fti);
             request.setLayer(mli.getFeature().getFeatureType());
@@ -102,15 +110,22 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         	try {
         		CoverageInfo cvi = request.getWMS().getData().getCoverageInfo(layer);
         		mli.setCoverage(cvi);
-        		Feature feature = mli.getCoverageToFeatures(httpRequest).getFeatures().features().next();
+        		Feature feature = DataUtilities.wrapGc(mli.getCoverage(httpRequest,null,null));
                 request.setLayer(feature.getFeatureType());
         	} catch (NoSuchElementException ne) {
-                throw new WmsException(layer + " layer does not exists.",
-                	"LayerNotDefined");
+                throw new WmsException(ne,new StringBuffer(layer).append( " layer does not exists.").toString(),
+                	ne.getLocalizedMessage());
             } catch (IOException ioe) {
-                throw new WmsException(
-                    "Can't obtain the schema for the required layer.");
-			}
+                throw new WmsException(ioe, "Can't obtain the schema for the required layer.", ioe.getLocalizedMessage());
+			} catch (TransformException te) {
+                throw new WmsException(te, "Can't obtain the schema for the required layer.", te.getLocalizedMessage());
+            } catch (FactoryConfigurationError fce) {
+                throw new WmsException(fce, "Can't obtain the schema for the required layer.", fce.getLocalizedMessage());
+            } catch (SchemaException se) {
+                throw new WmsException(se, "Can't obtain the schema for the required layer.", se.getLocalizedMessage());
+            } catch (IllegalAttributeException iae) {
+                throw new WmsException(iae, "Can't obtain the schema for the required layer.", iae.getLocalizedMessage());
+            }
         } catch (IOException e) {
             throw new WmsException(
                 "Can't obtain the schema for the required layer.");
@@ -120,7 +135,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 
         if (!org.vfny.geoserver.wms.responses.GetLegendGraphicResponse
                 .supportsFormat(format)) {
-            throw new WmsException("Invalid graphic format: " + format,
+            throw new WmsException(new StringBuffer("Invalid graphic format: " ).append( format).toString(),
                 "InvalidFormat");
         }
 

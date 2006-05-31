@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
-import java.awt.geom.Rectangle2D;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,24 +14,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.data.DataSourceException;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.DefaultFeature;
 import org.geotools.feature.DefaultFeatureType;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureCollections;
-import org.geotools.feature.FeatureTypeBuilder;
 import org.geotools.feature.IllegalAttributeException;
-import org.geotools.feature.SchemaException;
-import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.resources.CRSUtilities;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
@@ -43,22 +32,15 @@ import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 import org.opengis.spatialschema.geometry.MismatchedDimensionException;
-import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.CoverageStoreConfig;
+import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.CoverageStoreUtils;
+import org.vfny.geoserver.util.CoverageUtils;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
 
 /**
  * DOCUMENT ME!
@@ -181,10 +163,9 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		} else {
 			GeneralEnvelope bounds = null;
 			try {
-				bounds = CoverageStoreUtils
-						.adjustEnvelope(coverage.getEnvelope()
-								.getCoordinateReferenceSystem(), coverage
-								.getEnvelope());
+				bounds = CoverageStoreUtils.adjustEnvelope(coverage
+						.getEnvelope().getCoordinateReferenceSystem(), coverage
+						.getEnvelope());
 			} catch (MismatchedDimensionException e) {
 				final IOException ex = new IOException(new StringBuffer(
 						"Problems getting Coverage BoundingBox: ").append(
@@ -205,9 +186,12 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 				throw ex;
 			}
 
-			return new Envelope(bounds.getLowerCorner().getOrdinate(0), bounds
-					.getUpperCorner().getOrdinate(0), bounds.getLowerCorner()
-					.getOrdinate(1), bounds.getUpperCorner().getOrdinate(1));
+			// using referenced envelope (experiment)
+			return new ReferencedEnvelope(bounds.getLowerCorner()
+					.getOrdinate(0), bounds.getUpperCorner().getOrdinate(0),
+					bounds.getLowerCorner().getOrdinate(1), bounds
+							.getUpperCorner().getOrdinate(1), bounds
+							.getCoordinateReferenceSystem());
 		}
 	}
 
@@ -337,100 +321,87 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		this.type = type;
 	}
 
-	/**
-	 * simboss: Refactored in order to remove problems when it comes to axes
-	 * order
-	 * 
-	 * @param gridCoverage
-	 * @return
-	 * @throws IllegalAttributeException
-	 * @throws SchemaException
-	 * @throws TransformException
-	 */
-	private Feature wrapGcInFeature(GridCoverage gridCoverage)
-			throws IllegalAttributeException, SchemaException,
-			TransformException {
-		// create surrounding polygon
-		final PrecisionModel pm = new PrecisionModel();
-		final GeometryFactory gf = new GeometryFactory(pm, 0);
-		final Rectangle2D rect = ((GridCoverage2D) gridCoverage)
-				.getEnvelope2D();
-		final CoordinateReferenceSystem sourceCrs = CRSUtilities
-				.getCRS2D(((GridCoverage2D) gridCoverage)
-						.getCoordinateReferenceSystem());
-		final boolean lonFirst = !GridGeometry2D.swapXY(sourceCrs
-				.getCoordinateSystem());
-		final Coordinate[] coord = new Coordinate[5];
-		if (lonFirst) {
-			coord[0] = new Coordinate(rect.getMinX(), rect.getMinY());
-			coord[1] = new Coordinate(rect.getMaxX(), rect.getMinY());
-			coord[2] = new Coordinate(rect.getMaxX(), rect.getMaxY());
-			coord[3] = new Coordinate(rect.getMinX(), rect.getMaxY());
-			coord[4] = new Coordinate(rect.getMinX(), rect.getMinY());
-		} else {
-			coord[0] = new Coordinate(rect.getMinY(), rect.getMinX());
-			coord[1] = new Coordinate(rect.getMaxY(), rect.getMinX());
-			coord[2] = new Coordinate(rect.getMaxY(), rect.getMaxX());
-			coord[3] = new Coordinate(rect.getMinY(), rect.getMaxX());
-			coord[4] = new Coordinate(rect.getMinY(), rect.getMinX());
-		}
-		final LinearRing ring = gf.createLinearRing(coord);
-		final Polygon bounds = new Polygon(ring, null, gf);
-
-		// create the feature type
-		final GeometricAttributeType geom = new GeometricAttributeType("geom",
-				Polygon.class, true, 1, 1, null, sourceCrs, null);
-		final AttributeType grid = AttributeTypeFactory.newAttributeType(
-				"grid", GridCoverage.class);
-
-		final AttributeType[] attTypes = { geom, grid };
-
-		final DefaultFeatureType schema = (DefaultFeatureType) FeatureTypeBuilder
-				.newFeatureType(attTypes, this.name);
-
-		// create the feature
-		final Feature feature = new CoverageFeature(schema, new Object[] {
-				bounds, gridCoverage }, this.name);
-		feature.setDefaultGeometry(bounds);
-
-		return feature;
-	}
-
-	private GridCoverage getGridCoverage(HttpServletRequest request,
-			CoverageInfo meta) throws IOException {
+	private final GridCoverage getGridCoverage(HttpServletRequest request,
+			CoverageInfo meta, GeneralEnvelope envelope, Rectangle dim)
+			throws IOException {
 		GridCoverage coverage;
 
 		try {
-			String formatID = meta.getFormatId();
-			DataConfig dataConfig = (DataConfig) request.getSession()
+			// /////////////////////////////////////////////////////////
+			//
+			// Getting coverage config
+			//
+			// /////////////////////////////////////////////////////////
+			final String formatID = meta.getFormatId();
+			final DataConfig dataConfig = (DataConfig) request.getSession()
 					.getServletContext().getAttribute(DataConfig.CONFIG_KEY);
-			CoverageStoreConfig dfConfig = dataConfig.getDataFormat(formatID);
+			final CoverageStoreConfig dfConfig = dataConfig
+					.getDataFormat(formatID);
 
-			String realPath = request.getRealPath("/");
-			URL url = CoverageUtils.getResource(dfConfig.getUrl(), realPath);
-			Format format = dfConfig.getFactory();
-			GridCoverageReader reader = ((AbstractGridFormat) format)
+			// /////////////////////////////////////////////////////////
+			//
+			// Getting coverage reader using the format and the real path.
+			//
+			// /////////////////////////////////////////////////////////
+			final String realPath = request.getRealPath("/");
+			final URL url = CoverageUtils.getResource(dfConfig.getUrl(),
+					realPath);
+			final Format format = dfConfig.getFactory();
+			final GridCoverageReader reader = ((AbstractGridFormat) format)
 					.getReader(url);
 
-			ParameterValueGroup params = format.getReadParameters();
-
+			// /////////////////////////////////////////////////////////
+			//
+			// Setting coverage reading params.
+			//
+			// /////////////////////////////////////////////////////////
+			final ParameterValueGroup params = format.getReadParameters();
 			if (params != null) {
 				List list = params.values();
 				Iterator it = list.iterator();
+				ParameterValue param;
+				ParameterDescriptor descr;
+				String key;
+				Object value;
 				while (it.hasNext()) {
-					ParameterValue param = ((ParameterValue) it.next());
-					ParameterDescriptor descr = (ParameterDescriptor) param
-							.getDescriptor();
+					param = ((ParameterValue) it.next());
+					descr = (ParameterDescriptor) param.getDescriptor();
 
-					String key = descr.getName().toString();
-					Object value = CoverageUtils.getCvParamValue(key, param,
-							meta.getParameters());
+					key = descr.getName().toString();
 
-					if (value != null)
-						params.parameter(key).setValue(value);
+					// /////////////////////////////////////////////////////////
+					//
+					// request param for better management of coverage
+					//
+					// /////////////////////////////////////////////////////////
+					if (key.equalsIgnoreCase("readenvelope")
+							&& envelope != null) {
+						params.parameter(key).setValue(envelope);
+
+					} else if (key.equalsIgnoreCase("ReadDimensions2D")
+							&& dim != null) {
+						params.parameter(key).setValue(dim);
+
+					} else {
+						// /////////////////////////////////////////////////////////
+						//
+						// format specific params
+						//
+						// /////////////////////////////////////////////////////////
+						value = CoverageUtils.getCvParamValue(key, param, meta
+								.getParameters());
+
+						if (value != null)
+							params.parameter(key).setValue(value);
+					}
 				}
 			}
 
+			// /////////////////////////////////////////////////////////
+			//
+			// Reading the coverage
+			//
+			// /////////////////////////////////////////////////////////
 			coverage = reader
 					.read(params != null ? (GeneralParameterValue[]) params
 							.values().toArray(
@@ -474,58 +445,20 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		return coverage;
 	}
 
-	public FeatureSource getCoverageToFeatures(HttpServletRequest request)
-			throws DataSourceException {
-		FeatureCollection collection = FeatureCollections.newCollection();
-		// last step, wrap, add to the feature collection and return
+	public final GridCoverage getCoverage(HttpServletRequest request,
+			GeneralEnvelope envelope, Rectangle dim) throws DataSourceException {
 		try {
-			GridCoverage gridCoverage = getGridCoverage(request, this.coverage);
-			collection.add(wrapGcInFeature(gridCoverage));
+
+			return getGridCoverage(request, this.coverage, envelope, dim);
+
 		} catch (IOException e) {
 			final DataSourceException ex = new DataSourceException(
 					"IO error when getting a grid coverage", e);
-			
-
-			throw ex;
-
-		} catch (IllegalAttributeException e) {
-			final DataSourceException ex = new DataSourceException(
-					"IO error when getting a grid coverage", e);
-			
-
-			throw ex;
-		} catch (SchemaException e) {
-			final DataSourceException ex = new DataSourceException(
-					"IO error when getting a grid coverage", e);
-	
-
-			throw ex;
-		} catch (TransformException e) {
-			final DataSourceException ex = new DataSourceException(
-					"IO error when getting a grid coverage", e);
-			
-
-			throw ex;
-		}
-
-		return DataUtilities.source(collection);
-	}
-
-	public GridCoverage getCoverageToLayer(HttpServletRequest request)
-			throws DataSourceException {
-		GridCoverage gridCoverage = null;
-		try {
-			gridCoverage = getGridCoverage(request, this.coverage);
-		} catch (IOException e) {
-			final DataSourceException ex = new DataSourceException(
-					"IO error when getting a grid coverage", e);
-			ex.initCause(e);
 
 			throw ex;
 
 		}
 
-		return gridCoverage;
 	}
 
 	public Style getDefaultStyle() {

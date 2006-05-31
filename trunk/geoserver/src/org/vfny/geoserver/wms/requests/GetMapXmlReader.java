@@ -296,7 +296,7 @@ public class GetMapXmlReader extends XmlRequestReader {
         final List layers = new ArrayList();
         final List styles = new ArrayList();
         MapLayerInfo currLayer = new MapLayerInfo();
-        Style currStyle;
+
 
         StyledLayer sl = null;
 

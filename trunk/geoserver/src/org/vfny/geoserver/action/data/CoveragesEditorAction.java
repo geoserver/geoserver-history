@@ -45,13 +45,13 @@ import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.CoverageConfig;
-import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.CoverageStoreConfig;
+import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.form.data.CoveragesEditorForm;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.CoverageStoreUtils;
+import org.vfny.geoserver.util.CoverageUtils;
 
 /**
  * These Action handles all the buttons for the Coverage Editor.
@@ -210,8 +210,7 @@ public class CoveragesEditorAction extends ConfigAction {
 			final GeneralEnvelope gEnvelope = (GeneralEnvelope) gc
 					.getEnvelope();
 			final GeneralEnvelope targetEnvelope = gEnvelope;
-			final GeneralEnvelope envelope = CoverageStoreUtils.adjustEnvelope(sourceCRS,
-					targetEnvelope);
+			final GeneralEnvelope envelope = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(sourceCRS,targetEnvelope);
 			if (!sourceCRS.getIdentifiers().isEmpty()) {
 				coverageForm.setSrsName(sourceCRS.getIdentifiers().toArray()[0]
 						.toString());

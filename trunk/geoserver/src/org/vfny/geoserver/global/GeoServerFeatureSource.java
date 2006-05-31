@@ -101,7 +101,7 @@ public class GeoServerFeatureSource implements FeatureSource {
     }
 
     /**
-     * Factory that make the correct decorator for the provided featureSource.
+     * GDSFactory that make the correct decorator for the provided featureSource.
      * 
      * <p>
      * This factory method is public and will be used to create all required

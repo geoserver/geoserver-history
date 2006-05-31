@@ -36,7 +36,7 @@ public class KMZMapProducerFactory implements GetMapProducerFactorySpi {
      */
     static final String MIME_TYPE = "application/vnd.google-earth.kmz";
     
-    /** Set of supported mime types for the producers made by this Factory
+    /** Set of supported mime types for the producers made by this GDSFactory
      */
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
     

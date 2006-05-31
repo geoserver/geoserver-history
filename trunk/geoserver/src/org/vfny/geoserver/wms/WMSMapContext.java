@@ -18,21 +18,13 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
  * In particular, adds holding for the following parameter values:
  * 
  * <ul>
- * <li>
- * WIDTH
- * </li>
- * <li>
- * HEIGHT
- * </li>
- * <li>
- * BGCOLOR
- * </li>
- * <li>
- * TRANSPARENT
- * </li>
+ * <li> WIDTH </li>
+ * <li> HEIGHT </li>
+ * <li> BGCOLOR </li>
+ * <li> TRANSPARENT </li>
  * </ul>
  * </p>
- *
+ * 
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
@@ -68,21 +60,21 @@ public class WMSMapContext extends DefaultMapContext {
 
 	private GetMapRequest request;
 
-    /**
-     *
-     */
-    public WMSMapContext() {
-        super();
-    }
+	/**
+	 * Default constructor
+	 */
+	public WMSMapContext() {
+		super();
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param layers
-     */
-    public WMSMapContext(MapLayer[] layers) {
-        super(layers);
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param layers
+	 */
+	public WMSMapContext(MapLayer[] layers) {
+		super(layers);
+	}
 
 	/**
 	 * @param req
@@ -106,7 +98,8 @@ public class WMSMapContext extends DefaultMapContext {
 	/**
 	 * DOCUMENT ME!
 	 * 
-	 * @param bgColor DOCUMENT ME!
+	 * @param bgColor
+	 *            DOCUMENT ME!
 	 * 
 	 * @uml.property name="bgColor"
 	 */
@@ -128,7 +121,8 @@ public class WMSMapContext extends DefaultMapContext {
 	/**
 	 * DOCUMENT ME!
 	 * 
-	 * @param mapHeight DOCUMENT ME!
+	 * @param mapHeight
+	 *            DOCUMENT ME!
 	 * 
 	 * @uml.property name="mapHeight"
 	 */
@@ -150,7 +144,8 @@ public class WMSMapContext extends DefaultMapContext {
 	/**
 	 * DOCUMENT ME!
 	 * 
-	 * @param mapWidth DOCUMENT ME!
+	 * @param mapWidth
+	 *            DOCUMENT ME!
 	 * 
 	 * @uml.property name="mapWidth"
 	 */
@@ -158,19 +153,20 @@ public class WMSMapContext extends DefaultMapContext {
 		this.mapWidth = mapWidth;
 	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public boolean isTransparent() {
-        return this.transparent;
-    }
-
 	/**
 	 * DOCUMENT ME!
 	 * 
-	 * @param transparent DOCUMENT ME!
+	 * @return DOCUMENT ME!
+	 */
+	public boolean isTransparent() {
+		return this.transparent;
+	}
+
+	/**
+	 * Setting transparency for this wms context.
+	 * 
+	 * @param transparent
+	 *            DOCUMENT ME!
 	 * 
 	 * @uml.property name="transparent"
 	 */
@@ -181,6 +177,7 @@ public class WMSMapContext extends DefaultMapContext {
 	public GetMapRequest getRequest() {
 		return request;
 	}
+
 	public void setRequest(GetMapRequest request) {
 		this.request = request;
 	}

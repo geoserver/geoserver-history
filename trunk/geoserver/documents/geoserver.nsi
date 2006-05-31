@@ -212,6 +212,7 @@ Function dataDirPage
   StrCmp $1 "" 0 copy_str
   ## if it doesn't exist, use: "$INSTDIR\data_dir"
     StrCpy $1 "$INSTDIR\data_dir"
+    
 
   ## if it exists, use it for temp value until user chooses new one
   copy_str:

@@ -34,7 +34,7 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
      */
     static final String MIME_TYPE = "application/vnd.google-earth.kml+xml";
     
-    /** Set of supported mime types for the producers made by this Factory
+    /** Set of supported mime types for the producers made by this GDSFactory
      */
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
     

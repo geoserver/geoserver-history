@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -21,9 +22,6 @@ import org.geotools.factory.FactoryFinder;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
-import org.geotools.referencing.CRS;
-
-
 import org.geotools.styling.Style;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
@@ -33,6 +31,7 @@ import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -119,10 +118,11 @@ public class GetMapResponse implements Response {
 
 		// DJB: the WMS spec says that the request must not be 0 area
 		// if it is, throw a service exception!
-		Envelope env = request.getBbox();
+		final Envelope env = request.getBbox();
 		if (env.isNull() || (env.getWidth() <= 0) || (env.getHeight() <= 0)) {
-			throw new WmsException("The request bounding box has zero area: "
-					+ env);
+			throw new WmsException(new StringBuffer(
+					"The request bounding box has zero area: ").append(env)
+					.toString());
 		}
 
 		// DJB DONE: replace by setAreaOfInterest(Envelope,
@@ -130,13 +130,13 @@ public class GetMapResponse implements Response {
 		// with the user supplied SRS parameter
 
 		// if there's a crs in the request, use that. If not, assume its 4326
-		CoordinateReferenceSystem mapcrs = request.getCrs();
+		final CoordinateReferenceSystem mapcrs = request.getCrs();
 
 		// DJB: added this to be nicer about the "NONE" srs.
 		if (mapcrs != null)
-			map.setAreaOfInterest(request.getBbox(), mapcrs);
+			map.setAreaOfInterest(env, mapcrs);
 		else
-			map.setAreaOfInterest(request.getBbox());
+			map.setAreaOfInterest(env);
 		map.setMapWidth(request.getWidth());
 		map.setMapHeight(request.getHeight());
 		map.setBgColor(request.getBgColor());
@@ -154,9 +154,13 @@ public class GetMapResponse implements Response {
         boolean cachingPossible = request.getHttpServletRequest().getMethod().equals("GET");
         int maxAge = Integer.MAX_VALUE;
 
-        FeatureSource source;
-        for (int i = 0; i < layers.length; i++) {
-            Style style = styles[i];
+			FeatureSource source;
+			Style style;
+			Filter definitionFilter;
+			Query definitionQuery;
+			final int length = layers.length;
+			for (int i = 0; i < length; i++) {
+				style = styles[i];
 
 				if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
                     if (cachingPossible) {
@@ -171,13 +175,18 @@ public class GetMapResponse implements Response {
                             cachingPossible = false;
                         }
                     }
-
-                    try {
+					// /////////////////////////////////////////////////////////
+					//
+					// Adding a feature layer
+					//
+					// /////////////////////////////////////////////////////////
+					try {
 						source = layers[i].getFeature().getFeatureSource();
 					} catch (IOException exp) {
 						if (LOGGER.isLoggable(Level.SEVERE)) {
-							LOGGER.log(Level.SEVERE, new StringBuffer("Getting feature source: ").
-								append(exp.getMessage()).toString(), exp);
+							LOGGER.log(Level.SEVERE, new StringBuffer(
+									"Getting feature source: ").append(
+									exp.getMessage()).toString(), exp);
 						}
 						throw new WmsException(null, new StringBuffer(
 								"Internal error : ").append(exp.getMessage())
@@ -187,29 +196,34 @@ public class GetMapResponse implements Response {
 					layer = new DefaultMapLayer(source, style);
 					layer.setTitle(layers[i].getName());
 					
-					Filter definitionFilter = layers[i].getFeature()
+					definitionFilter = layers[i].getFeature()
 							.getDefinitionQuery();
 
 					if (definitionFilter != null) {
-						Query definitionQuery = new DefaultQuery(source
-								.getSchema().getTypeName(), definitionFilter);
+						definitionQuery = new DefaultQuery(source.getSchema()
+								.getTypeName(), definitionFilter);
 						layer.setQuery(definitionQuery);
 					}
 
 					map.addLayer(layer);
 				} else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {
-
-					source = layers[i].getCoverageToFeatures(req
-							.getHttpServletRequest());
-
-					layer = new DefaultMapLayer(source, style);
-					layer.setTitle(layers[i].getName());
-					layer.setQuery(Query.ALL);
-
-					map.addLayer(layer);
+					// /////////////////////////////////////////////////////////
+					//
+					// Adding a coverage layer
+					//
+					// /////////////////////////////////////////////////////////
+					map.addLayer(layers[i].getCoverage(req
+							.getHttpServletRequest(), CoverageUtils
+							.convertEnvelope(env, mapcrs), new Rectangle(map
+									.getMapWidth(), map.getMapHeight())),
+							style);
 				}
 			}
-
+			// /////////////////////////////////////////////////////////
+			//
+			// Producing the map in the requested format.
+			//
+			// /////////////////////////////////////////////////////////
 			this.delegate.produceMap(map);
         if (cachingPossible)
         	responseHeaders.put("Cache-Control: max-age",maxAge + "s" );
@@ -219,16 +233,16 @@ public class GetMapResponse implements Response {
 					"Getting feature source: ").append(e.getMessage())
 					.toString(), e);
 			}
-			throw new WmsException(null, new StringBuffer("Internal error : ")
-					.append(e.getMessage()).toString());
+			throw new WmsException(e, new StringBuffer("Internal error : ")
+					.append(e.getMessage()).toString(),"");
 		} catch (ClassCastException e) {
 			if (LOGGER.isLoggable(Level.SEVERE)) {
 				LOGGER.log(Level.SEVERE, new StringBuffer(
 					"Getting feature source: ").append(e.getMessage())
 					.toString(), e);
 			}
-			throw new WmsException(null, new StringBuffer("Internal error : ")
-					.append(e.getMessage()).toString());
+			throw new WmsException(e, new StringBuffer("Internal error : ")
+					.append(e.getMessage()).toString(),"");
 		} finally {
 			// clean
 			try {
@@ -249,8 +263,6 @@ public class GetMapResponse implements Response {
 			Runtime.getRuntime().gc();
 			Runtime.getRuntime().gc();
 			Runtime.getRuntime().gc();
-			
-			
 
 		}
 	}
@@ -331,7 +343,8 @@ public class GetMapResponse implements Response {
 			}
 
 			if (LOGGER.isLoggable(Level.FINER)) {
-				LOGGER.finer(new StringBuffer("asking delegate for write to ").append(out).toString());
+				LOGGER.finer(new StringBuffer("asking delegate for write to ")
+						.append(out).toString());
 			}
 			this.delegate.writeTo(out);
 		} finally {
@@ -340,7 +353,9 @@ public class GetMapResponse implements Response {
 			} catch (Exception e) // we dont want to propogate a new error
 			{
 				if (LOGGER.isLoggable(Level.SEVERE)) {
-					LOGGER.log(Level.SEVERE, new StringBuffer("Getting feature source: ").append(e.getMessage()).toString(), e);
+					LOGGER.log(Level.SEVERE, new StringBuffer(
+							"Getting feature source: ").append(e.getMessage())
+							.toString(), e);
 				}
 			}
 		}
@@ -366,7 +381,8 @@ public class GetMapResponse implements Response {
 	static GetMapProducer getDelegate(String outputFormat, WMSConfig config)
 			throws WmsException {
 		if (LOGGER.isLoggable(Level.FINER)) {
-			LOGGER.finer(new StringBuffer("request format is ").append(outputFormat).toString());
+			LOGGER.finer(new StringBuffer("request format is ").append(
+					outputFormat).toString());
 		}
 
 		GetMapProducerFactorySpi mpf = null;
@@ -422,5 +438,4 @@ public class GetMapResponse implements Response {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

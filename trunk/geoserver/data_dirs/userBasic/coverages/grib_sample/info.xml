@@ -48,7 +48,4 @@ at least must contain the "default" attribute
 <supportedInterpolations default = "nearest neighbor" >
 <interpolationMethods>nearest neighbor</interpolationMethods>
 </supportedInterpolations>
-<parameters>
-<parameter value = "#0000ff;#00ff00;#ff0000" name = "values_palette"  />
-</parameters>
 </coverage>

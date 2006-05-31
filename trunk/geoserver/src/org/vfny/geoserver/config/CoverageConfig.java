@@ -315,7 +315,8 @@ public class CoverageConfig {
 		dirName = new StringBuffer(formatId).append("_").append(name)
 				.toString();
 		requestCRSs = new LinkedList();
-		requestCRSs.add(((Identifier)gc.getCoordinateReferenceSystem2D().getIdentifiers().toArray()[0]).toString());
+        if (gc.getCoordinateReferenceSystem2D().getIdentifiers() != null && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty())
+            requestCRSs.add(((Identifier)gc.getCoordinateReferenceSystem2D().getIdentifiers().toArray()[0]).toString());
 		responseCRSs = new LinkedList();
 			/*final CoordinateReferenceSystem sourceCRS = gc.getCoordinateReferenceSystem();
 			Set s = CRS.getSupportedCodes("EPSG");
@@ -332,7 +333,8 @@ public class CoverageConfig {
 					
 				}
 			}*/
-		responseCRSs.add(((Identifier)gc.getCoordinateReferenceSystem2D().getIdentifiers().toArray()[0]).toString());
+        if (gc.getCoordinateReferenceSystem2D().getIdentifiers() != null && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty())
+            responseCRSs.add(((Identifier)gc.getCoordinateReferenceSystem2D().getIdentifiers().toArray()[0]).toString());
 		supportedFormats = new LinkedList();
 		final List formats = CoverageStoreUtils.listDataFormats();
 		for(Iterator i = formats.iterator(); i.hasNext();) {

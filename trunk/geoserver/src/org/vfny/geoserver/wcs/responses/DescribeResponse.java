@@ -290,7 +290,7 @@ public class DescribeResponse implements Response {
 		// TODO we need to signal somehow that something went wrong
 		GeneralEnvelope cvEnvelope = cv.getEnvelope();
 		try {
-			cvEnvelope = CoverageStoreUtils.adjustEnvelope(cv.getEnvelope()
+			cvEnvelope = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(cv.getEnvelope()
 					.getCoordinateReferenceSystem(), cv.getEnvelope());
 		} catch (MismatchedDimensionException e) {
 			LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),

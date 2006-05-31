@@ -65,7 +65,7 @@
 	</a>
   </li>
   <li>
-  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs?service=WCS&version=1.0.0&request=GetCoverage&coverage=Arc_Sample&BBOX=9.42,42.2,11.82,43.9&format=png&crs=EPSG:4326&response_crs=EPSG:32626&interpolation=nearest_neighbor">
+  	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>wcs?service=WCS&version=1.0.0&request=GetCoverage&coverage=Arc_Sample&BBOX=42.2,9.42,43.9,11.82&format=png&crs=EPSG:4326&response_crs=EPSG:32626&interpolation=nearest_neighbor">
   	  getCoverage
   	</a>
   </li>

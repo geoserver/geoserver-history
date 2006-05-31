@@ -1427,7 +1427,7 @@ public class XMLConfigWriter {
 			// STORING READ PARAMETERS
 			//
 			// ///////////////////////////////////////////////////////////////////////
-			if (cv.getParamKeys().size() != 0) {
+			if (cv.getParamKeys() != null && cv.getParamKeys().size() != 0) {
 				cw.openTag("parameters");
 				
 				final Iterator i = cv.getParamKeys().iterator();

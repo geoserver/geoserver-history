@@ -106,20 +106,22 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         // attempt to get a better SRS
         try {
         	CoordinateReferenceSystem crs = featureType.getDefaultGeometry().getCoordinateSystem();
-        	Set idents = crs.getIdentifiers();
-        	Iterator it = idents.iterator();
-        	while (it.hasNext())
-        	{
-        		Identifier id = (Identifier) it.next();
-        		if (id.toString().indexOf("EPSG:") != -1)    // this should probably use the Citation, but this is easier!
-        		{
-        			//we have an EPSG #, so lets use it!
-        			String str_num = id.toString().substring(id.toString().indexOf(':')+1);
-        			int num = Integer.parseInt(str_num);
-        			ftConfig.setSRS(num);
-        			break;  // take the first EPSG
-        		}
-        	}
+            if (crs != null) {
+                Set idents = crs.getIdentifiers();
+                Iterator it = idents.iterator();
+                while (it.hasNext())
+                {
+                    Identifier id = (Identifier) it.next();
+                    if (id.toString().indexOf("EPSG:") != -1)    // this should probably use the Citation, but this is easier!
+                    {
+                        //we have an EPSG #, so lets use it!
+                        String str_num = id.toString().substring(id.toString().indexOf(':')+1);
+                        int num = Integer.parseInt(str_num);
+                        ftConfig.setSRS(num);
+                        break;  // take the first EPSG
+                    }
+                }
+            }
         }catch(Exception e)
 		{
         	e.printStackTrace(); // not a big deal - we'll default to 0.

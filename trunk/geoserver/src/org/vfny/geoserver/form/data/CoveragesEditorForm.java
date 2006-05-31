@@ -193,7 +193,7 @@ public class CoveragesEditorForm extends ActionForm {
 				DataConfig.SELECTED_COVERAGE);
 		GeneralEnvelope bounds = null;
 		try {
-			bounds = CoverageStoreUtils.adjustEnvelope(cvConfig.getCrs(), cvConfig.getEnvelope());
+			bounds = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(cvConfig.getCrs(), cvConfig.getEnvelope());
 		} catch (MismatchedDimensionException e) {
 			// TODO Not sure what to do, user must have bookmarked?
 			return; // Action should redirect to Select screen?
@@ -453,7 +453,7 @@ public class CoveragesEditorForm extends ActionForm {
 		}
 
 		//dump("form", connectionParams);
-		// Factory will provide even more stringent checking
+		// GDSFactory will provide even more stringent checking
 		//
 		// if (!factory.canProcess( connectionParams )) {
 		// errors.add("paramValue",

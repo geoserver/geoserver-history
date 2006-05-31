@@ -47,6 +47,7 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
@@ -1566,14 +1567,18 @@ public class XMLConfigReader {
 		GeneralEnvelope gcEnvelope = loadEnvelope(envelope, crs);
 		cv.setEnvelope(gcEnvelope);
 		try {
-			cv.setLatLonEnvelope(CoverageStoreUtils.adjustEnvelope(crs, gcEnvelope));
+			cv.setLatLonEnvelope(CoverageStoreUtils.getLatLonEnvelope(gcEnvelope));
 		} catch (MismatchedDimensionException e) {
 			throw new ConfigurationException(e);
 		} catch (IndexOutOfBoundsException e) {
 			throw new ConfigurationException(e);
 		} catch (NoSuchAuthorityCodeException e) {
 			throw new ConfigurationException(e);
-		}
+		} catch (FactoryException e) {
+            throw new ConfigurationException(e);
+        } catch (TransformException e) {
+            throw new ConfigurationException(e);
+        }
 
 		// /////////////////////////////////////////////////////////////////////
 		//

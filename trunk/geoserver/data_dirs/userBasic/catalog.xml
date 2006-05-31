@@ -88,9 +88,6 @@ parameters repository for all coverages it holds.
 <format namespace = "nurc" enabled = "true" id = "prova_grib" >
 <type>GRIB1</type>
 <url>file:data/coverages/grib_sample/grid_RLM13_050418.070949_11_1_00-06.ggsbin</url>
-<parameters>
-<parameter value = "#0000ff;#00ff00;#ff0000" name = "values_palette"  />
-</parameters>
 </format>
 <format namespace = "nurc" enabled = "true" id = "worldImageSample" >
 <type>WorldImage</type>

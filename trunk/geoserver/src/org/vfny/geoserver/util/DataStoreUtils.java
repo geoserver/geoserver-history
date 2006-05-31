@@ -91,7 +91,7 @@ public abstract class DataStoreUtils {
     }
 
     /**
-     * After user has selected Description can aquire Factory based on
+     * After user has selected Description can aquire GDSFactory based on
      * display name.
      * 
      * <p>
@@ -222,7 +222,7 @@ public abstract class DataStoreUtils {
      * @param factory
      * @param params
      *
-     * @return Map with real values that may be acceptable to Factory
+     * @return Map with real values that may be acceptable to GDSFactory
      *
      * @throws IOException DOCUMENT ME!
      */

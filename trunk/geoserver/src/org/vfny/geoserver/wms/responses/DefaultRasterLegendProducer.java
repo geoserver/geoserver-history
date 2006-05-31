@@ -86,7 +86,7 @@ public abstract class DefaultRasterLegendProducer
     private static final Logger LOGGER = Logger.getLogger(DefaultRasterLegendProducer.class.getPackage()
                                                                                            .getName());
 
-    /** Factory that will resolve symbolizers into rendered styles */
+    /** GDSFactory that will resolve symbolizers into rendered styles */
     private static final SLDStyleFactory styleFactory = new SLDStyleFactory();
 
     /** Tolerance used to compare doubles for equality */

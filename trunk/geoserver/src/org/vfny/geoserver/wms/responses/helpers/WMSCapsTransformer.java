@@ -26,9 +26,13 @@ import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.metadata.Identifier;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.crs.DerivedCRS;
+import org.opengis.referencing.crs.ProjectedCRS;
+import org.opengis.referencing.operation.TransformException;
 import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
@@ -734,42 +738,61 @@ public class WMSCapsTransformer extends TransformerBase {
 
 			handleKeywordList(coverage.getKeywords());
 
+            String desc = "WKT definition of this CRS:\n" + coverage.getSrsWKT();
+            comment(desc);
 			/**
 			 * TODO REVISIT: should getSRS() return the full URL?
 			 */
 			String authority = "";
-			if (coverage.getCrs() != null
-					&& !coverage.getCrs().getIdentifiers().isEmpty()) {
-				Identifier[] idents = (Identifier[]) coverage.getCrs()
-						.getIdentifiers().toArray(
-								new Identifier[coverage.getCrs()
-										.getIdentifiers().size()]);
+            CoordinateReferenceSystem crs = coverage.getCrs();
+            if (crs != null && !crs.getIdentifiers().isEmpty()) {
+				Identifier[] idents = (Identifier[]) crs.getIdentifiers().toArray(new Identifier[crs.getIdentifiers().size()]);
 				authority = idents[0].toString();
-			} else {
-				authority = "UNKNOWN";
-			}
+			} else if (crs != null && crs instanceof DerivedCRS){
+                final CoordinateReferenceSystem baseCRS = ((DerivedCRS) crs).getBaseCRS();
+                if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
+                    authority = ((Identifier[]) baseCRS.getIdentifiers().toArray(new Identifier[baseCRS.getIdentifiers().size()]))[0].toString();
+                else
+                    authority = "UNKNOWN";
+            } else if (crs != null && crs instanceof ProjectedCRS){
+                final CoordinateReferenceSystem baseCRS = ((ProjectedCRS) crs).getBaseCRS();
+                if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
+                    authority = ((Identifier[]) baseCRS.getIdentifiers().toArray(new Identifier[baseCRS.getIdentifiers().size()]))[0].toString();
+                else
+                    authority = "UNKNOWN";
+            } else
+                authority = "UNKNOWN";
+
 			element("SRS", authority);
 
 			GeneralEnvelope bounds = null;
+            GeneralEnvelope llBounds = null;
 			try {
-				bounds = CoverageStoreUtils
-						.adjustEnvelope(coverage.getEnvelope()
-								.getCoordinateReferenceSystem(), coverage
-								.getEnvelope());
+                // We need LON/LAT Envelopes
+                // TODO check for BBOX, maybe it should be expressed in original CRS coords!!
+                final GeneralEnvelope latLonEnvelope = coverage.getLatLonEnvelope();
+                final CoordinateReferenceSystem llCRS = latLonEnvelope.getCoordinateReferenceSystem();
+				bounds = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS, latLonEnvelope);
+                llBounds = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS, latLonEnvelope);
 			} catch (MismatchedDimensionException e) {
 				// TODO Handle this Exception
 			} catch (IndexOutOfBoundsException e) {
 				// TODO Handle this Exception
-			} catch (NoSuchAuthorityCodeException e) {
-				// TODO Handle this Exception
-			}
+            } catch (FactoryException e) {
+                // TODO Auto-generated catch block
+            }
 
 			final Envelope bbox = new Envelope(bounds.getLowerCorner()
 					.getOrdinate(0), bounds.getUpperCorner().getOrdinate(0),
 					bounds.getLowerCorner().getOrdinate(1), bounds
 							.getUpperCorner().getOrdinate(1));
 
-			handleLatLonBBox(bbox);
+            final Envelope llBbox = new Envelope(llBounds.getLowerCorner()
+                    .getOrdinate(0), llBounds.getUpperCorner().getOrdinate(0),
+                    llBounds.getLowerCorner().getOrdinate(1), llBounds
+                            .getUpperCorner().getOrdinate(1));
+
+			handleLatLonBBox(llBbox);
 			handleBBox(bbox, authority);
 
 			// add the layer style

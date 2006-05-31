@@ -183,24 +183,7 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 		return gs;
 	}
 	
-	/**
-	 * Data constructor.
-	 * 
-	 * <p>
-	 * package only constructor for GeoServer to call.
-	 * </p>
-	 *
-	 * @param config DOCUMENT ME!
-	 *
-	 * @throws NullPointerException DOCUMENT ME!
-	 */
-	
-	/*Data() {
-	 nameSpaces = new HashMap();
-	 styles = new HashMap();
-	 featureTypes = new HashMap();
-	 dataStores = new HashMap();
-	 }*/
+
 	
 	/**
 	 * Places the data in this container and innitializes it. Complex tests are
@@ -1690,7 +1673,7 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 	 * know way of knowing if the dataStore has already been placed into our
 	 * care as DataStores are not good at identifying themselves. To
 	 * complicate matters most keep a static connectionPool around in their
-	 * Factory - it could be that the Factories are supposed to be smart
+	 * GDSFactory - it could be that the Factories are supposed to be smart
 	 * enough to prevent duplication.
 	 * </p>
 	 *

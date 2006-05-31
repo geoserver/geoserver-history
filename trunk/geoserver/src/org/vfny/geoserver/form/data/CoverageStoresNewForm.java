@@ -36,7 +36,7 @@ public class CoverageStoresNewForm extends ActionForm {
 
 
 	/**
-	 * Description provided by selected Dataformat Factory
+	 * Description provided by selected Dataformat GDSFactory
 	 */
 	private String selectedDescription;
 
