@@ -48,36 +48,32 @@
 		class="org.vfny.geoserver.wms.servlets.WMService"
 		parent="wmsAbstractService">
 		<!-- reference to wms bean in this context -->
-		<property name="WMS" ref="wms"/>
+		<constructor-arg ref="wms"/>
+		<!-- property name="WMS" ref="wms"/-->
 	</bean>
 		
 	<bean id="wmsGetCapabilities" 
 		class="org.vfny.geoserver.wms.servlets.Capabilities"
 		parent="wmsService">
-		<property name="serviceRef" ref="wms"/>
 	</bean>
 
 	<bean id="wmsDescribeFeatureType"
 		class="org.vfny.geoserver.wms.servlets.DescribeLayer"
 		parent="wmsService">
-		<property name="WMS" ref="wms"/>
 	</bean>
 		
 	<bean id="wmsGetFeatureInfo"
 		class="org.vfny.geoserver.wms.servlets.GetFeatureInfo"
 		parent="wmsService">
-		<property name="WMS" ref="wms"/>
 	</bean>
 		
 	<bean id="wmsGetLegendGraphic"
 		class="org.vfny.geoserver.wms.servlets.GetLegendGraphic"
 		parent="wmsService">
-		<property name="WMS" ref="wms"/>
 	</bean>	
 		
 	<bean id="wmsGetMap"
 		class="org.vfny.geoserver.wms.servlets.GetMap"
 		parent="wmsService">
-		<property name="WMS" ref="wms"/>
 	</bean>	
 </beans>

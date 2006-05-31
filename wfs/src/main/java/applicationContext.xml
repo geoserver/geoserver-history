@@ -52,37 +52,32 @@
 		class="org.vfny.geoserver.wfs.servlets.WFService"
 		parent="wfsAbstractService">	
 		<!-- reference to wfs bean in this context -->
-		<property name="WFS" ref="wfs"/>
+		<constructor-arg ref="wfs"/>
 	</bean>
 		
 	<bean id="wfsGetCapabilities" 
 		class="org.vfny.geoserver.wfs.servlets.Capabilities"
 		parent="wfsService">
-		<property name="serviceRef" ref="wfs"/>
 	</bean>
 
 	<bean id="wfsDescribeFeatureType"
 		class="org.vfny.geoserver.wfs.servlets.Describe"
 		parent="wfsService">
-		<property name="WFS" ref="wfs"/>
 	</bean>
 		
 	<bean id="wfsGetFeature"
 		class="org.vfny.geoserver.wfs.servlets.Feature"
 		parent="wfsService">
-		<property name="WFS" ref="wfs"/>
 	</bean>
 		
 	<bean id="wfsGetFeatureWithLock"
 		class="org.vfny.geoserver.wfs.servlets.FeatureWithLock"
 		parent="wfsService">
-		<property name="WFS" ref="wfs"/>
 	</bean>	
 		
 	<bean id="wfsTransaction"
 		class="org.vfny.geoserver.wfs.servlets.Transaction"
 		parent="wfsService">
-		<property name="WFS" ref="wfs"/>
 		
 		<!-- always use file strategy -->
 		<property name="fileStrategy" ref="fileServiceStrategy"/>
