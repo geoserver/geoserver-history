@@ -8,7 +8,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -75,26 +77,45 @@ public class Dispatcher extends AbstractController {
 		return null;
 	}
 	
-	AbstractService find(String service, String request) {
+	AbstractService find(String service, String request) throws ServiceException {
 		//map request parameters to a Request bean to handle it 
 		Map requests = 
 			//getApplicationContext().getBeansOfType(AbstractService.class);
 			getApplicationContext().getParent().getBeansOfType(AbstractService.class);
 		
+		List matches = new ArrayList();
 		for (Iterator itr = requests.entrySet().iterator(); itr.hasNext();) {
 			Map.Entry entry = (Entry) itr.next();
-			String id = (String) entry.getKey();
+			
 			AbstractService bean = (AbstractService) entry.getValue();
 			
-			if (bean.getService().equalsIgnoreCase(service) && 
-				bean.getRequest().equalsIgnoreCase(request)) {
-				
-				//we have a winner
-				return bean;
+			//we allow for a null service
+			if (service == null) {
+				if (bean.getRequest().equalsIgnoreCase(request)) {
+					//we have a winner
+					matches.add(bean);
+				}
+			}
+			else {
+				if (bean.getService().equalsIgnoreCase(service) && 
+					bean.getRequest().equalsIgnoreCase(request)) {
+					
+					//we have a winner
+					matches.add(bean);
+				}	
 			}
 		}
 		
-		return null;
+		if (matches.isEmpty())
+			return null;
+		
+		if (matches.size() > 1) {
+			String msg = "Multiple requests found capable of handling:" + 
+			" (" + service + "," + request + ")"; 
+			throw new ServiceException( msg );
+		}
+		
+		return (AbstractService) matches.get(0);
 	}
 	
 	void dispatch(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
@@ -117,15 +138,25 @@ public class Dispatcher extends AbstractController {
 			
 			String path = httpRequest.getContextPath();
 			String uri = httpRequest.getRequestURI();
-			uri = uri.substring(path.length()+1);
+			if (uri.length() > path.length()) {
+				uri = uri.substring(path.length()+1);	
+			}
 			
 			int index = uri.indexOf('/'); 
 			if ( index != -1 ) {
+				//take everything before the slash to be the service and 
+				// everything after to be the request
 				if (service == null)
 					service = uri.substring(0,index);
 				
 				if (request == null)
 					request = uri.substring(index+1);
+			}
+			else {
+				//just take the whole string to be the service
+				if (service == null) {
+					service = uri;
+				}
 			}
 		}	
 		
