@@ -38,9 +38,7 @@ public class Lock extends WFService {
      * @return DOCUMENT ME!
      */
     protected Response getResponseHandler() {
-        ServletContext context = getServletContext();
-
-        return new LockResponse((GeoServer) context.getAttribute("GeoServer"));
+    		return new LockResponse(getWFS().getGeoServer());
     }
 
     /**
