@@ -22,8 +22,8 @@
         </parameter>
 
         <parameter>
-          <name>webappDirectory</name>
-          <property>webappDirectory</property>
+          <name>warSourceDirectory</name>
+          <property>warSourceDirectory</property>
           <required>true</required>
           <type>java.io.File</type>
 					<defaultValue>${basedir}/src/main/webapp</defaultValue>

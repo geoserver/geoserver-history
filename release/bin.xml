@@ -6,7 +6,7 @@
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
-			<directory>web/target/web-1.4.x</directory>
+			<directory>web/target/geoserver</directory>
 			<outputDirectory>geoserver/webapps/geoserver</outputDirectory>
 			<includes>
 				<include>**/*</include>
@@ -43,9 +43,6 @@
 		<fileSet>
 			<directory>release/logs</directory>
 			<outputDirectory>geoserver</outputDirectory>
-			<!--includes>
-				<include>**/*</include>
-			</includes-->
 		</fileSet>
 	</fileSets>
 </assembly>

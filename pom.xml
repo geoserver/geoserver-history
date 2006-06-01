@@ -7,7 +7,7 @@
 	<groupId>org.geoserver</groupId>
 	<artifactId>geoserver</artifactId>
 	<packaging>pom</packaging>
-	<version>1.4.x</version>
+	<version>1.4.0-M0</version>
 	<name>GeoServer</name>
 	
 	<organization>
@@ -375,7 +375,7 @@
 							<descriptor>release/javadoc.xml</descriptor>
 							<descriptor>release/bin.xml</descriptor>
 					</descriptors>
-          <finalName>geoserver</finalName>
+          <finalName>geoserver-1.4.0-M0</finalName>
           <outputDirectory>${project.build.directory}/release</outputDirectory>
         </configuration>
       </plugin>
@@ -393,5 +393,9 @@
 		<module>release</module>
 		<module>test</module>
 	</modules>
+
+	<properties>
+		<gs.version>1.4.0-M0</gs.version>
+	</properties>
 	
 </project>
