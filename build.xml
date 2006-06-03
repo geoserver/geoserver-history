@@ -550,8 +550,8 @@
 	<copy todir="${basedir}/data">
 		<fileset dir="${basedir}/documents">
 			<include name="license.txt" />
+			<include name="GPL.txt" />
 			<include name="geoserver.log" />
-			<include name="z3950-geo.map" />
 		</fileset>
 	</copy>
 
@@ -784,6 +784,7 @@
 	<copy todir="${dir.build}">
 		<fileset dir="${basedir}/documents">
 			<include name="license.txt" />
+			<include name="GPL.txt" />
 			<include name="README.txt" />
 		</fileset>
 	</copy>
@@ -925,6 +926,7 @@
 	
 	<delete file="${basedir}/geoserver-${name.release}-src.zip" failonerror="true" />
 	<delete file="${basedir}/license.txt" failonerror="true" />
+	<delete file="${basedir}/GPL.txt" failonerror="true" />
 </target>
 	
 
