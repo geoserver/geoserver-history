@@ -4,11 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wms.responses.map.gif.GIFOutputStream;
+import org.vfny.geoserver.wms.responses.map.gif.Gif89Encoder;
 
 
 /**
@@ -36,7 +38,11 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
      */
     public void writeTo(OutputStream out) throws IOException, ServiceException {
-        GIFOutputStream.writeGIF(out, super.getLegendGraphic());
+        //GIFOutputStream.writeGIF(out, super.getLegendGraphic()); // removed: IP issues
+    	Gif89Encoder gifenc = new Gif89Encoder();
+    	BufferedImage image = super.getLegendGraphic();
+    	gifenc.addFrame(image);
+    	gifenc.encode(out);
     }
 
     /**
