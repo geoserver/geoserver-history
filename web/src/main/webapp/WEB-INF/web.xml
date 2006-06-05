@@ -159,9 +159,10 @@
     <servlet-class>org.vfny.geoserver.wms.servlets.GetLegendGraphic</servlet-class>
   </servlet>
   <servlet>
+  -->
    <servlet-name>JSPCompiler</servlet-name>
    <servlet-class>org.vfny.geoserver.servlets.JSPCompiler</servlet-class>
-  </servlet-->
+  </servlet>
 
   
   <!--servlet-mapping>
@@ -243,9 +244,10 @@
     <url-pattern>/wms/GetLegendGraphic</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+  -->
    <servlet-name>JSPCompiler</servlet-name>
    <url-pattern>/JSPCompiler</url-pattern>
-  </servlet-mapping-->
+  </servlet-mapping>
  
   
   <mime-mapping>
