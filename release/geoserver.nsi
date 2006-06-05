@@ -102,12 +102,14 @@ Section "GeoServer Section" SecGeoServer
   
   ;ADD YOUR OWN FILES HERE...
   File /r bin
+  File /r etc
   File /r conf
   File /r documents
   File /a README.txt
   File /r lib
   File /a RUNNING.txt
   File /a license.txt
+  File /a start.jar
   File /r webapps
 
 
