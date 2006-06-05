@@ -390,7 +390,7 @@
 		<module>validation</module>
 		<module>web</module>
 		<module>config</module>
-		<module>release</module>
+		<!--module>release</module-->
 		<module>test</module>
 	</modules>
 
