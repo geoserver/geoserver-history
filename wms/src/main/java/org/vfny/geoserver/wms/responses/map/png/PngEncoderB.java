@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.wms.responses.map.png;
 
 import java.awt.image.BufferedImage;
@@ -27,20 +31,20 @@ import java.util.zip.DeflaterOutputStream;
  *   <p><code>david@catcode.com</code></p>
  *
  * <p>This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
+ * modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.<p>
  * 
  * <p>This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.</p>
+ * General Public License for more details.</p>
  * 
- * <p>You should have received a copy of the GNU Lesser General Public
+ * <p>You should have received a copy of the GNU General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * A copy of the GNU LGPL may be found at
- * <code>http://www.gnu.org/copyleft/lesser.html</code></p>
+ * A copy of the GNU GPL may be found at
+ * http://www.gnu.org/copyleft/gpl.html</p>
  *
  * @author J. David Eisenberg
  * @version 1.5, 19 Oct 2003
@@ -52,7 +56,10 @@ import java.util.zip.DeflaterOutputStream;
  *               PngEncoderB can inherit them (JDE)
  *				 Fixed bug with calculation of nRows
  *				 Added modifications for unsigned short images
- *					(contributed by Christian at xpogen.com) 
+ *					(contributed by Christian at xpogen.com) * 02-Jun-2006 : Changed license to GPL, as per clause 3 of Terms and 
+ *               Conditions of LGPL, made additional copyright to TOPP
+ *               (though not exclusive copyright, so we can't change the terms
+ *                except to go to GPL)
  */
 
 public class PngEncoderB extends PngEncoder 
