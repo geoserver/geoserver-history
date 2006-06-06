@@ -213,7 +213,7 @@
 						<configuration>
 							<configId>${configId}</configId>
 						</configuration>
-            <phase>install</phase>
+            <phase>compile</phase>
             <goals>
               <goal>config</goal>
             </goals>
