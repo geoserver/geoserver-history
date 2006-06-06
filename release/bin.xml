@@ -31,6 +31,9 @@
 			<outputDirectory>geoserver</outputDirectory>
 			<includes>
 				<include>license.txt</include>
+				<include>GPL.txt</include>
+				<include>RUNNING.txt</include>
+				<include>README.txt</include>
 			</includes>
 		</fileSet>
 		<fileSet>

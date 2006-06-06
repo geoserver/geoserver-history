@@ -41,26 +41,6 @@
       <artifactId>spring-webmvc</artifactId>
     </dependency>
 		<dependency>
-			<groupId>ki</groupId>
-			<artifactId>ki-jzkit-iface</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ki</groupId>
-			<artifactId>ki-jzkit-iface</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ki</groupId>
-			<artifactId>ki-jzkit-z3950</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ki</groupId>
-			<artifactId>ki-util</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ki</groupId>
-			<artifactId>a2jruntime</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
 		</dependency>
@@ -71,10 +51,6 @@
 		<dependency>
 			<groupId>xalan</groupId>
 			<artifactId>xalan</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>lucene</groupId>
-			<artifactId>lucene</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
