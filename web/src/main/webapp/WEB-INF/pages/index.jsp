@@ -7,7 +7,7 @@
   <link type="image/gif" href="gs.gif" rel="icon"><!-- mozilla --> 
   <link href="gs.ico" rel="SHORTCUT ICON"><!-- ie -->
 </head>
-<body onload="javascript:window.location.replace('JSPCompiler')"><br><center>
+<body onload="javascript:window.location.replace('welcome.do')"><br><center>
 <table width="60%" height="60%"><tr><td>
 <center>
   <span class="project">
