@@ -79,7 +79,7 @@ REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/conf/
   if "%JAVA_HOME%" == "" goto usePathJava
   ::If it's not defined by now, then we are just using 'java', and it will 
   ::fail there if it can't find it.
-  set RUN_JAVA=%JAVA_HOME%/bin/java
+  set RUN_JAVA=%JAVA_HOME%\bin\java
   goto runJava
 
 :usePathJava
@@ -89,7 +89,8 @@ REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/conf/
   goto runJava
 
 :runJava
-  %RUN_JAVA% -DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -jar %GEOSERVER_HOME%/start.jar
+  cd %GEOSERVER_HOME%
+  %RUN_JAVA% -DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -jar %GEOSERVER_HOME%\start.jar
 
 
 :end
