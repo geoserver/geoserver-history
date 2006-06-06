@@ -11,13 +11,13 @@ if not exist "%JAVA_HOME%\bin\java.exe" goto noJava2
 
 if "%GEOSERVER_HOME%" == "" goto noGeo1
 
-if not exist "%GEOSERVER_HOME%\bin\stop.jar" goto noGeo2
+if not exist "%GEOSERVER_HOME%\start.jar" goto noGeo2
 
 REM -------------
 REM OK, we're ready to try actually runnning it.
 REM -------------
 
-java -jar "%GEOSERVER_HOME%\bin\stop.jar"
+java -jar "%GEOSERVER_HOME%\start.jar" --stop
 
 goto end
 
@@ -40,7 +40,7 @@ goto end
 :doGeo1
 echo GEOSERVER_HOME environment variable not found.  Using current
 echo directory.  Please set GEOSERVER_HOME for future uses.
- java -jar stop.jar
+ java -jar start.jar --stop
  goto end
 
 :noGeo2
@@ -53,7 +53,7 @@ goto end
   echo GEOSERVER_HOME environment variable not properly set.  Using parent
   echo directory of this script.  Please set GEOSERVER_HOME correctly for 
   echo future uses.
-  java -jar stop.jar
+  java -jar start.jar --stop
 goto end
 
 :end
