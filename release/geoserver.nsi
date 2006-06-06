@@ -104,7 +104,7 @@ Section "GeoServer Section" SecGeoServer
   File /r bin
   File /r etc
   File /r conf
-  File /r documents
+  #File /r documents
   File /a README.txt
   File /r lib
   File /a RUNNING.txt
@@ -133,7 +133,7 @@ Section "GeoServer Section" SecGeoServer
 
 
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-    SetOutPath "$INSTDIR\bin"
+    SetOutPath "$INSTDIR"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\GeoServer Documentation.lnk"\
                    "$INSTDIR\documents\GEOSDOC\Documentation.html"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\GeoServer Administration.lnk" \
