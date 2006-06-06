@@ -7,9 +7,6 @@ package org.vfny.geoserver.wms.requests;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.servlets.WMService;
 
-import com.k_int.gen.RecordSyntax_explain.superAttributes_inline86_codec;
-
-
 /**
  * Represents a WMS 1.1.1 GetFeatureInfo request.
  * <p>
