@@ -103,10 +103,10 @@ Section "GeoServer Section" SecGeoServer
   ;ADD YOUR OWN FILES HERE...
   File /r bin
   File /r etc
-  File /r conf
-  #File /r documents
+  File /r documents
   File /a README.txt
   File /r lib
+  File /r logs
   File /a RUNNING.txt
   File /a license.txt
   File /a start.jar
@@ -212,8 +212,8 @@ Function dataDirPage
   ;MessageBox MB_OK "existing env string: $1"
 
   StrCmp $1 "" 0 copy_str
-  ## if it doesn't exist, use: "$INSTDIR\conf"
-    StrCpy $1 "$INSTDIR\conf"
+  ## if it doesn't exist, use: "$INSTDIR\webapps\geoserver\conf"
+    StrCpy $1 "$INSTDIR\webapps\geoserver\conf"
 
   ## if it exists, use it for temp value until user chooses new one
   copy_str:
