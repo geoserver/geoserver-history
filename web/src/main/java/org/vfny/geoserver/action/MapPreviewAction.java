@@ -19,12 +19,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.Action;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
+
 import org.geotools.feature.FeatureType;
+
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -32,6 +34,7 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.xml.ReaderUtils;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
+import org.vfny.geoserver.wms.servlets.Capabilities;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -61,7 +64,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Brent Owens (The Open Planning Project)
  * @version 
  */
-public class MapPreviewAction extends Action 
+public class MapPreviewAction extends GeoServerAction
 {
 
 	/* (non-Javadoc)
@@ -78,10 +81,13 @@ public class MapPreviewAction extends Action
 		ArrayList bboxList = new ArrayList();
 		ArrayList ftnsList = new ArrayList();
 		
+		
 		// 1) get the capabilities info so we can find out our feature types
-		CapabilitiesRequest capRequest = new CapabilitiesRequest("WMS",null);
+		WMS wms = getWMS(request);
+		Capabilities caps = new Capabilities(wms);
+		CapabilitiesRequest capRequest = new CapabilitiesRequest("WMS",caps);
 		capRequest.setHttpServletRequest(request);
-		WMS wms = (WMS) capRequest.getServiceRef().getServiceRef();
+		
 		Data catalog = wms.getData();
 		Collection ftypes = catalog.getFeatureTypeInfos().values();
 		FeatureTypeInfo layer;
