@@ -103,7 +103,6 @@ Section "GeoServer Section" SecGeoServer
   ;ADD YOUR OWN FILES HERE...
   File /r bin
   File /r etc
-  File /r documents
   File /a README.txt
   File /r lib
   File /r logs
