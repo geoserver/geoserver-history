@@ -63,7 +63,7 @@
 
   !insertmacro MUI_PAGE_WELCOME
   Page custom echoJava
-  !insertmacro MUI_PAGE_LICENSE "license.txt"
+  !insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
   !insertmacro MUI_PAGE_DIRECTORY
 
   Page custom dataDirPage dataDirPageLeave
@@ -107,7 +107,7 @@ Section "GeoServer Section" SecGeoServer
   File /r lib
   File /r logs
   File /a RUNNING.txt
-  File /a license.txt
+  File /a LICENSE.txt
   File /a start.jar
   File /r webapps
 
