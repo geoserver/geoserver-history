@@ -11,7 +11,7 @@
 
 	<groupId>org.geoserver</groupId>
   <artifactId>community</artifactId>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
   <name>Community Space</name>
 
 	<dependencies>
@@ -22,4 +22,7 @@
 		</dependency>
 	</dependencies>
 
+	<modules>
+		<module>hello</module>
+	</modules>
 </project>
