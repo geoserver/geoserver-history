@@ -3,17 +3,6 @@
 
 <beans>
 
-	<!-- the hw service. -->
-	<bean id="hw"
-		class="org.vfny.geoserver.global.HelloWorld">
-		
-	</bean>
-			
-	<!-- the abstract wfs specific bean  -->
-	<bean id="hwService" 
-		class="org.vfny.geoserver.sample.servlets.HelloWorldService">	
-		<!-- reference to wfs bean in this context -->
-		<constructor-arg ref="hw"/>
-	</bean>
-			
+	<bean id="helloWorld"  class="HelloWorld"/>	
+
 </beans>
