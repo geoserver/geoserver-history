@@ -219,14 +219,6 @@
 				<version>6.0.0beta16</version>
 				<configuration>
 					<contextPath>geoserver</contextPath>
-					<systemProperties>
-						<systemProperty>
-							<!-- TODO: figure out how to reference the 'webappSourceDirectory' property
-	                 from the mavne-war-plugin instead of hard coding -->
-							<name>GEOSERVER_DATA_DIR</name>
-							<value>${basedir}/src/main/webapp/conf</value>
-						</systemProperty>
-					</systemProperties>
 				</configuration>
 			</plugin>
 

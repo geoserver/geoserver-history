@@ -2,12 +2,12 @@
 	<target name="config">
 		<available file="${basedir}/${configId}.zip" property="configIsAvailable"/>
 		<fail message="Unable to obtain configuration file: ${basedir}/${configId}.zip" unless="configIsAvailable"/>
-		<mkdir dir="${webappSourceDirectory}/conf"/>
-		<unzip src="${basedir}/${configId}.zip" dest="${webappSourceDirectory}/conf"/>
+		<unzip src="${basedir}/${configId}.zip" dest="${webappSourceDirectory}"/>
 	</target>
 
 	<target name="clean">
-		<echo message="Deleting ${webappSourceDirectory}/conf"/>
-		<delete dir="${webappSourceDirectory}/conf"/>
+		<delete file="${webappSourceDirectory}/WEB-INF/catalog.xml"/>
+		<delete file="${webappSourceDirectory}/WEB-INF/services.xml"/>
+		<delete dir="${webappSourceDirectory}/data"/>
 	</target>
 </project>
