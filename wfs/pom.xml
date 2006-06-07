@@ -12,7 +12,7 @@
 	<groupId>org.geoserver</groupId>
   <artifactId>wfs</artifactId>
 	<packaging>jar</packaging>
-  <name>GeoServer Web Feature Service Module</name>
+  <name>Web Feature Service Module</name>
 
 	<dependencies>
 		<dependency>

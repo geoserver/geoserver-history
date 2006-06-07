@@ -12,7 +12,7 @@
 	<groupId>org.geoserver</groupId>
   <artifactId>config</artifactId>
 	<packaging>maven-plugin</packaging>
-  <name>GeoServer Configuration Deployment PlugIn</name>
+  <name>Configuration Deployment PlugIn</name>
 
  	<dependencies>
     <dependency>
