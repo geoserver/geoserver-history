@@ -12,7 +12,7 @@
 	<groupId>org.geoserver</groupId>
   <artifactId>web</artifactId>
 	<packaging>jar</packaging>
-  <name>GeoServer Web Application Module</name>
+  <name>Web Application Module</name>
 
 	<dependencies>
 		<dependency>

@@ -29,7 +29,7 @@
 
 <ul>
   <li>
-    <a href="http://geoserver.sourceforge.net/documentation/1.3.0">
+    <a href="http://docs.codehaus.org/display/GEOSDOC/Documentation">
       Documentation
     </a>
   </li>
@@ -53,5 +53,9 @@
 <p>
 	<bean:message key="text.visitDemoPage"/>
 </p>
+
+	&nbsp;&nbsp;<a href="../../../wfs?service=WFS&request=GetCapabilities">WFS Capabilities</a>
+	<br>
+	&nbsp;&nbsp;<a href="../../../wms?service=WFS&request=GetCapabilities">WMS Capabilities</a>
 
 <br>
