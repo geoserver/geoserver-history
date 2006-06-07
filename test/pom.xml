@@ -12,7 +12,7 @@
 	<groupId>org.geoserver</groupId>
   <artifactId>test</artifactId>
 	<packaging>jar</packaging>
-  <name>GeoServer Test Module</name>
+  <name>Test Module</name>
 
 	<dependencies>
 		<dependency>
