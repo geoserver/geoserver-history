@@ -28,8 +28,8 @@
 ;General
 
   ;Name and file
-  Name "GeoServer 1.3.0"
-  OutFile "geoserver-1.3.0.exe"
+  Name "GeoServer 1.3.1"
+  OutFile "geoserver-1.3.1.exe"
 
 
   ;Default installation folder
@@ -102,7 +102,7 @@ Section "GeoServer Section" SecGeoServer
   
   ;ADD YOUR OWN FILES HERE...
   File /r bin
-  File /r conf
+  File /r data_dir
   File /r documents
   File /a README.txt
   File /r lib
@@ -210,8 +210,8 @@ Function dataDirPage
   ;MessageBox MB_OK "existing env string: $1"
 
   StrCmp $1 "" 0 copy_str
-  ## if it doesn't exist, use: "$INSTDIR\conf"
-    StrCpy $1 "$INSTDIR\conf"
+  ## if it doesn't exist, use: "$INSTDIR\data_dir"
+    StrCpy $1 "$INSTDIR\data_dir"
 
   ## if it exists, use it for temp value until user chooses new one
   copy_str:
