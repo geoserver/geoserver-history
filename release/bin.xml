@@ -30,7 +30,7 @@
 			<directory>release</directory>
 			<outputDirectory>geoserver</outputDirectory>
 			<includes>
-				<include>LICENCE.txt</include>
+				<include>LICENSE.txt</include>
 				<include>GPL.txt</include>
 				<include>RUNNING.txt</include>
 				<include>README.txt</include>

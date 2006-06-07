@@ -9,6 +9,8 @@
   		<includes>
   			<include>org.geoserver:main</include>
   			<include>org.geoserver:wfs</include>
+  			<include>org.geoserver:wms</include>
+  			<include>org.geoserver:validation</include>
   			<include>org.geoserver:web</include>
   		</includes>
   		<sources>
