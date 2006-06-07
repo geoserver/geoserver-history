@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<beansProjectDescription>
-	<configs>
-		<config>web/WEB-INF/org.openplans.geoserver-servlet.xml</config>
-	</configs>
-	<configSets>
-	</configSets>
-</beansProjectDescription>
