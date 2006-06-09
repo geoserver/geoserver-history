@@ -258,82 +258,16 @@ public abstract class AbstractService extends HttpServlet
     		this.serviceStrategy = serviceStrategy;
     }
     
-    //JD:  kill this
-//    /**
-//     * loads the "serviceStrategy" servlet context parameter and checks it if
-//     * reffers to a valid ServiceStrategy (by now, one of SPEED, FILE or
-//     * BUFFER); if no, just sets the strategy to BUFFER as default
-//     *
-//     * @param config the servlet environment
-//     *
-//     * @throws ServletException if the configured strategy class is not a
-//     *         derivate of ServiceStrategy or it is thrown by the parent class
-//     */
-//    public void init(ServletConfig config) throws ServletException {
-//        super.init(config);
-//        LOGGER.info("Looking for configured service responses' strategy");
-//
-//        ServletContext servContext = config.getServletContext();
-//        String stgyKey = servContext.getInitParameter("serviceStratagy");
-//        Class stgyClass = BufferStrategy.class;
-//
-//        if (stgyKey == null) {
-//            LOGGER.info("No service strategy configured, defaulting to BUFFER");
-//        } else {
-//            LOGGER.info("Looking for configured service strategy " + stgyKey);
-//
-//            Class configurefStgyClass = (Class) serviceStrategys.get(stgyKey);
-//
-//            if (configurefStgyClass == null) {
-//                LOGGER.info("No service strategy named " + stgyKey
-//                    + "found, defaulting to BUFFER. Please check your config");
-//            } else {
-//                stgyClass = configurefStgyClass;
-//            }
-//        }
-//
-//        LOGGER.fine("verifying configured strategy");
-//
-//        if (!(ServiceStrategy.class.isAssignableFrom(stgyClass))) {
-//            throw new ServletException("the configured service strategy "
-//                + stgyClass + " is not a ServiceStrategy derivate");
-//        }
-//
-//        LOGGER.info("Using service strategy " + stgyClass);
-//        AbstractService.safetyMode = stgyClass;
-//        
-//        if (stgyClass == PartialBufferStrategy.class)
-//        {
-//        	// this is a little hacky cause we are still dealing with a class and not an object
-//        	
-//        	// get the default value of the buffer size
-//        	int buffSize = PartialBufferStrategy.DEFAULT_BUFFER_SIZE();
-//        	String size = servContext.getInitParameter("PARTIAL_BUFFER_STRATEGY_SIZE");
-//        	if (size != null)
-//        	{
-//				try {
-//					//... convert string to # ...
-//					Integer i = new Integer(size);
-//					buffSize = i.intValue();
-//					LOGGER.info("Set buffer size to " + buffSize);
-//				}
-//				catch (Exception e) {
-//					LOGGER.warning("Invalid default buffer size for PARTIAL-BUFFER: " + size);
-//				}
-//        	}
-//        	
-//        	BUFFER_SIZE = buffSize;
-//        }
-//    }
-
     /**
-     * DOCUMENT ME!
-     *
-     * @param req DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * Determines if the service is enabled.
+     * <p>
+     * Subclass should override this method if the service can be turned on/off.
+     * This implementation returns <code>true</code>
+     * </p>
      */
-    protected abstract boolean isServiceEnabled(HttpServletRequest req);
+    protected boolean isServiceEnabled(HttpServletRequest req) {
+    		return true;
+    }
 
     /**
      * DOCUMENT ME!
@@ -695,28 +629,44 @@ public abstract class AbstractService extends HttpServlet
     /**
      * Gets the response class that should handle the request of this service.
      * All subclasses must implement.
+     * <p>
+     * This method is not abstract to support subclasses that use the 
+     * request-response mechanism. 
+     * </p>
      *
      * @return The response that the request read by this servlet should be
      *         passed to.
      */
-    protected abstract Response getResponseHandler();
+    protected Response getResponseHandler() {
+    		return null;
+    }
 
     /**
      * Gets a reader that will figure out the correct Key Vaule Pairs for this
      * service.
-     *
+     * <p>
+     * Subclasses should override to supply a specific kvp reader. Default
+     * implementation returns <code>null</code>
+     * </p>
      * @param params A map of the kvp pairs.
      *
      * @return An initialized KVP reader to decode the request.
      */
-    protected abstract KvpRequestReader getKvpReader(Map params);
+    protected KvpRequestReader getKvpReader(Map params) {
+    		return null;
+    }
 
     /**
      * Gets a reader that will handle a posted xml request for this servlet.
-     *
+     * <p>
+     * Subclasses should override to supply a specific xml reader. Default
+     * implementation returns <code>null</code>
+     * </p>
      * @return An XmlRequestReader appropriate to this service.
      */
-    protected abstract XmlRequestReader getXmlRequestReader();
+    protected XmlRequestReader getXmlRequestReader() {
+    		return null;
+    }
 
     /**
      * Gets the exception handler for this service.
