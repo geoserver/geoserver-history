@@ -140,10 +140,10 @@ Section "GeoServer Section" SecGeoServer
 
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Start GeoServer.lnk" \
                    "$2\bin\java.exe" '-DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -Xmx300m -jar start.jar'\
-                   "$INSTDIR\server\geoserver\images\gs.ico" 0 SW_SHOWNORMAL
+                   "$INSTDIR\webapps\geoserver\WEB-INF\images\gs.ico" 0 SW_SHOWNORMAL
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Stop GeoServer.lnk" \
-                   "$2\bin\java.exe" '-jar stop.jar'\
-                   "$INSTDIR\server\geoserver\images\gs.ico" 0 SW_SHOWMINIMIZED
+                   "$2\bin\java.exe" '-jar start.jar --stop'\
+                   "$INSTDIR\webapps\geoserver\WEB-INF\images\gs.ico" 0 SW_SHOWMINIMIZED
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 
   
