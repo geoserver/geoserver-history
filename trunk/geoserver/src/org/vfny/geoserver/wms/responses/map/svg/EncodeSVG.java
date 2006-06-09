@@ -21,6 +21,7 @@ import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.expression.Expression;
 import org.geotools.map.MapLayer;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.responses.map.SVGWriter;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.MultiPoint;
