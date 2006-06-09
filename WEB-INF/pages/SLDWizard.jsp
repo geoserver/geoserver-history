@@ -106,21 +106,22 @@ function generatePointForm()
 {
 	result = "";
 	result += '<tr><td colspan=4><b><u><font size="+1">Label names for the points:</font></u></b><br></td></tr>';
-	result += '<tr><td width=200 colspan=4>Name Field: '+generateNameSelect()+' <i><font color="#92AEFF" size="-1">(This field is the label that will appear on the geometry.)</font></i></td></tr>';
+	result += '<tr><td width=200 colspan=4><b>Name Field:</b> '+generateNameSelect()+' <i><font color="#92AEFF" size="-1">(This field is the label that will appear on the geometry.)</font></i></td></tr>';
+	result += '<tr><td width=200 colspan=4><b>Text Color:</b> <input type="text" id="labelColor" size=6 maxlength=6 value="FFFFFF"></input><i><font size=-1> hex.</font></i> <i><font color="#92AEFF" size="-1">(This is the color of the label.)</font></i></td></tr>';
 
 	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Color of the points:</font></u></b></td></tr>';
 
-	result += '<tr><td width=120 align="right"><b>Color:</b></td><td width=100><input type="text" id="fillColor" size=6 maxlength=6></input></td>';
-	result += '<td width=120 align="right"><b>Opacity:</b></td><td width=140><input type="text" id="fillOpacity" size=3 maxlength=3></input> <i><font color="#92AEFF" size="-1">(0.0 - 1.0)</font></i></td></tr>';
+	result += '<tr><td width=120 align="right"><b>Color:</b></td><td width=100><input type="text" id="fillColor" size=6 maxlength=6></input><i><font size=-1> hex.</font></i></td>';
+	result += '<td width=120 align="right"><b>Opacity:</b></td><td width=140><input type="text" id="fillOpacity" size=3 maxlength=3 value="1"></input> <i><font color="#92AEFF" size="-1">(0.0 - 1.0)</font></i></td></tr>';
 
 	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Point size and shape:</font></u></b></td></tr>';
 
-	result += '<tr><td width=200 colspan=4>Point Size: <input type="text" id="pointSize" size=6 maxlength=6></input> <i><font color="#92AEFF" size="-1">(The diameter of the point in pixels.)</font></i><br>&nbsp;</td></tr>';
-	result += '<tr><td width=200 colspan=4>Point Shape: <select name="pointShape" id="pointShape"> ';
+	result += '<tr><td width=200 colspan=4><b>Point Size:</b> <input type="text" id="pointSize" size=6 maxlength=6></input> <i><font color="#92AEFF" size="-1">(The diameter of the point in pixels.)</font></i><br>&nbsp;</td></tr>';
+	result += '<tr><td width=200 colspan=4><b>Point Shape:</b> <select name="pointShape" id="pointShape"> ';
 		result += '<option>circle</option>';
 		result += '<option>square</option>';
 		result += '</select>';
-	result += '<i><font color="#92AEFF" size="-1">(The size or diameter of the point in pixels.)</font></i><br>&nbsp;</td></tr>';
+	result += '</td></tr>';
 
 	return result;
 }
@@ -129,12 +130,17 @@ function generateLineForm()
 {
 	result = "";
 	result += '<tr><td colspan=4><b><u><font size="+1">Label names for the lines:</font></u></b><br></td></tr>';
-	result += '<tr><td width=200 colspan=4>Name Field: '+generateNameSelect()+' <i><font color="#92AEFF" size="-1">(This field is the label that will appear on the geometry.)</font></i></td></tr>';
+	result += '<tr><td width=200 colspan=4><b>Name Field:</b> '+generateNameSelect()+' <i><font color="#92AEFF" size="-1">(This field is the label that will appear on the geometry.)</font></i></td></tr>';
+	result += '<tr><td width=200 colspan=4><b>Text Color:</b> <input type="text" id="labelColor" size=6 maxlength=6 value="FFFFFF"></input><i><font size=-1> hex.</font></i> <i><font color="#92AEFF" size="-1">(This is the color of the label.)</font></i></td></tr>';
 
 	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Color of the lines:</font></u></b></td></tr>';
 
-	result += '<tr><td width=120 align="right"><b>Color:</b></td><td width=100><input type="text" id="fillColor"size=6 maxlength=6></input></td>';
-	result += '<td width=120 align="right"><b>Opacity:</b></td><td width=140><input type="text" id="fillOpacity" size=3 maxlength=3></input> <i><font color="#92AEFF" size="-1">(0.0 - 1.0)</font></i></td></tr>';
+	result += '<tr><td width=120 align="right"><b>Color:</b></td><td width=100><input type="text" id="lineColor"size=6 maxlength=6></input><i><font size=-1> hex.</font></i></td>';
+	result += '<td width=120 align="right"><b>Opacity:</b></td><td width=140><input type="text" id="lineOpacity" size=3 maxlength=3 value="1"></input> <i><font color="#92AEFF" size="-1">(0.0 - 1.0)</font></i></td></tr>';
+	
+	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Line dimentions:</font></u></b></td></tr>';
+
+	result += '<tr><td width=200 colspan=4><b>Line width:</b> <input type="text" id="lineWidth" size=6 maxlength=6></input> <i><font color="#92AEFF" size="-1">(The width, or thickness, of the line in pixles.)</font></i><br>&nbsp;</td></tr>';
 
 	return result;
 }
@@ -144,17 +150,17 @@ function generatePolygonForm()
 	result = "";
 	result += '<tr><td colspan=4><b><u><font size="+1">Label names for the polygons:</font></u></b><br></td></tr>';
 	result += '<tr><td width=200 colspan=4><b>Name Field:</b> '+generateNameSelect()+' <i><font color="#92AEFF" size="-1">(This field is the label that will appear on the geometry.)</font></i><br>&nbsp;</td></tr>';
-	result += '<tr><td width=200 colspan=4><b>Text Color:</b> <input  type="text" id="labelColor" size=6 maxlength=6></input> <i><font color="#92AEFF" size="-1">(This is the color of the label.)</font></i></td></tr>';
+	result += '<tr><td width=200 colspan=4><b>Text Color:</b> <input type="text" id="labelColor" size=6 maxlength=6 value="FFFFFF"></input><i><font size=-1> hex.</font></i> <i><font color="#92AEFF" size="-1">(This is the color of the label.)</font></i></td></tr>';
 
-	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Color inside the polygon:</font></u></b></td></tr>';
+	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Color inside the polygons:</font></u></b></td></tr>';
 
-	result += '<tr><td width=120 align="right"><b>Fill Color:</b></td><td width=100><input type="text" id="fillColor"size=6 maxlength=6></input></td>';
-	result += '<td width=120 align="right"><b>Fill Opacity:</b></td><td><input type="text" id="fillOpacity" size=3 maxlength=3></input> <i><font color="#92AEFF" size="-1">(0.0 - 1.0)</font></i></td></tr>';
+	result += '<tr><td width=120 align="right"><b>Fill Color:</b></td><td width=100><input type="text" id="fillColor"size=6 maxlength=6></input><i><font size=-1> hex.</font></i></td>';
+	result += '<td width=120 align="right"><b>Fill Opacity:</b></td><td><input type="text" id="fillOpacity" size=3 maxlength=3 value="1"></input> <i><font color="#92AEFF" size="-1">(0.0 - 1.0)</font></i></td></tr>';
 	
 	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Outline color of the polygons:</font></u></b></td></tr>';
 
-	result += '<tr><td width=120 align="right"><b>Outline Color:</b></td><td width=100><input type="text" id="lineColor"size=6 maxlength=6></input></td>';
-	result += '<td width=120 align="right"><b>Outline Opacity:</b></td><td><input type="text" id="lineOpacity" size=3 maxlength=3></input> <i><font color="#92AEFF" size="-1">(0.0 - 1.0)</font></i></td></tr>';
+	result += '<tr><td width=120 align="right"><b>Outline Color:</b></td><td width=100><input type="text" id="lineColor"size=6 maxlength=6></input><i><font size=-1> hex.</font></i></td>';
+	result += '<td width=120 align="right"><b>Outline Opacity:</b></td><td><input type="text" id="lineOpacity" size=3 maxlength=3 value="1"></input> <i><font color="#92AEFF" size="-1">(0.0 - 1.0)</font></i></td></tr>';
 
 	return result;
 }
@@ -192,8 +198,11 @@ function generateSLD()
 {
 	featureTypeName = document.getElementById('span_ftName').innerHTML;
 	//alert("featureTypeName: "+featureTypeName);
+	
+	hideSuccessMessage(); // hide the SLD success message
 
-	SLD = createSLDHeader(featureTypeName);
+	SLD="";
+	SLD += createSLDHeader(featureTypeName);
 
 	SLDcore = ""
 	if (geomType == "point")
@@ -203,13 +212,14 @@ function generateSLD()
 	else if (geomType == "polygon")
 		SLDcore += generatePolygonSLD();
 	
-	matches = SLDCore.match("ERROR:");
+	matches = SLDcore.match("ERROR:");
 	if (matches != null && matches.length > 0)
 	{
-		alert(SLDCore);	// alert te user with the error and return
+		alert(SLDcore);	// alert the user with the error and return
 		return;
 	}
 
+	
 	SLD += SLDcore; // append the code if there were no errors
 
 	SLD += createSLDFooter();
@@ -234,10 +244,12 @@ function generatePointSLD()
 	var halo;
 
 	// check values to make sure they are in range and valid
-	if (propertyName != "none" && (labelColor == null || labelColor == "")
+	if (propertyName != "none" && (labelColor == null || labelColor == "") )
 		return "ERROR: label name specified, but no text color specified.";
 	if (fillColor == null || fillColor == "")
 		return "ERROR: Point color cannot be empty";
+	if (fillColor.length != 6)
+		return "ERROR: Point color must be 6 digits long in hexadecimal (00ff23).";
 	if (fillOpacity == null || fillOpacity == "")
 		return "ERROR: Point opacity cannot be empty";
 	if (fillOpacity < 0.0 || fillOpacity > 1.0)
@@ -247,18 +259,68 @@ function generatePointSLD()
 
 
 	// create stroke
+	var stroke;
 	//stroke = createStroke(lineColor, lineOpacity);
-	graphicMark = createGraphic();
-	SLD = createSLDPointSymbolizer(graphicMark);
+
+	pointFill = createFill(fillColor, fillOpacity);
+	graphicMark = createGraphic(pointShape, pointFill, stroke, pointSize, 1.0);
+
+	SLDr = createSLDPointSymbolizer(graphicMark);
+
+	textFont = createFont("Times New Roman", "Normal", 12);
 
 	textFill = createFill(labelColor, 1.0);
 
 	if (propertyName != null && propertyName != "none")
-		SLD += createTextSymbolizer(propertyName, font, halo, textFill);
+		SLDr += createTextSymbolizer(propertyName, textFont, halo, textFill);
 
-	return SLD;
+	return SLDr;
 }
 
+/**
+ * Line SLD generation
+ */
+function generateLineSLD()
+{
+	propertyName = document.getElementById('propertyName').value;
+	labelColor = document.getElementById('labelColor').value;
+	lineColor = document.getElementById('lineColor').value;
+	lineOpacity = document.getElementById('lineOpacity').value;
+	lineWidth = document.getElementById('lineWidth').value;
+
+	var halo;
+
+	// check values to make sure they are in range and valid
+	if (propertyName != "none" && (labelColor == null || labelColor == "") )
+		return "ERROR: label name specified, but no text color specified.";
+	if (lineColor == null || lineColor == "")
+		return "ERROR: Line color cannot be empty";
+	if (lineColor.length != 6)
+		return "ERROR: Line color must be 6 digits long in hexadecimal (00ff23).";
+	if (lineOpacity == null || lineOpacity == "")
+		return "ERROR: Line opacity cannot be empty";
+	if (lineOpacity < 0.0 || lineOpacity > 1.0)
+		return "ERROR: Line opacity must be between 0.0 and 1.0";
+	if (lineWidth == null || lineWidth == "")
+		return "ERROR: Line width cannot be empty";
+	if (lineWidth < 0)
+		return "ERROR: Line width must be a positive number";
+
+
+	// create stroke
+	stroke = createStroke(lineColor, lineOpacity, lineWidth);
+	
+	SLDr = createSLDLineSymbolizer(stroke);
+
+	textFont = createFont("Times New Roman", "Normal", 12);
+
+	textFill = createFill(labelColor, 1.0);
+
+	if (propertyName != null && propertyName != "none")
+		SLDr += createTextSymbolizer(propertyName, textFont, halo, textFill);
+
+	return SLDr;
+}
 
 function generatePolygonSLD()
 {
@@ -269,20 +331,23 @@ function generatePolygonSLD()
 	lineColor = document.getElementById('lineColor').value;
 	lineOpacity = document.getElementById('lineOpacity').value;
 	
-	var font;
 	var halo;
 
 	// check values to make sure they are in range and valid
-	if (propertyName != "none" && (labelColor == null || labelColor == "")
+	if (propertyName != "none" && (labelColor == null || labelColor == "") )
 		return "ERROR: label name specified, but no text color specified.";
 	if (fillColor == null || fillColor == "")
 		return "ERROR: Polygon fill color cannot be empty";
+	if (fillColor.length != 6)
+		return "ERROR: Polygon fill color must be 6 digits long in hexadecimal (00ff23).";
 	if (fillOpacity == null || fillOpacity == "")
 		return "ERROR: Polygon color opacity cannot be empty";
 	if (fillOpacity < 0.0 || fillOpacity > 1.0)
 		return "ERROR: Polygon fill opacity must be between 0.0 and 1.0";
 	if (lineColor == null || lineColor == "")
 		return "ERROR: Polygon outline color cannot be empty";
+	if (lineColor.length != 6)
+		return "ERROR: Polygon outline color must be 6 digits long in hexadecimal (00ff23).";
 	if (lineOpacity == null || lineOpacity == "")
 		return "ERROR: Polygon outline opacity cannot be empty";
 	if (lineOpacity < 0.0 || lineOpacity > 1.0)
@@ -294,14 +359,16 @@ function generatePolygonSLD()
 	// create stroke
 	stroke = createStroke(lineColor, lineOpacity);
 
-	SLD = createSLDPolygonSymbolizer(polygonFill, stroke);
+	XMLr = createSLDPolygonSymbolizer(polygonFill, stroke);
 
 	textFill = createFill(labelColor, 1.0);
 
-	if (propertyName != null && propertyName != "none")
-		SLD += createTextSymbolizer(propertyName, font, halo, textFill);
+	textFont = createFont("Times New Roman", "Normal", 12);
 
-	return SLD;
+	if (propertyName != null && propertyName != "none")
+		XMLr += createTextSymbolizer(propertyName, textFont, halo, textFill);
+
+	return XMLr;
 }
 
 /**
@@ -326,7 +393,7 @@ function saveStyle(SLD)
 
 function createSLDHeader(featureType)
 {
-	//log("Making sld for: "+featureType);
+	log("Making sld for: "+featureType);
 	XML  = '<?xml version="1.0" encoding="UTF-8"?>'+"\n";
 	XML += '<StyledLayerDescriptor version="1.0.0"'+"\n";
 	XML += '	xmlns:gml="http://www.opengis.net/gml"'+"\n";
@@ -336,11 +403,11 @@ function createSLDHeader(featureType)
 	XML += '		<Name>'+featureType+'</Name>'+"\n";
 	XML += '		<UserStyle>'+"\n";
 	XML += '			<Name>'+featureType+'_style</Name>'+"\n";
-	XML += '			<Title>poly_landmarks_style in the United States</Title>'+"\n";
-	XML += '			<Abstract>Generated</Abstract>'+"\n";
+	XML += '			<Title>geoserver style</Title>'+"\n";
+	XML += '			<Abstract>Generated by GeoServer</Abstract>'+"\n";
 	XML += '			<FeatureTypeStyle>'+"\n";
 	XML += '			<Rule>'+"\n";
-	
+	//log(XML);
 	return XML;
 }
 
@@ -358,9 +425,9 @@ function createSLDFooter()
 
 function createSLDPointSymbolizer(graphic)
 {
-	XML  = '				<PointSymbolier>'+"\n";
+	XML  = '				<PointSymbolizer>'+"\n";
 	XML += '					'+graphic+"\n";
-	XML += '				</PointSymbolier>'+"\n";
+	XML += '				</PointSymbolizer>'+"\n";
 
 	return XML;
 
@@ -466,8 +533,8 @@ function createFont(name, style, size, weight)
 	XML += '							<CssParameter name="font-family">'+name+'</CssParameter>'+"\n";
 	XML += '							<CssParameter name="font-style">'+style+'</CssParameter>'+"\n";
 	XML += '							<CssParameter name="font-size">'+size+'</CssParameter>'+"\n";
-	XML += '							<CssParameter name="font-weight">'+weight+'</CssParameter>'+"\n";
-	XML += '						<Font>'+"\n";
+	if (weight)XML += '							<CssParameter name="font-weight">'+weight+'</CssParameter>'+"\n";
+	XML += '						</Font>'+"\n";
 
 	return XML;
 }
@@ -477,9 +544,9 @@ function createHalo(radius, fill)
 	XML  = '						<Halo>'+"\n";
 	XML += '							<Radius>'+"\n";
 	XML += '								<ogc:Literal>'+radius+'</ogc:Literal>'+"\n";
-	XML += '							<Radius>'+"\n";
+	XML += '							</Radius>'+"\n";
 	XML += fill;
-	XML += '						<Halo>'+"\n";
+	XML += '						</Halo>'+"\n";
 
 	return XML;
 }
@@ -550,6 +617,7 @@ function XMLProgressFunction()
 {
 	if (geo_xmlhttp != null)
 	{	// add 'working' animation
+		hideSuccessMessage();
 	}
 
 	if ( (geo_xmlhttp.readyState == 4) && (geo_xmlhttp.status == 200) )
@@ -564,47 +632,48 @@ function XMLProgressFunction()
 		}
 
 		log("response:\n"+geo_xmlhttp.responseText);
-/*
-		fc_node = getElements(geo_xmlhttp.responseXML,"wfs","FeatureCollection")[0];
-		if (fc_node == null)
+
+		success_node = getElements(geo_xmlhttp.responseXML,"sld","success")[0];
+		if (success_node != null)
 		{
-			log("XMLProgressFunction(): abort 2");
-			//document.getElementById('working_anim_gnis_span').innerHTML = '';	// remove 'working' animation
-			return;
+			enableSuccessMessage();
+			log("PutStyles successful");
 		}
-
-		fm_nodes = getElements(fc_node,"gml","featureMember");
-		if (fm_nodes == null)
-		{
-			log("XMLProgressFunction(): abort 3");
-			document.getElementById('working_anim_gnis_span').innerHTML = '';	// remove 'working' animation
-			return;
-		}
-
-		if (fm_nodes.length == 0)	// Nothing found (0 results)
-		{
-			log("XMLProgressFunction(): No results found");
-			document.getElementById('working_anim_gnis_span').innerHTML = '';	// remove 'working' animation
-			document.getElementById('search_result_gnis_span').innerHTML = writeSearchResultsHeader()+' <b>'+fm_nodes.length+'</b> results. <font size=-2></font><br><table border=1 bordercolor="#7CCE4A"><tr><td><div style="overflow:auto; height:150px; width:430px;"><table cellpadding="0" cellspacing="0" style="width:410px;"><tr><td>No results matched your query.</td></tr></table></div></td></tr></table>';
-			return;
-		}
-
-		queryEndTime = new Date();
-		queryEndTime = queryEndTime.getTime();
-		duration = (queryEndTime - queryStartTime)/1000;
-
-		log("found "+fm_nodes.length+" nodes in "+duration+" seconds.");
-
-		values = parseGnisNodes(fm_nodes);
-		document.getElementById('search_result_gnis_span').innerHTML = writeSearchResultsHeader()+' <b>'+fm_nodes.length+'</b> results. <font size=-2><i>Search took '+duration+' seconds.</i></font><br><table border=1 bordercolor="#7CCE4A"><tr><td><div style="overflow:auto; height:150px; width:430px;"><table cellpadding="0" cellspacing="0" style="width:410px;"><tr><td>'+values+'</td></tr></table></div></td></tr></table>';
-
-		document.getElementById('working_anim_gnis_span').innerHTML = '';	// remove 'working' animation
-		*/
 	}
 	else
 		log("waiting for response...");
 }
 
+/**
+ * Browser capabilities: prefixes for IE
+ * Inspect for IE first. If you do mozilla first, it will just be mozilla and IE will die
+ */
+function getElements(node,tag_prefix,tag_name)
+{
+	if (window.ActiveXObject)
+	{
+      //IE has no idea of namespaces/prefixes
+      return node.getElementsByTagName(tag_prefix+":"+tag_name);
+    }
+    else if (window.XMLHttpRequest)
+    {
+       //mozilla
+       return node.getElementsByTagName(tag_name);
+    }
+    else
+		log("Unsupported browser format: not expecting this kind of browser.");
+    
+}
+
+function enableSuccessMessage()
+{
+	document.getElementById('sld_success').innerHTML = "<b><font color=\"#22ff33\" size=\"+1\">Success</font></b>";
+}
+
+function hideSuccessMessage()
+{
+	document.getElementById('sld_success').innerHTML = "";
+}
 
 /**
  * Log to screen
@@ -699,23 +768,23 @@ function nothing()
 			</div>
 		</td></tr>
 	</table>
-	<br>&nbsp;<br>
+	<i><font color="#770000">* All fields are required.</font></i><br>&nbsp;<br>
 	
 	<input type="submit" value="Apply Style" onclick="generateSLD()">
+	<span id="sld_success" name="sld_success"></span>
 </form>
 
 
-<i>You must apply the style before it will be saved.<br>
-Hit the 'Apply Style' button above'.</i>
+<font color="#222222"><i>You must apply the style before it will be saved.<br>
+Hit the 'Apply Style' button above'.</i></font><be>
+
 <!-- finished button "back to FeatureType editor" -->
-<html:form action="/config/data/typeSelectSubmit">
-	<html:submit property="action">
-		<bean:message key="label.edit"/>
-	</html:submit>
-</html:form>
+<form action="/geoserver/config/data/typeEditor.do">
+	<input type="submit" value="Finished">
+</form>
 
 <p>&nbsp;<br>
-<iframe width=90% height=150px name=logFrame></iframe>
+<span style="display:none"><iframe width=90% height=150px name=logFrame></iframe></span>
 <br>
 
 
