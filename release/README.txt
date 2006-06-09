@@ -1,3 +1,20 @@
+GeoServer 1.4.0-M0
+------------------
+
+The issue log for this release is here:
+
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=11555
+
+The first release of the GeoServer 1.4.x series. This development stream represents
+a major refactoring of the core codebase. The purpose of which is to move to a more 
+component-oriented framework. 
+
+The major changehas been the move to the spring framework. Spring is a IOC container 
+that GeoServer now loads to bootstrap itself and manages component dependencies in the 
+system.
+
+Based on geotools 2.2.x (tag = geoserver-1.4.0-M0)
+
 Geoserver 1.3.0
 ---------------
 
