@@ -9,9 +9,42 @@
 			<directory>web/target/geoserver</directory>
 			<outputDirectory>geoserver/webapps/geoserver</outputDirectory>
 			<includes>
-				<include>**/*</include>
+				<include>WEB-INF/**/*</include>
+				<include>schemas/**/*</include>
+				<include>style.css</include>
 			</includes>
 		</fileSet>
+		<fileSet>
+			<directory>web/target/geoserver/WEB-INF</directory>
+			<outputDirectory>geoserver/webapps/geoserver/conf</outputDirectory>
+			<includes>
+				<include>catalog.xml</include>
+				<include>services.xml</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>web/target/geoserver/data</directory>
+			<outputDirectory>geoserver/webapps/geoserver/conf</outputDirectory>
+			<includes>
+				<include>demo/**/*</include>
+				<include>mbdemos/**/*</include>
+				<include>plugIns/**/*</include>
+				<include>styles/**/*</include>
+				<include>featureTypes/**/*</include>
+				<include>validation/**/*</include>
+				<include>wfs-t_demo/**/*</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>web/target/geoserver/data</directory>
+			<outputDirectory>geoserver/webapps/geoserver/conf/data</outputDirectory>
+			<includes>
+				<include>nyc/**/*</include>
+				<include>shapefiles/**/*</include>
+				<include>taz_shapes/**/*</include>
+			</includes>
+		</fileSet>
+		
 		<fileSet>
 			<directory>release/target/dependency</directory>
 			<outputDirectory>geoserver/lib</outputDirectory>
