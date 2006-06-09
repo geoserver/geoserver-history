@@ -24,12 +24,11 @@ import org.apache.struts.config.ControllerConfig;
 import org.apache.struts.upload.CommonsMultipartRequestHandler;
 import org.apache.struts.upload.MultipartRequestHandler;
 import org.apache.struts.util.MessageResources;
+import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.Format;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.CoverageConfig;
@@ -49,7 +48,12 @@ import org.vfny.geoserver.util.Requests;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
  */
-public class CoveragesEditorForm extends ActionForm {
+public final class CoveragesEditorForm extends ActionForm {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1831907046971087321L;
 
 	/**
 	 * 
@@ -86,13 +90,13 @@ public class CoveragesEditorForm extends ActionForm {
 	 */
 	private String metadataLink;
 
-	private String latLonBoundingBoxMinX;
+	private String lonLatBoundingBoxMinX;
 
-	private String latLonBoundingBoxMinY;
+	private String lonLatBoundingBoxMinY;
 
-	private String latLonBoundingBoxMaxX;
+	private String lonLatBoundingBoxMaxX;
 
-	private String latLonBoundingBoxMaxY;
+	private String lonLatBoundingBoxMaxY;
 
 	/**
 	 * 
@@ -174,49 +178,58 @@ public class CoveragesEditorForm extends ActionForm {
 	public void reset(ActionMapping mapping, HttpServletRequest request) {
 		super.reset(mapping, request);
 
+		// //
+		//
+		//
+		//
+		// //
 		action = "";
 		newCoverage = "";
 		final DataConfig config = ConfigRequests.getDataConfig(request);
 		final UserContainer user = Requests.getUserContainer(request);
 		final CoverageConfig type = user.getCoverageConfig();
-
 		if (type == null) {
 
 			// TODO Not sure what to do, user must have bookmarked?
 			return; // Action should redirect to Select screen?
 		}
-
 		this.formatId = type.getFormatId();
 		this.styleId = type.getDefaultStyle();
 
-		final CoverageConfig cvConfig= (CoverageConfig) request.getSession().getAttribute(
-				DataConfig.SELECTED_COVERAGE);
-		GeneralEnvelope bounds = null;
-		try {
-			bounds = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(cvConfig.getCrs(), cvConfig.getEnvelope());
-		} catch (MismatchedDimensionException e) {
-			// TODO Not sure what to do, user must have bookmarked?
-			return; // Action should redirect to Select screen?
-		} catch (IndexOutOfBoundsException e) {
-			// TODO Not sure what to do, user must have bookmarked?
-			return; // Action should redirect to Select screen?
-		} catch (NoSuchAuthorityCodeException e) {
-			// TODO Not sure what to do, user must have bookmarked?
-			return; // Action should redirect to Select screen?
+		// //
+		//
+		//
+		//
+		// //
+		final CoverageConfig cvConfig = (CoverageConfig) request.getSession()
+				.getAttribute(DataConfig.SELECTED_COVERAGE);
+		final GeneralEnvelope bounds = cvConfig.getLonLatWGS84Envelope();
+		if (bounds.isNull()) {
+			lonLatBoundingBoxMinX = "";
+		} else {
+			lonLatBoundingBoxMinX = Double.toString(bounds.getLowerCorner()
+					.getOrdinate(0));
+			lonLatBoundingBoxMinY = Double.toString(bounds.getLowerCorner()
+					.getOrdinate(1));
+			lonLatBoundingBoxMaxX = Double.toString(bounds.getUpperCorner()
+					.getOrdinate(0));
+			lonLatBoundingBoxMaxY = Double.toString(bounds.getUpperCorner()
+					.getOrdinate(1));
 		}
-		
+
+		// //
+		//
+		//
+		//
+		// //
 		srsName = cvConfig.getSrsName();
 		WKTString = cvConfig.getSrsWKT();
 
-		if (bounds.isNull()) {
-			latLonBoundingBoxMinX = "";
-		} else {
-			latLonBoundingBoxMinX = Double.toString(bounds.getLowerCorner().getOrdinate(0));
-			latLonBoundingBoxMinY = Double.toString(bounds.getLowerCorner().getOrdinate(1));
-			latLonBoundingBoxMaxX = Double.toString(bounds.getUpperCorner().getOrdinate(0));
-			latLonBoundingBoxMaxY = Double.toString(bounds.getUpperCorner().getOrdinate(1));
-		}
-
+		// //
+		//
+		//
+		//
+		// //
 		name = cvConfig.getName();
 		wmsPath = cvConfig.getWmsPath();
 		label = cvConfig.getLabel();
@@ -226,11 +239,17 @@ public class CoveragesEditorForm extends ActionForm {
 		nativeFormat = cvConfig.getNativeFormat();
 		defaultInterpolationMethod = cvConfig.getDefaultInterpolationMethod();
 
+		// //
+		//
+		//
+		//
+		// //
 		StringBuffer buf = new StringBuffer();
 		// Keywords
 		if (cvConfig.getKeywords() != null) {
+			String keyword;
 			for (Iterator i = cvConfig.getKeywords().iterator(); i.hasNext();) {
-				String keyword = (String) i.next();
+				keyword = (String) i.next();
 				buf.append(keyword);
 
 				if (i.hasNext()) {
@@ -241,11 +260,17 @@ public class CoveragesEditorForm extends ActionForm {
 			this.keywords = buf.toString();
 		}
 
+		// //
+		//
+		//
+		//
+		// //
 		if (cvConfig.getRequestCRSs() != null) {
 			buf = new StringBuffer();
 			// RequestCRSs
+			String CRS;
 			for (Iterator i = cvConfig.getRequestCRSs().iterator(); i.hasNext();) {
-				String CRS = (String) i.next();
+				CRS = (String) i.next();
 				buf.append(CRS.toUpperCase());
 
 				if (i.hasNext()) {
@@ -256,12 +281,18 @@ public class CoveragesEditorForm extends ActionForm {
 			this.requestCRSs = buf.toString();
 		}
 
+		// //
+		//
+		//
+		//
+		// //
 		if (cvConfig.getResponseCRSs() != null) {
 			buf = new StringBuffer();
 			// ResponseCRSs
+			String CRS;
 			for (Iterator i = cvConfig.getResponseCRSs().iterator(); i
 					.hasNext();) {
-				String CRS = (String) i.next();
+				CRS = (String) i.next();
 				buf.append(CRS.toUpperCase());
 
 				if (i.hasNext()) {
@@ -272,12 +303,18 @@ public class CoveragesEditorForm extends ActionForm {
 			this.responseCRSs = buf.toString();
 		}
 
+		// //
+		//
+		//
+		//
+		// //
 		if (cvConfig.getSupportedFormats() != null) {
 			buf = new StringBuffer();
 			// SupportedFormats
+			String format;
 			for (Iterator i = cvConfig.getSupportedFormats().iterator(); i
 					.hasNext();) {
-				String format = (String) i.next();
+				format = (String) i.next();
 				buf.append(format.toUpperCase());
 
 				if (i.hasNext()) {
@@ -288,12 +325,18 @@ public class CoveragesEditorForm extends ActionForm {
 			this.supportedFormats = buf.toString();
 		}
 
+		// //
+		//
+		//
+		//
+		// //
 		if (cvConfig.getInterpolationMethods() != null) {
 			buf = new StringBuffer();
 			// InterpolationMethods
+			String intMethod;
 			for (Iterator i = cvConfig.getInterpolationMethods().iterator(); i
 					.hasNext();) {
-				String intMethod = (String) i.next();
+				intMethod = (String) i.next();
 				buf.append(intMethod.toLowerCase());
 
 				if (i.hasNext()) {
@@ -304,9 +347,15 @@ public class CoveragesEditorForm extends ActionForm {
 			this.interpolationMethods = buf.toString();
 		}
 
+		// //
+		//
+		//
+		//
+		// //
 		styles = new TreeSet();
+		StyleConfig sc;
 		for (Iterator i = config.getStyles().values().iterator(); i.hasNext();) {
-			StyleConfig sc = (StyleConfig) i.next();
+			sc = (StyleConfig) i.next();
 			styles.add(sc.getId());
 
 			if (sc.isDefault()) {
@@ -316,12 +365,14 @@ public class CoveragesEditorForm extends ActionForm {
 			}
 		}
 
-		Object attribute = styles;
-
-		if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) {
+		if (styles instanceof org.vfny.geoserver.form.data.AttributeDisplay) {
 			// TODO why I am here?
 		}
-		
+		// //
+		//
+		//
+		//
+		// //
 		this.paramHelp = type.getParamHelp();
 		this.paramKeys = type.getParamKeys();
 		this.paramValues = type.getParamValues();
@@ -351,35 +402,45 @@ public class CoveragesEditorForm extends ActionForm {
 					styleId));
 		}
 
-		// check name exists in current DataStore?
-		if ("".equals(latLonBoundingBoxMinX)
-				|| "".equals(latLonBoundingBoxMinY)
-				|| "".equals(latLonBoundingBoxMaxX)
-				|| "".equals(latLonBoundingBoxMaxY)) {
+		// //
+		//
+		//
+		//
+		// //
+		if ("".equals(lonLatBoundingBoxMinX)
+				|| "".equals(lonLatBoundingBoxMinY)
+				|| "".equals(lonLatBoundingBoxMaxX)
+				|| "".equals(lonLatBoundingBoxMaxY)) {
 
 			errors.add("envelope", new ActionError("error.envelope.required"));
 		} else {
 			try {
-				double minX = Double.parseDouble(latLonBoundingBoxMinX);
-				double minY = Double.parseDouble(latLonBoundingBoxMinY);
-				double maxX = Double.parseDouble(latLonBoundingBoxMaxX);
-				double maxY = Double.parseDouble(latLonBoundingBoxMaxY);
+				Double.parseDouble(lonLatBoundingBoxMinX);
+				Double.parseDouble(lonLatBoundingBoxMinY);
+				Double.parseDouble(lonLatBoundingBoxMaxX);
+				Double.parseDouble(lonLatBoundingBoxMaxY);
 			} catch (NumberFormatException badNumber) {
 				errors.add("envelope", new ActionError(
 						"error.envelope.invalid", badNumber));
 			}
 		}
 
+		// //
+		//
+		//
+		//
+		// //
 		if ("".equals(name)) {
 			errors.add("name", new ActionError("error.coverage.name.required"));
 		} else if (name.indexOf(" ") > 0) {
 			errors.add("name", new ActionError("error.coverage.name.invalid"));
 		}
 
-		
-		/**
-		 * ReadParameters ...
-		 */
+		// //
+		//
+		//
+		//
+		// //
 		final DataConfig dataConfig = getDataConfig(request);
 		final CoverageStoreConfig cvConfig = dataConfig.getDataFormat(formatId);
 		if (cvConfig == null) {
@@ -390,24 +451,39 @@ public class CoveragesEditorForm extends ActionForm {
 			throw new RuntimeException(
 					"selectedDataFormatId required in Session");
 		}
-		
+
 		// Retrieve connection params
 		final Format factory = cvConfig.getFactory();
-		final String type = (cvConfig.getType() != null && cvConfig.getType().length() > 0 ? cvConfig
-				.getType()
-				: factory.getName());
-		ParameterValueGroup info = factory.getReadParameters();
-
-		Map connectionParams = new HashMap();
+		final ParameterValueGroup info = factory.getReadParameters();
+		final Map connectionParams = new HashMap();
 
 		// Convert Params into the kind of Map we actually need
 		//
 		if (paramKeys != null) {
-			for (int i = 0; i < paramKeys.size(); i++) {
-				String key = (String) getParamKey(i);
+			Boolean maxSize;
+			String size = null;
+			ControllerConfig cc;
+			Object value;
+			String key;
+			ParameterValue param;
+			final int length = paramKeys.size();
+			final String readEnvelopeKey = AbstractGridFormat.READ_ENVELOPE
+					.getName().toString();
+			final String readDimensionsKey = AbstractGridFormat.READ_DIMENSIONS2D
+					.getName().toString();
+			for (int i = 0; i < length; i++) {
+				key = (String) getParamKey(i);
 
-				ParameterValue param = CoverageStoreUtils.find(info, key);
+				// //
+				//
+				// Ignore the parameters used for decimation at run time
+				//
+				// //
+				if (key.equalsIgnoreCase(readDimensionsKey)
+						|| key.equalsIgnoreCase(readEnvelopeKey))
+					continue;
 
+				param = CoverageStoreUtils.find(info, key);
 				if (param == null) {
 					errors.add("paramValue[" + i + "]", new ActionError(
 							"error.dataFormatEditor.param.missing", key,
@@ -416,35 +492,26 @@ public class CoveragesEditorForm extends ActionForm {
 					continue;
 				}
 
-				Boolean maxSize = (Boolean) request
+				maxSize = (Boolean) request
 						.getAttribute(MultipartRequestHandler.ATTRIBUTE_MAX_LENGTH_EXCEEDED);
 				if ((maxSize != null) && (maxSize.booleanValue())) {
-					String size = null;
-					ControllerConfig cc = mapping.getModuleConfig()
-							.getControllerConfig();
+					size = null;
+					cc = mapping.getModuleConfig().getControllerConfig();
 					if (cc == null) {
 						size = Long
 								.toString(CommonsMultipartRequestHandler.DEFAULT_SIZE_MAX);
 					} else {
 						size = cc.getMaxFileSize();// struts-config :
-													// <controller
-													// maxFileSize="nK" />
+						// <controller
+						// maxFileSize="nK" />
 					}
 					errors.add("styleID", new ActionError(
 							"error.file.maxLengthExceeded", size));
 					return errors;
 				}
 
-				Object value = CoverageUtils.getCvParamValue(key, param,
-						paramValues, i);
-
-				// if ((value == null) && param.required) {
-				// errors.add("paramValue[" + i + "]",
-				// new ActionError("error.dataStoreEditor.param.required",
-				// key));
-				//
-				// continue;
-				// }
+				value = CoverageUtils.getCvParamValue(key, param, paramValues,
+						i);
 
 				if (value != null) {
 					connectionParams.put(key, value);
@@ -452,26 +519,20 @@ public class CoveragesEditorForm extends ActionForm {
 			}
 		}
 
-		//dump("form", connectionParams);
-		// GDSFactory will provide even more stringent checking
-		//
-		// if (!factory.canProcess( connectionParams )) {
-		// errors.add("paramValue",
-		// new ActionError("error.datastoreEditor.validation"));
-		// }
-
 		return errors;
 	}
 
 	/**
-     * Access Catalog Configuration Model from the WebContainer.
+	 * Access Catalog Configuration Model from the WebContainer.
+	 * 
 	 * @param request
-     *
-     * @return Configuration model for Catalog information.
-     */
-    protected DataConfig getDataConfig(HttpServletRequest request) {
-        return (DataConfig) request.getSession().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
-    }
+	 * 
+	 * @return Configuration model for Catalog information.
+	 */
+	protected DataConfig getDataConfig(HttpServletRequest request) {
+		return (DataConfig) request.getSession().getServletContext()
+				.getAttribute(DataConfig.CONFIG_KEY);
+	}
 
 	/**
 	 * @return Returns the defaultInterpolationMethod.
@@ -534,63 +595,63 @@ public class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @return Returns the latLonBoundingBoxMaxX.
+	 * @return Returns the lonLatBoundingBoxMaxX.
 	 */
 	public String getMaxX() {
-		return latLonBoundingBoxMaxX;
+		return lonLatBoundingBoxMaxX;
 	}
 
 	/**
-	 * @param latLonBoundingBoxMaxX
-	 *            The latLonBoundingBoxMaxX to set.
+	 * @param lonLatBoundingBoxMaxX
+	 *            The lonLatBoundingBoxMaxX to set.
 	 */
 	public void setMaxX(String latLonBoundingBoxMaxX) {
-		this.latLonBoundingBoxMaxX = latLonBoundingBoxMaxX;
+		this.lonLatBoundingBoxMaxX = latLonBoundingBoxMaxX;
 	}
 
 	/**
-	 * @return Returns the latLonBoundingBoxMaxY.
+	 * @return Returns the lonLatBoundingBoxMaxY.
 	 */
 	public String getMaxY() {
-		return latLonBoundingBoxMaxY;
+		return lonLatBoundingBoxMaxY;
 	}
 
 	/**
-	 * @param latLonBoundingBoxMaxY
-	 *            The latLonBoundingBoxMaxY to set.
+	 * @param lonLatBoundingBoxMaxY
+	 *            The lonLatBoundingBoxMaxY to set.
 	 */
 	public void setMaxY(String latLonBoundingBoxMaxY) {
-		this.latLonBoundingBoxMaxY = latLonBoundingBoxMaxY;
+		this.lonLatBoundingBoxMaxY = latLonBoundingBoxMaxY;
 	}
 
 	/**
-	 * @return Returns the latLonBoundingBoxMinX.
+	 * @return Returns the lonLatBoundingBoxMinX.
 	 */
 	public String getMinX() {
-		return latLonBoundingBoxMinX;
+		return lonLatBoundingBoxMinX;
 	}
 
 	/**
-	 * @param latLonBoundingBoxMinX
-	 *            The latLonBoundingBoxMinX to set.
+	 * @param lonLatBoundingBoxMinX
+	 *            The lonLatBoundingBoxMinX to set.
 	 */
 	public void setMinX(String latLonBoundingBoxMinX) {
-		this.latLonBoundingBoxMinX = latLonBoundingBoxMinX;
+		this.lonLatBoundingBoxMinX = latLonBoundingBoxMinX;
 	}
 
 	/**
-	 * @return Returns the latLonBoundingBoxMinY.
+	 * @return Returns the lonLatBoundingBoxMinY.
 	 */
 	public String getMinY() {
-		return latLonBoundingBoxMinY;
+		return lonLatBoundingBoxMinY;
 	}
 
 	/**
-	 * @param latLonBoundingBoxMinY
-	 *            The latLonBoundingBoxMinY to set.
+	 * @param lonLatBoundingBoxMinY
+	 *            The lonLatBoundingBoxMinY to set.
 	 */
 	public void setMinY(String latLonBoundingBoxMinY) {
-		this.latLonBoundingBoxMinY = latLonBoundingBoxMinY;
+		this.lonLatBoundingBoxMinY = latLonBoundingBoxMinY;
 	}
 
 	/**
@@ -781,49 +842,59 @@ public class CoveragesEditorForm extends ActionForm {
 	public void setWKTString(String string) {
 		WKTString = string;
 	}
+
 	public String getWmsPath() {
 		return wmsPath;
 	}
+
 	public void setWmsPath(String wmsPath) {
 		this.wmsPath = wmsPath;
 	}
 
 	/**
-	 * @param paramHelp The paramHelp to set.
+	 * @param paramHelp
+	 *            The paramHelp to set.
 	 */
 	public void setParamHelp(ArrayList paramHelp) {
 		this.paramHelp = paramHelp;
 	}
+
 	/**
 	 * @return Returns the paramKeys.
 	 */
 	public List getParamKeys() {
 		return paramKeys;
 	}
+
 	/**
-	 * @param paramKeys The paramKeys to set.
+	 * @param paramKeys
+	 *            The paramKeys to set.
 	 */
 	public void setParamKeys(List paramKeys) {
 		this.paramKeys = paramKeys;
 	}
+
 	/**
 	 * @return Returns the paramValues.
 	 */
 	public List getParamValues() {
 		return paramValues;
 	}
+
 	/**
-	 * @param paramValues The paramValues to set.
+	 * @param paramValues
+	 *            The paramValues to set.
 	 */
 	public void setParamValues(List paramValues) {
 		this.paramValues = paramValues;
 	}
-	
+
 	public Map getParams() {
-		Map map = new HashMap();
+		final Map map = new HashMap();
 
 		if (paramKeys != null) {
-			for (int i = 0; i < paramKeys.size(); i++) {
+			final int size = paramKeys.size();
+			for (int i = 0; i < size; i++) {
 				map.put(paramKeys.get(i), paramValues.get(i));
 
 			}
@@ -866,7 +937,7 @@ public class CoveragesEditorForm extends ActionForm {
 	public void setParamValues(int index, String value) {
 		paramValues.set(index, value);
 	}
-	
+
 	/**
 	 * Index property paramHelp
 	 * 

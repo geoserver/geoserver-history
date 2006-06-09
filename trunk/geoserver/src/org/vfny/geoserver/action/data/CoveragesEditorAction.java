@@ -74,24 +74,27 @@ import org.vfny.geoserver.util.CoverageUtils;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
  */
-public class CoveragesEditorAction extends ConfigAction {
+public final class CoveragesEditorAction extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			UserContainer user, HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ServletException {
 		if (LOGGER.isLoggable(Level.FINER)) {
-			LOGGER.finer(new StringBuffer("form bean:").append(form.getClass().getName()).toString());			
+			LOGGER.finer(new StringBuffer("form bean:").append(
+					form.getClass().getName()).toString());
 		}
 
 		final CoveragesEditorForm coverageForm = (CoveragesEditorForm) form;
 
 		String action = coverageForm.getAction();
 		if (LOGGER.isLoggable(Level.FINER)) {
-			LOGGER.finer(new StringBuffer("CoveragesEditorAction is ").append(action).toString());			
+			LOGGER.finer(new StringBuffer("CoveragesEditorAction is ").append(
+					action).toString());
 		}
 
 		String newCoverage = coverageForm.getNewCoverage();
 		if (LOGGER.isLoggable(Level.FINER)) {
-			LOGGER.finer(new StringBuffer("CoveragesEditorNew is ").append(newCoverage).toString());			
+			LOGGER.finer(new StringBuffer("CoveragesEditorNew is ").append(
+					newCoverage).toString());
 		}
 
 		Locale locale = (Locale) request.getLocale();
@@ -101,7 +104,8 @@ public class CoveragesEditorAction extends ConfigAction {
 		final String ENVELOPE = HTMLEncoder.decode(messages.getMessage(locale,
 				"config.data.calculateBoundingBox.label"));
 		if (LOGGER.isLoggable(Level.FINER)) {
-			LOGGER.finer(new StringBuffer("ENVELOPE: ").append(ENVELOPE).toString());			
+			LOGGER.finer(new StringBuffer("ENVELOPE: ").append(ENVELOPE)
+					.toString());
 		}
 
 		if (action.equals(SUBMIT)) {
@@ -110,7 +114,8 @@ public class CoveragesEditorAction extends ConfigAction {
 
 		if (newCoverage != null && newCoverage.equals("true")) {
 			if (LOGGER.isLoggable(Level.FINER)) {
-				LOGGER.finer(new StringBuffer("NEW COVERAGE: ").append(newCoverage).toString());			
+				LOGGER.finer(new StringBuffer("NEW COVERAGE: ").append(
+						newCoverage).toString());
 			}
 			request.setAttribute(DataCoveragesNewAction.NEW_COVERAGE_KEY,
 					"true");
@@ -154,8 +159,8 @@ public class CoveragesEditorAction extends ConfigAction {
 			CoveragesEditorForm coverageForm, UserContainer user,
 			HttpServletRequest request) throws IOException, ServletException {
 		final DataConfig dataConfig = getDataConfig();
-		final CoverageStoreConfig dfConfig = dataConfig.getDataFormat(coverageForm
-				.getFormatId());
+		final CoverageStoreConfig dfConfig = dataConfig
+				.getDataFormat(coverageForm.getFormatId());
 		GridCoverage gc;
 
 		try {
@@ -169,17 +174,28 @@ public class CoveragesEditorAction extends ConfigAction {
 			if (params != null) {
 				final List list = params.values();
 				final Iterator it = list.iterator();
+				ParameterValue param;
+				ParameterDescriptor descr;
+				String key;
+
+				Object value;
 				while (it.hasNext()) {
-					final ParameterValue param = ((ParameterValue) it.next());
-					final ParameterDescriptor descr = (ParameterDescriptor) param
-							.getDescriptor();
-					final String key = descr.getName().toString();
+					param = ((ParameterValue) it.next());
+					descr = (ParameterDescriptor) param.getDescriptor();
+					key = descr.getName().toString();
+					if (AbstractGridFormat.READ_DIMENSIONS2D.getName()
+							.toString().equalsIgnoreCase(key)
+							|| AbstractGridFormat.READ_ENVELOPE.getName()
+									.toString().equalsIgnoreCase(key))
+						value = null;
+					else{
+						value = CoverageUtils.getCvParamValue(key, param,
+								dfConfig.getParameters());
+						if (value != null)
+							params.parameter(key).setValue(value);
+						}
 
-					Object value = CoverageUtils.getCvParamValue(key, param,
-							dfConfig.getParameters());
-
-					if (value != null)
-						params.parameter(key).setValue(value);
+					
 				}
 			}
 			gc = reader.read(params != null ? (GeneralParameterValue[]) params
@@ -210,7 +226,8 @@ public class CoveragesEditorAction extends ConfigAction {
 			final GeneralEnvelope gEnvelope = (GeneralEnvelope) gc
 					.getEnvelope();
 			final GeneralEnvelope targetEnvelope = gEnvelope;
-			final GeneralEnvelope envelope = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(sourceCRS,targetEnvelope);
+			final GeneralEnvelope envelope = CoverageStoreUtils
+					.adjustEnvelopeLongitudeFirst(sourceCRS, targetEnvelope);
 			if (!sourceCRS.getIdentifiers().isEmpty()) {
 				coverageForm.setSrsName(sourceCRS.getIdentifiers().toArray()[0]
 						.toString());
@@ -218,10 +235,14 @@ public class CoveragesEditorAction extends ConfigAction {
 				coverageForm.setSrsName(sourceCRS.getName().toString());
 			}
 			coverageForm.setWKTString(sourceCRS.toWKT());
-			coverageForm.setMinX(Double.toString(envelope.getLowerCorner().getOrdinate(0)));
-			coverageForm.setMaxX(Double.toString(envelope.getUpperCorner().getOrdinate(0)));
-			coverageForm.setMinY(Double.toString(envelope.getLowerCorner().getOrdinate(1)));
-			coverageForm.setMaxY(Double.toString(envelope.getUpperCorner().getOrdinate(1)));
+			coverageForm.setMinX(Double.toString(envelope.getLowerCorner()
+					.getOrdinate(0)));
+			coverageForm.setMaxX(Double.toString(envelope.getUpperCorner()
+					.getOrdinate(0)));
+			coverageForm.setMinY(Double.toString(envelope.getLowerCorner()
+					.getOrdinate(1)));
+			coverageForm.setMaxY(Double.toString(envelope.getUpperCorner()
+					.getOrdinate(1)));
 		} catch (FactoryRegistryException e) {
 			throw new ServletException(e);
 		} catch (MismatchedDimensionException e) {
@@ -257,7 +278,9 @@ public class CoveragesEditorAction extends ConfigAction {
 		config.setCrs(CRS.parseWKT(form.getWKTString()));
 		config.setSrsName(form.getSrsName());
 		config.setSrsWKT(form.getWKTString());
-		config.setEnvelope(getEnvelope(form, CRS.parseWKT(form.getWKTString())));
+		config
+				.setEnvelope(getEnvelope(form, CRS
+						.parseWKT(form.getWKTString())));
 		config.setSupportedFormats(supportedFormats(form));
 		config.setDefaultStyle(form.getStyleId());
 
@@ -314,7 +337,8 @@ public class CoveragesEditorAction extends ConfigAction {
 	 * 
 	 * @return Bounding box in lat long TODO is this correct
 	 */
-	private GeneralEnvelope getEnvelope(CoveragesEditorForm coverageForm, CoordinateReferenceSystem crs) {
+	private GeneralEnvelope getEnvelope(CoveragesEditorForm coverageForm,
+			CoordinateReferenceSystem crs) {
 		final double[] coordinates = new double[4];
 		final CoordinateSystem cs = crs.getCoordinateSystem();
 		boolean lonFirst = true;
@@ -330,21 +354,38 @@ public class CoveragesEditorAction extends ConfigAction {
 		final AxisDirection longitude = cs.getAxis((latIndex + 1) % 2)
 				.getDirection();
 		final boolean[] reverse = new boolean[] {
-				lonFirst ? !longitude.equals(AxisDirection.EAST) : !latitude.equals(AxisDirection.NORTH),
-				lonFirst ? !latitude.equals(AxisDirection.NORTH) : !longitude.equals(AxisDirection.EAST) };
+				lonFirst ? !longitude.equals(AxisDirection.EAST) : !latitude
+						.equals(AxisDirection.NORTH),
+				lonFirst ? !latitude.equals(AxisDirection.NORTH) : !longitude
+						.equals(AxisDirection.EAST) };
 
-		coordinates[0] = (!reverse[(latIndex+1)%2] ? (!swapXY ? Double.parseDouble(coverageForm.getMinX()): Double.parseDouble(coverageForm.getMinY())) : (!swapXY ? Double.parseDouble(coverageForm.getMaxX()): Double.parseDouble(coverageForm.getMaxY()))); 
-		coordinates[1] = (!reverse[latIndex] ? (!swapXY ? Double.parseDouble(coverageForm.getMinY()): Double.parseDouble(coverageForm.getMinX())) : (!swapXY ? Double.parseDouble(coverageForm.getMaxY()): Double.parseDouble(coverageForm.getMaxX()))); 
-		coordinates[2] = (!reverse[(latIndex+1)%2] ? (!swapXY ? Double.parseDouble(coverageForm.getMaxX()): Double.parseDouble(coverageForm.getMaxY())) : (!swapXY ? Double.parseDouble(coverageForm.getMinX()): Double.parseDouble(coverageForm.getMinY()))); 
-		coordinates[3] = (!reverse[latIndex] ? (!swapXY ? Double.parseDouble(coverageForm.getMaxY()): Double.parseDouble(coverageForm.getMaxX())) : (!swapXY ? Double.parseDouble(coverageForm.getMinY()): Double.parseDouble(coverageForm.getMinX()))); 
-		
-		GeneralEnvelope envelope = new GeneralEnvelope(
-				new double[] {coordinates[0], coordinates[1]},
-				new double[] {coordinates[2], coordinates[3]}
-		);
-		
+		coordinates[0] = (!reverse[(latIndex + 1) % 2] ? (!swapXY ? Double
+				.parseDouble(coverageForm.getMinX()) : Double
+				.parseDouble(coverageForm.getMinY())) : (!swapXY ? Double
+				.parseDouble(coverageForm.getMaxX()) : Double
+				.parseDouble(coverageForm.getMaxY())));
+		coordinates[1] = (!reverse[latIndex] ? (!swapXY ? Double
+				.parseDouble(coverageForm.getMinY()) : Double
+				.parseDouble(coverageForm.getMinX())) : (!swapXY ? Double
+				.parseDouble(coverageForm.getMaxY()) : Double
+				.parseDouble(coverageForm.getMaxX())));
+		coordinates[2] = (!reverse[(latIndex + 1) % 2] ? (!swapXY ? Double
+				.parseDouble(coverageForm.getMaxX()) : Double
+				.parseDouble(coverageForm.getMaxY())) : (!swapXY ? Double
+				.parseDouble(coverageForm.getMinX()) : Double
+				.parseDouble(coverageForm.getMinY())));
+		coordinates[3] = (!reverse[latIndex] ? (!swapXY ? Double
+				.parseDouble(coverageForm.getMaxY()) : Double
+				.parseDouble(coverageForm.getMaxX())) : (!swapXY ? Double
+				.parseDouble(coverageForm.getMinY()) : Double
+				.parseDouble(coverageForm.getMinX())));
+
+		GeneralEnvelope envelope = new GeneralEnvelope(new double[] {
+				coordinates[0], coordinates[1] }, new double[] {
+				coordinates[2], coordinates[3] });
+
 		envelope.setCoordinateReferenceSystem(crs);
-		
+
 		return envelope;
 	}
 

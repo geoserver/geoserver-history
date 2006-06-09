@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: CoverageStoresNewAction.java,v 1.12 2004/02/25 21:51:11 dmzwiers Exp $
  */
-public class CoverageStoresNewAction extends ConfigAction {
+public final class CoverageStoresNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {

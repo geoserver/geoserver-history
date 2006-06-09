@@ -163,7 +163,7 @@ public class CoverageStoreConfig {
 	public void update(CoverageStoreInfoDTO df) {
 		if (df == null) {
 			throw new NullPointerException(
-					"FormatInfo Data Transfer Object required");
+					"CoverageStoreInfo Data Transfer Object required");
 		}
 
 		id = df.getId();

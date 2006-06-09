@@ -265,7 +265,7 @@ public class DescribeResponse implements Response {
 			tempResponse.append("\n  <label>").append(tmp).append("</label>");
 		}
 
-		final GeneralEnvelope envelope = cv.getLatLonEnvelope();
+		final GeneralEnvelope envelope = cv.getWGS84LonLatEnvelope();
 
 		tempResponse.append("\n  <lonLatEnvelope" + " srsName=\"WGS84(DD)\"")
 				.append(">");

@@ -15,7 +15,6 @@ import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 
-
 /**
  * Utility methods helpful when processing GeoServer Requests.
  * 
@@ -28,201 +27,201 @@ import org.vfny.geoserver.global.WMS;
  * 
  * <p>
  * If you are working with the STRUTS API the Action method is the direct
- * paralle of the Response classes. You may whish to look at how ConfigAction
- * is implemented, it is a super class which delegates to these Request
- * processing methods.
+ * paralle of the Response classes. You may whish to look at how ConfigAction is
+ * implemented, it is a super class which delegates to these Request processing
+ * methods.
  * </p>
- *
+ * 
  * @author Jody Garnett
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  */
 public final class Requests {
-    /**
-     * Aquire GeoServer from Web Container.
-     * 
-     * <p>
-     * In GeoServer is create by a STRUTS plug-in and is available through the
-     * Web container.
-     * </p>
-     * 
-     * <p>
-     * Test cases may seed the request object with a Mock WebContainer and a
-     * Mock GeoServer.
-     * </p>
-     *
-     * @param request HttpServletRequest used to aquire servlet context
-     *
-     * @return GeoServer instance for the current Web Application
-     */
-    /**
-     * Aquire WCS from Web Container.
-     * 
-     * <p>
-     * In WCS is create by a STRUTS plug-in and is available through the
-     * Web container.
-     * </p>
-     * 
-     * <p>
-     * Test cases may seed the request object with a Mock WebContainer and a
-     * Mock GeoServer.
-     * </p>
-     *
-     * @param request HttpServletRequest used to aquire servlet context
-     *
-     * @return WCS instance for the current Web Application
-     */
-    public static WCS getWCS(HttpServletRequest request) {
-    	ServletRequest req = request;
-    	HttpSession session = request.getSession();
-    	ServletContext context = session.getServletContext();
 
-    	return (WCS) context.getAttribute(WCS.WEB_CONTAINER_KEY);
-    }
-	/*public static GeoServer getGeoServer(HttpServletRequest request) {
-        return (GeoServer) getWFS(request).getGeoServer();
-    }*/
-    /**
-     * Aquire WFS from Web Container.
-     * 
-     * <p>
-     * In WFS is create by a STRUTS plug-in and is available through the
-     * Web container.
-     * </p>
-     * 
-     * <p>
-     * Test cases may seed the request object with a Mock WebContainer and a
-     * Mock GeoServer.
-     * </p>
-     *
-     * @param request HttpServletRequest used to aquire servlet context
-     *
-     * @return WFS instance for the current Web Application
-     */
-    public static WFS getWFS(HttpServletRequest request) {
-    	ServletRequest req = request;
-    	HttpSession session = request.getSession();
-    	ServletContext context = session.getServletContext();
+	/**
+	 * Aquire WCS from Web Container.
+	 * 
+	 * <p>
+	 * In WCS is create by a STRUTS plug-in and is available through the Web
+	 * container.
+	 * </p>
+	 * 
+	 * <p>
+	 * Test cases may seed the request object with a Mock WebContainer and a
+	 * Mock GeoServer.
+	 * </p>
+	 * 
+	 * @param request
+	 *            HttpServletRequest used to aquire servlet context
+	 * 
+	 * @return WCS instance for the current Web Application
+	 */
+	public static WCS getWCS(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		ServletContext context = session.getServletContext();
 
-    	return (WFS) context.getAttribute(WFS.WEB_CONTAINER_KEY);
-    }
-    /**
-     * Aquire WMS from Web Container.
-     * 
-     * <p>
-     * In WMS is create by a STRUTS plug-in and is available through the
-     * Web container.
-     * </p>
-     * 
-     * <p>
-     * Test cases may seed the request object with a Mock WebContainer and a
-     * Mock GeoServer.
-     * </p>
-     *
-     * @param request HttpServletRequest used to aquire servlet context
-     *
-     * @return WMS instance for the current Web Application
-     */
-    public static WMS getWMS(HttpServletRequest request) {
-    	ServletRequest req = request;
-    	HttpSession session = request.getSession();
-    	ServletContext context = session.getServletContext();
+		return (WCS) context.getAttribute(WCS.WEB_CONTAINER_KEY);
+	}
 
-    	return (WMS) context.getAttribute(WMS.WEB_CONTAINER_KEY);
-    }
+	/*
+	 * public static GeoServer getGeoServer(HttpServletRequest request) { return
+	 * (GeoServer) getWFS(request).getGeoServer(); }
+	 */
+	/**
+	 * Aquire WFS from Web Container.
+	 * 
+	 * <p>
+	 * In WFS is create by a STRUTS plug-in and is available through the Web
+	 * container.
+	 * </p>
+	 * 
+	 * <p>
+	 * Test cases may seed the request object with a Mock WebContainer and a
+	 * Mock GeoServer.
+	 * </p>
+	 * 
+	 * @param request
+	 *            HttpServletRequest used to aquire servlet context
+	 * 
+	 * @return WFS instance for the current Web Application
+	 */
+	public static WFS getWFS(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		ServletContext context = session.getServletContext();
 
-    /**
-     * Get base url used - it is not any more assumed to be http://server:port/geoserver/
-     * 
-     * @param httpServletRequest
-     * @return http://server:port/path-defined-context/
-     */
-    public static String getBaseUrl(HttpServletRequest httpServletRequest) {
-/*
- * didier (2004/10/03) assumption removed :
- *       return "http://" + httpServletRequest.getServerName() + ":"
- *       + httpServletRequest.getServerPort() + "/geoserver/";
- */
-    	return httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName() + ":"
-        + httpServletRequest.getServerPort() + httpServletRequest.getContextPath() +"/";
-    }
-    
-    /**
-     * Get capabilities base url used
-     * 
-     * @param httpServletRequest
-     * @return http://server:port/path-defined-context/data/capabilities
-     */
-    public static String getSchemaBaseUrl(HttpServletRequest httpServletRequest) {
-    	return getBaseUrl(httpServletRequest) + "schemas/";
-    }
-    
-    /**
-     * Aquire type safe session information in a UserContainer.
-     * 
-     * @param request Http Request used to aquire session reference
-     *
-     * @return UserContainer containing typesafe session information.
-     */
-    public static UserContainer getUserContainer(HttpServletRequest request) {
-        HttpSession session = request.getSession();
+		return (WFS) context.getAttribute(WFS.WEB_CONTAINER_KEY);
+	}
 
-        synchronized (session) {
-            UserContainer user = (UserContainer) session.getAttribute(UserContainer.SESSION_KEY);
+	/**
+	 * Aquire WMS from Web Container.
+	 * 
+	 * <p>
+	 * In WMS is create by a STRUTS plug-in and is available through the Web
+	 * container.
+	 * </p>
+	 * 
+	 * <p>
+	 * Test cases may seed the request object with a Mock WebContainer and a
+	 * Mock GeoServer.
+	 * </p>
+	 * 
+	 * @param request
+	 *            HttpServletRequest used to aquire servlet context
+	 * 
+	 * @return WMS instance for the current Web Application
+	 */
+	public static WMS getWMS(HttpServletRequest request) {
 
-            return user;
-        }
-    }
+		HttpSession session = request.getSession();
+		ServletContext context = session.getServletContext();
 
-    /**
-     * Tests is user is loggin in.
-     * 
-     * <p>
-     * True if UserContainer exists has been created.
-     * </p>
-     *
-     * @param request HttpServletRequest providing current Session
-     *
-     * @return
-     */
-    public static boolean isLoggedIn(HttpServletRequest request) {
-        HttpSession session = request.getSession();
+		return (WMS) context.getAttribute(WMS.WEB_CONTAINER_KEY);
+	}
 
-        synchronized (session) {
-            UserContainer user = (UserContainer) session.getAttribute(UserContainer.SESSION_KEY);
-            return user != null;
-        }
-    }
+	/**
+	 * Get base url used - it is not any more assumed to be
+	 * http://server:port/geoserver/
+	 * 
+	 * @param httpServletRequest
+	 * @return http://server:port/path-defined-context/
+	 */
+	public static String getBaseUrl(HttpServletRequest httpServletRequest) {
+		/*
+		 * didier (2004/10/03) assumption removed : return "http://" +
+		 * httpServletRequest.getServerName() + ":" +
+		 * httpServletRequest.getServerPort() + "/geoserver/";
+		 */
+		return new StringBuffer(httpServletRequest.getScheme()).append("://")
+				.append(httpServletRequest.getServerName()).append(":").append(
+						httpServletRequest.getServerPort()).append(
+						httpServletRequest.getContextPath()).append("/")
+				.toString();
+	}
 
-    /**
-     * Ensures a user is logged out.
-     * 
-     * <p>
-     * Removes the UserContainer, and thus GeoServers knowledge of the current
-     * user attached to this Session.
-     * </p>
-     *
-     * @param request HttpServletRequest providing current Session
-     */
-    public static void logOut(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        session.removeAttribute(UserContainer.SESSION_KEY);
-    }
+	/**
+	 * Get capabilities base url used
+	 * 
+	 * @param httpServletRequest
+	 * @return http://server:port/path-defined-context/data/capabilities
+	 */
+	public static String getSchemaBaseUrl(HttpServletRequest httpServletRequest) {
+		return getBaseUrl(httpServletRequest) + "schemas/";
+	}
 
-    /**
-     * Access GeoServer Application State from the WebContainer.
-     *
-     * @param request DOCUMENT ME!
-     *
-     * @return Configuration model for Catalog information.
-     */
-    public static ApplicationState getApplicationState(
-        HttpServletRequest request) {
+	/**
+	 * Aquire type safe session information in a UserContainer.
+	 * 
+	 * @param request
+	 *            Http Request used to aquire session reference
+	 * 
+	 * @return UserContainer containing typesafe session information.
+	 */
+	public static UserContainer getUserContainer(HttpServletRequest request) {
+		HttpSession session = request.getSession();
 
-        ServletRequest req = request;
-        HttpSession session = request.getSession();
-        ServletContext context = session.getServletContext();
+		synchronized (session) {
+			UserContainer user = (UserContainer) session
+					.getAttribute(UserContainer.SESSION_KEY);
 
-        return (ApplicationState) context.getAttribute(ApplicationState.WEB_CONTAINER_KEY);
-    }
+			return user;
+		}
+	}
+
+	/**
+	 * Tests is user is loggin in.
+	 * 
+	 * <p>
+	 * True if UserContainer exists has been created.
+	 * </p>
+	 * 
+	 * @param request
+	 *            HttpServletRequest providing current Session
+	 * 
+	 * @return
+	 */
+	public static boolean isLoggedIn(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+
+		synchronized (session) {
+			UserContainer user = (UserContainer) session
+					.getAttribute(UserContainer.SESSION_KEY);
+			return user != null;
+		}
+	}
+
+	/**
+	 * Ensures a user is logged out.
+	 * 
+	 * <p>
+	 * Removes the UserContainer, and thus GeoServers knowledge of the current
+	 * user attached to this Session.
+	 * </p>
+	 * 
+	 * @param request
+	 *            HttpServletRequest providing current Session
+	 */
+	public static void logOut(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		session.removeAttribute(UserContainer.SESSION_KEY);
+	}
+
+	/**
+	 * Access GeoServer Application State from the WebContainer.
+	 * 
+	 * @param request
+	 *            DOCUMENT ME!
+	 * 
+	 * @return Configuration model for Catalog information.
+	 */
+	public static ApplicationState getApplicationState(
+			HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+		ServletContext context = session.getServletContext();
+
+		return (ApplicationState) context
+				.getAttribute(ApplicationState.WEB_CONTAINER_KEY);
+	}
 }

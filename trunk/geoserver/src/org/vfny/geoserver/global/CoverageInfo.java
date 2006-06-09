@@ -23,10 +23,12 @@ import org.vfny.geoserver.util.CoverageStoreUtils;
 /**
  * DOCUMENT ME!
  * 
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  */
-public class CoverageInfo extends GlobalLayerSupertype {
+public final class CoverageInfo extends GlobalLayerSupertype {
 
 	/**
 	 * 
@@ -42,6 +44,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
 	 * 
 	 */
 	private String wmsPath;
+
 	/**
 	 * 
 	 */
@@ -75,7 +78,7 @@ public class CoverageInfo extends GlobalLayerSupertype {
 	/**
 	 * 
 	 */
-	private GeneralEnvelope latLonEnvelope;
+	private GeneralEnvelope lonLatWGS84Envelope;
 
 	/**
 	 * 
@@ -147,106 +150,105 @@ public class CoverageInfo extends GlobalLayerSupertype {
 	 */
 	private CoordinateReferenceSystem crs;
 
-    
-    /**
-     * Default style used to render this Coverage with WMS
-     */
-    private String defaultStyle;
+	/**
+	 * Default style used to render this Coverage with WMS
+	 */
+	private String defaultStyle;
 
 	private ArrayList paramHelp;
 
 	private List paramKeys;
 
 	private List paramValues;
-    
-    public CoverageInfo(CoverageInfoDTO dto, Data data)
-        throws ConfigurationException {
-        this.data = data;
 
-        formatId = dto.getFormatId();
-        name = dto.getName();
-        wmsPath = dto.getWmsPath();
-        label = dto.getLabel();
-        description = dto.getDescription();
-        metadataLink = dto.getMetadataLink();
-        dirName = dto.getDirName();
-        keywords = dto.getKeywords();
-        crs = dto.getCrs();
-        srsName = dto.getSrsName(); 
-        srsWKT = dto.getSrsWKT();
-        envelope = dto.getEnvelope();
-        latLonEnvelope = dto.getLatLonEnvelope();
+	public CoverageInfo(CoverageInfoDTO dto, Data data)
+			throws ConfigurationException {
+		this.data = data;
+
+		formatId = dto.getFormatId();
+		name = dto.getName();
+		wmsPath = dto.getWmsPath();
+		label = dto.getLabel();
+		description = dto.getDescription();
+		metadataLink = dto.getMetadataLink();
+		dirName = dto.getDirName();
+		keywords = dto.getKeywords();
+		crs = dto.getCrs();
+		srsName = dto.getSrsName();
+		srsWKT = dto.getSrsWKT();
+		envelope = dto.getEnvelope();
+		lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
 		grid = dto.getGrid();
 		dimensions = dto.getDimensions();
 		dimensionNames = dto.getDimensionNames();
-        requestCRSs = dto.getRequestCRSs();
-        responseCRSs = dto.getResponseCRSs();
-        nativeFormat = dto.getNativeFormat();
-        supportedFormats = dto.getSupportedFormats();
-        defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
-        interpolationMethods = dto.getInterpolationMethods();
-        defaultStyle = dto.getDefaultStyle();
-        paramHelp = dto.getParamHelp();
-        paramKeys = dto.getParamKeys();
-        paramValues = dto.getParamValues();
-    }
+		requestCRSs = dto.getRequestCRSs();
+		responseCRSs = dto.getResponseCRSs();
+		nativeFormat = dto.getNativeFormat();
+		supportedFormats = dto.getSupportedFormats();
+		defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
+		interpolationMethods = dto.getInterpolationMethods();
+		defaultStyle = dto.getDefaultStyle();
+		paramHelp = dto.getParamHelp();
+		paramKeys = dto.getParamKeys();
+		paramValues = dto.getParamValues();
+	}
 
-    Object toDTO() {
-        CoverageInfoDTO dto = new CoverageInfoDTO();
+	Object toDTO() {
+		CoverageInfoDTO dto = new CoverageInfoDTO();
 
-        dto.setFormatId(formatId);
-        dto.setName(name);
-        dto.setWmsPath(wmsPath);
-        dto.setLabel(label);
-        dto.setDescription(description);
-        dto.setMetadataLink(metadataLink);
-        dto.setDirName(dirName);
-        dto.setKeywords(keywords);
-        dto.setCrs(crs);
-        dto.setSrsName(srsName); 
-        dto.setSrsWKT(srsWKT);
-        dto.setEnvelope(envelope);
-        dto.setLatLonEnvelope(latLonEnvelope);
+		dto.setFormatId(formatId);
+		dto.setName(name);
+		dto.setWmsPath(wmsPath);
+		dto.setLabel(label);
+		dto.setDescription(description);
+		dto.setMetadataLink(metadataLink);
+		dto.setDirName(dirName);
+		dto.setKeywords(keywords);
+		dto.setCrs(crs);
+		dto.setSrsName(srsName);
+		dto.setSrsWKT(srsWKT);
+		dto.setEnvelope(envelope);
+		dto.setLonLatWGS84Envelope(lonLatWGS84Envelope);
 		dto.setGrid(grid);
 		dto.setDimensions(dimensions);
 		dto.setDimensionNames(dimensionNames);
-        dto.setRequestCRSs(requestCRSs);
-        dto.setResponseCRSs(responseCRSs);
-        dto.setNativeFormat(nativeFormat);
-        dto.setSupportedFormats(supportedFormats);
-        dto.setDefaultInterpolationMethod(defaultInterpolationMethod);
-        dto.setInterpolationMethods(interpolationMethods);
-        dto.setDefaultStyle(defaultStyle);
-        dto.setParamHelp(paramHelp);
-        dto.setParamKeys(paramKeys);
-        dto.setParamValues(paramValues);
+		dto.setRequestCRSs(requestCRSs);
+		dto.setResponseCRSs(responseCRSs);
+		dto.setNativeFormat(nativeFormat);
+		dto.setSupportedFormats(supportedFormats);
+		dto.setDefaultInterpolationMethod(defaultInterpolationMethod);
+		dto.setInterpolationMethods(interpolationMethods);
+		dto.setDefaultStyle(defaultStyle);
+		dto.setParamHelp(paramHelp);
+		dto.setParamKeys(paramKeys);
+		dto.setParamValues(paramValues);
 
-        return dto;
-    }
+		return dto;
+	}
 
-    public FormatInfo getFormatInfo() {
-        return data.getFormatInfo(formatId);
-    }
+	public CoverageStoreInfo getFormatInfo() {
+		return data.getFormatInfo(formatId);
+	}
 
-    public boolean isEnabled() {
-        return (getFormatInfo() != null) && (getFormatInfo().isEnabled());
-    }
+	public boolean isEnabled() {
+		return (getFormatInfo() != null) && (getFormatInfo().isEnabled());
+	}
 
-    public FormatInfo getFormatMetaData() {
-        return data.getFormatInfo(formatId);
-    }
+	public CoverageStoreInfo getFormatMetaData() {
+		return data.getFormatInfo(formatId);
+	}
 
-    public boolean containsMetaData(String key) {
-        return meta.containsKey(key);
-    }
+	public boolean containsMetaData(String key) {
+		return meta.containsKey(key);
+	}
 
-    public void putMetaData(String key, Object value) {
-        meta.put(key, value);
-    }
+	public void putMetaData(String key, Object value) {
+		meta.put(key, value);
+	}
 
-    public Object getMetaData(String key) {
-        return meta.get(key);
-    }
+	public Object getMetaData(String key) {
+		return meta.get(key);
+	}
 
 	/**
 	 * @return Returns the data.
@@ -325,26 +327,26 @@ public class CoverageInfo extends GlobalLayerSupertype {
 		return metadataLink;
 	}
 
-    /**
-     * @return String the namespace prefix.
-     */
-    public String getPrefix() {
-        return getFormatInfo().getNameSpace().getPrefix();
-    }
+	/**
+	 * @return String the namespace prefix.
+	 */
+	public String getPrefix() {
+		return getFormatInfo().getNameSpace().getPrefix();
+	}
 
-    /**
-     * @return NameSpaceInfo the namespace specified for the specified
-     *         FormatInfo (by ID)
-     *
-     * @throws IllegalStateException Thrown when disabled.
-     */
-    public NameSpaceInfo getNameSpace() {
-        if (!isEnabled()) {
-            throw new IllegalStateException("This coverage is not "
-                + "enabled");
-        }
-        return getFormatInfo().getNameSpace();
-    }
+	/**
+	 * @return NameSpaceInfo the namespace specified for the specified
+	 *         CoverageStoreInfo (by ID)
+	 * 
+	 * @throws IllegalStateException
+	 *             Thrown when disabled.
+	 */
+	public NameSpaceInfo getNameSpace() {
+		if (!isEnabled()) {
+			throw new IllegalStateException("This coverage is not " + "enabled");
+		}
+		return getFormatInfo().getNameSpace();
+	}
 
 	/**
 	 * @return Returns the name.
@@ -388,18 +390,17 @@ public class CoverageInfo extends GlobalLayerSupertype {
 		return supportedFormats;
 	}
 
-	
 	/**
-     * By now just return the default style to be able to declare it in
-     * WMS capabilities, but all this stuff needs to be revisited since it seems
-     * currently there is no way of retrieving all the styles declared for
-     * a given Coverage.
-     * 
-     * @return the default Style for the Coverage
-     */
-    public Style getDefaultStyle(){
-    	return data.getStyle(defaultStyle);
-    }
+	 * By now just return the default style to be able to declare it in WMS
+	 * capabilities, but all this stuff needs to be revisited since it seems
+	 * currently there is no way of retrieving all the styles declared for a
+	 * given Coverage.
+	 * 
+	 * @return the default Style for the Coverage
+	 */
+	public Style getDefaultStyle() {
+		return data.getStyle(defaultStyle);
+	}
 
 	/**
 	 * 
@@ -432,39 +433,46 @@ public class CoverageInfo extends GlobalLayerSupertype {
 	public String getSrsWKT() {
 		return srsWKT;
 	}
-	public GeneralEnvelope getLatLonEnvelope() {
-		if(this.latLonEnvelope == null) {
-				try {
-                    this.latLonEnvelope = CoverageStoreUtils.getLatLonEnvelope(this.envelope);
-				} catch (IndexOutOfBoundsException e) {
-					return null;
-				} catch (FactoryException e) {
-					return null;
-				} catch (TransformException e) {
-					return null;
-				}
+
+	public GeneralEnvelope getWGS84LonLatEnvelope() {
+		if (this.lonLatWGS84Envelope == null) {
+			try {
+				this.lonLatWGS84Envelope = CoverageStoreUtils
+						.getWGS84LonLatEnvelope(this.envelope);
+			} catch (IndexOutOfBoundsException e) {
+				return null;
+			} catch (FactoryException e) {
+				return null;
+			} catch (TransformException e) {
+				return null;
+			}
 		}
-		
-		return this.latLonEnvelope;
+
+		return this.lonLatWGS84Envelope;
 	}
+
 	public String getWmsPath() {
 		return wmsPath;
 	}
+
 	public void setWmsPath(String wmsPath) {
 		this.wmsPath = wmsPath;
 	}
+
 	/**
 	 * @return Returns the paramHelp.
 	 */
 	public ArrayList getParamHelp() {
 		return paramHelp;
 	}
+
 	/**
 	 * @return Returns the paramKeys.
 	 */
 	public List getParamKeys() {
 		return paramKeys;
 	}
+
 	/**
 	 * @return Returns the paramValues.
 	 */
@@ -477,15 +485,15 @@ public class CoverageInfo extends GlobalLayerSupertype {
 	 */
 	public Map getParameters() {
 		final HashMap params = new HashMap();
-		
+
 		if (this.paramKeys != null) {
 			int index = 0;
-			for (Iterator p_iT=this.paramKeys.iterator(); p_iT.hasNext();) {
+			for (Iterator p_iT = this.paramKeys.iterator(); p_iT.hasNext();) {
 				params.put(p_iT.next(), this.paramValues.get(index));
 				index++;
 			}
 		}
-		
+
 		return params;
 	}
 }

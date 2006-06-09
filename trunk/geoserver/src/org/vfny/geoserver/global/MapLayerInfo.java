@@ -31,13 +31,10 @@ import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.CoverageUtils;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -161,37 +158,35 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		if (this.type == TYPE_VECTOR) {
 			return feature.getBoundingBox();
 		} else {
-			GeneralEnvelope bounds = null;
-			try {
-				bounds = CoverageStoreUtils.adjustEnvelope(coverage
-						.getEnvelope().getCoordinateReferenceSystem(), coverage
-						.getEnvelope());
-			} catch (MismatchedDimensionException e) {
-				final IOException ex = new IOException(new StringBuffer(
-						"Problems getting Coverage BoundingBox: ").append(
-						e.getLocalizedMessage()).toString());
-				ex.initCause(e);
-				throw ex;
-			} catch (IndexOutOfBoundsException e) {
-				final IOException ex = new IOException(new StringBuffer(
-						"Problems getting Coverage BoundingBox: ").append(
-						e.getLocalizedMessage()).toString());
-				ex.initCause(e);
-				throw ex;
-			} catch (NoSuchAuthorityCodeException e) {
-				final IOException ex = new IOException(new StringBuffer(
-						"Problems getting Coverage BoundingBox: ").append(
-						e.getLocalizedMessage()).toString());
-				ex.initCause(e);
-				throw ex;
-			}
+			// GeneralEnvelope bounds = null;
+			// try {
+			// bounds =
+			// CoverageStoreUtils.adjustEnvelopeLongitudeFirst(coverage
+			// .getEnvelope().getCoordinateReferenceSystem(), coverage
+			// .getEnvelope());
+			// } catch (MismatchedDimensionException e) {
+			// final IOException ex = new IOException(new StringBuffer(
+			// "Problems getting Coverage BoundingBox: ").append(
+			// e.getLocalizedMessage()).toString());
+			// ex.initCause(e);
+			// throw ex;
+			// } catch (IndexOutOfBoundsException e) {
+			// final IOException ex = new IOException(new StringBuffer(
+			// "Problems getting Coverage BoundingBox: ").append(
+			// e.getLocalizedMessage()).toString());
+			// ex.initCause(e);
+			// throw ex;
+			// } catch (NoSuchAuthorityCodeException e) {
+			// final IOException ex = new IOException(new StringBuffer(
+			// "Problems getting Coverage BoundingBox: ").append(
+			// e.getLocalizedMessage()).toString());
+			// ex.initCause(e);
+			// throw ex;
+			// }
 
 			// using referenced envelope (experiment)
-			return new ReferencedEnvelope(bounds.getLowerCorner()
-					.getOrdinate(0), bounds.getUpperCorner().getOrdinate(0),
-					bounds.getLowerCorner().getOrdinate(1), bounds
-							.getUpperCorner().getOrdinate(1), bounds
-							.getCoordinateReferenceSystem());
+			return new ReferencedEnvelope(coverage.getEnvelope(), coverage
+					.getCrs());
 		}
 	}
 
@@ -321,6 +316,16 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		this.type = type;
 	}
 
+	/**
+	 * Getting a grid coverage as requested.
+	 * 
+	 * @param request
+	 * @param meta
+	 * @param envelope
+	 * @param dim
+	 * @return
+	 * @throws IOException
+	 */
 	private final GridCoverage getGridCoverage(HttpServletRequest request,
 			CoverageInfo meta, GeneralEnvelope envelope, Rectangle dim)
 			throws IOException {
@@ -356,6 +361,10 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 			//
 			// /////////////////////////////////////////////////////////
 			final ParameterValueGroup params = format.getReadParameters();
+			final String readEnvelopeKey = AbstractGridFormat.READ_ENVELOPE
+					.getName().toString();
+			final String requestedDimKey = AbstractGridFormat.READ_DIMENSIONS2D
+					.getName().toString();
 			if (params != null) {
 				List list = params.values();
 				Iterator it = list.iterator();
@@ -374,11 +383,11 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 					// request param for better management of coverage
 					//
 					// /////////////////////////////////////////////////////////
-					if (key.equalsIgnoreCase("readenvelope")
+					if (key.equalsIgnoreCase(readEnvelopeKey)
 							&& envelope != null) {
 						params.parameter(key).setValue(envelope);
 
-					} else if (key.equalsIgnoreCase("ReadDimensions2D")
+					} else if (key.equalsIgnoreCase(requestedDimKey)
 							&& dim != null) {
 						params.parameter(key).setValue(dim);
 
@@ -470,15 +479,4 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		return null;
 	}
 
-	/***************************************************************************
-	 * 
-	 * Extension of the DefaultFeature.
-	 * 
-	 */
-	private class CoverageFeature extends DefaultFeature {
-		public CoverageFeature(DefaultFeatureType fType, Object[] attributes,
-				String featureId) throws IllegalAttributeException {
-			super(fType, attributes, featureId);
-		}
-	}
 }

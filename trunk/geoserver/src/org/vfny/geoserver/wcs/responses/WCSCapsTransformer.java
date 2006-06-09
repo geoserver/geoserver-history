@@ -510,7 +510,7 @@ public class WCSCapsTransformer extends TransformerBase {
 				if ((tmp != null) && (tmp != "")) {
 					element("label", tmp);
 				}
-				handleEnvelope(cv.getLatLonEnvelope());
+				handleEnvelope(cv.getWGS84LonLatEnvelope());
 				handleKeywords(cv.getKeywords());
 
 				end("CoverageOfferingBrief");

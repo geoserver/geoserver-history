@@ -89,7 +89,7 @@ public class GeoServerPlugIn implements PlugIn {
 			return;
 		}
 
-//		OrderedAxisAuthorityFactory.register("EPSG");
+		// OGCEPSGOrderedAxisAuthorityFactory.register("EPSG");
 		//
 		//
 

@@ -5,15 +5,6 @@
 package org.vfny.geoserver.util;
 
 import java.awt.Color;
-import java.awt.RenderingHints;
-import java.awt.Transparency;
-import java.awt.color.ColorSpace;
-import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.IndexColorModel;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -24,43 +15,28 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Logger;
 
-import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
-import javax.media.jai.JAI;
-import javax.media.jai.ParameterBlockJAI;
-import javax.media.jai.PlanarImage;
-import javax.media.jai.RenderedOp;
 
-import org.geotools.coverage.Category;
-import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.processing.Operations;
-import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.operation.transform.LinearTransform1D;
 import org.geotools.resources.CRSUtilities;
-import org.geotools.util.NumberRange;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CRSAuthorityFactory;
-import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.cs.CoordinateSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.opengis.spatialschema.geometry.Envelope;
-import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
@@ -74,6 +50,10 @@ import org.vfny.geoserver.wcs.requests.CoverageRequest;
  *         modification)
  */
 public class CoverageUtils {
+
+	private final static Logger LOGGER = Logger.getLogger(CoverageUtils.class
+			.toString());
+
 	public static final int TRANSPARENT = 0;
 
 	public static final int OPAQUE = 1;
@@ -107,28 +87,16 @@ public class CoverageUtils {
 				if (getParamValue(paramValues, index) != null
 						&& ((String) getParamValue(paramValues, index))
 								.length() > 0) {
-					// CRSFactory crsFactory = FactoryFinder.getCRSFactory(new
-					// Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-					CRSFactory crsFactory = FactoryFinder
-							.getCRSFactory(new Hints(
-									Hints.CRS_AUTHORITY_FACTORY,
-									CRSAuthorityFactory.class));
-					CoordinateReferenceSystem crs = crsFactory
-							.createFromWKT((String) getParamValue(paramValues,
-									index));
-					value = crs;
-				} else {
-					// CRSAuthorityFactory
-					// crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG",new
-					// Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-					CRSAuthorityFactory crsFactory = FactoryFinder
-							.getCRSAuthorityFactory("EPSG", new Hints(
-									Hints.CRS_AUTHORITY_FACTORY,
-									CRSAuthorityFactory.class));
-					CoordinateReferenceSystem crs = (CoordinateReferenceSystem) crsFactory
-							.createCoordinateReferenceSystem("EPSG:4326");
-					value = crs;
-				}
+					if (paramValues.get(index) != null
+							&& ((String) paramValues.get(index)).length() > 0) 
+
+						value = CRS.parseWKT((String) paramValues.get(index));
+					} else {
+
+						LOGGER
+								.info("Unable to find a crs for the coverage param, using EPSG:4326");
+						value = CRS.decode("EPSG:4326");
+					}
 			} else if (key.equalsIgnoreCase("envelope")) {
 				if (getParamValue(paramValues, index) != null
 						&& ((String) getParamValue(paramValues, index))
@@ -206,26 +174,13 @@ public class CoverageUtils {
 			if (key.equalsIgnoreCase("crs")) {
 				if (params.get(key) != null
 						&& ((String) params.get(key)).length() > 0) {
-					// CRSFactory crsFactory = FactoryFinder.getCRSFactory(new
-					// Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-					CRSFactory crsFactory = FactoryFinder
-							.getCRSFactory(new Hints(
-									Hints.CRS_AUTHORITY_FACTORY,
-									CRSAuthorityFactory.class));
-					CoordinateReferenceSystem crs = crsFactory
-							.createFromWKT((String) params.get(key));
-					value = crs;
+
+					value = CRS.parseWKT((String) params.get(key));
 				} else {
-					// CRSAuthorityFactory
-					// crsFactory=FactoryFinder.getCRSAuthorityFactory("EPSG",new
-					// Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-					CRSAuthorityFactory crsFactory = FactoryFinder
-							.getCRSAuthorityFactory("EPSG", new Hints(
-									Hints.CRS_AUTHORITY_FACTORY,
-									CRSAuthorityFactory.class));
-					CoordinateReferenceSystem crs = (CoordinateReferenceSystem) crsFactory
-							.createCoordinateReferenceSystem("EPSG:4326");
-					value = crs;
+
+					LOGGER
+							.info("Unable to find a crs for the coverage param, using EPSG:4326");
+					value = CRS.decode("EPSG:4326");
 				}
 			} else if (key.equalsIgnoreCase("envelope")) {
 				if (params.get(key) != null
@@ -250,25 +205,6 @@ public class CoverageUtils {
 						}
 					}
 				}
-			} else if (key.equalsIgnoreCase("values_palette")) {
-				if (params.get(key) != null
-						&& ((String) params.get(key)).length() > 0) {
-					String tmp = (String) params.get(key);
-					String[] strColors = tmp.split(";");
-					Vector colors = new Vector();
-					final int colLength = strColors.length;
-					Color tmpColor = null;
-					for (int col = 0; col < colLength; col++) {
-						tmpColor = Color.decode(strColors[col]);
-						if (tmpColor != null) {
-							colors.add(tmpColor);
-						}
-					}
-
-					value = colors.toArray(new Color[colors.size()]);
-					// } else {
-					// value = "#000000;#3C3C3C;#FFFFFF";
-				}
 			} else {
 				Class[] clArray = { String.class };
 				Object[] inArray = { params.get(key) };
@@ -280,66 +216,6 @@ public class CoverageUtils {
 		}
 
 		return value;
-	}
-
-	/**
-	 * Creating a coverage from an Image.
-	 * 
-	 * @param image
-	 * @param crs
-	 * @param envelope
-	 * @param coverageName
-	 * @return
-	 * @throws MismatchedDimensionException
-	 * @throws IOException
-	 */
-	public static GridCoverage createCoverage(RenderedImage image,
-			CoordinateReferenceSystem crs, Envelope envelope,
-			String coverageName) throws MismatchedDimensionException,
-			IOException {
-		// building up a coverage
-		GridCoverage coverage = null;
-		// deciding the number range
-		NumberRange geophysicRange = null;
-		switch (image.getSampleModel().getTransferType()) {
-		case DataBuffer.TYPE_BYTE:
-			geophysicRange = new NumberRange(0, 255);
-			break;
-		case DataBuffer.TYPE_USHORT:
-			geophysicRange = new NumberRange(0, 65535);
-			break;
-		case DataBuffer.TYPE_INT:
-			geophysicRange = new NumberRange(-Integer.MAX_VALUE,
-					Integer.MAX_VALUE);
-			break;
-		default:
-			throw new IOException(
-					"Data buffer type not supported! Use byte, ushort or int");
-		}
-		try {
-
-			// convenieience category in order to
-			Category values = new Category("values",
-					new Color[] { Color.BLACK }, geophysicRange,
-					LinearTransform1D.IDENTITY);
-
-			// creating bands
-			GridSampleDimension bands[] = new GridSampleDimension[image
-					.getSampleModel().getNumBands()];
-			for (int i = 0; i < image.getSampleModel().getNumBands(); i++)
-				bands[i] = new GridSampleDimension(new Category[] { values },
-						null).geophysics(true);
-
-			// creating coverage
-			coverage = new GridCoverage2D(coverageName, image, crs, envelope,
-					bands, null, null);
-		} catch (NoSuchElementException e1) {
-			throw new IOException(
-					"Error when creating the coverage in world image"
-							+ e1.getMessage());
-		}
-
-		return coverage;
 	}
 
 	/**
@@ -358,9 +234,7 @@ public class CoverageUtils {
 			CoverageInfo meta, GridCoverage coverage) throws WcsException,
 			IOException, IndexOutOfBoundsException, FactoryException,
 			TransformException {
-		final CRSAuthorityFactory crsFactory = FactoryFinder
-				.getCRSAuthorityFactory("EPSG", new Hints(
-						Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
+
 		// This is the final Response CRS
 		final String responseCRS = request.getResponseCRS();
 		// - first check if the responseCRS is present on the Coverage
@@ -370,8 +244,7 @@ public class CoverageUtils {
 					"This Coverage does not support the Response CRS requested.");
 		}
 		// - then create the Coordinate Reference System
-		final CoordinateReferenceSystem targetCRS = crsFactory
-				.createCoordinateReferenceSystem(responseCRS);
+		final CoordinateReferenceSystem targetCRS =CRS.decode(responseCRS);
 		// This is the CRS of the requested Envelope
 		final String requestCRS = request.getCRS();
 		// - first check if the requestCRS is present on the Coverage
@@ -381,8 +254,7 @@ public class CoverageUtils {
 					"This Coverage does not support the CRS requested.");
 		}
 		// - then create the Coordinate Reference System
-		final CoordinateReferenceSystem sourceCRS = crsFactory
-				.createCoordinateReferenceSystem(requestCRS);
+		final CoordinateReferenceSystem sourceCRS =CRS.decode(requestCRS);
 		// This is the CRS of the Coverage Envelope
 		final CoordinateReferenceSystem cvCRS = ((GeneralEnvelope) coverage
 				.getEnvelope()).getCoordinateReferenceSystem();
@@ -551,227 +423,6 @@ public class CoverageUtils {
 		}
 
 		return subCoverage;
-	}
-
-	/**
-	 * Reformat the index color model to a component color model preserving
-	 * transparency. Code from jai-interests archive.
-	 * 
-	 * @param surrogateImage
-	 * 
-	 * @return
-	 * 
-	 * @throws IllegalArgumentException
-	 *             DOCUMENT ME!
-	 */
-	private static PlanarImage reformatColorModel2ComponentColorModel(
-			PlanarImage surrogateImage) throws IllegalArgumentException {
-		// Format the image to be expanded from IndexColorModel to
-		// ComponentColorModel
-		ParameterBlock pbFormat = new ParameterBlock();
-		pbFormat.addSource(surrogateImage);
-		pbFormat.add(surrogateImage.getSampleModel().getTransferType());
-
-		ImageLayout layout = new ImageLayout();
-		ColorModel cm1 = null;
-		final int numBits;
-
-		switch (surrogateImage.getSampleModel().getTransferType()) {
-		case DataBuffer.TYPE_BYTE:
-			numBits = 8;
-			break;
-
-		case DataBuffer.TYPE_USHORT:
-			numBits = 16;
-			break;
-		case DataBuffer.TYPE_SHORT:
-			numBits = 16;
-			break;
-
-		case DataBuffer.TYPE_INT:
-			numBits = 32;
-			break;
-		case DataBuffer.TYPE_FLOAT:
-			numBits = 32;
-			break;
-		case DataBuffer.TYPE_DOUBLE:
-			numBits = 64;
-			break;
-
-		default:
-			throw new IllegalArgumentException(
-					"Unsupported data type for an index color model!");
-		}
-
-		// do we need alpha?
-		final int transparency = surrogateImage.getColorModel()
-				.getTransparency();
-		final int transpPixel = ((IndexColorModel) surrogateImage
-				.getColorModel()).getTransparentPixel();
-		if (transparency != Transparency.OPAQUE) {
-			cm1 = new ComponentColorModel(ColorSpace
-					.getInstance(ColorSpace.CS_sRGB), new int[] { numBits,
-					numBits, numBits, numBits }, true, false, transparency,
-					surrogateImage.getSampleModel().getTransferType());
-		} else {
-			cm1 = new ComponentColorModel(ColorSpace
-					.getInstance(ColorSpace.CS_sRGB), new int[] { numBits,
-					numBits, numBits }, false, false, transparency,
-					surrogateImage.getSampleModel().getTransferType());
-		}
-
-		layout.setColorModel(cm1);
-		layout.setSampleModel(cm1.createCompatibleSampleModel(surrogateImage
-				.getWidth(), surrogateImage.getHeight()));
-
-		RenderingHints hint = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout);
-		RenderedOp dst = JAI.create("format", pbFormat, hint);
-		surrogateImage = dst.createSnapshot();
-		pbFormat.removeParameters();
-		pbFormat.removeSources();
-		dst.dispose();
-
-		return surrogateImage;
-	}
-
-	/**
-	 * This method allows me to go from DirectColorModel to ComponentColorModel
-	 * which seems to be well acepted from PNGEncoder and TIFFEncoder.
-	 * 
-	 * @param surrogateImage
-	 * @return
-	 */
-	private static PlanarImage direct2ComponentColorModel(
-			PlanarImage surrogateImage) {
-		ParameterBlockJAI pb = new ParameterBlockJAI("ColorConvert");
-		pb.addSource(surrogateImage);
-		int numBits = 8;
-		if (DataBuffer.TYPE_INT == surrogateImage.getSampleModel()
-				.getTransferType())
-			numBits = 32;
-		else if (DataBuffer.TYPE_USHORT == surrogateImage.getSampleModel()
-				.getTransferType()
-				|| DataBuffer.TYPE_SHORT == surrogateImage.getSampleModel()
-						.getTransferType())
-			numBits = 16;
-		else if (DataBuffer.TYPE_FLOAT == surrogateImage.getSampleModel()
-				.getTransferType())
-			numBits = 32;
-		else if (DataBuffer.TYPE_DOUBLE == surrogateImage.getSampleModel()
-				.getTransferType())
-			numBits = 64;
-		ComponentColorModel colorModel = new ComponentColorModel(surrogateImage
-				.getColorModel().getColorSpace(), new int[] { numBits, numBits,
-				numBits, numBits }, false, surrogateImage.getColorModel()
-				.hasAlpha(), surrogateImage.getColorModel().getTransparency(),
-				surrogateImage.getSampleModel().getTransferType());
-		pb.setParameter("colormodel", colorModel);
-		ImageLayout layout = new ImageLayout();
-		layout.setColorModel(colorModel);
-		layout.setSampleModel(colorModel.createCompatibleSampleModel(
-				surrogateImage.getWidth(), surrogateImage.getHeight()));
-		RenderingHints hints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout);
-		surrogateImage = JAI.create("ColorConvert", pb, hints).createInstance();
-		pb.removeParameters();
-		pb.removeSources();
-
-		return surrogateImage;
-	}
-
-	private static RenderedOp addTransparency(RenderedImage src,
-			int transparency) {
-		Number[] bandValues = null;
-		PlanarImage alphaPlane = null;
-		final int transferType = src.getSampleModel().getTransferType();
-		/**
-		 * We are trying to come up with a mask that should spot 0 or max as the
-		 * transparency level
-		 */
-		switch (transferType) {
-		case DataBuffer.TYPE_BYTE:
-			// fill with 0
-			bandValues = new Byte[1];
-			bandValues[0] = new Byte((byte) (0));
-
-			break;
-		case DataBuffer.TYPE_USHORT:
-
-			// fill with 0
-			bandValues = new Short[1];
-			bandValues[0] = new Short((short) (0));
-			break;
-		case DataBuffer.TYPE_INT:
-			// fill with 0
-			bandValues = new Integer[1];
-			bandValues[0] = new Integer((byte) (0));
-			break;
-		default:
-			return null;
-		}
-
-		ParameterBlock pb = new ParameterBlock();
-		pb.add(new Float(src.getWidth())).add(new Float(src.getHeight()));
-		pb.add(bandValues);
-		alphaPlane = JAI.create("Constant", pb, null);
-
-		/**
-		 * In case we are asking for adding the alpha channel we need to ensure
-		 * that we add transparency at the maximum level.
-		 * 
-		 * NOTE: handling transparenxy with Transfert Type USHORT is tricky
-		 * because if you try to create a constant image directly values 65535
-		 * it comes out as a SHORT valued image instead of a USHORT because of
-		 * Java's limitation with unsigned values. The trick i: 1>Create a
-		 * constant image type USHORT 2>Rescale it using scale 0 or 1 or
-		 * whatever you like (this value will be multiplied by 0 so...) and
-		 * offset 65535. In such a case everything works fine!!!
-		 */
-		if (transparency == OPAQUE) {
-
-			/**
-			 * RESCSALE
-			 */
-			pb.removeSources();
-			pb.removeParameters();
-
-			// get the transfer type and set the levels for the dynamic
-			double dynamicAcme = 0.0;
-
-			switch (transferType) {
-			case DataBuffer.TYPE_BYTE:
-				dynamicAcme = 255;
-				break;
-			case DataBuffer.TYPE_USHORT:
-				dynamicAcme = 65535;
-				break;
-			case DataBuffer.TYPE_INT:
-				dynamicAcme = Integer.MAX_VALUE;
-				break;
-			}
-
-			pb.addSource(alphaPlane);
-
-			// rescaling each band
-			double[] scale = new double[1];
-			double[] offset = new double[1];
-			scale[0] = 1;
-			offset[0] = dynamicAcme;
-
-			pb.add(scale);
-			pb.add(offset);
-			alphaPlane = JAI.create("rescale", pb);
-
-		}
-
-		// merging bands basing the decision on the transparency level
-		pb.removeParameters();
-		pb.removeSources();
-		pb.addSource(src);
-		pb.addSource(alphaPlane);
-
-		RenderedOp dest = JAI.create("BandMerge", pb, null);
-
-		return dest;
 	}
 
 	/**

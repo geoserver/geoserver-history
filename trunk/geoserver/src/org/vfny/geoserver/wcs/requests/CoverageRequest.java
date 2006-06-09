@@ -7,19 +7,20 @@ package org.vfny.geoserver.wcs.requests;
 import java.util.Map;
 import java.util.logging.Logger;
 
-
 import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * DOCUMENT ME!
  * 
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  */
 public class CoverageRequest extends WCSRequest {
 	/** Standard logging instance for class */
-	private static final Logger LOGGER = Logger.getLogger(
-	"org.vfny.geoserver.requests");
+	private static final Logger LOGGER = Logger
+			.getLogger("org.vfny.geoserver.requests");
 
 	/**
 	 * 
@@ -34,9 +35,9 @@ public class CoverageRequest extends WCSRequest {
 	protected String outputFormat = null;
 
 	protected String CRS = null;
-	
+
 	protected String ResponseCRS = null;
-	
+
 	/**
 	 * 
 	 * @uml.property name="envelope"
@@ -56,7 +57,6 @@ public class CoverageRequest extends WCSRequest {
 	 */
 	protected String handle = null;
 
-	
 	protected String coverageVersion = null;
 
 	/**
@@ -84,7 +84,6 @@ public class CoverageRequest extends WCSRequest {
 	private Double[] gridOrigin;
 
 	private Map parameters;
-
 
 	public CoverageRequest() {
 		super();
@@ -123,37 +122,36 @@ public class CoverageRequest extends WCSRequest {
 		return this.handle;
 	}
 
-	
 	public void setCoverageVersion(String version) {
 		this.version = version;
 	}
-	
+
 	public String getCoverageVersion() {
 		return this.version;
 	}
-	
+
 	public String toString() {
 		StringBuffer returnString = new StringBuffer("\nRequest");
-		returnString.append(": " + handle);
-		returnString.append("\n coverage:" + coverage);
-		returnString.append("\n output format:" + outputFormat);
-		returnString.append("\n version:" + version);
-		returnString.append("\n envelope:" + envelope);
-		returnString.append("\n interpolation:" + interpolation);
-		
+		returnString.append(": ").append(handle);
+		returnString.append("\n coverage:").append(coverage);
+		returnString.append("\n output format:").append(outputFormat);
+		returnString.append("\n version:").append(version);
+		returnString.append("\n envelope:").append(envelope);
+		returnString.append("\n interpolation:").append(interpolation);
+
 		return returnString.toString();
 	}
-	
+
 	public boolean equals(Object obj) {
 		super.equals(obj);
-		
+
 		if (!(obj instanceof CoverageRequest)) {
 			return false;
 		}
-		
+
 		CoverageRequest request = (CoverageRequest) obj;
 		boolean isEqual = true;
-		
+
 		if ((this.coverage == null) && (request.getCoverage() == null)) {
 			isEqual = isEqual && true;
 		} else if ((this.coverage == null) || (request.getCoverage() == null)) {
@@ -163,7 +161,7 @@ public class CoverageRequest extends WCSRequest {
 		} else {
 			isEqual = false;
 		}
-		
+
 		if ((this.version == null) && (request.getVersion() == null)) {
 			isEqual = isEqual && true;
 		} else if ((this.version == null) || (request.getVersion() == null)) {
@@ -173,7 +171,7 @@ public class CoverageRequest extends WCSRequest {
 		} else {
 			isEqual = false;
 		}
-		
+
 		if ((this.handle == null) && (request.getHandle() == null)) {
 			isEqual = isEqual && true;
 		} else if ((this.handle == null) || (request.getHandle() == null)) {
@@ -183,7 +181,7 @@ public class CoverageRequest extends WCSRequest {
 		} else {
 			isEqual = false;
 		}
-		
+
 		if ((this.outputFormat == null) && (request.getOutputFormat() == null)) {
 			isEqual = isEqual && true;
 		} else if ((this.outputFormat == null)
@@ -194,19 +192,19 @@ public class CoverageRequest extends WCSRequest {
 		} else {
 			isEqual = false;
 		}
-		
+
 		if ((this.envelope == null) && (request.getEnvelope() == null)) {
 			isEqual = isEqual && true;
-		} else if ((this.envelope == null)
-				|| (request.getEnvelope() == null)) {
+		} else if ((this.envelope == null) || (request.getEnvelope() == null)) {
 			isEqual = false;
 		} else if (request.getEnvelope().equals(envelope)) {
 			isEqual = isEqual && true;
 		} else {
 			isEqual = false;
 		}
-		
-		if ((this.interpolation == null) && (request.getInterpolation() == null)) {
+
+		if ((this.interpolation == null)
+				&& (request.getInterpolation() == null)) {
 			isEqual = isEqual && true;
 		} else if ((this.interpolation == null)
 				|| (request.getInterpolation() == null)) {
@@ -216,15 +214,15 @@ public class CoverageRequest extends WCSRequest {
 		} else {
 			isEqual = false;
 		}
-		
+
 		return isEqual;
 	}
-	
+
 	public int hashCode() {
 		int result = super.hashCode();
 		result = (23 * result) + ((handle == null) ? 0 : handle.hashCode());
 		result = (23 * result) + ((coverage == null) ? 0 : coverage.hashCode());
-		
+
 		return result;
 	}
 
@@ -238,7 +236,8 @@ public class CoverageRequest extends WCSRequest {
 	}
 
 	/**
-	 * @param envelope The envelope to set.
+	 * @param envelope
+	 *            The envelope to set.
 	 * 
 	 * @uml.property name="envelope"
 	 */
@@ -246,7 +245,6 @@ public class CoverageRequest extends WCSRequest {
 		this.envelope = envelope;
 	}
 
-	
 	public void setEnvelope(String envelope) {
 		String[] coords = envelope.split(",");
 		try {
@@ -254,9 +252,9 @@ public class CoverageRequest extends WCSRequest {
 			double arg1 = Double.parseDouble(coords[1]);
 			double arg2 = Double.parseDouble(coords[2]);
 			double arg3 = Double.parseDouble(coords[3]);
-			
+
 			this.envelope = new Envelope(arg0, arg2, arg1, arg3);
-		} catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			this.envelope = null;
 		}
 	}
@@ -271,7 +269,8 @@ public class CoverageRequest extends WCSRequest {
 	}
 
 	/**
-	 * @param interpolation The interpolation to set.
+	 * @param interpolation
+	 *            The interpolation to set.
 	 * 
 	 * @uml.property name="interpolation"
 	 */
@@ -289,7 +288,8 @@ public class CoverageRequest extends WCSRequest {
 	}
 
 	/**
-	 * @param coverage The coverage to set.
+	 * @param coverage
+	 *            The coverage to set.
 	 * 
 	 * @uml.property name="coverage"
 	 */
@@ -307,7 +307,8 @@ public class CoverageRequest extends WCSRequest {
 	}
 
 	/**
-	 * @param gridDimension The gridDimension to set.
+	 * @param gridDimension
+	 *            The gridDimension to set.
 	 * 
 	 * @uml.property name="gridDimension"
 	 */
@@ -315,9 +316,9 @@ public class CoverageRequest extends WCSRequest {
 		this.gridDimension = gridDimension;
 	}
 
-
 	/**
-	 * @param value The gridDimension to set.
+	 * @param value
+	 *            The gridDimension to set.
 	 */
 	public void setGridDimension(String value) {
 		this.gridDimension = Integer.parseInt(value);
@@ -327,14 +328,18 @@ public class CoverageRequest extends WCSRequest {
 	 * @param offsetVector
 	 */
 	public void setOffsetVector(Double[] offsetVector) {
-		if(this.envelope!=null) {
-        	final double envWidth = Math.abs(envelope.getMaxX() - envelope.getMinX());
-        	final double envHeight = Math.abs(envelope.getMaxY() - envelope.getMinY());
-        	final double width = envWidth / Math.abs(offsetVector[0].doubleValue());
-        	final double height = envHeight / Math.abs(offsetVector[1].doubleValue());
-            setGridOrigin(new Double[] {new Double(0.0), new Double(0.0)});
-            setGridLow(new Double[] {new Double(0.0), new Double(0.0)});
-            setGridHigh(new Double[] {new Double(width), new Double(height)});
+		if (this.envelope != null) {
+			final double envWidth = Math.abs(envelope.getMaxX()
+					- envelope.getMinX());
+			final double envHeight = Math.abs(envelope.getMaxY()
+					- envelope.getMinY());
+			final double width = envWidth
+					/ Math.abs(offsetVector[0].doubleValue());
+			final double height = envHeight
+					/ Math.abs(offsetVector[1].doubleValue());
+			setGridOrigin(new Double[] { new Double(0.0), new Double(0.0) });
+			setGridLow(new Double[] { new Double(0.0), new Double(0.0) });
+			setGridHigh(new Double[] { new Double(width), new Double(height) });
 		}
 	}
 
@@ -395,12 +400,15 @@ public class CoverageRequest extends WCSRequest {
 	public String getCRS() {
 		return CRS;
 	}
+
 	public void setCRS(String crs) {
 		CRS = crs;
 	}
+
 	public String getResponseCRS() {
 		return ResponseCRS;
 	}
+
 	public void setResponseCRS(String responseCRS) {
 		ResponseCRS = responseCRS;
 	}
@@ -411,6 +419,7 @@ public class CoverageRequest extends WCSRequest {
 	public void setParameters(Map kvpPairs) {
 		this.parameters = kvpPairs;
 	}
+
 	public Map getParameters() {
 		return parameters;
 	}

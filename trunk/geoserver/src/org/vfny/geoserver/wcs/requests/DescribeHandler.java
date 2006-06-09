@@ -66,7 +66,8 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
         currentTag = localName;
 
         if (currentTag.equals("DescribeCoverage")) {
-            for (int i = 0; i < atts.getLength(); i++) {
+        	final int length=atts.getLength();
+            for (int i = 0; i <length; i++) {
                 if (atts.getLocalName(i).equals("outputFormat")) {
                     LOGGER.finest("found outputFormat: " + atts.getValue(i));
                     request.setOutputFormat(atts.getValue(i));

@@ -25,6 +25,11 @@ public class DataCoveragesSelectForm extends ActionForm {
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID = 1300704188707189533L;
+
+	/**
+	 * 
+	 */
 	private String selectedCoverageName;
 
 	/**

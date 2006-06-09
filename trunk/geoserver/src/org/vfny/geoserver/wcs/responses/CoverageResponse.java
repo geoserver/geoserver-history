@@ -210,13 +210,18 @@ public class CoverageResponse implements Response {
 			if (params != null) {
 				List list = params.values();
 				Iterator it = list.iterator();
+				ParameterValue param;
+				ParameterDescriptor descr ;
+
+				String key ;
+				Object value;
 				while (it.hasNext()) {
-					ParameterValue param = ((ParameterValue) it.next());
-					ParameterDescriptor descr = (ParameterDescriptor) param
+					 param = ((ParameterValue) it.next());
+					 descr = (ParameterDescriptor) param
 							.getDescriptor();
 
-					String key = descr.getName().toString();
-					Object value = CoverageUtils.getCvParamValue(key, param,
+					 key = descr.getName().toString();
+					 value = CoverageUtils.getCvParamValue(key, param,
 							meta.getParameters());
 
 					if (value != null)
@@ -239,6 +244,7 @@ public class CoverageResponse implements Response {
 		} catch (IOException e) {
 			final WcsException newEx = new WcsException(e, "problem with CoverageResults", request
 					.getHandle());
+			
 			throw newEx;
 		} catch (NoSuchElementException e) {
 			final WcsException newEx = new WcsException(e, "problem with CoverageResults", request

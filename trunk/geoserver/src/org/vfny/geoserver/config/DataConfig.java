@@ -59,7 +59,7 @@ public class DataConfig {
 	/**
 	 * A set of dataFormatConfig by dataFormatId.
 	 * 
-	 * @see org.vfny.geoserver.config.data.FormatInfo
+	 * @see org.vfny.geoserver.config.data.CoverageStoreInfo
 	 * 
 	 * @uml.property name="dataFormats"
 	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.CoverageStoreConfig"
@@ -227,33 +227,48 @@ public class DataConfig {
             throw new NullPointerException("Data Data Transfer Object required");
         }
 
-        Iterator i = null;
-
+        Iterator i;
+        Object key;
+        
+        ////
+        //
+        //
+        //
+        ////
         i = data.getFormats().keySet().iterator();
         dataFormats = new HashMap();
-
         while (i.hasNext()) {
-            Object key = i.next();
+            key = i.next();
             dataFormats.put(key,
                 new CoverageStoreConfig(
                     (CoverageStoreInfoDTO) data.getFormats().get(key)));
         }
 
+        ////
+        //
+        //
+        //
+        ////
         i = data.getDataStores().keySet().iterator();
         dataStores = new HashMap();
 
         while (i.hasNext()) {
-            Object key = i.next();
+            key = i.next();
             dataStores.put(key,
                 new DataStoreConfig(
                     (DataStoreInfoDTO) data.getDataStores().get(key)));
         }
 
+        ////
+        //
+        //
+        //
+        ////
         i = data.getNameSpaces().keySet().iterator();
         nameSpaces = new HashMap();
 
         while (i.hasNext()) {
-            Object key = i.next();
+            key = i.next();
             nameSpaces.put(key,
                 new NameSpaceConfig(
                     (NameSpaceInfoDTO) data.getNameSpaces().get(key)));
@@ -263,35 +278,48 @@ public class DataConfig {
             }
         }
 
+        ////
+        //
+        //
+        //
+        ////
         i = data.getFeaturesTypes().keySet().iterator();
         featuresTypes = new HashMap();
-
+        FeatureTypeInfoDTO f ;
         while (i.hasNext()) {
-            Object key = i.next();
+            key = i.next();
 
-            FeatureTypeInfoDTO f = (FeatureTypeInfoDTO) data.getFeaturesTypes()
+             f = (FeatureTypeInfoDTO) data.getFeaturesTypes()
                                                             .get(key);
             featuresTypes.put(f.getDataStoreId() +":"+ f.getName(),
                 new FeatureTypeConfig(f));
         }
 
+        ////
+        //
+        //
+        //
+        ////
         i = data.getCoverages().keySet().iterator();
         coverages = new HashMap();
-
+        CoverageInfoDTO c;
         while (i.hasNext()) {
-            Object key = i.next();
-
-            CoverageInfoDTO c = (CoverageInfoDTO) data.getCoverages()
+            key = i.next();
+            c = (CoverageInfoDTO) data.getCoverages()
                                                             .get(key);
             coverages.put(c.getFormatId() +":"+ c.getName(),
                 new CoverageConfig(c));
         }
 
+        ////
+        //
+        //
+        //
+        ////
         i = data.getStyles().keySet().iterator();
         styles = new HashMap();
-
         while (i.hasNext()) {
-            Object key = i.next();
+            key = i.next();
             styles.put(key,
                 new StyleConfig((StyleDTO) data.getStyles().get(key)));
         }

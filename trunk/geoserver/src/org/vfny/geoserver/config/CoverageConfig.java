@@ -4,11 +4,9 @@
  */
 package org.vfny.geoserver.config;
 
-import java.awt.Color;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -106,10 +104,10 @@ public class CoverageConfig {
 
 	/**
 	 * 
-	 * @uml.property name="latLonEnvelope"
+	 * @uml.property name="lonLatWGS84Envelope"
 	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
-	private GeneralEnvelope latLonEnvelope;
+	private GeneralEnvelope lonLatWGS84Envelope;
 
 	/**
 	 * 
@@ -219,45 +217,49 @@ public class CoverageConfig {
 	}
 
 	/**
+	 * Creating a coverage config from gridcoverages information
 	 * 
 	 * @param formatId
 	 * @param format
 	 * @param gc
 	 * @throws ConfigurationException
 	 */
-	public CoverageConfig(String formatId, Format format, GridCoverage2D gc, HttpServletRequest request)
-			throws ConfigurationException {
+	public CoverageConfig(String formatId, Format format, GridCoverage2D gc,
+			HttpServletRequest request) throws ConfigurationException {
 		if ((formatId == null) || (formatId.length() == 0)) {
 			throw new IllegalArgumentException(
 					"formatId is required for CoverageConfig");
 		}
 		if (format == null) {
-			throw new ConfigurationException(
-					new StringBuffer("Cannot handle format: ").append(formatId).toString());
+			throw new ConfigurationException(new StringBuffer(
+					"Cannot handle format: ").append(formatId).toString());
 		}
 		this.formatId = formatId;
 		crs = gc.getCoordinateReferenceSystem();
-		srsName = (crs != null && !crs.getIdentifiers().isEmpty() ? crs.getIdentifiers().toArray()[0].toString() : crs.getName().toString());
+		srsName = (crs != null && !crs.getIdentifiers().isEmpty() ? crs
+				.getIdentifiers().toArray()[0].toString() : crs.getName()
+				.toString());
 		srsWKT = (crs != null ? crs.toWKT() : "UNKNOWN");
 		envelope = (GeneralEnvelope) gc.getEnvelope();
 		try {
-			latLonEnvelope = CoverageStoreUtils.getLatLonEnvelope(envelope);
+			lonLatWGS84Envelope = CoverageStoreUtils
+					.getWGS84LonLatEnvelope(envelope);
 		} catch (IndexOutOfBoundsException e) {
-			ConfigurationException newEx = new ConfigurationException(
-					new StringBuffer("Converting Envelope to Lat-Lon WGS84: ").
-					append(e.toString()).toString());
+			final ConfigurationException newEx = new ConfigurationException(
+					new StringBuffer("Converting Envelope to Lat-Lon WGS84: ")
+							.append(e.toString()).toString());
 			newEx.initCause(e);
 			throw newEx;
 		} catch (FactoryException e) {
-			ConfigurationException newEx = new ConfigurationException(
-					new StringBuffer("Converting Envelope to Lat-Lon WGS84: ").
-					append(e.toString()).toString());
+			final ConfigurationException newEx = new ConfigurationException(
+					new StringBuffer("Converting Envelope to Lat-Lon WGS84: ")
+							.append(e.toString()).toString());
 			newEx.initCause(e);
 			throw newEx;
 		} catch (TransformException e) {
-			ConfigurationException newEx = new ConfigurationException(
-					new StringBuffer("Converting Envelope to Lat-Lon WGS84: ").
-					append(e.toString()).toString());
+			final ConfigurationException newEx = new ConfigurationException(
+					new StringBuffer("Converting Envelope to Lat-Lon WGS84: ")
+							.append(e.toString()).toString());
 			newEx.initCause(e);
 			throw newEx;
 		}
@@ -266,9 +268,9 @@ public class CoverageConfig {
 		try {
 			dimensions = parseCoverageDimesions(gc.getSampleDimensions());
 		} catch (UnsupportedEncodingException e) {
-			ConfigurationException newEx = new ConfigurationException(
-					new StringBuffer("Coverage dimensions: ").
-					append(e.toString()).toString());
+			final ConfigurationException newEx = new ConfigurationException(
+					new StringBuffer("Coverage dimensions: ").append(
+							e.toString()).toString());
 			newEx.initCause(e);
 			throw newEx;
 		}
@@ -277,16 +279,22 @@ public class CoverageConfig {
 		final DataConfig config = ConfigRequests.getDataConfig(request);
 		StringBuffer cvName = new StringBuffer(gc.getName().toString());
 		int count = 0;
+		StringBuffer key;
+		Map coverages;
+		Set cvKeySet;
+		boolean key_exists;
+		String cvKey;
+		Iterator it;
 		while (true) {
-			final StringBuffer key = new StringBuffer(gc.getName().toString());
-			if (count>0)
+			key = new StringBuffer(gc.getName().toString());
+			if (count > 0)
 				key.append("[").append(count).append("]");
-			
-			final Map coverages = config.getCoverages();
-			final Set cvKeySet = coverages.keySet(); 
-			boolean key_exists = /*cvKeySet.contains(key.toString())*/false;
-			for (Iterator it = cvKeySet.iterator(); it.hasNext();) {
-				final String cvKey = ((String) it.next()).toLowerCase();
+
+			coverages = config.getCoverages();
+			cvKeySet = coverages.keySet();
+			key_exists = /* cvKeySet.contains(key.toString()) */false;
+			for (it = cvKeySet.iterator(); it.hasNext();) {
+				cvKey = ((String) it.next()).toLowerCase();
 				if (cvKey.endsWith(key.toString().toLowerCase())) {
 					key_exists = true;
 				}
@@ -307,68 +315,62 @@ public class CoverageConfig {
 		metadataLink = new MetaDataLink();
 		metadataLink.setAbout(format.getDocURL());
 		metadataLink.setMetadataType("other");
-		keywords = new LinkedList();
+		keywords = new ArrayList(10);
 		keywords.add("WCS");
 		keywords.add(formatId);
 		keywords.add(name);
 		nativeFormat = format.getName();
 		dirName = new StringBuffer(formatId).append("_").append(name)
 				.toString();
-		requestCRSs = new LinkedList();
-        if (gc.getCoordinateReferenceSystem2D().getIdentifiers() != null && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty())
-            requestCRSs.add(((Identifier)gc.getCoordinateReferenceSystem2D().getIdentifiers().toArray()[0]).toString());
-		responseCRSs = new LinkedList();
-			/*final CoordinateReferenceSystem sourceCRS = gc.getCoordinateReferenceSystem();
-			Set s = CRS.getSupportedCodes("EPSG");
-			Iterator it = s.iterator();
-			while (it.hasNext()) {
-				String currentSRS = new StringBuffer("EPSG:").append(it.next().toString()).toString();
-				try {
-					CoordinateReferenceSystem targetCRS = CRS.decode(currentSRS);
-					//Operations.DEFAULT.resample(gc, targetCRS);
-					responseCRSs.add(new StringBuffer("EPSG:").append(currentSRS).toString());
-				} catch (NoSuchAuthorityCodeException e) {
-					// TODO Auto-generated catch block
-				} catch (CannotReprojectException e) {
-					
-				}
-			}*/
-        if (gc.getCoordinateReferenceSystem2D().getIdentifiers() != null && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty())
-            responseCRSs.add(((Identifier)gc.getCoordinateReferenceSystem2D().getIdentifiers().toArray()[0]).toString());
-		supportedFormats = new LinkedList();
+		requestCRSs = new ArrayList(10);
+		if (gc.getCoordinateReferenceSystem2D().getIdentifiers() != null
+				&& !gc.getCoordinateReferenceSystem2D().getIdentifiers()
+						.isEmpty())
+			requestCRSs.add(((Identifier) gc.getCoordinateReferenceSystem2D()
+					.getIdentifiers().toArray()[0]).toString());
+		responseCRSs = new ArrayList(10);
+
+		if (gc.getCoordinateReferenceSystem2D().getIdentifiers() != null
+				&& !gc.getCoordinateReferenceSystem2D().getIdentifiers()
+						.isEmpty())
+			responseCRSs.add(((Identifier) gc.getCoordinateReferenceSystem2D()
+					.getIdentifiers().toArray()[0]).toString());
+		supportedFormats = new ArrayList(10);
 		final List formats = CoverageStoreUtils.listDataFormats();
-		for(Iterator i = formats.iterator(); i.hasNext();) {
-        	final Format fTmp = (Format) i.next();
-        	final String fName = fTmp.getName();
-        	if (fName.equalsIgnoreCase("WorldImage")) {
-        		/*final String[] formatNames = ImageIO.getReaderFormatNames();
-        		final int length = formatNames.length;
-        		for (int f=0; f<length; f++) {
-                	// TODO check if coverage can encode Format
-                	supportedFormats.add(formatNames[f]);        		
-        		}*/
-            	// TODO check if coverage can encode Format
-            	supportedFormats.add("GIF");
-            	supportedFormats.add("PNG");
-            	supportedFormats.add("JPEG");
-            	supportedFormats.add("TIFF");
-        	} else if (fName.toLowerCase().startsWith("geotiff")) {
-            	// TODO check if coverage can encode Format
-            	supportedFormats.add("GeoTIFF");        		
-        	} else {
-            	// TODO check if coverage can encode Format
-            	supportedFormats.add(fName);
-        	}
+		String fName;
+		Format fTmp;
+		for (Iterator i = formats.iterator(); i.hasNext();) {
+			fTmp = (Format) i.next();
+			fName = fTmp.getName();
+			if (fName.equalsIgnoreCase("WorldImage")) {
+				/*
+				 * final String[] formatNames = ImageIO.getReaderFormatNames();
+				 * final int length = formatNames.length; for (int f=0; f<length;
+				 * f++) { // TODO check if coverage can encode Format
+				 * supportedFormats.add(formatNames[f]); }
+				 */
+				// TODO check if coverage can encode Format
+				supportedFormats.add("GIF");
+				supportedFormats.add("PNG");
+				supportedFormats.add("JPEG");
+				supportedFormats.add("TIFF");
+			} else if (fName.toLowerCase().startsWith("geotiff")) {
+				// TODO check if coverage can encode Format
+				supportedFormats.add("GeoTIFF");
+			} else {
+				// TODO check if coverage can encode Format
+				supportedFormats.add(fName);
+			}
 		}
 		defaultInterpolationMethod = "nearest neighbor"; // TODO make me
 		// parametric
-		interpolationMethods = new LinkedList();
+		interpolationMethods = new ArrayList(10);
 		interpolationMethods.add("nearest neighbor");
 		interpolationMethods.add("bilinear");
 		interpolationMethods.add("bicubic");
 		interpolationMethods.add("bicubic_2");
 		defaultStyle = "raster";
-		
+
 		/**
 		 * ReadParameters ...
 		 */
@@ -382,12 +384,9 @@ public class CoverageConfig {
 			throw new RuntimeException(
 					"selectedDataFormatId required in Session");
 		}
-		
+
 		// Retrieve connection params
 		final Format factory = cvConfig.getFactory();
-		final String type = (cvConfig.getType() != null && cvConfig.getType().length() > 0 ? cvConfig
-				.getType()
-				: factory.getName());
 		ParameterValueGroup params = factory.getReadParameters();
 
 		if (params != null && params.values().size() > 0) {
@@ -396,14 +395,14 @@ public class CoverageConfig {
 			paramHelp = new ArrayList(params.values().size());
 
 			List list = params.values();
-			Iterator it = list.iterator();
+			it = list.iterator();
 			ParameterDescriptor descr = null;
 			ParameterValue val = null;
 			while (it.hasNext()) {
 				val = (ParameterValue) it.next();
 				if (val != null) {
 					descr = (ParameterDescriptor) val.getDescriptor();
-					String key = descr.getName().toString();
+					String _key = descr.getName().toString();
 
 					if ("namespace".equals(key)) {
 						// skip namespace as it is *magic* and
@@ -412,54 +411,15 @@ public class CoverageConfig {
 						continue;
 					}
 
-					Object value = cvConfig.getParameters().get(key);
+					Object value = cvConfig.getParameters().get(_key);
 					String text = "";
 
-					if ("values_palette".equals(key)) {
-						Object palVal = value;
-						if (palVal instanceof Color[]) {
-							for (int i = 0; i < ((Color[]) palVal).length; i++) {
-								String colString = "#"
-										+ (Integer.toHexString(
-												((Color) ((Color[]) palVal)[i])
-														.getRed()).length() > 1 ? Integer
-												.toHexString(((Color) ((Color[]) palVal)[i])
-														.getRed())
-												: "0"
-														+ Integer
-																.toHexString(((Color) ((Color[]) palVal)[i])
-																		.getRed()))
-										+ (Integer.toHexString(
-												((Color) ((Color[]) palVal)[i])
-														.getGreen()).length() > 1 ? Integer
-												.toHexString(((Color) ((Color[]) palVal)[i])
-														.getGreen())
-												: "0"
-														+ Integer
-																.toHexString(((Color) ((Color[]) palVal)[i])
-																		.getGreen()))
-										+ (Integer.toHexString(
-												((Color) ((Color[]) palVal)[i])
-														.getBlue()).length() > 1 ? Integer
-												.toHexString(((Color) ((Color[]) palVal)[i])
-														.getBlue())
-												: "0"
-														+ Integer
-																.toHexString(((Color) ((Color[]) palVal)[i])
-																		.getBlue()));
-								text += (i > 0 ? ";" : "") + colString;
-							}
-						} else if (palVal instanceof String) {
-							text = (String) palVal;
-						}
+					if (value == null) {
+						text = null;
+					} else if (value instanceof String) {
+						text = (String) value;
 					} else {
-						if (value == null) {
-							text = null;
-						} else if (value instanceof String) {
-							text = (String) value;
-						} else {
-							text = value.toString();
-						}
+						text = value.toString();
 					}
 
 					paramKeys.add(key);
@@ -483,7 +443,8 @@ public class CoverageConfig {
 
 		for (int i = 0; i < length; i++) {
 			dims[i] = new CoverageDimension();
-			dims[i].setName(sampleDimensions[i].getDescription().toString(Locale.getDefault()));
+			dims[i].setName(sampleDimensions[i].getDescription().toString(
+					Locale.getDefault()));
 			StringBuffer label = new StringBuffer("GridSampleDimension"
 					.intern());
 			final Unit uom = sampleDimensions[i].getUnits();
@@ -547,7 +508,7 @@ public class CoverageConfig {
 		srsName = dto.getSrsName();
 		srsWKT = dto.getSrsWKT();
 		envelope = dto.getEnvelope();
-		latLonEnvelope = dto.getLatLonEnvelope();
+		lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
 		grid = dto.getGrid();
 		dimensions = dto.getDimensions();
 		dimentionNames = dto.getDimensionNames();
@@ -577,7 +538,7 @@ public class CoverageConfig {
 		c.setSrsName(srsName);
 		c.setSrsWKT(srsWKT);
 		c.setEnvelope(envelope);
-		c.setLatLonEnvelope(latLonEnvelope);
+		c.setLonLatWGS84Envelope(lonLatWGS84Envelope);
 		c.setGrid(grid);
 		c.setDimensions(dimensions);
 		c.setDimensionNames(dimentionNames);
@@ -595,16 +556,18 @@ public class CoverageConfig {
 
 		return c;
 	}
-	
+
 	/**
-     * Access Catalog Configuration Model from the WebContainer.
+	 * Access Catalog Configuration Model from the WebContainer.
+	 * 
 	 * @param request
-     *
-     * @return Configuration model for Catalog information.
-     */
-    protected DataConfig getDataConfig(HttpServletRequest request) {
-        return (DataConfig) request.getSession().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
-    }
+	 * 
+	 * @return Configuration model for Catalog information.
+	 */
+	protected DataConfig getDataConfig(HttpServletRequest request) {
+		return (DataConfig) request.getSession().getServletContext()
+				.getAttribute(DataConfig.CONFIG_KEY);
+	}
 
 	public String getKey() {
 		return getFormatId() + DataConfig.SEPARATOR + getName();
@@ -982,47 +945,59 @@ public class CoverageConfig {
 	public void setSrsWKT(String srsWKT) {
 		this.srsWKT = srsWKT;
 	}
-	public GeneralEnvelope getLatLonEnvelope() {
-		return latLonEnvelope;
+
+	public GeneralEnvelope getLonLatWGS84Envelope() {
+		return lonLatWGS84Envelope;
 	}
+
 	public String getWmsPath() {
 		return wmsPath;
 	}
+
 	public void setWmsPath(String wmsPath) {
 		this.wmsPath = wmsPath;
 	}
+
 	/**
 	 * @return Returns the paramHelp.
 	 */
 	public ArrayList getParamHelp() {
 		return paramHelp;
 	}
+
 	/**
-	 * @param paramHelp The paramHelp to set.
+	 * @param paramHelp
+	 *            The paramHelp to set.
 	 */
 	public void setParamHelp(ArrayList paramHelp) {
 		this.paramHelp = paramHelp;
 	}
+
 	/**
 	 * @return Returns the paramKeys.
 	 */
 	public List getParamKeys() {
 		return paramKeys;
 	}
+
 	/**
-	 * @param paramKeys The paramKeys to set.
+	 * @param paramKeys
+	 *            The paramKeys to set.
 	 */
 	public void setParamKeys(List paramKeys) {
 		this.paramKeys = paramKeys;
 	}
+
 	/**
 	 * @return Returns the paramValues.
 	 */
 	public List getParamValues() {
 		return paramValues;
 	}
+
 	/**
-	 * @param paramValues The paramValues to set.
+	 * @param paramValues
+	 *            The paramValues to set.
 	 */
 	public void setParamValues(List paramValues) {
 		this.paramValues = paramValues;

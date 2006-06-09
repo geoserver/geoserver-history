@@ -8,74 +8,60 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.imageio.ImageIO;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
 
-
-
-import org.geotools.resources.image.ImageUtilities;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
-import org.vfny.geoserver.wms.responses.map.gif.GIFOutputStream;
-import org.vfny.geoserver.wms.responses.map.gif.Gif89Encoder;
 
+import com.sun.media.imageioimpl.plugins.gif.GIFImageWriter;
+import com.sun.media.imageioimpl.plugins.gif.GIFImageWriterSpi;
 
 /**
  * Handles a GetMap request that spects a map in GIF format.
- *
+ * 
  * @author Didier Richard
  * @version $Id
  */
 class GIFMapProducer extends DefaultRasterMapProducer {
-	
-	public GIFMapProducer(String format)
-	{
+
+	public GIFMapProducer(String format) {
 		super(format);
 	}
-	
-    /**
-     * Transforms the rendered image into the appropriate format, streaming to
-     * the output stream.
-     *
-     * @param format The name of the format
-     * @param image The image to be formatted.
-     * @param outStream The stream to write to.
-     *
-     * @throws WmsException not really.
-     * @throws IOException if encoding to <code>outStream</code> fails.
-     */
-    protected void formatImageOutputStream(String format, BufferedImage image,
-        OutputStream outStream) throws WmsException, IOException {
 
-    	final MemoryCacheImageOutputStream memOutStream= new MemoryCacheImageOutputStream(outStream);
-    	final PlanarImage encodedImage=PlanarImage.wrapRenderedImage(image);
-    	ImageIO.write(ImageUtilities.componentColorModel2IndexColorModel4GIF(encodedImage),"gif",memOutStream);
-    	
-//    	WMSMapContext mapCtx = getMapContext();
-//
-//        if (mapCtx.isTransparent()) 
-//        {
-//            //GIFOutputStream.writeGIF(outStream, image,GIFOutputStream.STANDARD_256_COLORS, mapCtx.getBgColor());
-//        	    //DJB: note I had to make colorTable in the encoder source public to do this!
-//        	    //DJB: to add a function "return colorTable.ciLookup.getPaletteIndex(rgb);" to Gif89Encoder
-//        	
-//        	Gif89Encoder gifenc = new Gif89Encoder(image,mapCtx.getBgColor(),2 ); // 2= colour reduction pixel sample factor (1=look at all pixels, but its slow) 
-//            gifenc.setComments("produced by Geoserver");
-//            
-//            gifenc.getFrameAt(0).setInterlaced(false);
-//            gifenc.encode(outStream);
-//        } 
-//        else 
-//        {
-//           // GIFOutputStream.writeGIF(outStream, image);
-//        	Gif89Encoder gifenc = new Gif89Encoder(image,null,2);// 2= colour reduction pixel sample factor (1=look at all pixels, but its slow)
-//            gifenc.setComments("produced by Geoserver");
-//           // gifenc.setTransparentIndex(transparent_index);
-//            gifenc.getFrameAt(0).setInterlaced(false);
-//            gifenc.encode(outStream);
-//            
-//        }
-    }
+	/**
+	 * Transforms the rendered image into the appropriate format, streaming to
+	 * the output stream.
+	 * 
+	 * @param format
+	 *            The name of the format
+	 * @param image
+	 *            The image to be formatted.
+	 * @param outStream
+	 *            The stream to write to.
+	 * 
+	 * @throws WmsException
+	 *             not really.
+	 * @throws IOException
+	 *             if encoding to <code>outStream</code> fails.
+	 */
+	protected void formatImageOutputStream(String format, BufferedImage image,
+			OutputStream outStream) throws WmsException, IOException {
+
+		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
+				outStream);
+		final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(image);
+		final ImageWriter gifWriter = new GIFImageWriter(
+				new GIFImageWriterSpi());
+		gifWriter.setOutput(memOutStream);
+		gifWriter.write(null, new IIOImage(encodedImage, null, null), null);
+		memOutStream.flush();
+		memOutStream.close();
+		outStream.flush();
+		outStream.close();
+
+
+	}
 }

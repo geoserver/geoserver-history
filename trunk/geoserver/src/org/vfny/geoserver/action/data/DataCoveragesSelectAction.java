@@ -58,7 +58,6 @@ public class DataCoveragesSelectAction extends ConfigAction {
 		if (edit.equals(buttonAction)) {
 			request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE,
 					cvConfig);
-
 			user.setCoverageConfig(cvConfig);
 			return mapping.findForward("config.data.coverage.editor");
 		} else if (delete.equals(buttonAction)) {

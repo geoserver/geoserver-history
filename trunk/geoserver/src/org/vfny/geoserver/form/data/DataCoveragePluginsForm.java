@@ -54,9 +54,9 @@ public class DataCoveragePluginsForm extends ActionForm {
         formats = CoverageStoreUtils.listDataFormats();
         formatDescriptions = new ArrayList();
         formatIDs = new ArrayList();
-        
+        Format fTmp;
         for(Iterator i = formats.iterator(); i.hasNext();) {
-        	Format fTmp = (Format) i.next();
+        	fTmp = (Format) i.next();
         	formatDescriptions.add(fTmp.getDescription());
         	formatIDs.add(fTmp.getName());
         }

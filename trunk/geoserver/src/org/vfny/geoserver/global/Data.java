@@ -89,11 +89,11 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 	private Map dataStores;
 
 	/**
-	 * Mapping of FormatInfo by formatId
+	 * Mapping of CoverageStoreInfo by formatId
 	 * 
 	 * @uml.property name="formats"
 	 * @uml.associationEnd elementType="org.vfny.geoserver.global.dto.FeatureTypeInfoDTO"
-	 * qualifier="next:java.lang.String org.vfny.geoserver.global.FormatInfo" multiplicity=
+	 * qualifier="next:java.lang.String org.vfny.geoserver.global.CoverageStoreInfo" multiplicity=
 	 * "(0 -1)" ordering="ordered"
 	 */
 	private Map formats;
@@ -234,7 +234,7 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 			CoverageStoreInfoDTO formatDTO = (CoverageStoreInfoDTO) i.next();
 			String id = formatDTO.getId();
 			
-			FormatInfo formatInfo = new FormatInfo(formatDTO, this);
+			CoverageStoreInfo formatInfo = new CoverageStoreInfo(formatDTO, this);
 			map.put(id, formatInfo);
 			
 			if (formatDTO.isEnabled()) {
@@ -864,7 +864,7 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 		i = formats.keySet().iterator();
 		
 		while (i.hasNext()) {
-			FormatInfo fmi = (FormatInfo) formats.get(i.next());
+			CoverageStoreInfo fmi = (CoverageStoreInfo) formats.get(i.next());
 			tmp.put(fmi.getId(), fmi.toDTO());
 		}
 		
@@ -922,15 +922,15 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
     }
 	
 	/**
-	 * Locate a FormatInfo by its id attribute.
+	 * Locate a CoverageStoreInfo by its id attribute.
 	 *
-	 * @param id the FormatInfo id looked for
+	 * @param id the CoverageStoreInfo id looked for
 	 *
-	 * @return the FormatInfo with id attribute equals to <code>id</code> or
+	 * @return the CoverageStoreInfo with id attribute equals to <code>id</code> or
 	 *         null if there no exists
 	 */
-	public FormatInfo getFormatInfo(String id) {
-		FormatInfo dfi = (FormatInfo) formats.get(id);
+	public CoverageStoreInfo getFormatInfo(String id) {
+		CoverageStoreInfo dfi = (CoverageStoreInfo) formats.get(id);
 		
 		if ((dfi != null) && dfi.isEnabled()) {
 			return dfi;

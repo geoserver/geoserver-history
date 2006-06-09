@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
@@ -20,8 +21,6 @@ import javax.media.jai.PlanarImage;
 import org.geotools.resources.image.ImageUtilities;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
-import org.vfny.geoserver.wms.responses.map.png.PngEncoder;
-import org.vfny.geoserver.wms.responses.map.png.PngEncoderB;
 
 /**
  * Handles a GetMap request that spects a map in GIF format.
@@ -56,49 +55,50 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
 	 */
 	public void formatImageOutputStream(String format, BufferedImage image,
 			OutputStream outStream) throws WmsException, IOException {
-		if (true) {
-			// /////////////////////////////////////////////////////////////////
-			//
-			//
-			//
-			//
-			// /////////////////////////////////////////////////////////////////
-			final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
-					outStream);
-			final PlanarImage encodedImage = PlanarImage
-					.wrapRenderedImage(image);
-			final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel?ImageUtilities
-					.reformatColorModel2ComponentColorModel(encodedImage):encodedImage;
-			final Iterator it = ImageIO.getImageWritersByMIMEType(format);
-			ImageWriter writer = null;
-			if (!it.hasNext()) {
-				throw new IllegalStateException("No PNG ImageWriter found");
-			} else
-				writer = (ImageWriter) it.next();
 
-//			final ImageWriteParam iwp = writer.getDefaultWriteParam();
-//			if (writer.getClass().getName().equals(
-//					"com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")) {
-//				iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-//				iwp.setCompressionQuality(1);// we can control quality here
-//			}
+		// /////////////////////////////////////////////////////////////////
+		//
+		// Reformatting this image for png
+		//
+		// /////////////////////////////////////////////////////////////////
+		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
+				outStream);
+		final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(image);
+		final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel ? ImageUtilities
+				.reformatColorModel2ComponentColorModel(encodedImage)
+				: encodedImage;
 
-			writer.setOutput(memOutStream);
-			writer.write(null, new IIOImage(finalImage, null, null), null);
-			memOutStream.flush();
-			memOutStream.close();
-			writer.dispose();
-		} else {
-			PngEncoderB png = new PngEncoderB(image, PngEncoder.ENCODE_ALPHA,
-					0, 1); // filter
-			// (0),
-			// and
-			// compression
-			// (1)
-			byte[] pngbytes = png.pngEncode();
-			outStream.write(pngbytes);
-			outStream.flush();
+		// /////////////////////////////////////////////////////////////////
+		//
+		// Getting a writer
+		//
+		// /////////////////////////////////////////////////////////////////
+		final Iterator it = ImageIO.getImageWritersByMIMEType(format);
+		ImageWriter writer = null;
+		if (!it.hasNext()) {
+			throw new IllegalStateException("No PNG ImageWriter found");
+		} else
+			writer = (ImageWriter) it.next();
+
+		// /////////////////////////////////////////////////////////////////
+		//
+		// Compression is available only on native lib
+		//
+		// /////////////////////////////////////////////////////////////////
+		final ImageWriteParam iwp = writer.getDefaultWriteParam();
+		if (writer.getClass().getName().equals(
+				"com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")) {
+			iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+
+			iwp.setCompressionQuality(0.75f);// we can control quality here
 		}
+
+		writer.setOutput(memOutStream);
+		writer.write(null, new IIOImage(finalImage, null, null), iwp);
+		memOutStream.flush();
+		memOutStream.close();
+		writer.dispose();
+
 	}
 
 }

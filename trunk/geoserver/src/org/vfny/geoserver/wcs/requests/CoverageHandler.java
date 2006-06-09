@@ -81,9 +81,10 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
 
       	if (currentTag.equals("GetCoverage")) {
             request = new CoverageRequest();
-
-            for (int i = 0; i < atts.getLength(); i++) {
-                String curAtt = atts.getLocalName(i);
+            final int length=atts.getLength();
+            String curAtt ;
+            for (int i = 0; i < length; i++) {
+                 curAtt = atts.getLocalName(i);
 
                 if (curAtt.equals("service")) {
                     request.setService(atts.getValue(i));
@@ -95,9 +96,10 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
         	insideEnvelope = true;
         } else if(currentTag.equals("Grid") || currentTag.equals("RectifiedGrid")) {
         	insideGrid = true;
-
-            for (int i = 0; i < atts.getLength(); i++) {
-                String curAtt = atts.getLocalName(i);
+            final int length=atts.getLength();
+            String curAtt ;
+            for (int i = 0; i < length; i++) {
+                 curAtt = atts.getLocalName(i);
 
                 if (curAtt.equals("dimension")) {
                     request.setGridDimension(atts.getValue(i));

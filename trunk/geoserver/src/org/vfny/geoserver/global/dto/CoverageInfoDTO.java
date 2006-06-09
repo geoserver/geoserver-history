@@ -21,8 +21,10 @@ import org.vfny.geoserver.global.MetaDataLink;
 /**
  * DOCUMENT ME!
  * 
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  */
 public final class CoverageInfoDTO implements DataTransferObject {
 
@@ -85,7 +87,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	/**
 	 * 
 	 */
-	private GeneralEnvelope latLonEnvelope;
+	private GeneralEnvelope lonLatWGS84Envelope;
 
 	/**
 	 * 
@@ -175,142 +177,140 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
 	private List paramValues;
 
+	public CoverageInfoDTO() {
+	}
 
+	public CoverageInfoDTO(CoverageInfoDTO dto) {
+		if (dto == null) {
+			throw new NullPointerException("Non null CoverageInfoDTO required");
+		}
 
-    public CoverageInfoDTO() {
-    }
-
-    public CoverageInfoDTO(CoverageInfoDTO dto) {
-        if (dto == null) {
-            throw new NullPointerException(
-                "Non null CoverageInfoDTO required");
-        }
-
-    	formatId = dto.getFormatId();
-        name = dto.getName();
-        wmsPath = dto.getWmsPath();
-        label = dto.getLabel();
-        description = dto.getDescription();
-        metadataLink = dto.getMetadataLink();
-        dirName = dto.getDirName();
-        try {
-            keywords = CloneLibrary.clone(dto.getKeywords()); //clone?
-        } catch (Exception e) {
-            keywords = new LinkedList();
-        }
-        crs = dto.getCrs();
-        srsName = dto.getSrsName(); 
-        srsWKT = dto.getSrsWKT();
-        envelope = dto.getEnvelope(); //CloneLibrary.clone(dto.getEnvelope());
-        latLonEnvelope = dto.getLatLonEnvelope();
+		formatId = dto.getFormatId();
+		name = dto.getName();
+		wmsPath = dto.getWmsPath();
+		label = dto.getLabel();
+		description = dto.getDescription();
+		metadataLink = dto.getMetadataLink();
+		dirName = dto.getDirName();
+		try {
+			keywords = CloneLibrary.clone(dto.getKeywords()); // clone?
+		} catch (Exception e) {
+			keywords = new LinkedList();
+		}
+		crs = dto.getCrs();
+		srsName = dto.getSrsName();
+		srsWKT = dto.getSrsWKT();
+		envelope = dto.getEnvelope(); 
+		lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
 		grid = dto.getGrid();
 		dimensions = dto.getDimensions();
 		dimensionNames = dto.getDimensionNames();
-        try {
+		try {
 			requestCRSs = CloneLibrary.clone(dto.getRequestCRSs());
 		} catch (CloneNotSupportedException e1) {
 			requestCRSs = new LinkedList();
 		}
-        try {
+		try {
 			responseCRSs = CloneLibrary.clone(dto.getResponseCRSs());
 		} catch (CloneNotSupportedException e2) {
 			responseCRSs = new LinkedList();
 		}
-        nativeFormat = dto.getNativeFormat();
-        try {
+		nativeFormat = dto.getNativeFormat();
+		try {
 			supportedFormats = CloneLibrary.clone(dto.getSupportedFormats());
 		} catch (CloneNotSupportedException e3) {
 			supportedFormats = new LinkedList();
 		}
-        defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
-        try {
-			interpolationMethods = CloneLibrary.clone(dto.getInterpolationMethods());
+		defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
+		try {
+			interpolationMethods = CloneLibrary.clone(dto
+					.getInterpolationMethods());
 		} catch (CloneNotSupportedException e4) {
 			interpolationMethods = new LinkedList();
 		}
-		
+
 		defaultStyle = dto.getDefaultStyle();
 		paramHelp = dto.getParamHelp();
 		paramKeys = dto.getParamKeys();
 		paramValues = dto.getParamValues();
-    }
+	}
 
-    public Object clone() {
-        return new CoverageInfoDTO(this);
-    }
+	public Object clone() {
+		return new CoverageInfoDTO(this);
+	}
 
-    public boolean equals(Object obj) {
-        if ((obj == null) || !(obj instanceof CoverageInfoDTO)) {
-            return false;
-        }
+	public boolean equals(Object obj) {
+		if ((obj == null) || !(obj instanceof CoverageInfoDTO)) {
+			return false;
+		}
 
-        CoverageInfoDTO f = (CoverageInfoDTO) obj;
-        boolean r = true;
-        r = r && (formatId == f.getFormatId());
+		CoverageInfoDTO f = (CoverageInfoDTO) obj;
+		boolean r = true;
+		r = r && (formatId == f.getFormatId());
 
-        if (envelope != null) {
-            r = r && envelope.equals(f.getEnvelope());
-        } else if (f.getEnvelope() != null) {
-            return false;
-        }
-        r = r && (srsName == f.getSrsName());
-        r = r && (srsWKT == f.getSrsWKT());
-        r = r && (crs == f.getCrs());
-        r = r && (name == f.getName());
-        r = r && (wmsPath == f.getWmsPath());
-        r = r && (description == f.getDescription());
-        r = r && (label == f.getLabel());
-        r = r && (metadataLink == f.getMetadataLink());
-        if (keywords != null) {
-            r = r && EqualsLibrary.equals(keywords, f.getKeywords());
-        } else if (f.getKeywords() != null) {
-            return false;
-        }
-        r = r && (defaultStyle == f.getDefaultStyle());
-        r = r && (dirName == f.getDirName());
-        r = r && (envelope == f.getEnvelope());
+		if (envelope != null) {
+			r = r && envelope.equals(f.getEnvelope());
+		} else if (f.getEnvelope() != null) {
+			return false;
+		}
+		r = r && (srsName == f.getSrsName());
+		r = r && (srsWKT == f.getSrsWKT());
+		r = r && (crs == f.getCrs());
+		r = r && (name == f.getName());
+		r = r && (wmsPath == f.getWmsPath());
+		r = r && (description == f.getDescription());
+		r = r && (label == f.getLabel());
+		r = r && (metadataLink == f.getMetadataLink());
+		if (keywords != null) {
+			r = r && EqualsLibrary.equals(keywords, f.getKeywords());
+		} else if (f.getKeywords() != null) {
+			return false;
+		}
+		r = r && (defaultStyle == f.getDefaultStyle());
+		r = r && (dirName == f.getDirName());
+		r = r && (envelope == f.getEnvelope());
 		r = r && (grid == f.getGrid());
 
-        return r;
-    }
+		return r;
+	}
 
-    public int hashCode() {
-        int r = 1;
+	public int hashCode() {
+		int r = 1;
 
-        if (name != null) {
-            r *= name.hashCode();
-        }
+		if (name != null) {
+			r *= name.hashCode();
+		}
 
-        if (formatId != null) {
-            r *= formatId.hashCode();
-        }
+		if (formatId != null) {
+			r *= formatId.hashCode();
+		}
 
-        if (label != null) {
-            r *= label.hashCode();
-        }
+		if (label != null) {
+			r *= label.hashCode();
+		}
 
-        if (envelope != null) {
-            r *= envelope.hashCode();
-        }
-		
-		if(grid != null) {
+		if (envelope != null) {
+			r *= envelope.hashCode();
+		}
+
+		if (grid != null) {
 			r *= grid.hashCode();
 		}
 
-        if (srsName != null) {
-            r *= srsName.hashCode();
-        }
+		if (srsName != null) {
+			r *= srsName.hashCode();
+		}
 
-        if (srsWKT != null) {
-            r *= srsWKT.hashCode();
-        }
+		if (srsWKT != null) {
+			r *= srsWKT.hashCode();
+		}
 
-        if (crs != null) {
-            r *= crs.hashCode();
-        }
+		if (crs != null) {
+			r *= crs.hashCode();
+		}
 
-        return r;
-    }
+		return r;
+	}
 
 	/**
 	 * List of keywords (limitied to text).
@@ -323,19 +323,18 @@ public final class CoverageInfoDTO implements DataTransferObject {
 		return keywords;
 	}
 
-
-    /**
-     * Convience method for dataStoreId.typeName.
-     * 
-     * <p>
-     * This key may be used to store this FeatureType in a Map for later.
-     * </p>
-     *
-     * @return dataStoreId.typeName
-     */
-    public String getKey() {
-        return getFormatId() + DataConfig.SEPARATOR + getName();
-    }
+	/**
+	 * Convience method for dataStoreId.typeName.
+	 * 
+	 * <p>
+	 * This key may be used to store this FeatureType in a Map for later.
+	 * </p>
+	 * 
+	 * @return dataStoreId.typeName
+	 */
+	public String getKey() {
+		return getFormatId() + DataConfig.SEPARATOR + getName();
+	}
 
 	/**
 	 * Name of featureType, must match typeName provided by DataStore.
@@ -363,40 +362,39 @@ public final class CoverageInfoDTO implements DataTransferObject {
 		keywords = list;
 	}
 
+	/**
+	 * setKeywords purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param key
+	 * 
+	 * @return boolean true when added.
+	 */
+	public boolean addKeyword(String key) {
+		if (keywords == null) {
+			keywords = new LinkedList();
+		}
 
-    /**
-     * setKeywords purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param key
-     *
-     * @return boolean true when added.
-     */
-    public boolean addKeyword(String key) {
-        if (keywords == null) {
-            keywords = new LinkedList();
-        }
+		return keywords.add(key);
+	}
 
-        return keywords.add(key);
-    }
-
-    /**
-     * setKeywords purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param key
-     *
-     * @return true whwn removed
-     */
-    public boolean removeKeyword(String key) {
-        return keywords.remove(key);
-    }
+	/**
+	 * setKeywords purpose.
+	 * 
+	 * <p>
+	 * Description ...
+	 * </p>
+	 * 
+	 * @param key
+	 * 
+	 * @return true whwn removed
+	 */
+	public boolean removeKeyword(String key) {
+		return keywords.remove(key);
+	}
 
 	/**
 	 * setName purpose.
@@ -443,12 +441,12 @@ public final class CoverageInfoDTO implements DataTransferObject {
 		dirName = string;
 	}
 
-
-    public String toString() {
-        return "[CoverageInfoDTO: " + name + ", formatId: " + formatId
-        + ", envelope: " + envelope + "\n  SRS: " + srsName + ", dirName: " + dirName
-        + ", label: " + label + "\n  description: " + description;
-    }
+	public String toString() {
+		return "[CoverageInfoDTO: " + name + ", formatId: " + formatId
+				+ ", envelope: " + envelope + "\n  SRS: " + srsName
+				+ ", dirName: " + dirName + ", label: " + label
+				+ "\n  description: " + description;
+	}
 
 	/**
 	 * @return Returns the description.
@@ -460,7 +458,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * @param description The description to set.
+	 * @param description
+	 *            The description to set.
 	 * 
 	 * @uml.property name="description"
 	 */
@@ -478,7 +477,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * @param formatId The formatId to set.
+	 * @param formatId
+	 *            The formatId to set.
 	 * 
 	 * @uml.property name="formatId"
 	 */
@@ -496,7 +496,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * @param label The label to set.
+	 * @param label
+	 *            The label to set.
 	 * 
 	 * @uml.property name="label"
 	 */
@@ -514,7 +515,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * @param metadataLink The metadataLink to set.
+	 * @param metadataLink
+	 *            The metadataLink to set.
 	 * 
 	 * @uml.property name="metadataLink"
 	 */
@@ -532,7 +534,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * @param defaultInterpolationMethod The defaultInterpolationMethod to set.
+	 * @param defaultInterpolationMethod
+	 *            The defaultInterpolationMethod to set.
 	 * 
 	 * @uml.property name="defaultInterpolationMethod"
 	 */
@@ -550,7 +553,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * @param envelope The envelope to set.
+	 * @param envelope
+	 *            The envelope to set.
 	 * 
 	 * @uml.property name="envelope"
 	 */
@@ -568,7 +572,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * @param interpolationMethods The interpolationMethods to set.
+	 * @param interpolationMethods
+	 *            The interpolationMethods to set.
 	 * 
 	 * @uml.property name="interpolationMethods"
 	 */
@@ -586,7 +591,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * @param nativeFormat The nativeFormat to set.
+	 * @param nativeFormat
+	 *            The nativeFormat to set.
 	 * 
 	 * @uml.property name="nativeFormat"
 	 */
@@ -604,7 +610,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * @param requestCRSs The requestCRSs to set.
+	 * @param requestCRSs
+	 *            The requestCRSs to set.
 	 * 
 	 * @uml.property name="requestCRSs"
 	 */
@@ -622,7 +629,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * @param responseCRSs The responseCRSs to set.
+	 * @param responseCRSs
+	 *            The responseCRSs to set.
 	 * 
 	 * @uml.property name="responseCRSs"
 	 */
@@ -640,7 +648,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * @param srsName The srsName to set.
+	 * @param srsName
+	 *            The srsName to set.
 	 * 
 	 * @uml.property name="srsName"
 	 */
@@ -658,7 +667,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * @param supportedFormats The supportedFormats to set.
+	 * @param supportedFormats
+	 *            The supportedFormats to set.
 	 * 
 	 * @uml.property name="supportedFormats"
 	 */
@@ -678,14 +688,17 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	 * @uml.property name="defaultStyle"
 	 */
 	public String getDefaultStyle() {
-		//HACK: So our UI doesn't seem to allow the setting of styles or 
-		//default styles or anything, despite the fact that shit chokes when none
-		//is present.  This is making it so the beta release can not have any data
-		//stores added to it.  This is a hacky ass way to get around it, just 
-		//write out a normal style if it is null.  This can obviously be done 
-		//better, and I have no idea why this default style shit is required - wfs
-		//does not care about a style.  Should be able to seamlessly at least do
-		//something for wms.
+		// HACK: So our UI doesn't seem to allow the setting of styles or
+		// default styles or anything, despite the fact that shit chokes when
+		// none
+		// is present. This is making it so the beta release can not have any
+		// data
+		// stores added to it. This is a hacky ass way to get around it, just
+		// write out a normal style if it is null. This can obviously be done
+		// better, and I have no idea why this default style shit is required -
+		// wfs
+		// does not care about a style. Should be able to seamlessly at least do
+		// something for wms.
 		if ((defaultStyle == null) || defaultStyle.equals("")) {
 			defaultStyle = "raster";
 		}
@@ -766,7 +779,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	}
 
 	/**
-	 * @param dimensions The dimensions to set.
+	 * @param dimensions
+	 *            The dimensions to set.
 	 * 
 	 * @uml.property name="dimensions"
 	 */
@@ -777,18 +791,23 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	public String getSrsWKT() {
 		return srsWKT;
 	}
+
 	public void setSrsWKT(String srsWKT) {
 		this.srsWKT = srsWKT;
 	}
-	public GeneralEnvelope getLatLonEnvelope() {
-		return latLonEnvelope;
+
+	public GeneralEnvelope getLonLatWGS84Envelope() {
+		return lonLatWGS84Envelope;
 	}
-	public void setLatLonEnvelope(GeneralEnvelope latLonEnvelope) {
-		this.latLonEnvelope = latLonEnvelope;
+
+	public void setLonLatWGS84Envelope(GeneralEnvelope latLonEnvelope) {
+		this.lonLatWGS84Envelope = latLonEnvelope;
 	}
+
 	public String getWmsPath() {
 		return wmsPath;
 	}
+
 	public void setWmsPath(String wmsPath) {
 		this.wmsPath = wmsPath;
 	}
@@ -843,8 +862,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
 			this.paramHelp = new ArrayList();
 			this.paramKeys = new ArrayList();
 			this.paramValues = new ArrayList();
-			
-			for(Iterator p_iT=map.keySet().iterator(); p_iT.hasNext();) {
+
+			for (Iterator p_iT = map.keySet().iterator(); p_iT.hasNext();) {
 				final String key = (String) p_iT.next();
 				paramHelp.add(key);
 				paramKeys.add(key);

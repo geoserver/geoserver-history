@@ -34,19 +34,17 @@ import org.vfny.geoserver.global.UserContainer;
  * @version $Id: CoverageStoresSelectAction.java,v 1.12 2004/02/25 21:51:11
  *          dmzwiers Exp $
  */
-public class CoverageStoresSelectAction extends ConfigAction {
+public final class CoverageStoresSelectAction extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping,
 			ActionForm incomingForm, UserContainer user,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 
 		CoverageStoresSelectForm form = (CoverageStoresSelectForm) incomingForm;
-
 		String buttonAction = form.getButtonAction();
 
 		DataConfig dataConfig = (DataConfig) getDataConfig();
 		CoverageStoreConfig dfConfig = null;
-
 		Locale locale = (Locale) request.getLocale();
 		MessageResources messages = servlet.getResources();
 

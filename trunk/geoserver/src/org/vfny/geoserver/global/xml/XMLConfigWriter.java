@@ -625,7 +625,7 @@ public class XMLConfigWriter {
 	 * storeFormat purpose.
 	 * 
 	 * <p>
-	 * Writes a FormatInfo into the WriterUtils provided.
+	 * Writes a CoverageStoreInfo into the WriterUtils provided.
 	 * </p>
 	 *
 	 * @param cw The Configuration Writer

@@ -13,6 +13,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ref.Reference;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
 
 import javax.media.jai.GraphicsJAI;
 
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.lite.RendererUtilities;
@@ -203,8 +205,8 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 				BufferedImage.TYPE_4BYTE_ABGR);
 
 		// simboss: this should help out with coverages
-		final Graphics2D graphic = GraphicsJAI.createGraphicsJAI(curImage
-				.createGraphics(), null);
+		final Graphics2D graphic = (Graphics2D) curImage
+				.createGraphics().create();
 
 		if (!map.isTransparent()) {
 			graphic.setColor(map.getBgColor());
@@ -233,20 +235,17 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 		renderer = new StreamingRenderer();
 		renderer.setContext(map);
 
-		RenderingHints hints = new RenderingHints(
-				RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
-		renderer.setJava2DHints(hints);
 
+		renderer.setJava2DHints(new RenderingHints(
+				RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON));
 		// we already do everything that the optimized data loading does...
 		// if we set it to true then it does it all twice...
 		Map rendererParams = new HashMap();
 		rendererParams.put("optimizedDataLoadingEnabled", Boolean.TRUE);
-
 		renderer.setRendererHints(rendererParams);
 
-		Envelope dataArea = map.getAreaOfInterest();
-		AffineTransform at = RendererUtilities.worldToScreenTransform(dataArea, paintArea);
+		final ReferencedEnvelope dataArea = map.getAreaOfInterest();
 
 		// LOGGER.fine("calling renderer");
 
@@ -255,7 +254,7 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 			return;
 		}
 
-		renderer.paint(graphic, paintArea, dataArea, at);
+		renderer.paint(graphic, paintArea, dataArea);
 
 		map = null;
 

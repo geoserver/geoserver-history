@@ -27,7 +27,7 @@ import org.vfny.geoserver.util.CoverageStoreUtils;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
  */
-public class CoverageStoresNewForm extends ActionForm {
+public final class CoverageStoresNewForm extends ActionForm {
 	/**
 	 * 
 	 */

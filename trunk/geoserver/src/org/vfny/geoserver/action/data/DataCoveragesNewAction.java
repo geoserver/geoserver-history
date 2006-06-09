@@ -83,7 +83,6 @@ public class DataCoveragesNewAction extends ConfigAction {
 		DataConfig dataConfig = (DataConfig) request.getSession()
 				.getServletContext().getAttribute(DataConfig.CONFIG_KEY);
 		String formatID = selectedNewCoverage;
-
 		CoverageStoreConfig dfConfig = dataConfig.getDataFormat(formatID);
 		GridCoverage gc = null;
 

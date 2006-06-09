@@ -41,12 +41,11 @@ import org.vfny.geoserver.util.CoverageStoreUtils;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
  */
-public class CoverageStoresEditorAction extends ConfigAction {
+public final class CoverageStoresEditorAction extends ConfigAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			UserContainer user, HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ServletException {
 		CoverageStoresEditorForm dataFormatsForm = (CoverageStoresEditorForm) form;
-
 		String dataFormatID = dataFormatsForm.getDataFormatId();
 		String namespace = dataFormatsForm.getNamespaceId();
 		String type = dataFormatsForm.getType();
@@ -62,7 +61,8 @@ public class CoverageStoresEditorAction extends ConfigAction {
 			// we are creating a new one.
 			dataConfig.addDataFormat(getUserContainer(request)
 					.getDataFormatConfig());
-			config = (CoverageStoreConfig) dataConfig.getDataFormat(dataFormatID);
+			config = (CoverageStoreConfig) dataConfig
+					.getDataFormat(dataFormatID);
 		}
 
 		// After extracting params into a map
@@ -70,17 +70,29 @@ public class CoverageStoresEditorAction extends ConfigAction {
 		Map paramTexts = new HashMap(); // values as stored
 
 		Map params = dataFormatsForm.getParams();
-
 		Format factory = config.getFactory();
 		ParameterValueGroup info = factory.getReadParameters();
 
 		// Convert Params into the kind of Map we actually need
 		//
+		ParameterValue param;
+		String key;
+		Object value;
+		final String readEnvelopeKey = AbstractGridFormat.READ_ENVELOPE
+				.getName().toString();
+		final String readDimensions2D = AbstractGridFormat.READ_DIMENSIONS2D
+				.getName().toString();
 		for (Iterator i = params.keySet().iterator(); i.hasNext();) {
-			String key = (String) i.next();
-
-			ParameterValue param = CoverageStoreUtils.find(info, key);
-
+			key = (String) i.next();
+			// //
+			//
+			// Skipping decimation parameters
+			//
+			// //
+			if (key.equalsIgnoreCase(readDimensions2D)
+					|| key.equalsIgnoreCase(readEnvelopeKey))
+				continue;
+			param = CoverageStoreUtils.find(info, key);
 			if (param == null) {
 
 				ActionErrors errors = new ActionErrors();
@@ -91,16 +103,11 @@ public class CoverageStoresEditorAction extends ConfigAction {
 				return mapping.findForward("config.data.format.editor");
 			}
 
-			Object value = CoverageUtils.getCvParamValue(key, param, params);
-
+			value = CoverageUtils.getCvParamValue(key, param, params);
 			if (value != null) {
 				parameters.put(key, value);
-				if (key.equalsIgnoreCase("values_palette")) {
-					paramTexts.put(key, value);
-				} else {
-					String text = value.toString();
-					paramTexts.put(key, text);
-				}
+				paramTexts.put(key, value.toString());
+
 			}
 		}
 
@@ -115,8 +122,8 @@ public class CoverageStoresEditorAction extends ConfigAction {
 						.size()];
 				int cnt = 0;
 				for (Iterator iT = niceParams.keySet().iterator(); iT.hasNext(); cnt++) {
-					String key = (String) iT.next();
-					Object value = niceParams.get(key);
+					key = (String) iT.next();
+					value = niceParams.get(key);
 					vicParams.parameter(key).setValue(value);
 					typeNames[cnt] = key;
 				}

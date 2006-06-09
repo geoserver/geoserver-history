@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
@@ -21,9 +23,9 @@ import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.grid.Format;
-import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
@@ -37,9 +39,8 @@ import org.opengis.referencing.operation.CoordinateOperation;
 import org.opengis.referencing.operation.CoordinateOperationFactory;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.opengis.spatialschema.geometry.Envelope;
 import org.opengis.spatialschema.geometry.MismatchedDimensionException;
-import org.vfny.geoserver.global.FormatInfo;
+import org.vfny.geoserver.global.CoverageStoreInfo;
 
 /**
  * A collection of utilties for dealing with GeotTools Format.
@@ -50,9 +51,16 @@ import org.vfny.geoserver.global.FormatInfo;
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
- * @version $Id: CoverageStoreUtils.java,v 1.12 2004/09/21 21:14:48 cholmesny Exp $
+ * @version $Id: CoverageStoreUtils.java,v 1.12 2004/09/21 21:14:48 cholmesny
+ *          Exp $
  */
-public abstract class CoverageStoreUtils {
+public final class CoverageStoreUtils {
+	private final static Logger LOGGER = Logger
+			.getLogger(CoverageStoreUtils.class.toString());
+
+	private CoverageStoreUtils() {
+	}
+
 	public static Format acquireFormat(String type, ServletContext sc)
 			throws IOException {
 		Format[] formats = GridFormatFinder.getFormatArray();
@@ -81,7 +89,7 @@ public abstract class CoverageStoreUtils {
 	 * Get Connect params.
 	 */
 	public static Map getParams(Map m, String baseDir) {
-		return Collections.synchronizedMap(FormatInfo.getParams(m, baseDir));
+		return Collections.synchronizedMap(CoverageStoreInfo.getParams(m, baseDir));
 	}
 
 	/**
@@ -136,9 +144,10 @@ public abstract class CoverageStoreUtils {
 	 * @return
 	 */
 	public static Format aquireFactory(Map params, String type) {
-		Format[] formats = GridFormatFinder.getFormatArray();
+		final Format[] formats = GridFormatFinder.getFormatArray();
 		Format format = null;
-		for (int i = 0; i < formats.length; i++) {
+		final int length = formats.length;
+		for (int i = 0; i < length; i++) {
 			format = formats[i];
 			if (format.getName().equals(type))
 				return format;
@@ -180,7 +189,6 @@ public abstract class CoverageStoreUtils {
 	public static List listDataFormatsDescriptions() {
 		List list = new ArrayList();
 		Format[] formats = GridFormatFinder.getFormatArray();
-
 		final int length = formats.length;
 		for (int i = 0; i < length; i++) {
 			if (!list.contains(formats[i].getDescription())) {
@@ -218,12 +226,14 @@ public abstract class CoverageStoreUtils {
 			Iterator it = list.iterator();
 			ParameterDescriptor descr = null;
 			ParameterValue val = null;
+			String key;
+			Object value;
 			while (it.hasNext()) {
 				val = (ParameterValue) it.next();
 				descr = (ParameterDescriptor) val.getDescriptor();
 
-				String key = descr.getName().toString();
-				Object value = null;
+				key = descr.getName().toString();
+				value = null;
 
 				if (val.getValue() != null) {
 					// Required params may have nice sample values
@@ -259,15 +269,17 @@ public abstract class CoverageStoreUtils {
 	 */
 	public static Map toParams(GridFormatFactorySpi factory, Map params)
 			throws IOException {
-		Map map = new HashMap(params.size());
+		final Map map = new HashMap(params.size());
 
-		ParameterValueGroup info = factory.createFormat().getReadParameters();
+		final ParameterValueGroup info = factory.createFormat()
+				.getReadParameters();
+		String key;
+		Object value;
 
 		// Convert Params into the kind of Map we actually need
 		for (Iterator i = params.keySet().iterator(); i.hasNext();) {
-			String key = (String) i.next();
-
-			Object value = find(info, key).getValue();
+			key = (String) i.next();
+			value = find(info, key).getValue();
 
 			if (value != null) {
 				map.put(key, value);
@@ -277,14 +289,9 @@ public abstract class CoverageStoreUtils {
 		return Collections.synchronizedMap(map);
 	}
 
-	public static Envelope getBoundingBoxEnvelope(GridCoverage gc)
-			throws IOException {
-		Envelope ev = gc.getEnvelope();
-
-		return ev;
-	}
-
 	/**
+	 * Retrieve a WGS84 lon,lat envelope from the provided one.
+	 * 
 	 * @param sourceCRS
 	 * @param targetEnvelope
 	 * @return
@@ -292,95 +299,82 @@ public abstract class CoverageStoreUtils {
 	 * @throws FactoryException
 	 * @throws TransformException
 	 */
-	public static GeneralEnvelope getLatLonEnvelope(GeneralEnvelope envelope) throws IndexOutOfBoundsException, FactoryException, TransformException {
-		final CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-		final CoordinateOperationFactory opFactory = FactoryFinder.getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
-		final CoordinateReferenceSystem targetCRS = crsFactory.createCoordinateReferenceSystem("EPSG:4326");
-		final CoordinateReferenceSystem sourceCRS = envelope.getCoordinateReferenceSystem();
-		final CoordinateOperation operation = opFactory.createOperation(CRS.parseWKT(sourceCRS.toWKT()), targetCRS);
-		MathTransform mathTransform = (MathTransform) operation.getMathTransform();
-		GeneralEnvelope targetEnvelope ;
-		if( !mathTransform.isIdentity() )
+	public static GeneralEnvelope getWGS84LonLatEnvelope(
+			GeneralEnvelope envelope) throws IndexOutOfBoundsException,
+			FactoryException, TransformException {
+
+		final CoordinateReferenceSystem sourceCRS = envelope
+		.getCoordinateReferenceSystem();
+		////
+		//
+		// Do we need to transform?
+		//
+		////
+		if(CRSUtilities.equalsIgnoreMetadata(sourceCRS,DefaultGeographicCRS.WGS84))
+			return new GeneralEnvelope(envelope);
+		
+		
+		////
+		//
+		//transform
+		//
+		////
+		final CoordinateReferenceSystem targetCRS = DefaultGeographicCRS.WGS84;
+		final MathTransform mathTransform = CRS.transform(sourceCRS, targetCRS);
+		final GeneralEnvelope targetEnvelope;
+		if (!mathTransform.isIdentity())
 			targetEnvelope = CRSUtilities.transform(mathTransform, envelope);
 		else
-			targetEnvelope = envelope;
-
+			targetEnvelope = new GeneralEnvelope(envelope);
 		targetEnvelope.setCoordinateReferenceSystem(targetCRS);
-		
+
 		return targetEnvelope;
 	}
+
 	
+
 	/**
+	 * Get a generic envelope and retrieve a lon,lat envelope.
+	 * 
 	 * @param sourceCRS
-	 * @param targetEnvelope
+	 * @param envelope
 	 * @return
 	 * @throws IndexOutOfBoundsException
-	 * @throws NoSuchAuthorityCodeException
 	 * @throws MismatchedDimensionException
+	 * @throws NoSuchAuthorityCodeException
 	 */
-	public static GeneralEnvelope adjustEnvelope(
-			final CoordinateReferenceSystem sourceCRS,
-			GeneralEnvelope targetEnvelope) throws IndexOutOfBoundsException, MismatchedDimensionException, NoSuchAuthorityCodeException {
-		final CoordinateSystem sourceCS = sourceCRS.getCoordinateSystem();
-        final CoordinateSystem envelopeCS = (targetEnvelope.getCoordinateReferenceSystem() != null? targetEnvelope.getCoordinateReferenceSystem().getCoordinateSystem() : null);
-		boolean swapXY = (envelopeCS == null? GridGeometry2D.swapXY(sourceCS) : 
-            !sourceCS.getAxis(0).getDirection().absolute().equals(envelopeCS.getAxis(0).getDirection().absolute()));
-        boolean lonFirst = !swapXY;
+	public static GeneralEnvelope adjustEnvelopeLongitudeFirst(
+			final CoordinateReferenceSystem sourceCRS, GeneralEnvelope envelope)
+			throws IndexOutOfBoundsException, MismatchedDimensionException,
+			NoSuchAuthorityCodeException {
 
-		// latitude index
-		final int latIndex = lonFirst ? 1 : 0;
+		// /////////////////////////////////////////////////////////////////////
+		//
+		// Is Lon first?
+		//
+		// /////////////////////////////////////////////////////////////////////
+		final CoordinateReferenceSystem crs2D;
+		try {
+			crs2D = CRSUtilities.getCRS2D(sourceCRS);
+		} catch (TransformException e) {
+			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			return null;
+		}
+		final CoordinateSystem sourceCS = crs2D.getCoordinateSystem();
+		final boolean lonFirst = !GridGeometry2D.swapXY(sourceCS);
 
-		final AxisDirection latitude = (envelopeCS != null ? envelopeCS.getAxis(latIndex).getDirection() : sourceCS.getAxis(latIndex).getDirection());
-		final AxisDirection longitude = (envelopeCS != null ? envelopeCS.getAxis((latIndex + 1) % 2).getDirection() : sourceCS.getAxis((latIndex + 1) % 2).getDirection());
-		final boolean[] reverse = new boolean[] {
-				lonFirst ? !longitude.equals(AxisDirection.EAST) : !latitude
-						.equals(AxisDirection.NORTH),
-				lonFirst ? !latitude.equals(AxisDirection.NORTH) : !longitude
-						.equals(AxisDirection.EAST) };
-
-		GeneralEnvelope envelope = new GeneralEnvelope(
-				new double[] {
-						reverse[(latIndex + 1) % 2] ? targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 1 : 0) : targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 1 : 0),
-						reverse[latIndex] ? targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 0 : 1) : targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 0 : 1)
-						     },
-				new double[] {
-						reverse[(latIndex + 1) % 2] ? targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 1 : 0) : targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 1 : 0),
-						reverse[latIndex] ? targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 0 : 1) : targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 0 : 1)
-						     }
-		);
-
-		return envelope;
+		// /////////////////////////////////////////////////////////////////////
+		//
+		// Creating a new envelope lon,lat
+		//
+		// /////////////////////////////////////////////////////////////////////
+		final GeneralEnvelope lonLatEnvelope = lonFirst ? new GeneralEnvelope(
+				envelope) : new GeneralEnvelope(new double[] {
+				envelope.getLowerCorner().getOrdinate(1),
+				envelope.getLowerCorner().getOrdinate(0) }, new double[] {
+				envelope.getUpperCorner().getOrdinate(1),
+				envelope.getUpperCorner().getOrdinate(0) });
+		lonLatEnvelope.setCoordinateReferenceSystem(crs2D);
+		return lonLatEnvelope;
 	}
-    
-    public static GeneralEnvelope adjustEnvelopeLongitudeFirst(
-            final CoordinateReferenceSystem sourceCRS,
-            GeneralEnvelope targetEnvelope) throws IndexOutOfBoundsException, MismatchedDimensionException, NoSuchAuthorityCodeException {
-        final CoordinateSystem sourceCS = sourceCRS.getCoordinateSystem();
-        boolean swapXY = GridGeometry2D.swapXY(sourceCS);
-        boolean lonFirst = !swapXY;
-
-        // latitude index
-        final int latIndex = lonFirst ? 1 : 0;
-
-        final AxisDirection latitude = sourceCS.getAxis(latIndex).getDirection();
-        final AxisDirection longitude = sourceCS.getAxis((latIndex + 1) % 2).getDirection();
-        final boolean[] reverse = new boolean[] {
-                lonFirst ? !longitude.equals(AxisDirection.EAST) : !latitude
-                        .equals(AxisDirection.NORTH),
-                lonFirst ? !latitude.equals(AxisDirection.NORTH) : !longitude
-                        .equals(AxisDirection.EAST) };
-
-        GeneralEnvelope envelope = new GeneralEnvelope(
-                new double[] {
-                        reverse[(latIndex + 1) % 2] ? targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 1 : 0) : targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 1 : 0),
-                        reverse[latIndex] ? targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 0 : 1) : targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 0 : 1)
-                             },
-                new double[] {
-                        reverse[(latIndex + 1) % 2] ? targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 1 : 0) : targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 1 : 0),
-                        reverse[latIndex] ? targetEnvelope.getLowerCorner().getOrdinate(swapXY ? 0 : 1) : targetEnvelope.getUpperCorner().getOrdinate(swapXY ? 0 : 1)
-                             }
-        );
-
-        return envelope;
-    }
 }

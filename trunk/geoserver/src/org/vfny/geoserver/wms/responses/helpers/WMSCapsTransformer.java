@@ -531,7 +531,7 @@ public class WMSCapsTransformer extends TransformerBase {
 					layer = (CoverageInfo) it.next();
 
 					if (layer.isEnabled()) {
-						final GeneralEnvelope bbox = layer.getLatLonEnvelope();
+						final GeneralEnvelope bbox = layer.getWGS84LonLatEnvelope();
 						layerBbox = new Envelope(bbox.getLowerCorner()
 								.getOrdinate(0), bbox.getUpperCorner()
 								.getOrdinate(0), bbox.getLowerCorner()
@@ -770,7 +770,7 @@ public class WMSCapsTransformer extends TransformerBase {
 			try {
                 // We need LON/LAT Envelopes
                 // TODO check for BBOX, maybe it should be expressed in original CRS coords!!
-                final GeneralEnvelope latLonEnvelope = coverage.getLatLonEnvelope();
+                final GeneralEnvelope latLonEnvelope = coverage.getWGS84LonLatEnvelope();
                 final CoordinateReferenceSystem llCRS = latLonEnvelope.getCoordinateReferenceSystem();
 				bounds = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS, latLonEnvelope);
                 llBounds = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS, latLonEnvelope);

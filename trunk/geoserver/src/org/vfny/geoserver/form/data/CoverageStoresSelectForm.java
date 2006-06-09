@@ -17,16 +17,21 @@ import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.ConfigRequests;
 
-
 /**
  * Select current DataFormat for edit or delete Action.
- *
- * @author rgould, Refractions Research, Inc.
- * @author emperorkefka
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * 
+ * 
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  */
-public class CoverageStoresSelectForm extends ActionForm {
+public final class CoverageStoresSelectForm extends ActionForm {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 950236665044594046L;
 
 	/**
 	 * Action that spawned us must be "edit" or "delete"
@@ -43,55 +48,60 @@ public class CoverageStoresSelectForm extends ActionForm {
 	 */
 	private List dataFormatIds;
 
+	/**
+	 * Reset form
+	 * 
+	 * @param mapping
+	 *            DOCUMENT ME!
+	 * @param request
+	 *            DOCUMENT ME!
+	 */
+	public void reset(ActionMapping mapping, HttpServletRequest request) {
+		super.reset(mapping, request);
 
-    /**
-     * Reset form
-     *
-     * @param mapping DOCUMENT ME!
-     * @param request DOCUMENT ME!
-     */
-    public void reset(ActionMapping mapping, HttpServletRequest request) {
-        super.reset(mapping, request);
+		// Pass data from congif layer to screen
+		// REVIST: Bad Design JSP should lookup data itself!
+		dataFormatIds = ConfigRequests.getDataConfig(request)
+				.listDataFormatIds();
 
-        // Pass data from congif layer to screen
-        // REVIST: Bad Design JSP should lookup data itself!
-        dataFormatIds = ConfigRequests.getDataConfig(request).listDataFormatIds();
+		// Usual reset stuff
+		selectedDataFormatId = null; // nothing selected yet
+		buttonAction = null; // updated when user submits form
+	}
 
-        // Usual reset stuff
-        selectedDataFormatId = null; // nothing selected yet        
-        buttonAction = null; // updated when user submits form        
-    }
+	/**
+	 * Validate as required
+	 * 
+	 * @param mapping
+	 *            DOCUMENT ME!
+	 * @param request
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public ActionErrors validate(ActionMapping mapping,
+			HttpServletRequest request) {
+		ActionErrors errors = new ActionErrors();
 
-    /**
-     * Validate as required
-     *
-     * @param mapping DOCUMENT ME!
-     * @param request DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
-        ActionErrors errors = new ActionErrors();
+		Locale locale = (Locale) request.getLocale();
+		MessageResources messages = servlet.getResources();
+		String EDIT = HTMLEncoder.decode(messages.getMessage(locale,
+				"label.edit"));
+		String DELETE = HTMLEncoder.decode(messages.getMessage(locale,
+				"label.delete"));
 
-        Locale locale = (Locale) request.getLocale();
-        MessageResources messages = servlet.getResources();
-        String EDIT = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
-        String DELETE = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
-        
-        if (!getDataFormatIds().contains(getSelectedDataFormatId())) {
-            errors.add("selectedDataFormatId",
-                new ActionError("errors.factory.invalid",
-                    getSelectedDataFormatId()));
-        }
+		if (!getDataFormatIds().contains(getSelectedDataFormatId())) {
+			errors.add("selectedDataFormatId", new ActionError(
+					"errors.factory.invalid", getSelectedDataFormatId()));
+		}
 
-        if (!DELETE.equals(getButtonAction())
-                && !EDIT.equals(getButtonAction())) {
-            errors.add("buttonAction",
-                new ActionError("errors.buttonAction.invalid", getButtonAction()));
-        }
-        return errors;
-    }
+		if (!DELETE.equals(getButtonAction())
+				&& !EDIT.equals(getButtonAction())) {
+			errors.add("buttonAction", new ActionError(
+					"errors.buttonAction.invalid", getButtonAction()));
+		}
+		return errors;
+	}
 
 	/**
 	 * List of current DataFormatIds
@@ -110,7 +120,8 @@ public class CoverageStoresSelectForm extends ActionForm {
 	 * <code>null</code>.
 	 * </p>
 	 * 
-	 * @return Selected DataFormatID or <code>null</code> if nothing is selected
+	 * @return Selected DataFormatID or <code>null</code> if nothing is
+	 *         selected
 	 */
 	public String getSelectedDataFormatId() {
 		return selectedDataFormatId;

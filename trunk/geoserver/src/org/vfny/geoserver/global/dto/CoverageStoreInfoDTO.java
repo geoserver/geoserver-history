@@ -78,7 +78,7 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
     private String _abstract;
 
 	/**
-	 * Parameters to create the FormatInfo
+	 * Parameters to create the CoverageStoreInfo
 	 * 
 	 * <p>
 	 * Limitied to Strings for both Keys and Values.
@@ -92,7 +92,7 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
 
     
     /**
-     * FormatInfo constructor.
+     * CoverageStoreInfo constructor.
      * 
      * <p>
      * does nothing
@@ -102,10 +102,10 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
     }
 
     /**
-     * FormatInfo constructor.
+     * CoverageStoreInfo constructor.
      * 
      * <p>
-     * Creates a copy of the FormatInfo provided. If the FormatInfo
+     * Creates a copy of the CoverageStoreInfo provided. If the CoverageStoreInfo
      * provided  is null then default values are used. All the datastructures
      * are cloned.
      * </p>
@@ -136,7 +136,7 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
      * creates a clone of this object
      * </p>
      *
-     * @return A copy of this FormatInfo
+     * @return A copy of this CoverageStoreInfo
      *
      * @see java.lang.Object#clone()
      */
@@ -152,7 +152,7 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
      * object.
      * </p>
      *
-     * @param obj The FormatInfo object to test.
+     * @param obj The CoverageStoreInfo object to test.
      *
      * @return true when the object passed is the same as this object.
      *

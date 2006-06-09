@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.form.data;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,6 +23,7 @@ import org.apache.struts.config.ControllerConfig;
 import org.apache.struts.upload.CommonsMultipartRequestHandler;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.upload.MultipartRequestHandler;
+import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.opengis.coverage.grid.Format;
 import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
@@ -34,6 +34,8 @@ import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.Requests;
+
+import com.k_int.gen.RecordSyntax_explain.abstractStructure_inline84_codec;
 
 /**
  * Represents the information required for editing a DataFormat.
@@ -50,7 +52,7 @@ import org.vfny.geoserver.util.Requests;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
  */
-public class CoverageStoresEditorForm extends ActionForm {
+public final class CoverageStoresEditorForm extends ActionForm {
 
 	/**
 	 * 
@@ -114,7 +116,7 @@ public class CoverageStoresEditorForm extends ActionForm {
 	 */
 	private List paramValues;
 
-    /** Available NamespaceIds */
+	/** Available NamespaceIds */
 	private SortedSet namespaces;
 
 	/**
@@ -130,16 +132,25 @@ public class CoverageStoresEditorForm extends ActionForm {
 	public void reset(ActionMapping mapping, HttpServletRequest request) {
 		super.reset(mapping, request);
 
+		// //
+		//
+		//
+		//
+		// //
 		enabledChecked = false;
+		ServletContext context = getServlet().getServletContext();
+		DataConfig config = (DataConfig) context
+				.getAttribute(DataConfig.CONFIG_KEY);
 
-        ServletContext context = getServlet().getServletContext();
-        DataConfig config = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+		namespaces = new TreeSet(config.getNameSpaces().keySet());
 
-        namespaces = new TreeSet(config.getNameSpaces().keySet());
-
-        CoverageStoreConfig dfConfig = Requests.getUserContainer(request)
+		// //
+		//
+		//
+		//
+		// //
+		CoverageStoreConfig dfConfig = Requests.getUserContainer(request)
 				.getDataFormatConfig();
-
 		if (dfConfig == null) {
 			// something is horribly wrong no FormatID selected!
 			// The JSP needs to not include us if there is no
@@ -149,23 +160,31 @@ public class CoverageStoresEditorForm extends ActionForm {
 					"selectedDataFormatId required in Session");
 		}
 
+		// //
+		//
+		//
+		//
+		// //
 		dataFormatId = dfConfig.getId();
 		description = dfConfig.getAbstract();
 		enabled = dfConfig.isEnabled();
-        namespaceId = dfConfig.getNameSpaceId();
-        if (namespaceId.equals("")) {
-        	namespaceId = config.getDefaultNameSpace().getPrefix();
-        }
+		namespaceId = dfConfig.getNameSpaceId();
+		if (namespaceId.equals("")) {
+			namespaceId = config.getDefaultNameSpace().getPrefix();
+		}
+		url = dfConfig.getUrl();
 
-        url = dfConfig.getUrl();
-
+		// //
+		//
+		//
+		//
+		// //
 		// Retrieve connection params
 		Format factory = dfConfig.getFactory();
 		type = (dfConfig.getType() != null && dfConfig.getType().length() > 0 ? dfConfig
 				.getType()
 				: factory.getName());
 		ParameterValueGroup params = factory.getReadParameters();
-
 		if (params != null && params.values().size() > 0) {
 			paramKeys = new ArrayList(params.values().size());
 			paramValues = new ArrayList(params.values().size());
@@ -175,6 +194,12 @@ public class CoverageStoresEditorForm extends ActionForm {
 			Iterator it = list.iterator();
 			ParameterDescriptor descr = null;
 			ParameterValue val = null;
+			Object value;
+			String text;
+			final String readEnv = AbstractGridFormat.READ_ENVELOPE.getName()
+					.toString();
+			final String readDim = AbstractGridFormat.READ_DIMENSIONS2D
+					.getName().toString();
 			while (it.hasNext()) {
 				val = (ParameterValue) it.next();
 				if (val != null) {
@@ -188,55 +213,20 @@ public class CoverageStoresEditorForm extends ActionForm {
 						continue;
 					}
 
-					Object value = dfConfig.getParameters().get(key);
-					String text = "";
+					value = dfConfig.getParameters().get(key);
+					text = "";
 
-					/**
-					 * values_palette, CRS and envelope params no more handled by Coverage Store.
-					 * They should be managed by the Coverage Editor instead.
-					 */
-					if ("values_palette".equals(key)) {
+					// //
+					//
+					// Ignore the parameters used for decimation at run time
+					//
+					// //
+					if ("CRS".equalsIgnoreCase(key)
+							|| "envelope".equalsIgnoreCase(key)
+							|| readEnv.equalsIgnoreCase(key)
+							|| readDim.equalsIgnoreCase(key)) {
 						continue;
-						/*Object palVal = value;
-						if (palVal instanceof Color[]) {
-							for (int i = 0; i < ((Color[]) palVal).length; i++) {
-								String colString = "#"
-										+ (Integer.toHexString(
-												((Color) ((Color[]) palVal)[i])
-														.getRed()).length() > 1 ? Integer
-												.toHexString(((Color) ((Color[]) palVal)[i])
-														.getRed())
-												: "0"
-														+ Integer
-																.toHexString(((Color) ((Color[]) palVal)[i])
-																		.getRed()))
-										+ (Integer.toHexString(
-												((Color) ((Color[]) palVal)[i])
-														.getGreen()).length() > 1 ? Integer
-												.toHexString(((Color) ((Color[]) palVal)[i])
-														.getGreen())
-												: "0"
-														+ Integer
-																.toHexString(((Color) ((Color[]) palVal)[i])
-																		.getGreen()))
-										+ (Integer.toHexString(
-												((Color) ((Color[]) palVal)[i])
-														.getBlue()).length() > 1 ? Integer
-												.toHexString(((Color) ((Color[]) palVal)[i])
-														.getBlue())
-												: "0"
-														+ Integer
-																.toHexString(((Color) ((Color[]) palVal)[i])
-																		.getBlue()));
-								text += (i > 0 ? ";" : "") + colString;
-							}
-						} else if (palVal instanceof String) {
-							text = (String) palVal;
-						}*/
-					} else if ("CRS".equalsIgnoreCase(key)) {
-						continue;
-					} else if ("envelope".equalsIgnoreCase(key)) {
-						continue;
+
 					} else {
 						if (value == null) {
 							text = null;
@@ -259,13 +249,6 @@ public class CoverageStoresEditorForm extends ActionForm {
 			HttpServletRequest request) {
 		ActionErrors errors = new ActionErrors();
 
-		// if (this.getUrlFile().getFileSize()==0) {// filename not filed or
-		// file does not exist
-		// errors.add("Format", new ActionError("error.file.required")) ;
-		// return errors;
-		// }
-		// Requests.getApplicationState(request);
-
 		// Selected CoverageStoreConfig is in session
 		//
 		UserContainer user = Requests.getUserContainer(request);
@@ -280,10 +263,28 @@ public class CoverageStoresEditorForm extends ActionForm {
 		// Convert Params into the kind of Map we actually need
 		//
 		if (paramKeys != null) {
-			for (int i = 0; i < paramKeys.size(); i++) {
-				String key = (String) getParamKey(i);
-
-				ParameterValue param = CoverageStoreUtils.find(info, key);
+			final int length = paramKeys.size();
+			String key;
+			ParameterValue param;
+			Boolean maxSize;
+			String size;
+			ControllerConfig cc;
+			Object value;
+			final String readEnvelopeKey = AbstractGridFormat.READ_ENVELOPE
+					.getName().toString();
+			final String readDimensionsKey = AbstractGridFormat.READ_DIMENSIONS2D
+					.getName().toString();
+			for (int i = 0; i < length; i++) {
+				key = (String) getParamKey(i);
+				// //
+				//
+				// Ignore the parameters used for decimation at run time
+				//
+				// //
+				if (key.equalsIgnoreCase(readDimensionsKey)
+						|| key.equalsIgnoreCase(readEnvelopeKey))
+					continue;
+				param = CoverageStoreUtils.find(info, key);
 
 				if (param == null) {
 					errors.add("paramValue[" + i + "]", new ActionError(
@@ -293,35 +294,26 @@ public class CoverageStoresEditorForm extends ActionForm {
 					continue;
 				}
 
-				Boolean maxSize = (Boolean) request
+				maxSize = (Boolean) request
 						.getAttribute(MultipartRequestHandler.ATTRIBUTE_MAX_LENGTH_EXCEEDED);
 				if ((maxSize != null) && (maxSize.booleanValue())) {
-					String size = null;
-					ControllerConfig cc = mapping.getModuleConfig()
-							.getControllerConfig();
+					size = null;
+					cc = mapping.getModuleConfig().getControllerConfig();
 					if (cc == null) {
 						size = Long
 								.toString(CommonsMultipartRequestHandler.DEFAULT_SIZE_MAX);
 					} else {
 						size = cc.getMaxFileSize();// struts-config :
-													// <controller
-													// maxFileSize="nK" />
+						// <controller
+						// maxFileSize="nK" />
 					}
 					errors.add("styleID", new ActionError(
 							"error.file.maxLengthExceeded", size));
 					return errors;
 				}
 
-				Object value = CoverageUtils.getCvParamValue(key, param,
-						paramValues, i);
-
-				// if ((value == null) && param.required) {
-				// errors.add("paramValue[" + i + "]",
-				// new ActionError("error.dataStoreEditor.param.required",
-				// key));
-				//
-				// continue;
-				// }
+				value = CoverageUtils.getCvParamValue(key, param, paramValues,
+						i);
 
 				if (value != null) {
 					connectionParams.put(key, value);
@@ -330,12 +322,6 @@ public class CoverageStoresEditorForm extends ActionForm {
 		}
 
 		dump("form", connectionParams);
-		// GDSFactory will provide even more stringent checking
-		//
-		// if (!factory.canProcess( connectionParams )) {
-		// errors.add("paramValue",
-		// new ActionError("error.datastoreEditor.validation"));
-		// }
 
 		return errors;
 	}
@@ -370,7 +356,8 @@ public class CoverageStoresEditorForm extends ActionForm {
 		Map map = new HashMap();
 
 		if (paramKeys != null) {
-			for (int i = 0; i < paramKeys.size(); i++) {
+			final int size = paramKeys.size();
+			for (int i = 0; i < size; i++) {
 				map.put(paramKeys.get(i), paramValues.get(i));
 
 			}
