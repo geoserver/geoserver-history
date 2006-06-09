@@ -442,7 +442,7 @@ public class KMLWriter extends OutputStreamWriter {
                         		fTitle = feature.getID();
                         	
                         	write("<Placemark>");
-                        	write("<name>"+title+"</name>");
+                        	write("<name><![CDATA["+title+"]]></name>");// CDATA needed for ampersands
                         	final FeatureType schema = features.getSchema();
                         	final StringBuffer description = new StringBuffer();
                         	// if there are supposed to be detailed descriptions, write them out
@@ -714,7 +714,7 @@ public class KMLWriter extends OutputStreamWriter {
 				res = true;
             } else if(layerCounter<0){
                 //TODO: come back and sort out crs transformation
-                //  CoordinateReferenceSystem crs = findGeometryCS(feature, symbolizers[m]);              
+                //CoordinateReferenceSystem crs = findGeometryCS(feature, symbolizers[m]);              
                 if( symbolizers[m] instanceof TextSymbolizer ){
                 	TextSymbolizer ts = (TextSymbolizer) symbolizers[m];
                 	Expression ex = ts.getLabel();
@@ -765,13 +765,17 @@ public class KMLWriter extends OutputStreamWriter {
         if(style instanceof PolygonStyle2D){
         	final StringBuffer styleString = new StringBuffer();
         	styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
-        	styleString.append("<IconStyle><Icon><href>root://icons/palette-3.png</href><x>224</x><w>32</w><h>32</h></Icon></IconStyle>");
+        	styleString.append("<IconStyle>");
+        	if (!mapContext.getRequest().getKMattr()) // if they don't want attributes
+        		styleString.append("<color>#00ffffff</color>");// fully transparent
+        	styleString.append("<Icon><href>root://icons/palette-3.png</href><x>224</x><w>32</w><h>32</h></Icon>");
+        	styleString.append("</IconStyle>");
         	styleString.append("<PolyStyle><color>");
             Paint p = ((PolygonStyle2D)style).getFill();
             if(p instanceof Color){
-            	styleString.append("aa").append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
+            	styleString.append("#aa").append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
             } else{
-            	styleString.append("ffaaaaaa");//should not occure in normal parsing
+            	styleString.append("#ffaaaaaa");//should not occure in normal parsing
             }
             styleString.append("</color></PolyStyle>");
             styleString.append("</Style>");
@@ -780,12 +784,16 @@ public class KMLWriter extends OutputStreamWriter {
         } else if(style instanceof LineStyle2D){
         	final StringBuffer styleString = new StringBuffer();
         	styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
+        	styleString.append("<IconStyle>");
+        	if (!mapContext.getRequest().getKMattr()) // if they don't want attributes
+        		styleString.append("<color>#00ffffff</color>");// fully transparent
+        	styleString.append("</IconStyle>");
         	styleString.append("<LineStyle><color>");
             Paint p = ((LineStyle2D)style).getContour();
             if(p instanceof Color){
-            	styleString.append("aa").append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
+            	styleString.append("#aa").append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
             } else{
-            	styleString.append("ffaaaaaa");//should not occure in normal parsing
+            	styleString.append("#ffaaaaaa");//should not occure in normal parsing
             }
             styleString.append("</color><width>2</width></LineStyle>");
             styleString.append("</Style>");
@@ -798,9 +806,9 @@ public class KMLWriter extends OutputStreamWriter {
         	styleString.append("<LabelStyle><color>");
         	Paint p = ((TextStyle2D)style).getFill();
         	if(p instanceof Color){
-            	styleString.append("aa").append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
+            	styleString.append("#aa").append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
             } else{
-            	styleString.append("ffaaaaaa");//should not occure in normal parsing
+            	styleString.append("#ffaaaaaa");//should not occure in normal parsing
             }
         	styleString.append("</color></LabelStyle>");
             styleString.append("</Style>");

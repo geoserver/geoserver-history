@@ -319,7 +319,7 @@ public class EncodeKML {
                 FeatureCollection fc = fSource.getFeatures(bboxQuery);
                 
                 int kmscore = mapContext.getRequest().getKMScore(); //KMZ score value
-                if (useVectorOutput(kmscore, fc.size()))
+                if (useVectorOutput(kmscore, fc.size()) || !kmz)
                 {
                 	layerRenderList.add(new Integer(i)); // save layer number so it won't be rendered
                 	writer.writeFeatures(fc, layer, i+1, false); // KML
