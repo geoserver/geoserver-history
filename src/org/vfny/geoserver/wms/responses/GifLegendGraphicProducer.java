@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.wms.responses.map.gif.GIFOutputStream;
 import org.vfny.geoserver.wms.responses.map.gif.Gif89Encoder;
 
 
