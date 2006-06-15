@@ -24,5 +24,6 @@
 
 	<modules>
 		<module>hello</module>
+		<module>preferences</module>
 	</modules>
 </project>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- Define spring remoting beans -->
+		<bean name="/preferences"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref local="controller" />
+		</property>
+		<property name="serviceInterface">
+			<value>org.vfny.geoserver.control.IPreferenceStore</value>
+		</property>
+	</bean>
+
+	<!-- define the control beans -->
+	<bean id="controller" class="org.vfny.geoserver.control.internal.PreferenceStoreImpl">
+	    <constructor-arg ref="propertyPreferenceStore"/>
+	</bean>
+	<!-- This is the file based preference store -->
+	<bean id="propertyPreferenceStore" 
+			class="org.vfny.geoserver.control.internal.PropertyPreferenceStoreStrategy"
+			destroy-method="flush">
+	    <constructor-arg type="java.lang.String" value=".preferences"/>		
+	</bean>
+	
+	
+</beans>
