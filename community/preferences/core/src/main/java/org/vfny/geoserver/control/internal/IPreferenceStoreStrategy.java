@@ -5,6 +5,8 @@
  */
 package org.vfny.geoserver.control.internal;
 
+import org.vfny.geoserver.control.IValidator;
+
 /**
  * <b>NOT API.</b>
  * 
@@ -43,4 +45,11 @@ public interface IPreferenceStoreStrategy {
      * @return all the keys of the existing preferences
      */
     String[] keys();
+
+    /**
+     * Sets the validator that this strategy uses.
+     * 
+     * @param validator new validator.
+     */
+	void setValidator(IValidator validator);
 }

@@ -1,8 +1,11 @@
-/**
- * 
+/* Copyright (c) 2001 - 2006 TOPP - http://topp.openplans.org.
+ * All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible in the
+ * license.txt file of the documents directory off the root directory.
  */
 package org.vfny.geoserver.control.internal;
 
+import org.vfny.geoserver.control.IValidator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -18,6 +21,7 @@ import java.util.Properties;
 public class PropertyPreferenceStoreStrategy implements IPreferenceStoreStrategy {
     private Properties properties;
     private String file;
+    private IValidator validator;
 
     public PropertyPreferenceStoreStrategy(String propertiesFile)
         throws IOException {
@@ -40,11 +44,10 @@ public class PropertyPreferenceStoreStrategy implements IPreferenceStoreStrategy
         return properties.getProperty(key);
     }
 
-    /* (non-Javadoc)
-     * @see org.vfny.geoserver.control.internal.IPreferenceStore#put(java.lang.String, java.lang.String)
-     */
     public synchronized void put(String key, String value) {
-        properties.put(key, value);
+        if (validator.isValid(key, value)) {
+            properties.put(key, value);
+        }
     }
 
     public synchronized void flush() throws IOException {
@@ -64,5 +67,9 @@ public class PropertyPreferenceStoreStrategy implements IPreferenceStoreStrategy
 
     public String[] keys() {
         return (String[]) properties.keySet().toArray(new String[0]);
+    }
+
+    public void setValidator(IValidator validator) {
+        this.validator = validator;
     }
 }
