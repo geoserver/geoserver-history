@@ -94,13 +94,14 @@
 					<execution>
 						<phase>install</phase>
 						<configuration>
+							<!-- remote the logging jar, gets pulled in as part of 
+							  jsp 2.0 dependency -->
 							<tasks>
 								<delete>
 									<fileset dir="${project.build.directory}/dependency"
 										includes="commons-logging*.jar"/>
 								
 								</delete>
-
 							</tasks>
 						</configuration>
 						<goals>
