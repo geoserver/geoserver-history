@@ -41,7 +41,7 @@ public class GetMapResponseTest extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        this.getMapResponse = new GetMapResponse(null);
+        this.getMapResponse = new GetMapResponse(null, null);
     }
 
     /*
@@ -51,15 +51,6 @@ public class GetMapResponseTest extends TestCase {
         this.getMapResponse = null;
         super.tearDown();
     }
-
-//    /**
-//     * DOCUMENT ME!
-//     */
-//    public void testExecute() throws Exception{
-//        GetMapProducer producer;
-//    	producer = GetMapResponse.getDelegate(TestMapProducerFactory.TESTING_MIME_TYPE,null);
-//    	assertEquals(TestMapProducerFactory.class, producer.getClass());
-//    }
 
     /**
      * DOCUMENT ME!
