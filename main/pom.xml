@@ -16,29 +16,17 @@
 
 	<dependencies>
     <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>platform</artifactId>
+			<version>1.4.0-M0</version>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>struts</groupId>
       <artifactId>struts</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-webmvc</artifactId>
     </dependency>
 		<dependency>
 			<groupId>xml-apis</groupId>
