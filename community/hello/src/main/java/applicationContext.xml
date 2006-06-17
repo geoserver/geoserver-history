@@ -3,6 +3,6 @@
 
 <beans>
 
-	<bean id="helloWorld"  class="HelloWorld"/>	
+	<bean id="helloWorld" class="HelloWorld"/>	
 
 </beans>
