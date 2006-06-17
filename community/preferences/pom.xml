@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
   	
-	<groupId>org.geoserver</groupId>
-	<artifactId>preferences</artifactId>
-	<packaging>pom</packaging>
-	<version>1.0</version>
-	<name>Preference Store</name>
-	
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>community</artifactId>
 		<version>1.4.0-M0</version>
 	</parent>
-	
-	<modules>
-		<module>core</module>
-		<module>web</module>
-	</modules>
+
+  <modelVersion>4.0.0</modelVersion>
+	<groupId>org.geoserver</groupId>
+	<artifactId>preferences</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0</version>
+	<name>Preference Store</name>
 	
 	<developers>
 	 <developer>
@@ -40,4 +35,9 @@
 			</dependency>
   	</dependencies>
 
-<project>
+	<modules>
+		<module>core</module>
+		<module>web</module>
+	</modules>
+
+</project>
