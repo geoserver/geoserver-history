@@ -215,6 +215,13 @@ public abstract class AbstractService extends HttpServlet
     }
     
     /**
+     * @return The application context.
+     */
+    public WebApplicationContext getApplicationContext() {
+    		return context;
+    }
+    
+    /**
      * Sets the reference to the global geoserver instance.
      */
     public void setGeoServer(GeoServer geoServer) {
