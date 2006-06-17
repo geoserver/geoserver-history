@@ -47,22 +47,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>ki</groupId>
-			<artifactId>ki-jzkit-iface</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ki</groupId>
-			<artifactId>ki-jzkit-z3950</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ki</groupId>
-			<artifactId>ki-util</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ki</groupId>
-			<artifactId>a2jruntime</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
 		</dependency>
@@ -219,9 +203,9 @@
 				<version>6.0.0beta16</version>
 				<configuration>
 					<contextPath>geoserver</contextPath>
+					<webApp>${project.build.directory}/geoserver</webApp>
 				</configuration>
 			</plugin>
-
 
 		</plugins>
 	</build>
