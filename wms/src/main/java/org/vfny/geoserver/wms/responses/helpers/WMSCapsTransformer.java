@@ -51,16 +51,19 @@ public class WMSCapsTransformer extends TransformerBase {
     /** DOCUMENT ME! */
     private String schemaBaseUrl;
 
+	private Set formats;
+
     /**
      * Creates a new WMSCapsTransformer object.
      *
      * @param schemaBaseUrl needed to get the schema base URL
+     * @param formats 
      *
      * @throws NullPointerException if <code>schemaBaseUrl</code> is null;
      */
-    public WMSCapsTransformer(String schemaBaseUrl) {
+    public WMSCapsTransformer(String schemaBaseUrl, Set formats) {
         super();
-
+        this.formats=formats;
         if (schemaBaseUrl == null) {
             throw new NullPointerException();
         }
@@ -77,7 +80,7 @@ public class WMSCapsTransformer extends TransformerBase {
      * @return DOCUMENT ME!
      */
     public Translator createTranslator(ContentHandler handler) {
-        return new CapabilitiesTranslator(handler);
+        return new CapabilitiesTranslator(handler,formats);
     }
 
     /**
@@ -136,13 +139,16 @@ public class WMSCapsTransformer extends TransformerBase {
          */
         private CapabilitiesRequest request;
 
+		private Set formats;
+
         /**
          * Creates a new CapabilitiesTranslator object.
          *
          * @param handler content handler to send sax events to.
          */
-        public CapabilitiesTranslator(ContentHandler handler) {
+        public CapabilitiesTranslator(ContentHandler handler, Set formats) {
             super(handler, null, null);
+            this.formats=formats;
         }
 
         /**
@@ -239,7 +245,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
             start("GetMap");
 
-            for (Iterator it = GetMapResponse.getMapFormats().iterator();
+            for (Iterator it = formats.iterator();
                     it.hasNext();) {
                 element("Format", String.valueOf(it.next()));
             }

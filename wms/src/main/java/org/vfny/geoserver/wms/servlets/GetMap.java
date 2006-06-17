@@ -7,11 +7,14 @@ package org.vfny.geoserver.wms.servlets;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -37,7 +40,7 @@ public class GetMap extends WMService {
      * Part of HTTP content type header.
      */
     public static final String URLENCODED = "application/x-www-form-urlencoded";
-
+	
     /**
      * Creates a new GetMap object.
      *  
@@ -90,9 +93,9 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected Response getResponseHandler() {
-       return new GetMapResponse(getWMS());
+       return new GetMapResponse(getWMS(), getApplicationContext());
     }
-
+    
     /**
      * DOCUMENT ME!
      *

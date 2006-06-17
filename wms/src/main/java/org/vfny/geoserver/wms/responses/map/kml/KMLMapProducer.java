@@ -29,7 +29,7 @@ class KMLMapProducer implements GetMapProducer {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.kml");
     
-    /** encoder instance which does all the hard work */
+	/** encoder instance which does all the hard work */
     private EncodeKML kmlEncoder;
     
     /** lag between 'encode' call and 'writeTo' requires temporary storage' */

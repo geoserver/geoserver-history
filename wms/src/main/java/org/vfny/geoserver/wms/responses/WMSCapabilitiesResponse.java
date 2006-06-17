@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
@@ -44,11 +45,20 @@ public class WMSCapabilitiesResponse implements Response {
     private byte[] rawResponse;
 
     /**
+     * List of formats accessible via a GetMap request.
+     */
+	private Set formats;
+
+    public WMSCapabilitiesResponse(Set wmsGetMapFormats) {
+		this.formats=wmsGetMapFormats;
+	}
+
+	/**
      * Returns any extra headers that this service might want to set in the HTTP response object.
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-    	return null;
+    		return null;
     }
     
     /**
@@ -66,7 +76,7 @@ public class WMSCapabilitiesResponse implements Response {
         }
 
         WMSCapsTransformer transformer = new WMSCapsTransformer(request
-                .getSchemaBaseUrl());
+                .getSchemaBaseUrl(), formats);
 
        // if (request.getWFS().getGeoServer().isVerbose()) {
             transformer.setIndentation(2);

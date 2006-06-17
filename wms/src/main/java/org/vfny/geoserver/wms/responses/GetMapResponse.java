@@ -6,9 +6,12 @@ package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,10 +25,10 @@ import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
@@ -70,12 +73,16 @@ public class GetMapResponse implements Response {
      * custom response headers
      */
     private HashMap responseHeaders;
+
+	private ApplicationContext applicationContext;
     
     /**
      * Creates a new GetMapResponse object.
+     * @param applicationContext 
      */
-    public GetMapResponse(WMS wms) {
+    public GetMapResponse(WMS wms, ApplicationContext applicationContext) {
         this.wms = wms;
+        this.applicationContext=applicationContext;
         responseHeaders = new HashMap();
     }
 
@@ -280,33 +287,22 @@ public class GetMapResponse implements Response {
      *         format specified in <code>request</code> or if it can't be
      *         instantiated
      */
-    static GetMapProducer getDelegate(String outputFormat, WMS wms)
+    private GetMapProducer getDelegate(String outputFormat, WMS wms)
         throws WmsException {
-        LOGGER.finer("request format is " + outputFormat);
-
-        GetMapProducerFactorySpi mpf = null;
-        Iterator mpfi = FactoryFinder.factories(GetMapProducerFactorySpi.class);
-
-        while (mpfi.hasNext()) {
-            mpf = (GetMapProducerFactorySpi) mpfi.next();
-
-            if (mpf.canProduce(outputFormat)) {
-                break;
-            }
-
-            mpf = null;
-        }
-
-        if (mpf == null) {
-            throw new WmsException("There is no support for creating maps in "
-                + outputFormat + " format", "InvalidFormat");
-        }
-
-        
-        GetMapProducer producer = mpf.createMapProducer(outputFormat,wms);
-
-        return producer;
-    }
+		Map beans=applicationContext.getBeansOfType(GetMapProducerFactorySpi.class);
+		Collection producers=beans.values();
+		for (Iterator iter = producers.iterator(); iter.hasNext();) {
+			GetMapProducerFactorySpi factory = 
+				(GetMapProducerFactorySpi) iter.next();
+			if (factory.canProduce( outputFormat ) ) {
+				return factory.createMapProducer( outputFormat, wms );
+			}
+			
+		}
+		
+		throw new WmsException("There is no support for creating maps in "
+	                + outputFormat + " format", "InvalidFormat");
+	}
 
     /**
      * Convenient mehtod to inspect the available
@@ -315,17 +311,27 @@ public class GetMapResponse implements Response {
      *
      * @return a Set&lt;String&gt; with the supported mime types.
      */
-    public static Set getMapFormats() {
-        Set mapFormats = new HashSet();
-        GetMapProducerFactorySpi mpf;
-        Iterator mpfi = FactoryFinder.factories(GetMapProducerFactorySpi.class);
-
-        while (mpfi.hasNext()) {
-            mpf = (GetMapProducerFactorySpi) mpfi.next();
-            mapFormats.addAll(mpf.getSupportedFormats());
-        }
-
-        return mapFormats;
+    public Set getMapFormats() {
+    		Set wmsGetMapFormats=loadImageFormats(applicationContext);
+        return wmsGetMapFormats;
     }
+
+    /**
+     * Convenience method for processing the GetMapProducerFactorySpi 
+     * extension point and returning the set of available image formats.
+     * 
+     * @param applicationContext The application context.
+     * 
+     */
+	public static Set loadImageFormats(ApplicationContext applicationContext) {
+		Map beans=applicationContext.getBeansOfType(GetMapProducerFactorySpi.class);
+		Collection producers=beans.values();
+		Set formats=new HashSet();
+		for (Iterator iter = producers.iterator(); iter.hasNext();) {
+			GetMapProducerFactorySpi producer = (GetMapProducerFactorySpi) iter.next();
+			formats.addAll(producer.getSupportedFormats());
+		}
+		return formats;
+	}
 
 }
