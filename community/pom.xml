@@ -17,13 +17,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.geoserver</groupId>
-			<artifactId>web</artifactId>
+			<artifactId>platform</artifactId>
 			<version>1.4.0-M0</version>
 		</dependency>
 	</dependencies>
 
 	<modules>
 		<module>hello</module>
+		<module>http</module>
 		<module>preferences</module>
 	</modules>
 </project>
