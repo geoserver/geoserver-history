@@ -27,8 +27,8 @@
       <artifactId>servlet-api</artifactId>
     </dependency>
  		<dependency>
-      <groupId>xpp</groupId>
-      <artifactId>xpp</artifactId>
+      <groupId>xpp3</groupId>
+      <artifactId>xpp3</artifactId>
     </dependency>
     <dependency>
       <groupId>mockobjects</groupId>
