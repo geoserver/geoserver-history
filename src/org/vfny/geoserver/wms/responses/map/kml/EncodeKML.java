@@ -47,6 +47,8 @@ import org.geotools.map.MapLayer;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.responses.map.png.PngEncoder;
+import org.vfny.geoserver.wms.responses.map.png.PngEncoderB;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -321,11 +323,15 @@ public class EncodeKML {
                 int kmscore = mapContext.getRequest().getKMScore(); //KMZ score value
                 if (useVectorOutput(kmscore, fc.size()) || !kmz)
                 {
+                	LOGGER.info("Layer ("+layer.getTitle()+") rendered with KML vector output.");
                 	layerRenderList.add(new Integer(i)); // save layer number so it won't be rendered
                 	writer.writeFeatures(fc, layer, i+1, false); // KML
                 }
                 else
+                {
+                	LOGGER.info("Layer ("+layer.getTitle()+") rendered with KMZ raster output.");
                 	writer.writeFeatures(fc, layer, i+1, true); // KMZ
+                }
 
                	LOGGER.fine("finished writing");
             } catch (IOException ex) {
@@ -398,15 +404,20 @@ public class EncodeKML {
     		int type = AlphaComposite.SRC;
     		graphic.setComposite(AlphaComposite.getInstance(type));
     		
-    		Color c = new Color(this.mapContext.getBgColor().getRed(), this.mapContext.getBgColor()
-    				.getGreen(), this.mapContext.getBgColor().getBlue(), 0);
+    		Color c = new Color(this.mapContext.getBgColor().getRed(), 
+    							this.mapContext.getBgColor().getGreen(), 
+    							this.mapContext.getBgColor().getBlue(), 
+    							0);
+    		
+    		LOGGER.info("****** bg color: "+c.getRed()+","+c.getGreen()+","+c.getBlue()+","+c.getAlpha()+", trans: "+c.getTransparency());
+ 
     		graphic.setBackground(this.mapContext.getBgColor());
     		graphic.setColor(c);
     		graphic.fillRect(0, 0, width, height);
     		
     		type = AlphaComposite.SRC_OVER;
     		graphic.setComposite(AlphaComposite.getInstance(type));
-
+    		
     		Rectangle paintArea = new Rectangle(width, height);
 
     		final StreamingRenderer renderer = new StreamingRenderer();
@@ -439,7 +450,7 @@ public class EncodeKML {
 			outZ.putNextEntry(e);
 			final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
 					outZ);
-			final PlanarImage encodedImage = PlanarImage
+			/*final PlanarImage encodedImage = PlanarImage
 					.wrapRenderedImage(curImage);
 			//final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel?ImageUtilities
 			//		.reformatColorModel2ComponentColorModel(encodedImage):encodedImage;
@@ -447,15 +458,23 @@ public class EncodeKML {
 			final Iterator it = ImageIO.getImageWritersByMIMEType("image/png");
 			ImageWriter imgWriter = null;
 			if (!it.hasNext()) {
+				LOGGER.warning("No PNG ImageWriter found");
 				throw new IllegalStateException("No PNG ImageWriter found");
 			} else
 				imgWriter = (ImageWriter) it.next();
-
-			imgWriter.setOutput(memOutStream);
-			imgWriter.write(null, new IIOImage(finalImage, null, null), null);
+			*/
+			
+			//---------------------- bo- new
+			PngEncoderB png = new PngEncoderB(curImage, PngEncoder.ENCODE_ALPHA, 0, 1);
+			byte[] pngbytes = png.pngEncode();
+			memOutStream.write(pngbytes);
+			//----------------------
+			
+			//imgWriter.setOutput(memOutStream);
+			//imgWriter.write(null, new IIOImage(finalImage, null, null), null);
 			memOutStream.flush();
 			memOutStream.close();
-			imgWriter.dispose();
+			//imgWriter.dispose();
 			outZ.closeEntry();
         }
     }

@@ -477,8 +477,8 @@ public class KMLWriter extends OutputStreamWriter {
     	startFolder("layer_"+order, layer.getTitle());
     	int layerCounter = order;
     	
-    	final int ftsLength = featureStylers.length;
-        for( int i = 0; i < ftsLength; i++ ) {// for each style
+    	final int ftStylesLength = featureStylers.length;
+        for( int i = 0; i < ftStylesLength; i++ ) {// for each style
             FeatureTypeStyle fts = featureStylers[i];
             String typeName = features.getSchema().getTypeName();
             
@@ -721,10 +721,10 @@ public class KMLWriter extends OutputStreamWriter {
                 	String value = (String)ex.getValue(feature);
                 	title.append(value);
                 	Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
-                	writeStyle(style, feature.getID());
+                	writeStyle(style, feature.getID(), symbolizers[m]);
                 } else {
                     Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
-                    writeStyle(style, feature.getID());
+                    writeStyle(style, feature.getID(), symbolizers[m]);
                 }
             } else if(layerCounter == order) {
             	com.vividsolutions.jts.geom.Envelope envelope = this.mapContext.getRequest().getBbox();
@@ -761,8 +761,13 @@ public class KMLWriter extends OutputStreamWriter {
      * @param id
      * @throws IOException
      */
-    private void writeStyle(final Style2D style, final String id) throws IOException {
+    private void writeStyle(final Style2D style, final String id, Symbolizer sym) throws IOException {
         if(style instanceof PolygonStyle2D){
+        	
+        	if ( ((PolygonStyle2D)style).getFill() == null && 
+        		((PolygonStyle2D)style).getStroke() == null)
+        		LOGGER.info("Empty PolygonSymbolizer, using default fill and stroke.");
+        	
         	final StringBuffer styleString = new StringBuffer();
         	styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
         	styleString.append("<IconStyle>");
@@ -771,9 +776,12 @@ public class KMLWriter extends OutputStreamWriter {
         	styleString.append("<Icon><href>root://icons/palette-3.png</href><x>224</x><w>32</w><h>32</h></Icon>");
         	styleString.append("</IconStyle>");
         	styleString.append("<PolyStyle><color>");
+        	float op = getOpacity(sym);
+        	int opacity = (new Float(255*op)).intValue();
+        	
             Paint p = ((PolygonStyle2D)style).getFill();
             if(p instanceof Color){
-            	styleString.append("#aa").append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
+            	styleString.append("#").append(intToHex(opacity)).append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
             } else{
             	styleString.append("#ffaaaaaa");//should not occure in normal parsing
             }
@@ -782,6 +790,10 @@ public class KMLWriter extends OutputStreamWriter {
 
             write(styleString.toString());
         } else if(style instanceof LineStyle2D){
+        	
+        	if ( ((LineStyle2D)style).getStroke() == null)
+            		LOGGER.info("Empty LineSymbolizer, using default stroke.");
+        	
         	final StringBuffer styleString = new StringBuffer();
         	styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
         	styleString.append("<IconStyle>");
@@ -789,9 +801,12 @@ public class KMLWriter extends OutputStreamWriter {
         		styleString.append("<color>#00ffffff</color>");// fully transparent
         	styleString.append("</IconStyle>");
         	styleString.append("<LineStyle><color>");
+        	float op = getOpacity(sym);
+        	int opacity = (new Float(255*op)).intValue();
+        	
             Paint p = ((LineStyle2D)style).getContour();
             if(p instanceof Color){
-            	styleString.append("#aa").append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
+            	styleString.append("#aa").append(intToHex(opacity)).append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
             } else{
             	styleString.append("#ffaaaaaa");//should not occure in normal parsing
             }
@@ -804,9 +819,12 @@ public class KMLWriter extends OutputStreamWriter {
 	    	final StringBuffer styleString = new StringBuffer();
         	styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
         	styleString.append("<LabelStyle><color>");
+        	float op = getOpacity(sym);
+        	int opacity = (new Float(255*op)).intValue();
+        	
         	Paint p = ((TextStyle2D)style).getFill();
         	if(p instanceof Color){
-            	styleString.append("#aa").append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
+            	styleString.append("#aa").append(intToHex(opacity)).append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
             } else{
             	styleString.append("#ffaaaaaa");//should not occure in normal parsing
             }
@@ -971,4 +989,37 @@ public class KMLWriter extends OutputStreamWriter {
     private String colorToHex(Color c){
         return intToHex(c.getBlue()) + intToHex(c.getGreen()) + intToHex(c.getRed());
     }
+    
+    /**
+     * Borrowed from StreamingRenderer
+     * 
+     * @param sym
+     * @return
+     */
+    private float getOpacity(final Symbolizer sym) {
+        float alpha = 1.0f;
+        Expression exp = null;
+        if (sym instanceof PolygonSymbolizer)
+        	exp = ((PolygonSymbolizer)sym).getFill().getOpacity();
+        else if (sym instanceof LineSymbolizer)
+        	exp = ((LineSymbolizer)sym).getStroke().getOpacity();
+        else if (sym instanceof PointSymbolizer)
+        	exp = ((PointSymbolizer)sym).getGraphic().getOpacity();
+        else if (sym instanceof TextSymbolizer)
+        	exp = ((TextSymbolizer)sym).getFill().getOpacity();
+        else
+        	LOGGER.info("Symbolizer not matched; was of class: "+sym);
+        if (exp == null)
+        {
+        	LOGGER.info("Could not determine proper symbolizer opacity.");
+        	return alpha;
+        }
+        Object obj = exp.getValue(null);
+        if(obj == null) return alpha;
+        Number num = null;
+        if(obj instanceof Number) num = (Number)obj;
+        if(num == null) return alpha;
+        return num.floatValue();
+    }
+    
 }
