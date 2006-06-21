@@ -33,10 +33,10 @@
 
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\GeoServer 1.3"
+  InstallDir "$PROGRAMFILES\GeoServer 1.3.1"
   
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\GeoServer-1.3" ""
+  InstallDirRegKey HKCU "Software\GeoServer-1.3.1" ""
 
 ;--------------------------------
 ;Variables
@@ -54,7 +54,7 @@
   
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
-      installation of GeoServer 1.3 \r\n \
+      installation of GeoServer 1.3.1 \r\n \
       Please report any problems or suggestions for improvement to \
       geoserver-devel@lists.sourceforge.net. \r\n \r\n \
       Click Next to continue."
@@ -108,6 +108,7 @@ Section "GeoServer Section" SecGeoServer
   File /r lib
   File /a RUNNING.txt
   File /a license.txt
+  File /a GPL.txt
   File /r server
 
 
