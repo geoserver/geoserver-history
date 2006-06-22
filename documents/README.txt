@@ -1,3 +1,19 @@
+Geoserver 1.3.1
+---------------
+Fully tested with GeoTools 2.2.x. This release also contains KML and KMZ support for 
+data viewing in Google Earth. For more information visit 
+http://docs.codehaus.org/display/GEOSDOC/Google+Earth 
+
+
+Geoserver 1.3.1 beta
+--------------------
+The main adition to this release is the move from Geotools 2.1.x to Geotools 2.2.x
+Bug fixes and new features listed in Jira will be added once this beta version has been tested
+by the community for a couple of days.
+
+The build.xml file has also been reformatted to reflect the changes in the data_dir system, and it 
+has been cleaned up.
+
 Geoserver 1.3.0
 ---------------
 

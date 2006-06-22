@@ -29,7 +29,12 @@
       <td class="datum">
         <html:select property="styleId">
           <html:options property="styles"/>
-        </html:select>
+        </html:select> 
+        <html:submit property="action">
+          <bean:message key="config.data.style.createNewStyle.label"/>
+        </html:submit>
+        <!--a href="../../../SLDWizard.jsp?<bean:write name="typesEditorForm" property="typeName"/>"><bean:message key="config.data.style.createNewStyle.label"/></a-->
+        <!--bean:write name="typesEditorForm" property="typeName"/-->
       </td>
     </tr>    
 	<tr>

@@ -21,6 +21,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.DynaActionForm;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
@@ -98,6 +99,8 @@ public class TypesEditorAction extends ConfigAction {
         final String BBOX = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
         LOGGER.finer("BBOX: " + BBOX);
+        final String NEWSLD = HTMLEncoder.decode(messages.getMessage(locale,
+        			"config.data.style.createNewStyle.label"));
 
         if (action.equals(SUBMIT)) {
             return executeSubmit(mapping, typeForm, user, request);
@@ -105,6 +108,10 @@ public class TypesEditorAction extends ConfigAction {
 
         if (action.equals(BBOX)) {
             return executeBBox(mapping, typeForm, user, request);
+        }
+        
+        if (action.equals(NEWSLD)) { // if the SLDWizard button was hit
+        	return mapping.findForward("sldWizardSuccess");
         }
 
         List attributes = typeForm.getAttributes();

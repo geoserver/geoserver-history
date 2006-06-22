@@ -28,15 +28,15 @@
 ;General
 
   ;Name and file
-  Name "GeoServer 1.3.0"
-  OutFile "geoserver-1.3.0.exe"
+  Name "GeoServer 1.3.1"
+  OutFile "geoserver-1.3.1.exe"
 
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\GeoServer 1.3"
+  InstallDir "$PROGRAMFILES\GeoServer 1.3.1"
   
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\GeoServer-1.3" ""
+  InstallDirRegKey HKCU "Software\GeoServer-1.3.1" ""
 
 ;--------------------------------
 ;Variables
@@ -54,7 +54,7 @@
   
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
-      installation of GeoServer 1.3 \r\n \
+      installation of GeoServer 1.3.1 \r\n \
       Please report any problems or suggestions for improvement to \
       geoserver-devel@lists.sourceforge.net. \r\n \r\n \
       Click Next to continue."
@@ -102,12 +102,13 @@ Section "GeoServer Section" SecGeoServer
   
   ;ADD YOUR OWN FILES HERE...
   File /r bin
-  File /r conf
+  File /r data_dir
   File /r documents
   File /a README.txt
   File /r lib
   File /a RUNNING.txt
   File /a license.txt
+  File /a GPL.txt
   File /r server
 
 
@@ -210,8 +211,8 @@ Function dataDirPage
   ;MessageBox MB_OK "existing env string: $1"
 
   StrCmp $1 "" 0 copy_str
-  ## if it doesn't exist, use: "$INSTDIR\conf"
-    StrCpy $1 "$INSTDIR\conf"
+  ## if it doesn't exist, use: "$INSTDIR\data_dir"
+    StrCpy $1 "$INSTDIR\data_dir"
 
   ## if it exists, use it for temp value until user chooses new one
   copy_str:

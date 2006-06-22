@@ -13,6 +13,7 @@ import org.apache.struts.upload.FormFile;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryFinder;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
@@ -159,7 +160,7 @@ public class StylesEditorAction extends ConfigAction {
 
         style.setId(styleID);
 
-        StyleFactory factory = StyleFactory.createStyleFactory();
+        StyleFactory factory = StyleFactoryFinder.createStyleFactory();
         SLDParser styleReader = new SLDParser(factory, newSldFile.toURL());
         Style[] readStyles = null;
         Style newStyle;

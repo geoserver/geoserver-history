@@ -16,6 +16,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.varia.DenyAllFilter;
 import org.geotools.data.jdbc.ConnectionPoolManager;
+import org.vfny.geoserver.zserver.GeoZServer;
 
 
 /**
@@ -32,6 +33,7 @@ public class FreefsLog extends HttpServlet {
 
     /** Default name for configuration directory */
     private static final String CONFIG_DIR = "data/";
+    private GeoZServer server;
 
     /**
      * Initializes logging and config.
@@ -57,7 +59,17 @@ public class FreefsLog extends HttpServlet {
         //	(new GeoServer()).init(this);
         //}
 
-
+        /*ServletContext sc = getServletContext();
+           GeoServer gs = (GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+           ConfigInfo cfgInfo = ConfigInfo.getInstance(path, gs);
+                   if (cfgInfo.runZServer()) {
+              try {
+                  server = new GeoZServer(cfgInfo.getZServerProps());
+                  server.start();
+              } catch (java.io.IOException e) {
+                  LOGGER.info("zserver module could not start: " + e.getMessage());
+              }
+                   }*/
     }
 
     /**
@@ -113,5 +125,8 @@ public class FreefsLog extends HttpServlet {
 
         LOGGER.finer("shutting down zserver");
 
+        if (server != null) {
+            server.shutdown(1);
+        }
     }
 }
