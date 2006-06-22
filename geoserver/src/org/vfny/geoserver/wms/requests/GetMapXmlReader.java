@@ -13,6 +13,7 @@ import org.geotools.referencing.CRS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryFinder;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
@@ -63,7 +64,7 @@ import javax.xml.parsers.SAXParserFactory;
  * @version $Id$
  */
 public class GetMapXmlReader extends XmlRequestReader {
-    private static final StyleFactory styleFactory = StyleFactory
+    private static final StyleFactory styleFactory = StyleFactoryFinder
         .createStyleFactory();
 
     /**

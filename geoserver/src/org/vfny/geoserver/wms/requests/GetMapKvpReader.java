@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.io.StringBufferInputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -37,6 +36,7 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleAttributeExtractor;
 import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryFinder;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
@@ -158,7 +158,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             "org.vfny.geoserver.requests.readers.wms");
 
     /** Used to parse SLD documents from SLD and SLD_BODY parameters */
-    private static final StyleFactory styleFactory = StyleFactory
+    private static final StyleFactory styleFactory = StyleFactoryFinder
         .createStyleFactory();
 
     /**
@@ -278,6 +278,45 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 throw new WmsException("BGCOLOR " + bgcolor
                     + " incorrectly specified (0xRRGGBB format expected)");
             }
+        }
+        
+        /** KML/KMZ score value */
+        String KMScore = getValue("KMSCORE");
+        if (KMScore != null)
+        {
+	        try {
+	        	// handle special string cases of "vector" or "raster"
+	        	if (KMScore.equalsIgnoreCase("vector"))
+	        		KMScore = "100"; // vector default
+	        	else if (KMScore.equalsIgnoreCase("raster"))
+	        		KMScore = "0"; // raster default
+	        	
+	        	Integer s = new Integer(KMScore);
+	        	int score = s.intValue();
+	        	if (score < 0 || score > 100)
+	        		throw new NumberFormatException("KMScore not between 0 and 100. "+
+	        				"If you wish not to use it, do not specify KMScore as a parameter.");
+	        	request.setKMScore(score);
+	        	LOGGER.info("Set KMScore: " + score);
+	        }
+	        catch (NumberFormatException e) {
+	        	throw new WmsException("KMScore parameter (" + KMScore + ") incorrectly specified. "+
+	        			"Expecting an integer value between between 0 and 100");
+	        }
+        }
+        
+        /** KMattr: 'full' or 'no' attribution for KML placemark <description> */
+        String KMAttr = getValue("KMATTR");
+        if (KMAttr != null)
+        {
+        	if (KMAttr.equalsIgnoreCase("no") ||
+        		KMAttr.equalsIgnoreCase("false") ||
+        		KMAttr.equalsIgnoreCase("0"))
+        	{
+        		request.setKMattr(false);
+        	}
+        	else
+        		request.setKMattr(true);	// default to true
         }
     }
 
@@ -450,7 +489,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * @throws WmsException if the value of the BBOX request parameter can't be
      *         parsed as four <code>double</code>'s
      */
-    private Envelope parseBbox() throws WmsException {
+    protected Envelope parseBbox() throws WmsException {
         Envelope bbox = null;
         String bboxParam = getValue("BBOX");
         Object[] bboxValues = readFlat(bboxParam, INNER_DELIMETER).toArray();
@@ -509,7 +548,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *         its number if greater than zero and distinct of the number of
      *         requested layers
      */
-    private List parseStylesParam(GetMapRequest request,
+    protected List parseStylesParam(GetMapRequest request,
         FeatureTypeInfo[] layers) throws WmsException {
         String rawStyles = getValue("STYLES");
         List styles = styles = new ArrayList(layers.length);
@@ -624,7 +663,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private void parseLayersAndStyles(GetMapRequest request)
+    protected void parseLayersAndStyles(GetMapRequest request)
         throws WmsException {
         String sldParam = getValue("SLD");
         String sldBodyParam = getValue("SLD_BODY");
@@ -661,7 +700,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private void parseSldBodyParam(GetMapRequest request)
+    protected void parseSldBodyParam(GetMapRequest request)
         throws WmsException {
         final String sldBody = getValue("SLD_BODY");
 
@@ -731,7 +770,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private void parseSldParam(GetMapRequest request) throws WmsException 
+    protected void parseSldParam(GetMapRequest request) throws WmsException 
 	{
         String urlValue = getValue("SLD");               
 
@@ -916,7 +955,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 		
 		if (layer instanceof NamedLayer)
 		{
-			ftcs = ((NamedLayer) layer).getLayerFeatureConstrains();
+			ftcs = ((NamedLayer) layer).getLayerFeatureConstraints();
 			layerStyles = ((NamedLayer) layer).getStyles();
 		}
 		else if (layer instanceof UserLayer)
@@ -1057,7 +1096,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException
      */
-    private FeatureTypeInfo[] parseLayersParam(GetMapRequest request)
+    protected FeatureTypeInfo[] parseLayersParam(GetMapRequest request)
         throws WmsException {
         FeatureTypeInfo[] featureTypes;
         String layersParam = getValue("LAYERS");

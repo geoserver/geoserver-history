@@ -8,6 +8,7 @@ import java.awt.Color;
 
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapLayer;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 
 /**
@@ -49,11 +50,18 @@ public class WMSMapContext extends DefaultMapContext {
     /** true if background transparency is requested */
     private boolean transparent;
 
+    private GetMapRequest request; // hold onto it so we can grab info from it (request URL etc...)
+    
     /**
      *
      */
     public WMSMapContext() {
         super();
+    }
+    
+    public WMSMapContext(GetMapRequest req) {
+        super();
+        request = req;
     }
 
     /**
@@ -136,4 +144,12 @@ public class WMSMapContext extends DefaultMapContext {
     public void setTransparent(boolean transparent) {
         this.transparent = transparent;
     }
+    
+    public GetMapRequest getRequest() {
+		return request;
+	}
+    
+	public void setRequest(GetMapRequest request) {
+		this.request = request;
+	}
 }

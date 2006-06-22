@@ -4,11 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
@@ -18,7 +13,6 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.map.svg.EncodeSVG;
 
 
 /**
@@ -30,12 +24,15 @@ class KMLMapProducer implements GetMapProducer {
     /** standard logger */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.kml");
-    
-    /** encoder instance which does all the hard work */
-    private EncodeKML kmlEncoder;
-    
-    /** lag between 'encode' call and 'writeTo' requires temporary storage' */
-    private File temp;
+
+	/**
+	 * encoder instance which does all the hard work
+	 * 
+	 * @uml.property name="kmlEncoder"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private EncodeKML kmlEncoder;
+
     
     /**
      * Request that encoding be halted if possible.
@@ -75,21 +72,8 @@ class KMLMapProducer implements GetMapProducer {
      *
      * @throws WmsException thrown if anything goes wrong during the production.
      */
-    public void produceMap(WMSMapContext map)
-    throws WmsException {
-        try{
-            temp = File.createTempFile("kml",null);
-            this.kmlEncoder = new EncodeKML(map);
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(temp));
-            kmlEncoder.encode(bos);
-            bos.flush();
-            bos.close();
-            
-        } catch(IOException ioe){
-            WmsException we  = new WmsException(ioe.getMessage());
-            we.initCause(ioe);
-            throw we;
-        }
+    public void produceMap(WMSMapContext map) throws WmsException {
+    	this.kmlEncoder = new EncodeKML(map);
     }
     
     /**
@@ -104,14 +88,8 @@ class KMLMapProducer implements GetMapProducer {
      *
      * @TODO replace stream copy with nio code.
      */
-    public void writeTo(OutputStream out) throws ServiceException, IOException {
-        FileInputStream fis  = new FileInputStream(temp);
-        
-        byte[] buf = new byte[1024];
-        int i = 0;
-        while((i=fis.read(buf))!=-1) {
-            out.write(buf, 0, i);
-        }
-        fis.close();
+    public void writeTo(OutputStream out) throws ServiceException, IOException 
+    {
+    	kmlEncoder.encodeKML(out);
     }
 }

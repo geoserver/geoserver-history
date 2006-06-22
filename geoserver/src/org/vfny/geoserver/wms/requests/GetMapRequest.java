@@ -132,6 +132,20 @@ public class GetMapRequest extends WMSRequest {
     public int getWidth() {
         return this.mandatoryParams.width;
     }
+    
+    /**
+     * @return the KML/KMZ score value for image vs. vector response
+     */
+    public int getKMScore() {
+    	return this.optionalParams.KMScore;
+    }
+    
+    /**
+     * @return true: return full attribution for placemark <description>
+     */
+    public boolean getKMattr() {
+    	return this.optionalParams.KMattr;
+    }
 
     /**
      * DOCUMENT ME!
@@ -224,6 +238,20 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
+     * @param score the KML/KMZ score value for image vs. vector response, from 0 to 100
+     */
+    public void setKMScore(int score){
+    	this.optionalParams.KMScore = score;
+    }
+    
+    /**
+     * @param on true: full attribution; false: no attribution
+     */
+    public void setKMattr(boolean on) {
+    	this.optionalParams.KMattr = on;
+    }
+    
+    /**
      * decodes a color of the form <code>#FFFFFF</code> into a
      * <code>java.awt.Color</code> object
      *
@@ -285,6 +313,12 @@ public class GetMapRequest extends WMSRequest {
 
         /** DOCUMENT ME!  */
         boolean transparent = false;
+        
+        /** score value for KML/KMZ */
+        int KMScore = 40;
+        
+        /** KML full/none attribution on returned placemark <description>. */
+        boolean KMattr = true;
     }
 
 }

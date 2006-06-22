@@ -108,7 +108,7 @@ public class GetMapResponse implements Response {
 
         //JD:make instance variable in order to release resources later
         //final WMSMapContext map = new WMSMapContext();
-        map = new WMSMapContext();
+        map = new WMSMapContext(request);
         
         //DJB: the WMS spec says that the request must not be 0 area
         //     if it is, throw a service exception!
