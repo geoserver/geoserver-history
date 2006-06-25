@@ -32,7 +32,7 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
     /** Official KML mime type
      * @TODO add KMZ support
      */
-    static final String MIME_TYPE = "application/vnd.google-earth.kml+xml";
+    public static final String MIME_TYPE = "application/vnd.google-earth.kml+xml";
     
     /** Set of supported mime types for the producers made by this Factory
      */
