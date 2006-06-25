@@ -25,6 +25,7 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetKMLReflectKvpReader;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
+import org.vfny.geoserver.wms.responses.map.kml.KMLMapProducerFactory;
 
 
 
@@ -108,11 +109,14 @@ public class KMLReflector extends WMService {
 	 */
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
     	throws ServletException, IOException {
+
+	    //set to KML mime type, so GEarth opens automatically
+	    response.setContentType(KMLMapProducerFactory.MIME_TYPE);
 		
-		// the output stream we will write to
-		BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
-		
-		Map requestParams = new HashMap();
+       	    // the output stream we will write to
+       	    BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
+       	
+       	Map requestParams = new HashMap();
         String paramName;
         String paramValue;
         
