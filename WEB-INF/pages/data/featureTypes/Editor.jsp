@@ -29,7 +29,10 @@
       <td class="datum">
         <html:select property="styleId">
           <html:options property="styles"/>
-        </html:select>
+        </html:select> 
+        <html:submit property="action">
+          <bean:message key="config.data.sldWizard.label"/>
+        </html:submit><br>
       </td>
     </tr>    
 	<tr>
