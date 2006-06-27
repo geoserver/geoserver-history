@@ -6,13 +6,12 @@ package org.vfny.geoserver.global;
  */
 
 import java.io.File;
-
+import java.io.IOException;
 import java.util.logging.Logger;
-
 
 import javax.servlet.ServletContext;
 
-import org.vfny.geoserver.global.xml.ReaderUtils;
+import org.geoserver.GeoServerResourceLoader;
 
 /**
  *   This class allows for abstracting the location of the Geoserver Data directory.  Some people call this "GEOSERVER_HOME".
@@ -41,13 +40,13 @@ import org.vfny.geoserver.global.xml.ReaderUtils;
  * @author dblasby
  *
  */
-public class GeoserverDataDirectory
+public class GeoserverDataDirectory 
 {
 	private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 	
     //caches the dataDir
-    private static File dataDir;
-
+    private static GeoServerResourceLoader loader;
+    
     private static boolean isTrueDataDir = false;
 
 
@@ -67,9 +66,11 @@ public class GeoserverDataDirectory
 	    //so it should always get a ServletContext in the startup routine.
 	    //If this assumption can't be made, then we can't allow data_dir
 	    //_and_ webapp options with relative data/ links -ch
-	    if (dataDir == null) {
-	    
-	    		
+		
+		if ( loader == null ) {
+			
+			File dataDir = null;
+			
 			//see if there's a system property
 			String prop = System.getProperty("GEOSERVER_DATA_DIR");
 			if (prop != null && !prop.equals(""))
@@ -98,9 +99,19 @@ public class GeoserverDataDirectory
 			String rootDir = servContext.getRealPath("/");
 			dataDir = new File (rootDir);
 			LOGGER.info("Data_dir: " + dataDir.getPath());
-	    }
+			
+			//create loader, and add some locations to the serach path
+			loader = new GeoServerResourceLoader( dataDir );
+			loader.addSearchLocation(
+				new File( servContext.getRealPath( "WEB-INF" ) )
+			);
+			loader.addSearchLocation(
+				new File( servContext.getRealPath( "data" ) )	
+			);
+		}
+		
+	    return loader.getBaseDirectory();
 	    
-	    return dataDir;
 	}
 
     /**
@@ -130,15 +141,32 @@ public class GeoserverDataDirectory
      * @return The proper config directory.
      * @throws ConfigurationException if the directory could not be found at all.    */
     public static File findConfigDir(File root, String dirName) throws ConfigurationException {
-        File configDir;
-	try {
-	    configDir = ReaderUtils.checkFile(new File(root, dirName), true);
-	} catch (ConfigurationException confE) {
-	    File dataDir = new File(root, "data/"); //check in data/, the old way.
-	    configDir = ReaderUtils.checkFile(new File(dataDir, dirName), true);
-	}
-	return configDir;
-    } 
+        
+    		File configDir;
+		try {
+			configDir = loader.find( dirName );
+		} 
+		catch (IOException e) {
+			throw new ConfigurationException( e );
+		}
+		return configDir;
+    }
+    
+    /**
+     * Utility method fofinding a config file under the data directory.
+     * 
+     * @param file Path to file, absolute or relative to data dir.
+     * 
+     * @return The file handle, or null.
+     */
+    public static File findConfigFile( String file ) throws ConfigurationException {
+    		try {
+			return loader.find( file );
+		} 
+    		catch (IOException e) {
+    			throw new ConfigurationException( e );
+		}
+    }
 }
 
 
