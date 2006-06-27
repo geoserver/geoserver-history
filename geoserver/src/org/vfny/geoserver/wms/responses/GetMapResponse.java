@@ -40,6 +40,7 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 
+import java.text.SimpleDateFormat;
 
 /**
  * A GetMapResponse object is responsible of generating a map based on a GetMap
@@ -184,8 +185,9 @@ public class GetMapResponse implements Response {
         }
 
         this.delegate.produceMap(map);
-        if (cachingPossible)
-        	responseHeaders.put("Cache-Control: max-age",maxAge + "s" );
+        if (cachingPossible) {
+	    responseHeaders.put("Cache-Control", "max-age=" + maxAge);
+	}
     }
 
     /**
