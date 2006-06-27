@@ -25,6 +25,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 
+import org.geoserver.util.ReaderUtils;
 import org.geotools.feature.FeatureType;
 
 import org.vfny.geoserver.global.ConfigurationException;
@@ -32,7 +33,7 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.global.xml.ReaderUtils;
+
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.servlets.Capabilities;
 
@@ -153,7 +154,13 @@ public class MapPreviewAction extends GeoServerAction
 	private void emptyGeneratedDirectory(File dir) 
 		throws FileNotFoundException, ConfigurationException 
 	{
-		dir = ReaderUtils.checkFile(dir, true);
+		try {
+			dir = ReaderUtils.checkFile(dir, true);
+		} 
+		catch (Exception e) {
+			throw new ConfigurationException( e );
+		}
+		
 		String[] files = dir.list();
 		if (files == null || files.length == 0)
 			return;
