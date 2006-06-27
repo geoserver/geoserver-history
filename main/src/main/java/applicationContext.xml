@@ -22,6 +22,7 @@
 		class="org.vfny.geoserver.global.Data">
 		<constructor-arg ref="config"/>
 		<constructor-arg ref="geoServer"/>
+		<constructor-arg ref="catalog"/>
 	</bean>
 	<bean id="dataConfig"
 		class="org.vfny.geoserver.config.DataConfig">
