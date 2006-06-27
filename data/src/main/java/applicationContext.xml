@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	
+	<!-- catalog  -->
+	<bean id="catalog"
+		class="org.geoserver.data.GeoServerCatalog"/>
+		
+	<bean id="serviceFinder"
+		class="org.geoserver.data.GeoServerServiceFinder">
+		<constructor-arg ref="catalog"></constructor-arg>	
+	</bean>
+	
+	<!-- default service factories -->
+	<bean id="shapefileServiceFactory"
+		class="org.geotools.catalog.shapefile.ShapefileServiceFactory"/>
+		
+</beans>

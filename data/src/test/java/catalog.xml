@@ -1,0 +1,9 @@
+<catalog>
+  <datastores>
+    <datastore>
+      <connectionParameters>
+        <parameter name="url" value="file:test.shp"/>
+      </connectionParameters>
+    </datastore> 
+  </datastores>
+</catalog>
