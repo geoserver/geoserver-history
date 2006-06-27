@@ -5,28 +5,48 @@
 package org.vfny.geoserver.global;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import javax.swing.Icon;
+
+import org.geotools.catalog.Catalog;
+import org.geotools.catalog.Resolve;
+import org.geotools.catalog.ResolveChangeEvent;
+import org.geotools.catalog.ResolveChangeListener;
+import org.geotools.catalog.Service;
+import org.geotools.catalog.ServiceInfo;
+import org.geotools.catalog.Resolve.Status;
+import org.geotools.catalog.defaults.DefaultServiceInfo;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
+import org.geotools.util.ProgressListener;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 
 
 /**
  * This is the configuration iformation for one DataStore. This class can also
  * generate real datastores.
- *
+ * <p>
+ * This class implements {@link org.geotools.catalog.Service} interface as a 
+ * link to a catalog.
+ * </p>
  * @author Gabriel Rold?n
  * @author dzwiers
+ * @author Justin Deoliveira
  * @version $Id: DataStoreInfo.java,v 1.14 2004/06/26 19:51:24 jive Exp $
  */
-public class DataStoreInfo extends GlobalLayerSupertype {
+public class DataStoreInfo extends GlobalLayerSupertype implements Service {
 
     /** DataStoreInfo we are representing */
     private DataStore dataStore = null;
@@ -42,7 +62,12 @@ public class DataStoreInfo extends GlobalLayerSupertype {
 
     /** Storage for metadata */
     private Map meta;
-
+    
+    /**
+     * Catalog
+     */
+    private Catalog catalog;
+    
     /**
      * Directory associated with this DataStore.
      * 
@@ -81,6 +106,8 @@ public class DataStoreInfo extends GlobalLayerSupertype {
         nameSpaceId = config.getNameSpaceId();
         title = config.getTitle();
         _abstract = config.getAbstract();
+        
+        catalog = data.getCatalog();
     }
 
     /**
@@ -359,4 +386,110 @@ public class DataStoreInfo extends GlobalLayerSupertype {
     public Object getMetaData(String key) {
         return meta.get(key);
     }
+
+    //catalog methods
+    
+    List/*<FeatureTypeInfo>*/ members = new ArrayList();
+    ServiceInfo info;
+    
+    public void addMember( FeatureTypeInfo ftInfo ) {
+    		members.add( ftInfo );
+    }
+    
+	public List members(ProgressListener monitor) throws IOException {
+		return members;
+	}
+
+	public boolean canResolve(Class adaptee) {
+		return DataStore.class.isAssignableFrom( adaptee ) || 
+			List.class.isAssignableFrom( adaptee ) || 
+			ServiceInfo.class.isAssignableFrom( adaptee );
+	}
+	
+	public Object resolve(Class adaptee, ProgressListener monitor) throws IOException {
+		if ( DataStore.class.isAssignableFrom( adaptee ) ) {
+			return getDataStore();
+		}
+		if ( List.class.isAssignableFrom( adaptee ) ) {
+			return members( monitor );
+		}
+		if ( ServiceInfo.class.isAssignableFrom( adaptee ) ) {
+			return getInfo( monitor );
+		}
+		
+		return null;
+	}
+
+	public Map getConnectionParams() {
+		return getParams();
+	}
+
+	public ServiceInfo getInfo(ProgressListener monitor) throws IOException {
+		if ( info == null ) {
+			synchronized ( this ) {
+				if ( info == null ) {
+					info = new DefaultServiceInfo(
+						getTitle(), null, getAbstract(), null, null, null, 
+						null, null
+					);
+				}
+			}
+		}
+		
+		return info;
+	}
+
+	public Resolve parent(ProgressListener monitor) throws IOException {
+		return catalog;
+	}
+
+	public Status getStatus() {
+		if ( isEnabled() ) {
+			return Status.CONNECTED;
+		}
+		
+		return Status.NOTCONNECTED;
+	}
+
+	public Throwable getMessage() {
+		return null;
+	}
+
+	public URI getIdentifier() {
+		
+		try {
+			URI uri = new URI( getNameSpace().getURI() );
+			String path = uri.getPath();
+			if ( path == null ) {
+				path = getId();
+			}
+			else {
+				if ( !path.endsWith( "/") ) {
+					path += "/";
+				}
+				path += getId();
+			}
+			
+			return new URI(
+				uri.getScheme(), uri.getHost(), path
+			);
+			
+		} 
+		catch (URISyntaxException e) {
+			return null;
+		}
+	}
+
+	public void addListener(ResolveChangeListener listener) throws UnsupportedOperationException {
+		//events not supported
+		throw new UnsupportedOperationException();
+	}
+
+	public void removeListener(ResolveChangeListener listener) {
+		//events not supported
+	}
+
+	public void fire(ResolveChangeEvent event) {
+		//events not supported
+	}
 }
