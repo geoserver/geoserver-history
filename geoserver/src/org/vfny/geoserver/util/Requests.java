@@ -35,26 +35,17 @@ import org.vfny.geoserver.global.WMS;
  * @author Jody Garnett
  */
 public final class Requests {
-    /**
-     * Aquire GeoServer from Web Container.
-     * 
-     * <p>
-     * In GeoServer is create by a STRUTS plug-in and is available through the
-     * Web container.
-     * </p>
-     * 
-     * <p>
-     * Test cases may seed the request object with a Mock WebContainer and a
-     * Mock GeoServer.
-     * </p>
-     *
-     * @param request HttpServletRequest used to aquire servlet context
-     *
-     * @return GeoServer instance for the current Web Application
+
+    /*
+     * This is the parameter used to get the proxy from the 
+     * web.xml file.  This is a bit hacky, it should be moved to
+     * GeoServer.java and be a normal config parameter, but the
+     * overhead of making a new config param is just too high,
+     * so we're allowing this to just be read from the web.xml
+     ( See GEOS-598 for more information
      */
-    /*public static GeoServer getGeoServer(HttpServletRequest request) {
-        return (GeoServer) getWFS(request).getGeoServer();
-    }*/
+    public static final String PROXY_PARAM = "PROXY_BASE_URL";
+
     /**
      * Aquire WFS from Web Container.
      * 
@@ -113,13 +104,13 @@ public final class Requests {
      * @return http://server:port/path-defined-context/
      */
     public static String getBaseUrl(HttpServletRequest httpServletRequest) {
-/*
- * didier (2004/10/03) assumption removed :
- *       return "http://" + httpServletRequest.getServerName() + ":"
- *       + httpServletRequest.getServerPort() + "/geoserver/";
- */
-    	return httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName() + ":"
+	String url = httpServletRequest.getSession().getServletContext()
+	    .getInitParameter(PROXY_PARAM);
+        if (url == null || url.trim().length() == 0) {
+    	url = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName() + ":"
         + httpServletRequest.getServerPort() + httpServletRequest.getContextPath() +"/";
+	}
+	return url;
     }
     
     /**
