@@ -100,8 +100,8 @@ public class TypesEditorAction extends ConfigAction {
                     "config.data.calculateBoundingBox.label"));
         LOGGER.finer("BBOX: " + BBOX);
         final String NEWSLD = HTMLEncoder.decode(messages.getMessage(locale,
-        			"config.data.style.createNewStyle.label"));
-
+        			"config.data.sldWizard.label"));
+        
         if (action.equals(SUBMIT)) {
             return executeSubmit(mapping, typeForm, user, request);
         }
@@ -111,7 +111,7 @@ public class TypesEditorAction extends ConfigAction {
         }
         
         if (action.equals(NEWSLD)) { // if the SLDWizard button was hit
-        	return mapping.findForward("sldWizardSuccess");
+        	return mapping.findForward("SLDWizard");
         }
 
         List attributes = typeForm.getAttributes();
