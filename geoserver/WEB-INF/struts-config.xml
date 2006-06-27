@@ -30,6 +30,10 @@
 	    />
 		</form-bean>
 		
+	    <form-bean
+    		name="sldWizardForm"
+    		type="org.vfny.geoserver.form.data.SLDWizardForm"/>
+    		
 		
 		<form-bean 
 	    name="mapPreviewForm" 
@@ -52,14 +56,6 @@
 	    />
 		</form-bean>
 	    
-	    <form-bean 
-	    name="sldWizardForm" 
-	    type="org.apache.struts.action.DynaActionForm">
-	    <form-property 
-	        name="typeName"
-	        type="java.lang.String" 
-	    />
-	    </form-bean>
 	    
     	<form-bean
     		name="loginForm"
@@ -163,10 +159,6 @@
     	<form-bean
     		name="validationTestSuiteNewForm"
 	   		type="org.vfny.geoserver.form.validation.ValidationTestSuiteNewForm"/>
-    		
-   		<form-bean
-    		name="sldWizardForm"
-    		type="org.vfny.geoserver.form.data.SLDWizardForm"/>
     		
 		<form-bean
 			name="blankBean"
@@ -371,14 +363,16 @@
        	<forward
        		name="config.data.type.editor"
        		path="/config/data/typeEditor.do"/>
-       	<forward
-       		name="sldWizardSuccess"
-       		path="/WEB-INF/pages/SLDWizard.jsp"/>
+
        		
        	<forward
        		name="config.data.calculateBoundingBox"
        		path="/config/data/calculateBoundingBox.do"/>
+       	<forward
+       		name="SLDWizard"
+       		path="/WEB-INF/pages/SLDWizard.jsp"/>
 
+       		
     </global-forwards>
 
 <!-- =================================== Action Mapping Definitions -->
@@ -864,6 +858,16 @@
         	path="/config/data/calculateBoundingBox"
         	type="org.vfny.geoserver.action.data.CalculateBoundingBoxAction"
         	name="blankBean"/>
+        <action
+        	path="/SLDWizard"
+        	type="org.vfny.geoserver.action.data.SLDWizardAction"
+        	name="sldWizardForm"
+        	input="/WEB-INF/pages/SLDWizard.jsp"
+			scope="request"
+			validate="true">
+        	
+        	<forward name="SLDWizard" path="/WEB-INF/pages/SLDWizard.jsp"/>
+        </action>
         	
         <action
         	path="/admin/saveToGeoServer"
@@ -902,14 +906,7 @@
                  <forward name="success" path="/WEB-INF/pages/mapPreview.jsp"/>
           </action>
           
-			<action
-		            path="/sldWizard"
-		            type="org.vfny.geoserver.action.data.SLDWizardAction"
-		            name="TypesEditorForm"
-		            scope="request"
-                 >
-                 <forward name="sldWizardSuccess" path="/WEB-INF/pages/SLDWizard.jsp"/>
-			</action>
+
 
 
 <!-- End Submit Actions -->
