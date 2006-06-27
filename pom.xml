@@ -431,6 +431,7 @@
 	
 	<modules>
 		<module>platform</module>
+		<module>data</module>
 		<module>main</module>
 		<module>wfs</module>
 		<module>wms</module>
@@ -455,6 +456,7 @@
 			</activation>
 			<modules>
 		<module>platform</module>
+		<module>data</module>
     <module>main</module>
     <module>wfs</module>
     <module>wms</module>
