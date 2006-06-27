@@ -1,3 +1,12 @@
+<!--
+Copyright (c) 2006 TOPP - www.openplans.org.  All rights reserved.
+This code is licensed under the GPL 2.0 license, availible at the root
+application directory.
+
+
+@author Brent Owens
+-->
+
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
@@ -107,14 +116,14 @@ function generatePointForm()
 	result = "";
 	result += '<tr><td colspan=4><b><u><font size="+1">Label names for the points:</font></u></b><br></td></tr>';
 	result += '<tr><td width=200 colspan=4><b>Name Field:</b> '+generateNameSelect()+' <i><font color="#92AEFF" size="-1">(This field is the label that will appear on the geometry.)</font></i></td></tr>';
-	result += '<tr><td width=200 colspan=4><b>Text Color:</b> <input type="text" id="labelColor" size=6 maxlength=6 value="FFFFFF"></input><i><font size=-1> hex.</font></i> <i><font color="#92AEFF" size="-1">(This is the color of the label.)</font></i></td></tr>';
+	result += '<tr><td width=200 colspan=4><b>Text Color:</b> '+generateColorPicker("labelColor")+' <i><font color="#92AEFF" size="-1">(This is the color of the label.)</font></i></td></tr>';
 
 	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Color of the points:</font></u></b></td></tr>';
 
-	result += '<tr><td width=120 align="right"><b>Color:</b></td><td width=100><input type="text" id="fillColor" size=6 maxlength=6></input><i><font size=-1> hex.</font></i></td>';
+	result += '<tr><td width=120 align="right"><b>Color:</b></td><td width=100>'+generateColorPicker("fillColor")+'</td>';
 	result += '<td width=120 align="right"><b>Opacity:</b></td><td width=140><input type="text" id="fillOpacity" size=3 maxlength=3 value="1"></input> <i><font color="#92AEFF" size="-1">(0.0 - 1.0)</font></i></td></tr>';
 
-	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Point size and shape:</font></u></b></td></tr>';
+	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Point size and shape:</font></u></b><br></td></tr>';
 
 	result += '<tr><td width=200 colspan=4><b>Point Size:</b> <input type="text" id="pointSize" size=6 maxlength=6></input> <i><font color="#92AEFF" size="-1">(The diameter of the point in pixels.)</font></i><br>&nbsp;</td></tr>';
 	result += '<tr><td width=200 colspan=4><b>Point Shape:</b> <select name="pointShape" id="pointShape"> ';
@@ -131,14 +140,14 @@ function generateLineForm()
 	result = "";
 	result += '<tr><td colspan=4><b><u><font size="+1">Label names for the lines:</font></u></b><br></td></tr>';
 	result += '<tr><td width=200 colspan=4><b>Name Field:</b> '+generateNameSelect()+' <i><font color="#92AEFF" size="-1">(This field is the label that will appear on the geometry.)</font></i></td></tr>';
-	result += '<tr><td width=200 colspan=4><b>Text Color:</b> <input type="text" id="labelColor" size=6 maxlength=6 value="FFFFFF"></input><i><font size=-1> hex.</font></i> <i><font color="#92AEFF" size="-1">(This is the color of the label.)</font></i></td></tr>';
+	result += '<tr><td width=200 colspan=4><b>Text Color:</b> '+generateColorPicker("labelColor")+' <i><font color="#92AEFF" size="-1">(This is the color of the label.)</font></i></td></tr>';
 
-	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Color of the lines:</font></u></b></td></tr>';
+	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Color of the lines:</font></u></b><br></td></tr>';
 
-	result += '<tr><td width=120 align="right"><b>Color:</b></td><td width=100><input type="text" id="lineColor"size=6 maxlength=6></input><i><font size=-1> hex.</font></i></td>';
-	result += '<td width=120 align="right"><b>Opacity:</b></td><td width=140><input type="text" id="lineOpacity" size=3 maxlength=3 value="1"></input> <i><font color="#92AEFF" size="-1">(0.0 - 1.0)</font></i></td></tr>';
+	result += '<tr><td width=150 align="right"><b>Color:</b></td><td width=100>'+generateColorPicker("lineColor")+'</td>';
+	result += '<td width=150 align="right"><b>Opacity:</b></td><td width=140><input type="text" id="lineOpacity" size=3 maxlength=3 value="1"></input> <i><font color="#92AEFF" size="-1">(0.0 - 1.0)</font></i></td></tr>';
 	
-	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Line dimentions:</font></u></b></td></tr>';
+	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Line dimentions:</font></u></b><br></td></tr>';
 
 	result += '<tr><td width=200 colspan=4><b>Line width:</b> <input type="text" id="lineWidth" size=6 maxlength=6></input> <i><font color="#92AEFF" size="-1">(The width, or thickness, of the line in pixles.)</font></i><br>&nbsp;</td></tr>';
 
@@ -150,17 +159,30 @@ function generatePolygonForm()
 	result = "";
 	result += '<tr><td colspan=4><b><u><font size="+1">Label names for the polygons:</font></u></b><br></td></tr>';
 	result += '<tr><td width=200 colspan=4><b>Name Field:</b> '+generateNameSelect()+' <i><font color="#92AEFF" size="-1">(This field is the label that will appear on the geometry.)</font></i><br>&nbsp;</td></tr>';
-	result += '<tr><td width=200 colspan=4><b>Text Color:</b> <input type="text" id="labelColor" size=6 maxlength=6 value="FFFFFF"></input><i><font size=-1> hex.</font></i> <i><font color="#92AEFF" size="-1">(This is the color of the label.)</font></i></td></tr>';
+	result += '<tr><td width=200 colspan=4><b>Text Color:</b> '+generateColorPicker("labelColor")+' <i><font color="#92AEFF" size="-1">(This is the color of the label.)</font></i></td></tr>';
 
-	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Color inside the polygons:</font></u></b></td></tr>';
+	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Color inside the polygons:</font></u></b><br></td></tr>';
 
-	result += '<tr><td width=120 align="right"><b>Fill Color:</b></td><td width=100><input type="text" id="fillColor"size=6 maxlength=6></input><i><font size=-1> hex.</font></i></td>';
+	result += '<tr><td width=120 align="right"><b>Fill Color:</b></td><td width=150>'+generateColorPicker("fillColor")+'&nbsp;&nbsp;&nbsp;&nbsp;</td>';
 	result += '<td width=120 align="right"><b>Fill Opacity:</b></td><td><input type="text" id="fillOpacity" size=3 maxlength=3 value="1"></input> <i><font color="#92AEFF" size="-1">(0.0 - 1.0)</font></i></td></tr>';
 	
-	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Outline color of the polygons:</font></u></b></td></tr>';
+	result += '<tr><td colspan=4><br><hr><b><u><font size="+1">Outline color of the polygons:</font></u></b><br></td></tr>';
 
-	result += '<tr><td width=120 align="right"><b>Outline Color:</b></td><td width=100><input type="text" id="lineColor"size=6 maxlength=6></input><i><font size=-1> hex.</font></i></td>';
+	result += '<tr><td width=120 align="right"><b>Outline Color:</b></td><td width=150>'+generateColorPicker("lineColor")+'&nbsp;&nbsp;&nbsp;&nbsp;</td>';
 	result += '<td width=120 align="right"><b>Outline Opacity:</b></td><td><input type="text" id="lineOpacity" size=3 maxlength=3 value="1"></input> <i><font color="#92AEFF" size="-1">(0.0 - 1.0)</font></i></td></tr>';
+
+	return result;
+}
+
+
+function generateColorPicker(colorFieldName)
+{
+	
+	result = '<input name="'+colorFieldName+'" id="'+colorFieldName+'" size="7" ';
+	result += 'onChange="relateColor(\''+colorFieldName+'\', this.value);"> ';
+	result += '<script language="javascript">relateColor(\'pick'+colorFieldName+'\', getObj(\''+colorFieldName+'\').value);</scr'+'ipt> ';
+	result += '<a href="javascript:pickColor(\''+colorFieldName+'\');" id="pick'+colorFieldName+'" name="pick'+colorFieldName+'" style="border: 1px solid #000000; font-family:Verdana; font-size:10px; ';
+	result += 'text-decoration: none; " ><img src="../../images/colorpicker.jpg" width=12 height=12 border="none"></a>';
 
 	return result;
 }
@@ -240,16 +262,25 @@ function generatePointSLD()
 	pointSize = document.getElementById('pointSize').value;
 	pointShape = document.getElementById('pointShape').value;
 
+	if (labelColor.length == 6)
+		labelColor = '#'+labelColor;
+	if (fillColor.length == 6)
+		fillColor = '#'+fillColor;
+
 	var font;
 	var halo;
 
 	// check values to make sure they are in range and valid
 	if (propertyName != "none" && (labelColor == null || labelColor == "") )
 		return "ERROR: label name specified, but no text color specified.";
+	if (labelColor == null || labelColor == "")
+		return "ERROR: Label color cannot be empty";
+	if (labelColor.length != 7)
+		return "ERROR: Label color must be 7 characters long in hexadecimal (#00ff23).";
 	if (fillColor == null || fillColor == "")
 		return "ERROR: Point color cannot be empty";
-	if (fillColor.length != 6)
-		return "ERROR: Point color must be 6 digits long in hexadecimal (00ff23).";
+	if (fillColor.length != 7)
+		return "ERROR: Point color must be 7 characters long in hexadecimal (#00ff23).";
 	if (fillOpacity == null || fillOpacity == "")
 		return "ERROR: Point opacity cannot be empty";
 	if (fillOpacity < 0.0 || fillOpacity > 1.0)
@@ -288,15 +319,24 @@ function generateLineSLD()
 	lineOpacity = document.getElementById('lineOpacity').value;
 	lineWidth = document.getElementById('lineWidth').value;
 
+	if (labelColor.length == 6)
+		labelColor = '#'+labelColor;
+	if (lineColor.length == 6)
+		lineColor = '#'+lineColor;
+
 	var halo;
 
 	// check values to make sure they are in range and valid
 	if (propertyName != "none" && (labelColor == null || labelColor == "") )
 		return "ERROR: label name specified, but no text color specified.";
+	if (labelColor == null || labelColor == "")
+		return "ERROR: Label color cannot be empty";
+	if (labelColor.length != 7)
+		return "ERROR: Label color must be 7 characters long in hexadecimal (#00ff23).";
 	if (lineColor == null || lineColor == "")
 		return "ERROR: Line color cannot be empty";
-	if (lineColor.length != 6)
-		return "ERROR: Line color must be 6 digits long in hexadecimal (00ff23).";
+	if (lineColor.length != 7)
+		return "ERROR: Line color must be 7 characters long in hexadecimal (#00ff23).";
 	if (lineOpacity == null || lineOpacity == "")
 		return "ERROR: Line opacity cannot be empty";
 	if (lineOpacity < 0.0 || lineOpacity > 1.0)
@@ -331,23 +371,34 @@ function generatePolygonSLD()
 	lineColor = document.getElementById('lineColor').value;
 	lineOpacity = document.getElementById('lineOpacity').value;
 	
+	if (labelColor.length == 6)
+		labelColor = '#'+labelColor;
+	if (fillColor.length == 6)
+		fillColor = '#'+fillColor;
+	if (lineColor.length == 6)
+		lineColor = '#'+lineColor;
+	
 	var halo;
 
 	// check values to make sure they are in range and valid
 	if (propertyName != "none" && (labelColor == null || labelColor == "") )
 		return "ERROR: label name specified, but no text color specified.";
+	if (labelColor == null || labelColor == "")
+		return "ERROR: Label color cannot be empty";
+	if (labelColor.length != 7)
+		return "ERROR: Label color must be 7 characters long in hexadecimal (#00ff23).";
 	if (fillColor == null || fillColor == "")
 		return "ERROR: Polygon fill color cannot be empty";
-	if (fillColor.length != 6)
-		return "ERROR: Polygon fill color must be 6 digits long in hexadecimal (00ff23).";
+	if (fillColor.length != 7)
+		return "ERROR: Polygon fill color must be 7 characters long in hexadecimal (#00ff23).";
 	if (fillOpacity == null || fillOpacity == "")
 		return "ERROR: Polygon color opacity cannot be empty";
 	if (fillOpacity < 0.0 || fillOpacity > 1.0)
 		return "ERROR: Polygon fill opacity must be between 0.0 and 1.0";
 	if (lineColor == null || lineColor == "")
 		return "ERROR: Polygon outline color cannot be empty";
-	if (lineColor.length != 6)
-		return "ERROR: Polygon outline color must be 6 digits long in hexadecimal (00ff23).";
+	if (lineColor.length != 7)
+		return "ERROR: Polygon outline color must be 7 characters long in hexadecimal (#00ff23).";
 	if (lineOpacity == null || lineOpacity == "")
 		return "ERROR: Polygon outline opacity cannot be empty";
 	if (lineOpacity < 0.0 || lineOpacity > 1.0)
@@ -633,11 +684,25 @@ function XMLProgressFunction()
 
 		log("response:\n"+geo_xmlhttp.responseText);
 
-		success_node = getElements(geo_xmlhttp.responseXML,"sld","success")[0];
-		if (success_node != null)
+		// ug, temporary hack just so I can get it working
+		if (window.ActiveXObject)
 		{
-			enableSuccessMessage();
-			log("PutStyles successful");
+			val = geo_xmlhttp.responseText.indexOf("success");
+
+			if (val > -1)
+			{
+				enableSuccessMessage();
+				log("PutStyles successful");
+			}
+		}
+		else
+		{
+			success_node = getElements(geo_xmlhttp.responseXML,"sld","success")[0];
+			if (success_node != null)
+			{
+				enableSuccessMessage();
+				log("PutStyles successful");
+			}
 		}
 	}
 	else
@@ -652,8 +717,9 @@ function getElements(node,tag_prefix,tag_name)
 {
 	if (window.ActiveXObject)
 	{
-      //IE has no idea of namespaces/prefixes
-      return node.getElementsByTagName(tag_prefix+":"+tag_name);
+		//IE has no idea of namespaces/prefixes
+		log("parsing IE");
+		return node.getElementsByTagName(tag_prefix+":"+tag_name);
     }
     else if (window.XMLHttpRequest)
     {
@@ -667,12 +733,26 @@ function getElements(node,tag_prefix,tag_name)
 
 function enableSuccessMessage()
 {
-	document.getElementById('sld_success').innerHTML = "<b><font color=\"#22ff33\" size=\"+1\">Success</font></b>";
+	if (document.all) // if IE
+	{
+		log("ie put");
+		doc = document.getElementById('sld_success').getElementsByTagName('span')[0];
+		doc.innerHTML = '<b><font color="#22ff33" size="+1">Success</font></b>';
+		
+	}
+	else
+		document.getElementById('inner_sld_success').innerHTML = "<b><font color=\"#22ff33\" size=\"+1\">Success</font></b>";
 }
 
 function hideSuccessMessage()
 {
-	document.getElementById('sld_success').innerHTML = "";
+	if (document.all) // if IE
+	{
+		doc = document.getElementById('sld_success').getElementsByTagName('span')[0];
+		doc.innerHTML = '';
+	}
+	else
+		document.getElementById('inner_sld_success').innerHTML = "";
 }
 
 /**
@@ -737,6 +817,195 @@ function nothing()
 }
 
 
+
+// Flooble Color Picker
+// Color Picker Script from Flooble.com
+// For more information, visit 
+//	http://www.flooble.com/scripts/colorpicker.php
+// Copyright 2003 Animus Pactum Consulting inc.
+// You may use and distribute this code freely, as long as
+// you keep this copyright notice and the link to flooble.com
+// if you chose to remove them, you must link to the page
+// listed above from every web page where you use the color
+// picker code.
+//---------------------------------------------------------
+     var perline = 15;
+     var divSet = false;
+     var curId;
+     var colorLevels = Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
+     var colorArray = Array();
+     var ie = false;
+     var nocolor = 'none';
+	 if (document.all) { ie = true; nocolor = ''; }
+	 function getObj(id) {
+		if (ie) { return document.all[id]; } 
+		else {	return document.getElementById(id);	}
+	 }
+
+     function addColor(r, g, b) {
+     	var red = colorLevels[r];
+     	var green = colorLevels[g];
+     	var blue = colorLevels[b];
+     	addColorValue(red, green, blue);
+     }
+
+     function addColorValue(r, g, b) {
+     	colorArray[colorArray.length] = '#' + r + r + g + g + b + b;
+     }
+     
+     function setColor(color) {
+     	var link = getObj('pick'+curId);
+     	var field = getObj(curId);// + 'field'
+     	var picker = getObj('colorpicker');
+     	field.value = color;
+     	if (color == '') {
+			link.innerHTML="&nbsp;&nbsp;&nbsp;";
+	     	link.style.background = nocolor;
+	     	link.style.color = nocolor;
+	     	color = nocolor;
+     	} else {
+			link.innerHTML="&nbsp;&nbsp;&nbsp;";
+	     	link.style.background = color;
+	     	link.style.color = color;
+	    }
+     	picker.style.display = 'none';
+	    eval(getObj(curId).title);// + 'field'
+     }
+        
+     function setDiv() {     
+     	if (!document.createElement) { return; }
+        var elemDiv = document.createElement('div');
+        if (typeof(elemDiv.innerHTML) != 'string') { return; }
+        genColors();
+        elemDiv.id = 'colorpicker';
+	    elemDiv.style.position = 'absolute';
+        elemDiv.style.display = 'none';
+        elemDiv.style.border = '#000000 1px solid';
+        elemDiv.style.background = '#FFFFFF';
+        elemDiv.innerHTML = '<span style="font-family:Verdana; font-size:11px;">Pick a color: ' 
+          	+ '(<a href="javascript:setColor(\'\');">No color</a>)<br>' 
+        	+ getColorTable() 
+        	+ '<center><a href="http://www.flooble.com/scripts/colorpicker.php"'
+        	+ ' target="_blank">color picker</a> by <a href="http://www.flooble.com" target="_blank"><b>flooble</b></a></center></span>';
+
+        document.body.appendChild(elemDiv);
+        divSet = true;
+     }
+     
+     function pickColor(id) {
+     	if (!divSet) { setDiv(); }
+     	var picker = getObj('colorpicker');     	
+		if (id == curId && picker.style.display == 'block') {
+			picker.style.display = 'none';
+			return;
+		}
+     	curId = id;
+     	var thelink = getObj(id);
+     	picker.style.top = getAbsoluteOffsetTop(thelink) + 20;
+     	picker.style.left = getAbsoluteOffsetLeft(thelink);     
+	picker.style.display = 'block';
+     }
+     
+     function genColors() {
+        addColorValue('0','0','0');
+		//addColorValue('1','1','1');
+		addColorValue('2','2','2');
+        addColorValue('3','3','3');
+		addColorValue('4','4','4');
+		addColorValue('5','5','5');
+        addColorValue('6','6','6');
+		addColorValue('7','7','7');
+        addColorValue('8','8','8');
+        addColorValue('9','9','9');
+        addColorValue('A','A','A');
+		addColorValue('B','B','B');
+        addColorValue('C','C','C');
+		addColorValue('D','D','D');
+        addColorValue('E','E','E');
+        addColorValue('F','F','F');
+			
+        for (a = 1; a < colorLevels.length; a++)
+			addColor(0,0,a);
+        for (a = 1; a < colorLevels.length - 1; a++)
+			addColor(a,a,5);
+
+        for (a = 1; a < colorLevels.length; a++)
+			addColor(0,a,0);
+        for (a = 1; a < colorLevels.length - 1; a++)
+			addColor(a,5,a);
+			
+        for (a = 1; a < colorLevels.length; a++)
+			addColor(a,0,0);
+        for (a = 1; a < colorLevels.length - 1; a++)
+			addColor(5,a,a);
+			
+			
+        for (a = 1; a < colorLevels.length; a++)
+			addColor(a,a,0);
+        for (a = 1; a < colorLevels.length - 1; a++)
+			addColor(5,5,a);
+			
+        for (a = 1; a < colorLevels.length; a++)
+			addColor(0,a,a);
+        for (a = 1; a < colorLevels.length - 1; a++)
+			addColor(a,5,5);
+
+        for (a = 1; a < colorLevels.length; a++)
+			addColor(a,0,a);			
+        for (a = 1; a < colorLevels.length - 1; a++)
+			addColor(5,a,5);
+			
+       	return colorArray;
+     }
+     function getColorTable() {
+         var colors = colorArray;
+      	 var tableCode = '';
+         tableCode += '<table border="0" cellspacing="1" cellpadding="1">';
+         for (i = 0; i < colors.length; i++) {
+              if (i % perline == 0) { tableCode += '<tr>'; }
+              tableCode += '<td bgcolor="#000000"><a style="outline: 1px solid #000000; color: ' 
+              	  + colors[i] + '; background: ' + colors[i] + ';font-size: 10px;" title="' 
+              	  + colors[i] + '" href="javascript:setColor(\'' + colors[i] + '\');">&nbsp;&nbsp;&nbsp;</a></td>';
+              if (i % perline == perline - 1) { tableCode += '</tr>'; }
+         }
+         if (i % perline != 0) { tableCode += '</tr>'; }
+         tableCode += '</table>';
+      	 return tableCode;
+     }
+     function relateColor(id, color) {
+     	var link = getObj(id);
+     	if (color == '') {
+	     	link.style.background = nocolor;
+	     	link.style.color = nocolor;
+	     	color = nocolor;
+     	} else {
+	     	link.style.background = color;
+	     	link.style.color = color;
+	    }
+	    eval(getObj(id + 'field').title);
+     }
+     function getAbsoluteOffsetTop(obj) {
+     	var top = obj.offsetTop;
+     	var parent = obj.offsetParent;
+     	while (parent != document.body) {
+     		top += parent.offsetTop;
+     		parent = parent.offsetParent;
+     	}
+     	return top;
+     }
+     
+     function getAbsoluteOffsetLeft(obj) {
+     	var left = obj.offsetLeft;
+     	var parent = obj.offsetParent;
+     	while (parent != document.body) {
+     		left += parent.offsetLeft;
+     		parent = parent.offsetParent;
+     	}
+     	return left;
+     }
+
+
+
 -->
 </script>
 <!-- ================================ -->
@@ -760,9 +1029,10 @@ function nothing()
 </span>
 
 
+
 <!--bean:write property="<%= "attributes" %>" name="typesEditorForm" /-->
 <form action="javascript:nothing()">
-	<table width=550 bgcolor="#7C8DBF">
+	<table width=650 bgcolor="#7C8DBF">
 		<tr><td>
 			<div id="mainEditDiv" name="mainEditDiv">
 			</div>
@@ -771,7 +1041,7 @@ function nothing()
 	<i><font color="#770000">* All fields are required.</font></i><br>&nbsp;<br>
 	
 	<input type="submit" value="Apply Style" onclick="generateSLD()">
-	<span id="sld_success" name="sld_success"></span>
+	<div id="sld_success"><span id="inner_sld_success" name="inner_sld_success"></span></div>
 </form>
 
 
@@ -784,8 +1054,10 @@ Hit the 'Apply Style' button above'.</i></font><be>
 </form>
 
 <p>&nbsp;<br>
-<span style="display:none"><iframe width=90% height=150px name=logFrame></iframe></span>
+<span><iframe width=90% height=150px name=logFrame></iframe></span><!-- style="display:none"-->
 <br>
+
+
 
 
 </body>
