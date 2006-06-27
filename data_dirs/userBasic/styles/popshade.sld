@@ -29,8 +29,23 @@
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
               <CssParameter name="fill">#FF0000</CssParameter>
+			  <CssParameter name="fill-opacity">0.5</CssParameter>
            </Fill>     
         </PolygonSymbolizer>
+		<TextSymbolizer>
+		    <Label>
+				<ogc:PropertyName>STATE_NAME</ogc:PropertyName>
+		    </Label>
+
+		    <Font>
+				<CssParameter name="font-family">Times New Roman</CssParameter>
+				<CssParameter name="font-style">Normal</CssParameter>
+				<CssParameter name="font-size">14</CssParameter>
+		    </Font>
+			<Fill>
+				<CssParameter name="fill">#000000</CssParameter>
+		    </Fill>
+		</TextSymbolizer>
       </Rule>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
@@ -44,8 +59,23 @@
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
               <CssParameter name="fill">#00FF00</CssParameter>
+			  <CssParameter name="fill-opacity">0.5</CssParameter>
            </Fill>     
         </PolygonSymbolizer>
+		<TextSymbolizer>
+		    <Label>
+				<ogc:PropertyName>STATE_NAME</ogc:PropertyName>
+		    </Label>
+
+		    <Font>
+				<CssParameter name="font-family">Times New Roman</CssParameter>
+				<CssParameter name="font-style">Normal</CssParameter>
+				<CssParameter name="font-size">14</CssParameter>
+		    </Font>
+			<Fill>
+				<CssParameter name="fill">#000000</CssParameter>
+		    </Fill>
+		</TextSymbolizer>
       </Rule>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
@@ -59,8 +89,23 @@
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
               <CssParameter name="fill">#0000FF</CssParameter>
+			  <CssParameter name="fill-opacity">0.5</CssParameter>
            </Fill>     
         </PolygonSymbolizer>
+		<TextSymbolizer>
+		    <Label>
+				<ogc:PropertyName>STATE_NAME</ogc:PropertyName>
+		    </Label>
+
+		    <Font>
+				<CssParameter name="font-family">Times New Roman</CssParameter>
+				<CssParameter name="font-style">Normal</CssParameter>
+				<CssParameter name="font-size">14</CssParameter>
+		    </Font>
+			<Fill>
+				<CssParameter name="fill">#000000</CssParameter>
+		    </Fill>
+		</TextSymbolizer>
       </Rule>
       <Rule>
         <LineSymbolizer>
