@@ -2,9 +2,9 @@ package org.geoserver;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -50,7 +50,7 @@ public class GeoServerResourceLoader extends
 	 */
 	public GeoServerResourceLoader( File baseDirectory ) {
 		this.baseDirectory = baseDirectory;
-		searchLocations = new HashSet();
+		searchLocations = new TreeSet();
 		searchLocations.add( baseDirectory );
 	}
 	
