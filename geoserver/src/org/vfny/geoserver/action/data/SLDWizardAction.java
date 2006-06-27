@@ -28,14 +28,12 @@ public class SLDWizardAction extends Action {
 	throws IOException, ServletException 
 	{
 		String typeName = "";
-		String s = request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE).toString();
-		System.out.println("********** s= "+s);
-		typeName = s;
+		typeName = request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE).toString();
 		
 		DynaActionForm myForm = (DynaActionForm) form;
 		myForm.set("typeName", typeName);
 		
-		return mapping.findForward("sldWizardSuccess");  
+		return mapping.findForward("sldWizard");  
 	}
 	
 }
