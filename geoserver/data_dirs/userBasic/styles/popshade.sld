@@ -29,12 +29,12 @@
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
               <CssParameter name="fill">#FF0000</CssParameter>
-			  <CssParameter name="fill-opacity">0.5</CssParameter>
+			  <CssParameter name="fill-opacity">0.7</CssParameter>
            </Fill>     
         </PolygonSymbolizer>
 		<TextSymbolizer>
 		    <Label>
-				<ogc:PropertyName>STATE_NAME</ogc:PropertyName>
+				<ogc:PropertyName>STATE_ABBR</ogc:PropertyName>
 		    </Label>
 
 		    <Font>
@@ -59,12 +59,12 @@
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
               <CssParameter name="fill">#00FF00</CssParameter>
-			  <CssParameter name="fill-opacity">0.5</CssParameter>
+			  <CssParameter name="fill-opacity">0.7</CssParameter>
            </Fill>     
         </PolygonSymbolizer>
 		<TextSymbolizer>
 		    <Label>
-				<ogc:PropertyName>STATE_NAME</ogc:PropertyName>
+				<ogc:PropertyName>STATE_ABBR</ogc:PropertyName>
 		    </Label>
 
 		    <Font>
@@ -89,12 +89,12 @@
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
               <CssParameter name="fill">#0000FF</CssParameter>
-			  <CssParameter name="fill-opacity">0.5</CssParameter>
+			  <CssParameter name="fill-opacity">0.7</CssParameter>
            </Fill>     
         </PolygonSymbolizer>
 		<TextSymbolizer>
 		    <Label>
-				<ogc:PropertyName>STATE_NAME</ogc:PropertyName>
+				<ogc:PropertyName>STATE_ABBR</ogc:PropertyName>
 		    </Label>
 
 		    <Font>
