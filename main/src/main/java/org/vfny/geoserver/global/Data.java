@@ -17,6 +17,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.geoserver.data.GeoServerCatalog;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
@@ -93,6 +94,11 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
      */
     private Map errors;
 
+    /**
+     * The catalog
+     */
+    private GeoServerCatalog catalog;
+    
     public Data(DataDTO config, File dir, GeoServer g)
         throws ConfigurationException {
         baseDir = dir;
@@ -105,14 +111,19 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
         gs = g;
     }
 
-    public Data ( Config config, GeoServer g ) throws ConfigurationException {
+    public Data ( Config config, GeoServer g, GeoServerCatalog catalog ) throws ConfigurationException {
     		this(config.getXMLReader().getData(), config.dataDirectory(), g);
+    		this.catalog = catalog;
     }
     
     GeoServer getGeoServer() {
         return gs;
     }
 
+    GeoServerCatalog getCatalog() {
+    		return catalog;
+    }
+    
     public void setDataDirectory(File dataDirectory) {
     		this.baseDir = dataDirectory;
     }
@@ -479,6 +490,8 @@ SCHEMA:
                     + " has been created...");
                 map.put(key2, featureTypeInfo);
 
+                //set catalog hierarchy
+                dataStoreInfo.addMember( featureTypeInfo );
                 LOGGER.finest("FeatureTypeInfo '" + key2 + "' is registered:"
                     + dataStoreInfo);
                 errors.put(featureTypeDTO, Boolean.TRUE);
