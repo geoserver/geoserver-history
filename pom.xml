@@ -75,42 +75,42 @@
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2</artifactId>
-				<version>2.2-SNAPSHOT</version>
+				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-api</artifactId>
-				<version>2.2-SNAPSHOT</version>
+				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-main</artifactId>
-				<version>2.2-SNAPSHOT</version>
+				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-shapefile</artifactId>
-				<version>2.2-SNAPSHOT</version>
+				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-validation</artifactId>
-				<version>2.2-SNAPSHOT</version>
+				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-render</artifactId>
-				<version>2.2-SNAPSHOT</version>
+				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>gt2-property</artifactId>
-				<version>2.2-SNAPSHOT</version>
+				<artifactId>gt2-demo-property</artifactId>
+				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-epsg-wkt</artifactId>
-				<version>2.2-SNAPSHOT</version>
+				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -444,6 +444,7 @@
 
 	<properties>
 		<gs.version>1.4.0-M0</gs.version>
+		<gt.version>2.2-RC4-SNAPSHOT</gt.version>
 	</properties>
 
 	<profiles>
