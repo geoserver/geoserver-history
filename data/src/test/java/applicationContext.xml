@@ -3,6 +3,9 @@
 
 <beans>
 	
+	<bean id="propertyServiceFactory" 
+		class="org.geotools.catalog.property.PropertyServiceFactory"/>
+		
 	<bean id="catalogLoader" 
 		class="org.geoserver.data.CatalogLoader">
 		<constructor-arg ref="catalog"/>

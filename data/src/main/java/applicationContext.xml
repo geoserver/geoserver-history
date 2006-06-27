@@ -12,8 +12,4 @@
 		<constructor-arg ref="catalog"></constructor-arg>	
 	</bean>
 	
-	<!-- default service factories -->
-	<bean id="shapefileServiceFactory"
-		class="org.geotools.catalog.shapefile.ShapefileServiceFactory"/>
-		
 </beans>
