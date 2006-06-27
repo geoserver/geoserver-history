@@ -422,16 +422,6 @@
 		</fileset>
 	</copy>
 </target>
-
-<target name="temp-deploy-jsp-sldwizard">
-	<delete file="${dir.server}/geoserver/WEB-INF/work/WEB-INF/pages/SLDWizard_jsp.class"/>
-	<delete file="${dir.server}/geoserver/WEB-INF/work/WEB-INF/pages/SLDWizard_jsp.java"/>
-	<copy todir="${dir.server}/geoserver/WEB-INF/pages/">
-		<fileset dir="${dir.webinf}/pages">
-			<include name="SLDWizard.jsp"/>
-		</fileset>
-	</copy>
-</target>
 	
 <!-- copies the JSPs from WEB-INF/pages to the server/geoserver/WEB-INF/pages directory -->
 <target name="deploy-jsp"
@@ -569,15 +559,8 @@
 	<antcall target="user_conf" />
 	<antcall target="misc_conf" />
 </target-->
-	<target name="temp-copy">
-		<copy todir="C:\temp\geoserver22x\test">
-				<fileset dir="${basedir}/test/org/vfny/geoserver/">
-					<include name="**/*"/>
-					<exclude name="*SVN*/*" />
-					<exclude name="**/*SVN*/*" />
-				</fileset>
-			</copy>
-		</target>
+	
+	
 <!-- BUILD WAR -->
 <target name="build-war" depends="all">
 	<!-- preparation -->
