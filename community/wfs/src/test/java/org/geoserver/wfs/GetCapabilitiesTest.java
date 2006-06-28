@@ -1,6 +1,5 @@
 package org.geoserver.wfs;
 
-import java.io.StringBufferInputStream;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +9,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.xml.utils.DOMBuilder;
 import org.geoserver.ows.http.Dispatcher;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.w3c.dom.Document;

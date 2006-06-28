@@ -5,7 +5,7 @@
 	<bean id="wfs" class="org.geoserver.wfs.WFS"/>
 	
 	<!-- service descriptor -->
-	<bean id="wfsService" class="org.geoserver.ows.http.Service">
+	<bean id="wfsService" class="org.geoserver.ows.Service">
 		<constructor-arg value="wfs"/>
 		<constructor-arg ref="wfs"/>
 	</bean>
@@ -28,7 +28,7 @@
 	
 	
 	<bean id="getCapabilitiesOperation" 
-		class="org.geoserver.ows.http.Operation" singleton="false">
+		class="org.geoserver.ows.Operation" singleton="false">
 		<constructor-arg index="0" value="GetCapabilities"/>
 		<constructor-arg index="1" ref="wfsService"/>
 		<constructor-arg index="2" ref="getCapabilities"/>

@@ -1,4 +1,4 @@
-package org.geoserver.ows.http;
+package org.geoserver.ows;
 
 import java.lang.reflect.Method;
 

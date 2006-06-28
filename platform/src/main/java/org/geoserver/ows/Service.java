@@ -1,4 +1,4 @@
-package org.geoserver.ows.http;
+package org.geoserver.ows;
 
 /**
  * Bean wrapper for an Open Web Service (OWS).
