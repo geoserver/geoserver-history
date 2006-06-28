@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -204,6 +205,8 @@ public class Dispatcher extends AbstractController {
 	Map parseKVP( HttpServletRequest request ) {
 		//unparsed kvp set
 		Map kvp = request.getParameterMap();
+		if ( kvp == null )
+			return Collections.EMPTY_MAP;
 		
 		//look up parser objects
 		Collection parsers = getApplicationContext().getBeansOfType(KVPParser.class).values();
