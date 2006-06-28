@@ -1,20 +1,19 @@
 package org.geoserver.ows.http;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.geoserver.ows.http.Dispatcher;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import junit.framework.TestCase;
+
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.mockobjects.servlet.MockHttpServletRequest;
+import com.mockobjects.servlet.MockHttpServletResponse;
 import com.mockobjects.servlet.MockServletInputStream;
-
-import junit.framework.TestCase;
+import com.mockobjects.servlet.MockServletOutputStream;
 
 public class DispatcherTest extends TestCase {
 
@@ -127,6 +126,9 @@ public class DispatcherTest extends TestCase {
 		request.setupGetContextPath("/geoserver");
 		request.setupGetMethod("GET");
 		
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		response.setupOutputStream( new MockServletOutputStream() );
+		
 		Map params = new HashMap();
 		params.put( "service", "hello" );
 		params.put( "request", "Hello" );
@@ -135,7 +137,8 @@ public class DispatcherTest extends TestCase {
 		request.setupGetParameterMap( params );
 		request.setupGetInputStream(null);
 		
-		dispatcher.handleRequest( request, null );
+		dispatcher.handleRequest( request, response );
+		assertEquals( params.get( "message" ), response.getOutputStreamContents() );
 	}
 	
 	public void testHelloOperationPost() throws Exception {
@@ -151,6 +154,9 @@ public class DispatcherTest extends TestCase {
 		request.setupGetContextPath("/geoserver");
 		request.setupGetMethod("POST");
 		
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		response.setupOutputStream( new MockServletOutputStream() );
+		
 		Map params = new HashMap();
 		request.setupGetParameterMap( params );
 		
@@ -158,9 +164,9 @@ public class DispatcherTest extends TestCase {
 		MockServletInputStream input = new MockServletInputStream();
 		input.setupRead( body.getBytes() );
 		
-		
 		request.setupGetInputStream( input );
 		
-		dispatcher.handleRequest( request, null );
+		dispatcher.handleRequest( request, response );
+		assertEquals( "Hello world!", response.getOutputStreamContents() );
 	}
 }

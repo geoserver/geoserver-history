@@ -8,12 +8,12 @@ public class HelloWorld {
 		this.message = message;
 	}
 	
-	public String hello() {
-		return message.message;
+	public Message hello() {
+		return message;
 	}
 	
-	public String hello ( Message message ) {
-		return message.message;
+	public Message hello ( Message message ) {
+		return message;
 	}
 	
 }
