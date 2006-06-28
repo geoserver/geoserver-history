@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="wfs" class="org.geoserver.wfs.WFS"/>
+	
+	<!-- service descriptor -->
+	<bean id="wfsService" class="org.geoserver.ows.http.Service">
+		<constructor-arg value="wfs"/>
+		<constructor-arg ref="wfs"/>
+	</bean>
+	
+	<!-- persistance -->
+	<bean id="wfsPersister" class="org.geoserver.BeanPersister">
+		<constructor-arg ref="resourceLoader"/>
+		<property name="beans">
+			<list>
+				<value>wfs</value>				
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="getCapabilities" class="org.geoserver.wfs.GetCapabilities"
+		singleton="false">
+		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
+	</bean>
+	
+	
+	<bean id="getCapabilitiesOperation" 
+		class="org.geoserver.ows.http.Operation" singleton="false">
+		<constructor-arg index="0" value="GetCapabilities"/>
+		<constructor-arg index="1" ref="wfsService"/>
+		<constructor-arg index="2" ref="getCapabilities"/>
+	</bean>
+
+</beans>
