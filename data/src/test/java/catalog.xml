@@ -1,9 +1,0 @@
-<catalog>
-  <datastores>
-    <datastore>
-      <connectionParameters>
-        <parameter name="directory" value="/tmp"/>
-      </connectionParameters>
-    </datastore> 
-  </datastores>
-</catalog>
