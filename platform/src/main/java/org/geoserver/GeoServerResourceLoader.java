@@ -44,13 +44,24 @@ public class GeoServerResourceLoader extends
 	File baseDirectory;
 	
 	/**
+	 * Creates a new resource loader with no base directory.
+	 * <p>
+	 * Such a constructed resource loader is not capable of creating resources
+	 * from relative paths.
+	 * </p>
+	 */
+	public GeoServerResourceLoader() {
+		searchLocations = new TreeSet();
+	}
+	
+	/**
 	 * Creates a new resource loader.
 	 * 
 	 * @param baseDirectory The directory in which 
 	 */
 	public GeoServerResourceLoader( File baseDirectory ) {
+		this();
 		this.baseDirectory = baseDirectory;
-		searchLocations = new TreeSet();
 		searchLocations.add( baseDirectory );
 	}
 	
@@ -137,6 +148,12 @@ public class GeoServerResourceLoader extends
 			return file;
 		}
 		
+		//no base directory set, cannot create a relative path
+		if ( baseDirectory == null ) {
+			//TODO: log or throw exception
+			return null;
+		}
+		
 		file = new File( baseDirectory, location );
 		file.mkdir();
 		return file;
@@ -163,6 +180,12 @@ public class GeoServerResourceLoader extends
 		if ( file.isAbsolute() ) {
 			file.createNewFile();
 			return file;
+		}
+		
+		//no base directory set, cannot create a relative path
+		if ( baseDirectory == null ) {
+			//TODO: log or throw exception
+			return null;
 		}
 		
 		file = new File( baseDirectory, location );
