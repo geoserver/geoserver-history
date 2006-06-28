@@ -26,5 +26,6 @@
 		<module>hello</module>
 		<module>http</module>
 		<module>preferences</module>
+		<module>wfs</module>
 	</modules>
 </project>
