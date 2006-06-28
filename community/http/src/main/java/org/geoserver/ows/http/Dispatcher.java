@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -77,10 +78,12 @@ public class Dispatcher extends AbstractController {
 			.getBeansOfType( Operation.class ).values();
 		List matches = new ArrayList();
 		for ( Iterator itr = operations.iterator(); itr.hasNext(); ) {
-			Operation bean = (Operation) itr.next();
-			if (bean.getId().equalsIgnoreCase( request ) ) {
-				if ( service == null || service.equalsIgnoreCase( bean.getServiceId() ) ) {
-					matches.add( bean );
+			Operation opBean = (Operation) itr.next();
+			Service sBean = opBean.getService();
+			
+			if (opBean.getId().equalsIgnoreCase( request ) ) {
+				if ( service == null || service.equalsIgnoreCase( sBean.getId() ) ) {
+					matches.add( opBean );
 				}
 			}
 		}
@@ -96,7 +99,7 @@ public class Dispatcher extends AbstractController {
 		}
 		
 		Operation opBean = (Operation) matches.get( 0 );
-		Object op = opBean.getOperation().newInstance();
+		Object op = opBean.getOperation();
 		
 		//step 3: set the params
 		for ( Iterator itr = kvp.entrySet().iterator(); itr.hasNext(); ) {
@@ -104,28 +107,64 @@ public class Dispatcher extends AbstractController {
 			String key = (String) entry.getKey();
 			Object val = entry.getValue();
 			
-			opBean.set( op, key, val );
+			opBean.set( key, val );
 		}
+		
+		// operations may wish to directly write to output stream
+		boolean outputStream = 
+			opBean.set( "outputStream", httpResponse.getOutputStream() );
 		
 		//step 4: execute
 		Object result = null;
 		if ( cache == null ) {
-			result = opBean.run( op, null );
+			result = opBean.run( null );
 		}
 		else {
 			Object input = parseXML( cache );
-			result = opBean.run( op, input );
+			result = opBean.run( input );
 		}
 		
-		//step 5: write response
-		if ( result == null ) {
+		//step 5: write response if operation returned result and did not 
+		// request an output stream
+		if ( result != null && !outputStream ) {
 			//look up the response for the result
+			//TODO: choose based on request
 			Collection responses = getApplicationContext()
 				.getBeansOfType( Response.class ).values();
+			matches = new ArrayList();
 			for( Iterator itr = responses.iterator(); itr.hasNext(); ) {
 				Response response = (Response) itr.next();
-				
+				//TODO: use isAssignableFrom and then sort afterwards
+				if ( response.getBinding().equals( result.getClass() ) ) {
+					matches.add( response );
+				}
 			}
+			
+			if ( matches.isEmpty() ) {
+				String msg = "No response: (" + result.getClass() + ")"; 
+				throw new RuntimeException( msg );
+			}
+			
+			if ( matches.size() > 1 ) {
+				String msg = "Multiple responses: (" + result.getClass() + ")"; 
+				throw new RuntimeException( msg );
+			}
+			
+			Response response = (Response) matches.get( 0 );
+			
+			httpResponse.setContentType( response.getMimeType() );
+			//TODO: initialize any header params (gzip,deflate,etc...)
+			
+			OutputStream output = httpResponse.getOutputStream();
+			response.write( result, output, op );
+		
+			try {
+				output.flush();
+			}
+			catch( IOException e ) {
+				//TODO: log
+			}
+			
 		}
 		
 		if (cache != null) {

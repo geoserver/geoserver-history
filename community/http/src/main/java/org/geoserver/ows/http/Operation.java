@@ -20,18 +20,18 @@ public final class Operation {
 	String id;
 	
 	/**
-	 * Unique identifer of service the operation falls into.
+	 * Service this operation is a component of.
 	 */
-	String  serviceId;
+	Service  service;
 
 	/**
 	 * The operation itself.
 	 */
-	Class operation;
+	Object operation;
 	
-	public Operation( String id, String serviceId, Class operation ) {
+	public Operation( String id, Service service, Object operation ) {
 		this.id = id;
-		this.serviceId = serviceId;
+		this.service = service;
 		this.operation = operation;
 	}
 	
@@ -39,27 +39,27 @@ public final class Operation {
 		return id;
 	}
 	
-	public String getServiceId() {
-		return serviceId;
+	public Service getService() {
+		return service;
 	}
 	
-	public Class getOperation() {
+	public Object getOperation() {
 		return operation;
 	}
 	
-	public boolean set(Object instance, String property, Object value) 
+	public boolean set(String property, Object value) 
 		throws Exception {
 		
 		Method method = method( "set" + property, null );
 		if (method != null) {
-			method.invoke( instance, new Object[]{value} );
+			method.invoke( operation, new Object[]{value} );
 			return true;
 		}
 		
 		return false;
 	}
 	
-	public Object run ( Object instance, Object input ) 
+	public Object run ( Object input ) 
 		throws Exception {
 		
 		Method method = null;
@@ -73,14 +73,14 @@ public final class Operation {
 		
 		if (method != null ) {
 			Object[] parameters = input != null ? new Object[]{input} : null;
-			return method.invoke( instance, parameters );
+			return method.invoke( operation, parameters );
 		}
 		
 		return null;
 	}
 
 	protected Method method ( String name, Class parameter ) {
-		Method[] methods = getOperation().getMethods();
+		Method[] methods = getOperation().getClass().getMethods();
 		for ( int i = 0; i < methods.length; i++ ) {
 			Method method = methods[i];
 			if (method.getName().equalsIgnoreCase( name ) ) {
