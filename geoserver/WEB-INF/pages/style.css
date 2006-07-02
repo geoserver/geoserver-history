@@ -197,7 +197,7 @@ td.loginStatus {
 span.loginStatus {
  font-size: 90%;
 }
-<!-- title -->
+/* title */
 table.tile {
  white-space: nowrap;
  width: 100%;
@@ -216,8 +216,8 @@ table.title td.title {
 }
 table.title td.icon {
  width: 64px;
- valign: center;
- align: center;
+ vertical-align: center;
+ text-align: center;
  padding: 2px;
 }
 table.title td.menu {
@@ -236,7 +236,7 @@ td.title h1 {
  white-space: nowrap; 
  margin: 2px;
 }
-<!-- menuator -->
+/* menuator */
 table.menu {
  width: 12ex;
  vertical-align: top;
@@ -301,7 +301,7 @@ td.data table.title {
  -moz-border-radius: 5px;
  margin: 2px;  
 }
-<!-- Main Page -->
+/* Main Page */
 table.info {
  text-align: left;
  vertical-align: top;
@@ -336,6 +336,3 @@ td.greyedout2  {
 font-family: serif;
 color:rgb(150,150,150)
 }
-
-
-
