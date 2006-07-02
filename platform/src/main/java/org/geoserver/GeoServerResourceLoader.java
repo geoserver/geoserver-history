@@ -30,8 +30,7 @@ import org.springframework.core.io.Resource;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class GeoServerResourceLoader extends
-		DefaultResourceLoader {
+public class GeoServerResourceLoader extends DefaultResourceLoader {
 
 	/**
 	 * "path" for resource lookups
