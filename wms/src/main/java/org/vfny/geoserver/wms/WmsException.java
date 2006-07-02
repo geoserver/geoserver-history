@@ -79,10 +79,8 @@ public class WmsException extends ServiceException {
      * @param locator The message for the .
      */
     public WmsException(String message, String code) {
-        super(message);
-
-        this.code = code;
-    }
+        super(message, code);
+}
 
     /**
      * DOCUMENT ME!
@@ -115,7 +113,7 @@ public class WmsException extends ServiceException {
 
         // Write exception code
         returnXml.append("    <ServiceException"
-            + ((code != null) ? (" code=\"" + code + "\"") : "") + ">"
+            + ((getCode() != null) ? (" code=\"" + getCode() + "\"") : "") + ">"
             + getXmlMessage(printStackTrace) + "</ServiceException>");
 
         // Write footer
