@@ -75,7 +75,7 @@ import org.vfny.geoserver.util.ResponseUtils;
  *       Would probably not be that hard to get the request included, and
  *       would lead to better  error reporting...
  */
-public class ServiceException extends Exception {
+public class ServiceException extends org.geoserver.ows.ServiceException {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
@@ -86,14 +86,11 @@ public class ServiceException extends Exception {
     /** full classpath of originating GeoServer class */
     protected String locator = new String();
 
-    /** Diagnostic code */
-    protected String code = new String();
-
     /**
      * Empty constructor.
      */
     public ServiceException() {
-        super();
+        super( null );
     }
 
     /**
@@ -102,7 +99,7 @@ public class ServiceException extends Exception {
      * @param message The message for the .
      */
     public ServiceException(String message) {
-        super(message);
+        super( message, null );
 
         LOGGER.fine(this.getMessage());
     }
@@ -114,7 +111,7 @@ public class ServiceException extends Exception {
      * @param cause The origional exception that caused failure
      */
     public ServiceException(String message, Throwable cause) {
-        super(message, cause);
+        super(message, cause, null );
     }
 
     /**
@@ -123,7 +120,7 @@ public class ServiceException extends Exception {
      * @param e The message for the .
      */
     public ServiceException(Throwable e) {
-        super(e);
+        super(e, null);
 
         LOGGER.fine(this.getMessage());
     }
@@ -150,22 +147,14 @@ public class ServiceException extends Exception {
      * @param locator The message for the .
      */
     public ServiceException(Throwable e, String preMessage, String locator) {
-        super(e);
+        this( e );
 
         this.preMessage = preMessage;
 
         this.locator = locator;
     }
 
-    /**
-     * Assigns a diagnostic code to this exception.
-     *
-     * @param code The diagnostic code.
-     */
-    public void setCode(String code) {
-        this.code = code;
-    }
-
+  
     /**
      * DOCUMENT ME!
      *
@@ -282,8 +271,8 @@ public class ServiceException extends Exception {
         //REVISIT: handle multiple service exceptions?  must refactor class.
         returnXml.append(indent + "<ServiceException");
 
-        if (!isEmpty(this.code)) {
-            returnXml.append(" code=\"" + this.code + "\"");
+        if (!isEmpty(getCode())) {
+            returnXml.append(" code=\"" + getCode() + "\"");
         }
 
         if (!isEmpty(this.locator)) {
