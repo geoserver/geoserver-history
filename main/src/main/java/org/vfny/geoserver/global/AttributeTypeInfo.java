@@ -86,7 +86,7 @@ public class AttributeTypeInfo {
      * @see org.geotools.data.AttributeTypeMetaData#getAttributeName()
      */
     public String getAttributeName() {
-    	String r = typeName;
+    		String r = typeName;
 
         if (r==null && type != null) {
             r = type.getName();
