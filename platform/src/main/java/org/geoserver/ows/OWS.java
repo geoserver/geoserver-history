@@ -5,6 +5,7 @@
 package org.geoserver.ows;
 
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,10 @@ public class OWS {
 	 * Maintainer of the service.
 	 */
 	private String maintainer;
+	/**
+	 * Character set to use.
+	 */
+	private Charset charSet;
 	
 	/**
 	 * List of keywords associated with the service. 
@@ -61,6 +66,11 @@ public class OWS {
 	 * Client properties
 	 */
 	private Map clientProperties;
+	
+	/**
+	 * Flag indicating wether the service should be verbose or not.
+	 */
+	private boolean isVerbose;
 	
 	/**
      * <p>
@@ -198,6 +208,17 @@ public class OWS {
 	}
     
     /**
+     * @return the character set for the service.
+     */
+    public Charset getCharSet() {
+		return charSet;
+	}
+    
+    public void setCharSet(Charset charSet) {
+		this.charSet = charSet;
+	}
+    
+    /**
      * <p>
      * Client properties for the service.
      * </p>
@@ -209,5 +230,20 @@ public class OWS {
     public void setClientProperties(Map clientProperties) {
 		this.clientProperties = clientProperties;
 	}
+    
+    /**
+     * Flag indicating wether the service should be verbose, for things like
+     * responding to requests, etc...
+     * 
+     * @return True if verboseness on, other wise false.
+     */
+    public boolean isVerbose() {
+		return isVerbose;
+	}
+    
+    public void setVerbose(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+    
     
 }
