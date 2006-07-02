@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import org.geoserver.feature.FeatureSourceUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFinder;
@@ -246,15 +247,10 @@ public abstract class DataStoreUtils {
         return map;
     }
  
+    /**
+     * @deprecated use {@link org.geoserver.feature.FeatureSourceUtils#
+     */
     public static Envelope getBoundingBoxEnvelope(FeatureSource fs) throws IOException {
-        Envelope ev = fs.getBounds();
-        if(ev == null || ev.isNull()){
-            try{
-                ev = fs.getFeatures().getBounds();
-            }catch(Throwable t){
-                ev = new Envelope();
-            }
-        }
-        return ev;
+    		return FeatureSourceUtils.getBoundingBoxEnvelope( fs );
     }
 }
