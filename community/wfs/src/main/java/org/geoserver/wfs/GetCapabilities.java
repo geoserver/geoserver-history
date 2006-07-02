@@ -26,7 +26,7 @@ public class GetCapabilities {
 		this.outputStream = outputStream;
 	}
 	
-	public void getCapabilities( ) throws Exception {
+	public void getCapabilities() throws Exception {
 		WFSCapsTransformer transformer = new WFSCapsTransformer( wfs, catalog );
         transformer.setIndentation(2);
 
