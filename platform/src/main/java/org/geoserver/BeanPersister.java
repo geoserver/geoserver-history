@@ -241,6 +241,8 @@ public class BeanPersister
 			Method[] methods = bean.getClass().getDeclaredMethods();
 			for 	( int i = 0; i < methods.length; i++ ) {
 				Method method = methods[i];
+				
+				//is hte method a getter?
 				if (
 					method.getName().startsWith("get") && 
 					method.getParameterTypes().length == 0 && 
@@ -249,6 +251,13 @@ public class BeanPersister
 					
 					String propName = method.getName().substring(3);
 					if ("".equals( propName ) )
+						continue;
+					
+					//shere needs to be a setter as well
+					Method setter = bean.getClass().getMethod( 
+						"set" + propName, new Class[]{ method.getReturnType() }
+					);
+					if ( setter == null )
 						continue;
 					
 					propName = Character.toLowerCase(propName.charAt( 0 ) ) + 
