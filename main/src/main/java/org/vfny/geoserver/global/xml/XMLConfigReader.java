@@ -33,7 +33,6 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.geoserver.util.ReaderUtils;
 import org.geotools.filter.FilterDOMParser;
-import org.springframework.beans.factory.InitializingBean;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
@@ -980,10 +979,10 @@ public class XMLConfigReader {
         }
 
         File[] directories = featureTypeRoot.listFiles(new FileFilter() {
-                    public boolean accept(File pathname) {
-                        return pathname.isDirectory();
-                    }
-                });
+            public boolean accept(File pathname) {
+                return pathname.isDirectory();
+            }
+        });
 
         Map map = new HashMap();
 
