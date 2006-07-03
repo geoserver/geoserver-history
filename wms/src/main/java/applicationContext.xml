@@ -79,11 +79,11 @@
 	</bean>	
 	
 	<bean id="wmsPutStyles"
-		class="org.vfny.geoserfver.sld.servlets.PutStyles"
+		class="org.vfny.geoserver.sld.servlets.PutStyles"
 		parent="wmsService">
 	</bean>
 	
-	<bean id="kmlReflector" class="org.vfny.geoserver.wms.servlets"
+	<bean id="kmlReflector" class="org.vfny.geoserver.wms.servlets.KMLReflector"
 		parent="wmsService">
 	</bean>	
 
@@ -112,7 +112,7 @@
 	</bean>
 	
 	<bean id="KMZMapProducerFactory"
-		class="org.vfny.geoserver.wms.responses.map.kml">
+		class="org.vfny.geoserver.wms.responses.map.kml.KMZMapProducerFactory">
 	</bean>
 		
 </beans>
