@@ -41,6 +41,7 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 
+import java.text.SimpleDateFormat;
 
 /**
  * A GetMapResponse object is responsible of generating a map based on a GetMap
@@ -113,7 +114,7 @@ public class GetMapResponse implements Response {
 
         //JD:make instance variable in order to release resources later
         //final WMSMapContext map = new WMSMapContext();
-        map = new WMSMapContext();
+        map = new WMSMapContext(request);
         
         //DJB: the WMS spec says that the request must not be 0 area
         //     if it is, throw a service exception!
@@ -189,8 +190,9 @@ public class GetMapResponse implements Response {
         }
 
         this.delegate.produceMap(map);
-        if (cachingPossible)
-        	responseHeaders.put("Cache-Control: max-age",maxAge + "s" );
+        if (cachingPossible) {
+	    responseHeaders.put("Cache-Control", "max-age=" + maxAge);
+	}
     }
 
     /**

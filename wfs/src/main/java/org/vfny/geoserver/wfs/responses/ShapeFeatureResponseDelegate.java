@@ -234,6 +234,14 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
         zipOut.closeEntry();
         dbf_in.close();
         
+        // read in and write out .shx
+        entry = new ZipEntry(name + ".shx");
+        zipOut.putNextEntry(entry);
+        InputStream shx_in = new FileInputStream(namePath + ".shx");
+        readInWriteOutBytes(output, shx_in);
+        zipOut.closeEntry();
+        shx_in.close();
+        
         zipOut.finish();
         zipOut.flush();
         zipOut.close();

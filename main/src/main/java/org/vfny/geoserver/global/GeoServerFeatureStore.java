@@ -32,7 +32,7 @@ import org.geotools.filter.Filter;
  * so? It would need to support writing and locking though.
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Rold?n
  * @version $Id: GeoServerFeatureStore.java,v 1.5 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class GeoServerFeatureStore extends GeoServerFeatureSource
@@ -57,6 +57,18 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource
     FeatureStore store() {
         return (FeatureStore) source;
     }
+    
+    /**
+     * see interface for details.
+     * @param fc
+     * @return
+     * @throws IOException
+     */
+    public Set addFeatures(FeatureCollection fc) throws IOException 
+	{
+        return store().addFeatures(fc);
+    }
+    
 
     /**
      * addFeatures purpose.
@@ -75,10 +87,6 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource
         return store().addFeatures(reader);
     }
     
-    public Set addFeatures(FeatureCollection collection) throws IOException {
-        return store().addFeatures(collection);
-    }
-
     /**
      * DOCUMENT ME!
      *

@@ -15,6 +15,37 @@ system.
 
 Based on geotools 2.2.x (tag = geoserver-1.4.0-M0)
 
+Geoserver 1.3.2
+---------------
+SLD Wizard to create SLD files with a nice user interface.
+Up to 60-70% speed increases in WMS rendering.
+Built on GeoTools 2.2.x
+Including KML/KMZ output formats for WMS.
+PDF output format for WMS.
+Caching headers for WMS (http://jira.codehaus.org/browse/GEOS-454).
+Support for more math functions in filters.
+Many big fixes and improvements.
+
+The change log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12332
+
+
+Geoserver 1.3.1
+---------------
+Fully tested with GeoTools 2.2.x. This release also contains KML and KMZ support for 
+data viewing in Google Earth. For more information visit 
+http://docs.codehaus.org/display/GEOSDOC/Google+Earth 
+
+
+Geoserver 1.3.1 beta
+--------------------
+The main adition to this release is the move from Geotools 2.1.x to Geotools 2.2.x
+Bug fixes and new features listed in Jira will be added once this beta version has been tested
+by the community for a couple of days.
+
+The build.xml file has also been reformatted to reflect the changes in the data_dir system, and it 
+has been cleaned up.
+
 Geoserver 1.3.0
 ---------------
 

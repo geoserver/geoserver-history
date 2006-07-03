@@ -55,7 +55,7 @@
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
       installation of GeoServer 1.4.0-M0 \r\n \
-      Please report any problems or suggestions for improvement to \
+			Please report any problems or suggestions for improvement to \
       geoserver-devel@lists.sourceforge.net. \r\n \r\n \
       Click Next to continue."
 ;--------------------------------
@@ -110,7 +110,7 @@ Section "GeoServer Section" SecGeoServer
   File /a LICENSE.txt
   File /a start.jar
   File /r webapps
-
+	
 
 
   ## Create the GEOSERVER_DATA_DIR environment variable (this will overwrite if one already exists)

@@ -15,34 +15,36 @@ import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 
 
 /**
- * KMLMapProducerFactory
+ * KMZMapProducerFactory
  * This class is used as part of the SPI auto discovery process which enables
  * new format producers to be plugged in.
  *
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $
  * @version $Id$
  */
-public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
+public class KMZMapProducerFactory implements GetMapProducerFactorySpi {
     /**
      * this is just to check the requested mime type starts with this string,
      * since the most common error when performing the HTTP request is not to
      * escape the '+' sign in "kml+xml", which is decoded as a space
      * character at server side.
      */
-    private static final String PRODUCE_TYPE = "kml";
+    private static final String PRODUCE_TYPE = "kmz";
     
-    /** Official KML mime type
-     * @TODO add KMZ support
+    /** 
+     * Official KMZ mime type
      */
-    public static final String MIME_TYPE = "application/vnd.google-earth.kml+xml";
+    static final String MIME_TYPE = "application/vnd.google-earth.kmz";
     
     /** Set of supported mime types for the producers made by this Factory
      */
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
     
     /**
-     * Creates a new KMLMapProducerFactory object.
+     * Creates a new KMZMapProducerFactory object.
      */
-    public KMLMapProducerFactory() {
+    public KMZMapProducerFactory() {
         super();
     }
     
@@ -50,7 +52,7 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
      * Human readable description of output format.
      */
     public String getName() {
-        return "Keyhole markup language producer";
+        return "Keyhole markup language compressed producer";
     }
     
     /**
@@ -64,7 +66,7 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
     
     /**
      * Reports on the availability of this factory.  As no external libraries are
-     * required for KML this should always be true.
+     * required for KMZ this should always be true.
      *
      * @return <code>true</code>
      */
@@ -76,30 +78,17 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
      * evaluates if this Map producer can generate the map format specified by
      * <code>mapFormat</code>
      *
-     * <p>
-     * In this case, true if <code>mapFormat</code> starts with "kml", as
-     * both <code>"kml"</code> and <code>"kml+xml"</code> are
-     * commonly passed.  Also true if <code>application/vnd.google-earth.kml</code>
-     * is passed, since that is as close as we can get to the value advertised in the 
-     * capabilities document taking into account the common mistake of not escaping '+'.
-     * We must do this as the most way to request an output format is to use the name
-     * in the caps document.
-     * </p>
-     *
-     * @TODO should this be image/kml and image/kml+xml?
      * @param mapFormat the mime type of the output map format requiered
      *
      * @return true if class can produce a map in the passed format.
      */
     public boolean canProduce(String mapFormat) {
-        //MIME TYPE is spec compliant, as its what we advertise in the caps
-        //document.  Keeping the startsWith kml, so shortcuts can be used. -ch
-        return (mapFormat != null) && (mapFormat.startsWith(PRODUCE_TYPE)
-                                    || mapFormat.startsWith("application/vnd.google-earth.kml"));
+        return (mapFormat != null) && (mapFormat.startsWith(PRODUCE_TYPE) // "KMZ"
+                                    || mapFormat.startsWith("application/vnd.google-earth.kmz"));
     }
     
     /**
-     * Create an actual instance of a KMLMapProducer.
+     * Create an actual instance of a KMZMapProducer.
      *
      * @param mapFormat String which MUST match the supported formats.  Call
      * canProcess fisrt if you are unsure.
@@ -110,7 +99,7 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
      */
     public GetMapProducer createMapProducer(String mapFormat, WMS wms )
     throws IllegalArgumentException {
-        return new KMLMapProducer();
+        return new KMZMapProducer();
     }
     
     /* (non-Javadoc)

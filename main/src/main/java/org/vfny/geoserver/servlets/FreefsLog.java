@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.geotools.data.jdbc.ConnectionPoolManager;
 
 
+
 /**
  * Initializes all logging functions.
  *
@@ -50,11 +51,6 @@ public class FreefsLog extends HttpServlet {
         //http://www.allaboutbalance.com/disableprefs.  When the site comes
         //back up we should implement their better way of fixing the problem.
         System.setProperty("java.util.prefs.syncInterval", "5000000");
-
-        //if(GeoServer.getInstance()==null){
-        //	(new GeoServer()).init(this);
-        //}
-
 
     }
 
@@ -108,8 +104,6 @@ public class FreefsLog extends HttpServlet {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        LOGGER.finer("shutting down zserver");
 
     }
 }

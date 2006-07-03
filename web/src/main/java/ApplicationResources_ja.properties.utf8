@@ -572,6 +572,7 @@ config.data.style.label=スタイル
 config.data.style.title=スタイル�?�設定
 config.data.style.short=使用�?�能�?�スタイルを定義�?��?��?�。
 config.data.style.words=(WMS) (Web Map Server) (スタイル)
+config.data.sldWizard.label=Create new SLD
 
 config.data.style.new.label=新�?
 config.data.style.new.title=新�?スタイル
