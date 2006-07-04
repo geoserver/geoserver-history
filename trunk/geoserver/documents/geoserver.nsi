@@ -28,15 +28,15 @@
 ;General
 
   ;Name and file
-  Name "GeoServer 1.3.0 WCS Experiment"
-  OutFile "geoserver-1.3.0-WCS.exe"
+  Name "GeoServer 1.3.2 WCS Experiment"
+  OutFile "geoserver-1.3.2-WCS.exe"
 
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\GeoServer 1.3.WCS"
+  InstallDir "$PROGRAMFILES\GeoServer 1.3.2.WCS"
   
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\GeoServer-1.3.WCS" ""
+  InstallDirRegKey HKCU "Software\GeoServer-1.3.2.WCS" ""
 
 ;--------------------------------
 ;Variables
@@ -54,7 +54,7 @@
   
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
-      installation of GeoServer 1.3 WCS Experiment\r\n \
+      installation of GeoServer 1.3.2 WCS Experiment\r\n \
       Please report any problems or suggestions for improvement to \
       geoserver-devel@lists.sourceforge.net. \r\n \r\n \
       Click Next to continue."
@@ -108,6 +108,7 @@ Section "GeoServer Section" SecGeoServer
   File /r lib
   File /a RUNNING.txt
   File /a license.txt
+  File /a GPL.txt
   File /r server
 
 
@@ -212,7 +213,6 @@ Function dataDirPage
   StrCmp $1 "" 0 copy_str
   ## if it doesn't exist, use: "$INSTDIR\data_dir"
     StrCpy $1 "$INSTDIR\data_dir"
-    
 
   ## if it exists, use it for temp value until user chooses new one
   copy_str:
