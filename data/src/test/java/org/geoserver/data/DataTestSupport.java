@@ -101,7 +101,7 @@ public class DataTestSupport extends TestCase {
     
     void copy( String type ) throws IOException {
     		File from = new File( 
-			getClass().getResource( "data" + File.separator + type + ".properties").getFile() 
+			getClass().getResource( "data/" + type + ".properties").getFile() 
 		);
     		
     		File to = new File( tmp, type + ".properties" ); 
