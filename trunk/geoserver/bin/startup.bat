@@ -81,13 +81,13 @@ REM if no ant we're out of luck
   echo binary release of GeoServer
 goto end
 
-REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/conf/
+REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/data_dir/
 :noDataDir
-  if exist "%GEOSERVER_HOME%\conf\" goto setDataDir
+  if exist "%GEOSERVER_HOME%\data_dir\" goto setDataDir
   goto execJava
 
 :setDataDir
-  set GEOSERVER_DATA_DIR=%GEOSERVER_HOME%\conf\
+  set GEOSERVER_DATA_DIR=%GEOSERVER_HOME%\data_dir\
   goto execJava
 
 :execJava
