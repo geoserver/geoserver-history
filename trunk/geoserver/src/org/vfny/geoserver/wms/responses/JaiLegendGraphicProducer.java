@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.wms.responses.map.JAISupport;
+import org.vfny.geoserver.wms.responses.helpers.JAISupport;
 
 
 /**

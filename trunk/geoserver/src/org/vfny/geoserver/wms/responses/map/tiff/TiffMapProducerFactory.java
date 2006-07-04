@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
-import org.vfny.geoserver.wms.responses.map.JAISupport;
 
 /**
  * DOCUMENT ME!

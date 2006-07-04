@@ -23,7 +23,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryImpl;
+import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.LogicFilter;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -230,7 +230,7 @@ public class GeoServerFeatureSource implements FeatureSource {
 
         try {
             if (definitionQuery != Filter.NONE) {
-                FilterFactory ff = new FilterFactoryImpl();
+                FilterFactory ff = FilterFactoryFinder.createFilterFactory();
                 newFilter = ff.createLogicFilter(AbstractFilter.LOGIC_AND);
                 ((LogicFilter) newFilter).addFilter(definitionQuery);
                 ((LogicFilter) newFilter).addFilter(filter);

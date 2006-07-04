@@ -40,7 +40,7 @@ import org.geotools.feature.SchemaException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryImpl;
+import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
@@ -390,7 +390,8 @@ public class TransactionResponse implements Response {
                             // extra work when doing release mode ALL.
                             // 
                             DataStore data = store.getDataStore();
-                            FilterFactory factory = new FilterFactoryImpl();
+                            FilterFactory factory = FilterFactoryFinder
+                                .createFilterFactory();
                             FeatureWriter writer;                            
                             writer = data.getFeatureWriter(typeName, filter,
                                     transaction);
@@ -528,7 +529,7 @@ public class TransactionResponse implements Response {
                     //
                     if( !fids.isEmpty() ) {
                         LOGGER.finer("Post process update for boundary update and featureValidation");
-                        FidFilter modified = new FilterFactoryImpl().createFidFilter();
+                        FidFilter modified = FilterFactoryFinder.createFilterFactory().createFidFilter();
                         modified.addAllFids( fids );
                     
                         FeatureCollection changed = store.getFeatures( modified ).collection();
@@ -549,16 +550,14 @@ public class TransactionResponse implements Response {
             }
         }
 
+        // All opperations have worked thus far
+        // 
+        // Time for some global Validation Checks against envelope
+        //
         try {
-        	// All opperations have worked thus far
-        	// 
-        	// Time for some global Validation Checks against envelope
-        	//
-        	integrityValidation(stores2, envelope);
-        } catch (WfsTransactionException invalid) {
+            integrityValidation(stores2, envelope);
+        } catch (Exception invalid) {
             throw new WfsTransactionException(invalid);
-        } catch (IOException io) {
-            throw new WfsException(io);
         }
 
         // we will commit in the writeTo method

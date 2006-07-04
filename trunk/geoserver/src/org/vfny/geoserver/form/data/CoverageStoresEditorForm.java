@@ -35,8 +35,6 @@ import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.Requests;
 
-import com.k_int.gen.RecordSyntax_explain.abstractStructure_inline84_codec;
-
 /**
  * Represents the information required for editing a DataFormat.
  * 

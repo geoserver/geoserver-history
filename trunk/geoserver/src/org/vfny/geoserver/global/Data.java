@@ -26,8 +26,8 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory2;
-import org.geotools.styling.StyleFactoryImpl;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryFinder;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
@@ -57,36 +57,16 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 	private static final String INFO_FILE = "info.xml";
 	
 	/** used to create styles */
-	private static StyleFactory2 styleFactory = new StyleFactoryImpl();
+    private static StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
-	/**
-	 * holds the mappings between prefixes and NameSpaceInfo objects
-	 * 
-	 * @uml.property name="nameSpaces"
-	 * @uml.associationEnd elementType="org.vfny.geoserver.global.dto.FeatureTypeInfoDTO"
-	 * qualifier="next:java.lang.String org.vfny.geoserver.global.NameSpaceInfo" multiplicity=
-	 * "(0 -1)" ordering="ordered"
-	 */
-	private Map nameSpaces;
+    /** holds the mappings between prefixes and NameSpaceInfo objects */
+    private Map nameSpaces;
 
-	/**
-	 * NameSpaceInfo
-	 * 
-	 * @uml.property name="defaultNameSpace"
-	 * @uml.associationEnd inverse="data:org.vfny.geoserver.global.NameSpaceInfo" multiplicity=
-	 * "(0 1)"
-	 */
-	private NameSpaceInfo defaultNameSpace;
+    /** NameSpaceInfo */
+    private NameSpaceInfo defaultNameSpace;
 
-	/**
-	 * Mapping of DataStoreInfo by dataStoreId
-	 * 
-	 * @uml.property name="dataStores"
-	 * @uml.associationEnd elementType="org.vfny.geoserver.global.dto.FeatureTypeInfoDTO"
-	 * qualifier="next:java.lang.String org.vfny.geoserver.global.DataStoreInfo" multiplicity=
-	 * "(0 -1)" ordering="ordered"
-	 */
-	private Map dataStores;
+    /** Mapping of DataStoreInfo by dataStoreId */
+    private Map dataStores;
 
 	/**
 	 * Mapping of CoverageStoreInfo by formatId
@@ -885,7 +865,7 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
 		
 		while (i.hasNext()) {
 			FeatureTypeInfoDTO fti = (FeatureTypeInfoDTO) i.next();
-			tmp.put(fti.getName(), fti.clone());
+            tmp.put(fti.getKey(), fti.clone());   //DJB:  changed to getKey() from getName() which was NOT unique!
 		}
 		
 		dto.setFeaturesTypes(tmp);

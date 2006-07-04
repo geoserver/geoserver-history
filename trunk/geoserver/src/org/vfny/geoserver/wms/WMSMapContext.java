@@ -35,7 +35,7 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
 	/**
 	 * Default constructor
 	 */
-	public WMSMapContext() {
+    public WMSMapContext() {
 		super();
 	}
 

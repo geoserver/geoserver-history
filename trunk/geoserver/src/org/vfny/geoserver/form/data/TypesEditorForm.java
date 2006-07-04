@@ -122,7 +122,7 @@ public class TypesEditorForm extends ActionForm {
     private String description;
 
     /** The amount of time to use for the CacheControl: max-age parameter in maps generated from this featuretype **/
-    private String cacheMaxAge = "0";
+    private String cacheMaxAge;
     /** Should we add the CacheControl: max-age header to maps generated from this featureType? **/
     private boolean cachingEnabled;
     private boolean cachingEnabledChecked = false;
@@ -428,11 +428,13 @@ public class TypesEditorForm extends ActionForm {
         MessageResources messages = servlet.getResources();
         final String BBOX = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
+        final String SLDWIZARD = HTMLEncoder.decode(messages.getMessage(locale,
+        			"config.data.sldWizard.label"));
 
         // Pass Attribute Management Actions through without
         // much validation.
         if (action.startsWith("Up") || action.startsWith("Down")
-                || action.startsWith("Remove") || action.equals(BBOX)) {
+                || action.startsWith("Remove") || action.equals(BBOX) || action.equals(SLDWIZARD)) {
             return errors;
         }
 
@@ -461,13 +463,15 @@ public class TypesEditorForm extends ActionForm {
             }
         }
         
-        /*try {
-        	Integer.parseInt(cacheMaxAge);
-        } catch (NumberFormatException nfe) {
-        	errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.malformed", nfe));
-        } catch (Throwable t) {
-        	errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.error", t));
-        }*/
+        if (isCachingEnabled()) {
+	        try {
+	        	Integer.parseInt(cacheMaxAge);
+	        } catch (NumberFormatException nfe) {
+	        	errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.malformed", nfe));
+	        } catch (Throwable t) {
+	        	errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.error", t));
+	        }
+        }
 
         return errors;
     }

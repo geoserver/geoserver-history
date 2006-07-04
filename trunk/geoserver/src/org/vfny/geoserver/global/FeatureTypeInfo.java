@@ -35,6 +35,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Represents a FeatureTypeInfo, its user config and autodefined information.
@@ -911,7 +912,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     String attName = ati.getName();
                     attributes[count] = ft.getAttributeType(attName);
                     
-                    if (attributes[count] instanceof GeometricAttributeType)
+                    if (Geometry.class.isAssignableFrom(attributes[count].getType()))  //DJB: added this to set SRS
                     {
                     	GeometricAttributeType old = (GeometricAttributeType) attributes[count];
                     	try {

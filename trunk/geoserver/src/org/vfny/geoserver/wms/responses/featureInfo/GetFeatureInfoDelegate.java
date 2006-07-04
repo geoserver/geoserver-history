@@ -13,7 +13,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryImpl;
+import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.filter.expression.BBoxExpression;
@@ -180,7 +180,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
 		Query[] queries = new Query[nLayers];
 		GetFeatureInfoRequest infoRequest = getRequest();
 		Envelope requestExtent = infoRequest.getGetMapRequest().getBbox();
-		FilterFactory ffactory = new FilterFactoryImpl();
+        FilterFactory ffactory = FilterFactoryFinder.createFilterFactory();
 
 		try {
 			Filter finalLayerFilter;
@@ -225,8 +225,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
 	private Filter buildFilter(Envelope requestExtent, FilterFactory ffactory,
 			FeatureType schema) throws IllegalFilterException {
 		GeometryFilter bboxFilter;
-		bboxFilter = ffactory
-				.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
+        bboxFilter = ffactory.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
 
 		BBoxExpression bboxExpr = ffactory.createBBoxExpression(requestExtent);
 		Expression geomAttExpr = ffactory.createAttributeExpression(schema,

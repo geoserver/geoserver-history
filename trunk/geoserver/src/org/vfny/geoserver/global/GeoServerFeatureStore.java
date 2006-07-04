@@ -12,6 +12,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 
@@ -56,6 +57,17 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource
     FeatureStore store() {
         return (FeatureStore) source;
     }
+    /**
+     * see interface for details.
+     * @param fc
+     * @return
+     * @throws IOException
+     */
+    /*public Set addFeatures(FeatureCollection fc) throws IOException 
+	{
+        return store().addFeatures(fc);
+    }*/
+    
 
     /**
      * addFeatures purpose.

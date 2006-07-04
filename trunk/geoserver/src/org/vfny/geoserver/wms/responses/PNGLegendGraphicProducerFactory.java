@@ -10,7 +10,6 @@ import java.util.TreeSet;
 
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
-import org.vfny.geoserver.wms.responses.map.JAISupport;
 
 
 /**

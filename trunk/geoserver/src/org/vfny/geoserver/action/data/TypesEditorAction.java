@@ -22,6 +22,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.DynaActionForm;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
@@ -109,13 +110,19 @@ public class TypesEditorAction extends ConfigAction {
 		if (LOGGER.isLoggable(Level.FINER)) {
 			LOGGER.finer(new StringBuffer("BBOX: ").append(BBOX).toString());
 		}
-
+        final String NEWSLD = HTMLEncoder.decode(messages.getMessage(locale,
+        			"config.data.sldWizard.label"));
+        
         if (action.equals(SUBMIT)) {
             return executeSubmit(mapping, typeForm, user, request);
         }
 
         if (action.equals(BBOX)) {
             return executeBBox(mapping, typeForm, user, request);
+        }
+        
+        if (action.equals(NEWSLD)) { // if the SLDWizard button was hit
+        	return mapping.findForward("SLDWizard");
         }
 
         List attributes = typeForm.getAttributes();

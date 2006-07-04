@@ -28,8 +28,8 @@ import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory2;
-import org.geotools.styling.StyleFactoryImpl;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryFinder;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
@@ -59,7 +59,8 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      * GDSFactory to create styles from inline or remote SLD documents (aka, from
      * SLD_BODY or SLD parameters).
      */
-    private static final StyleFactory2 styleFactory = new StyleFactoryImpl();
+	private static final StyleFactory styleFactory = StyleFactoryFinder
+			.createStyleFactory();
 
     /**
      * Creates a new GetLegendGraphicKvpReader object.

@@ -4,20 +4,6 @@
  */
 package org.vfny.geoserver.action.data;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -26,17 +12,34 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory2;
-import org.geotools.styling.StyleFactoryImpl;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryFinder;
+import org.geotools.styling.StyledLayerDescriptor;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.form.data.StylesEditorForm;
-import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.util.SLDValidator;
 import org.xml.sax.SAXParseException;
+
+
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -99,9 +102,7 @@ public class StylesEditorAction extends ConfigAction {
 	try {
 	    styleDir = GeoserverDataDirectory.findConfigDir(rootDir, "styles");
 	} catch (ConfigurationException cfe) {
-			if (LOGGER.isLoggable(Level.WARNING)) {
-				LOGGER.warning(new StringBuffer("no style dir found, creating new one").toString());
-			}
+            LOGGER.warning("no style dir found, creating new one");
             //if for some bizarre reason we don't fine the dir, make a new one.
             styleDir = new File(rootDir, "styles");
 	}
@@ -112,9 +113,8 @@ public class StylesEditorAction extends ConfigAction {
 
         //here we do a check to see if the file we are trying to upload is
         //overwriting another style file. 
-		if (LOGGER.isLoggable(Level.FINE)) {
-			LOGGER.fine(new StringBuffer("new sld file is: ").append(newSldFile).append(", exists: ").append(newSldFile.exists()).toString());
-		}
+        LOGGER.fine("new sld file is: " + newSldFile + ", exists: "
+            + newSldFile.exists());
 
         if (newSldFile.exists()) {
             StyleConfig styleForID = config.getStyle(styleID);
@@ -132,9 +132,7 @@ public class StylesEditorAction extends ConfigAction {
                 //update is being performed on the correct style id, so we see if the
                 //file in the system is the same as this one.  
                 File oldFile = styleForID.getFilename();
-        		if (LOGGER.isLoggable(Level.FINE)) {
-        			LOGGER.fine(new StringBuffer("old file: ").append(oldFile).append(", newFile: ").append(newSldFile).toString());
-        		}
+                LOGGER.fine("old file: " + oldFile + ", newFile: " + newSldFile);
 
                 if (!oldFile.equals(newSldFile)) {
                     doFileExistsError(newSldFile, request);
@@ -162,7 +160,7 @@ public class StylesEditorAction extends ConfigAction {
 
         style.setId(styleID);
 
-        StyleFactory2 factory = new StyleFactoryImpl();
+        StyleFactory factory = StyleFactoryFinder.createStyleFactory();
         SLDParser styleReader = new SLDParser(factory, newSldFile.toURL());
         Style[] readStyles = null;
         Style newStyle;
@@ -187,9 +185,7 @@ public class StylesEditorAction extends ConfigAction {
             }
 
             newStyle = readStyles[0];
-    		if (LOGGER.isLoggable(Level.FINE)) {
-    			LOGGER.fine(new StringBuffer("sld is ").append(newStyle).toString());
-    		}
+            LOGGER.fine("sld is " + newStyle);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -337,9 +333,7 @@ public class StylesEditorAction extends ConfigAction {
      */
     private void doStyleParseError(String message, File newSldFile,
         HttpServletRequest request) {
-		if (LOGGER.isLoggable(Level.FINE)) {
-			LOGGER.fine(new StringBuffer("parse error message is: ").append(message).toString());
-		}
+        LOGGER.fine("parse error message is: " + message);
 
         ActionErrors errors = new ActionErrors();
         errors.add(ActionErrors.GLOBAL_ERROR,

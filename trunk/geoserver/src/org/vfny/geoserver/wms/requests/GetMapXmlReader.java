@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.wms.requests;
 
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryFinder;
 import java.awt.Color;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -26,8 +28,6 @@ import org.geotools.filter.ExpressionDOMParser;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory2;
-import org.geotools.styling.StyleFactoryImpl;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
@@ -57,7 +57,8 @@ import com.vividsolutions.jts.geom.Coordinate;
  * @version $Id$
  */
 public class GetMapXmlReader extends XmlRequestReader {
-    private static final StyleFactory2 styleFactory = new StyleFactoryImpl();
+    private static final StyleFactory styleFactory = StyleFactoryFinder
+        .createStyleFactory();
 
     /**
      * Creates a new GetMapXmlReader object.

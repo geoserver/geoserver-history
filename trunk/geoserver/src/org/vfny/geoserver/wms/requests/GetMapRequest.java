@@ -241,7 +241,33 @@ public class GetMapRequest extends WMSRequest {
 		this.mandatoryParams.width = width;
 	}
 
-	/**
+    /**
+     * @param score the KML/KMZ score value for image vs. vector response, from 0 to 100
+     */
+    public void setKMScore(int score){
+    	this.optionalParams.KMScore = score;
+    }
+    
+    /**
+     * @param on true: full attribution; false: no attribution
+     */
+    public void setKMattr(boolean on) {
+    	this.optionalParams.KMattr = on;
+    }
+    
+    /**
+     * decodes a color of the form <code>#FFFFFF</code> into a
+     * <code>java.awt.Color</code> object
+     *
+     * @param hexColor DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    private static final Color decodeColor(String hexColor) {
+        return Color.decode(hexColor);
+    }
+
+    /*
 	 * DOCUMENT ME!
 	 * 
 	 * @author Gabriel Roldan, Axios Engineering
@@ -297,6 +323,12 @@ public class GetMapRequest extends WMSRequest {
 
 		/** DOCUMENT ME! */
 		boolean transparent = false;
-	}
+        
+        /** score value for KML/KMZ */
+        int KMScore = 40;
+        
+        /** KML full/none attribution on returned placemark <description>. */
+        boolean KMattr = true;
+    }
 
 }
