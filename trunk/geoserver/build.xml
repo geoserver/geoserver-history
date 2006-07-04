@@ -40,7 +40,7 @@
 
 	<!-- release version -->
 
-	<property name="name.release" value="WCS_0.3" />
+	<property name="name.release" value="1.3.2_WCS" />
 
 	<!-- primary directories -->
 	<property name="dir.bin" value="${basedir}/bin" />
@@ -181,6 +181,7 @@
 	<!-- ALL
       builds all of the files in the project, no clean -->
 <target name="all" depends="init">
+	<antcall target="clean"/>
 	<javac srcdir="${dir.src}" destdir="${dir.build}" includes="**" classpathref="path.build" deprecation="off" debug="on" />
 	<copy todir="${dir.build}">
 		<fileset dir="${dir.src}">
@@ -189,6 +190,7 @@
 			<include name="**/META-INF/services/**"/>
 			<include name="**/*.properties" />
 			<include name="**/*.config" />
+			<include name="**/*.class"/>
 			<exclude name="**/test-data/**" />
 		</fileset>
 	</copy>
@@ -401,7 +403,7 @@
          in the conf directory, since whenever you start with this it blows
          away changes the ui might have done. -->
 	<antcall target="build-war">
-		<param name="conf.path" value="${basedir}/data_dirs/userBasic"/>
+		<param name="conf.path" value="${basedir}/data_dirs/${test.type}"/>
 	</antcall>
 		<delete dir="${dir.server}/geoserver" />
 		<unwar src="${dir.build}/geoserver.war" dest="${dir.server}/geoserver/" />
@@ -410,22 +412,41 @@
 	
 	<!-- copies the geoserver jar from lib to the server WEB-INF/lib directory -->
 <target name="deploy-jar" depends="all"
-	    description="Copies the Geoserver jar from">
-		
-		<copy todir="${dir.jarcopy}">
-			<fileset dir="${dir.lib}">
-				<include name="geoserver.jar"/>
-			</fileset>
-		</copy>
-   	</target>
+    description="Copies the Geoserver jar from lib to server/geoserver dir">
+	
+	<delete file="${dir.jarcopy}/geoserver.jar"/>
+	
+	<copy todir="${dir.jarcopy}" failonerror="true">
+		<fileset dir="${dir.lib}">
+			<include name="geoserver.jar"/>
+		</fileset>
+	</copy>
+</target>
 	
 <!-- copies the JSPs from WEB-INF/pages to the server/geoserver/WEB-INF/pages directory -->
-<target name="deploy-jsp" depends="all"
+<target name="deploy-jsp"
     description="Copies the JSPs">
 	
+	<delete includeEmptyDirs="false" failonerror="false">
+		<fileset dir="${dir.server}/geoserver/WEB-INF/pages" />
+	</delete>
+	<delete file="${dir.server}/struts-config.xml" failonerror="true" />
+		
 	<copy todir="${dir.server}/geoserver/WEB-INF/pages/">
 		<fileset dir="${dir.webinf}/pages">
 			<include name="**/*.jsp"/>
+			<include name="**/*.html"/>
+		</fileset>
+	</copy>
+	<copy todir="${dir.server}/geoserver/WEB-INF/">
+		<fileset dir="${dir.webinf}/">
+			<include name="*.properties"/>
+			<include name="struts-config.xml"/>
+		</fileset>
+	</copy>
+	<copy todir="${dir.server}/geoserver/WEB-INF/classes">
+		<fileset dir="${dir.webinf}/">
+			<include name="*.properties"/>
 		</fileset>
 	</copy>
 	
@@ -539,6 +560,7 @@
 	<antcall target="misc_conf" />
 </target-->
 
+	
 <!-- BUILD WAR -->
 <target name="build-war" depends="all">
 	<!-- preparation -->
@@ -550,8 +572,8 @@
 		<copy todir="${basedir}/data">
 			<fileset dir="${basedir}/documents">
 				<include name="license.txt" />
-				<include name="geoserver.log" />
-				<include name="z3950-geo.map" />
+			<include name="GPL.txt" />
+			<include name="geoserver.log" />
 			</fileset>
 		</copy>
 
@@ -623,6 +645,7 @@
 			<!--exclude name="**/xml-apis.jar" /-->
 			<!--exclude name="**/xercesImpl.jar" /-->
 			<exclude name="*jetty*/**/*" />
+			<!--exclude name="**/gt2-arcsde.jar" /-->
 		</lib>
 
 		<!-- directories -->
@@ -803,7 +826,10 @@
 	<copy todir="${dir.build}">
 		<fileset dir="${basedir}/documents">
 			<include name="license.txt" />
+			<include name="GPL.txt" />
 			<include name="README.txt" />
+			<exclude name="*SVN*/*" />
+			<exclude name="**/*SVN*/*" />
 		</fileset>
 	</copy>
 	<copy todir="${dir.build}/lib">
@@ -843,10 +869,11 @@
 		</fileset>
 	</copy>
 	<copy todir="${dir.build}/conf">
-		<fileset dir="${basedir}/cite/confUserBasic">
+		<fileset dir="${basedir}/data_dirs/userBasic">
 			<include name="**/*" />
 			<exclude name="*SVN*/*" />
 			<exclude name="**/*SVN*/*" />
+			<exclude name="**/wfs-t_demo/*" />
 		</fileset>
 	</copy>
 	<copy todir="${dir.build}/src">
@@ -882,13 +909,15 @@
 			<include name="**/*" />
 			<exclude name="*SVN*/*" />
 			<exclude name="**/*SVN*/*" />
+			<exclude name="**/gt2-arcsde.jar"/>
 		</fileset>
 	</copy>
 	<copy todir="${dir.build}/documents">
 		<fileset dir="${basedir}/documents">
 			<include name="**/*" />
-			<exclude name="*generated*/*" />
-			<exclude name="*generated*/**/*" />
+			<include name="GPL.txt" />
+			<exclude name="*generated*/**" />
+			<exclude name="*GEOSDOC*/**" />
 			<exclude name="*SVN*/*" />
 			<exclude name="**/*SVN*/*" />
 		</fileset>
@@ -960,24 +989,46 @@
 	
 	<move file="${basedir}/geoserver-${name.release}-war.zip" todir="${dir.release}" />
 	<delete file="${dir.build}/geoserver.war" failonerror="true" />
-	
+	<delete file="${basedir}/license.txt" failonerror="true" />
+	<delete file="${basedir}/GPL.txt" failonerror="true" />
 </target>
 
+		
 <target name="release-binary" depends="release-common">
+	
+	<antcall target="build-war">
+		<!--param name="conf.path" value="${basedir}/cite/confMin" /-->
+		<param name="conf.path" value="${basedir}/data_dirs/${test.type}" />
+	</antcall>
+	<unwar src="${dir.build}/geoserver.war" dest="${dir.build}/server/geoserver/" />
+	
 	<copy todir="${dir.build}">
 		<fileset dir="${basedir}/documents">
 			<include name="RUNNING.txt" />
+			<include name="GPL.txt" />
 		</fileset>
 	</copy>
 	
-	<copy todir="${dir.build}/documents/" failonerror="false">
+	<copy todir="${dir.build}/documents" failonerror="false">
 		<fileset dir="${dir.doc}">
 			<include name="**/*" />
 			<exclude name="api/**" />
+			<exclude name="GEOSDOC/**" />
+			<exclude name="javadoc/**" />
 		</fileset>
 	</copy>
 	
-	<copy todir="${dir.build}/bin/" failonerror="false">
+	<copy todir="${dir.build}/lib" failonerror="false">
+		<fileset dir="${dir.lib}">
+			<include name="jetty/*" />
+			<include name="servlet.jar" />
+			<include name="xercesImpl.jar" />
+			<include name="xml-apis.jar" />
+			<exclude name="**/gt2-arcsde.jar"/>
+		</fileset>
+	</copy>
+	
+	<copy todir="${dir.build}/bin" failonerror="true">
 		<fileset dir="${dir.bin}">
 			<include name="**/*" />
 		</fileset>
@@ -994,13 +1045,11 @@
 	    <fileset dir="${basedir}/data_dirs/userBasic">
 			<include name="**/*"/>
 	    	<exclude name="mbdemos/**"/>
+	    	<exclude name="wfs-t_demo/**"/>
 	    </fileset>
 	</copy>
 
-	<antcall target="build-war">
-		<!--param name="conf.path" value="${basedir}/cite/confMin" /-->
-		<param name="conf.path" value="${basedir}/data_dirs/userBasic" />
-	</antcall>
+	
 	<!--copy todir="${dir.build}/server/" file="${dir.build}/geoserver.war"/-->
 	<unwar src="${dir.build}/geoserver.war" dest="${dir.build}/server/geoserver/" />
 	
@@ -1013,12 +1062,14 @@
 			<exclude name="geoserver.war" />
 			<exclude name="org/**" />
 	        <exclude name="META-INF/**"/>
-			<exclude name="bin/*.sh"/>
+			<exclude name="bin/startup.sh"/>
+			<exclude name="bin/shutdown.sh"/>
 		</tarfileset>
 	
 		<!-- JD(GEOS-385)include bin seperatly in order to get permission right -->
 		<tarfileset dir="${dir.build}" prefix="geoserver" mode="755">
-			<include name="bin/*.sh"/>
+			<include name="bin/startup.sh"/>
+			<include name="bin/shutdown.sh"/>
 		</tarfileset>
 	</tar>
 	
@@ -1026,12 +1077,12 @@
 	
 	<copy file="${basedir}/geoserver-${name.release}-bin.tar.gz" todir="${dir.release}" />
 	
-	<delete file="${basedir}/geoserver-${name.release}-bin.tar.gz" failonerror="true" />
+	<!--delete file="${basedir}/geoserver-${name.release}-bin.tar.gz" failonerror="true" />
 	<delete file="${basedir}/geoserver-${name.release}-bin.tar" failonerror="true" />
 
 	
 
-	<delete dir="${dir.build}" failonerror="false" />
+	<delete dir="${dir.build}" failonerror="false" /-->
 	<!--
 	<delete file="${basedir}/geoserver-${name.release}-bin.zip" failonerror="true" />
 	 -->
@@ -1101,10 +1152,14 @@
 	<gunzip src="${dir.release}/geoserver-${name.release}-bin.tar.gz" dest="${dir.build}/installer" />
 	<untar src="${dir.build}/installer/geoserver-${name.release}-bin.tar" dest="${dir.build}/installer"/>
 	<!--delete file="${dir.build}/installer/${dir.upgrade}/geoserver-${name.release}-bin.tar"/-->
+	<delete dir="${basedir}/installer/wfs-t_demo" failonerror="true" />
 	
 	<copy file="${dir.documents}/geoserver.nsi" todir="${dir.build}/installer/geoserver" />
 	<copy file="${dir.documents}/dataDirPage.ini" todir="${dir.build}/installer/geoserver" />
 	<copy file="${dir.documents}/splash.bmp" todir="${dir.build}/installer/geoserver" />
+	<copy file="${dir.documents}/license.txt" todir="${dir.build}/installer/geoserver" />
+	<copy file="${dir.documents}/README.txt" todir="${dir.build}/installer/geoserver" />
+	<copy file="${dir.documents}/RUNNING.txt" todir="${dir.build}/installer/geoserver" />
 	
 	<property environment="env"/>
 	<exec executable="${env.NSIS_PATH}/makensis.exe">
@@ -1113,7 +1168,7 @@
 	
 	<!-- copy over the exe to release, the NSI script needs the OutFile variable changed to match
 	     the version number. -->
-	<echo>If you get an error here, you need to edit the geoserver.nsi file and edit the variable "OutFile" to match the version number.</echo>
+	<echo>If you get an error here, you probably need to edit the geoserver.nsi file and edit the variable "OutFile" to match the version number.</echo>
 	<copy file="${dir.build}/installer/geoserver/geoserver-${name.release}.exe" todir="${dir.release}" />
 	<delete dir="${dir.build}/installer"/>
 </target>
