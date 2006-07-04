@@ -712,17 +712,17 @@
 		 <copy failonerror="false" toFile="${dir.lib}/opengis-legacy-0.1.jar" file="${dir.maven}/opengis/jars/opengis-legacy-0.1.jar" />
 		  -->
 		<copy overwrite="true" failonerror="true" toFile="${dir.lib}/units-0.01.jar" file="${dir.maven}/units/jars/units-0.01.jar" />
-		<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_sdk-9.0.jar" />
-		<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_jpe_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_jpe_sdk-9.0.jar" />
-		<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_concurrent-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_concurrent-9.0.jar" />
+		<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_sdk-9.0.jar" /-->
+		<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_jpe_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_jpe_sdk-9.0.jar" /-->
+		<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_concurrent-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_concurrent-9.0.jar" /-->
 
 		<!-- added by Alex -->
 		<copy overwrite="true" failonerror="true" toFile="${dir.lib}/JGriB1-0.9.x.jar" file="${dir.maven}/JGriB1/jars/JGriB1-0.9.x.jar" />
 		<copy overwrite="true" failonerror="true" toFile="${dir.lib}/hsqldb-1.8.0.1.jar" file="${dir.maven}/hsql/jars/hsqldb-1.8.0.1.jar" />
-		<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jdom-1.0.jar" file="${dir.maven}/jdom/jars/jdom-1.0.jar" />
+		<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/jdom-1.0.jar" file="${dir.maven}/jdom/jars/jdom-1.0.jar" /-->
 
 	
-<!-- added by DJB to be more complete. -->
+	<!-- added by DJB to be more complete. -->
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-main.jar" file="${dir.maven}/gt2/jars/main-${version.geotools}.jar" />
 	
 	<!-- added by Alex -->
@@ -756,7 +756,7 @@
 	<!--<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-mysql.jar" file="${dir.maven}/gt2/jars/mysql-${version.geotools}.jar" /-->	
 	<!--<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-utils.jar" file="${dir.maven}/gt2/jars/utils-${version.geotools}.jar" />-->
 	<!--<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wfs.jar" file="${dir.maven}/gt2/jars/wfs-${version.geotools}.jar" /-->
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wms.jar" file="${dir.maven}/gt2/jars/wms-${version.geotools}.jar" />
+	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wms.jar" file="${dir.maven}/gt2/jars/wms-${version.geotools}.jar" /-->
 
 
 			
