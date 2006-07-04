@@ -41,6 +41,7 @@ public class BeanPersisterTest extends TestCase {
 	
 	protected void setUp() throws Exception {
 		File tmp = new File( System.getProperty( "java.io.tmpdir" ) );
+		System.out.println(tmp.getAbsolutePath());
 		services = new File( tmp, "services" );
 		
 		services.mkdir();
@@ -50,9 +51,10 @@ public class BeanPersisterTest extends TestCase {
 	
 	protected void tearDown() throws Exception {
 		File[] files = services.listFiles();
-		for ( int i = 0; i < files.length; i++ ) files[i].delete();
+		for ( int i = 0; i < files.length; i++ ) 
+			assertTrue(files[i].delete());
 		
-		services.delete();
+		assertTrue(services.delete());
 	}
 	
 	

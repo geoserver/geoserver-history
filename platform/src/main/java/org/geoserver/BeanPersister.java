@@ -2,9 +2,12 @@ package org.geoserver;
 
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -229,6 +232,7 @@ public class BeanPersister
 	}
 	
 	void saveBean( String id, Object bean, ApplicationContext context ) {
+		OutputStream os = null;
 		try {
 			DocumentBuilder builder = 
 				DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -290,16 +294,24 @@ public class BeanPersister
 			DOMSource source = new DOMSource( root );
 			
 			File services = loader.createDirectory( "services" );
+			os = new BufferedOutputStream(new FileOutputStream(new File( services, id + ".xml" )));
 			StreamResult result = 
-				new StreamResult( new File( services, id + ".xml" ) );
+				new StreamResult(os);
 			
 			tx.transform( source, result );
+			os.close();
 				
 		} 
 		catch (Exception e) {
 			String msg = "Error persisting bean: " + id;
 			logger.log( Level.WARNING, msg, e );
-		} 
+		} finally {
+			if(os != null)
+				try {
+					os.close();
+				} catch (IOException e) {
+				}
+		}
 	}
 	
 	void loadBean( String id, ConfigurableListableBeanFactory factory ) {
