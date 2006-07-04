@@ -39,7 +39,10 @@
       <td class="datum">
         <html:select property="styleId">
           <html:options property="styles"/>
-        </html:select>
+        </html:select> 
+        <html:submit property="action">
+          <bean:message key="config.data.sldWizard.label"/>
+        </html:submit><br>
       </td>
     </tr>    
 	<tr>
@@ -216,6 +219,28 @@
 	  <td class="datum">
 		<html:textarea property="abstract" cols="60" rows="3"/>
       </td>
+    </tr>
+    
+    <tr>
+	    <td class="label">
+    		<span class="help" title="<bean:message key="help.type.cachingEnabled" />">
+    			<bean:message key="label.cachingEnabled" />:
+    		</span>
+    	</td>
+    	<td class="datum">
+    		<html:checkbox property="cachingEnabled" />
+    	</td>
+    </tr>
+    
+    <tr>
+    	<td class="label">
+    		<span class="help" title="<bean:message key="help.type.cacheMaxAge" />">
+    			<bean:message key="label.cacheMaxAge" />:
+    		</span>
+    	</td>
+    	<td class="datum">
+    		<html:text property="cacheMaxAge" size="10" />
+    	</td>
     </tr>
 
     <tr>
