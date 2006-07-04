@@ -426,6 +426,19 @@
         </configuration>
       </plugin>
       
+			<plugin>
+				<groupId>org.geoserver.maven</groupId>
+				<artifactId>merger</artifactId>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>mergeSurefireReports</goal>	
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 	
@@ -437,7 +450,7 @@
 		<module>wms</module>
 		<module>validation</module>
 		<module>web</module>
-		<module>config</module>
+		<module>maven</module>
 		<!--module>release</module-->
 		<module>test</module>
 	</modules>
@@ -463,7 +476,7 @@
     <module>wms</module>
     <module>validation</module>
     <module>web</module>
-    <module>config</module>
+    <module>maven</module>
     <module>test</module>
     <module>community</module>
 
