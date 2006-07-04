@@ -165,7 +165,7 @@
 		<plugins>
 
 			<plugin>
-				<groupId>org.geoserver</groupId>
+				<groupId>org.geoserver.maven</groupId>
 				<artifactId>config</artifactId>
 				<executions>
           <execution>
