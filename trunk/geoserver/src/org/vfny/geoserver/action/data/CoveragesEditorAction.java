@@ -183,10 +183,7 @@ public final class CoveragesEditorAction extends ConfigAction {
 					param = ((ParameterValue) it.next());
 					descr = (ParameterDescriptor) param.getDescriptor();
 					key = descr.getName().toString();
-					if (AbstractGridFormat.READ_DIMENSIONS2D.getName()
-							.toString().equalsIgnoreCase(key)
-							|| AbstractGridFormat.READ_ENVELOPE.getName()
-									.toString().equalsIgnoreCase(key))
+					if (AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString().equalsIgnoreCase(key))
 						value = null;
 					else{
 						value = CoverageUtils.getCvParamValue(key, param,

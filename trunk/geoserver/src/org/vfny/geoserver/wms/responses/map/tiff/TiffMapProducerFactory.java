@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses.map.tiff;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -20,6 +21,15 @@ import org.vfny.geoserver.wms.responses.map.JAISupport;
  * @version $Id$
  */
 public class TiffMapProducerFactory implements GetMapProducerFactorySpi {
+	/** the only MIME type this map producer supports */
+	static final String MIME_TYPE = "image/tiff";
+
+	/**
+	 * convenient singleton Set to expose the output format this producer
+	 * supports
+	 */
+	private static final Set SUPPORTED_FORMATS = Collections
+			.singleton(MIME_TYPE);
 	/** DOCUMENT ME! */
 	private static final Logger LOGGER = Logger
 			.getLogger(TiffMapProducerFactory.class.getPackage().getName());
@@ -40,49 +50,16 @@ public class TiffMapProducerFactory implements GetMapProducerFactorySpi {
 		return "Tiff backed raster maps producer";
 	}
 
-	/**
-	 * The formats this delegate supports. Includes those formats supported by
-	 * the Java ImageIO extension, mostly: <i>png, x-portable-graymap, jpeg,
-	 * jpeg2000, x-png, tiff, vnd.wap.wbmp, x-portable-pixmap,
-	 * x-portable-bitmap, bmp and x-portable-anymap</i>, but the specific ones
-	 * will depend on the platform and JAI version. At leas JPEG and PNG will
-	 * generally work.
-	 * 
-	 * @return The list of the supported formats, as returned by the Java
-	 *         ImageIO extension.
-	 */
 	public Set getSupportedFormats() {
-		return JAISupport.getSupportedFormats();
+		return SUPPORTED_FORMATS;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
 	public boolean isAvailable() {
-		try {
-			Class.forName("javax.imageio.ImageIO");
-			Class.forName("javax.media.jai.JAI");
-			return true;
-
-		} catch (ClassNotFoundException e) {
-			return false;
-		}
-
+		return true;
 	}
 
-	/**
-	 * Evaluates if this Map producer can generate the map format specified by
-	 * <code>mapFormat</code>
-	 * 
-	 * @param mapFormat
-	 *            the mime type of the output map format requiered
-	 * 
-	 * @return true if class can produce a map in the passed format
-	 */
 	public boolean canProduce(String mapFormat) {
-		return JAISupport.getSupportedFormats().contains(mapFormat);
+		return MIME_TYPE.equals(mapFormat);
 	}
 
 	/**

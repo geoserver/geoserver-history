@@ -467,9 +467,7 @@ public final class CoveragesEditorForm extends ActionForm {
 			String key;
 			ParameterValue param;
 			final int length = paramKeys.size();
-			final String readEnvelopeKey = AbstractGridFormat.READ_ENVELOPE
-					.getName().toString();
-			final String readDimensionsKey = AbstractGridFormat.READ_DIMENSIONS2D
+			final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D
 					.getName().toString();
 			for (int i = 0; i < length; i++) {
 				key = (String) getParamKey(i);
@@ -479,8 +477,7 @@ public final class CoveragesEditorForm extends ActionForm {
 				// Ignore the parameters used for decimation at run time
 				//
 				// //
-				if (key.equalsIgnoreCase(readDimensionsKey)
-						|| key.equalsIgnoreCase(readEnvelopeKey))
+				if (key.equalsIgnoreCase(readGeometryKey))
 					continue;
 
 				param = CoverageStoreUtils.find(info, key);

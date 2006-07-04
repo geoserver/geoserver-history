@@ -13,64 +13,65 @@ import javax.imageio.ImageIO;
 
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducerTest;
-
-
+import org.vfny.geoserver.wms.responses.map.gif.GIFMapProducer;
 
 /**
  * @task TODO: do some decent testing
- *
+ * 
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
 public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
-    /**
-     *
-     */
-    public GIFMapProducerTest() {
-        super();
-    }
-    
-    protected DefaultRasterMapProducer getProducerInstance(){
-    	return new GIFMapProducer("image/gif"); //DJB: set content enconding correctly
-    }
-    
+	/**
+	 * 
+	 */
+	public GIFMapProducerTest() {
+		super();
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param testName DOCUMENT ME!
-     * @param producer DOCUMENT ME!
-     */
-    protected void assertNotBlank(String testName,
-        DefaultRasterMapProducer producer){
-    	
-        BufferedImage image = producer.getImage();
-        
-        BufferedImage product = null;
-        File tmpGif = null;
-        try {
+	protected DefaultRasterMapProducer getProducerInstance() {
+		return new GIFMapProducer("image/gif"); // DJB: set content enconding
+												// correctly
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param testName
+	 *            DOCUMENT ME!
+	 * @param producer
+	 *            DOCUMENT ME!
+	 */
+	protected void assertNotBlank(String testName,
+			DefaultRasterMapProducer producer) {
+
+		BufferedImage image = producer.getImage();
+
+		BufferedImage product = null;
+		File tmpGif = null;
+		try {
 			tmpGif = new File("/tmp/" + testName + ".gif");
-			//tmpGif.deleteOnExit();
+			// tmpGif.deleteOnExit();
 			OutputStream out = new FileOutputStream(tmpGif);
 			producer.writeTo(out);
 			out.flush();
 			out.close();
-			
+
 			product = ImageIO.read(tmpGif);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
-				
-		int w = image.getWidth();
-        int h = image.getHeight();
-        
-		assertNotNull(product);
-        assertEquals(w, product.getWidth());
-        assertEquals(h, product.getHeight());
-        
-        System.out.println("width=" + w + ", height=" + h);
 
-        showImage(testName, product);
-    }
+		int w = image.getWidth();
+		int h = image.getHeight();
+
+		assertNotNull(product);
+		assertEquals(w, product.getWidth());
+		assertEquals(h, product.getHeight());
+
+		System.out.println("width=" + w + ", height=" + h);
+
+		showImage(testName, product);
+	}
 }

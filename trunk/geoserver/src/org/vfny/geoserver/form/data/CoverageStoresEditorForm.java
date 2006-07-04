@@ -196,10 +196,8 @@ public final class CoverageStoresEditorForm extends ActionForm {
 			ParameterValue val = null;
 			Object value;
 			String text;
-			final String readEnv = AbstractGridFormat.READ_ENVELOPE.getName()
+			final String readGeom = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName()
 					.toString();
-			final String readDim = AbstractGridFormat.READ_DIMENSIONS2D
-					.getName().toString();
 			while (it.hasNext()) {
 				val = (ParameterValue) it.next();
 				if (val != null) {
@@ -223,8 +221,7 @@ public final class CoverageStoresEditorForm extends ActionForm {
 					// //
 					if ("CRS".equalsIgnoreCase(key)
 							|| "envelope".equalsIgnoreCase(key)
-							|| readEnv.equalsIgnoreCase(key)
-							|| readDim.equalsIgnoreCase(key)) {
+							|| readGeom.equalsIgnoreCase(key)) {
 						continue;
 
 					} else {
@@ -270,9 +267,7 @@ public final class CoverageStoresEditorForm extends ActionForm {
 			String size;
 			ControllerConfig cc;
 			Object value;
-			final String readEnvelopeKey = AbstractGridFormat.READ_ENVELOPE
-					.getName().toString();
-			final String readDimensionsKey = AbstractGridFormat.READ_DIMENSIONS2D
+			final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D
 					.getName().toString();
 			for (int i = 0; i < length; i++) {
 				key = (String) getParamKey(i);
@@ -281,8 +276,7 @@ public final class CoverageStoresEditorForm extends ActionForm {
 				// Ignore the parameters used for decimation at run time
 				//
 				// //
-				if (key.equalsIgnoreCase(readDimensionsKey)
-						|| key.equalsIgnoreCase(readEnvelopeKey))
+				if (key.equalsIgnoreCase(readGeometryKey))
 					continue;
 				param = CoverageStoreUtils.find(info, key);
 

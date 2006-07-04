@@ -78,10 +78,7 @@ public final class CoverageStoresEditorAction extends ConfigAction {
 		ParameterValue param;
 		String key;
 		Object value;
-		final String readEnvelopeKey = AbstractGridFormat.READ_ENVELOPE
-				.getName().toString();
-		final String readDimensions2D = AbstractGridFormat.READ_DIMENSIONS2D
-				.getName().toString();
+		final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
 		for (Iterator i = params.keySet().iterator(); i.hasNext();) {
 			key = (String) i.next();
 			// //
@@ -89,8 +86,7 @@ public final class CoverageStoresEditorAction extends ConfigAction {
 			// Skipping decimation parameters
 			//
 			// //
-			if (key.equalsIgnoreCase(readDimensions2D)
-					|| key.equalsIgnoreCase(readEnvelopeKey))
+			if (key.equalsIgnoreCase(readGeometryKey))
 				continue;
 			param = CoverageStoreUtils.find(info, key);
 			if (param == null) {

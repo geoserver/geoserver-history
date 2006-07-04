@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducerTest;
+import org.vfny.geoserver.wms.responses.map.png.PNGMapProducer;
 
 public class PNGMapProducerTest extends DefaultRasterMapProducerTest {
 

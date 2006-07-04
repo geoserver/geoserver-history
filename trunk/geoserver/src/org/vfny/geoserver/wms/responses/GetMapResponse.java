@@ -14,10 +14,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geotools.data.DataSourceException;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.factory.FactoryFinder;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
@@ -70,26 +70,27 @@ public class GetMapResponse implements Response {
 	 */
 	private WMSConfig config;
 
-    /**
-     * custom response headers
-     */
-    private HashMap responseHeaders;
-    
-    /**
-     * Creates a new GetMapResponse object.
-     */
-    public GetMapResponse(WMSConfig config) {
-        this.config = config;
-        responseHeaders = new HashMap();
-    }
+	/**
+	 * custom response headers
+	 */
+	private HashMap responseHeaders;
 
-    /**
-     * Returns any extra headers that this service might want to set in the HTTP response object.
-     */
-    public HashMap getResponseHeaders() {
-    	return responseHeaders;
-    }
-    
+	/**
+	 * Creates a new GetMapResponse object.
+	 */
+	public GetMapResponse(WMSConfig config) {
+		this.config = config;
+		responseHeaders = new HashMap();
+	}
+
+	/**
+	 * Returns any extra headers that this service might want to set in the HTTP
+	 * response object.
+	 */
+	public HashMap getResponseHeaders() {
+		return responseHeaders;
+	}
+
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -148,13 +149,15 @@ public class GetMapResponse implements Response {
 
 		try { // mapcontext can leak memory -- we make sure we done (see
 			// finally block)
-        MapLayer layer;
-        
-        // track the external caching strategy for any map layers
-        boolean cachingPossible = request.getHttpServletRequest().getMethod().equals("GET");
-        int maxAge = Integer.MAX_VALUE;
+			MapLayer layer;
+
+			// track the external caching strategy for any map layers
+			boolean cachingPossible = request.getHttpServletRequest()
+					.getMethod().equals("GET");
+			int maxAge = Integer.MAX_VALUE;
 
 			FeatureSource source;
+			AbstractGridCoverage2DReader reader;
 			Style style;
 			Filter definitionFilter;
 			Query definitionQuery;
@@ -163,18 +166,22 @@ public class GetMapResponse implements Response {
 				style = styles[i];
 
 				if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
-                    if (cachingPossible) {
-                        if (layers[i].getFeature().isCachingEnabled()) {
-                            int nma = Integer.parseInt(layers[i].getFeature().getCacheMaxAge());
-                            //suppose the map contains multiple cachable layers...we can only cache the combined map for the
-                            //time specified by the shortest-cached layer.
-                            if (nma < maxAge)
-                                maxAge = nma;
-                        } else {
-                            //if one layer isn't cachable, then we can't cache any of them.  Disable caching.
-                            cachingPossible = false;
-                        }
-                    }
+					if (cachingPossible) {
+						if (layers[i].getFeature().isCachingEnabled()) {
+							int nma = Integer.parseInt(layers[i].getFeature()
+									.getCacheMaxAge());
+							// suppose the map contains multiple cachable
+							// layers...we can only cache the combined map for
+							// the
+							// time specified by the shortest-cached layer.
+							if (nma < maxAge)
+								maxAge = nma;
+						} else {
+							// if one layer isn't cachable, then we can't cache
+							// any of them. Disable caching.
+							cachingPossible = false;
+						}
+					}
 					// /////////////////////////////////////////////////////////
 					//
 					// Adding a feature layer
@@ -182,6 +189,14 @@ public class GetMapResponse implements Response {
 					// /////////////////////////////////////////////////////////
 					try {
 						source = layers[i].getFeature().getFeatureSource();
+						// ///
+						//
+						// Do we have something to load?
+						// We just need to check the bbox of the layer.
+						// //
+						if (!layers[i].getBoundingBox().intersects(env))
+							continue;
+
 					} catch (IOException exp) {
 						if (LOGGER.isLoggable(Level.SEVERE)) {
 							LOGGER.log(Level.SEVERE, new StringBuffer(
@@ -195,7 +210,7 @@ public class GetMapResponse implements Response {
 
 					layer = new DefaultMapLayer(source, style);
 					layer.setTitle(layers[i].getName());
-					
+
 					definitionFilter = layers[i].getFeature()
 							.getDefinitionQuery();
 
@@ -212,11 +227,28 @@ public class GetMapResponse implements Response {
 					// Adding a coverage layer
 					//
 					// /////////////////////////////////////////////////////////
-					map.addLayer(layers[i].getCoverage(req
-							.getHttpServletRequest(), CoverageUtils
-							.convertEnvelope(env, mapcrs), new Rectangle(map
-									.getMapWidth(), map.getMapHeight())),
-							style);
+					try {
+						
+						reader = (AbstractGridCoverage2DReader) layers[i]
+								.getReader(req.getHttpServletRequest(),
+										CoverageUtils.convertEnvelope(env,
+												mapcrs), new Rectangle(map
+												.getMapWidth(), map
+												.getMapHeight()));
+
+					} catch (IOException exp) {
+						if (LOGGER.isLoggable(Level.SEVERE)) {
+							LOGGER.log(Level.SEVERE, new StringBuffer(
+									"Getting feature source: ").append(
+									exp.getMessage()).toString(), exp);
+						}
+						throw new WmsException(null, new StringBuffer(
+								"Internal error : ").append(exp.getMessage())
+								.toString());
+					}
+
+					if (reader != null)
+						map.addLayer(reader, style);
 				}
 			}
 			// /////////////////////////////////////////////////////////
@@ -225,24 +257,16 @@ public class GetMapResponse implements Response {
 			//
 			// /////////////////////////////////////////////////////////
 			this.delegate.produceMap(map);
-        if (cachingPossible)
-        	responseHeaders.put("Cache-Control: max-age",maxAge + "s" );
-		} catch (DataSourceException e) {
-			if (LOGGER.isLoggable(Level.SEVERE)) {
-				LOGGER.log(Level.SEVERE, new StringBuffer(
-					"Getting feature source: ").append(e.getMessage())
-					.toString(), e);
-			}
-			throw new WmsException(e, new StringBuffer("Internal error : ")
-					.append(e.getMessage()).toString(),"");
+			if (cachingPossible)
+				responseHeaders.put("Cache-Control: max-age", maxAge + "s");
 		} catch (ClassCastException e) {
-			if (LOGGER.isLoggable(Level.SEVERE)) {
+			if (LOGGER.isLoggable(Level.WARNING)) {
 				LOGGER.log(Level.SEVERE, new StringBuffer(
-					"Getting feature source: ").append(e.getMessage())
-					.toString(), e);
+						"Getting feature source: ").append(e.getMessage())
+						.toString(), e);
 			}
 			throw new WmsException(e, new StringBuffer("Internal error : ")
-					.append(e.getMessage()).toString(),"");
+					.append(e.getMessage()).toString(), "");
 		} finally {
 			// clean
 			try {
@@ -251,18 +275,18 @@ public class GetMapResponse implements Response {
 			{
 				if (LOGGER.isLoggable(Level.SEVERE)) {
 					LOGGER.log(Level.SEVERE, new StringBuffer(
-						"Getting feature source: ").append(e.getMessage())
-						.toString(), e);
+							"Getting feature source: ").append(e.getMessage())
+							.toString(), e);
 				}
 			}
-
-			// call the Garbage Collector six times to be sure he hears us.
-			Runtime.getRuntime().gc();
-			Runtime.getRuntime().gc();
-			Runtime.getRuntime().gc();
-			Runtime.getRuntime().gc();
-			Runtime.getRuntime().gc();
-			Runtime.getRuntime().gc();
+			//
+			// // call the Garbage Collector six times to be sure he hears us.
+			// Runtime.getRuntime().gc();
+			// Runtime.getRuntime().gc();
+			// Runtime.getRuntime().gc();
+			// Runtime.getRuntime().gc();
+			// Runtime.getRuntime().gc();
+			// Runtime.getRuntime().gc();
 
 		}
 	}
@@ -435,7 +459,6 @@ public class GetMapResponse implements Response {
 	 * @see org.vfny.geoserver.Response#getContentDisposition()
 	 */
 	public String getContentDisposition() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

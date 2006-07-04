@@ -1,24 +1,13 @@
 package org.vfny.geoserver.wms.responses.map;
 
 import java.awt.Color;
-import java.io.ByteArrayOutputStream;
 
-import org.geotools.data.DataStore;
-import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.Query;
-import org.geotools.data.Transaction;
 import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureFactory;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
-import org.geotools.feature.type.BasicFeatureTypes;
-import org.geotools.filter.Filter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.GeometryFilter;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -82,10 +71,11 @@ public class SVGMapProducerTest extends AbstractCiteDataTest {
         Style basicStyle = getStyle("default.sld");
         map.addLayer(fs, basicStyle);
         
-        SVGMapProducer producer = new SVGMapProducer();
-        producer.produceMap(map);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        producer.writeTo(out);
+
+		// SVGMapProducer producer = new SVGMapProducer();
+		// producer.produceMap(map);
+		// ByteArrayOutputStream out = new ByteArrayOutputStream();
+		// producer.writeTo(out);
         
         
 	}
