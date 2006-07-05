@@ -40,7 +40,7 @@
 
 	<!-- release version -->
 
-	<property name="name.release" value="1.3.1" />
+	<property name="name.release" value="1.3.2" />
 
 	<!-- primary directories -->
 	<property name="dir.bin" value="${basedir}/bin" />
@@ -645,7 +645,7 @@
 			<!--exclude name="**/xml-apis.jar" /-->
 			<!--exclude name="**/xercesImpl.jar" /-->
 			<exclude name="*jetty*/**/*" />
-			<!--exclude name="**/gt2-arcsde.jar" /-->
+			<exclude name="**/gt2-arcsde.jar" />
 		</lib>
 
 		<!-- directories -->
@@ -841,11 +841,12 @@
 		</fileset>
 	</copy>
 	<copy todir="${dir.build}/conf">
-		<fileset dir="${basedir}/data_dirs/userBasic">
+		<fileset dir="${basedir}/data_dirs/${test.type}">
 			<include name="**/*" />
 			<exclude name="*SVN*/*" />
 			<exclude name="**/*SVN*/*" />
 			<exclude name="**/wfs-t_demo/*" />
+			<exclude name="demo/popup_demo/**"/>
 		</fileset>
 	</copy>
 	<copy todir="${dir.build}/src">
@@ -948,9 +949,9 @@
 </target>
 	
 
-<target name="release-war" depends="clean, all" description="Genearte the Geoserver.war war release (includes UserBasic)">
+<target name="release-war" depends="clean, all" description="Genearte the Geoserver.war war release (includes min)">
 	<antcall target="build-war">
-		<param name="conf.path" value="${basedir}/data_dirs/${test.type}" />
+		<param name="conf.path" value="${basedir}/data_dirs/min" />
 	</antcall>
 	<!-- .war build, stick it in a geoserver-<version>-war.zip -->
 	<zip destfile="${basedir}/geoserver-${name.release}-war.zip">
@@ -978,6 +979,8 @@
 		<fileset dir="${basedir}/documents">
 			<include name="RUNNING.txt" />
 			<include name="GPL.txt" />
+			<include name="license.txt" />
+			<include name="README.txt" />
 		</fileset>
 	</copy>
 	
@@ -1018,6 +1021,7 @@
 			<include name="**/*"/>
 	    	<exclude name="mbdemos/**"/>
 	    	<exclude name="wfs-t_demo/**"/>
+	    	<exclude name="demo/popup_map/**"/>
 	    </fileset>
 	</copy>
 
@@ -1036,6 +1040,8 @@
 	        <exclude name="META-INF/**"/>
 			<exclude name="bin/startup.sh"/>
 			<exclude name="bin/shutdown.sh"/>
+			<exclude name="doc-files/**"/>
+			<exclude name="test-data/**"/>
 		</tarfileset>
 	
 		<!-- JD(GEOS-385)include bin seperatly in order to get permission right -->
@@ -1162,7 +1168,6 @@
 	</copy>
 	<delete dir="${basedir}/data" />
 </target-->
-
 
 
 </project>
