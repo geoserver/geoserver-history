@@ -909,7 +909,7 @@ public final class CoveragesEditorForm extends ActionForm {
 	 * @return
 	 */
 	public String getParamKey(int index) {
-		return (String) paramKeys.get(index);
+		return (String) paramKeys.get(index).toString();
 	}
 
 	/**
@@ -921,7 +921,7 @@ public final class CoveragesEditorForm extends ActionForm {
 	 * @return
 	 */
 	public String getParamValue(int index) {
-		return (String) paramValues.get(index);
+		return (String) paramValues.get(index).toString();
 	}
 
 	/**
@@ -953,6 +953,6 @@ public final class CoveragesEditorForm extends ActionForm {
 	 * @return DOCUMENT ME!
 	 */
 	public String getParamHelp(int index) {
-		return (String) paramHelp.get(index);
+		return (String) paramHelp.get(index).toString();
 	}
 }

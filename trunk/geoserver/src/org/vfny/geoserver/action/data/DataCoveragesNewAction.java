@@ -8,8 +8,11 @@ package org.vfny.geoserver.action.data;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +23,10 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.parameter.AbstractParameterDescriptor;
+import org.geotools.parameter.DefaultParameterDescriptor;
+import org.geotools.parameter.ParameterGroup;
+import org.geotools.parameter.Parameters;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
@@ -101,29 +108,49 @@ public class DataCoveragesNewAction extends ConfigAction {
 
 		final ParameterValueGroup params = format.getReadParameters();
 
+        // After extracting params into a map
+        List parameters = new ArrayList(); // values used for connection
+
+		// Convert Params into the kind of Map we actually need
+        //
+        ParameterValue param;
+        String key;
+        Object value;
+        final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
 		if (params != null) {
 			final List list = params.values();
 			final Iterator it = list.iterator();
 			while (it.hasNext()) {
-				final ParameterValue param = ((ParameterValue) it.next());
+				param = ((ParameterValue) it.next());
 				final ParameterDescriptor descr = (ParameterDescriptor) param
 						.getDescriptor();
 
-				final String key = descr.getName().toString();
-				Object value = CoverageUtils.getCvParamValue(key, param,
+				key = descr.getName().toString();
+				// //
+                //
+                // Skipping decimation parameters
+                //
+                // //
+                if (key.equalsIgnoreCase(readGeometryKey)) {
+                    continue;
+                }
+				value = CoverageUtils.getCvParamValue(key, param,
 						dfConfig.getParameters());
 
-				if (value != null)
-					params.parameter(key).setValue(value);
+				if (value != null) {
+                    //params.parameter(key).setValue(value);
+                    parameters.add(new DefaultParameterDescriptor(key, value.getClass(), null, value).createValue());
+                }
 			}
 		}
 		try {
 			// trying to read the created coverage in order to check the entered
 			// parameters
-			gc = reader.read(params != null ? (GeneralParameterValue[]) params
+			gc = reader.read((GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]));
+                    /*params != null ? (GeneralParameterValue[]) params
 					.values().toArray(
 							new GeneralParameterValue[params.values().size()])
-					: null);
+					: null);*/
 
 			if (gc == null || !(gc instanceof GridCoverage2D))
 				throw new IOException(

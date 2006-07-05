@@ -7,6 +7,7 @@ package org.vfny.geoserver.action.data;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.FactoryRegistryException;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
@@ -171,6 +173,8 @@ public final class CoveragesEditorAction extends ConfigAction {
 			final GridCoverageReader reader = ((AbstractGridFormat) format)
 					.getReader(url);
 			final ParameterValueGroup params = format.getReadParameters();
+            // After extracting params into a map
+            List parameters = new ArrayList(); // values used for connection
 			if (params != null) {
 				final List list = params.values();
 				final Iterator it = list.iterator();
@@ -185,20 +189,20 @@ public final class CoveragesEditorAction extends ConfigAction {
 					key = descr.getName().toString();
 					if (AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString().equalsIgnoreCase(key))
 						value = null;
-					else{
-						value = CoverageUtils.getCvParamValue(key, param,
-								dfConfig.getParameters());
-						if (value != null)
-							params.parameter(key).setValue(value);
-						}
-
-					
+					else
+					    value = CoverageUtils.getCvParamValue(key, param,
+					            dfConfig.getParameters());
+					if (value != null) {
+					    //params.parameter(key).setValue(value);
+					    parameters.add(new DefaultParameterDescriptor(key, value.getClass(), null, value).createValue());
+					}
 				}
 			}
-			gc = reader.read(params != null ? (GeneralParameterValue[]) params
+			gc = reader.read((GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]));
+                    /*params != null ? (GeneralParameterValue[]) params
 					.values().toArray(
 							new GeneralParameterValue[params.values().size()])
-					: null);
+					: null);*/
 			if (gc == null || !(gc instanceof GridCoverage2D))
 				throw new IOException(
 						"The requested coverage could not be found.");

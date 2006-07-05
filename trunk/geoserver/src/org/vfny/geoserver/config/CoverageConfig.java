@@ -404,7 +404,7 @@ public class CoverageConfig {
 					descr = (ParameterDescriptor) val.getDescriptor();
 					String _key = descr.getName().toString();
 
-					if ("namespace".equals(key)) {
+					if ("namespace".equals(_key)) {
 						// skip namespace as it is *magic* and
 						// appears to be an entry used in all dataformats?
 						//
@@ -422,9 +422,9 @@ public class CoverageConfig {
 						text = value.toString();
 					}
 
-					paramKeys.add(key);
+					paramKeys.add(_key);
 					paramValues.add((text != null) ? text : "");
-					paramHelp.add(key);
+					paramHelp.add(_key);
 				}
 			}
 		}

@@ -772,7 +772,7 @@ public class WMSCapsTransformer extends TransformerBase {
                 // TODO check for BBOX, maybe it should be expressed in original CRS coords!!
                 final GeneralEnvelope latLonEnvelope = coverage.getWGS84LonLatEnvelope();
                 final CoordinateReferenceSystem llCRS = latLonEnvelope.getCoordinateReferenceSystem();
-				bounds = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS, latLonEnvelope);
+				bounds = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS, coverage.getEnvelope());
                 llBounds = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS, latLonEnvelope);
 			} catch (MismatchedDimensionException e) {
 				// TODO Handle this Exception

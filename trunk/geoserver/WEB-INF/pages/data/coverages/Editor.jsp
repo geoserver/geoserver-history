@@ -257,12 +257,12 @@
     <logic:notEqual name="coveragesEditorForm"
     	    	        property='<%= "paramKey[" + ctr + "]"%>'
     			        value="passwd">
-              <html:text property='<%= "paramValues[" + ctr + "]"%>' size="60"/>
+              <html:text property='<%= "paramValue[" + ctr + "]"%>' size="60"/>
     </logic:notEqual>
     <logic:equal name="coveragesEditorForm"
        		     property='<%= "paramKey[" + ctr + "]"%>'
                  value="passwd">
-              <html:password property='<%= "paramValues[" + ctr + "]"%>' size="12"/>
+              <html:password property='<%= "paramValue[" + ctr + "]"%>' size="12"/>
     </logic:equal>			             
     	  </td>
     	</tr>
