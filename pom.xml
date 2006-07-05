@@ -3,19 +3,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>org.geoserver</groupId>
 	<artifactId>geoserver</artifactId>
 	<packaging>pom</packaging>
 	<version>1.4.0-M0</version>
 	<name>GeoServer</name>
-	
+
 	<organization>
 		<name>The Open Planning Project</name>
 		<url>http://www.openplans.org</url>
 	</organization>
 	<inceptionYear>2005</inceptionYear>
-	
+
 	<licenses>
 		<license>
 			<name>Lesser General Public License (LGPL)</name>
@@ -23,11 +23,13 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
+
 	<repositories>
 		<repository>
 			<id>ibiblio</id>
-			<name>Ibiblio - the public's library and digital archive</name>
+			<name>
+				Ibiblio - the public's library and digital archive
+			</name>
 			<url>http://www.ibiblio.org/maven2</url>
 			<snapshots>
 				<enabled>false</enabled>
@@ -35,8 +37,10 @@
 		</repository>
 		<repository>
 			<id>geotools</id>
-			<name>Repository serving Geotools libraries built against 2.2.x
-				branch</name>
+			<name>
+				Repository serving Geotools libraries built against
+				2.2.x branch
+			</name>
 			<url>http://maven.geotools.fr/repository/</url>
 			<snapshots>
 				<enabled>false</enabled>
@@ -45,7 +49,9 @@
 		</repository>
 		<repository>
 			<id>refractions</id>
-			<name>Repository from Refractions research, Victoria, Canada</name>
+			<name>
+				Repository from Refractions research, Victoria, Canada
+			</name>
 			<url>http://lists.refractions.net/m2/</url>
 			<snapshots>
 				<enabled>true</enabled>
@@ -53,7 +59,10 @@
 		</repository>
 		<repository>
 			<id>codehaus</id>
-			<name>Repository serving Geoserver libraries hosted by Codehaus</name>
+			<name>
+				Repository serving Geoserver libraries hosted by
+				Codehaus
+			</name>
 			<url>http://dist.codehaus.org/geoserver</url>
 			<snapshots>
 				<enabled>false</enabled>
@@ -62,14 +71,30 @@
 		</repository>
 		<repository>
 			<id>espace</id>
-			<name>Repository from the Sicade laboratory in New-Caledonia</name>
+			<name>
+				Repository from the Sicade laboratory in New-Caledonia
+			</name>
 			<url>http://maven.espace.ird.nc</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 	</repositories>
-	
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>codehaus-snapshot-plugins</id>
+			<name>codehaus-shapshot-plugins</name>
+			<url>http://snapshots.repository.codehaus.org/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -328,10 +353,10 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<build>
 		<!-- TODO: the resources stuff hardcodes paths to source + test directories,
-		     we should be able to use some properties here -->
+			we should be able to use some properties here -->
 		<resources>
 			<resource>
 				<directory>${basedir}/src/main/java</directory>
@@ -349,7 +374,8 @@
 				<excludes>
 					<exclude>**/doc-files/**</exclude>
 					<exclude>
-						org/geotools/resources/i18n/**/*.properties</exclude>
+						org/geotools/resources/i18n/**/*.properties
+					</exclude>
 				</excludes>
 			</resource>
 		</resources>
@@ -377,9 +403,9 @@
 				</excludes>
 			</testResource>
 		</testResources>
-		
+
 		<plugins>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -394,46 +420,37 @@
 					<argLine>-Xmx512M -enableassertions</argLine>
 					<printSummary>false</printSummary>
 					<testFailureIgnore>
-						${allow.test.failure.ignore}</testFailureIgnore>
+						${allow.test.failure.ignore}
+					</testFailureIgnore>
 				</configuration>
 			</plugin>
-			
+
+
+
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.1</version>
 				<configuration>
-					<aggregate>false</aggregate>
-					<source>1.4</source>
-					<version>false</version>
-					<noqualifier>all</noqualifier>
-					<!--quiet>true</quiet-->
-					<maxmemory>512M</maxmemory>
+					<descriptors>
+						<descriptor>release/src.xml</descriptor>
+						<descriptor>release/war.xml</descriptor>
+						<descriptor>release/javadoc.xml</descriptor>
+						<descriptor>release/bin.xml</descriptor>
+					</descriptors>
+					<finalName>geoserver-1.4.0-M0</finalName>
+					<outputDirectory>
+						${project.build.directory}/release
+					</outputDirectory>
 				</configuration>
 			</plugin>
 
 			<plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.1</version>
-        <configuration>
-          <descriptors>
-							<descriptor>release/src.xml</descriptor>
-							<descriptor>release/war.xml</descriptor>
-							<descriptor>release/javadoc.xml</descriptor>
-							<descriptor>release/bin.xml</descriptor>
-					</descriptors>
-          <finalName>geoserver-1.4.0-M0</finalName>
-          <outputDirectory>${project.build.directory}/release</outputDirectory>
-        </configuration>
-      </plugin>
-      
-			<plugin>
-				<groupId>org.geoserver.maven</groupId>
-				<artifactId>merger</artifactId>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>install</phase>
 						<goals>
-							<goal>mergeSurefireReports</goal>	
+							<goal>clean</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -441,7 +458,175 @@
 
 		</plugins>
 	</build>
-	
+
+	<reporting>
+		<plugins>
+			<!-- ================================================================= -->
+			<!--     Web site generation.                                          -->
+			<!-- ================================================================= -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+			</plugin>
+
+			<!-- ================================================================= -->
+			<!--     Reports configuration for the web site.                       -->
+			<!-- ================================================================= -->
+
+			<!-- javadoc -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<source>1.4</source>
+					<!-- Necessary to enable javadoc to handle J2SE 1.4 features.           -->
+					<version>false</version>
+					<!-- Specifies whether or not the version text is included.             -->
+					<noqualifier>all</noqualifier>
+					<!-- Omits qualifying package name from ahead of class names in output. -->
+					<quiet>true</quiet>
+					<!-- Shuts off non-error and non-warning messages.                      -->
+					<maxmemory>512M</maxmemory>
+					<!-- The maximum Java heap size to be used when launching the javadoc.  -->
+					<encoding>ISO-8859-1</encoding>
+					<!-- Specifies the encoding name of the source files.                   -->
+					<aggregate>true</aggregate>
+					<!-- Whether to build an aggregated report at the root.                 -->
+					<additionalparam>-keywords</additionalparam>
+					<!-- Set an additional parameter on the command line.               -->
+					<excludePackageNames>
+						org.geotools.resources
+					</excludePackageNames>
+
+					<!-- Enables the Javadoc tool to interpret a simple, one-argument custom block tag tagname in doc comments. -->
+					<!-- Note: <placement/> should be a combinaison of the letters Xaoptcmf.                                    -->
+					<tags>
+						<tag>
+							<name>todo</name>
+							<placement>tfmc</placement>
+							<head>TODO:</head>
+						</tag>
+						<tag>
+							<name>task</name>
+							<placement>tfmc</placement>
+							<head>TODO:</head>
+						</tag>
+						<tag>
+							<name>revisit</name>
+							<placement>tfmc</placement>
+							<head>TODO:</head>
+						</tag>
+						<tag>
+							<name>source</name>
+							<placement>Xt</placement>
+							<head>Source:</head>
+						</tag>
+						<tag>
+							<name>tutorial</name>
+							<placement>Xt</placement>
+							<head>Tutorial:</head>
+						</tag>
+					</tags>
+
+					<!-- Creates links to existing javadoc-generated documentation of external referenced classes. -->
+					<links>
+						<link>
+							http://java.sun.com/j2se/1.5/docs/api
+						</link>
+						<link>
+							http://java.sun.com/j2ee/1.4/docs/api
+						</link>
+						<link>
+							http://java.sun.com/products/java-media/jai/forDevelopers/jai-apidocs
+						</link>
+						<link>
+							http://java.sun.com/products/java-media/3D/forDevelopers/j3dapi
+						</link>
+						<link>
+							http://jsr-108.sourceforge.net/javadoc
+						</link>
+						<link>
+							http://geoapi.sourceforge.net/snapshot/javadoc
+						</link>
+						<link>
+							http://geoapi.sourceforge.net/pending/javadoc
+						</link>
+						<link>
+							http://geoapi.sourceforge.net/legacy/javadoc
+						</link>
+						<link>
+							http://www.jump-project.org/docs/jts/1.7/api
+						</link>
+						<link>http://www.geotools.fr/javadoc/2.2/</link>
+						<link>
+							http://xmlgraphics.apache.org/batik/javadoc
+						</link>
+						<link>http://itextdocs.lowagie.com/docs</link>
+					</links>
+				</configuration>
+			</plugin>
+
+			<!-- Basic project informations -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>
+					maven-project-info-reports-plugin
+				</artifactId>
+			</plugin>
+
+			<!-- Report on the test results of the project -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<configuration>
+					<linkXRef>true</linkXRef>
+				</configuration>
+			</plugin>
+
+			<!-- HTML based, cross-reference version of Java source code -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jxr-maven-plugin</artifactId>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+
+			<!-- Report on various tags found in the code -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<configuration>
+					<tags>
+						<tag>@revisit</tag>
+						<tag>@todo</tag>
+						<tag>TODO</tag>
+						<tag>FIXME</tag>
+					</tags>
+				</configuration>
+			</plugin>
+
+			<!-- Cobertura plugin (test code coverage reports) -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.geoserver.maven</groupId>
+				<artifactId>merger</artifactId>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>mergeSurefireReports</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</reporting>
+
 	<modules>
 		<module>platform</module>
 		<module>data</module>
@@ -469,20 +654,19 @@
 				</property>
 			</activation>
 			<modules>
-		<module>platform</module>
-		<module>data</module>
-    <module>main</module>
-    <module>wfs</module>
-    <module>wms</module>
-    <module>validation</module>
-    <module>web</module>
-    <module>maven</module>
-    <module>test</module>
-    <module>community</module>
-
+				<module>platform</module>
+				<module>data</module>
+				<module>main</module>
+				<module>wfs</module>
+				<module>wms</module>
+				<module>validation</module>
+				<module>web</module>
+				<module>maven</module>
+				<module>test</module>
+				<module>community</module>
 			</modules>
 		</profile>
 
 	</profiles>
-	
+
 </project>
