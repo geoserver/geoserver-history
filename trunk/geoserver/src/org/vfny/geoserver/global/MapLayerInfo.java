@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.resources.CRSUtilities;
 import org.geotools.styling.Style;
@@ -336,6 +338,8 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		GridCoverage coverage = null;
 
 		try {
+            if (envelope == null)
+                envelope = this.coverage.getEnvelope();
 
 			// /////////////////////////////////////////////////////////
 			//
@@ -378,6 +382,7 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 			// Setting coverage reading params.
 			//
 			// /////////////////////////////////////////////////////////
+            List parameters = new ArrayList();
 			final ParameterValueGroup params = reader.getFormat()
 					.getReadParameters();
 			final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D
@@ -402,7 +407,8 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 					// /////////////////////////////////////////////////////////
 					if (key.equalsIgnoreCase(readGeometryKey)
 							&& envelope != null) {
-						params.parameter(key).setValue(envelope);
+						/*params.parameter(key).setValue(envelope);*/
+                        continue;
 					} else {
 						// /////////////////////////////////////////////////////////
 						//
@@ -413,7 +419,8 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 								.getParameters());
 
 						if (value != null)
-							params.parameter(key).setValue(value);
+							/*params.parameter(key).setValue(value);*/
+                            parameters.add(new DefaultParameterDescriptor(key, value.getClass(), null, value));
 					}
 				}
 			}
@@ -424,10 +431,12 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 			//
 			// /////////////////////////////////////////////////////////
 			coverage = reader
-					.read(params != null ? (GeneralParameterValue[]) params
+					.read((GeneralParameterValue[]) parameters.toArray(
+                                    new GeneralParameterValue[parameters.size()]));
+                            /*params != null ? (GeneralParameterValue[]) params
 							.values().toArray(
 									new GeneralParameterValue[params.values()
-											.size()]) : null);
+											.size()]) : null);*/
 			if (coverage == null || !(coverage instanceof GridCoverage2D))
 				throw new IOException(
 						"The requested coverage could not be found.");

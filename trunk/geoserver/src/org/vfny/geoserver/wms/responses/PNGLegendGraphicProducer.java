@@ -65,7 +65,7 @@ class PNGLegendGraphicProducer extends DefaultRasterLegendProducer {
 		// Getting a writer
 		//
 		// /////////////////////////////////////////////////////////////////
-		final Iterator it = ImageIO.getImageWritersByMIMEType("png");
+		final Iterator it = ImageIO.getImageWritersByMIMEType("image/png");
 		ImageWriter writer = null;
 		if (!it.hasNext()) {
 			throw new IllegalStateException("No PNG ImageWriter found");
