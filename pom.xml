@@ -456,6 +456,19 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.geoserver.maven</groupId>
+				<artifactId>merger</artifactId>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>mergeSurefireReports</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 
@@ -611,18 +624,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<groupId>org.geoserver.maven</groupId>
-				<artifactId>merger</artifactId>
-				<executions>
-					<execution>
-						<phase>install</phase>
-						<goals>
-							<goal>mergeSurefireReports</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+
 
 		</plugins>
 	</reporting>
