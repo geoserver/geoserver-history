@@ -104,6 +104,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 	private double jaiMemoryThreshold;
 	private boolean jaiRecycling;
 	private boolean jaiRecyclingChecked;
+    private boolean imageIOCache;
+    private boolean imageIOCacheChecked;
 	 
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -134,7 +136,9 @@ public class GeoServerConfigurationForm extends ActionForm {
         jaiMemoryCapacity = globalConfig.getJaiMemoryCapacity();
         jaiMemoryThreshold = globalConfig.getJaiMemoryThreshold();
         jaiRecycling = globalConfig.isJaiRecycling();
-        jaiRecyclingChecked =  false;
+        jaiRecyclingChecked = false;
+        imageIOCache = globalConfig.isImageIOCache();
+        imageIOCacheChecked = false;
         
         ContactConfig contactConfig = globalConfig.getContact();
         contactPerson = contactConfig.getContactPerson();
@@ -642,32 +646,60 @@ public class GeoServerConfigurationForm extends ActionForm {
 	}
 
 	public boolean getJaiRecycling() {
-		return jaiRecycling;
+	    return jaiRecycling;
 	}
-
+	
 	public void setJaiRecycling(boolean jaiRecycling) {
-		jaiRecyclingChecked = true;
-		this.jaiRecycling = jaiRecycling;
+	    jaiRecyclingChecked = true;
+	    this.jaiRecycling = jaiRecycling;
 	}
 	
 	/**
-		 * Access verboseChecked property.
-		 * 
-		 * @return Returns the verboseChecked.
-		 */
-		public boolean isJaiRecyclingChecked() {
-			return jaiRecyclingChecked;
-		}
-
-		/**
-		 * Set verboseChecked to verboseChecked.
-		 *
-		 * @param verboseChecked The verboseChecked to set.
-		 */
-		public void setJaiRecyclingChecked(boolean jaiRecyclingChecked) {
-			this.jaiRecyclingChecked = jaiRecyclingChecked;
-		}
-	public double getJaiMemoryThreshold() {
+	 * Access verboseChecked property.
+	 * 
+	 * @return Returns the verboseChecked.
+	 */
+	public boolean isJaiRecyclingChecked() {
+	    return jaiRecyclingChecked;
+	}
+	
+	/**
+	 * Set verboseChecked to verboseChecked.
+	 *
+	 * @param verboseChecked The verboseChecked to set.
+	 */
+	public void setJaiRecyclingChecked(boolean jaiRecyclingChecked) {
+	    this.jaiRecyclingChecked = jaiRecyclingChecked;
+	}
+    
+    public boolean getImageIOCache() {
+        return imageIOCache;
+    }
+    
+    public void setImageIOCache(boolean imageIOCache) {
+        imageIOCacheChecked = true;
+        this.imageIOCache = imageIOCache;
+    }
+    
+    /**
+     * Access verboseChecked property.
+     * 
+     * @return Returns the verboseChecked.
+     */
+    public boolean isImageIOCacheChecked() {
+        return imageIOCacheChecked;
+    }
+    
+    /**
+     * Set verboseChecked to verboseChecked.
+     *
+     * @param verboseChecked The verboseChecked to set.
+     */
+    public void setImageIOCacheChecked(boolean imageIOCacheChecked) {
+        this.imageIOCacheChecked = imageIOCacheChecked;
+    }
+    
+    public double getJaiMemoryThreshold() {
 		return jaiMemoryThreshold;
 	}
 	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {

@@ -198,6 +198,7 @@ public class XMLConfigWriter {
             cw.valueTag("JaiMemoryCapacity", "" + g.getJaiMemoryCapacity());
             cw.valueTag("JaiMemoryThreshold", "" + g.getJaiMemoryThreshold());
             cw.valueTag("JaiRecycling", "" + g.getJaiRecycling());
+            cw.valueTag("ImageIOCache", "" + g.getImageIOCache());
             
             /*if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){
                cw.comment("The base URL where this servlet will run.  If running locally\n"+

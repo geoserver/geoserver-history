@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
+import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
 import javax.media.jai.RecyclingTileFactory;
 import javax.servlet.ServletContext;
@@ -98,6 +99,8 @@ public class GeoServer extends GlobalLayerSupertype {
 	private double memoryThreshold;
 
 	private Boolean recycling;
+    
+    private Boolean imageIOCache;
 
 	/** Should we throw the stack traces back in responses? */
 	private boolean verboseExceptions = false;
@@ -435,8 +438,9 @@ public class GeoServer extends GlobalLayerSupertype {
 			memoryCapacity = dto.getJaiMemoryCapacity();
 			memoryThreshold = dto.getJaiMemoryThreshold();
 			recycling = dto.getJaiRecycling();
+            imageIOCache = dto.getImageIOCache();
 
-			initJAI(memoryCapacity, memoryThreshold, recycling);
+			initJAI(memoryCapacity, memoryThreshold, recycling, imageIOCache);
 
 			maxFeatures = dto.getMaxFeatures();
 			numDecimals = dto.getNumDecimals();
@@ -536,7 +540,7 @@ public class GeoServer extends GlobalLayerSupertype {
 	}
 
 	public void initJAI(final long memCapacity, final double memoryThreshold,
-			final Boolean recycling) {
+			final Boolean recycling, final Boolean ImageIOCache) {
 		// setting JAI wide hints
 		jaiDef.setRenderingHint(JAI.KEY_CACHED_TILE_RECYCLING_ENABLED,
 				recycling);
@@ -551,6 +555,9 @@ public class GeoServer extends GlobalLayerSupertype {
 
 		// Setting up Cahce Threshold
 		jaiCache.setMemoryThreshold((float) memoryThreshold);
+        
+        // ImageIO Caching
+        ImageIO.setUseCache(ImageIOCache.booleanValue());
 	}
 
 	/**
@@ -580,6 +587,7 @@ public class GeoServer extends GlobalLayerSupertype {
 		dto.setJaiMemoryCapacity(memoryCapacity);
 		dto.setJaiMemoryThreshold(memoryThreshold);
 		dto.setJaiRecycling(recycling);
+        dto.setImageIOCache(imageIOCache);
 
 		ContactDTO cdto = new ContactDTO();
 		dto.setContact(cdto);
@@ -743,4 +751,11 @@ public class GeoServer extends GlobalLayerSupertype {
 	public double getMemoryThreshold() {
 		return memoryThreshold;
 	}
+
+    /**
+     * @return Returns the imageIOCache.
+     */
+    public Boolean getImageIOCache() {
+        return imageIOCache;
+    }
 }

@@ -146,6 +146,7 @@ public class GlobalConfig {
     private long jaiMemoryCapacity;
     private double jaiMemoryThreshold;
     private boolean jaiRecycling;
+    private boolean imageIOCache;
     
     /**
      * GlobalConfig constructor.
@@ -201,6 +202,7 @@ public class GlobalConfig {
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
         jaiMemoryThreshold = g.getJaiMemoryThreshold();
         jaiRecycling = g.getJaiRecycling().booleanValue();
+        imageIOCache = g.getImageIOCache().booleanValue();
         
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -243,6 +245,7 @@ public class GlobalConfig {
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
         jaiMemoryThreshold = g.getJaiMemoryThreshold();
         jaiRecycling = g.getJaiRecycling().booleanValue();
+        imageIOCache = g.getImageIOCache().booleanValue();
         
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -279,6 +282,7 @@ public class GlobalConfig {
         g.setJaiMemoryCapacity(jaiMemoryCapacity);
         g.setJaiMemoryThreshold(jaiMemoryThreshold);
         g.setJaiRecycling(Boolean.valueOf(jaiRecycling));
+        g.setImageIOCache(Boolean.valueOf(imageIOCache));
 
         return g;
     }
@@ -601,7 +605,16 @@ public class GlobalConfig {
 	public void setJaiRecycling(boolean jaiRecycling) {
 		this.jaiRecycling = jaiRecycling;
 	}
-	public double getJaiMemoryThreshold() {
+
+    public boolean isImageIOCache() {
+        return imageIOCache;
+    }
+
+    public void setImageIOCache(boolean imageIOCache) {
+        this.imageIOCache = imageIOCache;
+    }
+
+    public double getJaiMemoryThreshold() {
 		return jaiMemoryThreshold;
 	}
 	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {

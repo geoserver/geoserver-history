@@ -492,9 +492,17 @@ public class XMLConfigReader {
 					elem, "value", false, false));
 		}
 
+        Boolean imageIOCache = Boolean.FALSE;
+        elem = ReaderUtils.getChildElement(globalElem, "ImageIOCache", false);
+        if (elem != null) {
+            imageIOCache = Boolean.valueOf(ReaderUtils.getBooleanAttribute(
+                    elem, "value", false, false));
+        }
+
 		geoServer.setJaiMemoryCapacity(jaiMemoryCapacity);
 		geoServer.setJaiMemoryThreshold(jaiMemoryThreshold);
 		geoServer.setJaiRecycling(jaiRecycling);
+        geoServer.setImageIOCache(imageIOCache);
 
 		elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
 		geoServer.setContact(loadContact(elem));

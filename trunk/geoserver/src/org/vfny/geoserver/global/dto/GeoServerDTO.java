@@ -72,6 +72,8 @@ public final class GeoServerDTO implements DataTransferObject {
 		public static final double JaiMemoryThreshold = 0.75;
 		
 		public static final Boolean JaiRecycling = Boolean.TRUE;
+        
+        public static final Boolean ImageIOCache = Boolean.FALSE;
 		
 	}
 	
@@ -184,6 +186,8 @@ public final class GeoServerDTO implements DataTransferObject {
     
     private Boolean jaiRecycling = Defaults.JaiRecycling;
     
+    private Boolean imageIOCache = Defaults.ImageIOCache;
+    
     /**
      * GlobalConfig constructor.
      * 
@@ -226,6 +230,7 @@ public final class GeoServerDTO implements DataTransferObject {
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
         jaiMemoryThreshold = g.getJaiMemoryThreshold();
         jaiRecycling = g.getJaiRecycling();
+        imageIOCache = g.getImageIOCache();
         
         if (g.getContact() != null) {
             contact = (ContactDTO) (g.getContact().clone());
@@ -299,6 +304,8 @@ public final class GeoServerDTO implements DataTransferObject {
         r = r && (jaiMemoryThreshold == g.getJaiMemoryThreshold()) ;
         
         r = r && (jaiRecycling == g.getJaiRecycling());
+        
+        r = r && (imageIOCache == g.getImageIOCache());
         
         return r;
     }
@@ -653,4 +660,18 @@ public final class GeoServerDTO implements DataTransferObject {
 	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
 		this.jaiMemoryThreshold = jaiMemoryThreshold;
 	}
+
+    /**
+     * @return Returns the imageIOCache.
+     */
+    public Boolean getImageIOCache() {
+        return imageIOCache;
+    }
+
+    /**
+     * @param imageIOCache The imageIOCache to set.
+     */
+    public void setImageIOCache(Boolean imageIOCache) {
+        this.imageIOCache = imageIOCache;
+    }
 }

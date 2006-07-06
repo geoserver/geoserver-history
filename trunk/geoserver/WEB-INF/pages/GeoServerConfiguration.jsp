@@ -163,7 +163,18 @@
 	  	<html:checkbox property="jaiRecycling"/>
 	  </td>
 	 </tr> 
-    
+
+    <tr>
+      <td class="label">
+        <span class="help" title="<bean:message key="help.global.imageIOCache"/>">
+            <bean:message key="label.imageIOCache"/>:
+        </span>
+      </td>
+      <td class="datum">
+        <html:checkbox property="imageIOCache"/>
+      </td>
+     </tr> 
+
   </tbody>
 </table>
 
