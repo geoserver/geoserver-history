@@ -50,6 +50,10 @@
   </li>
 </ul>
 
+<p>
+	<bean:message key="text.visitDemoPage"/>
+</p>
+
 <h2>
   <bean:write name="WCS" property="title"/>
 </h2>
@@ -75,7 +79,6 @@
 	<bean:message key="text.newFeatureLogo"/>&nbsp;
 	<a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>mapPreview.do"/><bean:message key="text.newFeature1"/></a>
 </p>
-
 <h2>
   <bean:write name="WFS" property="title"/>
 </h2>

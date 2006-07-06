@@ -732,7 +732,7 @@
 	
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2/jars/arcsde-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-wkt-${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-hsql-${version.geotools}.jar" />
 	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-postgresql-${version.geotools}.jar" /-->
 	<delete file="${dir.lib}/gt2-api.jar" failonerror="false" />
 	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-api.jar" file="${dir.maven}/gt2/jars/api-${version.geotools}.jar" />
