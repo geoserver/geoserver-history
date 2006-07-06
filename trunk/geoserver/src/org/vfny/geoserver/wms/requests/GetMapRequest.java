@@ -140,13 +140,26 @@ public class GetMapRequest extends WMSRequest {
 	public int getWidth() {
 		return this.mandatoryParams.width;
 	}
+    
+    /**
+     * @return the KML/KMZ score value for image vs. vector response
+     */
+    public int getKMScore() {
+    	return this.optionalParams.KMScore;
+    }
+    
+    /**
+     * @return true: return full attribution for placemark <description>
+     */
+    public boolean getKMattr() {
+    	return this.optionalParams.KMattr;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param bbox
-	 *            DOCUMENT ME!
-	 */
+    /**
+     * DOCUMENT ME!
+     *
+     * @param bbox DOCUMENT ME!
+     */
 	public void setBbox(Envelope bbox) {
 		this.mandatoryParams.bbox = bbox;
 	}

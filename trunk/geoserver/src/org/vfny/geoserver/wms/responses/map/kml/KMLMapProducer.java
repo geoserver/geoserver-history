@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
@@ -37,9 +33,6 @@ class KMLMapProducer implements GetMapProducer {
 	 */
 	private EncodeKML kmlEncoder;
 
-    
-    /** lag between 'encode' call and 'writeTo' requires temporary storage' */
-    private File temp;
     
     /**
      * Request that encoding be halted if possible.
@@ -79,21 +72,8 @@ class KMLMapProducer implements GetMapProducer {
      *
      * @throws WmsException thrown if anything goes wrong during the production.
      */
-    public void produceMap(WMSMapContext map)
-    throws WmsException {
-        try{
-            temp = File.createTempFile("kml",null);
-            this.kmlEncoder = new EncodeKML(map);
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(temp));
-            kmlEncoder.encode(bos);
-            bos.flush();
-            bos.close();
-            
-        } catch(IOException ioe){
-            WmsException we  = new WmsException(ioe.getMessage());
-            we.initCause(ioe);
-            throw we;
-        }
+    public void produceMap(WMSMapContext map) throws WmsException {
+    	this.kmlEncoder = new EncodeKML(map);
     }
     
     /**
@@ -108,14 +88,8 @@ class KMLMapProducer implements GetMapProducer {
      *
      * @TODO replace stream copy with nio code.
      */
-    public void writeTo(OutputStream out) throws ServiceException, IOException {
-        FileInputStream fis  = new FileInputStream(temp);
-        
-        byte[] buf = new byte[1024];
-        int i = 0;
-        while((i=fis.read(buf))!=-1) {
-            out.write(buf, 0, i);
-        }
-        fis.close();
+    public void writeTo(OutputStream out) throws ServiceException, IOException 
+    {
+    	kmlEncoder.encodeKML(out);
     }
 }

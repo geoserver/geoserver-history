@@ -134,7 +134,7 @@ Section "GeoServer Section" SecGeoServer
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
     SetOutPath "$INSTDIR\bin"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\GeoServer Documentation.lnk"\
-                   "$INSTDIR\documents\GEOSDOC\Documentation.html"
+                   "http://docs.codehaus.org/display/GEOSDOC/Documentation"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\GeoServer Administration.lnk" \
                    "http://127.0.0.1:8080/geoserver/"
 

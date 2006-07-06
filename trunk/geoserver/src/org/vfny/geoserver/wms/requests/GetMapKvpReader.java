@@ -257,7 +257,46 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 						+ " incorrectly specified (0xRRGGBB format expected)");
 			}
 		}
-	}
+        
+        /** KML/KMZ score value */
+        String KMScore = getValue("KMSCORE");
+        if (KMScore != null)
+        {
+	        try {
+	        	// handle special string cases of "vector" or "raster"
+	        	if (KMScore.equalsIgnoreCase("vector"))
+	        		KMScore = "100"; // vector default
+	        	else if (KMScore.equalsIgnoreCase("raster"))
+	        		KMScore = "0"; // raster default
+	        	
+	        	Integer s = new Integer(KMScore);
+	        	int score = s.intValue();
+	        	if (score < 0 || score > 100)
+	        		throw new NumberFormatException("KMScore not between 0 and 100. "+
+	        				"If you wish not to use it, do not specify KMScore as a parameter.");
+	        	request.setKMScore(score);
+	        	LOGGER.info("Set KMScore: " + score);
+	        }
+	        catch (NumberFormatException e) {
+	        	throw new WmsException("KMScore parameter (" + KMScore + ") incorrectly specified. "+
+	        			"Expecting an integer value between between 0 and 100");
+	        }
+        }
+        
+        /** KMattr: 'full' or 'no' attribution for KML placemark <description> */
+        String KMAttr = getValue("KMATTR");
+        if (KMAttr != null)
+        {
+        	if (KMAttr.equalsIgnoreCase("no") ||
+        		KMAttr.equalsIgnoreCase("false") ||
+        		KMAttr.equalsIgnoreCase("0"))
+        	{
+        		request.setKMattr(false);
+        	}
+        	else
+        		request.setKMattr(true);	// default to true
+        }
+    }
 
 	/**
 	 * Parses the mandatory GetMap request parameters:
@@ -437,7 +476,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 *             if the value of the BBOX request parameter can't be parsed as
 	 *             four <code>double</code>'s
 	 */
-	private Envelope parseBbox() throws WmsException {
+    protected Envelope parseBbox() throws WmsException {
 		Envelope bbox = null;
 		String bboxParam = getValue("BBOX");
 		Object[] bboxValues = readFlat(bboxParam, INNER_DELIMETER).toArray();
@@ -497,7 +536,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 *             if greater than zero and distinct of the number of requested
 	 *             layers
 	 */
-	private List parseStylesParam(GetMapRequest request, MapLayerInfo[] layers)
+	protected List parseStylesParam(GetMapRequest request, MapLayerInfo[] layers)
 			throws WmsException {
 		String rawStyles = getValue("STYLES");
 		List styles = styles = new ArrayList(layers.length);
@@ -649,7 +688,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 * @throws WmsException
 	 *             DOCUMENT ME!
 	 */
-	private void parseLayersAndStyles(GetMapRequest request)
+    protected void parseLayersAndStyles(GetMapRequest request)
 			throws WmsException {
 		String sldParam = getValue("SLD");
 		String sldBodyParam = getValue("SLD_BODY");
@@ -692,7 +731,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 * @throws WmsException
 	 *             DOCUMENT ME!
 	 */
-	private void parseSldBodyParam(GetMapRequest request) throws WmsException {
+    protected void parseSldBodyParam(GetMapRequest request)
+        throws WmsException {
 		final String sldBody = getValue("SLD_BODY");
 
 		if (LOGGER.isLoggable(Level.FINE)) {
@@ -767,7 +807,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 * @throws WmsException
 	 *             DOCUMENT ME!
 	 */
-	private void parseSldParam(GetMapRequest request) throws WmsException {
+    protected void parseSldParam(GetMapRequest request) throws WmsException 
+	{
 		String urlValue = getValue("SLD");
 
 		if (LOGGER.isLoggable(Level.FINE)) {
@@ -1133,7 +1174,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 * 
 	 * @throws WmsException
 	 */
-	private MapLayerInfo[] parseLayersParam(GetMapRequest request)
+	protected MapLayerInfo[] parseLayersParam(GetMapRequest request)
 			throws WmsException {
 		MapLayerInfo[] layers;
 		String layersParam = getValue("LAYERS");

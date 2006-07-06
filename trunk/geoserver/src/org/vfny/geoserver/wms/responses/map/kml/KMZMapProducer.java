@@ -5,11 +5,8 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipOutputStream;
 
@@ -22,9 +19,14 @@ import org.vfny.geoserver.wms.WmsException;
 
 /**
  * Handles a GetMap request that spects a map in KMZ format.
+ * 
+ * KMZ files are a zipped KML file. The KML file must have an emcompasing <document> or <folder> element.
+ * So if you have many different placemarks or ground overlays, they all need to be contained 
+ * within one <document> element, then zipped up and sent off with the extension "kmz".
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $
+ * @author $Author: Brent Owens
  */
 class KMZMapProducer implements GetMapProducer {
     /** standard logger */
@@ -65,18 +67,19 @@ class KMZMapProducer implements GetMapProducer {
      * aborts the encoding.
      */
     public void abort() {
-        if (LOGGER.isLoggable(Level.FINE))
-        	LOGGER.fine("aborting KMZ map response");
+        LOGGER.fine("aborting KMZ map response");
         
         if (this.kmlEncoder != null) {
-        	if (LOGGER.isLoggable(Level.INFO))
-        		LOGGER.info("aborting KMZ encoder");
+        	LOGGER.info("aborting KMZ encoder");
             this.kmlEncoder.abort();
         }
     }
     
     /**
-     * Produce the actual map ready for outputing.
+     * Initializes the KML encoder.
+     * None of the map production is done here, it is done in writeTo().
+     * This way the output can be streamed directly to the output response and
+     * not written to disk first, then loaded in and then sent to the response.
      *
      * @param map WMSMapContext describing what layers, styles, area of interest
      * etc are to be used when producing the map.
@@ -85,40 +88,29 @@ class KMZMapProducer implements GetMapProducer {
      */
     public void produceMap(WMSMapContext map)
     throws WmsException {
-        try{
-            temp = File.createTempFile("kml",null);
-            this.kmlEncoder = new EncodeKML(map);
-            final ZipOutputStream outZ = new ZipOutputStream(new FileOutputStream(temp));
-            kmlEncoder.encode2(outZ);
-            outZ.flush();
-            outZ.close();
-        } catch(IOException ioe){
-            WmsException we  = new WmsException(ioe.getMessage());
-            we.initCause(ioe);
-            throw we;
-        }
+        
+    	kmlEncoder = new EncodeKML(map);
     }
     
     /**
-     * Pumps the map to the provided output stream.  Note by this point that 
-     * produceMap should already have been called so little work should be done
-     * within this method.
+     * Makes the map and sends it to the zipped output stream
+     * The produceMap() method does not create the map in this case. We produce the
+     * map here so we can stream directly to the response output stream, and
+     * not have to write to disk, then send it to the stream.
      *
+     * @Note: Do not close the output stream in this method, it gets closed
+     * later on.
+     *  
      * @param out OutputStream to stream the map to.
      *
      * @throws ServiceException
      * @throws IOException
      *
-     * @TODO replace stream copy with nio code.
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
-        FileInputStream fis  = new FileInputStream(temp);
-        
-        byte[] buf = new byte[1024];
-        int i = 0;
-        while((i=fis.read(buf))!=-1) {
-            out.write(buf, 0, i);
-        }
-        fis.close();
+    	final ZipOutputStream outZ = new ZipOutputStream(out);
+    	kmlEncoder.encodeKMZ(outZ);
+    	outZ.finish();
+        outZ.flush();
     }
 }

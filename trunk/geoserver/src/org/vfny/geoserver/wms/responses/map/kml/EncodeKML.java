@@ -11,13 +11,12 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.DirectColorModel;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -29,7 +28,6 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.GraphicsJAI;
 import javax.media.jai.PlanarImage;
 
-import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
@@ -37,21 +35,20 @@ import org.geotools.data.Query;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
+//import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.FilterFactoryImpl;
+import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
-import org.geotools.filter.IllegalFilterException;
-import org.geotools.filter.expression.BBoxExpression;
 import org.geotools.filter.expression.Expression;
 import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
-import org.geotools.resources.image.ImageUtilities;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.responses.map.png.PngEncoder;
+import org.vfny.geoserver.wms.responses.map.png.PngEncoderB;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -65,7 +62,7 @@ public class EncodeKML {
             "org.vfny.geoserver.responses.wms.map.kml");
     
     /** Filter factory for creating bounding box filters */
-    private FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
+    //private FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
 
     /** the XML and KML header */
     private static final String KML_HEADER =
@@ -118,8 +115,7 @@ public class EncodeKML {
      *
      * @throws IOException Thrown if anything goes wrong whilst writing
      */
-    public void encode(final OutputStream out) throws IOException {
-        Envelope env = this.mapContext.getAreaOfInterest();
+    public void encodeKML(final OutputStream out) throws IOException {
         this.writer = new KMLWriter(out, mapContext);
         //once KML supports bbox queries against WMS this can be used to 
         //decimate the geometries based on zoom level.
@@ -130,14 +126,13 @@ public class EncodeKML {
         long t = System.currentTimeMillis();
         try {
             writeHeader();
-            writeLayers(false);
+            ArrayList layerRenderList = new ArrayList();// not used in straight KML generation
+            writeLayers(false, layerRenderList);
             writeFooter();
             
             this.writer.flush();
             t = System.currentTimeMillis() - t;
-            if (LOGGER.isLoggable(Level.FINE)) {
-            	LOGGER.fine(new StringBuffer("KML generated, it took").append(t).append(" ms").toString());
-            }
+            LOGGER.fine(new StringBuffer("KML generated, it took").append(t).append(" ms").toString());
         } catch (IOException ioe) {
             if (abortProcess) {
                 LOGGER.fine("KML encoding aborted");
@@ -154,11 +149,10 @@ public class EncodeKML {
      * This method is used to encode kml + images and put all the stuff into a KMZ
      * file.
      * 
-     * @param out
+     * @param out the response is a Zipped output stream
      * @throws IOException
      */
-    public void encode2(final ZipOutputStream out) throws IOException {
-        Envelope env = this.mapContext.getAreaOfInterest();
+    public void encodeKMZ(final ZipOutputStream out) throws IOException {
         this.writer = new KMLWriter(out, mapContext);
         
         abortProcess = false;
@@ -169,22 +163,20 @@ public class EncodeKML {
 			final ZipEntry e = new ZipEntry("wms.kml");
 			out.putNextEntry(e);
             writeHeader();
-            writeLayers(true);
+            ArrayList layerRenderList = new ArrayList();
+            writeLayers(true, layerRenderList);
             writeFooter();
             this.writer.flush();
             out.closeEntry();
 
             // then we produce and store all the layer images
-            writeImages(out);
+            writeImages(out, layerRenderList);
             
             t = System.currentTimeMillis() - t;
-            if (LOGGER.isLoggable(Level.FINE)){
-            	LOGGER.fine(new StringBuffer("KMZ generated, it took").append(t).append(" ms").toString());
-            }
+            LOGGER.fine(new StringBuffer("KMZ generated, it took").append(t).append(" ms").toString());
         } catch (IOException ioe) {
             if (abortProcess) {
-            	if (LOGGER.isLoggable(Level.FINE))
-            		LOGGER.fine("KMZ encoding aborted");
+            	LOGGER.fine("KMZ encoding aborted");
                 return;
             } else {
                 throw ioe;
@@ -194,7 +186,47 @@ public class EncodeKML {
         }
     }    
 
+    
     /**
+     * Determines whether to return a vector (KML) result of the data or to
+     * return an image instead.
+     * If the kmscore is 100, then the output should always be vector. If
+     * the kmscore is 0, it should always be raster. In between, the number of 
+     * features is weighed against the kmscore value. 
+     * kmscore determines whether to return the features as vectors, or as one
+     * raster image. It is the point, determined by the user, where X number of 
+     * features is "too many" and the result should be returned as an image instead.
+     *  
+     * kmscore is logarithmic. The higher the value, the more features it takes
+     * to make the algorithm return an image. The lower the kmscore, the fewer 
+     * features it takes to force an image to be returned.
+     * (in use, the formula is exponential: as you increase the KMScore value,
+     * the number of features required increases exponentially).
+     * 
+     * @param kmscore the score, between 0 and 100, use to determine what output to use
+     * @param numFeatures how many features are being rendered
+     * @return true: use just kml vectors, false: use raster result
+     */
+    private boolean useVectorOutput(int kmscore, int numFeatures) {
+    	if (kmscore == 100)
+    		return true; // vector KML
+    	if (kmscore == 0)
+    		return false; // raster KMZ
+    	
+    	// For numbers in between, determine exponentionally based on kmscore value:
+    	// 10^(kmscore/15)
+    	// This results in exponential growth.
+    	// The lowest bound is 1 feature and the highest bound is 3.98 million features
+    	// The most useful kmscore values are between 20 and 70 (21 and 46000 features respectively)
+    	// A good default kmscore value is around 40 (464 features)
+    	double magic = Math.pow(10, kmscore/15);
+    	if (numFeatures > magic)
+    		return false; // return raster
+    	else
+    		return true; // return vector
+	}
+
+	/**
      * writes out standard KML header
      *
      * @throws IOException
@@ -216,15 +248,16 @@ public class EncodeKML {
     /**
      * Processes each of the layers within the current mapContext in turn.
      * 
+     * writeLayers must be called before writeImages in order for the kmScore 
+     * algorithm to work.
+     * 
      * @throws IOException
      * @throws AbortedException
      *
-     * @task TODO: Wrap each layer in a 'Folder' tag
      */
-    private void writeLayers(final boolean kmz) throws IOException, AbortedException {
+    private void writeLayers(final boolean kmz, ArrayList layerRenderList) throws IOException, AbortedException {
         MapLayer[] layers = mapContext.getLayers();
         int nLayers = layers.length;
-        int defMaxDecimals = writer.getMaximunFractionDigits();
         
         FilterFactory fFac = new FilterFactoryImpl();
         
@@ -246,6 +279,7 @@ public class EncodeKML {
 
             try {
             	Filter filter = null;
+            	/* WCS branch version with new Expressions
             	BBoxExpression rightBBox = filterFactory.createBBoxExpression(mapContext
                         .getAreaOfInterest());
                 filter = createBBoxFilters(schema, attributes, rightBBox);
@@ -271,22 +305,43 @@ public class EncodeKML {
                         layer.getFeatureSource().getSchema().getDefaultGeometry().getCoordinateSystem());
                 
                 featureReader = fSource.getFeatures(q).reader();
-                FeatureCollection fc = fSource.getFeatures(q);
-                writer.writeFeatures(fc, layer, i+1, kmz);
-                	
-                if (LOGGER.isLoggable(Level.FINE))
-                	LOGGER.fine("finished writing");
+                ----WCS version with new expressions*/
+            	
+                Expression bboxExpression = fFac.createBBoxExpression(mapContext
+                        .getAreaOfInterest());
+                GeometryFilter bboxFilter = fFac.createGeometryFilter(FilterType.GEOMETRY_INTERSECTS);
+                bboxFilter.addLeftGeometry(bboxExpression);
+                bboxFilter.addRightGeometry(fFac.createAttributeExpression(
+                        schema, schema.getDefaultGeometry().getName()));
+                
+                Query bboxQuery = new DefaultQuery(schema.getTypeName(),
+                        bboxFilter);
+                
+                featureReader = fSource.getFeatures(bboxQuery).reader();
+                FeatureCollection fc = fSource.getFeatures(bboxQuery);
+                
+                int kmscore = mapContext.getRequest().getKMScore(); //KMZ score value
+                if (useVectorOutput(kmscore, fc.size()) || !kmz)
+                {
+                	LOGGER.info("Layer ("+layer.getTitle()+") rendered with KML vector output.");
+                	layerRenderList.add(new Integer(i)); // save layer number so it won't be rendered
+                	writer.writeFeatures(fc, layer, i+1, false); // KML
+                }
+                else
+                {
+                	LOGGER.info("Layer ("+layer.getTitle()+") rendered with KMZ raster output.");
+                	writer.writeFeatures(fc, layer, i+1, true); // KMZ
+                }
+
+               	LOGGER.fine("finished writing");
             } catch (IOException ex) {
-            	if (LOGGER.isLoggable(Level.INFO))
-            		LOGGER.info(new StringBuffer("process failed: ").append(ex.getMessage()).toString());
+            	LOGGER.info(new StringBuffer("process failed: ").append(ex.getMessage()).toString());
                 throw ex;
             } catch (AbortedException ae) {
-            	if (LOGGER.isLoggable(Level.INFO))
-            		LOGGER.info(new StringBuffer("process aborted: ").append(ae.getMessage()).toString());
+            	LOGGER.info(new StringBuffer("process aborted: ").append(ae.getMessage()).toString());
                 throw ae;
             } catch (Throwable t) {
-            	if (LOGGER.isLoggable(Level.WARNING))
-            		LOGGER.warning(new StringBuffer("UNCAUGHT exception: ").append(t.getMessage()).toString());
+            	LOGGER.warning(new StringBuffer("UNCAUGHT exception: ").append(t.getMessage()).toString());
                 
                 IOException ioe = new IOException(new StringBuffer("UNCAUGHT exception: ").
                         append(t.getMessage()).toString());
@@ -312,14 +367,21 @@ public class EncodeKML {
      * @throws IOException
      * @throws AbortedException
      */
-    private void writeImages(final ZipOutputStream outZ) throws IOException, AbortedException {
+    private void writeImages(final ZipOutputStream outZ, ArrayList layerRenderList) throws IOException, AbortedException {
         MapLayer[] layers = this.mapContext.getLayers();
         int nLayers = layers.length;
-        int defMaxDecimals = writer.getMaximunFractionDigits();
-        
-        FilterFactory fFac = new FilterFactoryImpl();
         
         for (int i = 0; i < nLayers; i++) {
+        	
+        	if (layerRenderList.size() > 0)
+        	{
+        		int num = ((Integer)layerRenderList.get(0)).intValue();
+        		if (num == i)
+        		{	// if this layer is a layer that doesn't need to be rendered, move to next layer
+        			layerRenderList.remove(0);
+        			continue;
+        		}
+        	}
             final MapLayer layer = layers[i];
             MapContext map = this.mapContext;
             map.clearLayerList();
@@ -327,10 +389,8 @@ public class EncodeKML {
     		final int width = this.mapContext.getMapWidth();
     		final int height = this.mapContext.getMapHeight();
 
-    		if (LOGGER.isLoggable(Level.FINE)) {
-    			LOGGER.fine(new StringBuffer("setting up ").append(width).append(
-    					"x").append(height).append(" image").toString());
-    		}
+    		LOGGER.fine(new StringBuffer("setting up ").append(width).append("x")
+    				.append(height).append(" image").toString());
     		// simone: ARGB should be much better
     		BufferedImage curImage = new BufferedImage(width, height,
     				BufferedImage.TYPE_4BYTE_ABGR);
@@ -339,22 +399,25 @@ public class EncodeKML {
     		final Graphics2D graphic = GraphicsJAI.createGraphicsJAI(curImage
     				.createGraphics(), null);
 
-    		if (LOGGER.isLoggable(Level.FINE)) {
-    			LOGGER.fine("setting to transparent");
-    		}
+    		LOGGER.fine("setting to transparent");
     		
     		int type = AlphaComposite.SRC;
     		graphic.setComposite(AlphaComposite.getInstance(type));
     		
-    		Color c = new Color(this.mapContext.getBgColor().getRed(), this.mapContext.getBgColor()
-    				.getGreen(), this.mapContext.getBgColor().getBlue(), 0);
+    		Color c = new Color(this.mapContext.getBgColor().getRed(), 
+    							this.mapContext.getBgColor().getGreen(), 
+    							this.mapContext.getBgColor().getBlue(), 
+    							0);
+    		
+    		LOGGER.info("****** bg color: "+c.getRed()+","+c.getGreen()+","+c.getBlue()+","+c.getAlpha()+", trans: "+c.getTransparency());
+ 
     		graphic.setBackground(this.mapContext.getBgColor());
     		graphic.setColor(c);
     		graphic.fillRect(0, 0, width, height);
     		
     		type = AlphaComposite.SRC_OVER;
     		graphic.setComposite(AlphaComposite.getInstance(type));
-
+    		
     		Rectangle paintArea = new Rectangle(width, height);
 
     		final StreamingRenderer renderer = new StreamingRenderer();
@@ -387,22 +450,31 @@ public class EncodeKML {
 			outZ.putNextEntry(e);
 			final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
 					outZ);
-			final PlanarImage encodedImage = PlanarImage
+			/*final PlanarImage encodedImage = PlanarImage
 					.wrapRenderedImage(curImage);
-			final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel?ImageUtilities
-					.reformatColorModel2ComponentColorModel(encodedImage):encodedImage;
+			//final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel?ImageUtilities
+			//		.reformatColorModel2ComponentColorModel(encodedImage):encodedImage;
+			final PlanarImage finalImage = encodedImage;
 			final Iterator it = ImageIO.getImageWritersByMIMEType("image/png");
 			ImageWriter imgWriter = null;
 			if (!it.hasNext()) {
+				LOGGER.warning("No PNG ImageWriter found");
 				throw new IllegalStateException("No PNG ImageWriter found");
 			} else
 				imgWriter = (ImageWriter) it.next();
-
-			imgWriter.setOutput(memOutStream);
-			imgWriter.write(null, new IIOImage(finalImage, null, null), null);
+			*/
+			
+			//---------------------- bo- new
+			PngEncoderB png = new PngEncoderB(curImage, PngEncoder.ENCODE_ALPHA, 0, 1);
+			byte[] pngbytes = png.pngEncode();
+			memOutStream.write(pngbytes);
+			//----------------------
+			
+			//imgWriter.setOutput(memOutStream);
+			//imgWriter.write(null, new IIOImage(finalImage, null, null), null);
 			memOutStream.flush();
 			memOutStream.close();
-			imgWriter.dispose();
+			//imgWriter.dispose();
 			outZ.closeEntry();
         }
     }
@@ -420,7 +492,7 @@ public class EncodeKML {
      *         its corresponding <code>GeometryFilter</code>.
      * @throws IllegalFilterException if something goes wrong creating the filter
      */
-    private Filter createBBoxFilters( FeatureType schema, String[] attributes, BBoxExpression bbox )
+    /*private Filter createBBoxFilters( FeatureType schema, String[] attributes, BBoxExpression bbox )
     throws IllegalFilterException {
         Filter filter = null;
         
@@ -460,5 +532,5 @@ public class EncodeKML {
         }
         
         return filter;
-    }
+    }*/
 }
