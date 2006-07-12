@@ -1,60 +1,67 @@
 package org.geoserver.data;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import org.geotools.catalog.Catalog;
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.Service;
-import org.geotools.catalog.defaults.DefaultCatalog;
+import org.geotools.util.ProgressListener;
 import org.xml.sax.helpers.NamespaceSupport;
 
-public class GeoServerCatalog extends DefaultCatalog {
+/**
+ * GeoServer catalog.
+ * <p>
+ * The GeoServer catalog extends the geotools catalog providing additional 
+ * convenience methods specific to geoserver.
+ * </p>
+ * 
+ * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ *
+ */
+public interface GeoServerCatalog extends Catalog {
 
-	NamespaceSupport namespaceSupport;
+	/**
+	 * The namespace / prefix mappings for the application.
+	 * 
+	 * @return NamespaceSupport containing declared namespace uris and prefixed.
+	 */
+	NamespaceSupport getNamespaceSupport();
 	
-	public GeoServerCatalog( ) {
-		namespaceSupport = new NamespaceSupport();
-	}
+	/**
+	 * Returns a list of service handles from the catalog which can resolve to 
+	 * the supplied the class.
+	 * 
+	 * @param resolvee The class to test a resolve to.
+	 * 
+	 * @return List of {@link Service}, possbily empty, never null.
+	 */
+	List services( Class resolvee ) throws IOException;
 	
-	public NamespaceSupport getNamespaceSupport() {
-		return namespaceSupport;
-	}
+	/**
+	 * Returns a list of resource handles from the catalog which can resolve to 
+	 * the supplied the class.
+	 * 
+	 * @param resolvee The class to test a resolve to.
+	 * 
+	 * @return List of {@link GeoResource}, possbily empty, never null.
+	 */
+	List resources( Class resolvee ) throws IOException;
 	
-	public List services( Class resolvee )
-		throws IOException {
-		
-		List handles = new ArrayList();
-		List services = members( null );
-		for ( Iterator s = services.iterator(); s.hasNext(); ) {
-			Service service = (Service) s.next();
-			if ( service.canResolve( resolvee ) ) {
-				handles.add( service );
-			}
-		}
-	
-		return handles;
-	}
-	
-	public List resources( Class resolvee ) 
-		throws IOException {
-		
-		List handles = new ArrayList(); 
-		List services = members( null );
-		for ( Iterator s = services.iterator(); s.hasNext(); ) {
-			
-			Service service = (Service) s.next();
-			List resources = service.members( null );
-			for ( Iterator r = resources.iterator(); r.hasNext(); ) {
-				GeoResource resource = (GeoResource) r.next();
-				if ( resource.canResolve( resolvee ) ) {
-					handles.add( resource );
-				}
-			}
-			
-		}
-		
-		return handles;
-	}
+	/**
+	 * Loads the feature type metata from the catalog correspoding to a 
+	 * feature type name.
+	 * 
+	 * @param name A feature type name.
+	 * @param monitor Monitor for blocking I/O calls, may be null.
+	 * 
+	 * @return A list of FeatureTypeInfo objects which match the given name, 
+	 * or empty if no such match.
+	 * 
+	 * @throws IOException Any I/O errors.
+	 *
+	 */
+//	List/*FeatureTypeInfo*/ featureTypes( String name, ProgressListener monitor) 
+//		throws IOException;
 }
+	
