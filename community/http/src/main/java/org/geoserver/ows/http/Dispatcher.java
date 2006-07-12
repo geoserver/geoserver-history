@@ -248,6 +248,12 @@ public class Dispatcher extends AbstractController {
 	Object parseXML( File cache ) throws Exception {
 		InputStream input = input( cache );
 		
+		//check for an empty input stream
+		if ( input.available() == 0 ) {
+			input.close();
+			return null;
+		}
+		
 		//create stream parser
 		XmlPullParserFactory factory = 
 			XmlPullParserFactory.newInstance();
