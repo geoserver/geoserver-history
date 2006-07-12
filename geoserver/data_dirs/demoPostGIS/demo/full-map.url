@@ -1,1 +1,0 @@
-wms?request=GetMap&layers=gd:streams,swamps,rivers,lakes,buildings,roads&bbox=556627.87%2c5233002.61%2c566208.16%2c5246984.76&width=500&height=800&srs=EPSG:27354&styles=blue,green,blueFill,blueFill,gray,red&Format=image/png

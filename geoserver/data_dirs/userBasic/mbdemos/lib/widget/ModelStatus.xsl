@@ -1,2 +1,0 @@
-<?xml version="1.0"?>
-<xsl:stylesheet xmlns:mb="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"><xsl:output method="xml" encoding="utf-8"/><xsl:param name="lang">en</xsl:param><xsl:param name="modelId"/><xsl:param name="modelTitle"/><xsl:param name="widgetId"/><xsl:param name="title"/><xsl:param name="statusMessage"/><xsl:template match="/"><DIV><xsl:value-of select="$title"/><xsl:value-of select="$modelTitle"/><xsl:value-of select="$statusMessage"/></DIV></xsl:template></xsl:stylesheet>
