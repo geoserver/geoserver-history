@@ -6,7 +6,6 @@ package org.geoserver.ows;
 
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -72,6 +71,16 @@ public class OWS {
 	 */
 	private boolean isVerbose;
 	
+	/**
+	 * Number of decimals used when encoding data.
+	 */
+	private int numDecimals;
+	
+	/**
+	 * Local used to look up schemas.
+	 */
+    private String schemaBaseURL;
+    
 	/**
      * <p>
      * Returns whether is service is enabled.
@@ -243,6 +252,40 @@ public class OWS {
     
     public void setVerbose(boolean isVerbose) {
 		this.isVerbose = isVerbose;
+	}
+    
+    /**
+     * The default number of decimals allowed in the data.
+     * 
+     * @return int the default number of decimals allowed in the data.
+     */
+    public int getNumDecimals() {
+        return numDecimals;
+    }
+    
+    /**
+     * Sets the number of decimals to be used with data.
+     * 
+     * @param numDecimals Number of decimals.
+     */
+    public void setNumDecimals( int numDecimals ) {
+    		this.numDecimals = numDecimals;
+    }
+    
+    /**
+     * Sets the base url from which to locate schemas from.
+     * 
+     * @param schemaBaseURL
+     */
+    public void setSchemaBaseURL(String schemaBaseURL) {
+		this.schemaBaseURL = schemaBaseURL;
+	}
+    
+    /**
+     * @return The base url from which to locate schemas from.
+     */
+    public String getSchemaBaseURL() {
+		return schemaBaseURL;
 	}
     
     
