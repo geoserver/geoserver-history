@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import javax.xml.transform.TransformerException;
 
 import org.geoserver.data.GeoServerCatalog;
+import org.geoserver.wfs.feature.FeatureTypeInfo;
 import org.geotools.catalog.GeoResource;
 import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTypeTransformer;
@@ -44,7 +45,6 @@ public class DescribeFeatureType {
     private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema\"";
     private static final String XS_NAMESPACE = "\n  xmlns:xs=" + SCHEMA_URI;
     private static final String GML_URL = "\"http://www.opengis.net/gml\"";
-    private static final String GML_SCHEMAS_URL = "http://schemas.opengis.net/";
     private static final String GML_NAMESPACE = "\n  xmlns:gml=" + GML_URL;
     private static final String ELEMENT_FORM_DEFAULT = "\n  elementFormDefault=\"qualified\"";
     private static final String ATTR_FORM_DEFAULT = "\n  attributeFormDefault=\"unqualified\" version=\"1.0\">";
@@ -225,7 +225,7 @@ public class DescribeFeatureType {
 //                + " schemaLocation=\"" + request.getSchemaBaseUrl()
 //                + "gml/2.1.2/feature.xsd\"/>\n\n");
             tempResponse.append("\n\n<xs:import namespace=" + GML_URL
-                    + " schemaLocation=\"" + GML_SCHEMAS_URL 
+                    + " schemaLocation=\"" + wfs.getSchemaBaseURL() 
                     + "gml/2.1.2/feature.xsd\"/>\n\n");
             tempResponse.append( generateSpecifiedTypes( infos ) );
         } else {
@@ -426,7 +426,7 @@ public class DescribeFeatureType {
      */
     private static String printElement(FeatureTypeInfo type) {
     		return "\n  <xs:element name='" + type.getTypeName() + "' type='"
-    			+ type.getNamespacePrefix()+":"+type.getSchemaName() + 
+    			+ type.getNamespacePrefix()+":"+type.schemaName() + 
     			"' substitutionGroup='gml:_Feature'/>";
     }
 
