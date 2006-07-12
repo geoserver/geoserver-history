@@ -49,7 +49,15 @@ public class CatalogReader {
 	 * @throws IOException In event of a parser error.
 	 */
 	public void read( File file ) throws IOException {
-		catalog = ReaderUtils.parse( new FileReader( file ) );
+		FileReader reader = new FileReader( file );
+		
+		try {
+			catalog = ReaderUtils.parse( reader );	
+		}
+		finally {
+			reader.close();	
+		}
+		
 	}
 	
 	/**
@@ -75,7 +83,7 @@ public class CatalogReader {
 			Element dataStoreElement = (Element) dataStoreElements.item( i );
 			
 			try {
-				Map params = params( dataStoreElement );
+				Map params = dataStoreParams( dataStoreElement );
 				dataStores.add( params );
 			} 
 			catch (Exception e) {
@@ -88,6 +96,46 @@ public class CatalogReader {
 	}
 	
 	/**
+	 * Reads "namespace" elements from the catalog.xml file.
+	 * <p>
+	 *  For each namespace element read, an entry of <prefix,uri> is created
+	 *  in a map. The default uri is located under the empty string key.
+	 *  </p>
+	 * 
+	 * @return A map containing <prefix,uri> tuples.
+	 * 
+	 * @throws Exception If error processing "namespaces" element.
+	 */
+	public Map namespaces() throws Exception {
+		Element namespacesElement = 
+			ReaderUtils.getChildElement( catalog, "namespaces", true );
+		
+		NodeList namespaceElements = 
+			namespacesElement.getElementsByTagName( "namespace" );
+		Map namespaces = new HashMap();
+		
+		for ( int i = 0; i < namespaceElements.getLength(); i++ ) {
+			Element namespaceElement = (Element) namespaceElements.item( i );
+			
+			try {
+				Map.Entry tuple = namespaceTuple( namespaceElement );
+				namespaces.put( tuple.getKey(), tuple.getValue() );
+			
+				//check for default
+				if ( "true".equals( namespaceElement.getAttribute( "default") ) ) {
+					namespaces.put( "", tuple.getValue() );
+				}
+			} 
+			catch (Exception e) {
+				//TODO: log this
+				continue;
+			}
+		}
+		
+		return namespaces;
+	}
+	
+	/**
 	 * Convenience method for reading connection parameters from a datastore
 	 * element.
 	 * 
@@ -97,7 +145,7 @@ public class CatalogReader {
 	 * 
 	 * @throws Exception If problem parsing any parameters.
 	 */
-	protected Map params( Element dataStoreElement ) throws Exception {
+	protected Map dataStoreParams( Element dataStoreElement ) throws Exception {
 		Element paramsElement = ReaderUtils.getChildElement( 
 				dataStoreElement, "connectionParameters", true ); 
 		NodeList paramList = paramsElement.getElementsByTagName( "parameter" );
@@ -113,5 +161,37 @@ public class CatalogReader {
 		}
 		
 		return params;
+	}
+	
+	/**
+	 * Convenience method for reading namespace prefix and uri from a namespace
+	 * element.
+	 * 
+	 * @param namespaceElement The "namespace" element.
+	 * 
+	 * @return A <prefix,uri> tuple.
+	 * 
+	 * @throws Exception If problem parsing any parameters.
+	 */
+	protected Map.Entry namespaceTuple( Element namespaceElement ) 
+		throws Exception {
+		
+		final String pre = namespaceElement.getAttribute( "prefix" );
+		final String uri = namespaceElement.getAttribute( "uri" );
+		
+		return new Map.Entry() {
+			public Object getKey() {
+				return pre;
+			}
+
+			public Object getValue() {
+				return uri;
+			}
+
+			public Object setValue(Object value) {
+				throw new UnsupportedOperationException();
+			}
+		};
+		
 	}
 }
