@@ -6,6 +6,7 @@ package org.geoserver.wfs;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.data.GeoServerCatalog;
+import org.geoserver.wfs.feature.FeatureTypeInfo;
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.GeoResourceInfo;
 import org.geotools.feature.FeatureType;
@@ -177,19 +179,29 @@ public class WFSCapsTransformer extends TransformerBase {
          * @param kwlist
          */
         private void handleKeywords(String[] kwlist) {
-        	 	StringBuffer kwds = new StringBuffer();
+        		if ( kwlist == null ) {
+        			handleKeywords( (List) null );
+        		}
+        		else { 
+        			handleKeywords( Arrays.asList( kwlist ) );
+        		}
+    		}
 
-            for (int i = 0; kwlist != null && i < kwlist.length; i++) {
-                kwds.append(kwlist[i]);
+        private void handleKeywords( List kwlist ) {
+        	
+        		StringBuffer kwds = new StringBuffer();
 
-                if ( i != kwlist.length - 1) {
+            for (int i = 0; kwlist != null && i < kwlist.size(); i++) {
+                kwds.append(kwlist.get(i));
+
+                if ( i != kwlist.size() - 1) {
                     kwds.append(", ");
                 }
             }
 
-            element("Keywords", kwds.toString());
+            element("Keywords", kwds.toString());	
         }
-
+        
         /**
          * DOCUMENT ME!
          */
@@ -453,12 +465,16 @@ public class WFSCapsTransformer extends TransformerBase {
          * @throws RuntimeException For any errors.
          */
         protected void handleFeatureType( GeoResource ftype ) {
-            start("FeatureType");
-
-            GeoResourceInfo info;
-			try {
-				info = ftype.getInfo( null );
-			} 
+            
+            FeatureTypeInfo info = null;
+            try {
+            		info = (FeatureTypeInfo) ftype.resolve( FeatureTypeInfo.class, null );
+            		if ( info == null ) {
+            			String msg = "Unable to locate feature type metadata for: " + 
+            				ftype.getIdentifier();
+            			throw new IOException( msg );
+            		}
+            	} 
 			catch (IOException e) {
 				String msg = "Could not get info for: " + ftype.getIdentifier()
 					+ ": " + e.getMessage();
@@ -468,18 +484,26 @@ public class WFSCapsTransformer extends TransformerBase {
 			
             Envelope bbox = null;
 
-            bbox = info.getBounds();
+            try {
+				bbox = info.boundingBox();
+			} 
+            catch (IOException e) {
+            		String msg = "Could not calculate bbox for: " + ftype.getIdentifier();
+				LOGGER.log( Level.SEVERE, msg, e );
+            		return ;
+			}
                 
-            element("Name", info.getName());
+            start("FeatureType");
+            element("Name", info.name());
             element("Title", info.getTitle());
-            element("Abstract", info.getDescription());
+            element("Abstract", info.getAbstract());
             handleKeywords(info.getKeywords());
 
             /**
              * @task REVISIT: should getSRS() return the full URL?
              */
             //JD: pretty sure this is wrong
-            element("SRS", EPSG + info.getCRS().getName().getCode());
+            element("SRS", EPSG + info.crs().getName().getCode());
 
             String minx = String.valueOf(bbox.getMinX());
             String miny = String.valueOf(bbox.getMinY());
