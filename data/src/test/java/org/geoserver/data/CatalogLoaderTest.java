@@ -2,8 +2,6 @@ package org.geoserver.data;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -15,13 +13,9 @@ import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.TestCase;
 
-import org.geotools.catalog.Catalog;
-import org.geotools.catalog.ServiceFactory;
 import org.geotools.catalog.ServiceFinder;
-import org.geotools.catalog.defaults.DefaultCatalog;
 import org.geotools.catalog.defaults.DefaultServiceFinder;
 import org.geotools.catalog.property.PropertyServiceFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -38,6 +32,16 @@ public class CatalogLoaderTest extends TestCase {
 		Document doc = builder.newDocument();
 		doc.appendChild( doc.createElement( "catalog" ) );
 		
+		//create namespaces
+		Element namespacesElement = doc.createElement( "namespaces" );
+		doc.getDocumentElement().appendChild( namespacesElement );
+		
+		Element namespaceElement = doc.createElement( "namespace" );
+		namespaceElement.setAttribute( "uri", "http://somenamespace" );
+		namespaceElement.setAttribute( "prefix", "some" );
+		namespacesElement.appendChild( namespaceElement );
+		
+		//create data stores
 		Element dataStoresElement = doc.createElement( "datastores" );
 		doc.getDocumentElement().appendChild( dataStoresElement );
 		
@@ -62,7 +66,7 @@ public class CatalogLoaderTest extends TestCase {
 		
 		tx.transform( source, result );
 		
-		Catalog catalog = new DefaultCatalog();
+		GeoServerCatalog catalog = new DefaultGeoServerCatalog();
 		ServiceFinder finder = new DefaultServiceFinder( catalog ) {
 			
 			public List getServiceFactories() {

@@ -21,9 +21,8 @@ import org.springframework.context.support.GenericApplicationContext;
 /**
  * Abstract test class for tests which need data or a catalog.
  * <p>
- * This class creates the 11 cite test types in a 
- * {@link org.geotools.data.property.PropertyDataStore} and populates a 
- * instance of the catalog with them.
+ * This class creates populates the catalog with data mimicing the WMS cite
+ * setup.
  * </p>
  * 
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
@@ -65,6 +64,12 @@ public class DataTestSupport extends TestCase {
     public static String STREAMS_TYPE = "Streams";
     
     /**
+     * cite namespace + uri
+     */
+    public static String CITE_PREFIX = "cite";
+    public static String CITE_URI = "http://www.opengis.net/cite";
+    
+    /**
      * Temporary directory for property files.
      */
     File tmp;
@@ -101,7 +106,7 @@ public class DataTestSupport extends TestCase {
     
     void copy( String type ) throws IOException {
     		File from = new File( 
-			getClass().getResource( "data/" + type + ".properties").getFile() 
+			DataTestSupport.class.getResource( "data/" + type + ".properties").getFile() 
 		);
     		
     		File to = new File( tmp, type + ".properties" ); 
@@ -117,8 +122,18 @@ public class DataTestSupport extends TestCase {
     		out.close();
     }
     
-    GeoServerCatalog createCiteCatalog() {
-		GeoServerCatalog catalog = new GeoServerCatalog();
+    /**
+     * Creates the geosrever catalog and populates it with cite data.
+     * <p>
+     * Subclasses should override/extend as necessary to provide a custom 
+     * catalog. This default implementation returns an instanceof 
+     * {@link DefaultGeoServerCatalog}. 
+     * </p>
+     * @return A popluated geoserver catalog.
+     */
+    protected GeoServerCatalog createCiteCatalog() {
+    		
+		GeoServerCatalog catalog = new DefaultGeoServerCatalog();
 		GeoServerServiceFinder finder = new GeoServerServiceFinder( catalog );
 		PropertyServiceFactory factory = new PropertyServiceFactory();
 		
@@ -128,11 +143,16 @@ public class DataTestSupport extends TestCase {
 		
 		finder.setApplicationContext( context );
 		
+		//set up the data
 		HashMap params = new HashMap();
 		params.put( PropertyDataStoreFactory.DIRECTORY.key, tmp );
 		
 		List services = finder.aquire( params );
 		catalog.add( (Service) services.get( 0 ) );
+		
+		//setup the namespaces
+		catalog.getNamespaceSupport().declarePrefix( "", CITE_URI );
+		catalog.getNamespaceSupport().declarePrefix( CITE_PREFIX, CITE_URI );
 		
 		return catalog;
 	}
