@@ -105,13 +105,11 @@ public class DataTestSupport extends TestCase {
 	}
     
     void copy( String type ) throws IOException {
-    		File from = new File( 
-			DataTestSupport.class.getResource( "data/" + type + ".properties").getFile() 
-		);
+    		InputStream from = DataTestSupport.class.getResourceAsStream( "data/" + type + ".properties" );
     		
     		File to = new File( tmp, type + ".properties" ); 
     		
-    		InputStream in = new BufferedInputStream( new FileInputStream( from ) );
+    		InputStream in = new BufferedInputStream( from );
     		OutputStream out = new BufferedOutputStream( new FileOutputStream( to ) );
     		
     		int b = 0;
