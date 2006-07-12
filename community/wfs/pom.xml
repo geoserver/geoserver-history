@@ -13,7 +13,7 @@
   <groupId>org.geoserver</groupId>
   <artifactId>wfs2</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.4.0-M0</version>
   <name>Web Feature Service Module</name>
 
   <dependencies>
@@ -30,6 +30,10 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-main</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-epsg-hsql</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
