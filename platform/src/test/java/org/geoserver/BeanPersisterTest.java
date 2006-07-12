@@ -1,20 +1,17 @@
 package org.geoserver;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import junit.framework.TestCase;
+
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import junit.framework.TestCase;
 
 public class BeanPersisterTest extends TestCase {
 
