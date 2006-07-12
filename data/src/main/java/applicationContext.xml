@@ -5,7 +5,7 @@
 	
 	<!-- catalog  -->
 	<bean id="catalog"
-		class="org.geoserver.data.GeoServerCatalog"/>
+		class="org.geoserver.data.DefaultGeoServerCatalog"/>
 		
 	<bean id="serviceFinder"
 		class="org.geoserver.data.GeoServerServiceFinder">
