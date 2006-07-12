@@ -1,0 +1,7 @@
+<Transaction>
+  <Delete>
+    <Filter>
+      <FeatureId fid="123"/>
+    </Filter>
+  </Delete>
+</Transaction>   
