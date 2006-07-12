@@ -35,11 +35,11 @@ import org.springframework.core.io.ResourceLoader;
 public class CatalogLoader implements ResourceLoaderAware, InitializingBean,
 	DisposableBean {
 
-	Catalog catalog;
+	GeoServerCatalog catalog;
 	ServiceFinder finder;
 	ResourceLoader loader;
 	
-	public CatalogLoader( Catalog catalog, ServiceFinder finder  ) {
+	public CatalogLoader( GeoServerCatalog catalog, ServiceFinder finder  ) {
 		this.catalog = catalog;
 		this.finder = finder;
 	}
@@ -60,13 +60,24 @@ public class CatalogLoader implements ResourceLoaderAware, InitializingBean,
 		CatalogReader reader = new CatalogReader();
 		reader.read( catalogFile );
 		
-		//populate the catalog
+		//populate the catalog with datastores
 		for ( Iterator d = reader.dataStores().iterator(); d.hasNext(); ) {
 			Map params = (Map) d.next();
 			List services = finder.aquire( params );
 			for ( Iterator s = services.iterator(); s.hasNext(); ) {
 				catalog.add( (Service) s.next() );
 			}
+		}
+		
+		//setup namespace mappings
+		Map nsMappings = reader.namespaces();
+		for ( Iterator ns = nsMappings.entrySet().iterator(); ns.hasNext(); ) {
+			Map.Entry nsMapping = (Map.Entry) ns.next();
+			
+			String pre = (String) nsMapping.getKey();
+			String uri = (String) nsMapping.getValue();
+			
+			catalog.getNamespaceSupport().declarePrefix( pre, uri );
 		}
 	}
 
