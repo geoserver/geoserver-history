@@ -13,7 +13,7 @@ import java.util.Map;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.property.PropertyDataStore;
+//import org.geotools.data.property.PropertyDataStore;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -273,7 +273,7 @@ public class MockUtils {
 
 		final File envTmpDir = new File(System.getProperty("java.io.tmpdir"));
 		File tempDir = new File(envTmpDir, "cite_test_datastore");
-		createCiteDataStore(tempDir);
+//		createCiteDataStore(tempDir);
 
 		Map dsConnectionParams = new HashMap();
 		dsConnectionParams.put("directory", tempDir);
@@ -351,12 +351,12 @@ public class MockUtils {
 	 * @throws IOException
 	 *             DOCUMENT ME!
 	 */
-	public static DataStore createCiteDataStore(File tempDir)
-			throws IOException {
-		writeTempFiles(tempDir);
-		DataStore propsDS = new ForceWGS84PropertyDataStore(tempDir);
-		return propsDS;
-	}
+//	public static DataStore createCiteDataStore(File tempDir)
+//			throws IOException {
+//		writeTempFiles(tempDir);
+//		DataStore propsDS = new ForceWGS84PropertyDataStore(tempDir);
+//		return propsDS;
+//	}
 
 	/**
 	 * DOCUMENT ME!
@@ -455,52 +455,52 @@ public class MockUtils {
 	 * @author Gabriel Roldan, Axios Engineering
 	 * @version $Id$
 	 */
-	private static class ForceWGS84PropertyDataStore extends PropertyDataStore {
-		/**
-		 * Creates a new ForceWGS84PropertyDataStore object.
-		 * 
-		 * @param dir
-		 *            DOCUMENT ME!
-		 */
-		public ForceWGS84PropertyDataStore(File dir) {
-			super(dir);
-		}
-
-		/**
-		 * DOCUMENT ME!
-		 * 
-		 * @param typeName
-		 *            DOCUMENT ME!
-		 * 
-		 * @return DOCUMENT ME!
-		 * 
-		 * @throws IOException
-		 *             DOCUMENT ME!
-		 * @throws DataSourceException
-		 *             DOCUMENT ME!
-		 */
-		public FeatureType getSchema(String typeName) throws IOException {
-			FeatureType schema = super.getSchema(typeName);
-
-			try {
-				return DataUtilities.createSubType(schema, null,
-						DefaultGeographicCRS.WGS84);
-			} catch (SchemaException e) {
-				throw new DataSourceException(e.getMessage(), e);
-			}
-		}
-
-		/**
-		 * DOCUMENT ME!
-		 */
-
-		/*
-		 * public FeatureReader getFeatureReader(Query query, Transaction
-		 * transaction) throws IOException { FeatureReader reader =
-		 * super.getFeatureReader(query, transaction); try { return new
-		 * ForceCoordinateSystemFeatureReader(reader,
-		 * AbstractCiteDataTest.FORCED_WGS84); } catch (SchemaException e) {
-		 * throw new DataSourceException(e.getMessage(), e); } }
-		 */
-	}
+//	private static class ForceWGS84PropertyDataStore extends PropertyDataStore {
+//		/**
+//		 * Creates a new ForceWGS84PropertyDataStore object.
+//		 * 
+//		 * @param dir
+//		 *            DOCUMENT ME!
+//		 */
+//		public ForceWGS84PropertyDataStore(File dir) {
+//			super(dir);
+//		}
+//
+//		/**
+//		 * DOCUMENT ME!
+//		 * 
+//		 * @param typeName
+//		 *            DOCUMENT ME!
+//		 * 
+//		 * @return DOCUMENT ME!
+//		 * 
+//		 * @throws IOException
+//		 *             DOCUMENT ME!
+//		 * @throws DataSourceException
+//		 *             DOCUMENT ME!
+//		 */
+//		public FeatureType getSchema(String typeName) throws IOException {
+//			FeatureType schema = super.getSchema(typeName);
+//
+//			try {
+//				return DataUtilities.createSubType(schema, null,
+//						DefaultGeographicCRS.WGS84);
+//			} catch (SchemaException e) {
+//				throw new DataSourceException(e.getMessage(), e);
+//			}
+//		}
+//
+//		/**
+//		 * DOCUMENT ME!
+//		 */
+//
+//		/*
+//		 * public FeatureReader getFeatureReader(Query query, Transaction
+//		 * transaction) throws IOException { FeatureReader reader =
+//		 * super.getFeatureReader(query, transaction); try { return new
+//		 * ForceCoordinateSystemFeatureReader(reader,
+//		 * AbstractCiteDataTest.FORCED_WGS84); } catch (SchemaException e) {
+//		 * throw new DataSourceException(e.getMessage(), e); } }
+//		 */
+//	}
 }

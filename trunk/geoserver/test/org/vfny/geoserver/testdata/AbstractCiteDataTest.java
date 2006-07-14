@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.property.PropertyDataStore;
+//import org.geotools.data.property.PropertyDataStore;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -117,7 +117,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
     private File tempDir;
 
     /** the DataStore instance that provides cite test data */
-    private PropertyDataStore propsDS;
+//    private PropertyDataStore propsDS;
 
     /**
      * Creates a new CiteTestData object.
@@ -153,15 +153,15 @@ public abstract class AbstractCiteDataTest extends TestCase {
      *
      * @throws IOException DOCUMENT ME!
      */
-    public DataStore getCiteDataStore() throws IOException {
-        if (this.propsDS == null) {
-            writeTempFiles();
-            this.propsDS = new ForceWGS84PropertyDataStore(this.tempDir);
-            assertContainsCiteTypes(this.propsDS);
-        }
-
-        return this.propsDS;
-    }
+//    public DataStore getCiteDataStore() throws IOException {
+//        if (this.propsDS == null) {
+//            writeTempFiles();
+//            this.propsDS = new ForceWGS84PropertyDataStore(this.tempDir);
+//            assertContainsCiteTypes(this.propsDS);
+//        }
+//
+//        return this.propsDS;
+//    }
 
     /**
      * DOCUMENT ME!
@@ -404,51 +404,51 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * @author Gabriel Roldan, Axios Engineering
      * @version $Id$
      */
-    private static class ForceWGS84PropertyDataStore extends PropertyDataStore {
-        /**
-         * Creates a new ForceWGS84PropertyDataStore object.
-         *
-         * @param dir DOCUMENT ME!
-         */
-        public ForceWGS84PropertyDataStore(File dir) {
-            super(dir);
-        }
-
-        /**
-         * DOCUMENT ME!
-         *
-         * @param typeName DOCUMENT ME!
-         *
-         * @return DOCUMENT ME!
-         *
-         * @throws IOException DOCUMENT ME!
-         * @throws DataSourceException DOCUMENT ME!
-         */
-        public FeatureType getSchema(String typeName) throws IOException {
-            FeatureType schema = super.getSchema(typeName);
-
-            try {
-                return DataUtilities.createSubType(schema, null, FORCED_WGS84);
-            } catch (SchemaException e) {
-                throw new DataSourceException(e.getMessage(), e);
-            }
-        }
-
-        /**
-         * DOCUMENT ME!
-         */
-
-        /*
-           public FeatureReader getFeatureReader(Query query,
-               Transaction transaction) throws IOException {
-               FeatureReader reader = super.getFeatureReader(query, transaction);
-               try {
-                   return new ForceCoordinateSystemFeatureReader(reader,
-                       AbstractCiteDataTest.FORCED_WGS84);
-               } catch (SchemaException e) {
-                   throw new DataSourceException(e.getMessage(), e);
-               }
-           }
-         */
-    }
+//    private static class ForceWGS84PropertyDataStore extends PropertyDataStore {
+//        /**
+//         * Creates a new ForceWGS84PropertyDataStore object.
+//         *
+//         * @param dir DOCUMENT ME!
+//         */
+//        public ForceWGS84PropertyDataStore(File dir) {
+//            super(dir);
+//        }
+//
+//        /**
+//         * DOCUMENT ME!
+//         *
+//         * @param typeName DOCUMENT ME!
+//         *
+//         * @return DOCUMENT ME!
+//         *
+//         * @throws IOException DOCUMENT ME!
+//         * @throws DataSourceException DOCUMENT ME!
+//         */
+//        public FeatureType getSchema(String typeName) throws IOException {
+//            FeatureType schema = super.getSchema(typeName);
+//
+//            try {
+//                return DataUtilities.createSubType(schema, null, FORCED_WGS84);
+//            } catch (SchemaException e) {
+//                throw new DataSourceException(e.getMessage(), e);
+//            }
+//        }
+//
+//        /**
+//         * DOCUMENT ME!
+//         */
+//
+//        /*
+//           public FeatureReader getFeatureReader(Query query,
+//               Transaction transaction) throws IOException {
+//               FeatureReader reader = super.getFeatureReader(query, transaction);
+//               try {
+//                   return new ForceCoordinateSystemFeatureReader(reader,
+//                       AbstractCiteDataTest.FORCED_WGS84);
+//               } catch (SchemaException e) {
+//                   throw new DataSourceException(e.getMessage(), e);
+//               }
+//           }
+//         */
+//    }
 }

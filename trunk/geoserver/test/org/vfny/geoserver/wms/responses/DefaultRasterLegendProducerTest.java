@@ -117,7 +117,7 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
             + multipleRulesStyle.getName());
 
         GetLegendGraphicRequest req = new GetLegendGraphicRequest();
-        req.setLayer(getCiteDataStore().getSchema(ROAD_SEGMENTS_TYPE));
+//        req.setLayer(getCiteDataStore().getSchema(ROAD_SEGMENTS_TYPE));
         req.setStyle(multipleRulesStyle);
         req.setRule(rule);
 
@@ -150,7 +150,7 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
         Style style = createSampleStyleWithScale();
 
         GetLegendGraphicRequest req = new GetLegendGraphicRequest();
-        req.setLayer(getCiteDataStore().getSchema(BUILDINGS_TYPE));
+//        req.setLayer(getCiteDataStore().getSchema(BUILDINGS_TYPE));
         req.setStyle(style);
 
         final int HEIGHT_HINT = 30;
@@ -224,9 +224,9 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
      */
     private BufferedImage testProduceLegendGraphic(String citeTypeName,
         int ruleCount) throws Exception {
-        FeatureType layer = getCiteDataStore().getSchema(citeTypeName);
+//        FeatureType layer = getCiteDataStore().getSchema(citeTypeName);
         GetLegendGraphicRequest req = new GetLegendGraphicRequest();
-        req.setLayer(layer);
+//        req.setLayer(layer);
         req.setStyle(getDefaultStyle(citeTypeName));
 
         final int HEIGHT_HINT = 30;
