@@ -10,6 +10,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -68,7 +69,7 @@ public class DataDataStoresSelectForm extends ActionForm {
         Locale locale = (Locale) request.getLocale();
         //MessageResources messages = servlet.getResources();
         //TODO: not sure about this, changed for struts 1.2.8 upgrade
-        MessageResources messages = servlet.getInternal();
+        MessageResources messages = (MessageResources) request.getAttribute(Globals.MESSAGES_KEY);
         String EDIT = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
         String DELETE = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
         
