@@ -1,0 +1,13 @@
+<project>
+	<target name="config">
+		<available file="${basedir}/${configId}.zip" property="configIsAvailable"/>
+		<fail message="Unable to obtain configuration file: ${basedir}/${configId}.zip" unless="configIsAvailable"/>
+		<unzip src="${basedir}/${configId}.zip" dest="${webappSourceDirectory}"/>
+	</target>
+
+	<target name="clean">
+		<delete file="${webappSourceDirectory}/WEB-INF/catalog.xml"/>
+		<delete file="${webappSourceDirectory}/WEB-INF/services.xml"/>
+		<delete dir="${webappSourceDirectory}/data"/>
+	</target>
+</project>
