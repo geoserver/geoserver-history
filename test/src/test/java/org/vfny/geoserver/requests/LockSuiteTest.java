@@ -9,10 +9,10 @@ import java.util.logging.Logger;
 
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
-import org.geotools.filter.AttributeExpression;
+import org.geotools.filter.expression.AttributeExpression;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.GeometryFilter;
-import org.geotools.filter.LiteralExpression;
+import org.geotools.filter.expression.LiteralExpression;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.testdata.MockUtils;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
