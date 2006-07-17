@@ -1,0 +1,23 @@
+<projectDescription>
+  <name>test</name>
+  <comment/>
+  <projects>
+    <project>data</project>
+    <project>wfs</project>
+    <project>wcs</project>
+    <project>main</project>
+    <project>platform</project>
+    <project>web</project>
+    <project>validation</project>
+    <project>wms</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+      <arguments/>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
