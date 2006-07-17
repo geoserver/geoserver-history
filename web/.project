@@ -2,13 +2,13 @@
   <name>web</name>
   <comment/>
   <projects>
-    <project>main</project>
-    <project>wms</project>
     <project>validation</project>
-    <project>wfs</project>
-    <project>data</project>
-    <project>platform</project>
+    <project>main</project>
     <project>wcs</project>
+    <project>platform</project>
+    <project>wfs</project>
+    <project>wms</project>
+    <project>data</project>
   </projects>
   <buildSpec>
     <buildCommand>
