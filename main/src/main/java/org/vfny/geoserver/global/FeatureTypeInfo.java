@@ -105,7 +105,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     /** typeName as defined by gt2 DataStore */
     private String typeName;
     
-    /**
+	/**
+	 * 
+	 */
+	private String wmsPath;
+	
+	/**
      * Directory where featureType is loaded from.
      * 
      * This may contain metadata files.
@@ -233,6 +238,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         keywords = dto.getKeywords();
         latLongBBox = dto.getLatLongBBox();
         typeName = dto.getName();
+        wmsPath = dto.getWmsPath();
         numDecimals = dto.getNumDecimals();
         List tmp = dto.getSchemaAttributes();
         schema = new LinkedList();
@@ -282,6 +288,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         dto.setKeywords(keywords);
         dto.setLatLongBBox(latLongBBox);
         dto.setName(typeName);
+        dto.setWmsPath(wmsPath);
         dto.setNumDecimals(numDecimals);
 
         List tmp = new LinkedList();
@@ -1104,6 +1111,17 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     	}
     	return result;
     }
+
+	public String getDirName() {
+		return dirName;
+	}
+
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
+	}
 
     /**
      * This value is added the headers of generated maps, marking them as being both

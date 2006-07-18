@@ -312,7 +312,7 @@
             <td><bean:message key="label.max"/>:<html:text size="2" property='<%= "attributes[" + index + "].maxOccurs"%>'/></td>
             <td width=16>
               <% if (first == false) { %>
-          	  <html:image src="../../../images/up.png" 
+          	  <html:image src="/geoserver/WEB-INF/images/up.png" 
           	  	          titleKey="type.title.up" 
           	  	          property="action" 
           	  	          value="<%= "up_"+ index%>"/>
@@ -321,14 +321,14 @@
           	</td>
           	<td width=16>
           	  <% if (attributesSize-1 != index.intValue()) { %>
-          	  <html:image src="../../../images/down.png" 
+          	  <html:image src="/geoserver/WEB-INF/images/down.png" 
           	              titleKey="type.title.down" 
           	              property="action" 
           	              value="<%= "down_"+ index%>"/>
           	  <% } %>
           	</td> 
           	<td width=16>
-          	  <html:image src="../../../images/delete.png" 
+          	  <html:image src="/geoserver/WEB-INF/images/delete.png" 
           	  	          titleKey="type.title.delete" 
           	  	          property="action" 
           	  	          value="<%= "delete_"+ index%>"/>

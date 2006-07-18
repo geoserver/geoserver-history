@@ -4,10 +4,10 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.factory.FactoryFinder;
+import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
@@ -29,10 +29,11 @@ import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -40,8 +41,6 @@ import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
-
-import java.text.SimpleDateFormat;
 
 /**
  * A GetMapResponse object is responsible of generating a map based on a GetMap
@@ -109,41 +108,45 @@ public class GetMapResponse implements Response {
 
         this.delegate = getDelegate(outputFormat, wms);
 
-        final FeatureTypeInfo[] layers = request.getLayers();
+        final MapLayerInfo[] layers = request.getLayers();
         final Style[] styles = (Style[])request.getStyles().toArray(new Style[]{});
 
         //JD:make instance variable in order to release resources later
         //final WMSMapContext map = new WMSMapContext();
         map = new WMSMapContext(request);
         
-        //DJB: the WMS spec says that the request must not be 0 area
-        //     if it is, throw a service exception!
-        Envelope env = request.getBbox();
-        if (env.isNull() || (env.getWidth() <=0)|| (env.getHeight() <=0)){
-        	throw new WmsException("The request bounding box has zero area: " + env);
-        }
+		// DJB: the WMS spec says that the request must not be 0 area
+		// if it is, throw a service exception!
+		final Envelope env = request.getBbox();
+		if (env.isNull() || (env.getWidth() <= 0) || (env.getHeight() <= 0)) {
+			throw new WmsException(new StringBuffer(
+					"The request bounding box has zero area: ").append(env)
+					.toString());
+		}
 
-        // DJB DONE: replace by setAreaOfInterest(Envelope,
-        // CoordinateReferenceSystem)
-        // with the user supplied SRS parameter
-        
-        //if there's a crs in the request, use that.  If not, assume its 4326
-        
-        CoordinateReferenceSystem mapcrs = request.getCrs();
-        
-        //DJB: added this to be nicer about the "NONE" srs.
-        if (mapcrs !=null)
-        	map.setAreaOfInterest(request.getBbox(),mapcrs);
-        else
-        	map.setAreaOfInterest(request.getBbox());
-        map.setMapWidth(request.getWidth());
-        map.setMapHeight(request.getHeight());
-        map.setBgColor(request.getBgColor());
-        map.setTransparent(request.isTransparent());
+		// DJB DONE: replace by setAreaOfInterest(Envelope,
+		// CoordinateReferenceSystem)
+		// with the user supplied SRS parameter
 
-        LOGGER.fine("setting up map");
+		// if there's a crs in the request, use that. If not, assume its 4326
+		final CoordinateReferenceSystem mapcrs = request.getCrs();
 
-         
+		// DJB: added this to be nicer about the "NONE" srs.
+		if (mapcrs != null)
+			map.setAreaOfInterest(env, mapcrs);
+		else
+			map.setAreaOfInterest(env);
+		map.setMapWidth(request.getWidth());
+		map.setMapHeight(request.getHeight());
+		map.setBgColor(request.getBgColor());
+		map.setTransparent(request.isTransparent());
+
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine("setting up map");
+		}
+
+		try { // mapcontext can leak memory -- we make sure we done (see
+			// finally block)
         MapLayer layer;
         
         // track the external caching strategy for any map layers
@@ -151,10 +154,18 @@ public class GetMapResponse implements Response {
         int maxAge = Integer.MAX_VALUE;
 
         FeatureSource source;
-        for (int i = 0; i < layers.length; i++) {
+			AbstractGridCoverage2DReader reader;
+			Style style;
+			Filter definitionFilter;
+			Query definitionQuery;
+			final int length = layers.length;
+			for (int i = 0; i < length; i++) {
+				style = styles[i];
+
+				if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
         	if (cachingPossible) {
-        		if (layers[i].isCachingEnabled()) {
-        			int nma = Integer.parseInt(layers[i].getCacheMaxAge());
+        		if (layers[i].getFeature().isCachingEnabled()) {
+        			int nma = Integer.parseInt(layers[i].getFeature().getCacheMaxAge());
         			//suppose the map contains multiple cachable layers...we can only cache the combined map for the
         			//time specified by the shortest-cached layer.
         			if (nma < maxAge)
@@ -164,38 +175,116 @@ public class GetMapResponse implements Response {
         			cachingPossible = false;
         		}
         	}
-            Style style = styles[i];
+					// /////////////////////////////////////////////////////////
+					//
+					// Adding a feature layer
+					//
+					// /////////////////////////////////////////////////////////
+					try {
+						source = layers[i].getFeature().getFeatureSource();
+						// ///
+						//
+						// Do we have something to load?
+						// We just need to check the bbox of the layer.
+						// //
+						if (!layers[i].getBoundingBox().intersects(env))
+							continue;
 
-            try {
-                source = layers[i].getFeatureSource();
-            } catch (IOException exp) {
-                LOGGER.log(Level.SEVERE,
-                    "Getting feature source: " + exp.getMessage(), exp);
-                throw new WmsException(null,
-                    "Internal error : " + exp.getMessage());
-            }
+					} catch (IOException exp) {
+						if (LOGGER.isLoggable(Level.SEVERE)) {
+							LOGGER.log(Level.SEVERE, new StringBuffer(
+									"Getting feature source: ").append(
+									exp.getMessage()).toString(), exp);
+						}
+						throw new WmsException(null, new StringBuffer(
+								"Internal error : ").append(exp.getMessage())
+								.toString());
+					}
 
-            layer = new DefaultMapLayer(source, style);
+					layer = new DefaultMapLayer(source, style);
+					layer.setTitle(layers[i].getName());
 
-            Filter definitionFilter = layers[i].getDefinitionQuery();
+					definitionFilter = layers[i].getFeature()
+							.getDefinitionQuery();
 
-            if (definitionFilter != null) {
-                Query definitionQuery = new DefaultQuery(source.getSchema()
-                                                               .getTypeName(),
-                        definitionFilter);
-                layer.setQuery(definitionQuery);
-            }
+					if (definitionFilter != null) {
+						definitionQuery = new DefaultQuery(source.getSchema()
+								.getTypeName(), definitionFilter);
+						layer.setQuery(definitionQuery);
+					}
 
-            map.addLayer(layer);// mapcontext can leak memory -- we make sure we done (see finally block)
-        }
+					map.addLayer(layer);
+				} else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {
+					// /////////////////////////////////////////////////////////
+					//
+					// Adding a coverage layer
+					//
+					// /////////////////////////////////////////////////////////
+					try {
+						
+						reader = (AbstractGridCoverage2DReader) layers[i]
+								.getReader(req.getHttpServletRequest(),
+										CoverageUtils.convertEnvelope(env,
+												mapcrs), new Rectangle(map
+												.getMapWidth(), map
+												.getMapHeight()));
 
-        this.delegate.produceMap(map);
-        if (cachingPossible) {
-	    responseHeaders.put("Cache-Control", "max-age=" + maxAge);
+					} catch (IOException exp) {
+						if (LOGGER.isLoggable(Level.SEVERE)) {
+							LOGGER.log(Level.SEVERE, new StringBuffer(
+									"Getting feature source: ").append(
+									exp.getMessage()).toString(), exp);
+						}
+						throw new WmsException(null, new StringBuffer(
+								"Internal error : ").append(exp.getMessage())
+								.toString());
+					}
+
+					if (reader != null)
+						map.addLayer(reader, style);
+				}
+			}
+			// /////////////////////////////////////////////////////////
+			//
+			// Producing the map in the requested format.
+			//
+			// /////////////////////////////////////////////////////////
+			this.delegate.produceMap(map);
+			if (cachingPossible)
+				responseHeaders.put("Cache-Control: max-age", maxAge + "s");
+		} catch (ClassCastException e) {
+			if (LOGGER.isLoggable(Level.WARNING)) {
+				LOGGER.log(Level.SEVERE, new StringBuffer(
+						"Getting feature source: ").append(e.getMessage())
+						.toString(), e);
+			}
+			throw new WmsException(e, new StringBuffer("Internal error : ")
+					.append(e.getMessage()).toString(), "");
+		} finally {
+			// clean
+			try {
+				map.clearLayerList();
+			} catch (Exception e) // we dont want to propogate a new error
+			{
+				if (LOGGER.isLoggable(Level.SEVERE)) {
+					LOGGER.log(Level.SEVERE, new StringBuffer(
+							"Getting feature source: ").append(e.getMessage())
+							.toString(), e);
+				}
+			}
+			//
+			// // call the Garbage Collector six times to be sure he hears us.
+			// Runtime.getRuntime().gc();
+			// Runtime.getRuntime().gc();
+			// Runtime.getRuntime().gc();
+			// Runtime.getRuntime().gc();
+			// Runtime.getRuntime().gc();
+			// Runtime.getRuntime().gc();
+
+		}
 	}
-    }
 
-    /**
+	/**
      * asks the internal GetMapDelegate for the MIME type of the map that it
      * will generate or is ready to, and returns it
      *
@@ -219,7 +308,9 @@ public class GetMapResponse implements Response {
      * @return DOCUMENT ME!
      */
     public String getContentEncoding() {
-        LOGGER.finer("returning content encoding null");
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer("returning content encoding null");
+		}
 
         return null;
     }
@@ -232,7 +323,9 @@ public class GetMapResponse implements Response {
      */
     public void abort(Service gs) {
         if (this.delegate != null) {
-            LOGGER.fine("asking delegate for aborting the process");
+			if (LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.fine("asking delegate for aborting the process");
+			}
             this.delegate.abort();
         }
     }
@@ -259,21 +352,25 @@ public class GetMapResponse implements Response {
 			        "No GetMapDelegate is setted, make sure you have called execute and it has succeed");
 			}
 
-			LOGGER.finer("asking delegate for write to " + out);
-			this.delegate.writeTo(out);
-        }
-        finally {
-        	try{
-        		map.clearLayerList();
-        	}
-        	catch(Exception e) // we dont want to propogate a new error
-			{
-        		e.printStackTrace();
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer(new StringBuffer("asking delegate for write to ")
+						.append(out).toString());
 			}
-        }
-    	
-        
-    }
+			this.delegate.writeTo(out);
+		} finally {
+			try {
+				map.clearLayerList();
+			} catch (Exception e) // we dont want to propogate a new error
+			{
+				if (LOGGER.isLoggable(Level.SEVERE)) {
+					LOGGER.log(Level.SEVERE, new StringBuffer(
+							"Getting feature source: ").append(e.getMessage())
+							.toString(), e);
+				}
+			}
+		}
+
+	}
 
     /**
      * Creates a GetMapDelegate specialized in generating the requested map
@@ -334,6 +431,11 @@ public class GetMapResponse implements Response {
 			formats.addAll(producer.getSupportedFormats());
 		}
 		return formats;
+	}
+
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

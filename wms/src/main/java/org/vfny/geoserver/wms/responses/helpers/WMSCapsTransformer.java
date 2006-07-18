@@ -5,11 +5,13 @@
 package org.vfny.geoserver.wms.responses.helpers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.transform.OutputKeys;
@@ -17,15 +19,24 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerIdentityImpl;
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.metadata.Identifier;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.crs.DerivedCRS;
+import org.opengis.referencing.crs.ProjectedCRS;
+import org.opengis.spatialschema.geometry.MismatchedDimensionException;
+import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.LegendURL;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
@@ -164,7 +175,9 @@ public class WMSCapsTransformer extends TransformerBase {
             }
 
             this.request = (CapabilitiesRequest) o;
-            LOGGER.fine("producing a capabilities document for " + request);
+			if (LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.fine(new StringBuffer("producing a capabilities document for ").append(request).toString());
+			}
             start("WMT_MS_Capabilities", wmsVersion);
             handleService();
             handleCapability();
@@ -390,21 +403,20 @@ public class WMSCapsTransformer extends TransformerBase {
 
             Data catalog = wms.getData();
             Collection ftypes = catalog.getFeatureTypeInfos().values();
+			Collection coverages = catalog.getCoverageInfos().values();
             FeatureTypeInfo layer;
 
             element("Title", wms.getTitle());
             element("Abstract", wms.getAbstract());
 
-            handleRootSRSAndBbox(ftypes);
+			handleRootSRSAndBbox(ftypes, MapLayerInfo.TYPE_VECTOR);
 
             //now encode each layer individually
-            for (Iterator it = ftypes.iterator(); it.hasNext();) {
-                layer = (FeatureTypeInfo) it.next();
+			LayerTree featuresLayerTree = new LayerTree(ftypes);
+			handleFeaturesTree(featuresLayerTree);
 
-                if (layer.isEnabled()) {
-                    handleFeatureType(layer);
-                }
-            }
+			LayerTree coveragesLayerTree = new LayerTree(coverages);
+			handleCoveragesTree(coveragesLayerTree);
 
             end("Layer");
         }
@@ -426,13 +438,16 @@ public class WMSCapsTransformer extends TransformerBase {
          * @task TODO: figure out how to incorporate multiple SRS using the
          *       reprojection facilities from gt2
          */
-        private void handleRootSRSAndBbox(Collection ftypes) {
-            FeatureTypeInfo layer;
+		private void handleRootSRSAndBbox(Collection ftypes, int TYPE) {
             String commonSRS = "";
             boolean isCommonSRS = true;
             Envelope latlonBbox = new Envelope();
             Envelope layerBbox = null;
-            LOGGER.finer("Collecting summarized latlonbbox and common SRS...");
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer("Collecting summarized latlonbbox and common SRS...");
+			}
+			if (TYPE == MapLayerInfo.TYPE_VECTOR) {
+				FeatureTypeInfo layer;
 
             for (Iterator it = ftypes.iterator(); it.hasNext();) {
                 layer = (FeatureTypeInfo) it.next();
@@ -499,7 +514,106 @@ public class WMSCapsTransformer extends TransformerBase {
 
             LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
             handleLatLonBBox(latlonBbox);
-        }
+			} else if (TYPE == MapLayerInfo.TYPE_RASTER) {
+				CoverageInfo layer;
+
+				for (Iterator it = ftypes.iterator(); it.hasNext();) {
+					layer = (CoverageInfo) it.next();
+
+					if (layer.isEnabled()) {
+						final GeneralEnvelope bbox = layer.getWGS84LonLatEnvelope();
+						layerBbox = new Envelope(bbox.getLowerCorner()
+								.getOrdinate(0), bbox.getUpperCorner()
+								.getOrdinate(0), bbox.getLowerCorner()
+								.getOrdinate(1), bbox.getUpperCorner()
+								.getOrdinate(1));
+
+						latlonBbox.expandToInclude(layerBbox);
+
+						String layerSRS = layer.getSrsName();
+
+						if ("".equals(commonSRS)) {
+							commonSRS = layerSRS;
+						} else if (!commonSRS.equals(layerSRS)) {
+							isCommonSRS = false;
+						}
+					}
+				}
+
+				if (isCommonSRS) {
+					//commonSRS = EPSG + commonSRS;
+					if (LOGGER.isLoggable(Level.FINE)) {
+						LOGGER.fine(new StringBuffer("Common SRS is ").append(commonSRS).toString());
+					}
+				} else {
+					commonSRS = "";
+					if (LOGGER.isLoggable(Level.FINE)) {
+						LOGGER.fine("No common SRS, don't forget to incorporate reprojection support...");
+					}
+				}
+
+				if (!(commonSRS.equals(""))) {
+					comment("common SRS:");
+					element("SRS", commonSRS);
+				}
+
+				// okay - we've sent out the commonSRS, if it exists.
+
+				comment("All supported EPSG projections:");
+
+				try {
+					ArrayList SRSs = new ArrayList();
+					for (Iterator it = ftypes.iterator(); it.hasNext();) {
+						layer = (CoverageInfo) it.next();
+
+						if (layer.isEnabled()) {
+							List s = layer.getRequestCRSs();
+							Iterator it_1 = s.iterator();
+							while (it_1.hasNext()) {
+								// do not output srs if it was output as common
+								// srs
+								// note, if commonSRS is "", this will not match
+								String currentSRS = it_1.next().toString();
+								if (!currentSRS.equals(commonSRS)
+										&& !SRSs.contains(currentSRS)) {
+									SRSs.add(currentSRS);
+									element("SRS", currentSRS);
+								}
+							}
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
+				handleLatLonBBox(latlonBbox);
+			}
+		}
+
+		/**
+		 * @param featuresLayerTree
+		 */
+		private void handleFeaturesTree(LayerTree featuresLayerTree) {
+			final Collection data = featuresLayerTree.getData();
+			final Collection childrens = featuresLayerTree.getChildrens();
+
+			for (Iterator it = data.iterator(); it.hasNext();) {
+				FeatureTypeInfo fLayer = (FeatureTypeInfo) it.next();
+
+				if (fLayer.isEnabled())
+					handleFeatureType(fLayer);
+			}
+
+			for (Iterator it = childrens.iterator(); it.hasNext();) {
+				LayerTree layerTree = (LayerTree) it.next();
+				start("Layer");
+				element("Name", layerTree.getName());
+				element("Title", layerTree.getName());
+				handleFeaturesTree(layerTree);
+				end("Layer");
+			}
+		}
 
         /**
          * Calls super.handleFeatureType to add common FeatureType content such
@@ -553,6 +667,7 @@ public class WMSCapsTransformer extends TransformerBase {
             }
 
             handleLatLonBBox(bbox);
+			handleBBox(bbox, EPSG + ftype.getSRS());
 
             //add the layer style
             start("Style");
@@ -566,6 +681,114 @@ public class WMSCapsTransformer extends TransformerBase {
 
             end("Layer");
         }
+
+		/**
+		 * @param coveragesLayerTree
+		 */
+		private void handleCoveragesTree(LayerTree coveragesLayerTree) {
+			final Collection data = coveragesLayerTree.getData();
+			final Collection childrens = coveragesLayerTree.getChildrens();
+
+			for (Iterator it = data.iterator(); it.hasNext();) {
+				CoverageInfo cLayer = (CoverageInfo) it.next();
+
+				if (cLayer.isEnabled())
+					handleCoverage(cLayer);
+			}
+
+			for (Iterator it = childrens.iterator(); it.hasNext();) {
+				LayerTree layerTree = (LayerTree) it.next();
+				start("Layer");
+				element("Name", layerTree.getName());
+				element("Title", layerTree.getName());
+				handleCoveragesTree(layerTree);
+				end("Layer");
+			}
+		}
+
+		protected void handleCoverage(CoverageInfo coverage) {
+			// HACK: by now all our layers are queryable, since they reference
+			// only featuretypes managed by this server
+			AttributesImpl qatts = new AttributesImpl();
+			qatts.addAttribute("", "queryable", "queryable", "", "0");
+			// qatts.addAttribute("", "opaque", "opaque", "", "1");
+			// qatts.addAttribute("", "cascaded", "cascaded", "", "1");
+			start("Layer", qatts);
+			element("Name", coverage.getName());
+			element("Title", coverage.getLabel());
+			element("Abstract", coverage.getDescription());
+
+			handleKeywordList(coverage.getKeywords());
+
+            String desc = "WKT definition of this CRS:\n" + coverage.getSrsWKT();
+            comment(desc);
+			/**
+			 * TODO REVISIT: should getSRS() return the full URL?
+			 */
+			String authority = "";
+            CoordinateReferenceSystem crs = coverage.getCrs();
+            if (crs != null && !crs.getIdentifiers().isEmpty()) {
+				Identifier[] idents = (Identifier[]) crs.getIdentifiers().toArray(new Identifier[crs.getIdentifiers().size()]);
+				authority = idents[0].toString();
+			} else if (crs != null && crs instanceof DerivedCRS){
+                final CoordinateReferenceSystem baseCRS = ((DerivedCRS) crs).getBaseCRS();
+                if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
+                    authority = ((Identifier[]) baseCRS.getIdentifiers().toArray(new Identifier[baseCRS.getIdentifiers().size()]))[0].toString();
+                else
+                    authority = "UNKNOWN";
+            } else if (crs != null && crs instanceof ProjectedCRS){
+                final CoordinateReferenceSystem baseCRS = ((ProjectedCRS) crs).getBaseCRS();
+                if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
+                    authority = ((Identifier[]) baseCRS.getIdentifiers().toArray(new Identifier[baseCRS.getIdentifiers().size()]))[0].toString();
+                else
+                    authority = "UNKNOWN";
+            } else
+                authority = "UNKNOWN";
+
+			element("SRS", authority);
+
+			GeneralEnvelope bounds = null;
+            GeneralEnvelope llBounds = null;
+			try {
+                // We need LON/LAT Envelopes
+                // TODO check for BBOX, maybe it should be expressed in original CRS coords!!
+                final GeneralEnvelope latLonEnvelope = coverage.getWGS84LonLatEnvelope();
+                final CoordinateReferenceSystem llCRS = latLonEnvelope.getCoordinateReferenceSystem();
+				bounds = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS, coverage.getEnvelope());
+                llBounds = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS, latLonEnvelope);
+			} catch (MismatchedDimensionException e) {
+				// TODO Handle this Exception
+			} catch (IndexOutOfBoundsException e) {
+				// TODO Handle this Exception
+            } catch (FactoryException e) {
+                // TODO Auto-generated catch block
+            }
+
+			final Envelope bbox = new Envelope(bounds.getLowerCorner()
+					.getOrdinate(0), bounds.getUpperCorner().getOrdinate(0),
+					bounds.getLowerCorner().getOrdinate(1), bounds
+							.getUpperCorner().getOrdinate(1));
+
+            final Envelope llBbox = new Envelope(llBounds.getLowerCorner()
+                    .getOrdinate(0), llBounds.getUpperCorner().getOrdinate(0),
+                    llBounds.getLowerCorner().getOrdinate(1), llBounds
+                            .getUpperCorner().getOrdinate(1));
+
+			handleLatLonBBox(llBbox);
+			handleBBox(bbox, authority);
+
+			// add the layer style
+			start("Style");
+
+			Style cvStyle = coverage.getDefaultStyle();
+			element("Name", cvStyle.getName());
+			element("Title", cvStyle.getTitle());
+			element("Abstract", cvStyle.getAbstract());
+			handleLegendURL(coverage);
+			end("Style");
+
+			end("Layer");
+		}
 
         /**
          * Writes layer LegendURL pointing to the user supplied icon URL, if
@@ -584,11 +807,20 @@ public class WMSCapsTransformer extends TransformerBase {
          * @task TODO: figure out how to unhack legend parameters such as
          *       WIDTH, HEIGHT and FORMAT
          */
-        protected void handleLegendURL(FeatureTypeInfo ft) {
-            LegendURL legend = ft.getLegendURL();
+		protected void handleLegendURL(Object layer) {
+			LegendURL legend = null;
+			String layerName = null;
 
+			if (layer instanceof FeatureTypeInfo) {
+				legend = ((FeatureTypeInfo) layer).getLegendURL();
+				layerName = ((FeatureTypeInfo) layer).getName();
+			} else if (layer instanceof CoverageInfo) {
+				layerName = ((CoverageInfo) layer).getName();
+			}
             if (legend != null) {
-                LOGGER.config("using user supplied legend URL");
+				if (LOGGER.isLoggable(Level.CONFIG)) {
+					LOGGER.config("using user supplied legend URL");
+				}
 
                 AttributesImpl attrs = new AttributesImpl();
                 attrs.addAttribute("", "width", "width", "",
@@ -614,13 +846,19 @@ public class WMSCapsTransformer extends TransformerBase {
                 String defaultFormat = GetLegendGraphicRequest.DEFAULT_FORMAT;
 
                 if (!GetLegendGraphicResponse.supportsFormat(defaultFormat)) {
-                    LOGGER.warning("Default legend format (" + defaultFormat
-                        + ")is not supported (jai not available?), can't add LegendURL element");
+					if (LOGGER.isLoggable(Level.WARNING)) {
+						LOGGER.warning(new StringBuffer("Default legend format (").
+							append(defaultFormat).
+							append(")is not supported (jai not available?), can't add LegendURL element").
+							toString());
+					}
 
-                    return;
+					return;
                 }
 
-                LOGGER.config("Adding GetLegendGraphic call as LegendURL");
+				if (LOGGER.isLoggable(Level.CONFIG)) {
+					LOGGER.config("Adding GetLegendGraphic call as LegendURL");
+				}
 
                 AttributesImpl attrs = new AttributesImpl();
                 attrs.addAttribute("", "width", "width", "",
@@ -655,7 +893,7 @@ public class WMSCapsTransformer extends TransformerBase {
                 onlineResource.append("&HEIGHT=");
                 onlineResource.append(GetLegendGraphicRequest.DEFAULT_HEIGHT);
                 onlineResource.append("&LAYER=");
-                onlineResource.append(ft.getName());
+				onlineResource.append(layerName);
 
                 attrs.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
                     XLINK_NS);
@@ -708,7 +946,157 @@ public class WMSCapsTransformer extends TransformerBase {
     			}
              }
         }
-        
-    }
+
+		/**
+		 * Encodes a BoundingBox for the given Envelope.
+		 * 
+		 * @param bbox
+		 */
+		private void handleBBox(Envelope bbox, String SRS) {
+			String minx = String.valueOf(bbox.getMinX());
+			String miny = String.valueOf(bbox.getMinY());
+			String maxx = String.valueOf(bbox.getMaxX());
+			String maxy = String.valueOf(bbox.getMaxY());
+
+			AttributesImpl bboxAtts = new AttributesImpl();
+			bboxAtts.addAttribute("", "SRS", "SRS", "", SRS);
+			bboxAtts.addAttribute("", "minx", "minx", "", minx);
+			bboxAtts.addAttribute("", "miny", "miny", "", miny);
+			bboxAtts.addAttribute("", "maxx", "maxx", "", maxx);
+			bboxAtts.addAttribute("", "maxy", "maxy", "", maxy);
+
+			element("BoundingBox", null, bboxAtts);
+		}
+	}
 }
 
+/**
+ * A Class to manage the WMS Layer structure
+ * 
+ * @author fabiania
+ * 
+ * TODO To change the template for this generated type comment go to Window -
+ * Preferences - Java - Code Style - Code Templates
+ */
+class LayerTree {
+	private String name;
+
+	private Collection childrens;
+
+	private Collection data;
+
+	/**
+	 * @param name
+	 *            String
+	 */
+	public LayerTree(String name) {
+		this.name = name;
+		this.childrens = new ArrayList();
+		this.data = new ArrayList();
+	}
+
+	/**
+	 * @param c
+	 *            Collection
+	 */
+	public LayerTree(Collection c) {
+		this.name = "";
+		this.childrens = new ArrayList();
+		this.data = new ArrayList();
+
+		for (Iterator it = c.iterator(); it.hasNext();) {
+			Object element = it.next();
+
+			if (element instanceof CoverageInfo) {
+				CoverageInfo cLayer = (CoverageInfo) element;
+				if (cLayer.isEnabled()) {
+					String wmsPath = (cLayer.getWmsPath() != null
+							&& cLayer.getWmsPath().length() > 0 ? cLayer
+							.getWmsPath() : "/");
+					if (wmsPath.startsWith("/"))
+						wmsPath = wmsPath.substring(1, wmsPath.length());
+					String[] treeStructure = wmsPath.split("/");
+					addToNode(this, treeStructure, cLayer);
+				}
+			} else if (element instanceof FeatureTypeInfo) {
+				FeatureTypeInfo fLayer = (FeatureTypeInfo) element;
+				if (fLayer.isEnabled()) {
+					String wmsPath = (fLayer.getWmsPath() != null
+							&& fLayer.getWmsPath().length() > 0 ? fLayer
+							.getWmsPath() : "/");
+					if (wmsPath.startsWith("/"))
+						wmsPath = wmsPath.substring(1, wmsPath.length());
+					String[] treeStructure = wmsPath.split("/");
+					addToNode(this, treeStructure, fLayer);
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * @param tree
+	 * @param treeStructure
+	 * @param layer
+	 */
+	private void addToNode(LayerTree tree, String[] treeStructure,
+			CoverageInfo layer) {
+		final int length = treeStructure.length;
+		if (length == 0 || treeStructure[0].length() == 0) {
+			tree.data.add(layer);
+		} else {
+			LayerTree node = tree.getNode(treeStructure[0]);
+			if (node == null) {
+				node = new LayerTree(treeStructure[0]);
+				tree.childrens.add(node);
+			}
+			String[] subTreeStructure = new String[length - 1];
+			System.arraycopy(treeStructure, 1, subTreeStructure, 0, length - 1);
+			addToNode(node, subTreeStructure, layer);
+		}
+	}
+
+	private void addToNode(LayerTree tree, String[] treeStructure,
+			FeatureTypeInfo layer) {
+		final int length = treeStructure.length;
+		if (length == 0 || treeStructure[0].length() == 0) {
+			tree.data.add(layer);
+		} else {
+			LayerTree node = tree.getNode(treeStructure[0]);
+			if (node == null) {
+				node = new LayerTree(treeStructure[0]);
+				tree.childrens.add(node);
+			}
+			String[] subTreeStructure = new String[length - 1];
+			System.arraycopy(treeStructure, 1, subTreeStructure, 0, length - 1);
+			addToNode(node, subTreeStructure, layer);
+		}
+	}
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	public LayerTree getNode(String name) {
+		LayerTree node = null;
+		for (Iterator it = this.childrens.iterator(); it.hasNext();) {
+			LayerTree tmpNode = (LayerTree) it.next();
+			if (tmpNode.name.equals(name))
+				node = tmpNode;
+		}
+
+		return node;
+	}
+
+	public Collection getChildrens() {
+		return childrens;
+	}
+
+	public Collection getData() {
+		return data;
+	}
+
+	public String getName() {
+		return name;
+	}
+}

@@ -136,7 +136,7 @@ public class WMSCapabilitiesResponse implements Response {
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         if (rawResponse == null) {
-            throw new IllegalStateException("");
+			throw new IllegalStateException("No raw response presents!");
         }
 
         out.write(rawResponse);
@@ -150,4 +150,13 @@ public class WMSCapabilitiesResponse implements Response {
      */
     public void abort(Service gs) {
     }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		return null;
+	}
 }
