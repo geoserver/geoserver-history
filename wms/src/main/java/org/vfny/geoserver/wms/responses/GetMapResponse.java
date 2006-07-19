@@ -302,8 +302,11 @@ public class GetMapResponse implements Response {
 			
 		}
 		
-		throw new WmsException("There is no support for creating maps in "
-	                + outputFormat + " format", "InvalidFormat");
+		WmsException e = new WmsException(
+			"There is no support for creating maps in " + outputFormat + " format" 
+		);
+		e.setCode( "InvalidFormat" );
+		throw e;
 	}
 
     /**

@@ -80,6 +80,7 @@ public class WmsException extends ServiceException {
      */
     public WmsException(String message, String code) {
         super(message, code);
+        setCode( code );
 }
 
     /**
