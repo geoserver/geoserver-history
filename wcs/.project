@@ -2,9 +2,9 @@
   <name>wcs</name>
   <comment/>
   <projects>
-    <project>data</project>
     <project>platform</project>
     <project>main</project>
+    <project>data</project>
   </projects>
   <buildSpec>
     <buildCommand>

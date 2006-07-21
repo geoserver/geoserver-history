@@ -562,11 +562,11 @@ public class GeoServer extends GlobalLayerSupertype {
 		ImageIO.setUseCache(ImageIOCache.booleanValue());
 		
 		// Tile Scheduling
-		/*final TileScheduler scheduler = jaiDef.getTileScheduler();
-		scheduler.setParallelism(25);
-		scheduler.setPriority(7);
-		scheduler.setPrefetchParallelism(25);
-		scheduler.setPrefetchPriority(7);*/
+		final TileScheduler scheduler = jaiDef.getTileScheduler();
+		//scheduler.setParallelism(25);
+		scheduler.setPriority(10);
+		//scheduler.setPrefetchParallelism(25);
+		scheduler.setPrefetchPriority(10);
 	}
 	
 	/**
