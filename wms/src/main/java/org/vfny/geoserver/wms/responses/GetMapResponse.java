@@ -263,7 +263,7 @@ public class GetMapResponse implements Response {
 		} finally {
 			// clean
 			try {
-				//map.clearLayerList();
+//				map.clearLayerList();
 			} catch (Exception e) // we dont want to propogate a new error
 			{
 				if (LOGGER.isLoggable(Level.SEVERE)) {

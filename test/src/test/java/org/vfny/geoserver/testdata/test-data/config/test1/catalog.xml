@@ -51,6 +51,8 @@
 
 </datastores>
 
+<formats>
+</formats>
   
 <!-- Defines namespaces to be used by the datastores.
        -->

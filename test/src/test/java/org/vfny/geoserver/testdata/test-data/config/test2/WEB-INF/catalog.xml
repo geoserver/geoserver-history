@@ -26,6 +26,10 @@
       </connectionParams>
     </datastore> 
   </datastores>
+  
+  <formats>
+	</formats>
+
   <namespaces>
   	<namespace uri="http://www.opengis.net/cite/data" prefix="cdf"/>
 	<namespace uri="http://www.opengis.net/cite/geometry" prefix="cgf"/>

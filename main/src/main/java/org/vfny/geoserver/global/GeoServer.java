@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
+import java.awt.RenderingHints;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,6 +19,8 @@ import java.util.logging.StreamHandler;
 import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
 import javax.media.jai.RecyclingTileFactory;
+import javax.media.jai.TileFactory;
+import javax.media.jai.TileScheduler;
 import javax.servlet.ServletContext;
 
 import org.vfny.geoserver.global.dto.ContactDTO;
@@ -557,6 +560,13 @@ public class GeoServer extends GlobalLayerSupertype {
 		
 		// ImageIO Caching
 		ImageIO.setUseCache(ImageIOCache.booleanValue());
+		
+		// Tile Scheduling
+		/*final TileScheduler scheduler = jaiDef.getTileScheduler();
+		scheduler.setParallelism(25);
+		scheduler.setPriority(7);
+		scheduler.setPrefetchParallelism(25);
+		scheduler.setPrefetchPriority(7);*/
 	}
 	
 	/**
