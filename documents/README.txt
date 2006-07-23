@@ -1,3 +1,9 @@
+Geoserver 1.3.3
+---------------
+Fixed several bugs in the KML servlet. Multiple layers should now render properly and
+the styles in the KML documents have all been combined with work with the new version
+of Google Earth.
+
 Geoserver 1.3.2
 ---------------
 SLD Wizard to create SLD files with a nice user interface.
