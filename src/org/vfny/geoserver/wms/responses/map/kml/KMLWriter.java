@@ -738,7 +738,7 @@ public class KMLWriter extends OutputStreamWriter {
                 if( symbolizers[m] instanceof TextSymbolizer ){
                 	TextSymbolizer ts = (TextSymbolizer) symbolizers[m];
                 	Expression ex = ts.getLabel();
-                	String value = (String)ex.getValue(feature);
+                	String value = ex.getValue(feature).toString();
                 	title.append(value);
                 	Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
                 	writeStyle(style, feature.getID(), symbolizers[m]);
