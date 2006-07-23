@@ -571,6 +571,11 @@ public class KMLWriter extends OutputStreamWriter {
                             }
                         }
                         
+                        // if the result is not vector (meaning it is a raster), then we only want to
+                        // render one feature and have it point at the png
+                        if (!vectorResult)
+                        	break;	// only render the one feature for raster result
+                        
                         // temporarily removed (bao)
                         // Is this ideal? If we are producing KMZ raster images, it is
                         // because there are too many features for the KMScore value.
