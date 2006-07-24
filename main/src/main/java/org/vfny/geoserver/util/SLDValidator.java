@@ -15,6 +15,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -211,7 +212,9 @@ public class SLDValidator {
         try {
         	// this takes care of spaces in the path to the file
 	        URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
-			LOGGER.info("Validating SLD with " + schemaFile.toString());
+	        if (LOGGER.isLoggable(Level.INFO)) {
+	        	LOGGER.info(new StringBuffer("Validating SLD with ").append(schemaFile.toString()).toString());
+	        }
 			String schemaUrl = schemaFile.toString();
 		
 //     1. tell the parser to validate the XML document vs the schema

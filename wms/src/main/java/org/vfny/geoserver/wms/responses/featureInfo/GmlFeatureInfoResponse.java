@@ -95,4 +95,9 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
         encoder.prepare("GML2", getFeatureResults);
         encoder.encode(out);
     }
+
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

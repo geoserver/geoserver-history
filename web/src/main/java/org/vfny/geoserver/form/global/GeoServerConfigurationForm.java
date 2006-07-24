@@ -10,6 +10,7 @@ import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -98,6 +99,13 @@ public class GeoServerConfigurationForm extends ActionForm {
 	private boolean loggingToFile;
 	private boolean loggingToFileChecked;
 	private String logLocation;
+	
+	private long jaiMemoryCapacity;
+	private double jaiMemoryThreshold;
+	private boolean jaiRecycling;
+	private boolean jaiRecyclingChecked;
+    private boolean imageIOCache;
+    private boolean imageIOCacheChecked;
 	 
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -125,6 +133,13 @@ public class GeoServerConfigurationForm extends ActionForm {
         loggingToFileChecked = false;
         logLocation = globalConfig.getLogLocation();
         
+        jaiMemoryCapacity = globalConfig.getJaiMemoryCapacity();
+        jaiMemoryThreshold = globalConfig.getJaiMemoryThreshold();
+        jaiRecycling = globalConfig.isJaiRecycling();
+        jaiRecyclingChecked = false;
+        imageIOCache = globalConfig.isImageIOCache();
+        imageIOCacheChecked = false;
+        
         ContactConfig contactConfig = globalConfig.getContact();
         contactPerson = contactConfig.getContactPerson();
         contactOrganization = contactConfig.getContactOrganization();
@@ -146,7 +161,18 @@ public class GeoServerConfigurationForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping,
             HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
+        
+        final long maxMemoryAvailable = Runtime.getRuntime().maxMemory() - (4 * 1024 * 1024);
+        if( jaiMemoryCapacity > maxMemoryAvailable ) {
+        	errors.add("jaiMemCapacity",
+        			new ActionError("error.geoserver.JAIMemCapacity", new Long(maxMemoryAvailable)));
+        }
 
+        if( jaiMemoryThreshold < 0.0 || jaiMemoryThreshold > 1.0) {
+        	errors.add("jaiMemThreshold",
+        			new ActionError("error.geoserver.JAIMemThreshold"));
+        }
+        
         return errors;
     }
 	/**
@@ -611,4 +637,72 @@ public class GeoServerConfigurationForm extends ActionForm {
 		this.loggingToFileChecked = loggingToFileChecked;
 	}
 
+	public long getJaiMemoryCapacity() {
+		return jaiMemoryCapacity;
+	}
+
+	public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
+		this.jaiMemoryCapacity = jaiMemoryCapacity;
+	}
+
+	public boolean getJaiRecycling() {
+	    return jaiRecycling;
+	}
+	
+	public void setJaiRecycling(boolean jaiRecycling) {
+	    jaiRecyclingChecked = true;
+	    this.jaiRecycling = jaiRecycling;
+	}
+	
+	/**
+	 * Access verboseChecked property.
+	 * 
+	 * @return Returns the verboseChecked.
+	 */
+	public boolean isJaiRecyclingChecked() {
+	    return jaiRecyclingChecked;
+	}
+	
+	/**
+	 * Set verboseChecked to verboseChecked.
+	 *
+	 * @param verboseChecked The verboseChecked to set.
+	 */
+	public void setJaiRecyclingChecked(boolean jaiRecyclingChecked) {
+	    this.jaiRecyclingChecked = jaiRecyclingChecked;
+	}
+    
+    public boolean getImageIOCache() {
+        return imageIOCache;
+    }
+    
+    public void setImageIOCache(boolean imageIOCache) {
+        imageIOCacheChecked = true;
+        this.imageIOCache = imageIOCache;
+    }
+    
+    /**
+     * Access verboseChecked property.
+     * 
+     * @return Returns the verboseChecked.
+     */
+    public boolean isImageIOCacheChecked() {
+        return imageIOCacheChecked;
+    }
+    
+    /**
+     * Set verboseChecked to verboseChecked.
+     *
+     * @param verboseChecked The verboseChecked to set.
+     */
+    public void setImageIOCacheChecked(boolean imageIOCacheChecked) {
+        this.imageIOCacheChecked = imageIOCacheChecked;
+    }
+    
+    public double getJaiMemoryThreshold() {
+		return jaiMemoryThreshold;
+	}
+	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
+		this.jaiMemoryThreshold = jaiMemoryThreshold;
+	}
 }

@@ -130,7 +130,51 @@
 
 		</td>
     </tr>	
-    
+
+	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiMemoryCapacity"/>">
+			<bean:message key="label.jaiMemoryCapacity"/>:
+		</span>
+      </td>
+	  <td class="datum">
+		<html:text property="jaiMemoryCapacity" size="60"/>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiMemoryThreshold"/>">
+			<bean:message key="label.jaiMemoryThreshold"/>:
+		</span>
+    </td>
+	  <td class="datum">
+		<html:text property="jaiMemoryThreshold" size="60"/>
+	  </td>
+	</tr>
+
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiRecycling"/>">
+			<bean:message key="label.jaiRecycling"/>:
+		</span>
+      </td>
+	  <td class="datum">
+	  	<html:checkbox property="jaiRecycling"/>
+	  </td>
+	 </tr> 
+
+    <tr>
+      <td class="label">
+        <span class="help" title="<bean:message key="help.global.imageIOCache"/>">
+            <bean:message key="label.imageIOCache"/>:
+        </span>
+      </td>
+      <td class="datum">
+        <html:checkbox property="imageIOCache"/>
+      </td>
+     </tr> 
+
   </tbody>
 </table>
 

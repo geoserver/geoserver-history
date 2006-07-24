@@ -42,6 +42,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
+			<artifactId>wcs</artifactId>
+			<version>1.4.0-M0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geoserver</groupId>
 			<artifactId>wfs</artifactId>
 			<version>1.4.0-M0</version>
 		</dependency>
@@ -221,6 +226,6 @@
 	</build>
 
 	<properties>
-		<configId>minimal</configId>
+		<configId>basic</configId>
 	</properties>
 </project>

@@ -9,10 +9,14 @@ import java.util.Locale;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
+import org.opengis.coverage.grid.*;
+import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataStore;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
+import org.vfny.geoserver.config.CoverageConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
@@ -57,17 +61,40 @@ public class UserContainer implements HttpSessionBindingListener {
     /** User's locale */
     private Locale locale;
 
+	/**
+	 * Selected dataFormatId
+	 * 
+	 */
+	private String dataFormatID;
+
+	/**
     /** Selected dataStoreId */
     private String dataStoreID;
 
     /** Selected prefix */
     private String prefix;
-    /**
+	/**
+	 * Selected CoverageStoreConfig held in session for creation/editing.
+	 * 
+	 */
+	private CoverageStoreConfig dataFormatConfig;
+
+	/**
      * Selected DataStoreConfig held in session for creation/editing.
      */
     private DataStoreConfig dataStoreConfig;
 
-    /**
+	/**
+	 * Cached Format being worked on.
+	 * 
+	 * <p>
+	 * This should agree with the value of dataFormatConfig.
+	 * </p>
+	 * 
+	 */
+	private Format dataFormat;
+
+	/**
      * Cached DataStore being worked on.
      * 
      * <p>
@@ -90,10 +117,16 @@ public class UserContainer implements HttpSessionBindingListener {
      * <p>
      * Pending: Make change over to UserContainer.
      * </p>
-     */
+	 */
     private FeatureTypeConfig featureTypeConfig;
 
-    /**
+
+	/**
+	 * 
+	 */
+	private CoverageConfig coverageConfig;
+
+	/**
      * Cached FeatureType being worked on.
      * 
      * <p>
@@ -104,7 +137,12 @@ public class UserContainer implements HttpSessionBindingListener {
      */
     private FeatureType featureType;
 
-    /**
+	/**
+	 * 
+	 */
+	private GridCoverage2D coverage;
+
+	/**
      * Selected AttributeType being worked on.
      * 
      * <p>
@@ -365,6 +403,7 @@ public class UserContainer implements HttpSessionBindingListener {
     public void setFeatureTypeConfig(FeatureTypeConfig featureTypeConfig) {
         this.featureTypeConfig = featureTypeConfig;
     }
+    
 	/**
 	 * Access namespaceConfig property.
 	 * 
@@ -414,4 +453,84 @@ public class UserContainer implements HttpSessionBindingListener {
     public void setStyle(StyleConfig style) {
         this.style = style;
     }
+	/**
+	 * @return Returns the dataFormat.
+	 * 
+	 */
+	public Format getDataFormat() {
+		return dataFormat;
+	}
+
+	/**
+	 * @param dataFormat The dataFormat to set.
+	 * 
+	 */
+	public void setDataFormat(Format dataFormat) {
+		this.dataFormat = dataFormat;
+	}
+
+	/**
+	 * @return Returns the dataFormatConfig.
+	 * 
+	 */
+	public CoverageStoreConfig getDataFormatConfig() {
+		return dataFormatConfig;
+	}
+
+	/**
+	 * @param dataFormatConfig The dataFormatConfig to set.
+	 * 
+	 */
+	public void setDataFormatConfig(CoverageStoreConfig dataFormatConfig) {
+		this.dataFormatConfig = dataFormatConfig;
+	}
+
+	/**
+	 * @return Returns the dataFormatID.
+	 * 
+	 */
+	public String getDataFormatID() {
+		return dataFormatID;
+	}
+
+	/**
+	 * @param dataFormatID The dataFormatID to set.
+	 * 
+	 */
+	public void setDataFormatID(String dataFormatID) {
+		this.dataFormatID = dataFormatID;
+	}
+
+	/**
+	 * @return Returns the coverageConfig.
+	 * 
+	 */
+	public CoverageConfig getCoverageConfig() {
+		return coverageConfig;
+	}
+
+	/**
+	 * @param coverageConfig The coverageConfig to set.
+	 * 
+	 */
+	public void setCoverageConfig(CoverageConfig coverageConfig) {
+		this.coverageConfig = coverageConfig;
+	}
+
+	/**
+	 * @return Returns the coverage.
+	 * 
+	 */
+	public GridCoverage2D getCoverage() {
+		return coverage;
+	}
+
+	/**
+	 * @param coverage The coverage to set.
+	 * 
+	 */
+	public void setCoverage(GridCoverage2D coverage) {
+		this.coverage = coverage;
+	}
+
 }

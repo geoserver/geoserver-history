@@ -7,9 +7,14 @@ package org.vfny.geoserver.wms.responses;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
+import javax.media.jai.PlanarImage;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.wms.responses.map.gif.Gif89Encoder;
 
+import com.sun.media.imageioimpl.plugins.gif.GIFImageWriter;
+import com.sun.media.imageioimpl.plugins.gif.GIFImageWriterSpi;
 
 /**
  * Producer of legend graphics in image/gif format.
@@ -36,12 +41,14 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
      */
     public void writeTo(OutputStream out) throws IOException, ServiceException {
-	//use same default background 
-	Gif89Encoder gifenc = new Gif89Encoder(super.getLegendGraphic(),BG_COLOR,2);// 2= colour reduction pixel sample factor (1=look at all pixels, but its slow)
-            gifenc.setComments("produced by Geoserver");
-           // gifenc.setTransparentIndex(transparent_index);
-            gifenc.getFrameAt(0).setInterlaced(false);
-            gifenc.encode(out);
+		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
+				out);
+		final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(super
+				.getLegendGraphic());
+		final ImageWriter gifWriter = new GIFImageWriter(
+				new GIFImageWriterSpi());
+		gifWriter.setOutput(memOutStream);
+		gifWriter.write(null, new IIOImage(encodedImage, null, null), null);
 
     }
 

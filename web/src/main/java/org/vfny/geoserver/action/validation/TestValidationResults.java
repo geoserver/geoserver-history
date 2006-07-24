@@ -27,11 +27,21 @@ import org.geotools.validation.ValidationResults;
  */
 public class TestValidationResults implements ValidationResults{
 	public static final String CURRENTLY_SELECTED_KEY = "TestValidationResults";
-	
+
+	/**
+	 * 
+	 * @uml.property name="v"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
 	Validation v = null;
-	
+
+	/**
+	 * 
+	 * @uml.property name="run" multiplicity="(0 1)"
+	 */
 	//HACK for JODY cause he messed up and then whined alot.
 	boolean run = false;
+
     
 	public void setValidation(Validation v){
         this.v = v;run=true;
@@ -47,9 +57,23 @@ public class TestValidationResults implements ValidationResults{
         
         return buf.toString();        
     }
-    
+
+	/**
+	 * 
+	 * @uml.property name="errors"
+	 * @uml.associationEnd qualifier="f:org.geotools.feature.Feature java.lang.String"
+	 * multiplicity="(0 1)"
+	 */
 	Map errors = new HashMap();
-	public Map getErrors(){return errors;}
+
+	/**
+	 * 
+	 * @uml.property name="errors"
+	 */
+	public Map getErrors() {
+		return errors;
+	}
+
 	public void error(Feature f,String s){
         String message = toMessage( s );
 		Logger logger = Logger.getLogger("org.vfny.geoserver");
@@ -58,8 +82,15 @@ public class TestValidationResults implements ValidationResults{
 		}
 		errors.put(f, message );
 	}
-	
+
+	/**
+	 * 
+	 * @uml.property name="warning"
+	 * @uml.associationEnd qualifier="f:org.geotools.feature.Feature java.lang.String"
+	 * multiplicity="(0 1)"
+	 */
 	Map warning = new HashMap();
+
 	public Map getWarnings(){return warning;}
     
 	public void warning(Feature f,String s){
@@ -79,13 +110,16 @@ public class TestValidationResults implements ValidationResults{
 	public boolean isRun() {
 		return run;
 	}
-	
+
 	/**
 	 * Set run to run.
-	 *
+	 * 
 	 * @param run The run to set.
+	 * 
+	 * @uml.property name="run"
 	 */
 	public void setRun(boolean run) {
 		this.run = run;
 	}
+
 }
