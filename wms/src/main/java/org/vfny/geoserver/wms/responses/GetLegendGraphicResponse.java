@@ -173,12 +173,4 @@ public class GetLegendGraphicResponse implements Response {
 
         return allFormats;
     }
-
-	/* (non-Javadoc)
-	 * @see org.vfny.geoserver.Response#getContentDisposition()
-	 */
-	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

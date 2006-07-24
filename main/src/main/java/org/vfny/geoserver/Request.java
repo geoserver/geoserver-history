@@ -21,8 +21,6 @@ import org.vfny.geoserver.util.Requests;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: Request.java,v 1.16 2004/09/08 17:36:35 cholmesny Exp $
  */
 abstract public class Request {
@@ -242,7 +240,7 @@ abstract public class Request {
 		uri = uri.toLowerCase();
 		}
 		// will happen if the dispatcher was called, as opposed to using the /wfs url.
-		if(uri.endsWith("/wcs") || uri.endsWith("/wfs") || uri.endsWith("/wms"))
+		if(uri.endsWith("/wfs") || uri.endsWith("/wms"))
 			return true;
 		return false;
 	}

@@ -26,7 +26,6 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
-import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
@@ -62,9 +61,7 @@ public class SaveXMLAction extends ConfigAction {
         //File rootDir = new File(sc.getRealPath("/"));
         File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
         try {
-            XMLConfigWriter.store(
-            	(WCSDTO) getWCS(request).toDTO(),
-            	(WMSDTO) getWMS(request).toDTO(),
+            XMLConfigWriter.store((WMSDTO) getWMS(request).toDTO(),
                 (WFSDTO) getWFS(request).toDTO(),
                 (GeoServerDTO) getWFS(request).getGeoServer().toDTO(),
                 (DataDTO) getWFS(request).getData().toDTO(), rootDir);
@@ -117,7 +114,7 @@ public class SaveXMLAction extends ConfigAction {
                 try {
                     key = i.next();
                     dto = (PlugInDTO) plugIns.get(key);
-                    String fName = dto.getName().replaceAll(" ", "") + ".xml";
+		    String fName = dto.getName().replaceAll(" ", "") + ".xml";
                     File pFile = WriterUtils.initWriteFile(new File(plugInDir, fName), false);
                     FileWriter fw = new FileWriter(pFile);
                     XMLWriter.writePlugIn(dto, fw);
@@ -148,10 +145,10 @@ public class SaveXMLAction extends ConfigAction {
 
                 try {
                     dto = (TestSuiteDTO) testSuites.get(i.next());
-                    String fName = dto.getName().replaceAll(" ", "") + ".xml";
+		    String fName = dto.getName().replaceAll(" ", "") + ".xml";
                     File pFile = WriterUtils.initWriteFile(new File(validationDir, fName), false);
                     FileWriter fw = new FileWriter(pFile);//new File(validationDir,
-                    //dto.getName().replaceAll(" ", "") + ".xml"));
+		    //dto.getName().replaceAll(" ", "") + ".xml"));
                     XMLWriter.writeTestSuite(dto, fw);
                     fw.close();
                 } catch (Exception e) {

@@ -43,10 +43,8 @@ import org.geotools.styling.UserLayer;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
@@ -417,10 +415,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     private List parseAttributes(FeatureTypeInfo[] layers)
         throws WmsException {
         String rawAtts = getValue("ATTRIBUTES");
-		if (LOGGER.isLoggable(Level.FINER)) {
-			LOGGER.finer(new StringBuffer("parsing attributes ")
-					.append(rawAtts).toString());
-		}
+        LOGGER.finer("parsing attributes " + rawAtts);
 
         if ((rawAtts == null) || "".equals(rawAtts)) {
             return Collections.EMPTY_LIST;
@@ -453,19 +448,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                     String attName = (String) attIt.next();
 
                     if (attName.length() > 0) {
-						if (LOGGER.isLoggable(Level.FINER)) {
-							LOGGER.finer(new StringBuffer("checking that ")
-									.append(attName).append(" is valid")
-									.toString());
-						}
+                        LOGGER.finer("checking that " + attName + " is valid");
 
                         if ("#FID".equalsIgnoreCase(attName)
                                 || "#BOUNDS".equalsIgnoreCase(attName)) {
-							if (LOGGER.isLoggable(Level.FINER)) {
-								LOGGER.finer(new StringBuffer(
-										"special attribute name requested: ")
-										.append(attName).toString());
-							}
+                            LOGGER.finer("special attribute name requested: "
+                                + attName);
 
                             continue;
                         }
@@ -476,19 +464,14 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                                 + schema.getTypeName() + " does not exists");
                         }
                     } else {
-						if (LOGGER.isLoggable(Level.FINEST)) {
-							LOGGER
-									.finest("removing empty attribute name from request");
-						}
+                        LOGGER.finest(
+                            "removing empty attribute name from request");
                         attIt.remove();
                     }
                 }
 
-				if (LOGGER.isLoggable(Level.FINEST)) {
-					LOGGER.finest(new StringBuffer("attributes requested for ")
-							.append(schema.getTypeName()).append(" checked: ")
-							.append(rawAtts).toString());
-				}
+                LOGGER.finest("attributes requested for "
+                    + schema.getTypeName() + " checked: " + rawAtts);
             } catch (java.io.IOException e) {
                 throw new WmsException(e);
             }
@@ -567,95 +550,63 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *         its number if greater than zero and distinct of the number of
      *         requested layers
      */
-	protected List parseStylesParam(GetMapRequest request, MapLayerInfo[] layers)
-			throws WmsException {
+    protected List parseStylesParam(GetMapRequest request,
+        FeatureTypeInfo[] layers) throws WmsException {
         String rawStyles = getValue("STYLES");
         List styles = styles = new ArrayList(layers.length);
 
         int numLayers = layers.length;
 
         if ("".equals(rawStyles)) {
-			if (LOGGER.isLoggable(Level.FINER)) {
-				LOGGER
-						.finer("Assigning default style to all the requested layers");
-			}
+            LOGGER.finer("Assigning default style to all the requested layers");
 
             for (int i = 0; i < numLayers; i++)
-				if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR)
-					styles.add(layers[i].getFeature().getDefaultStyle());
-				else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {
-					styles.add(layers[i].getCoverage().getDefaultStyle());
-				}
+                styles.add(layers[i].getDefaultStyle());
         } else {
             List styleNames = readFlat(rawStyles, INNER_DELIMETER);
 
             if (numLayers != styleNames.size()) {
-				String msg = numLayers
-						+ " layers requested, but found "
-						+ styleNames.size()
-						+ " styles specified. "
-						+ "Since SLD parameter is not yet implemented, the STYLES parameter "
-						+ "is mandatory and MUST have exactly one value per requested layer";
+                String msg = numLayers + " layers requested, but found "
+                    + styleNames.size() + " styles specified. "
+                    + "Since SLD parameter is not yet implemented, the STYLES parameter "
+                    + "is mandatory and MUST have exactly one value per requested layer";
                 throw new WmsException(msg, getClass().getName());
             }
 
             String currStyleName;
             Style currStyle;
-			MapLayerInfo currLayer;
+            FeatureTypeInfo currLayer;
 
             for (int i = 0; i < numLayers; i++) {
                 currStyleName = (String) styleNames.get(i);
                 currLayer = layers[i];
 
-				if (currLayer.getType() == MapLayerInfo.TYPE_VECTOR) {
-					if ((null == currStyleName) || "".equals(currStyleName)) {
-						currStyle = currLayer.getFeature().getDefaultStyle();
-					} else {
-						currStyle = findStyle(request, currStyleName);
+                if ((null == currStyleName) || "".equals(currStyleName)) {
+                    currStyle = currLayer.getDefaultStyle();
+                } else {
+                    currStyle = findStyle(request, currStyleName);
 
-						if (currStyle == null) {
-							String msg = "No default style has been defined for "
-									+ currLayer.getName();
-							throw new WmsException(msg, "StyleNotDefined");
-						}
-					}
+                    if (currStyle == null) {
+                        String msg = "No default style has been defined for "
+                            + currLayer.getName();
+                        throw new WmsException(msg,
+                            "StyleNotDefined");
+                    }
+                }
 
-					try {
-						checkStyle(currStyle, layers[i].getFeature()
-								.getFeatureType());
-					} catch (IOException e) {
-						throw new WmsException(
-								"Error obtaining FeatureType for layer "
-										+ layers[i].getName());
-					}
+                try {
+                    checkStyle(currStyle, layers[i].getFeatureType());
+                } catch (IOException e) {
+                    throw new WmsException(
+                        "Error obtaining FeatureType for layer "
+                        + layers[i].getName());
+                }
 
-					if (LOGGER.isLoggable(Level.FINE)) {
-						LOGGER.fine(new StringBuffer("establishing ").append(
-								currStyleName).append(" style for ").append(
-								layers[i].getName()).toString());
-					}
-					styles.add(currStyle);
-				} else if (currLayer.getType() == MapLayerInfo.TYPE_RASTER) {
-					if ((null == currStyleName) || "".equals(currStyleName)) {
-						currStyle = currLayer.getCoverage().getDefaultStyle();
-					} else {
-						currStyle = findStyle(request, currStyleName);
-
-						if (currStyle == null) {
-							String msg = "No default style has been defined for "
-									+ currLayer.getName();
-							throw new WmsException(msg,
-									"GetMapKvpReader::parseStyles()");
-						}
-					}
-
-					/**
-					 * @task TODO: Check for Style Coverage Compatibility ...
-					 */
-					styles.add(currStyle);
-				}
-			}
-		}
+                LOGGER.fine("establishing " + currStyleName + " style for "
+                    + layers[i].getName());
+                styles.add(currStyle);
+            }
+        }
 
         return styles;
     }
@@ -720,17 +671,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         String sldBodyParam = getValue("SLD_BODY");
 
         if (sldBodyParam != null) {
-			if (LOGGER.isLoggable(Level.FINE)) {
-				LOGGER.fine("Getting layers and styles from SLD_BODY");
-			}
+            LOGGER.fine("Getting layers and styles from SLD_BODY");
             parseSldBodyParam(request);
         } else if (sldParam != null) {
-			if (LOGGER.isLoggable(Level.FINE)) {
-				LOGGER.fine("Getting layers and styles from reomte SLD");
-			}
+            LOGGER.fine("Getting layers and styles from reomte SLD");
             parseSldParam(request);
         } else {
-			MapLayerInfo[] featureTypes = null;
+            FeatureTypeInfo[] featureTypes = null;
             List styles = null;
             featureTypes = parseLayersParam(request);
 
@@ -759,10 +706,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         throws WmsException {
         final String sldBody = getValue("SLD_BODY");
 
-		if (LOGGER.isLoggable(Level.FINE)) {
-			LOGGER.fine(new StringBuffer("About to parse SLD body: ").append(
-					sldBody).toString());
-		}
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("About to parse SLD body: " + sldBody);
+        }
                 
         
         if (getValue("VALIDATESCHEMA") != null)
@@ -830,24 +776,18 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	{
         String urlValue = getValue("SLD");               
 
-		if (LOGGER.isLoggable(Level.FINE)) {
-			LOGGER
-					.fine(new StringBuffer(
-							"about to load remote SLD document: '").append(
-							urlValue).append("'").toString());
-		}
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("about to load remote SLD document: '" + urlValue + "'");
+        }
 
         URL sldUrl;
 
         try {
             sldUrl = new URL(urlValue);
         } catch (MalformedURLException e) {
-			String msg = new StringBuffer("Creating remote SLD url: ").append(
-					e.getMessage()).toString();
-			if (LOGGER.isLoggable(Level.WARNING)) {
-				LOGGER.log(Level.WARNING, msg, e);
-			}
-			throw new WmsException(e, msg, "parseSldParam");
+            String msg = "Creating remote SLD url: " + e.getMessage();
+            LOGGER.log(Level.WARNING, msg, e);
+            throw new WmsException(e, msg, "parseSldParam");
         }
 
         
@@ -864,13 +804,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         		in.close();
         		if (errors.size() != 0)
         			throw new WmsException(SLDValidator.getErrorMessage(sldUrl.openStream(),errors));
-			} catch (IOException e) {
-				String msg = new StringBuffer("Creating remote SLD url: ")
-						.append(e.getMessage()).toString();
-				if (LOGGER.isLoggable(Level.WARNING)) {
-					LOGGER.log(Level.WARNING, msg, e);
-				}
-				throw new WmsException(e, msg, "parseSldParam");
+        	}
+        	catch (IOException e)
+			{
+        		String msg = "Creating remote SLD url: " + e.getMessage();
+                LOGGER.log(Level.WARNING, msg, e);
+                throw new WmsException(e, msg, "parseSldParam");
 			}
         }
         SLDParser parser;
@@ -880,11 +819,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     		// to do compression
             parser = new SLDParser(styleFactory, getInputStream( sldUrl));
         } catch (IOException e) {
-			String msg = new StringBuffer("Creating remote SLD url: ").append(
-					e.getMessage()).toString();
-			if (LOGGER.isLoggable(Level.WARNING)) {
-				LOGGER.log(Level.WARNING, msg, e);
-			}
+            String msg = "Creating remote SLD url: " + e.getMessage();
+            LOGGER.log(Level.WARNING, msg, e);
             throw new WmsException(e, msg, "parseSldParam");
         }
 
@@ -919,12 +855,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      */
     private void parseStyledLayerDescriptor(final GetMapRequest request,
         final StyledLayerDescriptor sld) throws WmsException {
-		MapLayerInfo[] libraryModeLayers = null;
+        FeatureTypeInfo[] libraryModeLayers = null;
 
         if (null != getValue("LAYERS")) {
-			if (LOGGER.isLoggable(Level.INFO)) {
-				LOGGER.info("request comes in \"library\" mode");
-			}
+            LOGGER.info("request comes in \"library\" mode");
             libraryModeLayers = parseLayersParam(request);
         }
 
@@ -938,19 +872,15 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         final List layers = new ArrayList();
         final List styles = new ArrayList();
 
-		MapLayerInfo currLayer = null;
-		Style currStyle = null;
+        FeatureTypeInfo currLayer;
+        Style currStyle;
 
         if (null != libraryModeLayers) {
             int lCount = libraryModeLayers.length;
 
             for (int i = 0; i < lCount; i++) {
                 currLayer = libraryModeLayers[i];
-				if (currLayer.getType() == MapLayerInfo.TYPE_VECTOR)
-					currStyle = findStyleOf(request, currLayer.getFeature(),
-							styledLayers);
-				else if (currLayer.getType() == MapLayerInfo.TYPE_RASTER)
-					currStyle = findStyle(request, "raster");
+                currStyle = findStyleOf(request, currLayer, styledLayers); // DJB: this might not be 100% correct, but its close enough until someone complains
                 layers.add(currLayer);
                 styles.add(currStyle);
             }
@@ -959,59 +889,41 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             for (int i = 0; i < slCount; i++) {
                 sl = styledLayers[i];
                 String layerName = sl.getName();
-				if (null == layerName)
-					throw new WmsException(
-							"A UserLayer without layer name was passed");
+                if(null == layerName)
+                	throw new WmsException("A UserLayer without layer name was passed");
 
-				currLayer = new MapLayerInfo();
-				// handle the InLineFeature stuff
-				// TODO: add support for remote WFS here
-				if ((sl instanceof UserLayer)
-						&& (((UserLayer) sl)).getInlineFeatureDatastore() != null) {
-					// SPECIAL CASE - we make the temporary version
-					UserLayer ul = ((UserLayer) sl);
-					currLayer.setFeature(new TemporaryFeatureTypeInfo(ul
-							.getInlineFeatureDatastore(), ul
-							.getInlineFeatureType()));
-				} else {
-					try {
-						currLayer.setFeature(GetMapKvpReader.findFeatureLayer(
-								request, layerName));
-					} catch (WmsException e) {
-						currLayer.setCoverage(GetMapKvpReader
-								.findCoverageLayer(request, layerName));
-					}
-				}
 
-				if (currLayer.getType() == MapLayerInfo.TYPE_VECTOR) {
-					// currStyle = findStyleOf(request, currLayer,
-					// styledLayers); // DJB: this looks like a bug, we should
-					// get the style from styledLayers[i]
-
-					// the correct thing to do its grab the style from
-					// styledLayers[i]
-					// inside the styledLayers[i] will either be :
-					// a) nothing - in which case grab the layer's default style
-					// b) a set of:
-					// i) NameStyle -- grab it from the pre-loaded styles
-					// ii)UserStyle -- grab it from the sld the user uploaded
-					//
-					// NOTE: we're going to get a set of layer->style pairs for
-					// (b).
-
-					addStyles(request, currLayer, styledLayers[i], layers,
-							styles);
-				} else if (currLayer.getType() == MapLayerInfo.TYPE_RASTER) {
-					currStyle = findStyle(request, "raster");
-
-					layers.add(currLayer);
-					styles.add(currStyle);
-				}
-			}
-		}
-		request.setLayers((MapLayerInfo[]) layers
-				.toArray(new MapLayerInfo[layers.size()]));
-		request.setStyles(styles);
+                	// handle the InLineFeature stuff
+                    // TODO: add support for remote WFS here
+                if ((sl instanceof UserLayer) && (((UserLayer)sl)).getInlineFeatureDatastore()!=null )
+                {
+                	//SPECIAL CASE - we make the temporary version
+                	UserLayer ul = ((UserLayer)sl);
+                	currLayer = new TemporaryFeatureTypeInfo(ul.getInlineFeatureDatastore(), ul.getInlineFeatureType());
+                }
+                else
+                	currLayer = GetMapKvpReader.findLayer(request, layerName);
+                
+                
+               // currStyle = findStyleOf(request, currLayer, styledLayers); // DJB: this looks like a bug, we should get the style from styledLayers[i]
+                
+                 // the correct thing to do its grab the style from styledLayers[i]
+                 //   inside the styledLayers[i] will either be :
+                 //     a) nothing - in which case grab the layer's default style
+                 //     b) a set of:
+                 //             i) NameStyle -- grab it from the pre-loaded styles
+                 //             ii)UserStyle -- grab it from the sld the user uploaded
+                 //
+                // NOTE: we're going to get a set of layer->style pairs for (b).
+                
+                addStyles(request,currLayer,styledLayers[i],   layers,styles);
+                
+                //layers.add(currLayer);
+               // styles.add(currStyle);
+            }
+        }
+        request.setLayers((FeatureTypeInfo[])layers.toArray(new FeatureTypeInfo[layers.size()]));
+        request.setStyles(styles);
     }
 
  
@@ -1035,66 +947,73 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 * @param layers
 	 * @param styles
 	 */
-	public static void addStyles(GetMapRequest request, MapLayerInfo currLayer,
-			StyledLayer layer, List layers, List styles) throws WmsException {
+	public static void addStyles(GetMapRequest request, FeatureTypeInfo currLayer, StyledLayer layer, List layers, List styles) throws WmsException 
+	{
 		if (currLayer == null)
 			return; // protection
 		
 		Style[] layerStyles =null;  
 		FeatureTypeConstraint[]  ftcs = null;
 		
-		if (layer instanceof NamedLayer) {
+		if (layer instanceof NamedLayer)
+		{
 			ftcs = ((NamedLayer) layer).getLayerFeatureConstraints();
 			layerStyles = ((NamedLayer) layer).getStyles();
-		} else if (layer instanceof UserLayer) {
-			ftcs = ((UserLayer) layer).getLayerFeatureConstraints();
+		}
+		else if (layer instanceof UserLayer)
+		{
+			ftcs = ((UserLayer)layer).getLayerFeatureConstraints();
 			layerStyles = ((UserLayer) layer).getUserStyles();
 		}
-
-		// DJB: TODO: this needs to do the whole thing, not just names
-		if (ftcs != null) {
-			for (int t = 0; t < ftcs.length; t++) {
-				FeatureTypeConstraint ftc = ftcs[t];
-				if (ftc.getFeatureTypeName() != null) {
-					String ftc_name = ftc.getFeatureTypeName();
-					// taken from lite renderer
-					boolean matches;
-					try {
-						matches = currLayer.getFeature().getFeatureType()
-								.isDescendedFrom(null, ftc_name)
-								|| currLayer.getFeature().getFeatureType()
-										.getTypeName().equalsIgnoreCase(
-												ftc_name);
-					} catch (Exception e) {
-						matches = false; // bad news
+		
+			//DJB:  TODO: this needs to do the whole thing, not just names
+			if (ftcs != null)
+			{
+				for (int t=0;t<ftcs.length;t++)
+				{
+					FeatureTypeConstraint ftc = ftcs[t];
+					if (ftc.getFeatureTypeName() != null)
+					{
+						String ftc_name = ftc.getFeatureTypeName();
+							//taken from lite renderer
+						boolean matches ;
+						try{
+							matches = currLayer.getFeatureType().isDescendedFrom(null,ftc_name) || currLayer.getFeatureType().getTypeName().equalsIgnoreCase(ftc_name);
+						}
+						catch(Exception e)
+						{
+							matches = false; // bad news
+						}
+						if (!matches)
+							continue ; // this layer is fitered out					
 					}
-					if (!matches)
-						continue; // this layer is fitered out
 				}
 			}
-		}
-
-		// handle no styles -- use default
-		if ((layerStyles == null) || (layerStyles.length == 0)) {
-			layers.add(currLayer);
-			styles.add(currLayer.getDefaultStyle());
-			return;
-		}
-
-		for (int t = 0; t < layerStyles.length; t++) {
-			if (layerStyles[t] instanceof NamedStyle) {
+		
+			//handle no styles -- use default
+			if ( (layerStyles == null) || (layerStyles.length ==0))
+			{
 				layers.add(currLayer);
-				Style s = findStyle(request, ((NamedStyle) layerStyles[t])
-						.getName());
-				if (s == null)
-					throw new WmsException("couldnt find style named '"
-							+ ((NamedStyle) layerStyles[t]).getName() + "'");
-				styles.add(s);
-			} else {
-				layers.add(currLayer);
-				styles.add(layerStyles[t]);
+				styles.add( currLayer.getDefaultStyle() );
+				return;
 			}
-		}
+			
+			for (int t=0;t<layerStyles.length;t++)
+			{
+				if (layerStyles[t] instanceof NamedStyle)
+				{
+					layers.add(currLayer);
+					Style s = findStyle( request, ((NamedStyle) layerStyles[t]).getName() );
+					if (s == null)
+						throw new WmsException("couldnt find style named '"+((NamedStyle) layerStyles[t]).getName()+"'");
+					styles.add(s);
+				}
+				else 
+				{
+					layers.add(currLayer);
+					styles.add(layerStyles[t]);
+				}
+			}
 	}
 
 	/**
@@ -1179,39 +1098,31 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException
      */
-	protected MapLayerInfo[] parseLayersParam(GetMapRequest request)
-			throws WmsException {
-		MapLayerInfo[] layers;
-		String layersParam = getValue("LAYERS");
-		List layerNames = layerNames = readFlat(layersParam, INNER_DELIMETER);
-		int layerCount = layerNames.size();
+    protected FeatureTypeInfo[] parseLayersParam(GetMapRequest request)
+        throws WmsException {
+        FeatureTypeInfo[] featureTypes;
+        String layersParam = getValue("LAYERS");
+        List layerNames = layerNames = readFlat(layersParam, INNER_DELIMETER);
+        int layerCount = layerNames.size();
 
-		if (layerCount == 0) {
-			throw new WmsException("No LAYERS has been requested", getClass()
-					.getName());
-		}
+        if (layerCount == 0) {
+            throw new WmsException("No LAYERS has been requested",
+                getClass().getName());
+        }
 
-		layers = new MapLayerInfo[layerCount];
+        featureTypes = new FeatureTypeInfo[layerCount];
 
-		String layerName = null;
+        String layerName = null;
 
-		for (int i = 0; i < layerCount; i++) {
-			layerName = (String) layerNames.get(i);
-			layers[i] = new MapLayerInfo();
+        for (int i = 0; i < layerCount; i++) {
+            layerName = (String) layerNames.get(i);
 
-			try {
-				FeatureTypeInfo ftype = findFeatureLayer(request, layerName);
+            FeatureTypeInfo ftype = findLayer(request, layerName);
+            featureTypes[i] = ftype;
+        }
 
-				layers[i].setFeature(ftype);
-			} catch (WmsException e) {
-				CoverageInfo cv = findCoverageLayer(request, layerName);
-
-				layers[i].setCoverage(cv);
-			}
-		}
-
-		return layers;
-	}
+        return featureTypes;
+    }
 
     /**
      * DOCUMENT ME!
@@ -1223,38 +1134,23 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException DOCUMENT ME!
      */
-	public static FeatureTypeInfo findFeatureLayer(GetMapRequest request,
-			String layerName) throws WmsException {
-		Data catalog = request.getWMS().getData();
-		FeatureTypeInfo ftype = null;
+    public static FeatureTypeInfo findLayer(GetMapRequest request, String layerName)
+        throws WmsException {
+        Data catalog = request.getWMS().getData();
+        FeatureTypeInfo ftype = null;
 
-		try {
-			ftype = catalog.getFeatureTypeInfo(layerName);
-		} catch (NoSuchElementException ex) {
-			throw new WmsException(ex, new StringBuffer(layerName)
-					.append(": no such layer on this server").toString(),
-			"LayerNotDefined");
-		}
+        try {
+            ftype = catalog.getFeatureTypeInfo(layerName);
+        } catch (NoSuchElementException ex) {
+        	WmsException e = new WmsException(ex,
+                layerName + ": no such layer on this server", "LayerNotDefined");
+        	e.setCode("LayerNotDefined"); //DJB: added this for cite tests
+        	throw e;
+        }
 
-		return ftype;
-	}
-
-	public static CoverageInfo findCoverageLayer(GetMapRequest request,
-			String layerName) throws WmsException {
-		Data catalog = request.getWMS().getData();
-		CoverageInfo cv = null;
-
-		try {
-			cv = catalog.getCoverageInfo(layerName);
-		} catch (NoSuchElementException ex) {
-			throw new WmsException(ex, new StringBuffer(layerName)
-					.append(": no such layer on this server").toString(),
-			"LayerNotDefined");
-		}
-
-		return cv;
-	}
-
+        return ftype;
+    }
+    
     /**
      * This method gets the correct input stream for a URL.
      * If the URL is a http/https connection, the Accept-Encoding: gzip, deflate is added.

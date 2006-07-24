@@ -9,7 +9,7 @@ import java.io.Writer;
 import java.util.logging.Logger;
 
 
-public final class ResponseUtils {
+public class ResponseUtils {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");

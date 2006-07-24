@@ -27,25 +27,12 @@
 			<version>1.4.0-M0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.geoserver</groupId>
-			<artifactId>wcs</artifactId>
-			<version>1.4.0-M0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-render</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-epsg-wkt</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-epsg-hsql</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-geotiff</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>batik</groupId>

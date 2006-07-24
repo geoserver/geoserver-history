@@ -132,9 +132,4 @@ public class WFSCapabilitiesResponse implements Response {
      */
     public void abort(Service gs) {
     }
-
-	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

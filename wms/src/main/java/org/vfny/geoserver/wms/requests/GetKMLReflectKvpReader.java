@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
 
@@ -103,7 +102,7 @@ public class GetKMLReflectKvpReader extends GetMapKvpReader {
 	        LOGGER.fine("Getting layers and styles from reomte SLD");
 	        parseSldParam(request);
 	    } else {
-	        MapLayerInfo[] featureTypes = null;
+	        FeatureTypeInfo[] featureTypes = null;
 	        List styles = null;
 	        featureTypes = parseLayersParam(request);
 	

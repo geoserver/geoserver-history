@@ -260,12 +260,4 @@ public class GeoValidator extends ValidationProcessor {
 	public Object toTestSuiteDTO(){
 		return testSuites;
 	}
-
-	public Map getPlugIns() {
-		return plugIns;
-	}
-
-	public Map getTestSuites() {
-		return testSuites;
-	}
 }

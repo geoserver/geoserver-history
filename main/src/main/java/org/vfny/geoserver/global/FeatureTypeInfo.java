@@ -15,12 +15,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.Icon;
+
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.GeoResourceInfo;
 import org.geotools.catalog.Resolve;
 import org.geotools.catalog.ResolveChangeEvent;
 import org.geotools.catalog.ResolveChangeListener;
 import org.geotools.catalog.Service;
+import org.geotools.catalog.Resolve.Status;
 import org.geotools.catalog.defaults.DefaultGeoResourceInfo;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
@@ -34,7 +37,6 @@ import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.geotools.util.ProgressListener;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -105,12 +107,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     /** typeName as defined by gt2 DataStore */
     private String typeName;
     
-	/**
-	 * 
-	 */
-	private String wmsPath;
-	
-	/**
+    /**
      * Directory where featureType is loaded from.
      * 
      * This may contain metadata files.
@@ -238,7 +235,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         keywords = dto.getKeywords();
         latLongBBox = dto.getLatLongBBox();
         typeName = dto.getName();
-        wmsPath = dto.getWmsPath();
         numDecimals = dto.getNumDecimals();
         List tmp = dto.getSchemaAttributes();
         schema = new LinkedList();
@@ -288,7 +284,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         dto.setKeywords(keywords);
         dto.setLatLongBBox(latLongBBox);
         dto.setName(typeName);
-        dto.setWmsPath(wmsPath);
         dto.setNumDecimals(numDecimals);
 
         List tmp = new LinkedList();
@@ -1097,31 +1092,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     	{
     		//make and add to hash
     		try {
-    			result = CRS.decode("EPSG:"+epsg);
-    			SRSLookup.put( new Integer(epsg)  , result);
-    		} catch (NoSuchAuthorityCodeException e) {
-    			String msg = "Error looking up SRS for EPSG: " + epsg + 
-    			":" + e.getLocalizedMessage();
+				result = CRS.decode("EPSG:"+epsg);
+				SRSLookup.put( new Integer(epsg)  , result);
+		} 
+    		catch (NoSuchAuthorityCodeException e) {
+			String msg = "Error looking up SRS for EPSG: " + epsg + 
+				":" + e.getLocalizedMessage();
     			LOGGER.warning( msg );
-    		} catch (FactoryException e) {
-    			String msg = "Error looking up SRS for EPSG: " + epsg + 
-    			":" + e.getLocalizedMessage();
-    			LOGGER.warning( msg );
-    		}
+		}
+    		
     	}
     	return result;
     }
-
-	public String getDirName() {
-		return dirName;
-	}
-
-	public String getWmsPath() {
-		return wmsPath;
-	}
-	public void setWmsPath(String wmsPath) {
-		this.wmsPath = wmsPath;
-	}
 
     /**
      * This value is added the headers of generated maps, marking them as being both

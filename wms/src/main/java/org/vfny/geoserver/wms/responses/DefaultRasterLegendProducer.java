@@ -10,14 +10,9 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
 
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
@@ -31,7 +26,6 @@ import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.PolygonSymbolizer;
-import org.geotools.styling.RasterSymbolizer;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
@@ -212,27 +206,11 @@ public abstract class DefaultRasterLegendProducer
 
             for (int sIdx = 0; sIdx < symbolizers.length; sIdx++) {
                 Symbolizer symbolizer = symbolizers[sIdx];
-                if ( symbolizer instanceof RasterSymbolizer ) {
-            		BufferedImage imgShape = new BufferedImage(w, h,
-                            BufferedImage.TYPE_INT_ARGB);
-                	try {
-                		imgShape = ImageIO.read(new URL(request.getBaseUrl() + "WEB-INF/images/rasterLegend.png"));
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-						throw new WmsException(e);
-					} catch (IOException e) {
-						e.printStackTrace();
-						throw new WmsException(e);
-					}
-					
-					graphics.drawImage(imgShape,0 , 0, w, h, null);
-                } else {
-                    Style2D style2d = styleFactory.createStyle(sampleFeature,
-                            symbolizer, scaleRange);
+                Style2D style2d = styleFactory.createStyle(sampleFeature,
+                        symbolizer, scaleRange);
                 LiteShape2 shape = getSampleShape(symbolizer, w, h);
 
-					shapePainter.paint(graphics, shape, style2d, scaleDenominator);
-                }
+                shapePainter.paint(graphics, shape, style2d, scaleDenominator);
             }
 
             legendsStack.add(image);
@@ -353,7 +331,7 @@ public abstract class DefaultRasterLegendProducer
             }
 
             sampleShape = this.sampleLine;
-        } else if ( (symbolizer instanceof PolygonSymbolizer) || (symbolizer instanceof RasterSymbolizer) ) {
+        } else if (symbolizer instanceof PolygonSymbolizer) {
             if (this.sampleRect == null) {
                 final float w = legendWidth - (2 * hpad);
                 final float h = legendHeight - (2 * vpad);

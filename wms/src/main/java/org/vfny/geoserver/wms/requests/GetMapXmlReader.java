@@ -34,7 +34,6 @@ import org.geotools.styling.UserLayer;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.util.GETMAPValidator;
 import org.vfny.geoserver.util.SLDValidator;
@@ -250,9 +249,7 @@ public class GetMapXmlReader extends XmlRequestReader {
         HttpServletRequest request = getMapRequest.getHttpServletRequest();
 
         String qString = request.getQueryString();
-        if (LOGGER.isLoggable(Level.FINE)) {
-        	LOGGER.fine(new StringBuffer("reading request: ").append(qString).toString());
-        }
+        LOGGER.fine("reading request: " + qString);
 
         //Map requestParams = KvpRequestReader.parseKvpSet(qString);
         Map requestParams = new HashMap();
@@ -299,7 +296,7 @@ public class GetMapXmlReader extends XmlRequestReader {
 
         final List layers = new ArrayList();
         final List styles = new ArrayList();
-        MapLayerInfo currLayer = new MapLayerInfo();
+        FeatureTypeInfo currLayer;
         Style currStyle;
 
         StyledLayer sl = null;
@@ -320,22 +317,17 @@ public class GetMapXmlReader extends XmlRequestReader {
                     && ((((UserLayer) sl)).getInlineFeatureDatastore() != null)) {
                 //SPECIAL CASE - we make the temporary version
                 UserLayer ul = ((UserLayer) sl);
-                currLayer.setFeature(new TemporaryFeatureTypeInfo(ul
-                        .getInlineFeatureDatastore(), ul.getInlineFeatureType()));
+                currLayer = new TemporaryFeatureTypeInfo(ul
+                        .getInlineFeatureDatastore(), ul.getInlineFeatureType());
             } else {
-            	try {
-            		currLayer.setFeature(GetMapKvpReader.findFeatureLayer(getMapRequest, layerName));	
-            	} catch (Exception e) {
-            		currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(getMapRequest, layerName));            		
-            	}
-                
+                currLayer = GetMapKvpReader.findLayer(getMapRequest, layerName);
             }
 
             GetMapKvpReader.addStyles(getMapRequest, currLayer,
                 styledLayers[i], layers, styles);
         }
 
-        getMapRequest.setLayers((MapLayerInfo[]) layers.toArray(
+        getMapRequest.setLayers((FeatureTypeInfo[]) layers.toArray(
                 new FeatureTypeInfo[layers.size()]));
         getMapRequest.setStyles(styles);
     }
@@ -603,10 +595,8 @@ public class GetMapXmlReader extends XmlRequestReader {
                 throw new WmsException(SLDValidator.getErrorMessage(in, errors));
             }
         } catch (IOException e) {
-            String msg = new StringBuffer("Creating remote SLD url: ").append(e.getMessage()).toString();
-            if (LOGGER.isLoggable(Level.WARNING)) {
-            	LOGGER.log(Level.WARNING, msg, e);
-            }
+            String msg = "Creating remote SLD url: " + e.getMessage();
+            LOGGER.log(Level.WARNING, msg, e);
             throw new WmsException(e, msg, "parseSldParam");
         }
     }
@@ -646,10 +636,8 @@ public class GetMapXmlReader extends XmlRequestReader {
                         errors));
             }
         } catch (IOException e) {
-            String msg = new StringBuffer("Creating remote GETMAP url: ").append(e.getMessage()).toString();
-            if (LOGGER.isLoggable(Level.WARNING)) {
-            	LOGGER.log(Level.WARNING, msg, e);
-            }
+            String msg = "Creating remote GETMAP url: " + e.getMessage();
+            LOGGER.log(Level.WARNING, msg, e);
             throw new WmsException(e, msg, "GETMAP validator");
         }
     }

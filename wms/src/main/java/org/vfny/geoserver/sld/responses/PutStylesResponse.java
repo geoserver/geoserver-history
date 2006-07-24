@@ -47,9 +47,4 @@ public class PutStylesResponse implements Response{
 		return null;
 	}
 
-	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

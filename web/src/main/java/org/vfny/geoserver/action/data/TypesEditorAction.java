@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,15 +26,12 @@ import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
-import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.geometry.JTS;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.FactoryFinder;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
@@ -88,16 +84,12 @@ public class TypesEditorAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         UserContainer user, HttpServletRequest request,
         HttpServletResponse response) throws IOException, ServletException {
-		if (LOGGER.isLoggable(Level.FINER)) {
-			LOGGER.finer(new StringBuffer("form bean:").append(form.getClass().getName()).toString());
-		}
+        LOGGER.finer("form bean:" + form.getClass().getName());
 
         TypesEditorForm typeForm = (TypesEditorForm) form;
 
         String action = typeForm.getAction();
-		if (LOGGER.isLoggable(Level.FINER)) {
-			LOGGER.finer(new StringBuffer("TypesEditorAction is ").append(action).toString());
-		}
+        LOGGER.finer("TypesEditorAction is " + action);
 
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = getResources(request);
@@ -107,9 +99,7 @@ public class TypesEditorAction extends ConfigAction {
                     "label.add"));
         final String BBOX = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
-		if (LOGGER.isLoggable(Level.FINER)) {
-			LOGGER.finer(new StringBuffer("BBOX: ").append(BBOX).toString());
-		}
+        LOGGER.finer("BBOX: " + BBOX);
         final String NEWSLD = HTMLEncoder.decode(messages.getMessage(locale,
         			"config.data.sldWizard.label"));
         
@@ -174,16 +164,12 @@ public class TypesEditorAction extends ConfigAction {
         FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
         FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
         
-		if (LOGGER.isLoggable(Level.FINE)) {
-			LOGGER.fine(new StringBuffer("calculating bbox for their dataset").toString());
-		}
+        LOGGER.fine("calculating bbox for their dataset" );
         Envelope envelope = DataStoreUtils.getBoundingBoxEnvelope(fs);
         
         if (envelope.isNull()) // there's no data in the featuretype!!
         {
-    		if (LOGGER.isLoggable(Level.FINE)) {
-    			LOGGER.fine(new StringBuffer("FeatureType '").append(featureType.getTypeName()).append("' has a null bounding box").toString());
-    		}
+        	LOGGER.fine("FeatureType '"+featureType.getTypeName()+"' has a null bounding box" );
       	    ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,
                 new ActionError("error.data.nullBBOX",featureType.getTypeName() ));
@@ -208,12 +194,8 @@ public class TypesEditorAction extends ConfigAction {
  
 
         try {
-        	//CoordinateReferenceSystem crsTheirData = CRS.decode(srs);
-        	//CoordinateReferenceSystem crsLatLong   = CRS.decode("EPSG:4326");  // latlong
-			CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-			CoordinateReferenceSystem crsTheirData=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem(srs);
-			CoordinateReferenceSystem crsLatLong=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:4326");
-
+        	CoordinateReferenceSystem crsTheirData = CRS.decode(srs);
+        	CoordinateReferenceSystem crsLatLong   = CRS.decode("EPSG:4326");  // latlong
         	MathTransform xform = CRS.transform(crsTheirData,crsLatLong,true);
         	Envelope xformed_envelope = JTS.transform(envelope,xform,10); //convert data bbox to lat/long
         	
@@ -225,10 +207,8 @@ public class TypesEditorAction extends ConfigAction {
         }
         catch (NoSuchAuthorityCodeException e)
 		{
-    		if (LOGGER.isLoggable(Level.FINE)) {
-    			LOGGER.fine(e.getLocalizedMessage() );
-    			LOGGER.fine(e.getStackTrace().toString());
-    		}
+        	  LOGGER.fine(e.getLocalizedMessage() );
+        	  LOGGER.fine(e.getStackTrace().toString());
         	  ActionErrors errors = new ActionErrors();
               errors.add(ActionErrors.GLOBAL_ERROR,
                   new ActionError("error.data.couldNotFindSRSAuthority", e.getLocalizedMessage(), e.getAuthorityCode() ));
@@ -237,10 +217,8 @@ public class TypesEditorAction extends ConfigAction {
 		}
         catch (FactoryException fe)
 		{
-    		if (LOGGER.isLoggable(Level.FINE)) {
-	          LOGGER.fine(fe.getLocalizedMessage() );
-	      	  LOGGER.fine(fe.getStackTrace().toString());
-    		}
+          LOGGER.fine(fe.getLocalizedMessage() );
+      	  LOGGER.fine(fe.getStackTrace().toString());
       	  ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,
                 new ActionError("error.data.factoryException",fe.getLocalizedMessage()));
@@ -249,10 +227,8 @@ public class TypesEditorAction extends ConfigAction {
 		}
         catch (TransformException te)
 		{
-    		if (LOGGER.isLoggable(Level.FINE)) {
-	          LOGGER.fine(te.getLocalizedMessage() );
-	      	  LOGGER.fine(te.getStackTrace().toString());
-    		}
+          LOGGER.fine(te.getLocalizedMessage() );
+      	  LOGGER.fine(te.getStackTrace().toString());
       	  ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,
                 new ActionError("error.data.transformException"));
@@ -269,73 +245,67 @@ public class TypesEditorAction extends ConfigAction {
      * @param config
      */
     private void sync(TypesEditorForm form, FeatureTypeConfig config, 
-    		HttpServletRequest request) {
-    	config.setName(form.getTypeName());
-    	config.setAbstract(form.getAbstract());
-    	config.setDefaultStyle(form.getStyleId());
-    	config.setSRS(Integer.parseInt(form.getSRS()));
-    	config.setTitle(form.getTitle());
-    	config.setLatLongBBox(getBoundingBox(form));
-    	config.setKeywords(keyWords(form));
-		config.setWmsPath(form.getWmsPath());
-        config.setCacheMaxAge(form.getCacheMaxAge());
-        config.setCachingEnabled(form.isCachingEnabled());
-        if (!form.isCachingEnabledChecked()) {
-        	config.setCachingEnabled(false);
-        }
+		      HttpServletRequest request) {
+        config.setName(form.getTypeName());
+        config.setAbstract(form.getAbstract());
+        config.setDefaultStyle(form.getStyleId());
+        config.setSRS(Integer.parseInt(form.getSRS()));
+        config.setTitle(form.getTitle());
+        config.setLatLongBBox(getBoundingBox(form));
+        config.setKeywords(keyWords(form));
 
-    	String schemaBase = form.getSchemaBase();
-    	
-    	if ((schemaBase == null) || schemaBase.equals("")
-    			|| schemaBase.equals("--")) {
-    		config.setSchemaBase(null);
-    		config.setSchemaName(null);
-    		config.setSchemaAttributes(null);
-    	} else {
-    		config.setSchemaBase(schemaBase);
-    		
-    		String schemaName = config.getSchemaName();
-    		List schemaAttributes = config.getSchemaAttributes();
-    		System.out.println("in non null sb, sname: " + schemaName + 
-    				", satts: " + schemaAttributes);
-    		if ((schemaName == null) || (schemaName.trim().length() == 0)) {
-    			schemaName = form.getTypeName() + "_Type";
-    			//HACK: For some reason only when editing an already exisitng
-    			//featureType, on the first time of switching to the editor
-    			//it gets a full schemaAttribute list, and I can't find where
-    			//so for now we are just relying on schemaName being null or
-    			
-    			schemaAttributes = null;
-    			//System.out.println("testing on schemaAtts: " + schemaAttributes);               
-    			config.setSchemaName(schemaName);
-    		} else {
-    			config.setSchemaName(form.getSchemaName());
-    		}
-    		if (schemaAttributes == null || schemaAttributes.isEmpty()) {
-    			schemaAttributes = new ArrayList();
-    			List createList = form.getCreateableAttributes();
-    			System.out.println("schemaAtts null, createList: " + createList);
-    			FeatureType fType = getFeatureType(form, request);
-    			for (int i = 0; i < fType.getAttributeCount(); i++) {
-    				AttributeType attType = fType.getAttributeType(i);
-    				AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attType);
-    				schemaAttributes.add(attributeConfig);
-    				//new ArrayList();
-    				//DataStoreConfig dsConfig = config.
-    				//FeatureType featureType = config.get
-    			}
-    			config.setSchemaAttributes(schemaAttributes);
-    		} else {
-    			config.setSchemaAttributes(form.toSchemaAttributes());
-    		}
-    	}
-    	
-    	
-    	
-    	//            config.setSchemaAttributes(form.toSchemaAttributes());
-    	
-    	LOGGER.fine("config schema atts is " + config.getSchemaAttributes());
-    	//config.setSchemaAttributes(form.toSchemaAttributes());
+        String schemaBase = form.getSchemaBase();
+
+        if ((schemaBase == null) || schemaBase.equals("")
+                || schemaBase.equals("--")) {
+            config.setSchemaBase(null);
+            config.setSchemaName(null);
+            config.setSchemaAttributes(null);
+        } else {
+            config.setSchemaBase(schemaBase);
+	    
+            String schemaName = config.getSchemaName();
+            List schemaAttributes = config.getSchemaAttributes();
+            System.out.println("in non null sb, sname: " + schemaName + 
+			       ", satts: " + schemaAttributes);
+	    if ((schemaName == null) || (schemaName.trim().length() == 0)) {
+                schemaName = form.getTypeName() + "_Type";
+                //HACK: For some reason only when editing an already exisitng
+		//featureType, on the first time of switching to the editor
+		//it gets a full schemaAttribute list, and I can't find where
+		//so for now we are just relying on schemaName being null or
+		
+                schemaAttributes = null;
+		//System.out.println("testing on schemaAtts: " + schemaAttributes);               
+		config.setSchemaName(schemaName);
+	    } else {
+		config.setSchemaName(form.getSchemaName());
+	    }
+	    if (schemaAttributes == null || schemaAttributes.isEmpty()) {
+		    schemaAttributes = new ArrayList();
+		    List createList = form.getCreateableAttributes();
+		    System.out.println("schemaAtts null, createList: " + createList);
+		    FeatureType fType = getFeatureType(form, request);
+		    for (int i = 0; i < fType.getAttributeCount(); i++) {
+			AttributeType attType = fType.getAttributeType(i);
+			AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attType);
+	 		schemaAttributes.add(attributeConfig);
+		    //new ArrayList();
+		    //DataStoreConfig dsConfig = config.
+		    //FeatureType featureType = config.get
+		    }
+		    config.setSchemaAttributes(schemaAttributes);
+	    } else {
+		config.setSchemaAttributes(form.toSchemaAttributes());
+	    }
+	}
+		
+
+
+	    //            config.setSchemaAttributes(form.toSchemaAttributes());
+    
+	    LOGGER.fine("config schema atts is " + config.getSchemaAttributes());
+	    //config.setSchemaAttributes(form.toSchemaAttributes());
     }
 
     private void executeAdd(ActionMapping mapping, TypesEditorForm form,

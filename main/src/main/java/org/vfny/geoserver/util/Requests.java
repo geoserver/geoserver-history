@@ -4,8 +4,11 @@
  */
 package org.vfny.geoserver.util;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 
 import org.vfny.geoserver.global.UserContainer;
 

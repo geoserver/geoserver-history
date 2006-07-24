@@ -402,9 +402,4 @@ public class LockResponse implements Response {
             LOGGER.warning("Abort not complete:" + ioException);
         }
     }
-
-	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

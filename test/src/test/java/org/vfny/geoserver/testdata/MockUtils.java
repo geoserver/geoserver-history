@@ -25,7 +25,6 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
@@ -179,7 +178,8 @@ public class MockUtils {
 		service.setAccessConstraints("NONE");
 		service.setEnabled(true);
 		service.setFees("NONE");
-		service.setKeywords(new String[] { "test", "mock", "service", "config" });
+		service
+				.setKeywords(new String[] { "test", "mock", "service", "config" });
 		service.setMaintainer("Gabriel Roldan");
 		service.setName("WMS");
 		try {
@@ -250,13 +250,7 @@ public class MockUtils {
 			throw new ConfigurationException(
 					"Expected cite test dataset directory at " + dir);
 		}
-		
-		Map formats = createFormatsMap();
-		dataDto.setFormats(formats);
-		
-		Map coverages = new HashMap();
-		dataDto.setCoverages(coverages);
-		
+
 		Map dataStores = createDataStoresMap();
 		dataDto.setDataStores(dataStores);
 
@@ -272,19 +266,6 @@ public class MockUtils {
 
 		Data catalog = new Data(dataDto, dir, geoserver);
 		return catalog;
-	}
-
-	private static Map createFormatsMap() throws IOException {
-		Map map = new HashMap();
-		CoverageStoreInfoDTO fmDto = new CoverageStoreInfoDTO();
-		fmDto.setAbstract("test cite data for unit testing geoserver");
-		fmDto.setEnabled(true);
-		fmDto.setId("cite");
-		fmDto.setNameSpaceId("cite");
-		fmDto.setTitle("same as abstract");
-
-		map.put("cite", fmDto);
-		return map;
 	}
 
 	private static Map createDataStoresMap() throws IOException {
@@ -366,7 +347,6 @@ public class MockUtils {
 		}
 		return map;
 	}
-
 
 	/**
 	 * Returns a <code>DataStore</code> containing CITE feature types.

@@ -33,7 +33,7 @@ public class SrsHelpAction extends Action {
 	 * 
 	 * DONE: once geosever support EPSG thats not in the properties file, this should
 	 *       be a bit more abstract and get a list of all EPSG defs from the 
-	 *       GDSFactory (if possible).  Use toWKT() as its nicer to read.
+	 *       Factory (if possible).  Use toWKT() as its nicer to read.
 	 * 
 	 *   Form has two properies - ids  (list of String - the epsg #)
 	 *                            defs (list of String - the epsg WKT definitions)

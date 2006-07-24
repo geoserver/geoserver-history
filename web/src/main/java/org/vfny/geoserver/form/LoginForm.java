@@ -10,7 +10,6 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -28,11 +27,6 @@ import org.apache.struts.util.MessageResources;
  * @version $Id: LoginForm.java,v 1.2 2004/02/09 23:30:06 dmzwiers Exp $
  */
 public class LoginForm extends ActionForm {
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
-	private static final long serialVersionUID = 3258410616858358324L;
-
 	private String username;
     private String password;
     private String confirm;
@@ -73,7 +67,7 @@ public class LoginForm extends ActionForm {
         
         //MessageResources messages = servlet.getResources();
         //TODO: not sure about this, changed for struts 1.2.8 upgrade
-        MessageResources messages = (MessageResources) request.getAttribute(Globals.MESSAGES_KEY);
+        MessageResources messages = servlet.getInternal();
         
         String usernameLabel = messages.getMessage(locale, "label.username");
         String passwordLabel = messages.getMessage(locale, "label.password");

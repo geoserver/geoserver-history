@@ -50,8 +50,6 @@ import org.vfny.geoserver.form.DemoRequestForm;
  * @author Richard Gould
  * @author Jody Garnett
  * @author Brent Owens (The Open Planning Project)
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * 
  * @version 
  */
@@ -73,12 +71,12 @@ public class DemoRequestAction extends GeoServerAction
         if (demo == null)
         	demo = "";
         if (demo.equals("")) {
-            demoForm.setUrl(baseUrl);
+            demoForm.setUrl(baseUrl + "wfs");
             demoForm.setBody("");
         }
 
         String url = org.vfny.geoserver.util.Requests.getBaseUrl(request)
-            + (demo.indexOf("Coverage") > 0 ? "wcs" : "wfs");
+            + "wfs";
         
         File file = new File(dir, demo);
         BufferedReader reader = new BufferedReader(new FileReader(file));

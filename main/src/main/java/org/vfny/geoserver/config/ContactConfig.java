@@ -85,11 +85,6 @@ public class ContactConfig {
     /** The contact email address. */
     private String contactEmail;
 
-	/**
-	 * The contact online resource.
-	 * 
-	 */
-	private String onlineResource;
     /**
      * Default ContactConfig constructor.
      * 
@@ -146,7 +141,6 @@ public class ContactConfig {
         contactVoice = dto.getContactVoice();
         contactFacsimile = dto.getContactFacsimile();
         contactEmail = dto.getContactEmail();
-        onlineResource = dto.getOnlineResource();
     }
 
     public ContactDTO toDTO() {
@@ -163,7 +157,6 @@ public class ContactConfig {
         dto.setContactVoice(contactVoice);
         dto.setContactFacsimile(contactFacsimile);
         dto.setContactEmail(contactEmail);
-        dto.setOnlineResource(onlineResource);
 
         return dto;
     }
@@ -503,25 +496,4 @@ public class ContactConfig {
             contactVoice = string;
         }
     }
-
-	/**
-	 * @return Returns the onlineResource.
-	 * 
-	 * @uml.property name="onlineResource"
-	 */
-	public String getOnlineResource() {
-		return onlineResource;
-	}
-
-	/**
-	 * @param onlineResource The onlineResource to set.
-	 * 
-	 * @uml.property name="onlineResource"
-	 */
-	public void setOnlineResource(String onlineResource) {
-		if (onlineResource != null) {
-			this.onlineResource = onlineResource;
-		}
-	}
-
 }

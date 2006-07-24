@@ -39,7 +39,6 @@ public abstract class Service extends GlobalLayerSupertype {
 	private String accessConstraints;
 	private String maintainer;
 	private String strategy;
-	private MetaDataLink metadataLink;
 	private int partialBufferSize;
 	
 	private GeoServer gs;
@@ -70,7 +69,6 @@ public abstract class Service extends GlobalLayerSupertype {
         accessConstraints = dto.getAccessConstraints();
         maintainer = dto.getMaintainer();
         onlineResource = dto.getOnlineResource();
-        metadataLink = dto.getMetadataLink();
         strategy = dto.getStrategy();
         partialBufferSize = dto.getPartialBufferSize();
     }
@@ -96,7 +94,6 @@ public abstract class Service extends GlobalLayerSupertype {
     	accessConstraints = dto.getAccessConstraints();
     	maintainer = dto.getMaintainer();
     	onlineResource = dto.getOnlineResource();
-    	metadataLink = dto.getMetadataLink();
     	strategy = dto.getStrategy();
     	partialBufferSize = dto.getPartialBufferSize();
     	
@@ -267,7 +264,6 @@ public abstract class Service extends GlobalLayerSupertype {
 	    	dto.setOnlineResource(onlineResource);
 	    	dto.setAbstract(serverAbstract);
 	    	dto.setTitle(title);
-    	dto.setMetadataLink(metadataLink);
 	    	dto.setStrategy(strategy);
 	    	dto.setPartialBufferSize(partialBufferSize);
 	    	return dto;
@@ -306,14 +302,6 @@ public abstract class Service extends GlobalLayerSupertype {
 	 */
 	void setGeoServer(GeoServer gs) {
 		this.gs = gs;
-	}
-
-	/**
-	 * @return Returns the metadataLink.
-	 * 
-	 */
-	public MetaDataLink getMetadataLink() {
-		return metadataLink;
 	}
 
 }

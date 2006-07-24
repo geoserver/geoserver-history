@@ -2,7 +2,7 @@
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
   <display-name>GeoServer</display-name>
-  <description>Web Mapping, Feature and Coverage Services</description>
+  <description>Web Mapping and Feature Services</description>
 
   <context-param>
     <param-name>serviceStratagy</param-name>
@@ -176,10 +176,6 @@
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>dispatcher</servlet-name>
-	<url-pattern>/wcs/*</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-  	<servlet-name>dispatcher</servlet-name>
 	<url-pattern>/wfs/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
@@ -253,18 +249,6 @@
     <welcome-file>/WEB-INF/pages/index.jsp</welcome-file>
   </welcome-file-list>
  
-  <error-page>
-  	<exception-type>java.lang.Exception</exception-type>
-		<location>/WEB-INF/pages/errors/Exception.jsp</location>
-  </error-page>
-  <error-page>
-  	<exception-type>javax.servlet.ServletException</exception-type>
-		<location>/WEB-INF/pages/errors/Exception.jsp</location>
-  </error-page>
-  <error-page>
-  	<exception-type>org.vfny.geoserver.global.ConfigurationException</exception-type>
-		<location>/WEB-INF/pages/errors/Exception.jsp</location>
-  </error-page>
 
   <taglib>
     <taglib-uri>/tags/struts-bean</taglib-uri>

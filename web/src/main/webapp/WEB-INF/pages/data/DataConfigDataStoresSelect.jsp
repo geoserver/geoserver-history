@@ -2,7 +2,7 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<html:form action="/config/data/storeSelectSubmit">
+<html:form action="/config/data/storeSelect">
 <table class="info">
   <tbody>
     <tr>

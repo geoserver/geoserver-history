@@ -22,16 +22,6 @@
     </tr>
 	<tr>
       <td class="label">
-		<span class="help" title="<bean:message key="help.wms.path"/>">
-          <bean:message key="label.wms.path"/>:
-        </span>
-	  </td>
-	  <td class="datum">
-		<html:text property="wmsPath" size="60"/>
-	  </td>
-	</tr>
-	<tr>
-      <td class="label">
 		<span class="help" title="<bean:message key="help.type.style"/>">
           <bean:message key="label.style"/>:
         </span>
@@ -312,7 +302,7 @@
             <td><bean:message key="label.max"/>:<html:text size="2" property='<%= "attributes[" + index + "].maxOccurs"%>'/></td>
             <td width=16>
               <% if (first == false) { %>
-          	  <html:image src="/geoserver/WEB-INF/images/up.png" 
+          	  <html:image src="../../../images/up.png" 
           	  	          titleKey="type.title.up" 
           	  	          property="action" 
           	  	          value="<%= "up_"+ index%>"/>
@@ -321,14 +311,14 @@
           	</td>
           	<td width=16>
           	  <% if (attributesSize-1 != index.intValue()) { %>
-          	  <html:image src="/geoserver/WEB-INF/images/down.png" 
+          	  <html:image src="../../../images/down.png" 
           	              titleKey="type.title.down" 
           	              property="action" 
           	              value="<%= "down_"+ index%>"/>
           	  <% } %>
           	</td> 
           	<td width=16>
-          	  <html:image src="/geoserver/WEB-INF/images/delete.png" 
+          	  <html:image src="../../../images/delete.png" 
           	  	          titleKey="type.title.delete" 
           	  	          property="action" 
           	  	          value="<%= "delete_"+ index%>"/>

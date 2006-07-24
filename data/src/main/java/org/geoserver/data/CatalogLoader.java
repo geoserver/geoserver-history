@@ -1,12 +1,15 @@
 package org.geoserver.data;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.geotools.catalog.Catalog;
 import org.geotools.catalog.Service;
 import org.geotools.catalog.ServiceFinder;
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ResourceLoaderAware;

@@ -7,7 +7,6 @@ package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
 import java.util.Locale;
-import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -56,9 +55,7 @@ public class DataFeatureTypesSelectAction extends ConfigAction {
                 ftConfig);
             
             user.setFeatureTypeConfig( ftConfig );                       
-			if (LOGGER.isLoggable(Level.INFO)) {
-				LOGGER.info(new StringBuffer("setting session and user ftConfig to : ").append(ftConfig).toString());			
-			}
+	    LOGGER.info("setting session and user ftConfig to : " + ftConfig);
             return mapping.findForward("config.data.type.editor");
         } else if (delete.equals(buttonAction)) {
             dataConfig.removeFeatureType(selectedFeatureType);

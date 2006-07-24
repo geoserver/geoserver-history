@@ -108,7 +108,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
         // put magic namespace into the mix
         // not sure if we want to do this, as we want the full namespace, not
-	    //the id.  But getParams in DataStore may override this - ch
+	//the id.  But getParams in DataStore may override this - ch
         connectionParams.put("namespace", dataStoresForm.getNamespaceId());
         paramTexts.put("namespace", dataStoresForm.getNamespaceId());
         

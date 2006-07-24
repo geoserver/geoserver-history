@@ -14,12 +14,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.mvc.ServletWrappingController;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.servlets.AbstractService;
@@ -27,6 +30,7 @@ import org.vfny.geoserver.util.requests.EncodingInfo;
 import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.DispatcherXmlReader;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.wfs.WfsException;
 
 
 

@@ -7,8 +7,6 @@ package org.vfny.geoserver.global.dto;
 import java.net.URL;
 import java.util.Arrays;
 
-import org.vfny.geoserver.global.MetaDataLink;
-
 
 /**
  * Data Transfer Object representing GeoServer Service information.
@@ -132,7 +130,7 @@ public final class ServiceDTO implements DataTransferObject {
      * </p>
      */
     private String maintainer;
-	private MetaDataLink metadataLink;
+    
     /**
      * The output strategy to use when the service is performing a response.
      * <p>
@@ -190,7 +188,6 @@ public final class ServiceDTO implements DataTransferObject {
         accessConstraints = dto.getAccessConstraints();
         maintainer = dto.getMaintainer();
         onlineResource = dto.getOnlineResource();
-        metadataLink = dto.getMetadataLink();
         strategy = dto.getStrategy();
     }
 
@@ -259,10 +256,6 @@ public final class ServiceDTO implements DataTransferObject {
             return false;
         }
         
-        if ((metadataLink != null) ? (!metadataLink.equals(dto.metadataLink))
-                : (dto.metadataLink != null)) {
-        	return false;
-        }
         if ((strategy != null) ? (!strategy.equals(dto.strategy)) : (dto.strategy != null)) {
         		return false;
         }
@@ -285,7 +278,6 @@ public final class ServiceDTO implements DataTransferObject {
         | ((fees != null) ? fees.hashCode() : 0)
         | ((accessConstraints != null) ? accessConstraints.hashCode() : 0)
         | ((maintainer != null) ? maintainer.hashCode() : 0) 
-        | ((metadataLink != null) ? metadataLink.hashCode() : 0)
         | ((strategy != null) ? strategy.hashCode() : 0);
     }
 
@@ -529,23 +521,7 @@ public final class ServiceDTO implements DataTransferObject {
     public void setMaintainer(String string) {
         maintainer = string;
     }
-
-	/**
-	 * @return Returns the metadataLink.
-	 * 
-	 */
-	public MetaDataLink getMetadataLink() {
-		return metadataLink;
-	}
-
-	/**
-	 * @param metadataLink The metadataLink to set.
-	 * 
-	 */
-	public void setMetadataLink(MetaDataLink metadataLink) {
-		this.metadataLink = metadataLink;
-	}
-
+    
     /**
      * Sets the strategy used by the service when performing a response.
      * 

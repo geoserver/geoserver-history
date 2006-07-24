@@ -17,20 +17,14 @@ import java.util.TreeSet;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
-import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureType;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.FactoryFinder;
-import org.geotools.referencing.factory.epsg.DefaultFactory;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
@@ -80,16 +74,11 @@ public class TypesEditorForm extends ActionForm {
     private String typeName;
 
     /**
-	 * 
-	 */
-	private String wmsPath;
-
-	/**
-	 * Representation of the Spatial Reference System.
-	 * 
-	 * <p>
-	 * Empty represents unknown, usually assumed to be Cartisian Coordinates.
-	 * </p>
+     * Representation of the Spatial Reference System.
+     * 
+     * <p>
+     * Empty represents unknown, usually assumed to be Cartisian Coordinates.
+     * </p>
      */
     private String SRS;
     
@@ -240,7 +229,6 @@ public class TypesEditorForm extends ActionForm {
 
         
         title = type.getTitle();
-        wmsPath = type.getWmsPath();
 
         System.out.println("rest based on schemaBase: " + type.getSchemaBase());
 
@@ -428,7 +416,7 @@ public class TypesEditorForm extends ActionForm {
         Locale locale = (Locale) request.getLocale();
         //MessageResources messages = servlet.getResources();
         //TODO: not sure about this, changed for struts 1.2.8 upgrade
-        MessageResources messages = (MessageResources) request.getAttribute(Globals.MESSAGES_KEY);
+        MessageResources messages = servlet.getInternal();
         final String BBOX = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
         final String SLDWIZARD = HTMLEncoder.decode(messages.getMessage(locale,
@@ -634,35 +622,30 @@ public class TypesEditorForm extends ActionForm {
      */
     public void setSRS(String srs) 
     {
-
-		SRS = srs;
-		try {
-			// srs should be an Integer - according to FeatureTypeConfig
-			// TODO: make everything consistent for SRS - either its an int or a
-			//       string.
-			String newSrs = srs;
-			if (newSrs.indexOf(':') == -1) {
-				newSrs = "EPSG:" + srs;
-			}
-			//CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
-			CRSAuthorityFactory crsFactory = FactoryFinder
-				.getCRSAuthorityFactory("EPSG", new Hints(
-					Hints.CRS_AUTHORITY_FACTORY,
-					CRSAuthorityFactory.class));
-			CoordinateReferenceSystem crsTheirData = (CoordinateReferenceSystem) crsFactory
-				.createCoordinateReferenceSystem(newSrs);
-
-			SRSWKT = crsTheirData.toWKT();
-		} catch (FactoryException e) // couldnt decode their code
+    
+        SRS = srs;
+        try{
+        	   // srs should be an Integer - according to FeatureTypeConfig
+        	// TODO: make everything consistent for SRS - either its an int or a
+        	//       string.
+        	String newSrs = srs;
+        	if (newSrs.indexOf(':') == -1)
+        	{
+        		newSrs = "EPSG:"+srs;
+        	}
+        	CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
+        	SRSWKT = crsTheirData.toWKT();
+        }
+        catch (Exception e)  // couldnt decode their code
 		{
-			// DJB:
-			// dont know how to internationize this inside a set() method!!!
-			// I think I need the request to get the local, then I can get MessageResources
-			// from the servlet and call an appropriate method.  
-			// Unforutunately, I dont know how to get the local!  
-			SRSWKT = "Could not find a definition for: EPSG:" + srs;
+        	// DJB:
+        	// dont know how to internationize this inside a set() method!!!
+        	// I think I need the request to get the local, then I can get MessageResources
+        	// from the servlet and call an appropriate method.  
+        	// Unforutunately, I dont know how to get the local!  
+        	SRSWKT = "Could not find a definition for: EPSG:"+srs;
 		}
-	}
+    }
 
     /**
      * Access title property.
@@ -895,13 +878,6 @@ public class TypesEditorForm extends ActionForm {
     	return dataMaxY;
     }
     
-	public String getWmsPath() {
-		return wmsPath;
-	}
-	public void setWmsPath(String wmsPath) {
-		this.wmsPath = wmsPath;
-	}
-
     public String getCacheMaxAge() {
 		return cacheMaxAge;
 	}

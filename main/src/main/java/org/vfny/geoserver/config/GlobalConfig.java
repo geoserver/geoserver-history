@@ -7,10 +7,7 @@ package org.vfny.geoserver.config;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.dto.ContactDTO;
-import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 
 
@@ -145,12 +142,6 @@ public class GlobalConfig {
     /** location on disk to log to **/
     private String logLocation = null;
 
-    
-    private long jaiMemoryCapacity;
-    private double jaiMemoryThreshold;
-    private boolean jaiRecycling;
-    private boolean imageIOCache;
-    
     /**
      * GlobalConfig constructor.
      * 
@@ -171,16 +162,6 @@ public class GlobalConfig {
         verboseExceptions = true;
         logLocation = null;
     }
-
-    /**
-     * Instantiates the global config from the geoServer module.
-     * 
-     * @param geoserver The geoServer module.
-     */
-    public GlobalConfig ( GeoServer geoserver ) {
-    		this ( (GeoServerDTO) geoserver.toDTO() );
-    }
- 
 
     /**
      * GlobalConfig constructor.
@@ -211,11 +192,6 @@ public class GlobalConfig {
         
         loggingToFile = g.getLoggingToFile();
         logLocation = g.getLogLocation();
-        
-        jaiMemoryCapacity = g.getJaiMemoryCapacity();
-        jaiMemoryThreshold = g.getJaiMemoryThreshold();
-        jaiRecycling = g.getJaiRecycling().booleanValue();
-        imageIOCache = g.getImageIOCache().booleanValue();
         
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -255,11 +231,6 @@ public class GlobalConfig {
 		loggingToFile = g.getLoggingToFile();
 		logLocation = g.getLogLocation();
         
-        jaiMemoryCapacity = g.getJaiMemoryCapacity();
-        jaiMemoryThreshold = g.getJaiMemoryThreshold();
-        jaiRecycling = g.getJaiRecycling().booleanValue();
-        imageIOCache = g.getImageIOCache().booleanValue();
-        
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
         } else {
@@ -292,10 +263,6 @@ public class GlobalConfig {
         g.setContact((ContactDTO) contact.toDTO());
         g.setLoggingToFile(loggingToFile);
         g.setLogLocation(logLocation);
-        g.setJaiMemoryCapacity(jaiMemoryCapacity);
-        g.setJaiMemoryThreshold(jaiMemoryThreshold);
-        g.setJaiRecycling(Boolean.valueOf(jaiRecycling));
-        g.setImageIOCache(Boolean.valueOf(imageIOCache));
 
         return g;
     }
@@ -601,36 +568,5 @@ public class GlobalConfig {
 	 */
 	public void setLoggingToFile(boolean loggingToFile) {
 		this.loggingToFile = loggingToFile;
-	}
-
-	public long getJaiMemoryCapacity() {
-		return jaiMemoryCapacity;
-	}
-
-	public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
-		this.jaiMemoryCapacity = jaiMemoryCapacity;
-	}
-
-	public boolean isJaiRecycling() {
-		return jaiRecycling;
-	}
-
-	public void setJaiRecycling(boolean jaiRecycling) {
-		this.jaiRecycling = jaiRecycling;
-	}
-
-    public boolean isImageIOCache() {
-        return imageIOCache;
-    }
-
-    public void setImageIOCache(boolean imageIOCache) {
-        this.imageIOCache = imageIOCache;
-    }
-
-    public double getJaiMemoryThreshold() {
-		return jaiMemoryThreshold;
-	}
-	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
-		this.jaiMemoryThreshold = jaiMemoryThreshold;
 	}
 }
