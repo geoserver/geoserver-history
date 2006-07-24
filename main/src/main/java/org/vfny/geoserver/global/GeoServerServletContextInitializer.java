@@ -1,7 +1,5 @@
 package org.vfny.geoserver.global;
 
-import javax.servlet.ServletContext;
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

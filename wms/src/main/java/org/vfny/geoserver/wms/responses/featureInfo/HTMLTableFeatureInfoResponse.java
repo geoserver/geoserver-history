@@ -124,4 +124,9 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         
         writer.flush();
     }
+
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

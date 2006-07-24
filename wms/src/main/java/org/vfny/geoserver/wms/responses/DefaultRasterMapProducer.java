@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
@@ -25,7 +26,6 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 
-import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -226,17 +226,17 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
         renderer.setRendererHints(rendererParams);
        
 
-        Envelope dataArea = map.getAreaOfInterest();
+		final ReferencedEnvelope dataArea = map.getAreaOfInterest();
         AffineTransform at = RendererUtilities.worldToScreenTransform(dataArea,   paintArea);
 
         //LOGGER.fine("calling renderer");
 
-        if (this.abortRequested)
-        {
-            return;
-        }
+		if (this.abortRequested) {
+			graphic.dispose();
+			return;
+		}
       
-        renderer.paint(graphic, paintArea, at);
+		renderer.paint(graphic, paintArea, dataArea);
         
         map = null;
 

@@ -862,4 +862,9 @@ public class TransactionResponse implements Response {
         request = null;
         response = null;
     }
+
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

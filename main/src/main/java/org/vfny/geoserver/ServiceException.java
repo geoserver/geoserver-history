@@ -76,7 +76,12 @@ import org.vfny.geoserver.util.ResponseUtils;
  *       would lead to better  error reporting...
  */
 public class ServiceException extends org.geoserver.ows.ServiceException {
-    /** Class logger */
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7167069567224924383L;
+
+	/** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
 

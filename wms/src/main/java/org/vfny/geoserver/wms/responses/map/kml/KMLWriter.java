@@ -32,7 +32,7 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.IllegalAttributeException;
-import org.geotools.filter.Expression;
+import org.geotools.filter.expression.Expression;
 import org.geotools.filter.Filter;
 import org.geotools.gml.producer.GeometryTransformer;
 import org.geotools.map.MapLayer;

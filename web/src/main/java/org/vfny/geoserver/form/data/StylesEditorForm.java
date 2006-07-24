@@ -27,6 +27,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -124,6 +125,7 @@ public class StylesEditorForm extends ActionForm {
             return errors;
         }
         filename= this.getSldFile().getFileName();
+        //Requests.getApplicationState(request);
         
         return errors;
     }

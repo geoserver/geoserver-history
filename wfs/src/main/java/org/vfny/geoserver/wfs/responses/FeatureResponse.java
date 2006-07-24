@@ -503,4 +503,9 @@ public class FeatureResponse implements Response {
         //
         catalog.lockRelease(featureLock.getAuthorization());
     }
+
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

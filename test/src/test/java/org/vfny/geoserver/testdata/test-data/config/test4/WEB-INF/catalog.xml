@@ -14,6 +14,10 @@ parameters repository for all featuretypes it holds.
 <parameter value = "cite" name = "user"  /><parameter value = "cite" name = "passwd"  /><parameter value = "hydra" name = "host"  /><parameter value = "5432" name = "port"  /><parameter value = "cite" name = "database"  /><parameter value = "postgis" name = "dbtype"  /></connectionParams>
 </datastore>
 </datastores>
+
+<formats>
+</formats>
+
 <!--
 Defines namespaces to be used by the datastores.
 -->

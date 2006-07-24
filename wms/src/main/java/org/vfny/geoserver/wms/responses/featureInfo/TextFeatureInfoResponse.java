@@ -131,4 +131,9 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         }
         writer.flush();
     }
+
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

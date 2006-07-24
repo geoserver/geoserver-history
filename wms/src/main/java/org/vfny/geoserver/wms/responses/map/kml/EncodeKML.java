@@ -15,19 +15,16 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.GraphicsJAI;
-import javax.media.jai.PlanarImage;
 
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
@@ -35,14 +32,14 @@ import org.geotools.data.Query;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.Expression;
+import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
-import org.geotools.filter.FilterFactoryImpl;
-import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
-import org.geotools.filter.Expression;
+import org.geotools.filter.IllegalFilterException;
+import org.geotools.filter.expression.BBoxExpression;
+import org.geotools.filter.expression.Expression;
 import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.lite.RendererUtilities;
@@ -63,7 +60,7 @@ public class EncodeKML {
             "org.vfny.geoserver.responses.wms.map.kml");
     
     /** Filter factory for creating bounding box filters */
-    //private FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
+    private FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
 
     /** the XML and KML header */
     private static final String KML_HEADER =
@@ -280,7 +277,6 @@ public class EncodeKML {
 
             try {
             	Filter filter = null;
-            	/* WCS branch version with new Expressions
             	BBoxExpression rightBBox = filterFactory.createBBoxExpression(mapContext
                         .getAreaOfInterest());
                 filter = createBBoxFilters(schema, attributes, rightBBox);
@@ -302,24 +298,9 @@ public class EncodeKML {
                     }
                 }
                 
-                q.setCoordinateSystem(
-                        layer.getFeatureSource().getSchema().getDefaultGeometry().getCoordinateSystem());
+                q.setCoordinateSystem(layer.getFeatureSource().getSchema().getDefaultGeometry().getCoordinateSystem());
                 
-                featureReader = fSource.getFeatures(q).reader();
-                ----WCS version with new expressions*/
-            	
-                Expression bboxExpression = fFac.createBBoxExpression(mapContext
-                        .getAreaOfInterest());
-                GeometryFilter bboxFilter = fFac.createGeometryFilter(FilterType.GEOMETRY_INTERSECTS);
-                bboxFilter.addLeftGeometry(bboxExpression);
-                bboxFilter.addRightGeometry(fFac.createAttributeExpression(
-                        schema, schema.getDefaultGeometry().getName()));
-                
-                Query bboxQuery = new DefaultQuery(schema.getTypeName(),
-                        bboxFilter);
-                
-                featureReader = fSource.getFeatures(bboxQuery).reader();
-                FeatureCollection fc = fSource.getFeatures(bboxQuery);
+                FeatureCollection fc = fSource.getFeatures(q);
                 
                 int kmscore = mapContext.getRequest().getKMScore(); //KMZ score value
                 if (useVectorOutput(kmscore, fc.size()) || !kmz)
@@ -493,7 +474,7 @@ public class EncodeKML {
      *         its corresponding <code>GeometryFilter</code>.
      * @throws IllegalFilterException if something goes wrong creating the filter
      */
-    /*private Filter createBBoxFilters( FeatureType schema, String[] attributes, BBoxExpression bbox )
+    private Filter createBBoxFilters( FeatureType schema, String[] attributes, BBoxExpression bbox )
     throws IllegalFilterException {
         Filter filter = null;
         
@@ -533,5 +514,5 @@ public class EncodeKML {
         }
         
         return filter;
-    }*/
+    }
 }

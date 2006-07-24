@@ -196,6 +196,25 @@ public class ApplicationState implements PlugIn, InitializingBean  {
         configTimestamp = new Date();
     }
     /** Q: what is this supposed to do? */
+    public int getWcsGood(){
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0)){
+    		loadStatus();
+    	}
+    	return geoserverStatus[4];
+    }
+    /** q: What foul manner of magic is this? */
+    public int getWcsBad() {
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    		loadStatus();
+    	return geoserverStatus[5];
+    }
+    /** q: This does not make a lot of sense - did you want to consult both ConfigChanged and GeoServer changed? */
+    public int getWcsDisabled() {
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    		loadStatus();
+    	return geoserverStatus[6];
+    }
+    /** Q: what is this supposed to do? */
     public int getWfsGood(){
     	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0)){
     		loadStatus();
@@ -511,6 +530,14 @@ public class ApplicationState implements PlugIn, InitializingBean  {
     	return new LinkedList(getValidationErrors().values());
     }
     
+    public Map getWCSErrors(){
+    	return getNameSpaceErrors();
+    }
+    
+    public List getWCSErrorKeys(){
+    	return getNameSpaceErrorKeys();
+    }
+
     public Map getWFSErrors(){
     	return getNameSpaceErrors();
     }

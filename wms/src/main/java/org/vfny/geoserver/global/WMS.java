@@ -5,7 +5,6 @@
 package org.vfny.geoserver.global;
 
 import org.vfny.geoserver.global.dto.ServiceDTO;
-import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
 
