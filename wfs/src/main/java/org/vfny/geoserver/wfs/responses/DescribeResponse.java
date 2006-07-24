@@ -528,4 +528,9 @@ public class DescribeResponse implements Response {
     public void abort(Service gs) {
         // nothing to undo
     }
+
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
