@@ -35,10 +35,9 @@ import org.geotools.data.Query;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.Expression;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
+//import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
@@ -260,7 +259,7 @@ public class EncodeKML {
         MapLayer[] layers = mapContext.getLayers();
         int nLayers = layers.length;
         
-        FilterFactory fFac = FilterFactoryFinder.createFilterFactory();
+        FilterFactory fFac = new FilterFactoryImpl();
         
         writer.startDocument("GeoServer", null);
         for (int i = 0; i < nLayers; i++) {
@@ -322,16 +321,18 @@ public class EncodeKML {
                 FeatureCollection fc = fSource.getFeatures(bboxQuery);
                 
                 int kmscore = mapContext.getRequest().getKMScore(); //KMZ score value
-                if (useVectorOutput(kmscore, fc.size()) || !kmz)
+                boolean useVector = useVectorOutput(kmscore, fc.size()); // kmscore = render vector/raster
+                if (useVector || !kmz)
                 {
                 	LOGGER.info("Layer ("+layer.getTitle()+") rendered with KML vector output.");
                 	layerRenderList.add(new Integer(i)); // save layer number so it won't be rendered
-                	writer.writeFeatures(fc, layer, i+1, false); // KML
+                	writer.writeFeatures(fc, layer, i, false, useVector); // KML
                 }
                 else
                 {
+                	// user requested KMZ and kmscore says render raster
                 	LOGGER.info("Layer ("+layer.getTitle()+") rendered with KMZ raster output.");
-                	writer.writeFeatures(fc, layer, i+1, true); // KMZ
+                	writer.writeFeatures(fc, layer, i, true, useVector); // KMZ
                 }
 
                	LOGGER.fine("finished writing");
@@ -410,7 +411,7 @@ public class EncodeKML {
     							this.mapContext.getBgColor().getBlue(), 
     							0);
     		
-    		LOGGER.info("****** bg color: "+c.getRed()+","+c.getGreen()+","+c.getBlue()+","+c.getAlpha()+", trans: "+c.getTransparency());
+    		//LOGGER.info("****** bg color: "+c.getRed()+","+c.getGreen()+","+c.getBlue()+","+c.getAlpha()+", trans: "+c.getTransparency());
  
     		graphic.setBackground(this.mapContext.getBgColor());
     		graphic.setColor(c);
@@ -447,7 +448,7 @@ public class EncodeKML {
 			// Storing Image ...
 			//
 			// /////////////////////////////////////////////////////////////////
-			final ZipEntry e = new ZipEntry("layer_"+(i+1)+".png");
+			final ZipEntry e = new ZipEntry("layer_"+(i)+".png");
 			outZ.putNextEntry(e);
 			final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
 					outZ);

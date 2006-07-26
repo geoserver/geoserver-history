@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.vfny.geoserver.config.WMSConfig;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 
@@ -97,7 +96,7 @@ public class KMZMapProducerFactory implements GetMapProducerFactorySpi {
      *
      * @throws IllegalArgumentException DOCUMENT ME!
      */
-    public GetMapProducer createMapProducer(String mapFormat, WMS wms )
+    public GetMapProducer createMapProducer(String mapFormat, WMSConfig config )
     throws IllegalArgumentException {
         return new KMZMapProducer();
     }
