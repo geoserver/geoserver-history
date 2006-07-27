@@ -441,6 +441,7 @@
 						<descriptor>release/war.xml</descriptor>
 						<descriptor>release/javadoc.xml</descriptor>
 						<descriptor>release/bin.xml</descriptor>
+						<descriptor>release/doc.xml</descriptor>
 					</descriptors>
 					<finalName>geoserver-1.4.0-M1</finalName>
 					<outputDirectory>
