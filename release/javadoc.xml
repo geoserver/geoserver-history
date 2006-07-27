@@ -6,29 +6,8 @@
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
-			<directory>main/target/javadoc</directory>
-			<outputDirectory>geoserver/main</outputDirectory>
-			<includes>
-				<include>**/*</include>
-			</includes>
-		</fileSet>
-		<fileSet>
-			<directory>web/target/javadoc</directory>
-			<outputDirectory>geoserver/web</outputDirectory>
-			<includes>
-				<include>**/*</include>
-			</includes>
-		</fileSet>
-		<fileSet>
-			<directory>wfs/target/javadoc</directory>
-			<outputDirectory>geoserver/wfs</outputDirectory>
-			<includes>
-				<include>**/*</include>
-			</includes>
-		</fileSet>
-		<fileSet>
-			<directory>web/target/javadoc</directory>
-			<outputDirectory>geoserver/wms</outputDirectory>
+			<directory>target/site/apidocs</directory>
+			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>**/*</include>
 			</includes>
