@@ -451,10 +451,11 @@ Section "Uninstall"
   
   Delete "$INSTDIR\Uninstall.exe"
   RMDIR /r "$INSTDIR\bin"
-  RMDIR /r "$INSTDIR\documents"
-  RMDIR /r "$INSTDIR\server"
+  RMDIR /r "$INSTDIR\etc"
+  RMDIR /r "$INSTDIR\webapps"
   RMDIR /r "$INSTDIR\lib"
   Delete "$INSTDIR\*.txt"
+  Delete "$INSTDIR\*.jar"
 
   RMDir "$INSTDIR"
   
