@@ -470,14 +470,6 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 			ex.initCause(e);
 
 			throw ex;
-		} catch (OperationNotFoundException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-			throw ex;
-		} catch (FactoryException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-			throw ex;
 		} catch (TransformException e) {
 			final IOException ex = new IOException(e.getLocalizedMessage());
 			ex.initCause(e);
@@ -544,14 +536,6 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 			final IOException ex = new IOException(e.getLocalizedMessage());
 			ex.initCause(e);
 
-			throw ex;
-		} catch (OperationNotFoundException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-			throw ex;
-		} catch (FactoryException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
 			throw ex;
 		} catch (TransformException e) {
 			final IOException ex = new IOException(e.getLocalizedMessage());

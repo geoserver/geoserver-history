@@ -206,7 +206,7 @@ public class KMLWriter extends OutputStreamWriter {
      * @TODO: support Name and Description information
      */
     public void writeFeatures(final FeatureCollection features, final MapLayer layer,
-    		final int order, final boolean kmz)
+    		final int order, final boolean kmz, final boolean vectorResult)
     throws IOException, AbortedException {
         Style style = layer.getStyle();
 		
@@ -218,7 +218,7 @@ public class KMLWriter extends OutputStreamWriter {
             if (!kmz)
             	processStylers(features, fts, layer, order);
             else
-            	processStylersKMZ(features, fts, layer, order);
+            	processStylersKMZ(features, fts, layer, order, vectorResult);
 
 
            	LOGGER.fine(new StringBuffer("encoded ").append(featureType.getTypeName()).toString());
@@ -411,6 +411,10 @@ public class KMLWriter extends OutputStreamWriter {
                         StringBuffer title = new StringBuffer("");	// this gets filled in if there is a textsymbolizer
                         
                         startDocument(feature.getID(), layer.getTitle());
+                        
+                        // start writing out the styles
+                        write("<Style id=\"GeoServerStyle" + feature.getID() +"\">");
+                        
                         // applicable rules
                         for( Iterator it = ruleList.iterator(); it.hasNext(); ) {
                             Rule r = (Rule) it.next();
@@ -421,20 +425,21 @@ public class KMLWriter extends OutputStreamWriter {
                                 doElse = false;
                                 LOGGER.finer("processing Symobolizer ...");
                                 Symbolizer[] symbolizers = r.getSymbolizers();
-                                raster = processSymbolizers(features, feature, symbolizers, scaleRange, layer, order, -1, title);
+                                raster = processSymbolizers(features, feature, symbolizers, scaleRange, layer, order, -1, title, true);
                             }
                         }
                         if (doElse) {
                             // rules with an else filter
                             LOGGER.finer("rules with an else filter");
-                            
                             for( Iterator it = elseRuleList.iterator(); it.hasNext(); ) {
                                 Rule r = (Rule) it.next();
                                 Symbolizer[] symbolizers = r.getSymbolizers();
                                 LOGGER.finer("processing Symobolizer ...");
-                                raster = processSymbolizers(features, feature, symbolizers, scaleRange, layer, order, -1, title);
+                                raster = processSymbolizers(features, feature, symbolizers, scaleRange, layer, order, -1, title, true);
                             }
                         }
+                        
+                        write("</Style>"); // close off styles
                         
                         if (!raster) {
                         	String fTitle = title.toString();
@@ -470,8 +475,18 @@ public class KMLWriter extends OutputStreamWriter {
         }
     }
     
+    /**
+     * 
+     * @param features
+     * @param featureStylers
+     * @param layer
+     * @param order 
+     * @param vectorResult is false when the result is forced to be a raster image (kmscore)
+     * @throws IOException
+     * @throws IllegalAttributeException
+     */
     private void processStylersKMZ(final FeatureCollection features, final FeatureTypeStyle[] featureStylers,
-    		final MapLayer layer, final int order)
+    		final MapLayer layer, final int order, final boolean vectorResult)
     throws IOException,  IllegalAttributeException {
         
     	startFolder("layer_"+order, layer.getTitle());
@@ -539,23 +554,27 @@ public class KMLWriter extends OutputStreamWriter {
                                 LOGGER.finer("processing Symobolizer ...");
                                 Symbolizer[] symbolizers = r.getSymbolizers();
                                 // title gets filled in if there is a textsymbolizer
-                                raster = processSymbolizers(features, feature, symbolizers, scaleRange, layer, order, layerCounter, title);
+                                raster = processSymbolizers(features, feature, symbolizers, scaleRange, layer, order, layerCounter, title, vectorResult);
                                 layerCounter++;
                             }
                         }
                         if (doElse) {
                             // rules with an else filter
                         	LOGGER.finer("rules with an else filter");
-                            
                             for( Iterator it = elseRuleList.iterator(); it.hasNext(); ) {
                                 Rule r = (Rule) it.next();
                                 Symbolizer[] symbolizers = r.getSymbolizers();
                                 LOGGER.finer("processing Symobolizer ...");
                                 // title gets filled in if there is a textsymbolizer
-                                raster = processSymbolizers(features, feature, symbolizers, scaleRange, layer, order, layerCounter, title);
+                                raster = processSymbolizers(features, feature, symbolizers, scaleRange, layer, order, layerCounter, title, vectorResult);
                                 layerCounter++;
                             }
                         }
+                        
+                        // if the result is not vector (meaning it is a raster), then we only want to
+                        // render one feature and have it point at the png
+                        if (!vectorResult)
+                        	break;	// only render the one feature for raster result
                         
                         // temporarily removed (bao)
                         // Is this ideal? If we are producing KMZ raster images, it is
@@ -644,11 +663,12 @@ public class KMLWriter extends OutputStreamWriter {
      */
     private boolean processSymbolizers( final FeatureCollection features, final Feature feature,
             final Symbolizer[] symbolizers, Range scaleRange,
-			final MapLayer layer, final int order, final int layerCounter, StringBuffer title) throws IOException, TransformerException {
+			final MapLayer layer, final int order, final int layerCounter, StringBuffer title, boolean vectorResult) throws IOException, TransformerException {
         
     	boolean res = false;
         //String title=null;
         final int length = symbolizers.length;
+        
         
         // for each Symbolizer (text, polygon, line etc...)
         for( int m = 0; m < length; m++ ) {
@@ -712,13 +732,13 @@ public class KMLWriter extends OutputStreamWriter {
                 //writeRasterStyle(getMapRequest.toString(), feature.getID());
 				*/
 				res = true;
-            } else if(layerCounter<0){
+            } else if(vectorResult){
                 //TODO: come back and sort out crs transformation
                 //CoordinateReferenceSystem crs = findGeometryCS(feature, symbolizers[m]);              
                 if( symbolizers[m] instanceof TextSymbolizer ){
                 	TextSymbolizer ts = (TextSymbolizer) symbolizers[m];
                 	Expression ex = ts.getLabel();
-                	String value = (String)ex.getValue(feature);
+                	String value = ex.getValue(feature).toString();
                 	title.append(value);
                 	Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
                 	writeStyle(style, feature.getID(), symbolizers[m]);
@@ -726,7 +746,7 @@ public class KMLWriter extends OutputStreamWriter {
                     Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
                     writeStyle(style, feature.getID(), symbolizers[m]);
                 }
-            } else if(layerCounter == order) {
+            } else if(!vectorResult) {
             	com.vividsolutions.jts.geom.Envelope envelope = this.mapContext.getRequest().getBbox();
                 write(new StringBuffer("<GroundOverlay>").
                     	append("<name>").append(feature.getID()).append("</name>").
@@ -750,7 +770,10 @@ public class KMLWriter extends OutputStreamWriter {
 						append("</LatLonBox>").
 						append("</GroundOverlay>").toString());
             }
+            else
+            	LOGGER.info("KMZ processSymbolizerz unknown case. Please report error.");
         }
+        	
         
         return res;
     }
@@ -769,7 +792,7 @@ public class KMLWriter extends OutputStreamWriter {
         		LOGGER.info("Empty PolygonSymbolizer, using default fill and stroke.");
         	
         	final StringBuffer styleString = new StringBuffer();
-        	styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
+        	
         	styleString.append("<IconStyle>");
         	if (!mapContext.getRequest().getKMattr()) // if they don't want attributes
         		styleString.append("<color>#00ffffff</color>");// fully transparent
@@ -786,7 +809,7 @@ public class KMLWriter extends OutputStreamWriter {
             	styleString.append("#ffaaaaaa");//should not occure in normal parsing
             }
             styleString.append("</color></PolyStyle>");
-            styleString.append("</Style>");
+            //styleString.append("</Style>");
 
             write(styleString.toString());
         } else if(style instanceof LineStyle2D){
@@ -795,7 +818,7 @@ public class KMLWriter extends OutputStreamWriter {
             		LOGGER.info("Empty LineSymbolizer, using default stroke.");
         	
         	final StringBuffer styleString = new StringBuffer();
-        	styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
+        	//styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
         	styleString.append("<IconStyle>");
         	if (!mapContext.getRequest().getKMattr()) // if they don't want attributes
         		styleString.append("<color>#00ffffff</color>");// fully transparent
@@ -806,30 +829,30 @@ public class KMLWriter extends OutputStreamWriter {
         	
             Paint p = ((LineStyle2D)style).getContour();
             if(p instanceof Color){
-            	styleString.append("#aa").append(intToHex(opacity)).append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
+            	styleString.append("#").append(intToHex(opacity)).append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
             } else{
             	styleString.append("#ffaaaaaa");//should not occure in normal parsing
             }
             styleString.append("</color><width>2</width></LineStyle>");
-            styleString.append("</Style>");
+            //styleString.append("</Style>");
 
             write(styleString.toString());
         }
 	    else if(style instanceof TextStyle2D){
 	    	final StringBuffer styleString = new StringBuffer();
-        	styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
+        	//styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
         	styleString.append("<LabelStyle><color>");
         	float op = getOpacity(sym);
         	int opacity = (new Float(255*op)).intValue();
-        	
         	Paint p = ((TextStyle2D)style).getFill();
+        	
         	if(p instanceof Color){
-            	styleString.append("#aa").append(intToHex(opacity)).append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
+            	styleString.append("#").append(intToHex(opacity)).append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
             } else{
             	styleString.append("#ffaaaaaa");//should not occure in normal parsing
             }
         	styleString.append("</color></LabelStyle>");
-            styleString.append("</Style>");
+            //styleString.append("</Style>");
             
             write(styleString.toString());
 	    }

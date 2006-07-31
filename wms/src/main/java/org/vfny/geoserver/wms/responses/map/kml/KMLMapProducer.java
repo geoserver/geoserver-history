@@ -37,8 +37,6 @@ class KMLMapProducer implements GetMapProducer {
 	 */
 	private EncodeKML kmlEncoder;
 
-    /** lag between 'encode' call and 'writeTo' requires temporary storage' */
-    private File temp;
     
     /**
      * Request that encoding be halted if possible.
