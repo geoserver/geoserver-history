@@ -42,7 +42,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-ImageMosaic</artifactId>
+			<artifactId>gt2-imagemosaic</artifactId>
 		</dependency>
 
 	</dependencies>

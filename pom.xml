@@ -102,17 +102,6 @@
 				<artifactId>gt2</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
-
-			<dependency>
-				<groupId>org.geotools</groupId>
-				<artifactId>gt2-coverage</artifactId>
-				<version>${gt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.geotools</groupId>
-				<artifactId>gt2-referencing</artifactId>
-				<version>${gt.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-arcgrid</artifactId>
@@ -125,17 +114,12 @@
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>gt2-GriB1</artifactId>
-				<version>${gt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.geotools</groupId>
 				<artifactId>gt2-gtopo30</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>gt2-ImageMosaic</artifactId>
+				<artifactId>gt2-imagemosaic</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			
@@ -187,31 +171,6 @@
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-referencing</artifactId>
-				<version>${gt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.geotools</groupId>
-				<artifactId>gt2-arcgrid</artifactId>
-				<version>${gt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.geotools</groupId>
-				<artifactId>gt2-geotiff</artifactId>
-				<version>${gt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.geotools</groupId>
-				<artifactId>gt2-GriB1</artifactId>
-				<version>${gt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.geotools</groupId>
-				<artifactId>gt2-gtopo30</artifactId>
-				<version>${gt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.geotools</groupId>
-				<artifactId>gt2-ImageMosaic</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
