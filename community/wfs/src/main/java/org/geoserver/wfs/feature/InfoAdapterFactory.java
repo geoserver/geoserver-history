@@ -1,10 +1,13 @@
 package org.geoserver.wfs.feature;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.geoserver.GeoServerResourceLoader;
 import org.geoserver.data.GeoServerCatalog;
+import org.geoserver.data.feature.FeatureTypeReader;
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.GeoResourceInfo;
 import org.geotools.catalog.Resolve;
@@ -39,12 +42,19 @@ public class InfoAdapterFactory implements ResolveAdapterFactory,
 	GeoServerCatalog catalog;
 
 	/**
+	 * Resource loader
+	 */
+	GeoServerResourceLoader loader;
+
+	/**
 	 * Adapting resolve
 	 */
 	AdaptingResolve adaptingResolve;
 	
-	public InfoAdapterFactory ( GeoServerCatalog catalog ) {
+		
+	public InfoAdapterFactory ( GeoServerCatalog catalog, GeoServerResourceLoader loader ) {
 		this.catalog = catalog;
+		this.loader = loader;
 	}
 	
 	public void setAdaptingResolve(AdaptingResolve adaptingResolve) {
@@ -84,30 +94,53 @@ public class InfoAdapterFactory implements ResolveAdapterFactory,
 		if ( FeatureTypeInfo.class.equals( adaptee ) ) {
 			GeoResource handle = (GeoResource) resolve;
 			GeoResourceInfo rInfo = handle.getInfo( monitor );
-			
+		
 			FeatureTypeInfo info = new FeatureTypeInfo( (GeoResource) adaptingResolve );
-			info.setTypeName( rInfo.getName() );
-			info.setAbstract( rInfo.getDescription() );
-			info.setTitle( rInfo.getTitle() );
 			
+			//set some common atts
+			info.setTypeName( rInfo.getName() );
 			if ( rInfo.getSchema() != null ) {
 				String uri = rInfo.getSchema().toString();
 				String prefix = catalog.getNamespaceSupport().getPrefix( uri );
 				info.setNamespacePrefix( prefix );
 			}
 			
-			if ( rInfo.getKeywords() != null ) {
-				info.setKeywords( new ArrayList( Arrays.asList( rInfo.getKeywords() ) ) );
+			//look up the feature type info
+			String id = info.getNamespacePrefix();
+			id = id != null ? id + "_" + info.getTypeName() : info.getTypeName();
+			
+			File f = loader.find( "featureTypes/" + id + "/info.xml" );
+			if ( f.exists() ) {
+				//create from stored metadata
+				FeatureTypeReader reader = new FeatureTypeReader();
+				reader.read( f );
+				
+				info.setAbstract( reader.abstrct() );
+				info.setTitle( reader.title() );
+				info.setKeywords( Arrays.asList( reader.keywords() ) );
+				//info.setDefaultStyle( reader.defaultStyle() );
+				info.setNumDecimals( reader.numDecimals() );
+				info.setSRS( reader.srs() );
+				info.setLatLongBoundingBox( info.boundingBox() );
+				info.setEnabled( true );
+			}
+			else {
+				//create default
+				info.setTypeName( rInfo.getName() );
+				info.setAbstract( rInfo.getDescription() );
+				info.setTitle( rInfo.getTitle() );
+			
+				if ( rInfo.getKeywords() != null ) {
+					info.setKeywords( new ArrayList( Arrays.asList( rInfo.getKeywords() ) ) );
+				}
+				
+				info.setEnabled( false );
 			}
 			
-		
 			return info;
 		}
 			
-			
 		return null;
 	}
-
-	
 
 }

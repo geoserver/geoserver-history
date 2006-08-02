@@ -40,6 +40,7 @@ import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.geotools.util.ProgressListener;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -198,7 +199,11 @@ public class FeatureTypeInfo {
      */
     private boolean cachingEnabled;
     
-
+    /**
+     * flag to enable disable
+     */
+    boolean enabled;
+    
     public FeatureTypeInfo( GeoResource handle ) {
     		this.handle = handle;
     }
@@ -281,6 +286,15 @@ public class FeatureTypeInfo {
     			return false;
 		}
     }
+    
+    public boolean isEnabled() {
+		return enabled;
+	}
+    
+    public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+    
    
     public FeatureSource featureSource() throws IOException {
 		if ( !enabled() || dataStoreInfo().dataStore() == null ) {
@@ -359,7 +373,7 @@ public class FeatureTypeInfo {
         return latLongBBox;
     }
 
-    public void getLatLongBoundingBox(Envelope latLongBBox) {
+    public void setLatLongBoundingBox(Envelope latLongBBox) {
 		this.latLongBBox = latLongBBox;
 	}
     
@@ -821,12 +835,11 @@ public class FeatureTypeInfo {
 					result = CRS.decode("EPSG:"+epsg);
 					SRSLookup.put( new Integer(epsg)  , result);
 			} 
-	    		catch (NoSuchAuthorityCodeException e) {
+	    		catch (Exception e) {
 				String msg = "Error looking up SRS for EPSG: " + epsg + 
 					":" + e.getLocalizedMessage();
 	    			LOGGER.warning( msg );
-			}
-	    		
+			} 
 	    	}
 	    	return result;
     }
