@@ -92,19 +92,20 @@
 		Map producer factories
 	 -->
 	<bean id="PNGMapProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.map.PNGMapProducerFactory">
+		class="org.vfny.geoserver.wms.responses.map.png.PNGMapProducerFactory">
 	</bean>
-		
-	<bean id="JAIMapProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.map.JaiMapProducerFactory">
+	<bean id="GeoTiffMapProducerFactory" 
+		class="org.vfny.geoserver.wms.responses.map.geotiff.GeoTiffMapProducerFactory">
 	</bean>
-			
+   	 <bean id="TiffMapProducerFactory" 
+		class="org.vfny.geoserver.wms.responses.map.tiff.TiffMapProducerFactory">
+	</bean>
 	<bean id="SVGMapProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.map.SvgMapProducerFactory">
+		class="org.vfny.geoserver.wms.responses.map.svg.SvgMapProducerFactory">
 	</bean>
 	
 	<bean id="GIFMapProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.map.GifMapProducerFactory">
+		class="org.vfny.geoserver.wms.responses.map.gif.GifMapProducerFactory">
 	</bean>
 	
 	<bean id="KMLMapProducerFactory" 
