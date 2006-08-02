@@ -23,6 +23,7 @@ import com.sun.media.imageioimpl.plugins.gif.GIFImageWriterSpi;
  * Handles a GetMap request that spects a map in GIF format.
  * 
  * @author Didier Richard
+ * @author Simone Giannechini
  * @version $Id
  */
 public final class GIFMapProducer extends DefaultRasterMapProducer {

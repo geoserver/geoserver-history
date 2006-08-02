@@ -16,7 +16,7 @@ import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 /**
  * DOCUMENT ME!
  * 
- * @author Gabriel Roldan, Axios Engineering
+ * @author Simone Giannecchini
  * @version $Id$
  */
 public class TiffMapProducerFactory implements GetMapProducerFactorySpi {
@@ -29,6 +29,7 @@ public class TiffMapProducerFactory implements GetMapProducerFactorySpi {
 	 */
 	private static final Set SUPPORTED_FORMATS = Collections
 			.singleton(MIME_TYPE);
+
 	/** DOCUMENT ME! */
 	private static final Logger LOGGER = Logger
 			.getLogger(TiffMapProducerFactory.class.getPackage().getName());

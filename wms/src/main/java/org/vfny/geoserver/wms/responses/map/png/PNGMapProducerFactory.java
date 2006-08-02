@@ -16,12 +16,14 @@ import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
  * DOCUMENT ME!
  * 
  * @author Didier Richard, IGN-F
+ * @author Simone Giannecchini
  * @version $Id: PNGMapProducerFactory.java 4316 2006-03-17 13:11:24Z simboss $
  */
 public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
+	
+
 	/** the only MIME type this map producer supports */
 	static final String MIME_TYPE = "image/png";
-
 	/**
 	 * convenient singleton Set to expose the output format this producer
 	 * supports

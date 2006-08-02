@@ -12,97 +12,105 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 
-
 /**
  * DOCUMENT ME!
- *
- * @author Didier Richard, IGN-F
+ * 
+ * @author Didier Richard, IGN-F *
+ * @author Simone Giannechini
  * @version $Id$
  */
 public final class GifMapProducerFactory implements GetMapProducerFactorySpi {
-    /** the only MIME type this map producer supports */
-    static final String MIME_TYPE = "image/gif";
+	/** the only MIME type this map producer supports */
+	static final String MIME_TYPE = "image/gif";
 
-    /**
-     * convenient singleton Set to expose the output format this producer
-     * supports
-     */
-    private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
+	/**
+	 * convenient singleton Set to expose the output format this producer
+	 * supports
+	 */
+	private static final Set SUPPORTED_FORMATS = Collections
+			.singleton(MIME_TYPE);
 
-    /**
-     * Creates a new GifMapProducerFactory object.
-     */
-    public GifMapProducerFactory() {
-        super();
-    }
+	/**
+	 * Creates a new GifMapProducerFactory object.
+	 */
+	public GifMapProducerFactory() {
+		super();
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getName() {
-        return "Graphics Interchange Format (GIF) map producer";
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public String getName() {
+		return "Graphics Interchange Format (GIF) map producer";
+	}
 
-    /**
-     * Returns the Set of output format this producer supports
-     *
-     * @return Set of output format this producer supports (actually
-     *         "image/gif")
-     */
-    public Set getSupportedFormats() {
-        return SUPPORTED_FORMATS;
-    }
+	/**
+	 * Returns the Set of output format this producer supports
+	 * 
+	 * @return Set of output format this producer supports (actually
+	 *         "image/gif")
+	 */
+	public Set getSupportedFormats() {
+		return SUPPORTED_FORMATS;
+	}
 
-    /**
-     * <b>FIXME</b> JAI dependency ?
-     *
-     * @return <code>true</code>
-     */
-    public boolean isAvailable() {
-        return true;
-    }
+	/**
+	 * <b>FIXME</b> JAI dependency ?
+	 * 
+	 * @return <code>true</code>
+	 */
+	public boolean isAvailable() {
+		return true;
+	}
 
-    /**
-     * Returns wether the map producers created by this factory can create maps
-     * in the passed output format.
-     *
-     * @param mapFormat a MIME type string to check if this producer is able to
-     *        handle.
-     *
-     * @return <code>true</code> if <code>mapFormat == "image/gif"</code>,
-     *         <code>false</code> otherwise.
-     */
-    public boolean canProduce(String mapFormat) {
-        return MIME_TYPE.equals(mapFormat);
-    }
+	/**
+	 * Returns wether the map producers created by this factory can create maps
+	 * in the passed output format.
+	 * 
+	 * @param mapFormat
+	 *            a MIME type string to check if this producer is able to
+	 *            handle.
+	 * 
+	 * @return <code>true</code> if <code>mapFormat == "image/gif"</code>,
+	 *         <code>false</code> otherwise.
+	 */
+	public boolean canProduce(String mapFormat) {
+		return MIME_TYPE.equals(mapFormat);
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param mapFormat DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalArgumentException DOCUMENT ME!
-     */
-    public GetMapProducer createMapProducer(String mapFormat, WMS wms)
-        throws IllegalArgumentException {
-        if (!canProduce(mapFormat)) {
-            throw new IllegalArgumentException(mapFormat
-                + " not supported by this map producer");
-        }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param mapFormat
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @throws IllegalArgumentException
+	 *             DOCUMENT ME!
+	 */
+	public GetMapProducer createMapProducer(String mapFormat, WMS wms)
+			throws IllegalArgumentException {
+		if (!canProduce(mapFormat)) {
+			throw new IllegalArgumentException(mapFormat
+					+ " not supported by this map producer");
+		}
 
-        return new GIFMapProducer("image/gif"); // DJB: added "image/gif" or you'll get content encoded as image/png (the default)!!!
-    }
-    
-    /* (non-Javadoc)
-	 * @see org.geotools.factory.Factory#getImplementationHints()
-	 * This just returns java.util.Collections.EMPTY_MAP
+		return new GIFMapProducer("image/gif"); // DJB: added "image/gif" or
+												// you'll get content encoded as
+												// image/png (the default)!!!
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.geotools.factory.Factory#getImplementationHints() This just
+	 *      returns java.util.Collections.EMPTY_MAP
 	 */
 	public Map getImplementationHints() {
 		return java.util.Collections.EMPTY_MAP;
 	}
-	
+
 }

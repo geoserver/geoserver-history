@@ -2,8 +2,6 @@ package org.vfny.geoserver.requests.wms;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;

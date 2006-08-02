@@ -15,19 +15,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.GraphicsJAI;
-import javax.media.jai.PlanarImage;
 
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
@@ -50,8 +45,6 @@ import org.geotools.map.MapLayer;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.responses.map.png.PngEncoder;
-import org.vfny.geoserver.wms.responses.map.png.PngEncoderB;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -454,9 +447,9 @@ public class EncodeKML {
 			*/
 			
 			//---------------------- bo- new
-			PngEncoderB png = new PngEncoderB(curImage, PngEncoder.ENCODE_ALPHA, 0, 1);
-			byte[] pngbytes = png.pngEncode();
-			memOutStream.write(pngbytes);
+//			PngEncoderB png = new PngEncoderB(curImage, PngEncoder.ENCODE_ALPHA, 0, 1);
+//			byte[] pngbytes = png.pngEncode();
+//			memOutStream.write(pngbytes);
 			//----------------------
 			
 			//imgWriter.setOutput(memOutStream);
