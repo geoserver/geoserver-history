@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.map;
+package org.vfny.geoserver.wms.responses.map.svg;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,14 +13,13 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.map.svg.EncodeSVG;
 
 
 /**
  * Handles a GetMap request that spects a map in SVG format. 
  *
  * @author Gabriel Rold?n
- * @version $Id: SVGMapResponse.java,v 1.11 2004/04/16 18:36:49 cholmesny Exp $
+ * @version $Id$
  */
 class SVGMapProducer implements GetMapProducer {
 	

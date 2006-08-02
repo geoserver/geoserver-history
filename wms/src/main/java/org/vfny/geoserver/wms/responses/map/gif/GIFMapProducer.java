@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.imageio.IIOImage;
+import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
@@ -56,6 +57,11 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
 		final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(image);
 		final ImageWriter gifWriter = new GIFImageWriter(
 				new GIFImageWriterSpi());
+        final ImageWriteParam iwp= gifWriter.getDefaultWriteParam();
+        iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        iwp.setCompressionType("LZW");
+        iwp.setCompressionQuality(0.75f);
+        
 		gifWriter.setOutput(memOutStream);
 		gifWriter.write(null, new IIOImage(encodedImage, null, null), null);
 		memOutStream.flush();

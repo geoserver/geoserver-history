@@ -15,10 +15,11 @@ import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
 
-import org.geotools.resources.image.ImageUtilities;
+import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
@@ -29,76 +30,81 @@ import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
  * @version $Id
  */
 public class PNGMapProducer extends DefaultRasterMapProducer {
-	/** DOCUMENT ME! */
-	private static final Logger LOGGER = Logger.getLogger(PNGMapProducer.class
-			.getPackage().getName());
+    /** DOCUMENT ME! */
+    private static final Logger LOGGER = Logger.getLogger(PNGMapProducer.class.getPackage()
+            .getName());
 
-	public PNGMapProducer(String format) {
-		super(format);
-	}
+    public PNGMapProducer( String format ) {
+        super(format);
+    }
 
-	/**
-	 * Transforms the rendered image into the appropriate format, streaming to
-	 * the output stream.
-	 * 
-	 * @param format
-	 *            The name of the format
-	 * @param image
-	 *            The image to be formatted.
-	 * @param outStream
-	 *            The stream to write to.
-	 * 
-	 * @throws WmsException
-	 *             not really.
-	 * @throws IOException
-	 *             if encoding to <code>outStream</code> fails.
-	 */
-	public void formatImageOutputStream(String format, BufferedImage image,
-			OutputStream outStream) throws WmsException, IOException {
+    /**
+     * Transforms the rendered image into the appropriate format, streaming to the output stream.
+     * 
+     * @param format The name of the format
+     * @param image The image to be formatted.
+     * @param outStream The stream to write to.
+     * @throws WmsException not really.
+     * @throws IOException if encoding to <code>outStream</code> fails.
+     */
+    public void formatImageOutputStream( String format, BufferedImage image, OutputStream outStream )
+            throws WmsException, IOException {
+        if (format.equalsIgnoreCase(PNGMapProducerFactory.MIME_TYPE))
+            throw new IllegalArgumentException("The provided format " + format
+                    + " is not the same as expected: " + PNGMapProducerFactory.MIME_TYPE);
 
-		// /////////////////////////////////////////////////////////////////
-		//
-		// Reformatting this image for png
-		//
-		// /////////////////////////////////////////////////////////////////
-		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
-				outStream);
-		final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(image);
-		final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel ? ImageUtilities
-				.reformatColorModel2ComponentColorModel(encodedImage)
-				: encodedImage;
+        // /////////////////////////////////////////////////////////////////
+        //
+        // Reformatting this image for png
+        //
+        // /////////////////////////////////////////////////////////////////
 
-		// /////////////////////////////////////////////////////////////////
-		//
-		// Getting a writer
-		//
-		// /////////////////////////////////////////////////////////////////
-		final Iterator it = ImageIO.getImageWritersByMIMEType(format);
-		ImageWriter writer = null;
-		if (!it.hasNext()) {
-			throw new IllegalStateException("No PNG ImageWriter found");
-		} else
-			writer = (ImageWriter) it.next();
+        final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(image);
+        final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel
+                ? new ImageWorker(encodedImage).forceComponentColorModel().getPlanarImage()
+                : encodedImage;
 
-		// /////////////////////////////////////////////////////////////////
-		//
-		// Compression is available only on native lib
-		//
-		// /////////////////////////////////////////////////////////////////
-		final ImageWriteParam iwp = writer.getDefaultWriteParam();
-		if (writer.getClass().getName().equals(
-				"com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")) {
-			iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        // /////////////////////////////////////////////////////////////////
+        //
+        // Getting a writer
+        //
+        // /////////////////////////////////////////////////////////////////
+        final Iterator it = ImageIO.getImageWritersByMIMEType(format);
+        ImageWriter writer = null;
+        if (!it.hasNext()) {
+            throw new IllegalStateException("No PNG ImageWriter found");
+        } else
+            writer = (ImageWriter) it.next();
 
-			iwp.setCompressionQuality(0.75f);// we can control quality here
-		}
+        // /////////////////////////////////////////////////////////////////
+        //
+        // Compression is available only on native lib
+        //
+        // /////////////////////////////////////////////////////////////////
+        final ImageWriteParam iwp = writer.getDefaultWriteParam();
+        boolean nativeW = false;
+        if (writer.getClass().getName().equals(
+                "com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")) {
+            iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            iwp.setCompressionType("FILTERED");
+            iwp.setCompressionQuality(0.9f);// we can control quality here
+            nativeW = true;
+            writer.setOutput(outStream);
+        } else {
+            final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
+                    outStream);
+            writer.setOutput(memOutStream);
+        }
 
-		writer.setOutput(memOutStream);
-		writer.write(null, new IIOImage(finalImage, null, null), iwp);
-		memOutStream.flush();
-		memOutStream.close();
-		writer.dispose();
+        writer.write(null, new IIOImage(finalImage, null, null), iwp);
 
-	}
+        if (nativeW)
+            ((ImageOutputStream) writer.getOutput()).close();
+        else
+            outStream.close();
+
+        writer.dispose();
+
+    }
 
 }

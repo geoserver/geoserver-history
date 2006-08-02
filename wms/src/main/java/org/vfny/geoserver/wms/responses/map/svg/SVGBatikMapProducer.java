@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.map;
+package org.vfny.geoserver.wms.responses.map.svg;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
