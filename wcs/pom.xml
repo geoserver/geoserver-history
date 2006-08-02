@@ -20,7 +20,6 @@
 			<artifactId>main</artifactId>
 			<version>1.4.0-M1</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-coverage</artifactId>
@@ -36,10 +35,6 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-geotiff</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-GriB1</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>

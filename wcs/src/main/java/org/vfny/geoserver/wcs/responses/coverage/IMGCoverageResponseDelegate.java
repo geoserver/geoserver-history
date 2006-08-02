@@ -106,6 +106,5 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 		this.sourceCoverage.dispose();
 		this.sourceCoverage = null;
 
-
 	}
 }
