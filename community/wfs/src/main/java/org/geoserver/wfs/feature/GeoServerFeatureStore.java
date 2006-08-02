@@ -75,9 +75,9 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource
         return store().addFeatures(reader);
     }
     
-    public Set addFeatures(FeatureCollection collection) throws IOException {
-        return store().addFeatures(collection);
-    }
+//    public Set addFeatures(FeatureCollection collection) throws IOException {
+//        return store().addFeatures(collection);
+//    }
 
     /**
      * DOCUMENT ME!
