@@ -17,34 +17,36 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
 
+import org.geotools.image.ImageWorker;
 import org.geotools.resources.image.ImageUtilities;
 import org.vfny.geoserver.ServiceException;
 
 /**
  * Producer of legend graphics in all the formats available through JAI.
- *
+ * 
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id$
+ * @version $Id: PNGLegendGraphicProducer.java 4776 2006-07-24 14:43:05Z
+ *          afabiani $
  */
 class PNGLegendGraphicProducer extends DefaultRasterLegendProducer {
 
+	/**
+	 * Creates a new JAI based legend producer for creating
+	 * <code>outputFormat</code> type images.
+	 * 
+	 * @param outputFormat
+	 *            DOCUMENT ME!
+	 */
+	PNGLegendGraphicProducer() {
+		super();
+	}
 
-    /**
-     * Creates a new JAI based legend producer for creating
-     * <code>outputFormat</code> type images.
-     *
-     * @param outputFormat DOCUMENT ME!
-     */
-    PNGLegendGraphicProducer() {
-        super();
-    }
-
-    /**
-     * Encodes the image created by the superclss to the format specified at
-     * the constructor and sends it to <code>out</code>.
-     *
-     * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
-     */
+	/**
+	 * Encodes the image created by the superclss to the format specified at the
+	 * constructor and sends it to <code>out</code>.
+	 * 
+	 * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
+	 */
 	public void writeTo(OutputStream out) throws IOException, ServiceException {
 		final BufferedImage image = super.getLegendGraphic();
 
@@ -55,10 +57,10 @@ class PNGLegendGraphicProducer extends DefaultRasterLegendProducer {
 		// /////////////////////////////////////////////////////////////////
 		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
 				out);
-		final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(image);
-		final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel ? ImageUtilities
-				.reformatColorModel2ComponentColorModel(encodedImage)
-				: encodedImage;
+		final ImageWorker worker = new ImageWorker(image);
+		final PlanarImage finalImage = image.getColorModel() instanceof DirectColorModel ? worker
+				.forceComponentColorModel().getPlanarImage()
+				: worker.getPlanarImage();
 
 		// /////////////////////////////////////////////////////////////////
 		//
@@ -90,14 +92,14 @@ class PNGLegendGraphicProducer extends DefaultRasterLegendProducer {
 		memOutStream.flush();
 		memOutStream.close();
 		writer.dispose();
-    }
+	}
 
-    /**
-     * Returns the MIME type in which the legend graphic will be encoded.
-     *
-     * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#getContentType()
-     */
-    public String getContentType() throws IllegalStateException {
-        return "image/png";
-    }
+	/**
+	 * Returns the MIME type in which the legend graphic will be encoded.
+	 * 
+	 * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#getContentType()
+	 */
+	public String getContentType() throws IllegalStateException {
+		return "image/png";
+	}
 }
