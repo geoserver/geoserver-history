@@ -59,7 +59,6 @@ public class JPEGMapProducer extends DefaultRasterMapProducer {
         // Reformatting this image for png
         //
         // /////////////////////////////////////////////////////////////////
-
         final ColorModel cm = image.getColorModel();
         final boolean indexColorModel = image.getColorModel() instanceof IndexColorModel;
         final int numBands = image.getSampleModel().getNumBands();

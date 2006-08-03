@@ -24,60 +24,51 @@ import com.vividsolutions.jts.geom.Polygon;
 
 public class SVGMapProducerTest extends AbstractCiteDataTest {
 
-	public void testHeterogeneousGeometry() throws Exception {
-		GeometryFactory gf = new GeometryFactory();
-		Point point = gf.createPoint(new Coordinate(10,10));
-		LineString line = gf.createLineString(
-			new Coordinate[]{new Coordinate(50,50),new Coordinate(100,100)}	
-		);
-		Polygon polygon = gf.createPolygon(
-			gf.createLinearRing(
-				new Coordinate[]{
-					new Coordinate(0,0), new Coordinate(0,200),
-					new Coordinate(200,200), new Coordinate(200,0),
-					new Coordinate(0,0)
-				}
-			), null
-		);
-		
-		AttributeTypeFactory atf = AttributeTypeFactory.defaultInstance();
-		FeatureTypeFactory ff = FeatureTypeFactory.newInstance("test");
-		
-		ff.addType(atf.newAttributeType("geom", Geometry.class));
-		FeatureType type = ff.getFeatureType();
-		
-		Feature f1 = type.create(new Object[]{point});
-		Feature f2 = type.create(new Object[]{line});
-		Feature f3 = type.create(new Object[]{polygon});
-		
-		MemoryDataStore ds = new MemoryDataStore();
-		ds.createSchema(type);
-		ds.addFeatures(new Feature[]{f1,f2,f3});
-		
-		FeatureSource fs = ds.getFeatureSource("test");
-		
-		final WMSMapContext map = new WMSMapContext();
-        map.setAreaOfInterest(new Envelope(-250,250,-250,250));
+    public void testHeterogeneousGeometry() throws Exception {
+        GeometryFactory gf = new GeometryFactory();
+        Point point = gf.createPoint(new Coordinate(10, 10));
+        LineString line = gf.createLineString(new Coordinate[]{new Coordinate(50, 50),
+                new Coordinate(100, 100)});
+        Polygon polygon = gf.createPolygon(gf.createLinearRing(new Coordinate[]{
+                new Coordinate(0, 0), new Coordinate(0, 200), new Coordinate(200, 200),
+                new Coordinate(200, 0), new Coordinate(0, 0)}), null);
+
+        AttributeTypeFactory atf = AttributeTypeFactory.defaultInstance();
+        FeatureTypeFactory ff = FeatureTypeFactory.newInstance("test");
+
+        ff.addType(atf.newAttributeType("geom", Geometry.class));
+        FeatureType type = ff.getFeatureType();
+
+        Feature f1 = type.create(new Object[]{point});
+        Feature f2 = type.create(new Object[]{line});
+        Feature f3 = type.create(new Object[]{polygon});
+
+        MemoryDataStore ds = new MemoryDataStore();
+        ds.createSchema(type);
+        ds.addFeatures(new Feature[]{f1, f2, f3});
+
+        FeatureSource fs = ds.getFeatureSource("test");
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(new Envelope(-250, 250, -250, 250));
         map.setMapWidth(300);
         map.setMapHeight(300);
         map.setBgColor(Color.red);
         map.setTransparent(false);
 
-//        FilterFactory f = FilterFactory.createFilterFactory();
-//        GeometryFilter filter = f.createGeometryFilter(GeometryFilter.GEOMETRY_BBOX);
-//        
-//        filter.addLeftGeometry(f.createAttributeExpression(type,"geom"));
-//        filter.addRightGeometry(f.createBBoxExpression(new Envelope(-100,100,-100,100)));
-        
-       
+        // FilterFactory f = FilterFactory.createFilterFactory();
+        // GeometryFilter filter = f.createGeometryFilter(GeometryFilter.GEOMETRY_BBOX);
+        //        
+        // filter.addLeftGeometry(f.createAttributeExpression(type,"geom"));
+        // filter.addRightGeometry(f.createBBoxExpression(new Envelope(-100,100,-100,100)));
+
         Style basicStyle = getStyle("default.sld");
         map.addLayer(fs, basicStyle);
-        
+
         SVGMapProducer producer = new SVGMapProducer();
         producer.produceMap(map);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         producer.writeTo(out);
-        
-        
-	}
+
+    }
 }

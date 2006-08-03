@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducerTest;
+import org.vfny.geoserver.wms.responses.GetMapResponseTest;
 import org.vfny.geoserver.wms.responses.map.gif.GIFMapProducer;
 
 
@@ -43,8 +44,8 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
      * @param producer DOCUMENT ME!
      */
     protected void assertNotBlank(String testName,
+            
         DefaultRasterMapProducer producer){
-    	
         BufferedImage image = producer.getImage();
         
         BufferedImage product = null;
@@ -74,5 +75,9 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
         System.out.println("width=" + w + ", height=" + h);
 
         showImage(testName, product);
+    }
+    
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(GIFMapProducerTest.class);
     }
 }
