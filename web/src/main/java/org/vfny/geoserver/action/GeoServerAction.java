@@ -141,6 +141,6 @@ public class GeoServerAction extends ActionSupport {
      * @return Configuration model for Catalog information.
      */
     protected ApplicationState getApplicationState(HttpServletRequest request) {
-        return (ApplicationState) getWebApplicationContext().getBean("applicationRequest");
+        return (ApplicationState) getWebApplicationContext().getBean("applicationState");
     }
 }
