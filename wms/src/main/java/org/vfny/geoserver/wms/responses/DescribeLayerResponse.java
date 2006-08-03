@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
@@ -71,7 +72,9 @@ public class DescribeLayerResponse implements Response {
     public void execute(Request request) throws ServiceException {
         this.request = (DescribeLayerRequest) request;
 
-        LOGGER.fine("executing request " + request);
+        if (LOGGER.isLoggable(Level.FINE)) {
+        	LOGGER.fine(new StringBuffer("executing request ").append(request).toString());
+        }
 
         this.transformer = new DescribeLayerTransformer(this.request
                 .getSchemaBaseUrl());
@@ -144,4 +147,12 @@ public class DescribeLayerResponse implements Response {
     public String getContentEncoding() {
         return null;
     }
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

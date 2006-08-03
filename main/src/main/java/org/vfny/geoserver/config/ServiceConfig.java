@@ -6,6 +6,7 @@ package org.vfny.geoserver.config;
 
 import java.net.URL;
 
+import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 
 
@@ -63,6 +64,7 @@ public class ServiceConfig {
      * contact  information such as webmaster&amp;geoserver.org .
      */
     private String maintainer;
+	private MetaDataLink metadataLink;
 
     /**
      * ServiceConfig constructor.
@@ -82,6 +84,7 @@ public class ServiceConfig {
         fees = "";
         accessConstraints = "NONE";
         maintainer = "";
+        metadataLink = null;
     }
 
     /**
@@ -146,6 +149,7 @@ public class ServiceConfig {
         accessConstraints = s.getAccessConstraints();
         maintainer = s.getMaintainer();
         onlineResource = s.getOnlineResource();
+        metadataLink = s.getMetadataLink();
     }
 
     /**
@@ -178,6 +182,7 @@ public class ServiceConfig {
         sDto.setName(name);
         sDto.setOnlineResource(onlineResource);
         sDto.setTitle(title);
+        sDto.setMetadataLink(metadataLink);
 
         return sDto;
     }
@@ -343,4 +348,20 @@ public class ServiceConfig {
     public void setMaintainer(String string) {
         maintainer = string;
     }
+	/**
+	 * @return Returns the metadataLink.
+	 * 
+	 */
+	public MetaDataLink getMetadataLink() {
+		return metadataLink;
+	}
+
+	/**
+	 * @param metadataLink The metadataLink to set.
+	 * 
+	 */
+	public void setMetadataLink(MetaDataLink metadataLink) {
+		this.metadataLink = metadataLink;
+	}
+
 }

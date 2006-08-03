@@ -20,6 +20,7 @@ import javax.xml.transform.TransformerException;
 import org.geotools.filter.FilterTransformer;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
@@ -292,6 +293,7 @@ public class XMLConfigWriter {
             cw.textTag("ContactVoiceTelephone", c.getContactVoice());
             cw.textTag("ContactFacsimileTelephone", c.getContactFacsimile());
             cw.textTag("ContactElectronicMailAddress", c.getContactEmail());
+			cw.textTag("ContactOnlineResource", c.getOnlineResource());
             cw.closeTag("ContactInformation");
         }
     }
@@ -315,6 +317,7 @@ public class XMLConfigWriter {
         LOGGER.finer("In method storeService");
 
         ServiceDTO s = null;
+        String u = null;
         String t = "";
         
         boolean fBounds = false;
@@ -362,7 +365,14 @@ public class XMLConfigWriter {
         if ((s.getAbstract() != null) && (s.getAbstract() != "")) {
             cw.textTag("abstract", s.getAbstract());
         }
-
+		if (s.getMetadataLink() != null) {
+			MetaDataLink ml = s.getMetadataLink();
+			Map mlAttr = new HashMap();
+			mlAttr.put("about",ml.getAbout());
+			mlAttr.put("type",ml.getType());
+			mlAttr.put("metadataType",ml.getMetadataType());
+			cw.textTag("metadataLink", mlAttr, ml.getContent());
+		}
         if (s.getKeywords().length != 0) {
             cw.openTag("keywords");
 
@@ -790,6 +800,10 @@ public class XMLConfigWriter {
 
             if ((ft.getAbstract() != null) && (ft.getAbstract() != "")) {
                 cw.textTag("abstract", ft.getAbstract());
+            }
+
+            if ((ft.getWmsPath() != null) && (ft.getWmsPath() != "")) {
+                cw.textTag("wmspath", ft.getWmsPath());
             }
 
             cw.valueTag("numDecimals", ft.getNumDecimals() + "");

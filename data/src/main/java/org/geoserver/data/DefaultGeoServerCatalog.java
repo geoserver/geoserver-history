@@ -9,7 +9,6 @@ import org.geotools.catalog.Catalog;
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.Service;
 import org.geotools.catalog.defaults.DefaultCatalog;
-import org.geotools.util.ProgressListener;
 import org.xml.sax.helpers.NamespaceSupport;
 
 /**

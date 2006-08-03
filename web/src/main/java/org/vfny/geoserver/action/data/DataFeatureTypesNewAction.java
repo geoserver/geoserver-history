@@ -106,6 +106,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
 			// attempt to get a better SRS
 			try {
 				CoordinateReferenceSystem crs = featureType.getDefaultGeometry().getCoordinateSystem();
+            if (crs != null) {
 				Set idents = crs.getIdentifiers();
 				Iterator it = idents.iterator();
 				while (it.hasNext())
@@ -120,6 +121,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
 						break;  // take the first EPSG
 					}
 				}
+            }
 			}catch(Exception e)
 			{
 				e.printStackTrace(); // not a big deal - we'll default to 0.

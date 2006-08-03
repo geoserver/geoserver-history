@@ -59,6 +59,7 @@ public class GeoServer extends GlobalLayerSupertype {
     private String contactVoice;
     private String contactFacsimile;
     private String contactEmail;
+	private String onlineResource;
     
     /** Should we throw the stack traces back in responses? */
     private boolean verboseExceptions = false;
@@ -263,7 +264,20 @@ public class GeoServer extends GlobalLayerSupertype {
         return notNull(contactVoice);
     }
 
-    /**
+	/**
+	 * getOnlineResource purpose.
+	 * 
+	 * <p>
+	 * Returns the online Resource.
+	 * </p>
+	 * 
+	 * @return String the online Resource.
+	 */
+	public String getOnlineResource() {
+		return notNull(onlineResource);
+	}
+	
+	/**
      * getLoggingLevel purpose.
      * 
      * <p>
@@ -390,6 +404,7 @@ public class GeoServer extends GlobalLayerSupertype {
          
          maxFeatures = dto.getMaxFeatures();
          numDecimals = dto.getNumDecimals();
+			onlineResource = dto.getContact().getOnlineResource();
          schemaBaseUrl = dto.getSchemaBaseUrl();
          verbose = dto.isVerbose();
          adminUserName = dto.getAdminUserName();
@@ -546,6 +561,7 @@ public class GeoServer extends GlobalLayerSupertype {
         cdto.setContactPerson(contactPerson);
         cdto.setContactPosition(contactPosition);
         cdto.setContactVoice(contactVoice);
+		cdto.setOnlineResource(onlineResource);
 
         return dto;
     }

@@ -36,6 +36,7 @@ import org.geotools.filter.FilterDOMParser;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
@@ -544,6 +545,8 @@ public class XMLConfigReader {
                 "ContactFacsimileTelephone"));
         c.setContactEmail(ReaderUtils.getChildText(contactInfoElement,
                 "ContactElectronicMailAddress"));
+		c.setOnlineResource(ReaderUtils.getChildText(contactInfoElement,
+		"ContactOnlineResource"));
 
         return c;
     }
@@ -682,6 +685,8 @@ public class XMLConfigReader {
 			s.setAbstract(ReaderUtils.getChildText(serviceRoot, "abstract"));
 			s.setKeywords(ReaderUtils.getKeyWords(ReaderUtils.getChildElement(
 			            serviceRoot, "keywords")));
+			s.setMetadataLink(getMetaDataLink(ReaderUtils
+					.getChildElement(serviceRoot, "metadataLink")));
 			s.setFees(ReaderUtils.getChildText(serviceRoot, "fees"));
 			s.setAccessConstraints(ReaderUtils.getChildText(serviceRoot,
 			        "accessConstraints"));
@@ -907,7 +912,10 @@ public class XMLConfigReader {
     protected Map loadConnectionParams(Element connElem)
         throws ConfigurationException {
         Map connectionParams = new HashMap();
-
+		
+		if (connElem == null)
+			return connectionParams;
+		
         NodeList paramElems = connElem.getElementsByTagName("parameter");
         int pCount = paramElems.getLength();
         Element param;
@@ -1123,7 +1131,10 @@ public class XMLConfigReader {
 			ft.setName(ReaderUtils.getChildText(fTypeRoot, "name", true));
 			ft.setTitle(ReaderUtils.getChildText(fTypeRoot, "title", true));
 			ft.setAbstract(ReaderUtils.getChildText(fTypeRoot, "abstract"));
-
+			ft
+			.setWmsPath(ReaderUtils
+					.getChildText(fTypeRoot, "wmspath"/* , true */));
+			
 			String keywords = ReaderUtils.getChildText(fTypeRoot, "keywords");
 
 			if (keywords != null) {
@@ -1190,7 +1201,24 @@ public class XMLConfigReader {
     }
 
     /**
-     * getKeyWords purpose.
+	
+	protected MetaDataLink loadMetaDataLink(Element metalinkRoot) {
+		MetaDataLink ml = new MetaDataLink();
+		try {
+			ml.setAbout(ReaderUtils.getAttribute(metalinkRoot, "about", false));
+			ml.setType(ReaderUtils.getAttribute(metalinkRoot, "type", false));
+			ml.setMetadataType(ReaderUtils.getAttribute(metalinkRoot,
+					"metadataType", false));
+			ml.setContent(ReaderUtils.getElementText(metalinkRoot));
+		} catch (Exception e) {
+			ml = null;
+		}
+		
+		return ml;
+	}
+	
+	/**
+	 * getKeyWords purpose.
      * 
      * <p>
      * Converts a DOM tree into a List of Strings representing keywords.
@@ -1543,6 +1571,44 @@ public class XMLConfigReader {
     public WMSDTO getWms() {
         return wms;
     }
-
 	
+	/**
+	 * getMetaDataLink purpose.
+	 * 
+	 * <p>
+	 * Used to help with XML manipulations. Returns a metedataLink Attribute
+	 * </p>
+	 *
+	 * @param metadataElem The root element to look for children in.
+	 *
+	 * @return The MetaDataLink that was found.
+	 * @throws Exception 
+	 */
+	public static MetaDataLink getMetaDataLink(Element metadataElem) throws Exception {
+		MetaDataLink mdl = new MetaDataLink();
+		String tmp;
+		if( metadataElem != null ) {
+			tmp = ReaderUtils.getElementText(metadataElem, false);
+			if( (tmp != null) && (tmp != "") ) {
+				mdl.setContent(tmp);
+			}
+			
+			tmp = ReaderUtils.getAttribute(metadataElem, "about", false);
+			if( (tmp != null) && (tmp != "") ) {
+				mdl.setAbout(tmp);
+			}
+			
+			tmp = ReaderUtils.getAttribute(metadataElem, "type", false);
+			if( (tmp != null) && (tmp != "") ) {
+				mdl.setType(tmp);
+			}
+			
+			tmp = ReaderUtils.getAttribute(metadataElem, "metadataType", false);
+			if( (tmp != null) && (tmp != "") ) {
+				mdl.setMetadataType(tmp);
+			}
+		}
+		
+		return mdl;
+	}	
 }

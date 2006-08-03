@@ -7,7 +7,10 @@ package org.vfny.geoserver.config;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 
 
@@ -162,6 +165,16 @@ public class GlobalConfig {
         verboseExceptions = true;
         logLocation = null;
     }
+
+    /**
+     * Instantiates the global config from the geoServer module.
+     * 
+     * @param geoserver The geoServer module.
+     */
+    public GlobalConfig ( GeoServer geoserver ) {
+    		this ( (GeoServerDTO) geoserver.toDTO() );
+    }
+ 
 
     /**
      * GlobalConfig constructor.

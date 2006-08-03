@@ -205,6 +205,10 @@
         	path="/admin/index.do"/>
 
         <forward 
+        	name="admin.main"
+        	path="/admin/main.do"/>
+
+        <forward 
         	name="admin.freeLocks"
         	path="/admin/freeLocks.do"/>
         	
@@ -416,6 +420,12 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="admin"
         	name="blankBean"/>       
+
+        <action
+        	path ="/admin/main"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="admin.main"
+        	name="blankBean"/>        	
 
         <action
         	path ="/admin/freeLocks"
@@ -642,6 +652,11 @@
 			
 		<!-- Admin Actions -->
         <action
+        	path="/admin/index"
+        	type="org.vfny.geoserver.action.AdminIndexAction"
+        	name="blankBean"/>
+
+        <action
         	path="/admin/freeLocks"
         	type="org.vfny.geoserver.action.FreeLocksAction"
         	name="blankBean"/>
@@ -710,12 +725,12 @@
         	input="/config/data/storeEditor.do"/>
         	
         <action
-        	path="/config/data/storeSelect"
+        	path="/config/data/storeSelectSubmit"
         	type="org.vfny.geoserver.action.data.DataDataStoresSelectAction"
         	name="dataDataStoresSelectForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/storeSelect.do"/>
+        	input="/config/data/storeEditor.do"/>
 
         <action
         	path="/config/data/storeNewSubmit"

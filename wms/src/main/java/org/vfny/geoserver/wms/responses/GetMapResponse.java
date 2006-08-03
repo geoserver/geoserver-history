@@ -338,5 +338,10 @@ public class GetMapResponse implements Response {
 		}
 		return formats;
 	}
-
+	
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }

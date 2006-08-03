@@ -66,7 +66,7 @@
    	</definition>
    	   	   	
    	<!-- ADMIN -->
-   	<definition name="admin" extends=".mainLayout">
+   	<definition name="admin.main" extends=".mainLayout">
    		<put name="key" value="admin"/>
    		<put name="body" value="/WEB-INF/pages/Administration.jsp"/>
    		<put name="layer" value="configuration"/>

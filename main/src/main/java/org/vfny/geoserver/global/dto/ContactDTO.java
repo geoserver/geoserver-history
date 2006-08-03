@@ -76,6 +76,11 @@ public final class ContactDTO implements DataTransferObject {
     /** The contact email address. */
     private String contactEmail;
 
+	/**
+	 * The contact online resource.
+	 * 
+	 */
+	private String onlineResource;
     /**
      * ContactConfig constructor.
      * 
@@ -114,6 +119,7 @@ public final class ContactDTO implements DataTransferObject {
         contactVoice = c.getContactVoice();
         contactFacsimile = c.getContactFacsimile();
         contactEmail = c.getContactEmail();
+        onlineResource = c.getOnlineResource();
     }
 
     /**
@@ -164,7 +170,8 @@ public final class ContactDTO implements DataTransferObject {
         && ((addressCountry == c.getAddressCountry())
         && ((contactVoice == c.getContactVoice())
         && ((contactFacsimile == c.getContactFacsimile())
-        && (contactEmail == c.getContactEmail()))))))))))));
+        && ((onlineResource == c.getOnlineResource())
+        && (contactEmail == c.getContactEmail())))))))))))));
     }
 
     public int hashCode() {
@@ -524,4 +531,23 @@ public final class ContactDTO implements DataTransferObject {
             contactVoice = string;
         }
     }
+
+	/**
+	 * @return Returns the onlineResource.
+	 * 
+	 */
+	public String getOnlineResource() {
+		return onlineResource;
+	}
+
+	/**
+	 * @param onlineResource The onlineResource to set.
+	 * 
+	 */
+	public void setOnlineResource(String onlineResource) {
+		if (onlineResource != null) {
+			this.onlineResource = onlineResource;
+		}
+	}
+
 }
