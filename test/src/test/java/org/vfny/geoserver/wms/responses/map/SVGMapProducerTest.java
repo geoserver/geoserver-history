@@ -12,6 +12,7 @@ import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.responses.map.svg.SVGMapProducer;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;

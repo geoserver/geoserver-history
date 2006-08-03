@@ -9,7 +9,6 @@ package org.vfny.geoserver.action.validation;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -42,57 +41,13 @@ public class ValidationRunnable implements Runnable {
 	
 	private Map testSuites;
 	private Map plugins;
-
-	/**
-	 * 
-	 * @uml.property name="dataConfig"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
 	private DataConfig dataConfig;
-
-	/**
-	 * 
-	 * @uml.property name="context"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
 	private ServletContext context;
-
-	/**
-	 * 
-	 * @uml.property name="request"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
 	private HttpServletRequest request;
-
-	/**
-	 * 
-	 * @uml.property name="validator"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
 	Validator validator;
-
-	/**
-	 * 
-	 * @uml.property name="gv"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
 	ValidationProcessor gv;
-
-	/**
-	 * 
-	 * @uml.property name="results"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	public TestValidationResults results; // I get filled up with goodies
-
-	/**
-	 * 
-	 * @uml.property name="repository"
-	 * @uml.associationEnd elementType="org.geotools.data.FeatureSource" multiplicity=
-	 * "(0 -1)"
-	 */
+	public TestValidationResults results;	// I get filled up with goodies
 	Repository repository;
-
 	
 	public final static String KEY = "validationTestDoItThread.key";
 	
@@ -106,11 +61,9 @@ public class ValidationRunnable implements Runnable {
 		this.request = request;
 		
 /*
-		if (LOGGER.isLoggable(Level.FINER)) {
-			LOGGER.finer(new StringBuffer("testSuites.size() = ").append(testSuites.size()).toString());
-			LOGGER.finer(new StringBuffer("plugins.size() = ").append(plugins.size()).toString());
-			LOGGER.finer(new StringBuffer((TestSuiteDTO) testSuites.values().toArray()[0]).toString());
-		}
+		LOGGER.finer("testSuites.size() = " + testSuites.size());
+		LOGGER.finer("plugins.size() = " + plugins.size());
+		LOGGER.finer("" + (TestSuiteDTO) testSuites.values().toArray()[0]);
 		
 		//DataConfig dataConfig = (DataConfig) getDataConfig();
 		Map dataStoreConfigs = dataConfig.getDataStores();
@@ -167,9 +120,7 @@ public class ValidationRunnable implements Runnable {
 			FeatureSource featureSource =(FeatureSource) entry.getValue();
 			String dataStoreId = typeRef.split(":")[0];
 			try {
-				if (LOGGER.isLoggable(Level.FINER)) {
-					LOGGER.finer(new StringBuffer(dataStoreId).append(": feature validation, ").append(featureSource).toString());
-				}
+				LOGGER.finer(dataStoreId + ": feature validation, "+featureSource );
 				FeatureReader reader = featureSource.getFeatures().reader();
 				try {
 					validator.featureValidation( dataStoreId, reader , results);
@@ -195,9 +146,7 @@ public class ValidationRunnable implements Runnable {
 		
 		try {
 			Map featureSources = repository.getFeatureSources();
-			if (LOGGER.isLoggable(Level.FINER)) {
-				LOGGER.finer(new StringBuffer("integrity tests entry for ").append(featureSources.size()).append(" dataSources.").toString());
-			}
+			LOGGER.finer("integrity tests entry for " + featureSources.size() + " dataSources.");
 			validator.integrityValidation( featureSources, env, results);
 		} catch (Exception e) {
 			e.printStackTrace();

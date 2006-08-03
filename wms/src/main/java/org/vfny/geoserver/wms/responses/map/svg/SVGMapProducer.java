@@ -21,7 +21,7 @@ import org.vfny.geoserver.wms.WmsException;
  * @author Gabriel Rold?n
  * @version $Id$
  */
-class SVGMapProducer implements GetMapProducer {
+public class SVGMapProducer implements GetMapProducer {
 	
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(

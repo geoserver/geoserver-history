@@ -97,7 +97,7 @@ public class JPEGMapProducer extends DefaultRasterMapProducer {
         boolean nativeW = false;
         if (writer.getClass().getName().equals(
                 "com.sun.media.imageioimpl.plugins.png.CLibJPEGImageWriter")) {
-            iwp= writer.getDefaultWriteParam()
+            iwp= writer.getDefaultWriteParam();
             iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
             iwp.setCompressionType("JPEG");
             iwp.setCompressionQuality(0.75f);// we can control quality here

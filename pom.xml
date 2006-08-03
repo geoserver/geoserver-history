@@ -699,12 +699,12 @@
 				<module>platform</module>
 				<module>data</module>
 				<module>main</module>
+				<module>maven</module>
 				<module>wcs</module>
 				<module>wfs</module>
 				<module>wms</module>
 				<module>validation</module>
 				<module>web</module>
-				<module>maven</module>
 				<module>test</module>
 				<module>community</module>
 			</modules>
