@@ -67,7 +67,7 @@ public class UpdateGSAction extends ConfigAction {
 
             getWFS(request).load(wfsDTO);
             getWMS(request).load(wmsDTO);
-            getWFS(request).getGeoServer().load(geoserverDTO,sc);
+            getWFS(request).getGeoServer().load(geoserverDTO);
             getWFS(request).getData().load(dataDTO);
 
             getApplicationState().notifyToGeoServer();
