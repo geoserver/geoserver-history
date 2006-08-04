@@ -99,9 +99,7 @@ public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
 					.append(" not supported by this map producer").toString());
 		}
 
-		return new PNGMapProducer(MIME_TYPE); // DJB: added "image/gif" or
-												// you'll get content encoded as
-												// image/png (the default)!!!
+		return new PNGMapProducer(MIME_TYPE); 
 	}
 
 	/*

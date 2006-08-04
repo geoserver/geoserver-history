@@ -17,7 +17,6 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
 
-import org.geotools.image.ImageWorker;
 import org.geotools.resources.image.ImageUtilities;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
@@ -55,15 +54,22 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
 	 */
 	protected void formatImageOutputStream(String format, BufferedImage image,
 			OutputStream outStream) throws WmsException, IOException {
+		if (!format.equalsIgnoreCase(GifMapProducerFactory.MIME_TYPE))
+			throw new IllegalArgumentException("The provided format " + format
+					+ " is not the same as expected: "
+					+ GifMapProducerFactory.MIME_TYPE);
 
 		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
 				outStream);
-		PlanarImage encodedImage=PlanarImage.wrapRenderedImage(image);
-		final ColorModel cm= image.getColorModel();
-		if(cm instanceof PackedColorModel)
-			encodedImage=ImageUtilities.reformatColorModel2ComponentColorModel(encodedImage);
-		if(!(cm instanceof IndexColorModel))
-			encodedImage= ImageUtilities.componentColorModel2IndexColorModel4GIF(encodedImage);
+		PlanarImage encodedImage = PlanarImage.wrapRenderedImage(image);
+		final ColorModel cm = image.getColorModel();
+		if (cm instanceof PackedColorModel)
+			encodedImage = ImageUtilities
+					.reformatColorModel2ComponentColorModel(encodedImage);
+		if (!(cm instanceof IndexColorModel))
+			encodedImage = ImageUtilities
+					.componentColorModel2IndexColorModel4GIF(encodedImage);
+		encodedImage=ImageUtilities.convertIndexColorModelAlpha4GIF(encodedImage);
 		final ImageWriter gifWriter = new GIFImageWriter(
 				new GIFImageWriterSpi());
 		final ImageWriteParam iwp = gifWriter.getDefaultWriteParam();

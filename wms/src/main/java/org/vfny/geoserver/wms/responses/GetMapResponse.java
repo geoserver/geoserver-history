@@ -390,8 +390,9 @@ public class GetMapResponse implements Response {
 	throws WmsException {
 		Map beans=applicationContext.getBeansOfType(GetMapProducerFactorySpi.class);
 		Collection producers=beans.values();
+		GetMapProducerFactorySpi factory ;
 		for (Iterator iter = producers.iterator(); iter.hasNext();) {
-			GetMapProducerFactorySpi factory = 
+			factory = 
 				(GetMapProducerFactorySpi) iter.next();
 			if (factory.canProduce( outputFormat ) ) {
 				return factory.createMapProducer( outputFormat, wms );

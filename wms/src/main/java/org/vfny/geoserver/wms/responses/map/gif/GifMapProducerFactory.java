@@ -57,12 +57,17 @@ public final class GifMapProducerFactory implements GetMapProducerFactorySpi {
 	}
 
 	/**
-	 * <b>FIXME</b> JAI dependency ?
 	 * 
 	 * @return <code>true</code>
 	 */
 	public boolean isAvailable() {
-		return true;
+		try {
+			Class.forName("com.sun.media.imageioimpl.plugins.gif.GIFImageWriterSpi");
+			return true;
+		} catch (ClassNotFoundException e) {
+
+		}
+		return false;
 	}
 
 	/**

@@ -49,7 +49,7 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
      */
     public void formatImageOutputStream( String format, BufferedImage image, OutputStream outStream )
             throws WmsException, IOException {
-        if (format.equalsIgnoreCase(PNGMapProducerFactory.MIME_TYPE))
+        if (!format.equalsIgnoreCase(PNGMapProducerFactory.MIME_TYPE))
             throw new IllegalArgumentException("The provided format " + format
                     + " is not the same as expected: " + PNGMapProducerFactory.MIME_TYPE);
 
@@ -58,7 +58,6 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
         // Reformatting this image for png
         //
         // /////////////////////////////////////////////////////////////////
-
         final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(image);
         final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel
                 ? new ImageWorker(encodedImage).forceComponentColorModel().getPlanarImage()
@@ -82,28 +81,23 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
         //
         // /////////////////////////////////////////////////////////////////
         final ImageWriteParam iwp = writer.getDefaultWriteParam();
-        boolean nativeW = false;
+        final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
+                outStream);
         if (writer.getClass().getName().equals(
                 "com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")) {
             iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
             iwp.setCompressionType("FILTERED");
             iwp.setCompressionQuality(0.9f);// we can control quality here
-            nativeW = true;
-            writer.setOutput(outStream);
-        } else {
-            final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
-                    outStream);
-            writer.setOutput(memOutStream);
-        }
 
+            
+        } 
+        writer.setOutput(memOutStream);
         writer.write(null, new IIOImage(finalImage, null, null), iwp);
 
-        if (nativeW)
-            ((ImageOutputStream) writer.getOutput()).close();
-        else
-            outStream.close();
 
+        memOutStream.flush();
         writer.dispose();
+        memOutStream.close();
 
     }
 
