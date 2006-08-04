@@ -32,7 +32,7 @@ public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
 			.singleton(MIME_TYPE);
 
 	/**
-	 * Creates a new GifMapProducerFactory object.
+	 * Creates a new PngMapProducerFactory object.
 	 */
 	public PNGMapProducerFactory() {
 		super();

@@ -17,7 +17,7 @@ import org.vfny.geoserver.wms.responses.map.png.PNGMapProducer;
  * @author Simone Giannecchini
  * @since 1.4.x
  */
-public class JPEGMapProducerfactory implements GetMapProducerFactorySpi {
+public class JPEGMapProducerFactory implements GetMapProducerFactorySpi {
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/jpeg";
 
@@ -34,7 +34,8 @@ public class JPEGMapProducerfactory implements GetMapProducerFactorySpi {
 
         return new PNGMapProducer(MIME_TYPE); 
     }
-    public JPEGMapProducerfactory(){
+
+    public JPEGMapProducerFactory(){
     	super();
     }
 

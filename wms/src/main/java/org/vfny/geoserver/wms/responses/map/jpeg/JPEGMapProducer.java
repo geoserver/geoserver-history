@@ -50,9 +50,9 @@ public class JPEGMapProducer extends DefaultRasterMapProducer {
 
     protected void formatImageOutputStream( String format, BufferedImage image,
             OutputStream outStream ) throws IOException {
-        if (format.equalsIgnoreCase(JPEGMapProducerfactory.MIME_TYPE))
+        if (format.equalsIgnoreCase(JPEGMapProducerFactory.MIME_TYPE))
             throw new IllegalArgumentException("The provided format " + format
-                    + " is not the same as expected: " + JPEGMapProducerfactory.MIME_TYPE);
+                    + " is not the same as expected: " + JPEGMapProducerFactory.MIME_TYPE);
 
         // /////////////////////////////////////////////////////////////////
         //
