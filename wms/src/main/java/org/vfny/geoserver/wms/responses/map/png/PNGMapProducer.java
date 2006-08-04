@@ -29,7 +29,7 @@ import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
  * @author Didier Richard
  * @version $Id
  */
-public class PNGMapProducer extends DefaultRasterMapProducer {
+public final class PNGMapProducer extends DefaultRasterMapProducer {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(PNGMapProducer.class.getPackage()
             .getName());

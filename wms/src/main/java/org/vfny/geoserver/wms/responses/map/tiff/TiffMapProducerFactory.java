@@ -19,7 +19,7 @@ import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
  * @author Simone Giannecchini
  * @version $Id$
  */
-public class TiffMapProducerFactory implements GetMapProducerFactorySpi {
+public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
 	/** the only MIME type this map producer supports */
 	static final String MIME_TYPE = "image/tiff";
 

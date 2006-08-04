@@ -19,7 +19,7 @@ import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
  * @author Simone Giannecchini
  * @version $Id: PNGMapProducerFactory.java 4316 2006-03-17 13:11:24Z simboss $
  */
-public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
+public final class PNGMapProducerFactory implements GetMapProducerFactorySpi {
 	
 
 	/** the only MIME type this map producer supports */
@@ -32,7 +32,7 @@ public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
 			.singleton(MIME_TYPE);
 
 	/**
-	 * Creates a new PngMapProducerFactory object.
+	 * Creates a new PNGMapProducerFactory object.
 	 */
 	public PNGMapProducerFactory() {
 		super();

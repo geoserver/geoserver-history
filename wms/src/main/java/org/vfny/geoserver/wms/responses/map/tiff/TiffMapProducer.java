@@ -20,16 +20,8 @@ import com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriter;
 import com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi;
 
 /**
- * Generates a map using the geotools jai rendering classes. Uses the Lite renderer, loading the
- * data on the fly, which is quite nice. Thanks Andrea and Gabriel. The word is that we should
- * eventually switch over to StyledMapRenderer and do some fancy stuff with caching layers, but I
- * think we are a ways off with its maturity to try that yet. So Lite treats us quite well, as it is
- * stateless and therefor loads up nice and fast.
- * 
- * @author Chris Holmes, TOPP
- * @version $Id: JAIMapResponse.java,v 1.29 2004/09/16 21:44:28 cholmesny Exp $
  */
-class TiffMapProducer extends DefaultRasterMapProducer {
+public final class  TiffMapProducer extends DefaultRasterMapProducer {
     /** A logger for this class. */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
 
