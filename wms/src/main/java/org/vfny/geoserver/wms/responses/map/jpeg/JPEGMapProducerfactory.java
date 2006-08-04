@@ -34,6 +34,9 @@ public class JPEGMapProducerfactory implements GetMapProducerFactorySpi {
 
         return new PNGMapProducer(MIME_TYPE); 
     }
+    public JPEGMapProducerfactory(){
+    	super();
+    }
 
     public String getName() {
         return "Joint Photographic Experts Group";
