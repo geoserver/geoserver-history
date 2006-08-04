@@ -227,7 +227,7 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
        
 
 		final ReferencedEnvelope dataArea = map.getAreaOfInterest();
-        AffineTransform at = RendererUtilities.worldToScreenTransform(dataArea,   paintArea);
+      
 
         //LOGGER.fine("calling renderer");
 
