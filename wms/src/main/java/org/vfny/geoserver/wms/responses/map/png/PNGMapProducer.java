@@ -9,6 +9,7 @@ import java.awt.image.DirectColorModel;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.IIOImage;
@@ -30,75 +31,99 @@ import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
  * @version $Id
  */
 public final class PNGMapProducer extends DefaultRasterMapProducer {
-    /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(PNGMapProducer.class.getPackage()
-            .getName());
+	/** DOCUMENT ME! */
+	private static final Logger LOGGER = Logger.getLogger(PNGMapProducer.class
+			.getPackage().getName());
 
-    public PNGMapProducer( String format ) {
-        super(format);
-    }
+	public PNGMapProducer(String format) {
+		super(format);
+	}
 
-    /**
-     * Transforms the rendered image into the appropriate format, streaming to the output stream.
-     * 
-     * @param format The name of the format
-     * @param image The image to be formatted.
-     * @param outStream The stream to write to.
-     * @throws WmsException not really.
-     * @throws IOException if encoding to <code>outStream</code> fails.
-     */
-    public void formatImageOutputStream( String format, BufferedImage image, OutputStream outStream )
-            throws WmsException, IOException {
-        if (!format.equalsIgnoreCase(PNGMapProducerFactory.MIME_TYPE))
-            throw new IllegalArgumentException("The provided format " + format
-                    + " is not the same as expected: " + PNGMapProducerFactory.MIME_TYPE);
+	/**
+	 * Transforms the rendered image into the appropriate format, streaming to
+	 * the output stream.
+	 * 
+	 * @param format
+	 *            The name of the format
+	 * @param image
+	 *            The image to be formatted.
+	 * @param outStream
+	 *            The stream to write to.
+	 * @throws WmsException
+	 *             not really.
+	 * @throws IOException
+	 *             if encoding to <code>outStream</code> fails.
+	 */
+	public void formatImageOutputStream(String format, BufferedImage image,
+			OutputStream outStream) throws WmsException, IOException {
+		if (!format.equalsIgnoreCase(PNGMapProducerFactory.MIME_TYPE))
+			throw new IllegalArgumentException("The provided format " + format
+					+ " is not the same as expected: "
+					+ PNGMapProducerFactory.MIME_TYPE);
 
-        // /////////////////////////////////////////////////////////////////
-        //
-        // Reformatting this image for png
-        //
-        // /////////////////////////////////////////////////////////////////
-        final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(image);
-        final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel
-                ? new ImageWorker(encodedImage).forceComponentColorModel().getPlanarImage()
-                : encodedImage;
+		// /////////////////////////////////////////////////////////////////
+		//
+		// Reformatting this image for png
+		//
+		// /////////////////////////////////////////////////////////////////
+		if (LOGGER.isLoggable(Level.FINE))
+			LOGGER.fine("Preparing for writing for png image");
+		final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(image);
+		final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel ? new ImageWorker(
+				encodedImage).forceComponentColorModel().getPlanarImage()
+				: encodedImage;
+		if (LOGGER.isLoggable(Level.FINE))
+			LOGGER.fine("Encoded input image for png writer");
+		// /////////////////////////////////////////////////////////////////
+		//
+		// Getting a writer
+		//
+		// /////////////////////////////////////////////////////////////////
+		if (LOGGER.isLoggable(Level.FINE))
+			LOGGER.fine("Getting a writer");
+		final Iterator it = ImageIO.getImageWritersByMIMEType(format);
+		ImageWriter writer = null;
+		if (!it.hasNext()) {
+			throw new IllegalStateException("No PNG ImageWriter found");
+		} else
+			writer = (ImageWriter) it.next();
 
-        // /////////////////////////////////////////////////////////////////
-        //
-        // Getting a writer
-        //
-        // /////////////////////////////////////////////////////////////////
-        final Iterator it = ImageIO.getImageWritersByMIMEType(format);
-        ImageWriter writer = null;
-        if (!it.hasNext()) {
-            throw new IllegalStateException("No PNG ImageWriter found");
-        } else
-            writer = (ImageWriter) it.next();
+		// /////////////////////////////////////////////////////////////////
+		//
+		// Compression is available only on native lib
+		//
+		// /////////////////////////////////////////////////////////////////
+		if (LOGGER.isLoggable(Level.FINE))
+			LOGGER.fine("Setting write parameters for this writer");
+		final ImageWriteParam iwp = writer.getDefaultWriteParam();
+		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
+				outStream);
+		if (writer.getClass().getName().equals(
+				"com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")) {
+			if (LOGGER.isLoggable(Level.FINE))
+				LOGGER.fine("Writer is native");
+			iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+			iwp.setCompressionType("FILTERED");
+			iwp.setCompressionQuality(0.9f);// we can control quality here
 
-        // /////////////////////////////////////////////////////////////////
-        //
-        // Compression is available only on native lib
-        //
-        // /////////////////////////////////////////////////////////////////
-        final ImageWriteParam iwp = writer.getDefaultWriteParam();
-        final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
-                outStream);
-        if (writer.getClass().getName().equals(
-                "com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")) {
-            iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-            iwp.setCompressionType("FILTERED");
-            iwp.setCompressionQuality(0.9f);// we can control quality here
+		}
+		else
+			if (LOGGER.isLoggable(Level.FINE))
+				LOGGER.fine("Writer is NOT native");
+		
+		
+		if (LOGGER.isLoggable(Level.FINE))
+			LOGGER.fine("About to write png image");
+		writer.setOutput(memOutStream);
+		writer.write(null, new IIOImage(finalImage, null, null), iwp);
 
-            
-        } 
-        writer.setOutput(memOutStream);
-        writer.write(null, new IIOImage(finalImage, null, null), iwp);
+		memOutStream.flush();
+		writer.dispose();
+		memOutStream.close();
+		
+		if (LOGGER.isLoggable(Level.FINE))
+			LOGGER.fine("Writing png image done!");
 
-
-        memOutStream.flush();
-        writer.dispose();
-        memOutStream.close();
-
-    }
+	}
 
 }

@@ -112,9 +112,7 @@ public class GetMapResponse implements Response {
 		GetMapRequest request = (GetMapRequest) req;
 
 		final String outputFormat = request.getFormat();
-
 		this.delegate = getDelegate(outputFormat, wms);
-
 		final MapLayerInfo[] layers = request.getLayers();
 		final Style[] styles = (Style[]) request.getStyles().toArray(
 				new Style[] {});
@@ -199,6 +197,7 @@ public class GetMapResponse implements Response {
 						//
 						// Do we have something to load?
 						// We just need to check the bbox of the layer.
+						//
 						// //
 						if (!layers[i].getBoundingBox().intersects(env))
 							continue;
@@ -427,8 +426,7 @@ public class GetMapResponse implements Response {
 	 * @return a Set&lt;String&gt; with the supported mime types.
 	 */
 	public Set getMapFormats() {
-		Set wmsGetMapFormats = loadImageFormats(applicationContext);
-		return wmsGetMapFormats;
+		return loadImageFormats(applicationContext);
 	}
 
 	/**
@@ -444,8 +442,9 @@ public class GetMapResponse implements Response {
 				.getBeansOfType(GetMapProducerFactorySpi.class);
 		Collection producers = beans.values();
 		Set formats = new HashSet();
+		GetMapProducerFactorySpi producer;
 		for (Iterator iter = producers.iterator(); iter.hasNext();) {
-			GetMapProducerFactorySpi producer = (GetMapProducerFactorySpi) iter
+			producer = (GetMapProducerFactorySpi) iter
 					.next();
 			formats.addAll(producer.getSupportedFormats());
 		}
@@ -453,7 +452,6 @@ public class GetMapResponse implements Response {
 	}
 
 	public String getContentDisposition() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

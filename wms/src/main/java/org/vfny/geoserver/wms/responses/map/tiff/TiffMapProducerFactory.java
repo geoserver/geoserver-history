@@ -14,9 +14,10 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 
 /**
- * DOCUMENT ME!
+ * Factory for producing Tiff images.
  * 
  * @author Simone Giannecchini
+ * @since .1.4.x
  * @version $Id$
  */
 public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
@@ -24,18 +25,18 @@ public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
 	static final String MIME_TYPE = "image/tiff";
 
 	/**
-	 * convenient singleton Set to expose the output format this producer
+	 * Convenient singleton Set to expose the output format this producer
 	 * supports
 	 */
 	private static final Set SUPPORTED_FORMATS = Collections
 			.singleton(MIME_TYPE);
 
-	/** DOCUMENT ME! */
+	/**Logger */
 	private static final Logger LOGGER = Logger
 			.getLogger(TiffMapProducerFactory.class.getPackage().getName());
 
 	/**
-	 * 
+	 * Default constructor.
 	 */
 	public TiffMapProducerFactory() {
 

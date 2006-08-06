@@ -51,6 +51,7 @@ import org.vfny.geoserver.wms.WmsException;
  * <p></p>
  *
  * @author Chris Holmes, TOPP
+ * @author Simone Giannecchini, GeoSolutions
  * @version $Id: JAIMapResponse.java,v 1.29 2004/09/16 21:44:28 cholmesny Exp $
  */
 public abstract class DefaultRasterMapProducer implements GetMapProducer {
@@ -173,12 +174,11 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
     public void produceMap(WMSMapContext map) throws WmsException 
 	{     
         this.mapContext = map;
-
         final int width = map.getMapWidth();
         final int height = map.getMapHeight();
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("setting up " + width + "x" + height + " image");
+            LOGGER.fine(new StringBuffer("setting up ").append(width).append("x").append( height).append(" image").toString());
         }
 
          BufferedImage curImage = new BufferedImage(width, height,BufferedImage.TYPE_4BYTE_ABGR);

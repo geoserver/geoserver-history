@@ -7,20 +7,31 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
 
 import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
+/**
+ * Map producer for JPEG image format.
+ * 
+ * @author Simone Giannecchini
+ * @since 1.4.x
+ * 
+ */
 public class JPEGMapProducer extends DefaultRasterMapProducer {
+	/** Logger. */
+	private final static Logger LOGGER = Logger.getLogger(JPEGMapProducer.class
+			.toString());
 
 	/**
 	 * This class overrides the setCompressionQuality() method to workaround a
@@ -56,11 +67,15 @@ public class JPEGMapProducer extends DefaultRasterMapProducer {
 					+ " is not the same as expected: "
 					+ JPEGMapProducerFactory.MIME_TYPE);
 
+		if (LOGGER.isLoggable(Level.FINE))
+			LOGGER.fine("About to write a JPEG image.");
 		// /////////////////////////////////////////////////////////////////
 		//
 		// Reformatting this image for png
 		//
 		// /////////////////////////////////////////////////////////////////
+		if (LOGGER.isLoggable(Level.FINE))
+			LOGGER.fine("Encoding input image to write out as JPEG.");
 		final ColorModel cm = image.getColorModel();
 		final boolean indexColorModel = image.getColorModel() instanceof IndexColorModel;
 		final int numBands = image.getSampleModel().getNumBands();
@@ -82,11 +97,21 @@ public class JPEGMapProducer extends DefaultRasterMapProducer {
 		// Getting a writer
 		//
 		// /////////////////////////////////////////////////////////////////
+		if (LOGGER.isLoggable(Level.FINE))
+			LOGGER.fine("Getting a JPEG writer and configurint it.");
 		final Iterator it = ImageIO.getImageWritersByMIMEType(format);
 		ImageWriter writer = null;
-		if (!it.hasNext()) 
+		if (!it.hasNext())
 			throw new IllegalStateException("No PNG ImageWriter found");
-		it.next();
+		// //
+		//
+		// XXX Attention the native JPEG writer gives strange results I am doing
+		// what follows to avoid using it.
+		//
+		// //
+		if (writer.getClass().getName().equals(
+				"com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter"))
+			it.next();
 		writer = (ImageWriter) it.next();
 
 		// /////////////////////////////////////////////////////////////////
@@ -99,24 +124,26 @@ public class JPEGMapProducer extends DefaultRasterMapProducer {
 				outStream);
 		if (writer.getClass().getName().equals(
 				"com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter")) {
-			iwp= writer.getDefaultWriteParam();
-//			iwp.setCompressionType("JPEG");
+			iwp = writer.getDefaultWriteParam();
+			iwp.setCompressionType("JPEG");
 
-			
-		}
-		else
-		{
-			iwp= new MyImageWriteParam();
-			
+		} else {
+			iwp = new MyImageWriteParam();
+
 		}
 		iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 		iwp.setCompressionQuality(0.75f);// we can control quality here
 		writer.setOutput(memOutStream);
 
+		if (LOGGER.isLoggable(Level.FINE))
+			LOGGER.fine("Writing out...");
 		writer.write(null, new IIOImage(encodedImage, null, null), iwp);
 
 		memOutStream.flush();
 		writer.dispose();
 		memOutStream.close();
+		
+		if (LOGGER.isLoggable(Level.FINE))
+			LOGGER.fine("Writing a JPEG done!!!");
 	}
 }

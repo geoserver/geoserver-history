@@ -20,6 +20,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Represents a WMS GetMap request. as a extension to the WMS spec 1.1.
  *
  * @author Gabriel Roldan, Axios Engineering
+ * @author Simone Giannecchini
  * @version $Id: GetMapRequest.java,v 1.8 2004/03/14 16:00:54 groldan Exp $
  */
 public class GetMapRequest extends WMSRequest {

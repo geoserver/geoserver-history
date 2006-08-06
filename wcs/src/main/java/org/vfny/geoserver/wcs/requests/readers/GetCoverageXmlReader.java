@@ -6,6 +6,8 @@ package org.vfny.geoserver.wcs.requests.readers;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
@@ -29,11 +31,11 @@ import org.xml.sax.helpers.ParserAdapter;
  */
 public class GetCoverageXmlReader extends XmlRequestReader {
 
-	public GetCoverageXmlReader(WCService service) {
-    	super(service);
+    public GetCoverageXmlReader( WCService service ) {
+        super(service);
     }
 
-    public Request read(Reader reader, HttpServletRequest req) throws WcsException {
+    public Request read( Reader reader, HttpServletRequest req ) throws WcsException {
         // translate string into a proper SAX input source
         InputSource requestSource = new InputSource(reader);
 
@@ -42,29 +44,34 @@ public class GetCoverageXmlReader extends XmlRequestReader {
 
         // read in XML file and parse to content handler
         try {
-            LOGGER.finest("about to create parser");
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.finest("about to create parser");
 
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser = factory.newSAXParser();
             ParserAdapter adapter = new ParserAdapter(parser.getParser());
-            LOGGER.finest("setting the content handler");
-            LOGGER.finest("content handler = " + contentHandler);
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.finest("setting the content handler");
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.finest("content handler = " + contentHandler);
             adapter.setContentHandler(contentHandler);
-            LOGGER.finest("about to parse");
-            LOGGER.finest("calling parse on " + requestSource);
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.finest("about to parse");
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.finest("calling parse on " + requestSource);
             adapter.parse(requestSource);
-            LOGGER.fine("just parsed: " + requestSource);
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.fine("just parsed: " + requestSource);
         } catch (SAXException e) {
-            e.printStackTrace(System.out);
-            throw new WcsException(e,
-                "XML getCoverage request SAX parsing error",
-                XmlRequestReader.class.getName());
+            
+            throw new WcsException(e, "XML getCoverage request SAX parsing error",
+                    XmlRequestReader.class.getName());
         } catch (IOException e) {
             throw new WcsException(e, "XML get coverage request input error",
-                XmlRequestReader.class.getName());
+                    XmlRequestReader.class.getName());
         } catch (ParserConfigurationException e) {
-            throw new WcsException(e, "Some sort of issue creating parser",
-                XmlRequestReader.class.getName());
+            throw new WcsException(e, "Some sort of issue creating parser", XmlRequestReader.class
+                    .getName());
         }
 
         Request r = contentHandler.getRequest(req);
