@@ -102,6 +102,17 @@ public class Dispatcher extends AbstractController {
 		}
 		
 		Operation opBean = (Operation) matches.get( 0 );
+		
+		//post process the key value pairs
+		if ( !kvp.isEmpty() ) {
+			Map kvpPostProcessors = 
+				getApplicationContext().getBeansOfType( KvpPostProcessor.class );
+			for ( Iterator i = kvpPostProcessors.values().iterator(); i.hasNext(); ) {
+				KvpPostProcessor kvpPostProcessor = (KvpPostProcessor) i.next();
+				kvpPostProcessor.postProcess( kvp, opBean );
+			}
+		}
+		
 		Object op = opBean.getOperation();
 		
 		//step 3: set the params
@@ -207,22 +218,31 @@ public class Dispatcher extends AbstractController {
 	Map parseKVP( HttpServletRequest request ) {
 		//unparsed kvp set
 		Map kvp = request.getParameterMap();
+		
 		if ( kvp == null )
 			return Collections.EMPTY_MAP;
 		
 		//look up parser objects
-		Collection parsers = getApplicationContext().getBeansOfType(KVPParser.class).values();
+		Collection parsers = getApplicationContext().getBeansOfType(KvpReader.class).values();
 		Map parsedKvp = new HashMap();
 		
 		for ( Iterator itr = kvp.entrySet().iterator(); itr.hasNext(); ) {
 			Map.Entry entry = (Map.Entry) itr.next();
 			String key = (String) entry.getKey();
-			String value = (String) entry.getValue();
+			String value = null;
+			if ( entry.getValue() instanceof String ) {
+				value = (String) entry.getValue();
+			}
+			else if ( entry.getValue() instanceof String[] ) {
+				//TODO: perhaps handle multiple values for a key
+				value = (String) ( (String[]) entry.getValue() )[0];
+			}
+			
 			
 			//find the parser for this key value pair
 			Object parsed = null;
 			for ( Iterator pitr = parsers.iterator(); pitr.hasNext(); ) {
-				KVPParser parser = (KVPParser) pitr.next();
+				KvpReader parser = (KvpReader) pitr.next();
 				if ( key.equals( parser.getKey() ) ) {
 					try {
 						parsed = parser.parse( value );
@@ -275,10 +295,10 @@ public class Dispatcher extends AbstractController {
 		input = input( cache );
 		
 		Collection xmlParsers = 
-			getApplicationContext().getBeansOfType( XMLParser.class ).values();
+			getApplicationContext().getBeansOfType( XmlReader.class ).values();
 		
 		for ( Iterator itr = xmlParsers.iterator(); itr.hasNext(); ) {
-			XMLParser xmlParser = (XMLParser) itr.next();
+			XmlReader xmlParser = (XmlReader) itr.next();
 			
 			String pns = xmlParser.getNamespace() != null ? 
 					xmlParser.getNamespace() : "";

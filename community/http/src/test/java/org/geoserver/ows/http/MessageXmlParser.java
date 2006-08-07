@@ -5,10 +5,10 @@ import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.geoserver.ows.http.XMLParser;
+import org.geoserver.ows.http.XmlReader;
 import org.w3c.dom.Document;
 
-public class MessageXmlParser extends XMLParser {
+public class MessageXmlParser extends XmlReader {
 
 	public MessageXmlParser() {
 		super(null, "Hello", null);

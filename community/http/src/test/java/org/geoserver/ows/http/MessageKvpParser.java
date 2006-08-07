@@ -1,8 +1,8 @@
 package org.geoserver.ows.http;
 
-import org.geoserver.ows.http.KVPParser;
+import org.geoserver.ows.http.KvpReader;
 
-public class MessageKvpParser extends KVPParser {
+public class MessageKvpParser extends KvpReader {
 
 	public MessageKvpParser() {
 		super("message", Message.class);

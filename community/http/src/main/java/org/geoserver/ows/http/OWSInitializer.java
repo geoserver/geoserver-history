@@ -77,7 +77,7 @@ public class OWSInitializer implements HandlerInterceptor, ApplicationContextAwa
 						try {
 							charSet = Charset.forName( request.getCharacterEncoding() );
 						}
-						catch( UnsupportedCharsetException e ) {
+						catch( Exception e ) {
 							charSet = Charset.forName( "UTF-8" );
 						}
 						
