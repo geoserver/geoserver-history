@@ -6,10 +6,17 @@ package org.vfny.geoserver.wms.responses.map.gif;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
 import java.awt.image.IndexColorModel;
 import java.awt.image.PackedColorModel;
+import java.awt.image.Raster;
+import java.awt.image.SampleModel;
+import java.awt.image.SinglePixelPackedSampleModel;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageWriteParam;
@@ -32,6 +39,36 @@ import com.sun.media.imageioimpl.plugins.gif.GIFImageWriterSpi;
  * @version $Id
  */
 public final class GIFMapProducer extends DefaultRasterMapProducer {
+	/**
+	 * Since the default palette has not transparency I am here tryin to create
+	 * a default one with transparency information inside.
+	 */
+	private final static IndexColorModel DEFAULT_PALETTE;
+	static {
+		// Create a 6x6x6 color cube
+		int[] cmap = new int[256];
+		int i = 0;
+		for (int r = 0; r < 256; r += 51) {
+			for (int g = 0; g < 256; g += 51) {
+				for (int b = 0; b < 256; b += 51) {
+					cmap[i++] = (r << 16) | (g << 8) | b;
+				}
+			}
+		}
+		// And populate the rest of the cmap with gray values
+		int grayIncr = 256 / (256 - i);
+
+		// The gray ramp will be between 18 and 252
+		int gray = grayIncr * 3;
+		for (; i < 255; i++) {
+			cmap[i] = (gray << 16) | (gray << 8) | gray;
+			gray += grayIncr;
+		}
+
+		DEFAULT_PALETTE = new IndexColorModel(8, 256, cmap, 0, true, 255,
+				DataBuffer.TYPE_BYTE);
+
+	}
 
 	public GIFMapProducer(String format) {
 		super(format);
@@ -69,7 +106,8 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
 		if (!(cm instanceof IndexColorModel))
 			encodedImage = ImageUtilities
 					.componentColorModel2IndexColorModel4GIF(encodedImage);
-		encodedImage=ImageUtilities.convertIndexColorModelAlpha4GIF(encodedImage);
+		encodedImage = ImageUtilities
+				.convertIndexColorModelAlpha4GIF(encodedImage);
 		final ImageWriter gifWriter = new GIFImageWriter(
 				new GIFImageWriterSpi());
 		final ImageWriteParam iwp = gifWriter.getDefaultWriteParam();
@@ -83,6 +121,35 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
 		memOutStream.close();
 		outStream.flush();
 		outStream.close();
+
+	}
+
+	protected BufferedImage prepareImage(int width, int height) {
+
+		final int size = width * height;
+		final byte pixels[] = new byte[size];
+		Arrays.fill(pixels, (byte) 255);
+
+		// Create a data buffer using the byte buffer of pixel data.
+		// The pixel data is not copied; the data buffer uses the byte buffer
+		// array.
+		DataBuffer dbuf = new DataBufferByte(pixels, width * height, 0);
+
+
+
+		// Prepare a sample model that specifies a storage 4-bits of
+		// pixel datavd in an 8-bit data element
+		int bitMasks[] = new int[] { (byte) 0xf };
+		SampleModel sampleModel = new SinglePixelPackedSampleModel(
+				DataBuffer.TYPE_BYTE, width, height, bitMasks);
+
+		// Create a raster using the sample model and data buffer
+		WritableRaster raster = Raster.createWritableRaster(sampleModel, dbuf,
+				null);
+
+		// Combine the color model and raster into a buffered image
+		return new BufferedImage(DEFAULT_PALETTE, raster, false, null);// new
+																	// java.util.Hashtable());
 
 	}
 }

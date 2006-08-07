@@ -433,10 +433,7 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 			coverage = reader
 					.read(!parameters.isEmpty() ? (GeneralParameterValue[]) parameters.toArray(
                                     new GeneralParameterValue[parameters.size()]) : null);
-                            /*params != null ? (GeneralParameterValue[]) params
-							.values().toArray(
-									new GeneralParameterValue[params.values()
-											.size()]) : null);*/
+
 			if (coverage == null || !(coverage instanceof GridCoverage2D))
 				throw new IOException(
 						"The requested coverage could not be found.");

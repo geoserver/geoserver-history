@@ -103,6 +103,7 @@ public class JPEGMapProducer extends DefaultRasterMapProducer {
 		ImageWriter writer = null;
 		if (!it.hasNext())
 			throw new IllegalStateException("No PNG ImageWriter found");
+		writer = (ImageWriter) it.next();
 		// //
 		//
 		// XXX Attention the native JPEG writer gives strange results I am doing
@@ -111,8 +112,7 @@ public class JPEGMapProducer extends DefaultRasterMapProducer {
 		// //
 		if (writer.getClass().getName().equals(
 				"com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter"))
-			it.next();
-		writer = (ImageWriter) it.next();
+			writer = (ImageWriter) it.next();
 
 		// /////////////////////////////////////////////////////////////////
 		//
@@ -145,5 +145,12 @@ public class JPEGMapProducer extends DefaultRasterMapProducer {
 		
 		if (LOGGER.isLoggable(Level.FINE))
 			LOGGER.fine("Writing a JPEG done!!!");
+	}
+
+
+	protected BufferedImage prepareImage(int width, int height) {
+		return new BufferedImage(width, height,
+				BufferedImage.TYPE_4BYTE_ABGR);
+		
 	}
 }
