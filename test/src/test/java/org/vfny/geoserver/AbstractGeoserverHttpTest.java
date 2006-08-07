@@ -15,6 +15,11 @@ import com.meterware.httpunit.WebResponse;
 
 import junit.framework.TestCase;
 
+/**
+ * @deprecated use abstract class from http module
+ * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ *
+ */
 public abstract class AbstractGeoserverHttpTest extends TestCase {
 
 	/** test fixture properties **/
