@@ -58,16 +58,16 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource
         return (FeatureStore) source;
     }
     
-    /**
-     * see interface for details.
-     * @param fc
-     * @return
-     * @throws IOException
-     */
-    public Set addFeatures(FeatureCollection fc) throws IOException 
-	{
-        return store().addFeatures(fc);
-    }
+//    /**
+//     * see interface for details.
+//     * @param fc
+//     * @return
+//     * @throws IOException
+//     */
+//    public Set addFeatures(FeatureCollection fc) throws IOException 
+//	{
+//        return store().addFeatures(fc);
+//    }
     
 
     /**

@@ -1095,7 +1095,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
 				result = CRS.decode("EPSG:"+epsg);
 				SRSLookup.put( new Integer(epsg)  , result);
 		} 
-    		catch (NoSuchAuthorityCodeException e) {
+    		catch (Exception e) {
 			String msg = "Error looking up SRS for EPSG: " + epsg + 
 				":" + e.getLocalizedMessage();
     			LOGGER.warning( msg );
