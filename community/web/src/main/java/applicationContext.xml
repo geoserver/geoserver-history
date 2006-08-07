@@ -3,8 +3,51 @@
 
 <beans>
 
+  <!-- resource loader -->
+  <bean id="resourceLoader" class="org.geoserver.GeoServerResourceLoader"/>
+
+  <bean id="resourceLoaderInitializer" class="org.geoserver.web.GeoServerDataDirectoryInitializer"/>
+  
+  <!-- catalog  -->
+  <bean id="adapterFactoryFinder" class="org.geoserver.data.GeoServerResolveAdapterFactoryFinder"/>
+ 
+  <bean id="catalog"
+		class="org.geoserver.data.DefaultGeoServerCatalog">
+	<constructor-arg ref="adapterFactoryFinder"/>
+  </bean>
+  
+  <!-- adapter to turn catalog handles into "meta data" objects" -->
+  <bean id="infoAdapterFactory" class="org.geoserver.data.feature.InfoAdapterFactory">
+  	<constructor-arg ref="catalog"/>
+  	<constructor-arg ref="resourceLoader"/>
+  </bean>
+ 
+  <bean id="serviceFinder" class="org.geotools.catalog.adaptable.AdaptingServiceFinder">
+  	<constructor-arg ref="catalog"/>
+  	<constructor-arg>
+  	  <bean class="org.geoserver.data.GeoServerServiceFinder">
+	    <constructor-arg ref="catalog"></constructor-arg>	
+      </bean>
+  	</constructor-arg>
+  </bean>
+  
+  <!-- loading the catalog with data -->
+  <bean id="catalogLoader" class="org.geoserver.data.CatalogLoader">
+  	<constructor-arg ref="resourceLoader"/>
+  	<constructor-arg ref="catalog"/>
+  	<constructor-arg ref="serviceFinder"/>
+  </bean>
+  
+  <!-- some default catalog service factories -->
+  <bean id="sldServiceFactory" 
+  	class="org.geotools.catalog.styling.SLDServiceFactory"/>
+  <!--  bean id="shapefileServiceFactory"
+  	 class="org.geotools.catalog.shapefile.ShapefileServiceFactory"/-->
+  <bean id="postgisServiceFactory"
+  	 class="org.geotools.catalog.postgis.PostGISServiceFactory"/>
+  	 
   <!-- controller which dispatches to ows services -->
-  <bean id="owsDispatcher" class="org.geoserver.ows.http.Dispatcher"/>
+  <bean id="dispatcher" class="org.geoserver.ows.http.Dispatcher"/>
   	
   <!-- interceptor which initializes ows services -->
   <bean id="owsInitializer" class="org.geoserver.ows.http.OWSInitializer"/>
@@ -20,7 +63,7 @@
   	
   	<property name="mappings">
   	  <props>
-      	<prop key="/ows/*">owsDispatcher</prop>
+      	<prop key="/ows/*">dispatcher</prop>
       </props>
     </property>
     
