@@ -78,16 +78,16 @@
     </dependency>
 
     <dependency>
-      <groupId>eclipse</groupId>
-      <artifactId>org.eclipse.emf.common</artifactId>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>common</artifactId>
     </dependency>
     <dependency>
-      <groupId>eclipse</groupId>
-      <artifactId>org.eclipse.emf.ecore</artifactId>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>ecore</artifactId>
     </dependency>
     <dependency>
-      <groupId>eclipse</groupId>
-      <artifactId>org.eclipse.xsd</artifactId>
+      <groupId>org.eclipse.xsd</groupId>
+      <artifactId>xsd</artifactId>
     </dependency>
   </dependencies>
 
