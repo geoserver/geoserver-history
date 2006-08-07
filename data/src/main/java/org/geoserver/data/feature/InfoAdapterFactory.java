@@ -117,18 +117,29 @@ public class InfoAdapterFactory implements ResolveAdapterFactory,
 			DataStoreInfo dataStoreInfo = 
 				(DataStoreInfo) adapt( handle.parent( null ), DataStoreInfo.class, null );
 			
-			//look up the feature type info
-			String id = rInfo.getName();
+			//look up the feature type info, stores as 'featureTypes/<prefix>_<typeName>/info.xml'
+			FeatureTypeInfo info = null;
+			File infoFile = null;
 			if ( dataStoreInfo.getNamespacePrefix() != null ) {
-				id = dataStoreInfo.getNamespacePrefix() + "_" + id;
+				String prefix = dataStoreInfo.getNamespacePrefix();
+				infoFile = loader.find( "featureTypes/" + prefix + "_" + rInfo.getName() + "/info.xml" );
+			}
+			else {
+				//try straight up, with just name
+				infoFile = loader.find( "featureTypes/" + rInfo.getName() + "/info.xml" );
+				if ( infoFile == null ) {
+					//try with default namespace
+					String prefix = catalog.getNamespaceSupport().getPrefix( 
+						catalog.getNamespaceSupport().getURI( "" )
+					);
+					infoFile = loader.find( "featureTypes/" + prefix + "_" + rInfo.getName() + "/info.xml" );
+				}
 			}
 			
-			FeatureTypeInfo info = null;
-			File f = loader.find( "featureTypes/" + id + "/info.xml" );
-			if ( f != null && f.exists() ) {
+			if ( infoFile != null && infoFile.exists() ) {
 				//create from stored metadata
 				FeatureTypeReader reader = new FeatureTypeReader( catalog );
-				info = reader.read( f );
+				info = reader.read( infoFile );
 				
 				info.setEnabled( true );
 			}
