@@ -81,6 +81,17 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
 	}
 	
 	/**
+	 * Sets the base directory.
+	 * 
+	 * @param baseDirectory
+	 */
+	public void setBaseDirectory(File baseDirectory) {
+		this.baseDirectory = baseDirectory;
+		
+		searchLocations.add( baseDirectory );
+	} 
+	
+	/**
 	 * Performs a resource lookup. 
 	 * 
 	 * @param location The name of the resource to lookup, can be absolute or 
