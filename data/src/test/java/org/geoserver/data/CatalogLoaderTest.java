@@ -2,6 +2,7 @@ package org.geoserver.data;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -14,7 +15,9 @@ import javax.xml.transform.stream.StreamResult;
 import junit.framework.TestCase;
 
 import org.geoserver.GeoServerResourceLoader;
+import org.geoserver.data.feature.InfoAdapterFactory;
 import org.geotools.catalog.ServiceFinder;
+import org.geotools.catalog.adaptable.AdaptingServiceFinder;
 import org.geotools.catalog.adaptable.ResolveAdapterFactoryFinder;
 import org.geotools.catalog.defaults.DefaultServiceFinder;
 import org.geotools.catalog.property.PropertyServiceFactory;
@@ -50,13 +53,16 @@ public class CatalogLoaderTest extends TestCase {
 		Element dataStoreElement = doc.createElement( "datastore" );
 		dataStoresElement.appendChild( dataStoreElement );
 		
-		Element connectionParamsElement = doc.createElement( "connectionParameters" );
+		Element connectionParamsElement = doc.createElement( "connectionParams" );
 		dataStoreElement.appendChild( connectionParamsElement );
 		
 		Element parameterElement = doc.createElement( "parameter" );
 		parameterElement.setAttribute( "name", "directory" );
 		parameterElement.setAttribute( "value", System.getProperty( "java.io.tmpdir" ) );
 		connectionParamsElement.appendChild( parameterElement );
+		
+		Element stylesElement = doc.createElement( "styles" );
+		doc.getDocumentElement().appendChild( stylesElement );
 		
 		Transformer tx = TransformerFactory.newInstance().newTransformer();
 		
@@ -65,31 +71,41 @@ public class CatalogLoaderTest extends TestCase {
 		File tmp = File.createTempFile( "catalog", "test" );
 		tmp.delete();
 		tmp.mkdir();
-		tmp.deleteOnExit();
 		
 		final File catalogFile = new File( tmp, "catalog.xml" );
-		catalogFile.deleteOnExit();
+		
+		File propertiesFile = new File( tmp, "dummy.properties" );
+		propertiesFile.createNewFile();
+		
 		StreamResult result = new StreamResult( catalogFile );
 		
 		tx.transform( source, result );
 		
 		GeoServerResourceLoader loader = new GeoServerResourceLoader( tmp );
 		
-		GeoServerCatalog catalog = new DefaultGeoServerCatalog( null );
-		ServiceFinder finder = new DefaultServiceFinder( catalog ) {
+		ResolveAdapterFactoryFinder adapterFinder = new ResolveAdapterFactoryFinder() { };
+		
+		DefaultGeoServerCatalog catalog = new DefaultGeoServerCatalog( adapterFinder );
+		ServiceFinder finder = new AdaptingServiceFinder( 
+			catalog, 
+			new DefaultServiceFinder( catalog ) {
 			
-			public List getServiceFactories() {
-				ArrayList list = new ArrayList();
-				list.add( new PropertyServiceFactory() );
-				
-				return list;
-			};
-		};
+				public List getServiceFactories() {
+					ArrayList list = new ArrayList();
+					list.add( new PropertyServiceFactory() );
+					
+					return list;
+				}
+			}
+		);
 		
 		CatalogLoader catalogLoader = new CatalogLoader( loader, catalog, finder );
 		
 		catalogLoader.afterPropertiesSet();
 		assertFalse( catalog.members( null ).isEmpty() );
 		
+		propertiesFile.delete();
+		catalogFile.delete();
+		tmp.delete();
 	}
 }
