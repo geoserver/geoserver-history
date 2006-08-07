@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import org.geoserver.data.feature.DataStoreInfo;
+import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.Service;

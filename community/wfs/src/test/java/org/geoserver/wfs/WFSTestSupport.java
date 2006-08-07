@@ -3,11 +3,10 @@ package org.geoserver.wfs;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import org.geoserver.data.AdaptingGeoServerCatalog;
 import org.geoserver.data.DataTestSupport;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.GeoServerResolveAdapterFactoryFinder;
-import org.geoserver.wfs.feature.InfoAdapterFactory;
+import org.geoserver.data.feature.InfoAdapterFactory;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**
@@ -35,10 +34,11 @@ public class WFSTestSupport extends DataTestSupport {
 		super.setUp();
 		
 		context = new GenericApplicationContext();
+		context.getBeanFactory().registerSingleton( "loader", loader );
 		context.getBeanFactory().registerSingleton( "catalog", catalog );
 		context.getBeanFactory().registerSingleton( "finder", finder );
 		context.getBeanFactory().registerSingleton( 
-			"infoAdapterFactory", new InfoAdapterFactory( catalog ) 
+			"infoAdapterFactory", new InfoAdapterFactory( catalog, loader ) 
 		);
 		
 		finder.setApplicationContext( context );
@@ -50,16 +50,4 @@ public class WFSTestSupport extends DataTestSupport {
 		wfs.setCharSet( Charset.forName( "UTF-8" ) );
 		
 	}
-	
-	/**
-	 * Override to provide an adapting catalog.
-	 */
-	protected GeoServerCatalog createCiteCatalog() {
-		GeoServerCatalog catalog = super.createCiteCatalog();
-		
-		//set up an adapting catalog
-		finder = new GeoServerResolveAdapterFactoryFinder();
-		return new AdaptingGeoServerCatalog( catalog, finder );
-	}
-
 }

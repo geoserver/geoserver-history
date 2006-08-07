@@ -18,9 +18,10 @@ public class GetCapabilitiesTest extends WFSTestSupport {
 	}
 	
 	public void testGetCapabilities() throws Exception {
+		
+		WFSCapsTransformer tx = getCapabilities.getCapabilities();
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		getCapabilities.setOutputStream( outputStream );
-		getCapabilities.getCapabilities();
+		tx.transform( null, outputStream );
 		
 		Element capsElement = ReaderUtils.parse( 
 			new InputStreamReader( new ByteArrayInputStream( outputStream.toByteArray() ) )
