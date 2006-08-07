@@ -139,7 +139,7 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
 
 		// Prepare a sample model that specifies a storage 4-bits of
 		// pixel datavd in an 8-bit data element
-		int bitMasks[] = new int[] { (byte) 0xf };
+		int bitMasks[] = new int[] { (byte) 0xff };
 		SampleModel sampleModel = new SinglePixelPackedSampleModel(
 				DataBuffer.TYPE_BYTE, width, height, bitMasks);
 
