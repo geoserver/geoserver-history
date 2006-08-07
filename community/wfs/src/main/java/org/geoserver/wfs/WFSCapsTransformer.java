@@ -17,11 +17,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.data.GeoServerCatalog;
-import org.geoserver.wfs.feature.FeatureTypeInfo;
+import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.GeoResourceInfo;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.FunctionExpression;
+import org.geotools.filter.expression.FunctionExpression;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.xml.sax.ContentHandler;
@@ -435,14 +435,14 @@ public class WFSCapsTransformer extends TransformerBase {
 
             List featureTypes;
 			try {
-				featureTypes = catalog.resources( FeatureType.class );
+				featureTypes = catalog.featureTypes();
 			} 
 			catch (IOException e) {
 				throw new RuntimeException( e );
 			}
             
             for (Iterator it = featureTypes.iterator(); it.hasNext();) {
-                GeoResource ftype = (GeoResource) it.next();
+                FeatureTypeInfo ftype = (FeatureTypeInfo) it.next();
                 
                 //can't handle ones that aren't enabled.
                 //and they shouldn't be handled, as they won't function.
@@ -464,31 +464,15 @@ public class WFSCapsTransformer extends TransformerBase {
          *
          * @throws RuntimeException For any errors.
          */
-        protected void handleFeatureType( GeoResource ftype ) {
+        protected void handleFeatureType( FeatureTypeInfo info ) {
             
-            FeatureTypeInfo info = null;
-            try {
-            		info = (FeatureTypeInfo) ftype.resolve( FeatureTypeInfo.class, null );
-            		if ( info == null ) {
-            			String msg = "Unable to locate feature type metadata for: " + 
-            				ftype.getIdentifier();
-            			throw new IOException( msg );
-            		}
-            	} 
-			catch (IOException e) {
-				String msg = "Could not get info for: " + ftype.getIdentifier()
-					+ ": " + e.getMessage();
-				LOGGER.log( Level.SEVERE, msg, e );
-				return ;
-			}
-			
             Envelope bbox = null;
 
             try {
 				bbox = info.boundingBox();
 			} 
             catch (IOException e) {
-            		String msg = "Could not calculate bbox for: " + ftype.getIdentifier();
+            		String msg = "Could not calculate bbox for: " + info.name();
 				LOGGER.log( Level.SEVERE, msg, e );
             		return ;
 			}

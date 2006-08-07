@@ -18,9 +18,9 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.geoserver.data.GeoServerCatalog;
+import org.geoserver.data.feature.AttributeTypeInfo;
+import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.ows.ServiceException;
-import org.geoserver.wfs.feature.AttributeTypeInfo;
-import org.geoserver.wfs.feature.FeatureTypeInfo;
 import org.geotools.catalog.GeoResource;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
@@ -465,7 +465,7 @@ public class GetFeature implements ApplicationContextAware {
 
                 List attrs = meta.getAttributes();
                 List propNames = query.getPropertyNames(); // REAL LIST: be careful here :)
-                List attributeNames = meta.getAttributeNames();
+                List attributeNames = meta.attributeNames();
 
                 for (Iterator iter = propNames.iterator(); iter.hasNext();) {
                     String propName = (String) iter.next();

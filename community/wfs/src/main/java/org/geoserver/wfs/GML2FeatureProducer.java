@@ -15,8 +15,8 @@ import java.util.zip.GZIPOutputStream;
 import javax.xml.transform.TransformerException;
 
 import org.geoserver.data.GeoServerCatalog;
+import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.ows.ServiceException;
-import org.geoserver.wfs.feature.FeatureTypeInfo;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureResults;
 import org.geotools.gml.producer.FeatureTransformer;
@@ -122,7 +122,7 @@ public class GML2FeatureProducer implements FeatureProducer {
         for (int resIndex = 0; resIndex < resCount; resIndex++) {
             features = results.getFeatures(resIndex);
             meta = results.getTypeInfo(resIndex);
-            prefix = meta.getNamespacePrefix();
+            prefix = meta.namespacePrefix();
             String uri = catalog.getNamespaceSupport().getURI( prefix );
             
             ftNames.declareNamespace(features.getSchema(), prefix, uri);

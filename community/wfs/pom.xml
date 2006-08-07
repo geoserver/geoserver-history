@@ -6,8 +6,8 @@
 
   <parent>
     <groupId>org.geoserver</groupId>		
-	<artifactId>community</artifactId>
-	<version>1.4.0-M1</version>
+	  <artifactId>community</artifactId>
+	  <version>1.4.0-M1</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -24,6 +24,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
+			<artifactId>net.opengis.wfs.basic</artifactId>
+			<version>1.4.0-M1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geoserver</groupId>
 			<artifactId>data</artifactId>
 			<version>1.4.0-M1</version>
 		</dependency>
@@ -36,12 +41,29 @@
 			<artifactId>gt2-epsg-hsql</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-xml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-xml-filter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-xml-gml2</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>xalan</groupId>
 			<artifactId>xalan</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>httpunit</groupId>
+			<artifactId>httpunit</artifactId>
 			<scope>test</scope>
 		</dependency>
 		 <dependency>
@@ -53,6 +75,19 @@
       <groupId>mockobjects</groupId>
       <artifactId>mockobjects-core</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>eclipse</groupId>
+      <artifactId>org.eclipse.emf.common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>eclipse</groupId>
+      <artifactId>org.eclipse.emf.ecore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>eclipse</groupId>
+      <artifactId>org.eclipse.xsd</artifactId>
     </dependency>
   </dependencies>
 

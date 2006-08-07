@@ -34,14 +34,32 @@
 		<constructor-arg index="2" ref="getCapabilities"/>
 	</bean>
 	
+	<!-- responses -->
+	<bean id="wfsCapsTransformerResponse"
+		class="org.geoserver.wfs.http.WFSCapsTransformerResponse"/>
+	
 	<!-- http url mapping -->
 	<bean id="wfsURLMapping" 
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="interceptors">
+	  		<list>
+				 <ref bean="owsInitializer"/>
+	  		</list>
+		</property>
 		<property name="mappings">
 			<props>
-				<prop key="/wfs/*">owsDispatcher</prop>
+				<prop key="/wfs">dispatcher</prop>
+				<prop key="/wfs/*">dispatcher</prop>
 			</props>
 		</property>
+	</bean>
+	
+	<!-- http protocol bindings -->
+	<bean id="typesKvpReader" class="org.geoserver.wfs.http.TypeNamesKvpReader"/>
+	
+	<bean id="getCapabilitiesXmlReader"
+		class="org.geoserver.wfs.http.WfsXmlReader">
+		<constructor-arg type="java.lang.String" value="GetCapabilities"/>
 	</bean>
 
 </beans>

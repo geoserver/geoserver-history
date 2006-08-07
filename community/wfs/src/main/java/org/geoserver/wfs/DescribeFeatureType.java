@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import javax.xml.transform.TransformerException;
 
 import org.geoserver.data.GeoServerCatalog;
-import org.geoserver.wfs.feature.FeatureTypeInfo;
+import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geotools.catalog.GeoResource;
 import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTypeTransformer;
@@ -199,13 +199,13 @@ public class DescribeFeatureType {
             //schemas.
         		FeatureTypeInfo ftInfo =  (FeatureTypeInfo) infos.get( 0 );
         		String targetNs = 
-        			catalog.getNamespaceSupport().getURI( ftInfo.getNamespacePrefix() );
+        			catalog.getNamespaceSupport().getURI( ftInfo.namespacePrefix() );
         		
             //String targetNs = nsInfoType.getXmlns();
             tempResponse.append(TARGETNS_PREFIX + targetNs + TARGETNS_SUFFIX);
 
             //namespace
-            tempResponse.append("\n  " + "xmlns:" + ftInfo.getNamespacePrefix()
+            tempResponse.append("\n  " + "xmlns:" + ftInfo.namespacePrefix()
                 + "=\"" + targetNs + "\"");
 
             //xmlns:" + nsPrefix + "=\"" + targetNs
@@ -239,7 +239,7 @@ public class DescribeFeatureType {
             //iterate through the types, and make a set of their prefixes.
             while ( i.hasNext() ) {
             		FeatureTypeInfo ftInfo = (FeatureTypeInfo) i.next();
-                prefixes.add( ftInfo.getNamespacePrefix() );
+                prefixes.add( ftInfo.namespacePrefix() );
             }
 
             Iterator prefixIter = prefixes.iterator();
@@ -356,7 +356,7 @@ public class DescribeFeatureType {
                         schemaFile.exists() && schemaFile.canRead()) {
                        generatedType = writeFile(schemaFile);
                    } else {
-                       FeatureType ft2 = ftInfo.getFeatureType();
+                       FeatureType ft2 = ftInfo.featureType();
                        String gType2 = generateFromSchema(ft2);
 
                         if ((gType2 != null) && (gType2 != "")) {
@@ -426,7 +426,7 @@ public class DescribeFeatureType {
      */
     private static String printElement(FeatureTypeInfo type) {
     		return "\n  <xs:element name='" + type.getTypeName() + "' type='"
-    			+ type.getNamespacePrefix()+":"+type.schemaName() + 
+    			+ type.namespacePrefix()+":"+type.schemaName() + 
     			"' substitutionGroup='gml:_Feature'/>";
     }
 
@@ -490,7 +490,7 @@ public class DescribeFeatureType {
 		
 		while ( i.hasNext() ) {
 			FeatureTypeInfo ftInfo = (FeatureTypeInfo) i.next();
-			if ( !first.getNamespacePrefix().equals( ftInfo.getNamespacePrefix() ) ) {
+			if ( !first.namespacePrefix().equals( ftInfo.namespacePrefix() ) ) {
 				return false;
 			}
 		}

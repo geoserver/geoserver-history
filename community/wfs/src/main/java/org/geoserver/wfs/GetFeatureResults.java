@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.geoserver.wfs.feature.FeatureTypeInfo;
+import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureResults;
 
@@ -162,7 +162,7 @@ public class GetFeatureResults {
                 "Both the metadata and results of querying a featuretype must be passed");
         }
 
-        if (!features.getSchema().getTypeName().equals(meta.getFeatureType()
+        if (!features.getSchema().getTypeName().equals(meta.featureType()
                                                                .getTypeName())) {
             throw new IllegalArgumentException(
                 "The passed type info and results"

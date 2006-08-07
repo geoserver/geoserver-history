@@ -1,6 +1,7 @@
 package org.geoserver.wfs;
 
-import java.io.OutputStream;
+import net.opengis.wfs.GetCapabilitiesType;
+import net.opengis.wfs.WFSFactory;
 
 import org.geoserver.data.GeoServerCatalog;
 
@@ -14,23 +15,34 @@ public class GetCapabilities {
 
 	WFS wfs;
 	GeoServerCatalog catalog;
-	
-	OutputStream outputStream;
+
+	GetCapabilitiesType request;
 	
 	public GetCapabilities( WFS wfs, GeoServerCatalog catalog) {
 		this.wfs = wfs;
 		this.catalog = catalog;
 	}
 	
-	public void setOutputStream( OutputStream outputStream ) {
-		this.outputStream = outputStream;
+	GetCapabilitiesType request() {
+		if ( request == null ) {
+			request = WFSFactory.eINSTANCE.createGetCapabilitiesType();
+		}
+		
+		return request;
 	}
 	
-	public void getCapabilities() throws Exception {
+	public void setVersion( String version ) {
+		request().setVersion( version );
+	}
+	
+	public WFSCapsTransformer getCapabilities() {
+		return getCapabilities( request() );
+	}
+	
+	public WFSCapsTransformer getCapabilities( GetCapabilitiesType request ) {
 		WFSCapsTransformer transformer = new WFSCapsTransformer( wfs, catalog );
-        transformer.setIndentation(2);
+        transformer.setIndentation( 2 );
 
-        transformer.transform( this, outputStream );
-    }
-
+        return transformer;
+	}
 }
