@@ -102,17 +102,6 @@ public class Dispatcher extends AbstractController {
 		}
 		
 		Operation opBean = (Operation) matches.get( 0 );
-		
-		//post process the key value pairs
-		if ( !kvp.isEmpty() ) {
-			Map kvpPostProcessors = 
-				getApplicationContext().getBeansOfType( KvpPostProcessor.class );
-			for ( Iterator i = kvpPostProcessors.values().iterator(); i.hasNext(); ) {
-				KvpPostProcessor kvpPostProcessor = (KvpPostProcessor) i.next();
-				kvpPostProcessor.postProcess( kvp, opBean );
-			}
-		}
-		
 		Object op = opBean.getOperation();
 		
 		//step 3: set the params
