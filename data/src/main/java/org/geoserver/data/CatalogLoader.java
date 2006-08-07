@@ -79,6 +79,17 @@ public class CatalogLoader implements InitializingBean, DisposableBean {
 		CatalogReader reader = new CatalogReader();
 		reader.read( catalogFile );
 		
+		//setup namespace mappings
+		Map nsMappings = reader.namespaces();
+		for ( Iterator ns = nsMappings.entrySet().iterator(); ns.hasNext(); ) {
+			Map.Entry nsMapping = (Map.Entry) ns.next();
+			
+			String pre = (String) nsMapping.getKey();
+			String uri = (String) nsMapping.getValue();
+			
+			catalog.getNamespaceSupport().declarePrefix( pre, uri );
+		}
+		
 		//populate the catalog with datastores
 		for ( Iterator d = reader.dataStores().entrySet().iterator(); d.hasNext(); ) {
 			Map.Entry entry = (Map.Entry) d.next();
@@ -95,25 +106,14 @@ public class CatalogLoader implements InitializingBean, DisposableBean {
 			
 			for ( Iterator s = services.iterator(); s.hasNext(); ) {
 				Service service = (Service) s.next();
-				if ( !service.canResolve( DataStoreInfo.class ) )
-					continue;
-				
-				DataStoreInfo info = (DataStoreInfo) service.resolve( DataStoreInfo.class, null );
-				info.setId( id );
-				
+				if ( service.canResolve( DataStoreInfo.class ) ) {
+					DataStoreInfo info = (DataStoreInfo) service.resolve( DataStoreInfo.class, null );
+					info.setId( id );
+	
+				}
+					
 				catalog.add( service );
 			}
-		}
-		
-		//setup namespace mappings
-		Map nsMappings = reader.namespaces();
-		for ( Iterator ns = nsMappings.entrySet().iterator(); ns.hasNext(); ) {
-			Map.Entry nsMapping = (Map.Entry) ns.next();
-			
-			String pre = (String) nsMapping.getKey();
-			String uri = (String) nsMapping.getValue();
-			
-			catalog.getNamespaceSupport().declarePrefix( pre, uri );
 		}
 		
 		//add styles
