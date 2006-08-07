@@ -3,8 +3,8 @@ package org.geoserver.data;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,8 +13,12 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.geoserver.GeoServerResourceLoader;
+import org.geoserver.data.feature.InfoAdapterFactory;
 import org.geotools.catalog.Service;
 import org.geotools.catalog.property.PropertyServiceFactory;
+import org.geotools.catalog.styling.SLDServiceFactory;
+
 import org.geotools.data.property.PropertyDataStoreFactory;
 import org.springframework.context.support.GenericApplicationContext;
 
@@ -80,6 +84,11 @@ public class DataTestSupport extends TestCase {
     protected GeoServerCatalog catalog;
     
     /**
+     * Resource loader
+     */
+    protected GeoServerResourceLoader loader;
+    
+    /**
 	 * Creates an instance of the geoserver catalog populated with cite data.
 	 * 
 	 */
@@ -88,36 +97,72 @@ public class DataTestSupport extends TestCase {
 	   tmp.delete();
 	   tmp.mkdir();
 	   
-	   copy( BASIC_POLYGONS_TYPE );
-	   copy(  BRIDGES_TYPE );
-	   copy(  BUILDINGS_TYPE );
-	   copy(  DIVIDED_ROUTES_TYPE );
-	   copy(  FORESTS_TYPE );
-	   copy(  LAKES_TYPE );
-	   copy(  MAP_NEATLINE_TYPE );
-	   copy(  NAMED_PLACES_TYPE );
-	   copy(  PONDS_TYPE );
-	   copy(  ROAD_SEGMENTS_TYPE );
-	   copy(  STREAMS_TYPE );
+	   //create a featureTypes directory
+	   File featureTypes = new File( tmp, "featureTypes" );
+	   featureTypes.mkdir();
 	   
+	   //create the styles directory
+	   File styles = new File( tmp, "styles" );
+	   styles.mkdir();
+	   
+	   for ( int i = 0; i < citeTypeNames().length; i++ ) {
+		   String type = citeTypeNames()[i];
+		   copy( type );
+		   info( type, featureTypes );
+		   style( type, styles );
+	   }
+	   
+	   loader = new GeoServerResourceLoader( tmp );
 	   catalog = createCiteCatalog();
-	   
 	}
     
     void copy( String type ) throws IOException {
+    		//copy over the properties file
     		InputStream from = DataTestSupport.class.getResourceAsStream( "data/" + type + ".properties" );
-    		
     		File to = new File( tmp, type + ".properties" ); 
-    		
+    		copy( from, to );
+   	}
+
+    void copy ( InputStream from, File to ) throws IOException {
     		InputStream in = new BufferedInputStream( from );
-    		OutputStream out = new BufferedOutputStream( new FileOutputStream( to ) );
+		OutputStream out = new BufferedOutputStream( new FileOutputStream( to ) );
+		
+		int b = 0;
+		while ( ( b = in.read() ) != -1 ) out.write( b );
+		
+		in.close();
+		out.flush();
+		out.close();	
+    }
+    
+    void info( String type, File dir ) throws Exception {
+    		File featureTypeDir = new File( dir, type );
+    		featureTypeDir.mkdir();
     		
-    		int b = 0;
-    		while ( ( b = in.read() ) != -1 ) out.write( b );
+    		File info = new File( featureTypeDir, "info.xml" );
+    		info.createNewFile();
     		
-    		in.close();
-    		out.flush();
-    		out.close();
+    		FileWriter writer = new FileWriter( info );
+    		writer.write( "<featureType datastore=\"cite\">" );
+    		writer.write( "<name>" + type + "</name>" );
+    		writer.write( "<SRS>4326</SRS>" );
+    		writer.write( "<title>" + type + "</title>" );
+    		writer.write( "<abstract>abstract about " + type + "</abstract>" );
+    		writer.write( "<numDecimals value=\"0\"/>" );
+    		writer.write( "<keywords>" + type + "</keywords>" );
+    		writer.write( "<latLonBoundingBox dynamic=\"false\" minx=\"0\" miny=\"0\" maxx=\"0\" maxy=\"0\"/>" );
+    		writer.write( "<styles default=\"someStyle\"/>" );
+    		writer.write( "</featureType>" );
+    		
+    		writer.flush();
+    		writer.close();
+    	}
+    
+    void style( String type, File dir ) throws IOException {
+ 		//copy over the properties file
+		InputStream from = DataTestSupport.class.getResourceAsStream( "data/" + type + ".sld" );
+		File to = new File( dir, type + ".sld" ); 
+		copy( from, to );	
     }
     
     /**
@@ -131,14 +176,22 @@ public class DataTestSupport extends TestCase {
      */
     protected GeoServerCatalog createCiteCatalog() {
     		
-		GeoServerCatalog catalog = new DefaultGeoServerCatalog();
+    		GeoServerResolveAdapterFactoryFinder adapterFinder 
+    			= new GeoServerResolveAdapterFactoryFinder();
+		GeoServerCatalog catalog = new DefaultGeoServerCatalog( adapterFinder );
+		
 		GeoServerServiceFinder finder = new GeoServerServiceFinder( catalog );
 		PropertyServiceFactory factory = new PropertyServiceFactory();
+		SLDServiceFactory sldFactory = new SLDServiceFactory();
 		
 		GenericApplicationContext context = new GenericApplicationContext();
 		context.getBeanFactory().registerSingleton( "finder", finder );
-		context.getBeanFactory().registerSingleton( "psf", factory );
-		
+		context.getBeanFactory().registerSingleton( "propertyServiceFactory", factory );
+		context.getBeanFactory().registerSingleton( "sldServiceFactory", sldFactory );
+		context.getBeanFactory().registerSingleton( 
+			"adapter", new InfoAdapterFactory( catalog, loader ) 
+		);
+		adapterFinder.setApplicationContext( context );
 		finder.setApplicationContext( context );
 		
 		//set up the data
@@ -146,6 +199,10 @@ public class DataTestSupport extends TestCase {
 		params.put( PropertyDataStoreFactory.DIRECTORY.key, tmp );
 		
 		List services = finder.aquire( params );
+		catalog.add( (Service) services.get( 0 ) );
+		
+		//setup the styles
+		services = finder.aquire( new File( tmp, "styles").toURI() );
 		catalog.add( (Service) services.get( 0 ) );
 		
 		//setup the namespaces
@@ -156,14 +213,20 @@ public class DataTestSupport extends TestCase {
 	}
     
     protected void tearDown() throws Exception {
-	   File[] files = tmp.listFiles();
-	   for ( int i = 0; i < files.length; i++ ) {
-		   files[i].delete();
-	   }
-	   
-	   tmp.delete();
-    }
+    		delete( new File( tmp, "styles" ) );
+    		delete( new File( tmp, "featureTypes" ) );
+    		delete( tmp );
+    	}
 
+    void delete( File dir ) throws IOException {
+    		File[] files = dir.listFiles();
+ 	   for ( int i = 0; i < files.length; i++ ) {
+ 		   files[i].delete();
+ 	   }
+ 	   
+ 	   dir.delete();	
+    }
+    
     /**
      * @return The cite type names as an array of strings.
      */
