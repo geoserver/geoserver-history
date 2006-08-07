@@ -136,7 +136,7 @@ public class DataTestSupport extends TestCase {
     }
     
     void info( String type, File dir ) throws Exception {
-    		File featureTypeDir = new File( dir, type );
+    		File featureTypeDir = new File( dir, CITE_PREFIX + "_" + type );
     		featureTypeDir.mkdir();
     		
     		File info = new File( featureTypeDir, "info.xml" );
@@ -176,7 +176,7 @@ public class DataTestSupport extends TestCase {
      */
     protected GeoServerCatalog createCiteCatalog() {
     		
-    		GeoServerResolveAdapterFactoryFinder adapterFinder 
+		GeoServerResolveAdapterFactoryFinder adapterFinder 
     			= new GeoServerResolveAdapterFactoryFinder();
 		GeoServerCatalog catalog = new DefaultGeoServerCatalog( adapterFinder );
 		
@@ -194,9 +194,14 @@ public class DataTestSupport extends TestCase {
 		adapterFinder.setApplicationContext( context );
 		finder.setApplicationContext( context );
 		
+		//setup the namespaces
+		catalog.getNamespaceSupport().declarePrefix( "", CITE_URI );
+		catalog.getNamespaceSupport().declarePrefix( CITE_PREFIX, CITE_URI );
+		
 		//set up the data
 		HashMap params = new HashMap();
 		params.put( PropertyDataStoreFactory.DIRECTORY.key, tmp );
+		params.put( PropertyDataStoreFactory.NAMESPACE.key, CITE_URI );
 		
 		List services = finder.aquire( params );
 		catalog.add( (Service) services.get( 0 ) );
@@ -205,9 +210,7 @@ public class DataTestSupport extends TestCase {
 		services = finder.aquire( new File( tmp, "styles").toURI() );
 		catalog.add( (Service) services.get( 0 ) );
 		
-		//setup the namespaces
-		catalog.getNamespaceSupport().declarePrefix( "", CITE_URI );
-		catalog.getNamespaceSupport().declarePrefix( CITE_PREFIX, CITE_URI );
+
 		
 		return catalog;
 	}
@@ -221,7 +224,13 @@ public class DataTestSupport extends TestCase {
     void delete( File dir ) throws IOException {
     		File[] files = dir.listFiles();
  	   for ( int i = 0; i < files.length; i++ ) {
- 		   files[i].delete();
+ 		   if ( files[i].isDirectory() ) {
+ 			   delete( files[i] );
+ 		   }
+ 		   else {
+ 			  files[i].delete();   
+ 		   }
+ 		   
  	   }
  	   
  	   dir.delete();	
