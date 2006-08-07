@@ -3,16 +3,5 @@
 
 <beans>
  
-  <!-- "global" mappings -->
-  <bean id="org.geoserver.web.urlMapping"
-    class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-    <property name="mappings">
-      <props>
-      </props>
-    </property>
-  </bean>
-
-  
-
 </beans>
  
