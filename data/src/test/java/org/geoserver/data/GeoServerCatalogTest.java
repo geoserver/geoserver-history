@@ -15,7 +15,6 @@ public class GeoServerCatalogTest extends DataTestSupport {
 	public void testServices() throws Exception {
 		List services = catalog.services( DataStore.class );
 		assertEquals( 1, services.size() );
-		
 	}
 	
 	public void testResolveServices() throws Exception {
@@ -51,5 +50,15 @@ public class GeoServerCatalogTest extends DataTestSupport {
 			assertTrue( citeTypeNames.contains( typeName ) );
 			citeTypeNames.remove( typeName );
 		}
+	}
+	
+	public void testFeatureTypes() throws Exception {
+		List featureTypes = catalog.featureTypes();
+		assertEquals( citeTypeNames().length, featureTypes.size() );
+	}
+	
+	public void testStyles() throws Exception {
+		List styles = catalog.styles();
+		assertEquals( citeTypeNames().length, styles.size() );
 	}
 }

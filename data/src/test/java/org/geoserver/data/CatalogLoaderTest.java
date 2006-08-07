@@ -13,7 +13,9 @@ import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.TestCase;
 
+import org.geoserver.GeoServerResourceLoader;
 import org.geotools.catalog.ServiceFinder;
+import org.geotools.catalog.adaptable.ResolveAdapterFactoryFinder;
 import org.geotools.catalog.defaults.DefaultServiceFinder;
 import org.geotools.catalog.property.PropertyServiceFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -60,13 +62,20 @@ public class CatalogLoaderTest extends TestCase {
 		
 		DOMSource source = new DOMSource( doc );
 		
-		final File catalogFile = File.createTempFile( "catalog", "xml" );
+		File tmp = File.createTempFile( "catalog", "test" );
+		tmp.delete();
+		tmp.mkdir();
+		tmp.deleteOnExit();
+		
+		final File catalogFile = new File( tmp, "catalog.xml" );
 		catalogFile.deleteOnExit();
 		StreamResult result = new StreamResult( catalogFile );
 		
 		tx.transform( source, result );
 		
-		GeoServerCatalog catalog = new DefaultGeoServerCatalog();
+		GeoServerResourceLoader loader = new GeoServerResourceLoader( tmp );
+		
+		GeoServerCatalog catalog = new DefaultGeoServerCatalog( null );
 		ServiceFinder finder = new DefaultServiceFinder( catalog ) {
 			
 			public List getServiceFactories() {
@@ -77,16 +86,9 @@ public class CatalogLoaderTest extends TestCase {
 			};
 		};
 		
-		CatalogLoader loader = new CatalogLoader( catalog, finder );
-		loader.setResourceLoader( 
-			new ResourceLoader() {
-				public Resource getResource(String path) {
-					return new FileSystemResource( catalogFile );
-				}
-			}
-		);
+		CatalogLoader catalogLoader = new CatalogLoader( loader, catalog, finder );
 		
-		loader.afterPropertiesSet();
+		catalogLoader.afterPropertiesSet();
 		assertFalse( catalog.members( null ).isEmpty() );
 		
 	}
