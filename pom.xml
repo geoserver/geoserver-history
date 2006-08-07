@@ -143,6 +143,36 @@
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-epsg-postgresql</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-xml</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-xml-filter</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-xml-gml2</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-postgis</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.opengis</groupId>
+				<artifactId>geoapi-nogenerics</artifactId>
+				<version>2.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>3.8.1</version>
@@ -295,7 +325,23 @@
 				<artifactId>itext</artifactId>
 				<version>1.3</version>
 			</dependency>
+			<dependency>
+				<groupId>org.eclipse.emf</groupId>
+				<artifactId>common</artifactId>
+				<version>2.1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.emf</groupId>
+				<artifactId>ecore</artifactId>
+				<version>2.1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.xsd</groupId>
+				<artifactId>xsd</artifactId>
+				<version>2.1.1</version>
+			</dependency>
 
+			<!-- jetty dependencies -->
 			<dependency>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty</artifactId>
@@ -369,6 +415,8 @@
 					<include>**/*.txt</include>
 					<include>**/*.sql</include>
 					<include>**/*.xml</include>
+					<include>**/*.xsd</include>
+					<include>**/*.sld</include>
 					<include>**/*.utf</include>
 					<include>**/*.properties</include>
 					<include>**/*.serialized</include>
@@ -429,8 +477,6 @@
 					</testFailureIgnore>
 				</configuration>
 			</plugin>
-
-
 
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -650,7 +696,7 @@
 
 	<properties>
 		<gs.version>1.4.0-M1</gs.version>
-		<gt.version>2.2.0</gt.version>
+		<gt.version>2.3-SNAPSHOT</gt.version>
 	</properties>
 
 	<profiles>
