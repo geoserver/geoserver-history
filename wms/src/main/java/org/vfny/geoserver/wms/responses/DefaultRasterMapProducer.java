@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.StreamingRenderer;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
@@ -52,6 +53,9 @@ import org.vfny.geoserver.wms.WmsException;
  * @version $Id: JAIMapResponse.java,v 1.29 2004/09/16 21:44:28 cholmesny Exp $
  */
 public abstract class DefaultRasterMapProducer implements GetMapProducer {
+	/** WMS Service configuration **/
+	private WMS wms;
+	
 	/** A logger for this class. */
 	private static final Logger LOGGER = Logger
 			.getLogger("org.vfny.geoserver.responses.wms.map");
@@ -89,15 +93,16 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 	/**
 	 * 
 	 */
-	public DefaultRasterMapProducer() {
-		this(DEFAULT_MAP_FORMAT);
+	public DefaultRasterMapProducer(WMS wms) {
+		this(DEFAULT_MAP_FORMAT, wms);
 	}
 
 	/**
 	 * 
 	 */
-	public DefaultRasterMapProducer(String outputFormat) {
+	public DefaultRasterMapProducer(String outputFormat, WMS wms) {
 		setOutputFormat(outputFormat);
+		this.wms = wms;
 	}
 
 	/**
@@ -214,9 +219,15 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 		renderer = new StreamingRenderer();
 		renderer.setContext(map);
 
-		RenderingHints hints = new RenderingHints(
-				RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		Map hintsMap = new HashMap();
+		hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		//turn off/on interpolation rendering hint
+		if (wms != null && !wms.isAllowInterpolation())
+			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+		else hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		
+		RenderingHints hints = new RenderingHints(hintsMap);
 		renderer.setJava2DHints(hints);
 
 		// we already do everything that the optimized data loading does...

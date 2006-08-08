@@ -103,9 +103,9 @@ public final class GifMapProducerFactory implements GetMapProducerFactorySpi {
 					+ " not supported by this map producer");
 		}
 
-		return new GIFMapProducer("image/gif"); // DJB: added "image/gif" or
-												// you'll get content encoded as
-												// image/png (the default)!!!
+		return new GIFMapProducer("image/gif", wms); // DJB: added "image/gif" or
+													 // you'll get content encoded as
+													 // image/png (the default)!!!
 	}
 
 	/*

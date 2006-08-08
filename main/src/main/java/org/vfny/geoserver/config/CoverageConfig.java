@@ -48,13 +48,11 @@ public class CoverageConfig {
 
 	/**
 	 * 
-	 * @uml.property name="formatId" multiplicity="(0 1)"
 	 */
 	private String formatId;
 
 	/**
 	 * 
-	 * @uml.property name="name" multiplicity="(0 1)"
 	 */
 	private String name;
 
@@ -65,114 +63,86 @@ public class CoverageConfig {
 
 	/**
 	 * 
-	 * @uml.property name="label" multiplicity="(0 1)"
 	 */
 	private String label;
 
 	/**
 	 * 
-	 * @uml.property name="description" multiplicity="(0 1)"
 	 */
 	private String description;
 
 	/**
 	 * 
-	 * @uml.property name="metadataLink"
-	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private MetaDataLink metadataLink;
 
 	/**
 	 * 
-	 * @uml.property name="dirName" multiplicity="(0 1)"
 	 */
 	private String dirName;
 
 	/**
 	 * 
-	 * @uml.property name="keywords"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
 	private List keywords;
 
 	/**
 	 * 
-	 * @uml.property name="envelope"
-	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private GeneralEnvelope envelope;
 
 	/**
 	 * 
-	 * @uml.property name="lonLatWGS84Envelope"
-	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private GeneralEnvelope lonLatWGS84Envelope;
 
 	/**
 	 * 
-	 * @uml.property name="grid"
-	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private GridGeometry grid;
 
 	/**
 	 * 
-	 * @uml.property name="dimensions"
-	 * @uml.associationEnd multiplicity="(0 -1)"
 	 */
 	private CoverageDimension[] dimensions;
 
 	/**
 	 * 
-	 * @uml.property name="dimentionNames"
-	 * @uml.associationEnd multiplicity="(0 -1)"
 	 */
 	private InternationalString[] dimentionNames;
 
 	/**
 	 * 
-	 * @uml.property name="requestCRSs"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
 	private List requestCRSs;
 
 	/**
 	 * 
-	 * @uml.property name="responseCRSs"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
 	private List responseCRSs;
 
 	/**
 	 * 
-	 * @uml.property name="nativeFormat" multiplicity="(0 1)"
 	 */
 	private String nativeFormat;
 
 	/**
 	 * 
-	 * @uml.property name="supportedFormats"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
 	private List supportedFormats;
 
 	/**
 	 * 
-	 * @uml.property name="defaultInterpolationMethod" multiplicity="(0 1)"
 	 */
 	private String defaultInterpolationMethod;
 
 	/**
 	 * 
-	 * @uml.property name="interpolationMethods"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
 	private List interpolationMethods;
 
 	/**
-	 * 
-	 * @uml.property name="srsName" multiplicity="(0 1)"
+	 *  
 	 */
 	private String srsName;
 
@@ -183,15 +153,16 @@ public class CoverageConfig {
 
 	/**
 	 * 
-	 * @uml.property name="crs"
-	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private String nativeCRS;
+
+	/**
+	 * 
 	 */
 	private CoordinateReferenceSystem crs;
 
 	/**
 	 * The default style name.
-	 * 
-	 * @uml.property name="defaultStyle" multiplicity="(0 1)"
 	 */
 	private String defaultStyle;
 
@@ -237,13 +208,12 @@ public class CoverageConfig {
 		this.formatId = formatId;
 		crs = gc.getCoordinateReferenceSystem();
 		srsName = (crs != null && !crs.getIdentifiers().isEmpty() ? crs
-				.getIdentifiers().toArray()[0].toString() : crs.getName()
-				.toString());
+				.getIdentifiers().toArray()[0].toString() : "UNKNOWN");
 		srsWKT = (crs != null ? crs.toWKT() : "UNKNOWN");
+		nativeCRS = (!srsName.equals("UNKNOWN") ? null : "");
 		envelope = (GeneralEnvelope) gc.getEnvelope();
 		try {
-			lonLatWGS84Envelope = CoverageStoreUtils
-					.getWGS84LonLatEnvelope(envelope);
+			lonLatWGS84Envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(envelope);
 		} catch (IndexOutOfBoundsException e) {
 			final ConfigurationException newEx = new ConfigurationException(
 					new StringBuffer("Converting Envelope to Lat-Lon WGS84: ")
@@ -507,6 +477,7 @@ public class CoverageConfig {
 		crs = dto.getCrs();
 		srsName = dto.getSrsName();
 		srsWKT = dto.getSrsWKT();
+		nativeCRS = dto.getNativeCRS();
 		envelope = dto.getEnvelope();
 		lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
 		grid = dto.getGrid();
@@ -537,6 +508,7 @@ public class CoverageConfig {
 		c.setCrs(crs);
 		c.setSrsName(srsName);
 		c.setSrsWKT(srsWKT);
+		c.setNativeCRS(nativeCRS);
 		c.setEnvelope(envelope);
 		c.setLonLatWGS84Envelope(lonLatWGS84Envelope);
 		c.setGrid(grid);
@@ -1001,5 +973,13 @@ public class CoverageConfig {
 	 */
 	public void setParamValues(List paramValues) {
 		this.paramValues = paramValues;
+	}
+
+	public String getNativeCRS() {
+		return nativeCRS;
+	}
+
+	public void setNativeCRS(String nativeCRS) {
+		this.nativeCRS = nativeCRS;
 	}
 }

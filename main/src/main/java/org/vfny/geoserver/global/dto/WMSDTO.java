@@ -35,6 +35,9 @@ public final class WMSDTO implements DataTransferObject {
     private String svgRenderer;
     /** The antialisaing hint for the svg renderer **/
     private boolean svgAntiAlias;
+
+    /** The interpolation rendering hint **/
+    private boolean allowInterpolation;
     
     /**
      * WMS constructor.  does nothing
@@ -63,6 +66,7 @@ public final class WMSDTO implements DataTransferObject {
         gmlPrefixing = other.isGmlPrefixing();
         svgRenderer = other.getSvgRenderer();
         svgAntiAlias = other.getSvgAntiAlias();
+        allowInterpolation = other.getAllowInterpolation();
     }
 
     /**
@@ -98,7 +102,8 @@ public final class WMSDTO implements DataTransferObject {
         WMSDTO dto = (WMSDTO) other;
         
         boolean equals = gmlPrefixing == dto.gmlPrefixing && 
-        	svgAntiAlias == dto.svgAntiAlias;
+        	svgAntiAlias == dto.svgAntiAlias &&
+        	allowInterpolation == dto.allowInterpolation;
         if (equals) {
         	if (service == null) {
         		equals = dto.getService() == null;
@@ -126,6 +131,7 @@ public final class WMSDTO implements DataTransferObject {
     public int hashCode() {
         return (gmlPrefixing ? 1 : 0) 
         | (svgAntiAlias ? 1 : 0)
+        | (allowInterpolation ? 1 : 0)
         | ((service == null) ? 0 : service.hashCode()) 
         | ((svgRenderer == null) ? 0 : svgRenderer.hashCode());
     }
@@ -219,4 +225,19 @@ public final class WMSDTO implements DataTransferObject {
     public boolean getSvgAntiAlias() {
     	return svgAntiAlias;
     }
+    
+    /**
+     * @param allowInterpolation interpolation hint.
+     */
+    public void setAllowInterpolation(boolean allowInterpolation) {
+    	this.allowInterpolation = allowInterpolation;
+    }
+    
+    /**
+     * @return The value of the interpolation rendering hint.
+     */
+    public boolean getAllowInterpolation() {
+    	return allowInterpolation;
+    }
+
 }

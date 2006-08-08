@@ -3,8 +3,8 @@
   <comment/>
   <projects>
     <project>data</project>
-    <project>platform</project>
     <project>main</project>
+    <project>platform</project>
   </projects>
   <buildSpec>
     <buildCommand>

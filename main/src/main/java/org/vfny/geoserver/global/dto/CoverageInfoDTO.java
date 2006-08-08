@@ -30,13 +30,11 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
 	/**
 	 * 
-	 * @uml.property name="formatId" multiplicity="(0 1)"
 	 */
 	private String formatId;
 
 	/**
 	 * 
-	 * @uml.property name="name" multiplicity="(0 1)"
 	 */
 	private String name;
 
@@ -47,40 +45,31 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
 	/**
 	 * 
-	 * @uml.property name="label" multiplicity="(0 1)"
 	 */
 	private String label;
 
 	/**
 	 * 
-	 * @uml.property name="description" multiplicity="(0 1)"
 	 */
 	private String description;
 
 	/**
 	 * 
-	 * @uml.property name="metadataLink"
-	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private MetaDataLink metadataLink;
 
 	/**
 	 * 
-	 * @uml.property name="dirName" multiplicity="(0 1)"
 	 */
 	private String dirName;
 
 	/**
 	 * 
-	 * @uml.property name="keywords"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
 	 */
 	private List keywords;
 
 	/**
 	 * 
-	 * @uml.property name="envelope"
-	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private GeneralEnvelope envelope;
 
@@ -91,64 +80,51 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
 	/**
 	 * 
-	 * @uml.property name="grid"
-	 * @uml.associationEnd multiplicity="(0 1)"
 	 */
 	private GridGeometry grid;
 
 	/**
 	 * 
-	 * @uml.property name="dimensions"
-	 * @uml.associationEnd multiplicity="(0 -1)"
 	 */
 	private CoverageDimension[] dimensions;
 
 	/**
 	 * 
-	 * @uml.property name="dimensionNames"
-	 * @uml.associationEnd multiplicity="(0 -1)"
 	 */
 	private InternationalString[] dimensionNames;
 
 	/**
 	 * 
-	 * @uml.property name="requestCRSs" multiplicity="(0 1)"
 	 */
 	private List requestCRSs;
 
 	/**
 	 * 
-	 * @uml.property name="responseCRSs" multiplicity="(0 1)"
 	 */
 	private List responseCRSs;
 
 	/**
 	 * 
-	 * @uml.property name="nativeFormat" multiplicity="(0 1)"
 	 */
 	private String nativeFormat;
 
 	/**
 	 * 
-	 * @uml.property name="supportedFormats" multiplicity="(0 1)"
 	 */
 	private List supportedFormats;
 
 	/**
 	 * 
-	 * @uml.property name="defaultInterpolationMethod" multiplicity="(0 1)"
 	 */
 	private String defaultInterpolationMethod;
 
 	/**
 	 * 
-	 * @uml.property name="interpolationMethods" multiplicity="(0 1)"
 	 */
 	private List interpolationMethods;
 
 	/**
 	 * 
-	 * @uml.property name="srsName" multiplicity="(0 1)"
 	 */
 	private String srsName;
 
@@ -159,15 +135,16 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
 	/**
 	 * 
-	 * @uml.property name="crs"
-	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private String nativeCRS;
+
+	/**
+	 * 
 	 */
 	private CoordinateReferenceSystem crs;
 
 	/**
 	 * Default style used to render this Coverage with WMS
-	 * 
-	 * @uml.property name="defaultStyle" multiplicity="(0 1)"
 	 */
 	private String defaultStyle;
 
@@ -200,6 +177,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
 		crs = dto.getCrs();
 		srsName = dto.getSrsName();
 		srsWKT = dto.getSrsWKT();
+		nativeCRS = dto.getNativeCRS();
 		envelope = dto.getEnvelope(); 
 		lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
 		grid = dto.getGrid();
@@ -255,6 +233,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
 		}
 		r = r && (srsName == f.getSrsName());
 		r = r && (srsWKT == f.getSrsWKT());
+		r = r && (nativeCRS == f.getNativeCRS());
 		r = r && (crs == f.getCrs());
 		r = r && (name == f.getName());
 		r = r && (wmsPath == f.getWmsPath());
@@ -303,6 +282,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
 		if (srsWKT != null) {
 			r *= srsWKT.hashCode();
+		}
+		
+		if (nativeCRS != null) {
+			r *= nativeCRS.hashCode();
 		}
 
 		if (crs != null) {
@@ -870,5 +853,13 @@ public final class CoverageInfoDTO implements DataTransferObject {
 				paramValues.add(map.get(key));
 			}
 		}
+	}
+
+	public String getNativeCRS() {
+		return nativeCRS;
+	}
+
+	public void setNativeCRS(String nativeCRS) {
+		this.nativeCRS = nativeCRS;
 	}
 }

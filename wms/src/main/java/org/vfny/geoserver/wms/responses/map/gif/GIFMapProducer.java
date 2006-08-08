@@ -7,25 +7,19 @@ package org.vfny.geoserver.wms.responses.map.gif;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
 import java.awt.image.IndexColorModel;
 import java.awt.image.PackedColorModel;
-import java.awt.image.Raster;
-import java.awt.image.SampleModel;
-import java.awt.image.WritableRaster;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
 
 import org.geotools.resources.image.ImageUtilities;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
@@ -71,8 +65,8 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
 
 	}
 
-	public GIFMapProducer(String format) {
-		super(format);
+	public GIFMapProducer(String format, WMS wms) {
+		super(format, wms);
 	}
 
 	/**

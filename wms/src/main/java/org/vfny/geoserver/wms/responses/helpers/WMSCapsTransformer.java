@@ -537,7 +537,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
 						latlonBbox.expandToInclude(layerBbox);
 
-						String layerSRS = layer.getSrsName();
+						String layerSRS = (!layer.getSrsName().equals("UNKNOWN") ? layer.getSrsName() : layer.getNativeCRS());
 
 						if ("".equals(commonSRS)) {
 							commonSRS = layerSRS;
@@ -740,11 +740,9 @@ public class WMSCapsTransformer extends TransformerBase {
 			String desc = "WKT definition of this CRS:\n"
 					+ coverage.getSrsWKT();
 			comment(desc);
-			/**
-			 * TODO REVISIT: should getSRS() return the full URL?
-			 */
-			String authority = "";
-			CoordinateReferenceSystem crs = coverage.getCrs();
+
+			String authority = (!coverage.getSrsName().equals("UNKNOWN") ? coverage.getSrsName() : coverage.getNativeCRS());
+			/*CoordinateReferenceSystem crs = coverage.getCrs();
 			if (crs != null && !crs.getIdentifiers().isEmpty()) {
 				Identifier[] idents = (Identifier[]) crs.getIdentifiers()
 						.toArray(new Identifier[crs.getIdentifiers().size()]);
@@ -758,7 +756,7 @@ public class WMSCapsTransformer extends TransformerBase {
 									new Identifier[baseCRS.getIdentifiers()
 											.size()]))[0].toString();
 				else
-					authority = "UNKNOWN";
+					authority = coverage.getNativeCRS();
 			} else if (crs != null && crs instanceof ProjectedCRS) {
 				final CoordinateReferenceSystem baseCRS = ((ProjectedCRS) crs)
 						.getBaseCRS();
@@ -768,9 +766,9 @@ public class WMSCapsTransformer extends TransformerBase {
 									new Identifier[baseCRS.getIdentifiers()
 											.size()]))[0].toString();
 				else
-					authority = "UNKNOWN";
+					authority = coverage.getNativeCRS();
 			} else
-				authority = "UNKNOWN";
+				authority = coverage.getNativeCRS();*/
 
 			element("SRS", authority);
 

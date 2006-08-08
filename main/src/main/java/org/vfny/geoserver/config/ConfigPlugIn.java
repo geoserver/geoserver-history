@@ -8,14 +8,11 @@
  */
 package org.vfny.geoserver.config;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
-import org.apache.struts.config.ModuleConfigFactory;
-import org.apache.struts.config.impl.ModuleConfigImpl;
 
 
 /**
@@ -64,11 +61,7 @@ public class ConfigPlugIn implements PlugIn {
      */
     public void init(ActionServlet arg0, ModuleConfig arg1)
         throws ServletException {
-    	
-    	ServletContext sc = arg0.getServletContext();
-    	ModuleConfig wcsModule = new ModuleConfigImpl("config/wcs");
-    	
-    //JD: delete this	
+//JD: delete this	
 //        ServletContext sc = arg0.getServletContext();
 //        WMS wms = (WMS) sc.getAttribute(WMS.WEB_CONTAINER_KEY);
 //        WFS wfs = (WFS) sc.getAttribute(WFS.WEB_CONTAINER_KEY);

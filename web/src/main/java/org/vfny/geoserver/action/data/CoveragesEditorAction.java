@@ -235,7 +235,7 @@ public final class CoveragesEditorAction extends ConfigAction {
 				coverageForm.setSrsName(sourceCRS.getIdentifiers().toArray()[0]
 						.toString());
 			} else {
-				coverageForm.setSrsName(sourceCRS.getName().toString());
+				coverageForm.setSrsName("UNKNOWN");
 			}
 			coverageForm.setWKTString(sourceCRS.toWKT());
 			coverageForm.setMinX(Double.toString(envelope.getLowerCorner()
@@ -279,6 +279,7 @@ public final class CoveragesEditorAction extends ConfigAction {
 		config.setCrs(CRS.parseWKT(form.getWKTString()));
 		config.setSrsName(form.getSrsName());
 		config.setSrsWKT(form.getWKTString());
+		config.setNativeCRS(form.getNativeCRS());
 		config
 				.setEnvelope(getEnvelope(form, CRS
 						.parseWKT(form.getWKTString())));

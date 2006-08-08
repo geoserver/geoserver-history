@@ -14,6 +14,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
@@ -39,8 +40,8 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
 	 * Creates a map producer that relies on JAI to encode the BufferedImage
 	 * generated the default (image/png) image format.
 	 */
-	public TiffMapProducer() {
-		this(DEFAULT_MAP_FORMAT);
+	public TiffMapProducer(WMS wms) {
+		this(DEFAULT_MAP_FORMAT, wms);
 	}
 
 	/**
@@ -50,7 +51,8 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
 	 * @param outputFormat
 	 *            the output format MIME type.
 	 */
-	public TiffMapProducer(String outputFormat) {
+	public TiffMapProducer(String outputFormat, WMS wms) {
+		super(outputFormat, wms);
 		setOutputFormat(outputFormat);
 	}
 

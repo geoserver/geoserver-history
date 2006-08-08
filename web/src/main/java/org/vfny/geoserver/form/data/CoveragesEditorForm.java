@@ -117,6 +117,11 @@ public final class CoveragesEditorForm extends ActionForm {
 	/**
 	 * 
 	 */
+	private String nativeCRS;
+
+	/**
+	 * 
+	 */
 	private String WKTString;
 
 	/**
@@ -225,6 +230,7 @@ public final class CoveragesEditorForm extends ActionForm {
 		// //
 		srsName = cvConfig.getSrsName();
 		WKTString = cvConfig.getSrsWKT();
+		nativeCRS = cvConfig.getNativeCRS();
 
 		// //
 		//
@@ -401,6 +407,15 @@ public final class CoveragesEditorForm extends ActionForm {
 		if (!(data.getStyles().containsKey(styleId) || "".equals(styleId))) {
 			errors.add("styleId", new ActionError("error.styleId.notFound",
 					styleId));
+		}
+
+		// //
+		//
+		//
+		//
+		// //
+		if ("".equals(nativeCRS) && "UNKNOWN".equals(srsName)) {
+			errors.add("envelope", new ActionError("error.coverage.nativeCRS.required"));
 		}
 
 		// //
@@ -955,5 +970,13 @@ public final class CoveragesEditorForm extends ActionForm {
 	 */
 	public String getParamHelp(int index) {
 		return (String) paramHelp.get(index).toString();
+	}
+
+	public String getNativeCRS() {
+		return nativeCRS;
+	}
+
+	public void setNativeCRS(String nativeCRS) {
+		this.nativeCRS = nativeCRS;
 	}
 }

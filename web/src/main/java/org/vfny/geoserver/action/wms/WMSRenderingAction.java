@@ -24,13 +24,19 @@ public class WMSRenderingAction extends ConfigAction {
 	        WMSRenderingForm renderingForm = (WMSRenderingForm) form;
 
 	        boolean svgAntiAlias = renderingForm.getSvgAntiAlias();
+	        boolean allowInterpolation = renderingForm.getAllowInterpolation();
 
 	        if (renderingForm.isSvgAntiAliasChecked() == false) {
 	        	svgAntiAlias = false;
 	        }
 	        
+	        if (renderingForm.isAllowInterpolationChecked() == false) {
+	        	allowInterpolation = false;
+	        }
+	        
 	        config.setSvgRenderer(renderingForm.getSvgRenderer());
 	        config.setSvgAntiAlias(svgAntiAlias);
+	        config.setAllowInterpolation(allowInterpolation);
 	        getApplicationState().notifyConfigChanged();
 
 	        return mapping.findForward("config");

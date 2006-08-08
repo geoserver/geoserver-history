@@ -29,7 +29,7 @@ public class JPEGMapProducerFactory implements GetMapProducerFactorySpi {
 					.append(" not supported by this map producer").toString());
 		}
 
-		return new JPEGMapProducer(MIME_TYPE);
+		return new JPEGMapProducer(MIME_TYPE, wms);
 	}
 
 	public JPEGMapProducerFactory() {

@@ -16,6 +16,7 @@ public class WMSRenderingForm extends ActionForm {
 	List svgRenderers;
 	String svgRenderer;
 	boolean svgAntiAlias;
+	boolean allowInterpolation;
 	
 	/*
      * Because of the way that STRUTS works, if the user does not check the enabled box,
@@ -39,12 +40,15 @@ public class WMSRenderingForm extends ActionForm {
      * but it works just fine.
      */
     private boolean svgAntiAliasChecked = false;
-    
+
+    private boolean allowInterpolationChecked = false;
+
 	public WMSRenderingForm() {
 		svgRenderers = new ArrayList();
 		svgRenderers.add(WMSConfig.SVG_SIMPLE);
 		svgRenderers.add(WMSConfig.SVG_BATIK);
 		svgAntiAlias = true;
+		allowInterpolation = true;
 	}
 	public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
@@ -57,6 +61,7 @@ public class WMSRenderingForm extends ActionForm {
         	svgRenderer = WMSConfig.SVG_SIMPLE;
         
         svgAntiAlias = config.getSvgAntiAlias();
+        allowInterpolation = config.getAllowInterpolation();
 	}
 
 	
@@ -104,6 +109,31 @@ public class WMSRenderingForm extends ActionForm {
         return svgAntiAliasChecked;
     }
 
+    /**
+     * @param allowInterpolation interpolation rendering hint.
+     */
+    public void setAllowInterpolation(boolean allowInterpolation) {
+    	allowInterpolationChecked = true;
+    	this.allowInterpolation = allowInterpolation;
+    }
+    
+    /**
+     * @return The value of the interpolation rendering hint.
+     */
+    public boolean getAllowInterpolation() {
+    	return allowInterpolation;
+    }
+    
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public boolean isAllowInterpolationChecked() {
+        return allowInterpolationChecked;
+    }
+
+    
     /**
      * DOCUMENT ME!
      *

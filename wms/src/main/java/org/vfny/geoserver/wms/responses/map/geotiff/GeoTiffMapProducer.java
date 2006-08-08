@@ -14,6 +14,7 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
 import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.geometry.GeneralEnvelope;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
@@ -41,8 +42,8 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
 	private final static GridCoverageFactory factory = FactoryFinder
 			.getGridCoverageFactory(null);
 
-	public GeoTiffMapProducer(String mime) {
-		super(mime);
+	public GeoTiffMapProducer(String mime, WMS wms) {
+		super(mime, wms);
 
 	}
 

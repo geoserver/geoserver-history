@@ -19,6 +19,7 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
 
 import org.geotools.image.ImageWorker;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
 /**
@@ -56,8 +57,8 @@ public class JPEGMapProducer extends DefaultRasterMapProducer {
 		}
 	}
 
-	public JPEGMapProducer(String outputFormat) {
-		super(outputFormat);
+	public JPEGMapProducer(String outputFormat, WMS wms) {
+		super(outputFormat, wms);
 	}
 
 	protected void formatImageOutputStream(String format, BufferedImage image,

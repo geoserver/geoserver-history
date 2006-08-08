@@ -56,7 +56,7 @@ public class GeoTiffMapProducerFactory implements GetMapProducerFactorySpi {
 					+ " not supported by this map producer");
 		}
 
-		return new GeoTiffMapProducer("image/geotiff");
+		return new GeoTiffMapProducer("image/geotiff", wms);
 	}
 	  /* (non-Javadoc)
 	 * @see org.geotools.factory.Factory#getImplementationHints()

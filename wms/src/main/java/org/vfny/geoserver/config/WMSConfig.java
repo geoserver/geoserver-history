@@ -37,6 +37,8 @@ public class WMSConfig extends ServiceConfig {
     private String svgRenderer;
     /** anti aliasing hint for svg renderer **/
     private boolean svgAntiAlias;
+    /** rendering interpolation **/
+    private boolean allowInterpolation;
     
     /**
      * WMS constructor.
@@ -51,6 +53,7 @@ public class WMSConfig extends ServiceConfig {
         super();
         svgRenderer = SVG_SIMPLE;
         svgAntiAlias = true;
+        allowInterpolation = true;
     }
 
     /**
@@ -67,6 +70,7 @@ public class WMSConfig extends ServiceConfig {
         super(w.getService());
         svgRenderer = w.getSvgRenderer();
         svgAntiAlias = w.getSvgAntiAlias();
+        allowInterpolation = w.getAllowInterpolation();
     }
 
     /**
@@ -99,6 +103,7 @@ public class WMSConfig extends ServiceConfig {
         super.update(dto.getService());
         svgRenderer = dto.getSvgRenderer();
         svgAntiAlias = dto.getSvgAntiAlias();
+        allowInterpolation = dto.getAllowInterpolation();
     }
 
     /**
@@ -117,6 +122,7 @@ public class WMSConfig extends ServiceConfig {
         wmsDto.setService((ServiceDTO) super.toServDTO());
         wmsDto.setSvgRenderer(svgRenderer);
         wmsDto.setSvgAntiAlias(svgAntiAlias);
+        wmsDto.setAllowInterpolation(allowInterpolation);
         return wmsDto;
     }
     
@@ -151,4 +157,18 @@ public class WMSConfig extends ServiceConfig {
     public boolean getSvgAntiAlias() {
     	return svgAntiAlias;
     }
+    
+    /**
+     * @param allowInterpolation rendering interpolation hint.
+     */
+    public void setAllowInterpolation(boolean allowInterpolation) {
+    	this.allowInterpolation = allowInterpolation;
+    }
+    
+    /**
+     * @return The value of the rendering interpolation rendering hint.
+     */
+    public boolean getAllowInterpolation() {
+    	return allowInterpolation;
+    }    
 }

@@ -79,7 +79,7 @@ public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
 		if (!canProduce(mapFormat))
 			throw new IllegalArgumentException("Can't produce " + mapFormat
 					+ " format");
-		return new TiffMapProducer(mapFormat);
+		return new TiffMapProducer(mapFormat, wms);
 	}
 
 	/*

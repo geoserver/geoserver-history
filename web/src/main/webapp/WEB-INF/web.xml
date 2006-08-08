@@ -75,10 +75,10 @@
    <!-- Struts config needs to load before all the other servlets. -->
    <servlet>
     <servlet-name>action</servlet-name>
-    <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+    <servlet-class>org.vfny.geoserver.config.MultipleActionServlet</servlet-class>
     <init-param>
       <param-name>config</param-name>
-      <param-value>/WEB-INF/struts-config.xml</param-value>
+      <param-value>/WEB-INF/struts-config.xml,classpath*:/WEB-INF/struts-config.xml</param-value>
     </init-param>
     <init-param>
       <param-name>debug</param-name>

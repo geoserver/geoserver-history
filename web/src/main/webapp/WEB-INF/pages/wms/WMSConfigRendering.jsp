@@ -24,6 +24,11 @@
 		<td colspan=2>
 			<html:checkbox name="wmsRenderingForm" property="svgAntiAlias"><bean:message key="label.wms.svgAntiAlias"/></html:checkbox> 	
 		</td></tr>
+	<tr><td align="right">
+		</td>
+		<td colspan=2>
+			<html:checkbox name="wmsRenderingForm" property="allowInterpolation"><bean:message key="label.wms.allowInterpolation"/></html:checkbox> 	
+		</td></tr>
 
 	<tr><td align="right">&nbsp;</td><td>
 		<html:submit>

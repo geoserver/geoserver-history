@@ -51,7 +51,12 @@
         </span>
       </td>
 	  <td class="datum">
+	  <logic:equal name="coveragesEditorForm" property="srsName" value="UNKNOWN">
+		<html:text property="srsName" size="60" readonly="true"/>
+	  </logic:equal>
+	  <logic:notEqual name="coveragesEditorForm" property="srsName" value="UNKNOWN">
 		<html:text property="srsName" size="60"/>
+	  </logic:notEqual>
 	</td></tr>
 	<!------------------------->
 	<!------ This puts in the SRS WKT definition --->
@@ -70,6 +75,21 @@
 	
 	
 	<!-------------------------->
+
+  <!------ NATIVE CRS TextBox--->
+  <logic:equal name="coveragesEditorForm" property="srsName" value="UNKNOWN">
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.coverage.nativeCRS"/>">
+          <bean:message key="label.nativeCRS"/>:
+        </span>
+      </td>
+	  <td class="datum">
+		<html:text property="nativeCRS" size="60"/>
+	  </td>
+	</tr>
+  </logic:equal>
+  <!-------------------------->
 
     <tr>
       <td class="label">

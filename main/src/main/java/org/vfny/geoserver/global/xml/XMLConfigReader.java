@@ -800,6 +800,8 @@ public class XMLConfigReader {
 		wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
 		wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(
 				wmsElement, "svgAntiAlias")));
+		wms.setAllowInterpolation(!"false".equals(ReaderUtils.getChildText(
+				wmsElement, "allowInterpolation")));
 	}
 	
 	/**
@@ -1640,6 +1642,7 @@ public class XMLConfigReader {
 			final Element envelope = ReaderUtils.getChildElement(coverageRoot,
 			"envelope");
 			cv.setSrsName(ReaderUtils.getAttribute(envelope, "srsName", true));
+			cv.setNativeCRS(ReaderUtils.getAttribute(envelope, "nativeCRS", false));
 			final CoordinateReferenceSystem crs;
 			try {
 				crs = CRS.parseWKT(ReaderUtils

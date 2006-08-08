@@ -48,6 +48,8 @@ public class WMS extends Service {
     private String svgRenderer;
     /** svg anitalias or not **/
     private boolean svgAntiAlias;
+    /** rendering interpolation or not **/
+    private boolean allowInterpolation;
     
     /**
      * WMS constructor.
@@ -63,6 +65,7 @@ public class WMS extends Service {
         super(config.getService());
         svgRenderer = config.getSvgRenderer();
         svgAntiAlias = config.getSvgAntiAlias();
+        allowInterpolation = config.getAllowInterpolation();
     }
     
     
@@ -93,6 +96,7 @@ public class WMS extends Service {
     	super.load(config.getService());
     	svgRenderer = config.getSvgRenderer();
     	svgAntiAlias = config.getSvgAntiAlias();
+    	allowInterpolation = config.getAllowInterpolation();
     }
 
     /**
@@ -128,6 +132,7 @@ public class WMS extends Service {
         w.setService((ServiceDTO)super.toDTO());
         w.setSvgRenderer(svgRenderer);
         w.setSvgAntiAlias(svgAntiAlias);
+        w.setAllowInterpolation(allowInterpolation);
         
         return w;
     }
@@ -231,5 +236,18 @@ public class WMS extends Service {
     public void setSvgAntiAlias(boolean svgAntiAlias) {
 		this.svgAntiAlias = svgAntiAlias;
 	}
+
+    /**
+     * @return Flag indicating wether the renderer should interpolate or not.
+     */
+    public boolean isAllowInterpolation() {
+		return allowInterpolation;
+	}
     
+    /**
+     * Sets the Flag indicating wether the renderer should interpolate or not.
+     */
+    public void setAllowInterpolation(boolean allowInterpolation) {
+		this.allowInterpolation = allowInterpolation;
+	}
 }

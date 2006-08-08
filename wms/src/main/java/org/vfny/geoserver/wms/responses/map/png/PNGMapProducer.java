@@ -16,11 +16,11 @@ import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
 
 import org.geotools.image.ImageWorker;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
@@ -35,8 +35,8 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
 	private static final Logger LOGGER = Logger.getLogger(PNGMapProducer.class
 			.getPackage().getName());
 
-	public PNGMapProducer(String format) {
-		super(format);
+	public PNGMapProducer(String format, WMS wms) {
+		super(format, wms);
 	}
 
 	/**

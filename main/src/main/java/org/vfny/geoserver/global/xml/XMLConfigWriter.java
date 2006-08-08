@@ -30,10 +30,10 @@ import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
+import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.ServiceDTO;
@@ -354,6 +354,7 @@ public class XMLConfigWriter {
         int serviceLevel = 0;
         String svgRenderer = null;
         boolean svgAntiAlias = false;
+        boolean allowInterpolation = false;
         boolean citeConformanceHacks = false;
 		if (obj instanceof WCSDTO) {
 			WCSDTO w = (WCSDTO) obj;
@@ -375,6 +376,7 @@ public class XMLConfigWriter {
             t = "WMS";
             svgRenderer = w.getSvgRenderer();
             svgAntiAlias = w.getSvgAntiAlias();
+            allowInterpolation = w.getAllowInterpolation();
         } else {
 			throw new ConfigurationException("Invalid object: not WMS or WFS or WCS");
         }
@@ -456,6 +458,7 @@ public class XMLConfigWriter {
 
         if (obj instanceof WMSDTO) {
             cw.textTag("svgAntiAlias", svgAntiAlias + "");
+            cw.textTag("allowInterpolation", allowInterpolation + "");
         }
 
         if ((s.getStrategy() != null) && !"".equals(s.getStrategy())) {
@@ -1293,7 +1296,11 @@ public class XMLConfigWriter {
 				if ((cv.getSrsName() != null) && (cv.getSrsName() != "")) {
 					m.put("srsName",cv.getSrsName());
 				}
-				
+
+				if ((cv.getNativeCRS() != null) && (cv.getNativeCRS() != "")) {
+					m.put("nativeCRS",cv.getNativeCRS());
+				}
+
 				m.put("crs", cv.getCrs().toWKT().replaceAll("\"","'"));
 				
 				if (!e.isNull()) {

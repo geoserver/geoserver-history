@@ -99,7 +99,7 @@ public final class PNGMapProducerFactory implements GetMapProducerFactorySpi {
 					.append(" not supported by this map producer").toString());
 		}
 
-		return new PNGMapProducer(MIME_TYPE); 
+		return new PNGMapProducer(MIME_TYPE, wms); 
 	}
 
 	/*
