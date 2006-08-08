@@ -259,7 +259,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         if (epsgCode != null) {
         	try {
-        		CoordinateReferenceSystem  mapcrs = CRS.decode(epsgCode);
+        		CoordinateReferenceSystem  mapcrs = CRS.decode(epsgCode,true);
         		request.setCrs(mapcrs);
         	}catch (Exception e){
         		//couldnt make it - we send off a service exception with the correct info
@@ -301,7 +301,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	        		throw new NumberFormatException("KMScore not between 0 and 100. "+
 	        				"If you wish not to use it, do not specify KMScore as a parameter.");
 	        	request.setKMScore(score);
-	        	LOGGER.info("Set KMScore: " + score);
+	        	if(LOGGER.isLoggable(Level.INFO))
+	        		LOGGER.info("Set KMScore: " + score);
 	        }
 	        catch (NumberFormatException e) {
 	        	throw new WmsException("KMScore parameter (" + KMScore + ") incorrectly specified. "+

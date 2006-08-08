@@ -327,48 +327,48 @@ public final class CoverageStoreUtils {
 
 	
 
-	/**
-	 * Get a generic envelope and retrieve a lon,lat envelope.
-	 * 
-	 * @param sourceCRS
-	 * @param envelope
-	 * @return
-	 * @throws IndexOutOfBoundsException
-	 * @throws MismatchedDimensionException
-	 * @throws NoSuchAuthorityCodeException
-	 */
-	public static GeneralEnvelope adjustEnvelopeLongitudeFirst(
-			final CoordinateReferenceSystem sourceCRS, GeneralEnvelope envelope)
-			throws IndexOutOfBoundsException, MismatchedDimensionException,
-			NoSuchAuthorityCodeException {
-
-		// /////////////////////////////////////////////////////////////////////
-		//
-		// Is Lon first?
-		//
-		// /////////////////////////////////////////////////////////////////////
-		final CoordinateReferenceSystem crs2D;
-		try {
-			crs2D = CRSUtilities.getCRS2D(sourceCRS);
-		} catch (TransformException e) {
-			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			return null;
-		}
-		final CoordinateSystem sourceCS = crs2D.getCoordinateSystem();
-		final boolean lonFirst = !GridGeometry2D.swapXY(sourceCS);
-
-		// /////////////////////////////////////////////////////////////////////
-		//
-		// Creating a new envelope lon,lat
-		//
-		// /////////////////////////////////////////////////////////////////////
-		final GeneralEnvelope lonLatEnvelope = lonFirst ? new GeneralEnvelope(
-				envelope) : new GeneralEnvelope(new double[] {
-				envelope.getLowerCorner().getOrdinate(1),
-				envelope.getLowerCorner().getOrdinate(0) }, new double[] {
-				envelope.getUpperCorner().getOrdinate(1),
-				envelope.getUpperCorner().getOrdinate(0) });
-		lonLatEnvelope.setCoordinateReferenceSystem(crs2D);
-		return lonLatEnvelope;
-	}
+//	/**
+//	 * Get a generic envelope and retrieve a lon,lat envelope.
+//	 * 
+//	 * @param sourceCRS
+//	 * @param envelope
+//	 * @return
+//	 * @throws IndexOutOfBoundsException
+//	 * @throws MismatchedDimensionException
+//	 * @throws NoSuchAuthorityCodeException
+//	 */
+//	public static GeneralEnvelope adjustEnvelopeLongitudeFirst(
+//			final CoordinateReferenceSystem sourceCRS, GeneralEnvelope envelope)
+//			throws IndexOutOfBoundsException, MismatchedDimensionException,
+//			NoSuchAuthorityCodeException {
+//
+//		// /////////////////////////////////////////////////////////////////////
+//		//
+//		// Is Lon first?
+//		//
+//		// /////////////////////////////////////////////////////////////////////
+//		final CoordinateReferenceSystem crs2D;
+//		try {
+//			crs2D = CRSUtilities.getCRS2D(sourceCRS);
+//		} catch (TransformException e) {
+//			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+//			return null;
+//		}
+//		final CoordinateSystem sourceCS = crs2D.getCoordinateSystem();
+//		final boolean lonFirst = !GridGeometry2D.swapXY(sourceCS);
+//
+//		// /////////////////////////////////////////////////////////////////////
+//		//
+//		// Creating a new envelope lon,lat
+//		//
+//		// /////////////////////////////////////////////////////////////////////
+//		final GeneralEnvelope lonLatEnvelope = lonFirst ? new GeneralEnvelope(
+//				envelope) : new GeneralEnvelope(new double[] {
+//				envelope.getLowerCorner().getOrdinate(1),
+//				envelope.getLowerCorner().getOrdinate(0) }, new double[] {
+//				envelope.getUpperCorner().getOrdinate(1),
+//				envelope.getUpperCorner().getOrdinate(0) });
+//		lonLatEnvelope.setCoordinateReferenceSystem(crs2D);
+//		return lonLatEnvelope;
+//	}
 }

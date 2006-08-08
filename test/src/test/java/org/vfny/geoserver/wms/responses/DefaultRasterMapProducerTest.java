@@ -293,5 +293,10 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
              * abstract raster producer correctly generates a BufferedImage.
              */
         }
+
+		protected BufferedImage prepareImage(int arg0, int arg1) {
+			
+			return new  BufferedImage(arg0,arg1,BufferedImage.TYPE_4BYTE_ABGR);
+		}
     }
 }

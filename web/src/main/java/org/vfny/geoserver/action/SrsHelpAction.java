@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +27,13 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 
 
-
+/**
+ * 
+ * @author Simone Giannecchini, GeoSolutions
+ *
+ */
 public class SrsHelpAction extends Action {
+	private final static Logger LOGGER=Logger.getLogger(SrsHelpAction.class.toString());
 	
 	/**
 	 *  This is a simple action - it reads in the GT2 supported EPSG codes. 
@@ -59,19 +66,21 @@ public class SrsHelpAction extends Action {
     	       		t++;
     	       }
     	       Arrays.sort(ids); //sort to get them in order
-    	       
-    	       for (t=0;t<ids.length;t++) //for each id (in sorted order)
+    	       final int length=ids.length;
+    	       CoordinateReferenceSystem crs;
+    	       String def;
+    	       for (t=0;t<length;t++) //for each id (in sorted order)
     	       {
     	       	   try{  //get its definition
-    	       	   		CoordinateReferenceSystem crs = CRS.decode("EPSG:"+ids[t]);
-    	       	   		String def = crs.toWKT();
+    	       	   		crs = CRS.decode("EPSG:"+ids[t],true);
+    	       	   		def = crs.toWKT();
     	       	   		defs.add(def);
     	       	   		ids_string.add(""+ids[t]);
     	       	   }
     	       	   catch(Exception e)
 				   {
-    	       	   	   System.out.println("tried to parse projection "+"EPSG:"+ids[t]+" but couldnt!");
-    	       	   	   //e.printStackTrace(); // dont really expect to get this, so we ignore that one code
+    	       		   LOGGER.log(Level.WARNING,e.getLocalizedMessage(),e);
+    	       	   	  
 				   }
     	       	   
     	       }

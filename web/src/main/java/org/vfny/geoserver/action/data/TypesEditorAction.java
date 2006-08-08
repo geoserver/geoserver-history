@@ -208,11 +208,10 @@ public class TypesEditorAction extends ConfigAction {
  
 
         try {
-        	//CoordinateReferenceSystem crsTheirData = CRS.decode(srs);
-        	//CoordinateReferenceSystem crsLatLong   = CRS.decode("EPSG:4326");  // latlong
-			CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-			CoordinateReferenceSystem crsTheirData=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem(srs);
-			CoordinateReferenceSystem crsLatLong=(CoordinateReferenceSystem) crsFactory.createCoordinateReferenceSystem("EPSG:4326");
+
+			
+			CoordinateReferenceSystem crsTheirData=CRS.decode(srs,true);
+			CoordinateReferenceSystem crsLatLong=CRS.decode("EPSG:4326",true);
 
         	MathTransform xform = CRS.transform(crsTheirData,crsLatLong,true);
         	Envelope xformed_envelope = JTS.transform(envelope,xform,10); //convert data bbox to lat/long

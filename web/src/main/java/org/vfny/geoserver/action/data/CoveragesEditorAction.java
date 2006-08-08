@@ -227,8 +227,10 @@ public final class CoveragesEditorAction extends ConfigAction {
 			final GeneralEnvelope gEnvelope = (GeneralEnvelope) gc
 					.getEnvelope();
 			final GeneralEnvelope targetEnvelope = gEnvelope;
-			final GeneralEnvelope envelope = CoverageStoreUtils
-					.adjustEnvelopeLongitudeFirst(sourceCRS, targetEnvelope);
+//			final GeneralEnvelope envelope = CoverageStoreUtils
+//					.adjustEnvelopeLongitudeFirst(sourceCRS, targetEnvelope);
+			final GeneralEnvelope envelope =  targetEnvelope;
+
 			if (!sourceCRS.getIdentifiers().isEmpty()) {
 				coverageForm.setSrsName(sourceCRS.getIdentifiers().toArray()[0]
 						.toString());
@@ -250,9 +252,7 @@ public final class CoveragesEditorAction extends ConfigAction {
 			throw new ServletException(e);
 		} catch (IndexOutOfBoundsException e) {
 			throw new ServletException(e);
-		} catch (NoSuchAuthorityCodeException e) {
-			throw new ServletException(e);
-		}
+		} 
 
 		return mapping.findForward("config.data.coverage.editor");
 	}

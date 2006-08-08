@@ -12,13 +12,14 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.PackedColorModel;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
-import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 
 import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
@@ -92,9 +93,10 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
 	protected void formatImageOutputStream(String format, BufferedImage image,
 			OutputStream outStream) throws WmsException, IOException {
 		if (!format.equalsIgnoreCase(GifMapProducerFactory.MIME_TYPE))
-			throw new IllegalArgumentException("The provided format " + format
-					+ " is not the same as expected: "
-					+ GifMapProducerFactory.MIME_TYPE);
+			throw new IllegalArgumentException(new StringBuffer(
+					"The provided format ").append(format).append(
+					" is not the same as expected: ").append(
+					GifMapProducerFactory.MIME_TYPE).toString());
 
 		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
 				outStream);
@@ -106,8 +108,10 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
 		if (!(cm instanceof IndexColorModel))
 			encodedImage = ImageUtilities
 					.componentColorModel2IndexColorModel4GIF(encodedImage);
+		
 		encodedImage = ImageUtilities
 				.convertIndexColorModelAlpha4GIF(encodedImage);
+
 		final ImageWriter gifWriter = new GIFImageWriter(
 				new GIFImageWriterSpi());
 		final ImageWriteParam iwp = gifWriter.getDefaultWriteParam();
@@ -126,30 +130,27 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
 
 	protected BufferedImage prepareImage(int width, int height) {
 
-		final int size = width * height;
-		final byte pixels[] = new byte[size];
-		Arrays.fill(pixels, (byte) 255);
-
-		// Create a data buffer using the byte buffer of pixel data.
-		// The pixel data is not copied; the data buffer uses the byte buffer
-		// array.
-		DataBuffer dbuf = new DataBufferByte(pixels, width * height, 0);
-
-
-
-		// Prepare a sample model that specifies a storage 4-bits of
-		// pixel datavd in an 8-bit data element
-		int bitMasks[] = new int[] { (byte) 0xff };
-		SampleModel sampleModel = new SinglePixelPackedSampleModel(
-				DataBuffer.TYPE_BYTE, width, height, bitMasks);
-
-		// Create a raster using the sample model and data buffer
-		WritableRaster raster = Raster.createWritableRaster(sampleModel, dbuf,
-				null);
-
-		// Combine the color model and raster into a buffered image
-		return new BufferedImage(DEFAULT_PALETTE, raster, false, null);// new
-																	// java.util.Hashtable());
-
+		// final int size = width * height;
+		// final byte pixels[] = new byte[size];
+		// Arrays.fill(pixels, (byte) 255);
+		//
+		// // Create a data buffer using the byte buffer of pixel data.
+		// // The pixel data is not copied; the data buffer uses the byte buffer
+		// // array.
+		// final DataBuffer dbuf = new DataBufferByte(pixels, width * height,
+		// 0);
+		//
+		// // Prepare a sample model suitable for the default palette
+		// final SampleModel sampleModel = DEFAULT_PALETTE
+		// .createCompatibleSampleModel(width, height);
+		//
+		// // Create a raster using the sample model and data buffer
+		// final WritableRaster raster =
+		// Raster.createWritableRaster(sampleModel,
+		// dbuf, null);
+		//
+		// // Combine the color model and raster into a buffered image
+		// return new BufferedImage(DEFAULT_PALETTE, raster, false, null);
+		return new BufferedImage(width, height,BufferedImage.TYPE_4BYTE_ABGR);
 	}
 }

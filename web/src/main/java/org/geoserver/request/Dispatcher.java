@@ -28,8 +28,6 @@ import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.DispatcherXmlReader;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 
-
-
 /**
  * Root dispatcher which handles all incoming requests.
  * <p>
@@ -37,244 +35,239 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
  * </p>
  * 
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
+ * 
  */
 public class Dispatcher extends AbstractController {
 
 	GeoServer geoServer;
-	
-	public Dispatcher ( GeoServer geoServer ) {
+
+	public Dispatcher(GeoServer geoServer) {
 		this.geoServer = geoServer;
 	}
-	
+
 	protected ModelAndView handleRequestInternal(
-		HttpServletRequest httpRequest, HttpServletResponse httpResponse
-	) throws Exception {
-		
+			HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+			throws Exception {
+
 		try {
 			try {
-				dispatch( httpRequest, httpResponse );	
+				dispatch(httpRequest, httpResponse);
+			} catch (IOException e) {
+				throw new ServiceException(e);
+			} catch (ServletException e) {
+				throw new ServiceException(e);
 			}
-			catch( IOException e ) {
-				throw new ServiceException( e );
-			}
-			catch( ServletException e ) {
-				throw new ServiceException( e );
-			}
-		}
-		catch(ServiceException se) {
-			String tempResponse = 
-				se.getXmlResponse(geoServer.isVerboseExceptions(), httpRequest);
+		} catch (ServiceException se) {
+			String tempResponse = se.getXmlResponse(geoServer
+					.isVerboseExceptions(), httpRequest);
 
-            httpResponse.setContentType(geoServer.getCharSet().toString());
-            httpResponse.getWriter().write(tempResponse);
+			httpResponse.setContentType(geoServer.getCharSet().toString());
+			httpResponse.getWriter().write(tempResponse);
 		}
-		
+
 		return null;
 	}
-	
-	AbstractService find(String service, String request) throws ServiceException {
-		//map request parameters to a Request bean to handle it 
-		Map requests = 
-			//getApplicationContext().getBeansOfType(AbstractService.class);
-			getApplicationContext().getParent().getBeansOfType(AbstractService.class);
-		
+
+	AbstractService find(String service, String request)
+			throws ServiceException {
+		// map request parameters to a Request bean to handle it
+		Map requests =
+		// getApplicationContext().getBeansOfType(AbstractService.class);
+		getApplicationContext().getParent().getBeansOfType(
+				AbstractService.class);
+
 		List matches = new ArrayList();
 		for (Iterator itr = requests.entrySet().iterator(); itr.hasNext();) {
 			Map.Entry entry = (Entry) itr.next();
-			
+
 			AbstractService bean = (AbstractService) entry.getValue();
-			
-			//we allow for a null service
+
+			// we allow for a null service
 			if (service == null) {
 				if (bean.getRequest().equalsIgnoreCase(request)) {
-					//we have a winner
+					// we have a winner
+					matches.add(bean);
+				}
+			} else {
+				if (bean.getService().equalsIgnoreCase(service)
+						&& bean.getRequest().equalsIgnoreCase(request)) {
+
+					// we have a winner
 					matches.add(bean);
 				}
 			}
-			else {
-				if (bean.getService().equalsIgnoreCase(service) && 
-					bean.getRequest().equalsIgnoreCase(request)) {
-					
-					//we have a winner
-					matches.add(bean);
-				}	
-			}
 		}
-		
+
 		if (matches.isEmpty())
 			return null;
-		
+
 		if (matches.size() > 1) {
-			String msg = "Multiple requests found capable of handling:" + 
-			" (" + service + "," + request + ")"; 
-			throw new ServiceException( msg );
+			String msg = "Multiple requests found capable of handling:" + " ("
+					+ service + "," + request + ")";
+			throw new ServiceException(msg);
 		}
-		
+
 		return (AbstractService) matches.get(0);
 	}
-	
-	void dispatch(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-		throws ServiceException, IOException, ServletException {
-		
+
+	void dispatch(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) throws ServiceException,
+			IOException, ServletException {
+
 		String service = null;
 		String request = null;
-		
-		if (httpRequest.getQueryString() != null) { 
-			//process query string params
-			Map kvp = KvpRequestReader.parseKvpSet(httpRequest.getQueryString());
-			
-			//figure out service and request being processed
+
+		if (httpRequest.getQueryString() != null) {
+			// process query string params
+			Map kvp = KvpRequestReader
+					.parseKvpSet(httpRequest.getQueryString());
+
+			// figure out service and request being processed
 			service = (String) kvp.get("SERVICE");
 			request = (String) kvp.get("REQUEST");
 		}
-		
+
 		if (service == null || request == null) {
-			//lookup in context path, (http://.../geoserver/service/request?)
-			
+			// lookup in context path, (http://.../geoserver/service/request?)
+
 			String path = httpRequest.getContextPath();
 			String uri = httpRequest.getRequestURI();
 			if (uri.length() > path.length()) {
-				uri = uri.substring(path.length()+1);	
+				uri = uri.substring(path.length() + 1);
 			}
-			
-			int index = uri.indexOf('/'); 
-			if ( index != -1 ) {
-				//take everything before the slash to be the service and 
+
+			int index = uri.indexOf('/');
+			if (index != -1) {
+				// take everything before the slash to be the service and
 				// everything after to be the request
 				if (service == null)
-					service = uri.substring(0,index);
-				
+					service = uri.substring(0, index);
+
 				if (request == null)
-					request = uri.substring(index+1);
-			}
-			else {
-				//just take the whole string to be the service
+					request = uri.substring(index + 1);
+			} else {
+				// just take the whole string to be the service
 				if (service == null) {
 					service = uri;
 				}
 			}
-		}	
-		
-		
+		}
+
 		if (service == null || request == null) {
-			//check for a POST request specifying the request as the 
+			// check for a POST request specifying the request as the
 			if ("POST".equalsIgnoreCase(httpRequest.getMethod())) {
-				post(httpRequest,httpResponse);
+				post(httpRequest, httpResponse);
 				return;
 			}
 		}
-		
-		AbstractService target = find(service,request);
-		
+
+		AbstractService target = find(service, request);
+
 		if (target != null) {
-			//we have a servlet, do it
+			// we have a servlet, do it
 			if ("GET".equalsIgnoreCase(httpRequest.getMethod())) {
-				target.doGet(httpRequest,httpResponse);
+				target.doGet(httpRequest, httpResponse);
+			} else if ("POST".equalsIgnoreCase(httpRequest.getMethod())) {
+
+				target.doPost(httpRequest, httpResponse);
+			} else {
+				String msg = "Unkown request method: "
+						+ httpRequest.getMethod();
+				throw new ServiceException(msg);
 			}
-			else if ("POST".equalsIgnoreCase(httpRequest.getMethod())) {
-				
-				target.doPost(httpRequest,httpResponse);
-			}
-			else {
-				String msg = "Unkown request method: " + httpRequest.getMethod();
-				throw new ServiceException( msg );
-			}
+		} else {
+			String msg = "Could not locate service mapping to: (" + service
+					+ "," + request + ")";
+			throw new ServiceException(msg);
 		}
-		else {
-			String msg = "Could not locate service mapping to: (" 
-				+ service + "," + request + ")";
-			throw new ServiceException( msg );
-		}
-		
+
 	}
-	
+
 	static int sequence = 0;
+
 	void post(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-		throws ServiceException, IOException, ServletException {
+			throws ServiceException, IOException, ServletException {
 		File temp;
-    
-        InputStream is = 
-        		new BufferedInputStream(httpRequest.getInputStream());
 
-        // REVISIT: Should do more than sequence here
-        // (In case we are running two GeoServers at once)
-        // - Could we use response.getHandle() in the filename?
-        // - ProcessID is traditional, I don't know how to find that in Java
-        sequence++;
-        // test to see if we have permission to write, if not, throw an appropirate error
-        try {
-            	temp = File.createTempFile("wfsdispatch" + sequence, "tmp");
-            	if (!temp.canRead() || !temp.canWrite())
-            	{
-            		String errorMsg = "Temporary-file permission problem for location: " + temp.getPath();
-                	throw new IOException(errorMsg);
-            	}
-        } 
-        catch (IOException e) {
-            	String errorMsg = "Possible file permission problem. Root cause: \n" + e.toString();
-            	IOException newE = new IOException(errorMsg);
-            	throw newE;
-        }
-        
-        temp.deleteOnExit();
-        FileOutputStream fos = new FileOutputStream(temp);
-        BufferedOutputStream out = new BufferedOutputStream(fos);
+		InputStream is = new BufferedInputStream(httpRequest.getInputStream());
 
-        int c;
+		// REVISIT: Should do more than sequence here
+		// (In case we are running two GeoServers at once)
+		// - Could we use response.getHandle() in the filename?
+		// - ProcessID is traditional, I don't know how to find that in Java
+		sequence++;
+		// test to see if we have permission to write, if not, throw an
+		// appropirate error
+		try {
+			temp = File.createTempFile("wfsdispatch" + sequence, "tmp");
+			if (!temp.canRead() || !temp.canWrite()) {
+				String errorMsg = "Temporary-file permission problem for location: "
+						+ temp.getPath();
+				throw new IOException(errorMsg);
+			}
+		} catch (IOException e) {
+			String errorMsg = "Possible file permission problem. Root cause: \n"
+					+ e.toString();
+			IOException newE = new IOException(errorMsg);
+			throw newE;
+		}
 
-        while (-1 != (c = is.read())) {
-            out.write(c);
-        }
+		temp.deleteOnExit();
+		FileOutputStream fos = new FileOutputStream(temp);
+		BufferedOutputStream out = new BufferedOutputStream(fos);
 
-        is.close();
-        out.flush();
-        out.close();
+		int c;
 
-        //JD: GEOS-323, Adding char encoding support
-        EncodingInfo encInfo = new EncodingInfo();
+		while (-1 != (c = is.read())) {
+			out.write(c);
+		}
 
-        BufferedReader disReader;
-        BufferedReader requestReader;
+		is.close();
+		out.flush();
+		out.close();
 
-        try {
-            disReader = new BufferedReader(
-                    XmlCharsetDetector.getCharsetAwareReader(
-                            new FileInputStream(temp), encInfo));
+		// JD: GEOS-323, Adding char encoding support
+		EncodingInfo encInfo = new EncodingInfo();
 
-            requestReader = new BufferedReader(
-                    XmlCharsetDetector.createReader(
-                            new FileInputStream(temp), encInfo));
-        } catch (Exception e) {
-            /*
-             * Any exception other than WfsException will "hang up" the
-             * process - no client output, no log entries, only "Internal
-             * server error". So this is a little trick to make detector's
-             * exceptions "visible".
-             */
-            throw new ServiceException(e);
-        }
+		BufferedReader disReader;
+		BufferedReader requestReader;
 
-        AbstractService target = null;
-        //JD: GEOS-323, Adding char encoding support
-        if (disReader != null) {
-            DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
-        		requestTypeAnalyzer.read(disReader, httpRequest);
-        		
-        		target = find(requestTypeAnalyzer.getService(),requestTypeAnalyzer.getRequest());
-		} 
-       
-        if (target == null) {
-        		String msg = "Could not locate service for request";
-        		throw new ServiceException( msg );
-        }
-        
-        if (requestReader != null) {
-        		target.doPost(httpRequest,httpResponse,requestReader);
-        }
-        else {
-        		target.doPost(httpRequest,httpResponse);
-        }
-        	
-    }
+		try {
+			disReader = new BufferedReader(XmlCharsetDetector
+					.getCharsetAwareReader(new FileInputStream(temp), encInfo));
+
+			requestReader = new BufferedReader(XmlCharsetDetector.createReader(
+					new FileInputStream(temp), encInfo));
+		} catch (Exception e) {
+			/*
+			 * Any exception other than WfsException will "hang up" the process -
+			 * no client output, no log entries, only "Internal server error".
+			 * So this is a little trick to make detector's exceptions
+			 * "visible".
+			 */
+			throw new ServiceException(e);
+		}
+
+		AbstractService target = null;
+		// JD: GEOS-323, Adding char encoding support
+		if (disReader != null) {
+			DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
+			requestTypeAnalyzer.read(disReader, httpRequest);
+
+			target = find(requestTypeAnalyzer.getService(), requestTypeAnalyzer
+					.getRequest());
+		}
+
+		if (target == null) {
+			String msg = "Could not locate service for request";
+			throw new ServiceException(msg);
+		}
+
+		if (requestReader != null) {
+			target.doPost(httpRequest, httpResponse, requestReader);
+		} else {
+			target.doPost(httpRequest, httpResponse);
+		}
+
+	}
 }

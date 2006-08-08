@@ -25,495 +25,501 @@ import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.metadata.Identifier;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.crs.DerivedCRS;
 import org.opengis.referencing.crs.ProjectedCRS;
-import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.LegendURL;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
-import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-
 /**
  * Geotools xml framework based encoder for a Capabilities WMS 1.1.1 document.
- *
+ * 
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id
  */
 public class WMSCapsTransformer extends TransformerBase {
-    /** fixed MIME type for the returned capabilities document */
-    public static final String WMS_CAPS_MIME = "application/vnd.ogc.wms_xml";
+	/** fixed MIME type for the returned capabilities document */
+	public static final String WMS_CAPS_MIME = "application/vnd.ogc.wms_xml";
 
-    /** DOCUMENT ME! */
-    private String schemaBaseUrl;
+	/** DOCUMENT ME! */
+	private String schemaBaseUrl;
 
 	private Set formats;
 
-    /**
-     * Creates a new WMSCapsTransformer object.
-     *
-     * @param schemaBaseUrl needed to get the schema base URL
-     * @param formats 
-     *
-     * @throws NullPointerException if <code>schemaBaseUrl</code> is null;
-     */
-    public WMSCapsTransformer(String schemaBaseUrl, Set formats) {
-        super();
-        this.formats=formats;
-        if (schemaBaseUrl == null) {
-            throw new NullPointerException();
-        }
+	/**
+	 * Creates a new WMSCapsTransformer object.
+	 * 
+	 * @param schemaBaseUrl
+	 *            needed to get the schema base URL
+	 * @param formats
+	 * 
+	 * @throws NullPointerException
+	 *             if <code>schemaBaseUrl</code> is null;
+	 */
+	public WMSCapsTransformer(String schemaBaseUrl, Set formats) {
+		super();
+		this.formats = formats;
+		if (schemaBaseUrl == null) {
+			throw new NullPointerException();
+		}
 
-        this.schemaBaseUrl = schemaBaseUrl;
-        this.setNamespaceDeclarationEnabled(false);
-    }
+		this.schemaBaseUrl = schemaBaseUrl;
+		this.setNamespaceDeclarationEnabled(false);
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param handler DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Translator createTranslator(ContentHandler handler) {
-        return new CapabilitiesTranslator(handler,formats);
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param handler
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public Translator createTranslator(ContentHandler handler) {
+		return new CapabilitiesTranslator(handler, formats);
+	}
 
-    /**
-     * Gets the <code>Transformer</code> created by the overriden method in the
-     * superclass and adds it the system DOCTYPE token pointing to the
-     * Capabilities DTD on this server instance.
-     * 
-     * <p>
-     * The DTD is set at the fixed location given by the
-     * <code>schemaBaseUrl</code> passed to the constructor <code>+
-     * "wms/1.1.1/WMS_MS_Capabilities.dtd</code>.
-     * </p>
-     *
-     * @return a Transformer propoerly configured to produce DescribeLayer
-     *         responses.
-     *
-     * @throws TransformerException if it is thrown by
-     *         <code>super.createTransformer()</code>
-     */
-    public Transformer createTransformer() throws TransformerException {
-        Transformer transformer = super.createTransformer();
-        String dtdUrl = this.schemaBaseUrl
-            + "wms/1.1.1/WMS_MS_Capabilities.dtd";  //DJB: fixed this to point to correct location
-        transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
+	/**
+	 * Gets the <code>Transformer</code> created by the overriden method in
+	 * the superclass and adds it the system DOCTYPE token pointing to the
+	 * Capabilities DTD on this server instance.
+	 * 
+	 * <p>
+	 * The DTD is set at the fixed location given by the
+	 * <code>schemaBaseUrl</code> passed to the constructor <code>+
+	 * "wms/1.1.1/WMS_MS_Capabilities.dtd</code>.
+	 * </p>
+	 * 
+	 * @return a Transformer propoerly configured to produce DescribeLayer
+	 *         responses.
+	 * 
+	 * @throws TransformerException
+	 *             if it is thrown by <code>super.createTransformer()</code>
+	 */
+	public Transformer createTransformer() throws TransformerException {
+		Transformer transformer = super.createTransformer();
+		String dtdUrl = this.schemaBaseUrl
+				+ "wms/1.1.1/WMS_MS_Capabilities.dtd"; // DJB: fixed this to
+		// point to correct
+		// location
+		transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
 
-        return transformer;
-    }
+		return transformer;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @author Gabriel Roldan, Axios Engineering
-     * @version $Id
-     */
-    private static class CapabilitiesTranslator extends TranslatorSupport {
-        /** DOCUMENT ME! */
-        private static final Logger LOGGER = Logger.getLogger(CapabilitiesTranslator.class.getPackage()
-                                                                                          .getName());
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @author Gabriel Roldan, Axios Engineering
+	 * @version $Id
+	 */
+	private static class CapabilitiesTranslator extends TranslatorSupport {
+		/** DOCUMENT ME! */
+		private static final Logger LOGGER = Logger
+				.getLogger(CapabilitiesTranslator.class.getPackage().getName());
 
-        /** DOCUMENT ME! */
-        private static final String EPSG = "EPSG:";
+		/** DOCUMENT ME! */
+		private static final String EPSG = "EPSG:";
 
-        /** DOCUMENT ME! */
-        private static AttributesImpl wmsVersion = new AttributesImpl();
+		/** DOCUMENT ME! */
+		private static AttributesImpl wmsVersion = new AttributesImpl();
 
-        /** DOCUMENT ME! */
-        private static final String XLINK_NS = "http://www.w3.org/1999/xlink";
+		/** DOCUMENT ME! */
+		private static final String XLINK_NS = "http://www.w3.org/1999/xlink";
 
-        static {
-            wmsVersion.addAttribute("", "version", "version", "", "1.1.1");
-        }
+		static {
+			wmsVersion.addAttribute("", "version", "version", "", "1.1.1");
+		}
 
-        /**
-         * The request from wich all the information needed to produce the
-         * capabilities document can be obtained
-         */
-        private CapabilitiesRequest request;
+		/**
+		 * The request from wich all the information needed to produce the
+		 * capabilities document can be obtained
+		 */
+		private CapabilitiesRequest request;
 
 		private Set formats;
 
-        /**
-         * Creates a new CapabilitiesTranslator object.
-         *
-         * @param handler content handler to send sax events to.
-         */
-        public CapabilitiesTranslator(ContentHandler handler, Set formats) {
-            super(handler, null, null);
-            this.formats=formats;
-        }
+		/**
+		 * Creates a new CapabilitiesTranslator object.
+		 * 
+		 * @param handler
+		 *            content handler to send sax events to.
+		 */
+		public CapabilitiesTranslator(ContentHandler handler, Set formats) {
+			super(handler, null, null);
+			this.formats = formats;
+		}
 
-        /**
-         * DOCUMENT ME!
-         *
-         * @param o the <code>CapabilitiesRequest</code>
-         *
-         * @throws IllegalArgumentException DOCUMENT ME!
-         */
-        public void encode(Object o) throws IllegalArgumentException {
-            if (!(o instanceof CapabilitiesRequest)) {
-                throw new IllegalArgumentException();
-            }
-
-            this.request = (CapabilitiesRequest) o;
-			if (LOGGER.isLoggable(Level.FINE)) {
-				LOGGER.fine(new StringBuffer("producing a capabilities document for ").append(request).toString());
+		/**
+		 * DOCUMENT ME!
+		 * 
+		 * @param o
+		 *            the <code>CapabilitiesRequest</code>
+		 * 
+		 * @throws IllegalArgumentException
+		 *             DOCUMENT ME!
+		 */
+		public void encode(Object o) throws IllegalArgumentException {
+			if (!(o instanceof CapabilitiesRequest)) {
+				throw new IllegalArgumentException();
 			}
-            start("WMT_MS_Capabilities", wmsVersion);
-            handleService();
-            handleCapability();
-            end("WMT_MS_Capabilities");
-        }
 
-        /**
-         * Encodes the service metadata section of a WMS capabilities document.
-         */
-        private void handleService() {
-            WMS wms = (WMS) request.getServiceRef().getServiceRef();
-            start("Service");
+			this.request = (CapabilitiesRequest) o;
+			if (LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.fine(new StringBuffer(
+						"producing a capabilities document for ").append(
+						request).toString());
+			}
+			start("WMT_MS_Capabilities", wmsVersion);
+			handleService();
+			handleCapability();
+			end("WMT_MS_Capabilities");
+		}
 
-            element("Name", "OGC:WMS");
-            element("Title", wms.getTitle());
-            element("Abstract", wms.getAbstract());
+		/**
+		 * Encodes the service metadata section of a WMS capabilities document.
+		 */
+		private void handleService() {
+			WMS wms = (WMS) request.getServiceRef().getServiceRef();
+			start("Service");
 
-            handleKeywordList(wms.getKeywords());
+			element("Name", "OGC:WMS");
+			element("Title", wms.getTitle());
+			element("Abstract", wms.getAbstract());
 
-            AttributesImpl orAtts = new AttributesImpl();
-            orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
-            orAtts.addAttribute(XLINK_NS, "xlink:type", "xlink:type", "",
-                "simple");
-            orAtts.addAttribute("", "xlink:href", "xlink:href", "",
-                wms.getOnlineResource().toExternalForm());
-            element("OnlineResource", null, orAtts);
+			handleKeywordList(wms.getKeywords());
 
-            element("Fees", wms.getFees());
-            element("AccessConstraints", wms.getAccessConstraints());
-            end("Service");
-        }
+			AttributesImpl orAtts = new AttributesImpl();
+			orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
+			orAtts.addAttribute(XLINK_NS, "xlink:type", "xlink:type", "",
+					"simple");
+			orAtts.addAttribute("", "xlink:href", "xlink:href", "", wms
+					.getOnlineResource().toExternalForm());
+			element("OnlineResource", null, orAtts);
 
-        /**
-         * DOCUMENT ME!
-         *
-         * @param keywords DOCUMENT ME!
-         */
-        private void handleKeywordList(List keywords) {
-            start("KeywordList");
+			element("Fees", wms.getFees());
+			element("AccessConstraints", wms.getAccessConstraints());
+			end("Service");
+		}
 
-            for (Iterator it = keywords.iterator(); it.hasNext();) {
-                element("Keyword", String.valueOf(it.next()));
-            }
+		/**
+		 * DOCUMENT ME!
+		 * 
+		 * @param keywords
+		 *            DOCUMENT ME!
+		 */
+		private void handleKeywordList(List keywords) {
+			start("KeywordList");
 
-            end("KeywordList");
-        }
+			for (Iterator it = keywords.iterator(); it.hasNext();) {
+				element("Keyword", String.valueOf(it.next()));
+			}
 
-        /**
-         * Encodes the capabilities metadata section of a WMS capabilities
-         * document
-         */
-        private void handleCapability() {
-            start("Capability");
-            handleRequest();
-            handleException();
-            handleSLD();
-            handleLayers();
-            end("Capability");
-        }
+			end("KeywordList");
+		}
 
-        /**
-         * DOCUMENT ME!
-         */
-        private void handleRequest() {
-            WMS wms = (WMS) request.getServiceRef().getServiceRef();
-            
-            start("Request");
+		/**
+		 * Encodes the capabilities metadata section of a WMS capabilities
+		 * document
+		 */
+		private void handleCapability() {
+			start("Capability");
+			handleRequest();
+			handleException();
+			handleSLD();
+			handleLayers();
+			end("Capability");
+		}
 
-            start("GetCapabilities");
-            element("Format", WMS_CAPS_MIME);
+		/**
+		 * DOCUMENT ME!
+		 */
+		private void handleRequest() {
+			WMS wms = (WMS) request.getServiceRef().getServiceRef();
 
-            //@HACK: pointer to the WMS dispatcher
-            String serviceUrl = request.getBaseUrl() + 
-            		"wms?SERVICE=WMS&";
-            
-            handleDcpType(serviceUrl, serviceUrl);
-            end("GetCapabilities");
+			start("Request");
 
-            start("GetMap");
+			start("GetCapabilities");
+			element("Format", WMS_CAPS_MIME);
 
-            for (Iterator it = formats.iterator();
-                    it.hasNext();) {
-                element("Format", String.valueOf(it.next()));
-            }
+			// @HACK: pointer to the WMS dispatcher
+			String serviceUrl = request.getBaseUrl() + "wms?SERVICE=WMS&";
 
-            handleDcpType(serviceUrl, null);
-            end("GetMap");
+			handleDcpType(serviceUrl, serviceUrl);
+			end("GetCapabilities");
 
-            start("GetFeatureInfo");
+			start("GetMap");
 
-            for (Iterator it = GetFeatureInfoResponse.getFormats().iterator();
-                    it.hasNext();) {
-                element("Format", String.valueOf(it.next()));
-            }
+			for (Iterator it = formats.iterator(); it.hasNext();) {
+				element("Format", String.valueOf(it.next()));
+			}
 
-            handleDcpType(serviceUrl, serviceUrl);
-            end("GetFeatureInfo");
+			handleDcpType(serviceUrl, null);
+			end("GetMap");
 
-            start("DescribeLayer");
-            element("Format", DescribeLayerResponse.DESCLAYER_MIME_TYPE);
-            handleDcpType(serviceUrl, null);
-            end("DescribeLayer");
+			start("GetFeatureInfo");
 
-            start("GetLegendGraphic");
+			for (Iterator it = GetFeatureInfoResponse.getFormats().iterator(); it
+					.hasNext();) {
+				element("Format", String.valueOf(it.next()));
+			}
 
-            for (Iterator it = GetLegendGraphicResponse.getFormats().iterator();
-                    it.hasNext();) {
-                element("Format", String.valueOf(it.next()));
-            }
+			handleDcpType(serviceUrl, serviceUrl);
+			end("GetFeatureInfo");
 
-            handleDcpType(serviceUrl, null);
-            end("GetLegendGraphic");
+			start("DescribeLayer");
+			element("Format", DescribeLayerResponse.DESCLAYER_MIME_TYPE);
+			handleDcpType(serviceUrl, null);
+			end("DescribeLayer");
 
-            end("Request");
-        }
+			start("GetLegendGraphic");
 
-        /**
-         * Encodes a <code>DCPType</code> fragment for HTTP GET and POST
-         * methods.
-         *
-         * @param getUrl the URL of the onlineresource for HTTP GET method
-         *        requests
-         * @param postUrl the URL of the onlineresource for HTTP POST method
-         *        requests
-         */
-        private void handleDcpType(String getUrl, String postUrl) {
-            AttributesImpl orAtts = new AttributesImpl();
-            orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
-            orAtts.addAttribute("", "xlink:type", "xlink:type", "", "simple");
-            orAtts.addAttribute("", "xlink:href", "xlink:href", "", getUrl);
-            start("DCPType");
-            start("HTTP");
+			for (Iterator it = GetLegendGraphicResponse.getFormats().iterator(); it
+					.hasNext();) {
+				element("Format", String.valueOf(it.next()));
+			}
 
-            if (getUrl != null) {
-                start("Get");
-                element("OnlineResource", null, orAtts);
-                end("Get");
-            }
+			handleDcpType(serviceUrl, null);
+			end("GetLegendGraphic");
 
-            if (postUrl != null) {
-                orAtts.setAttribute(2, "", "xlink:href", "xlink:href", "",
-                    postUrl);
-                start("Post");
-                element("OnlineResource", null, orAtts);
-                end("Post");
-            }
+			end("Request");
+		}
 
-            end("HTTP");
-            end("DCPType");
-        }
+		/**
+		 * Encodes a <code>DCPType</code> fragment for HTTP GET and POST
+		 * methods.
+		 * 
+		 * @param getUrl
+		 *            the URL of the onlineresource for HTTP GET method requests
+		 * @param postUrl
+		 *            the URL of the onlineresource for HTTP POST method
+		 *            requests
+		 */
+		private void handleDcpType(String getUrl, String postUrl) {
+			AttributesImpl orAtts = new AttributesImpl();
+			orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
+			orAtts.addAttribute("", "xlink:type", "xlink:type", "", "simple");
+			orAtts.addAttribute("", "xlink:href", "xlink:href", "", getUrl);
+			start("DCPType");
+			start("HTTP");
 
-        /**
-         * DOCUMENT ME!
-         */
-        private void handleException() {
-            start("Exception");
+			if (getUrl != null) {
+				start("Get");
+				element("OnlineResource", null, orAtts);
+				end("Get");
+			}
 
-            WMS wms = (WMS) request.getServiceRef().getServiceRef();
-            Iterator it = Arrays.asList(wms.getExceptionFormats())
-                                .iterator();
+			if (postUrl != null) {
+				orAtts.setAttribute(2, "", "xlink:href", "xlink:href", "",
+						postUrl);
+				start("Post");
+				element("OnlineResource", null, orAtts);
+				end("Post");
+			}
 
-            while (it.hasNext()) {
-                element("Format", String.valueOf(it.next()));
-            }
+			end("HTTP");
+			end("DCPType");
+		}
 
-            end("Exception");
-        }
+		/**
+		 * DOCUMENT ME!
+		 */
+		private void handleException() {
+			start("Exception");
 
-        /**
-         * DOCUMENT ME!
-         */
-        private void handleSLD() {
-            AttributesImpl sldAtts = new AttributesImpl();
-            WMS config = (WMS) request.getServiceRef().getServiceRef();
-            String supportsSLD = config.supportsSLD() ? "1" : "0";
-            String supportsUserLayer = config.supportsUserLayer() ? "1" : "0";
-            String supportsUserStyle = config.supportsUserStyle() ? "1" : "0";
-            String supportsRemoteWFS = config.supportsRemoteWFS() ? "1" : "0";
-            sldAtts.addAttribute("", "SupportSLD", "SupportSLD", "", supportsSLD);
-            sldAtts.addAttribute("", "UserLayer", "UserLayer", "",
-                supportsUserLayer);
-            sldAtts.addAttribute("", "UserStyle", "UserStyle", "",
-                supportsUserStyle);
-            sldAtts.addAttribute("", "RemoteWFS", "RemoteWFS", "",
-                supportsRemoteWFS);
-            
-            
-            start("UserDefinedSymbolization",sldAtts);
-//          djb: this was removed, even though they are correct - the CITE tests have an incorrect DTD
-           //       element("SupportedSLDVersion","1.0.0");  //djb: added that we support this.  We support partial 1.1
-            end ("UserDefinedSymbolization");
-            //element("UserDefinedSymbolization", null, sldAtts);
-        }
+			WMS wms = (WMS) request.getServiceRef().getServiceRef();
+			Iterator it = Arrays.asList(wms.getExceptionFormats()).iterator();
 
-        /**
-         * Handles the encoding of the layers elements.
-         * 
-         * <p>
-         * This method does a search over the SRS of all the layers to see if
-         * there are at least a common one, as needed by the spec:  "<i>The
-         * root Layer element shall include a sequence of zero or more
-         * &lt;SRS&gt; elements listing all SRSes that are common  to all
-         * subsidiary layers. Use a single SRS element with empty content
-         * (like so: "&lt;SRS&gt;&lt;/SRS&gt;") if there is no common
-         * SRS."</i>
-         * </p>
-         * 
-         * <p>
-         * By the other hand, this search is also used to collecto the whole
-         * latlon bbox, as stated by the spec: <i>"The bounding box metadata
-         * in Capabilities XML specify the minimum enclosing rectangle for the
-         * layer as a whole."</i>
-         * </p>
-         *
-         * @task TODO: manage this differently when we have the layer list of
-         *       the WMS service decoupled from the feature types configured
-         *       for the server instance. (This involves nested layers,
-         *       gridcoverages, etc)
-         */
-        private void handleLayers() {
-            WMS wms = (WMS) request.getServiceRef().getServiceRef();
-            start("Layer");
+			while (it.hasNext()) {
+				element("Format", String.valueOf(it.next()));
+			}
 
-            Data catalog = wms.getData();
-            Collection ftypes = catalog.getFeatureTypeInfos().values();
+			end("Exception");
+		}
+
+		/**
+		 * DOCUMENT ME!
+		 */
+		private void handleSLD() {
+			AttributesImpl sldAtts = new AttributesImpl();
+			WMS config = (WMS) request.getServiceRef().getServiceRef();
+			String supportsSLD = config.supportsSLD() ? "1" : "0";
+			String supportsUserLayer = config.supportsUserLayer() ? "1" : "0";
+			String supportsUserStyle = config.supportsUserStyle() ? "1" : "0";
+			String supportsRemoteWFS = config.supportsRemoteWFS() ? "1" : "0";
+			sldAtts.addAttribute("", "SupportSLD", "SupportSLD", "",
+					supportsSLD);
+			sldAtts.addAttribute("", "UserLayer", "UserLayer", "",
+					supportsUserLayer);
+			sldAtts.addAttribute("", "UserStyle", "UserStyle", "",
+					supportsUserStyle);
+			sldAtts.addAttribute("", "RemoteWFS", "RemoteWFS", "",
+					supportsRemoteWFS);
+
+			start("UserDefinedSymbolization", sldAtts);
+			// djb: this was removed, even though they are correct - the CITE
+			// tests have an incorrect DTD
+			// element("SupportedSLDVersion","1.0.0"); //djb: added that we
+			// support this. We support partial 1.1
+			end("UserDefinedSymbolization");
+			// element("UserDefinedSymbolization", null, sldAtts);
+		}
+
+		/**
+		 * Handles the encoding of the layers elements.
+		 * 
+		 * <p>
+		 * This method does a search over the SRS of all the layers to see if
+		 * there are at least a common one, as needed by the spec: "<i>The root
+		 * Layer element shall include a sequence of zero or more &lt;SRS&gt;
+		 * elements listing all SRSes that are common to all subsidiary layers.
+		 * Use a single SRS element with empty content (like so:
+		 * "&lt;SRS&gt;&lt;/SRS&gt;") if there is no common SRS."</i>
+		 * </p>
+		 * 
+		 * <p>
+		 * By the other hand, this search is also used to collecto the whole
+		 * latlon bbox, as stated by the spec: <i>"The bounding box metadata in
+		 * Capabilities XML specify the minimum enclosing rectangle for the
+		 * layer as a whole."</i>
+		 * </p>
+		 * 
+		 * @task TODO: manage this differently when we have the layer list of
+		 *       the WMS service decoupled from the feature types configured for
+		 *       the server instance. (This involves nested layers,
+		 *       gridcoverages, etc)
+		 */
+		private void handleLayers() {
+			WMS wms = (WMS) request.getServiceRef().getServiceRef();
+			start("Layer");
+
+			Data catalog = wms.getData();
+			Collection ftypes = catalog.getFeatureTypeInfos().values();
 			Collection coverages = catalog.getCoverageInfos().values();
-            FeatureTypeInfo layer;
+		
 
-            element("Title", wms.getTitle());
-            element("Abstract", wms.getAbstract());
+			element("Title", wms.getTitle());
+			element("Abstract", wms.getAbstract());
 
 			handleRootSRSAndBbox(ftypes, MapLayerInfo.TYPE_VECTOR);
 
-            //now encode each layer individually
+			// now encode each layer individually
 			LayerTree featuresLayerTree = new LayerTree(ftypes);
 			handleFeaturesTree(featuresLayerTree);
 
 			LayerTree coveragesLayerTree = new LayerTree(coverages);
 			handleCoveragesTree(coveragesLayerTree);
 
-            end("Layer");
-        }
+			end("Layer");
+		}
 
-        /**
-         * Called from <code>handleLayers()</code>, does the first iteration
-         * over the  available featuretypes to look for common SRS's and
-         * summarize their LatLonBBox'es, to state at the root layer.
-         * 
-         * <p>
-         * NOTE: by now we just have "layer.getSRS()", so the search is done
-         * against this only SRS.
-         * </p>
-         *
-         * @param ftypes DOCUMENT ME!
-         *
-         * @throws RuntimeException DOCUMENT ME!
-         *
-         * @task TODO: figure out how to incorporate multiple SRS using the
-         *       reprojection facilities from gt2
-         */
+		/**
+		 * Called from <code>handleLayers()</code>, does the first iteration
+		 * over the available featuretypes to look for common SRS's and
+		 * summarize their LatLonBBox'es, to state at the root layer.
+		 * 
+		 * <p>
+		 * NOTE: by now we just have "layer.getSRS()", so the search is done
+		 * against this only SRS.
+		 * </p>
+		 * 
+		 * @param ftypes
+		 *            DOCUMENT ME!
+		 * 
+		 * @throws RuntimeException
+		 *             DOCUMENT ME!
+		 * 
+		 * @task TODO: figure out how to incorporate multiple SRS using the
+		 *       reprojection facilities from gt2
+		 */
 		private void handleRootSRSAndBbox(Collection ftypes, int TYPE) {
-            String commonSRS = "";
-            boolean isCommonSRS = true;
-            Envelope latlonBbox = new Envelope();
-            Envelope layerBbox = null;
+			String commonSRS = "";
+			boolean isCommonSRS = true;
+			Envelope latlonBbox = new Envelope();
+			Envelope layerBbox = null;
 			if (LOGGER.isLoggable(Level.FINER)) {
-				LOGGER.finer("Collecting summarized latlonbbox and common SRS...");
+				LOGGER
+						.finer("Collecting summarized latlonbbox and common SRS...");
 			}
 			if (TYPE == MapLayerInfo.TYPE_VECTOR) {
 				FeatureTypeInfo layer;
 
-            for (Iterator it = ftypes.iterator(); it.hasNext();) {
-                layer = (FeatureTypeInfo) it.next();
+				for (Iterator it = ftypes.iterator(); it.hasNext();) {
+					layer = (FeatureTypeInfo) it.next();
 
-                if (layer.isEnabled()) {
-                    try {
-                        layerBbox = layer.getLatLongBoundingBox();
-                    } catch (IOException e) {
-                        throw new RuntimeException(
-                            "Can't obtain latLonBBox of " + layer.getName()
-                            + ": " + e.getMessage(), e);
-                    }
+					if (layer.isEnabled()) {
+						try {
+							layerBbox = layer.getLatLongBoundingBox();
+						} catch (IOException e) {
+							throw new RuntimeException(
+									"Can't obtain latLonBBox of "
+											+ layer.getName() + ": "
+											+ e.getMessage(), e);
+						}
 
-                    latlonBbox.expandToInclude(layerBbox);
+						latlonBbox.expandToInclude(layerBbox);
 
-                    String layerSRS = layer.getSRS();
+						String layerSRS = layer.getSRS();
 
-                    if ("".equals(commonSRS)) {
-                        commonSRS = layerSRS;
-                    } else if (!commonSRS.equals(layerSRS)) {
-                        isCommonSRS = false;
-                    }
-                }
-            }
+						if ("".equals(commonSRS)) {
+							commonSRS = layerSRS;
+						} else if (!commonSRS.equals(layerSRS)) {
+							isCommonSRS = false;
+						}
+					}
+				}
 
-            if (isCommonSRS) {
-                commonSRS = EPSG + commonSRS;
-                LOGGER.fine("Common SRS is " + commonSRS);
-            } else {
-                commonSRS = "";
-                LOGGER.fine(
-                    "No common SRS, don't forget to incorporate reprojection support...");
-            }
+				if (isCommonSRS) {
+					commonSRS = EPSG + commonSRS;
+					LOGGER.fine("Common SRS is " + commonSRS);
+				} else {
+					commonSRS = "";
+					LOGGER
+							.fine("No common SRS, don't forget to incorporate reprojection support...");
+				}
 
-            if (!(commonSRS.equals("")))
-            {
-            	comment("common SRS:");
-            	element("SRS", commonSRS);
-            }
-            
-            //okay - we've sent out the commonSRS, if it exists.
-            
-            comment("All supported EPSG projections:");
-            
-            try {
-            	Set s = CRS.getSupportedCodes("EPSG");
-            	Iterator it = s.iterator();
-            	while (it.hasNext())
-            	{
-            		 // do not output srs if it was output as common srs
-                    // note, if commonSRS is "", this will not match
-                    String currentSRS = it.next().toString();
-                    if (!currentSRS.equals(commonSRS))
-                    {
-                         element("SRS", currentSRS );
-                    }
-            	}
-            }
-            catch (Exception e)
-			{
-            	e.printStackTrace();
-			}
-			
+				if (!(commonSRS.equals(""))) {
+					comment("common SRS:");
+					element("SRS", commonSRS);
+				}
 
-            LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
-            handleLatLonBBox(latlonBbox);
+				// okay - we've sent out the commonSRS, if it exists.
+
+				comment("All supported EPSG projections:");
+
+				try {
+					Set s = CRS.getSupportedCodes("EPSG");
+					Iterator it = s.iterator();
+					String currentSRS;
+					while (it.hasNext()) {
+						// do not output srs if it was output as common srs
+						// note, if commonSRS is "", this will not match
+						currentSRS = it.next().toString();
+						if (!currentSRS.equals(commonSRS)) {
+							element("SRS", currentSRS);
+						}
+					}
+				} catch (Exception e) {
+					if (LOGGER.isLoggable(Level.WARNING))
+						LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+				}
+
+				if (LOGGER.isLoggable(Level.FINE))
+					LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
+				handleLatLonBBox(latlonBbox);
 			} else if (TYPE == MapLayerInfo.TYPE_RASTER) {
 				CoverageInfo layer;
 
@@ -521,7 +527,8 @@ public class WMSCapsTransformer extends TransformerBase {
 					layer = (CoverageInfo) it.next();
 
 					if (layer.isEnabled()) {
-						final GeneralEnvelope bbox = layer.getWGS84LonLatEnvelope();
+						final GeneralEnvelope bbox = layer
+								.getWGS84LonLatEnvelope();
 						layerBbox = new Envelope(bbox.getLowerCorner()
 								.getOrdinate(0), bbox.getUpperCorner()
 								.getOrdinate(0), bbox.getLowerCorner()
@@ -541,14 +548,16 @@ public class WMSCapsTransformer extends TransformerBase {
 				}
 
 				if (isCommonSRS) {
-					//commonSRS = EPSG + commonSRS;
+					// commonSRS = EPSG + commonSRS;
 					if (LOGGER.isLoggable(Level.FINE)) {
-						LOGGER.fine(new StringBuffer("Common SRS is ").append(commonSRS).toString());
+						LOGGER.fine(new StringBuffer("Common SRS is ").append(
+								commonSRS).toString());
 					}
 				} else {
 					commonSRS = "";
 					if (LOGGER.isLoggable(Level.FINE)) {
-						LOGGER.fine("No common SRS, don't forget to incorporate reprojection support...");
+						LOGGER
+								.fine("No common SRS, don't forget to incorporate reprojection support...");
 					}
 				}
 
@@ -562,7 +571,8 @@ public class WMSCapsTransformer extends TransformerBase {
 				comment("All supported EPSG projections:");
 
 				try {
-					ArrayList SRSs = new ArrayList();
+					String currentSRS;
+					ArrayList SRSs = new ArrayList(ftypes.size());
 					for (Iterator it = ftypes.iterator(); it.hasNext();) {
 						layer = (CoverageInfo) it.next();
 
@@ -573,7 +583,7 @@ public class WMSCapsTransformer extends TransformerBase {
 								// do not output srs if it was output as common
 								// srs
 								// note, if commonSRS is "", this will not match
-								String currentSRS = it_1.next().toString();
+								currentSRS = it_1.next().toString();
 								if (!currentSRS.equals(commonSRS)
 										&& !SRSs.contains(currentSRS)) {
 									SRSs.add(currentSRS);
@@ -583,10 +593,12 @@ public class WMSCapsTransformer extends TransformerBase {
 						}
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					if (LOGGER.isLoggable(Level.WARNING))
+						LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
 				}
 
-				LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
+				if (LOGGER.isLoggable(Level.FINE))
+					LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
 				handleLatLonBBox(latlonBbox);
 			}
 		}
@@ -597,16 +609,16 @@ public class WMSCapsTransformer extends TransformerBase {
 		private void handleFeaturesTree(LayerTree featuresLayerTree) {
 			final Collection data = featuresLayerTree.getData();
 			final Collection childrens = featuresLayerTree.getChildrens();
-
+			FeatureTypeInfo fLayer;
 			for (Iterator it = data.iterator(); it.hasNext();) {
-				FeatureTypeInfo fLayer = (FeatureTypeInfo) it.next();
+				fLayer = (FeatureTypeInfo) it.next();
 
 				if (fLayer.isEnabled())
 					handleFeatureType(fLayer);
 			}
-
+			LayerTree layerTree;
 			for (Iterator it = childrens.iterator(); it.hasNext();) {
-				LayerTree layerTree = (LayerTree) it.next();
+				layerTree = (LayerTree) it.next();
 				start("Layer");
 				element("Name", layerTree.getName());
 				element("Title", layerTree.getName());
@@ -615,72 +627,77 @@ public class WMSCapsTransformer extends TransformerBase {
 			}
 		}
 
-        /**
-         * Calls super.handleFeatureType to add common FeatureType content such
-         * as Name, Title and LatLonBoundingBox, and then writes WMS specific
-         * layer properties as Styles, Scale Hint, etc.
-         *
-         * @param ftype The featureType to write out.
-         *
-         * @throws RuntimeException DOCUMENT ME!
-         *
-         * @task TODO: write wms specific elements.
-         */
-        protected void handleFeatureType(FeatureTypeInfo ftype) {
-            //HACK: by now all our layers are queryable, since they reference
-            //only featuretypes managed by this server
-            AttributesImpl qatts = new AttributesImpl();
-            qatts.addAttribute("", "queryable", "queryable", "", "1");
-            start("Layer", qatts);
-            element("Name", ftype.getName());
-            element("Title", ftype.getTitle());
-            element("Abstract", ftype.getAbstract());
+		/**
+		 * Calls super.handleFeatureType to add common FeatureType content such
+		 * as Name, Title and LatLonBoundingBox, and then writes WMS specific
+		 * layer properties as Styles, Scale Hint, etc.
+		 * 
+		 * @param ftype
+		 *            The featureType to write out.
+		 * 
+		 * @throws RuntimeException
+		 *             DOCUMENT ME!
+		 * 
+		 * @task TODO: write wms specific elements.
+		 */
+		protected void handleFeatureType(FeatureTypeInfo ftype) {
+			// HACK: by now all our layers are queryable, since they reference
+			// only featuretypes managed by this server
+			AttributesImpl qatts = new AttributesImpl();
+			qatts.addAttribute("", "queryable", "queryable", "", "1");
+			start("Layer", qatts);
+			element("Name", ftype.getName());
+			element("Title", ftype.getTitle());
+			element("Abstract", ftype.getAbstract());
 
-            handleKeywordList(ftype.getKeywords());
+			handleKeywordList(ftype.getKeywords());
 
-            /**
-             * @task REVISIT: should getSRS() return the full URL?
-             * no - the spec says it should be a set of <SRS>EPSG:#</SRS>...
-             */
-            element("SRS", EPSG + ftype.getSRS());
-              //DJB: I want to be nice to the people reading the capabilities file - I'm going to get the
-              //     human readable name and stick it in the capabilities file
-              // NOTE: this isnt well done because "comment()" isnt in the ContentHandler interface...
-             
-             	try{
-            		CoordinateReferenceSystem crs = CRS.decode(EPSG + ftype.getSRS());
-            		String desc = "WKT definition of this CRS:\n"+crs.toWKT();
-            		comment(desc);
-            	}
-            	catch (Exception e)
-				{
-            		e.printStackTrace(); // this shouldnt happen 
-				}
- 
-            Envelope bbox = null;
+			/**
+			 * @task REVISIT: should getSRS() return the full URL? no - the spec
+			 *       says it should be a set of <SRS>EPSG:#</SRS>...
+			 */
+			element("SRS", EPSG + ftype.getSRS());
+			// DJB: I want to be nice to the people reading the capabilities
+			// file - I'm going to get the
+			// human readable name and stick it in the capabilities file
+			// NOTE: this isnt well done because "comment()" isnt in the
+			// ContentHandler interface...
 
-            try {
-                bbox = ftype.getLatLongBoundingBox();
-            } catch (IOException ex) {
-                throw new RuntimeException("Can't obtain latLongBBox of "
-                    + ftype.getName() + ": " + ex.getMessage(), ex);
-            }
+			try {
+				CoordinateReferenceSystem crs = CRS.decode(EPSG
+						+ ftype.getSRS(), true);
+				String desc = new StringBuffer("WKT definition of this CRS:\n")
+						.append(crs.toWKT()).toString();
+				comment(desc);
+			} catch (Exception e) {
+				if (LOGGER.isLoggable(Level.WARNING))
+					LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+			}
 
-            handleLatLonBBox(bbox);
+			Envelope bbox = null;
+
+			try {
+				bbox = ftype.getLatLongBoundingBox();
+			} catch (IOException ex) {
+				throw new RuntimeException("Can't obtain latLongBBox of "
+						+ ftype.getName() + ": " + ex.getMessage(), ex);
+			}
+
+			handleLatLonBBox(bbox);
 			handleBBox(bbox, EPSG + ftype.getSRS());
 
-            //add the layer style
-            start("Style");
+			// add the layer style
+			start("Style");
 
-            Style ftStyle = ftype.getDefaultStyle();
-            element("Name", ftStyle.getName());
-            element("Title", ftStyle.getTitle());
-            element("Abstract", ftStyle.getAbstract());
-            handleLegendURL(ftype);
-            end("Style");
+			Style ftStyle = ftype.getDefaultStyle();
+			element("Name", ftStyle.getName());
+			element("Title", ftStyle.getTitle());
+			element("Abstract", ftStyle.getAbstract());
+			handleLegendURL(ftype);
+			end("Style");
 
-            end("Layer");
-        }
+			end("Layer");
+		}
 
 		/**
 		 * @param coveragesLayerTree
@@ -688,16 +705,16 @@ public class WMSCapsTransformer extends TransformerBase {
 		private void handleCoveragesTree(LayerTree coveragesLayerTree) {
 			final Collection data = coveragesLayerTree.getData();
 			final Collection childrens = coveragesLayerTree.getChildrens();
-
+			CoverageInfo cLayer;
 			for (Iterator it = data.iterator(); it.hasNext();) {
-				CoverageInfo cLayer = (CoverageInfo) it.next();
+				cLayer = (CoverageInfo) it.next();
 
 				if (cLayer.isEnabled())
 					handleCoverage(cLayer);
 			}
-
+			LayerTree layerTree;
 			for (Iterator it = childrens.iterator(); it.hasNext();) {
-				LayerTree layerTree = (LayerTree) it.next();
+				layerTree = (LayerTree) it.next();
 				start("Layer");
 				element("Name", layerTree.getName());
 				element("Title", layerTree.getName());
@@ -720,59 +737,76 @@ public class WMSCapsTransformer extends TransformerBase {
 
 			handleKeywordList(coverage.getKeywords());
 
-            String desc = "WKT definition of this CRS:\n" + coverage.getSrsWKT();
-            comment(desc);
+			String desc = "WKT definition of this CRS:\n"
+					+ coverage.getSrsWKT();
+			comment(desc);
 			/**
 			 * TODO REVISIT: should getSRS() return the full URL?
 			 */
 			String authority = "";
-            CoordinateReferenceSystem crs = coverage.getCrs();
-            if (crs != null && !crs.getIdentifiers().isEmpty()) {
-				Identifier[] idents = (Identifier[]) crs.getIdentifiers().toArray(new Identifier[crs.getIdentifiers().size()]);
+			CoordinateReferenceSystem crs = coverage.getCrs();
+			if (crs != null && !crs.getIdentifiers().isEmpty()) {
+				Identifier[] idents = (Identifier[]) crs.getIdentifiers()
+						.toArray(new Identifier[crs.getIdentifiers().size()]);
 				authority = idents[0].toString();
-			} else if (crs != null && crs instanceof DerivedCRS){
-                final CoordinateReferenceSystem baseCRS = ((DerivedCRS) crs).getBaseCRS();
-                if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
-                    authority = ((Identifier[]) baseCRS.getIdentifiers().toArray(new Identifier[baseCRS.getIdentifiers().size()]))[0].toString();
-                else
-                    authority = "UNKNOWN";
-            } else if (crs != null && crs instanceof ProjectedCRS){
-                final CoordinateReferenceSystem baseCRS = ((ProjectedCRS) crs).getBaseCRS();
-                if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
-                    authority = ((Identifier[]) baseCRS.getIdentifiers().toArray(new Identifier[baseCRS.getIdentifiers().size()]))[0].toString();
-                else
-                    authority = "UNKNOWN";
-            } else
-                authority = "UNKNOWN";
+			} else if (crs != null && crs instanceof DerivedCRS) {
+				final CoordinateReferenceSystem baseCRS = ((DerivedCRS) crs)
+						.getBaseCRS();
+				if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
+					authority = ((Identifier[]) baseCRS.getIdentifiers()
+							.toArray(
+									new Identifier[baseCRS.getIdentifiers()
+											.size()]))[0].toString();
+				else
+					authority = "UNKNOWN";
+			} else if (crs != null && crs instanceof ProjectedCRS) {
+				final CoordinateReferenceSystem baseCRS = ((ProjectedCRS) crs)
+						.getBaseCRS();
+				if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
+					authority = ((Identifier[]) baseCRS.getIdentifiers()
+							.toArray(
+									new Identifier[baseCRS.getIdentifiers()
+											.size()]))[0].toString();
+				else
+					authority = "UNKNOWN";
+			} else
+				authority = "UNKNOWN";
 
 			element("SRS", authority);
 
 			GeneralEnvelope bounds = null;
-            GeneralEnvelope llBounds = null;
-			try {
-                // We need LON/LAT Envelopes
-                // TODO check for BBOX, maybe it should be expressed in original CRS coords!!
-                final GeneralEnvelope latLonEnvelope = coverage.getWGS84LonLatEnvelope();
-                final CoordinateReferenceSystem llCRS = latLonEnvelope.getCoordinateReferenceSystem();
-				bounds = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS, coverage.getEnvelope());
-                llBounds = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS, latLonEnvelope);
-			} catch (MismatchedDimensionException e) {
-				// TODO Handle this Exception
-			} catch (IndexOutOfBoundsException e) {
-				// TODO Handle this Exception
-            } catch (FactoryException e) {
-                // TODO Auto-generated catch block
-            }
+			GeneralEnvelope llBounds = null;
+			// try {
+			// We need LON/LAT Envelopes
+			// TODO check for BBOX, maybe it should be expressed in original
+			// CRS coords!!
+			final GeneralEnvelope latLonEnvelope = coverage
+					.getWGS84LonLatEnvelope();
+			// final CoordinateReferenceSystem llCRS = latLonEnvelope
+			// .getCoordinateReferenceSystem();
+			bounds = coverage.getEnvelope();
+			llBounds = latLonEnvelope;
+			// bounds =
+			// CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS,
+			// coverage.getEnvelope());
+			// llBounds =
+			// CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS,
+			// // latLonEnvelope);
+			// } catch (MismatchedDimensionException e) {
+			//	
+			// } catch (IndexOutOfBoundsException e) {
+			//			
+			// }
 
 			final Envelope bbox = new Envelope(bounds.getLowerCorner()
 					.getOrdinate(0), bounds.getUpperCorner().getOrdinate(0),
 					bounds.getLowerCorner().getOrdinate(1), bounds
 							.getUpperCorner().getOrdinate(1));
 
-            final Envelope llBbox = new Envelope(llBounds.getLowerCorner()
-                    .getOrdinate(0), llBounds.getUpperCorner().getOrdinate(0),
-                    llBounds.getLowerCorner().getOrdinate(1), llBounds
-                            .getUpperCorner().getOrdinate(1));
+			final Envelope llBbox = new Envelope(llBounds.getLowerCorner()
+					.getOrdinate(0), llBounds.getUpperCorner().getOrdinate(0),
+					llBounds.getLowerCorner().getOrdinate(1), llBounds
+							.getUpperCorner().getOrdinate(1));
 
 			handleLatLonBBox(llBbox);
 			handleBBox(bbox, authority);
@@ -790,23 +824,23 @@ public class WMSCapsTransformer extends TransformerBase {
 			end("Layer");
 		}
 
-        /**
-         * Writes layer LegendURL pointing to the user supplied icon URL, if
-         * any, or to the proper GetLegendGraphic operation if an URL was not
-         * supplied by configuration file.
-         * 
-         * <p>
-         * It is common practice to supply a URL to a WMS accesible legend
-         * graphic when it is difficult to create a dynamic legend for a
-         * layer.
-         * </p>
-         *
-         * @param ft The FeatureTypeInfo that holds the legendURL to write out,
-         *        or<code>null</code> if dynamically generated.
-         *
-         * @task TODO: figure out how to unhack legend parameters such as
-         *       WIDTH, HEIGHT and FORMAT
-         */
+		/**
+		 * Writes layer LegendURL pointing to the user supplied icon URL, if
+		 * any, or to the proper GetLegendGraphic operation if an URL was not
+		 * supplied by configuration file.
+		 * 
+		 * <p>
+		 * It is common practice to supply a URL to a WMS accesible legend
+		 * graphic when it is difficult to create a dynamic legend for a layer.
+		 * </p>
+		 * 
+		 * @param ft
+		 *            The FeatureTypeInfo that holds the legendURL to write out,
+		 *            or<code>null</code> if dynamically generated.
+		 * 
+		 * @task TODO: figure out how to unhack legend parameters such as WIDTH,
+		 *       HEIGHT and FORMAT
+		 */
 		protected void handleLegendURL(Object layer) {
 			LegendURL legend = null;
 			String layerName = null;
@@ -817,135 +851,152 @@ public class WMSCapsTransformer extends TransformerBase {
 			} else if (layer instanceof CoverageInfo) {
 				layerName = ((CoverageInfo) layer).getName();
 			}
-            if (legend != null) {
+			if (legend != null) {
 				if (LOGGER.isLoggable(Level.CONFIG)) {
 					LOGGER.config("using user supplied legend URL");
 				}
 
-                AttributesImpl attrs = new AttributesImpl();
-                attrs.addAttribute("", "width", "width", "",
-                    String.valueOf(legend.getWidth()));
-                attrs.addAttribute("", "height", "height", "",
-                    String.valueOf(legend.getHeight()));
+				AttributesImpl attrs = new AttributesImpl();
+				attrs.addAttribute("", "width", "width", "", String
+						.valueOf(legend.getWidth()));
+				attrs.addAttribute("", "height", "height", "", String
+						.valueOf(legend.getHeight()));
 
-                start("LegendURL", attrs);
+				start("LegendURL", attrs);
 
-                element("Format", legend.getFormat());
-                attrs.clear();
-                attrs.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
-                    XLINK_NS);
-                attrs.addAttribute(XLINK_NS, "type",
-                    "xlink:type", "", "simple");
-                attrs.addAttribute(XLINK_NS, "href",
-                    "xlink:href", "", legend.getOnlineResource());
+				element("Format", legend.getFormat());
+				attrs.clear();
+				attrs.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
+						XLINK_NS);
+				attrs
+						.addAttribute(XLINK_NS, "type", "xlink:type", "",
+								"simple");
+				attrs.addAttribute(XLINK_NS, "href", "xlink:href", "", legend
+						.getOnlineResource());
 
-                element("OnlineResource", null, attrs);
+				element("OnlineResource", null, attrs);
 
-                end("LegendURL");
-            } else {
-                String defaultFormat = GetLegendGraphicRequest.DEFAULT_FORMAT;
+				end("LegendURL");
+			} else {
+				String defaultFormat = GetLegendGraphicRequest.DEFAULT_FORMAT;
 
-                if (!GetLegendGraphicResponse.supportsFormat(defaultFormat)) {
+				if (!GetLegendGraphicResponse.supportsFormat(defaultFormat)) {
 					if (LOGGER.isLoggable(Level.WARNING)) {
-						LOGGER.warning(new StringBuffer("Default legend format (").
-							append(defaultFormat).
-							append(")is not supported (jai not available?), can't add LegendURL element").
-							toString());
+						LOGGER
+								.warning(new StringBuffer(
+										"Default legend format (")
+										.append(defaultFormat)
+										.append(
+												")is not supported (jai not available?), can't add LegendURL element")
+										.toString());
 					}
 
 					return;
-                }
+				}
 
 				if (LOGGER.isLoggable(Level.CONFIG)) {
 					LOGGER.config("Adding GetLegendGraphic call as LegendURL");
 				}
 
-                AttributesImpl attrs = new AttributesImpl();
-                attrs.addAttribute("", "width", "width", "",
-                    String.valueOf(GetLegendGraphicRequest.DEFAULT_WIDTH));
-                
-                //DJB: problem here is that we do not know the size of the legend apriori - we need
-                //     to make one and find its height.  Not the best way, but it would work quite well.
-                //     This was advertising a 20*20 icon, but actually producing ones of a different size.
-                //     An alternative is to just scale the resulting icon to what the server requested, but this isnt
-                //     the nicest thing since warped images dont look nice.  The client should do the warping.
-                
-                //however, to actually estimate the size is a bit difficult.  I'm going to do the scaling 
-                //so it obeys the what the request says.  For people with a problem with that should consider
-                //changing the default size here so that the request is for the correct size.
-                
-                attrs.addAttribute("", "height", "height", "",
-                    String.valueOf(GetLegendGraphicRequest.DEFAULT_HEIGHT));
+				AttributesImpl attrs = new AttributesImpl();
+				attrs.addAttribute("", "width", "width", "", String
+						.valueOf(GetLegendGraphicRequest.DEFAULT_WIDTH));
 
-                start("LegendURL", attrs);
+				// DJB: problem here is that we do not know the size of the
+				// legend apriori - we need
+				// to make one and find its height. Not the best way, but it
+				// would work quite well.
+				// This was advertising a 20*20 icon, but actually producing
+				// ones of a different size.
+				// An alternative is to just scale the resulting icon to what
+				// the server requested, but this isnt
+				// the nicest thing since warped images dont look nice. The
+				// client should do the warping.
 
-                element("Format", defaultFormat);
-                attrs.clear();
+				// however, to actually estimate the size is a bit difficult.
+				// I'm going to do the scaling
+				// so it obeys the what the request says. For people with a
+				// problem with that should consider
+				// changing the default size here so that the request is for the
+				// correct size.
 
-                StringBuffer onlineResource = new StringBuffer(this.request
-                        .getBaseUrl());
-                onlineResource.append("wms/GetLegendGraphic?VERSION=");
-                onlineResource.append(GetLegendGraphicRequest.SLD_VERSION);
-                onlineResource.append("&FORMAT=");
-                onlineResource.append(defaultFormat);
-                onlineResource.append("&WIDTH=");
-                onlineResource.append(GetLegendGraphicRequest.DEFAULT_WIDTH);
-                onlineResource.append("&HEIGHT=");
-                onlineResource.append(GetLegendGraphicRequest.DEFAULT_HEIGHT);
-                onlineResource.append("&LAYER=");
+				attrs.addAttribute("", "height", "height", "", String
+						.valueOf(GetLegendGraphicRequest.DEFAULT_HEIGHT));
+
+				start("LegendURL", attrs);
+
+				element("Format", defaultFormat);
+				attrs.clear();
+
+				StringBuffer onlineResource = new StringBuffer(this.request
+						.getBaseUrl());
+				onlineResource.append("wms/GetLegendGraphic?VERSION=");
+				onlineResource.append(GetLegendGraphicRequest.SLD_VERSION);
+				onlineResource.append("&FORMAT=");
+				onlineResource.append(defaultFormat);
+				onlineResource.append("&WIDTH=");
+				onlineResource.append(GetLegendGraphicRequest.DEFAULT_WIDTH);
+				onlineResource.append("&HEIGHT=");
+				onlineResource.append(GetLegendGraphicRequest.DEFAULT_HEIGHT);
+				onlineResource.append("&LAYER=");
 				onlineResource.append(layerName);
 
-                attrs.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
-                    XLINK_NS);
-                attrs.addAttribute(XLINK_NS, "type",
-                    "xlink:type", "", "simple");
-                attrs.addAttribute(XLINK_NS, "href",
-                    "xlink:href", "", onlineResource.toString());
-                element("OnlineResource", null, attrs);
+				attrs.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
+						XLINK_NS);
+				attrs
+						.addAttribute(XLINK_NS, "type", "xlink:type", "",
+								"simple");
+				attrs.addAttribute(XLINK_NS, "href", "xlink:href", "",
+						onlineResource.toString());
+				element("OnlineResource", null, attrs);
 
-                end("LegendURL");
-            }
-        }
+				end("LegendURL");
+			}
+		}
 
-        /**
-         * Encodes a LatLonBoundingBox for the given Envelope.
-         *
-         * @param bbox
-         */
-        private void handleLatLonBBox(Envelope bbox) {
-            String minx = String.valueOf(bbox.getMinX());
-            String miny = String.valueOf(bbox.getMinY());
-            String maxx = String.valueOf(bbox.getMaxX());
-            String maxy = String.valueOf(bbox.getMaxY());
+		/**
+		 * Encodes a LatLonBoundingBox for the given Envelope.
+		 * 
+		 * @param bbox
+		 */
+		private void handleLatLonBBox(Envelope bbox) {
+			String minx = String.valueOf(bbox.getMinX());
+			String miny = String.valueOf(bbox.getMinY());
+			String maxx = String.valueOf(bbox.getMaxX());
+			String maxy = String.valueOf(bbox.getMaxY());
 
-            AttributesImpl bboxAtts = new AttributesImpl();
-            bboxAtts.addAttribute("", "minx", "minx", "", minx);
-            bboxAtts.addAttribute("", "miny", "miny", "", miny);
-            bboxAtts.addAttribute("", "maxx", "maxx", "", maxx);
-            bboxAtts.addAttribute("", "maxy", "maxy", "", maxy);
+			AttributesImpl bboxAtts = new AttributesImpl();
+			bboxAtts.addAttribute("", "minx", "minx", "", minx);
+			bboxAtts.addAttribute("", "miny", "miny", "", miny);
+			bboxAtts.addAttribute("", "maxx", "maxx", "", maxx);
+			bboxAtts.addAttribute("", "maxy", "maxy", "", maxy);
 
-            element("LatLonBoundingBox", null, bboxAtts);
-        }
-        /**
-         *  adds a comment to the output xml file.
-         *   THIS IS A BIG HACK.
-         *   TODO: do this in the correct manner!
-         * @param comment
-         */
-        public void comment(String comment)
-        {
-        	 if (contentHandler instanceof TransformerIdentityImpl)  // HACK HACK HACK -- not sure of the proper way to do this.
-             {
-             	try{
-             		TransformerIdentityImpl ch = (TransformerIdentityImpl) contentHandler;
-             		ch.comment(comment.toCharArray(),0,comment.length());
-             	}
-             	catch (Exception e)
-    			{
-             		e.printStackTrace();
-    			}
-             }
-        }
+			element("LatLonBoundingBox", null, bboxAtts);
+		}
+
+		/**
+		 * adds a comment to the output xml file. THIS IS A BIG HACK. TODO: do
+		 * this in the correct manner!
+		 * 
+		 * @param comment
+		 */
+		public void comment(String comment) {
+			if (contentHandler instanceof TransformerIdentityImpl) // HACK HACK
+			// HACK --
+			// not sure
+			// of the
+			// proper
+			// way to do
+			// this.
+			{
+				try {
+					TransformerIdentityImpl ch = (TransformerIdentityImpl) contentHandler;
+					ch.comment(comment.toCharArray(), 0, comment.length());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 
 		/**
 		 * Encodes a BoundingBox for the given Envelope.

@@ -2,8 +2,8 @@
   <name>validation</name>
   <comment/>
   <projects>
-    <project>platform</project>
     <project>data</project>
+    <project>platform</project>
     <project>main</project>
   </projects>
   <buildSpec>

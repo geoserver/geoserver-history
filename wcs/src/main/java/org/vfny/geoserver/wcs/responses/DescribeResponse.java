@@ -292,23 +292,24 @@ public class DescribeResponse implements Response {
 
 		// TODO we need to signal somehow that something went wrong
 		GeneralEnvelope cvEnvelope = cv.getEnvelope();
-		try {
-			cvEnvelope = CoverageStoreUtils.adjustEnvelopeLongitudeFirst(cv.getEnvelope()
-					.getCoordinateReferenceSystem(), cv.getEnvelope());
-		} catch (MismatchedDimensionException e) {
-			LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),
-					"private static String printElement(CoverageInfo cv)", e
-							.getLocalizedMessage(), e);
-
-		} catch (IndexOutOfBoundsException e) {
-			LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),
-					"private static String printElement(CoverageInfo cv)", e
-							.getLocalizedMessage(), e);
-		} catch (NoSuchAuthorityCodeException e) {
-			LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),
-					"private static String printElement(CoverageInfo cv)", e
-							.getLocalizedMessage(), e);
-		}
+		// try {
+		// cvEnvelope =
+		// CoverageStoreUtils.adjustEnvelopeLongitudeFirst(cv.getEnvelope()
+		// .getCoordinateReferenceSystem(), cv.getEnvelope());
+		// } catch (MismatchedDimensionException e) {
+		// LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),
+		// "private static String printElement(CoverageInfo cv)", e
+		// .getLocalizedMessage(), e);
+		//
+		// } catch (IndexOutOfBoundsException e) {
+		// LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),
+		// "private static String printElement(CoverageInfo cv)", e
+		// .getLocalizedMessage(), e);
+		// } catch (NoSuchAuthorityCodeException e) {
+		// LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),
+		// "private static String printElement(CoverageInfo cv)", e
+		// .getLocalizedMessage(), e);
+		//		}
 		tempResponse.append("\n  <domainSet>");
 		tempResponse.append("\n   <spatialDomain>");
 		// Envelope

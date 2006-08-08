@@ -244,7 +244,7 @@ public class CoverageUtils {
 					"This Coverage does not support the Response CRS requested.");
 		}
 		// - then create the Coordinate Reference System
-		final CoordinateReferenceSystem targetCRS =CRS.decode(responseCRS);
+		final CoordinateReferenceSystem targetCRS =CRS.decode(responseCRS,true);
 		// This is the CRS of the requested Envelope
 		final String requestCRS = request.getCRS();
 		// - first check if the requestCRS is present on the Coverage

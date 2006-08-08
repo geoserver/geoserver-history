@@ -365,8 +365,8 @@ public class GetMapXmlReader extends XmlRequestReader {
         }
 
         com.vividsolutions.jts.geom.Envelope env = new com.vividsolutions.jts.geom.Envelope();
-
-        for (int i = 0; i < coordList.size(); i++) {
+        final int size= coordList.size();
+        for (int i = 0; i < size; i++) {
             env.expandToInclude((Coordinate) coordList.get(i));
         }
 
@@ -382,7 +382,7 @@ public class GetMapXmlReader extends XmlRequestReader {
             epsgCode = "EPSG:" + epsgCode;
             
         	try {
-        		CoordinateReferenceSystem  mapcrs = CRS.decode(epsgCode);
+        		CoordinateReferenceSystem  mapcrs = CRS.decode(epsgCode,true);
         		getMapRequest.setCrs(mapcrs);
         	}catch (Exception e){
         		//couldnt make it - we send off a service exception with the correct info
