@@ -17,6 +17,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.media.jai.Interpolation;
+import javax.media.jai.InterpolationBilinear;
+import javax.media.jai.InterpolationNearest;
+import javax.media.jai.JAI;
+
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.StreamingRenderer;
@@ -53,9 +58,15 @@ import org.vfny.geoserver.wms.WmsException;
  * @version $Id: JAIMapResponse.java,v 1.29 2004/09/16 21:44:28 cholmesny Exp $
  */
 public abstract class DefaultRasterMapProducer implements GetMapProducer {
-	/** WMS Service configuration **/
-	private WMS wms;
 	
+	
+	private final static Interpolation NN_INTERPOLATION= new InterpolationNearest();
+	
+	private final static Interpolation BIL_INTERPOLATION= new InterpolationBilinear();
+	
+	/** WMS Service configuration * */
+	private WMS wms;
+
 	/** A logger for this class. */
 	private static final Logger LOGGER = Logger
 			.getLogger("org.vfny.geoserver.responses.wms.map");
@@ -190,25 +201,22 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 					"x").append(height).append(" image").toString());
 		}
 
-		BufferedImage curImage = prepareImage(width,height);
-
+		BufferedImage curImage = prepareImage(width, height);
 		final Graphics2D graphic = curImage.createGraphics();
-
 		if (!map.isTransparent()) {
 			graphic.setColor(map.getBgColor());
 			graphic.fillRect(0, 0, width, height);
 		} else {
-			LOGGER.fine("setting to transparent");
-
+			if (LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.fine("setting to transparent");
+			}
 			int type = AlphaComposite.SRC;
 			graphic.setComposite(AlphaComposite.getInstance(type));
-
 			Color c = new Color(map.getBgColor().getRed(), map.getBgColor()
 					.getGreen(), map.getBgColor().getBlue(), 0);
 			graphic.setBackground(map.getBgColor());
 			graphic.setColor(c);
 			graphic.fillRect(0, 0, width, height);
-
 			type = AlphaComposite.SRC_OVER;
 			graphic.setComposite(AlphaComposite.getInstance(type));
 
@@ -218,15 +226,16 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 
 		renderer = new StreamingRenderer();
 		renderer.setContext(map);
-
 		Map hintsMap = new HashMap();
-		hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-		//turn off/on interpolation rendering hint
+		hintsMap.put(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		// turn off/on interpolation rendering hint
 		if (wms != null && !wms.isAllowInterpolation())
-			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-		else hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		
+			hintsMap.put(JAI.KEY_INTERPOLATION,
+					NN_INTERPOLATION);
+		else
+			hintsMap.put(JAI.KEY_INTERPOLATION,
+					BIL_INTERPOLATION);
 		RenderingHints hints = new RenderingHints(hintsMap);
 		renderer.setJava2DHints(hints);
 
@@ -234,12 +243,9 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 		// if we set it to true then it does it all twice...
 		Map rendererParams = new HashMap();
 		rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
-
 		renderer.setRendererHints(rendererParams);
 
 		final ReferencedEnvelope dataArea = map.getAreaOfInterest();
-
-		// LOGGER.fine("calling renderer");
 
 		if (this.abortRequested) {
 			graphic.dispose();
@@ -249,12 +255,12 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 		renderer.paint(graphic, paintArea, dataArea);
 
 		map = null;
+		graphic.dispose();
 
 		if (!this.abortRequested) {
 			this.image = curImage;
 		}
 
-		graphic.dispose();
 	}
 
 	/**
@@ -296,5 +302,5 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 	}
 
 	protected abstract BufferedImage prepareImage(int width, int height);
-	
+
 }

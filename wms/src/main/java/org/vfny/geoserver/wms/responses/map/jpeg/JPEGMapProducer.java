@@ -64,10 +64,12 @@ public class JPEGMapProducer extends DefaultRasterMapProducer {
 	protected void formatImageOutputStream(String format, BufferedImage image,
 			OutputStream outStream) throws IOException {
 		if (!format.equalsIgnoreCase(JPEGMapProducerFactory.MIME_TYPE))
-			throw new IllegalArgumentException("The provided format " + format
-					+ " is not the same as expected: "
-					+ JPEGMapProducerFactory.MIME_TYPE);
+			throw new IllegalArgumentException(new StringBuffer(
+					"The provided format ").append(format).append(
+					" is not the same as expected: ").append(
+					JPEGMapProducerFactory.MIME_TYPE).toString());
 
+		
 		if (LOGGER.isLoggable(Level.FINE))
 			LOGGER.fine("About to write a JPEG image.");
 		// /////////////////////////////////////////////////////////////////
@@ -143,15 +145,13 @@ public class JPEGMapProducer extends DefaultRasterMapProducer {
 		memOutStream.flush();
 		writer.dispose();
 		memOutStream.close();
-		
+
 		if (LOGGER.isLoggable(Level.FINE))
 			LOGGER.fine("Writing a JPEG done!!!");
 	}
 
-
 	protected BufferedImage prepareImage(int width, int height) {
-		return new BufferedImage(width, height,
-				BufferedImage.TYPE_4BYTE_ABGR);
-		
+		return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+
 	}
 }
