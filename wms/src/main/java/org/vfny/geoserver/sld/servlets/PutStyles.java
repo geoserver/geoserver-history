@@ -71,10 +71,9 @@ public class PutStyles extends AbstractService {
     	.createStyleFactory();
 	
 	
-	
 	public PutStyles(WMS wms)
 	{
-		super("SLD","PutStyles",wms);
+		super("WMS","PutStyles",wms);
 	}
 	
 	protected boolean isServiceEnabled(HttpServletRequest req) {
