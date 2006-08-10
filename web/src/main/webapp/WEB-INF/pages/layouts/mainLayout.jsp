@@ -163,7 +163,7 @@
                     </tr>    
                   </tbody>
                 </table>
-                <tiles:insert attribute="body"/>                
+                <tiles:insert attribute="body"/>
               </td>
 	        </tr>
           </tbody>

@@ -75,7 +75,7 @@
    <!-- Struts config needs to load before all the other servlets. -->
    <servlet>
     <servlet-name>action</servlet-name>
-    <servlet-class>org.vfny.geoserver.config.MultipleActionServlet</servlet-class>
+    <servlet-class>org.vfny.geoserver.config.web.MultipleActionServlet</servlet-class>
     <init-param>
       <param-name>config</param-name>
       <param-value>/WEB-INF/struts-config.xml,classpath*:/WEB-INF/struts-config.xml</param-value>

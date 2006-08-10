@@ -78,10 +78,6 @@
     		type="org.vfny.geoserver.form.global.GeoServerConfigurationForm"/>
     
     	<form-bean
-    		name="wcsDescriptionForm"
-    		type="org.vfny.geoserver.form.wcs.WCSDescriptionForm"/>
-    		
-    	<form-bean
     		name="wcsContentForm"
     		type="org.vfny.geoserver.form.wcs.WCSContentForm"/>
 
@@ -104,19 +100,6 @@
 		<form-bean
 			name="wmsRenderingForm"
 			type="org.vfny.geoserver.form.wms.WMSRenderingForm"/>
-    	<form-bean
-    		name="dataCoveragePluginsForm"
-    		type="org.vfny.geoserver.form.data.DataCoveragePluginsForm"/>
-
-    	<form-bean
-    		name="dataFormatsSelectForm"
-    		type="org.vfny.geoserver.form.data.CoverageStoresSelectForm"/>
-    	<form-bean
-    		name="dataFormatsNewForm"
-    		type="org.vfny.geoserver.form.data.CoverageStoresNewForm"/>
-    	<form-bean
-    		name="dataFormatsEditorForm"
-    		type="org.vfny.geoserver.form.data.CoverageStoresEditorForm"/>
 
     	<form-bean
     		name="dataDataStoresSelectForm"
@@ -181,17 +164,6 @@
     		name="validationTestSuiteNewForm"
 	   		type="org.vfny.geoserver.form.validation.ValidationTestSuiteNewForm"/>
     		
-		<!-- DATA Coverage -->
-    	<form-bean
-    		name="dataCoveragesSelectForm"
-    		type="org.vfny.geoserver.form.data.DataCoveragesSelectForm"/>
-    	<form-bean
-    		name="dataCoveragesNewForm"
-    		type="org.vfny.geoserver.form.data.DataCoveragesNewForm"/>
-    	<form-bean
-    		name="coveragesEditorForm"
-    		type="org.vfny.geoserver.form.data.CoveragesEditorForm"/>
-
 		<form-bean
 			name="blankBean"
 			type="org.apache.struts.action.DynaActionForm"/>
@@ -309,25 +281,6 @@
         	name="config.validation.displayResults"
         	path="/config/validation/displayResults.do"/>
         	
-        <!-- CONFIG wcs -->
-        
-       	<forward
-       		name="config.wcs"
-       		path="/config/wcs/index.do"/>
-        <forward
-       		name="config.wcs.description"
-       		path="/config/wcs/description.do"/>
-       	<forward
-       		name="config.wcs.content"
-       		path="/config/wcs/content.do"/>
-       		
-       	<forward
-       		name="wcsConfigDescription"
-       		path="/config/wcs/description.do"/>
-       	<forward
-       		name="wcsConfigContent"
-       		path="/config/wcs/content.do"/>
-
         <!-- CONFIG wfs -->
         
        	<forward
@@ -372,22 +325,6 @@
        	<forward
        		name="config.data"
        		path="/config/data/index.do"/>
-
-        <!-- CONFIG data coverage plugins -->
-       	<forward
-       		name="config.data.coverageplugins"
-       		path="/config/data/coverageplugins.do"/>
-
-        <!-- CONFIG data formats -->
-       	<forward
-       		name="config.data.format"
-       		path="/config/data/format.do"/>
-       	<forward
-       		name="config.data.format.new"
-       		path="/config/data/formatNew.do"/>
-       	<forward
-       		name="config.data.format.editor"
-       		path="/config/data/formatEditor.do"/>
 
         <!-- CONFIG data store -->
        	<forward
@@ -445,16 +382,6 @@
        	<forward
        		name="SLDWizard"
        		path="/WEB-INF/pages/SLDWizard.jsp"/>
-        <!-- CONFIG data coverage -->
-       	<forward
-       		name="config.data.coverage"
-       		path="/config/data/coverageSelect.do"/>
-       	<forward
-       		name="config.data.coverage.new"
-       		path="/config/data/coverageNew.do"/>
-       	<forward
-       		name="config.data.coverage.editor"
-       		path="/config/data/coverageEditor.do"/>
 
     </global-forwards>
 
@@ -557,26 +484,6 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.server.login"/>
 
-        <!-- CONFIG WCS -->        	
-        <action
-        	path="/config/wcs/index"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.wcs"/>    	
-        <action
-        	path="/config/wcs"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.wcs"/>
-
-        <action
-        	path="/config/wcs/description"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.wcs.description"/>
-
-        <action
-        	path="/config/wcs/content"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.wcs.content"/>
-
         <!-- CONFIG WFS -->        	
         <action
         	path="/config/wfs/index"
@@ -662,26 +569,6 @@
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.data"/>      
 
-       <!-- DATA COVERAGE PLUGINS -->
-        <action
-        	path="/config/data/coverageplugins"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.data.coverageplugins"/>
-
-       <!-- DATA FORMATS -->
-        <action
-        	path="/config/data/format"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.data.format"/>
-        <action	
-        	path="/config/data/formatNew"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.data.format.new"/>
-        <action
-        	path="/config/data/formatEditor"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.data.format.editor"/>        	
-
        <!-- DATA STORES -->
         <action
         	path="/config/data/store"
@@ -737,20 +624,6 @@
         	path="/config/data/typeEditor"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config.data.type.editor"/>        	        	
-
-		<!-- DATA coverages -->
-        <action
-        	path="/config/data/coverageSelect"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.data.coverage"/>
-        <action
-        	path="/config/data/coverageNew"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.data.coverage.new"/>
-        <action
-        	path="/config/data/coverageEditor"
-        	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.data.coverage.editor"/>        	        	
 
 <!-- Submit Actions -->    
 		<!-- Welcome Actions -->
@@ -817,23 +690,6 @@
         	validate="true"
         	input="/config/server.do"/>
 
-       	<!-- WCS Actions -->
-        <action
-        	path="/config/wcs/descriptionSubmit"
-        	type="org.vfny.geoserver.action.wcs.WCSDescriptionAction"
-        	name="wcsDescriptionForm"
-        	scope="request"
-        	validate="true"
-        	input="/config/wcs/description.do"/>
-        	
-        <action
-        	path="/config/wcs/contentSubmit"
-        	type="org.vfny.geoserver.action.wcs.WCSContentAction"
-        	name="wcsContentForm"
-        	scope="request"
-        	validate="true"
-        	input="/config/wcs/content.do"/>
-        	
        	<!-- WFS Actions -->
         <action
         	path="/config/wfs/descriptionSubmit"
@@ -874,40 +730,6 @@
         	validate="true"
         	input="/config/wms/rendering.do"/>
        
-       	<!-- DATA Coverage Plugins Actions -->
-        <action
-        	path="/config/data/coveragePlugins"
-        	type="org.vfny.geoserver.action.data.DataCoveragePluginsAction"
-        	name="dataCoveragePluginsForm"
-        	scope="request"
-        	validate="true"
-        	input="/config/data/coverageplugins.do"/>        	
-
-       	<!-- DATA Formats Actions -->
-        <action
-        	path="/config/data/formatSubmit"
-        	type="org.vfny.geoserver.action.data.CoverageStoresEditorAction"
-        	name="dataFormatsEditorForm"
-        	scope="request"
-        	validate="true"
-        	input="/config/data/formatEditor.do"/>
-        	
-        <action
-        	path="/config/data/formatSelectSubmit"
-        	type="org.vfny.geoserver.action.data.CoverageStoresSelectAction"
-        	name="dataFormatsSelectForm"
-        	scope="request"
-        	validate="true"
-        	input="/config/data/formatEditor.do"/>
-
-        <action
-        	path="/config/data/formatNewSubmit"
-        	type="org.vfny.geoserver.action.data.CoverageStoresNewAction"
-        	name="dataFormatsNewForm"
-        	scope="request"
-        	validate="true"
-        	input="/config/data/formatNew.do"/>        	
-      
        	<!-- DATA Stores Actions -->
         <action
         	path="/config/data/storeSubmit"
@@ -1004,28 +826,6 @@
         	validate="true"
         	input="/config/data/typeEditor.do"/>
 
-		<!-- DATA Coverage Actions -->
-        <action
-        	path="/config/data/coverageSelectSubmit"
-        	type="org.vfny.geoserver.action.data.DataCoveragesSelectAction"
-        	name="dataCoveragesSelectForm"
-        	scope="request"
-        	validate="true"
-        	input="/config/data/coverageSelect.do"/>
-         <action
-        	path="/config/data/coverageNewSubmit"
-        	type="org.vfny.geoserver.action.data.DataCoveragesNewAction"
-        	name="dataCoveragesNewForm"
-        	scope="request"
-        	validate="true"
-        	input="/config/data/coverageNew.do"/>        	
-        <action
-        	path="/config/data/coverageEditorSubmit"
-        	type="org.vfny.geoserver.action.data.CoveragesEditorAction"
-        	name="coveragesEditorForm"
-        	scope="request"
-        	validate="true"
-        	input="/config/data/coverageEditor.do"/>
 		 <!-- DATA Validation -->
  
          <action
@@ -1188,8 +988,10 @@
   -->
   <!-- comment following if struts1.0.x -->
   <plug-in className="org.apache.struts.tiles.TilesPlugin" >
+    <set-property property="definitions-factory-class"
+    				 value="org.vfny.geoserver.config.web.tiles.definition.MultipleDefinitionsFactory" />
     <set-property property="definitions-config" 
-	                 value="/WEB-INF/tiles-defs.xml" />
+	                 value="/WEB-INF/tiles-defs.xml,classpath*:/WEB-INF/tiles-defs.xml" />
     <set-property property="moduleAware" value="true" />
     <set-property property="definitions-parser-validate" value="true" />
   </plug-in>
