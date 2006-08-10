@@ -652,7 +652,7 @@
 
 	<properties>
 		<gs.version>1.4.0-M1</gs.version>
-		<gt.version>2.2.0</gt.version>
+		<gt.version>2.2-RC5-SNAPSHOT</gt.version>
 	</properties>
 
 	<profiles>
