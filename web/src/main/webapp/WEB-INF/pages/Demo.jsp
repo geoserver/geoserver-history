@@ -8,7 +8,7 @@
 		<tr>
 			<td width=70/>
 			<td width=600 class="label" valign="top">
-			<center><u><b><font size=+2><a href="../../../conf/demo/popup_map/index.html"><bean:message key="welcome.demo.wmsexample.title"/></a></font></b></u><br>
+			<center><u><b><font size=+2><a href="../../../popup_map/index.html"><bean:message key="welcome.demo.wmsexample.title"/></a></font></b></u><br>
 			<p>
 			<bean:message key="welcome.demo.wmsexample.short"/>
 			</p>
@@ -52,7 +52,7 @@
 		<tr>
 			<td width=70/>
 			<td width=600 class="label" valign="top">
-			<center><u><b><font size=+2><a href="../../../conf/wfs-t_demo/index.html" target="newwindow"><bean:message key="welcome.demo.wfst.title"/></a></font></b></u><br>
+			<center><u><b><font size=+2><a href="../../../wfs-t_demo/index.html" target="newwindow"><bean:message key="welcome.demo.wfst.title"/></a></font></b></u><br>
 			<p>
 			<bean:message key="welcome.demo.wfst.short"/>
 			</p>
