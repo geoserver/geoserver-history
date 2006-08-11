@@ -639,7 +639,7 @@ function getXML(url,post,procfunction)
 		}
 		else if (window.XMLHttpRequest)
 		{
-			alert( url );
+			
 			// Mozilla and others
 			//log("getXML through Mozilla etc.");
 			geo_xmlhttp =  new XMLHttpRequest();
