@@ -25,7 +25,7 @@
 
 	
 	<!--property name="version.geotools" value="2.1.1" /--> 
-	<property name="version.geotools" value="2.2.x" />
+	<property name="version.geotools" value="2.2.1-SNAPSHOT" />
 
 	<!-- If you don't have your own conf directory then define one of -->
 	<!-- these test.type's in your build.properties file-->
@@ -40,7 +40,7 @@
 
 	<!-- release version -->
 
-	<property name="name.release" value="1.3.2" />
+	<property name="name.release" value="1.3.3" />
 
 	<!-- primary directories -->
 	<property name="dir.bin" value="${basedir}/bin" />
@@ -123,6 +123,12 @@
 <target name="help" description="descirbe targets defined by this build.xml file">
 	<echo message="GeoServer Build File..." />
 	<echo message="" />
+	<echo message=" RUNNING" />
+	<echo message="    run-jetty     Runs Geoserver" />
+	<echo message="    stop-jetty    Stops Geoserver" />
+	<echo message="    deploy-full   Compiles and deploys a new version of Geoserver" />
+	<echo message="                   - run this when you make a change to the code." />
+	<echo message="" />
 	<echo message=" COMPILATION TARGETS" />
 	<echo message="    init:         initializes build process" />
 	<echo message="    all:          compiles all packages" />
@@ -142,8 +148,7 @@
 	<echo message="                    -param: test.type=CitePostGis" />
 	<echo message="" />
 	<echo message=" BUILD TARGETS" />
-	<echo message="    war:          builds geoserver war file" />
-	<echo message="    document:     generates all javadocs for project" />
+	<echo message="    build-war:    builds geoserver war file" />
 	<echo message="    clean:        rebuilds all classes" />
 	<echo message="    release-all:      makes a full release build" />
 	<echo message="                    -param: name.release=[release]" />
@@ -585,7 +590,7 @@
 	<copy todir="${basedir}/data">
 		<fileset dir="${conf.path}">
 			<include name="**/*" />
-			<exclude name="**/data/**" />
+			<!--exclude name="**/data/**" /-->
 		</fileset>
 		<fileset dir="${conf.path}/data">
 			<include name="**/*" />
@@ -706,41 +711,40 @@
 	     Building with maven is required before commit changed jar files.
 	-->
 <target name="build-geotools.jars" depends="init" description="Generate geotools2 jars for quick testing (use maven for jars you commit)">
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/geoapi-2.0.jar" file="${dir.maven}/geoapi/jars/geoapi-2.0.jar" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/geoapi-2.0.jar" file="${dir.maven}/../opengis/geoapi/2.0/geoapi-2.0.jar" />
 	
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_sdk-9.0.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_jpe_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_jpe_sdk-9.0.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/jsde_concurrent-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_concurrent-9.0.jar" />
+	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/jsde_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_sdk-9.0.jar" />
+	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/jsde_jpe_sdk-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_jpe_sdk-9.0.jar" />
+	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/jsde_concurrent-9.0.jar" file="${dir.maven}/arcsde/jars/jsde_concurrent-9.0.jar" />
 		
 	<!-- added by DJB to be more complete. -->
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-main.jar" file="${dir.maven}/gt2/jars/main-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-render.jar" file="${dir.maven}/gt2/jars/render-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-coverage.jar" file="${dir.maven}/gt2/jars/coverage-${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-main.jar" file="${dir.maven}/gt2-main/${version.geotools}/gt2-main-${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-render.jar" file="${dir.maven}/gt2-render/${version.geotools}/gt2-render-${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-coverage.jar" file="${dir.maven}/gt2-coverage/${version.geotools}/gt2-coverage-${version.geotools}.jar" />
 	
 	
 	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-api.jar" file="${dir.maven}/org/geotools/gt2-api/${version.geotools}/gt2-api-${version.geotools}.jar" />
 	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-referencing.jar" file="${dir.maven}/org/geotools/gt2-referencing/${version.geotools}/gt2-referencing-${version.geotools}.jar" />
 
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2/jars/arcsde-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2/jars/graph-${version.geotools}.jar" />
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2/jars/epsg-wkt-${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-arcsde.jar" file="${dir.maven}/gt2-arcsde/${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="false" toFile="${dir.lib}/gt2-graph.jar" file="${dir.maven}/gt2-graph/${version.geotools}/gt2-graph-${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-epsg.jar" file="${dir.maven}/gt2-epsg-wkt/${version.geotools}/gt2-epsg-wkt-${version.geotools}.jar" />
 
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2/jars/gml-${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-gml.jar" file="${dir.maven}/gt2-gml/${version.geotools}/gt2-gml-${version.geotools}.jar" />
 
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-validation.jar" file="${dir.maven}/gt2-validation/${version.geotools}/gt2-validation-${version.geotools}.jar" />
 	
-	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wms.jar" file="${dir.maven}/gt2/jars/wms-${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-wms.jar" file="${dir.maven}/gt2-wms/${version.geotools}/gt2-wms-${version.geotools}.jar" />
 
 	<!-- required for test cases: the demo/properties datastore.  Its not built by default in maven 1 or maven 2, so you have to do it by hand -->
 
-	<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/oracle-spatial-${version.geotools}.jar" toFile="${dir.lib}/gt2-oracle-spatial.jar" />
-	<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/postgis-${version.geotools}.jar" toFile="${dir.lib}/gt2-postgis.jar" />
-	<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-shapefile.jar" />
-	<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/validation-${version.geotools}.jar" toFile="${dir.lib}/gt2-validation.jar" />
-	<copy overwrite="true" failonerror="true" file="${dir.maven}/gt2/jars/indexed-shapefile-${version.geotools}.jar" toFile="${dir.lib}/gt2-indexed-shapefile.jar" />
-	<copy overwrite="true" failonerror="true" file="${dir.maven}/batik/jars/batik-awt-util-1.1.1.jar" toFile="${dir.lib}/batik-util-1.1.1.jar" />
-	<copy overwrite="true" failonerror="true" file="${dir.maven}/batik/jars/batik-svggen-1.1.1.jar" toFile="${dir.lib}/batik-svggen-1.1.1.jar" />
-	<copy overwrite="true" failonerror="true" file="${dir.maven}/batik/jars/batik-awt-util-1.1.1.jar" toFile="${dir.lib}/batik-awt-util-1.1.1.jar" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-oracle-spatial.jar" file="${dir.maven}/gt2-oracle-spatial/${version.geotools}/gt2-oracle-spatial-${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-postgis.jar" file="${dir.maven}/gt2-postgis/${version.geotools}/gt2-postgis-${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-shapefile.jar" file="${dir.maven}/gt2-shapefile/${version.geotools}/gt2-shapefile-${version.geotools}.jar" />
+	<copy overwrite="true" failonerror="true" toFile="${dir.lib}/gt2-indexed-shapefile.jar" file="${dir.maven}/gt2-indexed-shapefile/${version.geotools}/gt2-indexed-shapefile-${version.geotools}.jar" />
+	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/batik-util-1.1.1.jar" file="${dir.maven}/../../batik/jars/batik-awt-util-1.1.1.jar" /-->
+	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/batik-svggen-1.1.1.jar" file="${dir.maven}/../../batik/jars/batik-svggen-1.1.1.jar" /-->
+	<!--copy overwrite="true" failonerror="true" toFile="${dir.lib}/batik-awt-util-1.1.1.jar" file="${dir.maven}/../../batik/jars/batik-awt-util-1.1.1.jar" /-->
 </target>
 
 <target name="build-gt-validation.jars" depends="init" description="Generate gt2-validation.jar for quick testing (use maven for jars you commit)">
@@ -951,7 +955,7 @@
 
 <target name="release-war" depends="clean, all" description="Genearte the Geoserver.war war release (includes min)">
 	<antcall target="build-war">
-		<param name="conf.path" value="${basedir}/data_dirs/min" />
+		<param name="conf.path" value="${basedir}/data_dirs/userBasic" />
 	</antcall>
 	<!-- .war build, stick it in a geoserver-<version>-war.zip -->
 	<zip destfile="${basedir}/geoserver-${name.release}-war.zip">
