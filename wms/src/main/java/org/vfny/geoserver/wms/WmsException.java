@@ -79,7 +79,8 @@ public class WmsException extends ServiceException {
      * @param locator The message for the .
      */
     public WmsException(String message, String code) {
-        super(message, code);
+        super(message);
+        setCode( code );
 }
 
     /**

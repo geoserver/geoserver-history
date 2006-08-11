@@ -436,7 +436,7 @@ function saveStyle(SLD)
 	}
 
 	// build XML POST query
-	URL  = "/geoserver/sld";//"http://"+SERVERHOSTNAME+"/
+	URL  = "/geoserver/wms?request=putstyles";//"http://"+SERVERHOSTNAME+"/
 
 	getXML(URL,SLD,XMLProgressFunction);
 	
@@ -639,6 +639,7 @@ function getXML(url,post,procfunction)
 		}
 		else if (window.XMLHttpRequest)
 		{
+			alert( url );
 			// Mozilla and others
 			//log("getXML through Mozilla etc.");
 			geo_xmlhttp =  new XMLHttpRequest();

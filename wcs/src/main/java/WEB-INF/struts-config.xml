@@ -18,6 +18,10 @@
         -->
 
     	<form-bean
+    		name="wcsContentForm"
+    		type="org.vfny.geoserver.form.wcs.WCSContentForm"/>
+    		
+    	<form-bean
     		name="wcsDescriptionForm"
     		type="org.vfny.geoserver.form.wcs.WCSDescriptionForm"/>
     		

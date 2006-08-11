@@ -135,7 +135,7 @@ public class MultipleActionServlet extends ActionServlet {
                 break;
             }
 
-            this.parseModuleConfigFile(digester, path);
+            this.parseModuleConfigFile(digester, path, config);
         }
 
         getServletContext().setAttribute(
@@ -160,51 +160,62 @@ public class MultipleActionServlet extends ActionServlet {
      *
      * @param digester Digester instance that does the parsing
      * @param path The path to the config file to parse.
+     * @param config 
      *
      * @throws UnavailableException if file cannot be read or parsed
      * @since Struts 1.2
      */
-    protected void parseModuleConfigFile(Digester digester, String path)
+    protected void parseModuleConfigFile(Digester digester, String path, ModuleConfig config)
         throws UnavailableException {
 
         InputStream input = null;
-        try {
-        	Resource[] resources = WebApplicationContextUtils.getWebApplicationContext(getServletContext()).getResources(path);
-            final int length = resources.length;
-            for (int i=0; i<length; i++) {
-            	URL url = resources[i].getURL(); /*getServletContext().getResource(path)*/;
+        Resource[] resources = null;
+		try {
+			resources = WebApplicationContextUtils.getWebApplicationContext(getServletContext()).getResources(path);
+		} catch (IOException ex) {
+    		handleConfigException(path, ex);
+		}
 
-                // If the config isn't in the servlet context, try the class loader
-                // which allows the config files to be stored in a jar
-                if (url == null) {
-                    url = getClass().getResource(path);
-                }
-                
-                if (url == null) {
-                    String msg = internal.getMessage("configMissing", path);
-                    log.error(msg);
-                    throw new UnavailableException(msg);
-                }
-          
-                InputSource is = new InputSource(url.toExternalForm());
-                input = url.openStream();
-                is.setByteStream(input);
-                digester.parse(is);
-            }
-        } catch (MalformedURLException e) {
-            handleConfigException(path, e);
-        } catch (IOException e) {
-            handleConfigException(path, e);
-        } catch (SAXException e) {
-            handleConfigException(path, e);
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    throw new UnavailableException(e.getMessage());
-                }
-            }
+		final int length = resources.length;
+        for (int i=0; i<length; i++) {
+        	try {
+        		URL url = resources[i].getURL(); /*getServletContext().getResource(path)*/;
+        		
+        		// If the config isn't in the servlet context, try the class loader
+        		// which allows the config files to be stored in a jar
+        		if (url == null) {
+        			url = getClass().getResource(path);
+        		}
+        		
+        		if (url == null) {
+        			String msg = internal.getMessage("configMissing", path);
+        			log.error(msg);
+        			throw new UnavailableException(msg);
+        		}
+        		
+        		InputSource is = new InputSource(url.toExternalForm());
+        		input = url.openStream();
+        		is.setByteStream(input);
+        		digester.parse(is);
+        	} catch (MalformedURLException e) {
+        		handleConfigException(path, e);
+        	} catch (IOException e) {
+        		handleConfigException(path, e);
+        	} catch (SAXException e) {
+        		handleConfigException(path, e);
+        	} finally {
+        		if (input != null) {
+        			try {
+        				input.close();
+        				
+        				if(length>1 && i<length-1) {
+        					digester.push(config);
+        				}
+        			} catch (IOException e) {
+        				throw new UnavailableException(e.getMessage());
+					}
+        		}
+        	}
         }
     }
 
