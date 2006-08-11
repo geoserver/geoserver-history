@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<OWSContext version="0.0.13"
+    id="ows-context-tie"
+    xmlns="http://www.opengis.net/context"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:sld="http://www.opengis.net/sld"
+    xmlns:ogc="http://www.opengis.net/ogc"
+    xmlns:ows="http://www.opengis.net/ows"
+    xmlns:param="http;//www.opengis.net/param"
+    xsi:schemaLocation="http://www.opengis.net/oc oc_0_0_13.xsd">
+  <General>
+    <Window width="500" height="250"/>
+    <ows:BoundingBox crs="EPSG:4326">
+      <ows:LowerCorner>141.57875 -44.26625</ows:LowerCorner>
+      <ows:UpperCorner>151.03125 -39.56375</ows:UpperCorner>
+    </ows:BoundingBox>
+    <Title>WPS context doc</Title>
+    <KeywordList>
+      <Keyword>WPS</Keyword>
+    </KeywordList>
+    <Abstract>test case for the OGC WPS IE</Abstract>
+    <LogoURL width="140" height="65" format="image/gif">
+      <OnlineResource xlink:type="simple" xlink:href="http://www.opengis.org/img/ogc_header_top_left.gif"/>
+    </LogoURL>
+    <DescriptionURL format="text/html">
+      <OnlineResource xlink:type="simple" xlink:href="http://www.opengeospatial.org/press/?page=pressrelease&amp;year=0&amp;prid=211"/>
+    </DescriptionURL>
+    <ows:ServiceProvider>
+  </ows:ServiceProvider>
+  </General>
+  <ResourceList>
+    <Layer queryable="1" hidden="0">
+      <Server service="OGC:WMS" version="1.1.1" title="Local">
+        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+      </Server>
+      <Name>topp:tasmania_state_boundaries</Name>
+      <Title>Tasmania State Boundaries</Title>
+      <Abstract>Tasmania State Boundaries based on the Digital Chart of the World.</Abstract>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/png</Format>
+      </FormatList>
+    </Layer>
+    <Layer queryable="1" hidden="0">
+      <Server service="OGC:WMS" version="1.1.1" title="Local">
+        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+      </Server>
+      <Name>topp:tasmania_water_bodies</Name>
+      <Title>Tasmania Water Bodies</Title>
+      <Abstract>Tasmania Water Bodies based on the Digital Chart of the World.</Abstract>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/png</Format>
+      </FormatList>
+    </Layer>
+    <FeatureType hidden="0">
+      <Server service="OGC:WFS" version="1.0.0" title="Local">
+        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wfs"/>
+      </Server>
+      <Name>topp:tasmania_roads</Name>
+      <Title>Tasmania Roads</Title>
+      <Abstract>Tasmania Roads based on the Digital Chart of the World.</Abstract>
+      <SRS>EPSG:4326</SRS>
+      <Geometry>the_geom</Geometry>
+    </FeatureType>
+    <Layer queryable="1" hidden="0">
+      <Server service="OGC:WMS" version="1.1.1" title="Local">
+        <OnlineResource xlink:type="simple" xlink:href="http://localhost:8080/geoserver/wms"/>
+      </Server>
+      <Name>topp:tasmania_cities</Name>
+      <Title>Tasmania Major Cities</Title>
+      <Abstract>Tasmania Major based on the Digital Chart of the World.</Abstract>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/png</Format>
+      </FormatList>
+    </Layer>
+  
+  </ResourceList>
+</OWSContext>

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!-- $Id$ -->
+<QuickviewPresetResultSet version="1.0.0"  xmlns="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mapbuilder.sourceforge.net/mapbuilder ../../lib/schemas/locations.xsd">
+	<gml:description>Canadian locations</gml:description>
+	<gml:name>CMB:Locations</gml:name>
+	<gml:boundedBy>
+		<gml:Null>missing</gml:Null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-------Canada</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-141,42 -52,84</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-----------Alberta</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-120,49 -110,60</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-----------British Columbia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-139,48 -114,60</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>---------------Vancouver</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-123.224241434698,49.1981566626439 -123.022966859531,49.3168483739754</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-----------Manitoba</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-102,49 -89,60</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-----------New Brunswick</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-69,45 -64,48</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-----------Newfoundland and Labrador</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-67.7,47 -52,60</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-----------Northwest Territories</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-136.5,60 -101.5,79</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-----------Nova Scotia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-66.3,43 -59.9,47</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-----------Nunavut</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-121,52 -61,84</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-----------Ontario</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-95,42 -74,57</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>---------------Ottawa</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-75.8177,45.31929 -75.5897,45.46888</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>---------------Toronto</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-79.4881,43.61042 -79.2786,43.73698</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-----------Prince Edward Island</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-64.5,45.9 -62,47</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-----------Quebec</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-79.5,45 -57,63</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>---------------Montreal</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-73.6193886688066,45.6127246118815 -73.4754304860602,45.7130175713401</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-----------Saskatchewan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-110,49 -101.5,60</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>-----------Yukon</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-141,60 -123.8,69.6</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+</QuickviewPresetResultSet>

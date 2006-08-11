@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<OWSContext version="0.0.13"
+    id="ows-context-tie"
+    xmlns="http://www.opengis.net/context"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:sld="http://www.opengis.net/sld"
+    xmlns:ogc="http://www.opengis.net/ogc"
+    xmlns:ows="http://www.opengis.net/ows"
+    xmlns:param="http;//www.opengis.net/param"
+    xsi:schemaLocation="http://www.opengis.net/oc oc_0_0_13.xsd">
+  <General>
+    <Window width="400" height="337"/>
+    <ows:BoundingBox crs="EPSG:42304">
+      <ows:LowerCorner>1304462.08383873 -318095.60707587446</ows:LowerCorner>
+      <ows:UpperCorner>1670675.6143887795 -9560.70758745767</ows:UpperCorner>
+    </ows:BoundingBox>
+    <Title>Eastern Ontario Bird data</Title>
+    <KeywordList>
+      <Keyword>bird</Keyword>
+      <Keyword>Ontario</Keyword>
+    </KeywordList>
+    <Abstract>This is a map aggregating bird related data.</Abstract>
+    <DescriptionURL format="text/html">
+      <OnlineResource xlink:type="simple" xlink:href="http://www.opengis.org/press/?page=pressrelease&amp;view=20040525_ContextIE_PR"/>
+    </DescriptionURL>
+    <ows:ServiceProvider>
+    <ows:ProviderName>Natural Resources Canada</ows:ProviderName>
+    <ows:ProviderSite xlink:type="simple" xlink:href="http://geodiscover.cgdi.ca/"/>
+    <ows:ServiceContact>
+      <ows:IndividualName>Mike Adair</ows:IndividualName>
+      <ows:PositionName>Systems Scientist</ows:PositionName>
+      <ows:ContactInfo>
+        <ows:Phone>
+          <ows:Voice>+01-613-947-1342</ows:Voice>
+          <ows:Facsimile>+01-613-947-2410</ows:Facsimile>
+        </ows:Phone>
+        <ows:Address>
+          <ows:DeliveryPoint>650-615 Booth St.</ows:DeliveryPoint>
+          <ows:City>Ottawa</ows:City>
+          <ows:AdministrativeArea>Ontario</ows:AdministrativeArea>
+          <ows:PostalCode>K1A0E9</ows:PostalCode>
+          <ows:Country>Canada</ows:Country>
+          <ows:ElectronicMailAddress>mike.adair@nrcan.gc.ca</ows:ElectronicMailAddress>
+        </ows:Address>
+        <ows:OnlineResource xlink:type="simple" xlink:href="http://www.ec.gc.ca/"/>
+        <ows:HoursOfService>0700h - 1500h (EST), Monday - Friday</ows:HoursOfService>
+        <ows:ContactInstructions>Just call or email</ows:ContactInstructions>
+      </ows:ContactInfo>
+      <ows:Role>Systems Scientist</ows:Role>
+    </ows:ServiceContact>
+  </ows:ServiceProvider>
+  </General>
+  <ResourceList>
+		<Layer queryable="1" hidden="0">
+			<Server service="OGC:WMS" version="1.1.1" title="Canada Centre for Remote Sensing Web Map Service">
+				<OnlineResource xlink:type="simple" xlink:href="http://ceoware2.ccrs.nrcan.gc.ca/cubewerx/cubeserv/cubeserv.cgi"/>
+			</Server>
+			<Name>L7O_B743:CEOWARE2</Name>
+			<Title>Landsat 7 Orthorectified Imagery over Canada - band 743</Title>
+			<Abstract>The orthoimage data set is created with the most accurate control data available at the time of creation. The imagery has been corrected with either provincial and aerial triangulation data or, if not available, the most accurate NTDB data. The objective is to obtain accuracy of 30 metres or better in the South and 50 metres or better in the North for a 90% level of confidence. The accuracy is evaluated for each orthoimage dataset. The control data, which has been extracted from sources as mentioned above, can consist of road intersection vector data or lake/island centroids. In some cases the intersection of the centre line of surficial river may have been used. The control points are distributed homogeneously within the image in specific sectors. Sectors are located in the surround of the image, in the lowest and highest elevation area of the image, and in all other areas in which overlapping image base sectors are located.</Abstract>
+			<DataURL format="text/html">
+				<OnlineResource xlink:type="simple" xlink:href="http://geogratis.cgdi.gc.ca/download/landsat_7/ortho/"/>
+			</DataURL>
+			<MetadataURL format="text/html">
+				<OnlineResource xlink:type="simple" xlink:href="http://geogratis.cgdi.gc.ca/clf/en?action=entrySummary&amp;entryId=1583&amp;entryType=productCollection&amp;context=&amp;keymap=outlineCanada"/>
+			</MetadataURL>
+			<FormatList><Format current="1">image/png</Format></FormatList>
+			<StyleList>
+				<Style current="1">
+					<Name>default</Name>
+					<Title>default</Title>
+					<LegendURL width="16" height="16" format="image/gif">
+						<OnlineResource xlink:type="simple" xlink:href="http://ceoware2.ccrs.nrcan.gc.ca/cubewerx/cubeserv/cubeserv.cgi?VERSION=1.1.1&amp;REQUEST=GetLegendGraphic&amp;LAYER=L7O_B743%3ACEOWARE2&amp;FORMAT=image%2Fgif"/>
+					</LegendURL>    
+				</Style>
+			</StyleList>
+		</Layer>
+    <Layer queryable="0" hidden="0">
+      <Server service="wms" version="1.1.0" title="Atlas of Canada WMS">
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca:80/cgi-bin/atlaswms_en?"/>
+      </Server>
+      <Name>wa_2m</Name>
+      <Title>Water areas (1:2 000 000)</Title>
+      <Abstract>The surface area of oceans, lakes and large rivers intended for display at the scale of 1:2 000 000.</Abstract>
+			<FormatList><Format current="1">image/gif</Format></FormatList>
+    </Layer>
+    <Layer queryable="0" hidden="0">
+      <Server service="wms" version="1.1.0" title="Atlas of Canada WMS">
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca:80/cgi-bin/atlaswms_en?"/>
+      </Server>
+      <Name>drain_2m</Name>
+      <Title>Drainage (1:2 000 000)</Title>
+      <Abstract>Coastline, rivers and lake shorelines intended for display at 1:2 000 000.</Abstract>
+			<FormatList><Format current="1">image/gif</Format></FormatList>
+    </Layer>
+    <Coverage hidden="0">
+      <Server service="OGC:WCS" version="1.0.0" title="Boston Indexed Geotiff imagery">
+        <OnlineResource method="GET" xlink:type="simple" xlink:href="http://webservices.ionicsoft.com/ionicwcs/coverage/BOSTONPOOL"/>
+      </Server>
+      <Name>MOD_Grid_L2g_2d</Name>
+      <Title>MOD_Grid_L2g_2d Coverage Offering</Title>
+      <Abstract>MOD_Grid_L2g_2d Coverage Offering, MOD09GHK data</Abstract>
+      <MetadataURL format="text/xml">
+        <OnlineResource xlink:type="simple" xlink:href="http://webservices.ionicsoft.com/ionicwcs/coverage/BOSTONPOOL/REQUEST/getdir/DIR/metadata/DATA/LPR/BOSTONPOOL/MOD_Grid_L2g_2d.xml"/>
+      </MetadataURL>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">GeoTIFF</Format>
+      </FormatList>
+      <DimensionList>
+        <Dimension name="time" units="ISO8601">2003-12-01T14:55:00Z/2003-12-03T20:50:00Z</Dimension>
+      </DimensionList>
+      <ParameterList>
+        <Parameter>
+          <param:kvp name="band" value="band1"/>
+        </Parameter>
+        <Parameter>
+          <param:kvp name="interpolation" value="nearest neighbor"/>
+        </Parameter>
+      </ParameterList>
+    </Coverage>
+    <FeatureType hidden="0">
+      <Server service="OGC:GML" version="2.1.2" title="NTS Lookup Service">
+        <OnlineResource xlink:type="simple" xlink:href="http://geoservices.cgdi.ca/NTS/NTSLookup?request=GetMapsheet&amp;version=1.1.2&amp;mapsheet=31g"/>
+      </Server>
+      <Name>NTSLoookup</Name>
+      <Title>Mapsheet 31G</Title>
+      <Abstract>NTS map outline for mapsheet 31G</Abstract>
+      <SRS>EPSG:4326</SRS>
+    </FeatureType>
+    <FeatureType hidden="0">
+      <Server service="OGC:WFS" version="1.0.0" title="Bird Studies Canada">
+        <OnlineResource method="GET" xlink:type="simple" xlink:href="http://www.bsc-eoc.org/cgi-bin/bsc_ows.asp?"/>
+      </Server>
+      <Name>BBS_PT</Name>
+      <Title>Breeding Bird Survey Route Start Points</Title>
+      <Abstract/>
+      <Geometry>gml:PointProperty</Geometry>
+      <SRS>EPSG:4326</SRS>
+    </FeatureType>
+  </ResourceList>
+</OWSContext>

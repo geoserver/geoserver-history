@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<MapbuilderConfig version="0.2.1" id="simpleTemplate" xmlns="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mapbuilder.sourceforge.net/mapbuilder ../../lib/schemas/config.xsd">
+	<models>
+		<Context id="mainMap">
+			<defaultModelUrl>tsEstPrecip.xml</defaultModelUrl>
+			<widgets>
+				<AoiBoxWZ id="aoiBox2">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<stylesheet>../../lib/widget/GmlRenderer.xsl</stylesheet>
+					<mapContainerId>mainMapContainer</mapContainerId>
+					<lineColor>#FF0000</lineColor>
+					<lineWidth>1</lineWidth>
+					<crossSize>15</crossSize>
+				</AoiBoxWZ>
+				<TimeSeries id="mainMapWidget">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<stylesheet>../../lib/widget/MapPane.xsl</stylesheet>
+					<mapContainerId>mainMapContainer</mapContainerId>
+				</TimeSeries>
+				<Timestamp id="timestamp">
+        </Timestamp>
+				<Loading id="loading"/>
+				<Legend id="legend">
+        </Legend>
+				<Widget id="abstract">
+					<stylesheet>Abstract.xsl</stylesheet>
+				</Widget>
+				<Widget id="mapTitle">
+					<stylesheet>../../lib/widget/MapTitle.xsl</stylesheet>
+				</Widget>
+				<!--SelectTimeFrame id="timeRangeSelect">
+        </SelectTimeFrame-->
+				<CursorTrack id="cursorTrack">
+					<mouseHandler>mainMap</mouseHandler>
+				</CursorTrack>
+			</widgets>
+			<tools>
+				<AoiMouseHandler id="mainAoi"/>
+				<DragPanHandler id="mainDragPan">
+					<enabled>false</enabled>
+				</DragPanHandler>
+				<MovieLoop id="movieLoop">
+					<framesPerSecond>4</framesPerSecond>
+					<maxFrames>15</maxFrames>
+				</MovieLoop>
+			</tools>
+		</Context>
+		<ContextCollection id="collection">
+			<defaultModelUrl>timeSeriesCollection.xml</defaultModelUrl>
+			<widgets>
+				<CollectionList id="collectionList">
+					<targetModel>mainMap</targetModel>
+				</CollectionList>
+			</widgets>
+		</ContextCollection>
+		<WmsCapabilities id="wmsCapTemplate">
+			<!--defaultModelUrl>../data/test/tsNasaCaps.xml</defaultModelUrl-->
+			<title>OGC Web Map Server (WMS)</title>
+			<widgets>
+				<Widget id="layerList">
+					<htmlTagId>workspace</htmlTagId>
+					<outputNodeId>workspaceCanvas</outputNodeId>
+					<stylesheet>../../lib/widget/SelectMapLayers.xsl</stylesheet>
+				</Widget>
+        <Loading2 id="loading2">
+					<htmlTagId>workspace</htmlTagId>
+					<outputNodeId>workspaceCanvas</outputNodeId>
+          <textMessage>This is a large file, please wait for it to load...</textMessage>
+        </Loading2>
+			</widgets>
+			<tools>
+				<Caps2Context id="convertCaps">
+					<targetModel>mainMap</targetModel>
+				</Caps2Context>
+			</tools>
+			<nodeSelectXpath>//Layer</nodeSelectXpath>
+		</WmsCapabilities>
+	</models>
+	<widgets>
+		<ModelUrlInput id="wmsCapsUrlInput">
+			<targetModel>wmsCapTemplate</targetModel>
+			<defaultUrl>http://aes.gsfc.nasa.gov/cgi-bin/wms?request=GetCapabilities</defaultUrl>
+		</ModelUrlInput>
+		<Button id="play">
+			<buttonBar>tsButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>RadioButton</class>
+			<enabledSrc>/images/PlayEnable.png</enabledSrc>
+			<disabledSrc>/images/PlayDisable.png</disabledSrc>
+			<tooltip>play the movie</tooltip>
+			<action>movieLoop.play()</action>
+		</Button>
+		<Button id="stepBack">
+			<buttonBar>tsButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/StepBackwardDisable.png</disabledSrc>
+			<tooltip>step back one frame</tooltip>
+			<action>movieLoop.nextFrame(-1)</action>
+		</Button>
+		<Button id="pause">
+			<buttonBar>tsButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>RadioButton</class>
+			<enabledSrc>/images/PauseEnable.png</enabledSrc>
+			<disabledSrc>/images/PauseDisable.png</disabledSrc>
+			<tooltip>pause the movie</tooltip>
+			<action>movieLoop.pause()</action>
+		</Button>
+		<Button id="stop">
+			<buttonBar>tsButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>RadioButton</class>
+			<enabledSrc>/images/StopEnable.png</enabledSrc>
+			<disabledSrc>/images/StopDisable.png</disabledSrc>
+			<tooltip>stop and rewind to beginning</tooltip>
+			<action>movieLoop.stop()</action>
+		</Button>
+		<Button id="stepAhead">
+			<buttonBar>tsButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/StepForwardDisable.png</disabledSrc>
+			<tooltip>step ahead one frame</tooltip>
+			<action>movieLoop.nextFrame(1)</action>
+		</Button>
+		<ZoomIn id="zoomIn">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<selected>true</selected>
+			<enabledSrc>/images/ZoomInEnable.png</enabledSrc>
+			<disabledSrc>/images/ZoomInDisable.png</disabledSrc>
+		</ZoomIn>
+		<ZoomOut id="zoomOut">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/ZoomOutEnable.png</enabledSrc>
+			<disabledSrc>/images/ZoomOutDisable.png</disabledSrc>
+		</ZoomOut>
+		<Reset id="reset">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/ResetExtentDisable.png</disabledSrc>
+		</Reset>
+		<Save id="save">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/SaveDisable.png</disabledSrc>
+			<popupWindowName>modelXML</popupWindowName>
+		</Save>
+	</widgets>
+	<skinDir>../../lib/skin/default</skinDir>
+	<widgetTextUrl>/widgetText.xml</widgetTextUrl>
+	<!-- relative to the skin dir -->
+</MapbuilderConfig>

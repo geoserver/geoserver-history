@@ -1,0 +1,2229 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!-- $Id$ -->
+<QuickviewPresetResultSet version="1.0.0"  xmlns="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mapbuilder.sourceforge.net/mapbuilder ../../lib/schemas/locations.xsd">
+	<gml:description>This is the CMB preset zoom document</gml:description>
+	<gml:name>CMB:QuickViewPreset</gml:name>
+	<gml:boundedBy>
+		<gml:Null>missing</gml:Null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Afghanistan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>59.9,28.66 75.65,39.11</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Africa</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-20.2,-37.6 53.4,35.75</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Albania</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>19.36,39.42 21.39,42.71</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Algeria</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-9.47,17.94 13.19,38.14</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Angola</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>11.31,-18.68 24.97,-3.84</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Antarctic</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-180,-90 180,-66</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Antarctica</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-180,-90 180,-62.83</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Arctic</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-180,66 180,90</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Argentina</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-74.97,-56.71 -51.76,-20.25</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Armenia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>43.53,38.68 47.07,41.48</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Asia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>40,-10 180,83.5</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Australia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>111.22,-45.73 155.72,-8.88</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Austria</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>9.27,45.99 17.93,49.38</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Azerbaijan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>44.58,38.04 50.96,42.2</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Bangladesh</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>87.95,20.75 93.07,26.62</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Belgium</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>2.54,49.31 6.69,51.69</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Belize</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-89.18,15.78 -87.78,18.64</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Benin</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>0.74,5.97 4.34,12.66</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Bhutan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>88.8,26.54 92.37,28.46</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Bolivia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-70.05,-23.63 -56.72,-9.13</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Bosnia and Herzegovina</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>15.76,42.38 20.02,45.45</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Botswana</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>19.57,-27.41 29.94,-17.32</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Brazil</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-75.64,-35.81 -32.74,7.12</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Brunei</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>114.22,3.96 115.42,5.09</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Bulgaria</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>22.19,40.86 29.02,44.59</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Burkina Faso</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-5.72,9.19 2.98,15.54</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Burma</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>91.41,9.22 102.13,29.34</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Burundi</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>28.98,-4.85 31.17,-2.35</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Byelarus</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>22.91,50.82 33.38,56.65</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Cambodia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>102.28,10.07 107.98,14.86</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Cameroon</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>8.22,1.06 16.85,13.65</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Canada</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-145.27,37.3 -48.11,87.61</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Caribbean</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-91.4,27.36 -55.4,6.48</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Central African Republic</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>13.96,1.5 28.11,11.67</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Central America</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-94.1,21.8 -75.8,6.61</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Chad</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>12.88,6.67 24.97,24.19</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Chile</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-77.16,-56.79 -64.9,-15.72</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>China</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>70.83,15.06 137.97,56.58</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Colombia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-79.69,-5 -66.15,13.28</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Congo</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>10.93,-5.41 19.19,3.98</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Costa Rica</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-85.83,7.9 -82.18,11.38</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Croatia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>13.47,42.09 19.92,46.84</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Cuba</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-85.03,19.36 -73.44,23.68</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Cyprus</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>32.23,34.44 34.78,35.78</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Czech Republic</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>12.13,48.23 19.38,51.42</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Denmark</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>8.02,54.68 12.89,58</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Djibouti</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>41.89,10.78 43.77,12.81</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Dominican Republic</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-71.87,17.54 -67.99,20.12</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>East Pacific Ocean</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-180,64.8 -72.7,-75.6</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Ecuador</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-81.08,-5.35 -74.68,1.72</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Egypt</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>24.29,21.29 37.61,32.14</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>El Salvador</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-90.05,13.07 -87.41,14.6</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Equatorial Guinea</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>8.39,0.76 11.59,3.82</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Eritrea</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>36.31,12 43.58,18.41</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Estonia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>23.3,57.29 28.59,59.75</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Ethiopia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>32.49,2.63 48.85,15.56</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Europe</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-25.1,71.3 35,34.9</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Finland</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>20.46,59.3 32.14,70.44</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>France</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-5.29,40.65 10.4,51.82</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>French Guiana</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-54.37,1.84 -51.23,5.89</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Gabon</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>8.71,-4.23 15.01,2.6</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Gambia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-16.71,13.02 -13.66,13.96</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Germany</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>5.68,46.86 15.68,55.41</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Ghana</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-3.31,4.39 1.7,11.47</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Greece</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>19.99,34.62 27.19,42.01</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Greenland</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-75.34,56.78 -9.36,86.6</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Guatemala</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-92.24,13.59 -87.87,18.06</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Guinea</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-15.19,6.77 -6.87,13.02</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Guinea-Bissau</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-16.51,10.97 -13.34,12.8</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Guyana</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-61.41,0.81 -56.12,8.79</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Haiti</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-74.38,17.88 -71.34,20.1</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Honduras</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-89.47,12.75 -82.92,16.31</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Hungary</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>16.12,45.44 23.57,48.95</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Iceland</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-24.55,62.81 -12.79,67.01</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>India</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>66.79,6.58 99.01,36.96</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Indian Ocean</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>22.3,-55.4 119.5,25.2</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Indonesia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>93.11,-12.65 143.45,7.88</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Iran</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>43.31,24.08 64.42,40.73</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Iraq</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>38.47,28.5 49.25,37.84</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Ireland</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-10.52,51.23 -5.62,55.49</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Israel</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>34.17,29.25 36.09,33.31</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Italy</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>6.11,36.15 19.33,47.71</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Ivory Coast</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-8.64,4.03 -2.01,10.96</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Jamaica</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-78.22,17.72 -76,18.63</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Japan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>128.74,30.1 146.46,46.26</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Jordan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>34.97,28.87 39.75,33.44</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Kazakhstan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>44.73,38.62 89.65,57.49</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Kenya</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>33,-5.3 42.44,5.07</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Democratic People's Republic of Korea</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>124.02,43.29 37.55,130.95</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Republic of Korea</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>125.95,38.76 33.06,129.88</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Kuwait</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>46.62,28.34 48.74,30</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Kyrgyzstan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>69.01,38.7 81.03,43.77</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Laos</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>99.77,13.47 108.1,22.98</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Latvia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>20.76,55.32 28.76,58.44</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Lebanon</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>35.09,32.84 36.79,34.63</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Lesotho</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>27.16,-30.89 29.76,-28.59</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Liberia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-11.47,4.16 -6.95,8.66</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Libya</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>8.79,18.7 26.1,33.95</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Lithuania</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>20.86,53.6 27.25,56.73</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Luxembourg</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>5.9,49.42 6.77,50.21</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Macedonia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>20.62,40.62 23.27,42.48</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Madagascar</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>42.83,-26.31 51.38,-11.58</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Malawi</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>32.55,-17.51 36.46,-9.26</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Malaysia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>99.4,-0.2 120.19,7.86</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Mali</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-12.77,9.25 5.27,25.83</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Mauritania</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-17.47,14.21 -4.04,27.81</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Mexico</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-118.48,13.05 -85.18,34.17</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Middle East</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>25,10.7 59.7,36.1</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Moldova</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>26.64,45.31 30.47,48.64</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Mongolia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>86.47,40 121.62,53.65</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Montenegro</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>18.56,41.77 20.67,43.64</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Morocco</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-13.52,26.96 -0.28,36.48</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Mozambique</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>29.67,-27.82 41.89,-9.63</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Namibia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>11.32,-29.61 25.86,-16.31</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Nepal</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>79.9,26 88.84,30.88</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Netherlands</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>3.54,50.56 7.62,53.59</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>New Hampshire</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-72.68,42.57 -70.58,45.43</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>New Jersey</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-75.69,38.8 -73.78,41.47</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>New Mexico</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-109.35,31.04 -102.7,37.3</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>New Zealand</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>166.05,-47.31 179.41,-33.89</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Nicaragua</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-87.7,10.55 -82.87,15.24</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Niger</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-0.39,10.95 16.95,24.28</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Nigeria</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>2.33,3.72 15.34,14.4</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>North America</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-168.5,18 -50.4,85.7</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>North Atlantic Ocean</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-82,0 12,80</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Northern Temperate</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-180,23 180,60</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Norway</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>3.88,56.69 32.56,81.95</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Oman</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>51.53,16.19 60.52,26.73</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Pakistan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>60.18,22.94 78.66,37.86</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Panama</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-83.06,6.9 -76.63,9.95</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Papua New Guinea</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>140.37,-11.3 153.05,-2.2</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Paraguay</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-62.83,-27.85 -53.6,-18.87</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Peru</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-82.13,-19.35 -67.52,0.79</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Philippines</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>116.68,4.85 127.23,19.22</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Poland</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>13.77,48.57 24.85,55.24</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Portugal</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-9.6,36.75 -5.65,42.36</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Qatar</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>50.97,24.33 51.89,26.17</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Romania</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>20.05,43.29 30.38,48.76</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Russia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>25,23.21 180,71</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Rwanda</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>28.9,-3.01 31.2,-1.03</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Saudi Arabia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>33.9,14.01 57.3,33.22</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Senegal</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-17.53,12.02 -10.89,17.14</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Serbia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>18.8,41.66 23.35,46.39</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Sierra Leone</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-13.16,6.71 -10.02,10.09</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Slovakia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>16.84,47.61 23.06,49.93</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Slovenia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>13.39,45.28 16.87,47.06</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Somalia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>40.53,-2.55 52.14,12.66</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>South Africa</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>13.68,-35.9 33.98,-21.27</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>South America</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-84.9,-57.6 -32.4,13.7</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>South Atlantic Ocean</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-67,-55.4 23,0</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Southern Ocean</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-180,-77 180,-32</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Southern Temperate</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-180,-60 180,-23</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Spain</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-9.69,35.4 3.98,44.38</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Sri Lanka</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>79.69,5.76 82.26,9.89</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Sudan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>21.06,2.6 39.77,22.86</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Suriname</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-58.01,1.53 -53.42,6.23</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Swaziland</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>30.93,-27.52 32.45,-25.72</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Sweden</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>10.56,54.63 24.84,69.68</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Switzerland</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>5.92,45.66 10.84,48.02</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Syria</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>35.36,31.84 43.11,37.69</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Taiwan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>119.99,21.78 122.14,25.31</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Tajikistan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>67.34,36.34 75.59,41.46</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Tanzania United Republic of</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>,-0.54 28.96,41.23</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Thailand</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>96.83,4.8 106.42,21.22</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Togo</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-0.09,5.85 2.21,11.33</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Trinidad</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-61.88,10.01 -60.86,10.89</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Tropics</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-180,-23 180,23</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Tunisia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>7.38,29.87 12.03,37.65</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Turkey</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>25.29,34.91 45.94,43</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Turkmenistan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>52.05,34.56 67.66,43.46</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Uganda</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>29.45,-1.82 35.52,4.32</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Ukraine</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>21.4,43.61 41.24,53.31</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>United Arab Emirates</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>51.06,21.82 56.87,26.25</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>United Kingdom</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-8.41,49.49 2.39,59.07</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>United States</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-180,13.71 -61.48,76.63</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Uruguay</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-58.46,-35.26 -52.77,-29.97</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Uzbekistan</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>55.44,36.08 74.31,46.46</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Venezuela</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-73.81,-0.11 -58.91,12.92</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Vietnam</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>101.43,7.75 110.25,24.05</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Virginia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-84.1,36.12 -74.82,39.88</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Western Sahara</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>-17.23,20.87 -8.01,28</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Yemen</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>42.45,12.12 53.74,19.51</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Zaire</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>11.45,-14.4 32.4,6.28</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Zambia</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>21.55,-18.7 34.45,-7.69</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+	<gml:featureMember>
+		<locationDef>
+			<gml:name>Zimbabwe</gml:name>
+			<spatialKeyword>
+				<gml:location>
+					<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+						<gml:coordinates>25.11,-22.93 33.65,15.22</gml:coordinates>
+					</gml:Envelope>
+				</gml:location>
+			</spatialKeyword>
+		</locationDef>
+	</gml:featureMember>
+</QuickviewPresetResultSet>
