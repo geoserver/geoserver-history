@@ -16,6 +16,8 @@
 				<exclude>META-INF/**/*</exclude>
 				<exclude>data</exclude>
 				<exclude>data/**/*</exclude>
+				<exclude>preview</exclude>
+				<exclude>preview/**/*</exclude>
 			</excludes>
 		</fileSet>
 		<fileSet>
