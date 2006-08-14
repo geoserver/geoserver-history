@@ -35,6 +35,7 @@ import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.Expression;
 import org.geotools.filter.Filter;
 import org.geotools.gml.producer.GeometryTransformer;
+import org.geotools.gml.producer.GeometryTransformer.GeometryTranslator;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.style.LineStyle2D;
 import org.geotools.renderer.style.PolygonStyle2D;
@@ -51,6 +52,7 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -134,6 +136,9 @@ public class KMLWriter extends OutputStreamWriter {
         //transformer.setUseDummyZ(true);
         transformer.setOmitXMLDeclaration(true);
         transformer.setNamespaceDeclarationEnabled(true);
+        
+        GeoServer config = mapContext.getRequest().getGeoServer();
+        transformer.setNumDecimals(config.getNumDecimals());
     }
     
     /**
@@ -311,6 +316,7 @@ public class KMLWriter extends OutputStreamWriter {
         } else{
             //remove gml prefixing as KML does not accept them
             StringWriter tempWriter = new StringWriter();
+            //trans.setNumDecimals(config.getNumDecimals());
             trans.transform(geom, tempWriter);
             String tempBuffer = tempWriter.toString();
             //@REVISIT: should check which prefix is being used, this will only work for the default (99.9%) of cases.
@@ -738,7 +744,7 @@ public class KMLWriter extends OutputStreamWriter {
                 if( symbolizers[m] instanceof TextSymbolizer ){
                 	TextSymbolizer ts = (TextSymbolizer) symbolizers[m];
                 	Expression ex = ts.getLabel();
-                	String value = ex.getValue(feature).toString();
+                	String value = (String)ex.getValue(feature);
                 	title.append(value);
                 	Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
                 	writeStyle(style, feature.getID(), symbolizers[m]);
@@ -793,13 +799,18 @@ public class KMLWriter extends OutputStreamWriter {
         	
         	final StringBuffer styleString = new StringBuffer();
         	
+        	PolygonSymbolizer polySym = (PolygonSymbolizer)sym;
+        	
+        	// ** LABEL **
         	styleString.append("<IconStyle>");
         	if (!mapContext.getRequest().getKMattr()) // if they don't want attributes
         		styleString.append("<color>#00ffffff</color>");// fully transparent
         	styleString.append("<Icon><href>root://icons/palette-3.png</href><x>224</x><w>32</w><h>32</h></Icon>");
         	styleString.append("</IconStyle>");
+        	
+        	// ** FILL **
         	styleString.append("<PolyStyle><color>");
-        	float op = getOpacity(sym);
+        	float op = getOpacity(polySym.getFill().getOpacity());
         	int opacity = (new Float(255*op)).intValue();
         	
             Paint p = ((PolygonStyle2D)style).getFill();
@@ -808,8 +819,23 @@ public class KMLWriter extends OutputStreamWriter {
             } else{
             	styleString.append("#ffaaaaaa");//should not occure in normal parsing
             }
-            styleString.append("</color></PolyStyle>");
-            //styleString.append("</Style>");
+            styleString.append("</color>");
+            styleString.append("<outline>1</outline>");
+            styleString.append("</PolyStyle>");
+            
+            
+            // ** OUTLINE **
+            styleString.append("<LineStyle><color>");
+            op = getOpacity(polySym.getStroke().getOpacity());
+        	opacity = (new Float(255*op)).intValue();
+        	
+            p = ((PolygonStyle2D)style).getContour();
+            if(p instanceof Color){
+            	styleString.append("#").append(intToHex(opacity)).append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
+            } else{
+            	styleString.append("#ffaaaaaa");//should not occure in normal parsing
+            }
+            styleString.append("</color></LineStyle>");
 
             write(styleString.toString());
         } else if(style instanceof LineStyle2D){
@@ -1038,6 +1064,18 @@ public class KMLWriter extends OutputStreamWriter {
         	return alpha;
         }
         Object obj = exp.getValue(null);
+        if(obj == null) return alpha;
+        Number num = null;
+        if(obj instanceof Number) num = (Number)obj;
+        if(num == null) return alpha;
+        return num.floatValue();
+    }
+    
+    private float getOpacity(final Expression exp)
+    {
+    	float alpha = 1.0f;
+    	
+    	Object obj = exp.getValue(null);
         if(obj == null) return alpha;
         Number num = null;
         if(obj instanceof Number) num = (Number)obj;
