@@ -6,6 +6,12 @@ Major features / improvements of this release include:
 - GetMap factoring out to spring extension point
 - Developer Documentation 
 
+Along with numerous ui bug fixes coming out of the move to Spring.
+Special thanks to the following people for contributions / bug fixing:
+
+- Saul Farber
+- Allesio Fabiani
+
 The issue log for this release is here:
 
 http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&mode=hide&sorter/order=ASC&sorter/field=priority&pid=10311&fixfor=12710

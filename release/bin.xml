@@ -9,10 +9,16 @@
 			<directory>web/target/geoserver</directory>
 			<outputDirectory>geoserver/webapps/geoserver</outputDirectory>
 			<includes>
-				<include>WEB-INF/**/*</include>
-				<include>schemas/**/*</include>
-				<include>style.css</include>
+				<include>**/*</include>
 			</includes>
+			<excludes>
+				<exclude>META-INF</exclude>
+				<exclude>META-INF/**/*</exclude>
+				<exclude>data</exclude>
+				<exclude>data/**/*</exclude>
+				<exclude>preview</exclude>
+				<exclude>preview/**/*</exclude>
+			</excludes>
 		</fileSet>
 		<fileSet>
 			<directory>web/target/geoserver/WEB-INF</directory>

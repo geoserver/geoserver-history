@@ -118,7 +118,7 @@
 	<tr >
 	     <td width=30%>
 				<center><b>
-				<a href="../../data/generated/<bean:write property="<%= "FTNameList[" + idx + "]" %>" name="mapPreviewForm"/>.html" target="_blank"><bean:write property="<%= "FTNamespaceList[" + idx + "]" %>" name="mapPreviewForm"/></a>
+				<a href="../../preview/<bean:write property="<%= "FTNameList[" + idx + "]" %>" name="mapPreviewForm"/>.html" target="_blank"><bean:write property="<%= "FTNamespaceList[" + idx + "]" %>" name="mapPreviewForm"/></a>
 				</b></center>
 	     </td>
 	     <td class="greyedOut2" width=15%>
@@ -132,7 +132,7 @@
 		 <td width=10%>
 			<!-- add link to FTNameList.html -->
 			<center><b>
-			<a href="../../data/generated/<bean:write property="<%= "FTNameList[" + idx + "]" %>" name="mapPreviewForm"/>.html" target="_blank">Preview</a>
+			<a href="../../preview/<bean:write property="<%= "FTNameList[" + idx + "]" %>" name="mapPreviewForm"/>.html" target="_blank">Preview</a>
 			
 			</b></center>
 		 </td>

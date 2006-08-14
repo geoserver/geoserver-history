@@ -182,7 +182,7 @@ function generateColorPicker(colorFieldName)
 	result += 'onChange="relateColor(\''+colorFieldName+'\', this.value);"> ';
 	result += '<script language="javascript">relateColor(\'pick'+colorFieldName+'\', getObj(\''+colorFieldName+'\').value);</scr'+'ipt> ';
 	result += '<a href="javascript:pickColor(\''+colorFieldName+'\');" id="pick'+colorFieldName+'" name="pick'+colorFieldName+'" style="border: 1px solid #000000; font-family:Verdana; font-size:10px; ';
-	result += 'text-decoration: none; " ><img src="../../images/colorpicker.jpg" width=12 height=12 border="none"></a>';
+	result += 'text-decoration: none; " ><img src="../../WEB-INF/images/colorpicker.jpg" width=12 height=12 border="none"></a>';
 
 	return result;
 }
@@ -639,7 +639,7 @@ function getXML(url,post,procfunction)
 		}
 		else if (window.XMLHttpRequest)
 		{
-			alert( url );
+			
 			// Mozilla and others
 			//log("getXML through Mozilla etc.");
 			geo_xmlhttp =  new XMLHttpRequest();
