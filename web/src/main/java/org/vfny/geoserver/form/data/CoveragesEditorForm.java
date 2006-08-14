@@ -91,13 +91,13 @@ public final class CoveragesEditorForm extends ActionForm {
 	 */
 	private String metadataLink;
 
-	private String lonLatBoundingBoxMinX;
+	private String boundingBoxMinX;
 
-	private String lonLatBoundingBoxMinY;
+	private String boundingBoxMinY;
 
-	private String lonLatBoundingBoxMaxX;
+	private String boundingBoxMaxX;
 
-	private String lonLatBoundingBoxMaxY;
+	private String boundingBoxMaxY;
 
 	/**
 	 * 
@@ -209,17 +209,17 @@ public final class CoveragesEditorForm extends ActionForm {
 		// //
 		final CoverageConfig cvConfig = (CoverageConfig) request.getSession()
 				.getAttribute(DataConfig.SELECTED_COVERAGE);
-		final GeneralEnvelope bounds = cvConfig.getLonLatWGS84Envelope();
+		final GeneralEnvelope bounds = cvConfig.getEnvelope();
 		if (bounds.isNull()) {
-			lonLatBoundingBoxMinX = "";
+			boundingBoxMinX = "";
 		} else {
-			lonLatBoundingBoxMinX = Double.toString(bounds.getLowerCorner()
+			boundingBoxMinX = Double.toString(bounds.getLowerCorner()
 					.getOrdinate(0));
-			lonLatBoundingBoxMinY = Double.toString(bounds.getLowerCorner()
+			boundingBoxMinY = Double.toString(bounds.getLowerCorner()
 					.getOrdinate(1));
-			lonLatBoundingBoxMaxX = Double.toString(bounds.getUpperCorner()
+			boundingBoxMaxX = Double.toString(bounds.getUpperCorner()
 					.getOrdinate(0));
-			lonLatBoundingBoxMaxY = Double.toString(bounds.getUpperCorner()
+			boundingBoxMaxY = Double.toString(bounds.getUpperCorner()
 					.getOrdinate(1));
 		}
 
@@ -423,18 +423,18 @@ public final class CoveragesEditorForm extends ActionForm {
 		//
 		//
 		// //
-		if ("".equals(lonLatBoundingBoxMinX)
-				|| "".equals(lonLatBoundingBoxMinY)
-				|| "".equals(lonLatBoundingBoxMaxX)
-				|| "".equals(lonLatBoundingBoxMaxY)) {
+		if ("".equals(boundingBoxMinX)
+				|| "".equals(boundingBoxMinY)
+				|| "".equals(boundingBoxMaxX)
+				|| "".equals(boundingBoxMaxY)) {
 
 			errors.add("envelope", new ActionError("error.envelope.required"));
 		} else {
 			try {
-				Double.parseDouble(lonLatBoundingBoxMinX);
-				Double.parseDouble(lonLatBoundingBoxMinY);
-				Double.parseDouble(lonLatBoundingBoxMaxX);
-				Double.parseDouble(lonLatBoundingBoxMaxY);
+				Double.parseDouble(boundingBoxMinX);
+				Double.parseDouble(boundingBoxMinY);
+				Double.parseDouble(boundingBoxMaxX);
+				Double.parseDouble(boundingBoxMaxY);
 			} catch (NumberFormatException badNumber) {
 				errors.add("envelope", new ActionError(
 						"error.envelope.invalid", badNumber));
@@ -608,63 +608,63 @@ public final class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
-	 * @return Returns the lonLatBoundingBoxMaxX.
+	 * @return Returns the boundingBoxMaxX.
 	 */
 	public String getMaxX() {
-		return lonLatBoundingBoxMaxX;
+		return boundingBoxMaxX;
 	}
 
 	/**
-	 * @param lonLatBoundingBoxMaxX
-	 *            The lonLatBoundingBoxMaxX to set.
+	 * @param boundingBoxMaxX
+	 *            The boundingBoxMaxX to set.
 	 */
-	public void setMaxX(String latLonBoundingBoxMaxX) {
-		this.lonLatBoundingBoxMaxX = latLonBoundingBoxMaxX;
+	public void setMaxX(String boundingBoxMaxX) {
+		this.boundingBoxMaxX = boundingBoxMaxX;
 	}
 
 	/**
-	 * @return Returns the lonLatBoundingBoxMaxY.
+	 * @return Returns the boundingBoxMaxY.
 	 */
 	public String getMaxY() {
-		return lonLatBoundingBoxMaxY;
+		return boundingBoxMaxY;
 	}
 
 	/**
-	 * @param lonLatBoundingBoxMaxY
-	 *            The lonLatBoundingBoxMaxY to set.
+	 * @param boundingBoxMaxY
+	 *            The boundingBoxMaxY to set.
 	 */
-	public void setMaxY(String latLonBoundingBoxMaxY) {
-		this.lonLatBoundingBoxMaxY = latLonBoundingBoxMaxY;
+	public void setMaxY(String boundingBoxMaxY) {
+		this.boundingBoxMaxY = boundingBoxMaxY;
 	}
 
 	/**
-	 * @return Returns the lonLatBoundingBoxMinX.
+	 * @return Returns the boundingBoxMinX.
 	 */
 	public String getMinX() {
-		return lonLatBoundingBoxMinX;
+		return boundingBoxMinX;
 	}
 
 	/**
-	 * @param lonLatBoundingBoxMinX
-	 *            The lonLatBoundingBoxMinX to set.
+	 * @param boundingBoxMinX
+	 *            The boundingBoxMinX to set.
 	 */
-	public void setMinX(String latLonBoundingBoxMinX) {
-		this.lonLatBoundingBoxMinX = latLonBoundingBoxMinX;
+	public void setMinX(String boundingBoxMinX) {
+		this.boundingBoxMinX = boundingBoxMinX;
 	}
 
 	/**
-	 * @return Returns the lonLatBoundingBoxMinY.
+	 * @return Returns the boundingBoxMinY.
 	 */
 	public String getMinY() {
-		return lonLatBoundingBoxMinY;
+		return boundingBoxMinY;
 	}
 
 	/**
-	 * @param lonLatBoundingBoxMinY
-	 *            The lonLatBoundingBoxMinY to set.
+	 * @param boundingBoxMinY
+	 *            The boundingBoxMinY to set.
 	 */
-	public void setMinY(String latLonBoundingBoxMinY) {
-		this.lonLatBoundingBoxMinY = latLonBoundingBoxMinY;
+	public void setMinY(String boundingBoxMinY) {
+		this.boundingBoxMinY = boundingBoxMinY;
 	}
 
 	/**

@@ -14,7 +14,7 @@
 <uri>http://jakarta.apache.org/struts/tags-tiles</uri>
 <tag>
 <name>insert</name>
-<tagclass>org.apache.struts.taglib.tiles.InsertTag</tagclass>
+<tagclass>org.vfny.geoserver.config.web.tiles.taglib.ExtResInsertTag</tagclass>
 <bodycontent>JSP</bodycontent>
 <attribute>
 <name>template</name>

@@ -1,6 +1,9 @@
 package org.vfny.geoserver.config.web.tiles;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,7 +18,6 @@ import org.apache.struts.tiles.Controller;
 import org.apache.struts.tiles.DefinitionsFactoryException;
 import org.apache.struts.tiles.DefinitionsUtil;
 import org.apache.struts.tiles.NoSuchDefinitionException;
-import org.apache.struts.tiles.UrlController;
 import org.apache.struts.upload.MultipartRequestWrapper;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.struts.DelegatingActionProxy;
@@ -372,6 +374,8 @@ public class MultipleDelegatingTilesRequestProcessor extends DelegatingTilesRequ
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(uri);
 		
 		if (rd == null) {
+			URL resource = WebApplicationContextUtils.getWebApplicationContext(getServletContext()).getResource(uri).getURL();
+			response.sendRedirect(resource.toString());
 			response.sendError(
 					HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					getInternal().getMessage("requestDispatcher", uri));
