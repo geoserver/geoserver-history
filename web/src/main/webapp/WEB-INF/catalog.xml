@@ -6,23 +6,20 @@ a datastore configuration element serves as a common data source connection
 parameters repository for all featuretypes it holds.
 -->
 <datastore namespace = "tiger" enabled = "true" id = "DS_giant_polygon" >
-<abstract></abstract>
 <connectionParams>
 <parameter value = "tiger" name = "namespace"  />
-<parameter value = "file:data/data/nyc/giant_polygon.shp" name = "url"  
-/>
+<parameter value = "file:data/data/nyc/giant_polygon.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "tiger" enabled = "true" id = "DS_poi" >
+<connectionParams>
+<parameter value = "tiger" name = "namespace"  />
+<parameter value = "file:data/data/nyc/poi.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "topp" enabled = "true" id = "states_shapefile" >
 <connectionParams>
 <parameter value = "file:data/data/shapefiles/states.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "tiger" enabled = "true" id = "DS_poi" >
-<abstract></abstract>
-<connectionParams>
-<parameter value = "tiger" name = "namespace"  />
-<parameter value = "file:data/data/nyc/poi.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "topp" enabled = "true" id = "tasmania_cities" >
@@ -35,29 +32,27 @@ parameters repository for all featuretypes it holds.
 <parameter value = "file:data/data/taz_shapes/tasmania_roads.shp" name = "url"  />
 </connectionParams>
 </datastore>
-<datastore namespace = "topp" enabled = "true" id = "tasmania_state_boundaries" >
-<connectionParams>
-<parameter value = "file:data/data/taz_shapes/tasmania_state_boundaries.shp" name = "url"  />
-</connectionParams>
-</datastore>
 <datastore namespace = "tiger" enabled = "true" id = "DS_poly_landmarks" >
-<abstract></abstract>
 <connectionParams>
 <parameter value = "tiger" name = "namespace"  />
 <parameter value = "file:data/data/nyc/poly_landmarks.shp" name = "url"  />
 </connectionParams>
 </datastore>
-<datastore namespace = "tiger" enabled = "true" id = "DS_tiger_roads" >
-<abstract></abstract>
+<datastore namespace = "topp" enabled = "true" id = "tasmania_state_boundaries" >
 <connectionParams>
-<parameter value = "tiger" name = "namespace"  />
-<parameter value = "file:data/data/nyc/tiger_roads.shp" name = "url"  />
+<parameter value = "file:data/data/taz_shapes/tasmania_state_boundaries.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "topp" enabled = "true" id = "tasmania_water_bodies" >
 <connectionParams>
-<parameter value = "file:data/data/taz_shapes/tasmania_water_bodies.shp" 
-name = "url"  /> </connectionParams>
+<parameter value = "file:data/data/taz_shapes/tasmania_water_bodies.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "tiger" enabled = "true" id = "DS_tiger_roads" >
+<connectionParams>
+<parameter value = "tiger" name = "namespace"  />
+<parameter value = "file:data/data/nyc/tiger_roads.shp" name = "url"  />
+</connectionParams>
 </datastore>
 </datastores>
 <formats>
@@ -70,17 +65,6 @@ parameters repository for all coverages it holds.
 <type>Gtopo30</type>
 <url>file:data/coverages/gtopo_sample/W020N90.DEM</url>
 </format>
-<format namespace = "topp" enabled = "true" id = "mosaic_sample" >
-<description></description>
-<type>ImageMosaic</type>
-<url>file:data/coverages/mosaic_sample/index.shp</url>
-<parameters>
-<parameter value = "1" name = "InputImageROIThreshold"  />
-<parameter value = "false" name = "FinalAlpha"  />
-<parameter value = "1.0" name = "AlphaThreshold"  />
-<parameter value = "false" name = "InputImageROI"  />
-</parameters>
-</format>
 <format namespace = "nurc" enabled = "true" id = "sample_geotiff" >
 <type>GeoTIFF</type>
 <url>file:data/coverages/geotiff_sample/~gtiff172030523_192_106_197_2_0.tiff</url>
@@ -88,6 +72,16 @@ parameters repository for all coverages it holds.
 <format namespace = "nurc" enabled = "true" id = "worldImageSample" >
 <type>WorldImage</type>
 <url>file:data/coverages/img_sample/usa.png</url>
+</format>
+<format namespace = "topp" enabled = "true" id = "mosaic" >
+<type>ImageMosaic</type>
+<url>file:data/coverages/mosaic_sample/mosaic.shp</url>
+<parameters>
+<parameter value = "1" name = "InputImageROIThreshold"  />
+<parameter value = "false" name = "FinalAlpha"  />
+<parameter value = "1.0" name = "AlphaThreshold"  />
+<parameter value = "false" name = "InputImageROI"  />
+</parameters>
 </format>
 <format namespace = "nurc" enabled = "true" id = "arcGridSample" >
 <description>A test ArcGrid Coverage</description>
@@ -99,8 +93,9 @@ parameters repository for all coverages it holds.
 </parameters>
 </format>
 </formats>
-
-
+<!--
+Defines namespaces to be used by the datastores.
+-->
 <namespaces>
 <namespace uri = "http://www.openplans.org/topp" prefix = "topp" default = "true"  />
 <namespace uri = "http://geoserver.sf.net" prefix = "sde"  />
@@ -108,7 +103,6 @@ parameters repository for all coverages it holds.
 <namespace uri = "http://www.census.gov" prefix = "tiger"  />
 <namespace uri = "http://www.opengeospatial.net/cite" prefix = "cite"  />
 </namespaces>
-
 <styles>
 <!--
 Defines the style ids to be used by the wms.  The files must be
@@ -123,13 +117,12 @@ if you want them on the server.
 <style filename = "green.sld" id = "green"  />
 <style filename = "simpleRoads.sld" id = "simple_roads"  />
 <style filename = "dem.sld" id = "dem"  />
+<style filename = "popshade.sld" id = "population"  />
+<style filename = "default_line.sld" id = "line"  />
 <style filename = "raster.sld" id = "raster"  />
+<style filename = "default_polygon.sld" id = "polygon"  />
+<style filename = "default_point.sld" id = "point"  />
 <style filename = "poi.sld" id = "poi"  />
 <style filename = "Lakes.sld" id = "cite_lakes"  />
-<style filename = "popshade.sld" id = "population"  />
-<style filename = "default_point.sld" id = "point"  />
-<style filename = "default_line.sld" id = "line"  />
-<style filename = "default_polygon.sld" id = "polygon"  />
 </styles>
-
 </catalog>
