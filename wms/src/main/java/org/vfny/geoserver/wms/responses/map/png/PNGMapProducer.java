@@ -103,8 +103,8 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
 			if (LOGGER.isLoggable(Level.FINE))
 				LOGGER.fine("Writer is native");
 			iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-			iwp.setCompressionType("FILTERED");
-			iwp.setCompressionQuality(0.9f);// we can control quality here
+			iwp.setCompressionType("HUFFMAN_ONLY");//best speed
+			iwp.setCompressionQuality(8.0F/9.0F);// we can control quality here
 
 		}
 		else

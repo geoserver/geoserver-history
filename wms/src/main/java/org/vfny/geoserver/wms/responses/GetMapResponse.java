@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
@@ -21,8 +20,6 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.filter.Filter;
-import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
@@ -87,7 +84,7 @@ public class GetMapResponse implements Response {
 	public GetMapResponse(WMS wms, ApplicationContext applicationContext) {
 		this.wms = wms;
 		this.applicationContext = applicationContext;
-		responseHeaders = new HashMap();
+		responseHeaders = new HashMap(10);
 	}
 
 	/**
@@ -166,6 +163,7 @@ public class GetMapResponse implements Response {
 			Style style;
 			Filter definitionFilter;
 			Query definitionQuery;
+			int nma;
 			final int length = layers.length;
 			for (int i = 0; i < length; i++) {
 				style = styles[i];
@@ -173,7 +171,7 @@ public class GetMapResponse implements Response {
 				if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
 					if (cachingPossible) {
 						if (layers[i].getFeature().isCachingEnabled()) {
-							int nma = Integer.parseInt(layers[i].getFeature()
+							nma = Integer.parseInt(layers[i].getFeature()
 									.getCacheMaxAge());
 							// suppose the map contains multiple cachable
 							// layers...we can only cache the combined map for
@@ -233,29 +231,19 @@ public class GetMapResponse implements Response {
 					// Adding a coverage layer
 					//
 					// /////////////////////////////////////////////////////////
-					try {
 
-						reader = (AbstractGridCoverage2DReader) layers[i]
-								.getReader(req.getHttpServletRequest(),
-										new GeneralEnvelope(
-												new ReferencedEnvelope(env,
-														mapcrs)),
-										new Rectangle(map.getMapWidth(), map
-												.getMapHeight()));
-
-					} catch (IOException exp) {
-						if (LOGGER.isLoggable(Level.SEVERE)) {
-							LOGGER.log(Level.SEVERE, new StringBuffer(
-									"Getting feature source: ").append(
-									exp.getMessage()).toString(), exp);
-						}
-						throw new WmsException(null, new StringBuffer(
-								"Internal error : ").append(exp.getMessage())
-								.toString());
-					}
+					reader = (AbstractGridCoverage2DReader) layers[i]
+							.getCoverage().getReader();
 
 					if (reader != null)
 						map.addLayer(reader, style);
+					else
+						throw new WmsException(
+								null,
+								new StringBuffer(
+										"Internal error : unable to get reader for this coverage layer ")
+										.append(layers[i].toString())
+										.toString());
 				}
 			}
 			// /////////////////////////////////////////////////////////

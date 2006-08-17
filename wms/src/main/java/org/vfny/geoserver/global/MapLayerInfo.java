@@ -4,44 +4,12 @@
  */
 package org.vfny.geoserver.global;
 
-import java.awt.Rectangle;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.data.DataSourceException;
-import org.geotools.data.coverage.grid.AbstractGridFormat;
-import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.parameter.DefaultParameterDescriptor;
-import org.geotools.renderer.lite.StreamingRenderer;
-import org.geotools.resources.CRSUtilities;
 import org.geotools.styling.Style;
-import org.opengis.coverage.grid.Format;
-import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridCoverageReader;
-import org.opengis.parameter.GeneralParameterValue;
-import org.opengis.parameter.InvalidParameterValueException;
-import org.opengis.parameter.ParameterDescriptor;
-import org.opengis.parameter.ParameterNotFoundException;
-import org.opengis.parameter.ParameterValue;
-import org.opengis.parameter.ParameterValueGroup;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.OperationNotFoundException;
-import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.config.CoverageStoreConfig;
-import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.util.CoverageUtils;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -53,7 +21,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
  */
-public class MapLayerInfo extends GlobalLayerSupertype {
+public final class MapLayerInfo extends GlobalLayerSupertype {
 	public static int TYPE_VECTOR = 0;
 
 	public static int TYPE_RASTER = 1;
@@ -164,31 +132,6 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		if (this.type == TYPE_VECTOR) {
 			return feature.getBoundingBox();
 		} else {
-			// GeneralEnvelope bounds = null;
-			// try {
-			// bounds =
-			// CoverageStoreUtils.adjustEnvelopeLongitudeFirst(coverage
-			// .getEnvelope().getCoordinateReferenceSystem(), coverage
-			// .getEnvelope());
-			// } catch (MismatchedDimensionException e) {
-			// final IOException ex = new IOException(new StringBuffer(
-			// "Problems getting Coverage BoundingBox: ").append(
-			// e.getLocalizedMessage()).toString());
-			// ex.initCause(e);
-			// throw ex;
-			// } catch (IndexOutOfBoundsException e) {
-			// final IOException ex = new IOException(new StringBuffer(
-			// "Problems getting Coverage BoundingBox: ").append(
-			// e.getLocalizedMessage()).toString());
-			// ex.initCause(e);
-			// throw ex;
-			// } catch (NoSuchAuthorityCodeException e) {
-			// final IOException ex = new IOException(new StringBuffer(
-			// "Problems getting Coverage BoundingBox: ").append(
-			// e.getLocalizedMessage()).toString());
-			// ex.initCause(e);
-			// throw ex;
-			// }
 
 			// using referenced envelope (experiment)
 			return new ReferencedEnvelope(coverage.getEnvelope(), coverage
@@ -213,7 +156,6 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		this.label = coverage.getLabel();
 		this.description = coverage.getDescription();
 		this.dirName = coverage.getDirName();
-
 		this.coverage = coverage;
 		this.feature = null;
 		this.type = TYPE_RASTER;
@@ -268,7 +210,6 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		this.label = feature.getTitle();
 		this.description = feature.getAbstract();
 		this.dirName = feature.getDirName();
-
 		this.feature = feature;
 		this.coverage = null;
 		this.type = TYPE_VECTOR;
@@ -322,316 +263,297 @@ public class MapLayerInfo extends GlobalLayerSupertype {
 		this.type = type;
 	}
 
-	/**
-	 * Getting a grid coverage as requested.
-	 * 
-	 * @param request
-	 * @param meta
-	 * @param envelope
-	 * @param dim
-	 * @return
-	 * @throws IOException
-	 */
-	private final GridCoverage getGridCoverage(HttpServletRequest request,
-			CoverageInfo meta, GeneralEnvelope envelope, Rectangle dim)
-			throws IOException {
-		GridCoverage coverage = null;
+//	/**
+//	 * 
+//	 * @param request
+//	 * @param meta
+//	 * @param envelope
+//	 * @param dim
+//	 * @return
+//	 * @throws IOException
+//	 */
+//	public GridCoverageReader getReader() throws IOException {
+//
+//		try {
+//
+//			// /////////////////////////////////////////////////////////
+//			//
+//			// Getting coverage config
+//			//
+//			// /////////////////////////////////////////////////////////
+//			final String formatID = coverage.getFormatId();
+//			final CoverageStoreInfo gcInfo = coverage.getData().getFormatInfo(
+//					formatID);
+//
+//			// /////////////////////////////////////////////////////////
+//			//
+//			// Getting coverage reader using the format and the real path.
+//			//
+//			// /////////////////////////////////////////////////////////
+////			final File obj = CoverageUtils.getResourceAsFile(gcInfo.getUrl(),
+////					gcInfo.getBaseDir());
+////
+////			// XXX CACHING READERS HERE
+////			return ((AbstractGridFormat) gcInfo.getFormat()).getReader(obj);
+//			return gcInfo.getReader();
+//
+//		} catch (InvalidParameterValueException e) {
+//			final IOException ex = new IOException(e.getLocalizedMessage());
+//			ex.initCause(e);
+//
+//			throw ex;
+//		} catch (ParameterNotFoundException e) {
+//			final IOException ex = new IOException(e.getLocalizedMessage());
+//			ex.initCause(e);
+//
+//			throw ex;
+//			// } catch (MalformedURLException e) {
+//			// final IOException ex = new IOException(e.getLocalizedMessage());
+//			// ex.initCause(e);
+//			//
+//			//			throw ex;
+//		} catch (IllegalArgumentException e) {
+//			final IOException ex = new IOException(e.getLocalizedMessage());
+//			ex.initCause(e);
+//
+//			throw ex;
+//		} catch (SecurityException e) {
+//			final IOException ex = new IOException(e.getLocalizedMessage());
+//			ex.initCause(e);
+//
+//			throw ex;
+//		}
+//
+//	}
 
-		try {
-            if (envelope == null)
-                envelope = this.coverage.getEnvelope();
+	// /**
+	// *
+	// * @param request
+	// * @param meta
+	// * @param envelope
+	// * @return
+	// * @throws IOException
+	// */
+	// private GridCoverageReader getReader(HttpServletRequest request,
+	// CoverageInfo meta) throws IOException {
+	// try {
+	//
+	// // /////////////////////////////////////////////////////////
+	// //
+	// // Getting coverage config
+	// //
+	// // /////////////////////////////////////////////////////////
+	// final String formatID = meta.getFormatId();
+	// final DataConfig dataConfig = (DataConfig) request.getSession()
+	// .getServletContext().getAttribute(DataConfig.CONFIG_KEY);
+	// final CoverageStoreConfig dfConfig = dataConfig
+	// .getDataFormat(formatID);
+	//
+	// // /////////////////////////////////////////////////////////
+	// //
+	// // Getting coverage reader using the format and the real path.
+	// //
+	// // /////////////////////////////////////////////////////////
+	// final String realPath = request.getRealPath("/");
+	// final URL url = CoverageUtils.getResource(dfConfig.getUrl(),
+	// realPath);
+	// // XXX CACHING
+	// final Format format = dfConfig.getFactory();
+	// return ((AbstractGridFormat) format).getReader(url);
+	//
+	// } catch (InvalidParameterValueException e) {
+	// final IOException ex = new IOException(e.getLocalizedMessage());
+	// ex.initCause(e);
+	//
+	// throw ex;
+	// } catch (ParameterNotFoundException e) {
+	// final IOException ex = new IOException(e.getLocalizedMessage());
+	// ex.initCause(e);
+	//
+	// throw ex;
+	// } catch (MalformedURLException e) {
+	// final IOException ex = new IOException(e.getLocalizedMessage());
+	// ex.initCause(e);
+	//
+	// throw ex;
+	// } catch (IllegalArgumentException e) {
+	// final IOException ex = new IOException(e.getLocalizedMessage());
+	// ex.initCause(e);
+	//
+	// throw ex;
+	// } catch (SecurityException e) {
+	// final IOException ex = new IOException(e.getLocalizedMessage());
+	// ex.initCause(e);
+	//
+	// throw ex;
+	// }
+	//
+	// }
 
-			// /////////////////////////////////////////////////////////
-			//
-			// Do we need to proceed?
-			// I need to check the requested envelope in order to see if the
-			// coverage we ask intersect it otherwise it is pointless to load it
-			// since its reader might return null;
-			// /////////////////////////////////////////////////////////
-			final CoordinateReferenceSystem sourceCRS = envelope
-					.getCoordinateReferenceSystem();
-			final CoordinateReferenceSystem destCRS = meta.getCrs();
-			if (!CRSUtilities.equalsIgnoreMetadata(sourceCRS, destCRS)) {
-				// get a math transform
-				final MathTransform transform = StreamingRenderer
-						.getMathTransform(sourceCRS, destCRS);
-
-				// transform the envelope
-				envelope = CRSUtilities.transform(transform, envelope);
-
-			}
-
-			// just do the intersection since
-			envelope.intersect(meta.getEnvelope());
-			if (envelope.isEmpty())
-				return null;
-			envelope.setCoordinateReferenceSystem(destCRS);
-
-			// /////////////////////////////////////////////////////////
-			//
-			// get a reader
-			//
-			// /////////////////////////////////////////////////////////
-			final GridCoverageReader reader = getReader(request, meta,
-					envelope, dim);
-			if (reader == null)
-				return null;
-
-			// /////////////////////////////////////////////////////////
-			//
-			// Setting coverage reading params.
-			//
-			// /////////////////////////////////////////////////////////
-            List parameters = new ArrayList();
-			final ParameterValueGroup params = reader.getFormat()
-					.getReadParameters();
-			final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D
-					.getName().toString();
-			if (params != null) {
-				List list = params.values();
-				Iterator it = list.iterator();
-				ParameterValue param;
-				ParameterDescriptor descr;
-				String key;
-				Object value;
-				while (it.hasNext()) {
-					param = ((ParameterValue) it.next());
-					descr = (ParameterDescriptor) param.getDescriptor();
-
-					key = descr.getName().toString();
-
-					// /////////////////////////////////////////////////////////
-					//
-					// request param for better management of coverage
-					//
-					// /////////////////////////////////////////////////////////
-					if (key.equalsIgnoreCase(readGeometryKey)
-							&& envelope != null) {
-						/*params.parameter(key).setValue(envelope);*/
-                        continue;
-					} else {
-						// /////////////////////////////////////////////////////////
-						//
-						// format specific params
-						//
-						// /////////////////////////////////////////////////////////
-						value = CoverageUtils.getCvParamValue(key, param, meta
-								.getParameters());
-
-						if (value != null)
-							/*params.parameter(key).setValue(value);*/
-                            parameters.add(new DefaultParameterDescriptor(key, value.getClass(), null, value));
-					}
-				}
-			}
-
-			// /////////////////////////////////////////////////////////
-			//
-			// Reading the coverage
-			//
-			// /////////////////////////////////////////////////////////
-			coverage = reader
-					.read(!parameters.isEmpty() ? (GeneralParameterValue[]) parameters.toArray(
-                                    new GeneralParameterValue[parameters.size()]) : null);
-
-			if (coverage == null || !(coverage instanceof GridCoverage2D))
-				throw new IOException(
-						"The requested coverage could not be found.");
-		} catch (InvalidParameterValueException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (ParameterNotFoundException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (MalformedURLException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (IllegalArgumentException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (SecurityException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (IOException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (TransformException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-			throw ex;
-		}
-		return coverage;
-	}
-
-	/**
-	 * 
-	 * @param request
-	 * @param meta
-	 * @param envelope
-	 * @param dim
-	 * @return
-	 * @throws IOException
-	 */
-	public GridCoverageReader getReader(HttpServletRequest request,
-			GeneralEnvelope envelope, Rectangle dim) throws IOException {
-		try {
-			// /////////////////////////////////////////////////////////
-			//
-			// Do we need to proceed?
-			// I need to check the requested envelope in order to see if the
-			// coverage we ask intersect it otherwise it is pointless to load it
-			// since its reader might return null;
-			// /////////////////////////////////////////////////////////
-			final CoordinateReferenceSystem sourceCRS = envelope
-					.getCoordinateReferenceSystem();
-			final CoordinateReferenceSystem destCRS = this.coverage.getCrs();
-			if (!CRSUtilities.equalsIgnoreMetadata(sourceCRS, destCRS)) {
-				// get a math transform
-				final MathTransform transform = StreamingRenderer
-						.getMathTransform(sourceCRS, destCRS);
-
-				// transform the envelope
-				envelope = CRSUtilities.transform(transform, envelope);
-
-			}
-
-			return getReader(request, this.coverage, envelope, dim);
-
-		} catch (InvalidParameterValueException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (ParameterNotFoundException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (MalformedURLException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (IllegalArgumentException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (SecurityException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (TransformException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-			throw ex;
-		}
-
-	}
-
-	/**
-	 * 
-	 * @param request
-	 * @param meta
-	 * @param envelope
-	 * @param dim
-	 * @return
-	 * @throws IOException
-	 */
-	private GridCoverageReader getReader(HttpServletRequest request,
-			CoverageInfo meta, GeneralEnvelope envelope, Rectangle dim)
-			throws IOException {
-		try {
-
-			// /////////////////////////////////////////////////////////
-			//
-			// Getting coverage config
-			//
-			// /////////////////////////////////////////////////////////
-			final String formatID = meta.getFormatId();
-			final DataConfig dataConfig = (DataConfig) request.getSession()
-					.getServletContext().getAttribute(DataConfig.CONFIG_KEY);
-			final CoverageStoreConfig dfConfig = dataConfig
-					.getDataFormat(formatID);
-
-			// /////////////////////////////////////////////////////////
-			//
-			// Getting coverage reader using the format and the real path.
-			//
-			// /////////////////////////////////////////////////////////
-			final String realPath = request.getRealPath("/");
-			final URL url = CoverageUtils.getResource(dfConfig.getUrl(),
-					realPath);
-			final Format format = dfConfig.getFactory();
-			return ((AbstractGridFormat) format).getReader(url);
-
-		} catch (InvalidParameterValueException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (ParameterNotFoundException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (MalformedURLException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (IllegalArgumentException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} catch (SecurityException e) {
-			final IOException ex = new IOException(e.getLocalizedMessage());
-			ex.initCause(e);
-
-			throw ex;
-		} 
-
-	}
-
-	/**
-	 * Getting a gridcoverage using the information provided in this layer info
-	 * object with the specified dimensions.
-	 * 
-	 * @param request
-	 * @param envelope
-	 * @param dim
-	 * @return
-	 * @throws DataSourceException
-	 */
-	public final GridCoverage getCoverage(HttpServletRequest request,
-			GeneralEnvelope envelope, Rectangle dim) throws DataSourceException {
-		try {
-
-			return getGridCoverage(request, this.coverage, envelope, dim);
-
-		} catch (IOException e) {
-			final DataSourceException ex = new DataSourceException(
-					"IO error when getting a grid coverage", e);
-
-			throw ex;
-
-		}
-
-	}
+	// /**
+	// * Getting a gridcoverage using the information provided in this layer
+	// info
+	// * object with the specified dimensions.
+	// *
+	// * @param request
+	// * @param envelope
+	// * @param dim
+	// * @return
+	// * @throws DataSourceException
+	// */
+	// public GridCoverage getCoverage(HttpServletRequest request,
+	// GeneralEnvelope envelope, Rectangle dim) throws DataSourceException {
+	//
+	// GridCoverage gc = null;
+	// try {
+	// if (envelope == null)
+	// envelope = this.coverage.getEnvelope();
+	//
+	// // /////////////////////////////////////////////////////////
+	// //
+	// // Do we need to proceed?
+	// // I need to check the requested envelope in order to see if the
+	// // coverage we ask intersect it otherwise it is pointless to load it
+	// // since its reader might return null;
+	// // /////////////////////////////////////////////////////////
+	// final CoordinateReferenceSystem sourceCRS = envelope
+	// .getCoordinateReferenceSystem();
+	// final CoordinateReferenceSystem destCRS = coverage.getCrs();
+	// if (!CRSUtilities.equalsIgnoreMetadata(sourceCRS, destCRS)) {
+	// // get a math transform
+	// final MathTransform transform = StreamingRenderer
+	// .getMathTransform(sourceCRS, destCRS);
+	//
+	// // transform the envelope
+	// if (!transform.isIdentity())
+	// envelope = CRSUtilities.transform(transform, envelope);
+	//
+	// }
+	//
+	// // just do the intersection since
+	// envelope.intersect(coverage.getEnvelope());
+	// if (envelope.isEmpty())
+	// return null;
+	// envelope.setCoordinateReferenceSystem(destCRS);
+	//
+	// // /////////////////////////////////////////////////////////
+	// //
+	// // get a reader
+	// //
+	// // /////////////////////////////////////////////////////////
+	// final GridCoverageReader reader = coverage.getReader();
+	// if (reader == null)
+	// return null;
+	//
+	// // /////////////////////////////////////////////////////////
+	// //
+	// // Setting coverage reading params.
+	// //
+	// // /////////////////////////////////////////////////////////
+	// List parameters = new ArrayList();
+	// final ParameterValueGroup params = reader.getFormat()
+	// .getReadParameters();
+	// final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D
+	// .getName().toString();
+	// if (params != null) {
+	// List list = params.values();
+	// Iterator it = list.iterator();
+	// ParameterValue param;
+	// ParameterDescriptor descr;
+	// String key;
+	// Object value;
+	// while (it.hasNext()) {
+	// param = ((ParameterValue) it.next());
+	// descr = (ParameterDescriptor) param.getDescriptor();
+	//
+	// key = descr.getName().toString();
+	//
+	// // /////////////////////////////////////////////////////////
+	// //
+	// // request param for better management of coverage
+	// //
+	// // /////////////////////////////////////////////////////////
+	// if (key.equalsIgnoreCase(readGeometryKey)
+	// && envelope != null) {
+	// /* params.parameter(key).setValue(envelope); */
+	// continue;
+	// } else {
+	// // /////////////////////////////////////////////////////////
+	// //
+	// // format specific params
+	// //
+	// // /////////////////////////////////////////////////////////
+	// value = CoverageUtils.getCvParamValue(key, param,
+	// coverage.getParameters());
+	//
+	// if (value != null)
+	// /* params.parameter(key).setValue(value); */
+	// parameters.add(new DefaultParameterDescriptor(key,
+	// value.getClass(), null, value));
+	// }
+	// }
+	// }
+	//
+	// // /////////////////////////////////////////////////////////
+	// //
+	// // Reading the coverage
+	// //
+	// // /////////////////////////////////////////////////////////
+	// gc = reader
+	// .read(!parameters.isEmpty() ? (GeneralParameterValue[]) parameters
+	// .toArray(new GeneralParameterValue[parameters
+	// .size()])
+	// : null);
+	//
+	// if (gc == null || !(gc instanceof GridCoverage2D))
+	// throw new IOException(
+	// "The requested coverage could not be found.");
+	// } catch (InvalidParameterValueException e) {
+	// final DataSourceException ex = new DataSourceException(
+	// "IO error when getting a grid coverage", e);
+	//
+	// throw ex;
+	//
+	// } catch (ParameterNotFoundException e) {
+	// final DataSourceException ex = new DataSourceException(
+	// "IO error when getting a grid coverage", e);
+	//
+	// throw ex;
+	//
+	// } catch (MalformedURLException e) {
+	// final DataSourceException ex = new DataSourceException(
+	// "IO error when getting a grid coverage", e);
+	//
+	// throw ex;
+	//
+	// } catch (IllegalArgumentException e) {
+	// final DataSourceException ex = new DataSourceException(
+	// "IO error when getting a grid coverage", e);
+	//
+	// throw ex;
+	//
+	// } catch (SecurityException e) {
+	// final DataSourceException ex = new DataSourceException(
+	// "IO error when getting a grid coverage", e);
+	//
+	// throw ex;
+	//
+	// } catch (IOException e) {
+	// final DataSourceException ex = new DataSourceException(
+	// "IO error when getting a grid coverage", e);
+	//
+	// throw ex;
+	//
+	// } catch (TransformException e) {
+	// final DataSourceException ex = new DataSourceException(
+	//					"IO error when getting a grid coverage", e);
+	//
+	//			throw ex;
+	//
+	//		}
+	//		return gc;
+	//
+	//	}
 
 	public Style getDefaultStyle() {
 		if (this.type == TYPE_VECTOR)

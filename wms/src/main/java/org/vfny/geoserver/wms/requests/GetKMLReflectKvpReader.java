@@ -103,10 +103,8 @@ public class GetKMLReflectKvpReader extends GetMapKvpReader {
 	        LOGGER.fine("Getting layers and styles from reomte SLD");
 	        parseSldParam(request);
 	    } else {
-	        MapLayerInfo[] featureTypes = null;
+	        MapLayerInfo[] featureTypes = parseLayersParam(request);
 	        List styles = null;
-	        featureTypes = parseLayersParam(request);
-	
 	        request.setLayers(featureTypes);
 	
 	        if (isStylesRquired()) {

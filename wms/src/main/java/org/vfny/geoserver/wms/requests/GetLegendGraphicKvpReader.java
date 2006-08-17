@@ -116,14 +116,12 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         	try {
         		CoverageInfo cvi = request.getWMS().getData().getCoverageInfo(layer);
         		mli.setCoverage(cvi);
-        		FeatureCollection feature = DataUtilities.wrapGc(mli.getCoverage(httpRequest,null,null));
+        		FeatureCollection feature = DataUtilities.wrapGc(cvi.getCoverage(null,null));
                 request.setLayer(feature.getFeatureType());
         	} catch (NoSuchElementException ne) {
                 throw new WmsException(ne,new StringBuffer(layer).append( " layer does not exists.").toString(),
                 	ne.getLocalizedMessage());
-            } catch (IOException ioe) {
-                throw new WmsException(ioe, "Can't obtain the schema for the required layer.", ioe.getLocalizedMessage());
-			} catch (TransformException te) {
+            } catch (TransformException te) {
                 throw new WmsException(te, "Can't obtain the schema for the required layer.", te.getLocalizedMessage());
             } catch (FactoryConfigurationError fce) {
                 throw new WmsException(fce, "Can't obtain the schema for the required layer.", fce.getLocalizedMessage());

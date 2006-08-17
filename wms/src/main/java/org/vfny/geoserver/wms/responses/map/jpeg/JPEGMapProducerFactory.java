@@ -14,7 +14,7 @@ import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
  * @author Simone Giannecchini
  * @since 1.4.x
  */
-public class JPEGMapProducerFactory implements GetMapProducerFactorySpi {
+public final class JPEGMapProducerFactory implements GetMapProducerFactorySpi {
 	/** the only MIME type this map producer supports */
 	static final String MIME_TYPE = "image/jpeg";
 

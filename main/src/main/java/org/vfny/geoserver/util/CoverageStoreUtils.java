@@ -51,6 +51,7 @@ import org.vfny.geoserver.global.CoverageStoreInfo;
 public final class CoverageStoreUtils {
 	private final static Logger LOGGER = Logger
 			.getLogger(CoverageStoreUtils.class.toString());
+	public final static Format[] formats = GridFormatFinder.getFormatArray();
 
 	private CoverageStoreUtils() {
 	}

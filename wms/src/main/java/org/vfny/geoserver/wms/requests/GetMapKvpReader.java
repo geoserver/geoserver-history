@@ -439,19 +439,22 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         //fill byFeatureTypes with the split of its raw attributes requested
         //separated by commas, and check for the validity of each att name
+        FeatureType schema ;
+        List atts;
+        String attName ;
         for (int i = 0; i < nLayers; i++) {
             rawAtts = (String) byFeatureTypes.get(i);
 
-            List atts = readFlat(rawAtts, ",");
+            atts = readFlat(rawAtts, ",");
             byFeatureTypes.set(i, atts);
 
             //FeatureType schema = layers[i].getSchema();
             try {
-                FeatureType schema = layers[i].getFeatureType();
+                schema = layers[i].getFeatureType();
 
                 //verify that propper attributes has been requested
                 for (Iterator attIt = atts.iterator(); attIt.hasNext();) {
-                    String attName = (String) attIt.next();
+                    attName = (String) attIt.next();
 
                     if (attName.length() > 0) {
 						if (LOGGER.isLoggable(Level.FINER)) {
@@ -695,9 +698,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         sae.visit(style);
 
         String[] styleAttributes = sae.getAttributeNames();
-
-        for (int i = 0; i < styleAttributes.length; i++) {
-            String attName = styleAttributes[i];
+        String attName;
+        final int length=styleAttributes.length;
+        for (int i = 0; i < length; i++) {
+            attName = styleAttributes[i];
 
             if (fType.getAttributeType(attName) == null) {
                 throw new WmsException(
@@ -957,9 +961,11 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             }
         } else {
             StyledLayer sl = null;
+            String layerName;
+            UserLayer ul ;
             for (int i = 0; i < slCount; i++) {
                 sl = styledLayers[i];
-                String layerName = sl.getName();
+                layerName = sl.getName();
 				if (null == layerName)
 					throw new WmsException(
 							"A UserLayer without layer name was passed");
@@ -970,7 +976,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 				if ((sl instanceof UserLayer)
 						&& (((UserLayer) sl)).getInlineFeatureDatastore() != null) {
 					// SPECIAL CASE - we make the temporary version
-					UserLayer ul = ((UserLayer) sl);
+					ul = ((UserLayer) sl);
 					currLayer.setFeature(new TemporaryFeatureTypeInfo(ul
 							.getInlineFeatureDatastore(), ul
 							.getInlineFeatureType()));
@@ -1054,8 +1060,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
 		// DJB: TODO: this needs to do the whole thing, not just names
 		if (ftcs != null) {
-			for (int t = 0; t < ftcs.length; t++) {
-				FeatureTypeConstraint ftc = ftcs[t];
+			FeatureTypeConstraint ftc;
+			final int length=ftcs.length;
+			for (int t = 0; t < length; t++) {
+				ftc = ftcs[t];
 				if (ftc.getFeatureTypeName() != null) {
 					String ftc_name = ftc.getFeatureTypeName();
 					// taken from lite renderer
@@ -1081,11 +1089,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 			styles.add(currLayer.getDefaultStyle());
 			return;
 		}
-
-		for (int t = 0; t < layerStyles.length; t++) {
+		final int length=layerStyles.length;
+		Style s;
+		for (int t = 0; t < length; t++) {
 			if (layerStyles[t] instanceof NamedStyle) {
 				layers.add(currLayer);
-				Style s = findStyle(request, ((NamedStyle) layerStyles[t])
+				s = findStyle(request, ((NamedStyle) layerStyles[t])
 						.getName());
 				if (s == null)
 					throw new WmsException("couldnt find style named '"

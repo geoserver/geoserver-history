@@ -35,6 +35,7 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.CoverageUtils;
+import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
 
@@ -238,7 +239,7 @@ public class CoverageResponse implements Response {
 				throw new IOException(
 						"The requested coverage could not be found.");
 
-			final GridCoverage2D finalCoverage = CoverageUtils
+			final GridCoverage2D finalCoverage = WCSUtils
 					.getCroppedCoverage(request, meta, coverage);
 			delegate.prepare(outputFormat, finalCoverage);
 		} catch (IOException e) {

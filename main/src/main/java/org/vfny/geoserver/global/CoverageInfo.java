@@ -4,21 +4,39 @@
  */
 package org.vfny.geoserver.global;
 
+import java.awt.Rectangle;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.parameter.DefaultParameterDescriptor;
+import org.geotools.resources.CRSUtilities;
 import org.geotools.styling.Style;
+import org.opengis.coverage.grid.GridCoverage;
+import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.parameter.GeneralParameterValue;
+import org.opengis.parameter.InvalidParameterValueException;
+import org.opengis.parameter.ParameterDescriptor;
+import org.opengis.parameter.ParameterNotFoundException;
+import org.opengis.parameter.ParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.util.CoverageStoreUtils;
+import org.vfny.geoserver.util.CoverageUtils;
 
 /**
  * DOCUMENT ME!
@@ -169,7 +187,6 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 	public CoverageInfo(CoverageInfoDTO dto, Data data)
 			throws ConfigurationException {
 		this.data = data;
-
 		formatId = dto.getFormatId();
 		name = dto.getName();
 		wmsPath = dto.getWmsPath();
@@ -491,20 +508,162 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 	 * @return
 	 */
 	public Map getParameters() {
-		final HashMap params = new HashMap();
 
 		if (this.paramKeys != null) {
+			final HashMap params = new HashMap(paramKeys.size());
 			int index = 0;
 			for (Iterator p_iT = this.paramKeys.iterator(); p_iT.hasNext();) {
 				params.put(p_iT.next(), this.paramValues.get(index));
 				index++;
 			}
-		}
+			return params;
+		} else
+			return new HashMap();
 
-		return params;
 	}
 
 	public String getNativeCRS() {
 		return nativeCRS;
+	}
+
+	public GridCoverageReader getReader() {
+		// /////////////////////////////////////////////////////////
+		//
+		// Getting coverage config and then reader
+		//
+		// /////////////////////////////////////////////////////////
+		return data.getFormatInfo(formatId).getReader();
+
+	}
+
+	public GridCoverage getCoverage() {
+		return getCoverage(null, null);
+	}
+
+	public GridCoverage getCoverage(GeneralEnvelope envelope, Rectangle dim) {
+		GridCoverage gc = null;
+		try {
+			if (envelope == null)
+				envelope = this.envelope;
+
+			// /////////////////////////////////////////////////////////
+			//
+			// Do we need to proceed?
+			// I need to check the requested envelope in order to see if the
+			// coverage we ask intersect it otherwise it is pointless to load it
+			// since its reader might return null;
+			// /////////////////////////////////////////////////////////
+			final CoordinateReferenceSystem sourceCRS = envelope
+					.getCoordinateReferenceSystem();
+			final CoordinateReferenceSystem destCRS = crs;
+			if (!CRSUtilities.equalsIgnoreMetadata(sourceCRS, destCRS)) {
+				// get a math transform
+				final MathTransform transform = CoverageUtils.getMathTransform(
+						sourceCRS, destCRS);
+
+				// transform the envelope
+				if (!transform.isIdentity())
+					envelope = CRSUtilities.transform(transform, envelope);
+
+			}
+
+			// just do the intersection since
+			envelope.intersect(this.envelope);
+			if (envelope.isEmpty())
+				return null;
+			envelope.setCoordinateReferenceSystem(destCRS);
+
+			// /////////////////////////////////////////////////////////
+			//
+			// get a reader
+			//
+			// /////////////////////////////////////////////////////////
+			final GridCoverageReader reader = getReader();
+			if (reader == null)
+				return null;
+
+			// /////////////////////////////////////////////////////////
+			//
+			// Setting coverage reading params.
+			//
+			// /////////////////////////////////////////////////////////
+			List parameters = new ArrayList();
+			final ParameterValueGroup params = reader.getFormat()
+					.getReadParameters();
+			final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D
+					.getName().toString();
+			if (params != null) {
+				List list = params.values();
+				Iterator it = list.iterator();
+				ParameterValue param;
+				ParameterDescriptor descr;
+				String key;
+				Object value;
+				while (it.hasNext()) {
+					param = ((ParameterValue) it.next());
+					descr = (ParameterDescriptor) param.getDescriptor();
+
+					key = descr.getName().toString();
+
+					// /////////////////////////////////////////////////////////
+					//
+					// request param for better management of coverage
+					//
+					// /////////////////////////////////////////////////////////
+					if (key.equalsIgnoreCase(readGeometryKey)
+							&& envelope != null) {
+						/* params.parameter(key).setValue(envelope); */
+						continue;
+					} else {
+						// /////////////////////////////////////////////////////////
+						//
+						// format specific params
+						//
+						// /////////////////////////////////////////////////////////
+						value = CoverageUtils.getCvParamValue(key, param,
+								getParameters());
+
+						if (value != null)
+							/* params.parameter(key).setValue(value); */
+							parameters.add(new DefaultParameterDescriptor(key,
+									value.getClass(), null, value));
+					}
+				}
+			}
+
+			// /////////////////////////////////////////////////////////
+			//
+			// Reading the coverage
+			//
+			// /////////////////////////////////////////////////////////
+			gc = reader
+					.read(!parameters.isEmpty() ? (GeneralParameterValue[]) parameters
+							.toArray(new GeneralParameterValue[parameters
+									.size()])
+							: null);
+
+			if (gc == null || !(gc instanceof GridCoverage2D))
+				throw new IOException(
+						"The requested coverage could not be found.");
+		} catch (InvalidParameterValueException e) {
+			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+		} catch (ParameterNotFoundException e) {
+			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+
+		} catch (MalformedURLException e) {
+			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+
+		} catch (IllegalArgumentException e) {
+			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+
+		} catch (SecurityException e) {
+			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+
+		} catch (TransformException e) {
+			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+		}
+		return gc;
 	}
 }

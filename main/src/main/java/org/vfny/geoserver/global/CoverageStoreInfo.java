@@ -5,6 +5,7 @@
 package org.vfny.geoserver.global;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -15,9 +16,14 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geotools.data.coverage.grid.GridFormatFinder;
+import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.opengis.coverage.grid.Format;
+import org.opengis.coverage.grid.GridCoverageReader;
+import org.opengis.parameter.InvalidParameterValueException;
+import org.opengis.parameter.ParameterNotFoundException;
 import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
+import org.vfny.geoserver.util.CoverageStoreUtils;
+import org.vfny.geoserver.util.CoverageUtils;
 
 /**
  * This is the configuration iformation for one coverage Format.
@@ -28,6 +34,7 @@ import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
  *         modification)
  */
 public final class CoverageStoreInfo extends GlobalLayerSupertype {
+
 	/** for logging */
 	private static final Logger LOGGER = Logger
 			.getLogger(CoverageStoreInfo.class.toString());
@@ -46,6 +53,8 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 	 * 
 	 */
 	private String id;
+
+	private GridCoverageReader reader=null;
 
 	/**
 	 * 
@@ -85,16 +94,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 	 * This directory may be used for File based relative paths.
 	 * </p>
 	 */
-	File baseDir;
-
-	/**
-	 * URL associated with this Format.
-	 * 
-	 * <p>
-	 * This directory may be used for URL based relative paths.
-	 * </p>
-	 */
-	URL baseURL;
+	private File baseDir;
 
 	/**
 	 * CoverageStoreInfo constructor.
@@ -110,8 +110,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 	 */
 	public CoverageStoreInfo(CoverageStoreInfoDTO config, Data data) {
 		this.data = data;
-		meta = new HashMap();
-
+		meta = new HashMap(10);
 		parameters = config.getParameters();
 		enabled = config.isEnabled();
 		id = config.getId();
@@ -120,6 +119,21 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 		url = config.getUrl();
 		title = config.getTitle();
 		_abstract = config.getAbstract();
+		format = lookupFormat();
+		baseDir = data.getBaseDir();
+
+	}
+
+	private Format lookupFormat() {
+		final int length = CoverageStoreUtils.formats.length;
+		for (int i = 0; i < length; i++) {
+
+			if (CoverageStoreUtils.formats[i].getName().equals(type)) {
+				return CoverageStoreUtils.formats[i];
+			}
+
+		}
+		return null;
 	}
 
 	/**
@@ -233,36 +247,10 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 					"this format is not enabled, check your configuration");
 		}
 
-		// Map m = getParams();
-
 		if (format == null) {
-			try {
-				// format = GridFormatFinder.getDataStore(m);
-				for (Iterator f_iT = GridFormatFinder.getAvailableFormats(); f_iT
-						.hasNext();) {
-					Format fTmp = (Format) f_iT.next();
-					if (fTmp.getName().equals(type)) {
-						format = fTmp;
-
-						break;
-					}
-
-				}
-				if (LOGGER.isLoggable(Level.FINE))
-					LOGGER.fine("connection established by " + toString());
-			} catch (Throwable ex) {
-				throw new IllegalStateException("can't create the format "
-						+ getId() + ": " + ex.getClass().getName() + ": "
-						+ ex.getMessage() + "\n" + ex.toString());
-			}
-
-			if (format == null) {
-				LOGGER
-						.fine("failed to establish connection with "
-								+ toString());
-				throw new NoSuchElementException(
-						"No format found capable of managing " + toString());
-			}
+			LOGGER.warning("failed to establish connection with " + toString());
+			throw new NoSuchElementException(
+					"No format found capable of managing " + toString());
 		}
 
 		return format;
@@ -390,6 +378,49 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 	 */
 	public String getNamesSpacePrefix() {
 		return nameSpaceId;
+	}
+
+	public File getBaseDir() {
+		return baseDir;
+	}
+
+	public synchronized GridCoverageReader getReader() {
+		if(reader!=null)
+			return reader;
+		try {
+
+			// /////////////////////////////////////////////////////////
+			//
+			// Getting coverage config
+			//
+			// /////////////////////////////////////////////////////////
+			final CoverageStoreInfo gcInfo = data.getFormatInfo(
+					id);
+
+			// /////////////////////////////////////////////////////////
+			//
+			// Getting coverage reader using the format and the real path.
+			//
+			// /////////////////////////////////////////////////////////
+			final File obj=CoverageUtils.getResourceAsFile(gcInfo.getUrl(),
+					gcInfo.getBaseDir());
+
+			// XXX CACHING READERS HERE
+			reader= ((AbstractGridFormat) gcInfo.getFormat()).getReader(obj);
+			return reader;
+
+		} catch (InvalidParameterValueException e) {
+			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+		} catch (ParameterNotFoundException e) {
+			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+		} catch (MalformedURLException e) {
+			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+		} catch (IllegalArgumentException e) {
+			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+		} catch (SecurityException e) {
+			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+		}
+		return null;
 	}
 
 }
