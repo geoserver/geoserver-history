@@ -555,10 +555,10 @@ public class GeoServer extends GlobalLayerSupertype {
 		// Setting up Cahce Threshold
 		jaiCache.setMemoryThreshold((float) memoryThreshold);
 		
-		jaiDef.getTileScheduler().setParallelism(20);
-		jaiDef.getTileScheduler().setPrefetchParallelism(7);
-		jaiDef.getTileScheduler().setPrefetchPriority(20);
-		jaiDef.getTileScheduler().setPriority(7);
+		jaiDef.getTileScheduler().setParallelism(50);
+		jaiDef.getTileScheduler().setPrefetchParallelism(5);
+		jaiDef.getTileScheduler().setPrefetchPriority(50);
+		jaiDef.getTileScheduler().setPriority(5);
 		
 		// ImageIO Caching
 		ImageIO.setUseCache(ImageIOCache.booleanValue());
