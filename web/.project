@@ -3,9 +3,9 @@
   <comment/>
   <projects>
     <project>data</project>
+    <project>platform</project>
     <project>wcs</project>
     <project>main</project>
-    <project>platform</project>
     <project>wms</project>
     <project>wfs</project>
     <project>validation</project>
