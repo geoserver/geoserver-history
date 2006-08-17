@@ -98,7 +98,7 @@ public class MultipleDefinitionsFactory extends FactorySet {
 	{
 		"/WEB-INF/tileDefinitions.xml",
 		"/WEB-INF/componentDefinitions.xml",
-	"/WEB-INF/instanceDefinitions.xml" };
+		"/WEB-INF/instanceDefinitions.xml" };
 	
 	/**
 	 * Maximum length of one branch of the resource search path tree.
@@ -552,9 +552,10 @@ public class MultipleDefinitionsFactory extends FactorySet {
 					ex);
 			
 		} catch (IOException ex) {
-			/*throw new DefinitionsFactoryException*/log.error(
-					"IO Error while parsing file '" + filename + "'. " + ex.getMessage(),
-					ex);
+			/*throw new DefinitionsFactoryException*/
+			if (log.isDebugEnabled()) {
+				log.debug("IO Error while parsing file '" + filename + "'. " + ex.getMessage(),ex);
+			}
 		}
 		
 		return xmlDefinitions;
