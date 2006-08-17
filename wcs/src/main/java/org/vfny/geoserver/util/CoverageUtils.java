@@ -34,7 +34,6 @@ import org.opengis.parameter.ParameterValue;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.cs.CoordinateSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.CoverageInfo;
@@ -88,15 +87,15 @@ public class CoverageUtils {
 						&& ((String) getParamValue(paramValues, index))
 								.length() > 0) {
 					if (paramValues.get(index) != null
-							&& ((String) paramValues.get(index)).length() > 0) 
+							&& ((String) paramValues.get(index)).length() > 0)
 
 						value = CRS.parseWKT((String) paramValues.get(index));
-					} else {
+				} else {
 
-						LOGGER
-								.info("Unable to find a crs for the coverage param, using EPSG:4326");
-						value = CRS.decode("EPSG:4326");
-					}
+					LOGGER
+							.info("Unable to find a crs for the coverage param, using EPSG:4326");
+					value = CRS.decode("EPSG:4326");
+				}
 			} else if (key.equalsIgnoreCase("envelope")) {
 				if (getParamValue(paramValues, index) != null
 						&& ((String) getParamValue(paramValues, index))
@@ -244,7 +243,8 @@ public class CoverageUtils {
 					"This Coverage does not support the Response CRS requested.");
 		}
 		// - then create the Coordinate Reference System
-		final CoordinateReferenceSystem targetCRS =CRS.decode(responseCRS,true);
+		final CoordinateReferenceSystem targetCRS = CRS.decode(responseCRS,
+				true);
 		// This is the CRS of the requested Envelope
 		final String requestCRS = request.getCRS();
 		// - first check if the requestCRS is present on the Coverage
@@ -254,7 +254,7 @@ public class CoverageUtils {
 					"This Coverage does not support the CRS requested.");
 		}
 		// - then create the Coordinate Reference System
-		final CoordinateReferenceSystem sourceCRS =CRS.decode(requestCRS);
+		final CoordinateReferenceSystem sourceCRS = CRS.decode(requestCRS);
 		// This is the CRS of the Coverage Envelope
 		final CoordinateReferenceSystem cvCRS = ((GeneralEnvelope) coverage
 				.getEnvelope()).getCoordinateReferenceSystem();
@@ -425,29 +425,4 @@ public class CoverageUtils {
 		return subCoverage;
 	}
 
-	/**
-	 * Convert a JTS envelope to GeneralEnvelope.
-	 * 
-	 * @param envelope
-	 * @param mapcrs
-	 * @return
-	 */
-	public static GeneralEnvelope convertEnvelope(
-			com.vividsolutions.jts.geom.Envelope envelope,
-			CoordinateReferenceSystem mapcrs) {
-		final CoordinateSystem cs = mapcrs.getCoordinateSystem();
-		final boolean lonfirst = !GridGeometry2D.swapXY(cs);
-		final GeneralEnvelope env;
-		if (lonfirst) {
-			env = new GeneralEnvelope(new double[] { envelope.getMinX(),
-					envelope.getMinY() }, new double[] { envelope.getMaxX(),
-					envelope.getMaxY() });
-		} else
-			env = new GeneralEnvelope(new double[] { envelope.getMinY(),
-					envelope.getMinX() }, new double[] { envelope.getMaxY(),
-					envelope.getMaxX() });
-
-		env.setCoordinateReferenceSystem(mapcrs);
-		return env;
-	}
 }

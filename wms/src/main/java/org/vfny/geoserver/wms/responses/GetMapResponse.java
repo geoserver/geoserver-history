@@ -21,6 +21,8 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.filter.Filter;
+import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
@@ -33,7 +35,6 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -236,9 +237,10 @@ public class GetMapResponse implements Response {
 
 						reader = (AbstractGridCoverage2DReader) layers[i]
 								.getReader(req.getHttpServletRequest(),
-										CoverageUtils.convertEnvelope(env,
-												mapcrs), new Rectangle(map
-												.getMapWidth(), map
+										new GeneralEnvelope(
+												new ReferencedEnvelope(env,
+														mapcrs)),
+										new Rectangle(map.getMapWidth(), map
 												.getMapHeight()));
 
 					} catch (IOException exp) {
@@ -284,7 +286,6 @@ public class GetMapResponse implements Response {
 							.toString(), e);
 				}
 			}
-
 
 		}
 	}
@@ -358,7 +359,7 @@ public class GetMapResponse implements Response {
 	public void writeTo(OutputStream out) throws ServiceException, IOException {
 
 		try { // mapcontext can leak memory -- we make sure we done (see
-				// finally block)
+			// finally block)
 			if (this.delegate == null) {
 				throw new IllegalStateException(
 						"No GetMapDelegate is setted, make sure you have called execute and it has succeed");
@@ -444,8 +445,7 @@ public class GetMapResponse implements Response {
 		Set formats = new HashSet();
 		GetMapProducerFactorySpi producer;
 		for (Iterator iter = producers.iterator(); iter.hasNext();) {
-			producer = (GetMapProducerFactorySpi) iter
-					.next();
+			producer = (GetMapProducerFactorySpi) iter.next();
 			formats.addAll(producer.getSupportedFormats());
 		}
 		return formats;
