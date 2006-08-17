@@ -8,6 +8,7 @@ package org.vfny.geoserver.action;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
@@ -54,28 +55,29 @@ public class SrsHelpAction extends Action {
     	       
     	       Set codes = CRS.getSupportedCodes("EPSG");
     	       
-    	         // make an array of each code (as an int)
-    	       int[] ids = new int[codes.size()];
-    	       int t=0;
+    	       // make an array of each code (as an int)
+    	       ArrayList ids = new ArrayList();
     	       Iterator codeIt = codes.iterator();
     	       while (codeIt.hasNext())
     	       {
     	       		String code = (String) codeIt.next();
     	       		String id  = code.substring(code.indexOf(':')+1); //just the number
-    	       		ids[t] = Integer.parseInt(id);
-    	       		t++;
+    	       		if(!ids.contains(Integer.valueOf(id)))
+    	       			ids.add(Integer.valueOf(id));
     	       }
-    	       Arrays.sort(ids); //sort to get them in order
-    	       final int length=ids.length;
+    	       Collections.sort(ids);//sort to get them in order
     	       CoordinateReferenceSystem crs;
     	       String def;
-    	       for (t=0;t<length;t++) //for each id (in sorted order)
+    	       codeIt = ids.iterator();
+    	       Integer id;
+    	       while (codeIt.hasNext()) //for each id (in sorted order)
     	       {
+    	    	   id = (Integer) codeIt.next();
     	       	   try{  //get its definition
-    	       	   		crs = CRS.decode("EPSG:"+ids[t],true);
+    	       	   		crs = CRS.decode(new StringBuffer("EPSG:").append(id).toString(),true);
     	       	   		def = crs.toWKT();
     	       	   		defs.add(def);
-    	       	   		ids_string.add(""+ids[t]);
+    	       	   		ids_string.add(id.toString());
     	       	   }
     	       	   catch(Exception e)
 				   {
