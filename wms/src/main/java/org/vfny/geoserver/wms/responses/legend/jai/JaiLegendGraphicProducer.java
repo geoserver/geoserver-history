@@ -2,12 +2,13 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses;
+package org.vfny.geoserver.wms.responses.legend.jai;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import org.vfny.geoserver.wms.responses.helpers.JAISupport;
 
 

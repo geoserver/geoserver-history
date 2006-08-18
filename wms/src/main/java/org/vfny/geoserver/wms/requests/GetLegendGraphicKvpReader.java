@@ -38,6 +38,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.vfny.geoserver.wms.servlets.WMService;
 
 /**
@@ -137,10 +138,8 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 
 		String format = getValue("FORMAT");
 
-		if (!org.vfny.geoserver.wms.responses.GetLegendGraphicResponse
-				.supportsFormat(format)) {
-            throw new WmsException(new StringBuffer("Invalid graphic format: " ).append( format).toString(),
-                "InvalidFormat");
+		if (!GetLegendGraphicResponse.supportsFormat(format, getServiceRef().getApplicationContext())) {
+            throw new WmsException(new StringBuffer("Invalid graphic format: " ).append( format).toString(), "InvalidFormat");
 		}
 
 		request.setFormat(format);

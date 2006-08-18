@@ -20,6 +20,7 @@ import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.global.ApplicationState;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.UserContainer;
 
 
@@ -172,6 +173,15 @@ public class ConfigAction extends GeoServerAction {
      */
     protected DataConfig getDataConfig() {
         return (DataConfig) getServlet().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
+    }
+
+    /**
+     * Access Catalog Model from the WebContainer.
+     *
+     * @return Configuration model for Catalog information.
+     */
+    protected Data getData() {
+        return (Data) getServlet().getServletContext().getAttribute(Data.WEB_CONTAINER_KEY);
     }
 
     /**

@@ -231,6 +231,7 @@ public abstract class DefaultRasterLegendProducer
                             symbolizer, scaleRange);
                 LiteShape2 shape = getSampleShape(symbolizer, w, h);
 
+                if (style2d != null)
 					shapePainter.paint(graphics, shape, style2d, scaleDenominator);
                 }
             }

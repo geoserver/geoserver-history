@@ -24,10 +24,8 @@ import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.opengis.metadata.Identifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.crs.DerivedCRS;
-import org.opengis.referencing.crs.ProjectedCRS;
+import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -59,17 +57,20 @@ public class WMSCapsTransformer extends TransformerBase {
 
 	private Set formats;
 
+	private ApplicationContext applicationContext;
+
 	/**
 	 * Creates a new WMSCapsTransformer object.
 	 * 
 	 * @param schemaBaseUrl
 	 *            needed to get the schema base URL
 	 * @param formats
+	 * @param applicationContext 
 	 * 
 	 * @throws NullPointerException
 	 *             if <code>schemaBaseUrl</code> is null;
 	 */
-	public WMSCapsTransformer(String schemaBaseUrl, Set formats) {
+	public WMSCapsTransformer(String schemaBaseUrl, Set formats, ApplicationContext applicationContext) {
 		super();
 		this.formats = formats;
 		if (schemaBaseUrl == null) {
@@ -78,6 +79,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
 		this.schemaBaseUrl = schemaBaseUrl;
 		this.setNamespaceDeclarationEnabled(false);
+		this.applicationContext = applicationContext;
 	}
 
 	/**
@@ -89,7 +91,7 @@ public class WMSCapsTransformer extends TransformerBase {
 	 * @return DOCUMENT ME!
 	 */
 	public Translator createTranslator(ContentHandler handler) {
-		return new CapabilitiesTranslator(handler, formats);
+		return new CapabilitiesTranslator(handler, formats, applicationContext);
 	}
 
 	/**
@@ -152,15 +154,18 @@ public class WMSCapsTransformer extends TransformerBase {
 
 		private Set formats;
 
+		private ApplicationContext applicationContext;
+
 		/**
 		 * Creates a new CapabilitiesTranslator object.
 		 * 
 		 * @param handler
 		 *            content handler to send sax events to.
 		 */
-		public CapabilitiesTranslator(ContentHandler handler, Set formats) {
+		public CapabilitiesTranslator(ContentHandler handler, Set formats, ApplicationContext applicationContext) {
 			super(handler, null, null);
 			this.formats = formats;
+			this.applicationContext = applicationContext;
 		}
 
 		/**
@@ -287,7 +292,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
 			start("GetLegendGraphic");
 
-			for (Iterator it = GetLegendGraphicResponse.getFormats().iterator(); it
+			for (Iterator it = GetLegendGraphicResponse.getFormats(applicationContext).iterator(); it
 					.hasNext();) {
 				element("Format", String.valueOf(it.next()));
 			}
@@ -878,7 +883,8 @@ public class WMSCapsTransformer extends TransformerBase {
 			} else {
 				String defaultFormat = GetLegendGraphicRequest.DEFAULT_FORMAT;
 
-				if (!GetLegendGraphicResponse.supportsFormat(defaultFormat)) {
+				
+				if (!GetLegendGraphicResponse.supportsFormat(defaultFormat, applicationContext)) {
 					if (LOGGER.isLoggable(Level.WARNING)) {
 						LOGGER
 								.warning(new StringBuffer(

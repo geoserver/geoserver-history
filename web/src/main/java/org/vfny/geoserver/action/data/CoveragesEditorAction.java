@@ -6,7 +6,6 @@ package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,7 +37,6 @@ import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.cs.CoordinateSystem;
@@ -47,12 +44,12 @@ import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.CoverageConfig;
-import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.form.data.CoveragesEditorForm;
+import org.vfny.geoserver.global.CoverageStoreInfo;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.CoverageUtils;
 
 /**
@@ -160,19 +157,24 @@ public final class CoveragesEditorAction extends ConfigAction {
 	private ActionForward executeEnvelope(ActionMapping mapping,
 			CoveragesEditorForm coverageForm, UserContainer user,
 			HttpServletRequest request) throws IOException, ServletException {
-		final DataConfig dataConfig = getDataConfig();
-		final CoverageStoreConfig dfConfig = dataConfig
-				.getDataFormat(coverageForm.getFormatId());
-		GridCoverage gc;
-
+		final String formatID = coverageForm.getFormatId(); 
+		final Data catalog = getData();
+		CoverageStoreInfo cvStoreInfo = catalog.getFormatInfo(formatID);
+		if(cvStoreInfo == null) {
+			cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(), catalog);
+		}
+		GridCoverage gc = null; 
+		
 		try {
-			final ServletContext sc = getServlet().getServletContext();
-			final URL url = CoverageUtils.getResource(dfConfig.getUrl(), sc
-					.getRealPath("/"));
-			final Format format = dfConfig.getFactory();
-			final GridCoverageReader reader = ((AbstractGridFormat) format)
-					.getReader(url);
+			final Format format = cvStoreInfo.getFormat();
 			final ParameterValueGroup params = format.getReadParameters();
+			GridCoverageReader reader = cvStoreInfo.getReader();
+			if (reader == null)
+				try {
+					reader = ((AbstractGridFormat) format).getReader(CoverageUtils.getResourceAsFile(cvStoreInfo.getUrl(), catalog.getBaseDir()));
+				} catch (MalformedURLException ex) {
+					throw new ServletException(ex);
+				}
             // After extracting params into a map
             List parameters = new ArrayList(); // values used for connection
 			if (params != null) {
@@ -190,8 +192,7 @@ public final class CoveragesEditorAction extends ConfigAction {
 					if (AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString().equalsIgnoreCase(key))
 						value = null;
 					else
-					    value = CoverageUtils.getCvParamValue(key, param,
-					            dfConfig.getParameters());
+					    value = CoverageUtils.getCvParamValue(key, param, cvStoreInfo.getParameters());
 					if (value != null) {
 					    //params.parameter(key).setValue(value);
 					    parameters.add(new DefaultParameterDescriptor(key, value.getClass(), null, value).createValue());
@@ -199,10 +200,6 @@ public final class CoveragesEditorAction extends ConfigAction {
 				}
 			}
 			gc = reader.read((GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]));
-                    /*params != null ? (GeneralParameterValue[]) params
-					.values().toArray(
-							new GeneralParameterValue[params.values().size()])
-					: null);*/
 			if (gc == null || !(gc instanceof GridCoverage2D))
 				throw new IOException(
 						"The requested coverage could not be found.");

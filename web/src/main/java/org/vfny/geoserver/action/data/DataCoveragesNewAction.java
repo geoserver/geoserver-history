@@ -7,12 +7,10 @@ package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,10 +31,11 @@ import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.CoverageConfig;
-import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.form.data.DataCoveragesNewForm;
 import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.CoverageStoreInfo;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageUtils;
 
@@ -80,26 +79,23 @@ public class DataCoveragesNewAction extends ConfigAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws ConfigurationException {
 
-		DataCoveragesNewForm form = (DataCoveragesNewForm) incomingForm;
-		String selectedNewCoverage = form.getSelectedNewCoverage();
-		DataConfig dataConfig = (DataConfig) request.getSession()
-				.getServletContext().getAttribute(DataConfig.CONFIG_KEY);
-		String formatID = selectedNewCoverage;
-		CoverageStoreConfig dfConfig = dataConfig.getDataFormat(formatID);
+		final DataCoveragesNewForm form = (DataCoveragesNewForm) incomingForm;
+		final String formatID = form.getSelectedNewCoverage();
+		final Data catalog = getData();
+		CoverageStoreInfo cvStoreInfo = catalog.getFormatInfo(formatID);
+		if(cvStoreInfo == null) {
+			cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(), catalog);
+		}
 		GridCoverage gc = null;
 
-		final ServletContext sc = getServlet().getServletContext();
-		final URL url;
-		try {
-			url = CoverageUtils.getResource(dfConfig.getUrl(), sc
-					.getRealPath("/"));
-		} catch (MalformedURLException e) {
-			throw new ConfigurationException(e);
-		}
-
-		final Format format = dfConfig.getFactory();
-		final GridCoverageReader reader = ((AbstractGridFormat) format)
-				.getReader(url);
+		final Format format = cvStoreInfo.getFormat(); 
+		GridCoverageReader reader = cvStoreInfo.getReader();
+		if (reader == null)
+			try {
+				reader = ((AbstractGridFormat) format).getReader(CoverageUtils.getResourceAsFile(cvStoreInfo.getUrl(), catalog.getBaseDir()));
+			} catch (MalformedURLException ex) {
+				throw new ConfigurationException(ex);
+			}
 
 		final ParameterValueGroup params = format.getReadParameters();
 
@@ -129,8 +125,7 @@ public class DataCoveragesNewAction extends ConfigAction {
                 if (key.equalsIgnoreCase(readGeometryKey)) {
                     continue;
                 }
-				value = CoverageUtils.getCvParamValue(key, param,
-						dfConfig.getParameters());
+				value = CoverageUtils.getCvParamValue(key, param, cvStoreInfo.getParameters());
 
 				if (value != null) {
                     //params.parameter(key).setValue(value);
@@ -165,13 +160,12 @@ public class DataCoveragesNewAction extends ConfigAction {
 		}
 
 		final GridCoverage2D finalCoverage = (GridCoverage2D) gc;
-		CoverageConfig cvConfig = new CoverageConfig(formatID, format, finalCoverage, request);
+		CoverageConfig coverageConfig = new CoverageConfig(formatID, format, finalCoverage, request);
 
 		request.setAttribute(NEW_COVERAGE_KEY, "true");
-		request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE,
-				cvConfig);
+		request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE, coverageConfig);
 
-		user.setCoverageConfig(cvConfig);
+		user.setCoverageConfig(coverageConfig);
 		return mapping.findForward("config.data.coverage.editor");
 	}
 }

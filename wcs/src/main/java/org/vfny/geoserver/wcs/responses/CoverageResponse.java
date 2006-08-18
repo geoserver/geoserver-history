@@ -191,21 +191,9 @@ public class CoverageResponse implements Response {
 						"supported by geoserver").toString());
 				throw newEx;
 			}
-			
-			final String formatID = meta.getFormatId();
-			final DataConfig dataConfig = (DataConfig) request
-					.getHttpServletRequest().getSession().getServletContext()
-					.getAttribute(DataConfig.CONFIG_KEY);
-			final CoverageStoreConfig dfConfig = dataConfig
-					.getDataFormat(formatID);
-			final String realPath = request.getHttpServletRequest()
-					.getRealPath("/");
-			final URL url = CoverageUtils.getResource(dfConfig.getUrl(),
-					realPath);
 
-			final Format format = dfConfig.getFactory();
-			final GridCoverageReader reader = ((AbstractGridFormat) format)
-					.getReader(url);
+			final Format format = meta.getFormatInfo().getFormat();
+			final GridCoverageReader reader = meta.getReader();
 
 			final ParameterValueGroup params = format.getReadParameters();
 			if (params != null) {

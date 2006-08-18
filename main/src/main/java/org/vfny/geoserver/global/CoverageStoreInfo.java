@@ -5,7 +5,6 @@
 package org.vfny.geoserver.global;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -394,16 +393,16 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 			// Getting coverage config
 			//
 			// /////////////////////////////////////////////////////////
-			final CoverageStoreInfo gcInfo = data.getFormatInfo(
-					id);
+			final CoverageStoreInfo gcInfo = data.getFormatInfo(id);
+			if (gcInfo == null)
+				return null;
 
 			// /////////////////////////////////////////////////////////
 			//
 			// Getting coverage reader using the format and the real path.
 			//
 			// /////////////////////////////////////////////////////////
-			final File obj=CoverageUtils.getResourceAsFile(gcInfo.getUrl(),
-					gcInfo.getBaseDir());
+			final File obj=CoverageUtils.getResourceAsFile(gcInfo.getUrl(), gcInfo.getBaseDir());
 
 			// XXX CACHING READERS HERE
 			reader= ((AbstractGridFormat) gcInfo.getFormat()).getReader(obj);
@@ -421,6 +420,10 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
 		}
 		return null;
+	}
+
+	public Map getParameters() {
+		return parameters;
 	}
 
 }

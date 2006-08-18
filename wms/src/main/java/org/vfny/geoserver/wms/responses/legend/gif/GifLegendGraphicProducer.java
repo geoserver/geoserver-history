@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses;
+package org.vfny.geoserver.wms.responses.legend.gif;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,6 +12,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 
 import com.sun.media.imageioimpl.plugins.gif.GIFImageWriter;
 import com.sun.media.imageioimpl.plugins.gif.GIFImageWriterSpi;

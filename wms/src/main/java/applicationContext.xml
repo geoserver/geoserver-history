@@ -87,6 +87,18 @@
 		parent="wmsService">
 	</bean>	
 
+	<!--  
+		Legend producer factories
+	 -->
+	<bean id="GIFLegendProducerFactory" 
+		class="org.vfny.geoserver.wms.responses.legend.gif.GIFLegendGraphicProducerFactory">
+	</bean>
+	<bean id="JaiLegendProducerFactory" 
+		class="org.vfny.geoserver.wms.responses.legend.jai.JaiLegendGraphicProducerFactory">
+	</bean>
+	<bean id="PNGLegendProducerFactory" 
+		class="org.vfny.geoserver.wms.responses.legend.png.PNGLegendGraphicProducerFactory">
+	</bean>
 	
 	<!--  
 		Map producer factories
