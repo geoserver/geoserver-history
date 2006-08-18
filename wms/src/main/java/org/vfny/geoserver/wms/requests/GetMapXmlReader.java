@@ -336,7 +336,7 @@ public class GetMapXmlReader extends XmlRequestReader {
         }
 
         getMapRequest.setLayers((MapLayerInfo[]) layers.toArray(
-                new FeatureTypeInfo[layers.size()]));
+                new MapLayerInfo[layers.size()]));
         getMapRequest.setStyles(styles);
     }
 
