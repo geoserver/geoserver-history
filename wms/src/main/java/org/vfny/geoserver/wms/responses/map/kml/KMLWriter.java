@@ -21,10 +21,13 @@ import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 import javax.media.jai.util.Range;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.TransformerException;
 
 //import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataSourceException;
+import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
@@ -52,6 +55,7 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
+import org.opengis.coverage.grid.GridCoverage;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WMSMapContext;
 
@@ -427,7 +431,7 @@ public class KMLWriter extends OutputStreamWriter {
                             LOGGER.finer(new StringBuffer("applying rule: ").append(r.toString()).toString());
                             Filter filter = r.getFilter();
                             // if there is no filter or the filter says to do the feature anyways, render it
-                            if ((filter == null) || filter.contains(feature)) {
+                            if ((filter == null) || filter.evaluate(feature)) {
                                 doElse = false;
                                 LOGGER.finer("processing Symobolizer ...");
                                 Symbolizer[] symbolizers = r.getSymbolizers();
@@ -681,12 +685,11 @@ public class KMLWriter extends OutputStreamWriter {
         	LOGGER.finer(new StringBuffer("applying symbolizer ").append(symbolizers[m]).toString());
             
             if (symbolizers[m] instanceof RasterSymbolizer) {
-            	//LOGGER.info("Removed by bao for testing");
-            	/*final GridCoverage gc = (GridCoverage) feature.getAttribute("grid");
+            	final GridCoverage gc = ((AbstractGridCoverage2DReader) feature.getAttribute("grid")).read(null);
 				final HttpServletRequest request = this.mapContext.getRequest().getHttpServletRequest();
 				final String baseURL = org.vfny.geoserver.util.Requests.getBaseUrl(request);
             	com.vividsolutions.jts.geom.Envelope envelope = this.mapContext.getRequest().getBbox();
-            	*/
+            	final StringBuffer getMapRequest = new StringBuffer();
             	/**
             	 * EXAMPLE OUTPUT:
             	 	<GroundOverlay>
@@ -704,7 +707,6 @@ public class KMLWriter extends OutputStreamWriter {
 					  </LatLonBox>
 					</GroundOverlay> 
             	 */
-            	/*
                 write(new StringBuffer("<GroundOverlay>").
                 	append("<name>").append(((GridCoverage2D)gc).getName()).append("</name>").
                 	append("<drawOrder>").append(order).append("</drawOrder>").
@@ -716,7 +718,7 @@ public class KMLWriter extends OutputStreamWriter {
 						envelope.getMaxY()
 						};
 				if (layerCounter<0) {
-					final StringBuffer getMapRequest = new StringBuffer(baseURL).append("wms?bbox=").append(BBOX[0]).append(",").
+					getMapRequest.append(baseURL).append("wms?bbox=").append(BBOX[0]).append(",").
 					append(BBOX[1]).append(",").append(BBOX[2]).append(",").append(BBOX[3]).append("&amp;styles=").
 					append(layer.getStyle().getName()).append("&amp;Format=image/png&amp;request=GetMap&amp;layers=").
 					append(layer.getTitle()).append("&amp;width="+this.mapContext.getMapWidth()+"&amp;height="+this.mapContext.getMapHeight()+"&amp;srs=EPSG:4326&amp;");
@@ -734,9 +736,9 @@ public class KMLWriter extends OutputStreamWriter {
 					append("<west>").append(BBOX[0]).append("</west>").
 					append("</LatLonBox>").
 					append("</GroundOverlay>").toString());
-                //Geometry g = findGeometry(feature, symbolizers[m]);
-                //writeRasterStyle(getMapRequest.toString(), feature.getID());
-				*/
+                Geometry g = findGeometry(feature, symbolizers[m]);
+                writeRasterStyle(getMapRequest.toString(), feature.getID());
+				
 				res = true;
             } else if(vectorResult){
                 //TODO: come back and sort out crs transformation
