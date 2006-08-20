@@ -1,0 +1,22 @@
+<projectDescription>
+  <name>web-wicket</name>
+  <comment/>
+  <projects>
+    <project>wcs</project>
+    <project>main</project>
+    <project>wfs</project>
+    <project>validation</project>
+    <project>platform</project>
+    <project>data</project>
+    <project>wms</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+      <arguments/>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

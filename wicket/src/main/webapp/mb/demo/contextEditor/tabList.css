@@ -1,0 +1,35 @@
+ul.tablist
+{
+   padding: 3px 0;
+   width: 540;
+   margin-top: 10px;
+}
+
+ul.tablist li
+{
+   list-style: none;
+   display: inline;
+   margin: 0;
+}
+
+ul.tablist li a
+{
+   text-decoration: none;
+   padding: 3px 0.5em;
+   margin-right: 3px;
+   border: 1px solid #778;
+   border-bottom: none;
+   background: #6699CC;
+   color: #FFF;
+   font-weight: bold;
+}
+
+ul.tablist li a:hover/*, li a:focus*/
+{  
+   background: #003466;
+}
+
+ul.tablist li a.current
+{
+   background: #003466;
+}

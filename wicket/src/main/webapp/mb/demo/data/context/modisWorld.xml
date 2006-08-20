@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<ViewContext  version="1.0.0" 
+              id="GDP-SearchMapContext-Modis" 
+              xmlns="http://www.opengis.net/context" 
+              xmlns:xlink="http://www.w3.org/1999/xlink" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xmlns:gdp="http://geodiscover.cgdi.ca"
+              xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd">
+  <General>
+    <Window width="400" height="250"/>
+    <BoundingBox SRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+    <Title>MODIS composite</Title>
+    <KeywordList>
+      <Keyword>MODIS</Keyword>
+    </KeywordList>
+    <Abstract>background map for use in search map widget</Abstract>
+    <LogoURL width="34" height="35" format="image/gif">
+      <OnlineResource xlink:type="simple" xlink:href="http://geodiscover.cgdi.ca/gdp/hmi/common/images/ml/ES.gif"/>
+    </LogoURL>
+    <DescriptionURL format="text/html">
+      <OnlineResource xlink:type="simple" xlink:href="http://geodiscover.cgdi.ca/gdp/about/en/9.1.4.html"/>
+    </DescriptionURL>
+    <ContactInformation>
+      <ContactPersonPrimary>
+      <ContactPerson>Michael Adair</ContactPerson>
+      <ContactOrganization>Canada Centre for Remote Sensing</ContactOrganization>
+      </ContactPersonPrimary>
+      <ContactPosition>Systems Scientist</ContactPosition>
+      <ContactAddress>
+        <AddressType>postal</AddressType>
+        <Address>615 Booth Street, room 650</Address>
+        <City>Ottawa</City>
+        <StateOrProvince>Ontario</StateOrProvince>
+        <PostCode>K1A 0E9</PostCode>
+        <Country>Canada</Country>
+      </ContactAddress>
+      <ContactVoiceTelephone>+1 613 947 1342</ContactVoiceTelephone>
+      <ContactFacsimileTelephone>+1 613 947 2410</ContactFacsimileTelephone>
+      <ContactElectronicMailAddress>mike.adair@ccrs.nrcan.gc.ca</ContactElectronicMailAddress>
+    </ContactInformation>
+  </General>
+
+  <LayerList>
+      <Layer hidden="0" queryable="0">
+      <Server version="1.1.0" service="OGC">
+        <OnlineResource xlink:href="http://ceoware2.ccrs.nrcan.gc.ca/cubewerx/cubeserv/cubeserv.cgi" xlink:type="simple"/>
+      </Server>
+      <Name>COASTL_BND_1M:Foundation</Name> 
+      <Title>Coastlines</Title> 
+      <Abstract>info</Abstract>
+      <DataURL>
+        <OnlineResource xlink:href="http://www.cits.rncan.gc.ca/" xlink:type="simple"/>
+      </DataURL>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+      </FormatList>
+      <StyleList>
+        <Style current="1">
+          <Name>default</Name>
+          <Title>default</Title>
+        </Style>
+      </StyleList>
+      <Extension>
+        <LatLongBoundingBox xmlns="gdp" SRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Extension>
+    </Layer>
+
+    <Layer hidden="0" queryable="0">
+      <Server version="1.1.0" service="OGC">
+        <OnlineResource xlink:href="http://mapserv2.esrin.esa.it/cubestor/cubeserv/cubeserv.cgi" xlink:type="simple"/>
+      </Server>
+      <Name>WORLD_MODIS_1KM:MapAdmin</Name>
+      <Title>Modis world composite</Title>
+      <Abstract>info</Abstract>
+      <DataURL>
+        <OnlineResource xlink:href="http://www.cits.rncan.gc.ca/" xlink:type="simple"/>
+      </DataURL>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/jpg</Format>
+      </FormatList>
+      <StyleList>
+        <Style current="1">
+          <Name>default</Name>
+          <Title>default</Title>
+        </Style>
+      </StyleList>
+      <Extension>
+        <LatLongBoundingBox xmlns="gdp" SRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Extension>
+    </Layer>
+
+    <Layer hidden="0" queryable="0">
+      <Server version="1.1.0" service="OGC">
+        <OnlineResource xlink:href="http://ceoware2.ccrs.nrcan.gc.ca/cubewerx/cubeserv/cubeserv.cgi" xlink:type="simple"/>
+      </Server>
+      <Name>POLBNDL_BND_1M:Foundation</Name>
+      <Title>Political Boundaries</Title>
+      <Abstract>info</Abstract>
+      <DataURL>
+        <OnlineResource xlink:href="http://www.cits.rncan.gc.ca/" xlink:type="simple"/>
+      </DataURL>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+      </FormatList>
+      <StyleList>
+        <Style current="1">
+          <Name>default</Name>
+          <Title>default</Title>
+        </Style>
+      </StyleList>
+      <Extension>
+        <LatLongBoundingBox xmlns="gdp" SRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Extension>
+    </Layer>
+  </LayerList>
+</ViewContext>
