@@ -5,10 +5,10 @@
     <project>wcs</project>
     <project>main</project>
     <project>wfs</project>
-    <project>validation</project>
-    <project>platform</project>
     <project>data</project>
+    <project>validation</project>
     <project>wms</project>
+    <project>platform</project>
   </projects>
   <buildSpec>
     <buildCommand>

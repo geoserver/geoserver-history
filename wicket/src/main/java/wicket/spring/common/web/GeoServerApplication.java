@@ -79,7 +79,7 @@ public class GeoServerApplication extends SpringWebApplication {
 	}
 
 	public Class getHomePage() {
-		return HomePage.class;
+		return WelcomePage.class;
 	}
 
 }
