@@ -2,6 +2,8 @@
    <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">  
    <head>
        <wicket:head>
+		 <meta name="keywords" content="(GeoServer) (GIS) (Geographic Information Systems) (WMS) (WFS) (WCS)"/>
+		 <meta name="description" content="Welcome to GeoServer 1.4.x - WCS"/>
        </wicket:head>
    </head>
    <body>
@@ -15,6 +17,12 @@
 			<a href="#" wicket:id="proxy-link">proxy approach</a>
 			<br/>
 			This approach wraps the static lookups for dependencies inside dynamic proxies. This allows the code to be decoupled from the application and easy to unit test.
+			<br/><br/><br/>
+			This examples project demonstrates the modularization of GeoServer WEB UI.
+			<br/><br/>
+			<a href="#" wicket:id="wcs-link">WCS Module Hello Page!</a>
+			<br/>
+			All necessary resources are located into the wcs jar file in the classpath. The main web application does not know anything about module interface.
 			<br/><br/>
        </span>
    </body>

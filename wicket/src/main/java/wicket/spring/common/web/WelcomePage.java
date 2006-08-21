@@ -3,6 +3,7 @@ package wicket.spring.common.web;
 import wicket.markup.html.link.Link;
 import wicket.spring.direct.web.DirectPage;
 import wicket.spring.proxy.web.ProxyPage;
+import wicket.spring.wcs.web.WCSHelloWorld;
 
 /**
  * Welcome Page
@@ -27,5 +28,14 @@ public class WelcomePage extends BasePage {
 			}
 
 		});
+
+		add(new Link("wcs-link") {
+
+			public void onClick() {
+				setResponsePage(new WCSHelloWorld());
+			}
+
+		});
+
 	}
 }
