@@ -47,8 +47,8 @@ public class SurefireReportMerger extends AbstractMojo {
 		}
 		
 		if ( !root.isExecutionRoot() ) {
-			String msg = "Could not locate execution root";
-			throw new MojoExecutionException( msg );
+			String msg = "Could not find execution root for:" + project.getName() + ". Skipping.";
+			getLog().warn( msg );
 		}
 		
 		//make the target reports directory
