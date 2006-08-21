@@ -48,7 +48,7 @@ public class ApplicationState implements PlugIn, InitializingBean  {
     /** Non null if configuration has been edited (but not applied) */
     private Date configTimestamp;
     
-    /** Non null if the geoserve setup has been changed (but not saved) */
+    /** Non null if the geoserver setup has been changed (but not saved) */
     private Date appTimestamp;
     
     /** Non null if the modification date of the xml files is known */

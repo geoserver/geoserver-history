@@ -6,7 +6,6 @@ import wicket.markup.html.link.ExternalLink;
 import wicket.model.StringResourceModel;
 
 public class MainLayout extends Border {
-
 	public MainLayout(String id) {
 		super(id);
 		//TODO: create & add any components that always appear on every page
@@ -19,11 +18,9 @@ public class MainLayout extends Border {
 		add(new ExternalLink("labelCreditsUrl", new StringResourceModel("label.credits.url", this, null)));
 	}
 
-//	/* (non-Javadoc)
-//	 * @see wicket.MarkupContainer#newMarkupResourceStream(java.lang.Class)
-//	 */
-//	public IResourceStream newMarkupResourceStream(Class layoutClass) {
-//		return new UrlResourceStream(layoutClass.getResource("MainLayout.html"));
-//	}
+	public MainLayout(String id, Border layer) {
+		this(id);
+		add(layer);
+	}
 	
 }

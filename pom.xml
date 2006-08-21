@@ -103,7 +103,7 @@
 				<version>${gt.version}</version>
 			</dependency>
 
-			<dependency>
+			<!--dependency>
 				<groupId>it.geosolutions</groupId>
 				<artifactId>streams</artifactId>
 				<version>1.0</version>
@@ -117,7 +117,7 @@
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-imageio-arcgrid</artifactId>
 				<version>2.3-MODIFIED</version>
-			</dependency>
+			</dependency-->
 
 			<dependency>
 				<groupId>org.geotools</groupId>
@@ -705,8 +705,8 @@
 		<module>wfs</module>
 		<module>wms</module>
 		<module>validation</module>
-		<module>web</module>
-		<!--module>wicket</module-->
+		<!--module>web</module-->
+		<module>wicket</module>
 		<module>maven</module>
 		<!--module>release</module-->
 		<module>test</module>

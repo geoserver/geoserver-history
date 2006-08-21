@@ -11,15 +11,15 @@ parameters repository for all featuretypes it holds.
 <parameter value = "file:data/data/nyc/giant_polygon.shp" name = "url"  />
 </connectionParams>
 </datastore>
+<datastore namespace = "topp" enabled = "true" id = "states_shapefile" >
+<connectionParams>
+<parameter value = "file:data/data/shapefiles/states.shp" name = "url"  />
+</connectionParams>
+</datastore>
 <datastore namespace = "tiger" enabled = "true" id = "DS_poi" >
 <connectionParams>
 <parameter value = "tiger" name = "namespace"  />
 <parameter value = "file:data/data/nyc/poi.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "topp" enabled = "true" id = "states_shapefile" >
-<connectionParams>
-<parameter value = "file:data/data/shapefiles/states.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "topp" enabled = "true" id = "tasmania_cities" >
@@ -32,26 +32,26 @@ parameters repository for all featuretypes it holds.
 <parameter value = "file:data/data/taz_shapes/tasmania_roads.shp" name = "url"  />
 </connectionParams>
 </datastore>
+<datastore namespace = "topp" enabled = "true" id = "tasmania_state_boundaries" >
+<connectionParams>
+<parameter value = "file:data/data/taz_shapes/tasmania_state_boundaries.shp" name = "url"  />
+</connectionParams>
+</datastore>
 <datastore namespace = "tiger" enabled = "true" id = "DS_poly_landmarks" >
 <connectionParams>
 <parameter value = "tiger" name = "namespace"  />
 <parameter value = "file:data/data/nyc/poly_landmarks.shp" name = "url"  />
 </connectionParams>
 </datastore>
-<datastore namespace = "topp" enabled = "true" id = "tasmania_state_boundaries" >
+<datastore namespace = "tiger" enabled = "true" id = "DS_tiger_roads" >
 <connectionParams>
-<parameter value = "file:data/data/taz_shapes/tasmania_state_boundaries.shp" name = "url"  />
+<parameter value = "tiger" name = "namespace"  />
+<parameter value = "file:data/data/nyc/tiger_roads.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "topp" enabled = "true" id = "tasmania_water_bodies" >
 <connectionParams>
 <parameter value = "file:data/data/taz_shapes/tasmania_water_bodies.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "tiger" enabled = "true" id = "DS_tiger_roads" >
-<connectionParams>
-<parameter value = "tiger" name = "namespace"  />
-<parameter value = "file:data/data/nyc/tiger_roads.shp" name = "url"  />
 </connectionParams>
 </datastore>
 </datastores>
@@ -90,7 +90,11 @@ parameters repository for all coverages it holds.
 <format namespace = "nurc" enabled = "true" id = "arcGridSample" >
 <description>A test ArcGrid Coverage</description>
 <type>ArcGrid</type>
-<url>file:data/coverages/arc_sample/g_etopo6min.asc</url>
+<url>file:data/coverages/arc_sample/a.asc.gz</url>
+<parameters>
+<parameter value = "false" name = "GRASS"  />
+<parameter value = "true" name = "Compressed"  />
+</parameters>
 </format>
 </formats>
 <!--
