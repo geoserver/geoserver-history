@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
 import org.geotools.data.DefaultQuery;
 import org.geotools.filter.Filter;
 
@@ -43,7 +45,7 @@ public class Query {
     protected String version = new String();
 
     /** The feature type name requested. */
-    protected String typeName = new String();
+    protected QName typeName ;
 
     /** The property names requested */
     protected List propertyNames = new ArrayList();
@@ -73,12 +75,13 @@ public class Query {
     	propertyNames = l;
     }
 
+    
     /**
      * Sets the feature type name for this query.
      *
      * @param typeName The featureType to query.
      */
-    public void setTypeName(String typeName) {
+    public void setTypeName( QName typeName ) {
         this.typeName = typeName;
     }
 
@@ -87,27 +90,8 @@ public class Query {
      *
      * @return The featureType to query.
      */
-    public String getTypeName() {
+    public QName getTypeName() {
         return this.typeName;
-    }
-
-    private String getName() {
-        if (typeName.indexOf(":") == -1) {
-            return typeName;
-        } else {
-            //HACK: Request kvp reader does the same thing.
-            //put in common utility, and do more efficiently (indexOf?)
-            String[] splitName = typeName.split("[:]");
-            String name = typeName;
-
-            if (splitName.length == 1) {
-                name = splitName[0];
-            } else {
-                name = splitName[splitName.length - 1];
-            }
-
-            return name;
-        }
     }
 
     /**
@@ -220,8 +204,9 @@ public class Query {
             props = (String[]) propertyNames.toArray(new String[0]);
         }
 
-        DefaultQuery query = new DefaultQuery(getName(), this.filter,
-                maxFeatures, props, this.handle);
+        DefaultQuery query = new DefaultQuery( 
+        		typeName.getLocalPart(), this.filter, maxFeatures, props, this.handle
+    		);
 
         return query;
     }
@@ -258,8 +243,9 @@ public class Query {
             filter = Filter.NONE;
         }
 
-        DefaultQuery query = new DefaultQuery(getName(), this.filter,
-                maxFeatures, props, this.handle);
+        DefaultQuery query = new DefaultQuery(
+        		typeName.getLocalPart(), this.filter, maxFeatures, props, this.handle
+    		);
 
         return query;
     }

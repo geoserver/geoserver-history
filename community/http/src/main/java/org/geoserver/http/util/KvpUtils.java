@@ -31,16 +31,16 @@ public class KvpUtils {
             "org.vfny.geoserver.requests.readers");
 
     /** Delimeter for KVPs in the raw string */
-    private static final String KEYWORD_DELIMITER = "&";
+    public static final String KEYWORD_DELIMITER = "&";
 
     /** Delimeter that seperates keywords from values */
-    private static final String VALUE_DELIMITER = "=";
+    public static final String VALUE_DELIMITER = "=";
 
     /** Delimeter for outer value lists in the KVPs */
-    protected static final String OUTER_DELIMETER = "()";
+    public static final String OUTER_DELIMETER = "()";
 
     /** Delimeter for inner value lists in the KVPs */
-    protected static final String INNER_DELIMETER = ",";
+    public static final String INNER_DELIMETER = ",";
 
     /**
      * Attempts to parse out the proper typeNames from the FeatureId filters.

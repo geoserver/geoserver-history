@@ -28,6 +28,8 @@
 		<module>preferences</module>
 		<module>wfs</module>
 		<module>web</module>
-		<module>net.opengis.wfs.basic</module>
+		<module>net.opengis.ows-1.0.0</module>
+		<module>net.opengis.wfs-1.0.0</module>
+		<module>net.opengis.wfs-1.1.0</module>
 	</modules>
 </project>

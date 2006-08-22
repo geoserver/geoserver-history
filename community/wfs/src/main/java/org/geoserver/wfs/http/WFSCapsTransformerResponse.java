@@ -6,18 +6,18 @@ import java.io.OutputStream;
 import javax.xml.transform.TransformerException;
 
 import org.geoserver.ows.http.Response;
-import org.geoserver.wfs.WFSCapsTransformer;
+import org.geotools.xml.transform.TransformerBase;
 
 public class WFSCapsTransformerResponse extends Response {
 
 	public WFSCapsTransformerResponse() {
-		super( "text/xml", WFSCapsTransformer.class );
+		super( "text/xml", TransformerBase.class );
 	}
 
-	public void write(Object value, OutputStream output, Object operation)
+	public void write( Object value, OutputStream output, Object operation )
 			throws IOException {
 		
-		WFSCapsTransformer tx = (WFSCapsTransformer) value;
+		TransformerBase tx = (TransformerBase) value;
 		try {
 			tx.transform( this, output );
 		} 

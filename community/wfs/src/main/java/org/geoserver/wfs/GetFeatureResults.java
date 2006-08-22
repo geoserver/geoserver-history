@@ -42,12 +42,19 @@ public class GetFeatureResults {
     /** the feature producer being used to encode features */
     private FeatureProducer producer;
     
+    /** the handle of the request */
+    private String handle;
+    
+    /** the queries forming the request */
+    private List queries;
+    
     /**
      * Creates a new GetFeatureResults object.
      */
     public GetFeatureResults() {
         features = new ArrayList(2);
         typeInfo = new ArrayList(2);
+        queries = new ArrayList();
     }
 
     /**
@@ -79,6 +86,31 @@ public class GetFeatureResults {
     public void setFeatureProducer(FeatureProducer producer) {
 		this.producer = producer;
 	}
+    
+    /**
+     * @return handle or application specific name given to the request.
+     * 
+     */
+    public String getHandle() {
+		return handle;
+	}
+    
+    public void setHandle(String handle) {
+		this.handle = handle;
+	} 
+
+    public void addQuery( Query query ) {
+    		queries.add( query );
+    }
+    
+    public void setQueries( List queries ) {
+    		this.queries = queries;
+    }
+    
+    public List getQueries() {
+    		return queries;
+    }
+    
     
     /**
      * @return the number of resultsets this object holds.

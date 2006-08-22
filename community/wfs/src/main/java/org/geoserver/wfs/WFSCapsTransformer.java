@@ -271,7 +271,7 @@ public class WFSCapsTransformer extends TransformerBase {
             //     to allow.
             
             //JD: reenable feature response delegate stuff
-              element("GML2", null); // old implementation
+//             element("GML2", null); // old implementation
             //FeatureResponseDelegateProducerSpi spi;
  
 
@@ -469,7 +469,7 @@ public class WFSCapsTransformer extends TransformerBase {
             Envelope bbox = null;
 
             try {
-				bbox = info.boundingBox();
+				bbox = info.latLongBoundingBox();
 			} 
             catch (IOException e) {
             		String msg = "Could not calculate bbox for: " + info.name();

@@ -102,8 +102,7 @@ public class DescribeFeatureTypeTypeBinding extends AbstractComplexBinding {
 		WFSBindingUtils.version( describeFeatureType, node );
 		WFSBindingUtils.outputFormat( describeFeatureType, node, "XMLSCHEMA" );
 		
-		QName typeName = (QName) node.getChildValue( QName.class );
-		describeFeatureType.setTypeName( typeName );
+		describeFeatureType.getTypeName().addAll( node.getChildValues( QName.class ) );
 		
 		return describeFeatureType;
 	}

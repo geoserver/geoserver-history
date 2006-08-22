@@ -10,6 +10,7 @@ import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.http.util.RequestUtils;
 import org.geoserver.ows.OWS;
 import org.geoserver.ows.Service;
 import org.springframework.beans.BeansException;
@@ -53,41 +54,32 @@ public class OWSInitializer implements HandlerInterceptor, ApplicationContextAwa
 					OWS ows = (OWS) service;
 					
 					//set the online resource
-					if ( ows.getOnlineResource() == null ) {
-						try {
-							URL url = new URL(
-								baseURL( request ) + descriptor.getId()
-							);
-							ows.setOnlineResource( url );
-						} 
-						catch (MalformedURLException e) {
-							throw new RuntimeException( e );
-						}
+					try {
+						URL url = new URL(
+							RequestUtils.baseURL( request ) + descriptor.getId()
+						);
+						ows.setOnlineResource( url );
+					} 
+					catch (MalformedURLException e) {
+						throw new RuntimeException( e );
+					}
 							
-					}
-					
 					//set the schema base
-					if ( ows.getSchemaBaseURL() == null ) {
-						ows.setSchemaBaseURL( baseURL( request ) + "schemas" );
-					}
+					//TODO: JD. this is only temporary
+					//ows.setSchemaBaseURL( RequestUtils.baseURL( request ) + "schemas" );
+					ows.setSchemaBaseURL( "http://schemas.opengis.net/" );
 					
 					//set the charset
-					if ( ows.getCharSet() == null ) {
-						Charset charSet = null;
-						try {
-							charSet = Charset.forName( request.getCharacterEncoding() );
-						}
-						catch( Exception e ) {
-							charSet = Charset.forName( "UTF-8" );
-						}
-						
-						ows.setCharSet( charSet );
+				
+					Charset charSet = null;
+					try {
+						charSet = Charset.forName( request.getCharacterEncoding() );
+					}
+					catch( Exception e ) {
+						charSet = Charset.forName( "UTF-8" );
 					}
 					
-					//set the schema base
-					
-					
-					
+					ows.setCharSet( charSet );
 				}
 			}
 		}
@@ -111,15 +103,5 @@ public class OWSInitializer implements HandlerInterceptor, ApplicationContextAwa
 		
 		//do nothing
 
-	}
-	
-
-	//JD: move this method into utility class, and have old "Requests" class
-	// delegate to it
-	String baseURL( HttpServletRequest req ) {
-		String url = req.getScheme() + "://" + req.getServerName() + ":"
-        + req.getServerPort() + req.getContextPath() +"/";
-		
-		return url;
 	}
 }

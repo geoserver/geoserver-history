@@ -11,21 +11,39 @@ import org.geoserver.ows.ServiceException;
  */
 public class WFSException extends ServiceException {
 
+	public WFSException( String message ) {
+		super( message );
+	}
+	
+	public WFSException(String message, String code, String locator) {
+		super(message, code, locator);
+	}
+
 	public WFSException(String message, String code) {
 		super(message, code);
+	}
+
+	public WFSException(String message, Throwable cause, String code, String locator) {
+		super(message, cause, code, locator);
 	}
 
 	public WFSException(String message, Throwable cause, String code) {
 		super(message, cause, code);
 	}
 
-	public WFSException(String code) {
-		super(code);
+	public WFSException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public WFSException(Throwable cause, String code, String locator) {
+		super(cause, code, locator);
 	}
 
 	public WFSException(Throwable cause, String code) {
 		super(cause, code);
-	
 	}
-    
+
+	public WFSException(Throwable cause) {
+		super(cause);
+	}
 }

@@ -40,6 +40,8 @@ public class GetCapabilities {
 	}
 	
 	public WFSCapsTransformer getCapabilities( GetCapabilitiesType request ) {
+		this.request = request;
+		
 		WFSCapsTransformer transformer = new WFSCapsTransformer( wfs, catalog );
         transformer.setIndentation( 2 );
 

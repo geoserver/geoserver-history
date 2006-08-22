@@ -3,6 +3,8 @@ package org.geoserver.ows.http;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.geoserver.ows.ServiceException;
+
 /**
  * Response to an operation.
  * <p>
@@ -49,11 +51,12 @@ public abstract class Response {
 	 * @param output The output stream.
 	 * @param operation The operation which resulted in <code>value</code>
 	 * 
-	 * @throws IOException
+	 * @throws IOException Any I/O errors that occur
+	 * @throws ServiceException Any service errors that occur
 	 */
 	abstract public void write( Object value, OutputStream output, Object operation ) 
-		throws IOException;
+		throws IOException, ServiceException;
 
 	abstract public void abort( Object value, OutputStream output, Object operation ) 
-		throws IOException;
+		throws IOException, ServiceException;
 }

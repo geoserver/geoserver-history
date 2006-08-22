@@ -16,6 +16,7 @@ import javax.xml.transform.TransformerException;
 
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
+import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.ServiceException;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureResults;
@@ -60,21 +61,23 @@ public class GML2FeatureProducer implements FeatureProducer {
 
     /** will be true if GML2-GZIP output format was requested */
     private boolean compressOutput = false;
-
+    
     /**
-     * the results of a getfeature request wich this object will encode as GML2
+     * WFS configuration
      */
-    private GetFeatureResults results;
-
-    /** The getFeature operation */
-    GetFeature operation;
+    private WFS wfs;
+    /**
+     * The catalog
+     */
+    private GeoServerCatalog catalog;
     
     /**
      * Creates the producer with a reference to the GetFeature operation 
      * using it.
      */
-    public GML2FeatureProducer( GetFeature operation ) {
-    		this.operation = operation;
+    public GML2FeatureProducer( WFS wfs, GeoServerCatalog catalog ) {
+    		this.wfs = wfs;
+    		this.catalog = catalog;
     }
 
     /**
@@ -101,20 +104,14 @@ public class GML2FeatureProducer implements FeatureProducer {
     public void prepare(String outputFormat, GetFeatureResults results)
         throws IOException {
         this.compressOutput = formatNameCompressed.equalsIgnoreCase(outputFormat);
-        this.results = results;
-
+        
         transformer = new FeatureTransformer();
 
         FeatureTypeNamespaces ftNames = transformer.getFeatureTypeNamespaces();
-        int maxFeatures = operation.getMaxFeatures();
-
-        StringBuffer typeNames = new StringBuffer();
+     
         FeatureResults features;
         FeatureTypeInfo meta = null;
         String prefix = null;
-        
-        GeoServerCatalog catalog = operation.getCatalog();
-        WFS wfs = operation.getWFS();
         
         int resCount = results.getResultsetsCount();
         Map ftNamespaces = new HashMap(resCount);
@@ -132,10 +129,10 @@ public class GML2FeatureProducer implements FeatureProducer {
                 ftNamespaces.put(uri, location + "," + meta.name());
             } 
             else {
-            		 
-                ftNamespaces.put(
-                		uri, wfs.getOnlineResource() + "request=DescribeFeatureType&typeName=" + meta.name()
-            		);
+            		String location = ResponseUtils.appendQueryString( 
+        				wfs.getOnlineResource().toString(), "request=DescribeFeatureType&typeName=" + meta.name()
+    				);
+                ftNamespaces.put( uri, location );
             }
         }
 
@@ -148,8 +145,8 @@ public class GML2FeatureProducer implements FeatureProducer {
         transformer.setFeatureBounding(wfs.isFeatureBounding());
         transformer.setEncoding(wfs.getCharSet());
 
-        String wfsSchemaLoc = wfs.getSchemaBaseURL()
-            + "wfs/1.0.0/WFS-basic.xsd";
+        String wfsSchemaLoc = 
+        		ResponseUtils.appendPath( wfs.getSchemaBaseURL() , "wfs/1.0.0/WFS-basic.xsd" );
 
         transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
 
@@ -200,7 +197,7 @@ public class GML2FeatureProducer implements FeatureProducer {
      * @throws IOException DOCUMENT ME!
      * @throws IllegalStateException DOCUMENT ME!
      */
-    public void encode(OutputStream output)
+    public void encode( OutputStream output, GetFeatureResults results )
         throws ServiceException, IOException {
     	
         if (results == null) {
@@ -236,7 +233,7 @@ public class GML2FeatureProducer implements FeatureProducer {
         } 
         catch (TransformerException gmlException) {
             ServiceException serviceException = 
-            		new ServiceException(operation .getHandle() + " error:" + gmlException.getMessage());
+            		new ServiceException(results.getHandle() + " error:" + gmlException.getMessage());
             serviceException.initCause(gmlException);
             throw serviceException;
         }
@@ -244,6 +241,6 @@ public class GML2FeatureProducer implements FeatureProducer {
     
     public void produce(String outputFormat, GetFeatureResults results, OutputStream output) throws ServiceException, IOException {
     		prepare( outputFormat, results );
-    		encode( output );
+    		encode( output, results  );
     }
 }

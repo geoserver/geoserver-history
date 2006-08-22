@@ -6,6 +6,7 @@ package org.geoserver.wfs;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,10 +18,18 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.QueryType;
+import net.opengis.wfs.WFSFactory;
+
+import org.eclipse.emf.common.util.EList;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.AttributeTypeInfo;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.ows.ServiceException;
+import org.geoserver.wfs.http.TypeNameKvpReader;
 import org.geotools.catalog.GeoResource;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
@@ -31,13 +40,21 @@ import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Transaction;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.FidFilter;
+import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
+import org.geotools.resources.Utilities;
+import org.opengis.filter.FeatureId;
+import org.opengis.filter.expression.PropertyName;
+import org.opengis.filter.spatial.BBOX;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Implements the WFS GetFeature interface, which responds to requests for GML.
@@ -56,29 +73,32 @@ public class GetFeature implements ApplicationContextAware {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** Creates a max features constraint for the entire request */
-    protected int maxFeatures = Integer.MAX_VALUE; //SOFT_MAX_FEATURES;
-
+    /** The request object */
+    protected GetFeatureType request;
+    
     /** The time to hold the lock for */
     protected int lockExpiry = 0;
 
-    /** Specifies the output format */
-    protected String outputFormat = "GML2";
-
-    /** Specifices the user-defined name for the entire get feature request */
-    protected String handle = null;
-
-    /** Creates an object version type */
-    protected String featureVersion = null;
-
-    /** Creates a full list of queries */
-    protected List queries = new ArrayList();
-
+      /** feature id filters */
+    protected List featureId;
+    
+    /** filters */
+    protected List filter;
+    
+    /** property names */
+    protected List propertyName;
+   
+    /** bounding box */
+    protected Envelope bbox;
+    
     /** The catalog */
     protected GeoServerCatalog catalog;
     
     /** The wfs configuration */
     protected WFS wfs;
+    
+    /** filter factory */
+    protected FilterFactory filterFactory;
     
     /** The output stream */
     protected OutputStream outputStream;
@@ -91,9 +111,9 @@ public class GetFeature implements ApplicationContextAware {
      * 
      * @param catalog The catalog.
      */
-    public GetFeature( GeoServerCatalog catalog, WFS wfs ) {
-    		this.catalog = catalog;
+    public GetFeature( WFS wfs, GeoServerCatalog catalog) {
     		this.wfs = wfs;
+    		this.catalog = catalog;
     }
     
     /**
@@ -111,69 +131,27 @@ public class GetFeature implements ApplicationContextAware {
     }
     
     /**
-     * Sets the entire set of queries for this GetFeature request.
-     *
-     * @param queries The Querys of this request.
+     * Sets the filter factory to use to create filters.
+     * 
+     * @param filterFactory
      */
-    public void setQueries(List queries) {
-        this.queries = queries;
-    }
-
-    /**
-     * Returns a specific query from this GetFeature request.
-     *
-     * @param query a Query to add to this request.
-     */
-    public void addQuery(Query query) {
-        this.queries.add(query);
-    }
-
-    /**
-     * Returns the entire set of queries for this GetFeature request.
-     *
-     * @return The List of Query objects for this request.
-     */
-    public List getQueries() {
-        return this.queries;
-    }
-
-    /**
-     * Returns the number of queries for this GetFeature request.
-     *
-     * @return The number of queries held by this request.
-     */
-    public int getQueryCount() {
-        return this.queries.size();
-    }
-
-    /**
-     * Returns a specific query from this GetFeature request.
-     *
-     * @param i The index of the query to retrieve.
-     *
-     * @return The query at position i.
-     */
-    public Query getQuery(int i) {
-        return (Query) this.queries.get(i);
-    }
-
+    public void setFilterFactory(FilterFactory filterFactory) {
+		this.filterFactory = filterFactory;
+	}
+    
     /**
      * Sets the output format for this GetFeature request.
-     *
-     * @param outputFormat only gml2 is currently supported.
      */
     public void setOutputFormat(String outputFormat) {
-        this.outputFormat = outputFormat;
+        request().setOutputFormat( outputFormat );
     }
 
     /**
-     * Gets the output format for this GetFeature request.
-     *
-     * @return "GML2"
+     * @return the output format for this GetFeature request.
      */
     public String getOutputFormat() {
-        return this.outputFormat;
-    }
+        return request().getOutputFormat();
+    	}
 
     /**
      * Sets the user-defined name for this request.
@@ -181,7 +159,7 @@ public class GetFeature implements ApplicationContextAware {
      * @param handle The string to be used in reporting errors.
      */
     public void setHandle(String handle) {
-        this.handle = handle;
+    		request().setHandle( handle );
     }
 
     /**
@@ -190,27 +168,7 @@ public class GetFeature implements ApplicationContextAware {
      * @return The string to use in error reporting with this request.
      */
     public String getHandle() {
-        return this.handle;
-    }
-
-    /**
-     * Returns the version for the entire GetFeature request. Not currently
-     * used in GeoServer.
-     *
-     * @param featureVersion The version of the feature to retrieve.
-     */
-    public void setFeatureVersion(String featureVersion) {
-        this.featureVersion = featureVersion;
-    }
-
-    /**
-     * Returns the version for the entire GetFeature request. Not currently
-     * used in GeoServer.
-     *
-     * @return The version of the feature to retrieve.
-     */
-    public String getFeatureVersion() {
-        return featureVersion;
+        return request().getHandle();
     }
 
     /**
@@ -218,26 +176,8 @@ public class GetFeature implements ApplicationContextAware {
      *
      * @param maxFeatures The maximum number of features to return.
      */
-    public void setMaxFeatures(int maxFeatures) {
-        if (maxFeatures > 0) {
-            this.maxFeatures = maxFeatures;
-        }
-
-        //if (maxFeatures > HARD_MAX_FEATURES) {
-        //  this.maxFeatures = HARD_MAX_FEATURES;
-        //}
-    }
-
-    /**
-     * Parses the GetFeature reqeust and returns a contentHandler.
-     *
-     * @param maxFeatures The maximum number of features to return.
-     */
-    public void setMaxFeatures(String maxFeatures) {
-        if (maxFeatures != null) {
-            Integer tempInt = new Integer(maxFeatures);
-            setMaxFeatures(tempInt.intValue());
-        }
+    public void setMaxFeatures( BigInteger maxFeatures ) {
+        request().setMaxFeatures( maxFeatures );
     }
 
     /**
@@ -245,8 +185,8 @@ public class GetFeature implements ApplicationContextAware {
      *
      * @return Maximum number of features this request will return.
      */
-    public int getMaxFeatures() {
-        return this.maxFeatures;
+    public BigInteger getMaxFeatures() {
+        return request().getMaxFeatures();
     }
 
    /**
@@ -265,6 +205,72 @@ public class GetFeature implements ApplicationContextAware {
      */
     public int getLockExpiry() {
     		return lockExpiry;
+    }
+  
+    public void setTypeName(List typeName) throws WFSException {
+    		batchSet( "typeName", typeName );
+	}
+    
+    public void setFilter( List filter ) throws WFSException {
+		batchSet( "filter", filter );
+	}
+    
+    public void setPropertyName(List propertyName) throws WFSException {
+		batchSet( "propertyName", propertyName );
+	}
+    
+    protected void batchSet( String property, List values ) throws WFSException {
+    		GetFeatureType request = request();
+    		int m = values.size();
+    		int n = request.getQuery().size();
+    		
+    		if ( m == 1 && n > 1 ) {
+    			//apply single value to all queries
+    			EMFUtils.set( request.getQuery(), property, values.get( 0 ) );
+    			return;
+    		}
+    		
+    		//match up sizes
+    		if ( m > n ) {
+    			
+    			if ( n == 0 ) {
+    				//make same size, with empty objects
+    				for ( int i = 0; i < m; i++ ) {
+    					request.getQuery().add( WFSFactory.eINSTANCE.createQueryType() );
+    				}
+    			}
+    			else if ( n == 1 ) {
+    				//clone single object up to 
+    				QueryType query = (QueryType) request.getQuery().get( 0 );
+    				for ( int i = 1; i < m; i++ ) {
+    					request.getQuery().add( EMFUtils.clone( query, WFSFactory.eINSTANCE ) );
+    				}
+    				return;
+    			}
+    			else {
+    				//illegal
+        			String msg = "Specified " + m + " " + property + " for " + n + " queries.";
+        			throw new WFSException( msg );	
+    			}
+    		}
+    		
+    		EMFUtils.set( request.getQuery(), property, values );
+    	}
+    
+    public void setBBOX(Envelope bbox) {
+		this.bbox = bbox;
+	}
+    
+    public Envelope getBBOX() {
+		return bbox;
+	}
+    
+    protected GetFeatureType request() {
+    		if ( request == null ) {
+    			request = WFSFactory.eINSTANCE.createGetFeatureType();
+    		}
+    		
+    		return request;
     }
     
     /**
@@ -294,18 +300,166 @@ public class GetFeature implements ApplicationContextAware {
      * @return A GetFeatureResults object.
      */
     protected GetFeatureResults init() throws ServiceException {
+    		//build up the queries
+		EList queries = request().getQuery();
+		
+		if ( queries.isEmpty() ) {
+			String msg = "No query specified";
+			throw new WFSException( msg );
+		}
+			
+		if ( EMFUtils.isUnset( queries, "typeName" ) ) {
+			//no type names specified, try to infer from feature ids
+			if ( featureId != null ) {
+				ArrayList typeNames = new ArrayList();
+				TypeNameKvpReader reader = new TypeNameKvpReader( catalog );
+				for ( Iterator i = featureId.iterator(); i.hasNext(); ) {
+					String fid = (String) i.next();
+					int pos = fid.indexOf(".");
+	                if ( pos != -1 ) {
+	                		String typeName = fid.substring( 0, fid.lastIndexOf( "." ) );
+	                		typeNames.add( reader.qName( typeName ) );
+	                }
+				}
+				
+				EMFUtils.set( queries, "typeName", typeNames );
+			}
+		}
+		
+		if ( EMFUtils.isUnset( queries, "typeName") ) {
+			String msg = "No feature types specified";
+			throw new WFSException( msg );
+		}
+		
+		//make sure not both featureid and filter specified
+		if ( featureId != null && EMFUtils.isSet( queries, "filter" ) ) {
+			String msg = "featureid and filter both specified but are mutually exclusive";
+			throw new WFSException( msg );
+		}
+		//make sure not both featureid and bbox specified
+		if ( featureId != null && bbox != null ) {
+			String msg = "featureid and bbox both specified but are mutually exclusive";
+			throw new WFSException( msg );
+		}
+		//make sure not both filter and bbox specified
+		if ( bbox != null && EMFUtils.isSet( queries, "filter") ) {
+			String msg = "bbox and filter both specified but are mutually exclusive";
+			throw new WFSException( msg );
+		}
+		
+		if ( featureId != null ) {
+			//set filters to fids
+			List filters = new ArrayList();
+			TypeNameKvpReader reader = new TypeNameKvpReader( catalog );
+			for ( Iterator i = featureId.iterator(); i.hasNext(); ) {
+				String fid = (String) i.next();
+				Set fids = new HashSet();
+				fids.add( fid );
+				
+				FeatureId filter = filterFactory.featureId( fids );
+				filters.add( filter );
+			}
+			
+			EMFUtils.set( queries, "filter", filters );
+		}
+		
+		if ( bbox != null ) {
+			List filters = new ArrayList();
+			for ( Iterator q = queries.iterator(); q.hasNext(); ) {
+				QueryType query = (QueryType) q.next();
+				QName typeName = query.getTypeName();
+				
+				FeatureTypeInfo featureTypeInfo = null;
+				FeatureType featureType = null;
+				try {
+					featureTypeInfo = 
+						catalog.featureType( typeName.getPrefix(), typeName.getLocalPart() );
+					featureType = featureTypeInfo.featureType();
+				}
+				catch( IOException e ) {
+					String msg = "Unable to load feature type: " + typeName;
+					throw new WFSException( msg, e );
+				}
+				
+				String name = featureType.getDefaultGeometry().getName();
+				BBOX filter = filterFactory.bbox( 
+					name, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), null	
+				);
+				filters.add( filter );
+			}
+			
+			EMFUtils.set( queries, "filter", filters );
+		}
+		
+		GetFeatureResults results = new GetFeatureResults();
+	    for ( Iterator q = queries.iterator(); q.hasNext(); ) {
+	    		QueryType query = (QueryType) q.next();
+	    		results.addQuery( query( query ) );
+	    }
+	    
+		//look up an output format, default to GML
 	    	String outputFormat = getOutputFormat();
 		if ( outputFormat == null ) {
 			//default to GML
 			outputFormat = "GML2";
 		}
-			
-	    FeatureProducer delegate = lookupProducer( outputFormat );
-	 	
-	    GetFeatureResults results = new GetFeatureResults();
-	    results.setFeatureProducer( delegate );
-	    
+		FeatureProducer delegate = lookupProducer( outputFormat );
+		results.setFeatureProducer( delegate );
+	
+//	
+//		for ( int i = 0; i < types.size(); i++ ) {
+//			QName featureType = (QName) types.get( i );
+//			List properties = null;
+//            Filter f = null;
+//            
+//            // permissive logic: lets one property list apply to all types
+//            LOGGER.finest("setting properties: " + i);
+//
+//            if ( propertyName == null || propertyName.isEmpty() ) {
+//                properties = null;
+//            }
+//            else if ( propertyName.size() == 1 ) {
+//                properties = (List) propertyName.get( 0 );
+//            } 
+//            else {
+//                properties = (List) propertyName.get( i );
+//            }
+//
+//            // permissive logic: lets one filter apply to all types
+//            LOGGER.finest("setting filters: " + i);
+//
+//            if ( filter == null || filter.isEmpty() ) {
+//                f = null;
+//            } 
+//            else if ( filter.size() == 1 ) {
+//                f = (Filter) filter.get( 0 );
+//            } 
+//            else {
+//                f = (Filter) filter.get( i );
+//            }
+//            
+//            results.addQuery( query( featureType, properties, f ) );
+//		}
+//		
+		
 	    return results;
+    }
+    
+    protected Query query( QueryType q ) {
+    		Query query = new Query();
+    		
+        query.setTypeName( q.getTypeName() );
+
+        for (int i = 0; i < q.getPropertyName().size(); i++) {
+        		PropertyName propertyName = (PropertyName) q.getPropertyName().get( i );
+            query.addPropertyName( propertyName.getPropertyName() );
+        }
+        
+        if ( q.getFilter() != null) {
+            query.addFilter( (Filter) q.getFilter() );
+        }
+
+        return query;	
     }
     
     protected FeatureProducer lookupProducer( String outputFormat ) 
@@ -316,6 +470,7 @@ public class GetFeature implements ApplicationContextAware {
     		List matches = new ArrayList();
     		for ( Iterator p = producers.iterator(); p.hasNext(); ) {
     			FeatureProducer producer = (FeatureProducer) p.next();
+    			
     			if ( producer.canProduce( outputFormat ) ) 
     				matches.add( producer );
     		}
@@ -323,28 +478,28 @@ public class GetFeature implements ApplicationContextAware {
     		if ( matches.isEmpty() ) {
     			String msg = 
 	    			"output format: " + outputFormat + " not supported by geoserver";
-	    		throw new WFSException( msg, null );
+	    		throw new WFSException( msg, "InvalidFormat" );
     		}
     		
     		if ( matches.size() > 1 ) {
     			String msg = 
     				"multiple produces found for output format: " + outputFormat;
-    			throw new WFSException( msg, null );
+    			throw new WFSException( msg );
     		}
     		
     		return (FeatureProducer) matches.get( 0 );
     }
     
-    public void getFeatureWithLock() throws ServiceException {
-		GetFeatureResults results = init();
-		
-		FeatureLock lock = featureLock();
-		results.setFeatureLock( lock );
-		
-		LOGGER.finest("FeatureWithLock using Lock:" + lock.getAuthorization());
-		
-		run( results );
-    }
+//    public void getFeatureWithLock() throws ServiceException {
+//		GetFeatureResults results = init();
+//		
+//		FeatureLock lock = featureLock();
+//		results.setFeatureLock( lock );
+//		
+//		LOGGER.finest("FeatureWithLock using Lock:" + lock.getAuthorization());
+//		
+//		run( results );
+//    }
     
     /**
      * Turn this request into a FeatureLock.
@@ -375,25 +530,25 @@ public class GetFeature implements ApplicationContextAware {
      *
      * @return
      */
-    protected FeatureLock featureLock() {
-      
-        if ((handle == null) || (handle.length() == 0)) {
-            handle = "GeoServer";
-        }
-
-        if (lockExpiry < 0) {
-            // negative time used to query if lock is available!
-            return FeatureLockFactory.generate(handle, lockExpiry);
-        }
-
-        if (lockExpiry == 0) {
-            // perma lock with no expiry!
-            return FeatureLockFactory.generate(handle, 0);
-        }
-
-        // FeatureLock is specified in seconds
-        return FeatureLockFactory.generate(handle, lockExpiry * 60 * 1000);
-    }
+//    protected FeatureLock featureLock() {
+//      
+//        if ((handle == null) || (handle.length() == 0))	 {
+//            handle = "GeoServer";
+//        }
+//
+//        if (lockExpiry < 0) {
+//            // negative time used to query if lock is available!
+//            return FeatureLockFactory.generate(handle, lockExpiry);
+//        }
+//
+//        if (lockExpiry == 0) {
+//            // perma lock with no expiry!
+//            return FeatureLockFactory.generate(handle, 0);
+//        }
+//
+//        // FeatureLock is specified in seconds
+//        return FeatureLockFactory.generate(handle, lockExpiry * 60 * 1000);
+//    }
 
     /**
      * Performs a getFeatures, or getFeaturesWithLock (using gt2 locking ).
@@ -418,9 +573,15 @@ public class GetFeature implements ApplicationContextAware {
      */
     public void getFeature() throws ServiceException {
        
+    		getFeature( request() );
+    }
+    
+    public void getFeature( GetFeatureType request ) throws ServiceException {
+    		this.request = request;
+    		
     		GetFeatureResults results = init();
         
-    		run( results );
+		run( results );
     }
     
     protected void run( GetFeatureResults results) throws ServiceException {
@@ -444,7 +605,10 @@ public class GetFeature implements ApplicationContextAware {
         FeatureTypeInfo meta = null;
         
         Query query;
-        int maxFeatures = getMaxFeatures();
+        int maxFeatures = Integer.MAX_VALUE; 
+        if ( request.getMaxFeatures() != null ) {
+        		maxFeatures = request.getMaxFeatures().intValue();
+        }
 
         Set lockedFids = new HashSet();
         Set lockFailedFids = new HashSet();
@@ -457,7 +621,7 @@ public class GetFeature implements ApplicationContextAware {
         int numberLocked;
 
         try {
-            for (Iterator it = getQueries().iterator(); it.hasNext() && (maxFeatures > 0);) {
+            for (Iterator it = results.getQueries().iterator(); it.hasNext() && (maxFeatures > 0);) {
                 query = (Query) it.next();
                 
                 meta = featureTypeInfo( query.getTypeName() );
@@ -476,7 +640,7 @@ public class GetFeature implements ApplicationContextAware {
                             + query.getTypeName() + ".  "
                             + "The possible propertyName values are: "
                             + attributeNames;
-                        throw new WFSException( mesg, null );
+                        throw new WFSException( mesg );
                     }
                 }
 
@@ -588,14 +752,12 @@ public class GetFeature implements ApplicationContextAware {
                 // I think we need to release and fail when lockAll fails
                 //
                 // abort will take care of releasing the locks
-                throw new WFSException(
-                		"Could not aquire locks for:" + lockFailedFids, null 
-            		);
+                throw new WFSException( "Could not aquire locks for:" + lockFailedFids );
             }
             
             FeatureProducer delegate = results.getFeatureProducer();
             try {
-            		delegate.produce( outputFormat, results, outputStream );	
+            		delegate.produce( request().getOutputFormat(), results, outputStream );	
             }
             catch( Throwable t ) {
             		String msg = "Error occured producing features";
@@ -620,31 +782,17 @@ public class GetFeature implements ApplicationContextAware {
         }
     }
     
-    //JD: move this method to catalog
-    FeatureTypeInfo featureTypeInfo( String name ) throws WFSException, IOException {
+    FeatureTypeInfo featureTypeInfo( QName name ) throws WFSException, IOException {
     	
-    		List resources = catalog.resources( FeatureTypeInfo.class );
-    		List metas = new ArrayList();
-    		
-    		for ( Iterator r = resources.iterator(); r.hasNext(); ) {
-    			GeoResource resource = (GeoResource) r.next();
-    			FeatureTypeInfo meta = 
-    				(FeatureTypeInfo) resource.resolve( FeatureTypeInfo.class, null );
-    			if ( name.equals( meta.getTypeName() ) )
-    				metas.add( meta );
-    			
-    		}
-    		
-    		if ( metas.isEmpty() ) {
+	    	FeatureTypeInfo meta = 
+	    		catalog.featureType( name.getPrefix(), name.getLocalPart() );
+	    	
+    		if ( meta == null ) {
         		String msg = "Could not locate " + name + " in catalog.";
-        		throw new WFSException( msg, null );
+        		throw new WFSException( msg );
         }
-        if ( metas.size() > 1 ) {
-        		String msg = "Found multiple entries under " + name + " in catalog.";
-        		throw new WFSException( msg, null );	
-        }	
-        
-        return (FeatureTypeInfo) metas.get( 0 );
+    		
+        return meta;
     }
     
     /**
@@ -654,19 +802,12 @@ public class GetFeature implements ApplicationContextAware {
      */
     public String toString() {
         StringBuffer returnString = new StringBuffer("\nRequest");
-        returnString.append(": " + handle);
-        returnString.append("\n output format:" + outputFormat);
-        returnString.append("\n max features:" + maxFeatures);
-        returnString.append("\n version:" + featureVersion);
+        returnString.append(": " + request().getHandle());
+        returnString.append("\n output format:" + request().getOutputFormat());
+        returnString.append("\n max features:" + request().getMaxFeatures());
+        
         returnString.append("\n queries: ");
 
-        Iterator iterator = queries.listIterator();
-
-        while (iterator.hasNext()) {
-            returnString.append(iterator.next().toString() + " \n");
-        }
-
-        //returnString.append("\n inside: " + filter.toString());
         return returnString.toString();
     }
 
@@ -685,75 +826,35 @@ public class GetFeature implements ApplicationContextAware {
         }
 
         GetFeature frequest = (GetFeature) obj;
-        boolean isEqual = true;
+        
+        if ( lockExpiry != frequest.lockExpiry )
+        		return false;
+        
+        if (!Utilities.equals( getMaxFeatures(), frequest.getMaxFeatures() ) )
+    			return false;
+    
+        if ( !Utilities.equals( getHandle(), frequest.getHandle() ) ) 
+        		return false;
+        
+        if ( !Utilities.equals( getOutputFormat(), frequest.getOutputFormat() ) )
+        		return false;
+        
+        if ( !Utilities.equals( request().getQuery(), frequest.request().getQuery() ) )
+        		return false;
+        	
+        if ( !Utilities.equals( featureId , frequest.featureId ) )
+    			return false;
 
-        if ((this.featureVersion == null) && (frequest.getFeatureVersion() == null)) {
-            isEqual = isEqual && true;
-        } else if ((this.featureVersion == null) || (frequest.getFeatureVersion() == null)) {
-            isEqual = false;
-        } else if (frequest.getFeatureVersion().equals(featureVersion)) {
-            isEqual = isEqual && true;
-        } else {
-            isEqual = false;
-        }
+        if ( !Utilities.equals( filter , frequest.filter ) )
+			return false;
+          
+        if ( !Utilities.equals( propertyName , frequest.propertyName ) )
+			return false;
 
-        LOGGER.finest("checking version equality: " + isEqual);
+        if ( !Utilities.equals( bbox , frequest.bbox ) )
+			return false;
 
-        if ((this.handle == null) && (frequest.getHandle() == null)) {
-            isEqual = isEqual && true;
-        } else if ((this.handle == null) || (frequest.getHandle() == null)) {
-            isEqual = false;
-        } else if (frequest.getHandle().equals(handle)) {
-            isEqual = isEqual && true;
-        } else {
-            isEqual = false;
-        }
-
-        LOGGER.finest("checking handle equality: " + isEqual);
-
-        if ((this.outputFormat == null) && (frequest.getOutputFormat() == null)) {
-            isEqual = isEqual && true;
-        } else if ((this.outputFormat == null)
-                || (frequest.getOutputFormat() == null)) {
-            isEqual = false;
-        } else if (frequest.getOutputFormat().equals(outputFormat)) {
-            isEqual = isEqual && true;
-        } else {
-            isEqual = false;
-        }
-
-        LOGGER.finest("checking output format equality: " + isEqual);
-
-        if (this.maxFeatures == frequest.getMaxFeatures()) {
-            isEqual = isEqual && true;
-        }
-
-        LOGGER.finest("checking max features equality: " + isEqual);
-
-        ListIterator internalIterator = queries.listIterator();
-        ListIterator externalIterator = frequest.getQueries().listIterator();
-
-        while (internalIterator.hasNext()) {
-            if (!externalIterator.hasNext()) {
-                isEqual = false;
-                LOGGER.finest("query lists not same size");
-
-                break;
-            } else {
-                if (((Query) internalIterator.next()).equals(
-                            (Query) externalIterator.next())) {
-                    isEqual = true && isEqual;
-                    LOGGER.finest("query properties match: " + isEqual);
-                } else {
-                    isEqual = false;
-                    LOGGER.finest("queries not equal");
-
-                    break;
-                }
-            }
-        }
-
-        return isEqual;
+        return true;
     }
 
     /**
@@ -763,9 +864,15 @@ public class GetFeature implements ApplicationContextAware {
      */
     public int hashCode() {
         int result = super.hashCode();
-        result = (23 * result) + ((queries == null) ? 0 : queries.hashCode());
-        result = (23 * result) + ((handle == null) ? 0 : handle.hashCode());
 
+        result = (23 * result) + ( getHandle() == null ? 0 : getHandle().hashCode() );
+        result = (23 * result) + ( getOutputFormat() == null ? 0 : getOutputFormat().hashCode() );
+        
+        result = (23 * result) + ( featureId == null ? 0 : featureId.hashCode() );
+        result = (23 * result) + ( filter == null ? 0 : filter.hashCode() );
+        result = (23 * result) + ( propertyName == null ? 0 : propertyName.hashCode() );
+        result = (23 * result) + ( bbox == null ? 0 : bbox.hashCode() );
+        
         return result;
     }
 }

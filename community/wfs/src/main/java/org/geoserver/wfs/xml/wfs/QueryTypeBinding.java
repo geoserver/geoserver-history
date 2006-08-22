@@ -127,7 +127,7 @@ public class QueryTypeBinding extends AbstractComplexBinding {
 		//<xsd:element maxOccurs="1" minOccurs="0" ref="ogc:Filter">
 		Filter filter = (Filter) node.getChildValue( Filter.class );
 		if ( filter == null ) {
-			filter = (Filter) org.geotools.filter.Filter.ALL;
+			filter = (Filter) org.geotools.filter.Filter.NONE;
 		}
 		queryType.setFilter( filter );
 		
@@ -135,7 +135,7 @@ public class QueryTypeBinding extends AbstractComplexBinding {
 		queryType.setHandle( (String) node.getAttributeValue( "handle" ) );
 		
 		//<xsd:attribute name="typeName" type="xsd:QName" use="required"/>
-        queryType.setTypeName( (QName) node.getChildValue( "typeName" ) );
+        queryType.setTypeName( (QName) node.getAttributeValue( "typeName" ) );
 		
 		//<xsd:attribute name="featureVersion" type="xsd:string" use="optional">  
 		queryType.setFeatureVersion( 

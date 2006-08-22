@@ -123,6 +123,7 @@ public class DispatcherTest extends TestCase {
 			(Dispatcher) context.getBean( "dispatcher" );
 		
 		MockHttpServletRequest request = new MockHttpServletRequest();
+		
 		request.setupGetContextPath("/geoserver");
 		request.setupGetMethod("GET");
 		
@@ -136,7 +137,9 @@ public class DispatcherTest extends TestCase {
 		
 		request.setupGetParameterMap( params );
 		request.setupGetInputStream(null);
-		
+		request.setupGetRequestURI( 
+			"http://localhost/geoserver/ows?service=hello&request=hello&message=HelloWorld" 
+		);
 		dispatcher.handleRequest( request, response );
 		assertEquals( params.get( "message" ), response.getOutputStreamContents() );
 	}
@@ -153,7 +156,7 @@ public class DispatcherTest extends TestCase {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setupGetContextPath("/geoserver");
 		request.setupGetMethod("POST");
-		
+		request.setupGetRequestURI( "http://localhost/geoserver/ows" );
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setupOutputStream( new MockServletOutputStream() );
 		

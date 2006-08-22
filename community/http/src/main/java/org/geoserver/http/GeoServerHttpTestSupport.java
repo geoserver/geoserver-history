@@ -1,19 +1,36 @@
 package org.geoserver.http;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Properties;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.util.PropertyResourceBundle;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import junit.framework.TestCase;
+
 import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import junit.framework.TestCase;
-
+/**
+ * Base class for http tests.
+ * 
+ * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ *
+ */
 public class GeoServerHttpTestSupport extends TestCase {
 
 	static protected Logger logger = Logger.getLogger( "org.geoserver.test" );
@@ -55,14 +72,14 @@ public class GeoServerHttpTestSupport extends TestCase {
 	
 	public String getBaseUrl() {
 		return getProtocol() + "://" + getServer() + ":" + getPort() + 
-		"/" + getContext();
+		"/" + getContext() + "/";
 	}
 	
 	protected boolean isOffline() {
 		try {
 			WebConversation conversation = new WebConversation();
 	        WebRequest request = 
-	        	new GetMethodWebRequest(getBaseUrl()+"/wfs?request=getCapabilities");
+	        	new GetMethodWebRequest(getBaseUrl()+"wfs?request=getCapabilities");
 	        
 	        conversation.getResponse( request );
 		}
@@ -73,4 +90,36 @@ public class GeoServerHttpTestSupport extends TestCase {
 		return false;
 		
 	}
+	
+	protected WebResponse get( String path ) throws Exception {
+		WebConversation conversation = new WebConversation();
+        WebRequest request = new GetMethodWebRequest( getBaseUrl() + path );
+        
+        return conversation.getResponse( request );
+	}
+	
+	protected WebResponse post( String path, String xml ) throws Exception {
+		InputStream input = new ByteArrayInputStream( xml.getBytes() );
+		WebConversation conversation = new WebConversation();
+		
+	    PostMethodWebRequest request = 
+	    		new PostMethodWebRequest(getBaseUrl()+ path, input, "text/xml" );
+	    
+	    return conversation.getResponse( request );
+	}
+	
+	protected BufferedReader reader( WebResponse response ) throws Exception {
+		return new BufferedReader( new InputStreamReader( response.getInputStream() ) );
+	}
+	
+	protected Document dom( WebResponse response ) throws Exception {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); 
+		factory.setNamespaceAware( true );
+		factory.setValidating( true );
+		
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		return builder.parse( response.getInputStream() );
+	}
+
+	
 }

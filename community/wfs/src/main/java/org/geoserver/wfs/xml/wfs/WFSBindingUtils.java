@@ -21,7 +21,7 @@ public class WFSBindingUtils {
 	 * @param object An object which contains a feature named "service"
 	 * @param node The parse node.
 	 */
-	static void service( EObject object, Node node ) {
+	public static void service( EObject object, Node node ) {
 		String service = (String) node.getAttributeValue( "service" );
 		if ( service == null ) {
 			service = "WFS";
@@ -39,7 +39,7 @@ public class WFSBindingUtils {
 	 * @param object An object which contains a feature named "version"
 	 * @param node The parse node.
 	 */
-	static void version( EObject object, Node node ) {
+	public static void version( EObject object, Node node ) {
 		String version = (String) node.getAttributeValue( "version" );
 		if ( version == null ) {
 			version = "1.0.0";
@@ -57,7 +57,7 @@ public class WFSBindingUtils {
 	 * @param object An object which contains a feature named "version"
 	 * @param node The parse node.
 	 */
-	static void outputFormat( EObject object, Node node, String defalt ) {
+	public static void outputFormat( EObject object, Node node, String defalt ) {
 		String outputFormat = (String) node.getAttributeValue( "outputFormat" );
 		if ( outputFormat == null ) {
 			outputFormat = defalt;

@@ -1,54 +1,49 @@
 package org.geoserver.wfs.http;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import org.geoserver.http.GeoServerHttpTestSupport;
 import org.w3c.dom.Document;
 
-import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.PostMethodWebRequest;
-import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 public class DescribeFeatureHttpTest extends GeoServerHttpTestSupport {
 
-		
 	public void testGet() throws Exception {
 		if ( isOffline() )
 			return;
 		
-		WebConversation conversation = new WebConversation();
-        WebRequest request = 
-        		new GetMethodWebRequest(getBaseUrl()+"/wfs?service=WFS&request=DescribeFeatureType&typeName");
-        
-        WebResponse response = 
-        		conversation.getResponse( request );
+		WebResponse response = get( "wfs?service=WFS&request=DescribeFeatureType" );
 		Document doc = response.getDOM();
-		assertEquals( "WFS_Capabilities", doc.getDocumentElement().getNodeName() );
-        
-	}
+		assertEquals( "xs:schema", doc.getDocumentElement().getNodeName() );
+    }
 	
 	public void testPost() throws Exception {
 		if ( isOffline() )
 			return;
 		
-		String xml = "<GetCapabilities service=\"WFS\" version=\"1.0.0\"" + 
-				 " xmlns=\"http://www.opengis.net/wfs\" " + 
-				 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " + 
-				 " xsi:schemaLocation=\"http://www.opengis.net/wfs " +
-				 " http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd\"/>";
+		String xml = "<wfs:DescribeFeatureType " + 
+			"service=\"WFS\" " + 
+			"version=\"1.0.0\" " + 
+			"xmlns:wfs=\"http://www.opengis.net/wfs\" />";
 	
-		InputStream input = new ByteArrayInputStream( xml.getBytes() );
-		WebConversation conversation = new WebConversation();
-        PostMethodWebRequest request = 
-        		new PostMethodWebRequest(getBaseUrl()+"/wfs", input, "text/xml" );
-        
-        WebResponse response = 
-        		conversation.getResponse( request );
-		Document doc = response.getDOM();
-		assertEquals( "WFS_Capabilities", doc.getDocumentElement().getNodeName() );
+		WebResponse response = post( "wfs", xml );
+        	Document doc = response.getDOM();
+		assertEquals( "xs:schema", doc.getDocumentElement().getNodeName() );
+	}
+	
+	public void testPostDummyFeature() throws Exception {
+		if ( isOffline() ) 
+			return;
+		
+		String xml = "<wfs:DescribeFeatureType " + 
+		"service=\"WFS\" " + 
+		"version=\"1.0.0\" " + 
+		"xmlns:wfs=\"http://www.opengis.net/wfs\" >" + 
+		 " <wfs:TypeName>cgf:DummyFeature</wfs:TypeName>" + 
+		"</wfs:DescribeFeatureType>";
+
+		WebResponse response = post( "wfs", xml );
+    		Document doc = response.getDOM();
+		assertEquals( "ServiceExceptionReport", doc.getDocumentElement().getNodeName() );
 		
 	}
 }

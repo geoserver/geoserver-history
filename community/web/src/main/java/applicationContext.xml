@@ -69,4 +69,5 @@
     
   </bean>
   
+  <!-- bean id="jspInitializer" class="org.geoserver.web.JSPInitializer"/-->
 </beans>

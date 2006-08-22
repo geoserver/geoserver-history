@@ -17,6 +17,10 @@
   <name>Web Application Module</name>
 
   <dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
   	<dependency>
   		<groupId>org.geoserver</groupId>
   		<artifactId>wfs2</artifactId>
@@ -40,6 +44,7 @@
         <version>6.0.0beta16</version>
         <configuration>
           <contextPath>geoserver</contextPath>
+					<webApp>${project.build.directory}/geoserver</webApp>
         </configuration>
       </plugin>
 	</plugins>
