@@ -151,7 +151,7 @@ public class InfoAdapterFactory implements ResolveAdapterFactory,
 				info.setTitle( rInfo.getTitle() );
 			
 				if ( rInfo.getKeywords() != null ) {
-					info.setKeywords( new ArrayList( Arrays.asList( rInfo.getKeywords() ) ) );
+					info.setKeywords( rInfo.getKeywords() );
 				}
 				
 				info.setEnabled( false );

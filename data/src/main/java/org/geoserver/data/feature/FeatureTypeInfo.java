@@ -96,7 +96,7 @@ public class FeatureTypeInfo {
     /**
      * List of keywords for Web Register Services
      */
-    private List keywords;
+    private String[] keywords;
     /** 
      * typeName as defined by gt2 DataStore 
      */
@@ -197,7 +197,7 @@ public class FeatureTypeInfo {
      * JD: this method used to do what {@link #latLongBoundingBox()} does, 
      * hunt down calls and change.
      */
-    public Envelope getLatLongBoundingBox() throws IOException {
+    public Envelope getLatLongBoundingBox()  {
         return latLongBBox;
     }
 
@@ -238,13 +238,13 @@ public class FeatureTypeInfo {
      * Keywords are often used by Search engines or Catalog services.
      * </p>
      *
-     * @return List the FeatureTypeInfo keywords
+     * @return Array of the FeatureTypeInfo keywords
      */
-    public List getKeywords() {
+    public String[] getKeywords() {
         return keywords;
     }
 
-    public void setKeywords(List keywords) {
+    public void setKeywords(String[] keywords) {
 		this.keywords = keywords;
 	}
     
@@ -701,17 +701,18 @@ public class FeatureTypeInfo {
     }
     
     /**
-     * getBoundingBox purpose.
+     * Convenience method to always return a non null bounding in lat long.
      * 
      * <p>
-     * The feature source bounds.
+     * This method generated hte bounding box from the underlying feature 
+     * source if {@link #getLatLongBoundingBox()} returns <code>null</code>.
      * </p>
      *
      * @return Envelope the feature source bounds.
      *
      * @throws IOException when an error occurs
      */
-    public Envelope boundingBox() throws IOException {
+    public Envelope latLongBoundingBox() throws IOException {
     		if ( latLongBBox != null )
     			return latLongBBox;
     		
