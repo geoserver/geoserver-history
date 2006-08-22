@@ -1,5 +1,6 @@
 package org.geoserver.ows;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -8,7 +9,10 @@ import java.lang.reflect.Method;
  * An operation is nothing more then a Plain Old Java Object (POJO). It does 
  * not implement any GeoServer specific interface.
  * </p>
- * 
+ * <p>
+ * An operation descriptor is identified by an id,service pair. Two operation
+ * descriptors are considred equal if they have the same id, service pair.
+ * </p>
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
@@ -29,10 +33,24 @@ public final class Operation {
 	 */
 	Object operation;
 	
+	/**
+	 * Creates a new operation descriptor.
+	 * 
+	 * @param id Id of the operation, must not be <code>null</code>
+	 * @param service The service containing the operation, must not be <code>null</code>
+	 * @param operation
+	 */
 	public Operation( String id, Service service, Object operation ) {
 		this.id = id;
 		this.service = service;
 		this.operation = operation;
+		
+		if ( id == null ) 
+			throw new NullPointerException( "id" );
+	
+		if ( service == null ) {
+			throw new NullPointerException( "service" );
+		}
 	}
 	
 	public String getId() {
@@ -59,8 +77,7 @@ public final class Operation {
 		return false;
 	}
 	
-	public Object run ( Object input ) 
-		throws Exception {
+	public Object run ( Object input ) throws Exception {
 		
 		Method method = null;
 		
@@ -73,7 +90,8 @@ public final class Operation {
 		
 		if (method != null ) {
 			Object[] parameters = input != null ? new Object[]{input} : null;
-			return method.invoke( operation, parameters );
+			
+			return method.invoke( operation, parameters );	
 		}
 		
 		return null;
@@ -98,4 +116,31 @@ public final class Operation {
 		
 		return null;
 	}
+	
+	public boolean equals(Object obj) {
+		if ( obj == null )
+			return false;
+		
+		if ( !( obj instanceof Operation ) ) {
+			return false;
+		}
+		
+		Operation other = (Operation) obj;
+		if ( !id.equals( other.id ) ) 
+			return false;
+		
+		if ( !service.equals( other.service ) )
+			return false;
+		
+		return true;
+	}
+	
+	public int hashCode() {
+		return id.hashCode()*17 + service.hashCode();
+	}
+	
+	public String toString() {
+		return "Operation( " + id + ", " + service.getId() + " )";
+	}
+	
 }
