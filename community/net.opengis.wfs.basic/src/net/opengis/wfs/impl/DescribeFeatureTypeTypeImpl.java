@@ -6,16 +6,26 @@
  */
 package net.opengis.wfs.impl;
 
+import java.util.Collection;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.DescribeFeatureTypeType;
 import net.opengis.wfs.WFSPackage;
 
 import org.eclipse.emf.common.notify.Notification;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
+
+import org.opengis.filter.expression.PropertyName;
 
 /**
  * <!-- begin-user-doc -->
@@ -35,24 +45,14 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  */
 public class DescribeFeatureTypeTypeImpl extends EObjectImpl implements DescribeFeatureTypeType {
 	/**
-	 * The default value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
+	 * The cached value of the '{@link #getTypeName() <em>Type Name</em>}' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getTypeName()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object TYPE_NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getTypeName()
-	 * @generated
-	 * @ordered
-	 */
-	protected Object typeName = TYPE_NAME_EDEFAULT;
+	protected EList typeName = null;
 
 	/**
 	 * The default value of the '{@link #getOutputFormat() <em>Output Format</em>}' attribute.
@@ -164,20 +164,11 @@ public class DescribeFeatureTypeTypeImpl extends EObjectImpl implements Describe
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getTypeName() {
+	public EList getTypeName() {
+		if (typeName == null) {
+			typeName = new EDataTypeUniqueEList(QName.class, this, WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME);
+		}
 		return typeName;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setTypeName(Object newTypeName) {
-		Object oldTypeName = typeName;
-		typeName = newTypeName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME, oldTypeName, typeName));
 	}
 
 	/**
@@ -345,7 +336,8 @@ public class DescribeFeatureTypeTypeImpl extends EObjectImpl implements Describe
 	public void eSet(EStructuralFeature eFeature, Object newValue) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
-				setTypeName((Object)newValue);
+				getTypeName().clear();
+				getTypeName().addAll((Collection)newValue);
 				return;
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
 				setOutputFormat((String)newValue);
@@ -368,7 +360,7 @@ public class DescribeFeatureTypeTypeImpl extends EObjectImpl implements Describe
 	public void eUnset(EStructuralFeature eFeature) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
-				setTypeName(TYPE_NAME_EDEFAULT);
+				getTypeName().clear();
 				return;
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
 				unsetOutputFormat();
@@ -391,7 +383,7 @@ public class DescribeFeatureTypeTypeImpl extends EObjectImpl implements Describe
 	public boolean eIsSet(EStructuralFeature eFeature) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
-				return TYPE_NAME_EDEFAULT == null ? typeName != null : !TYPE_NAME_EDEFAULT.equals(typeName);
+				return typeName != null && !typeName.isEmpty();
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
 				return isSetOutputFormat();
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__SERVICE:

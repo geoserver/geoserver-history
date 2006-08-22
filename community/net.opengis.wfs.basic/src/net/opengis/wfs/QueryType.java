@@ -8,6 +8,8 @@ package net.opengis.wfs;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
@@ -42,8 +44,7 @@ import org.opengis.filter.expression.PropertyName;
  */
 public interface QueryType extends EObject{
 	/**
-	 * Returns the value of the '<em><b>Property Name</b></em>' attribute list.
-	 * The list contents are of type {@link org.opengis.filter.expression.PropertyName}.
+	 * Returns the value of the '<em><b>Property Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
@@ -68,10 +69,11 @@ public interface QueryType extends EObject{
 	 *                 application can determine which properties are mandatory
 	 *                 and request them in the first place.
 	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Property Name</em>' attribute list.
+	 * @return the value of the '<em>Property Name</em>' attribute.
+	 * @see #setPropertyName(PropertyName)
 	 * @see net.opengis.wfs.WFSPackage#getQueryType_PropertyName()
-	 * @model type="org.opengis.filter.expression.PropertyName" dataType="net.opengis.wfs.PropertyName"
-	 * @generated
+	 * @model type="net.opengis.wfs.PropertyName"
+	 * 
 	 */
 	EList getPropertyName();
 
@@ -175,11 +177,11 @@ public interface QueryType extends EObject{
 	 * @return the value of the '<em>Type Name</em>' attribute.
 	 * @see #setTypeName(Object)
 	 * @see net.opengis.wfs.WFSPackage#getQueryType_TypeName()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.QName" required="true"
-	 *        extendedMetaData="kind='attribute' name='typeName'"
-	 * @generated
+	 * 
+	 * @model 
+	 * 
 	 */
-	Object getTypeName();
+	QName getTypeName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.QueryType#getTypeName <em>Type Name</em>}' attribute.
@@ -189,6 +191,6 @@ public interface QueryType extends EObject{
 	 * @see #getTypeName()
 	 * @generated
 	 */
-	void setTypeName(Object value);
+	void setTypeName(QName value);
 
 } // QueryType

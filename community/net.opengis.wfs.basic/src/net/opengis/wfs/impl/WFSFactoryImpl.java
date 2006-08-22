@@ -6,6 +6,8 @@
  */
 package net.opengis.wfs.impl;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.*;
 
 import org.eclipse.emf.ecore.EClass;
@@ -64,6 +66,8 @@ public class WFSFactoryImpl extends EFactoryImpl implements WFSFactory {
 				return createPropertyNameFromString(eDataType, initialValue);
 			case WFSPackage.FILTER:
 				return createFilterFromString(eDataType, initialValue);
+			case WFSPackage.QNAME:
+				return createQNameFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -80,6 +84,8 @@ public class WFSFactoryImpl extends EFactoryImpl implements WFSFactory {
 				return convertPropertyNameToString(eDataType, instanceValue);
 			case WFSPackage.FILTER:
 				return convertFilterToString(eDataType, instanceValue);
+			case WFSPackage.QNAME:
+				return convertQNameToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -178,6 +184,24 @@ public class WFSFactoryImpl extends EFactoryImpl implements WFSFactory {
 	 * @generated
 	 */
 	public String convertFilterToString(EDataType eDataType, Object instanceValue) {
+		return super.convertToString(eDataType, instanceValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public QName createQNameFromString(EDataType eDataType, String initialValue) {
+		return (QName)super.createFromString(eDataType, initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertQNameToString(EDataType eDataType, Object instanceValue) {
 		return super.convertToString(eDataType, instanceValue);
 	}
 

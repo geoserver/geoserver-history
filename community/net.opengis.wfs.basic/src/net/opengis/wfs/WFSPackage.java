@@ -71,7 +71,7 @@ public interface WFSPackage extends EPackage{
 	int DESCRIBE_FEATURE_TYPE_TYPE = 0;
 
 	/**
-	 * The feature id for the '<em><b>Type Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Type Name</b></em>' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -421,6 +421,17 @@ public interface WFSPackage extends EPackage{
 
 
 	/**
+	 * The meta object id for the '<em>QName</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see javax.xml.namespace.QName
+	 * @see net.opengis.wfs.impl.WFSPackageImpl#getQName()
+	 * @generated
+	 */
+	int QNAME = 8;
+
+
+	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.DescribeFeatureTypeType <em>Describe Feature Type Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -431,10 +442,10 @@ public interface WFSPackage extends EPackage{
 	EClass getDescribeFeatureTypeType();
 
 	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.DescribeFeatureTypeType#getTypeName <em>Type Name</em>}'.
+	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.DescribeFeatureTypeType#getTypeName <em>Type Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Type Name</em>'.
+	 * @return the meta object for the attribute list '<em>Type Name</em>'.
 	 * @see net.opengis.wfs.DescribeFeatureTypeType#getTypeName()
 	 * @see #getDescribeFeatureTypeType()
 	 * @generated
@@ -776,6 +787,17 @@ public interface WFSPackage extends EPackage{
 	 * @generated
 	 */
 	EDataType getFilter();
+
+	/**
+	 * Returns the meta object for data type '{@link javax.xml.namespace.QName <em>QName</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>QName</em>'.
+	 * @see javax.xml.namespace.QName
+	 * @model instanceClass="javax.xml.namespace.QName"
+	 * @generated
+	 */
+	EDataType getQName();
 
 	/**
 	 * Returns the factory that creates the instances of the model.

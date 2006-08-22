@@ -6,6 +6,10 @@
  */
 package net.opengis.wfs;
 
+import org.eclipse.emf.common.util.EList;
+
+import java.util.List;
+
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -43,7 +47,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model extendedMetaData="name='DescribeFeatureTypeType' kind='elementOnly'"
  * @generated
  */
-public interface DescribeFeatureTypeType extends EObject {
+public interface DescribeFeatureTypeType extends EObject{
 	/**
 	 * Returns the value of the '<em><b>Type Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -57,21 +61,11 @@ public interface DescribeFeatureTypeType extends EObject {
 	 * @return the value of the '<em>Type Name</em>' attribute.
 	 * @see #setTypeName(Object)
 	 * @see net.opengis.wfs.WFSPackage#getDescribeFeatureTypeType_TypeName()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.QName"
-	 *        extendedMetaData="kind='element' name='TypeName' namespace='##targetNamespace'"
-	 * @generated
+	 * 
+	 * @model type="javax.xml.namespace.QName" 
+	 * 
 	 */
-	Object getTypeName();
-
-	/**
-	 * Sets the value of the '{@link net.opengis.wfs.DescribeFeatureTypeType#getTypeName <em>Type Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Type Name</em>' attribute.
-	 * @see #getTypeName()
-	 * @generated
-	 */
-	void setTypeName(Object value);
+	EList getTypeName();
 
 	/**
 	 * Returns the value of the '<em><b>Output Format</b></em>' attribute.
