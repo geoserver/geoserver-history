@@ -12,26 +12,53 @@ public class ServiceException extends Exception {
 	 * Application specfic code.
 	 */
 	String code;
+	/**
+	 * Application specific locator
+	 */
+	String locator;
 	
-	public ServiceException( String code ) {
-		super();
+	public ServiceException( String message ) {
+		super( message );
+	}
+	
+	public ServiceException( String message, Throwable cause ) {
+		super( message, cause );
 	}
 
-	public ServiceException( String message, Throwable cause, String code ) {
-		super(message, cause);
+	public ServiceException( String message, Throwable cause, String code  ) {
+		this( message, cause );
 		this.code = code;
 	}
 
-	public ServiceException( String message, String code) {
-		super(message);
-		this.code = code;
+	public ServiceException( String message, Throwable cause, String code, String locator ) {
+		this( message, cause, code );
+		this.locator = locator;
 	}
 
+	public ServiceException( String message, String code ) {
+		super( message );
+		this.code = code;
+	}
+	
+	public ServiceException( String message, String code, String locator ) {
+		this( message, code );
+		this.locator = locator;
+	}
+
+	public ServiceException( Throwable cause ) {
+		super( cause );
+	}
+	
 	public ServiceException( Throwable cause, String code ) {
-		super(cause);
+		this( cause );
 		this.code = code;
 	}
-
+	
+	public ServiceException( Throwable cause, String code, String locator ) {
+		this( cause, code );
+		this.locator = locator;
+	}
+	
 	/**
 	 * @return The application specifc code of the exception.
 	 */
@@ -46,5 +73,21 @@ public class ServiceException extends Exception {
 	 */
 	public void setCode(String code) {
 		this.code = code;
+	}
+	
+	/**
+	 * @return The application specific locator. 
+	 */
+	public String getLocator() {
+		return locator;
+	}
+	
+	/**
+	 * Sets the locator for the exception.
+	 * 
+	 * @return The application specific locator.
+	 */
+	public void setLocator(String locator) {
+		this.locator = locator;
 	}
 }
