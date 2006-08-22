@@ -223,8 +223,7 @@ public class CoverageUtils {
 			CoordinateReferenceSystem sourceCRS,
 			CoordinateReferenceSystem destCRS) {
 		try {
-			CoordinateOperation op = operationFactory.createOperation(
-					sourceCRS, destCRS);
+			CoordinateOperation op = operationFactory.createOperation(sourceCRS, destCRS);
 			if (op != null)
 				return op.getMathTransform();
 		} catch (OperationNotFoundException e) {

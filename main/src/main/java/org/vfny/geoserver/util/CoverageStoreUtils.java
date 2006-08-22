@@ -310,7 +310,7 @@ public final class CoverageStoreUtils {
 		//
 		////
 		final CoordinateReferenceSystem targetCRS = DefaultGeographicCRS.WGS84;
-		final MathTransform mathTransform = CRS.transform(sourceCRS, targetCRS);
+		final MathTransform mathTransform = CRS.transform(sourceCRS, targetCRS, true);
 		final GeneralEnvelope targetEnvelope;
 		if (!mathTransform.isIdentity())
 			targetEnvelope = CRSUtilities.transform(mathTransform, envelope);
