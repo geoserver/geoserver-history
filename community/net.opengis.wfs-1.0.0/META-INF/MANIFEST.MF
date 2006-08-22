@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WFS Basic Model
+Bundle-SymbolicName: net.opengis.wfs.basic; singleton := true
+Bundle-Version: 1.0.0
+Bundle-Vendor: Opengis.net
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.emf.ecore
