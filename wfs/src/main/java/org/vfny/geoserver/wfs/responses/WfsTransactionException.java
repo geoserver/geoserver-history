@@ -112,7 +112,7 @@ public class WfsTransactionException extends WfsException {
     public String getXmlResponse() {
         WfsTransResponse response = new WfsTransResponse(WfsTransResponse.FAILED,
                 handle, true);
-        response.setLocator(locator);
+        response.setLocator(getLocator());
 
         //right now defaults to full stack traces, should change before
         //production release.
