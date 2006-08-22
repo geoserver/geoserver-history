@@ -9,6 +9,10 @@ import java.io.Writer;
 import java.util.logging.Logger;
 
 
+//TODO: JD: move this class to http module
+/**
+ * @deprecated use the ResponseUtils class in the http module.
+ */
 public class ResponseUtils {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
