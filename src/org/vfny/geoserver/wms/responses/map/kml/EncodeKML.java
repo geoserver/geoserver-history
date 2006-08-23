@@ -15,18 +15,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.GraphicsJAI;
-import javax.media.jai.PlanarImage;
 
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
@@ -35,9 +30,7 @@ import org.geotools.data.Query;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
-//import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
@@ -262,7 +255,7 @@ public class EncodeKML {
         FilterFactory fFac = new FilterFactoryImpl();
         
         writer.startDocument("GeoServer", null);
-        for (int i = 0; i < nLayers; i++) {
+        for (int i = 0; i < nLayers; i++) { // for every layer specified in the request
             MapLayer layer = layers[i];
             FeatureReader featureReader = null;
             FeatureSource fSource = layer.getFeatureSource();
@@ -278,35 +271,6 @@ public class EncodeKML {
             }
 
             try {
-            	Filter filter = null;
-            	/* WCS branch version with new Expressions
-            	BBoxExpression rightBBox = filterFactory.createBBoxExpression(mapContext
-                        .getAreaOfInterest());
-                filter = createBBoxFilters(schema, attributes, rightBBox);
-                
-                // now build the query using only the attributes and the bounding
-                // box needed
-                DefaultQuery q = new DefaultQuery(schema.getTypeName());
-                q.setFilter(filter);
-                q.setPropertyNames(attributes);
-                // now, if a definition query has been established for this layer, be
-                // sure to respect it by combining it with the bounding box one.
-                Query definitionQuery = layer.getQuery();
-                
-                if (definitionQuery != Query.ALL) {
-                    if (q == Query.ALL) {
-                        q = (DefaultQuery) definitionQuery;
-                    } else {
-                        q = (DefaultQuery) DataUtilities.mixQueries(definitionQuery, q, "KMLEncoder");
-                    }
-                }
-                
-                q.setCoordinateSystem(
-                        layer.getFeatureSource().getSchema().getDefaultGeometry().getCoordinateSystem());
-                
-                featureReader = fSource.getFeatures(q).reader();
-                ----WCS version with new expressions*/
-            	
                 Expression bboxExpression = fFac.createBBoxExpression(mapContext
                         .getAreaOfInterest());
                 GeometryFilter bboxFilter = fFac.createGeometryFilter(FilterType.GEOMETRY_INTERSECTS);
@@ -326,13 +290,16 @@ public class EncodeKML {
                 {
                 	LOGGER.info("Layer ("+layer.getTitle()+") rendered with KML vector output.");
                 	layerRenderList.add(new Integer(i)); // save layer number so it won't be rendered
-                	writer.writeFeatures(fc, layer, i, false, useVector); // KML
+                	writer.writeFeaturesAsVectors(fc, layer); // vector
                 }
                 else
                 {
                 	// user requested KMZ and kmscore says render raster
                 	LOGGER.info("Layer ("+layer.getTitle()+") rendered with KMZ raster output.");
-                	writer.writeFeatures(fc, layer, i, true, useVector); // KMZ
+                	// layer order is only needed for raster results. In the <GroundOverlay> tag 
+                	// you need to point to a raster image, this image has the layer number as
+                	// part of the name. The kml will then reference the image via the layer number
+                	writer.writeFeaturesAsRaster(fc, layer, i); // raster
                 }
 
                	LOGGER.fine("finished writing");
