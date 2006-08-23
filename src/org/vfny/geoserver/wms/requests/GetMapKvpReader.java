@@ -1195,4 +1195,27 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         return conn.getInputStream();
       }
     }
+    
+    /**
+     * Filters the layers and styles if the user specified "layers=basemap".
+     * 
+     * @param layers
+     * @param styles
+     */
+    public void filterBaseMap(String layers, String styles)
+    {
+    	String currentLayers = getValue("LAYERS");
+    	if ("basemap".equalsIgnoreCase(currentLayers))
+    	{
+    		LOGGER.info("Using BASEMAP layers: "+layers);
+    		kvpPairs.remove("LAYERS");
+    		kvpPairs.put("LAYERS", layers);
+    		if (styles != null && !styles.equals(""))
+    		{	// if the user specified styles, lets use them
+    			kvpPairs.remove("STYLES");
+    			kvpPairs.put("STYLES", styles);
+    		}
+    	}
+    }
+    
 }

@@ -636,6 +636,8 @@ public class XMLConfigReader {
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
         wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(
                     wmsElement, "svgAntiAlias")));
+        wms.setBaseMapLayers(ReaderUtils.getChildText(wmsElement, "baseMapLayers"));
+        wms.setBaseMapStyles(ReaderUtils.getChildText(wmsElement, "baseMapStyles"));
     }
 
     /**

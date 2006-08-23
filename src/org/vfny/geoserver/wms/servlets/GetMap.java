@@ -19,6 +19,7 @@ import java.io.Reader;
 
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +37,7 @@ public class GetMap extends WMService {
      * Part of HTTP content type header.
      */
     public static final String URLENCODED = "application/x-www-form-urlencoded";
-
+    
     /**
      * Creates a new GetMap object.
      */
@@ -87,9 +88,9 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected Response getResponseHandler() {
-        WMSConfig config = (WMSConfig) getServletContext().getAttribute(WMSConfig.CONFIG_KEY);
+    	WMSConfig wmsConfig = (WMSConfig) getServletContext().getAttribute(WMSConfig.CONFIG_KEY);
 
-        return new GetMapResponse(config);
+        return new GetMapResponse(wmsConfig);
     }
 
     /**
@@ -116,7 +117,19 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new GetMapKvpReader(params);
+    	
+    	WMSConfig wmsConfig = (WMSConfig) getServletContext().getAttribute(WMSConfig.CONFIG_KEY);
+    	String layers = wmsConfig.getBaseMapLayers();
+    	String styles = wmsConfig.getBaseMapStyles();
+    	
+    	GetMapKvpReader kvp = new GetMapKvpReader(params);
+    	
+    	// filter layers and styles if the user specified "layers=basemap"
+    	// This must happen after the kvp reader has been initially called
+    	if (layers != null && !layers.equals(""))
+    		kvp.filterBaseMap(layers, styles);
+    	
+        return kvp;
     }
 
     /**

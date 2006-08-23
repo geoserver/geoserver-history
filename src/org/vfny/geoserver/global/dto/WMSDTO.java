@@ -36,6 +36,10 @@ public final class WMSDTO implements DataTransferObject {
     /** The antialisaing hint for the svg renderer **/
     private boolean svgAntiAlias;
     
+    /** The base-map layers and styles */
+    private String baseMapLayers;
+    private String baseMapStyles;
+    
     /**
      * WMS constructor.  does nothing
      */
@@ -63,6 +67,8 @@ public final class WMSDTO implements DataTransferObject {
         gmlPrefixing = other.isGmlPrefixing();
         svgRenderer = other.getSvgRenderer();
         svgAntiAlias = other.getSvgAntiAlias();
+        baseMapLayers = other.getBaseMapLayers();
+        baseMapStyles = other.getBaseMapStyles();
     }
 
     /**
@@ -111,6 +117,18 @@ public final class WMSDTO implements DataTransferObject {
         	}
         	else equals = svgRenderer.equals(dto.getSvgRenderer());
         }
+        if (equals) {
+        	if (baseMapLayers == null) {
+        		equals = dto.getBaseMapLayers() == null;
+        	}
+        	else equals = baseMapLayers.equals(dto.getBaseMapLayers());
+        }
+        if (equals) {
+        	if (baseMapStyles == null) {
+        		equals = dto.getBaseMapStyles() == null;
+        	}
+        	else equals = baseMapStyles.equals(dto.getBaseMapStyles());
+        }
         
 
         return equals;
@@ -127,7 +145,9 @@ public final class WMSDTO implements DataTransferObject {
         return (gmlPrefixing ? 1 : 0) 
         | (svgAntiAlias ? 1 : 0)
         | ((service == null) ? 0 : service.hashCode()) 
-        | ((svgRenderer == null) ? 0 : svgRenderer.hashCode());
+        | ((svgRenderer == null) ? 0 : svgRenderer.hashCode())
+        | ((baseMapLayers == null) ? 0 : baseMapLayers.hashCode())
+        | ((baseMapStyles == null) ? 0 : baseMapStyles.hashCode());
     }
 
     /**
@@ -219,4 +239,21 @@ public final class WMSDTO implements DataTransferObject {
     public boolean getSvgAntiAlias() {
     	return svgAntiAlias;
     }
+    
+    public void setBaseMapLayers(String layers) {
+    	baseMapLayers = layers;
+    }
+    
+    public String getBaseMapLayers() {
+    	return baseMapLayers;
+    }
+    
+    public void setBaseMapStyles(String styles) {
+    	baseMapStyles = styles;
+    }
+    
+    public String getBaseMapStyles() {
+    	return baseMapStyles;
+    }
+    
 }

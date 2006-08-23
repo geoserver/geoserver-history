@@ -27,7 +27,9 @@ import org.vfny.geoserver.config.WMSConfig;
 public class WMSContentForm extends ActionForm {
     private boolean enabled;
     private String onlineResource;
-
+    private String baseMapLayers;
+    private String baseMapStyles;
+    
     /*
      * Because of the way that STRUTS works, if the user does not check the enabled box,
      * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()
@@ -68,6 +70,26 @@ public class WMSContentForm extends ActionForm {
         enabled = b;
     }
 
+    public String getBaseMapLayers()
+    {
+    	return baseMapLayers;
+    }
+    
+    public void setBaseMapLayers(String layers)
+    {
+    	baseMapLayers = layers;
+    }
+    
+    public String getBaseMapStyles()
+    {
+    	return baseMapStyles;
+    }
+    
+    public void setBaseMapStyles(String styles)
+    {
+    	baseMapStyles = styles;
+    }
+    
     /**
      * DOCUMENT ME!
      *
@@ -94,6 +116,9 @@ public class WMSContentForm extends ActionForm {
         } else {
             this.onlineResource = "";
         }
+        
+        baseMapLayers = config.getBaseMapLayers();
+        baseMapStyles = config.getBaseMapStyles();
     }
 
     public ActionErrors validate(ActionMapping mapping,

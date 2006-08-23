@@ -35,6 +35,9 @@ public class WMSConfig extends ServiceConfig {
     /** anti aliasing hint for svg renderer **/
     private boolean svgAntiAlias;
     
+    private String baseMapLayers;
+    private String baseMapStyles;
+    
     /**
      * WMS constructor.
      * 
@@ -48,6 +51,8 @@ public class WMSConfig extends ServiceConfig {
         super();
         svgRenderer = SVG_SIMPLE;
         svgAntiAlias = true;
+        baseMapLayers = "";
+        baseMapStyles = "";
     }
 
     /**
@@ -64,6 +69,8 @@ public class WMSConfig extends ServiceConfig {
         super(w.getService());
         svgRenderer = w.getSvgRenderer();
         svgAntiAlias = w.getSvgAntiAlias();
+        baseMapLayers = w.getBaseMapLayers();
+        baseMapStyles = w.getBaseMapStyles();
     }
 
     /**
@@ -87,6 +94,8 @@ public class WMSConfig extends ServiceConfig {
         super.update(dto.getService());
         svgRenderer = dto.getSvgRenderer();
         svgAntiAlias = dto.getSvgAntiAlias();
+        baseMapLayers = dto.getBaseMapLayers();
+        baseMapStyles = dto.getBaseMapStyles();
     }
 
     /**
@@ -105,6 +114,8 @@ public class WMSConfig extends ServiceConfig {
         wmsDto.setService((ServiceDTO) super.toServDTO());
         wmsDto.setSvgRenderer(svgRenderer);
         wmsDto.setSvgAntiAlias(svgAntiAlias);
+        wmsDto.setBaseMapLayers(baseMapLayers);
+        wmsDto.setBaseMapStyles(baseMapStyles);
         return wmsDto;
     }
     
@@ -138,5 +149,35 @@ public class WMSConfig extends ServiceConfig {
      */
     public boolean getSvgAntiAlias() {
     	return svgAntiAlias;
+    }
+    
+    /**
+     * The comma separated list of feature types that make up the 
+     * base-map layer list.
+     * @return
+     */
+    public String getBaseMapLayers()
+    {
+    	return baseMapLayers;
+    }
+    
+    public void setBaseMapLayers(String layers)
+    {
+    	baseMapLayers = layers;
+    }
+    
+    /**
+     * The comma separated list of Styles that make up the 
+     * base-map style list.
+     * @return
+     */
+    public String getBaseMapStyles()
+    {
+    	return baseMapStyles;
+    }
+    
+    public void setBaseMapStyles(String styles)
+    {
+    	baseMapStyles = styles;
     }
 }

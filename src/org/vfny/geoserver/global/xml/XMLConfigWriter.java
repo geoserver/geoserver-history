@@ -311,7 +311,7 @@ public class XMLConfigWriter {
     protected static void storeService(Object obj, WriterHelper cw)
         throws ConfigurationException {
         LOGGER.finer("In method storeService");
-
+        
         ServiceDTO s = null;
         String t = "";
         
@@ -319,6 +319,8 @@ public class XMLConfigWriter {
         boolean srsXmlStyle = false;
         int serviceLevel = 0;
         String svgRenderer = null;
+        String baseMapLayers = null;
+        String baseMapStyles = null;
         boolean svgAntiAlias = false;
         boolean citeConformanceHacks = false;
 
@@ -337,6 +339,9 @@ public class XMLConfigWriter {
             t = "WMS";
             svgRenderer = w.getSvgRenderer();
             svgAntiAlias = w.getSvgAntiAlias();
+            baseMapLayers = w.getBaseMapLayers();
+            baseMapStyles = w.getBaseMapStyles();
+            
         } else {
             throw new ConfigurationException("Invalid object: not WMS of WFS");
         }
@@ -407,6 +412,14 @@ public class XMLConfigWriter {
 
         if (svgRenderer != null) {
             cw.textTag("svgRenderer", svgRenderer);
+        }
+        
+        if (baseMapLayers != null) {
+        	cw.textTag("baseMapLayers", baseMapLayers);
+        }
+        
+        if (baseMapStyles != null) {
+        	cw.textTag("baseMapStyles", baseMapStyles);
         }
 
         if (obj instanceof WMSDTO) {
@@ -656,7 +669,7 @@ public class XMLConfigWriter {
             	
             	try {	// encode the file name (this is to catch colons in FT names)
             		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
-					LOGGER.info("Writing encoded URL: "+ftDirName);
+					LOGGER.fine("Writing encoded URL: "+ftDirName);
 				} catch (UnsupportedEncodingException e1) {
 					throw new ConfigurationException(e1);
 				}
@@ -703,7 +716,7 @@ public class XMLConfigWriter {
                 String ftDirName = ft.getDirName();
                 try {	// encode the file name (this is to catch colons in FT names)
             		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
-					LOGGER.info("Decoded URL: "+ftDirName);
+					LOGGER.fine("Decoded URL: "+ftDirName);
 				} catch (UnsupportedEncodingException e1) {
 					throw new ConfigurationException(e1);
 				}

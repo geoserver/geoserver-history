@@ -40,12 +40,18 @@ public final class WMSContentAction extends ConfigAction {
         }
 
         String onlineResource = contentForm.getOnlineResource();
+        
+        String baseMapLayers = contentForm.getBaseMapLayers();
+        String baseMapStyles = contentForm.getBaseMapStyles();
 
         WMSConfig config = getWMSConfig();
 
         config.setEnabled(enabled);
         config.setOnlineResource(new URL(onlineResource));
 
+        config.setBaseMapLayers(baseMapLayers);
+        config.setBaseMapStyles(baseMapStyles);
+        
         getApplicationState().notifyConfigChanged();
 
         return mapping.findForward("config");
