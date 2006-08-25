@@ -255,7 +255,7 @@ public interface WFSPackage extends EPackage{
 	int DESCRIBE_FEATURE_TYPE_TYPE__VERSION = BASE_REQUEST_TYPE__VERSION;
 
 	/**
-	 * The feature id for the '<em><b>Type Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Type Name</b></em>' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2577,10 +2577,10 @@ public interface WFSPackage extends EPackage{
 	EClass getDescribeFeatureTypeType();
 
 	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.v1_1_0.DescribeFeatureTypeType#getTypeName <em>Type Name</em>}'.
+	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.v1_1_0.DescribeFeatureTypeType#getTypeName <em>Type Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Type Name</em>'.
+	 * @return the meta object for the attribute list '<em>Type Name</em>'.
 	 * @see net.opengis.wfs.v1_1_0.DescribeFeatureTypeType#getTypeName()
 	 * @see #getDescribeFeatureTypeType()
 	 * @generated

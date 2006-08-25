@@ -22,6 +22,8 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
+
 import org.eclipse.emf.ecore.util.EDataTypeEList;
 
 /**
@@ -40,24 +42,14 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
  */
 public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements DescribeFeatureTypeType {
 	/**
-	 * The default value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
+	 * The cached value of the '{@link #getTypeName() <em>Type Name</em>}' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getTypeName()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final QName TYPE_NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getTypeName()
-	 * @generated
-	 * @ordered
-	 */
-	protected QName typeName = TYPE_NAME_EDEFAULT;
+	protected EList typeName = null;
 
 	/**
 	 * The default value of the '{@link #getOutputFormat() <em>Output Format</em>}' attribute.
@@ -111,20 +103,11 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public QName getTypeName() {
+	public EList getTypeName() {
+		if (typeName == null) {
+			typeName = new EDataTypeUniqueEList(QName.class, this, WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME);
+		}
 		return typeName;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setTypeName(QName newTypeName) {
-		QName oldTypeName = typeName;
-		typeName = newTypeName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME, oldTypeName, typeName));
 	}
 
 	/**
@@ -211,7 +194,8 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 				setVersion((String)newValue);
 				return;
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
-				setTypeName((QName)newValue);
+				getTypeName().clear();
+				getTypeName().addAll((Collection)newValue);
 				return;
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
 				setOutputFormat((String)newValue);
@@ -237,7 +221,7 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 				unsetVersion();
 				return;
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
-				setTypeName(TYPE_NAME_EDEFAULT);
+				getTypeName().clear();
 				return;
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
 				unsetOutputFormat();
@@ -260,7 +244,7 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__VERSION:
 				return isSetVersion();
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
-				return TYPE_NAME_EDEFAULT == null ? typeName != null : !TYPE_NAME_EDEFAULT.equals(typeName);
+				return typeName != null && !typeName.isEmpty();
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
 				return isSetOutputFormat();
 		}

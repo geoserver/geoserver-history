@@ -6,6 +6,8 @@
  */
 package net.opengis.wfs.v1_1_0;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.eclipse.emf.common.util.EList;
@@ -60,19 +62,9 @@ public interface DescribeFeatureTypeType extends BaseRequestType{
 	 * @return the value of the '<em>Type Name</em>' attribute.
 	 * @see #setTypeName(Object)
 	 * @see net.opengis.wfs.v1_1_0.WFSPackage#getDescribeFeatureTypeType_TypeName()
-	 * @model 
+	 * @model type="javax.xml.namespace.QName"
 	 */
-	QName getTypeName();
-
-	/**
-	 * Sets the value of the '{@link net.opengis.wfs.v1_1_0.DescribeFeatureTypeType#getTypeName <em>Type Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Type Name</em>' attribute.
-	 * @see #getTypeName()
-	 * @generated
-	 */
-	void setTypeName(QName value);
+	EList getTypeName();
 
 	/**
 	 * Returns the value of the '<em><b>Output Format</b></em>' attribute.
