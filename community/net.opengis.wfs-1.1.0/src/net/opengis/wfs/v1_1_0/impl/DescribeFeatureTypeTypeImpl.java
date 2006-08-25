@@ -6,6 +6,8 @@
  */
 package net.opengis.wfs.v1_1_0.impl;
 
+import javax.xml.namespace.QName;
+
 import java.util.Collection;
 
 import net.opengis.wfs.v1_1_0.DescribeFeatureTypeType;
@@ -45,7 +47,7 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object TYPE_NAME_EDEFAULT = null;
+	protected static final QName TYPE_NAME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
@@ -55,7 +57,7 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 	 * @generated
 	 * @ordered
 	 */
-	protected Object typeName = TYPE_NAME_EDEFAULT;
+	protected QName typeName = TYPE_NAME_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getOutputFormat() <em>Output Format</em>}' attribute.
@@ -109,7 +111,7 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getTypeName() {
+	public QName getTypeName() {
 		return typeName;
 	}
 
@@ -118,8 +120,8 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTypeName(Object newTypeName) {
-		Object oldTypeName = typeName;
+	public void setTypeName(QName newTypeName) {
+		QName oldTypeName = typeName;
 		typeName = newTypeName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME, oldTypeName, typeName));
@@ -209,7 +211,7 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 				setVersion((String)newValue);
 				return;
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
-				setTypeName((Object)newValue);
+				setTypeName((QName)newValue);
 				return;
 			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
 				setOutputFormat((String)newValue);
