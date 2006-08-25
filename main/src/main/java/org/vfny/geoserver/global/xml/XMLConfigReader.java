@@ -660,8 +660,41 @@ public class XMLConfigReader {
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
         wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(
                     wmsElement, "svgAntiAlias")));
+        
+        loadBaseMapLayers(wmsElement);
+        
     }
 
+    private void loadBaseMapLayers(Element wmsElement)
+    {
+    	HashMap layerMap = new HashMap();
+        HashMap styleMap = new HashMap();
+        
+    	Element groupBase = ReaderUtils.getChildElement(wmsElement, "BaseMapGroups");
+    	if (groupBase == null) {
+    		LOGGER.info("No baseMap groups defined yet");
+    		return;
+    	}
+    	
+    	Element[] groups = ReaderUtils.getChildElements(groupBase, "BaseMapGroup");
+    	for (int i=0; i<groups.length; i++)
+    	{
+    		Element group = groups[i];
+    		try {
+    			String title = ReaderUtils.getAttribute(group, "baseMapTitle", true);
+    			String layers = ReaderUtils.getChildText(group, "baseMapLayers");
+    	        String styles = ReaderUtils.getChildText(group, "baseMapStyles");
+    	        layerMap.put(title, layers);
+    	        styleMap.put(title, styles);
+    		} catch(Exception ex) {
+    			ex.printStackTrace();
+    		}
+    	}
+        
+        wms.setBaseMapLayers(layerMap);
+        wms.setBaseMapStyles(styleMap);
+    }
+    
     /**
      * loadService purpose.
      * 

@@ -6,7 +6,7 @@ package org.vfny.geoserver.global;
 
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-
+import java.util.Map;
 
 /**
  * WMS
@@ -49,6 +49,9 @@ public class WMS extends Service {
     /** svg anitalias or not **/
     private boolean svgAntiAlias;
     
+    private Map baseMapLayers;
+    private Map baseMapStyles;
+    
     /**
      * WMS constructor.
      * 
@@ -63,6 +66,8 @@ public class WMS extends Service {
         super(config.getService());
         svgRenderer = config.getSvgRenderer();
         svgAntiAlias = config.getSvgAntiAlias();
+        baseMapLayers = config.getBaseMapLayers();
+        baseMapStyles = config.getBaseMapStyles();
     }
     
     
@@ -93,6 +98,8 @@ public class WMS extends Service {
     	super.load(config.getService());
     	svgRenderer = config.getSvgRenderer();
     	svgAntiAlias = config.getSvgAntiAlias();
+    	baseMapLayers = config.getBaseMapLayers();
+    	baseMapStyles = config.getBaseMapStyles();
     }
 
     /**
@@ -128,6 +135,8 @@ public class WMS extends Service {
         w.setService((ServiceDTO)super.toDTO());
         w.setSvgRenderer(svgRenderer);
         w.setSvgAntiAlias(svgAntiAlias);
+        w.setBaseMapLayers(baseMapLayers);
+        w.setBaseMapStyles(baseMapStyles);
         
         return w;
     }
@@ -231,5 +240,21 @@ public class WMS extends Service {
     public void setSvgAntiAlias(boolean svgAntiAlias) {
 		this.svgAntiAlias = svgAntiAlias;
 	}
+    
+    public Map getBaseMapLayers() {
+    	return baseMapLayers;
+    }
+    
+    public void setBaseMapLayers(Map layers) {
+    	baseMapLayers = layers;
+    }
+    
+    public Map getBaseMapStyles() {
+    	return baseMapStyles;
+    }
+    
+    public void setBaseMapStyles(Map styles) {
+    	baseMapStyles = styles;
+    }
     
 }
