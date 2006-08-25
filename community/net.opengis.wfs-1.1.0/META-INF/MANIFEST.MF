@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Web Feature Service Model 1.1.0
-Bundle-SymbolicName: net.opengis.wfs_1.1.0; singleton := true
-Bundle-Version: 1.0.0
-Bundle-Vendor: Opengis.net
-Bundle-Localization: plugin
-Require-Bundle: org.eclipse.emf.ecore,
- net.opengis.ows_1.0.0
