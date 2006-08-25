@@ -6,6 +6,8 @@
  */
 package net.opengis.wfs.v1_1_0;
 
+import javax.xml.namespace.QName;
+
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
@@ -296,8 +298,18 @@ public interface QueryType extends EObject{
 	 * @return the value of the '<em>Type Name</em>' attribute.
 	 * @see #setTypeName(List)
 	 * @see net.opengis.wfs.v1_1_0.WFSPackage#getQueryType_TypeName()
-	 * @model type="javax.xml.namespace.QName"
+	 * @model 
 	 */
-	EList getTypeName();
+	QName getTypeName();
+
+	/**
+	 * Sets the value of the '{@link net.opengis.wfs.v1_1_0.QueryType#getTypeName <em>Type Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Type Name</em>' attribute.
+	 * @see #getTypeName()
+	 * @generated
+	 */
+	void setTypeName(QName value);
 
 } // QueryType

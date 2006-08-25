@@ -191,14 +191,24 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	protected String srsName = SRS_NAME_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getTypeName() <em>Type Name</em>}' attribute list.
+	 * The default value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getTypeName()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList typeName = null;
+	protected static final QName TYPE_NAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTypeName()
+	 * @generated
+	 * @ordered
+	 */
+	protected QName typeName = TYPE_NAME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -364,11 +374,20 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList getTypeName() {
-		if (typeName == null) {
-			typeName = new EDataTypeUniqueEList(QName.class, this, WFSPackage.QUERY_TYPE__TYPE_NAME);
-		}
+	public QName getTypeName() {
 		return typeName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setTypeName(QName newTypeName) {
+		QName oldTypeName = typeName;
+		typeName = newTypeName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.QUERY_TYPE__TYPE_NAME, oldTypeName, typeName));
 	}
 
 	/**
@@ -452,8 +471,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				setSrsName((String)newValue);
 				return;
 			case WFSPackage.QUERY_TYPE__TYPE_NAME:
-				getTypeName().clear();
-				getTypeName().addAll((Collection)newValue);
+				setTypeName((QName)newValue);
 				return;
 		}
 		eDynamicSet(eFeature, newValue);
@@ -491,7 +509,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				setSrsName(SRS_NAME_EDEFAULT);
 				return;
 			case WFSPackage.QUERY_TYPE__TYPE_NAME:
-				getTypeName().clear();
+				setTypeName(TYPE_NAME_EDEFAULT);
 				return;
 		}
 		eDynamicUnset(eFeature);
@@ -521,7 +539,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 			case WFSPackage.QUERY_TYPE__SRS_NAME:
 				return SRS_NAME_EDEFAULT == null ? srsName != null : !SRS_NAME_EDEFAULT.equals(srsName);
 			case WFSPackage.QUERY_TYPE__TYPE_NAME:
-				return typeName != null && !typeName.isEmpty();
+				return TYPE_NAME_EDEFAULT == null ? typeName != null : !TYPE_NAME_EDEFAULT.equals(typeName);
 		}
 		return eDynamicIsSet(eFeature);
 	}

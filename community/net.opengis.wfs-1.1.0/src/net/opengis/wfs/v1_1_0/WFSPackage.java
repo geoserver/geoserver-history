@@ -1828,7 +1828,7 @@ public interface WFSPackage extends EPackage{
 	int QUERY_TYPE__SRS_NAME = 7;
 
 	/**
-	 * The feature id for the '<em><b>Type Name</b></em>' attribute list.
+	 * The feature id for the '<em><b>Type Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -3993,10 +3993,10 @@ public interface WFSPackage extends EPackage{
 	EAttribute getQueryType_SrsName();
 
 	/**
-	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.v1_1_0.QueryType#getTypeName <em>Type Name</em>}'.
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.v1_1_0.QueryType#getTypeName <em>Type Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Type Name</em>'.
+	 * @return the meta object for the attribute '<em>Type Name</em>'.
 	 * @see net.opengis.wfs.v1_1_0.QueryType#getTypeName()
 	 * @see #getQueryType()
 	 * @generated
