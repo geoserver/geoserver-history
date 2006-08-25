@@ -30,6 +30,14 @@
       <groupId>org.eclipse.emf</groupId>
       <artifactId>ecore</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.opengis</groupId>
+      <artifactId>geoapi-nogenerics</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis-xerces</artifactId>
+    </dependency>
   </dependencies>
 
 	<build>
