@@ -58,18 +58,6 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>codehaus</id>
-			<name>
-				Repository serving Geoserver libraries hosted by
-				Codehaus
-			</name>
-			<url>http://dist.codehaus.org/geoserver</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<layout>legacy</layout>
-		</repository>
-		<repository>
 			<id>espace</id>
 			<name>
 				Repository from the Sicade laboratory in New-Caledonia
@@ -409,6 +397,14 @@
 			</testResource>
 		</testResources>
 
+		<extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav</artifactId>
+        <version>1.0-beta-1</version>
+      </extension>
+    </extensions>
+
 		<plugins>
 
 			<plugin>
@@ -636,6 +632,19 @@
 
 		</plugins>
 	</reporting>
+
+	<distributionManagement>
+		<repository>
+      <id>codehaus.org</id>
+      <name>GeoServer Central Repository</name>
+      <url>dav:https://dav.codehaus.org/repository/geoserver/</url>
+    </repository>
+    <snapshotRepository>
+      <id>codehaus.org</id>
+      <name>GeoServer Central Development Repository</name>
+      <url>dav:https://dav.codehaus.org/snapshots.repository/geoserver/</url>
+    </snapshotRepository>
+	</distributionManagement>
 
 	<modules>
 		<module>platform</module>
