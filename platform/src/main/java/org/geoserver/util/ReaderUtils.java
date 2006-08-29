@@ -121,6 +121,71 @@ public class ReaderUtils {
 	}
 	
 	/**
+	 * getChildElements purpose.
+	 * 
+	 * <p>
+	 * Used to help with XML manipulations. Returns *all* child elements of
+	 * the specified name.
+	 * </p>
+	 *
+	 * @param root The root element to look for children in.
+	 * @param name The name of the child element to look for.
+	 *
+	 * @return The child element found, null if not found.
+	 *
+	 * @see getChildElement(Element,String,boolean)
+	 */
+	public static Element[] getChildElements(Element root, String name) {
+		try {
+			return getChildElements(root, name, false);
+		} catch (Exception e) {
+			//will never be here.
+			return null;
+		}
+	}
+	
+	/**
+	 * getChildElements purpose.
+	 * 
+	 * <p>
+	 * Used to help with XML manipulations. Returns *all* child elements of
+	 * the specified name.  An exception occurs when the node is required and
+	 * not found.
+	 * </p>
+	 *
+	 * @param root The root element to look for children in.
+	 * @param name The name of the child element to look for.
+	 * @param mandatory true when an exception should be thrown if the child
+	 *        element does not exist.
+	 *
+	 * @return The child element found, null if not found.
+	 *
+	 * @throws Exception When a child element is required and not
+	 *         found.
+	 */
+	public static Element[] getChildElements(Element root, String name,
+			boolean mandatory) throws Exception {
+		
+		ArrayList elements = new ArrayList();
+		Node child = root.getFirstChild();
+		while (child != null) {
+			if (child.getNodeType() == Node.ELEMENT_NODE) {
+				if (name.equals(child.getNodeName())) {
+					elements.add( (Element) child );
+				}
+			}
+			child = child.getNextSibling();
+		}
+		
+		if (mandatory && (elements.isEmpty())) {
+			throw new Exception(root.getNodeName()
+					+ " does not contains a child element named " + name);
+		}
+		
+		return (Element[]) elements.toArray(new Element[0]);
+	}
+	
+	/**
 	 * getChildElement purpose.
 	 * 
 	 * <p>

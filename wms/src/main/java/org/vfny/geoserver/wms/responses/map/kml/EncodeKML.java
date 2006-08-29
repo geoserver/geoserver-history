@@ -265,12 +265,15 @@ public class EncodeKML {
             FeatureType schema = fSource.getSchema();
             
             String[] attributes;
+            boolean isRaster = false;
 			
             AttributeType[] ats = schema.getAttributeTypes();
             final int length = ats.length;
             attributes = new String[length];
             for (int t = 0; t < length; t++) {
             	attributes[t] = ats[t].getName();
+            	if(attributes[t].equals("grid"))
+            		isRaster = true;
             }
 
             try {
@@ -306,13 +309,20 @@ public class EncodeKML {
                 {
                 	LOGGER.info("Layer ("+layer.getTitle()+") rendered with KML vector output.");
                 	layerRenderList.add(new Integer(i)); // save layer number so it won't be rendered
-                	writer.writeFeatures(fc, layer, i, false, useVector); // KML
+                	if (!isRaster) {
+                    	writer.writeFeaturesAsVectors(fc, layer); // vector
+                	} else {
+                		writer.writeCoverages(fc, layer); // coverage
+                	}
                 }
                 else
                 {
                 	// user requested KMZ and kmscore says render raster
                 	LOGGER.info("Layer ("+layer.getTitle()+") rendered with KMZ raster output.");
-                	writer.writeFeatures(fc, layer, i, true, useVector); // KMZ
+                	// layer order is only needed for raster results. In the <GroundOverlay> tag 
+                	// you need to point to a raster image, this image has the layer number as
+                	// part of the name. The kml will then reference the image via the layer number
+                	writer.writeFeaturesAsRaster(fc, layer, i); // raster
                 }
 
                	LOGGER.fine("finished writing");

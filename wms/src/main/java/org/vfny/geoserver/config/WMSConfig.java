@@ -10,6 +10,8 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * WMS purpose.
@@ -38,6 +40,8 @@ public class WMSConfig extends ServiceConfig {
     /** anti aliasing hint for svg renderer **/
     private boolean svgAntiAlias;
     /** rendering interpolation **/
+    private Map baseMapLayers;
+    private Map baseMapStyles;
     private boolean allowInterpolation;
     
     /**
@@ -54,6 +58,8 @@ public class WMSConfig extends ServiceConfig {
         svgRenderer = SVG_SIMPLE;
         svgAntiAlias = true;
         allowInterpolation = true;
+        baseMapLayers = new HashMap();
+        baseMapStyles = new HashMap();
     }
 
     /**
@@ -71,6 +77,8 @@ public class WMSConfig extends ServiceConfig {
         svgRenderer = w.getSvgRenderer();
         svgAntiAlias = w.getSvgAntiAlias();
         allowInterpolation = w.getAllowInterpolation();
+        baseMapLayers = w.getBaseMapLayers();
+        baseMapStyles = w.getBaseMapStyles();
     }
 
     /**
@@ -104,6 +112,8 @@ public class WMSConfig extends ServiceConfig {
         svgRenderer = dto.getSvgRenderer();
         svgAntiAlias = dto.getSvgAntiAlias();
         allowInterpolation = dto.getAllowInterpolation();
+        baseMapLayers = dto.getBaseMapLayers();
+        baseMapStyles = dto.getBaseMapStyles();
     }
 
     /**
@@ -123,6 +133,8 @@ public class WMSConfig extends ServiceConfig {
         wmsDto.setSvgRenderer(svgRenderer);
         wmsDto.setSvgAntiAlias(svgAntiAlias);
         wmsDto.setAllowInterpolation(allowInterpolation);
+        wmsDto.setBaseMapLayers(baseMapLayers);
+        wmsDto.setBaseMapStyles(baseMapStyles);
         return wmsDto;
     }
     
@@ -171,4 +183,33 @@ public class WMSConfig extends ServiceConfig {
     public boolean getAllowInterpolation() {
     	return allowInterpolation;
     }    
+    /**
+     * The comma separated list of feature types that make up the 
+     * base-map layer list.
+     * @return
+     */
+    public Map getBaseMapLayers()
+    {
+    	return baseMapLayers;
+    }
+    
+    public void setBaseMapLayers(Map layers)
+    {
+    	baseMapLayers = layers;
+    }
+    
+    /**
+     * The comma separated list of Styles that make up the 
+     * base-map style list.
+     * @return
+     */
+    public Map getBaseMapStyles()
+    {
+    	return baseMapStyles;
+    }
+    
+    public void setBaseMapStyles(Map styles)
+    {
+    	baseMapStyles = styles;
+    }
 }

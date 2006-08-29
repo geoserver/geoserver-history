@@ -120,7 +120,19 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new GetMapKvpReader(params, this);
+    	
+    	Map layers = this.getWMS().getBaseMapLayers();
+    	Map styles = this.getWMS().getBaseMapStyles();
+    	System.out.println("******************* basemapStyles = " + styles);
+    	
+    	GetMapKvpReader kvp = new GetMapKvpReader(params, this);
+    	
+    	// filter layers and styles if the user specified "layers=basemap"
+    	// This must happen after the kvp reader has been initially called
+    	if (layers != null && !layers.equals(""))
+    		kvp.filterBaseMap(layers, styles);
+    	
+        return kvp;
     }
 
     /**

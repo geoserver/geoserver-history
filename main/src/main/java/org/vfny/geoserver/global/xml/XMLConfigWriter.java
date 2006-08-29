@@ -353,6 +353,8 @@ public class XMLConfigWriter {
         boolean srsXmlStyle = false;
         int serviceLevel = 0;
         String svgRenderer = null;
+        Map baseMapLayers = null;
+        Map baseMapStyles = null;
         boolean svgAntiAlias = false;
         boolean allowInterpolation = false;
         boolean citeConformanceHacks = false;
@@ -377,6 +379,8 @@ public class XMLConfigWriter {
             svgRenderer = w.getSvgRenderer();
             svgAntiAlias = w.getSvgAntiAlias();
             allowInterpolation = w.getAllowInterpolation();
+            baseMapLayers = w.getBaseMapLayers();
+            baseMapStyles = w.getBaseMapStyles();
         } else {
 			throw new ConfigurationException("Invalid object: not WMS or WFS or WCS");
         }
@@ -456,6 +460,22 @@ public class XMLConfigWriter {
             cw.textTag("svgRenderer", svgRenderer);
         }
 
+        if (baseMapLayers != null && baseMapStyles != null) {
+        	cw.openTag("BaseMapGroups");
+        	// for each title/layer combo, write it out
+        	String[] titles = (String[]) baseMapLayers.keySet().toArray(new String[0]);
+        	for (int i=0; i<titles.length; i++)	
+        	{
+        		HashMap titleMap = new HashMap();
+        		titleMap.put("baseMapTitle", titles[i]);
+        		cw.openTag("BaseMapGroup", titleMap);
+        		cw.textTag("baseMapLayers", baseMapLayers.get(titles[i]).toString());
+        		cw.textTag("baseMapStyles", baseMapStyles.get(titles[i]).toString());
+        		cw.closeTag("BaseMapGroup");
+        	}
+        	cw.closeTag("BaseMapGroups");
+        }
+        
         if (obj instanceof WMSDTO) {
             cw.textTag("svgAntiAlias", svgAntiAlias + "");
             cw.textTag("allowInterpolation", allowInterpolation + "");

@@ -12,11 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-
-import org.apache.struts.action.ActionServlet;
-import org.apache.struts.action.PlugIn;
-import org.apache.struts.config.ModuleConfig;
 import org.geotools.validation.dto.PlugInDTO;
 import org.geotools.validation.dto.TestDTO;
 import org.geotools.validation.dto.TestSuiteDTO;
@@ -40,7 +35,7 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter.WriterUtils;
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: ApplicationState.java,v 1.15 2004/04/03 13:13:03 cholmesny Exp $
  */
-public class ApplicationState implements PlugIn, InitializingBean  {
+public class ApplicationState implements InitializingBean  {
     /** The key used to store this value in the Web Container */
     public static final String WEB_CONTAINER_KEY = "GeoServer.ApplicationState";
 
@@ -73,14 +68,6 @@ public class ApplicationState implements PlugIn, InitializingBean  {
     Config config;
     
     /**
-     * 
-     * @deprecated use {@link #ApplicationState(Data, GeoValidator, Config)}
-     */
-    public ApplicationState() {
-    		this( null, null, null );
-    }
-    
-    /**
      * Creates a new appliction state.
      * 
      * @param data The data modle.
@@ -104,36 +91,6 @@ public class ApplicationState implements PlugIn, InitializingBean  {
     public void destroy() {
     }
 
-    /**
-     * Set up the ApplicationState during Application start up.
-     * 
-     * <p>
-     * ApplicationState simply registers itself with the WEB_CONTAINER_KEY
-     * ("GeoServer.ApplicationState") during start up.
-     * </p>
-     *
-     * @param actionServlet ActionServlet representing the Application
-     * @param moduleConfig Configuration used to set up this plug in
-     *
-     * @throws ServletException
-     *
-     * @see org.apache.struts.action.PlugIn#init(org.apache.struts.action.ActionServlet,
-     *      org.apache.struts.config.ModuleConfig)
-     *      
-     * @deprecated This class is no longer loaded with struts,
-     *  use {@link #afterPropertiesSet()}
-     */
-    public void init(ActionServlet actionServlet, ModuleConfig moduleConfig)
-        throws ServletException {
-      
-    		try {
-			afterPropertiesSet();
-		} 
-    		catch (Exception e) {
-			throw new ServletException(e);
-		}
-    }
-    
     public void afterPropertiesSet() throws Exception {
     		configTimestamp = getXmlTimestamp();
         appTimestamp = configTimestamp;

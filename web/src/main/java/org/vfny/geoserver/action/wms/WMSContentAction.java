@@ -7,6 +7,7 @@ package org.vfny.geoserver.action.wms;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -40,11 +41,24 @@ public final class WMSContentAction extends ConfigAction {
         }
 
         String onlineResource = contentForm.getOnlineResource();
-
+        
+        String baseMapTitle = contentForm.getBaseMapTitle();
+        String baseMapLayers = contentForm.getBaseMapLayers();
+        String baseMapStyles = contentForm.getBaseMapStyles();
+        System.out.println("******************* contentAction: title="+baseMapTitle+", layers="+baseMapLayers+", styles="+baseMapStyles);
+        
         WMSConfig config = getWMSConfig();
 
         config.setEnabled(enabled);
         config.setOnlineResource(new URL(onlineResource));
+        
+        HashMap layerMap = new HashMap();
+        HashMap styleMap = new HashMap();
+        layerMap.put(baseMapTitle, baseMapLayers);
+        styleMap.put(baseMapTitle, baseMapStyles);
+        
+        config.setBaseMapLayers(layerMap);
+        config.setBaseMapStyles(styleMap);
 
         getApplicationState().notifyConfigChanged();
 

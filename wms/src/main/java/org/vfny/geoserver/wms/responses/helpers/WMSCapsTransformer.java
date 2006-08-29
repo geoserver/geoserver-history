@@ -679,16 +679,17 @@ public class WMSCapsTransformer extends TransformerBase {
 					LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
 			}
 
-			Envelope bbox = null;
+			Envelope bbox = null, llbbox = null;
 
 			try {
-				bbox = ftype.getLatLongBoundingBox();
+				bbox = ftype.getBoundingBox();
+				llbbox = ftype.getLatLongBoundingBox();
 			} catch (IOException ex) {
 				throw new RuntimeException("Can't obtain latLongBBox of "
 						+ ftype.getName() + ": " + ex.getMessage(), ex);
 			}
 
-			handleLatLonBBox(bbox);
+			handleLatLonBBox(llbbox);
 			handleBBox(bbox, EPSG + ftype.getSRS());
 
 			// add the layer style

@@ -8,6 +8,8 @@
  */
 package org.vfny.geoserver.global.dto;
 
+import java.util.Map;
+
 /**
  * Data Transfer Object for communication GeoServer Web Map Server information.
  * 
@@ -37,6 +39,8 @@ public final class WMSDTO implements DataTransferObject {
     private boolean svgAntiAlias;
 
     /** The interpolation rendering hint **/
+    private Map baseMapLayers;
+    private Map baseMapStyles;
     private boolean allowInterpolation;
     
     /**
@@ -67,6 +71,8 @@ public final class WMSDTO implements DataTransferObject {
         svgRenderer = other.getSvgRenderer();
         svgAntiAlias = other.getSvgAntiAlias();
         allowInterpolation = other.getAllowInterpolation();
+        baseMapLayers = other.getBaseMapLayers();
+        baseMapStyles = other.getBaseMapStyles();
     }
 
     /**
@@ -116,6 +122,18 @@ public final class WMSDTO implements DataTransferObject {
         	}
         	else equals = svgRenderer.equals(dto.getSvgRenderer());
         }
+        if (equals) {
+        	if (baseMapLayers == null) {
+        		equals = dto.getBaseMapLayers() == null;
+        	}
+        	else equals = baseMapLayers.equals(dto.getBaseMapLayers());
+        }
+        if (equals) {
+        	if (baseMapStyles == null) {
+        		equals = dto.getBaseMapStyles() == null;
+        	}
+        	else equals = baseMapStyles.equals(dto.getBaseMapStyles());
+        }
         
 
         return equals;
@@ -133,7 +151,9 @@ public final class WMSDTO implements DataTransferObject {
         | (svgAntiAlias ? 1 : 0)
         | (allowInterpolation ? 1 : 0)
         | ((service == null) ? 0 : service.hashCode()) 
-        | ((svgRenderer == null) ? 0 : svgRenderer.hashCode());
+        | ((svgRenderer == null) ? 0 : svgRenderer.hashCode())
+        | ((baseMapLayers == null) ? 0 : baseMapLayers.hashCode())
+        | ((baseMapStyles == null) ? 0 : baseMapStyles.hashCode());
     }
 
     /**
@@ -226,6 +246,21 @@ public final class WMSDTO implements DataTransferObject {
     	return svgAntiAlias;
     }
     
+    public void setBaseMapLayers(Map layers) {
+    	baseMapLayers = layers;
+    }
+    
+    public Map getBaseMapLayers() {
+    	return baseMapLayers;
+    }
+    
+    public void setBaseMapStyles(Map styles) {
+    	baseMapStyles = styles;
+    }
+    
+    public Map getBaseMapStyles() {
+    	return baseMapStyles;
+    }
     /**
      * @param allowInterpolation interpolation hint.
      */

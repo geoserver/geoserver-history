@@ -19,11 +19,15 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
+import org.geotools.factory.FactoryConfigurationError;
+import org.geotools.feature.IllegalAttributeException;
+import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -235,8 +239,12 @@ public class GetMapResponse implements Response {
 					reader = (AbstractGridCoverage2DReader) layers[i]
 							.getCoverage().getReader();
 
-					if (reader != null)
-						map.addLayer(reader, style);
+					if (reader != null) {
+						layer = new DefaultMapLayer(reader, style);
+						layer.setTitle(layers[i].getName());
+						layer.setQuery(Query.ALL);
+						map.addLayer(layer);
+					}	
 					else
 						throw new WmsException(
 								null,
@@ -260,6 +268,18 @@ public class GetMapResponse implements Response {
 						"Getting feature source: ").append(e.getMessage())
 						.toString(), e);
 			}
+			throw new WmsException(e, new StringBuffer("Internal error : ")
+					.append(e.getMessage()).toString(), "");
+		} catch (TransformException e) {
+			throw new WmsException(e, new StringBuffer("Internal error : ")
+					.append(e.getMessage()).toString(), "");
+		} catch (FactoryConfigurationError e) {
+			throw new WmsException(e, new StringBuffer("Internal error : ")
+					.append(e.getMessage()).toString(), "");
+		} catch (SchemaException e) {
+			throw new WmsException(e, new StringBuffer("Internal error : ")
+					.append(e.getMessage()).toString(), "");
+		} catch (IllegalAttributeException e) {
 			throw new WmsException(e, new StringBuffer("Internal error : ")
 					.append(e.getMessage()).toString(), "");
 		} finally {

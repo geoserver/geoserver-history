@@ -21,6 +21,30 @@
 	</td><td colspan=2>
 		<html:text property="onlineResource" size="60"/>
 	</td></tr>
+	
+	
+	<!-- put this in a loop for every layer-group they specify -->
+	<tr><td align="right">
+		<span class="help" title="<bean:message key="help.baseMapTitle"/>">
+			&nbsp;&nbsp;&nbsp;&nbsp;<bean:message key="label.baseMapTitle"/>:
+		</span>
+	</td><td colspan=2>
+		<html:text property="baseMapTitle" size="15"/>
+	</td></tr>
+	<tr><td align="right">
+		<span class="help" title="<bean:message key="help.baseMapLayers"/>">
+			<bean:message key="label.baseMapLayers"/>:
+		</span>
+	</td><td colspan=2>
+		<html:text property="baseMapLayers" size="60"/>
+	</td></tr>
+	<tr><td align="right">
+		<span class="help" title="<bean:message key="help.baseMapStyles"/>">
+			<bean:message key="label.baseMapStyles"/>:
+		</span>
+	</td><td colspan=2>
+		<html:text property="baseMapStyles" size="60"/>
+	</td></tr>
 
 	<tr><td align="right">&nbsp;</td><td>
 		<html:submit>
