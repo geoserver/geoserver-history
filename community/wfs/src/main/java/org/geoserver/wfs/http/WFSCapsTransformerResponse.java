@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import javax.xml.transform.TransformerException;
 
+import org.geoserver.ows.Operation;
 import org.geoserver.ows.http.Response;
 import org.geotools.xml.transform.TransformerBase;
 
@@ -14,7 +15,7 @@ public class WFSCapsTransformerResponse extends Response {
 		super( "text/xml", TransformerBase.class );
 	}
 
-	public void write( Object value, OutputStream output, Object operation )
+	public void write( Object value, OutputStream output, Operation operation )
 			throws IOException {
 		
 		TransformerBase tx = (TransformerBase) value;
@@ -26,7 +27,7 @@ public class WFSCapsTransformerResponse extends Response {
 		}
 	}
 
-	public void abort(Object value, OutputStream output, Object operation)
+	public void abort(Object value, OutputStream output, Operation operation)
 			throws IOException {
 		
 		//do nothing
