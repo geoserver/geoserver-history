@@ -34,7 +34,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
-			<artifactId>net.opengis.wfs</artifactId>
+			<artifactId>net.opengis.wfs-1.1.0</artifactId>
 			<version>1.1.0</version>
 		</dependency>
 		<dependency>
