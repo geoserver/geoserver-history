@@ -1,22 +1,18 @@
 package org.geoserver.wfs.http;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.geoserver.http.util.KvpUtils;
 import org.geoserver.ows.http.KvpReader;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
 
 public class PropertyNameKvpReader extends KvpReader {
 
 	FilterFactory filterFactory;
 	
-	public PropertyNameKvpReader() {
+	public PropertyNameKvpReader( FilterFactory filterFactory ) {
 		super( "propertyname", List.class );
-		
-		//TODO: filter factory should be injected
-		this.filterFactory = FilterFactoryFinder.createFilterFactory();
+		this.filterFactory = filterFactory;
 	}
 	
 	public Object parse( String value ) throws Exception {
