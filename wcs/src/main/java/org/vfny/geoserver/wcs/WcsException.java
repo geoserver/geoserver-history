@@ -4,13 +4,7 @@
  */
 package org.vfny.geoserver.wcs;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.util.Requests;
 
 /**
  * This defines an exception that can be turned into a valid xml service
