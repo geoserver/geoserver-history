@@ -3,13 +3,14 @@ package org.geoserver.wfs;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.namespace.QName;
 
 import org.geoserver.data.feature.FeatureTypeInfo;
+import org.geoserver.ows.Operation;
+import org.geoserver.ows.Service;
 import org.geoserver.util.ReaderUtils;
-import org.geoserver.wfs.http.DescribeFeatureTypeResponse;
+import org.geoserver.wfs.http.XmlSchemaEncoder;
 import org.w3c.dom.Element;
 
 public class DescribeFeatureTypeTest extends WFSTestSupport {
@@ -17,7 +18,8 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
 	public void testDescribeFeatureType() throws Exception {
 		
 		DescribeFeatureType op = new DescribeFeatureType( wfs, catalog );
-		
+		Service service = new Service( "wfs", wfs );
+		Operation descriptor = new Operation( "DescribeFeatureType", service, op );
 		ArrayList typeName = new ArrayList();
 		typeName.add( qname( BASIC_POLYGONS_TYPE ) );
 		op.setTypeName( typeName );
@@ -26,7 +28,7 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
 		FeatureTypeInfo[] infos = op.describeFeatureType();
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		new DescribeFeatureTypeResponse().write( infos, output, op );
+		new XmlSchemaEncoder( wfs, catalog ).write( infos, output, descriptor );
 		
 		String result = new String( output.toByteArray() );
 		Element schemaDoc = ReaderUtils.parse( new StringReader ( result ) );

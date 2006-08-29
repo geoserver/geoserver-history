@@ -47,12 +47,15 @@ public class GetFeatureTest extends WFSTestSupport {
 		propertyNames.add( filterFactory.property( "the_geom" ) );
 		getFeature.setPropertyName( Arrays.asList( new List[] { propertyNames } ) );
 		
-		getFeature.setTypeName( Arrays.asList( new QName[] { new QName( CITE_URI, BASIC_POLYGONS_TYPE, CITE_PREFIX ) } ) );
+		getFeature.setTypeName( 
+			Arrays.asList( new QName[] { new QName( CITE_URI, "BasicPolygons", CITE_PREFIX ) } ) 
+		);
+		
+		GetFeatureResults results = getFeature.getFeature();
 		
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		getFeature.setOutputStream( outputStream );
-		
-		getFeature.getFeature();
+		GML2FeatureProducer producer = new GML2FeatureProducer( wfs, catalog );
+		producer.produce( GML2FeatureProducer.formatName, results, outputStream );
 		
 		Element fcElement = ReaderUtils.parse( 
 			new InputStreamReader( new ByteArrayInputStream( outputStream.toByteArray() ) )

@@ -15,7 +15,7 @@ public class InfoAdapterFactoryTest extends WFSTestSupport {
 
 	public void testAdaptToDataStoreInfo() throws Exception {
 		List services = catalog.services( DataStoreInfo.class );
-		assertEquals( 1, services.size() );
+		assertEquals( 3, services.size() );
 		
 		Service service = (Service) services.get( 0 );
 		assertNotNull( service );
