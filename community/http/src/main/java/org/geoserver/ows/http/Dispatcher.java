@@ -146,7 +146,7 @@ public class Dispatcher extends AbstractController {
 				
 		//step 5: write response if operation returned result and did not 
 		// request an output stream
-		if ( result != null && !outputStream ) {
+		if ( result != null ) {
 			//look up the response for the result
 			//TODO: choose based on request
 			Collection responses = getApplicationContext()
@@ -154,7 +154,10 @@ public class Dispatcher extends AbstractController {
 			ArrayList matches = new ArrayList();
 			for( Iterator itr = responses.iterator(); itr.hasNext(); ) {
 				Response response = (Response) itr.next();
-				//TODO: use isAssignableFrom and then sort afterwards
+				
+				if (!response.canHandle( opBean ) )
+					continue;
+				
 				if ( response.getBinding().isAssignableFrom( result.getClass() ) ) {
 					matches.add( response );
 				}
@@ -202,7 +205,7 @@ public class Dispatcher extends AbstractController {
 			//TODO: initialize any header params (gzip,deflate,etc...)
 			
 			OutputStream output = httpResponse.getOutputStream();
-			response.write( result, output, op );
+			response.write( result, output, opBean );
 		
 			try {
 				output.flush();
@@ -413,14 +416,19 @@ public class Dispatcher extends AbstractController {
 			new BufferedOutputStream( new FileOutputStream( cache ) );
 		
 		byte[] buffer = new byte[1024];
+		int n = 0;
 		int nread = 0;
 		
-		while (( nread = input.read( buffer ) ) > 0) {
-			output.write( buffer, 0, nread );
+		while (( n = input.read( buffer ) ) > 0) {
+			output.write( buffer, 0, n );
+			nread += n;
 		}
 		
 		output.flush();
 		output.close();
+		
+		if ( nread == 0 )
+			return null;
 		
 		return cache;
 	}
