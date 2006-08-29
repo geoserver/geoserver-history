@@ -13,6 +13,11 @@ import javax.xml.namespace.QName;
 
 import org.geotools.data.DefaultQuery;
 import org.geotools.filter.Filter;
+import org.geotools.referencing.CRS;
+import org.opengis.filter.sort.SortBy;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 
 /**
@@ -44,6 +49,9 @@ public class Query {
      */
     protected String version = new String();
 
+    /** The srs for hte query */
+    protected String srsName;
+    
     /** The feature type name requested. */
     protected QName typeName ;
 
@@ -53,6 +61,9 @@ public class Query {
     /** The filter for the query */
     protected Filter filter = null;
 
+    /** The sorting of the query */
+    protected SortBy sortBy;
+    
     /** Flags whether or not all properties were requested */
     protected boolean allRequested = true;
 
@@ -136,6 +147,53 @@ public class Query {
     }
 
     /**
+     * Sets the srsName to be used in the query.
+     * <p>
+     * Note this is a wfs 1.1 concept.
+     * </p>
+     * @param srsName The name of the srs to be used.
+     */
+    public void setSrsName(String srsName) {
+		this.srsName = srsName;
+	}
+    
+    /**
+     * Returns the srsName to be used in the query, or <code>null</code> if 
+     * not set.
+     * <p>
+     * Note this is a wfs 1.1 feature.
+     * </p>
+     * @return The srsName, or <code>null</code>
+     */
+    public String getSrsName() {
+		return srsName;
+	}
+    
+    /**
+     * Sets the sorting clause to be used in the query, or <code>null</code>
+     * if not set.
+     * <p>
+     * Note, this is a wfs 1.1. feature. 
+     * </p>
+     * @param sortBy The sortBy clause, or <code>null</code>
+     */
+    public void setSortBy(SortBy sortBy) {
+		this.sortBy = sortBy;
+	}
+    
+    /**
+     * Returns the sorting clause to be used in the query, or <code>null</code>
+     * if not set.
+     * <p>
+     * Note, this is a wfs 1.1. feature. 
+     * </p>
+     * @return sortBy The sortBy clause, or <code>null</code>
+     */
+    public SortBy getSortBy() {
+		return sortBy;
+	}
+    
+    /**
      * Sets the user-defined 'handle' for the query.
      *
      * @param handle The mnemonic handle to associate with this query.
@@ -205,8 +263,8 @@ public class Query {
         }
 
         DefaultQuery query = new DefaultQuery( 
-        		typeName.getLocalPart(), this.filter, maxFeatures, props, this.handle
-    		);
+    		typeName.getLocalPart(), this.filter, maxFeatures, props, this.handle
+		);
 
         return query;
     }
@@ -228,7 +286,7 @@ public class Query {
      *
      * @return A Query for use with the FeatureSource interface
      */
-    public org.geotools.data.Query toDataQuery(int maxFeatures) {
+    public org.geotools.data.Query toDataQuery(int maxFeatures) throws WFSException {
         if (maxFeatures <= 0) {
             maxFeatures = DefaultQuery.DEFAULT_MAX;
         }
@@ -244,9 +302,28 @@ public class Query {
         }
 
         DefaultQuery query = new DefaultQuery(
-        		typeName.getLocalPart(), this.filter, maxFeatures, props, this.handle
-    		);
+    		typeName.getLocalPart(), this.filter, maxFeatures, props, this.handle
+		);
 
+        if ( srsName != null ) {
+        	CoordinateReferenceSystem crs;
+			try {
+				crs = CRS.decode( srsName );
+			} 
+			catch ( Exception e ) {
+				String msg = "Unable to support srsName: " + srsName;
+				throw new WFSException( msg , e );
+			}
+			
+        	query.setCoordinateSystem( crs );
+        	query.setCoordinateSystemReproject( crs );
+        }
+        
+        if ( sortBy != null ) {
+        	query.setSortBy( new SortBy[] { sortBy } );
+        }
+        
+        
         return query;
     }
 
