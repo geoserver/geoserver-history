@@ -77,6 +77,14 @@ public class KvpUtils {
     }
 
     /**
+     * Calls {@link #readFlat(String)} with the {@link #INNER_DELIMETER}.
+     * 
+     */
+    public static List readFlat( String rawList ) {
+    	return readFlat( rawList, INNER_DELIMETER );
+    }
+    
+    /**
      * Reads a tokenized string and turns it into a list.  In this method, the
      * tokenizer is quite flexible.  Note that if the list is unspecified (ie.
      * is null) or is unconstrained (ie. is ''), then the method returns an
