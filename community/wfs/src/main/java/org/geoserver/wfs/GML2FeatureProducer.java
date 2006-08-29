@@ -105,7 +105,7 @@ public class GML2FeatureProducer implements FeatureProducer {
         throws IOException {
         this.compressOutput = formatNameCompressed.equalsIgnoreCase(outputFormat);
         
-        transformer = new FeatureTransformer();
+        transformer = createTransformer();
 
         FeatureTypeNamespaces ftNames = transformer.getFeatureTypeNamespaces();
      
@@ -129,10 +129,8 @@ public class GML2FeatureProducer implements FeatureProducer {
                 ftNamespaces.put(uri, location + "," + meta.name());
             } 
             else {
-            		String location = ResponseUtils.appendQueryString( 
-        				wfs.getOnlineResource().toString(), "request=DescribeFeatureType&typeName=" + meta.name()
-    				);
-                ftNamespaces.put( uri, location );
+            	String location = typeSchemaLocation( wfs, meta );
+        		ftNamespaces.put( uri, location );
             }
         }
 
@@ -145,10 +143,8 @@ public class GML2FeatureProducer implements FeatureProducer {
         transformer.setFeatureBounding(wfs.isFeatureBounding());
         transformer.setEncoding(wfs.getCharSet());
 
-        String wfsSchemaLoc = 
-        		ResponseUtils.appendPath( wfs.getSchemaBaseURL() , "wfs/1.0.0/WFS-basic.xsd" );
-
-        transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
+        String wfsSchemaloc = wfsSchemaLocation( wfs );
+        transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaloc);
 
         for (Iterator it = ftNamespaces.keySet().iterator(); it.hasNext();) {
             String uri = (String) it.next();
@@ -174,9 +170,9 @@ public class GML2FeatureProducer implements FeatureProducer {
      * @return DOCUMENT ME!
      */
     public String getMimeType() {
-    		//JD: fix this
-    		//return gs.getMimeType();
-    		return null;
+		//JD: fix this
+		//return gs.getMimeType();
+		return null;
     }
 
     /**
@@ -242,5 +238,19 @@ public class GML2FeatureProducer implements FeatureProducer {
     public void produce(String outputFormat, GetFeatureResults results, OutputStream output) throws ServiceException, IOException {
     		prepare( outputFormat, results );
     		encode( output, results  );
+    }
+    
+    protected FeatureTransformer createTransformer() {
+    	return new FeatureTransformer();
+    }
+    
+    protected String wfsSchemaLocation( WFS wfs ) {
+    	return ResponseUtils.appendPath( wfs.getSchemaBaseURL() , "wfs/1.0.0/WFS-basic.xsd" );
+    }
+    
+    protected String typeSchemaLocation( WFS wfs, FeatureTypeInfo meta ) {
+    	return ResponseUtils.appendQueryString( 
+			wfs.getOnlineResource().toString(), "version=1.0.0&request=DescribeFeatureType&typeName=" + meta.name()
+		);
     }
 }
