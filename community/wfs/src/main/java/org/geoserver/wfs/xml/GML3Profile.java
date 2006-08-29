@@ -3,10 +3,9 @@ package org.geoserver.wfs.xml;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.geotools.feature.Name;
 import org.geotools.gml3.GMLSchema;
 import org.geotools.gml3.bindings.GML;
-import org.geotools.util.Name;
-
 
 public class GML3Profile extends TypeMappingProfile {
 	

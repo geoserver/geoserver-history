@@ -3,7 +3,7 @@ package org.geoserver.wfs.xml;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.geotools.util.Name;
+import org.geotools.feature.Name;
 import org.geotools.xs.XSSchema;
 import org.geotools.xs.bindings.XS;
 
