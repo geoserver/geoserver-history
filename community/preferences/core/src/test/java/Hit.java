@@ -11,7 +11,7 @@ import org.vfny.geoserver.control.IPreferenceStore;
 public class Hit {
     /**
      * 
-    DOCUMENT ME!
+  	 * NOTE: This only works against the SENS modules! Not vanilla geoserver!
      *
      * @param args
      */
