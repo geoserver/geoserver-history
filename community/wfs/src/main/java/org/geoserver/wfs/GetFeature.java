@@ -20,11 +20,12 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.wfs.GetFeatureType;
-import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WFSPackage;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EFactory;
+import org.eclipse.emf.ecore.EObject;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.AttributeTypeInfo;
 import org.geoserver.data.feature.FeatureTypeInfo;
@@ -39,9 +40,12 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Transaction;
+import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
+import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
+import org.geotools.feature.SchemaException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
@@ -50,6 +54,9 @@ import org.geotools.resources.Utilities;
 import org.opengis.filter.FeatureId;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.spatial.BBOX;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.OperationNotFoundException;
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -74,7 +81,10 @@ public class GetFeature implements ApplicationContextAware {
             "org.vfny.geoserver.requests");
 
     /** The request object */
-    protected GetFeatureType request;
+    protected EObject request;
+    
+    /** The model factory */
+    protected EFactory factory;
     
     /** The time to hold the lock for */
     protected int lockExpiry = 0;
@@ -100,20 +110,26 @@ public class GetFeature implements ApplicationContextAware {
     /** filter factory */
     protected FilterFactory filterFactory;
     
-    /** The output stream */
-    protected OutputStream outputStream;
-    
     /** Spring application context */
     protected ApplicationContext applicationContext;
     
     /**
      * Creates the GetFeature operation.
      * 
-     * @param catalog The catalog.
      */
     public GetFeature( WFS wfs, GeoServerCatalog catalog) {
-    		this.wfs = wfs;
-    		this.catalog = catalog;
+		this( wfs, catalog, WFSFactory.eINSTANCE );
+    }
+    
+    /**
+     * Creates the GetFeature operation supplied the efactory used to create
+     * model objects.
+     * 
+     */
+    public GetFeature( WFS wfs, GeoServerCatalog catalog, EFactory factory ) {
+    	this.wfs = wfs;
+    	this.catalog = catalog;
+    	this.factory = factory;
     }
     
     /**
@@ -127,7 +143,7 @@ public class GetFeature implements ApplicationContextAware {
      * @return The reference to the WFS configuration.
      */
     public WFS getWFS() {
-    		return wfs;
+		return wfs;
     }
     
     /**
@@ -143,15 +159,15 @@ public class GetFeature implements ApplicationContextAware {
      * Sets the output format for this GetFeature request.
      */
     public void setOutputFormat(String outputFormat) {
-        request().setOutputFormat( outputFormat );
+        set( "outputFormat", outputFormat );
     }
 
     /**
      * @return the output format for this GetFeature request.
      */
     public String getOutputFormat() {
-        return request().getOutputFormat();
-    	}
+    	return (String) get( "outputFormat" );
+	}
 
     /**
      * Sets the user-defined name for this request.
@@ -159,25 +175,25 @@ public class GetFeature implements ApplicationContextAware {
      * @param handle The string to be used in reporting errors.
      */
     public void setHandle(String handle) {
-    		request().setHandle( handle );
+    	set( "handle", handle );
     }
-
+    
     /**
      * Returns the user-defined name for the entire GetFeature request.
      *
      * @return The string to use in error reporting with this request.
      */
     public String getHandle() {
-        return request().getHandle();
+    	return (String) get( "handle" );
     }
-
+    
     /**
      * Sets the maximum number of features this request should return.
      *
      * @param maxFeatures The maximum number of features to return.
      */
     public void setMaxFeatures( BigInteger maxFeatures ) {
-        request().setMaxFeatures( maxFeatures );
+        set( "maxFeatures", maxFeatures );
     }
 
     /**
@@ -186,7 +202,7 @@ public class GetFeature implements ApplicationContextAware {
      * @return Maximum number of features this request will return.
      */
     public BigInteger getMaxFeatures() {
-        return request().getMaxFeatures();
+        return (BigInteger) get( "maxFeatures" );
     }
 
    /**
@@ -195,7 +211,7 @@ public class GetFeature implements ApplicationContextAware {
      * @param expiry How many minutes till the lock should expire.
      */
     public void setLockExpiry( int lockExpiry ) {
-    		this.lockExpiry = lockExpiry;
+		this.lockExpiry = lockExpiry;
     }
     
     /**
@@ -204,11 +220,11 @@ public class GetFeature implements ApplicationContextAware {
      * @return How many minutes till the lock should expire.
      */
     public int getLockExpiry() {
-    		return lockExpiry;
+		return lockExpiry;
     }
   
     public void setTypeName(List typeName) throws WFSException {
-    		batchSet( "typeName", typeName );
+		batchSet( "typeName", typeName );
 	}
     
     public void setFilter( List filter ) throws WFSException {
@@ -219,44 +235,6 @@ public class GetFeature implements ApplicationContextAware {
 		batchSet( "propertyName", propertyName );
 	}
     
-    protected void batchSet( String property, List values ) throws WFSException {
-    		GetFeatureType request = request();
-    		int m = values.size();
-    		int n = request.getQuery().size();
-    		
-    		if ( m == 1 && n > 1 ) {
-    			//apply single value to all queries
-    			EMFUtils.set( request.getQuery(), property, values.get( 0 ) );
-    			return;
-    		}
-    		
-    		//match up sizes
-    		if ( m > n ) {
-    			
-    			if ( n == 0 ) {
-    				//make same size, with empty objects
-    				for ( int i = 0; i < m; i++ ) {
-    					request.getQuery().add( WFSFactory.eINSTANCE.createQueryType() );
-    				}
-    			}
-    			else if ( n == 1 ) {
-    				//clone single object up to 
-    				QueryType query = (QueryType) request.getQuery().get( 0 );
-    				for ( int i = 1; i < m; i++ ) {
-    					request.getQuery().add( EMFUtils.clone( query, WFSFactory.eINSTANCE ) );
-    				}
-    				return;
-    			}
-    			else {
-    				//illegal
-        			String msg = "Specified " + m + " " + property + " for " + n + " queries.";
-        			throw new WFSException( msg );	
-    			}
-    		}
-    		
-    		EMFUtils.set( request.getQuery(), property, values );
-    	}
-    
     public void setBBOX(Envelope bbox) {
 		this.bbox = bbox;
 	}
@@ -265,22 +243,66 @@ public class GetFeature implements ApplicationContextAware {
 		return bbox;
 	}
     
-    protected GetFeatureType request() {
-    		if ( request == null ) {
-    			request = WFSFactory.eINSTANCE.createGetFeatureType();
-    		}
-    		
-    		return request;
+    
+    protected Object get( String property ) {
+    	return EMFUtils.get( request(), property );
     }
     
-    /**
-     * Sets the output stream used to write response to.
-     * 
-     * @param outputStream
-     */
-    public void setOutputStream(OutputStream outputStream) {
-		this.outputStream = outputStream;
+    protected void set( String property, Object value ) {
+    	EMFUtils.set( request(), property, value );
+    }
+    
+    protected void batchSet( String property, List values ) throws WFSException {
+		EObject request = request();
+		EList queries = (EList) EMFUtils.get( request, "query" );
+		
+		int m = values.size();
+		int n = queries.size();
+		
+		if ( m == 1 && n > 1 ) {
+			//apply single value to all queries
+			EMFUtils.set( queries, property, values.get( 0 ) );
+			return;
+		}
+		
+		//match up sizes
+		if ( m > n ) {
+			
+			if ( n == 0 ) {
+				//make same size, with empty objects
+				for ( int i = 0; i < m; i++ ) {
+					queries.add( query() );
+				}
+			}
+			else if ( n == 1 ) {
+				//clone single object up to 
+				EObject query = (EObject) queries.get( 0 );
+				for ( int i = 1; i < m; i++ ) {
+					queries.add( EMFUtils.clone( query, factory ) );
+				}
+				return;
+			}
+			else {
+				//illegal
+    			String msg = "Specified " + m + " " + property + " for " + n + " queries.";
+    			throw new WFSException( msg );	
+			}
+		}
+		
+		EMFUtils.set( queries, property, values );
 	}
+    
+    protected EObject request() {
+		if ( request == null ) {
+			request = factory.create( WFSPackage.eINSTANCE.getGetFeatureType() );
+		}
+		
+		return request;
+    }
+    
+    protected EObject query() {
+    	return factory.create( WFSPackage.eINSTANCE.getQueryType() );
+    }
     
     /**
      * Sets the application context.
@@ -300,8 +322,8 @@ public class GetFeature implements ApplicationContextAware {
      * @return A GetFeatureResults object.
      */
     protected GetFeatureResults init() throws ServiceException {
-    		//build up the queries
-		EList queries = request().getQuery();
+    	//build up the queries
+		EList queries = (EList) EMFUtils.get( request(), "query" );
 		
 		if ( queries.isEmpty() ) {
 			String msg = "No query specified";
@@ -317,8 +339,8 @@ public class GetFeature implements ApplicationContextAware {
 					String fid = (String) i.next();
 					int pos = fid.indexOf(".");
 	                if ( pos != -1 ) {
-	                		String typeName = fid.substring( 0, fid.lastIndexOf( "." ) );
-	                		typeNames.add( reader.qName( typeName ) );
+                		String typeName = fid.substring( 0, fid.lastIndexOf( "." ) );
+                		typeNames.add( reader.qName( typeName ) );
 	                }
 				}
 				
@@ -350,7 +372,7 @@ public class GetFeature implements ApplicationContextAware {
 		if ( featureId != null ) {
 			//set filters to fids
 			List filters = new ArrayList();
-			TypeNameKvpReader reader = new TypeNameKvpReader( catalog );
+			
 			for ( Iterator i = featureId.iterator(); i.hasNext(); ) {
 				String fid = (String) i.next();
 				Set fids = new HashSet();
@@ -366,8 +388,8 @@ public class GetFeature implements ApplicationContextAware {
 		if ( bbox != null ) {
 			List filters = new ArrayList();
 			for ( Iterator q = queries.iterator(); q.hasNext(); ) {
-				QueryType query = (QueryType) q.next();
-				QName typeName = query.getTypeName();
+				EObject query = (EObject) q.next();
+				QName typeName = (QName) EMFUtils.get( query, "typeName" );
 				
 				FeatureTypeInfo featureTypeInfo = null;
 				FeatureType featureType = null;
@@ -393,18 +415,18 @@ public class GetFeature implements ApplicationContextAware {
 		
 		GetFeatureResults results = new GetFeatureResults();
 	    for ( Iterator q = queries.iterator(); q.hasNext(); ) {
-	    		QueryType query = (QueryType) q.next();
-	    		results.addQuery( query( query ) );
+	    	EObject query = (EObject) q.next();
+    		results.addQuery( query( query ) );
 	    }
 	    
 		//look up an output format, default to GML
-	    	String outputFormat = getOutputFormat();
+	    String outputFormat = getOutputFormat();
 		if ( outputFormat == null ) {
 			//default to GML
 			outputFormat = "GML2";
 		}
-		FeatureProducer delegate = lookupProducer( outputFormat );
-		results.setFeatureProducer( delegate );
+//		FeatureProducer delegate = lookupProducer( outputFormat );
+//		results.setFeatureProducer( delegate );
 	
 //	
 //		for ( int i = 0; i < types.size(); i++ ) {
@@ -445,50 +467,26 @@ public class GetFeature implements ApplicationContextAware {
 	    return results;
     }
     
-    protected Query query( QueryType q ) {
-    		Query query = new Query();
+    protected Query query( EObject q ) {
+		Query query = new Query();
     		
-        query.setTypeName( q.getTypeName() );
-
-        for (int i = 0; i < q.getPropertyName().size(); i++) {
-        		PropertyName propertyName = (PropertyName) q.getPropertyName().get( i );
+        query.setTypeName( (QName) EMFUtils.get( q, "typeName" ) );
+        
+        List propertyNames = (List) EMFUtils.get( q, "propertyName" );
+        for (int i = 0; i < propertyNames.size(); i++) {
+    		PropertyName propertyName = (PropertyName) propertyNames.get( i );
             query.addPropertyName( propertyName.getPropertyName() );
         }
         
-        if ( q.getFilter() != null) {
-            query.addFilter( (Filter) q.getFilter() );
+        Filter filter = (Filter) EMFUtils.get( q, "filter" );
+        if ( filter != null) {
+            query.addFilter( filter );
         }
 
         return query;	
     }
     
-    protected FeatureProducer lookupProducer( String outputFormat ) 
-    		throws WFSException {
-    	
-    		Collection producers = 
-    			applicationContext.getBeansOfType( FeatureProducer.class ).values();
-    		List matches = new ArrayList();
-    		for ( Iterator p = producers.iterator(); p.hasNext(); ) {
-    			FeatureProducer producer = (FeatureProducer) p.next();
-    			
-    			if ( producer.canProduce( outputFormat ) ) 
-    				matches.add( producer );
-    		}
-    		
-    		if ( matches.isEmpty() ) {
-    			String msg = 
-	    			"output format: " + outputFormat + " not supported by geoserver";
-	    		throw new WFSException( msg, "InvalidFormat" );
-    		}
-    		
-    		if ( matches.size() > 1 ) {
-    			String msg = 
-    				"multiple produces found for output format: " + outputFormat;
-    			throw new WFSException( msg );
-    		}
-    		
-    		return (FeatureProducer) matches.get( 0 );
-    }
+   
     
 //    public void getFeatureWithLock() throws ServiceException {
 //		GetFeatureResults results = init();
@@ -571,17 +569,18 @@ public class GetFeature implements ApplicationContextAware {
      *       able to, we just need to get the reporting right, use the
      *       AllSameType function as  Describe does.
      */
-    public void getFeature() throws ServiceException {
-       
-    		getFeature( request() );
+    public GetFeatureResults getFeature() throws ServiceException {
+       return getFeature( request() );
     }
     
-    public void getFeature( GetFeatureType request ) throws ServiceException {
-    		this.request = request;
+    public GetFeatureResults getFeature( EObject request ) throws ServiceException {
+		this.request = request;
     		
-    		GetFeatureResults results = init();
+		GetFeatureResults results = init();
         
 		run( results );
+		
+		return results;
     }
     
     protected void run( GetFeatureResults results) throws ServiceException {
@@ -606,8 +605,8 @@ public class GetFeature implements ApplicationContextAware {
         
         Query query;
         int maxFeatures = Integer.MAX_VALUE; 
-        if ( request.getMaxFeatures() != null ) {
-        		maxFeatures = request.getMaxFeatures().intValue();
+        if ( EMFUtils.get( request, "maxFeatures") != null ) {
+    		maxFeatures = ((BigInteger) EMFUtils.get( request, "maxFeatures") ).intValue();
         }
 
         Set lockedFids = new HashSet();
@@ -674,11 +673,33 @@ public class GetFeature implements ApplicationContextAware {
 
                 //DJB: note if maxFeatures gets to 0 the while loop above takes care of this! (this is a subtle situation)
                 
-                FeatureResults features = source.getFeatures(query.toDataQuery(
-                            maxFeatures));
+                org.geotools.data.Query gtQuery = query.toDataQuery( maxFeatures );
+                FeatureResults features = source.getFeatures();
                 if (it.hasNext()) //DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
                 	maxFeatures -= features.getCount();
 
+                //JD: reproject if neccessary
+                if ( gtQuery.getCoordinateSystemReproject() != null ) {
+                	try {
+						features = new ReprojectFeatureResults( features, gtQuery.getCoordinateSystemReproject() );
+					} 
+                	catch ( Exception e ) {
+                		String msg = "Unable to reproject features";
+                		throw new WFSException( msg, e );
+					} 
+                }
+                
+                //JD: override crs if neccessary
+                if ( gtQuery.getCoordinateSystem() != null ) {
+                	try {
+						features = new ForceCoordinateSystemFeatureResults( features, gtQuery.getCoordinateSystem() );
+					} 
+            		catch (Exception e) {
+						String msg = "Unable to set coordinate system";
+						throw new WFSException( msg, e );
+					}
+                }
+                
                 //GR: I don't know if the featuresults should be added here for later
                 //encoding if it was a lock request. may be after ensuring the lock
                 //succeed?
@@ -755,16 +776,6 @@ public class GetFeature implements ApplicationContextAware {
                 throw new WFSException( "Could not aquire locks for:" + lockFailedFids );
             }
             
-            FeatureProducer delegate = results.getFeatureProducer();
-            try {
-            		delegate.produce( request().getOutputFormat(), results, outputStream );	
-            }
-            catch( Throwable t ) {
-            		String msg = "Error occured producing features";
-            		throw new WFSException( msg, t, null );
-            }
-            
-        
         } 
         catch (IOException e) {
         		throw new ServiceException(
@@ -802,77 +813,13 @@ public class GetFeature implements ApplicationContextAware {
      */
     public String toString() {
         StringBuffer returnString = new StringBuffer("\nRequest");
-        returnString.append(": " + request().getHandle());
-        returnString.append("\n output format:" + request().getOutputFormat());
-        returnString.append("\n max features:" + request().getMaxFeatures());
+        returnString.append(": " + getHandle() );
+        returnString.append("\n output format:" + getOutputFormat() );
+        returnString.append("\n max features:" + getMaxFeatures() );
         
         returnString.append("\n queries: ");
 
         return returnString.toString();
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param obj DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public boolean equals(Object obj) {
-        super.equals(obj);
-
-        if (!(obj instanceof GetFeature)) {
-            return false;
-        }
-
-        GetFeature frequest = (GetFeature) obj;
-        
-        if ( lockExpiry != frequest.lockExpiry )
-        		return false;
-        
-        if (!Utilities.equals( getMaxFeatures(), frequest.getMaxFeatures() ) )
-    			return false;
-    
-        if ( !Utilities.equals( getHandle(), frequest.getHandle() ) ) 
-        		return false;
-        
-        if ( !Utilities.equals( getOutputFormat(), frequest.getOutputFormat() ) )
-        		return false;
-        
-        if ( !Utilities.equals( request().getQuery(), frequest.request().getQuery() ) )
-        		return false;
-        	
-        if ( !Utilities.equals( featureId , frequest.featureId ) )
-    			return false;
-
-        if ( !Utilities.equals( filter , frequest.filter ) )
-			return false;
-          
-        if ( !Utilities.equals( propertyName , frequest.propertyName ) )
-			return false;
-
-        if ( !Utilities.equals( bbox , frequest.bbox ) )
-			return false;
-
-        return true;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public int hashCode() {
-        int result = super.hashCode();
-
-        result = (23 * result) + ( getHandle() == null ? 0 : getHandle().hashCode() );
-        result = (23 * result) + ( getOutputFormat() == null ? 0 : getOutputFormat().hashCode() );
-        
-        result = (23 * result) + ( featureId == null ? 0 : featureId.hashCode() );
-        result = (23 * result) + ( filter == null ? 0 : filter.hashCode() );
-        result = (23 * result) + ( propertyName == null ? 0 : propertyName.hashCode() );
-        result = (23 * result) + ( bbox == null ? 0 : bbox.hashCode() );
-        
-        return result;
-    }
 }

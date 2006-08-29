@@ -89,6 +89,9 @@ public class DescribeFeatureType {
     public FeatureTypeInfo[] describeFeatureType( DescribeFeatureTypeType request ) 
     		throws WFSException {
     
+    	//some initial sanity
+    	
+		
     		this.request = request;
     		List names = new ArrayList( getTypeName() );
     		

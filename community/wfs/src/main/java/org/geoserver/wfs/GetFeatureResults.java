@@ -77,17 +77,6 @@ public class GetFeatureResults {
     }
 
     /**
-     * @return The producer being used to encode the features of the request.
-     */
-    public FeatureProducer getFeatureProducer() {
-		return producer;
-	}
-    
-    public void setFeatureProducer(FeatureProducer producer) {
-		this.producer = producer;
-	}
-    
-    /**
      * @return handle or application specific name given to the request.
      * 
      */
