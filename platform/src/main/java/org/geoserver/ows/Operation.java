@@ -77,6 +77,16 @@ public final class Operation {
 		return false;
 	}
 	
+	public Object get( String property ) throws Exception {
+		
+		Method method = method( "get" + property, null );
+		if ( method != null ) {
+			return method.invoke( operation, null ); 
+		}
+		
+		return null;
+	}
+	
 	public Object run ( Object input ) throws Exception {
 		
 		Method method = null;
