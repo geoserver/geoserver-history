@@ -565,6 +565,8 @@ public class FeatureTypeInfo {
      *
      * @return String the FeatureTypeInfo name - should be unique for the
      *         parent Data instance.
+     *         
+     * TODO: rename this method to qName()
      */
     public String name() {        
         return namespacePrefix() + ":" + typeName;

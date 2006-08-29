@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,7 +36,14 @@ import org.springframework.context.support.GenericApplicationContext;
  */
 public class DataTestSupport extends TestCase {
 
-	 /** featuretype name for CITE BasicPolygons features */
+	//WMS
+	/**
+     * cite namespace + uri
+     */
+    public static String CITE_PREFIX = "cite";
+    public static String CITE_URI = "http://www.opengis.net/cite";
+	
+    /** featuretype name for CITE BasicPolygons features */
     public static String BASIC_POLYGONS_TYPE = "BasicPolygons";
 
     /** featuretype name for CITE Bridges features */
@@ -67,16 +76,67 @@ public class DataTestSupport extends TestCase {
     /** featuretype name for CITE Streams features */
     public static String STREAMS_TYPE = "Streams";
     
+    //WFS
     /**
-     * cite namespace + uri
+     * cdf namespace + uri
      */
-    public static String CITE_PREFIX = "cite";
-    public static String CITE_URI = "http://www.opengis.net/cite";
+    public static String CDF_PREFIX = "cdf";
+    public static String CDF_URI = "http://www.opengis.net/cite/data";
     
     /**
-     * Temporary directory for property files.
+     * cgf namespace + uri
      */
-    File tmp;
+    public static String CGF_PREFIX = "cgf";
+    public static String CGF_URI = "http://www.opengis.net/cite/geometry";
+    
+    /** featuretype name for CITE Deletes features */
+    public static String DELETES_TYPE = "Deletes";
+    
+    /** featuretype name for CITE Fifteen features */
+    public static String FIFTEEN_TYPE = "Fifteen";
+    
+    /** featuretype name for CITE Inserts features */
+    public static String INSERTS_TYPE = "Inserts";
+    
+    /** featuretype name for CITE Inserts features */
+    public static String LOCKS_TYPE = "Locks";
+    
+    /** featuretype name for CITE Nulls features */
+    public static String NULLS_TYPE = "Nulls";
+    
+    /** featuretype name for CITE Other features */
+    public static String OTHER_TYPE = "Other";
+    
+    /** featuretype name for CITE Nulls features */
+    public static String SEVEN_TYPE = "Seven";
+    
+    /** featuretype name for CITE Updates features */
+    public static String UPDATES_TYPE = "Updates";
+    
+    /** featuretype name for CITE Lines features */
+    public static String LINES_TYPE = "Lines";
+    
+    /** featuretype name for CITE MLines features */
+    public static String MLINES_TYPE = "MLines";
+    
+    /** featuretype name for CITE MPoints features */
+    public static String MPOINTS_TYPE = "MPoints";
+    
+    /** featuretype name for CITE MPolygons features */
+    public static String MPOLYGONS_TYPE = "MPolygons";
+    
+    /** featuretype name for CITE Points features */
+    public static String POINTS_TYPE = "Points";
+    
+    /** featuretype name for CITE Polygons features */
+    public static String POLYGONS_TYPE = "Polygons";
+    
+    /**
+     * Data directory
+     */
+    File data;
+    File featureTypes;
+    File styles;
     
     /**
      * The catalog
@@ -93,38 +153,69 @@ public class DataTestSupport extends TestCase {
 	 * 
 	 */
     protected void setUp() throws Exception {
-	   tmp = File.createTempFile("cite","test");
-	   tmp.delete();
-	   tmp.mkdir();
+	   data = File.createTempFile("cite","test");
+	   data.delete();
+	   data.mkdir();
 	   
 	   //create a featureTypes directory
-	   File featureTypes = new File( tmp, "featureTypes" );
+	   featureTypes = new File( data, "featureTypes" );
 	   featureTypes.mkdir();
 	   
 	   //create the styles directory
-	   File styles = new File( tmp, "styles" );
+	   styles = new File( data, "styles" );
 	   styles.mkdir();
 	   
-	   for ( int i = 0; i < citeTypeNames().length; i++ ) {
-		   String type = citeTypeNames()[i];
-		   copy( type );
-		   info( type, featureTypes );
-		   style( type, styles );
-	   }
-	   
-	   loader = new GeoServerResourceLoader( tmp );
+	   //set up types
+	   setup( CITE_PREFIX, BASIC_POLYGONS_TYPE );
+	   setup( CITE_PREFIX, BRIDGES_TYPE );
+	   setup( CITE_PREFIX, BUILDINGS_TYPE );
+	   setup( CITE_PREFIX, DIVIDED_ROUTES_TYPE );
+	   setup( CITE_PREFIX, FORESTS_TYPE );
+	   setup( CITE_PREFIX, LAKES_TYPE );
+	   setup( CITE_PREFIX, MAP_NEATLINE_TYPE );
+	   setup( CITE_PREFIX, NAMED_PLACES_TYPE );
+	   setup( CITE_PREFIX, PONDS_TYPE );
+	   setup( CITE_PREFIX, ROAD_SEGMENTS_TYPE );
+	   setup( CITE_PREFIX, STREAMS_TYPE );
+
+	   setup( CDF_PREFIX, DELETES_TYPE );
+	   setup( CDF_PREFIX, FIFTEEN_TYPE );
+	   setup( CDF_PREFIX, INSERTS_TYPE );
+	   setup( CDF_PREFIX, LOCKS_TYPE );
+	   setup( CDF_PREFIX, NULLS_TYPE );
+	   setup( CDF_PREFIX, OTHER_TYPE );
+	   setup( CDF_PREFIX, SEVEN_TYPE );
+	   setup( CDF_PREFIX, UPDATES_TYPE );
+
+	   setup( CGF_PREFIX, LINES_TYPE );
+	   setup( CGF_PREFIX, MLINES_TYPE );
+	   setup( CGF_PREFIX, MPOINTS_TYPE );
+	   setup( CGF_PREFIX, MPOLYGONS_TYPE );
+	   setup( CGF_PREFIX, POINTS_TYPE );
+	   setup( CGF_PREFIX, POLYGONS_TYPE );
+
+	   loader = new GeoServerResourceLoader( data );
 	   catalog = createCiteCatalog();
 	}
     
-    void copy( String type ) throws IOException {
-    		//copy over the properties file
-    		InputStream from = DataTestSupport.class.getResourceAsStream( "data/" + type + ".properties" );
-    		File to = new File( tmp, type + ".properties" ); 
-    		copy( from, to );
+    void setup( String prefix, String type ) throws Exception {
+    	  properties( prefix, type );
+		  info( prefix, type );
+		  style( type );
+    }
+    
+    void properties( String prefix, String type ) throws IOException {
+    	
+		//copy over the properties file
+		InputStream from = DataTestSupport.class.getResourceAsStream( "data/" + type + ".properties" );
+		File directory = new File( data, prefix );
+		directory.mkdir();
+		File to = new File( directory, type + ".properties" ); 
+		copy( from, to );
    	}
 
     void copy ( InputStream from, File to ) throws IOException {
-    		InputStream in = new BufferedInputStream( from );
+    	InputStream in = new BufferedInputStream( from );
 		OutputStream out = new BufferedOutputStream( new FileOutputStream( to ) );
 		
 		int b = 0;
@@ -135,33 +226,39 @@ public class DataTestSupport extends TestCase {
 		out.close();	
     }
     
-    void info( String type, File dir ) throws Exception {
-    		File featureTypeDir = new File( dir, CITE_PREFIX + "_" + type );
-    		featureTypeDir.mkdir();
-    		
-    		File info = new File( featureTypeDir, "info.xml" );
-    		info.createNewFile();
-    		
-    		FileWriter writer = new FileWriter( info );
-    		writer.write( "<featureType datastore=\"cite\">" );
-    		writer.write( "<name>" + type + "</name>" );
-    		writer.write( "<SRS>4326</SRS>" );
-    		writer.write( "<title>" + type + "</title>" );
-    		writer.write( "<abstract>abstract about " + type + "</abstract>" );
-    		writer.write( "<numDecimals value=\"0\"/>" );
-    		writer.write( "<keywords>" + type + "</keywords>" );
-    		writer.write( "<latLonBoundingBox dynamic=\"false\" minx=\"0\" miny=\"0\" maxx=\"0\" maxy=\"0\"/>" );
-    		writer.write( "<styles default=\"someStyle\"/>" );
-    		writer.write( "</featureType>" );
-    		
-    		writer.flush();
-    		writer.close();
-    	}
+    void info( String prefix, String type ) throws Exception {
+    	
+    	File featureTypeDir = new File( featureTypes, prefix + "_" + type );
+		featureTypeDir.mkdir();
+		
+		File info = new File( featureTypeDir, "info.xml" );
+		info.createNewFile();
+		
+		FileWriter writer = new FileWriter( info );
+		writer.write( "<featureType datastore=\"" + prefix + "\">" );
+		writer.write( "<name>" + type + "</name>" );
+		writer.write( "<SRS>4326</SRS>" );
+		writer.write( "<title>" + type + "</title>" );
+		writer.write( "<abstract>abstract about " + type + "</abstract>" );
+		writer.write( "<numDecimals value=\"0\"/>" );
+		writer.write( "<keywords>" + type + "</keywords>" );
+		writer.write( "<latLonBoundingBox dynamic=\"false\" minx=\"0\" miny=\"0\" maxx=\"0\" maxy=\"0\"/>" );
+		writer.write( "<styles default=\"someStyle\"/>" );
+		writer.write( "</featureType>" );
+		
+		writer.flush();
+		writer.close();
+	}
     
-    void style( String type, File dir ) throws IOException {
+    void style( String type ) throws IOException {
+    	
  		//copy over the properties file
+    	if ( DataTestSupport.class.getResource( "data/" + type + ".sld" ) == null ) 
+    		return;
+    	
 		InputStream from = DataTestSupport.class.getResourceAsStream( "data/" + type + ".sld" );
-		File to = new File( dir, type + ".sld" ); 
+		
+		File to = new File( styles, type + ".sld" ); 
 		copy( from, to );	
     }
     
@@ -195,30 +292,43 @@ public class DataTestSupport extends TestCase {
 		finder.setApplicationContext( context );
 		
 		//setup the namespaces
-		catalog.getNamespaceSupport().declarePrefix( "", CITE_URI );
 		catalog.getNamespaceSupport().declarePrefix( CITE_PREFIX, CITE_URI );
+		catalog.getNamespaceSupport().declarePrefix( CDF_PREFIX, CDF_URI );
+		catalog.getNamespaceSupport().declarePrefix( CGF_PREFIX, CGF_URI );
 		
-		//set up the data
+		//set up the services
 		HashMap params = new HashMap();
-		params.put( PropertyDataStoreFactory.DIRECTORY.key, tmp );
+		params.put( PropertyDataStoreFactory.DIRECTORY.key, new File( data, CITE_PREFIX ) );
 		params.put( PropertyDataStoreFactory.NAMESPACE.key, CITE_URI );
 		
 		List services = finder.aquire( params );
 		catalog.add( (Service) services.get( 0 ) );
 		
-		//setup the styles
-		services = finder.aquire( new File( tmp, "styles").toURI() );
+		params = new HashMap();
+		params.put( PropertyDataStoreFactory.DIRECTORY.key, new File( data, CDF_PREFIX ) );
+		params.put( PropertyDataStoreFactory.NAMESPACE.key, CDF_URI );
+		
+		services = finder.aquire( params );
 		catalog.add( (Service) services.get( 0 ) );
 		
-
+		params = new HashMap();
+		params.put( PropertyDataStoreFactory.DIRECTORY.key, new File( data, CGF_PREFIX ) );
+		params.put( PropertyDataStoreFactory.NAMESPACE.key, CGF_URI );
+		
+		services = finder.aquire( params );
+		catalog.add( (Service) services.get( 0 ) );
+		
+		//setup the styles
+		services = finder.aquire( new File( data, "styles").toURI() );
+		catalog.add( (Service) services.get( 0 ) );
 		
 		return catalog;
 	}
     
     protected void tearDown() throws Exception {
-    		delete( new File( tmp, "styles" ) );
-    		delete( new File( tmp, "featureTypes" ) );
-    		delete( tmp );
+    		delete( styles );
+    		delete( featureTypes );
+    		delete( data );
     	}
 
     void delete( File dir ) throws IOException {
@@ -237,13 +347,29 @@ public class DataTestSupport extends TestCase {
     }
     
     /**
-     * @return The cite type names as an array of strings.
+     * @return The qualified cite type names as an array of strings.
      */
     protected String[] citeTypeNames() {
-    		return new String[]{
+    	ArrayList names = new ArrayList();
+    	names.addAll( Arrays.asList( wmsCiteTypeNames() ) );
+    	names.addAll( Arrays.asList( wfsCiteTypeNames() ) );
+    	
+    	return (String[]) names.toArray( new String[ names.size() ] );
+    }
+    
+    protected String[] wmsCiteTypeNames() {
+    	return new String[] {
 			BASIC_POLYGONS_TYPE, BRIDGES_TYPE, BUILDINGS_TYPE,
 			DIVIDED_ROUTES_TYPE, FORESTS_TYPE, LAKES_TYPE, MAP_NEATLINE_TYPE,
-    			NAMED_PLACES_TYPE, PONDS_TYPE, ROAD_SEGMENTS_TYPE, STREAMS_TYPE 
+    		NAMED_PLACES_TYPE, PONDS_TYPE, ROAD_SEGMENTS_TYPE, STREAMS_TYPE 
 		};
+    }
+    
+    protected String[] wfsCiteTypeNames() {
+    	return new String[] {
+			DELETES_TYPE, FIFTEEN_TYPE, INSERTS_TYPE, LOCKS_TYPE, NULLS_TYPE, 
+    		OTHER_TYPE, SEVEN_TYPE, UPDATES_TYPE, LINES_TYPE, MLINES_TYPE, 
+		    MPOINTS_TYPE, MPOLYGONS_TYPE, POINTS_TYPE, POLYGONS_TYPE
+    	};
     }
 }
