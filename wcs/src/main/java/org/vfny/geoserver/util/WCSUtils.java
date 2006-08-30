@@ -153,7 +153,28 @@ public class WCSUtils {
 		/**
 		 * Reproject
 		 */
-		subCoverage = resample(request, targetCRS, sourceCRS, subCoverage);
+		final String interp_requested = request.getInterpolation();
+		if (interp_requested != null) {
+			int interp_type = -1;
+			
+			if (interp_requested.equalsIgnoreCase("nearest_neighbor"))
+				interp_type = Interpolation.INTERP_NEAREST;
+			else if (interp_requested.equalsIgnoreCase("bilinear"))
+				interp_type = Interpolation.INTERP_BILINEAR;
+			else if (interp_requested.equalsIgnoreCase("bicubic"))
+				interp_type = Interpolation.INTERP_BICUBIC;
+			else if (interp_requested.equalsIgnoreCase("bicubic_2"))
+				interp_type = Interpolation.INTERP_BICUBIC_2;
+			else
+				throw new WcsException(
+				"Unrecognized interpolation type. Allowed values are: nearest_neighbor, bilinear, bicubic, bicubic_2");
+
+			subCoverage = resample(
+					subCoverage,
+					sourceCRS, 
+					targetCRS, 
+					Interpolation.getInstance(interp_type));
+		}
 
 		return subCoverage;
 	}
@@ -166,7 +187,12 @@ public class WCSUtils {
 	 * @return
 	 * @throws WcsException
 	 */
-	public static GridCoverage2D resample(CoverageRequest request, final CoordinateReferenceSystem targetCRS, final CoordinateReferenceSystem sourceCRS, GridCoverage2D subCoverage) throws WcsException {
+	public static GridCoverage2D resample(
+			GridCoverage2D coverage,
+			final CoordinateReferenceSystem sourceCRS,
+			final CoordinateReferenceSystem targetCRS,
+			final Interpolation interpolation
+			) throws WcsException {
 		// ///////////////////////////////////////////////////////////////////
 		//
 		// REPROJECT
@@ -176,32 +202,16 @@ public class WCSUtils {
 		if (!sourceCRS.equals(targetCRS)) {
 			final GridCoverage2D reprojectedGridCoverage;
 			reprojectedGridCoverage = (GridCoverage2D) Operations.DEFAULT
-					.resample(subCoverage, targetCRS, null, Interpolation
-							.getInstance(Interpolation.INTERP_NEAREST));
-
-			subCoverage = reprojectedGridCoverage;
+			.resample(coverage, targetCRS, null, Interpolation
+					.getInstance(Interpolation.INTERP_NEAREST));
+			
+			coverage = reprojectedGridCoverage;
 		}
 
-		final String interp_requested = request.getInterpolation();
-		if (interp_requested != null) {
-			int interp_type = -1;
-
-			if (interp_requested.equalsIgnoreCase("nearest_neighbor"))
-				interp_type = Interpolation.INTERP_NEAREST;
-			else if (interp_requested.equalsIgnoreCase("bilinear"))
-				interp_type = Interpolation.INTERP_BILINEAR;
-			else if (interp_requested.equalsIgnoreCase("bicubic"))
-				interp_type = Interpolation.INTERP_BICUBIC;
-			else if (interp_requested.equalsIgnoreCase("bicubic_2"))
-				interp_type = Interpolation.INTERP_BICUBIC_2;
-			else
-				throw new WcsException(
-						"Unrecognized interpolation type. Allowed values are: nearest_neighbor, bilinear, bicubic, bicubic_2");
-
-			subCoverage = (GridCoverage2D) Operations.DEFAULT.interpolate(
-					subCoverage, Interpolation.getInstance(interp_type));
-		}
-		return subCoverage;
+		if (interpolation != null)
+			coverage = (GridCoverage2D) Operations.DEFAULT.interpolate(coverage, interpolation);
+		
+		return coverage;
 	}
 
 	/**
