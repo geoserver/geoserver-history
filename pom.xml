@@ -58,18 +58,6 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>codehaus</id>
-			<name>
-				Repository serving Geoserver libraries hosted by
-				Codehaus
-			</name>
-			<url>http://dist.codehaus.org/geoserver</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<layout>legacy</layout>
-		</repository>
-		<repository>
 			<id>espace</id>
 			<name>
 				Repository from the Sicade laboratory in New-Caledonia
@@ -112,6 +100,11 @@
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-imageio-arcgrid</artifactId>
 				<version>2.3-MODIFIED</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-arcgrid</artifactId>
+				<version>2.3-MODIFIED</version>
 			</dependency-->
 			<dependency>
 				<groupId>org.geotools</groupId>
@@ -139,6 +132,11 @@
 				<artifactId>gt2-imagemosaic</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
+			<!--dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-pyramid</artifactId>
+				<version>${gt.version}</version>
+			</dependency-->
 			
 			<dependency>
 				<groupId>org.geotools</groupId>
@@ -245,11 +243,11 @@
 				<artifactId>wicket-spring</artifactId>
 				<version>1.2.1</version>
 			</dependency>
-	        	<dependency>
-      		      <groupId>wicket</groupId>
-		            <artifactId>wicket-extensions</artifactId>
-            		<version>1.2.1</version>
-		      </dependency>
+	    <dependency>
+      	<groupId>wicket</groupId>
+		    <artifactId>wicket-extensions</artifactId>
+        <version>1.2.1</version>
+		  </dependency>
 			<dependency>
 				<groupId>struts</groupId>
 				<artifactId>struts</artifactId>
@@ -468,6 +466,14 @@
 				</excludes>
 			</testResource>
 		</testResources>
+
+		<extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav</artifactId>
+        <version>1.0-beta-1</version>
+      </extension>
+    </extensions>
 
 		<plugins>
 
@@ -696,6 +702,19 @@
 
 		</plugins>
 	</reporting>
+
+	<distributionManagement>
+		<repository>
+      <id>codehaus.org</id>
+      <name>GeoServer Central Repository</name>
+      <url>dav:https://dav.codehaus.org/repository/geoserver/</url>
+    </repository>
+    <snapshotRepository>
+      <id>codehaus.org</id>
+      <name>GeoServer Central Development Repository</name>
+      <url>dav:https://dav.codehaus.org/snapshots.repository/geoserver/</url>
+    </snapshotRepository>
+	</distributionManagement>
 
 	<modules>
 		<module>platform</module>

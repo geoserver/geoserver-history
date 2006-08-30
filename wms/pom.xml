@@ -16,6 +16,15 @@
 	<name>Web Map Service Module</name>
 	
 	<dependencies>
+		<!--dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>streams</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-imageio-arcgrid</artifactId>
+		</dependency-->
+
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>main</artifactId>
