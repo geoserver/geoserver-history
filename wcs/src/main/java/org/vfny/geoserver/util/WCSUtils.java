@@ -1,5 +1,7 @@
 package org.vfny.geoserver.util;
 
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,18 +9,27 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.media.jai.Interpolation;
 
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.processing.DefaultProcessor;
 import org.geotools.coverage.processing.Operations;
+import org.geotools.coverage.processing.operation.Crop;
+import org.geotools.coverage.processing.operation.FilteredSubsample;
+import org.geotools.coverage.processing.operation.Resample;
+import org.geotools.coverage.processing.operation.Scale;
+import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.GridCoverage;
+import org.opengis.coverage.grid.GridRange;
+import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
@@ -34,6 +45,12 @@ import org.vfny.geoserver.wcs.requests.CoverageRequest;
  *
  */
 public class WCSUtils {
+	private final static Hints LENIENT_HINT = new Hints(
+			Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
+
+	private static final Logger LOGGER = Logger
+			.getLogger("org.vfny.geoserver.util");
+
 	/**
 	 * @param request
 	 * @param outputFormat
@@ -102,88 +119,24 @@ public class WCSUtils {
 				: new GeneralEnvelope(destinationEnvelope);
 		destinationEnvelopeInSourceCRS.setCoordinateReferenceSystem(cvCRS);
 
-		// ///////////////////////////////////////////////////////////////////
-		//
-		// BAND SELECT
-		//
-		//
-		// ///////////////////////////////////////////////////////////////////
-		final Set params = request.getParameters().keySet();
-		final int numDimensions = coverage.getNumSampleDimensions();
-		final Map dims = new HashMap();
-		final ArrayList selectedBands = new ArrayList();
+		/**
+		 * Band Select
+		 */
+		Coverage bandSelectedCoverage = bandSelect(request.getParameters().keySet(), coverage);
 
-		for (int d = 0; d < numDimensions; d++) {
-			dims.put(coverage.getSampleDimension(d).getDescription().toString(
-					Locale.getDefault()).toUpperCase(), new Integer(d));
-		}
-
-		if (!params.isEmpty()) {
-			for (Iterator p = params.iterator(); p.hasNext();) {
-				final String param = (String) p.next();
-				if (dims.containsKey(param)) {
-					selectedBands.add(dims.get(param));
-				}
-			}
-		}
-
-		final int length = selectedBands.size();
-		final int[] bands = new int[length];
-		for (int b = 0; b < length; b++) {
-			bands[b] = ((Integer) selectedBands.get(b)).intValue();
-		}
-
-		Coverage bandSelectedCoverage;
-		if (bands != null && bands.length > 0)
-			bandSelectedCoverage = Operations.DEFAULT.selectSampleDimension(
-					coverage, bands);
-		else
-			bandSelectedCoverage = coverage;
-
-		// ///////////////////////////////////////////////////////////////////
-		//
-		// CROP
-		//
-		//
-		// ///////////////////////////////////////////////////////////////////
-		final GridCoverage2D croppedGridCoverage;
-		final GeneralEnvelope oldEnvelope = (GeneralEnvelope) coverage
-				.getEnvelope();
-		// intersect the envelopes
-		final GeneralEnvelope intersectionEnvelope = new GeneralEnvelope(
+		/**
+		 * Crop
+		 */
+		final GridCoverage2D croppedGridCoverage = crop(
+				bandSelectedCoverage,
+				(GeneralEnvelope) coverage.getEnvelope(), 
+				cvCRS, 
 				destinationEnvelopeInSourceCRS);
-		intersectionEnvelope.setCoordinateReferenceSystem(cvCRS);
-		intersectionEnvelope.intersect((GeneralEnvelope) oldEnvelope);
-		// dow we have something to show?
-		if (intersectionEnvelope.isEmpty())
-			throw new WcsException(
-					"The Intersection is null. Check the requested BBOX!");
-		if (!intersectionEnvelope.equals((GeneralEnvelope) oldEnvelope)) {
-			// get the cropped grid geometry
-			// final GridGeometry2D cropGridGeometry = getCroppedGridGeometry(
-			// intersectionEnvelope, gridCoverage);
-			croppedGridCoverage = (GridCoverage2D) Operations.DEFAULT.crop(
-					bandSelectedCoverage, intersectionEnvelope);
-		} else
-			croppedGridCoverage = (GridCoverage2D) bandSelectedCoverage;
 
-		// prefetch to be faster afterwards.
-		// This step is important since at this stage we might be loading tiles
-		// from disk
-		croppedGridCoverage.prefetch(intersectionEnvelope.toRectangle2D());
-
-		// ///////////////////////////////////////////////////////////////////
-		//
-		// SCALE to the needed resolution
-		// Let me now scale down to the EXACT needed resolution. This step does
-		// not prevent from having loaded an overview of the original image
-		// based on the requested scale.
-		//
-		// ///////////////////////////////////////////////////////////////////
+		/**
+		 * Scale
+		 */
 		GridCoverage2D subCoverage = croppedGridCoverage;
-
-		GridGeometry2D scaledGridGeometry = (GridGeometry2D) coverage
-				.getGridGeometry();
 		if (request.getGridLow() != null && request.getGridHigh() != null) {
 			final int[] lowers = new int[] {
 					request.getGridLow()[0].intValue(),
@@ -194,16 +147,26 @@ public class WCSUtils {
 			// new grid range
 			final GeneralGridRange newGridrange = new GeneralGridRange(lowers,
 					highers);
-			scaledGridGeometry = new GridGeometry2D(newGridrange, coverage
-					.getEnvelope());
-			final GridCoverage2D scaledGridCoverage = (GridCoverage2D) Operations.DEFAULT
-					.resample(croppedGridCoverage, cvCRS, scaledGridGeometry,
-							Interpolation
-									.getInstance(Interpolation.INTERP_NEAREST));
 
-			subCoverage = scaledGridCoverage;
+			subCoverage = scale(croppedGridCoverage, newGridrange, coverage, cvCRS);
 		}
+		/**
+		 * Reproject
+		 */
+		subCoverage = resample(request, targetCRS, sourceCRS, subCoverage);
 
+		return subCoverage;
+	}
+
+	/**
+	 * @param request
+	 * @param targetCRS
+	 * @param sourceCRS
+	 * @param subCoverage
+	 * @return
+	 * @throws WcsException
+	 */
+	public static GridCoverage2D resample(CoverageRequest request, final CoordinateReferenceSystem targetCRS, final CoordinateReferenceSystem sourceCRS, GridCoverage2D subCoverage) throws WcsException {
 		// ///////////////////////////////////////////////////////////////////
 		//
 		// REPROJECT
@@ -238,7 +201,126 @@ public class WCSUtils {
 			subCoverage = (GridCoverage2D) Operations.DEFAULT.interpolate(
 					subCoverage, Interpolation.getInstance(interp_type));
 		}
-
 		return subCoverage;
+	}
+
+	/**
+	 * @param request
+	 * @param coverage
+	 * @param cvCRS
+	 * @param croppedGridCoverage
+	 * @return
+	 */
+	public static GridCoverage2D scale(
+			final GridCoverage2D coverage,
+			final GridRange newGridRange,
+			final GridCoverage sourceCoverage, 
+			final CoordinateReferenceSystem sourceCRS) {
+		// ///////////////////////////////////////////////////////////////////
+		//
+		// SCALE to the needed resolution
+		// Let me now scale down to the EXACT needed resolution. This step does
+		// not prevent from having loaded an overview of the original image
+		// based on the requested scale.
+		//
+		// ///////////////////////////////////////////////////////////////////
+		GridGeometry2D scaledGridGeometry = (GridGeometry2D) sourceCoverage.getGridGeometry();
+		scaledGridGeometry = new GridGeometry2D(newGridRange, sourceCoverage.getEnvelope());
+		final GridCoverage2D scaledGridCoverage = (GridCoverage2D) Operations.DEFAULT
+		.resample(coverage, sourceCRS, scaledGridGeometry,
+				Interpolation
+				.getInstance(Interpolation.INTERP_NEAREST));
+		
+		
+		return scaledGridCoverage;
+	}
+
+	/**
+	 * @param coverage
+	 * @param cvCRS
+	 * @param destinationEnvelopeInSourceCRS
+	 * @param bandSelectedCoverage
+	 * @return
+	 * @throws WcsException
+	 */
+	public static GridCoverage2D crop(
+			final Coverage coverage,
+			final GeneralEnvelope sourceEnvelope, 
+			final CoordinateReferenceSystem sourceCRS, 
+			final GeneralEnvelope destinationEnvelopeInSourceCRS) 
+	throws WcsException {
+		// ///////////////////////////////////////////////////////////////////
+		//
+		// CROP
+		//
+		//
+		// ///////////////////////////////////////////////////////////////////
+		final GridCoverage2D croppedGridCoverage;
+		// intersect the envelopes
+		final GeneralEnvelope intersectionEnvelope = new GeneralEnvelope(
+				destinationEnvelopeInSourceCRS);
+		intersectionEnvelope.setCoordinateReferenceSystem(sourceCRS);
+		intersectionEnvelope.intersect((GeneralEnvelope) sourceEnvelope);
+		// dow we have something to show?
+		if (intersectionEnvelope.isEmpty())
+			throw new WcsException(
+					"The Intersection is null. Check the requested BBOX!");
+		if (!intersectionEnvelope.equals((GeneralEnvelope) sourceEnvelope)) {
+			// get the cropped grid geometry
+			// final GridGeometry2D cropGridGeometry = getCroppedGridGeometry(
+			// intersectionEnvelope, gridCoverage);
+			croppedGridCoverage = (GridCoverage2D) Operations.DEFAULT.crop(coverage, intersectionEnvelope);
+		} else
+			croppedGridCoverage = (GridCoverage2D) coverage;
+
+		// prefetch to be faster afterwards.
+		// This step is important since at this stage we might be loading tiles
+		// from disk
+		croppedGridCoverage.prefetch(intersectionEnvelope.toRectangle2D());
+		return croppedGridCoverage;
+	}
+
+	/**
+	 * @param request
+	 * @param coverage
+	 * @return
+	 */
+	public static Coverage bandSelect(final Set params, final GridCoverage coverage) {
+		// ///////////////////////////////////////////////////////////////////
+		//
+		// BAND SELECT
+		//
+		//
+		// ///////////////////////////////////////////////////////////////////
+		final int numDimensions = coverage.getNumSampleDimensions();
+		final Map dims = new HashMap();
+		final ArrayList selectedBands = new ArrayList();
+
+		for (int d = 0; d < numDimensions; d++) {
+			dims.put(coverage.getSampleDimension(d).getDescription().toString(
+					Locale.getDefault()).toUpperCase(), new Integer(d));
+		}
+
+		if (!params.isEmpty()) {
+			for (Iterator p = params.iterator(); p.hasNext();) {
+				final String param = (String) p.next();
+				if (dims.containsKey(param)) {
+					selectedBands.add(dims.get(param));
+				}
+			}
+		}
+
+		final int length = selectedBands.size();
+		final int[] bands = new int[length];
+		for (int b = 0; b < length; b++) {
+			bands[b] = ((Integer) selectedBands.get(b)).intValue();
+		}
+
+		Coverage bandSelectedCoverage;
+		if (bands != null && bands.length > 0)
+			bandSelectedCoverage = Operations.DEFAULT.selectSampleDimension(coverage, bands);
+		else
+			bandSelectedCoverage = coverage;
+		return bandSelectedCoverage;
 	}
 }
