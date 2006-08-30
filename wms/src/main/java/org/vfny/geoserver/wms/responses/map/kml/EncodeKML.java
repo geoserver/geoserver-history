@@ -40,8 +40,10 @@ import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.filter.expression.BBoxExpression;
 import org.geotools.filter.expression.Expression;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
+import org.geotools.referencing.CRS;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -278,8 +280,11 @@ public class EncodeKML {
 
             try {
             	Filter filter = null;
-            	BBoxExpression rightBBox = filterFactory.createBBoxExpression(mapContext
-                        .getAreaOfInterest());
+            	ReferencedEnvelope aoi = mapContext.getAreaOfInterest();
+            	if (!CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(), schema.getDefaultGeometry().getCoordinateSystem())) {
+            		aoi = aoi.transform(schema.getDefaultGeometry().getCoordinateSystem(), true);
+            	}
+            	BBoxExpression rightBBox = filterFactory.createBBoxExpression(aoi);
                 filter = createBBoxFilters(schema, attributes, rightBBox);
                 
                 // now build the query using only the attributes and the bounding

@@ -24,7 +24,6 @@ import javax.media.jai.util.Range;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.TransformerException;
 
-import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.feature.AttributeType;
@@ -36,8 +35,10 @@ import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.Filter;
 import org.geotools.filter.expression.Expression;
+import org.geotools.geometry.jts.JTS;
 import org.geotools.gml.producer.GeometryTransformer;
 import org.geotools.map.MapLayer;
+import org.geotools.referencing.CRS;
 import org.geotools.renderer.style.LineStyle2D;
 import org.geotools.renderer.style.PolygonStyle2D;
 import org.geotools.renderer.style.SLDStyleFactory;
@@ -53,7 +54,11 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
-import org.opengis.coverage.grid.GridCoverage;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
+import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WMSMapContext;
 
@@ -465,7 +470,7 @@ public class KMLWriter extends OutputStreamWriter {
                             LOGGER.finer(new StringBuffer("applying rule: ").append(r.toString()).toString());
                             Filter filter = r.getFilter();
                             // if there is no filter or the filter says to do the feature anyways, render it
-                            if ((filter == null) || filter.contains(feature)) {
+                            if ((filter == null) || filter.evaluate(feature)) {
                                 doElse = false;
                                 LOGGER.finer("processing Symobolizer ...");
                                 Symbolizer[] symbolizers = r.getSymbolizers();
@@ -1017,7 +1022,7 @@ public class KMLWriter extends OutputStreamWriter {
      * @throws IOException
      */
     private void writeStyle(final Style2D style, final String id, Symbolizer sym) throws IOException {
-        if (style instanceof PolygonStyle2D){
+        if (style instanceof PolygonStyle2D && sym instanceof PolygonSymbolizer){
         	
         	if ( ((PolygonStyle2D)style).getFill() == null && 
         		((PolygonStyle2D)style).getStroke() == null)
@@ -1090,7 +1095,7 @@ public class KMLWriter extends OutputStreamWriter {
 
             write(styleString.toString());
             
-        } else if(style instanceof LineStyle2D){
+        } else if(style instanceof LineStyle2D && sym instanceof LineSymbolizer){
         	
         	if ( ((LineStyle2D)style).getStroke() == null)
             		LOGGER.info("Empty LineSymbolizer, using default stroke.");
@@ -1138,8 +1143,7 @@ public class KMLWriter extends OutputStreamWriter {
             
             write(styleString.toString());
             
-        }
-	    else if(style instanceof TextStyle2D){
+        } else if(style instanceof TextStyle2D && sym instanceof TextSymbolizer){
 	    	
 	    	final StringBuffer styleString = new StringBuffer();
 	    	TextSymbolizer textSym = (TextSymbolizer)sym;
@@ -1238,7 +1242,22 @@ public class KMLWriter extends OutputStreamWriter {
      */
     private com.vividsolutions.jts.geom.Geometry findGeometry( Feature f ) {
         // get the geometry
-        return f.getDefaultGeometry();
+    	Geometry geom = f.getDefaultGeometry();
+    	CoordinateReferenceSystem sourceCRS = f.getFeatureType().getDefaultGeometry().getCoordinateSystem();
+    	if (!CRS.equalsIgnoreMetadata(sourceCRS, this.mapContext.getCoordinateReferenceSystem())) {
+    		try {
+    			MathTransform transform = CRS.transform(sourceCRS, this.mapContext.getCoordinateReferenceSystem(), true);
+				geom = JTS.transform(geom, transform);
+			} catch (MismatchedDimensionException e) {
+	            LOGGER.severe( e.getLocalizedMessage() );
+			} catch (TransformException e) {
+	            LOGGER.severe( e.getLocalizedMessage() );
+			} catch (FactoryException e) {
+	            LOGGER.severe( e.getLocalizedMessage() );
+			}
+    	}
+    	
+        return geom;
     }
 
     /**

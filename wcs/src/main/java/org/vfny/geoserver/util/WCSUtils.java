@@ -241,5 +241,4 @@ public class WCSUtils {
 
 		return subCoverage;
 	}
-
 }

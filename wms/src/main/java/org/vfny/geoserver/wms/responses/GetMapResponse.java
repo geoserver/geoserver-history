@@ -23,9 +23,12 @@ import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
+import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.context.ApplicationContext;
@@ -202,10 +205,28 @@ public class GetMapResponse implements Response {
 						// We just need to check the bbox of the layer.
 						//
 						// //
-						if (!layers[i].getBoundingBox().intersects(env))
-							continue;
+						final ReferencedEnvelope bbox = (ReferencedEnvelope) layers[i].getBoundingBox();
+						if(CRS.equalsIgnoreMetadata(bbox.getCoordinateReferenceSystem(), mapcrs)) {
+							if (!layers[i].getBoundingBox().intersects(env)) {
+								continue;
+							}
+						} else {
+							ReferencedEnvelope prjEnv = new ReferencedEnvelope(env, mapcrs).transform(bbox.getCoordinateReferenceSystem(), true);
+							if (!layers[i].getBoundingBox().intersects(prjEnv)) {
+								continue;
+							}
+						}
 
 					} catch (IOException exp) {
+						if (LOGGER.isLoggable(Level.SEVERE)) {
+							LOGGER.log(Level.SEVERE, new StringBuffer(
+									"Getting feature source: ").append(
+									exp.getMessage()).toString(), exp);
+						}
+						throw new WmsException(null, new StringBuffer(
+								"Internal error : ").append(exp.getMessage())
+								.toString());
+					} catch (FactoryException exp) {
 						if (LOGGER.isLoggable(Level.SEVERE)) {
 							LOGGER.log(Level.SEVERE, new StringBuffer(
 									"Getting feature source: ").append(
