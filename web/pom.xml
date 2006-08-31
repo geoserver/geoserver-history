@@ -218,7 +218,7 @@
 					<!--systemProperties>
 						<systemProperty>
 							<name>GEOSERVER_DATA_DIR</name>
-							<value>/home/jdeolive/devel/geoserver/configurations/citeWFS</value>
+							<value>/home/jdeolive/devel/geoserver/1.3.x/data_dirs/userBasic</value>
 						</systemProperty>
 					</systemProperties-->
 				</configuration>
