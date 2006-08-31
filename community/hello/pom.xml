@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.geoserver</groupId>		
 	<artifactId>community</artifactId>
-	<version>1.4.0-M1</version>
+	<version>1.5.x</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -20,7 +20,6 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.4.0-M1</version>
     </dependency>
   </dependencies>
 

@@ -6,19 +6,49 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.4.0-M1</version>
+		<version>1.5.x</version>
 	</parent>
 
 	<groupId>org.geoserver</groupId>
-  <artifactId>community</artifactId>
+	<artifactId>community</artifactId>
+	<version>1.5.x</version>
 	<packaging>pom</packaging>
-  <name>Community Space</name>
+	<name>Community Space</name>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>${parent.groupId}</groupId>
+				<artifactId>http</artifactId>
+				<version>${parent.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${parent.groupId}</groupId>
+				<artifactId>wfs2</artifactId>
+				<version>${parent.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${parent.groupId}</groupId>
+				<artifactId>net.opengis.ows-1.0.0</artifactId>
+				<version>${parent.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${parent.groupId}</groupId>
+				<artifactId>net.opengis.wfs-1.0.0</artifactId>
+				<version>${parent.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${parent.groupId}</groupId>
+				<artifactId>net.opengis.wfs-1.1.0</artifactId>
+				<version>${parent.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>platform</artifactId>
-			<version>1.4.0-M1</version>
 		</dependency>
 	</dependencies>
 
