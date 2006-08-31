@@ -211,7 +211,7 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
         return ResponseUtils.encodeXML(mesg.toString());
     }
 
-    private String createStackTrace() {
+    protected String createStackTrace() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(baos);
         Throwable cause = getCause();
@@ -266,7 +266,7 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
         returnXml.append("xsi:schemaLocation=\"http://www.opengis.net/ogc ");
 
         returnXml.append(Requests.getSchemaBaseUrl(request)
-            + "/wfs/1.0.0/OGC-exception.xsd\">\n");
+            + "wfs/1.0.0/OGC-exception.xsd\">\n");
 
         //REVISIT: handle multiple service exceptions?  must refactor class.
         returnXml.append(indent + "<ServiceException");

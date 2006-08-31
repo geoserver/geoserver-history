@@ -65,7 +65,7 @@ public class WCSUtils {
 		// ///////////////////////////////////////////////////////////////////
 		final DefaultProcessor processor = new DefaultProcessor(LENIENT_HINT);
 		bandSelectParams 	= processor.getOperation("SelectSampleDimension").getParameters();
-		cropParams 			= processor.getOperation("Crop").getParameters();
+		cropParams 			= processor.getOperation("CoverageCrop").getParameters();
 		interpolateParams 	= processor.getOperation("Interpolate").getParameters();
 		resampleParams 		= processor.getOperation("Resample").getParameters();
 	}

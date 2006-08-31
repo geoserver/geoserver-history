@@ -6,6 +6,7 @@ package org.vfny.geoserver.wcs.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.parameter.DefaultParameterDescriptor;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
@@ -169,8 +172,7 @@ public class CoverageResponse implements Response {
 		} catch (NoSuchElementException ex) {
 			WcsException newEx = new WcsException(new StringBuffer("output format: ").append(
 					outputFormat).append(" not ").append(
-					"supported by geoserver").toString(), ex);
-			newEx.initCause(ex);
+					"supported by geoserver for this Coverage").toString(), ex);
 			throw newEx;
 		}
 
@@ -184,41 +186,68 @@ public class CoverageResponse implements Response {
 			if (!meta.getSupportedFormats().contains(outputFormat.toUpperCase())) {
 				WcsException newEx = new WcsException(new StringBuffer("output format: ").append(
 						outputFormat).append(" not ").append(
-						"supported by geoserver").toString());
+						"supported by geoserver for this Coverage").toString());
 				throw newEx;
 			}
 
 			final Format format = meta.getFormatInfo().getFormat();
 			final GridCoverageReader reader = meta.getReader();
 
-			final ParameterValueGroup params = format.getReadParameters();
+			// /////////////////////////////////////////////////////////
+			//
+			// Setting coverage reading params.
+			//
+			// /////////////////////////////////////////////////////////
+			List parameters = new ArrayList();
+			final ParameterValueGroup params = reader.getFormat()
+					.getReadParameters();
+			final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D
+					.getName().toString();
 			if (params != null) {
 				List list = params.values();
 				Iterator it = list.iterator();
 				ParameterValue param;
-				ParameterDescriptor descr ;
-
-				String key ;
+				ParameterDescriptor descr;
+				String key;
 				Object value;
 				while (it.hasNext()) {
-					 param = ((ParameterValue) it.next());
-					 descr = (ParameterDescriptor) param
-							.getDescriptor();
+					param = ((ParameterValue) it.next());
+					descr = (ParameterDescriptor) param.getDescriptor();
 
-					 key = descr.getName().toString();
-					 value = CoverageUtils.getCvParamValue(key, param,
-							meta.getParameters());
+					key = descr.getName().toString();
 
-					if (value != null)
-						params.parameter(key).setValue(value);
+					// /////////////////////////////////////////////////////////
+					//
+					// request param for better management of coverage
+					//
+					// /////////////////////////////////////////////////////////
+					if (key.equalsIgnoreCase(readGeometryKey)
+							&& request.getEnvelope() != null) {
+						/* params.parameter(key).setValue(envelope); */
+						continue;
+					} else {
+						// /////////////////////////////////////////////////////////
+						//
+						// format specific params
+						//
+						// /////////////////////////////////////////////////////////
+						value = CoverageUtils.getCvParamValue(key, param, meta.getParameters());
+
+						if (value != null)
+							/* params.parameter(key).setValue(value); */
+							parameters.add(new DefaultParameterDescriptor(key,
+									value.getClass(), null, value));
+					}
 				}
 			}
-
-			coverage = reader
-					.read(params != null ? (GeneralParameterValue[]) params
-							.values().toArray(
-									new GeneralParameterValue[params.values()
-											.size()]) : null);
+			
+			// /////////////////////////////////////////////////////////
+			//
+			// Reading the coverage
+			//
+			// /////////////////////////////////////////////////////////
+			coverage = reader.read(!parameters.isEmpty() ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]) : null);
+			
 			if (coverage == null || !(coverage instanceof GridCoverage2D))
 				throw new IOException(
 						"The requested coverage could not be found.");

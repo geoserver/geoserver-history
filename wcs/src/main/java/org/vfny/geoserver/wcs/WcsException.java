@@ -4,7 +4,12 @@
  */
 package org.vfny.geoserver.wcs;
 
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.util.Requests;
 
 /**
  * This defines an exception that can be turned into a valid xml service
@@ -18,6 +23,10 @@ import org.vfny.geoserver.ServiceException;
  * @version $Id: WcsException.java,v 0.1 Feb 15, 2005 11:11:26 AM $
  */
 public class WcsException extends ServiceException {
+    /** Class logger */
+    private static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.wcs");
+	
     /**
      * Empty constructor.
      */
@@ -66,5 +75,68 @@ public class WcsException extends ServiceException {
      */
     public WcsException(Throwable e, String preMessage, String locator) {
         super(e, preMessage, locator);
+    }
+    
+    /**
+     * Return request type.
+     *
+     * @param printStackTrace whether the stack trace should be included.
+     * @param request DOCUMENT ME!
+     *
+     * @return The ServiceExceptionReport of this error.
+     *
+     * @task REVISIT: Our error handling should actually have knowledge of the
+     *       app configuration, so that we can set the ogc error report to
+     *       validate right (reference our own schema), and to put the correct
+     *       mime type here.
+     */
+    public String getXmlResponse(boolean printStackTrace,
+        HttpServletRequest request) {
+        //Perhaps not the best place to do this, but it's by far the best place to ensure
+        //that all logged errors get recorded in the same way, as there all must return
+        //xml responses.
+        LOGGER.warning("encountered error: " + getMessage() + "\nStackTrace: " + createStackTrace());
+
+        String indent = "   ";
+
+        StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\" ?>\n");
+
+        returnXml.append("<ServiceExceptionReport\n");
+
+        returnXml.append(indent + "version=\"1.2.0\"\n");
+
+        returnXml.append(indent + "xmlns=\"http://www.opengis.net/ogc\"\n");
+
+        returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/"
+            + "XMLSchema-instance\"\n");
+
+        returnXml.append(indent);
+
+        returnXml.append("xsi:schemaLocation=\"http://www.opengis.net/ogc ");
+
+        returnXml.append(Requests.getSchemaBaseUrl(request)
+            + "wcs/1.0.0/OGC-exception.xsd\">\n");
+
+        //REVISIT: handle multiple service exceptions?  must refactor class.
+        returnXml.append(indent + "<ServiceException");
+
+        if (!isEmpty(getCode())) {
+            returnXml.append(" code=\"" + getCode() + "\"");
+        }
+
+        if (!isEmpty(this.locator)) {
+            returnXml.append(" locator=\"" + this.locator + "\"");
+        }
+
+        returnXml.append(">\n" + indent + indent);
+        returnXml.append(getXmlMessage(printStackTrace));
+
+        returnXml.append(indent + "</ServiceException>\n");
+
+        returnXml.append("</ServiceExceptionReport>");
+
+        LOGGER.fine("return wfs exception is " + returnXml);
+
+        return returnXml.toString();
     }
 }
