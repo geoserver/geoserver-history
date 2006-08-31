@@ -143,10 +143,10 @@ public class CoverageResponse implements Response {
 	}
 
 	/**
-	 * Executes FeatureRequest.
+	 * Executes CoverageRequest.
 	 * 
 	 * <p>
-	 * Willing to execute a FetureRequest, or FeatureRequestWith Lock.
+	 * Willing to execute a CoverageRequest.
 	 * </p>
 	 * 
 	 * @param req
