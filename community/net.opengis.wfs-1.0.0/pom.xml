@@ -12,7 +12,6 @@
   <groupId>org.geoserver</groupId>
   <artifactId>net.opengis.wfs-1.0.0</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0</version>
   <name>Web Feature Service Model 1.0.0</name>
 
   <dependencies>

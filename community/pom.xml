@@ -19,6 +19,16 @@
 		<dependencies>
 			<dependency>
 				<groupId>${parent.groupId}</groupId>
+				<artifactId>platform</artifactId>
+				<version>${parent.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${parent.groupId}</groupId>
+				<artifactId>main</artifactId>
+				<version>${parent.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${parent.groupId}</groupId>
 				<artifactId>http</artifactId>
 				<version>${parent.version}</version>
 			</dependency>

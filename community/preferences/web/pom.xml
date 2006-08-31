@@ -7,8 +7,8 @@
   <!-- set parent pom to community pom -->
   <parent>
     <groupId>org.geoserver</groupId>		
-    <artifactId>community</artifactId>
-    <version>1.5.x</version>
+    <artifactId>preferences</artifactId>
+    <version>0.4</version>
   </parent>
 
   <groupId>org.geoserver</groupId>

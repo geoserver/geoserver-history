@@ -21,4 +21,19 @@
 		<module>web</module>
 	</modules>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>${parent.groupId}</groupId>
+				<artifactId>platform</artifactId>
+				<version>1.5.x</version>
+			</dependency>
+			<dependency>
+				<groupId>${parent.groupId}</groupId>
+				<artifactId>main</artifactId>
+				<version>1.5.x</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
 </project>

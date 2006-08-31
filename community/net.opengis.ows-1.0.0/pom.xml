@@ -13,7 +13,6 @@
   <groupId>org.geoserver</groupId>
   <artifactId>net.opengis.ows</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0</version>
   <name>Open Web Service Model</name>
 
   <dependencies>
