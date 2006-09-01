@@ -20,37 +20,37 @@
 			<dependency>
 				<groupId>${parent.groupId}</groupId>
 				<artifactId>platform</artifactId>
-				<version>${parent.version}</version>
+				<version>1.5.x</version>
 			</dependency>
 			<dependency>
 				<groupId>${parent.groupId}</groupId>
 				<artifactId>main</artifactId>
-				<version>${parent.version}</version>
+				<version>1.5.x</version>
 			</dependency>
 			<dependency>
 				<groupId>${parent.groupId}</groupId>
 				<artifactId>http</artifactId>
-				<version>${parent.version}</version>
+				<version>1.5.x</version>
 			</dependency>
 			<dependency>
 				<groupId>${parent.groupId}</groupId>
 				<artifactId>wfs2</artifactId>
-				<version>${parent.version}</version>
+				<version>1.5.x</version>
 			</dependency>
 			<dependency>
 				<groupId>${parent.groupId}</groupId>
 				<artifactId>net.opengis.ows-1.0.0</artifactId>
-				<version>${parent.version}</version>
+				<version>1.5.x</version>
 			</dependency>
 			<dependency>
 				<groupId>${parent.groupId}</groupId>
 				<artifactId>net.opengis.wfs-1.0.0</artifactId>
-				<version>${parent.version}</version>
+				<version>1.5.x</version>
 			</dependency>
 			<dependency>
 				<groupId>${parent.groupId}</groupId>
 				<artifactId>net.opengis.wfs-1.1.0</artifactId>
-				<version>${parent.version}</version>
+				<version>1.5.x</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
