@@ -12,7 +12,6 @@
 
   <groupId>org.geoserver</groupId>
   <artifactId>wfs2</artifactId>
-  <version>${parent.version}</version>
   <packaging>jar</packaging>
   <name>Web Feature Service Module</name>
 
@@ -23,18 +22,15 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
-			<artifactId>net.opengis.wfs-1.0.0</artifactId>
-			<version>1.0.0</version>
+			<artifactId>net.opengis.ows-1.0.0</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
-			<artifactId>net.opengis.ows</artifactId>
-			<version>1.0.0</version>
+			<artifactId>net.opengis.wfs-1.0.0</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>net.opengis.wfs-1.1.0</artifactId>
-			<version>1.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
