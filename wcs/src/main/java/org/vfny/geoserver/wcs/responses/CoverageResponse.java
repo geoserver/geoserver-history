@@ -236,7 +236,7 @@ public class CoverageResponse implements Response {
 						if (value != null)
 							/* params.parameter(key).setValue(value); */
 							parameters.add(new DefaultParameterDescriptor(key,
-									value.getClass(), null, value));
+									value.getClass(), null, value).createValue());
 					}
 				}
 			}

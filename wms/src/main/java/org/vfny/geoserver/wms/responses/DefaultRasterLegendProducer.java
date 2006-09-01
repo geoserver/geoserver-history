@@ -216,7 +216,7 @@ public abstract class DefaultRasterLegendProducer
             		BufferedImage imgShape = new BufferedImage(w, h,
                             BufferedImage.TYPE_INT_ARGB);
                 	try {
-                		imgShape = ImageIO.read(new URL(request.getBaseUrl() + "WEB-INF/images/rasterLegend.png"));
+                		imgShape = ImageIO.read(new URL(request.getHttpServletRequest().getRequestURL() + "/../WEB-INF/images/rasterLegend.png"));
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
 						throw new WmsException(e);

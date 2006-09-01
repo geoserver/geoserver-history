@@ -625,8 +625,9 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 
 						if (value != null)
 							/* params.parameter(key).setValue(value); */
-							parameters.add(new DefaultParameterDescriptor(key,
-									value.getClass(), null, value));
+							parameters.add(
+									new DefaultParameterDescriptor(key,
+									value.getClass(), null, value).createValue());
 					}
 				}
 			}
