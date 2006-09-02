@@ -1,13 +1,11 @@
 package org.vfny.geoserver.issues;
 
+import java.util.List;
+
 import org.vfny.geoserver.issues.enums.Priority;
 import org.vfny.geoserver.issues.enums.Resolution;
 import org.vfny.geoserver.issues.listeners.IIssueListener;
 
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IMemento;
-import org.eclipse.ui.IViewPart;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 
 /**
@@ -32,41 +30,6 @@ public interface IIssue {
      * @param listener listener to remove.
      */
     public void removeIssueListener(IIssueListener listener);
-    /**
-     * Returns the id of the ViewPart that the issue requires in order to be resolved. This is
-     * called by the issues view. If a non-null value is returned, the IssuesView will show the
-     * ViewPart identified by the id. Otherwise nothing is done.
-     * 
-     * @return The id of the ViewPart the issue concerns.
-     */
-    String getViewPartId();//TODO: understand this
-    /**
-     * If the ViewPart identified by getViewPartID is a view and the IMemento returned by this
-     * method is non-null, the view will be initialized with the memento.
-     * 
-     * @memento IMemento for the state of the View identified by {@link #getViewPartId()} if it is a
-     *         view. Null otherwise.
-     */
-    void getViewMemento(IMemento memento);//
-    /**
-     * The id of the editor that will be opened to edit the Editor Input.  If the {@link #getEditorInput()}
-     * does not return null and {@link #getEditorID()} also does not then the editor will be
-     * opened by the framework (It does not need to be done in fixIssue() method).
-     * 
-     * @return The id of the editor that will be opened to edit the Editor Input.  
-     */
-    String getEditorID();
-    /**
-     * If returns not null the framework will attempt to open an editor that can edit the input
-     * object.
-     */
-    public IEditorInput getEditorInput();
-    /**
-     * If not null the framework will open the identified perspective.
-     * 
-     * @return id of a perspective to open. Or null.
-     */
-    public String getPerspectiveID();
     /**
      * Returns A one or two word name for the object that has the <i>issue</i>. This should be
      * translateable and understandable by a human.
@@ -114,7 +77,7 @@ public interface IIssue {
      * @param editor The editor that was identified by {@linkplain #getEditorID()} or null.
      * @see FeatureIssue
      */
-    void fixIssue( IViewPart part, IEditorPart editor );
+    void fixIssue( List<? extends Object> params );
     /**
      * Indicates whether the issue has been resolved. This method <b>MUST</b> return quickly. If
      * the resolution state cannot be determined quickly then either {@linkplain Resolution#UNKNOWN}

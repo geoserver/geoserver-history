@@ -1,9 +1,7 @@
 package org.vfny.geoserver.issues;
 
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IMemento;
-import org.eclipse.ui.IViewPart;
+import java.util.List;
+
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.vfny.geoserver.issues.enums.Priority;
 import org.vfny.geoserver.issues.enums.Resolution;
@@ -34,10 +32,6 @@ public class Issue implements IIssue {
         return null;
     }
 
-    public IEditorInput getEditorInput() {
-        return null;
-    }
-
     public String getPerspectiveID() {
         return null;
     }
@@ -58,9 +52,6 @@ public class Issue implements IIssue {
     }
 
     public void setPriority( Priority priority ) {
-    }
-
-    public void fixIssue( IViewPart part, IEditorPart editor ) {
     }
 
     public Resolution getResolution() {
@@ -103,6 +94,9 @@ public class Issue implements IIssue {
 
     public ReferencedEnvelope getBounds() {
         return null;
+    }
+
+    public void fixIssue( List< ? extends Object> params ) {
     }
 
 }
