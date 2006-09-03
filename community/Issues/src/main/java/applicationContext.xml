@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="featureHandler" class="org.vfny.geoserver.issues.Featurehandler"/>
+
+	<bean id="issueService" class="org.vfny.geoserver.issues.IssueService">
+		<property name="issueHandlers">
+			<list>
+				<ref local="featureHandler" />
+			</list>
+		</property>
+	</bean>
+
+	<bean name="/issues"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref local="issueService" />
+		</property>
+		<property name="serviceInterface">
+			<value>IIssueService</value>
+		</property>
+	</bean>
+
+</beans>

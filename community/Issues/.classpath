@@ -49,28 +49,5 @@
 	<classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-core/1.2.5/spring-core-1.2.5.jar"/>
 	<classpathentry kind="src" path="src/test"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.console.nl1_3.1.0.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.console_3.1.2.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.editors.nl1_3.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.editors_3.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.externaltools.nl1_3.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.externaltools_3.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.forms.nl1_3.1.0.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.forms_3.1.0.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.ide.nl1_3.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.ide_3.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.intro.nl1_3.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.intro_3.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.nl1_3.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.presentations.r21.nl1_3.1.0.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.presentations.r21_3.1.0.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.views.nl1_3.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.views_3.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.win32_3.1.0.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.workbench.nl1_3.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.workbench.texteditor.nl1_3.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.workbench.texteditor_3.1.2.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui.workbench_3.1.2.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/org.eclipse.ui_3.1.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
