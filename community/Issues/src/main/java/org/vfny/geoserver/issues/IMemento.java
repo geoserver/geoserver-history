@@ -42,12 +42,12 @@ public interface IMemento {
      * @param key
      * @return The value, null if the key could not be resolved
      */
-    public Object getValue(String key);
+    public String getValue(String key);
     /**
      * Adds a value to this memento
      * @param key The key to associate the value to
      * @param value The actual value
      */
-    public void putValue(String key, Object value);
+    public void putValue(String key, String value);
     
 }
