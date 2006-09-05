@@ -147,6 +147,7 @@ label.wms.svgRenderer=SVGæ??ç”»
 label.wms.svgSimple=ã‚·ãƒ³ãƒ—ãƒ«(æ—©ã?„ã€?é™?å®šã?•ã‚Œã?Ÿã‚¹ã‚¿ã‚¤ãƒ«)
 label.wms.svgBatik=ãƒ?ãƒ?ãƒƒã‚¯(é?…ã?„ã€?ãƒ•ãƒ«ã‚¹ã‚¿ã‚¤ãƒ«)
 label.wms.svgAntiAlias=ã‚¢ãƒ³ãƒ?ãƒ»ã‚¢ãƒªã‚¢ã‚¹
+label.wms.path=WMS Path
 
 help.name_service=ã‚µãƒ¼ãƒ“ã‚¹å??ã?§ã?™ã€‚
 help.title_service=ã‚µãƒ¼ãƒ“ã‚¹ã?®ã‚¿ã‚¤ãƒˆãƒ«ã?§ã?™ã€‚
@@ -309,6 +310,7 @@ help.global.contactEmail=eãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
 help.serviceLevel=WFSã?Œæ??ä¾›ã?™ã‚‹ã‚µãƒ¼ãƒ“ã‚¹ãƒ¬ãƒ™ãƒ«ã?®å®šç¾©
 
 help.wms.svgRenderer=WMS SVGãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’ã‚µãƒ¼ãƒ“ã‚¹ã?™ã‚‹æ™‚ã?«ä½¿ç”¨ã?™ã‚‹svg æ??ç”»æ–¹æ³•ã‚’é?¸æŠžã?—ã?¾ã?™ã€‚
+help.wms.path=What is this?
 
 tab.description=èª¬æ˜Ž
 tab.content=ã‚³ãƒ³ãƒ†ãƒ³ãƒ„
