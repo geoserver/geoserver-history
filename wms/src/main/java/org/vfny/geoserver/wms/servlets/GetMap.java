@@ -123,7 +123,6 @@ public class GetMap extends WMService {
     	
     	Map layers = this.getWMS().getBaseMapLayers();
     	Map styles = this.getWMS().getBaseMapStyles();
-    	System.out.println("******************* basemapStyles = " + styles);
     	
     	GetMapKvpReader kvp = new GetMapKvpReader(params, this);
     	
