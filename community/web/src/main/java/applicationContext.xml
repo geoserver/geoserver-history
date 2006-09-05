@@ -63,6 +63,7 @@
   	
   	<property name="mappings">
   	  <props>
+  	    <prop key="/ows">dispatcher</prop>
       	<prop key="/ows/*">dispatcher</prop>
       </props>
     </property>
