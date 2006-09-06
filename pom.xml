@@ -232,7 +232,7 @@
 			</dependency>
 			<dependency>
 				<groupId>mockobjects</groupId>
-				<artifactI>mockobjects-core</artifactId>
+				<artifactId>mockobjects-core</artifactId>
 				<version>0.09</version>
 			</dependency>
 			<dependency>
