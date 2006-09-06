@@ -39,6 +39,11 @@
 			</dependency>
 			<dependency>
 				<groupId>${parent.groupId}</groupId>
+				<artifactId>ows</artifactId>
+				<version>1.5.x</version>
+			</dependency>
+			<dependency>
+				<groupId>${parent.groupId}</groupId>
 				<artifactId>net.opengis.ows-1.0.0</artifactId>
 				<version>1.5.x</version>
 			</dependency>
@@ -67,6 +72,7 @@
 		<module>http</module>
 		<module>preferences</module>
 		<module>wfs</module>
+		<module>ows</module>
 		<module>web</module>
 		<module>net.opengis.ows-1.0.0</module>
 		<module>net.opengis.wfs-1.0.0</module>
