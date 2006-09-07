@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.vfny.geoserver.control.IStatusChecker;
 import org.vfny.geoserver.control.IStatusReporter;
 
@@ -35,5 +36,11 @@ public class StatusReporterImpl implements IStatusReporter, ApplicationContextAw
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
+	}
+
+	public void reset() {
+		if (applicationContext instanceof AbstractApplicationContext) {
+			((AbstractApplicationContext) applicationContext).refresh();
+		}
 	}
 }

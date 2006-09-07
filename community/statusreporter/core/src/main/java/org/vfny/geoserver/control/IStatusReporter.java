@@ -20,4 +20,9 @@ public interface IStatusReporter {
 	 * @return a List of type IStatusReport representing the statuses of multiple modules
 	 */
 	public List getStatusReports();
+	
+	/**
+	 * Resets the server's application context.
+	 */
+	public void reset();
 }

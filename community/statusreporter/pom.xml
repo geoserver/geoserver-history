@@ -14,5 +14,20 @@
 		<module>core</module>
 		<!--module>web</module-->
 	</modules>
-
+	<build>
+		<extensions> 
+			<extension> 
+				<groupId>org.apache.maven.wagon</groupId> 
+				<artifactId>wagon-webdav</artifactId> 
+			</extension> 
+		</extensions> 
+	</build>
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>refractions</id>
+      <name>Refractions Research Repository</name>
+      <url>dav:http://lists.refractions.net/m2</url>
+    </repository>
+  </distributionManagement>
 </project>
