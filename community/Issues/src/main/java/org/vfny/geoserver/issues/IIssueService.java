@@ -19,26 +19,31 @@ public interface IIssueService {
      * Adds issues to the back end
      * All the issues within this list must relate to the same target type
      * @param issues issues to added.
-     * @param target the target that the issues relate to.
      */
-    void addIssues(Object target, List<IIssue> issues) throws IOException;
+    void addIssues(List<IIssue> issues) throws IOException;
     /**
      * Saves the issue to the storage
      * @param issue issue to save
      */
-    void modifyIssue(Object target, IIssue issue) throws IOException;
+    void modifyIssue(IIssue issue) throws IOException;
     /**
      * Removes the issues from storage
      * All of these issues must be related to the same target type
      * @param issues issues to remove.
      */
-    void removeIssues(Object target, Collection<IIssue> issues ) throws IOException;
+    void removeIssues(Collection<IIssue> issues ) throws IOException;
     /**
      * Returns a list of issues, the issues should be ordered in the correct order.
-     * @param target The target that the issues must relate to
      * @return a list of issues
      * @throws IOException
      */
-    Collection< ? extends IIssue> getIssues(Object target) throws IOException;
+    Collection< ? extends IIssue> getIssues() throws IOException;
+    /**
+     * Returns a list of issues, the issues should be ordered in the correct order.
+     * @param groupId The id of the group of issues that should be returned
+     * @return a list of issues
+     * @throws IOException
+     */
+    Collection< ? extends IIssue> getIssues(String groupId) throws IOException;
 }
 

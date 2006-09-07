@@ -14,30 +14,11 @@ public class Issue implements IIssue {
     public Issue(String id){
         this.id = id;
     }
-    
+
     public void addIssueListener( IIssueListener listener ) {
     }
 
     public void removeIssueListener( IIssueListener listener ) {
-    }
-
-    public String getViewPartId() {
-        return null;
-    }
-
-    public void getViewMemento( IMemento memento ) {
-    }
-
-    public String getEditorID() {
-        return null;
-    }
-
-    public String getPerspectiveID() {
-        return null;
-    }
-
-    public String getProblemObject() {
-        return null;
     }
 
     public String getDescription() {
@@ -62,11 +43,10 @@ public class Issue implements IIssue {
     }
 
     public String getId() {
-        return id;
+        return null;
     }
 
     public void setId( String newId ) {
-        this.id = newId;
     }
 
     public String getGroupId() {
@@ -81,22 +61,20 @@ public class Issue implements IIssue {
         return null;
     }
 
-    public void init( IMemento memento, IMemento viewMemento, String issueId, String groupId,
-            ReferencedEnvelope bounds ) {
+    public void addProperty( String key, Object value ) {
+    }
+
+    public void init( IMemento memento, IMemento viewMemento, String issueId, String groupId, ReferencedEnvelope bounds ) {
     }
 
     public void save( IMemento memento ) {
     }
 
-    public String getExtensionID() {
+    public String getIssueType() {
         return null;
     }
 
     public ReferencedEnvelope getBounds() {
         return null;
     }
-
-    public void fixIssue( List< ? extends Object> params ) {
-    }
-
 }

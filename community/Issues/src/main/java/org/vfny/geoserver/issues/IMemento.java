@@ -14,25 +14,25 @@ public interface IMemento {
      * Creates a new child of this memento
      * @return The new child
      */
-    public IMemento createChild();
+    public IMemento createChild(String type);
     /**
      * Creats a new child of this memento with the given id
      * Throws an exception if a duplicate id is passed to the method
      * @param id
      * @return The new child
      */
-    public IMemento createChild(String id) throws Exception;
+    public IMemento createChild(String type, String id) throws Exception;
     /**
      * Returns the child specified by the given id
      * @param id
      * @return The child memento, null if the child does not exist
      */
-    public IMemento getChild(String id);
+    public IMemento getChild(String type);
     /**
      * Returns the children of this memento
      * @return An array of children
      */
-    public IMemento[] getChildren();
+    public IMemento[] getChildren(String type);
     /**
      * Returns the id of this memento
      */

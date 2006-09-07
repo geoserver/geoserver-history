@@ -9,10 +9,18 @@ import org.vfny.geoserver.issues.listeners.IIssueListener;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 
 /**
- * Specifies an issue that requires the user's input to be dealt with. One example is an invalid
- * feature.
+ * The issue interface. Represents a single issue. Issues can be grouped
+ * by group id. They have the following basic properties:<BR>
+ * -Description<BR>
+ * -Priority<BR>
+ * -Resolution<BR>
+ * -Bounds<BR>
+ * -groupId<BR>
+ * -memento<BR>
+ * -viewMemento<BR>
+ * -issueType<BR>
  * 
- * @author jones
+ * @author quintona
  * @since 1.0.0
  */
 public interface IIssue {
@@ -31,18 +39,12 @@ public interface IIssue {
      */
     public void removeIssueListener(IIssueListener listener);
     /**
-     * Returns A one or two word name for the object that has the <i>issue</i>. This should be
-     * translateable and understandable by a human.
-     */
-    String getProblemObject();
-    /**
      * Gets the description of the Issue. Should be a single line and around one line. Should be
      * translateable.
      * 
      * @return the description of the Issue.
      */
     String getDescription();
-
     /**
      * Sets the description of the issue.
      * 
@@ -59,25 +61,6 @@ public interface IIssue {
      * Sets the priority of the issue.
      */
     void setPriority( Priority priority );
-    /**
-     * This is called when the user wishes to fix the issue. It will be called after the
-     * WorkbenchPath has been shown and set with the memento if it is a view.
-     * <p>
-     * This method can do other initializations and return or it can run the user through a workflow
-     * and only return when the problem is fixed or the user cancels the operation.
-     * </p>
-     * <p>
-     * This method does <b>NOT</b> have to fix the issue
-     * </p>
-     * <p>
-     * This method <b>IS</b> run in the display thread.
-     * </p>
-     * 
-     * @param part The workbenchpart identified by {@linkplain #getViewPartId()} or null.
-     * @param editor The editor that was identified by {@linkplain #getEditorID()} or null.
-     * @see FeatureIssue
-     */
-    void fixIssue( List<? extends Object> params );
     /**
      * Indicates whether the issue has been resolved. This method <b>MUST</b> return quickly. If
      * the resolution state cannot be determined quickly then either {@linkplain Resolution#UNKNOWN}
@@ -124,6 +107,12 @@ public interface IIssue {
      */
     String[] getPropertyNames();
     /**
+     * Allows properties to be added to the issue. allows the interface to be flexible
+     * @param key
+     * @param value
+     */
+    void addProperty(String key, Object value);
+    /**
      * Called by framework to initialize the Issue.
      * @param memento The saved state of a Issue. May be null.
      * @param viewMemento the memento for initializing the view, may be null
@@ -160,7 +149,7 @@ public interface IIssue {
      * the Issues plugin (which the id <em>net.refractions.udig.issues</em>) and the extension name is featureIssue.  The two are combined to form the id of the
      * extension</p> 
      */
-    String getExtensionID();
+    String getIssueType();
     /**
      * Returns the area that this issue affects.  May return null.
      *
