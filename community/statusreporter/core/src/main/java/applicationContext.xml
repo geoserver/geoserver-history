@@ -17,7 +17,7 @@
 
 	
 	<!-- define the control beans -->
-	<bean id="statusreporter" class="org.vfny.geoserver.control.internal.StatusReporterImpl">
+	<bean id="statuscontroller" class="org.vfny.geoserver.control.internal.StatusReporterImpl">
 	</bean>
 	
 	<bean id="wfsstatuschecker" class="org.vfny.geoserver.control.internal.WFSStatusChecker"/>
