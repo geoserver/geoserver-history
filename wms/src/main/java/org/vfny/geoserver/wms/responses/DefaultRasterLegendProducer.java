@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
@@ -218,10 +219,10 @@ public abstract class DefaultRasterLegendProducer
                 	try {
                 		imgShape = ImageIO.read(new URL(request.getHttpServletRequest().getRequestURL() + "/../WEB-INF/images/rasterLegend.png"));
 					} catch (MalformedURLException e) {
-						e.printStackTrace();
+						LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
 						throw new WmsException(e);
 					} catch (IOException e) {
-						e.printStackTrace();
+						LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
 						throw new WmsException(e);
 					}
 					

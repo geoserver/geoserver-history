@@ -152,6 +152,23 @@ public class GetMapResponse implements Response {
 		map.setBgColor(request.getBgColor());
 		map.setTransparent(request.isTransparent());
 
+		// //
+		//
+		// Check to see if we really have something to display. Sometimes width
+		// or height or both are non positivie or the requested area is null.
+		//
+		// ///
+		if (request.getWidth() <= 0 || request.getHeight() <= 0
+				|| map.getAreaOfInterest().getLength(0) <= 0
+				|| map.getAreaOfInterest().getLength(1) <= 0) {
+
+			if (LOGGER.isLoggable(Level.FINE))
+				LOGGER
+						.fine("We are not going to render anything because either the are is null ar the dimensions are not positive.");
+			return;
+
+		}
+
 		if (LOGGER.isLoggable(Level.FINE)) {
 			LOGGER.fine("setting up map");
 		}
@@ -265,8 +282,7 @@ public class GetMapResponse implements Response {
 						layer.setTitle(layers[i].getName());
 						layer.setQuery(Query.ALL);
 						map.addLayer(layer);
-					}	
-					else
+					} else
 						throw new WmsException(
 								null,
 								new StringBuffer(
