@@ -5,8 +5,8 @@ import org.vfny.geoserver.issues.enums.Priority;
 import org.vfny.geoserver.issues.enums.Resolution;
 
 /**
- * The issue interface. Represents a single issue. Issues can be grouped
- * by group id. They have the following basic properties:<BR>
+ * The issue interface. Represents a single issue. 
+ * They have the following basic properties:<BR>
  * -id<BR>
  * -Description<BR>
  * -Priority<BR>
