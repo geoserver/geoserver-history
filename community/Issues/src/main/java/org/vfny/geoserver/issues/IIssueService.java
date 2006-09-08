@@ -40,10 +40,10 @@ public interface IIssueService {
     Collection< ? extends IIssue> getIssues() throws IOException;
     /**
      * Returns a list of issues, the issues should be ordered in the correct order.
-     * @param groupId The id of the group of issues that should be returned
+     * @param target The target object
      * @return a list of issues
      * @throws IOException
      */
-    Collection< ? extends IIssue> getIssues(String groupId) throws IOException;
+    Collection< ? extends IIssue> getIssues(ITarget target) throws IOException;
 }
 
