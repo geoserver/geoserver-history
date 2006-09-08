@@ -6,11 +6,7 @@ import java.util.List;
 
 /**
  * The issue service interface for GeoServer.
- * This service allows you to add, modify and retrieve issues relating to a specific
- * 'target'. A target is any object, like a feature or layer.
- * @note This service makes use of handlers to actually do the work
- * via an extension point design. Therefore if Issues handlers are used incorrectly 
- * you may receive duplicate issues.
+ * This service allows you to add, modify and retrieve issues.
  * @author quintona
  * @since 1.1.0
  */
