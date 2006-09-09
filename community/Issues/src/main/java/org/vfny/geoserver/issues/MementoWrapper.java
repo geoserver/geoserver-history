@@ -1,14 +1,25 @@
 package org.vfny.geoserver.issues;
 
+import java.io.IOException;
+
 public class MementoWrapper {
     public static IMemento getMementoFromString(String mementoString){
-        return null;
+        try {
+            return XMLMemento.loadMementoFromString(mementoString);
+        } catch (Exception e) {
+            return null;
+        }
         
     }
-    
+    private static final String ROOT_ID = "MementoData";
     public static String getStringFromMemento(IMemento memento){
-        return null;
-        
+        XMLMemento newMemento = XMLMemento.createWriteRoot(ROOT_ID);
+        newMemento.putMemento(memento);
+        try {
+            return newMemento.saveToString();
+        } catch (IOException e) {
+            return "";
+        }
     }
 
 }
