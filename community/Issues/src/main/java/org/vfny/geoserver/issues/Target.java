@@ -1,7 +1,11 @@
 package org.vfny.geoserver.issues;
 
-public class Target implements ITarget {
+import java.io.Serializable;
 
+public class Target implements ITarget, Serializable {
+
+    /** long serialVersionUID field */
+    private static final long serialVersionUID = -6828722211977040816L;
     private String type;
     private String id;
     

@@ -1,5 +1,7 @@
 package org.vfny.geoserver.issues;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -15,8 +17,10 @@ import org.vfny.geoserver.issues.enums.Resolution;
 
 @Entity
 @Table(name = "Issues")
-public class Issue implements IIssue {
+public class Issue implements IIssue, Serializable {
 
+    /** long serialVersionUID field */
+    private static final long serialVersionUID = 465228904084847959L;
     private int id;
     private String description;
     private Resolution resolution;

@@ -49,5 +49,14 @@
 	<classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-core/1.2.5/spring-core-1.2.5.jar"/>
 	<classpathentry kind="src" path="src/test"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/quintona/.m2/repository/hibernate/jars/cglib-2.1_3.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/quintona/.m2/repository/hibernate/jars/ehcache-1.2beta4.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/quintona/.m2/repository/hibernate/jars/hibernate-3.05.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/quintona/.m2/repository/hibernate/jars/hibernate-3.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/quintona/.m2/repository/hibernate/jars/hibernate-annotations.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/quintona/.m2/repository/hibernate/jars/ejb3-persistence.jar"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="var" path="M2_REPO/asm/asm/2.1/asm-2.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/asm/asm/1.5.3/asm-1.5.3.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
