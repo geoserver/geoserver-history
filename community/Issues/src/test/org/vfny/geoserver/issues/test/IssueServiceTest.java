@@ -29,7 +29,7 @@ public class IssueServiceTest extends TestCase {
         issueService = (IIssueService)appContext.getBean("IssueService");
     }
 
-    /*public void testAdding(){
+    public void testAdding(){
         //add an issue
         IIssue newIssue = new Issue();
         newIssue.setDescription("test");
@@ -57,7 +57,7 @@ public class IssueServiceTest extends TestCase {
             fail("Error thrown trying to get the issues back");
         }
         
-    }*/
+    }
     
     public void testModify(){
         //add one issue
