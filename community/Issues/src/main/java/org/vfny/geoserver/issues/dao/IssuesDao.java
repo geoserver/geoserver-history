@@ -13,12 +13,12 @@ import org.vfny.geoserver.issues.Target;
  */
 public interface IssuesDao {
 	   IIssue findIssueById(int id);
-	   Collection< ? extends IIssue> findByTarget(Target target);
+	   Collection<IIssue> findByTarget(Target target);
 	   void insertIssue(IIssue issue);
-	   void insertIssues(Collection< ? extends IIssue> issues);
+	   void insertIssues(Collection<IIssue> issues);
 	   void updateIssue(IIssue issue);
-	   void updateIssues(Collection< ? extends IIssue> issues);
-	   Collection< ? extends IIssue> getAllIssues();
+	   void updateIssues(Collection<IIssue> issues);
+	   Collection<IIssue> getAllIssues();
 	   void removeIssue(IIssue issue);
-	   void removeIssues(Collection< ? extends IIssue>  issues);
+	   void removeIssues(Collection<IIssue>  issues);
 }

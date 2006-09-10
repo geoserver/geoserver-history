@@ -11,27 +11,24 @@ public class IssueService implements IIssueService {
 
     private IssuesDao issuesDao;
     
-    public Collection<IIssue> getIssues()throws IOException{
-        return null;
+    public Collection<IIssue> getIssues(){
+        return issuesDao.getAllIssues();
     }
     
-    public Collection< ? extends IIssue> getIssues(Target target ) throws IOException {
-        return null;
+    public Collection<IIssue> getIssues(Target target ){
+        return issuesDao.findByTarget(target);
     }
 
-    public void addIssues(List<IIssue> issues)
-        throws IOException {
-        
+    public void addIssues(List<IIssue> issues){
+        issuesDao.insertIssues(issues);
     }
 
-    public void modifyIssue(IIssue issue)
-        throws IOException {
-        
+    public void modifyIssue(IIssue issue){
+        issuesDao.updateIssue(issue);
     }
 
-    public void removeIssues(Collection<IIssue> issues)
-        throws IOException {
-        
+    public void removeIssues(Collection<IIssue> issues){
+        issuesDao.removeIssues(issues);
     }
     
     public void setIssueDao(IssuesDao issueDao){

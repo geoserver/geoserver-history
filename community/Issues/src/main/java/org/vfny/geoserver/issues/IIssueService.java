@@ -16,30 +16,30 @@ public interface IIssueService {
      * All the issues within this list must relate to the same target type
      * @param issues issues to added.
      */
-    void addIssues(List<IIssue> issues) throws IOException;
+    void addIssues(List<IIssue> issues);
     /**
      * Saves the issue to the storage
      * @param issue issue to save
      */
-    void modifyIssue(IIssue issue) throws IOException;
+    void modifyIssue(IIssue issue);
     /**
      * Removes the issues from storage
      * All of these issues must be related to the same target type
      * @param issues issues to remove.
      */
-    void removeIssues(Collection<IIssue> issues ) throws IOException;
+    void removeIssues(Collection<IIssue> issues );
     /**
      * Returns a list of issues, the issues should be ordered in the correct order.
      * @return a list of issues
      * @throws IOException
      */
-    Collection< ? extends IIssue> getIssues() throws IOException;
+    Collection<IIssue> getIssues();
     /**
      * Returns a list of issues, the issues should be ordered in the correct order.
      * @param target The target object
      * @return a list of issues
      * @throws IOException
      */
-    Collection< ? extends IIssue> getIssues(Target target) throws IOException;
+    Collection<IIssue> getIssues(Target target);
 }
 

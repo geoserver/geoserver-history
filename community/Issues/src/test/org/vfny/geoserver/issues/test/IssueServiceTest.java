@@ -37,24 +37,15 @@ public class IssueServiceTest extends TestCase {
         newIssue.setTarget(new Target("Diagram","1"));
         List<IIssue> list = new LinkedList<IIssue>();
         list.add(newIssue);
-        try {
-            issueService.addIssues(list);
-        } catch (IOException e) {
-            fail("Error thrown trying to add issues");
-        }
+        issueService.addIssues(list);
         
-        //now try get is back
-        try {
-            List<IIssue> newList = (List<IIssue>)issueService.getIssues();
-            assertNotNull(newList);
-            assertEquals(newList.get(0).getPriority(),Priority.HIGH);
-            assertEquals(newList.get(0).getResolution(),Resolution.IN_PROGRESS);
-            assertEquals(newList.get(0).getTarget().getType(),"Diagram");
-            assertEquals(newList.get(0).getTarget().getId(),"1");
-            assertEquals(newList.get(0).getDescription(),"test");
-        } catch (IOException e) {
-            fail("Error thrown trying to get the issues back");
-        }
+        List<IIssue> newList = (List<IIssue>)issueService.getIssues();
+        assertNotNull(newList);
+        assertEquals(newList.get(0).getPriority(),Priority.HIGH);
+        assertEquals(newList.get(0).getResolution(),Resolution.IN_PROGRESS);
+        assertEquals(newList.get(0).getTarget().getType(),"Diagram");
+        assertEquals(newList.get(0).getTarget().getId(),"1");
+        assertEquals(newList.get(0).getDescription(),"test");
         
     }
     
@@ -68,45 +59,31 @@ public class IssueServiceTest extends TestCase {
         newIssue.setTarget(myTarget);
         List<IIssue> list = new LinkedList<IIssue>();
         list.add(newIssue);
-        try {
-            issueService.addIssues(list);
-        } catch (IOException e) {
-            fail("Error thrown trying to add issues");
-        }
+        issueService.addIssues(list);
         int id = 0;//temp to store the id of the issue
-        //get the issue back and modify it
-        try {
-            List<IIssue> newList = (List<IIssue>)issueService.getIssues(myTarget);
-            assertNotNull(newList);
-            IIssue savedIssue = newList.get(0);
-            assertNotNull(savedIssue);
-            id = savedIssue.getId();
-            savedIssue.setDescription("newDescription");
-            savedIssue.setResolution(Resolution.RESOLVED);
-            
-            issueService.modifyIssue(savedIssue);
-        } catch (IOException e) {
-            fail("Error thrown trying to modify the issue: " + e.getMessage());
-        }
+        List<IIssue> newList = (List<IIssue>)issueService.getIssues(myTarget);
+        assertNotNull(newList);
+        IIssue savedIssue = newList.get(0);
+        assertNotNull(savedIssue);
+        id = savedIssue.getId();
+        savedIssue.setDescription("newDescription");
+        savedIssue.setResolution(Resolution.RESOLVED);
         
-        //get it back and check it
-        try {
-            List<IIssue> newList = (List<IIssue>)issueService.getIssues(myTarget);
-            assertNotNull(newList);
-            Iterator<IIssue> it = newList.iterator();
-            IIssue savedIssue = null;
-            while(it.hasNext()){
-                IIssue temp = it.next();
-                if(temp.getId() == id){
-                    savedIssue = temp;
-                }
+        issueService.modifyIssue(savedIssue);
+        
+        List<IIssue> newList2 = (List<IIssue>)issueService.getIssues(myTarget);
+        assertNotNull(newList2);
+        Iterator<IIssue> it2 = newList2.iterator();
+        IIssue savedIssue2 = null;
+        while(it2.hasNext()){
+            IIssue temp = it2.next();
+            if(temp.getId() == id){
+                savedIssue = temp;
             }
-            assertNotNull(savedIssue);
-            assertEquals(savedIssue.getDescription(),"newDescription");
-            assertEquals(savedIssue.getResolution(),Resolution.RESOLVED);
-        } catch (IOException e) {
-            fail("Error thrown trying to modify the issue: " + e.getMessage());
         }
+        assertNotNull(savedIssue);
+        assertEquals(savedIssue.getDescription(),"newDescription");
+        assertEquals(savedIssue.getResolution(),Resolution.RESOLVED);
     }
     
     public void testRemove(){
@@ -119,27 +96,13 @@ public class IssueServiceTest extends TestCase {
         newIssue.setTarget(myTarget);
         List<IIssue> list = new LinkedList<IIssue>();
         list.add(newIssue);
-        try {
-            issueService.addIssues(list);
-        } catch (IOException e) {
-            fail("Error thrown trying to add issues");
-        }
+        issueService.addIssues(list);
         
-        //remove it
-        try {
-            issueService.removeIssues(list);
-        } catch (IOException e) {
-            fail("Error thrown trying to remove issues: "+e.getMessage());
-        }
+        issueService.removeIssues(list);
         
-        //check that it is not there
-        try {
-            List<IIssue> newList = (List<IIssue>)issueService.getIssues(myTarget);
-            assertNotNull(newList);
-            assertEquals(newList.size(),0);
-        } catch (IOException e) {
-            fail("Error thrown trying to get issues: "+e.getMessage());
-        }
+        List<IIssue> newList = (List<IIssue>)issueService.getIssues(myTarget);
+        assertNotNull(newList);
+        assertEquals(newList.size(),0);
     }
     
     public static void main( String[] args ) {
