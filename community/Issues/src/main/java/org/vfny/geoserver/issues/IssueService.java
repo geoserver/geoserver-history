@@ -31,11 +31,13 @@ public class IssueService implements IIssueService {
         issuesDao.removeIssues(issues);
     }
     
-    public void setIssueDao(IssuesDao issueDao){
-        this.issuesDao = issueDao;
+    public void setIssuesDao(IssuesDao issuesDao){
+        this.issuesDao = issuesDao;
     }
 
-    
+    public IssuesDao getIssuesDao(){
+        return issuesDao;
+    }
 
     
 }
