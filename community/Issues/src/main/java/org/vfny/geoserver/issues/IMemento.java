@@ -1,6 +1,5 @@
 package org.vfny.geoserver.issues;
 
-import java.io.IOException;
 
 /**
  * The generic memento interface for the issues module within geoserver.

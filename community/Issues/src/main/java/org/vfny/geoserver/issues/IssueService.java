@@ -1,8 +1,6 @@
 package org.vfny.geoserver.issues;
 
-import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 import org.vfny.geoserver.issues.dao.IssuesDao;
 
@@ -19,7 +17,7 @@ public class IssueService implements IIssueService {
         return issuesDao.findByTarget(target);
     }
 
-    public void addIssues(List<IIssue> issues){
+    public void addIssues(Collection<IIssue> issues){
         issuesDao.insertIssues(issues);
     }
 

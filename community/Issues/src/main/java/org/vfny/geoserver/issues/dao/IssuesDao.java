@@ -1,7 +1,6 @@
 package org.vfny.geoserver.issues.dao;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.vfny.geoserver.issues.IIssue;
 import org.vfny.geoserver.issues.Target;
@@ -12,13 +11,13 @@ import org.vfny.geoserver.issues.Target;
  *
  */
 public interface IssuesDao {
-	   IIssue findIssueById(int id);
-	   Collection<IIssue> findByTarget(Target target);
-	   void insertIssue(IIssue issue);
-	   void insertIssues(Collection<IIssue> issues);
-	   void updateIssue(IIssue issue);
-	   void updateIssues(Collection<IIssue> issues);
-	   Collection<IIssue> getAllIssues();
-	   void removeIssue(IIssue issue);
-	   void removeIssues(Collection<IIssue>  issues);
+	IIssue findIssueById(int id);
+	Collection<IIssue> findByTarget(Target target);
+	void insertIssue(IIssue issue);
+	void insertIssues(Collection<IIssue> issues);
+	void updateIssue(IIssue issue);
+	void updateIssues(Collection<IIssue> issues);
+	Collection<IIssue> getAllIssues();
+	void removeIssue(IIssue issue);
+	void removeIssues(Collection<IIssue>  issues);
 }

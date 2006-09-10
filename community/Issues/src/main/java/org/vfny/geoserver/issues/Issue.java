@@ -135,7 +135,8 @@ public class Issue implements IIssue, Serializable {
     public void setMementoString( String mementoString ) {
         this.mementoString = mementoString;
     }
-    @Lob
+    
+    @Column (length=1024)
     public String getTargetString() {
         return targetString;
     }

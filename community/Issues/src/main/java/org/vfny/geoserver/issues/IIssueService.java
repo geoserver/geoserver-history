@@ -1,8 +1,6 @@
 package org.vfny.geoserver.issues;
 
-import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * The issue service interface for GeoServer.
@@ -16,7 +14,7 @@ public interface IIssueService {
      * All the issues within this list must relate to the same target type
      * @param issues issues to added.
      */
-    void addIssues(List<IIssue> issues);
+    void addIssues(Collection<IIssue> issues);
     /**
      * Saves the issue to the storage
      * @param issue issue to save
