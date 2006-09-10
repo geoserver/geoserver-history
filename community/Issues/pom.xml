@@ -47,7 +47,7 @@
 			<version>3.2.0.cr1</version>
 		</dependency>
 		<dependency>
-			<groupId>hibernate</groupId>
+			<groupId>org.hibernate</groupId>
 			<artifactId>ejb3-persistence</artifactId>
 			<version>1.0</version>
 		</dependency>
