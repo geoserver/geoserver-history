@@ -1,11 +1,16 @@
 package org.vfny.geoserver.ui;
 
-import wicket.markup.html.PackageResource;
-import wicket.protocol.http.WebApplication;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.Pattern;
+import org.springframework.context.ApplicationContext;
+import org.vfny.geoserver.ui.main.GeoserverHomePage;
 
-public class GeoserverApplication extends WebApplication {
+import wicket.spring.SpringWebApplication;
+
+public class GeoserverApplication extends SpringWebApplication {
 
 	protected void init() {
 		super.init();
@@ -17,6 +22,16 @@ public class GeoserverApplication extends WebApplication {
 
 	public Class getHomePage() {
 		return GeoserverHomePage.class;
+	}
+
+	public List getBeansOfType(Class clazz) {
+		ApplicationContext ac = internalGetApplicationContext();
+		Map map = ac.getBeansOfType(clazz);
+		List beans = new ArrayList();
+		for (Iterator it = map.values().iterator(); it.hasNext();) {
+			beans.add(it.next());
+		}
+		return beans;
 	}
 
 }

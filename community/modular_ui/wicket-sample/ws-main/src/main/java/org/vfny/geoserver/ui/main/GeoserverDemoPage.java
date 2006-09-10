@@ -1,9 +1,11 @@
-package org.vfny.geoserver.ui;
+package org.vfny.geoserver.ui.main;
 
 import java.util.Collections;
 import java.util.List;
 
-public class GeoserverDemoPage extends GeoserverBasePage {
+import org.vfny.geoserver.ui.GeoserverBasePage;
+
+public class GeoserverDemoPage extends GeoserverMainPage {
 
 	protected String getHeaderTitle() {
 		return "Demo";
@@ -15,10 +17,6 @@ public class GeoserverDemoPage extends GeoserverBasePage {
 
 	protected String getPageTitle() {
 		return "Demo";
-	}
-
-	protected List getSubPageLinks() {
-		return Collections.emptyList();
 	}
 
 }
