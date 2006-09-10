@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.vfny.geoserver.issues.enums.Priority;
@@ -100,6 +101,7 @@ public class Issue implements IIssue, Serializable {
         setMementoString(MementoWrapper.getStringFromMemento(memento));
     }
 
+    @Transient
     public IMemento getMemento() {
         return MementoWrapper.getMementoFromString(getMementoString());
     }
@@ -109,6 +111,7 @@ public class Issue implements IIssue, Serializable {
         setViewMementoString(MementoWrapper.getStringFromMemento(memento));
     }
 
+    @Transient
     public IMemento getViewMemento() {
         return MementoWrapper.getMementoFromString(getViewMementoString());
     }
@@ -117,7 +120,7 @@ public class Issue implements IIssue, Serializable {
         setTargetString(TargetWrapper.getStringFromTarget(target));
     }
 
-
+    @Transient
     public Target getTarget() {
         try{
             return TargetWrapper.getTargetFromString(getTargetString());

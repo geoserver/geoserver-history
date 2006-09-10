@@ -88,6 +88,7 @@ public class IssueServiceTest extends TestCase {
     
     public void testRemove(){
         //add an issue
+    	/*
         Target myTarget = new Target("Diagram","3");
         IIssue newIssue = new Issue();
         newIssue.setDescription("test");
@@ -97,13 +98,18 @@ public class IssueServiceTest extends TestCase {
         List<IIssue> list = new LinkedList<IIssue>();
         list.add(newIssue);
         issueService.addIssues(list);
-        
+        */
+    	List<IIssue> list = (List<IIssue>)issueService.getIssues();
+    	assertTrue(list.size()>0);
+    	
         issueService.removeIssues(list);
         
-        List<IIssue> newList = (List<IIssue>)issueService.getIssues(myTarget);
+        List<IIssue> newList = (List<IIssue>)issueService.getIssues();
         assertNotNull(newList);
         assertEquals(newList.size(),0);
     }
+    
+    
     
     public static void main( String[] args ) {
         junit.textui.TestRunner.run(IssueServiceTest.class);
