@@ -75,7 +75,7 @@ public class PutStylesKvpReader extends KvpRequestReader{
 		String version = getValue("VERSION");
 
        	if (version == null) {
-       		version = getValue("WMTVER");
+       		version = getValue("WMSVER");
        	}
 
        	if (version == null) {

@@ -13,10 +13,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.math.BigDecimal;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,10 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.geotools.styling.SLDParser;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
-import org.geotools.styling.StyledLayerDescriptor;
 import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -53,7 +49,6 @@ import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapXmlReader;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -168,6 +163,8 @@ public class PutStyles extends AbstractService {
                         request.getInputStream()));
 		}
 
+		// temporarily write out the file and read it back in
+		// so we don't destroy the connection if the request fails.
         File temp = File.createTempFile("putStylesPost", "xml");
         temp.deleteOnExit();
 
@@ -468,8 +465,10 @@ public class PutStyles extends AbstractService {
         }
         
         // get the feature type and save the style for it
-        FeatureTypeConfig featureTypeConfig = dataConfig.getFeatureTypeConfig(layerName);
-        featureTypeConfig.setDefaultStyle(styleName);
+        if (layerName != null && !layerName.equals("")) {
+        	FeatureTypeConfig featureTypeConfig = dataConfig.getFeatureTypeConfig(layerName);
+        	featureTypeConfig.setDefaultStyle(styleName);
+        }
         
 		// if successful, return "success"
 		//response.setContentType(success_mime_type);
