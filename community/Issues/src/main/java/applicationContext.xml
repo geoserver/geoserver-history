@@ -3,7 +3,13 @@
 
 <beans>
 
-	<bean id="issueService" class="org.vfny.geoserver.issues.IssueService"/>
+	<bean id="issuesDaoBean" class="org.vfny.geoserver.issues.dao.IssuesDaoImpl"/>
+
+	<bean id="issueService" class="org.vfny.geoserver.issues.IssueService">
+		<property name="issuesDao">
+			<ref local="issuesDaoBean"/>
+		</property>
+	</bean>
 
 	<bean name="issues"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">

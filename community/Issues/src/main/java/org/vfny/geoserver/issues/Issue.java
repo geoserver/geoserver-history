@@ -113,12 +113,12 @@ public class Issue implements IIssue, Serializable {
         return MementoWrapper.getMementoFromString(getViewMementoString());
     }
 
-    public void setTarget( ITarget target ) {
+    public void setTarget( Target target ) {
         setTargetString(TargetWrapper.getStringFromTarget(target));
     }
 
 
-    public ITarget getTarget() {
+    public Target getTarget() {
         try{
             return TargetWrapper.getTargetFromString(getTargetString());
         }

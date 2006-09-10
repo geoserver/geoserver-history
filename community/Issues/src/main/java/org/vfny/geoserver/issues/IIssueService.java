@@ -40,6 +40,6 @@ public interface IIssueService {
      * @return a list of issues
      * @throws IOException
      */
-    Collection< ? extends IIssue> getIssues(ITarget target) throws IOException;
+    Collection< ? extends IIssue> getIssues(Target target) throws IOException;
 }
 

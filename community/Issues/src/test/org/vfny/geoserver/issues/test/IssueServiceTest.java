@@ -10,7 +10,6 @@ import junit.framework.TestCase;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.vfny.geoserver.issues.IIssue;
 import org.vfny.geoserver.issues.IIssueService;
-import org.vfny.geoserver.issues.ITarget;
 import org.vfny.geoserver.issues.Issue;
 import org.vfny.geoserver.issues.Target;
 import org.vfny.geoserver.issues.enums.Priority;
@@ -61,7 +60,7 @@ public class IssueServiceTest extends TestCase {
     
     public void testModify(){
         //add one issue
-        ITarget myTarget = new Target("Diagram","2");
+        Target myTarget = new Target("Diagram","2");
         IIssue newIssue = new Issue();
         newIssue.setDescription("test");
         newIssue.setPriority(Priority.HIGH);
@@ -112,7 +111,7 @@ public class IssueServiceTest extends TestCase {
     
     public void testRemove(){
         //add an issue
-        ITarget myTarget = new Target("Diagram","3");
+        Target myTarget = new Target("Diagram","3");
         IIssue newIssue = new Issue();
         newIssue.setDescription("test");
         newIssue.setPriority(Priority.HIGH);

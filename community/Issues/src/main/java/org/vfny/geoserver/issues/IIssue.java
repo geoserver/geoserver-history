@@ -99,11 +99,11 @@ public interface IIssue {
      *
      * @param target
      */
-    void setTarget(ITarget target);
+    void setTarget(Target target);
     /**
      *
      * @return
      */
-    ITarget getTarget();
+    Target getTarget();
 }
 
