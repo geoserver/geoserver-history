@@ -119,8 +119,9 @@ public final class Operation {
 							return method;
 						}
 					}
+				}else if(method.getParameterTypes().length == 0){
+				    return method;
 				}
-				else return method;
 			}
 		}
 		
