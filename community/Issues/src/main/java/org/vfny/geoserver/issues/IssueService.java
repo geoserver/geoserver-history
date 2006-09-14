@@ -1,6 +1,8 @@
 package org.vfny.geoserver.issues;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import org.vfny.geoserver.issues.dao.IssuesDao;
 
@@ -18,15 +20,16 @@ public class IssueService implements IIssueService {
     }
 
     public void addIssues(Collection<IIssue> issues){
-        issuesDao.insertIssues(issues);
+        issuesDao.insertIssues(getIssueValueObjects(issues));
     }
 
     public void modifyIssue(IIssue issue){
-        issuesDao.updateIssue(issue);
+        IIssue issueVo = new Issue(issue);
+        issuesDao.updateIssue(issueVo);
     }
 
     public void removeIssues(Collection<IIssue> issues){
-        issuesDao.removeIssues(issues);
+        issuesDao.removeIssues(getIssueValueObjects(issues));
     }
     
     public void setIssuesDao(IssuesDao issuesDao){
@@ -35,6 +38,16 @@ public class IssueService implements IIssueService {
 
     public IssuesDao getIssuesDao(){
         return issuesDao;
+    }
+    
+    private Collection<IIssue> getIssueValueObjects(Collection<IIssue> issues){
+        Collection<IIssue> issueVos = new LinkedList<IIssue>();
+        Iterator<IIssue> it = issues.iterator();
+        while(it.hasNext()){
+            IIssue newIssue = new Issue(it.next());
+            issueVos.add(newIssue);
+        }
+        return issueVos;
     }
 
     

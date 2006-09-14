@@ -1,5 +1,6 @@
 package org.vfny.geoserver.issues;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -31,9 +32,31 @@ public class Issue implements IIssue, Serializable {
     private String viewMementoString;
     private ReferencedEnvelope bounds;
     
-    
     public Issue(){
-
+        
+    }
+    
+    public Issue(IIssue otherIssue){
+        this.description = otherIssue.getDescription();
+        this.resolution = otherIssue.getResolution();
+        this.priority = otherIssue.getPriority();
+        this.targetString = TargetWrapper.getStringFromTarget(otherIssue.getTarget());
+        this.bounds = otherIssue.getBounds();
+        XMLMemento memento = XMLMemento.createWriteRoot(MementoWrapper.ROOT_ID);
+        otherIssue.save(memento);
+        try {
+            this.mementoString = memento.saveToString();
+        } catch (IOException e) {
+            this.mementoString = "";
+        }
+        XMLMemento viewMemento = XMLMemento.createWriteRoot(MementoWrapper.ROOT_ID);
+        otherIssue.saveViewMemento(viewMemento);
+        try {
+            this.viewMementoString = viewMemento.saveToString();
+        } catch (IOException e) {
+            this.viewMementoString = "";
+        }
+        
     }
 
     /**
@@ -154,6 +177,13 @@ public class Issue implements IIssue, Serializable {
 
     public void setViewMementoString( String viewMementoString ) {
         this.viewMementoString = viewMementoString;
+    }
+
+    public void save( IMemento memento ) {
+        //do nothing, for the client to implement
+    }
+
+    public void saveViewMemento( IMemento memento ) {
     }
 
     

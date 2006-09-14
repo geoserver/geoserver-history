@@ -11,7 +11,7 @@ public class MementoWrapper {
         }
         
     }
-    private static final String ROOT_ID = "MementoData";
+    public static final String ROOT_ID = "MementoData";
     public static String getStringFromMemento(IMemento memento){
         XMLMemento newMemento = XMLMemento.createWriteRoot(ROOT_ID);
         newMemento.putMemento(memento);

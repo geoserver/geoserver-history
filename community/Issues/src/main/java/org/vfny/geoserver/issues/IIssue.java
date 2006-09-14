@@ -76,20 +76,23 @@ public interface IIssue {
      */
     ReferencedEnvelope getBounds();
     /**
-     *
+     * Called by the issue service. Passed an existing memento that must
+     * be populated by the user of the service
      * @param memento
      */
-    void setMemento(IMemento memento);
+    void save(IMemento memento);
     /**
-     *
+     * Returns an existing memento. It is assumed that the user of the service
+     * has the keys to extract the state from the memento
      * @return
      */
     IMemento getMemento();
     /**
-     *
+     * Called by the issue service. Passed an existing memento that must
+     * be populated by the user of the service
      * @param memento
      */
-    void setViewMemento(IMemento memento);
+    void saveViewMemento(IMemento memento);
     /**
      *
      * @return
