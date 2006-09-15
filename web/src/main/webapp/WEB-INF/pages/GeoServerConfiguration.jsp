@@ -154,6 +154,28 @@
 	</tr>
 
 	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiTileThreads"/>">
+			<bean:message key="label.jaiTileThreads"/>:
+		</span>
+    </td>
+	  <td class="datum">
+		<html:text property="jaiTileThreads" size="60"/>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiTilePriority"/>">
+			<bean:message key="label.jaiTilePriority"/>:
+		</span>
+    </td>
+	  <td class="datum">
+		<html:text property="jaiTilePriority" size="60"/>
+	  </td>
+	</tr>
+
+	<tr>
       <td class="label">
 		<span class="help" title="<bean:message key="help.global.jaiRecycling"/>">
 			<bean:message key="label.jaiRecycling"/>:

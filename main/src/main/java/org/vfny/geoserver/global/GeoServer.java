@@ -68,6 +68,8 @@ public class GeoServer extends GlobalLayerSupertype {
 	private String onlineResource;
 	private long memoryCapacity;
 	private double memoryThreshold;
+	private int tileThreads;
+	private int tilePriority;
 	private Boolean recycling;
 	
 	private Boolean imageIOCache;
@@ -413,6 +415,8 @@ public class GeoServer extends GlobalLayerSupertype {
 //			}
 			memoryCapacity = dto.getJaiMemoryCapacity();
 			memoryThreshold = dto.getJaiMemoryThreshold();
+			tileThreads = dto.getJaiTileThreads();
+			tilePriority = dto.getJaiTilePriority();
 			recycling = dto.getJaiRecycling();
 			imageIOCache = dto.getImageIOCache();
 			
@@ -555,10 +559,10 @@ public class GeoServer extends GlobalLayerSupertype {
 		// Setting up Cahce Threshold
 		jaiCache.setMemoryThreshold((float) memoryThreshold);
 		
-		jaiDef.getTileScheduler().setParallelism(50);
-		jaiDef.getTileScheduler().setPrefetchParallelism(5);
-		jaiDef.getTileScheduler().setPrefetchPriority(50);
-		jaiDef.getTileScheduler().setPriority(5);
+		jaiDef.getTileScheduler().setParallelism(tileThreads);
+		jaiDef.getTileScheduler().setPrefetchParallelism(tileThreads);
+		jaiDef.getTileScheduler().setPriority(tilePriority);
+		jaiDef.getTileScheduler().setPrefetchPriority(tilePriority);
 		
 		// ImageIO Caching
 		ImageIO.setUseCache(ImageIOCache.booleanValue());
@@ -590,6 +594,8 @@ public class GeoServer extends GlobalLayerSupertype {
         dto.setLogLocation(logLocation);
 		dto.setJaiMemoryCapacity(memoryCapacity);
 		dto.setJaiMemoryThreshold(memoryThreshold);
+		dto.setJaiTileThreads(tileThreads);
+		dto.setJaiTilePriority(tilePriority);
 		dto.setJaiRecycling(recycling);
 		dto.setImageIOCache(imageIOCache);
         
@@ -758,5 +764,13 @@ public class GeoServer extends GlobalLayerSupertype {
 	 */
 	public Boolean getImageIOCache() {
 		return imageIOCache;
+	}
+
+	public int getTilePriority() {
+		return tilePriority;
+	}
+
+	public int getTileThreads() {
+		return tileThreads;
 	}
 }

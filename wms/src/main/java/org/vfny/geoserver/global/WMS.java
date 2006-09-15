@@ -51,7 +51,7 @@ public class WMS extends Service {
     /** rendering interpolation or not **/
     private Map baseMapLayers;
     private Map baseMapStyles;
-    private boolean allowInterpolation;
+    private String allowInterpolation;
     
     /**
      * WMS constructor.
@@ -248,14 +248,14 @@ public class WMS extends Service {
     /**
      * @return Flag indicating wether the renderer should interpolate or not.
      */
-    public boolean isAllowInterpolation() {
+    public String getAllowInterpolation() {
 		return allowInterpolation;
 	}
     
     /**
      * Sets the Flag indicating wether the renderer should interpolate or not.
      */
-    public void setAllowInterpolation(boolean allowInterpolation) {
+    public void setAllowInterpolation(String allowInterpolation) {
 		this.allowInterpolation = allowInterpolation;
 	}
     

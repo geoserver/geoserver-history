@@ -16,7 +16,8 @@ public class WMSRenderingForm extends ActionForm {
 	List svgRenderers;
 	String svgRenderer;
 	boolean svgAntiAlias;
-	boolean allowInterpolation;
+	List intTypes;
+	String allowInterpolation;
 	
 	/*
      * Because of the way that STRUTS works, if the user does not check the enabled box,
@@ -41,14 +42,15 @@ public class WMSRenderingForm extends ActionForm {
      */
     private boolean svgAntiAliasChecked = false;
 
-    private boolean allowInterpolationChecked = false;
-
 	public WMSRenderingForm() {
 		svgRenderers = new ArrayList();
 		svgRenderers.add(WMSConfig.SVG_SIMPLE);
 		svgRenderers.add(WMSConfig.SVG_BATIK);
 		svgAntiAlias = true;
-		allowInterpolation = true;
+		intTypes = new ArrayList();
+		intTypes.add(WMSConfig.INT_NEAREST);
+		intTypes.add(WMSConfig.INT_BIlINEAR);
+		intTypes.add(WMSConfig.INT_BICUBIC);
 	}
 	public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
@@ -61,7 +63,10 @@ public class WMSRenderingForm extends ActionForm {
         	svgRenderer = WMSConfig.SVG_SIMPLE;
         
         svgAntiAlias = config.getSvgAntiAlias();
+        
         allowInterpolation = config.getAllowInterpolation();
+        if (allowInterpolation == null)
+        	allowInterpolation = WMSConfig.INT_NEAREST;
 	}
 
 	
@@ -112,28 +117,21 @@ public class WMSRenderingForm extends ActionForm {
     /**
      * @param allowInterpolation interpolation rendering hint.
      */
-    public void setAllowInterpolation(boolean allowInterpolation) {
-    	allowInterpolationChecked = true;
+    public void setAllowInterpolation(String allowInterpolation) {
     	this.allowInterpolation = allowInterpolation;
     }
     
     /**
      * @return The value of the interpolation rendering hint.
      */
-    public boolean getAllowInterpolation() {
+    public String getAllowInterpolation() {
     	return allowInterpolation;
     }
-    
-    /**
-     * DOCUMENT ME!
-     *
-     * @return
-     */
-    public boolean isAllowInterpolationChecked() {
-        return allowInterpolationChecked;
+
+    public List getIntTypes() {
+    	return intTypes;
     }
 
-    
     /**
      * DOCUMENT ME!
      *

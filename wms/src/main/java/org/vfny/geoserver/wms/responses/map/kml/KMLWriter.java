@@ -98,6 +98,15 @@ public class KMLWriter extends OutputStreamWriter {
     //TODO: calcuate a real value based on image size to bbox ratio, as image size has no meanining for KML yet this is a fudge.
     private double scaleDenominator = 1;
     
+    /** Tolerance used to compare doubles for equality */
+    private static final double TOLERANCE = 1e-6;
+    
+    /** 
+     * The CRS of the data we are querying. It is a bit of a hack because sometimes when we grab the 
+     * CRS from the feature itself, we get null. This variable is paired with setSourceCrs() so EncodeKML 
+     * can can use the feature type's schema to set the CRS.*/
+    private CoordinateReferenceSystem sourceCrs;
+    
     /**
      * Handles the outputing of geometries as GML
      **/
@@ -189,6 +198,14 @@ public class KMLWriter extends OutputStreamWriter {
      */
     public int getMinimunFractionDigits() {
         return formatter.getMinimumFractionDigits();
+    }
+    
+    public void setRequestedScale(double scale) {
+    	scaleDenominator = scale;
+    }
+    
+    public void setSourceCrs(CoordinateReferenceSystem crs) {
+    	sourceCrs = crs;
     }
     
     /**
@@ -439,7 +456,7 @@ public class KMLWriter extends OutputStreamWriter {
                 Rule[] rules = fts.getRules();
                 List ruleList = new ArrayList();
                 List elseRuleList = new ArrayList();
-                populateRuleLists(rules, ruleList, elseRuleList);
+                populateRuleLists(rules, ruleList, elseRuleList, false);
                 
                 if ( (ruleList.size() == 0) && (elseRuleList.size()==0) ){
                     return; // bail out early if no rules made it (because of scale denominators)
@@ -553,7 +570,7 @@ public class KMLWriter extends OutputStreamWriter {
                 Rule[] rules = fts.getRules();
                 List ruleList = new ArrayList();
                 List elseRuleList = new ArrayList();
-                populateRuleLists(rules, ruleList, elseRuleList);
+                populateRuleLists(rules, ruleList, elseRuleList, false);
                 
                 if ( (ruleList.size() == 0) && (elseRuleList.size()==0) ){
                     return;
@@ -639,7 +656,7 @@ public class KMLWriter extends OutputStreamWriter {
                 Rule[] rules = fts.getRules();
                 List ruleList = new ArrayList();
                 List elseRuleList = new ArrayList();
-                populateRuleLists(rules, ruleList, elseRuleList);
+                populateRuleLists(rules, ruleList, elseRuleList, true);
                 
                 if ( (ruleList.size() == 0) && (elseRuleList.size()==0) ){
                     return;
@@ -706,19 +723,29 @@ public class KMLWriter extends OutputStreamWriter {
 	 * @param rules
 	 * @param ruleList
 	 * @param elseRuleList
+	 * @param ignoreScale ignore the scale denominator
 	 */
-	private void populateRuleLists(Rule[] rules, List ruleList, List elseRuleList) {
+	private void populateRuleLists(Rule[] rules, List ruleList, List elseRuleList, boolean ignoreScale) {
 		final int rulesLength = rules.length;
 		for( int j = 0; j < rulesLength; j++ ) {
 		    
 		    Rule r = rules[j];
 		    
-		    if (isWithinScale(r)) {
-		        if (r.hasElseFilter()) {
+		    if (ignoreScale) {
+		    	if (r.hasElseFilter()) {
 		            elseRuleList.add(r);
 		        } else {
 		            ruleList.add(r);
 		        }
+		    }
+		    else {
+			    if (isWithinScale(r)) {
+			        if (r.hasElseFilter()) {
+			            elseRuleList.add(r);
+			        } else {
+			            ruleList.add(r);
+			        }
+			    }
 		    }
 		}
 	}
@@ -1204,7 +1231,11 @@ public class KMLWriter extends OutputStreamWriter {
     private boolean isWithinScale(Rule r){
     	double min = r.getMinScaleDenominator();
     	double max = r.getMaxScaleDenominator();
-        return true;
+    	
+    	if (min-TOLERANCE <= scaleDenominator && max+TOLERANCE >= scaleDenominator)
+    		return true;
+    	else
+    		return false;
     }
     
     /**
@@ -1243,10 +1274,10 @@ public class KMLWriter extends OutputStreamWriter {
     private com.vividsolutions.jts.geom.Geometry findGeometry( Feature f ) {
         // get the geometry
     	Geometry geom = f.getDefaultGeometry();
-    	CoordinateReferenceSystem sourceCRS = f.getFeatureType().getDefaultGeometry().getCoordinateSystem();
-    	if (!CRS.equalsIgnoreMetadata(sourceCRS, this.mapContext.getCoordinateReferenceSystem())) {
+    	//CoordinateReferenceSystem sourceCRS = f.getFeatureType().getDefaultGeometry().getCoordinateSystem();
+    	if (!CRS.equalsIgnoreMetadata(sourceCrs, this.mapContext.getCoordinateReferenceSystem())) {
     		try {
-    			MathTransform transform = CRS.transform(sourceCRS, this.mapContext.getCoordinateReferenceSystem(), true);
+    			MathTransform transform = CRS.transform(sourceCrs, this.mapContext.getCoordinateReferenceSystem(), true);
 				geom = JTS.transform(geom, transform);
 			} catch (MismatchedDimensionException e) {
 	            LOGGER.severe( e.getLocalizedMessage() );

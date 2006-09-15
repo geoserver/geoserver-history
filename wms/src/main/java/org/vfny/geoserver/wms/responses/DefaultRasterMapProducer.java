@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.media.jai.Interpolation;
+import javax.media.jai.InterpolationBicubic2;
 import javax.media.jai.InterpolationBilinear;
 import javax.media.jai.InterpolationNearest;
 import javax.media.jai.JAI;
@@ -25,6 +26,7 @@ import javax.media.jai.JAI;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.StreamingRenderer;
+import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -63,7 +65,9 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 	private final static Interpolation NN_INTERPOLATION= new InterpolationNearest();
 	
 	private final static Interpolation BIL_INTERPOLATION= new InterpolationBilinear();
-	
+
+	private final static Interpolation BIC_INTERPOLATION= new InterpolationBicubic2(0);
+
 	/** WMS Service configuration * */
 	private WMS wms;
 
@@ -230,12 +234,15 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 		hintsMap.put(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		// turn off/on interpolation rendering hint
-		if (wms != null && !wms.isAllowInterpolation())
+		if (wms != null && WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation()))
 			hintsMap.put(JAI.KEY_INTERPOLATION,
 					NN_INTERPOLATION);
-		else
+		else if (wms != null && WMSConfig.INT_BIlINEAR.equals(wms.getAllowInterpolation()))
 			hintsMap.put(JAI.KEY_INTERPOLATION,
 					BIL_INTERPOLATION);
+		else if (wms != null && WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation()))
+			hintsMap.put(JAI.KEY_INTERPOLATION,
+					BIC_INTERPOLATION);
 		RenderingHints hints = new RenderingHints(hintsMap);
 		renderer.setJava2DHints(hints);
 

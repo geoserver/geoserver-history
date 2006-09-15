@@ -479,7 +479,23 @@ public class XMLConfigReader {
 				jaiMemoryThreshold = ReaderUtils.getDoubleAttribute(elem, "value",
 						false);
 			}
-			
+
+			int jaiTileThreads = 7;
+			elem = ReaderUtils.getChildElement(globalElem, "JaiTileThreads",
+					false);
+			if (elem != null) {
+				jaiTileThreads = ReaderUtils.getIntAttribute(elem, "value",
+						false, 7);
+			}
+
+			int jaiTilePriority = 5;
+			elem = ReaderUtils.getChildElement(globalElem, "JaiTilePriority",
+					false);
+			if (elem != null) {
+				jaiTilePriority = ReaderUtils.getIntAttribute(elem, "value",
+						false, 5);
+			}
+
 			Boolean jaiRecycling = Boolean.FALSE;
 			elem = ReaderUtils.getChildElement(globalElem, "JaiRecycling", false);
 			if (elem != null) {
@@ -496,6 +512,8 @@ public class XMLConfigReader {
 			
 			geoServer.setJaiMemoryCapacity(jaiMemoryCapacity);
 			geoServer.setJaiMemoryThreshold(jaiMemoryThreshold);
+			geoServer.setJaiTileThreads(jaiTileThreads);
+			geoServer.setJaiTilePriority(jaiTilePriority);
 			geoServer.setJaiRecycling(jaiRecycling);
 			geoServer.setImageIOCache(imageIOCache);
 			
@@ -800,8 +818,7 @@ public class XMLConfigReader {
 		wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
 		wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(
 				wmsElement, "svgAntiAlias")));
-		wms.setAllowInterpolation(!"false".equals(ReaderUtils.getChildText(
-				wmsElement, "allowInterpolation")));
+		wms.setAllowInterpolation(ReaderUtils.getChildText(wmsElement, "allowInterpolation"));
         loadBaseMapLayers(wmsElement);
         
     }

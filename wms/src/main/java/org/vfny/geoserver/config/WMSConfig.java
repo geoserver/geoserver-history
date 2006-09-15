@@ -35,6 +35,13 @@ public class WMSConfig extends ServiceConfig {
     public static final String SVG_SIMPLE = "Simple";
     public static final String SVG_BATIK = "Batik";
     
+    /**
+     * Interpolation Types
+     */
+    public static final String INT_NEAREST = "Nearest";
+    public static final String INT_BIlINEAR = "Bilinear";
+    public static final String INT_BICUBIC = "Bicubic";
+    
     /** current svg renderer **/
     private String svgRenderer;
     /** anti aliasing hint for svg renderer **/
@@ -42,7 +49,7 @@ public class WMSConfig extends ServiceConfig {
     /** rendering interpolation **/
     private Map baseMapLayers;
     private Map baseMapStyles;
-    private boolean allowInterpolation;
+    private String allowInterpolation;
     
     /**
      * WMS constructor.
@@ -57,7 +64,7 @@ public class WMSConfig extends ServiceConfig {
         super();
         svgRenderer = SVG_SIMPLE;
         svgAntiAlias = true;
-        allowInterpolation = true;
+        allowInterpolation = INT_NEAREST;
         baseMapLayers = new HashMap();
         baseMapStyles = new HashMap();
     }
@@ -173,14 +180,14 @@ public class WMSConfig extends ServiceConfig {
     /**
      * @param allowInterpolation rendering interpolation hint.
      */
-    public void setAllowInterpolation(boolean allowInterpolation) {
+    public void setAllowInterpolation(String allowInterpolation) {
     	this.allowInterpolation = allowInterpolation;
     }
     
     /**
      * @return The value of the rendering interpolation rendering hint.
      */
-    public boolean getAllowInterpolation() {
+    public String getAllowInterpolation() {
     	return allowInterpolation;
     }    
     /**

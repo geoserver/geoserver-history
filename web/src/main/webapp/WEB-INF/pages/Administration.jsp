@@ -89,5 +89,25 @@
     	<%= request.getAttribute("JAI_MEM_THRESHOLD") %>%
     </td>      
 	</tr>
+    <tr>
+    <td class="label">
+		<span class="help" title="<bean:message key="help.jai.tile.threads"/>">
+			<bean:message key="label.jai.tile.threads"/>:
+		</span>
+    </td>
+    <td class="datum">
+    	<%= request.getAttribute("JAI_TILE_THREADS") %>
+    </td>      
+	</tr>
+    <tr>
+    <td class="label">
+		<span class="help" title="<bean:message key="help.jai.tile.priority"/>">
+			<bean:message key="label.jai.tile.priority"/>:
+		</span>
+    </td>
+    <td class="datum">
+    	<%= request.getAttribute("JAI_TILE_PRIORITY") %> (1 - Min, 5 - Normal; 10 - Max)
+    </td>      
+	</tr>
   </tbody>
 </table>

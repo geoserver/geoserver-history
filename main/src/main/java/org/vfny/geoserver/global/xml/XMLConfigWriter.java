@@ -195,6 +195,8 @@ public class XMLConfigWriter {
 
             cw.valueTag("JaiMemoryCapacity", "" + g.getJaiMemoryCapacity());
             cw.valueTag("JaiMemoryThreshold", "" + g.getJaiMemoryThreshold());
+            cw.valueTag("JaiTileThreads", "" + g.getJaiTileThreads());
+            cw.valueTag("JaiTilePriority", "" + g.getJaiTilePriority());
             cw.valueTag("JaiRecycling", "" + g.getJaiRecycling());
             cw.valueTag("ImageIOCache", "" + g.getImageIOCache());
             
@@ -356,7 +358,7 @@ public class XMLConfigWriter {
         Map baseMapLayers = null;
         Map baseMapStyles = null;
         boolean svgAntiAlias = false;
-        boolean allowInterpolation = false;
+        String allowInterpolation = null;
         boolean citeConformanceHacks = false;
 		if (obj instanceof WCSDTO) {
 			WCSDTO w = (WCSDTO) obj;
@@ -478,7 +480,8 @@ public class XMLConfigWriter {
         
         if (obj instanceof WMSDTO) {
             cw.textTag("svgAntiAlias", svgAntiAlias + "");
-            cw.textTag("allowInterpolation", allowInterpolation + "");
+            if (allowInterpolation != null)
+            	cw.textTag("allowInterpolation", allowInterpolation);
         }
 
         if ((s.getStrategy() != null) && !"".equals(s.getStrategy())) {

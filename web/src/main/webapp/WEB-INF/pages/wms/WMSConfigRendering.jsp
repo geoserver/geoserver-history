@@ -25,9 +25,22 @@
 			<html:checkbox name="wmsRenderingForm" property="svgAntiAlias"><bean:message key="label.wms.svgAntiAlias"/></html:checkbox> 	
 		</td></tr>
 	<tr><td align="right">
+		<span class="help" title="<bean:message key="help.wms.allowInterpolation"/>">
+			<bean:message key="label.wms.allowInterpolation"/>:
+		</span>
 		</td>
 		<td colspan=2>
-			<html:checkbox name="wmsRenderingForm" property="allowInterpolation"><bean:message key="label.wms.allowInterpolation"/></html:checkbox> 	
+			<html:radio name="wmsRenderingForm" property="allowInterpolation" value="Nearest"><bean:message key="label.wms.allowInterpolation.nearest"/></html:radio>
+		</td></tr>
+	<tr><td align="right">
+		</td>
+		<td colspan=2>
+			<html:radio name="wmsRenderingForm" property="allowInterpolation" value="Bilinear"><bean:message key="label.wms.allowInterpolation.bilinear"/></html:radio>
+		</td></tr>
+	<tr><td align="right">
+		</td>
+		<td colspan=2>
+			<html:radio name="wmsRenderingForm" property="allowInterpolation" value="Bicubic"><bean:message key="label.wms.allowInterpolation.bicubic"/></html:radio>
 		</td></tr>
 
 	<tr><td align="right">&nbsp;</td><td>

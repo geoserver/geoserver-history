@@ -71,6 +71,10 @@ public final class GeoServerDTO implements DataTransferObject {
 		
 		public static final double JaiMemoryThreshold = 0.75;
 		
+		public static final int JaiTileThreads = 7;
+		
+		public static final int JaiTilePriority = Thread.NORM_PRIORITY;
+		
 		public static final Boolean JaiRecycling = Boolean.TRUE;
         
         public static final Boolean ImageIOCache = Boolean.FALSE;
@@ -184,6 +188,10 @@ public final class GeoServerDTO implements DataTransferObject {
     
     private double jaiMemoryThreshold = Defaults.JaiMemoryThreshold;
     
+    private int jaiTileThreads = Defaults.JaiTileThreads;
+    
+    private int jaiTilePriority = Defaults.JaiTilePriority;
+    
     private Boolean jaiRecycling = Defaults.JaiRecycling;
     
     private Boolean imageIOCache = Defaults.ImageIOCache;
@@ -229,6 +237,8 @@ public final class GeoServerDTO implements DataTransferObject {
         
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
         jaiMemoryThreshold = g.getJaiMemoryThreshold();
+        jaiTileThreads = g.getJaiTileThreads();
+        jaiTilePriority = g.getJaiTilePriority();
         jaiRecycling = g.getJaiRecycling();
         imageIOCache = g.getImageIOCache();
         
@@ -302,6 +312,8 @@ public final class GeoServerDTO implements DataTransferObject {
         
         r = r && (jaiMemoryCapacity == g.getJaiMemoryCapacity()) ;
         r = r && (jaiMemoryThreshold == g.getJaiMemoryThreshold()) ;
+        r = r && (jaiTileThreads == g.getJaiTileThreads()) ;
+        r = r && (jaiTilePriority == g.getJaiTilePriority()) ;
         
         r = r && (jaiRecycling == g.getJaiRecycling());
         
@@ -674,4 +686,20 @@ public final class GeoServerDTO implements DataTransferObject {
     public void setImageIOCache(Boolean imageIOCache) {
         this.imageIOCache = imageIOCache;
     }
+
+	public int getJaiTilePriority() {
+		return jaiTilePriority;
+	}
+
+	public void setJaiTilePriority(int jaiTilePriority) {
+		this.jaiTilePriority = jaiTilePriority;
+	}
+
+	public int getJaiTileThreads() {
+		return jaiTileThreads;
+	}
+
+	public void setJaiTileThreads(int jaiTileThreads) {
+		this.jaiTileThreads = jaiTileThreads;
+	}
 }

@@ -119,6 +119,8 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
 		
 		long jaiMemoryCapacity = form.getJaiMemoryCapacity();
 		double jaiMemoryThreshold = form.getJaiMemoryThreshold();
+		int jaiTileThreads = form.getJaiTileThreads();
+		int jaiTilePriority = form.getJaiTilePriority();
 		boolean jaiRecycling = form.getJaiRecycling();
         if (form.isJaiRecyclingChecked() == false) {
         	jaiRecycling = false;
@@ -144,6 +146,8 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setVerboseExceptions(verboseExceptions);
         globalConfig.setJaiMemoryCapacity(jaiMemoryCapacity);
         globalConfig.setJaiMemoryThreshold(jaiMemoryThreshold);
+        globalConfig.setJaiTileThreads(jaiTileThreads);
+        globalConfig.setJaiTilePriority(jaiTilePriority);
         globalConfig.setJaiRecycling(jaiRecycling);
         globalConfig.setImageIOCache(imageIOCache);
         

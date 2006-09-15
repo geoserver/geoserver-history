@@ -102,6 +102,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 	
 	private long jaiMemoryCapacity;
 	private double jaiMemoryThreshold;
+	private int jaiTileThreads;
+	private int jaiTilePriority;
 	private boolean jaiRecycling;
 	private boolean jaiRecyclingChecked;
     private boolean imageIOCache;
@@ -135,6 +137,8 @@ public class GeoServerConfigurationForm extends ActionForm {
         
         jaiMemoryCapacity = globalConfig.getJaiMemoryCapacity();
         jaiMemoryThreshold = globalConfig.getJaiMemoryThreshold();
+        jaiTileThreads = globalConfig.getJaiTileThreads();
+        jaiTilePriority = globalConfig.getJaiTilePriority();
         jaiRecycling = globalConfig.isJaiRecycling();
         jaiRecyclingChecked = false;
         imageIOCache = globalConfig.isImageIOCache();
@@ -173,6 +177,16 @@ public class GeoServerConfigurationForm extends ActionForm {
         			new ActionError("error.geoserver.JAIMemThreshold"));
         }
         
+        if (jaiTileThreads < 0 || jaiTileThreads > 100) {
+        	errors.add("jaiTileThreads",
+        			new ActionError("error.geoserver.JAITileThreads"));
+        }
+        
+        if (jaiTilePriority < 1 || jaiTilePriority > 10) {
+        	errors.add("jaiTilePriority",
+        			new ActionError("error.geoserver.JAITilePriority"));
+        }
+
         return errors;
     }
 	/**
@@ -704,5 +718,21 @@ public class GeoServerConfigurationForm extends ActionForm {
 	}
 	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
 		this.jaiMemoryThreshold = jaiMemoryThreshold;
+	}
+
+	public int getJaiTilePriority() {
+		return jaiTilePriority;
+	}
+
+	public void setJaiTilePriority(int jaiTilePriority) {
+		this.jaiTilePriority = jaiTilePriority;
+	}
+
+	public int getJaiTileThreads() {
+		return jaiTileThreads;
+	}
+
+	public void setJaiTileThreads(int jaiTileThreads) {
+		this.jaiTileThreads = jaiTileThreads;
 	}
 }

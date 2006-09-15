@@ -41,7 +41,7 @@ public final class WMSDTO implements DataTransferObject {
     /** The interpolation rendering hint **/
     private Map baseMapLayers;
     private Map baseMapStyles;
-    private boolean allowInterpolation;
+    private String allowInterpolation;
     
     /**
      * WMS constructor.  does nothing
@@ -149,7 +149,7 @@ public final class WMSDTO implements DataTransferObject {
     public int hashCode() {
         return (gmlPrefixing ? 1 : 0) 
         | (svgAntiAlias ? 1 : 0)
-        | (allowInterpolation ? 1 : 0)
+        | ((allowInterpolation != null) ? 0 : allowInterpolation.hashCode())
         | ((service == null) ? 0 : service.hashCode()) 
         | ((svgRenderer == null) ? 0 : svgRenderer.hashCode())
         | ((baseMapLayers == null) ? 0 : baseMapLayers.hashCode())
@@ -264,14 +264,14 @@ public final class WMSDTO implements DataTransferObject {
     /**
      * @param allowInterpolation interpolation hint.
      */
-    public void setAllowInterpolation(boolean allowInterpolation) {
+    public void setAllowInterpolation(String allowInterpolation) {
     	this.allowInterpolation = allowInterpolation;
     }
     
     /**
      * @return The value of the interpolation rendering hint.
      */
-    public boolean getAllowInterpolation() {
+    public String getAllowInterpolation() {
     	return allowInterpolation;
     }
 

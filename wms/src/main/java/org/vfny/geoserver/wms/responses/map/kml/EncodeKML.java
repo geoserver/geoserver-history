@@ -26,9 +26,9 @@ import javax.media.jai.GraphicsJAI;
 
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
@@ -36,6 +36,7 @@ import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
+import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.filter.expression.BBoxExpression;
@@ -44,8 +45,11 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.FactoryFinder;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.CoordinateOperationFactory;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -60,7 +64,7 @@ public class EncodeKML {
             "org.vfny.geoserver.responses.wms.map.kml");
     
     /** Filter factory for creating bounding box filters */
-    private FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
+    //private FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
 
     /** the XML and KML header */
     private static final String KML_HEADER =
@@ -86,9 +90,18 @@ public class EncodeKML {
 	 */
 	private KMLWriter writer;
 
+	/** Filter factory for creating bounding box filters */
+    private FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
     
     /** Flag to be monotored by writer loops */
     private boolean abortProcess;
+    
+    /** Used for reprojection */
+    private final static CoordinateOperationFactory operationFactory;
+    static {
+        Hints hints=new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
+        operationFactory=FactoryFinder.getCoordinateOperationFactory(hints);
+    }
     
     /**
      * Creates a new EncodeKML object.
@@ -257,14 +270,35 @@ public class EncodeKML {
         MapLayer[] layers = mapContext.getLayers();
         int nLayers = layers.length;
         
-        FilterFactory fFac = FilterFactoryFinder.createFilterFactory();
+        FilterFactory fFac = new FilterFactoryImpl();
+        
+        final int imageWidth = this.mapContext.getMapWidth();
+        final int imageHeight = this.mapContext.getMapHeight();
+        //final CoordinateReferenceSystem requestedCrs = mapContext.getCoordinateReferenceSystem();
+        //writer.setRequestedCRS(requestedCrs);
+        //writer.setScreenSize(new Rectangle(imageWidth, imageHeight));
         
         writer.startDocument("GeoServer", null);
-        for (int i = 0; i < nLayers; i++) {
+        for (int i = 0; i < nLayers; i++) { // for every layer specified in the request
             MapLayer layer = layers[i];
-            FeatureReader featureReader = null;
+            //FeatureReader featureReader = null;
             FeatureSource fSource = layer.getFeatureSource();
             FeatureType schema = fSource.getSchema();
+            
+
+            //GeometryAttributeType geometryAttribute = schema.getDefaultGeometry();
+        	//CoordinateReferenceSystem sourceCrs = geometryAttribute.getCoordinateSystem();
+        	Rectangle paintArea = new Rectangle(imageWidth, imageHeight);
+            AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(
+            		mapContext.getAreaOfInterest(), paintArea);
+            double scaleDenominator = 1;
+            try {
+            	scaleDenominator = RendererUtilities.calculateScale(mapContext.getAreaOfInterest(),mapContext.getCoordinateReferenceSystem(),paintArea.width,paintArea.height,90);// 90 = OGC standard DPI (see SLD spec page 37)
+            } catch (Exception e) // probably either (1) no CRS (2) error xforming
+            {
+            	scaleDenominator =  1 / worldToScreen.getScaleX(); //DJB old method - the best we can do
+            }
+            writer.setRequestedScale(scaleDenominator);
             
             String[] attributes;
             boolean isRaster = false;
@@ -279,8 +313,14 @@ public class EncodeKML {
             }
 
             try {
+            	CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry().getCoordinateSystem();
+            	writer.setSourceCrs(sourceCrs);// it seems to work better getting it from the schema, here
+            	Envelope envelope = mapContext.getAreaOfInterest();
+            	ReferencedEnvelope aoi = new ReferencedEnvelope(envelope, mapContext.getCoordinateReferenceSystem());
+            	
+            	
             	Filter filter = null;
-            	ReferencedEnvelope aoi = mapContext.getAreaOfInterest();
+            	//ReferencedEnvelope aoi = mapContext.getAreaOfInterest();
             	if (!CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(), schema.getDefaultGeometry().getCoordinateSystem())) {
             		aoi = aoi.transform(schema.getDefaultGeometry().getCoordinateSystem(), true);
             	}
@@ -345,13 +385,13 @@ public class EncodeKML {
                 ioe.setStackTrace(t.getStackTrace());
                 throw ioe;
             } finally {
-                if (featureReader != null) {
+                /*if (featureReader != null) {
                     try{
                         featureReader.close();
                     }catch(IOException ioe){
                         //featureReader was probably closed already.
                     }
-                }
+                }*/
             }
         }
         writer.endDocument();

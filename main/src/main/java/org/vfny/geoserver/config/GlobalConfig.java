@@ -148,6 +148,8 @@ public class GlobalConfig {
     
     private long jaiMemoryCapacity;
     private double jaiMemoryThreshold;
+    private int jaiTileThreads;
+    private int jaiTilePriority;
     private boolean jaiRecycling;
     private boolean imageIOCache;
     
@@ -214,6 +216,8 @@ public class GlobalConfig {
         
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
         jaiMemoryThreshold = g.getJaiMemoryThreshold();
+        jaiTileThreads = g.getJaiTileThreads();
+        jaiTilePriority = g.getJaiTilePriority();
         jaiRecycling = g.getJaiRecycling().booleanValue();
         imageIOCache = g.getImageIOCache().booleanValue();
         
@@ -257,6 +261,8 @@ public class GlobalConfig {
         
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
         jaiMemoryThreshold = g.getJaiMemoryThreshold();
+        jaiTileThreads = g.getJaiTileThreads();
+        jaiTilePriority = g.getJaiTilePriority();
         jaiRecycling = g.getJaiRecycling().booleanValue();
         imageIOCache = g.getImageIOCache().booleanValue();
         
@@ -294,6 +300,8 @@ public class GlobalConfig {
         g.setLogLocation(logLocation);
         g.setJaiMemoryCapacity(jaiMemoryCapacity);
         g.setJaiMemoryThreshold(jaiMemoryThreshold);
+        g.setJaiTileThreads(jaiTileThreads);
+        g.setJaiTilePriority(jaiTilePriority);
         g.setJaiRecycling(Boolean.valueOf(jaiRecycling));
         g.setImageIOCache(Boolean.valueOf(imageIOCache));
 
@@ -632,5 +640,21 @@ public class GlobalConfig {
 	}
 	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
 		this.jaiMemoryThreshold = jaiMemoryThreshold;
+	}
+
+	public int getJaiTilePriority() {
+		return jaiTilePriority;
+	}
+
+	public void setJaiTilePriority(int jaiTilePriority) {
+		this.jaiTilePriority = jaiTilePriority;
+	}
+
+	public int getJaiTileThreads() {
+		return jaiTileThreads;
+	}
+
+	public void setJaiTileThreads(int jaiTileThreads) {
+		this.jaiTileThreads = jaiTileThreads;
 	}
 }

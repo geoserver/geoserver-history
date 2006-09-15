@@ -40,10 +40,14 @@ public class AdminIndexAction extends ConfigAction {
     	final long memCapacity = jaiCache.getMemoryCapacity()/ 1024;
     	final long memUsed = jaiCache.getCacheMemoryUsed()/ 1024;
     	final float memThreshold = jaiCache.getMemoryThreshold()* 100;
+    	final int numThreads = jaiDef.getTileScheduler().getParallelism();
+    	final int priiority = jaiDef.getTileScheduler().getPriority();
     	
     	request.setAttribute("JAI_MEM_CAPACITY", new Long(memCapacity));
     	request.setAttribute("JAI_MEM_USED", new Long(memUsed));
     	request.setAttribute("JAI_MEM_THRESHOLD", new Float(memThreshold));
+    	request.setAttribute("JAI_TILE_THREADS", new Integer(numThreads));
+    	request.setAttribute("JAI_TILE_PRIORITY", new Integer(priiority));
     	
     	// return back to the admin screen
     	//
