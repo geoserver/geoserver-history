@@ -7,13 +7,13 @@
   <groupId>org.geoserver</groupId>
   <artifactId>statusreporter_core</artifactId>
   <packaging>jar</packaging>
-  <version>0.4</version>
+  <version>0.4_gt2.2.x</version>
   <name>Status Reporter Core Service Module</name>
   
   <parent>
     <groupId>org.geoserver</groupId>		
     <artifactId>statusreporter</artifactId>
-    <version>0.4</version>
+    <version>0.4_gt2.2.x</version>
   </parent>
   
  	<dependencies>
@@ -31,22 +31,22 @@
 		<dependency>
                         <groupId>org.geoserver</groupId>
                         <artifactId>wfs</artifactId>
-			<version>1.4.0-M1</version>
+			<version>1.4.0_gt2.2.x</version>
                 </dependency>
 		<dependency>
                         <groupId>org.geoserver</groupId>
                         <artifactId>wms</artifactId>
-			<version>1.4.0-M1</version>
+			<version>1.4.0_gt2.2.x</version>
                 </dependency>
 		<dependency>
                         <groupId>org.geoserver</groupId>
                         <artifactId>data</artifactId>
-			<version>1.4.0-M1</version>
+			<version>1.4.0_gt2.2.x</version>
                 </dependency>
 		<dependency>
                         <groupId>org.geoserver</groupId>
                         <artifactId>preference_core</artifactId>
-			<version>0.4</version>
+			<version>0.4_gt2.2.x</version>
                 </dependency>
 	</dependencies>
 

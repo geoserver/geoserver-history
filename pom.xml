@@ -7,7 +7,7 @@
 	<groupId>org.geoserver</groupId>
 	<artifactId>geoserver</artifactId>
 	<packaging>pom</packaging>
-	<version>1.4.0-M1</version>
+	<version>1.4.0_gt2.2.x</version>
 	<name>GeoServer</name>
 
 	<organization>
@@ -665,8 +665,8 @@
 	</modules>
 
 	<properties>
-		<gs.version>1.4.0-M1</gs.version>
-		<gt.version>2.2.0</gt.version>
+		<gs.version>1.4.0-gt2.2.x</gs.version>
+		<gt.version>2.2.1-SNAPSHOT</gt.version>
 	</properties>
 
 	<profiles>

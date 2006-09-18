@@ -44,18 +44,15 @@ public class StatusReporterImplTest extends TestCase {
 
 		public boolean refreshCalled = false;
 
-		@Override
 		public void refresh() throws BeansException, IllegalStateException {
 			this.refreshCalled = true;
 		}
 
-		@Override
 		public ConfigurableListableBeanFactory getBeanFactory() throws IllegalStateException {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
-		@Override
 		protected void refreshBeanFactory() throws BeansException, IllegalStateException {
 			// TODO Auto-generated method stub
 			
