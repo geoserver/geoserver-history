@@ -6,10 +6,13 @@ package org.vfny.geoserver.global;
 
 import java.io.IOException;
 
+import org.geotools.data.DataStore;
+import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.util.DataStoreUtils;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -130,7 +133,13 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
 	 */
 	public Envelope getBoundingBox() throws IOException {
 		if (this.type == TYPE_VECTOR) {
-			return feature.getBoundingBox();
+			try {
+				return feature.getBoundingBox();
+			} catch (IllegalArgumentException e) {
+		        FeatureSource realSource = feature.getFeatureSource();
+
+		        return DataStoreUtils.getBoundingBoxEnvelope(realSource);
+			}
 		} else {
 
 			// using referenced envelope (experiment)
@@ -206,10 +215,18 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
 	 * @uml.property name="feature"
 	 */
 	public void setFeature(FeatureTypeInfo feature) {
-		this.name = feature.getName();
-		this.label = feature.getTitle();
-		this.description = feature.getAbstract();
-		this.dirName = feature.getDirName();
+		// handle InlineFeatureStuff
+		try {
+			this.name = feature.getName();
+			this.label = feature.getTitle();
+			this.description = feature.getAbstract();
+			this.dirName = feature.getDirName();
+		} catch (IllegalArgumentException e) {
+			this.name = "";
+			this.label = "";
+			this.description = "";
+			this.dirName = "";
+		}
 		this.feature = feature;
 		this.coverage = null;
 		this.type = TYPE_VECTOR;

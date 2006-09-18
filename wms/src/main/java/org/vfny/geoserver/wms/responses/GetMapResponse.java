@@ -222,18 +222,19 @@ public class GetMapResponse implements Response {
 						// We just need to check the bbox of the layer.
 						//
 						// //
-						final ReferencedEnvelope bbox = (ReferencedEnvelope) layers[i].getBoundingBox();
-						if(CRS.equalsIgnoreMetadata(bbox.getCoordinateReferenceSystem(), mapcrs)) {
-							if (!layers[i].getBoundingBox().intersects(env)) {
-								continue;
-							}
-						} else {
-							ReferencedEnvelope prjEnv = new ReferencedEnvelope(env, mapcrs).transform(bbox.getCoordinateReferenceSystem(), true);
-							if (!layers[i].getBoundingBox().intersects(prjEnv)) {
-								continue;
-							}
+						if (layers[i].getBoundingBox() instanceof ReferencedEnvelope) {
+							final ReferencedEnvelope bbox = (ReferencedEnvelope) layers[i].getBoundingBox();
+							if(CRS.equalsIgnoreMetadata(bbox.getCoordinateReferenceSystem(), mapcrs)) {
+								if (!layers[i].getBoundingBox().intersects(env)) {
+									continue;
+								}
+							} else {
+								ReferencedEnvelope prjEnv = new ReferencedEnvelope(env, mapcrs).transform(bbox.getCoordinateReferenceSystem(), true);
+								if (!layers[i].getBoundingBox().intersects(prjEnv)) {
+									continue;
+								}
+							}						
 						}
-
 					} catch (IOException exp) {
 						if (LOGGER.isLoggable(Level.SEVERE)) {
 							LOGGER.log(Level.SEVERE, new StringBuffer(
