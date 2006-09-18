@@ -16,7 +16,7 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.geotools.factory.FactoryFinder;
-import org.geotools.filter.expression.FunctionExpression;
+import org.geotools.filter.FunctionExpression;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.global.FeatureTypeInfo;
