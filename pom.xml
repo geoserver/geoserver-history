@@ -402,13 +402,13 @@
 			</testResource>
 		</testResources>
 
-		<!--extensions>
+		<extensions>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-webdav</artifactId>
         <version>1.0-beta-1</version>
       </extension>
-    </extensions-->
+    </extensions>
 
 		<plugins>
 
@@ -640,15 +640,11 @@
 
 	<distributionManagement>
 		<repository>
-      <id>codehaus.org</id>
-      <name>GeoServer Central Repository</name>
-      <url>dav:https://dav.codehaus.org/repository/geoserver/</url>
-    </repository>
-    <snapshotRepository>
-      <id>codehaus.org</id>
-      <name>GeoServer Central Development Repository</name>
-      <url>dav:https://dav.codehaus.org/snapshots.repository/geoserver/</url>
-    </snapshotRepository>
+          <uniqueVersion>false</uniqueVersion>
+          <id>refractions</id>
+          <name>Refractions Research Repository</name>
+          <url>dav:http://lists.refractions.net/m2</url>
+        </repository>
 	</distributionManagement>
 
 	<modules>

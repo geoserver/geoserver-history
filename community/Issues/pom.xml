@@ -27,7 +27,7 @@
 	<groupId>org.geoserver</groupId>
 	<artifactId>Issues</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0</version>
+	<version>1.0_gt2.2.x</version>
 	<name>Issues List Service Module</name>
 
 	<dependencies>
