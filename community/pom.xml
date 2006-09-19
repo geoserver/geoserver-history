@@ -23,10 +23,14 @@
 	</dependencies>
 
 	<modules>
+        <!-- removed modules we don't need for the sens project 
 		<module>hello</module>
 		<module>http</module>
-		<module>preferences</module>
 		<module>wfs</module>
 		<module>web</module>
+        -->
+        <module>preferences</module>
+        <module>Issues</module>
+        <module>statusreporter</module>
 	</modules>
 </project>
