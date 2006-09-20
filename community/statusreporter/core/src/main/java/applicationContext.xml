@@ -23,6 +23,6 @@
 	<bean id="wfsstatuschecker" class="org.vfny.geoserver.control.internal.WFSStatusChecker"/>
 	<bean id="wmsstatuschecker" class="org.vfny.geoserver.control.internal.WMSStatusChecker"/>
 	<bean id="datastatuschecker" class="org.vfny.geoserver.control.internal.DataStatusChecker"/>
-	<bean id="prefstatuschecker" class="org.vfny.geoserver.control.internal.PreferencesStatusChecker"/>
+	<bean id="prefstatuschecker" class="org.vfny.geoserver.control.internal.PreferenceStatusChecker"/>
 	
 </beans>
