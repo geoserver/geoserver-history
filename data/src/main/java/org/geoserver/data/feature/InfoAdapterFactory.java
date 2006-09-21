@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 import org.geoserver.GeoServerResourceLoader;
 import org.geoserver.data.GeoServerCatalog;
@@ -113,6 +114,8 @@ public class InfoAdapterFactory implements ResolveAdapterFactory,
 		if ( FeatureTypeInfo.class.equals( adaptee ) ) {
 			GeoResource handle = (GeoResource) resolve;
 			GeoResourceInfo rInfo = handle.getInfo( monitor );
+			if ( rInfo == null ) 
+				throw new NullPointerException();
 			
 			DataStoreInfo dataStoreInfo = 
 				(DataStoreInfo) adapt( handle.parent( null ), DataStoreInfo.class, null );
@@ -121,6 +124,7 @@ public class InfoAdapterFactory implements ResolveAdapterFactory,
 			FeatureTypeInfo info = null;
 			File infoFile = null;
 			if ( dataStoreInfo.getNamespacePrefix() != null ) {
+				
 				String prefix = dataStoreInfo.getNamespacePrefix();
 				infoFile = loader.find( "featureTypes/" + prefix + "_" + rInfo.getName() + "/info.xml" );
 			}
