@@ -68,7 +68,7 @@ public final class Operation {
 	public boolean set(String property, Object value) 
 		throws Exception {
 		
-		Method method = method( "set" + property, null );
+		Method method = method( "set" + property, value.getClass() );
 		if (method != null) {
 			method.invoke( operation, new Object[]{value} );
 			return true;
