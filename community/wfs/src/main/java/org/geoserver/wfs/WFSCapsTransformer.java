@@ -21,7 +21,7 @@ import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.GeoResourceInfo;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.expression.FunctionExpression;
+import org.geotools.filter.FunctionExpression;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.xml.sax.ContentHandler;

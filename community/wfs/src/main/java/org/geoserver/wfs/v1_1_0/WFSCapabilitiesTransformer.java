@@ -14,7 +14,7 @@ import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.wfs.WFS;
 import org.geoserver.xml.ows.v1_0_0.OWS;
 import org.geotools.factory.FactoryFinder;
-import org.geotools.filter.expression.FunctionExpression;
+import org.geotools.filter.FunctionExpression;
 import org.geotools.filter.v1_1.OGC;
 import org.geotools.xlink.bindings.XLINK;
 import org.geotools.xml.transform.TransformerBase;

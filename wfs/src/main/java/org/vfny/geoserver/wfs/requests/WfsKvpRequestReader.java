@@ -12,7 +12,7 @@ import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
-import org.geotools.filter.expression.LiteralExpression;
+import org.geotools.filter.LiteralExpression;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.WfsXmlRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
