@@ -1,3 +1,9 @@
+Geoserver 1.3.4
+---------------
+This release contains more improvements to KML output.
+Decimal precision has been fixed in KML and more styling options are available.
+
+
 Geoserver 1.3.3
 ---------------
 Fixed several bugs in the KML servlet. Multiple layers should now render properly and
