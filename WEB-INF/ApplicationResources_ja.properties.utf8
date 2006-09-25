@@ -339,7 +339,7 @@ message.dataOkay=ãƒ‡ãƒ¼ã‚¿ã?Œéšœå®³ã?ªã??èª­è¾¼ã?¾ã‚Œã?¾ã?—ã?Ÿã€‚
 # WELCOME
 welcome.label=Welcome
 welcome.title=Welcome GeoServer
-welcome.short=ã‚ˆã?†ã?“ã??ã€€GeoServer 1.3.3ã?¸ã€€ã€€GeoServerã?®ã?”åˆ©ç”¨ã?‚ã‚Šã?Œã?¨ã?†ã?”ã?–ã?„ã?¾ã?™!
+welcome.short=ã‚ˆã?†ã?“ã??ã€€GeoServer 1.3.4ã?¸ã€€ã€€GeoServerã?®ã?”åˆ©ç”¨ã?‚ã‚Šã?Œã?¨ã?†ã?”ã?–ã?„ã?¾ã?™!
 welcome.words=(GeoServer) (GIS) (Geographic Information Systems) (WFS)
 
 welcome.contact.label=é€£çµ¡å…ˆ
