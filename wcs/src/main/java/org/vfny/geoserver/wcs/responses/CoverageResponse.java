@@ -14,9 +14,17 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.media.jai.Interpolation;
+
+import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.factory.Hints;
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.parameter.DefaultParameterDescriptor;
+import org.geotools.referencing.CRS;
+import org.geotools.resources.CRSUtilities;
+import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
@@ -25,6 +33,9 @@ import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.AxisDirection;
+import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -50,6 +61,11 @@ public class CoverageResponse implements Response {
 	/** Standard logging instance for class */
 	private static final Logger LOGGER = Logger
 			.getLogger("org.vfny.geoserver.responses");
+
+	private final static Hints LENIENT_HINT = new Hints(
+			Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
+	
+	private final static Hints hints = new Hints(new HashMap(5));
 
 	/**
 	 * 
@@ -252,8 +268,7 @@ public class CoverageResponse implements Response {
 				throw new IOException(
 						"The requested coverage could not be found.");
 
-			final GridCoverage2D finalCoverage = WCSUtils
-					.getCroppedCoverage(request, meta, coverage);
+			final GridCoverage2D finalCoverage = getFinalCoverage(request, meta, coverage);
 			delegate.prepare(outputFormat, finalCoverage);
 		} catch (IOException e) {
 			final WcsException newEx = new WcsException(e, "problem with CoverageResults", request
@@ -302,5 +317,148 @@ public class CoverageResponse implements Response {
 		}
 
 		Data catalog = gs.getData();
+	}
+	
+	/**
+	 * GetCroppedCoverage
+	 * 
+	 * @param request CoverageRequest
+	 * @param meta CoverageInfo
+	 * @param coverage GridCoverage
+	 * @return GridCoverage2D
+	 * @throws WcsException
+	 * @throws IOException
+	 * @throws IndexOutOfBoundsException
+	 * @throws FactoryException
+	 * @throws TransformException
+	 */
+	private static GridCoverage2D getFinalCoverage(CoverageRequest request,
+			CoverageInfo meta, GridCoverage coverage) throws WcsException,
+			IOException, IndexOutOfBoundsException, FactoryException,
+			TransformException {
+
+		// ///////////////////////////////////////////////////////////////////
+		//
+		// HINTS
+		//
+		// ///////////////////////////////////////////////////////////////////
+		hints.add(LENIENT_HINT);
+		/*if (java2dHints != null)
+		 this.hints.add(java2dHints);*/
+
+		// This is the final Response CRS
+		final String responseCRS = request.getResponseCRS();
+		// - first check if the responseCRS is present on the Coverage
+		// ResponseCRSs list
+		if (!meta.getResponseCRSs().contains(responseCRS)) {
+			throw new WcsException(
+			"This Coverage does not support the Response CRS requested.");
+		}
+		// - then create the Coordinate Reference System
+		final CoordinateReferenceSystem targetCRS = CRS.decode(responseCRS,
+				true);
+		// This is the CRS of the requested Envelope
+		final String requestCRS = request.getCRS();
+		// - first check if the requestCRS is present on the Coverage
+		// RequestCRSs list
+		if (!meta.getResponseCRSs().contains(requestCRS)) {
+			throw new WcsException(
+			"This Coverage does not support the CRS requested.");
+		}
+		// - then create the Coordinate Reference System
+		final CoordinateReferenceSystem sourceCRS = CRS.decode(requestCRS);
+		// This is the CRS of the Coverage Envelope
+		final CoordinateReferenceSystem cvCRS = ((GeneralEnvelope) coverage
+				.getEnvelope()).getCoordinateReferenceSystem();
+		final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS
+		.transform(cvCRS, sourceCRS, true);
+		final MathTransform deviceCRSToGCCRSTransform = GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform
+		.inverse();
+
+		com.vividsolutions.jts.geom.Envelope envelope = request.getEnvelope();
+		GeneralEnvelope destinationEnvelope;
+		final boolean lonFirst = sourceCRS.getCoordinateSystem().getAxis(0)
+		.getDirection().absolute().equals(AxisDirection.EAST);
+		// the envelope we are provided with is lon,lat always
+		if (!lonFirst)
+			destinationEnvelope = new GeneralEnvelope(new double[] {
+					envelope.getMinY(), envelope.getMinX() }, new double[] {
+					envelope.getMaxY(), envelope.getMaxX() });
+		else
+			destinationEnvelope = new GeneralEnvelope(new double[] {
+					envelope.getMinX(), envelope.getMinY() }, new double[] {
+					envelope.getMaxX(), envelope.getMaxY() });
+		destinationEnvelope.setCoordinateReferenceSystem(sourceCRS);
+
+		// this is the destination envelope in the coverage crs
+		final GeneralEnvelope destinationEnvelopeInSourceCRS = (!deviceCRSToGCCRSTransform
+				.isIdentity()) ? CRSUtilities.transform(
+						deviceCRSToGCCRSTransform, destinationEnvelope)
+						: new GeneralEnvelope(destinationEnvelope);
+						destinationEnvelopeInSourceCRS.setCoordinateReferenceSystem(cvCRS);
+
+						/**
+						 * Band Select
+						 */
+						Coverage bandSelectedCoverage = WCSUtils.bandSelect(request.getParameters().keySet(), coverage);
+
+						/**
+						 * Crop
+						 */
+						final GridCoverage2D croppedGridCoverage = WCSUtils.crop(
+								bandSelectedCoverage,
+								(GeneralEnvelope) coverage.getEnvelope(), 
+								cvCRS, 
+								destinationEnvelopeInSourceCRS);
+
+						/**
+						 * Scale
+						 */
+						GridCoverage2D subCoverage = croppedGridCoverage;
+						if (request.getGridLow() != null && request.getGridHigh() != null) {
+							final int[] lowers = new int[] {
+									request.getGridLow()[0].intValue(),
+									request.getGridLow()[1].intValue() };
+							final int[] highers = new int[] {
+									request.getGridHigh()[0].intValue(),
+									request.getGridHigh()[1].intValue() };
+							// new grid range
+							final GeneralGridRange newGridrange = new GeneralGridRange(lowers,
+									highers);
+
+							subCoverage = WCSUtils.scale(croppedGridCoverage, newGridrange, coverage, cvCRS);
+						}
+
+						/**
+						 * Reproject
+						 */
+						subCoverage = WCSUtils.reproject(
+								subCoverage,
+								sourceCRS, 
+								targetCRS);
+
+						/**
+						 * Interpolate (if necessary)
+						 */
+						final String interp_requested = request.getInterpolation();
+						if (interp_requested != null) {
+							int interp_type = -1;
+
+							if (interp_requested.equalsIgnoreCase("nearest_neighbor"))
+								interp_type = Interpolation.INTERP_NEAREST;
+							else if (interp_requested.equalsIgnoreCase("bilinear"))
+								interp_type = Interpolation.INTERP_BILINEAR;
+							else if (interp_requested.equalsIgnoreCase("bicubic"))
+								interp_type = Interpolation.INTERP_BICUBIC;
+							else if (interp_requested.equalsIgnoreCase("bicubic_2"))
+								interp_type = Interpolation.INTERP_BICUBIC_2;
+							else
+								throw new WcsException(
+								"Unrecognized interpolation type. Allowed values are: nearest_neighbor, bilinear, bicubic, bicubic_2");
+
+							subCoverage = WCSUtils.interpolate(subCoverage, Interpolation.getInstance(interp_type));
+						}
+
+						return subCoverage;
 	}
 }

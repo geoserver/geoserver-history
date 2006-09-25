@@ -1,6 +1,5 @@
 package org.vfny.geoserver.util;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,7 +10,6 @@ import java.util.logging.Logger;
 
 import javax.media.jai.Interpolation;
 
-import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.processing.DefaultProcessor;
@@ -21,20 +19,13 @@ import org.geotools.coverage.processing.operation.Resample;
 import org.geotools.coverage.processing.operation.SelectSampleDimension;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.referencing.CRS;
 import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridRange;
 import org.opengis.parameter.ParameterValueGroup;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.wcs.WcsException;
-import org.vfny.geoserver.wcs.requests.CoverageRequest;
 
 /**
  * 
@@ -61,6 +52,7 @@ public class WCSUtils {
 		
 		// ///////////////////////////////////////////////////////////////////
 		//
+		// Static Processors
 		//
 		// ///////////////////////////////////////////////////////////////////
 		final DefaultProcessor processor = new DefaultProcessor(LENIENT_HINT);
@@ -81,151 +73,11 @@ public class WCSUtils {
 	private final static Hints hints = new Hints(new HashMap(5));
 	
 	/**
-	 * GetCroppedCoverage
-	 * 
-	 * @param request CoverageRequest
-	 * @param meta CoverageInfo
-	 * @param coverage GridCoverage
-	 * @return GridCoverage2D
-	 * @throws WcsException
-	 * @throws IOException
-	 * @throws IndexOutOfBoundsException
-	 * @throws FactoryException
-	 * @throws TransformException
-	 */
-	public static GridCoverage2D getCroppedCoverage(CoverageRequest request,
-			CoverageInfo meta, GridCoverage coverage) throws WcsException,
-			IOException, IndexOutOfBoundsException, FactoryException,
-			TransformException {
-		
-		// ///////////////////////////////////////////////////////////////////
-		//
-		// HINTS
-		//
-		// ///////////////////////////////////////////////////////////////////
-		hints.add(LENIENT_HINT);
-		/*if (java2dHints != null)
-		 this.hints.add(java2dHints);*/
-		
-		// This is the final Response CRS
-		final String responseCRS = request.getResponseCRS();
-		// - first check if the responseCRS is present on the Coverage
-		// ResponseCRSs list
-		if (!meta.getResponseCRSs().contains(responseCRS)) {
-			throw new WcsException(
-			"This Coverage does not support the Response CRS requested.");
-		}
-		// - then create the Coordinate Reference System
-		final CoordinateReferenceSystem targetCRS = CRS.decode(responseCRS,
-				true);
-		// This is the CRS of the requested Envelope
-		final String requestCRS = request.getCRS();
-		// - first check if the requestCRS is present on the Coverage
-		// RequestCRSs list
-		if (!meta.getResponseCRSs().contains(requestCRS)) {
-			throw new WcsException(
-			"This Coverage does not support the CRS requested.");
-		}
-		// - then create the Coordinate Reference System
-		final CoordinateReferenceSystem sourceCRS = CRS.decode(requestCRS);
-		// This is the CRS of the Coverage Envelope
-		final CoordinateReferenceSystem cvCRS = ((GeneralEnvelope) coverage
-				.getEnvelope()).getCoordinateReferenceSystem();
-		final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS
-		.transform(cvCRS, sourceCRS, true);
-		final MathTransform deviceCRSToGCCRSTransform = GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform
-		.inverse();
-		
-		com.vividsolutions.jts.geom.Envelope envelope = request.getEnvelope();
-		GeneralEnvelope destinationEnvelope;
-		final boolean lonFirst = sourceCRS.getCoordinateSystem().getAxis(0)
-		.getDirection().absolute().equals(AxisDirection.EAST);
-		// the envelope we are provided with is lon,lat always
-		if (!lonFirst)
-			destinationEnvelope = new GeneralEnvelope(new double[] {
-					envelope.getMinY(), envelope.getMinX() }, new double[] {
-					envelope.getMaxY(), envelope.getMaxX() });
-		else
-			destinationEnvelope = new GeneralEnvelope(new double[] {
-					envelope.getMinX(), envelope.getMinY() }, new double[] {
-					envelope.getMaxX(), envelope.getMaxY() });
-		destinationEnvelope.setCoordinateReferenceSystem(sourceCRS);
-		
-		// this is the destination envelope in the coverage crs
-		final GeneralEnvelope destinationEnvelopeInSourceCRS = (!deviceCRSToGCCRSTransform
-				.isIdentity()) ? CRSUtilities.transform(
-						deviceCRSToGCCRSTransform, destinationEnvelope)
-						: new GeneralEnvelope(destinationEnvelope);
-						destinationEnvelopeInSourceCRS.setCoordinateReferenceSystem(cvCRS);
-						
-						/**
-						 * Band Select
-						 */
-						Coverage bandSelectedCoverage = bandSelect(request.getParameters().keySet(), coverage);
-						
-						/**
-						 * Crop
-						 */
-						final GridCoverage2D croppedGridCoverage = crop(
-								bandSelectedCoverage,
-								(GeneralEnvelope) coverage.getEnvelope(), 
-								cvCRS, 
-								destinationEnvelopeInSourceCRS);
-						
-						/**
-						 * Scale
-						 */
-						GridCoverage2D subCoverage = croppedGridCoverage;
-						if (request.getGridLow() != null && request.getGridHigh() != null) {
-							final int[] lowers = new int[] {
-									request.getGridLow()[0].intValue(),
-									request.getGridLow()[1].intValue() };
-							final int[] highers = new int[] {
-									request.getGridHigh()[0].intValue(),
-									request.getGridHigh()[1].intValue() };
-							// new grid range
-							final GeneralGridRange newGridrange = new GeneralGridRange(lowers,
-									highers);
-							
-							subCoverage = scale(croppedGridCoverage, newGridrange, coverage, cvCRS);
-						}
-						
-						/**
-						 * Reproject
-						 */
-						subCoverage = reproject(
-								subCoverage,
-								sourceCRS, 
-								targetCRS);
-						
-						/**
-						 * Interpolate (if necessary)
-						 */
-						final String interp_requested = request.getInterpolation();
-						if (interp_requested != null) {
-							int interp_type = -1;
-							
-							if (interp_requested.equalsIgnoreCase("nearest_neighbor"))
-								interp_type = Interpolation.INTERP_NEAREST;
-							else if (interp_requested.equalsIgnoreCase("bilinear"))
-								interp_type = Interpolation.INTERP_BILINEAR;
-							else if (interp_requested.equalsIgnoreCase("bicubic"))
-								interp_type = Interpolation.INTERP_BICUBIC;
-							else if (interp_requested.equalsIgnoreCase("bicubic_2"))
-								interp_type = Interpolation.INTERP_BICUBIC_2;
-							else
-								throw new WcsException(
-								"Unrecognized interpolation type. Allowed values are: nearest_neighbor, bilinear, bicubic, bicubic_2");
-							
-							subCoverage = interpolate(subCoverage, Interpolation.getInstance(interp_type));
-						}
-						
-						return subCoverage;
-	}
-	
-	/**
-	 * REPROJECT
-	 * 
+	 * <strong>Reprojecting</strong><br>
+	 * The new grid geometry can have a different coordinate reference system than the underlying
+	 * grid geometry. For example, a grid coverage can be reprojected from a geodetic coordinate
+	 * reference system to Universal Transverse Mercator CRS.
+	 *
 	 * @param coverage GridCoverage2D
 	 * @param sourceCRS CoordinateReferenceSystem
 	 * @param targetCRS CoordinateReferenceSystem
@@ -243,7 +95,7 @@ public class WCSUtils {
 		//
 		//
 		/////////////////////////////////////////////////////////////////////
-		if (!sourceCRS.equals(targetCRS)) {
+		if (!CRSUtilities.equalsIgnoreMetadata(sourceCRS, targetCRS)) {
 			/*Operations.DEFAULT.resample(
 			 coverage, 
 			 targetCRS, 
@@ -262,7 +114,11 @@ public class WCSUtils {
 	}
 	
 	/**
-	 * INTERPOLATE
+	 * <strong>Interpolating</strong><br>
+	 * Specifies the interpolation type to be used to interpolate values for points which fall between
+	 * grid cells. The default value is nearest neighbor. The new interpolation type operates on all
+	 * sample dimensions. Possible values for type are: {@code "NearestNeighbor"}, {@code "Bilinear"}
+	 * and {@code "Bicubic"} (the {@code "Optimal"} interpolation type is currently not supported).
 	 * 
 	 * @param coverage GridCoverage2D
 	 * @param interpolation Interpolation
@@ -292,8 +148,8 @@ public class WCSUtils {
 	}
 	
 	/**
-	 * SCALE to the needed resolution
-	 * Let me now scale down to the EXACT needed resolution. This step does
+	 * <strong>Scaling</strong><br>
+	 * Let user to scale down to the EXACT needed resolution. This step does
 	 * not prevent from having loaded an overview of the original image
 	 * based on the requested scale.
 	 * 
@@ -335,7 +191,9 @@ public class WCSUtils {
 	}
 	
 	/**
-	 * CROP
+	 * <strong>Cropping</strong><br>
+	 * The crop operation is responsible for selecting geographic subareas of the
+	 * source coverage.
 	 * 
 	 * @param coverage Coverage
 	 * @param sourceEnvelope GeneralEnvelope
@@ -388,7 +246,15 @@ public class WCSUtils {
 	}
 	
 	/**
-	 * BAND SELECT
+	 * <strong>Band Selecting</strong><br>
+	 * Chooses <var>N</var> {@linkplain org.geotools.coverage.GridSampleDimension sample dimensions}
+	 * from a grid coverage and copies their sample data to the destination grid coverage in the order
+	 * specified. The {@code "SampleDimensions"} parameter specifies the source
+	 * {@link org.geotools.coverage.GridSampleDimension} indices, and its size
+	 * ({@code SampleDimensions.length}) determines the number of sample dimensions of the destination
+	 * grid coverage. The destination coverage may have any number of sample dimensions, and a particular
+	 * sample dimension of the source coverage may be repeated in the destination coverage by specifying
+	 * it multiple times in the {@code "SampleDimensions"} parameter.
 	 * 
 	 * @param params Set
 	 * @param coverage GridCoverage
