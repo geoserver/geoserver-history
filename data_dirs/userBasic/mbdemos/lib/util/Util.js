@@ -121,8 +121,13 @@ var imgTitle=(myImage.title)?"title='"+myImage.title+"' ":"title='"+myImage.alt+
 var imgStyle="display:inline-block;"+myImage.style.cssText 
 var strNewHTML="<span "+imgID+imgClass+imgTitle
 strNewHTML+=" style=\""+"width:"+myImage.width+"px; height:"+myImage.height+"px;"+imgStyle+";"
+var src=myImage.src;
+src=src.replace(/\(/g,'%28');
+src=src.replace(/\)/g,'%29');
+src=src.replace(/'/g,'%27');
+src=src.replace(/%23/g,'%2523');
 strNewHTML+="filter:progid:DXImageTransform.Microsoft.AlphaImageLoader";
-strNewHTML+="(src=\'"+myImage.src+"\', sizingMethod='scale'); \"></span>";
+strNewHTML+="(src=\'"+src+"\', sizingMethod='scale'); \"></span>";
 return strNewHTML;
 }
 }

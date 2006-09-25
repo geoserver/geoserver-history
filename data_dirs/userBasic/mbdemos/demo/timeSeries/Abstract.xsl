@@ -42,10 +42,10 @@ Abstract.xsl,v 1.5 2004/06/25 17:59:38 madair1 Exp
         </xsl:choose>
         <!--br/><xsl:value-of select="{$widgetNode}/stylesheet"/-->
       </p>
-      <p style="float:left; clear:left">
+      <p style="float:left; clear:left; padding-top:0px; margin-top:0px;">
         <a href='{$metadataUrl}' title='{$metadataUrl}' target="moreInfo"><xsl:call-template name="moreInfo"/></a>
       </p>
-      <p style="float:right; clear:right">
+      <p style="float:right; clear:right; padding-top:0px; margin-top:0px; font-weight: bold">
         provided by: <xsl:value-of select="wmc:ContactInformation/wmc:ContactPersonPrimary/wmc:ContactOrganization"/>
       </p>
     </div>

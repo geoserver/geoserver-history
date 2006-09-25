@@ -1,8 +1,8 @@
-<?
+<?php
 /*
 License: LGPL as per: http://www.gnu.org/copyleft/lesser.html
-$Id: proxy.php,v 1.3 2005/10/06 13:05:36 graphrisc Exp $
-$Name: mapbuilder-lib-1_0-rc1 $
+$Id: proxy.php 2147 2006-06-30 07:51:21Z steven $
+$Name$
 */
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -20,20 +20,20 @@ $Name: mapbuilder-lib-1_0-rc1 $
 
 $onlineresource=$_REQUEST['url'];
 $parsed = parse_url($onlineresource);
-$host = $parsed["host"];
-$path = $parsed["path"] . "?" . $parsed["query"];
+$host = @$parsed["host"];
+$path = @$parsed["path"] . "?" . @$parsed["query"];
 if(empty($host)) {
   $host = "localhost";
 }
-$port = $_REQUEST['port'];
+$port=@$parsed['port']; 
 if(empty($port)){
   $port="80";
 }
-$contenttype = $_REQUEST['contenttype'];
+$contenttype = @$_REQUEST['contenttype']; 
 if(empty($contenttype)) {
   $contenttype = "text/xml";
 }
-$data = $GLOBALS["HTTP_RAW_POST_DATA"];
+$data = @$GLOBALS["HTTP_RAW_POST_DATA"];
 // define content type
 header("Content-type: " . $contenttype);
 

@@ -8,7 +8,13 @@
       #workspace {
         height: 300px;
         overflow: auto;
-        border: 1px solid blue;
+        position: relative;
+        /* border: 1px solid blue;*/
+        background-color: rgb(240,240,240);
+        display: none;
+      }
+      #abstract {
+        margin: 0px;
       }
     </style>
     <script>
@@ -31,11 +37,6 @@
   <tr>
     <td colspan="2" valign="top">
       <div id="mainMapPane"/>
-      <div id="loading">
-        <p>Loading Program<br/>
-        <img src="../../lib/skin/default/images/Loading.gif"/>
-        </p>
-      </div>
       <noscript>this page requires Javascript to be enabled</noscript>
     </td>
   </tr>
@@ -69,14 +70,20 @@
   </tr>
   <tr>
     <td valign="top" align="left">
-      Load a WMS Capabilities URL
-      <div id="wmsCapsUrlInput"/>
+      <a href="javascript:document.getElementById('workspace').style.display='block';config.loadModel('wmsCapTemplate','http://aes.gsfc.nasa.gov/cgi-bin/wms?request=GetCapabilities');">NASA SVS Image Server</a> 
+      - a large collection of earth observation data.  
+      Images are in fixed size so map zoom/pan functions are not allowed.
     </td>
   </tr>
   <tr>
     <td valign="top" align="left">
-      <div id="workspace">
-      </div>
+      <p id="wmsCapsUrlInput"/>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" align="left">
+      <p id="workspace">
+      </p>
     </td>
   </tr>
 </table>
@@ -87,7 +94,7 @@
 
     <table class="footer">
       <tr>
-        <td><a href="http://mapbuilder.sourceforge.net">Community Map Builder</a><br/>$Name: mapbuilder-lib-1_0-rc1 $</td>
+        <td><a href="http://mapbuilder.sourceforge.net">Community Map Builder</a><br/>$Name$</td>
         <td width="60"><img src="../../lib/skin/default/images/Icon.gif"/></td>
       </tr>
     </table>

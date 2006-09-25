@@ -5,7 +5,7 @@
       xmlns:xlink="http://www.w3.org/1999/xlink" 
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
       xmlns:gdp="http://geodiscover.cgdi.ca" 
-      xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd">
+      xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengeospatial.net/context/1.0.0/context.xsd">
   <General>
     <Window width="400" height="337"/>
     <BoundingBox SRS="EPSG:42101" minx="-2600000" miny="-2300000" maxx="3100000" maxy="2500000"/>

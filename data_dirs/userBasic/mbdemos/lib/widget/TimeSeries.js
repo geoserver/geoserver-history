@@ -9,8 +9,11 @@ if(objRef.model.getHidden(layerName)=="1"){
 vis="hidden";
 }
 var layerId=objRef.model.id+"_"+objRef.id+"_"+layerName;
+if(objRef.model.timestampList&&objRef.model.timestampList.getAttribute("layerName")==layerName){ 
 var timestampIndex=objRef.model.getParam("timestamp");
-if(timestampIndex)layerId+="_"+timestampIndex;
+var timestamp=objRef.model.timestampList.childNodes[timestampIndex];
+layerId+="_"+timestamp.firstChild.nodeValue;
+}
 var layer=document.getElementById(layerId);
 if(layer){
 layer.style.visibility=vis;

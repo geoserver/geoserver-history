@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<!-- $Id: Test.xml,v 1.1 2005/03/12 14:24:25 madair1 Exp $ -->
+<!-- $Id: Test.xml 1333 2005-03-12 14:29:07Z madair1 $ -->
 <QuickviewPresetResultSet version="1.0.0"  xmlns="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mapbuilder.sourceforge.net/mapbuilder ../../lib/schemas/locations.xsd">
 
   <!-- Envelope examples -->

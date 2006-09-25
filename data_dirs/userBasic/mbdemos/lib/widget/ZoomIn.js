@@ -1,7 +1,9 @@
 mapbuilder.loadScript(baseDir+"/widget/ButtonBase.js");
 function ZoomIn(widgetNode,model){
 ButtonBase.apply(this,new Array(widgetNode,model));
-this.zoomBy=4;
+this.zoomFactor=4;
+var zoomFactor=widgetNode.selectSingleNode("mb:zoomFactor");
+if(zoomFactor)this.zoomFactor=zoomFactor.firstChild.nodeValue;
 this.doAction=function(objRef,targetNode){
 if(objRef.enabled){
 var bbox=objRef.targetModel.getParam("aoi");
@@ -10,7 +12,7 @@ var extent=objRef.targetModel.extent;
 var ul=bbox[0];
 var lr=bbox[1];
 if((ul[0]==lr[0])&&(ul[1]==lr[1])){
-extent.centerAt(ul,extent.res[0]/objRef.zoomBy);
+extent.centerAt(ul,extent.res[0]/objRef.zoomFactor);
 }else{
 extent.zoomToBox(ul,lr);
 }

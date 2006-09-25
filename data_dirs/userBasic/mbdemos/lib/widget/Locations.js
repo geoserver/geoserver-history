@@ -8,7 +8,6 @@ bboxArray=bbox.split(",");
 var ul=new Array(parseFloat(bboxArray[0]),parseFloat(bboxArray[3]));
 var lr=new Array(parseFloat(bboxArray[2]),parseFloat(bboxArray[1]));
 this.model.setParam("aoi",new Array(ul,lr));
-this.targetModel.setParam("aoi",new Array(ul,lr));
-this.targetModel.setParam("mouseup",this);
+this.targetModel.extent.zoomToBox(ul,lr);
 }
 }

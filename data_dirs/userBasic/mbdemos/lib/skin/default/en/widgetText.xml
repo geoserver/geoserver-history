@@ -10,7 +10,7 @@
                   widget is painted.
     Licence:     LGPL as per: http://www.gnu.org/copyleft/lesser.html 
 
-    $Id: widgetText.xml,v 1.9 2005/10/13 20:49:50 camerons Exp $
+    $Id: widgetText.xml 1735 2005-10-13 20:49:50Z camerons $
   -->
   <widgets>
     <Widget>

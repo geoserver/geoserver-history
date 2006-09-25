@@ -8,7 +8,7 @@ Purpose         :   build file for ant tool
 Author     Date            Description
 M.Adair    17-Dec-2001     initial version copied from quicklook
 
-$Id: build.xml,v 1.1 2005/09/19 14:55:53 cappelaere Exp $
+$Id: build.xml 1670 2005-09-19 14:55:53Z cappelaere $
 ***************************************************************************--><!--
      General purpose build script for web applications and web services,
      including enhanced support for deploying directly to a Tomcat 5

@@ -45,6 +45,7 @@ if(nodeSelectXpath){
 this.nodeSelectXpath=nodeSelectXpath.firstChild.nodeValue;
 }
 this.getXpathValue=function(objRef,xpath){
+if(!objRef.doc)return null; 
 node=objRef.doc.selectSingleNode(xpath);
 if(node&&node.firstChild){
 return node.firstChild.nodeValue;
@@ -52,7 +53,8 @@ return node.firstChild.nodeValue;
 return null;
 }
 }
-this.setXpathValue=function(objRef,xpath,value){
+this.setXpathValue=function(objRef,xpath,value,refresh){
+if(refresh==null)refresh=true;
 var node=objRef.doc.selectSingleNode(xpath);
 if(node){
 if(node.firstChild){
@@ -62,16 +64,16 @@ dom=Sarissa.getDomDocument();
 v=dom.createTextNode(value);
 node.appendChild(v);
 }
-objRef.setParam("refresh");
+if(refresh)objRef.setParam("refresh");
 return true;
 }else{
 return false;
 }
 }
 this.loadModelDoc=function(objRef){
-objRef.setParam("modelStatus","loading");
 if(objRef.url){
 objRef.callListeners("newModel");
+objRef.setParam("modelStatus","loading");
 if(objRef.contentType=="image"){
 objRef.doc=new Image();
 objRef.doc.src=objRef.url;
@@ -91,10 +93,11 @@ xmlHttp.setRequestHeader("content-type",objRef.contentType);
 xmlHttp.setRequestHeader("serverUrl",objRef.url);
 }
 xmlHttp.onreadystatechange=function(){
-objRef.setParam("modelStatus",xmlHttp.readyState);
+objRef.setParam("modelStatus",httpStatusMsg[xmlHttp.readyState]);
 if(xmlHttp.readyState==4){
-if(xmlHttp.status>=400){alert("error loading document: "+sUri+" - "+xmlHttp.statusText+"-"+xmlHttp.responseText);
-objRef.setParam("modelStatus",-1);
+if(xmlHttp.status>=400){var errorMsg="error loading document: "+sUri+" - "+xmlHttp.statusText+"-"+xmlHttp.responseText;
+alert(errorMsg);
+objRef.setParam("modelStatus",errorMsg);
 return;
 }else{
 if(null==xmlHttp.responseXML){
@@ -108,8 +111,9 @@ objRef.finishLoading();
 }
 xmlHttp.send(objRef.postData);
 if(!objRef.async){
-if(xmlHttp.status>=400){alert("error loading document: "+sUri+" - "+xmlHttp.statusText+"-"+xmlHttp.responseText);
-this.objRef.setParam("modelStatus",-1);
+if(xmlHttp.status>=400){var errorMsg="error loading document: "+sUri+" - "+xmlHttp.statusText+"-"+xmlHttp.responseText;
+alert(errorMsg);
+this.objRef.setParam("modelStatus",errorMsg);
 return;
 }else{
 if(null==xmlHttp.responseXML)alert("null XML response:"+xmlHttp.responseText);
@@ -123,6 +127,9 @@ objRef.finishLoading();
 this.setModel=function(objRef,newModel){
 objRef.callListeners("newModel");
 objRef.doc=newModel;
+if((newModel==null)&&objRef.url){
+objRef.url=null;
+}
 objRef.finishLoading();
 }
 this.finishLoading=function(){
@@ -137,7 +144,12 @@ this.newRequest=function(objRef,httpPayload){
 var model=objRef;
 if(objRef.template){
 var parentNode=objRef.modelNode.parentNode;
-var newConfigNode=parentNode.appendChild(objRef.modelNode.ownerDocument.importNode(objRef.modelNode,true));
+var newConfigNode;
+if(_SARISSA_IS_IE){
+newConfigNode=parentNode.appendChild(modelNode.cloneNode(true));
+}else{
+newConfigNode=parentNode.appendChild(objRef.modelNode.ownerDocument.importNode(objRef.modelNode,true));
+}
 newConfigNode.removeAttribute("id");model=objRef.createObject(newConfigNode);
 model.callListeners("init");
 if(!objRef.templates)objRef.templates=new Array();
@@ -178,7 +190,7 @@ if(newObject){
 config.objects[newObject.id]=newObject;
 return newObject;
 }else{ 
-alert("error creating object:"+objType);
+alert("error creating object:"+objectType);
 }
 }
 this.loadObjects=function(objectXpath){
@@ -210,3 +222,4 @@ this.parentModel.addListener("newModel",this.clearModel,this);
 this.parseConfig(this);
 }
 }
+var httpStatusMsg=['uninitialized','loading','loaded','interactive','completed'];

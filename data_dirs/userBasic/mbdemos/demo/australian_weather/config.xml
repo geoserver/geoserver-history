@@ -6,7 +6,7 @@
                  page.
     Licence:     LGPL as per: http://www.gnu.org/copyleft/lesser.html 
 
-    $Id: config.xml,v 1.7 2005/10/25 08:15:44 graphrisc Exp $
+    $Id: config.xml 1756 2005-10-25 08:15:44Z graphrisc $
   -->
 	<!--
     All static images should be relative to this URL.

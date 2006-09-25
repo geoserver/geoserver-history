@@ -4,16 +4,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://www.opengis.net http://schemas.opengis.net/context/1.0.0/collection.xsd">
   <!-- List of context XML URLs -->
-  <ViewContextReference version="1.0.0" id="tsPrecipAnomaly">
+  <!--ViewContextReference version="1.0.0" id="tsPrecipAnomaly">
     <Title>The BALANCE Climate Change Visualization Server</Title>
     <ContextURL>
       <OnlineResource xlink:type="simple" xlink:href="tsIFGITemp.xml"/>
-    </ContextURL>
-  </ViewContextReference>
-  <!--ViewContextReference version="1.0.0" id="tsPrecipAnomaly">
-    <Title>AVHRR Composite - Geocomp (CCRS)</Title>
-    <ContextURL>
-      <OnlineResource xlink:type="simple" xlink:href="tsGeocomp.xml"/>
     </ContextURL>
   </ViewContextReference-->
   <ViewContextReference version="1.0.0" id="tsPrecipAnomaly">
@@ -38,6 +32,12 @@
     <Title>World Temperature (NASA)</Title>
     <ContextURL>
       <OnlineResource xlink:type="simple" xlink:href="tsWorldTemp.xml"/>
+    </ContextURL>
+  </ViewContextReference>
+  <ViewContextReference version="1.0.0" id="tsPrecipAnomaly">
+    <Title>AVHRR Composite - Geocomp (CCRS) - slow to load</Title>
+    <ContextURL>
+      <OnlineResource xlink:type="simple" xlink:href="tsGeocomp.xml"/>
     </ContextURL>
   </ViewContextReference>
   <!--ViewContextReference version="1.0.0" id="tsOzoneMLS">

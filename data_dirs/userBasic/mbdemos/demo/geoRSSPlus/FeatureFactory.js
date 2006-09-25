@@ -1,6 +1,6 @@
 /*
 License: LGPL as per: http://www.gnu.org/copyleft/lesser.html
-$Id: FeatureFactory.js,v 1.1 2005/09/19 14:55:53 cappelaere Exp $
+$Id: FeatureFactory.js 1670 2005-09-19 14:55:53Z cappelaere $
 */
 mapbuilder.loadScript(baseDir+"/widget/Popup.js");
 mapbuilder.loadScript(baseDir+"/widget/FeaturePointFactory.js");

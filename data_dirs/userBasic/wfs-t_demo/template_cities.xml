@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<!-- $Id: template_cities.xml,v 1.2 2005/03/06 20:05:51 camerons Exp $ -->
+<!-- $Id: template_cities.xml 1299 2005-03-06 20:05:51Z camerons $ -->
 <gml:featureMember xmlns:topp="http://www.openplans.org/topp" xmlns:gml="http://www.opengis.net/gml">
   <topp:tasmania_cities>
     <topp:the_geom>

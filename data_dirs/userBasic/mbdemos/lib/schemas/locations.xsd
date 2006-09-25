@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xs:schema targetNamespace="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:gml="http://www.opengis.net/gml" xmlns:loc="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0.0">
 	<xs:annotation>
-		<xs:appinfo>$Id: locations.xsd,v 1.1 2004/06/23 21:44:35 tomkralidis Exp $</xs:appinfo>
+		<xs:appinfo>$Id: locations.xsd 653 2004-06-23 21:44:35Z tomkralidis $</xs:appinfo>
 		<xs:documentation xml:lang="en">GML schema for Community Mapbuilder quickview zoom presets</xs:documentation>
 	</xs:annotation>
 	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.0.0/base/feature.xsd"/>

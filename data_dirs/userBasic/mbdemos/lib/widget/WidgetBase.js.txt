@@ -1,6 +1,6 @@
 /*
 License: LGPL as per: http://www.gnu.org/copyleft/lesser.html
-$Id: WidgetBase.js.txt,v 1.1 2005/08/24 01:03:20 maiqui Exp $
+$Id: WidgetBase.js.txt 1638 2005-08-24 01:03:20Z maiqui $
 */
 
 /**

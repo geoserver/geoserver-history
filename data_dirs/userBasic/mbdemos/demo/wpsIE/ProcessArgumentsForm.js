@@ -2,7 +2,7 @@
 Author:       Mike Adair mike.adairATccrs.nrcan.gc.ca
 License:      LGPL as per: http://www.gnu.org/copyleft/lesser.html
 
-$Id: ProcessArgumentsForm.js,v 1.11 2005/09/20 02:42:46 madair1 Exp $
+$Id: ProcessArgumentsForm.js 1672 2005-09-20 02:42:46Z madair1 $
 */
 
 // Ensure this object's dependancies are loaded.

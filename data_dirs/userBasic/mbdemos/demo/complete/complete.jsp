@@ -5,8 +5,8 @@ Description: A Browser based Web Map Server Client based on javascript and XSL
              libraries from http://mapbuilder.sourceforge.net .
 Licence:     LGPL as per: http://www.gnu.org/copyleft/lesser.html
 
-$Id: complete.jsp,v 1.3 2005/08/03 19:06:52 mattdiez Exp $
-$Name: mapbuilder-lib-1_0-rc1 $
+$Id: complete.jsp 1608 2005-08-03 19:07:09Z mattdiez $
+$Name$
 -->
 <%
   request.setAttribute("mbConfigUrl", "/demo/complete/completeConfig.xml");
@@ -81,7 +81,7 @@ $Name: mapbuilder-lib-1_0-rc1 $
       </tr>
     </table>
     <br/>
-    <p align="right"><a href="http://mapbuilder.sourceforge.net">Community Map Builder</a><br/>$Name: mapbuilder-lib-1_0-rc1 $</p>
+    <p align="right"><a href="http://mapbuilder.sourceforge.net">Community Map Builder</a><br/>$Name$</p>
 
   </body>
 </html>

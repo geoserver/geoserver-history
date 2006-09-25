@@ -7,7 +7,7 @@
                  page.
     Licence:     LGPL as per: http://www.gnu.org/copyleft/lesser.html 
 
-    $Id: owsContext.xml,v 1.11 2005/10/25 08:30:49 graphrisc Exp $
+    $Id: owsContext.xml 1758 2005-10-25 08:33:55Z graphrisc $
   -->
 	<!--
     All static images should be relative to this URL.

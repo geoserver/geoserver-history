@@ -1,12 +1,14 @@
 mapbuilder.loadScript(baseDir+"/widget/ButtonBase.js");
 function ZoomOut(widgetNode,model){
 ButtonBase.apply(this,new Array(widgetNode,model));
-this.zoomBy=4;
+this.zoomFactor=4;
+var zoomFactor=widgetNode.selectSingleNode("mb:zoomFactor");
+if(zoomFactor)this.zoomFactor=zoomFactor.firstChild.nodeValue;
 this.doAction=function(objRef,targetNode){
 if(!objRef.enabled)return;
 var bbox=objRef.targetModel.getParam("aoi");
 var extent=objRef.targetModel.extent;
-var newRes=extent.res[0]*objRef.zoomBy;
+var newRes=extent.res[0]*objRef.zoomFactor;
 extent.centerAt(bbox[0],newRes);
 }
 this.setMouseListener=function(objRef){
