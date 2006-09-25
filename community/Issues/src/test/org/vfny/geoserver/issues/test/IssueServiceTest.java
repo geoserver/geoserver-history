@@ -88,8 +88,8 @@ public class IssueServiceTest extends TestCase {
     
     public void testRemove(){
         //add an issue
-    	/*
-        Target myTarget = new Target("Diagram","3");
+    	
+        /*Target myTarget = new Target("Diagram","3");
         IIssue newIssue = new Issue();
         newIssue.setDescription("test");
         newIssue.setPriority(Priority.HIGH);
@@ -97,9 +97,9 @@ public class IssueServiceTest extends TestCase {
         newIssue.setTarget(myTarget);
         List<IIssue> list = new LinkedList<IIssue>();
         list.add(newIssue);
-        issueService.addIssues(list);
-        */
-    	List<IIssue> list = (List<IIssue>)issueService.getIssues();
+        issueService.addIssues(list);*/
+        
+    	List<IIssue> list = (List<IIssue>) issueService.getIssues();
     	assertTrue(list.size()>0);
     	
         issueService.removeIssues(list);

@@ -26,7 +26,7 @@ public class IssuesDaoImpl extends HibernateDaoSupport implements IssuesDao {
     }
 
     public void insertIssue( IIssue issue ) {
-    	getHibernateTemplate().save(issue);
+    	getHibernateTemplate().save((Issue)issue);
     }
 
     public void insertIssues( Collection<IIssue> issues ) {
@@ -38,7 +38,11 @@ public class IssuesDaoImpl extends HibernateDaoSupport implements IssuesDao {
     }
 
     public void updateIssue( IIssue issue ) {
-    	getHibernateTemplate().update(issue);    	
+        Issue obj = (Issue)getHibernateTemplate().get(Issue.class, issue.getId());
+        if(obj != null){
+            obj.copyFrom(issue);
+            getHibernateTemplate().update(obj);
+        }
     }
 
     public void updateIssues( Collection<IIssue> issues ) {
@@ -55,7 +59,10 @@ public class IssuesDaoImpl extends HibernateDaoSupport implements IssuesDao {
     }
 
     public void removeIssue( IIssue issue ) {
-    	getHibernateTemplate().delete(issue);
+        Issue obj = (Issue) getHibernateTemplate().get(Issue.class, issue.getId());
+        if(obj != null){
+            getHibernateTemplate().delete(obj);
+        }
     }
 
     public void removeIssues( Collection<IIssue> issues ) {

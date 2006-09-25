@@ -37,11 +37,16 @@ public class Issue implements IIssue, Serializable {
     }
     
     public Issue(IIssue otherIssue){
+        copyFrom(otherIssue);
+    }
+    
+    public void copyFrom(IIssue otherIssue){
         this.description = otherIssue.getDescription();
         this.resolution = otherIssue.getResolution();
         this.priority = otherIssue.getPriority();
         this.targetString = TargetWrapper.getStringFromTarget(otherIssue.getTarget());
         this.bounds = otherIssue.getBounds();
+        this.id = otherIssue.getId();
         XMLMemento memento = XMLMemento.createWriteRoot(MementoWrapper.ROOT_ID);
         otherIssue.save(memento);
         try {
@@ -56,7 +61,6 @@ public class Issue implements IIssue, Serializable {
         } catch (IOException e) {
             this.viewMementoString = "";
         }
-        
     }
 
     /**
@@ -106,7 +110,7 @@ public class Issue implements IIssue, Serializable {
     /**
      * @param id The id to set.
      */
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
