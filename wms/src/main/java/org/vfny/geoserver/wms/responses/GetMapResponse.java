@@ -27,6 +27,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -146,7 +147,7 @@ public class GetMapResponse implements Response {
 		if (mapcrs != null)
 			map.setAreaOfInterest(env, mapcrs);
 		else
-			map.setAreaOfInterest(env);
+			map.setAreaOfInterest(env, DefaultGeographicCRS.WGS84);
 		map.setMapWidth(request.getWidth());
 		map.setMapHeight(request.getHeight());
 		map.setBgColor(request.getBgColor());

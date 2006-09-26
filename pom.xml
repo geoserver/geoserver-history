@@ -95,22 +95,16 @@
 				<artifactId>streams</artifactId>
 				<version>1.0</version>
 			</dependency-->
-			<!--dependency>
-				<groupId>org.geotools</groupId>
-				<artifactId>gt2-imageio-arcgrid</artifactId>
-				<version>2.3-MODIFIED</version>
-			</dependency>
 			<dependency>
-				<groupId>org.geotools</groupId>
-				<artifactId>gt2-arcgrid</artifactId>
-				<version>2.3-MODIFIED</version>
-			</dependency-->
-			<dependency>
-				<groupId>org.geotools</groupId>
-				<artifactId>gt2-arcgrid</artifactId>
+		  	<groupId>org.geotools</groupId>
+	  	  <artifactId>gt2-imageio-arcgrid</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.geotools</groupId>
+  			<artifactId>gt2-arcgrid</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-geotiff</artifactId>
@@ -131,11 +125,11 @@
 				<artifactId>gt2-imagemosaic</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
-			<!--dependency>
+			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>gt2-pyramid</artifactId>
+				<artifactId>gt2-imagepyramid</artifactId>
 				<version>${gt.version}</version>
-			</dependency-->
+			</dependency>
 			
 			<dependency>
 				<groupId>org.geotools</groupId>
@@ -736,7 +730,7 @@
 
 	<properties>
 		<gs.version>1.4.0-M1</gs.version>
-		<gt.version>2.3-SNAPSHOT</gt.version>
+		<gt.version>2.4-SNAPSHOT</gt.version>
 	</properties>
 
 	<profiles>

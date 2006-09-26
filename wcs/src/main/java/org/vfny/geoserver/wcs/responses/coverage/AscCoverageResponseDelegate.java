@@ -93,7 +93,7 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
 			final GridCoverageWriter writer = new ArcGridWriter(output);
 			final ParameterValueGroup params = writer.getFormat()
 					.getWriteParameters();
-			params.parameter("Compressed").setValue(compressOutput);
+			//params.parameter("Compressed").setValue(compressOutput);
 			writer.write(sourceCoverage, null);
 
 			if (gzipOut != null) {

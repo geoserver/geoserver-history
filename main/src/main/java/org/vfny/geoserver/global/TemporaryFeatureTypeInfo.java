@@ -48,7 +48,10 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo
     }
     
     public Filter getDefinitionQuery() {
-    	return null;
+    	/**
+    	 * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
+    	 */
+    	return Filter.ALL;
     }
     
     
@@ -74,7 +77,10 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo
     
     
     public boolean isEnabled() {
-    	throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
+    	/**
+    	 * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
+    	 */
+    	return true;
     }
 
    
@@ -110,7 +116,10 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo
 
     
     public String getSRS() {
-    	throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
+    	/**
+    	 * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
+    	 */
+    	return "4326";
     }
 
     
