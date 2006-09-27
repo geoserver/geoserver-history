@@ -96,13 +96,8 @@
 				<version>1.0</version>
 			</dependency-->
 			<dependency>
-		  	<groupId>org.geotools</groupId>
-	  	  <artifactId>gt2-imageio-arcgrid</artifactId>
-				<version>${gt.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.geotools</groupId>
-  			<artifactId>gt2-arcgrid</artifactId>
+  			<artifactId>gt2-arcgrid-spike</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
