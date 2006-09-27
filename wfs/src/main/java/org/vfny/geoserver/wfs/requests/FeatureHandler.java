@@ -219,10 +219,15 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
      * Handles the string chunks collected in {@link #characters}.
      */
     private void handleCharacters(){
+    	if(characters.length() == 0){
+    		return;
+    	}
         // if inside a property element, add the element
         if (insideTag.equals("PropertyName")) {
-            LOGGER.finest("found property name: " + characters);
-            currentQuery.addPropertyName(characters.toString());
+            String name = characters.toString().trim();
+            characters.setLength(0);
+            LOGGER.finest("found property name: " + name);
+			currentQuery.addPropertyName(name);
         }
     }    
 }

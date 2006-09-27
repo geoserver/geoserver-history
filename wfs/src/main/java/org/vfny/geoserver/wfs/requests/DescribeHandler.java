@@ -128,9 +128,13 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
      * Handles the string chunks collected in {@link #characters}.
      */
     private void handleCharacters(){
+    	if(characters.length() == 0){
+    		return;
+    	}
         if (currentTag.equals("TypeName")) {
             request.addFeatureType(characters.toString());
             LOGGER.finest("added type name: " + characters);
+            characters.setLength(0);
         }	
     }
 }

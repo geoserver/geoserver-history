@@ -295,7 +295,11 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
      * Handles the string chunks collected in {@link #characters}.
      */
     private void handleCharacters(){
+    	if(characters.length() == 0){
+    		return;
+    	}
         final String s = characters.toString();
+        characters.setLength(0);
         // if inside a property element, add the element
         if (state == PROPERTY_NAME) {
             LOGGER.finest("found property name: " + s);

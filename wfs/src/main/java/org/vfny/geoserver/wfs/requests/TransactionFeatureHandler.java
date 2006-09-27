@@ -396,7 +396,10 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      * Handles the string chunks collected in {@link #characters}.
      */
     private void handleCharacters() throws SAXException{
-		if(LOGGER.isLoggable(Level.FINE)){
+    	if(characters.length() == 0){
+    		return;
+    	}
+    	if(LOGGER.isLoggable(Level.FINE)){
 	        LOGGER.fine("we are inside attribute: " + insideAttribute
 	            + ", curAttType is " + curAttributeType + " curFeatureT: "
 	            + curFeatureType + " attName " + attName);
@@ -419,6 +422,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
         } else {
             parent.characters(characters.toString().toCharArray(), 0, characters.length());
         }
+        characters.setLength(0);
     }    
     
 }
