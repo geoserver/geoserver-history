@@ -78,7 +78,11 @@ public final class GeoServerDTO implements DataTransferObject {
 		public static final Boolean JaiRecycling = Boolean.TRUE;
         
         public static final Boolean ImageIOCache = Boolean.FALSE;
-		
+
+		public static final Boolean JaiJPEGNative = Boolean.TRUE;
+
+		public static final Boolean JaiPNGNative = Boolean.TRUE;
+
 	}
 	
     /** Sets the max number of Features returned by GetFeature */
@@ -195,7 +199,11 @@ public final class GeoServerDTO implements DataTransferObject {
     private Boolean jaiRecycling = Defaults.JaiRecycling;
     
     private Boolean imageIOCache = Defaults.ImageIOCache;
-    
+
+    private Boolean jaiJPEGNative = Defaults.JaiJPEGNative;
+
+    private Boolean jaiPNGNative = Defaults.JaiPNGNative;
+
     /**
      * GlobalConfig constructor.
      * 
@@ -241,6 +249,8 @@ public final class GeoServerDTO implements DataTransferObject {
         jaiTilePriority = g.getJaiTilePriority();
         jaiRecycling = g.getJaiRecycling();
         imageIOCache = g.getImageIOCache();
+        jaiJPEGNative = g.getJaiJPEGNative();
+        jaiPNGNative = g.getJaiPNGNative();
         
         if (g.getContact() != null) {
             contact = (ContactDTO) (g.getContact().clone());
@@ -313,11 +323,11 @@ public final class GeoServerDTO implements DataTransferObject {
         r = r && (jaiMemoryCapacity == g.getJaiMemoryCapacity()) ;
         r = r && (jaiMemoryThreshold == g.getJaiMemoryThreshold()) ;
         r = r && (jaiTileThreads == g.getJaiTileThreads()) ;
-        r = r && (jaiTilePriority == g.getJaiTilePriority()) ;
-        
-        r = r && (jaiRecycling == g.getJaiRecycling());
-        
+        r = r && (jaiTilePriority == g.getJaiTilePriority()) ;       
+        r = r && (jaiRecycling == g.getJaiRecycling());        
         r = r && (imageIOCache == g.getImageIOCache());
+        r = r && (jaiJPEGNative == g.getJaiJPEGNative());
+        r = r && (jaiPNGNative == g.getJaiPNGNative());
         
         return r;
     }
@@ -664,6 +674,22 @@ public final class GeoServerDTO implements DataTransferObject {
 
 	public void setJaiRecycling(Boolean jaiRecycling) {
 		this.jaiRecycling = jaiRecycling;
+	}
+
+	public Boolean getJaiJPEGNative() {
+		return jaiJPEGNative;
+	}
+
+	public void setJaiJPEGNative(Boolean jaiJPEGNative) {
+		this.jaiJPEGNative = jaiJPEGNative;
+	}
+
+	public Boolean getJaiPNGNative() {
+		return jaiPNGNative;
+	}
+
+	public void setJaiPNGNative(Boolean jaiPNGNative) {
+		this.jaiPNGNative = jaiPNGNative;
 	}
 
 	public double getJaiMemoryThreshold() {

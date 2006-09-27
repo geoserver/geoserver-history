@@ -71,9 +71,11 @@ public class GeoServer extends GlobalLayerSupertype {
 	private int tileThreads;
 	private int tilePriority;
 	private Boolean recycling;
-	
 	private Boolean imageIOCache;
-    /** Should we throw the stack traces back in responses? */
+	private Boolean JPEGnativeAcc;
+	private Boolean PNGnativeAcc;
+
+	/** Should we throw the stack traces back in responses? */
     private boolean verboseExceptions = false;
 
     /** Default Logging level */
@@ -419,6 +421,8 @@ public class GeoServer extends GlobalLayerSupertype {
 			tilePriority = dto.getJaiTilePriority();
 			recycling = dto.getJaiRecycling();
 			imageIOCache = dto.getImageIOCache();
+			JPEGnativeAcc = dto.getJaiJPEGNative();
+			PNGnativeAcc = dto.getJaiPNGNative();
 			
 			initJAI(memoryCapacity, memoryThreshold, recycling, imageIOCache);
 			
@@ -598,6 +602,8 @@ public class GeoServer extends GlobalLayerSupertype {
 		dto.setJaiTilePriority(tilePriority);
 		dto.setJaiRecycling(recycling);
 		dto.setImageIOCache(imageIOCache);
+		dto.setJaiJPEGNative(JPEGnativeAcc);
+		dto.setJaiPNGNative(PNGnativeAcc);
         
         ContactDTO cdto = new ContactDTO();
         dto.setContact(cdto);
@@ -754,7 +760,15 @@ public class GeoServer extends GlobalLayerSupertype {
 	public Boolean getRecycling() {
 		return recycling;
 	}
-	
+
+	public Boolean getJPEGNativeAcceleration() {
+		return JPEGnativeAcc;
+	}
+
+	public Boolean getPNGNativeAcceleration() {
+		return PNGnativeAcc;
+	}
+
 	public double getMemoryThreshold() {
 		return memoryThreshold;
 	}

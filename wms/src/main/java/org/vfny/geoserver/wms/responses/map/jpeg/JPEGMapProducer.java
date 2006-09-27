@@ -34,6 +34,9 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
 	private final static Logger LOGGER = Logger.getLogger(JPEGMapProducer.class
 			.toString());
 
+	/** JPEG Native Acceleration Mode **/
+	private Boolean JPEGNativeAcc;
+
 	/**
 	 * This class overrides the setCompressionQuality() method to workaround a
 	 * problem in compressing JPEG images using the javax.imageio package.
@@ -59,6 +62,11 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
 
 	public JPEGMapProducer(String outputFormat, WMS wms) {
 		super(outputFormat, wms);
+		/**
+		 * TODO
+		 * 	To check Native Acceleration mode use the following variable
+		 */
+		this.JPEGNativeAcc = wms.getGeoServer().getJPEGNativeAcceleration();
 	}
 
 	protected void formatImageOutputStream(String format, BufferedImage image,
@@ -105,7 +113,7 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
 		final Iterator it = ImageIO.getImageWritersByMIMEType(format);
 		ImageWriter writer = null;
 		if (!it.hasNext())
-			throw new IllegalStateException("No PNG ImageWriter found");
+			throw new IllegalStateException("No JPEG ImageWriter found");
 		writer = (ImageWriter) it.next();
 		// //
 		//

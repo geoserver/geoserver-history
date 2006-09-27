@@ -35,8 +35,16 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
 	private static final Logger LOGGER = Logger.getLogger(PNGMapProducer.class
 			.getPackage().getName());
 
+	/** PNG Native Acceleration Mode **/
+	private Boolean PNGNativeAcc;
+
 	public PNGMapProducer(String format, WMS wms) {
 		super(format, wms);
+		/**
+		 * TODO
+		 * 	To check Native Acceleration mode use the following variable
+		 */
+		this.PNGNativeAcc = wms.getGeoServer().getPNGNativeAcceleration();
 	}
 
 	/**

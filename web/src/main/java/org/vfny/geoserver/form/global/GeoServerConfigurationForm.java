@@ -108,6 +108,10 @@ public class GeoServerConfigurationForm extends ActionForm {
 	private boolean jaiRecyclingChecked;
     private boolean imageIOCache;
     private boolean imageIOCacheChecked;
+	private boolean jaiJPEGNative;
+	private boolean jaiJPEGNativeChecked;
+	private boolean jaiPNGNative;
+	private boolean jaiPNGNativeChecked;
 	 
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -143,6 +147,10 @@ public class GeoServerConfigurationForm extends ActionForm {
         jaiRecyclingChecked = false;
         imageIOCache = globalConfig.isImageIOCache();
         imageIOCacheChecked = false;
+        jaiJPEGNative = globalConfig.isJaiJPEGNative();
+        jaiJPEGNativeChecked = false;
+        jaiPNGNative = globalConfig.isJaiPNGNative();
+        jaiPNGNativeChecked = false;
         
         ContactConfig contactConfig = globalConfig.getContact();
         contactPerson = contactConfig.getContactPerson();
@@ -667,25 +675,79 @@ public class GeoServerConfigurationForm extends ActionForm {
 	    jaiRecyclingChecked = true;
 	    this.jaiRecycling = jaiRecycling;
 	}
+
+	public boolean getJaiJPEGNative() {
+	    return jaiJPEGNative;
+	}
 	
+	public void setJaiJPEGNative(boolean jaiJPEGNative) {
+	    jaiJPEGNativeChecked = true;
+	    this.jaiJPEGNative = jaiJPEGNative;
+	}
+
+	public boolean getJaiPNGNative() {
+	    return jaiPNGNative;
+	}
+	
+	public void setJaiPNGNative(boolean jaiPNGNative) {
+	    jaiPNGNativeChecked = true;
+	    this.jaiPNGNative = jaiPNGNative;
+	}
+
 	/**
-	 * Access verboseChecked property.
+	 * Access recyclingChecked property.
 	 * 
-	 * @return Returns the verboseChecked.
+	 * @return Returns the recyclingChecked.
 	 */
 	public boolean isJaiRecyclingChecked() {
 	    return jaiRecyclingChecked;
 	}
-	
+
 	/**
-	 * Set verboseChecked to verboseChecked.
+	 * Access nativeChecked property.
+	 * 
+	 * @return Returns the nativeChecked.
+	 */
+	public boolean isJaiJPEGNativeChecked() {
+	    return jaiJPEGNativeChecked;
+	}
+
+	/**
+	 * Access nativeChecked property.
+	 * 
+	 * @return Returns the nativeChecked.
+	 */
+	public boolean isJaiPNGNativeChecked() {
+	    return jaiPNGNativeChecked;
+	}
+
+	/**
+	 * Set recyclingChecked to recyclingChecked.
 	 *
-	 * @param verboseChecked The verboseChecked to set.
+	 * @param recyclingChecked The recyclingChecked to set.
 	 */
 	public void setJaiRecyclingChecked(boolean jaiRecyclingChecked) {
 	    this.jaiRecyclingChecked = jaiRecyclingChecked;
 	}
-    
+
+	/**
+	 * Set nativeChecked to nativeChecked.
+	 *
+	 * @param nativeChecked The nativeChecked to set.
+	 */
+	public void setJaiJPEGNativeChecked(boolean jaiJPEGNativeChecked) {
+	    this.jaiJPEGNativeChecked = jaiJPEGNativeChecked;
+	}
+
+	/**
+	 * Set nativeChecked to nativeChecked.
+	 *
+	 * @param nativeChecked The nativeChecked to set.
+	 */
+	public void setJaiPNGNativeChecked(boolean jaiPNGNativeChecked) {
+	    this.jaiPNGNativeChecked = jaiPNGNativeChecked;
+	}
+
     public boolean getImageIOCache() {
         return imageIOCache;
     }

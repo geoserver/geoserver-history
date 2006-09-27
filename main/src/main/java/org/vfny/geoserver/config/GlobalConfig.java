@@ -152,6 +152,8 @@ public class GlobalConfig {
     private int jaiTilePriority;
     private boolean jaiRecycling;
     private boolean imageIOCache;
+    private boolean jaiJPEGNative;
+    private boolean jaiPNGNative;
     
     /**
      * GlobalConfig constructor.
@@ -220,6 +222,8 @@ public class GlobalConfig {
         jaiTilePriority = g.getJaiTilePriority();
         jaiRecycling = g.getJaiRecycling().booleanValue();
         imageIOCache = g.getImageIOCache().booleanValue();
+        jaiJPEGNative = g.getJaiJPEGNative().booleanValue();
+        jaiPNGNative = g.getJaiPNGNative().booleanValue();
         
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -265,6 +269,8 @@ public class GlobalConfig {
         jaiTilePriority = g.getJaiTilePriority();
         jaiRecycling = g.getJaiRecycling().booleanValue();
         imageIOCache = g.getImageIOCache().booleanValue();
+        jaiJPEGNative = g.getJaiJPEGNative().booleanValue();
+        jaiPNGNative = g.getJaiPNGNative().booleanValue();
         
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -304,6 +310,8 @@ public class GlobalConfig {
         g.setJaiTilePriority(jaiTilePriority);
         g.setJaiRecycling(Boolean.valueOf(jaiRecycling));
         g.setImageIOCache(Boolean.valueOf(imageIOCache));
+        g.setJaiJPEGNative(Boolean.valueOf(jaiJPEGNative));
+        g.setJaiPNGNative(Boolean.valueOf(jaiPNGNative));
 
         return g;
     }
@@ -634,6 +642,22 @@ public class GlobalConfig {
     public void setImageIOCache(boolean imageIOCache) {
         this.imageIOCache = imageIOCache;
     }
+
+	public boolean isJaiJPEGNative() {
+		return jaiJPEGNative;
+	}
+
+	public void setJaiJPEGNative(boolean jaiJPEGNative) {
+		this.jaiJPEGNative = jaiJPEGNative;
+	}
+
+	public boolean isJaiPNGNative() {
+		return jaiPNGNative;
+	}
+
+	public void setJaiPNGNative(boolean jaiPNGNative) {
+		this.jaiPNGNative = jaiPNGNative;
+	}
 
     public double getJaiMemoryThreshold() {
 		return jaiMemoryThreshold;

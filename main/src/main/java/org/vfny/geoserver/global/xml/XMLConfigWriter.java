@@ -199,6 +199,8 @@ public class XMLConfigWriter {
             cw.valueTag("JaiTilePriority", "" + g.getJaiTilePriority());
             cw.valueTag("JaiRecycling", "" + g.getJaiRecycling());
             cw.valueTag("ImageIOCache", "" + g.getImageIOCache());
+            cw.valueTag("JaiJPEGNative", "" + g.getJaiJPEGNative());
+            cw.valueTag("JaiPNGNative", "" + g.getJaiPNGNative());
             
             /*if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){
                cw.comment("The base URL where this servlet will run.  If running locally\n"+

@@ -131,6 +131,16 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
             imageIOCache = false;
         }
 
+		boolean jaiJPEGNative = form.getJaiJPEGNative();
+        if (form.isJaiJPEGNativeChecked() == false) {
+        	jaiJPEGNative = false;
+        }
+
+		boolean jaiPNGNative = form.getJaiPNGNative();
+        if (form.isJaiPNGNativeChecked() == false) {
+        	jaiPNGNative = false;
+        }
+
 		GlobalConfig globalConfig = getGlobalConfig();
         globalConfig.setMaxFeatures(maxFeatures);
         globalConfig.setVerbose(verbose);
@@ -150,6 +160,8 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setJaiTilePriority(jaiTilePriority);
         globalConfig.setJaiRecycling(jaiRecycling);
         globalConfig.setImageIOCache(imageIOCache);
+        globalConfig.setJaiJPEGNative(jaiJPEGNative);
+        globalConfig.setJaiPNGNative(jaiPNGNative);
         
         ContactConfig contactConfig = globalConfig.getContact();
         contactConfig.setContactPerson( form.getContactPerson() );

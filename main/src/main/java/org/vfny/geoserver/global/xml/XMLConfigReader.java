@@ -509,13 +509,29 @@ public class XMLConfigReader {
 				imageIOCache = Boolean.valueOf(ReaderUtils.getBooleanAttribute(
 						elem, "value", false, false));
 			}
-			
+
+			Boolean jaiJPEGNative = Boolean.TRUE;
+			elem = ReaderUtils.getChildElement(globalElem, "JaiJPEGNative", false);
+			if (elem != null) {
+				jaiJPEGNative = Boolean.valueOf(ReaderUtils.getBooleanAttribute(
+						elem, "value", false, false));
+			}
+
+			Boolean jaiPNGNative = Boolean.TRUE;
+			elem = ReaderUtils.getChildElement(globalElem, "JaiPNGNative", false);
+			if (elem != null) {
+				jaiPNGNative = Boolean.valueOf(ReaderUtils.getBooleanAttribute(
+						elem, "value", false, false));
+			}
+
 			geoServer.setJaiMemoryCapacity(jaiMemoryCapacity);
 			geoServer.setJaiMemoryThreshold(jaiMemoryThreshold);
 			geoServer.setJaiTileThreads(jaiTileThreads);
 			geoServer.setJaiTilePriority(jaiTilePriority);
 			geoServer.setJaiRecycling(jaiRecycling);
 			geoServer.setImageIOCache(imageIOCache);
+			geoServer.setJaiJPEGNative(jaiJPEGNative);
+			geoServer.setJaiPNGNative(jaiPNGNative);
 			
 			elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
 			geoServer.setContact(loadContact(elem));

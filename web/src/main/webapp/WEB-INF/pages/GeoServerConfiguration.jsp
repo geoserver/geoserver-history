@@ -197,6 +197,27 @@
       </td>
      </tr> 
 
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiJPEGNative"/>">
+			<bean:message key="label.jaiJPEGNative"/>:
+		</span>
+      </td>
+	  <td class="datum">
+	  	<html:checkbox property="jaiJPEGNative"/>
+	  </td>
+	 </tr> 
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiPNGNative"/>">
+			<bean:message key="label.jaiPNGNative"/>:
+		</span>
+      </td>
+	  <td class="datum">
+	  	<html:checkbox property="jaiPNGNative"/>
+	  </td>
+	 </tr> 
+
   </tbody>
 </table>
 
