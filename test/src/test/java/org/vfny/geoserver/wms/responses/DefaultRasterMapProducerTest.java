@@ -94,7 +94,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
      * @throws Exception DOCUMENT ME!
      */
     public void testSimpleGetMapQuery() throws Exception {
-        final String mapFormat = "image/png";
+        final String mapFormat = "image/gif";
 
         final DataStore ds = getCiteDataStore();
         final FeatureSource basicPolygons = ds.getFeatureSource(BASIC_POLYGONS_TYPE);
@@ -185,7 +185,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
 
         map.setAreaOfInterest(env);
 
-        this.rasterMapProducer.setOutputFormat("image/png");
+        this.rasterMapProducer.setOutputFormat("image/gif");
         this.rasterMapProducer.produceMap(map);
 
         assertNotBlank("testBlueLake", this.rasterMapProducer);
@@ -245,7 +245,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
         map.setBgColor(BG_COLOR);
         map.setTransparent(false);
 
-        this.rasterMapProducer.setOutputFormat("image/png");
+        this.rasterMapProducer.setOutputFormat("image/gif");
         this.rasterMapProducer.produceMap(map);
 
         BufferedImage image = this.rasterMapProducer.getImage();

@@ -9,11 +9,9 @@ import junit.framework.TestCase;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.Config;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.testdata.MockUtils;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -91,6 +89,7 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
 		wms.setData(data);
 		
 		GetLegendGraphic service = new GetLegendGraphic(wms);
+		
 		this.requestReader = new GetLegendGraphicKvpReader(allParameters,service);
 		this.httpRequest = MockUtils.newHttpRequest(allParameters, true);
 		
@@ -129,9 +128,7 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
 			// OK
 		}
 		requiredParameters.put("VERSION", "1.0.0");
-		GetLegendGraphicRequest parsedRequest;
-		parsedRequest = (GetLegendGraphicRequest) requestReader
-				.getRequest(httpRequest);
+		GetLegendGraphicRequest parsedRequest = (GetLegendGraphicRequest) requestReader.getRequest(httpRequest);
 	}
 
 	/**

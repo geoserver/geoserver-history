@@ -138,11 +138,12 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 
 		String format = getValue("FORMAT");
 
-		if (!GetLegendGraphicResponse.supportsFormat(format, getServiceRef().getApplicationContext())) {
+		if (getServiceRef().getApplicationContext() == null)
+			LOGGER.log(Level.SEVERE, "Application Context is null. No producer beans can be found!");
+		else if(!GetLegendGraphicResponse.supportsFormat(format, getServiceRef().getApplicationContext())) {
             throw new WmsException(new StringBuffer("Invalid graphic format: " ).append( format).toString(), "InvalidFormat");
-		}
-
-		request.setFormat(format);
+		} else
+			request.setFormat(format);
 
 		parseOptionalParameters(request, mli);
 
