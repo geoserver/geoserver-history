@@ -53,6 +53,11 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     /** Tracks current query */
     private Query currentQuery = new Query();
 
+    /** Collects string chunks in {@link #characters(char[], int, int)} 
+     * callback to be handled at the beggining of {@link #endElement(String, String, String)}
+     */
+    private StringBuffer characters = new StringBuffer();
+
     /**
      * Empty constructor.
      */
@@ -86,7 +91,8 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     public void startElement(String namespaceURI, String localName,
         String rawName, Attributes atts) throws SAXException {
         LOGGER.finest("at start element: " + localName);
-
+        characters.setLength(0);
+        
         // at start of element, set inside flag to whatever tag we are inside
         insideTag = localName;
 
@@ -152,7 +158,8 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     public void endElement(String namespaceURI, String localName, String rawName)
         throws SAXException {
         LOGGER.finer("at end element: " + localName);
-
+        handleCharacters();
+        
         // as we leave query, set insideTag to "NULL" (otherwise the stupid
         //  characters method picks up external chars)
         insideTag = "NULL";
@@ -178,13 +185,7 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
      */
     public void characters(char[] ch, int start, int length)
         throws SAXException {
-        String s = new String(ch, start, length);
-
-        // if inside a property element, add the element
-        if (insideTag.equals("PropertyName")) {
-            LOGGER.finest("found property name: " + s);
-            currentQuery.addPropertyName(s);
-        }
+    	characters.append(ch, start, length);
     }
 
     /**
@@ -213,4 +214,15 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
             }
         }
     }
+    
+    /**
+     * Handles the string chunks collected in {@link #characters}.
+     */
+    private void handleCharacters(){
+        // if inside a property element, add the element
+        if (insideTag.equals("PropertyName")) {
+            LOGGER.finest("found property name: " + characters);
+            currentQuery.addPropertyName(characters.toString());
+        }
+    }    
 }

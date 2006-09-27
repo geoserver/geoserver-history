@@ -38,7 +38,12 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
     private DescribeRequest request = null;
 
     /** Local variable to track current tag */
-    private String currentTag = new String();
+    private String currentTag = "";
+    
+    /** Collects string chunks in {@link #characters(char[], int, int)} 
+     * callback to be handled at the beggining of {@link #endElement(String, String, String)}
+     */
+    private StringBuffer characters = new StringBuffer();
 
     /**
      * Creates a new describe request handler.
@@ -76,6 +81,7 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
     public void startElement(String namespaceURI, String localName,
         String rawName, Attributes atts) throws SAXException {
         LOGGER.finest("found start element: " + localName);
+        characters.setLength(0);
         currentTag = localName;
 
         if (currentTag.equals("DescribeFeatureType")) {
@@ -100,6 +106,7 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
     public void endElement(String namespaceURI, String localName, String rawName)
         throws SAXException {
         LOGGER.finest("found end element: " + localName);
+        handleCharacters();
         currentTag = "";
     }
 
@@ -114,11 +121,16 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
      */
     public void characters(char[] ch, int start, int length)
         throws SAXException {
-        String s = new String(ch, start, length);
-
+    	characters.append(ch, start, length);
+    }
+    
+    /**
+     * Handles the string chunks collected in {@link #characters}.
+     */
+    private void handleCharacters(){
         if (currentTag.equals("TypeName")) {
-            request.addFeatureType(s);
-            LOGGER.finest("added type name: " + s);
-        }
+            request.addFeatureType(characters.toString());
+            LOGGER.finest("added type name: " + characters);
+        }	
     }
 }

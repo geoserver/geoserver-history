@@ -83,6 +83,11 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     /** holds the list of features for an insert request. */
     private List curFeatures;
 
+    /** Collects string chunks in {@link #characters(char[], int, int)} 
+     * callback to be handled at the beggining of {@link #endElement(String, String, String)}
+     */
+    private StringBuffer characters = new StringBuffer();
+    
     /**
      * Flag to alert signal we are within a Property element.  The state thing
      * was not giving enough information.
@@ -159,6 +164,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     public void startElement(String namespaceURI, String localName,
         String rawName, Attributes atts) throws SAXException {
         LOGGER.finest("at start element: " + localName);
+        characters.setLength(0);
 
         // at start of element, set insidetag flag to whatever tag we're inside
         state = toState(localName);
@@ -220,6 +226,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
      */
     public void endElement(String namespaceURI, String localName, String rawName)
         throws SAXException {
+    	handleCharacters();
         LOGGER.finer("at end element: " + localName);
 
         // as we leave query, set insideTag to "NULL" (otherwise the stupid
@@ -281,9 +288,16 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
      */
     public void characters(char[] ch, int start, int length)
         throws SAXException {
+    	characters.append(ch, start, length);
+    }
+
+    /**
+     * Handles the string chunks collected in {@link #characters}.
+     */
+    private void handleCharacters(){
+        final String s = characters.toString();
         // if inside a property element, add the element
         if (state == PROPERTY_NAME) {
-            String s = new String(ch, start, length);
             LOGGER.finest("found property name: " + s);
             curPropertyName = s.trim();
 
@@ -295,8 +309,6 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
         */
          //if curProperty is not null then there is a geometry there.
 		} else if (state == VALUE) {
-            String s = new String(ch, start, length);
-            
 			//GR:also doing s.trim() is wrong. We can't force spaces not to be part of the data
             //JD:appending the string blindly changes the type of non String values
             if (curPropertyValue != null && !(curPropertyValue instanceof String)) {
@@ -314,14 +326,11 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
             else {
             	curPropertyValue = curPropertyValue == null? s : curPropertyValue + s;	
             }
-           
-            
         } else if (state == LOCKID) {
-            String s = new String(ch, start, length);
             curLockId = s.trim();
         }
-    }
-
+    }    
+    
     /**
      * Gets a filter and adds it to the appropriate query (or queries).
      *

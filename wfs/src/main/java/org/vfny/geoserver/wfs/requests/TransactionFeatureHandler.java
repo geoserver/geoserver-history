@@ -76,6 +76,11 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     private FeatureType curFeatureType;
     private AttributeType curAttributeType;
 
+    /** Collects string chunks in {@link #characters(char[], int, int)} 
+     * callback to be handled at the beggining of {@link #endElement(String, String, String)}
+     */
+    private StringBuffer characters = new StringBuffer();
+
     /**
      * Constructor with parent, which must implement GMLHandlerJTS.
      *
@@ -113,7 +118,8 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      */
     public void startElement(String namespaceURI, String localName,
         String qName, Attributes atts) throws SAXException {
-        if (localName.equals("Insert")) {
+        characters.setLength(0);
+    	if (localName.equals("Insert")) {
             insideInsert = true;
         }
 
@@ -229,29 +235,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      */
     public void characters(char[] ch, int start, int length)
         throws SAXException {
-		if(LOGGER.isLoggable(Level.FINE)){
-	        LOGGER.fine("we are inside attribute: " + insideAttribute
-	            + ", curAttType is " + curAttributeType + " curFeatureT: "
-	            + curFeatureType + " attName " + attName);
-		}
-
-        if (insideAttribute && length > 0) {
-			//GR: parsing tempValue here wrong, att value parsing should be
-			//done in endElement, since we don't have the full string 
-			//representation until then
-            
-			//tempValue = curAttributeType.parse(rawAttribute);
-			
-			//processingAttributeValue is null when we're outside
-			//an xml element, so junk spaces need not to be treated
-			if(processingAttributeValue != null){
-				//so we incrementally build the value on this StringBuffer and parse
-				//on endElement
-				processingAttributeValue.append(ch, start, length);
-			}
-        } else {
-            parent.characters(ch, start, length);
-        }
+    	characters.append(ch, start, length);
     }
 
     /**
@@ -269,6 +253,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      */
     public void endElement(String namespaceURI, String localName, String qName)
         throws SAXException {
+    	handleCharacters();
         if (localName.equals("Insert")) {
             insideInsert = false;
         }
@@ -406,4 +391,34 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             parent.geometry(geometry);
         }
     }
+    
+    /**
+     * Handles the string chunks collected in {@link #characters}.
+     */
+    private void handleCharacters() throws SAXException{
+		if(LOGGER.isLoggable(Level.FINE)){
+	        LOGGER.fine("we are inside attribute: " + insideAttribute
+	            + ", curAttType is " + curAttributeType + " curFeatureT: "
+	            + curFeatureType + " attName " + attName);
+		}
+
+        if (insideAttribute && characters.length() > 0) {
+			//GR: parsing tempValue here wrong, att value parsing should be
+			//done in endElement, since we don't have the full string 
+			//representation until then
+            
+			//tempValue = curAttributeType.parse(rawAttribute);
+			
+			//processingAttributeValue is null when we're outside
+			//an xml element, so junk spaces need not to be treated
+			if(processingAttributeValue != null){
+				//so we incrementally build the value on this StringBuffer and parse
+				//on endElement
+				processingAttributeValue.append(characters);
+			}
+        } else {
+            parent.characters(characters.toString().toCharArray(), 0, characters.length());
+        }
+    }    
+    
 }
