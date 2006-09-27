@@ -6,7 +6,7 @@ Author:      adair
 Licence:     LGPL as specified in http://www.gnu.org/copyleft/lesser.html .
 
 $Id$
-$Name: mapbuilder-lib-1_0-rc1 $
+$Name$
 -->
 
 <xsl:stylesheet version="1.0" 

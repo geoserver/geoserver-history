@@ -10,6 +10,9 @@
 				</MapPane>
 				<Loading id="loading">
         </Loading>
+        <Loading2 id="loading2">
+					<mapContainerId>mainMapContainer</mapContainerId>
+        </Loading2>
 				<AoiBoxDHTML id="aoiBox2">
 					<htmlTagId>mainMapPane</htmlTagId>
 					<stylesheet>../../lib/widget/Null.xsl</stylesheet>
@@ -27,9 +30,9 @@
 			</tools>
 		</Context>
 		<GeoRSS id="geoRSS">
-			<!--defaultModelUrl>http://crcp-blogger.mit.edu/geoblogger/rss.php</defaultModelUrl-->
+			<defaultModelUrl>http://crcp-blogger.mit.edu/geoblogger/rss.php</defaultModelUrl>
 			<!--scriptFile>/geoRSS/GeoRSS.js</scriptFile-->
-			<defaultModelUrl>geoRSS.xml</defaultModelUrl>
+			<!-- defaultModelUrl>geoRSS.xml</defaultModelUrl -->
 
 			<widgets>
 				<Widget id="eventsListing">

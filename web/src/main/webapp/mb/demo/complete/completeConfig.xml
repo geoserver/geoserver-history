@@ -28,15 +28,30 @@
 					<htmlTagId>mainMapPane</htmlTagId>
 					<mapContainerId>mainMapContainer</mapContainerId>
 				</MapPane>
+				<MapScaleBar id="scalebar">
+        	<!--all of these properties are optional--> 
+        	<!--displaySystem>english</displaySystem--> 
+        	<displaySystem>metric</displaySystem> 
+          <minWidth>100</minWidth>
+          <maxWidth>300</maxWidth>
+        	<divisions>4</divisions>
+          <subdivisions>2</subdivisions>
+        	<showMinorMeasures>false</showMinorMeasures>
+          <abbreviateLabel>true</abbreviateLabel>
+          <singleLine>false</singleLine>
+          <align>left</align>  <!-- left, center, or right -->
+        </MapScaleBar>
 				<Loading id="loading"/>
-				<AoiBoxWZ id="aoiBoxMain">
+        <Loading2 id="loading2">
+					<mapContainerId>mainMapContainer</mapContainerId>
+        </Loading2>
+				<AoiBoxDHTML id="aoiBoxMain">
 					<htmlTagId>mainMapPane</htmlTagId>
-					<stylesheet>../../lib/widget/GmlRenderer.xsl</stylesheet>
 					<mapContainerId>mainMapContainer</mapContainerId>
 					<lineColor>#FF0000</lineColor>
 					<lineWidth>1</lineWidth>
 					<crossSize>15</crossSize>
-				</AoiBoxWZ>
+				</AoiBoxDHTML>
 				<CursorTrack id="cursorTrack">
 					<mouseHandler>mainMap</mouseHandler>
 					<showXY>false</showXY>
@@ -48,7 +63,7 @@
 				<Widget id="mapTitle">
 					<stylesheet>../../lib/widget/MapTitle.xsl</stylesheet>
 				</Widget>
-				<AoiForm id="aoiForm"/>
+				<!--AoiForm id="aoiForm"/-->
 				<MapScaleText id="mapScaleText"/>
 				<SaveModel id="saveModelWidget">
 					<htmlTagId>saveModel</htmlTagId>

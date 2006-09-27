@@ -2,25 +2,21 @@
 <MapbuilderConfig version="0.2.1" id="simpleTemplate" xmlns="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mapbuilder.sourceforge.net/mapbuilder ../../lib/schemas/config.xsd">
 
 	<models>
-		<ModelBase id="mainMap">
+		<Model id="mainMap">
 			<!--defaultModelUrl>config/simpleConfig.xml</defaultModelUrl-->
 			<defaultModelUrl>../data/context/atlasWorld.xml</defaultModelUrl>
 			<widgets>
-				<WidgetBase id="xmlForm">
-					<stylesheet>../../lib/widget/XmlForm.xsl</stylesheet>
-					<debug/>
-				</WidgetBase>
+				<XmlForm id="xmlForm"/>
 			</widgets>
-		</ModelBase>
-		<ModelBase id="schema">
+		</Model>
+		<Model id="schema">
 			<defaultModelUrl>../../lib/schemas/context.xsd</defaultModelUrl>
 			<widgets>
-				<WidgetBase id="xmlSchemaForm">
+				<XmlForm id="xmlSchemaForm">
 					<stylesheet>../../lib/widget/XmlSchemaForm.xsl</stylesheet>
-					<debug/>
-				</WidgetBase>
-			</widgets>
-		</ModelBase>
+				</XmlForm>
+			</XmlForm>
+		</Model>
 	</models>
 	<skinDir>../../lib/skin/default</skinDir>
 </MapbuilderConfig>

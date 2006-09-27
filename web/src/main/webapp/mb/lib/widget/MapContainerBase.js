@@ -11,8 +11,8 @@ if(containerNode){
 this.containerModel=containerNode.containerModel;
 model.containerModel=containerNode.containerModel;
 this.setContainerWidth=function(objRef){
-objRef.node.style.width=objRef.containerModel.getWindowWidth();
-objRef.node.style.height=objRef.containerModel.getWindowHeight();
+objRef.node.style.width=objRef.containerModel.getWindowWidth()+'px';
+objRef.node.style.height=objRef.containerModel.getWindowHeight()+'px';
 if(this.stylesheet){
 this.stylesheet.setParameter("width",objRef.containerModel.getWindowWidth());
 this.stylesheet.setParameter("height",objRef.containerModel.getWindowHeight());
@@ -36,8 +36,8 @@ var newHeight=Math.round(aspectRatio*fixedWidth);
 objRef.containerModel.setWindowWidth(fixedWidth);
 objRef.containerModel.setWindowHeight(newHeight);
 }
-objRef.node.style.width=objRef.containerModel.getWindowWidth();
-objRef.node.style.height=objRef.containerModel.getWindowHeight();
+objRef.node.style.width=objRef.containerModel.getWindowWidth()+'px';
+objRef.node.style.height=objRef.containerModel.getWindowHeight()+'px';
 if(this.stylesheet){
 this.stylesheet.setParameter("width",objRef.containerModel.getWindowWidth());
 this.stylesheet.setParameter("height",objRef.containerModel.getWindowHeight());
@@ -46,13 +46,14 @@ this.stylesheet.setParameter("height",objRef.containerModel.getWindowHeight());
 this.containerModel.extent=new Extent(this.containerModel);
 this.containerModel.addListener("contextLoaded",this.containerModel.extent.firstInit,this.containerModel.extent);
 this.containerModel.addListener("bbox",this.containerModel.extent.init,this.containerModel.extent);
+this.containerModel.addListener("resize",this.containerModel.extent.init,this.containerModel.extent);
 this.setTooltip=function(objRef,tooltip){
 }
 this.containerModel.addListener("tooltip",this.setTooltip,this);
 this.eventHandler=function(ev){
 if(window.event){
-var p=window.event.clientX-this.offsetLeft+document.documentElement.scrollLeft+document.body.scrollLeft;
-var l=window.event.clientY-this.offsetTop+document.documentElement.scrollTop+document.body.scrollTop;
+var p=window.event.clientX-getOffsetLeft(this)+document.documentElement.scrollLeft+document.body.scrollLeft;
+var l=window.event.clientY-getOffsetTop(this)+document.documentElement.scrollTop+document.body.scrollTop;
 this.evpl=new Array(p,l);
 this.eventTarget=window.event.srcElement;
 this.eventType=window.event.type;
@@ -62,8 +63,8 @@ this.shiftKey=window.event.shiftKey;
 window.event.returnValue=false;
 window.event.cancelBubble=true;
 }else{
-var p=ev.clientX+window.scrollX-this.offsetLeft;
-var l=ev.clientY+window.scrollY-this.offsetTop;
+var p=ev.clientX+window.scrollX-getOffsetLeft(this);
+var l=ev.clientY+window.scrollY-getOffsetTop(this);
 this.evpl=new Array(p,l);
 this.eventTarget=ev.target;
 this.eventType=ev.type;
@@ -87,4 +88,34 @@ this.node=document.getElementById(this.containerNodeId);
 this.setContainerWidth=this.setContainerWidth;
 this.containerModel.addFirstListener("loadModel",this.setContainerWidth,this);
 this.containerModel.addListener("bbox",this.paint,this);
+}
+function getOffsetLeft(node){
+var offsetLeft=0;
+if(node==null){
+return offsetLeft;
+} 
+else{
+if(node.offsetLeft){
+offsetLeft=node.offsetLeft+getOffsetLeft(node.offsetParent);
+}
+else{
+offsetLeft=getOffsetLeft(node.offsetParent);
+}
+return offsetLeft;
+}
+} 
+function getOffsetTop(node){
+var offsetTop=0;
+if(node==null){
+return offsetTop;
+}
+else{
+if(node.offsetTop){
+offsetTop=node.offsetTop+getOffsetTop(node.offsetParent);
+}
+else{
+offsetTop=getOffsetTop(node.offsetParent);
+}
+return offsetTop;
+}
 }

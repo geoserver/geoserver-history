@@ -12,6 +12,7 @@
 		<OwsContext id="mainMap">
 			<!--defaultModelUrl>../owsContext/cite.xml</defaultModelUrl-->
 			<defaultModelUrl>../owsContext/oc_0_0_13r1.xml</defaultModelUrl>
+			<defaultModelUrl>../owsContext/oc_0_0_13r1.xml</defaultModelUrl>
 			<models>
 				<FeatureCollection id="gml2FeatureTemplate">
 					<method>get</method>

@@ -4,6 +4,7 @@ if(!this.namespace){
 this.namespace="xmlns:gml='http://www.opengis.net/gml' xmlns:wfs='http://www.opengis.net/wfs'";
 }
 this.convertCoords=function(objRef){
+if(objRef.doc&&objRef.containerModel&&objRef.containerModel.doc){
 var coordNodes=objRef.doc.selectNodes("//gml:coordinates");
 if(coordNodes.length>0&&objRef.containerModel){
 var srsNode=coordNodes[0].selectSingleNode("ancestor-or-self::*/@srsName");
@@ -28,7 +29,9 @@ coordNodes[i].firstChild.nodeValue=newCoords;
 }
 }
 }
+}
 this.addFirstListener("loadModel",this.convertCoords,this);
+if(this.containerModel)this.containerModel.addListener("loadModel",this.convertCoords,this);
 this.setHidden=function(featureName,hidden){
 this.hidden=hidden;
 this.callListeners("hidden",featureName);

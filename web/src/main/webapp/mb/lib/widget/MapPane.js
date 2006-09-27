@@ -11,6 +11,12 @@ this.stylesheet=new XslProcessor(styleNode.firstChild.nodeValue,model.namespace)
 this.stylesheet=new XslProcessor(baseDir+"/widget/"+widgetNode.nodeName+".xsl",model.namespace);
 }
 }
+var loadingSrc=widgetNode.selectSingleNode("mb:loadingSrc");
+if(loadingSrc){
+this.loadingSrc=config.skinDir+loadingSrc.firstChild.nodeValue;
+}else{
+this.loadingSrc=config.skinDir+"/images/Loading.gif";
+}
 for(var j=0;j<widgetNode.childNodes.length;j++){
 if(widgetNode.childNodes[j].firstChild
 &&widgetNode.childNodes[j].firstChild.nodeValue)
@@ -59,44 +65,49 @@ objRef.stylesheet.setParameter("bbox",objRef.model.getBoundingBox().join(","));
 objRef.stylesheet.setParameter("srs",objRef.model.getSRS());
 if(objRef.debug)alert("painting:"+Sarissa.serialize(objRef.model.doc));
 if(objRef.debug)alert("stylesheet:"+Sarissa.serialize(objRef.stylesheet.xslDom));
-var s=objRef.stylesheet.transformNodeToString(objRef.model.doc);
-var tempNode=document.createElement("DIV");
-tempNode.innerHTML=s;
+var tempDom=objRef.stylesheet.transformNodeToObject(objRef.model.doc);
+var tempNodeList=tempDom.selectNodes("//img");
 if(objRef.debug){
 alert("painting:"+objRef.id+":"+s);
 if(config.serializeUrl)postLoad(config.serializeUrl,s);
 }
 var outputNode=document.getElementById(objRef.outputNodeId);
 if(!outputNode){
-outputNode=document.createElement("DIV");
+outputNode=document.createElement("div");
 outputNode.setAttribute("id",objRef.outputNodeId);
-outputNode.style.left=0;
-outputNode.style.top=0;
 outputNode.style.position="absolute"; 
 objRef.node.appendChild(outputNode);
+outputNode.style.left='0px';
+outputNode.style.top='0px';
 } 
 var layers=objRef.model.getAllLayers();
 if(!objRef.imageStack)objRef.imageStack=new Array(layers.length);
 objRef.firstImageLoaded=false;
+objRef.layerCount=layers.length;
 for(var i=0;i<layers.length;i++){
 if(!objRef.imageStack[i]){
 objRef.imageStack[i]=new Image();
 objRef.imageStack[i].objRef=objRef;
 }
-var newSrc=tempNode.firstChild.childNodes[i].firstChild.getAttribute("src"); 
+var newSrc=tempNodeList[i].getAttribute("src");
 objRef.loadImgDiv(layers[i],newSrc,objRef.imageStack[i]);
 }
+var message="loading "+objRef.layerCount+" map layer"+((objRef.layerCount>1)?"s":"");
+objRef.model.setParam("modelStatus",message);
 }
 }
 MapPane.prototype.getLayerDivId=function(layerName){
 return this.model.id+"_"+this.id+"_"+layerName;}
 MapPane.prototype.addLayer=function(objRef,layerNode){
+++objRef.layerCount;
+var message="loading "+objRef.layerCount+" map layer"+((objRef.layerCount>1)?"s":"");
+objRef.model.setParam("modelStatus",message);
 objRef.stylesheet.setParameter("width",objRef.model.getWindowWidth());
 objRef.stylesheet.setParameter("height",objRef.model.getWindowHeight());
 objRef.stylesheet.setParameter("bbox",objRef.model.getBoundingBox().join(","));
 objRef.stylesheet.setParameter("srs",objRef.model.getSRS());
 var s=objRef.stylesheet.transformNodeToString(layerNode);
-var tempNode=document.createElement("DIV");
+var tempNode=document.createElement("div");
 tempNode.innerHTML=s;
 var newSrc=tempNode.firstChild.firstChild.getAttribute("src"); 
 objRef.imageStack.push(new Image());
@@ -142,39 +153,50 @@ if(imageFormatNode)imageFormat=imageFormatNode.firstChild.nodeValue;
 var imgDivId=this.getLayerDivId(layerName); 
 var imgDiv=document.getElementById(imgDivId);
 if(!imgDiv){
-imgDiv=document.createElement("DIV");
+imgDiv=document.createElement("div");
 imgDiv.setAttribute("id",imgDivId);
 imgDiv.style.position="absolute"; 
 imgDiv.style.visibility=(layerHidden)?"hidden":"visible";
-imgDiv.style.top=0; 
-imgDiv.style.left=0;
+imgDiv.style.top='0px'; 
+imgDiv.style.left='0px';
 imgDiv.imgId=Math.random().toString(); 
-var domImg=document.createElement("IMG");
+var domImg=document.createElement("img");
 domImg.id="real"+imgDiv.imgId;
-domImg.src="../../lib/skin/default/images/Loading.gif";
+domImg.src=config.skinDir+"/images/Spacer.gif";
 domImg.layerHidden=layerHidden;
 imgDiv.appendChild(domImg);
 outputNode.appendChild(imgDiv);
 }
 newImg.id=imgDiv.imgId;
 newImg.hidden=layerHidden;
+newImg.fixPng=false;
 if(_SARISSA_IS_IE&&imageFormat=="image/png")newImg.fixPng=true;
 newImg.onload=MapImgLoadHandler;
 newImg.src=newSrc;
 }
 function MapImgLoadHandler(){
 var oldImg=document.getElementById("real"+this.id);
-var outputNode=oldImg.parentNode.parentNode;
 if(!this.objRef.firstImageLoaded){
+this.objRef.firstImageLoaded=true;
+var outputNode=document.getElementById(this.objRef.outputNodeId);
 var siblingImageDivs=outputNode.childNodes;
 for(var i=0;i<siblingImageDivs.length;++i){
 var sibImg=siblingImageDivs[i].firstChild;
 sibImg.parentNode.style.visibility="hidden";
-sibImg.style.visibility="hidden";}
-outputNode.style.left=0;
-outputNode.style.top=0; 
-this.objRef.firstImageLoaded=true;
+sibImg.style.visibility="hidden";if(_SARISSA_IS_IE)sibImg.src=config.skinDir+"/images/Spacer.gif";
 }
+if(_SARISSA_IS_IE)siblingImageDivs[0].firstChild.parentNode.parentNode.style.visibility="hidden";
+outputNode.style.left='0px';
+outputNode.style.top='0px';
+}
+--this.objRef.layerCount;
+if(this.objRef.layerCount>0){
+var message="loading "+this.objRef.layerCount+" map layers"
+this.objRef.model.setParam("modelStatus",message);
+}else{
+this.objRef.model.setParam("modelStatus");
+}
+if(_SARISSA_IS_IE)oldImg.parentNode.parentNode.style.visibility="visible";
 if(this.fixPng){
 var vis=oldImg.layerHidden?"hidden":"visible";
 oldImg.outerHTML=fixPNG(this,"real"+this.id);

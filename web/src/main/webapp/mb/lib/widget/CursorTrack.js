@@ -80,7 +80,9 @@ objRef.mouseHandler.addListener('mouseout',objRef.mouseOutHandler,objRef);
 }else{
 alert('CursorTrack requires a mouseHandler property');
 }
+if(objRef.showLatLong||objRef.showDMS||objRef.showMGRS){
 objRef.proj=new Proj(objRef.model.getSRS());
+}
 if(this.showMGRS)
 this.MGRS=new MGRS();
 }

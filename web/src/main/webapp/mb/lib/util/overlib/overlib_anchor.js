@@ -18,7 +18,8 @@ o3_anchorx=ol_anchorx;
 o3_anchory=ol_anchory;
 o3_noanchorwarn=ol_noanchorwarn;
 o3_anchoralign=ol_anchoralign;
-mrkObj=null;}
+mrkObj=null; 
+}
 function parseAnchorExtras(pf,i,ar){
 var v,k=i;
 if(k<ar.length){
@@ -131,7 +132,8 @@ pH=(shdwPresent?parseInt(o3_aboveheight):(olNs4?over.clip.height:over.offsetHeig
 if(!olOp&&mkObj.toString().indexOf('Image')!=-1){
 mW=mkObj.width
 mH=mkObj.height
-}else if(!olOp&&mkObj.toString().indexOf('Anchor')!=-1){mp='UL'
+}else if(!olOp&&mkObj.toString().indexOf('Anchor')!=-1){ 
+mp='UL'
 }else{
 mW=(olNs4)?mkObj.clip.width:mkObj.offsetWidth
 mH=(olNs4)?mkObj.clip.height:mkObj.offsetHeight

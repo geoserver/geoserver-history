@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd">
   <General>
-    <Window width="300" height="150"/>
+    <Window width="400" height="200"/>
     <BoundingBox SRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
     <Title>Maximum Temperature from world weather stations</Title>
     <Abstract>Maximum Temperature from world weather stations.</Abstract>
@@ -15,8 +15,32 @@
     <KeywordList>
       <Keyword>Temperature</Keyword>
     </KeywordList>
+    <ContactInformation>
+      <ContactPersonPrimary>
+        <ContactPerson></ContactPerson>
+        <ContactOrganization>NASA</ContactOrganization>
+      </ContactPersonPrimary>
+      <ContactElectronicMailAddress></ContactElectronicMailAddress>
+    </ContactInformation>
   </General>
   <LayerList>
+		<Layer queryable="1" hidden="0">
+			<Server service="OGC:WMS" version="1.0.0" title="OGC:WMS">
+      <OnlineResource xlink:type="simple" xlink:href="http://www2.demis.nl/WMS/wms.asp?wms=BlueMarble"/>
+			</Server>
+			<Name>Countries,Earth+Image,Coastlines,Waterbodies</Name>
+			<Title>Demis Blue Marble</Title>
+			<SRS>EPSG:4326</SRS>
+			<FormatList>
+				<Format current="1">image/gif</Format>
+			</FormatList>
+			<StyleList>
+				<Style current="1">
+					<Name>default</Name>
+					<Title>default</Title>
+				</Style>
+			</StyleList>
+		</Layer>
     <Layer level="2" hidden="0">
       <Server service="wms" title="The GLOBE Program Visualization Server" wmtver="1.1.1">
         <OnlineResource xlink:type="simple" xlink:href="http://globe.digitalearth.gov/viz-bin/wmt.cgi"/>
@@ -32,9 +56,9 @@
         <Format current="1">image/png</Format>
       </FormatList>
     </Layer>    
-    <Layer queryable="0" hidden="0">
+    <!--Layer queryable="0" hidden="0">
       <Server service="wms" version="1.1.0" title="wms">
-        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/mapdata/aoc_v3/english/pb_world.map"/>
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
       </Server>
       <Name>coast</Name>
       <Title>coastline</Title>
@@ -42,6 +66,6 @@
       <FormatList>
         <Format current="1">image/gif</Format>
       </FormatList>
-    </Layer>
+    </Layer-->
   </LayerList>
 </ViewContext>

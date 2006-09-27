@@ -4,7 +4,7 @@
              xmlns="http://www.opengis.net/context"
              xmlns:xlink="http://www.w3.org/1999/xlink"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd">
+             xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengeospatial.net/context/1.0.0/context.xsd">
 	<General>
     <Window width="400" height="337"/>
     <BoundingBox SRS="EPSG:42304" minx="-2600000" miny="-1000000" maxx="3100000" maxy="3800000"/>

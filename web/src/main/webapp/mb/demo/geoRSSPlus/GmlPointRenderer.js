@@ -2,7 +2,7 @@
 Author:       Cameron Shorter cameronATshorter.net
 License:      LGPL as per: http://www.gnu.org/copyleft/lesser.html
 
-$Id: GmlPointRenderer.js,v 1.1 2005/09/19 14:55:53 cappelaere Exp $
+$Id: GmlPointRenderer.js 1670 2005-09-19 14:55:53Z cappelaere $
 */
 
 // Ensure this object's dependancies are loaded.

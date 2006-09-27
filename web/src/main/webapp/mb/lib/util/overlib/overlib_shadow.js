@@ -1,7 +1,8 @@
 if(typeof olInfo=='undefined'||typeof olInfo.meets=='undefined'||!olInfo.meets(4.10))alert('overLIB 4.10 or later is required for the Shadow Plugin.');
 else{
 registerCommands('shadow,shadowcolor,shadowimage,shadowopacity,shadowx,shadowy');
-if(typeof ol_shadowadjust=='undefined')var ol_shadowadjust=2;if(typeof ol_shadow=='undefined')var ol_shadow=0;
+if(typeof ol_shadowadjust=='undefined')var ol_shadowadjust=2; 
+if(typeof ol_shadow=='undefined')var ol_shadow=0;
 if(typeof ol_shadowcolor=='undefined')var ol_shadowcolor='#CCCCCC';
 if(typeof ol_shadowimage=='undefined')var ol_shadowimage='';
 if(typeof ol_shadowopacity=='undefined')var ol_shadowopacity=0;
@@ -138,7 +139,8 @@ var dpObj=(olIe4?o3_frame.document.all['backdrop']:o3_frame.document.getElementB
 cleanUpBrowserOpacity(dpObj);
 }
 function setBrowserOpacity(op,lyr){
-if(olNs4||!op)return;lyr=(lyr)?lyr:over;
+if(olNs4||!op)return; 
+lyr=(lyr)?lyr:over;
 if(olIe4&&typeof lyr.filters!='undefined'){
 lyr.style.filter='Alpha(Opacity='+op+')';
 lyr.filters.alpha.enabled=true;
@@ -174,4 +176,5 @@ registerHook("cursorOff",shadow_cursorOff,FREPLACE);
 registerHook("hideObject",checkShadowPreHide,FBEFORE);
 registerHook("createPopup",generateShadow,FAFTER,before);
 if(olInfo.meets(4.10))registerNoParameterCommands('shadow');
-if(olNs4)shadowAdjust();
+if(olNs4)shadowAdjust(); 
+}

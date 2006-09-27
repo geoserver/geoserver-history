@@ -1,4 +1,4 @@
-mapbuilder.loadScript(baseDir+"/tool/ButtonBase.js");
+mapbuilder.loadScript(baseDir+"/widget/ButtonBase.js");
 function GetFeatureInfo(toolNode,model){
 ButtonBase.apply(this,new Array(toolNode,model));
 this.xsl=new XslProcessor(baseDir+"/tool/GetFeatureInfo.xsl");
