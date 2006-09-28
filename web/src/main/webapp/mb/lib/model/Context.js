@@ -32,8 +32,10 @@ bbox.setAttribute("maxy",boundingBox[3]);
 this.callListeners("bbox",boundingBox);
 }
 this.initBbox=function(objRef){
-if(window.cgiArgs["bbox"]){var boundingBox=window.cgiArgs["bbox"].split(',');
-objRef.setBoundingBox(boundingBox);
+if(window.cgiArgs["bbox"]){var bbox=window.cgiArgs["bbox"].split(',');
+var ul=new Array(parseFloat(bbox[0]),parseFloat(bbox[3]));
+var lr=new Array(parseFloat(bbox[2]),parseFloat(bbox[1]));
+objRef.extent.zoomToBox(ul,lr);
 }
 }
 this.addListener("contextLoaded",this.initBbox,this);

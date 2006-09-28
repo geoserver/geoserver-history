@@ -1,6 +1,6 @@
 /*
 License: LGPL as per: http://www.gnu.org/copyleft/lesser.html
-$Id: Mapbuilder.js,v 1.1 2005/09/19 14:55:53 cappelaere Exp $
+$Id: Mapbuilder.js 1670 2005-09-19 14:55:53Z cappelaere $
 */
 
 /** get a time stamp at start of the page load */

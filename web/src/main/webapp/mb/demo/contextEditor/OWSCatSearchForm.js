@@ -2,7 +2,7 @@
 Author:       Mike Adair mike.adairATccrs.nrcan.gc.ca
 License:      LGPL as per: http://www.gnu.org/copyleft/lesser.html
 
-$Id: OWSCatSearchForm.js,v 1.2 2005/10/24 23:52:10 madair1 Exp $
+$Id: OWSCatSearchForm.js 2076 2006-04-11 19:48:08Z madair $
 */
 
 // Ensure this object's dependancies are loaded.
@@ -119,7 +119,7 @@ function OWSCatSearchForm(widgetNode, model) {
    * Handles submission of the form (via javascript in an <a> tag)
    */
   this.submitForm = function() {
-    thisWidget = this.parentWidget;
+    var thisWidget = this.parentWidget;
     thisWidget.createFilter(thisWidget);
     thisWidget.targetModel.setParam("wfs_GetFeature","service_resources");
     return false;
@@ -167,8 +167,7 @@ function OWSCatSearchForm(widgetNode, model) {
     }
 
     if (keycode == 13) {    //enter key
-      target.parentWidget.submitForm();
-      return false;
+      return true;
     }
   }
 

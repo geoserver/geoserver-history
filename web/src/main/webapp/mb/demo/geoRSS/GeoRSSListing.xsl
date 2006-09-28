@@ -5,7 +5,7 @@ Description: presents the list of events in a GeoRSS
 Author:      adair
 Licence:     LGPL as specified in http://www.gnu.org/copyleft/lesser.html .
 
-$Id: GeoRSSListing.xsl 4872 2006-08-11 18:58:06Z jdeolive $
+$Id: GeoRSSListing.xsl 5068 2006-09-27 23:51:42Z bowens $
 $Name:  $
 -->
 
@@ -28,11 +28,7 @@ $Name:  $
   <!-- template rule matching source root element -->
   <xsl:template match="/rdf:RDF ">
     <table>
-      <tr>
-        <th>
-          GeoRSS feed: <xsl:value-of select="rss:channel/rss:title"/>
-        </th>
-      </tr>
+      <th><xsl:value-of select="rss:channel/rss:title"/></th>
       <xsl:apply-templates select="rss:item"/>
     </table>
   </xsl:template>
@@ -42,7 +38,10 @@ $Name:  $
     <xsl:variable name="x"><xsl:value-of select="geo:long"/></xsl:variable>
     <xsl:variable name="y"><xsl:value-of select="geo:lat"/></xsl:variable>
     <xsl:variable name="link"><xsl:value-of select="rss:link"/></xsl:variable>
+    <xsl:variable name="time"><xsl:value-of select="dc:date"/></xsl:variable>
+ 
     <tr onmouseover="config.objects.{$modelId}.setParam('highlightFeature','{$fid}')" onmouseout="config.objects.{$modelId}.setParam('dehighlightFeature','{$fid}')">
+      <td><xsl:value-of select="dc:date"/></td>
       <td>
         <a href="{$link}"><xsl:value-of select="rss:title"/></a>
         - <xsl:value-of select="rss:description"/>

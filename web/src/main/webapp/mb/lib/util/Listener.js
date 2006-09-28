@@ -21,7 +21,7 @@ this.removeListener=function(param,listener,target){
 if(this.listeners[param]){
 for(var i=0;i<this.listeners[param].length;i++){
 if(this.listeners[param][i][0]==listener&&this.listeners[param][i][1]==target){
-for(var j=i;i<this.listeners[param].length-1;i++){
+for(var j=i;j<this.listeners[param].length-1;j++){
 this.listeners[param][j]=this.listeners[param][j+1];
 }
 this.listeners[param].pop();

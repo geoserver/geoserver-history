@@ -38,8 +38,8 @@ objRef.deltaL=targetNode.evpl[1]-objRef.anchorPoint[1];
 var images=targetNode.childNodes;
 for(var i=0;i<images.length;i++){
 var img=images.item(i);
-img.style.left=objRef.deltaP+objRef.oldPos[i][0];
-img.style.top=objRef.deltaL+objRef.oldPos[i][1];
+img.style.left=objRef.deltaP+objRef.oldPos[i][0]+'px';
+img.style.top=objRef.deltaL+objRef.oldPos[i][1]+'px';
 }
 }
 }

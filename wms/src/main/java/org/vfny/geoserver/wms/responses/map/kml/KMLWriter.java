@@ -893,7 +893,7 @@ public class KMLWriter extends OutputStreamWriter {
 		final StringBuffer getMapRequest = new StringBuffer(baseURL).append("wms?bbox=").append(BBOX[0]).append(",").
 		append(BBOX[1]).append(",").append(BBOX[2]).append(",").append(BBOX[3]).append("&amp;styles=").
 		append(layer.getStyle().getName()).append("&amp;Format=image/png&amp;request=GetMap&amp;layers=").
-		append(layer.getTitle()).append("&amp;width="+this.mapContext.getMapWidth()+"&amp;height="+this.mapContext.getMapHeight()+"&amp;srs=EPSG:4326&amp;");
+		append(layer.getTitle()).append("&amp;width="+this.mapContext.getMapWidth()+"&amp;height="+this.mapContext.getMapHeight()+"&amp;srs=EPSG:4326&amp;transparent=true&amp;");
 
 		write(new StringBuffer("<href>").append(getMapRequest).append("</href>").
 				append("<viewRefreshMode>never</viewRefreshMode>").

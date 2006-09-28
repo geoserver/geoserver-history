@@ -15,8 +15,9 @@ objRef.model.active=place;
 objRef.model.historyList=list;
 }
 this.add=function(objRef){
-place=objRef.model.active;
-list=objRef.model.historyList;
+if(objRef.model.active!=null){
+var place=objRef.model.active;
+var list=objRef.model.historyList;
 newExtent=new Array();
 newExtent[0]=objRef.model.extent.ul;
 newExtent[1]=objRef.model.extent.lr;
@@ -29,6 +30,7 @@ list.push(newExtent);
 }
 objRef.model.active=place;
 objRef.model.historyList=list;
+}
 }
 this.back=function(objRef){
 place=objRef.model.active;
@@ -61,9 +63,9 @@ this.start=function(objRef){
 objRef.model.addListener("bbox",objRef.add,objRef);
 }
 this.initReset=function(objRef){
+objRef.targetModel.addListener("bbox",objRef.add,objRef);
 objRef.targetModel.addListener("loadModel",objRef.init,objRef);
 }
-this.model.addListener("bbox",this.add,this);
 this.model.addListener("historyBack",this.back,this);
 this.model.addListener("historyForward",this.forward,this);
 this.model.addListener("historyStart",this.start,this);

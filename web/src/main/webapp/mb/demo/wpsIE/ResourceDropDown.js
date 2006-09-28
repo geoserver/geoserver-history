@@ -2,7 +2,7 @@
 Author:       Tom Kralidis
 License:      LGPL as per: http://www.gnu.org/copyleft/lesser.html
 
-$Id: ResourceDropDown.js,v 1.9 2005/09/20 02:42:46 madair1 Exp $
+$Id: ResourceDropDown.js 1672 2005-09-20 02:42:46Z madair1 $
 */
 
 // Ensure this object's dependancies are loaded.

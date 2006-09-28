@@ -10,7 +10,7 @@ this.stylesheet=new XslProcessor(styleNode.firstChild.nodeValue,model.namespace)
 this.stylesheet=new XslProcessor(baseDir+"/widget/"+widgetNode.nodeName+".xsl",model.namespace);
 }
 this.paint=function(objRef){
-if(objRef.model.doc&&objRef.node){
+if(objRef.model.doc&&objRef.node&&objRef.containerModel&&objRef.containerModel.doc){
 objRef.stylesheet.setParameter("modelUrl",objRef.model.url);
 objRef.resultDoc=objRef.model.doc;objRef.prePaint(objRef);
 if(objRef.debug)alert("prepaint:"+Sarissa.serialize(objRef.resultDoc));

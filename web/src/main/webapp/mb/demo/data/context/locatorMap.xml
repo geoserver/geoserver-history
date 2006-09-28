@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
-<ViewContext version="1.0.0" id="mb_atlasLocatorMap" xmlns="http://www.opengis.net/context" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gdp="http://geodiscover.cgdi.ca" xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd">
+<ViewContext version="1.0.0" id="mb_atlasLocatorMap" xmlns="http://www.opengis.net/context" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gdp="http://geodiscover.cgdi.ca" xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengeospatial.net/context/1.0.0/context.xsd">
   <General>
     <Window width="180" height="90"/>
     <BoundingBox SRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
@@ -36,7 +36,7 @@
   <LayerList>
     <Layer queryable="0" hidden="0">
       <Server service="wms" version="1.1.0" title="wms">
-        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/mapdata/aoc_v3/english/pb_world.map"/>
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
       </Server>
       <Name>ocean</Name>
       <Title>ocean area</Title>
@@ -47,7 +47,7 @@
     </Layer>
     <Layer queryable="0" hidden="0">
       <Server service="wms" version="1.1.0" title="wms">
-        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/mapdata/aoc_v3/english/pb_world.map"/>
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
       </Server>
       <Name>land</Name>
       <Title>land area</Title>
@@ -58,7 +58,7 @@
     </Layer>
     <Layer queryable="0" hidden="0">
       <Server service="wms" version="1.1.0" title="wms">
-        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/mapdata/aoc_v3/english/pb_world.map"/>
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
       </Server>
       <Name>coast</Name>
       <Title>coastline</Title>

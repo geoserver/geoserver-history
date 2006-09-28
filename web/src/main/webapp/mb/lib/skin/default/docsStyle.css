@@ -36,10 +36,10 @@ A.banner { text-decoration: none; color: white; }
 
 
 H1 { 
-  font: normal 18pt;  
+  font-size: 18px;  
   color: #3366cc; 
   margin: 0; 
-  margin-top: 10; 
+  margin-top: 10pt; 
   width: 100%; 
   border-bottom: 1pt solid #3366cc; 
   text-align: left}
@@ -60,7 +60,7 @@ H6 { font-size: 100%; font-weight: bold; }
   font-size: 80%;  
   color: #3366cc; 
   margin: 0; 
-  margin-bottom: 10; 
+  margin-bottom: 10pt; 
   width: 100%; 
   border-top: 1pt solid #3366cc; 
   text-align: right;
@@ -188,5 +188,4 @@ H6 { font-size: 100%; font-weight: bold; }
 
   A:active      { voice-family: betty, female; pitch-range: 80; pitch: x-high }
 
-
-
+}

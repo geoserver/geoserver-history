@@ -1,7 +1,15 @@
 if(typeof olInfo=='undefined'||typeof olInfo.meets=='undefined'||!olInfo.meets(4.14))alert('overLIB 4.14 or later is required for the Speech Bubble Plugin.');
 else{
 registerCommands('bubble,bubbletype,adjbubble');
-var imgWidth=[250,330,144,202,200];var imgHeight=[150,160,190,221,66];var contentWidth=[200,250,130,184,190];var contentHeight=[80,85,150,176,46];var padLeft=[30,40,7,9,5];var padTop=[25,48,10,34,4];var arwTipX=[180,50,51,9,19];var arwTipY=[148,5,180,221,64];if(typeof ol_bubble=='undefined')var ol_bubble=0;
+var imgWidth=[250,330,144,202,200]; 
+var imgHeight=[150,160,190,221,66]; 
+var contentWidth=[200,250,130,184,190]; 
+var contentHeight=[80,85,150,176,46]; 
+var padLeft=[30,40,7,9,5]; 
+var padTop=[25,48,10,34,4]; 
+var arwTipX=[180,50,51,9,19]; 
+var arwTipY=[148,5,180,221,64]; 
+if(typeof ol_bubble=='undefined')var ol_bubble=0;
 if(typeof ol_bubbletype=='undefined')var ol_bubbletype='';
 if(typeof ol_adjbubble=='undefined')var ol_adjbubble=0;
 var olBId,olBContentWd=contentWidth;
@@ -176,7 +184,8 @@ registerRunTimeFunction(setBubbleVariables);
 registerCmdLineFunction(parseBubbleExtras);
 registerPostParseFunction(chkForBubbleEffect);
 registerHook("createPopup",generateBubble,FAFTER);
-registerImages('flower,oval,square,pushpin,quotation,roundcorners');if(olInfo.meets(4.14))registerNoParameterCommands('bubble,adjbubble');
+registerImages('flower,oval,square,pushpin,quotation,roundcorners'); 
+if(olInfo.meets(4.14))registerNoParameterCommands('bubble,adjbubble');
 if(olNs4)document.write('<style type="text/css">\n
 <!--\n#bLayer, #bContent {position: absolute;}\n-->
 \n<'+'\/style>');

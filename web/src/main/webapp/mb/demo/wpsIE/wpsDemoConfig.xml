@@ -6,11 +6,12 @@
                  page.
     Licence:     LGPL as per: http://www.gnu.org/copyleft/lesser.html 
 
-    $Id: wpsDemoConfig.xml 4872 2006-08-11 18:58:06Z jdeolive $
+    $Id: wpsDemoConfig.xml 5068 2006-09-27 23:51:42Z bowens $
   -->
 	<models>
 		<OwsContext id="mainMap">
 			<!--defaultModelUrl>../owsContext/cite.xml</defaultModelUrl-->
+			<defaultModelUrl>../owsContext/oc_0_0_13r1.xml</defaultModelUrl>
 			<defaultModelUrl>../owsContext/oc_0_0_13r1.xml</defaultModelUrl>
 			<models>
 				<FeatureCollection id="gml2FeatureTemplate">

@@ -1,8 +1,8 @@
-<?
+<?php
 /*
 License: LGPL as per: http://www.gnu.org/copyleft/lesser.html
-$Id: serializer.php,v 1.2 2005/08/03 19:07:08 mattdiez Exp $
-$Name: mapbuilder-lib-1_0-rc1 $
+$Id: serializer.php 2141 2006-06-28 10:07:56Z steven $
+$Name$
 */
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -8,7 +8,6 @@ this.httpPayload=new Object();
 this.httpPayload.method="get";
 this.httpPayload.postData=null;
 this.trm=widgetNode.selectSingleNode("mb:transactionResponseModel").firstChild.nodeValue;
-this.transactionResponseModel="init";
 this.cursor="pointer"; 
 this.doAction=function(objRef,targetNode){
 if(objRef.enabled){
@@ -18,7 +17,7 @@ xPixel=extent.res[0]*objRef.tolerance;
 yPixel=extent.res[1]*objRef.tolerance;
 bbox=(point[0]-xPixel)+","+(point[1]-yPixel)+","+(point[0]+xPixel)+","+(point[1]+yPixel);
 objRef.httpPayload.url=objRef.webServiceUrl+"?request=GetFeature&typeName="+objRef.typeName+"&bbox="+bbox;
-if(objRef.transactionResponseModel="init"){
+if(!objRef.transactionResponseModel){
 objRef.transactionResponseModel=eval("config.objects."+objRef.trm);
 }
 objRef.transactionResponseModel.newRequest(objRef.transactionResponseModel,objRef.httpPayload);

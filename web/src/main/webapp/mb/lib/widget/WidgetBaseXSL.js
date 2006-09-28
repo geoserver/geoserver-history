@@ -9,6 +9,13 @@ this.stylesheet=new XslProcessor(styleNode.firstChild.nodeValue,model.namespace)
 this.stylesheet=new XslProcessor(baseDir+"/widget/"+widgetNode.nodeName+".xsl",model.namespace);
 }
 }
+if(config.widgetText){
+var textNodeXpath="/mb:WidgetText/mb:widgets/mb:"+widgetNode.nodeName;
+var textParams=config.widgetText.selectNodes(textNodeXpath+"/*");
+for(var j=0;j<textParams.length;j++){
+this.stylesheet.setParameter(textParams[j].nodeName,textParams[j].firstChild.nodeValue);
+}
+}
 for(var j=0;j<widgetNode.childNodes.length;j++){
 if(widgetNode.childNodes[j].firstChild
 &&widgetNode.childNodes[j].firstChild.nodeValue)
@@ -16,13 +23,6 @@ if(widgetNode.childNodes[j].firstChild
 this.stylesheet.setParameter(
 widgetNode.childNodes[j].nodeName,
 widgetNode.childNodes[j].firstChild.nodeValue);
-}
-}
-if(config.widgetText){
-var textNodeXpath="/mb:WidgetText/mb:widgets/mb:"+widgetNode.nodeName;
-var textParams=config.widgetText.selectNodes(textNodeXpath+"/*");
-for(var j=0;j<textParams.length;j++){
-this.stylesheet.setParameter(textParams[j].nodeName,textParams[j].firstChild.nodeValue);
 }
 }
 this.stylesheet.setParameter("modelId",this.model.id);
@@ -43,11 +43,12 @@ var s=objRef.stylesheet.transformNodeToString(objRef.resultDoc);
 if(config.serializeUrl&&objRef.debug)postLoad(config.serializeUrl,s);
 if(objRef.debug)alert("painting:"+objRef.id+":"+s);
 tempNode.innerHTML=s;
-tempNode.firstChild.setAttribute("id",objRef.outputNodeId);
+if(tempNode.firstChild!=null){tempNode.firstChild.setAttribute("id",objRef.outputNodeId);
 if(outputNode){
 objRef.node.replaceChild(tempNode.firstChild,outputNode);
 }else{
 objRef.node.appendChild(tempNode.firstChild);
+}
 }
 objRef.postPaint(objRef);
 }

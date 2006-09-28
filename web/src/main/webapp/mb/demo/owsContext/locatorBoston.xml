@@ -37,7 +37,7 @@
   <LayerList>
     <Layer queryable="0" hidden="0">
       <Server service="wms" version="1.1.0" title="wms">
-        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/mapdata/aoc_v3/english/pb_world.map"/>
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
       </Server>
       <Name>ocean</Name>
       <Title>ocean area</Title>
@@ -48,7 +48,7 @@
     </Layer>
     <Layer queryable="0" hidden="0">
       <Server service="wms" version="1.1.0" title="wms">
-        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/mapdata/aoc_v3/english/pb_world.map"/>
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
       </Server>
       <Name>land</Name>
       <Title>land area</Title>
@@ -59,7 +59,7 @@
       </Layer>
     <Layer queryable="0" hidden="0">
       <Server service="wms" version="1.1.0" title="wms">
-        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/mapdata/aoc_v3/english/pb_world.map"/>
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
       </Server>
       <Name>lake_fill</Name>
       <Title>lakes</Title>
@@ -70,7 +70,7 @@
     </Layer>
     <Layer queryable="0" hidden="0">
       <Server service="wms" version="1.1.0" title="wms">
-        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/mapdata/aoc_v3/english/pb_world.map"/>
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
       </Server>
       <Name>lake_outline</Name>
       <Title>lake outlines</Title>
@@ -81,7 +81,7 @@
     </Layer>
     <Layer queryable="0" hidden="0">
       <Server service="wms" version="1.1.0" title="wms">
-        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/mapdata/aoc_v3/english/pb_world.map"/>
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
       </Server>
       <Name>coast</Name>
       <Title>coastline</Title>
@@ -92,7 +92,7 @@
     </Layer>
     <Layer queryable="0" hidden="0">
       <Server service="wms" version="1.1.0" title="wms">
-        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/mapdata/aoc_v3/english/pb_world.map"/>
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
       </Server>
       <Name>rivers</Name>
       <Title>rivers</Title>
@@ -103,7 +103,7 @@
     </Layer>
     <Layer queryable="0" hidden="0">
       <Server service="wms" version="1.1.0" title="wms">
-        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/mapdata/aoc_v3/english/pb_world.map"/>
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
       </Server>
       <Name>boundaries</Name>
       <Title>boundaries</Title>

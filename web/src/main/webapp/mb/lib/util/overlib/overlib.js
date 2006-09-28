@@ -1,6 +1,9 @@
 var olLoaded=0;var pmStart=10000000;var pmUpper=10001000;var pmCount=pmStart+1;var pmt='';var pms=new Array();var olInfo=new Info('4.21',1);
 var FREPLACE=0;var FBEFORE=1;var FAFTER=2;var FALTERNATE=3;var FCHAIN=4;
-var olHideForm=0;var olHautoFlag=0;var olVautoFlag=0;var hookPts=new Array(),postParse=new Array(),cmdLine=new Array(),runTime=new Array();
+var olHideForm=0; 
+var olHautoFlag=0; 
+var olVautoFlag=0; 
+var hookPts=new Array(),postParse=new Array(),cmdLine=new Array(),runTime=new Array();
 registerCommands('donothing,inarray,caparray,sticky,background,noclose,caption,left,right,center,offsetx,offsety,fgcolor,bgcolor,textcolor,capcolor,closecolor,width,border,cellpad,status,autostatus,autostatuscap,height,closetext,snapx,snapy,fixx,fixy,relx,rely,fgbackground,bgbackground,padx,pady,fullhtml,above,below,capicon,textfont,captionfont,closefont,textsize,captionsize,closesize,timeout,function,delay,hauto,vauto,closeclick,wrap,followmouse,mouseoff,closetitle,cssoff,compatmode,cssclass,fgclass,bgclass,textfontclass,captionfontclass,closefontclass');
 if(typeof ol_fgcolor=='undefined')var ol_fgcolor="#CCCCFF";
 if(typeof ol_bgcolor=='undefined')var ol_bgcolor="#333399";
@@ -133,12 +136,14 @@ var over=null;
 var fnRef,hoveringSwitch=false;
 var olHideDelay;
 var isMac=(navigator.userAgent.indexOf("Mac")!=-1);
-var olOp=(navigator.userAgent.toLowerCase().indexOf('opera')>-1&&document.createTextNode);var olNs4=(navigator.appName=='Netscape'&&parseInt(navigator.appVersion)==4);
+var olOp=(navigator.userAgent.toLowerCase().indexOf('opera')>-1&&document.createTextNode); 
+var olNs4=(navigator.appName=='Netscape'&&parseInt(navigator.appVersion)==4);
 var olNs6=(document.getElementById)?true:false;
 var olKq=(olNs6&&/konqueror/i.test(navigator.userAgent));
 var olIe4=(document.all)?true:false;
 var olIe5=false; 
-var olIe55=false;var docRoot='document.body';
+var olIe55=false; 
+var docRoot='document.body';
 if(olNs4){
 var oW=window.innerWidth;
 var oH=window.innerHeight;
@@ -471,7 +476,8 @@ for(i=0;i<ar.length;i++){
 if(mode<0){
 if(typeof ar[i]=='number'&&ar[i]>pmStart&&ar[i]<pmUpper){
 fnMark=(par?1:0);
-i--;}else{
+i--; 
+}else{
 switch(pf){
 case 'ol_':
 ol_text=ar[i].toString();
@@ -503,7 +509,8 @@ if(ar[i]==CELLPAD){i=opt_MULTIPLEARGS(++i,ar,(pf+'cellpad'));continue;}
 if(ar[i]==STATUS){eval(pf+"status='"+escSglQuote(ar[++i])+"'");continue;}
 if(ar[i]==AUTOSTATUS){eval(pf+'autostatus=('+pf+'autostatus == 1) ? 0 : 1');continue;}
 if(ar[i]==AUTOSTATUSCAP){eval(pf+'autostatus=('+pf+'autostatus == 2) ? 0 : 2');continue;}
-if(ar[i]==HEIGHT){eval(pf+'height='+pf+'aboveheight='+ar[++i]);continue;}if(ar[i]==CLOSETEXT){eval(pf+"close='"+escSglQuote(ar[++i])+"'");continue;}
+if(ar[i]==HEIGHT){eval(pf+'height='+pf+'aboveheight='+ar[++i]);continue;} 
+if(ar[i]==CLOSETEXT){eval(pf+"close='"+escSglQuote(ar[++i])+"'");continue;}
 if(ar[i]==SNAPX){eval(pf+'snapx='+ar[++i]);continue;}
 if(ar[i]==SNAPY){eval(pf+'snapy='+ar[++i]);continue;}
 if(ar[i]==FIXX){eval(pf+'fixx='+ar[++i]);continue;}
@@ -632,7 +639,8 @@ if(typeof args[k]=='number'&&args[k]>pmStart)break;
 str+=args[k]+',';
 }
 if(str)str=str.substring(0,--str.length);
-k--;pV=(olNs4&&/cellpad/i.test(parameter))?str.split(',')[0]:str;
+k--; 
+pV=(olNs4&&/cellpad/i.test(parameter))?str.split(',')[0]:str;
 eval(parameter+'="'+pV+'"');
 return k;
 }
@@ -649,7 +657,8 @@ function OLonLoad_handler(e){
 var re=/\w+\(.*\)[;\s]+/g,olre=/overlib\(|nd\(|cClick\(/,fn,l,i;
 if(!olLoaded)olLoaded=1;
 if(window.removeEventListener&&e.eventPhase==3)window.removeEventListener("load",OLonLoad_handler,false);
-else if(window.detachEvent){window.detachEvent("onload",OLonLoad_handler);
+else if(window.detachEvent){ 
+window.detachEvent("onload",OLonLoad_handler);
 var fN=document.body.getAttribute('onload');
 if(fN){
 fN=fN.toString().match(re);
@@ -734,16 +743,19 @@ o3_hpos = LEFT;
 o3_hpos = RIGHT;
 }
 }  		
-if (o3_hpos == CENTER) { 			placeX = o3_x+o3_offsetx-(parsedWidth/2);
+if (o3_hpos == CENTER) { 
+placeX = o3_x+o3_offsetx-(parsedWidth/2);
 if (placeX < winoffset) placeX = winoffset;
 }
-if (o3_hpos == RIGHT) { 			placeX = o3_x+o3_offsetx;
+if (o3_hpos == RIGHT) { 
+placeX = o3_x+o3_offsetx;
 if ((placeX+parsedWidth) > (winoffset+iwidth - widthFix)) {
 placeX = iwidth+winoffset - parsedWidth - widthFix;
 if (placeX < 0) placeX = 0;
 }
 }
-if (o3_hpos == LEFT) { 			placeX = o3_x-o3_offsetx-parsedWidth;
+if (o3_hpos == LEFT) { 
+placeX = o3_x-o3_offsetx-parsedWidth;
 if (placeX < winoffset) placeX = winoffset;
 }  	
 if (o3_snapx > 1) {
@@ -934,7 +946,8 @@ function postParseChecks(pf,args){
 if (typeof postParse != 'undefined' && postParse.length) {
 for (var k = 0; k < postParse.length; k++) {
 if (postParse[k](pf,args)) continue;
-return false;  		}
+return false;  
+}
 }
 return true;
 }
@@ -957,7 +970,8 @@ if (typeof hookPts[fnHookTo] == 'undefined') hookPts[fnHookTo] = new FunctionRef
 hookPt = hookPts[fnHookTo];
 if (hookType != null) {
 if (hookType == FREPLACE) {
-hookPt.ovload = fnRef;  			if (fnHookTo.indexOf('ol_content_') > -1) hookPt.alt[pms[CSSOFF-1-pmStart]]=fnRef; 
+hookPt.ovload = fnRef;  
+if (fnHookTo.indexOf('ol_content_') > -1) hookPt.alt[pms[CSSOFF-1-pmStart]]=fnRef; 
 } else if (hookType == FBEFORE || hookType == FAFTER) {
 var hookPt=(hookType == 1 ? hookPt.before : hookPt.after);
 if (typeof fnRef == 'object') {
@@ -970,7 +984,8 @@ if (optPm) hookPt = reOrder(hookPt, fnRef, optPm);
 if (last=='number') hookPt.alt[pms[optPm-1-pmStart]] = fnRef;
 } else if (hookType == FCHAIN) {
 hookPt = hookPt.chain; 
-if (typeof fnRef=='object') hookPt=hookPt.concat(fnRef); 			else hookPt[hookPt.length++]=fnRef;
+if (typeof fnRef=='object') hookPt=hookPt.concat(fnRef); 
+else hookPt[hookPt.length++]=fnRef;
 }
 return;
 }

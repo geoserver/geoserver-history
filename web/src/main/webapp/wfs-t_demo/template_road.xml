@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gml:featureMember xmlns:topp="http://www.openplans.org/topp" xmlns:gml="http://www.opengis.net/gml">
-  <topp:tasmania_roads fid="tasmania_roads.1">
+  <topp:tasmania_roads>
     <topp:the_geom>
       <gml:MultiLineString srsName="epsg:4326">
         <gml:lineStringMember>

@@ -78,6 +78,77 @@ this.Init(new Array(6378137.0,6356752.3141,44.00,49.00,3.00000000001,46.50,70000
 this.units="meters";
 this.title="Lambert Conformal Conic";
 break;
+case "EPSG:4326":case "EPSG:4269":case "CRS:84":case "EPSG:4965":case new String("http://www.opengis.net/gml/srs/epsg.xml#4326").toUpperCase():
+this.Forward=identity;
+this.Inverse=identity;
+this.units="degrees";
+this.title="Lat/Long";
+break;
+case "EPSG:102758":this.title="NAD 1983 StatePlane Wyoming West FIPS 4904 US Survey Feet";
+this.Init=tminit;
+this.Forward=ll2tm
+this.Inverse=tm2ll;
+this.Init(new Array(grs80[0],grs80[1],0.9999375,-110.0833333333333,40.5,800000,100000));
+this.units="usfeet";
+break;
+case "EPSG:32158":this.title="NAD 1983 StatePlane Wyoming West meters";
+this.Init=tminit;
+this.Forward=ll2tm
+this.Inverse=tm2ll;
+this.Init(new Array(grs80[0],grs80[1],0.9999375,-110.0833333333333,40.5,800000,100000));
+this.units="meters";
+break;
+case"EPSG:26903":case"EPSG:26904":case"EPSG:26905":case"EPSG:26906":case"EPSG:26907":case"EPSG:26908":case"EPSG:26909":
+case"EPSG:26910":case"EPSG:26911":case"EPSG:26912":case"EPSG:26913":case"EPSG:26914":case"EPSG:26915":case"EPSG:26916":
+case"EPSG:26917":case"EPSG:26918":case"EPSG:26919":case"EPSG:26920":case"EPSG:26921":case"EPSG:26922":case"EPSG:26923":
+this.title="NAD83 / UTM zone "+srs.substr(8,2)+"N";
+this.Init=utminit;
+this.Forward=ll2tm;
+this.Inverse=tm2ll;
+this.Init(new Array(grs80[0],grs80[1],0.9996,srs.substr(8,2)));
+this.units="meters";
+break;
+case"EPSG:32601":case"EPSG:32602":
+case"EPSG:32603":case"EPSG:32604":case"EPSG:32605":case"EPSG:32606":case"EPSG:32607":case"EPSG:32608":case"EPSG:32609":
+case"EPSG:32610":case"EPSG:32611":case"EPSG:32612":case"EPSG:32613":case"EPSG:32614":case"EPSG:32615":case"EPSG:32616":
+case"EPSG:32617":case"EPSG:32618":case"EPSG:32619":case"EPSG:32620":case"EPSG:32621":case"EPSG:32622":case"EPSG:32623":
+case"EPSG:32624":case"EPSG:32625":case"EPSG:32626":case"EPSG:32627":case"EPSG:32628":case"EPSG:32629":
+case"EPSG:32630":case"EPSG:32631":case"EPSG:32632":case"EPSG:32633":case"EPSG:32634":case"EPSG:32635":case"EPSG:32636":
+case"EPSG:32637":case"EPSG:32638":case"EPSG:32639":case"EPSG:32640":case"EPSG:32641":case"EPSG:32642":
+case"EPSG:32643":case"EPSG:32644":case"EPSG:32645":case"EPSG:32646":case"EPSG:32647":case"EPSG:32648":case"EPSG:32649":
+case"EPSG:32650":case"EPSG:32651":case"EPSG:32652":case"EPSG:32653":case"EPSG:32654":case"EPSG:32655":case"EPSG:32656":
+case"EPSG:32657":case"EPSG:32658":case"EPSG:32659":case"EPSG:32660":
+this.title="WGS84 / UTM zone "+srs.substr(8,2)+"N";
+this.Init=utminit;
+this.Forward=ll2tm;
+this.Inverse=tm2ll;
+this.Init(new Array(wgs84[0],wgs84[1],0.9996,srs.substr(8,2)));
+this.units="meters";
+break;
+case"EPSG:32701":case"EPSG:32702":
+case"EPSG:32703":case"EPSG:32704":case"EPSG:32705":case"EPSG:32706":case"EPSG:32707":case"EPSG:32708":case"EPSG:32709":
+case"EPSG:32710":case"EPSG:32711":case"EPSG:32712":case"EPSG:32713":case"EPSG:32714":case"EPSG:32715":case"EPSG:32716":
+case"EPSG:32717":case"EPSG:32718":case"EPSG:32719":case"EPSG:32720":case"EPSG:32721":case"EPSG:32722":case"EPSG:32723":
+case"EPSG:32724":case"EPSG:32725":case"EPSG:32726":case"EPSG:32727":case"EPSG:32728":case"EPSG:32729":
+case"EPSG:32730":case"EPSG:32731":case"EPSG:32732":case"EPSG:32733":case"EPSG:32734":case"EPSG:32735":case"EPSG:32736":
+case"EPSG:32737":case"EPSG:32738":case"EPSG:32739":case"EPSG:32740":case"EPSG:32741":case"EPSG:32742":
+case"EPSG:32743":case"EPSG:32744":case"EPSG:32745":case"EPSG:32746":case"EPSG:32747":case"EPSG:32748":case"EPSG:32749":
+case"EPSG:32750":case"EPSG:32751":case"EPSG:32752":case"EPSG:32753":case"EPSG:32754":case"EPSG:32755":case"EPSG:32756":
+case"EPSG:32757":case"EPSG:32758":case"EPSG:32759":case"EPSG:32760":
+this.title="WGS84 / UTM zone "+srs.substr(8,2)+"S";
+this.Init=utminit;
+this.Forward=ll2tm;
+this.Inverse=tm2ll;
+this.Init(new Array(wgs84[0],wgs84[1],0.9996,"-"+srs.substr(8,2)));
+this.units="meters";
+break;
+case "EPSG:26591":this.title="Monte Mario (Rome) / Italy zone 1";
+this.Init=tminit;
+this.Forward=ll2tm
+this.Inverse=tm2ll;
+this.Init(new Array(6378388.0,6356911.94612795,0.9996,9,0.0,1500000.0,0.0));
+this.units="meters";
+break;
 case "SCENE":this.Init=sceneInit;
 this.Forward=ll2scene;
 this.Inverse=scene2ll;
@@ -239,7 +310,7 @@ this.fac=(this.center_lat<0)?-1.0:1.0;
 this.ind=0;
 if(Math.abs(Math.abs(this.center_lat)-HALF_PI)>EPSLN){
 this.ind=1;
-var con1=this.fac*this.center_lat; 
+var con1=this.fac*this.center_lat;
 var sinphi=Math.sin(con1);
 this.mcs=msfnz(this.e,sinphi,Math.cos(con1));
 this.tcs=tsfnz(this.e,con1,sinphi);
@@ -280,13 +351,159 @@ lon=adjust_lon(this.fac*Math.atan2(x,-y)+this.center_lon);
 }
 return new Array(R2D*lon,R2D*lat);
 }
+function semi_minor(a,f){return a-(a*(1/f));}
+var grs80=new Array(6378137.0,6356752.31414036);var wgs84=new Array(6378137.0,6356752.31424518);
+var wgs72=new Array(6378135.0,6356750.52001609);
+var intl=new Array(6378388.0,6356911.94612795); 
+var usfeet=1200/3937;var feet=0.3048; 
+function e0fn(x){return(1.0-0.25*x*(1.0+x/16.0*(3.0+1.25*x)));}
+function e1fn(x){return(0.375*x*(1.0+0.25*x*(1.0+0.46875*x)));}
+function e2fn(x){return(0.05859375*x*x*(1.0+0.75*x));}
+function e3fn(x){return(x*x*x*(35.0/3072.0));}
+function mlfn(e0,e1,e2,e3,phi){return(e0*phi-e1*Math.sin(2.0*phi)+e2*Math.sin(4.0*phi)-e3*Math.sin(6.0*phi));}
+function tminit(param){
+this.r_maj=param[0];
+this.r_min=param[1];
+this.scale_fact=param[2];
+this.lon_center=param[3]*D2R;
+this.lat_origin=param[4]*D2R;
+this.false_easting=param[5];
+this.false_northing=param[6];
+var temp=this.r_min/this.r_maj;
+this.es=1.0-Math.pow(temp,2);
+this.e0=e0fn(this.es);
+this.e1=e1fn(this.es);
+this.e2=e2fn(this.es);
+this.e3=e3fn(this.es);
+this.ml0=this.r_maj*mlfn(this.e0,this.e1,this.e2,this.e3,this.lat_origin);
+this.esp=this.es/(1.0-this.es);
+this.ind=(this.es<.00001)?1:0;
+}
+function utminit(param){
+this.r_maj=param[0];
+this.r_min=param[1];
+this.scale_fact=param[2];
+var zone=param[3];
+this.lat_origin=0.0;
+this.lon_center=((6*Math.abs(zone))-183)*D2R;
+this.false_easting=500000.0;
+this.false_northing=(zone<0)?10000000.0:0.0;
+var temp=this.r_min/this.r_maj;
+this.es=1.0-Math.pow(temp,2);
+this.e0=e0fn(this.es);
+this.e1=e1fn(this.es);
+this.e2=e2fn(this.es);
+this.e3=e3fn(this.es);
+this.ml0=this.r_maj*mlfn(this.e0,this.e1,this.e2,this.e3,this.lat_origin);
+this.esp=this.es/(1.0-this.es);
+this.ind=(this.es<.00001)?1:0;
+} 
+function ll2tm(coords){
+var lon=coords[0]*D2R;
+var lat=coords[1]*D2R;
+var delta_lon=adjust_lon(lon-this.lon_center); 
+var con; 
+var x,y;
+var sin_phi=Math.sin(lat);
+var cos_phi=Math.cos(lat);
+if(this.ind!=0){
+var b=cos_phi*Math.sin(delta_lon);
+if((Math.abs(Math.abs(b)-1.0))<.0000000001){
+alert("Error in ll2tm(): Point projects into infinity");
+return(93);
+}else{
+x=.5*this.r_maj*this.scale_fact*Math.log((1.0+b)/(1.0-b));
+con=Math.acos(cos_phi*Math.cos(delta_lon)/Math.sqrt(1.0-b*b));
+if(lat<0)
+con=-con;
+y=this.r_maj*this.scale_fact*(con-this.lat_origin);
+}
+}else{
+var al=cos_phi*delta_lon;
+var als=Math.pow(al,2);
+var c=this.esp*Math.pow(cos_phi,2);
+var tq=Math.tan(lat);
+var t=Math.pow(tq,2);
+con=1.0-this.es*Math.pow(sin_phi,2);
+var n=this.r_maj/Math.sqrt(con);
+var ml=this.r_maj*mlfn(this.e0,this.e1,this.e2,this.e3,lat);
+x=this.scale_fact*n*al*(1.0+als/6.0*(1.0-t+c+als/20.0*(5.0-18.0*t+Math.pow(t,2)+72.0*c-58.0*this.esp)))+this.false_easting;
+y=this.scale_fact*(ml-this.ml0+n*tq*(als*(0.5+als/24.0*(5.0-t+9.0*c+4.0*Math.pow(c,2)+als/30.0*(61.0-58.0*t+Math.pow(t,2)+600.0*c-330.0*this.esp)))))+this.false_northing;
+switch(this.units){
+case "usfeet":
+x/=usfeet;
+y/=usfeet
+break;
+case "feet":
+x=x/feet;
+y=y/feet;
+break;
+}}
+return new Array(x,y);
+} 
+function tm2ll(coords){
+var x=coords[0];
+var y=coords[1];
+var con,phi; 
+var delta_phi; 
+var i;
+var max_iter=6; 
+var lat,lon;
+if(this.ind!=0){ 
+var f=exp(x/(this.r_maj*this.scale_fact));
+var g=.5*(f-1/f);
+var temp=this.lat_origin+y/(this.r_maj*this.scale_fact);
+var h=cos(temp);
+con=sqrt((1.0-h*h)/(1.0+g*g));
+lat=asinz(con);
+if(temp<0)
+lat=-lat;
+if((g==0)&&(h==0)){
+lon=this.lon_center;
+}else{
+lon=adjust_lon(atan2(g,h)+this.lon_center);
+}
+}else{x=x-this.false_easting;
+y=y-this.false_northing;
+con=(this.ml0+y/this.scale_fact)/this.r_maj;
+phi=con;
+for(i=0;;i++){
+delta_phi=((con+this.e1*Math.sin(2.0*phi)-this.e2*Math.sin(4.0*phi)+this.e3*Math.sin(6.0*phi))/this.e0)-phi;
+phi+=delta_phi;
+if(Math.abs(delta_phi)<=EPSLN)break;
+if(i>=max_iter){
+alert("Error in tm2ll(): Latitude failed to converge");
+return(95);
+}
+}if(Math.abs(phi)<HALF_PI){
+var sin_phi=Math.sin(phi);
+var cos_phi=Math.cos(phi);
+var tan_phi=Math.tan(phi);
+var c=this.esp*Math.pow(cos_phi,2);
+var cs=Math.pow(c,2);
+var t=Math.pow(tan_phi,2);
+var ts=Math.pow(t,2);
+con=1.0-this.es*Math.pow(sin_phi,2);
+var n=this.r_maj/Math.sqrt(con);
+var r=n*(1.0-this.es)/con;
+var d=x/(n*this.scale_fact);
+var ds=Math.pow(d,2);
+lat=phi-(n*tan_phi*ds/r)*(0.5-ds/24.0*(5.0+3.0*t+10.0*c-4.0*cs-9.0*this.esp-ds/30.0*(61.0+90.0*t+298.0*c+45.0*ts-252.0*this.esp-3.0*cs)));
+lon=adjust_lon(this.lon_center+(d*(1.0-ds/6.0*(1.0+2.0*t+c-ds/20.0*(5.0-2.0*c+28.0*t-3.0*cs+8.0*this.esp+24.0*ts)))/cos_phi));
+}else{
+lat=HALF_PI*sign(y);
+lon=this.lon_center;
+}
+}
+return new Array(lon*R2D,lat*R2D);
+} 
 function msfnz(eccent,sinphi,cosphi){
 var con=eccent*sinphi;
 return cosphi/(Math.sqrt(1.0-con*con));
 }
 function tsfnz(eccent,phi,sinphi){
 var con=eccent*sinphi;
-var com=.5*eccent; 
+var com=.5*eccent;
 con=Math.pow(((1.0-con)/(1.0+con)),com);
 return(Math.tan(.5*(HALF_PI-phi))/con);
 }
@@ -297,7 +514,7 @@ var phi=HALF_PI-2*Math.atan(ts);
 for(i=0;i<=15;i++){
 con=eccent*Math.sin(phi);
 dphi=HALF_PI-2*Math.atan(ts*(Math.pow(((1.0-con)/(1.0+con)),eccnth)))-phi;
-phi+=dphi; 
+phi+=dphi;
 if(Math.abs(dphi)<=.0000000001)return phi;
 }
 alert("Convergence error - phi2z");

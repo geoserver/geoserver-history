@@ -17,8 +17,12 @@ LAYERS=abc3_19930411%3ACEOWARE2&STYLES=&FORMAT=image%2Fpng&BGCOLOR=0xFFFFFF&TRAN
 1997-04-11,1997-04-21,1997-05-01,1997-05-11,1997-05-21,1997-06-01,1997-06-11,1997-06-21,1997-07-01,1997-07-11,1997-07-21,1997-08-01,1997-08-11,1997-08-21,1997-09-01,1997-09-11,1997-09-21,1997-10-01,1997-10-11,1997-10-21,
 1998-04-11,1998-04-21,1998-05-01,1998-05-11,1998-05-21,1998-06-01,1998-06-11,1998-06-21,1998-07-01,1998-07-11,1998-07-21,1998-08-01,1998-08-11,1998-08-21,1998-09-01,1998-09-11,1998-09-21,1998-10-01,1998-10-11,1998-10-21
 -->  
+    <Window width="400" height="337"/>
+    <BoundingBox SRS="EPSG:42304" minx="442694.0261391697" miny="-148274.61719307187" maxx="2814302.8832287025" maxy="1849805.8449048596"/>
+<!--   
     <Window width="400" height="200"/>
     <BoundingBox SRS="EPSG:4326" minx="-142" miny="40" maxx="-52" maxy="85"/>
+-->
     <Title>Canada-wide 1-km AVHRR Composite Maps based on GEOCOMP Data enhanced with ABC3v2 Software</Title>
     <Abstract>The ABC3 Canada-wide 1-km resolution AVHRR composite maps (Version 2) were produced as part of the CCRS Northern Biosphere Observation and Modelling Experiment (NBIOME). NBIOME co-ordinated the participation of a Canadian research team in the international Earth Observing System (EOS) to develop methods for post-processing of AVHRR seasonal composite maps to produce derived products with national coverage. The ABC3v2 output product layers are used at CCRS in land cover and climate change studies; and are used to generate various non-remote sensing products such as Leaf Area Index (LAI) and Net Primary Productivity (NPP). These data layers can be used directly by resource managers to study large scale changes in land cover types and land use practices. Natural disturbances such as forest fires can alter the land cover. Anthropogenic changes caused by clear cutting of forests or industrial and residential development are significant in the long-term. The composite products can be used to evaluate seasonal behaviours of land cover types. These data layers and derived products can be used in radiation budget and climate studies.</Abstract>
     <KeywordList>
@@ -34,24 +38,22 @@ LAYERS=abc3_19930411%3ACEOWARE2&STYLES=&FORMAT=image%2Fpng&BGCOLOR=0xFFFFFF&TRAN
       <OnlineResource xlink:type="simple" xlink:href="http://geogratis.cgdi.gc.ca/clf/en?action=entrySummary&amp;entryId=8544&amp;entryType=productCollection&amp;keymap=outlineCanada" />
     </DescriptionURL>
     <ContactInformation>
-      <ContactElectronicMailAddress>info@GeoGratis.cgdi.gc.ca</ContactElectronicMailAddress>
+        <ContactElectronicMailAddress>info@GeoGratis.cgdi.gc.ca</ContactElectronicMailAddress>
+        <ContactPersonPrimary>
+            <ContactPerson>Steve Smith</ContactPerson>
+            <ContactOrganization>GeoGratis, NRCan</ContactOrganization>
+        </ContactPersonPrimary>
+        <ContactAddress>
+            <AddressType>postal</AddressType>
+            <Address>650-615 Booth St.</Address>
+            <City>Ottawa</City>
+            <StateOrProvince>Ont</StateOrProvince>
+            <PostCode>K1A 0E9</PostCode>
+            <Country>Canada</Country>
+        </ContactAddress>
+        <ContactVoiceTelephone/>
+        <ContactElectronicMailAddress>info@GeoGratis.cgdi.gc.ca</ContactElectronicMailAddress>
     </ContactInformation>
-        <ContactInformation>
-            <ContactPersonPrimary>
-                <ContactPerson>Steve Smith</ContactPerson>
-                <ContactOrganization>GeoGratis, Natural Resources Canada</ContactOrganization>
-            </ContactPersonPrimary>
-            <ContactAddress>
-                <AddressType>postal</AddressType>
-                <Address>650-615 Booth St.</Address>
-                <City>Ottawa</City>
-                <StateOrProvince>Ont</StateOrProvince>
-                <PostCode>K1A 0E9</PostCode>
-                <Country>Canada</Country>
-            </ContactAddress>
-            <ContactVoiceTelephone/>
-            <ContactElectronicMailAddress>info@GeoGratis.cgdi.gc.ca</ContactElectronicMailAddress>
-        </ContactInformation>
   </General>
   <LayerList>
     <Layer queryable="0" hidden="0">
@@ -77,9 +79,9 @@ LAYERS=abc3_19930411%3ACEOWARE2&STYLES=&FORMAT=image%2Fpng&BGCOLOR=0xFFFFFF&TRAN
         <Format current="1">image/png</Format>
       </FormatList>
     </Layer>
-    <Layer queryable="0" hidden="0">
+    <!--Layer queryable="0" hidden="0">
       <Server service="wms" version="1.1.0" title="wms">
-        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/mapdata/aoc_v3/english/pb_world.map"/>
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
       </Server>
       <Name>coast</Name>
       <Title>coastline</Title>
@@ -87,6 +89,6 @@ LAYERS=abc3_19930411%3ACEOWARE2&STYLES=&FORMAT=image%2Fpng&BGCOLOR=0xFFFFFF&TRAN
       <FormatList>
         <Format current="1">image/gif</Format>
       </FormatList>
-    </Layer>
+    </Layer-->
   </LayerList>
 </ViewContext>

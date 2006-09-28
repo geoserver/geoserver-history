@@ -2,7 +2,7 @@
 <ViewContextCollection version="1.0.0" xmlns="http://www.opengis.net/context" 
     xmlns:xlink="http://www.w3.org/1999/xlink" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:schemaLocation="http://www.opengis.net http://schemas.opengis.net/context/1.0.0/collection.xsd">
+    xsi:schemaLocation="http://www.opengis.net http://schemas.opengeospatial.net/context/1.0.0/collection.xsd">
 	<!-- List of context XML URLs -->
 	<ViewContextReference version="1.0.0" id="atlas">
 		<Title>Atlas World base map</Title>

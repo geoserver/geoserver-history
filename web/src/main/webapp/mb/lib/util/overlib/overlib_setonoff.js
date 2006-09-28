@@ -39,8 +39,10 @@ var olRe;
 function setNoParamCommand(whichType,pf,COMMAND){
 var v=pms[COMMAND-1-pmStart];
 if(pmt&&!olRe)olRe=eval('/'+pmt.split(',').join('|')+'/');
-if(pf!='ol_'&&/capturefirst/.test(v))return;if(pf!='ol_'&&/wrap/.test(v)&&eval(pf+'wrap')&&(whichType==0)){
-nbspCleanup();o3_width=ol_width;
+if(pf!='ol_'&&/capturefirst/.test(v))return; 
+if(pf!='ol_'&&/wrap/.test(v)&&eval(pf+'wrap')&&(whichType==0)){
+nbspCleanup(); 
+o3_width=ol_width;
 }
 if(olRe.test(v))eval(pf+v+'='+((whichType&&COMMAND==AUTOSTATUSCAP)?whichType++:whichType));
 }

@@ -19,11 +19,24 @@ normalImageDiv.style.visibility="visible";
 var highlightImageDiv=document.getElementById(featureId+"_highlight");
 highlightImageDiv.style.visibility="hidden";
 }
+this.clearFeatures=function(){
+var features=this.model.getFeatureNodes();
+for(var i=0;i<features.length;++i){
+var feature=features[i];
+var itemId=this.model.getFeatureId(feature);var normalImageDiv=document.getElementById(itemId+"_normal");
+var highlightImageDiv=document.getElementById(itemId+"_highlight");
+if(normalImageDiv)
+this.node.removeChild(normalImageDiv);
+if(highlightImageDiv)
+this.node.removeChild(highlightImageDiv);
+}
+}
 this.model.addListener("dehighlightFeature",this.dehighlight,this);
 }
 GmlPointRenderer.prototype.paint=function(objRef){
-if(objRef.model.doc&&objRef.node){
+if(objRef.model.doc&&objRef.node&&objRef.containerModel.doc){
 var containerProj=new Proj(objRef.containerModel.getSRS());
+objRef.clearFeatures();
 var features=objRef.model.getFeatureNodes();
 for(var i=0;i<features.length;++i){
 var feature=features[i];

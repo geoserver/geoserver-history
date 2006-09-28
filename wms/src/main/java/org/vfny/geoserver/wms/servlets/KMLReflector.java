@@ -177,7 +177,7 @@ public class KMLReflector extends WMService {
 		
 		// make a network link for every layer
 		for (int i=0; i<layers.length; i++) {
-			if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
+			//if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
 				String style = "&styles="+layers[i].getDefaultStyle().getName();
 				if (styles != null && styles.length>=i+1) // if the user specified styles
 					style = "&styles="+styles[i].getName(); // use them, else we use the default style
@@ -199,7 +199,7 @@ public class KMLReflector extends WMService {
 				sb.append("<viewRefreshTime>3</viewRefreshTime>\n");
 				sb.append("</Url>\n");
 				sb.append("</NetworkLink>\n");
-			}
+			//}
 		}
 		sb.append("</Folder>\n");
 		sb.append("</kml>\n");

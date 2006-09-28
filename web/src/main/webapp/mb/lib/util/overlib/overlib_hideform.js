@@ -18,15 +18,18 @@ var px,py,pw,ph,sx,sw,sy,sh,selEl,v;
 if(olIe4)v=0;
 else{
 v=navigator.userAgent.match(/Gecko\/(\d{8})/i);
-if(!v)return;v=parseInt(v[1]);
+if(!v)return; 
+v=parseInt(v[1]);
 }
-if(v<20030624){px=parseInt(over.style.left);
+if(v<20030624){ 
+px=parseInt(over.style.left);
 py=parseInt(over.style.top);
 pw=o3_width;
 ph=(o3_aboveheight?parseInt(o3_aboveheight):over.offsetHeight);
 selEl=(olIe4)?o3_frame.document.all.tags("SELECT"):o3_frame.document.getElementsByTagName("SELECT");
 for(var i=0;i<selEl.length;i++){
-if(!olIe4&&selEl[i].size<2)continue;sx=pageLocation(selEl[i],'Left');
+if(!olIe4&&selEl[i].size<2)continue; 
+sx=pageLocation(selEl[i],'Left');
 sy=pageLocation(selEl[i],'Top');
 sw=selEl[i].offsetWidth;
 sh=selEl[i].offsetHeight;

@@ -93,7 +93,8 @@ lyrObj.visibility='visible';
 }
 }
 }
-function positionLayer(Obj,x,y){Obj.left=x+(olIe4?eval(docRoot+'.scrollLeft'):window.pageXOffset)+(olNs4?0:'px');
+function positionLayer(Obj,x,y){ 
+Obj.left=x+(olIe4?eval(docRoot+'.scrollLeft'):window.pageXOffset)+(olNs4?0:'px');
 Obj.top=y+(olIe4?eval(docRoot+'.scrollTop'):window.pageYOffset)+(olNs4?0:'px');
 }
 function closeLayer(lyrID){

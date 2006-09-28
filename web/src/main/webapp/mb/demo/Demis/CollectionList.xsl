@@ -5,8 +5,8 @@ Description: parses an OGC context collection document to generate a context pic
 Author:      adair
 Licence:     LGPL as specified in http://www.gnu.org/copyleft/lesser.html .
 
-$Id: CollectionList.xsl 4872 2006-08-11 18:58:06Z jdeolive $
-$Name: mapbuilder-lib-1_0-rc1 $
+$Id: CollectionList.xsl 5068 2006-09-27 23:51:42Z bowens $
+$Name$
 -->
 
 <xsl:stylesheet version="1.0" 
