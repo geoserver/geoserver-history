@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.operation.BufferedDefaultCoordinateOperationFactory;
+import org.geotools.referencing.operation.BufferedCoordinateOperationFactory;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -35,7 +35,7 @@ import org.opengis.referencing.operation.OperationNotFoundException;
  */
 public class CoverageUtils {
 
-	private final static BufferedDefaultCoordinateOperationFactory operationFactory = new BufferedDefaultCoordinateOperationFactory(
+	private final static BufferedCoordinateOperationFactory operationFactory = new BufferedCoordinateOperationFactory(
 			new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
 
 	private final static Logger LOGGER = Logger.getLogger(CoverageUtils.class
