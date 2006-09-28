@@ -28,10 +28,10 @@
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-referencing</artifactId>
 		</dependency>
-		<!--dependency>
+		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-arcgrid-spike</artifactId>
-		</dependency-->
+			<artifactId>gt2-arcgrid</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-geotiff</artifactId>

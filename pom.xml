@@ -95,11 +95,11 @@
 				<artifactId>streams</artifactId>
 				<version>1.0</version>
 			</dependency-->
-			<!--dependency>
+			<dependency>
 				<groupId>org.geotools</groupId>
-  			<artifactId>gt2-arcgrid-spike</artifactId>
+  			<artifactId>gt2-arcgrid</artifactId>
 				<version>${gt.version}</version>
-			</dependency-->
+			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-geotiff</artifactId>
