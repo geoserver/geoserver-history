@@ -1,3 +1,19 @@
+GeoServer 1.4.0-M2
+------------------
+
+Major features / improvements of this release include:
+
+- Upgraded MapBuilder demo version
+- WMS Base-map option
+- GetFeatureInfo now supports reprojection
+- KML Reprojection
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12950
+
+Base on Geotools 2.2.0 (tag = 2.2.0)
+
+
 GeoServer 1.4.0-M1
 ------------------
 
