@@ -7,7 +7,7 @@
                  page.
     Licence:     LGPL as per: http://www.gnu.org/copyleft/lesser.html 
 
-    $Id: config.xml 5067 2006-09-27 23:49:39Z bowens $
+    $Id: config.xml 5074 2006-09-29 19:46:48Z bowens $
   -->
 	<!--
     All static images should be relative to this URL.
@@ -103,7 +103,7 @@
 			<class>Button</class>
 			<disabledSrc>/images/DeleteDisable.png</disabledSrc>
 			<transactionResponseModel>transaction</transactionResponseModel>
-			<webServiceUrl>../../wfs</webServiceUrl>
+			<webServiceUrl>../wfs</webServiceUrl>
 			<targetContext>mainMap</targetContext>
 		</DeleteFeature>
 		<ZoomIn id="zoomIn">
@@ -145,7 +145,7 @@
 			<enabledSrc>/images/EditPointEnable.png</enabledSrc>
 			<disabledSrc>/images/EditPointDisable.png</disabledSrc>
 			<transactionResponseModel>transaction</transactionResponseModel>
-			<webServiceUrl>../../wfs</webServiceUrl>
+			<webServiceUrl>../wfs</webServiceUrl>
 			<targetContext>mainMap</targetContext>
 			<featureXpath>/gml:featureMember/topp:tasmania_cities/topp:the_geom/gml:MultiPoint/gml:pointMember/gml:Point/gml:coordinates</featureXpath>
 			<defaultModelUrl>template_cities.xml</defaultModelUrl>
@@ -158,7 +158,7 @@
 			<enabledSrc>/images/EditLineEnable.png</enabledSrc>
 			<disabledSrc>/images/EditLineDisable.png</disabledSrc>
 			<transactionResponseModel>transaction</transactionResponseModel>
-			<webServiceUrl>../../wfs</webServiceUrl>
+			<webServiceUrl>../wfs</webServiceUrl>
 			<targetContext>mainMap</targetContext>
 			<featureXpath>/gml:featureMember/topp:tasmania_roads/topp:the_geom/gml:MultiLineString/gml:lineStringMember/gml:LineString/gml:coordinates</featureXpath>
 			<defaultModelUrl>template_road.xml</defaultModelUrl>
@@ -169,7 +169,7 @@
 			<class>Button</class>
 			<disabledSrc>/images/SaveDisable.png</disabledSrc>
 			<transactionResponseModel>transaction</transactionResponseModel>
-			<webServiceUrl>../../wfs</webServiceUrl>
+			<webServiceUrl>../wfs</webServiceUrl>
 			<targetContext>mainMap</targetContext>
 		</InsertFeature>
 		<WfsGetFeature id="wfsGetFeature">
@@ -180,7 +180,7 @@
 			<enabledSrc>/images/QueryEnable.png</enabledSrc>
 			<disabledSrc>/images/QueryDisable.png</disabledSrc>
 			<transactionResponseModel>featureCollection</transactionResponseModel>
-			<webServiceUrl>../../wfs</webServiceUrl>
+			<webServiceUrl>../wfs</webServiceUrl>
 			<typeName>topp:tasmania_cities,topp:tasmania_roads</typeName>
 			<tolerance>5</tolerance>
 		</WfsGetFeature>

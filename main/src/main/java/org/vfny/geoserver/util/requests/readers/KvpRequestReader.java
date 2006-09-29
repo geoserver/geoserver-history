@@ -62,8 +62,7 @@ abstract public class KvpRequestReader {
 	protected static final String INNER_DELIMETER = ",";
 
 	/** Holds mappings between HTTP and ASCII encodings */
-	protected final static FilterFactory factory = FilterFactoryFinder
-			.createFilterFactory();
+	protected final static FilterFactory factory = FilterFactoryFinder.createFilterFactory();
 
 	/** KVP pair listing; stores all data from the KVP request */
 	protected Map kvpPairs = new HashMap(10);

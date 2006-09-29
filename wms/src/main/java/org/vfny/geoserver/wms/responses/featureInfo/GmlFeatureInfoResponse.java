@@ -89,6 +89,7 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
             fresults = (FeatureResults) it.next();
             finfo = (FeatureTypeInfo) metas.get(i);
             getFeatureResults.addFeatures(finfo, fresults);
+            //TODO: Do we want to reproject the geometries here? Or leave them in their native projection?
         }
 
         GML2FeatureResponseDelegate encoder = new GML2FeatureResponseDelegate();

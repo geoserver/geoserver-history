@@ -36,6 +36,8 @@
 				<include>mbdemos/**/*</include>
 				<include>plugIns/**/*</include>
 				<include>styles/**/*</include>
+				<include>images/**/*</include>
+				<include>coverages/**/*</include>
 				<include>featureTypes/**/*</include>
 				<include>validation/**/*</include>
 				<include>wfs-t_demo/**/*</include>
