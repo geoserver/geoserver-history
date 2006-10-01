@@ -94,6 +94,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 	 * </p>
 	 */
 	private File baseDir;
+	private File dataDir;
 
 	/**
 	 * CoverageStoreInfo constructor.
@@ -120,6 +121,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 		_abstract = config.getAbstract();
 		format = lookupFormat();
 		baseDir = data.getBaseDir();
+		dataDir = data.getDataDirectory();
 
 	}
 
@@ -383,6 +385,10 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 		return baseDir;
 	}
 
+	public File getDataDir() {
+		return dataDir;
+	}
+
 	public synchronized GridCoverageReader getReader() {
 		if(reader!=null)
 			return reader;
@@ -402,7 +408,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 			// Getting coverage reader using the format and the real path.
 			//
 			// /////////////////////////////////////////////////////////
-			final File obj=CoverageUtils.getResourceAsFile(gcInfo.getUrl(), gcInfo.getBaseDir());
+			final File obj=CoverageUtils.getResourceAsFile(gcInfo.getUrl(), null, gcInfo.getDataDir());
 
 			// XXX CACHING READERS HERE
 			reader= ((AbstractGridFormat) gcInfo.getFormat()).getReader(obj);

@@ -131,7 +131,7 @@ public final class CoverageStoresEditorAction extends ConfigAction {
 			// format.
 			//
 			// ///////////////////////////////////////////////////////////////
-			URL victimUrl = CoverageUtils.getResource(url, sc.getRealPath("/"));
+			URL victimUrl = CoverageUtils.getResourceAsFile(url, getServletContext(), null).toURL();
 			if (!((AbstractGridFormat) victim).accepts(victimUrl)) {
 
 				ActionErrors errors = new ActionErrors();

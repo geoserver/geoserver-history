@@ -1,3 +1,17 @@
+GeoServer 1.4.0-M2-WCS
+----------------------
+
+Major features / improvements of this release include:
+
+- WCS 0.4 (2D Coverages)
+- WMS Raster support
+- KML Raster support
+
+The issue log for this release is here:
+
+Base on Geotools 2.3.0-M0 (tag = 2.3.0-M0)
+
+
 GeoServer 1.4.0-M2
 ------------------
 

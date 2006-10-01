@@ -171,7 +171,7 @@ public final class CoveragesEditorAction extends ConfigAction {
 			GridCoverageReader reader = cvStoreInfo.getReader();
 			if (reader == null)
 				try {
-					reader = ((AbstractGridFormat) format).getReader(CoverageUtils.getResourceAsFile(cvStoreInfo.getUrl(), catalog.getBaseDir()));
+					reader = ((AbstractGridFormat) format).getReader(CoverageUtils.getResourceAsFile(cvStoreInfo.getUrl(), getServletContext(), null/*catalog.getBaseDir()*/));
 				} catch (MalformedURLException ex) {
 					throw new ServletException(ex);
 				}

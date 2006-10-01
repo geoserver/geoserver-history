@@ -14,6 +14,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletContext;
+
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
@@ -24,6 +26,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.CoordinateOperation;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.OperationNotFoundException;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * DOCUMENT ME!
@@ -60,10 +63,18 @@ public class CoverageUtils {
 		return url;
 	}
 
-	public static File getResourceAsFile(String path, File baseDir)
+	public static File getResourceAsFile(String path, ServletContext sc, File dataDir)
 			throws MalformedURLException {
 
-		if (path.startsWith("file:data/")) {
+    	//DJB: changed this for geoserver_data_dir   	
+    	//String baseDir = sc.getRealPath("/");
+    	File baseDir = null;
+    	if (dataDir != null)
+    		baseDir = dataDir;
+    	else
+    		baseDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+
+		if (path.startsWith("file:")) {
 			path = path.substring(5); // remove 'file:' prefix
 
 			return new File(baseDir, path);
