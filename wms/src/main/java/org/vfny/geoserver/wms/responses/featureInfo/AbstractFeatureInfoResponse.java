@@ -153,7 +153,9 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 "Content type unknown since execute() has not been called yet");
         }
 
-        return format;
+        // chain geoserver charset so that multibyte feature info responses
+        // gets properly encoded, same as getCapabilities responses 
+        return format + ";charset=" + gs.getCharSet().displayName();
     }
 
     /**
