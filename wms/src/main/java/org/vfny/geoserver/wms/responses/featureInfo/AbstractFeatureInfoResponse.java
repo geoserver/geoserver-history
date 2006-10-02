@@ -172,7 +172,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         this.format = request.getInfoFormat();
 
         GetMapRequest getMapReq = request.getGetMapRequest();
-        CoordinateReferenceSystem requestedCRS = getMapReq.getCrs();
+        CoordinateReferenceSystem requestedCRS = getMapReq.getCrs(); // optional, may be null
         
         int width = getMapReq.getWidth();
         int height = getMapReq.getHeight();
@@ -218,7 +218,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 
                 CoordinateReferenceSystem dataCRS = finfo.getFeatureType().getDefaultGeometry().getCoordinateSystem();
                 // reproject the bounding box
-                if (!CRS.equalsIgnoreMetadata(dataCRS, requestedCRS)) {
+                if (requestedCRS != null && !CRS.equalsIgnoreMetadata(dataCRS, requestedCRS)) {
             		try {
             			MathTransform transform = CRS.transform(requestedCRS, dataCRS, true);
             			pixelRect = (Polygon) JTS.transform(pixelRect, transform); // reprojected
