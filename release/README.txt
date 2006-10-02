@@ -10,7 +10,8 @@ Major features / improvements of this release include:
 The issue log for this release is here:
 
 Base on Geotools 2.3.0-M0 (tag = 2.3.0-M0)
-
+        JAI      1.1.4+   (https://jai.dev.java.net/)
+        ImageIO  1.1+     (https://jai-imageio.dev.java.net/)
 
 GeoServer 1.4.0-M2
 ------------------
