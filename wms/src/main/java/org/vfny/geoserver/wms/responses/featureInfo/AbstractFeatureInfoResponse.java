@@ -153,7 +153,9 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 "Content type unknown since execute() has not been called yet");
         }
 
-        return format;
+        // chain geoserver charset so that multibyte feature info responses
+        // gets properly encoded, same as getCapabilities responses 
+        return format + ";charset=" + gs.getCharSet().displayName();
     }
 
     /**
@@ -218,7 +220,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 
                 CoordinateReferenceSystem dataCRS = finfo.getFeatureType().getDefaultGeometry().getCoordinateSystem();
                 // reproject the bounding box
-                if (!CRS.equalsIgnoreMetadata(dataCRS, requestedCRS)) {
+                if (requestedCRS != null && !CRS.equalsIgnoreMetadata(dataCRS, requestedCRS)) {
             		try {
             			MathTransform transform = CRS.transform(requestedCRS, dataCRS, true);
             			pixelRect = (Polygon) JTS.transform(pixelRect, transform); // reprojected

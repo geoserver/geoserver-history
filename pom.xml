@@ -67,6 +67,16 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>mortbay</id>
+			<name>
+				Repository from Mortbay project (useful mirror when main is not available)
+			</name>
+			<url>http://www.mortbay.org/maven2/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
@@ -174,7 +184,7 @@
 			<dependency>
 				<groupId>org.wkb4j</groupId>
 				<artifactId>wkb4j</artifactId>
-				<version>1.0-RC1-modified</version>
+				<version>1.0-RC1</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -194,12 +204,12 @@
 			<dependency>
 				<groupId>xml-apis</groupId>
 				<artifactId>xmlParserAPIs</artifactId>
-				<version>2.6.2</version>
+				<version>2.0.2</version>
 			</dependency>
 			<dependency>
 				<groupId>xerces</groupId>
 				<artifactId>xercesImpl</artifactId>
-				<version>2.6.2</version>
+				<version>2.4.0</version>
 			</dependency>
 			<dependency>
 				<groupId>xalan</groupId>
@@ -344,21 +354,16 @@
 				<artifactId>itext</artifactId>
 				<version>1.3</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty</artifactId>
-				<version>6.0.1</version>
+				<version>6.0.0rc2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-util</artifactId>
-				<version>6.0.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jsp-api-2.0</artifactId>
-				<version>6.0.1</version>
+				<artifactId>jsp-2.0</artifactId>
+				<version>6.0.0rc2</version>
+				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>tomcat</groupId>
@@ -393,7 +398,7 @@
 			<dependency>
 				<groupId>ant</groupId>
 				<artifactId>ant</artifactId>
-				<version>1.6.5</version>
+				<version>1.6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -493,116 +498,6 @@
 			</testResource>
 		</testResources>
 
-    <!-- =================================================================== -->
-    <!--   Maven plugins dependencies management.                            -->
-    <!--   It should not be needed since Maven select by default the latest  -->
-    <!--   plugins. Unfortunatly, experience shows that new plugin releases  -->
-    <!--   sometime introduce new bugs that break our build. So it is safer  -->
-    <!--   to specify plugin versions that are known to work.  This list is  -->
-    <!--   in alphabetical order for easier comparaison with latest plugins  -->
-    <!--   at http://www.ibiblio.org/maven2/org/apache/maven/plugins/.       -->
-    <!-- =================================================================== -->
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <configuration>
-            <descriptors>
-              <descriptor>src/main/assembly/binaryDist.xml</descriptor>
-              <descriptor>src/main/assembly/sourceDist.xml</descriptor>
-            </descriptors>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>2.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.0.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>2.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-plugin-plugin</artifactId>
-          <version>2.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-pmd-plugin</artifactId>
-          <version>2.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>2.0.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>2.0-beta-5</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-report-plugin</artifactId>
-          <version>2.0</version>
-        </plugin>
-
-        <!-- http://www.ibiblio.org/maven2/org/codehaus/mojo/ -->
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>changelog-maven-plugin</artifactId>
-          <version>2.0-beta-1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>changes-maven-plugin</artifactId>
-          <version>2.0-beta-1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>jxr-maven-plugin</artifactId>
-          <version>2.0-beta-1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>taglist-maven-plugin</artifactId>
-          <version>2.0</version>
-        </plugin>
-        <!--plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>jalopy-maven-plugin</artifactId>
-          <version>1.0-SNAPSHOT</version>
-        </plugin-->
-      </plugins>
-    </pluginManagement>
-
 		<!--extensions>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
@@ -683,142 +578,151 @@
 	</build>
 
 	<reporting>
-	   <plugins>
-      <!-- ================================================================= -->
-      <!--     Javadoc generation.                                           -->
-      <!--     Notes:                                                        -->
-      <!--                                                                   -->
-      <!--       - Do NOT enable deep copying of "doc-files" directories     -->
-      <!--         ("-docfilessubdirs" option), because it has the unwanted  -->
-      <!--         side effect to copy .svn directories as well.             -->
-      <!--                                                                   -->
-      <!--       - Do NOT link source code, because it duplicates            -->
-      <!--         jxr-maven-plugin.                                         -->
-      <!--                                                                   -->
-      <!--       - <sourcepath /> and <subpackages /> elements doesn't seem    -->
-      <!--         to work with aggregated javadoc.                          -->
-      <!--                                                                   -->
-      <!-- ================================================================= -->
+		<plugins>
+			<!-- ================================================================= -->
+			<!--     Web site generation.                                          -->
+			<!-- ================================================================= -->
 			<plugin>
-  			<groupId>org.apache.maven.plugins</groupId>
-  			<artifactId>maven-javadoc-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+			</plugin>
+
+			<!-- ================================================================= -->
+			<!--     Reports configuration for the web site.                       -->
+			<!-- ================================================================= -->
+
+			<!-- javadoc -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
-          <source>1.4</source>            <!-- Necessary to enable javadoc to handle J2SE 1.4 features.           -->
-          <version>false</version>        <!-- Specifies whether or not the version text is included.             -->
-          <noqualifier>all</noqualifier>  <!-- Omits qualifying package name from ahead of class names in output. -->
-          <quiet>true</quiet>             <!-- Shuts off non-error and non-warning messages.                      -->
-          <maxmemory>512M</maxmemory>     <!-- The maximum Java heap size to be used when launching the javadoc.  -->
-          <encoding>ISO-8859-1</encoding> <!-- Specifies the encoding name of the source files.                   -->
-          <aggregate>true</aggregate>     <!-- Whether to build an aggregated report at the root.                 -->
-          <additionalparam>-keywords</additionalparam> <!-- Set an additional parameter on the command line.      -->
+					<source>1.4</source>
+					<!-- Necessary to enable javadoc to handle J2SE 1.4 features.           -->
+					<version>false</version>
+					<!-- Specifies whether or not the version text is included.             -->
+					<noqualifier>all</noqualifier>
+					<!-- Omits qualifying package name from ahead of class names in output. -->
+					<quiet>true</quiet>
+					<!-- Shuts off non-error and non-warning messages.                      -->
+					<maxmemory>512M</maxmemory>
+					<!-- The maximum Java heap size to be used when launching the javadoc.  -->
+					<encoding>ISO-8859-1</encoding>
+					<!-- Specifies the encoding name of the source files.                   -->
+					<aggregate>true</aggregate>
+					<!-- Whether to build an aggregated report at the root.                 -->
+					<additionalparam>-keywords</additionalparam>
+					<!-- Set an additional parameter on the command line.               -->
+					<excludePackageNames>
+						org.geotools.resources
+					</excludePackageNames>
 
-          <!-- Enables the Javadoc tool to interpret a simple, one-argument -->
-          <!-- custom block tag tagname in doc comments. Note: <placement /> -->
-          <!-- should be a combinaison of the letters Xaoptcmf.             -->
-          <tags>
-            <tag>
-              <name>todo</name>
-              <placement>tfmc</placement>
-              <head>TODO:</head>
-            </tag>
-            <tag>
-              <name>task</name>
-              <placement>tfmc</placement>
-              <head>TODO:</head>
-            </tag>
-            <tag>
-              <name>revisit</name>
-              <placement>tfmc</placement>
-              <head>TODO:</head>
-            </tag>
-            <tag>
-              <name>generated</name>
-              <placement>Xt</placement>
-              <head>Generated</head>
-            </tag>
-          </tags>
+					<!-- Enables the Javadoc tool to interpret a simple, one-argument custom block tag tagname in doc comments. -->
+					<!-- Note: <placement/> should be a combinaison of the letters Xaoptcmf.                                    -->
+					<tags>
+						<tag>
+							<name>todo</name>
+							<placement>tfmc</placement>
+							<head>TODO:</head>
+						</tag>
+						<tag>
+							<name>task</name>
+							<placement>tfmc</placement>
+							<head>TODO:</head>
+						</tag>
+						<tag>
+							<name>revisit</name>
+							<placement>tfmc</placement>
+							<head>TODO:</head>
+						</tag>
+						<tag>
+							<name>source</name>
+							<placement>Xt</placement>
+							<head>Source:</head>
+						</tag>
+						<tag>
+							<name>tutorial</name>
+							<placement>Xt</placement>
+							<head>Tutorial:</head>
+						</tag>
+					</tags>
 
-          <!-- Creates links to existing javadoc-generated documentation of external referenced classes. -->
-          <links>
-            <link>http://java.sun.com/j2se/1.5/docs/api</link>
-            <link>http://java.sun.com/j2ee/1.4/docs/api</link>
-            <link>http://java.sun.com/products/java-media/jai/forDevelopers/jai-apidocs</link>
-            <link>http://java.sun.com/products/java-media/3D/forDevelopers/j3dapi</link>
-            <link>http://jsr-108.sourceforge.net/javadoc</link>
-            <link>http://geoapi.sourceforge.net/snapshot/javadoc</link>
-            <link>http://geoapi.sourceforge.net/pending/javadoc</link>
-            <link>http://geoapi.sourceforge.net/legacy/javadoc</link>
-            <link>http://www.jump-project.org/docs/jts/1.7/api</link>
-          </links>
+					<!-- Creates links to existing javadoc-generated documentation of external referenced classes. -->
+					<links>
+						<link>
+							http://java.sun.com/j2se/1.5/docs/api
+						</link>
+						<link>
+							http://java.sun.com/j2ee/1.4/docs/api
+						</link>
+						<link>
+							http://java.sun.com/products/java-media/jai/forDevelopers/jai-apidocs
+						</link>
+						<link>
+							http://java.sun.com/products/java-media/3D/forDevelopers/j3dapi
+						</link>
+						<link>
+							http://jsr-108.sourceforge.net/javadoc
+						</link>
+						<link>
+							http://geoapi.sourceforge.net/snapshot/javadoc
+						</link>
+						<link>
+							http://geoapi.sourceforge.net/pending/javadoc
+						</link>
+						<link>
+							http://geoapi.sourceforge.net/legacy/javadoc
+						</link>
+						<link>
+							http://www.jump-project.org/docs/jts/1.7/api
+						</link>
+						<link>http://www.geotools.fr/javadoc/2.2/</link>
+						<link>
+							http://xmlgraphics.apache.org/batik/javadoc
+						</link>
+						<link>http://itextdocs.lowagie.com/docs</link>
+					</links>
 				</configuration>
 			</plugin>
 
-      <!-- ================================================================= -->
-      <!--     Web site generation.                                          -->
-      <!-- ================================================================= -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-          <siteDirectory>site</siteDirectory>
-	<!-- TODO The following is disabled for now because of a bug in French resources
-          <locales>en,fr</locales>   <! Generates the site in English and French -->
-          <locales>en</locales>
-        </configuration>
-      </plugin>
+			<!-- Basic project informations -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>
+					maven-project-info-reports-plugin
+				</artifactId>
+			</plugin>
 
+			<!-- Report on the test results of the project -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<configuration>
+					<linkXRef>true</linkXRef>
+				</configuration>
+			</plugin>
 
-      <!-- ================================================================= -->
-      <!--     Reports configuration for the web site.                       -->
-      <!-- ================================================================= -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-      </plugin>
-      
-      <!-- Report on the test results of the project -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-      </plugin>
-      
-      <!-- Code coverage report -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clover-plugin</artifactId>
-      </plugin>
-      
-      <!-- Verification of coding rules. Disabled, nobody is using it at the moment
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-      </plugin>
-      -->
-      
-      <!-- HTML based, cross-reference version of Java source code -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jxr-maven-plugin</artifactId>
-      </plugin>
-      
-      <!-- Report on various tags found in the code -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>taglist-maven-plugin</artifactId>
-      </plugin>
-      
-      
-      <!-- SVN activities during the last 30 days -->
-      <!-- Disabled for now, because this plugin crash with a NullPointerException
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>changelog-maven-plugin</artifactId>
-        <configuration>
-          <type>range</type>
-          <range>30</range>
-        </configuration>
-      </plugin>
-      -->
+			<!-- HTML based, cross-reference version of Java source code -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jxr-maven-plugin</artifactId>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+
+			<!-- Report on various tags found in the code -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<configuration>
+					<tags>
+						<tag>@revisit</tag>
+						<tag>@todo</tag>
+						<tag>TODO</tag>
+						<tag>FIXME</tag>
+					</tags>
+				</configuration>
+			</plugin>
 
 			<!-- Cobertura plugin (test code coverage reports) -->
 			<plugin>
@@ -864,6 +768,7 @@
 
 	<profiles>
 		<!-- community profile, include community module -->
+		<id>community</id>
 		<profile>
 			<activation>
 				<property>
@@ -883,6 +788,35 @@
 				<module>test</module>
 				<module>community</module>
 			</modules>
+		</profile>
+		<profile>
+			<id>uml</id>
+			<activation>
+				<property>
+					<name>uml</name>
+				</property>
+			</activation>
+			<reporting>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<configuration>
+							<doclet>gr.spinellis.umlgraph.doclet.UmlGraphDoc</doclet>
+							<docletArtifact>
+								<groupId>gr.spinellis</groupId>
+								<artifactId>UmlGraph</artifactId>
+								<version>4.4</version>
+							</docletArtifact>
+							<additionalparam>
+								-inferrel -inferdep -quiet -hide java.* -collpackages java.util.* -qualify
+								-postfixpackage -nodefontsize 9
+								-nodefontpackagesize 7
+							</additionalparam>
+						</configuration>
+					</plugin>
+				</plugins>
+			</reporting>
 		</profile>
 	</profiles>
 

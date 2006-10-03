@@ -69,6 +69,9 @@ public class GeoserverDataDirectory {
 				isTrueDataDir = true;
 				dataDir = new File(prop);
 				loader = new GeoServerResourceLoader(dataDir);
+				System.out.println("----------------------------------");
+				System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
+				System.out.println("----------------------------------");
 				return dataDir;
 			}
 
@@ -79,6 +82,9 @@ public class GeoserverDataDirectory {
 				isTrueDataDir = true;
 				dataDir = new File(loc);
 				loader = new GeoServerResourceLoader(dataDir);
+				System.out.println("----------------------------------");
+				System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
+				System.out.println("----------------------------------");
 				return dataDir;
 			}
 
@@ -86,6 +92,9 @@ public class GeoserverDataDirectory {
 			isTrueDataDir = false;
 			String rootDir = servContext.getRealPath("/");
 			dataDir = new File(rootDir);
+			System.out.println("----------------------------------");
+			System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
+			System.out.println("----------------------------------");
 
 			// create loader, and add some locations to the serach path
 			loader = new GeoServerResourceLoader(dataDir);

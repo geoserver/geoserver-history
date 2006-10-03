@@ -98,10 +98,14 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 
 		String version = super.getRequestVersion();
 
-		if (!GetLegendGraphicRequest.SLD_VERSION.equals(version)) {
-			throw new WmsException("Invalid SLD version number \"" + version
-					+ "\"");
-		}
+//		Fix for http://jira.codehaus.org/browse/GEOS-710
+//		Since at the moment none of the other request do check the version numbers, we 
+//		disable this check for the moment, and wait for a proper fix once the 
+//		we support more than one version of WMS/WFS specs
+//		if (!GetLegendGraphicRequest.SLD_VERSION.equals(version)) {
+//			throw new WmsException("Invalid SLD version number \"" + version
+//					+ "\"");
+//		}
 
 		String layer = getValue("LAYER");
         MapLayerInfo mli = new MapLayerInfo();

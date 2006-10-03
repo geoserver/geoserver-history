@@ -19,7 +19,6 @@ import org.geotools.filter.IllegalFilterException;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
@@ -75,7 +74,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
      * @return DOCUMENT ME!
      */
     protected DefaultRasterMapProducer getProducerInstance() {
-        return new DummyRasterMapProducer(null);
+        return new DummyRasterMapProducer();
     }
 
     /**
@@ -276,12 +275,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
      * @version $Id$
      */
     private static class DummyRasterMapProducer extends DefaultRasterMapProducer {
-
-    	public DummyRasterMapProducer(WMS wms) {
-			super(wms);
-		}
-
-		/**
+        /**
          * DOCUMENT ME!
          *
          * @param format not used.
@@ -299,10 +293,5 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
              * abstract raster producer correctly generates a BufferedImage.
              */
         }
-
-		protected BufferedImage prepareImage(int arg0, int arg1) {
-			
-			return new  BufferedImage(arg0,arg1,BufferedImage.TYPE_4BYTE_ABGR);
-		}
     }
 }

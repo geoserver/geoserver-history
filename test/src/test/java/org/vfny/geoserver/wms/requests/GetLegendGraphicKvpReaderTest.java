@@ -9,9 +9,11 @@ import junit.framework.TestCase;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.Config;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.testdata.MockUtils;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -89,7 +91,6 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
 		wms.setData(data);
 		
 		GetLegendGraphic service = new GetLegendGraphic(wms);
-		
 		this.requestReader = new GetLegendGraphicKvpReader(allParameters,service);
 		this.httpRequest = MockUtils.newHttpRequest(allParameters, true);
 		
@@ -116,20 +117,28 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
 		super.tearDown();
 	}
 
-	public void testVersion() throws Exception {
-		requiredParameters.put("VERSION", "WRONG");
-		
-		this.requestReader = 
-			new GetLegendGraphicKvpReader(requiredParameters, dummy);
-		try {
-			requestReader.getRequest(httpRequest);
-			fail("Expected ServiceException due to wrong VERSION parameter");
-		} catch (ServiceException e) {
-			// OK
-		}
-		requiredParameters.put("VERSION", "1.0.0");
-		GetLegendGraphicRequest parsedRequest = (GetLegendGraphicRequest) requestReader.getRequest(httpRequest);
-	}
+	// disabled this test for the moment as a 
+//	fix for http://jira.codehaus.org/browse/GEOS-710
+//	Since at the moment none of the other request do check the version numbers, we 
+//	disable this check for the moment, and wait for a proper fix once the 
+//	we support more than one version of WMS/WFS specs
+
+//	public void testVersion() throws Exception {
+//		requiredParameters.put("VERSION", "WRONG");
+//		
+//		this.requestReader = 
+//			new GetLegendGraphicKvpReader(requiredParameters, dummy);
+//		try {
+//			requestReader.getRequest(httpRequest);
+//			fail("Expected ServiceException due to wrong VERSION parameter");
+//		} catch (ServiceException e) {
+//			// OK
+//		}
+//		requiredParameters.put("VERSION", "1.0.0");
+//		GetLegendGraphicRequest parsedRequest;
+//		parsedRequest = (GetLegendGraphicRequest) requestReader
+//				.getRequest(httpRequest);
+//	}
 
 	/**
 	 * This test ensures that when a SLD parameter has been passed that refers
