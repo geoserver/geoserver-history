@@ -67,6 +67,16 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>mortbay</id>
+			<name>
+				Repository from Mortbay project (useful mirror when main is not available)
+			</name>
+			<url>http://www.mortbay.org/maven2/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
@@ -133,7 +143,7 @@
 			<dependency>
 				<groupId>org.wkb4j</groupId>
 				<artifactId>wkb4j</artifactId>
-				<version>1.0-RC1-modified</version>
+				<version>1.0-RC1</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -288,7 +298,6 @@
 				<artifactId>itext</artifactId>
 				<version>1.3</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty</artifactId>
@@ -296,13 +305,9 @@
 			</dependency>
 			<dependency>
 				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-util</artifactId>
+				<artifactId>jsp-2.0</artifactId>
 				<version>6.0.0rc2</version>
-			</dependency>
-			<dependency>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jsp-api-2.0</artifactId>
-				<version>6.0.0rc2</version>
+				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>tomcat</groupId>
@@ -671,6 +676,7 @@
 
 	<profiles>
 		<!-- community profile, include community module -->
+		<id>community</id>
 		<profile>
 			<activation>
 				<property>
@@ -689,6 +695,35 @@
 				<module>test</module>
 				<module>community</module>
 			</modules>
+		</profile>
+		<profile>
+			<id>uml</id>
+			<activation>
+				<property>
+					<name>uml</name>
+				</property>
+			</activation>
+			<reporting>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<configuration>
+							<doclet>gr.spinellis.umlgraph.doclet.UmlGraphDoc</doclet>
+							<docletArtifact>
+								<groupId>gr.spinellis</groupId>
+								<artifactId>UmlGraph</artifactId>
+								<version>4.4</version>
+							</docletArtifact>
+							<additionalparam>
+								-inferrel -inferdep -quiet -hide java.* -collpackages java.util.* -qualify
+								-postfixpackage -nodefontsize 9
+								-nodefontpackagesize 7
+							</additionalparam>
+						</configuration>
+					</plugin>
+				</plugins>
+			</reporting>
 		</profile>
 	</profiles>
 
