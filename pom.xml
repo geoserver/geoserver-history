@@ -234,23 +234,8 @@
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
-				<version>2.4</version>
+				<version>2.5</version>
 			</dependency>
-			<!--dependency>
-				<groupId>wicket</groupId>
-				<artifactId>wicket</artifactId>
-				<version>1.2.1</version>
-			</dependency>
-			<dependency>
-				<groupId>wicket</groupId>
-				<artifactId>wicket-spring</artifactId>
-				<version>1.2.1</version>
-			</dependency>
-	    <dependency>
-      	<groupId>wicket</groupId>
-		    <artifactId>wicket-extensions</artifactId>
-        <version>1.2.1</version>
-		  </dependency-->
 			<dependency>
 				<groupId>struts</groupId>
 				<artifactId>struts</artifactId>
@@ -295,6 +280,11 @@
 				<groupId>commons-validator</groupId>
 				<artifactId>commons-validator</artifactId>
 				<version>1.1.4</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>1.0.3</version>
 			</dependency>
 			<dependency>
 				<groupId>mockobjects</groupId>
@@ -763,7 +753,7 @@
 
 	<properties>
 		<gs.version>1.4.0-M2-WCS</gs.version>
-		<gt.version>2.3.0-M0</gt.version>
+		<gt.version>2.3.0-RC1-SNAPSHOT</gt.version>
 	</properties>
 
 	<profiles>

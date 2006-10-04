@@ -293,5 +293,32 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
              * abstract raster producer correctly generates a BufferedImage.
              */
         }
+
+	protected BufferedImage prepareImage(int width, int height) {
+
+		// final int size = width * height;
+		// final byte pixels[] = new byte[size];
+		// Arrays.fill(pixels, (byte) 255);
+		//
+		// // Create a data buffer using the byte buffer of pixel data.
+		// // The pixel data is not copied; the data buffer uses the byte buffer
+		// // array.
+		// final DataBuffer dbuf = new DataBufferByte(pixels, width * height,
+		// 0);
+		//
+		// // Prepare a sample model suitable for the default palette
+		// final SampleModel sampleModel = DEFAULT_PALETTE
+		// .createCompatibleSampleModel(width, height);
+		//
+		// // Create a raster using the sample model and data buffer
+		// final WritableRaster raster =
+		// Raster.createWritableRaster(sampleModel,
+		// dbuf, null);
+		//
+		// // Combine the color model and raster into a buffered image
+		// return new BufferedImage(DEFAULT_PALETTE, raster, false, null);
+		return new BufferedImage(width, height,BufferedImage.TYPE_4BYTE_ABGR);
+	}
+
     }
 }

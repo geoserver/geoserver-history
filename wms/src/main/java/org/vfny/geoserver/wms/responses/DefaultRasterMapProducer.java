@@ -106,6 +106,13 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 	private WMSMapContext mapContext;
 
 	/**
+   *
+   */
+  public DefaultRasterMapProducer() {
+  	this(DEFAULT_MAP_FORMAT, null);
+  }
+    
+	/**
 	 * 
 	 */
 	public DefaultRasterMapProducer(WMS wms) {
