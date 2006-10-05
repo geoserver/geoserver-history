@@ -36,7 +36,7 @@ public class KMLWriterTest extends AbstractGeoserverHttpTest {
 				"srs=EPSG:4326&"+
 				"Format=kml";
 		
-        /*WebRequest request = 
+        WebRequest request = 
         	new GetMethodWebRequest(getBaseUrl()+"/wms?"+requestParams);
         
         WebResponse response = conversation.getResponse( request );
@@ -47,7 +47,7 @@ public class KMLWriterTest extends AbstractGeoserverHttpTest {
         
         Element e = parser.getDocument().getDocumentElement();
         //System.out.println(e.getLocalName());
-        assertEquals("kml", e.getLocalName());*/
+        assertEquals("kml", e.getLocalName());
 	}
 	
 	public void testRasterRequest() throws Exception{
@@ -62,7 +62,7 @@ public class KMLWriterTest extends AbstractGeoserverHttpTest {
 				"Format=kmz"+
 				"KMSCORE=0"; // set tolerance to zero. Guaranteed raster result
 		
-        /*WebRequest request = 
+        WebRequest request = 
         	new GetMethodWebRequest(getBaseUrl()+"/wms?"+requestParams);
         
         WebResponse response = conversation.getResponse( request );
@@ -72,6 +72,6 @@ public class KMLWriterTest extends AbstractGeoserverHttpTest {
         ZipInputStream z = new ZipInputStream(response.getInputStream());
         ZipEntry entry = z.getNextEntry();
         //System.out.println(entry.getName());
-        assertEquals("wms.kml", entry.getName());*/
+        assertEquals("wms.kml", entry.getName());
 	}
 }
