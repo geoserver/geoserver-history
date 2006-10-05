@@ -28,6 +28,7 @@ import java.util.zip.InflaterInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.feature.FeatureType;
+import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.NamedLayer;
@@ -47,6 +48,8 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.util.SLDValidator;
+import org.vfny.geoserver.util.requests.readers.WfsXmlRequestReader;
+import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
 import org.xml.sax.InputSource;
@@ -281,6 +284,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                     + " incorrectly specified (0xRRGGBB format expected)");
             }
         }
+        
+        // filter parsing
+        parseFilterParam(request);
         
         /** KML/KMZ score value */
         String KMScore = getValue("KMSCORE");
@@ -766,12 +772,71 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     }
     
     /**
-     * DOCUMENT ME!
-     *
-     * @param request DOCUMENT ME!
-     *
-     * @throws WmsException DOCUMENT ME!
-     */
+	 * Gets a sequence of url encoded filters and parses them into Filter
+	 * objects that will be set into the request object
+	 * 
+	 * @param request
+	 * @throws WmsException
+	 */
+	protected void parseFilterParam(GetMapRequest request) throws WmsException {
+		String rawFilter = getValue("FILTER");
+		
+		int numLayers = request.getLayers().length;
+		if(request.getLayers() == null || numLayers == 0)
+			throw new RuntimeException("parseFilterParam must be called after the layer list has been built!");
+
+		// if no filter, no need to proceed
+		if (rawFilter == null || rawFilter.equals(""))
+			return;
+
+		// parse each filter, eventually throwing an exception if there is any
+		// encoding problem
+		List filterSpecs = readFlat(rawFilter, OUTER_DELIMETER);
+		List filters = new ArrayList(filterSpecs.size());
+		try {
+			for (Iterator it = filterSpecs.iterator(); it.hasNext();) {
+				String filterSpec = (String) it.next();
+				if (filterSpec != null && !filterSpec.equals("")) {
+					Reader filterReader = new StringReader(filterSpec);
+					filters.add(WfsXmlRequestReader.readFilter(filterReader));
+				} else {
+					filters.add(null);
+				}
+			}
+		} catch (WfsException e) {
+			throw new WmsException(e);
+		}
+		
+		if(numLayers != filters.size()) {
+			// as in wfs getFeatures, perform lenient parsing, if just one filter, it gets
+			// applied to all layers
+			if(filters.size() == 1) {
+				Filter f = (Filter) filters.get(0);
+				filters = new ArrayList(numLayers);
+				for (int i = 0; i < filters.size(); i++) {
+					filters.add(f);
+				}
+			} else {
+				String msg = numLayers + " layers requested, but found "
+                + filters.size() + " filters specified. "
+                + "When you specify the FILTER parameter, you must provide just one, \n"
+                + " that will be applied to all layers, or exactly one for each requested layer";
+				throw new WmsException(msg, getClass().getName());
+			}
+		}
+		
+		request.setFilters(filters);
+	}
+    
+    /**
+	 * DOCUMENT ME!
+	 * 
+	 * @param request
+	 *            DOCUMENT ME!
+	 * 
+	 * @throws WmsException
+	 *             DOCUMENT ME!
+	 */
     protected void parseSldParam(GetMapRequest request) throws WmsException 
 	{
         String urlValue = getValue("SLD");               

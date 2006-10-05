@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -110,7 +111,7 @@ public class GetMapResponse implements Response {
         this.delegate = getDelegate(outputFormat, wms);
 
         final FeatureTypeInfo[] layers = request.getLayers();
-        final Style[] styles = (Style[])request.getStyles().toArray(new Style[]{});
+        final Style[] styles = (Style[])request.getStyles().toArray(new Style[request.getStyles().size()]);
 
         //JD:make instance variable in order to release resources later
         //final WMSMapContext map = new WMSMapContext();
@@ -185,6 +186,19 @@ public class GetMapResponse implements Response {
                         definitionFilter);
                 layer.setQuery(definitionQuery);
             }
+            // if a filter has been defined for this layer, set it, eventually mixing it 
+            // with the definition query one
+            if (request.getFilters() != null) {
+            	Filter f = (Filter) request.getFilters().get(i);
+            	if(f != null) {
+            		Query q = new DefaultQuery(layer.getFeatureSource().getSchema().getTypeName(), f);
+            		if(layer.getQuery() != null) {
+            			q = DataUtilities.mixQueries(layer.getQuery(), q, layer.getQuery().getHandle());
+            		}
+            		layer.setQuery(q);
+            	}
+            }
+            
 
             map.addLayer(layer);// mapcontext can leak memory -- we make sure we done (see finally block)
         }
