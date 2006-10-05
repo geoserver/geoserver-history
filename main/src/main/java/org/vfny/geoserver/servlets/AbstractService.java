@@ -542,7 +542,7 @@ public abstract class AbstractService extends HttpServlet
 
             if (encoding != null) {
                 LOGGER.fine("content encoding is: " + encoding);
-                response.setHeader("content-encoding", encoding);
+                response.setHeader("Content-Encoding", encoding);
             }
         } catch (SocketException socketException) {
             LOGGER.fine(
