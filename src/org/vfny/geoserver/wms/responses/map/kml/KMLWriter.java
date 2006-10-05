@@ -42,6 +42,7 @@ import org.geotools.gml.producer.GeometryTransformer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.renderer.style.LineStyle2D;
+import org.geotools.renderer.style.MarkStyle2D;
 import org.geotools.renderer.style.PolygonStyle2D;
 import org.geotools.renderer.style.SLDStyleFactory;
 import org.geotools.renderer.style.Style2D;
@@ -1208,10 +1209,24 @@ public class KMLWriter extends OutputStreamWriter {
         	
             
             write(styleString.toString());
-	    }
-        // What about PointSymbolizers?!
-        // - GE doesn't have points, it has placemarks. You can't style placemarks or do anything
-        // neat with them, so there is no point in reading the point symbolizer.
+	    } 
+        /*else if(style instanceof MarkStyle2D && sym instanceof PointSymbolizer){
+        	// we can sorta style points. Just with color however.
+        	final StringBuffer styleString = new StringBuffer();
+        	PointSymbolizer pointSym = (PointSymbolizer) sym;
+        	
+        	styleString.append("<IconStyle><color>");
+        	
+        	styleString.append("</color>");
+        	styleString.append("<colorMode>normal</colorMode>");
+        	styleString.append("<Icon><href>root://icons/palette-4.png</href>");
+        	styleString.append("<x>32</x><y>128</y><w>32</w><h>32</h></Icon>");
+		
+        	styleString.append("</IconStyle>");
+        	
+        	write(styleString.toString());
+        }*/
+        
     }
     
     /**
