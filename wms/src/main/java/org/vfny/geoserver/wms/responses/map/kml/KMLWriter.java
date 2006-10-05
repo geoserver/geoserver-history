@@ -42,12 +42,14 @@ import org.geotools.gml.producer.GeometryTransformer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.renderer.style.LineStyle2D;
+import org.geotools.renderer.style.MarkStyle2D;
 import org.geotools.renderer.style.PolygonStyle2D;
 import org.geotools.renderer.style.SLDStyleFactory;
 import org.geotools.renderer.style.Style2D;
 import org.geotools.renderer.style.TextStyle2D;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.LineSymbolizer;
+import org.geotools.styling.Mark;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.PolygonSymbolizer;
 import org.geotools.styling.RasterSymbolizer;
@@ -791,7 +793,23 @@ public class KMLWriter extends OutputStreamWriter {
 		}
 	}
 	
-	
+	/**
+	 * 
+	 * Applies each of a set of symbolizers in turn to a given feature.
+	 * This will style the KML for vector output (non-raster results).
+     * 
+     * The KML color tag:
+     * The order of expression is alpha, blue, green, red (ABGR). 
+     * The range of values for any one color is 0 to 255 (00 to ff). 
+     * For opacity, 00 is fully transparent and ff is fully opaque.
+     * 
+	 * @param feature
+	 * @param symbolizers
+	 * @param scaleRange
+	 * @param featureLabel
+	 * @throws IOException
+	 * @throws TransformerException
+	 */
 	private void processVectorSymbolizers( final Feature feature,
             final Symbolizer[] symbolizers, Range scaleRange, StringBuffer featureLabel) 
 		throws IOException, TransformerException {
@@ -822,6 +840,12 @@ public class KMLWriter extends OutputStreamWriter {
 	/**
 	 * Writes out the KML for a ground overlay. The image is processed later on.
 	 * 
+	 * This will style the KML for raster output.
+	 * There are no descriptions with vector output, as that would make the result 
+	 * really large (assuming that they chose raster output because a lot of features 
+	 * were requested).
+     * 
+     * 
 	 * @param feature
 	 * @param symbolizers
 	 * @param order
@@ -915,138 +939,6 @@ public class KMLWriter extends OutputStreamWriter {
         
 	}*/
 	
-    /**
-     * Applies each of a set of symbolizers in turn to a given feature.
-     * <p>
-     * This is an internal method and should only be called by processStylers.
-     * </p>
-     * 
-     * The KML color tag:
-     * The order of expression is alpha, blue, green, red (ABGR). 
-     * The range of values for any one color is 0 to 255 (00 to ff). 
-     * For opacity, 00 is fully transparent and ff is fully opaque.
-     *
-     * @param feature The feature to be rendered
-     * @param symbolizers An array of symbolizers which actually perform the rendering.
-     * @param scaleRange The scale range we are working on... provided in order to make the style
-     *        factory happy
-     */
-    private boolean processSymbolizers( final FeatureCollection features, final Feature feature,
-            final Symbolizer[] symbolizers, Range scaleRange,
-			final MapLayer layer, final int order, final int layerCounter, StringBuffer title, boolean vectorResult) throws IOException, TransformerException {
-        
-    	boolean res = false;
-        //String title=null;
-        final int length = symbolizers.length;
-        
-        
-        // for each Symbolizer (text, polygon, line etc...)
-        for( int m = 0; m < length; m++ ) {
-        	LOGGER.finer(new StringBuffer("applying symbolizer ").append(symbolizers[m]).toString());
-            
-            if (symbolizers[m] instanceof RasterSymbolizer) {
-            	//LOGGER.info("Removed by bao for testing");
-            	/*final GridCoverage gc = (GridCoverage) feature.getAttribute("grid");
-				final HttpServletRequest request = this.mapContext.getRequest().getHttpServletRequest();
-				final String baseURL = org.vfny.geoserver.util.Requests.getBaseUrl(request);
-            	com.vividsolutions.jts.geom.Envelope envelope = this.mapContext.getRequest().getBbox();
-            	*/
-            	/**
-            	 * EXAMPLE OUTPUT:
-            	 	<GroundOverlay>
-					  <name>Google Earth - New Image Overlay</name>
-					  <Icon>
-					    <href>http://localhost:8081/geoserver/wms?bbox=-130,24,-66,50&amp;styles=raster&amp;Format=image/tiff&amp;request=GetMap&amp;layers=nurc:Img_Sample&amp;width=550&amp;height=250&amp;srs=EPSG:4326&amp;</href>
-					    <viewRefreshMode>never</viewRefreshMode>
-					    <viewBoundScale>0.75</viewBoundScale>
-					  </Icon>
-					  <LatLonBox>
-					    <north>50.0</north>
-					    <south>24.0</south>
-					    <east>-66.0</east>
-					    <west>-130.0</west>
-					  </LatLonBox>
-					</GroundOverlay> 
-            	 */
-            	/*
-                write(new StringBuffer("<GroundOverlay>").
-                	append("<name>").append(((GridCoverage2D)gc).getName()).append("</name>").
-                	append("<drawOrder>").append(order).append("</drawOrder>").
-					append("<Icon>").toString());
-				final double[] BBOX = new double[] {
-						envelope.getMinX(),
-						envelope.getMinY(),
-						envelope.getMaxX(),
-						envelope.getMaxY()
-						};
-				if (layerCounter<0) {
-					final StringBuffer getMapRequest = new StringBuffer(baseURL).append("wms?bbox=").append(BBOX[0]).append(",").
-					append(BBOX[1]).append(",").append(BBOX[2]).append(",").append(BBOX[3]).append("&amp;styles=").
-					append(layer.getStyle().getName()).append("&amp;Format=image/png&amp;request=GetMap&amp;layers=").
-					append(layer.getTitle()).append("&amp;width="+this.mapContext.getMapWidth()+"&amp;height="+this.mapContext.getMapHeight()+"&amp;srs=EPSG:4326&amp;");
-					write("<href>"+getMapRequest.toString()+"</href>");
-				} else {
-					write("<href>layer_"+order+".png</href>");
-				}
-				write(new StringBuffer("<viewRefreshMode>never</viewRefreshMode>").
-					append("<viewBoundScale>0.75</viewBoundScale>").
-					append("</Icon>").
-					append("<LatLonBox>").
-					append("<north>").append(BBOX[3]).append("</north>").
-					append("<south>").append(BBOX[1]).append("</south>").
-					append("<east>").append(BBOX[2]).append("</east>").
-					append("<west>").append(BBOX[0]).append("</west>").
-					append("</LatLonBox>").
-					append("</GroundOverlay>").toString());
-                //Geometry g = findGeometry(feature, symbolizers[m]);
-                //writeRasterStyle(getMapRequest.toString(), feature.getID());
-				*/
-				res = true;
-            } else if(vectorResult){
-                //TODO: come back and sort out crs transformation
-                //CoordinateReferenceSystem crs = findGeometryCS(feature, symbolizers[m]);              
-                if( symbolizers[m] instanceof TextSymbolizer ){
-                	TextSymbolizer ts = (TextSymbolizer) symbolizers[m];
-                	Expression ex = ts.getLabel();
-                	String value = (String)ex.getValue(feature);
-                	title.append(value);
-                	Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
-                	writeStyle(style, feature.getID(), symbolizers[m]);
-                } else {
-                    Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
-                    writeStyle(style, feature.getID(), symbolizers[m]);
-                }
-            } else if(!vectorResult) {
-            	com.vividsolutions.jts.geom.Envelope envelope = this.mapContext.getRequest().getBbox();
-                write(new StringBuffer("<GroundOverlay>").
-                    	append("<name>").append(feature.getID()).append("</name>").
-                    	append("<drawOrder>").append(order).append("</drawOrder>").
-    					append("<Icon>").toString());
-				final double[] BBOX = new double[] {
-						envelope.getMinX(),
-						envelope.getMinY(),
-						envelope.getMaxX(),
-						envelope.getMaxY()
-						};
-				write(new StringBuffer("<href>layer_").append(order).append(".png</href>").
-						append("<viewRefreshMode>never</viewRefreshMode>").
-						append("<viewBoundScale>0.75</viewBoundScale>").
-						append("</Icon>").
-						append("<LatLonBox>").
-						append("<north>").append(BBOX[3]).append("</north>").
-						append("<south>").append(BBOX[1]).append("</south>").
-						append("<east>").append(BBOX[2]).append("</east>").
-						append("<west>").append(BBOX[0]).append("</west>").
-						append("</LatLonBox>").
-						append("</GroundOverlay>").toString());
-            }
-            else
-            	LOGGER.info("KMZ processSymbolizerz unknown case. Please report error.");
-        }
-        	
-        
-        return res;
-    }
     
     /**
      * Adds the <style> tag to the KML document.
@@ -1209,30 +1101,54 @@ public class KMLWriter extends OutputStreamWriter {
             
             write(styleString.toString());
 	    }
-        // What about PointSymbolizers?!
-        // - GE doesn't have points, it has placemarks. You can't style placemarks or do anything
-        // neat with them, so there is no point in reading the point symbolizer.
+        else if(style instanceof MarkStyle2D && sym instanceof PointSymbolizer){
+        	// we can sorta style points. Just with color however.
+        	final StringBuffer styleString = new StringBuffer();
+        	PointSymbolizer pointSym = (PointSymbolizer) sym;
+        	
+        	styleString.append("<IconStyle><color>");
+        	if ( pointSym.getGraphic() != null && pointSym.getGraphic().getMarks() != null)
+	    	{
+        		Mark[] marks = pointSym.getGraphic().getMarks();
+        		if (marks.length > 0 && marks[0] != null)
+        		{
+        			Mark mark = marks[0];
+        			
+        			int opacity = 255;
+    	        	if (mark.getFill().getOpacity() != null) {
+    	        		float op = getOpacity(mark.getFill().getOpacity());
+    	        		opacity = (new Float(255*op)).intValue();
+    	        	}
+    	        	
+    	        	Paint p = ((MarkStyle2D)style).getFill();
+    	        	if(p instanceof Color){
+    	            	styleString.append("#").append(intToHex(opacity)).append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
+    	            } else{
+    	            	styleString.append("#ffaaaaaa");//should not occure in normal parsing
+    	            }
+        			
+        		}
+        		else
+        			styleString.append("#ffaaaaaa");
+	        	
+	    	}
+	    	else
+	    	{
+	    		styleString.append("#ffaaaaaa");
+	    	}
+        	
+        	styleString.append("</color>");
+        	styleString.append("<colorMode>normal</colorMode>");
+        	styleString.append("<Icon><href>root://icons/palette-4.png</href>");
+        	styleString.append("<x>32</x><y>128</y><w>32</w><h>32</h></Icon>");
+		
+        	styleString.append("</IconStyle>");
+        	
+        	write(styleString.toString());
+        }
     }
     
-    /**
-     * @param href
-     * @param id
-     * @throws IOException
-     */
-    private void writeRasterStyle(final String href, final String id) throws IOException {
-    	final StringBuffer styleString = new StringBuffer();
-    	styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
-    	styleString.append("<IconStyle><Icon><href>").
-			append(href).append("</href><viewRefreshMode>never</viewRefreshMode>").
-        	append("<viewBoundScale>0.75</viewBoundScale><w>").//default 0.75 for overlays
-			append(this.mapContext.getMapWidth()).append("</w><h>").
-			append(this.mapContext.getMapHeight()).
-			append("</h></Icon></IconStyle>");
-    	styleString.append("<PolyStyle><fill>0</fill><outline>0</outline></PolyStyle>");
-    	styleString.append("</Style>");
-    	
-    	write(styleString.toString());
-    }
+
     
     private boolean isWithinScale(Rule r){
     	double min = r.getMinScaleDenominator();
@@ -1244,33 +1160,7 @@ public class KMLWriter extends OutputStreamWriter {
     		return false;
     }
     
-    /**
-     * Finds the geometric attribute requested by the symbolizer
-     *
-     * @param f The feature
-     * @param s The symbolizer
-     * @return The geometry requested in the symbolizer, or the default geometry if none is
-     *         specified
-     */
-    private com.vividsolutions.jts.geom.Geometry findGeometry( Feature f, Symbolizer s ) {
-        String geomName = getGeometryPropertyName(s);
-        
-        // get the geometry
-        Geometry geom;
-        
-        if (geomName == null) {
-            geom = f.getDefaultGeometry();
-        } else {
-            geom = (com.vividsolutions.jts.geom.Geometry) f.getAttribute(geomName);
-        }
-        
-        // if the symbolizer is a point symbolizer generate a suitable location to place the
-        // point in order to avoid recomputing that location at each rendering step
-        if (s instanceof PointSymbolizer)
-            geom = getCentroid(geom); // djb: major simpificatioN
-        
-        return geom;
-    }
+    
 
     /**
      * Returns the default geometry in the feature.
@@ -1317,61 +1207,18 @@ public class KMLWriter extends OutputStreamWriter {
         }
     }
     
-    /**
-     * Finds the geometric attribute coordinate reference system
-     *
-     * @param f The feature
-     * @param s The symbolizer
-     * @return The geometry requested in the symbolizer, or the default geometry if none is
-     *         specified
-     */
-    private org.opengis.referencing.crs.CoordinateReferenceSystem findGeometryCS( Feature f,
-            Symbolizer s ) {
-        String geomName = getGeometryPropertyName(s);
-        
-        if (geomName != null) {
-            return ((GeometryAttributeType) f.getFeatureType().getAttributeType(geomName))
-            .getCoordinateSystem();
-        } else {
-            return ((GeometryAttributeType) f.getFeatureType().getDefaultGeometry())
-            .getCoordinateSystem();
-        }
-    }
+    
+
     
     /**
-     * Utility method to find which geometry property is referenced by a given
-     * symbolizer.
-     *
-     * @param s The symbolizer
-     * @TODO: this is c&p from lite renderer code as the method was private
-     *        consider moving to a public unility class.
-     */
-    private String getGeometryPropertyName( Symbolizer s ) {
-        String geomName = null;
-        
-        // TODO: fix the styles, the getGeometryPropertyName should probably be moved into an
-        // interface...
-        if (s instanceof PolygonSymbolizer) {
-            geomName = ((PolygonSymbolizer) s).getGeometryPropertyName();
-        } else if (s instanceof PointSymbolizer) {
-            geomName = ((PointSymbolizer) s).getGeometryPropertyName();
-        } else if (s instanceof LineSymbolizer) {
-            geomName = ((LineSymbolizer) s).getGeometryPropertyName();
-        } else if (s instanceof TextSymbolizer) {
-            geomName = ((TextSymbolizer) s).getGeometryPropertyName();
-        }
-        
-        return geomName;
-    }
-    
-    /**
-     * Utility method to convert an int into kex, padded to two characters.
+     * Utility method to convert an int into hex, padded to two characters.
      * handy for generating colour strings.
      *
      * @param i Int to convert
      * @return String a two character hex representation of i
+     * NOTE: this is a utility method and should be put somewhere more useful.
      */
-    private String intToHex(int i){
+    protected static String intToHex(int i){
         String prelim = Integer.toHexString(i);
         if (prelim.length() < 2){
             prelim = "0" + prelim;
