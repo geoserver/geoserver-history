@@ -1,5 +1,7 @@
 package org.geoserver.wfs.xml.wfs;
 
+import java.math.BigInteger;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.geotools.xml.Node;
@@ -73,5 +75,22 @@ public class WFSBindingUtils {
 		if ( feature != null ) {
 			object.eSet( feature, value );
 		}
+	}
+	
+	/**
+	 * @param value A number
+	 * 
+	 * @return The number as a {@link BigInteger}.
+	 */
+	public static BigInteger asBigInteger( Number number ) {
+		if ( number == null ) 
+			return null;
+		
+		if ( number instanceof BigInteger ) {
+			return (BigInteger) number;
+		}
+		
+		return BigInteger.valueOf( number.longValue() );
+		
 	}
 }

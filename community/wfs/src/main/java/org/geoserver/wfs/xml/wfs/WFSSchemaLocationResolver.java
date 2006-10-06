@@ -21,6 +21,9 @@ public class WFSSchemaLocationResolver implements XSDSchemaLocationResolver {
 			if (schemaLocationURI.endsWith("WFS-basic.xsd")) {
 				return getClass().getResource("WFS-basic.xsd").toString();
 			}
+			if (schemaLocationURI.endsWith("WFS-transaction.xsd")) {
+				return getClass().getResource("WFS-transaction.xsd").toString();
+			}
 		}
 		
 		return null;
