@@ -36,7 +36,7 @@ import org.geotools.filter.Filter;
  * @version $Id: GeoServerFeatureStore.java,v 1.5 2004/02/09 23:29:41 dmzwiers Exp $
  */
 public class GeoServerFeatureStore extends GeoServerFeatureSource
-    implements FeatureSource {
+    implements FeatureStore {
     /**
      * Creates a new DEFQueryFeatureLocking object.
      *
@@ -75,9 +75,9 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource
         return store().addFeatures(reader);
     }
     
-//    public Set addFeatures(FeatureCollection collection) throws IOException {
-//        return store().addFeatures(collection);
-//    }
+    public Set addFeatures(FeatureCollection collection) throws IOException {
+        return store().addFeatures(collection);
+    }
 
     /**
      * DOCUMENT ME!
