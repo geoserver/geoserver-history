@@ -257,7 +257,7 @@ public class BeanPersister
 					if ("".equals( propName ) )
 						continue;
 					
-					//shere needs to be a setter as well
+					//there needs to be a setter as well
 					Method setter = bean.getClass().getMethod( 
 						"set" + propName, new Class[]{ method.getReturnType() }
 					);
