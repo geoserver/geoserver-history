@@ -11,6 +11,10 @@ public class Message {
 		this.message = message;
 	}
 	
+	public Message getMessage() {
+		return this;
+	}
+	
 	public boolean equals(Object obj) {
 		if (obj instanceof Message) {
 			Message other = (Message)obj;
