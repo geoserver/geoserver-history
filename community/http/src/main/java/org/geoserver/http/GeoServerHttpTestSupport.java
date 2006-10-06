@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.util.PropertyResourceBundle;
 import java.util.logging.Logger;
@@ -37,6 +38,16 @@ public class GeoServerHttpTestSupport extends TestCase {
 	
 	/** test fixture properties **/
 	PropertyResourceBundle properties;
+	
+	/**
+	 * Override to disable tests if no server is online.
+	 */
+	public int countTestCases() {
+		if ( isOffline() )
+			return 0;
+		
+		return super.countTestCases();
+	}
 	
 	protected void setUp() throws Exception {
 		try {
@@ -121,5 +132,13 @@ public class GeoServerHttpTestSupport extends TestCase {
 		return builder.parse( response.getInputStream() );
 	}
 
-	
+	protected void print( WebResponse response, PrintStream stream ) throws Exception {
+		BufferedReader reader = reader( response );
+		String line = null;
+		while( ( line = reader.readLine() ) != null ) {
+			stream.println( line );
+		}
+		
+		reader.close();
+	}
 }
