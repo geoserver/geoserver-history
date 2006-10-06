@@ -83,6 +83,18 @@ public class DefaultGeoServerCatalog extends AdaptingCatalog implements
 		return active;
 	}
 	
+	public FeatureTypeInfo featureType(String identifier) throws IOException {
+		if ( identifier == null ) 
+			return null;
+		
+		if ( identifier.indexOf( ':' ) != -1 ) {
+			String[] prefixLocal = identifier.split( ":" );
+			return featureType( prefixLocal[ 0 ], prefixLocal[ 1 ] );
+		}
+		
+		return featureType( null, identifier );
+	}
+	
 	public FeatureTypeInfo featureType(String nsPrefix, String typeName) throws IOException {
 	
 		if ( typeName == null ) {
