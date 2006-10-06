@@ -93,6 +93,7 @@ public class InfoAdapterFactory implements ResolveAdapterFactory,
 			info.setDataStore( (DataStore) handle.resolve( DataStore.class, null ) );
 			info.setAbstract( sInfo.getAbstract() );
 			info.setTitle( sInfo.getTitle() );
+			info.setConnectionParameters( handle.getConnectionParams() );
 			
 			if ( sInfo.getSchema() != null ) {
 				String schema = sInfo.getSchema().toString();
