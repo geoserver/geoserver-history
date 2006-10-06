@@ -17,7 +17,7 @@ public class XSProfile extends TypeMappingProfile {
 	static {
 		profile.add( new Name(  XS.NAMESPACE, "byte" ) );
 		profile.add( new Name(  XS.NAMESPACE, "short" ) );
-		profile.add( new Name(  XS.NAMESPACE, "integer" ) );
+		profile.add( new Name(  XS.NAMESPACE, "int" ) );
 		profile.add( new Name(  XS.NAMESPACE, "float" ) );
 		profile.add( new Name(  XS.NAMESPACE, "long" ) );
 		profile.add( new Name(  XS.NAMESPACE, "QName" ) );
