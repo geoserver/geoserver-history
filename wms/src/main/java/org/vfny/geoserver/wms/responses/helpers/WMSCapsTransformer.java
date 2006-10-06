@@ -24,6 +24,7 @@ import org.geotools.xml.transform.Translator;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.LegendURL;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
@@ -191,11 +192,44 @@ public class WMSCapsTransformer extends TransformerBase {
             orAtts.addAttribute("", "xlink:href", "xlink:href", "",
                 wms.getOnlineResource().toExternalForm());
             element("OnlineResource", null, orAtts);
+            
+            handleContactInfo(wms.getGeoServer());
 
             element("Fees", wms.getFees());
             element("AccessConstraints", wms.getAccessConstraints());
             end("Service");
         }
+        
+        /**
+         * Encodes contact information in the WMS capabilities document
+         * @param geoServer
+         */
+        public void handleContactInfo(GeoServer geoServer) {
+    		start("ContactInformation");
+    		
+    		start("ContactPersonPrimary");
+    		element("ContactPerson", geoServer.getContactPerson());
+    		element("ContactOrganization", geoServer.getContactOrganization());
+    		end("ContactPersonPrimary");
+    		
+    		element("ContactPosition", geoServer.getContactPosition());
+    		
+    		start("ContactAddress");
+    		element("AddressType", geoServer.getAddressType());
+    		element("Address", geoServer.getAddress());
+    		element("City", geoServer.getAddressCity());
+    		element("StateOrProvince", geoServer.getAddressState());
+    		element("PostCode", geoServer.getAddressPostalCode());
+    		element("Country", geoServer.getAddressCountry());
+    		end("ContactAddress");
+    		
+    		element("ContactVoiceTelephone", geoServer.getContactVoice());
+    		element("ContactFacsimileTelephone", geoServer.getContactFacsimile());
+    		element("ContactElectronicMailAddress", geoServer.getContactEmail());
+    		
+    		end("ContactInformation");
+    		
+    	}
 
         /**
          * DOCUMENT ME!
@@ -710,5 +744,7 @@ public class WMSCapsTransformer extends TransformerBase {
         }
         
     }
+
+	
 }
 
