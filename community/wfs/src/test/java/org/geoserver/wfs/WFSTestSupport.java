@@ -18,10 +18,6 @@ import org.springframework.context.support.GenericApplicationContext;
  */
 public class WFSTestSupport extends DataTestSupport {
 
-	protected GeoServerResolveAdapterFactoryFinder finder;
-	
-	protected GenericApplicationContext context;
-	
 	protected WFS wfs;
 	
 	/**
@@ -33,21 +29,22 @@ public class WFSTestSupport extends DataTestSupport {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		finder = new GeoServerResolveAdapterFactoryFinder();
-		
-		context = new GenericApplicationContext();
-		context.getBeanFactory().registerSingleton( "loader", loader );
-		context.getBeanFactory().registerSingleton( "catalog", catalog );
-		context.getBeanFactory().registerSingleton( "finder", finder );
-		context.getBeanFactory().registerSingleton( 
-			"infoAdapterFactory", new InfoAdapterFactory( catalog, loader ) 
-		);
-		
-		//create wfs service bean and populate
+//		finder = new GeoServerResolveAdapterFactoryFinder();
+//		
+//		context = new GenericApplicationContext();
+//		context.getBeanFactory().registerSingleton( "loader", loader );
+//		context.getBeanFactory().registerSingleton( "catalog", catalog );
+//		context.getBeanFactory().registerSingleton( "finder", finder );
+//		context.getBeanFactory().registerSingleton( 
+//			"infoAdapterFactory", new InfoAdapterFactory( catalog, loader ) 
+//		);
+//		
+//		//create wfs service bean and populate
 		wfs = new WFS();
 		wfs.setOnlineResource( new URL( "http://localhost:8080/geoserver/wfs?" ) );
 		wfs.setSchemaBaseURL( "http://schemas.opengis.net/" );
 		wfs.setCharSet( Charset.forName( "UTF-8" ) );
 		
+		context.getBeanFactory().registerSingleton( "wfs", wfs );
 	}
 }
