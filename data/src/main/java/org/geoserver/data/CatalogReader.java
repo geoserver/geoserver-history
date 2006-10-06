@@ -3,9 +3,7 @@ package org.geoserver.data;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,8 +22,8 @@ import org.w3c.dom.NodeList;
  * 		File catalog = new File( ".../catalog.xml" );
  * 		CatalogReader reader = new CatalogReader();
  * 		reader.read( catalog );
- * 		List dataStores = reader.dataStores();
- * 		LIst nameSpaces = reader.nameSpaces();
+ * 		Map dataStores = reader.dataStores();
+ * 		Map nameSpaces = reader.nameSpaces();
  * 	</code>
  * </pre>
  * </p>
@@ -70,11 +68,9 @@ public class CatalogReader {
 	/**
 	 * Reads "datastore" elements from the catalog.xml file.
 	 * <p>
-	 *  For each datastore element read, a map of id to connection parameter map is
-	 *  created.
-	 *  </p>
+	 *  For each datastore element read, a map of id to connectino paramters is created.
 	 * 
-	 * @return A Map of (id,datastore connection parameters) tuples
+	 * @return A Map of (id,datastore connection parameters) entries
 	 * 
 	 * @throws Exception If error processing "datastores" element.
 	 */
@@ -91,6 +87,7 @@ public class CatalogReader {
 			
 			try {
 				String id = dataStoreElement.getAttribute( "id" );
+				
 				Map params = dataStoreParams( dataStoreElement );
 				dataStores.put( id, params );
 			} 
