@@ -10,6 +10,7 @@ import org.geoserver.http.util.KvpUtils;
 import org.geoserver.ows.http.KvpReader;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.v1_0.OGCBindingConfiguration;
+import org.geotools.filter.v1_0.OGCConfiguration;
 import org.geotools.filter.v1_0.OGCSchemaLocationResolver;
 import org.geotools.filter.v1_0.OGCSchemaLocator;
 import org.geotools.gml2.bindings.GMLBindingConfiguration;
@@ -33,26 +34,7 @@ public class FilterKvpReader extends KvpReader {
 	
 	public Object parse( String value ) throws Exception {
 		//create the parser
-		Configuration configuration = new Configuration() {
-
-			public void configureBindings( MutablePicoContainer container ) {
-				new XSBindingConfiguration().configure( container );
-				new XLINKBindingConfiguration().configure( container );
-				new GMLBindingConfiguration().configure( container );
-				new OGCBindingConfiguration().configure( container );
-			}
-
-			public void configureContext( MutablePicoContainer container ) {
-				container.registerComponentImplementation( GeometryFactory.class );
-				container.registerComponentInstance( CoordinateArraySequenceFactory.instance() );
-				container.registerComponentInstance( FilterFactoryFinder.createFilterFactory() );
-			
-				container.registerComponentImplementation( XLINKSchemaLocationResolver.class );
-				container.registerComponentImplementation( GMLSchemaLocationResolver.class );
-				container.registerComponentImplementation( OGCSchemaLocationResolver.class );
-				container.registerComponentImplementation( OGCSchemaLocator.class );
-			}
-		};
+		Configuration configuration = new OGCConfiguration();
 		Parser parser = new Parser( configuration );
 		
 		//seperate the individual filter strings
