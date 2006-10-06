@@ -48,6 +48,11 @@ public class DataStoreInfo  {
      */
     private Map meta;
     /**
+     * Connection paramters used to create datastore
+     */
+    private Map connectionParameters;
+    
+    /**
      * The underlying datastore.
      */
     DataStore dataStore;
@@ -129,7 +134,7 @@ public class DataStoreInfo  {
     }
 
     public void setAbstract( String _abstract ) {
-    		this._abstract = _abstract;
+    	this._abstract = _abstract;
     }
     
     /**
@@ -168,9 +173,22 @@ public class DataStoreInfo  {
      * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
      */
     public Object getMetaData(String key) {
-    		return meta.get(key);
+    	return meta.get(key);
     }
 
+    /**
+     * @return THe map of connection paramters used to connect to the 
+     * datastore.
+     */
+    public Map getConnectionParameters() {
+		return connectionParameters;
+	}
+    
+    public void setConnectionParameters(Map connectionParameters) {
+		this.connectionParameters = connectionParameters;
+    }
+    
+	
     /**
      * The underlying datastore.
      * @return
@@ -184,17 +202,17 @@ public class DataStoreInfo  {
 	}
     
     public boolean equals(Object obj) {
-    		if ( !( obj instanceof DataStoreInfo ) )  {
-    			return false;
-    		}
-    		
-    		DataStoreInfo other = (DataStoreInfo) obj;
-    		return Utilities.equals( id, other.id ) && 
-    			Utilities.equals( namespacePrefix, other.namespacePrefix ) &&
-    			Utilities.equals( title, other.title ) && 
-    			Utilities.equals( _abstract, other._abstract ) && 
-    			enabled == other.enabled;
-    	}
+		if ( !( obj instanceof DataStoreInfo ) )  {
+			return false;
+		}
+		
+		DataStoreInfo other = (DataStoreInfo) obj;
+		return Utilities.equals( id, other.id ) && 
+			Utilities.equals( namespacePrefix, other.namespacePrefix ) &&
+			Utilities.equals( title, other.title ) && 
+			Utilities.equals( _abstract, other._abstract ) && 
+			enabled == other.enabled;
+	}
     
     public int hashCode() {
     		int PRIME = 1000003;
