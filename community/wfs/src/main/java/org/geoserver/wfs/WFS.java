@@ -42,7 +42,7 @@ public class WFS extends OWS {
     /** ServiceLevel mask equivilent to complete WFS conformance */
     public static final int COMPLETE = TRANSACTIONAL | SERVICE_LOCKING;
     
-	private int serviceLevel;
+	private int serviceLevel = COMPLETE;
     private boolean srsXmlStyle;
     private boolean citeConformanceHacks;
     private boolean featureBounding;
@@ -91,6 +91,15 @@ public class WFS extends OWS {
         return serviceLevel;
     }
 
+    /**
+     * Sets the service level.
+     * 
+     * @param serviceLevel 
+     */
+    public void setServiceLevel(int serviceLevel) {
+		this.serviceLevel = serviceLevel;
+	}
+    
     /**
      * turn on/off the citeConformanceHacks option.
      *
