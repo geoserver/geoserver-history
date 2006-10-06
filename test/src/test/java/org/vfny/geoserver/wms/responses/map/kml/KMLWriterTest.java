@@ -15,7 +15,7 @@ import com.meterware.httpunit.WebResponse;
 
 public class KMLWriterTest extends AbstractGeoserverHttpTest {
 
-	
+	/*
 	public void testIntToHex() {
 		String result = KMLWriter.intToHex(0);
 		assertTrue( result.equals("00"));
@@ -74,4 +74,5 @@ public class KMLWriterTest extends AbstractGeoserverHttpTest {
         //System.out.println(entry.getName());
         assertEquals("wms.kml", entry.getName());
 	}
+	*/
 }
