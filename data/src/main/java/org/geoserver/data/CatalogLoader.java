@@ -1,6 +1,8 @@
 package org.geoserver.data;
 
 import java.io.File;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -68,11 +70,6 @@ public class CatalogLoader implements InitializingBean, DisposableBean {
 		if ( catalogFile == null ) {
 			logger.severe( "Could not locate catalog.xml" );
 			return;
-		}
-		
-		if ( !catalogFile.exists() ) {
-			String msg = "Could not find catalog.xml";
-			throw new Exception( msg );
 		}
 		
 		//read the catalog file
@@ -152,7 +149,33 @@ public class CatalogLoader implements InitializingBean, DisposableBean {
 	}
 
 	public void destroy() throws Exception {
-		//TODO: write out catalog.xml file
-		
+		//TODO: write out catalog
+//		File catalogFile = loader.find("catalog.xml");
+//		if ( catalogFile == null || !catalogFile.exists() ) {
+//			logger.info( "Could not find catalog.xml, creating" );
+//			catalogFile = loader.createFile( "catalog.xml" );
+//		}
+//		
+//		CatalogWriter writer = new CatalogWriter();
+//		
+//		//datastors
+//		Map dataStores = new HashMap();
+//		for ( Iterator d = catalog.dataStores().iterator(); d.hasNext(); ) {
+//			DataStoreInfo dataStore = (DataStoreInfo) d.next();
+//			dataStores.put( dataStore.getId(), dataStore.getConnectionParameters() );
+//		}
+//		writer.dataStores( dataStores );
+//		
+//		//namespaces
+//		Map namespaces = new HashMap();
+//		for ( Enumeration p = catalog.getNamespaceSupport().getPrefixes(); p.hasMoreElements(); ) {
+//			String prefix = (String) p.nextElement();
+//			String uri = catalog.getNamespaceSupport().getURI( prefix );
+//			namespaces.put( prefix, uri );
+//		}
+//		namespaces.put( "", catalog.getNamespaceSupport().getURI( "" ) );
+//		writer.namespaces( namespaces );
+//		
+//		writer.write( catalogFile );
 	}
 }
