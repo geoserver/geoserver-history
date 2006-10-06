@@ -86,6 +86,23 @@ public interface GeoServerCatalog extends Catalog {
 	List featureTypes() throws IOException;
 	
 	/**
+	 * Returns a single feature type meta data object based on a single identifier.
+	 * <p>
+	 * The feature type identifier is namespace prefix qualified as in <code>cfg:Points</code>.
+	 * If a namespace prefix is absent as in <code>Points</code>, the default application 
+	 * namespace is assumed. 
+	 * </p>
+	 * 
+	 * @param identifier The namespace qualified feature type identifier.
+	 *  
+	 * @return The feature type meta data object, or <code>null</code> if none matching
+	 * the specified identifier.
+	 * 
+	 * @throws IOException
+	 */
+	FeatureTypeInfo featureType( String identifier ) throws IOException;
+	
+	/**
 	 * Returns a single feature type meta data object based on a namespace prefix
 	 * and type name which together uniquley identify the feature type.
 	 * <p>
@@ -121,7 +138,6 @@ public interface GeoServerCatalog extends Catalog {
 	 * @throws IOException
 	 */
 	StyleInfo style( String id ) throws IOException;
-	
 	
 }
 	
