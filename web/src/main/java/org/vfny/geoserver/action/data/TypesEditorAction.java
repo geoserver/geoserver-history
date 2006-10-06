@@ -34,6 +34,7 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.MathTransformFactory;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
@@ -196,7 +197,8 @@ public class TypesEditorAction extends ConfigAction {
         try {
         	CoordinateReferenceSystem crsTheirData = CRS.decode(srs);
         	CoordinateReferenceSystem crsLatLong   = CRS.decode("EPSG:4326");  // latlong
-        	MathTransform xform = CRS.transform(crsTheirData,crsLatLong,true);
+        	
+        	MathTransform xform = CRS.findMathTransform(crsTheirData,crsLatLong,true);
         	Envelope xformed_envelope = JTS.transform(envelope,xform,10); //convert data bbox to lat/long
         	
             typeForm.setMinX(Double.toString(xformed_envelope.getMinX()));
