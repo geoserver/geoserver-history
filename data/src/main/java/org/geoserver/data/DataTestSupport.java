@@ -22,6 +22,7 @@ import org.geotools.catalog.property.PropertyServiceFactory;
 import org.geotools.catalog.styling.SLDServiceFactory;
 
 import org.geotools.data.property.PropertyDataStoreFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**
@@ -149,6 +150,11 @@ public class DataTestSupport extends TestCase {
     protected GeoServerResourceLoader loader;
     
     /**
+     * Application context
+     */
+    protected GenericApplicationContext context;
+    
+    /**
 	 * Creates an instance of the geoserver catalog populated with cite data.
 	 * 
 	 */
@@ -194,8 +200,11 @@ public class DataTestSupport extends TestCase {
 	   setup( CGF_PREFIX, POINTS_TYPE );
 	   setup( CGF_PREFIX, POLYGONS_TYPE );
 
+	   context = new GenericApplicationContext();
 	   loader = new GeoServerResourceLoader( data );
-	   catalog = createCiteCatalog();
+	   context.getBeanFactory().registerSingleton( "resourceLoader", loader );
+	   
+	   catalog = createCiteCatalog( context );
 	}
     
     void setup( String prefix, String type ) throws Exception {
@@ -271,7 +280,7 @@ public class DataTestSupport extends TestCase {
      * </p>
      * @return A popluated geoserver catalog.
      */
-    protected GeoServerCatalog createCiteCatalog() {
+    private GeoServerCatalog createCiteCatalog( GenericApplicationContext conext ) {
     		
 		GeoServerResolveAdapterFactoryFinder adapterFinder 
     			= new GeoServerResolveAdapterFactoryFinder();
@@ -281,7 +290,6 @@ public class DataTestSupport extends TestCase {
 		PropertyServiceFactory factory = new PropertyServiceFactory();
 		SLDServiceFactory sldFactory = new SLDServiceFactory();
 		
-		GenericApplicationContext context = new GenericApplicationContext();
 		context.getBeanFactory().registerSingleton( "finder", finder );
 		context.getBeanFactory().registerSingleton( "propertyServiceFactory", factory );
 		context.getBeanFactory().registerSingleton( "sldServiceFactory", sldFactory );
