@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -67,7 +66,7 @@ public class EMFUtils {
 	 * @param property The property to set on each eobject in <code>objects</code>
 	 * @param values The value to set on each eobjct in <code>objects</code>
 	 */
-	public static void set( EList objects, String property, List values ) {
+	public static void set( List objects, String property, List values ) {
 		
 		for ( int i = 0; i < objects.size(); i++ ) {
 			EObject eobject = (EObject) objects.get( i );
@@ -84,7 +83,7 @@ public class EMFUtils {
 	 * @param property The property to set on each eobject in <code>objects</code>
 	 * @param value The value to set on each eobjct in <code>objects</code>
 	 */
-	public static void set( EList objects, String property, Object value ) {
+	public static void set(List objects, String property, Object value ) {
 		
 		for ( int i = 0; i < objects.size(); i++ ) {
 			EObject eobject = (EObject) objects.get( i );
@@ -101,7 +100,7 @@ public class EMFUtils {
 	 * 
 	 * @return The list of values.
 	 */
-	public static List get( EList objects, String property ) {
+	public static List get( List objects, String property ) {
 		
 		List values = new ArrayList();
 		for ( int i = 0; i < objects.size(); i++ ) {
@@ -138,7 +137,7 @@ public class EMFUtils {
 	 * 
 	 * @return <code>true</code> if every element in the list has been set, otherwise <code>false</code>
 	 */
-	public static boolean isSet( EList objects, String property ) {
+	public static boolean isSet( List objects, String property ) {
 	
 		for ( int i = 0; i < objects.size(); i++ ) {
 			EObject eobject = (EObject) objects.get( i );
@@ -157,7 +156,7 @@ public class EMFUtils {
 	 * 
 	 * @return <code>true</code> if every element in the list is unset, otherwise <code>false</code>
 	 */
-	public static boolean isUnset( EList objects, String property ) {
+	public static boolean isUnset( List objects, String property ) {
 		
 		for ( int i = 0; i < objects.size(); i++ ) {
 			EObject eobject = (EObject) objects.get( i );
