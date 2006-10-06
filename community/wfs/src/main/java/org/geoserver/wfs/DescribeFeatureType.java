@@ -11,9 +11,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.wfs.DescribeFeatureTypeType;
-import net.opengis.wfs.WFSFactory;
-
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.xml.sax.helpers.NamespaceSupport;
@@ -39,10 +36,15 @@ public class DescribeFeatureType {
 	 * WFS service
 	 */
     private WFS wfs;
+    
     /**
-     * request object
+     * the output format
      */
-    private DescribeFeatureTypeType request;
+    private String outputFormat;
+    /**
+     * requested type names
+     */
+    private List typeName;
     
     public DescribeFeatureType( WFS wfs, GeoServerCatalog catalog ) {
 		this.catalog = catalog;
@@ -66,36 +68,27 @@ public class DescribeFeatureType {
 	}
     
     public void setOutputFormat(String outputFormat) {
-    		request().setOutputFormat( outputFormat );
+		this.outputFormat = outputFormat;
 	}
     
     public String getOutputFormat() {
-		return request().getOutputFormat();
+		return outputFormat;
 	}
     
-    public void setTypeName(List typeNames) {
-		request().getTypeName().clear();
-		request().getTypeName().addAll( typeNames );
+    public void setTypeName(List typeName) {
+		this.typeName = typeName;
 	}
 
     public List getTypeName() {
-		return request().getTypeName();
+    	return typeName;
 	}
     
     public FeatureTypeInfo[] describeFeatureType() throws WFSException {
-    		return describeFeatureType( request() );
-    }
-    
-    public FeatureTypeInfo[] describeFeatureType( DescribeFeatureTypeType request ) 
-    		throws WFSException {
     
     	//some initial sanity
-    	
+		List names = new ArrayList( getTypeName() );
 		
-    		this.request = request;
-    		List names = new ArrayList( getTypeName() );
-    		
-    		try {
+		try {
 			//list of catalog handles
 			List infos = catalog.featureTypes();
 			ArrayList requested = new ArrayList();
@@ -132,14 +125,5 @@ public class DescribeFeatureType {
 		catch (IOException e) {
 			throw new WFSException( e, null );
 		} 	
-    	}
-    
-    protected DescribeFeatureTypeType request() {
-    		if ( request == null ) {
-    			request = WFSFactory.eINSTANCE.createDescribeFeatureTypeType();
-    		}
-    		
-    		return request;
-    }
-    
+	}
 }

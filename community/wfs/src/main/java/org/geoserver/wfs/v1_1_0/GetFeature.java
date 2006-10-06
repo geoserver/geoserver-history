@@ -1,7 +1,9 @@
 package org.geoserver.wfs.v1_1_0;
 
-import java.math.BigInteger;
 import java.util.List;
+
+import net.opengis.wfs.v1_1_0.WFSFactory;
+import net.opengis.wfs.v1_1_0.WFSPackage;
 
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.data.GeoServerCatalog;
@@ -9,12 +11,7 @@ import org.geoserver.wfs.EMFUtils;
 import org.geoserver.wfs.Query;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
-import org.geotools.feature.FeatureCollection;
 import org.opengis.filter.sort.SortBy;
-
-import net.opengis.wfs.v1_1_0.GetFeatureType;
-import net.opengis.wfs.v1_1_0.WFSFactory;
-import net.opengis.wfs.v1_1_0.WFSPackage;
 
 /**
  * WFS 1.1.0 GetFeature operation.
@@ -29,23 +26,11 @@ public class GetFeature extends org.geoserver.wfs.GetFeature {
 	}
 
 	public void setSrsName( List srsName ) throws WFSException {
-		batchSet( "srsName", srsName );
+		querySet( "srsName", srsName );
 	}
 	
 	public void setSortBy( List sortBy ) throws WFSException {
-		batchSet( "sortBy", sortBy );
-	}
-	
-	protected EObject request() {
-		if ( request == null ) {
-			synchronized ( this ) {
-				if ( request == null ) {
-					request = factory.create( WFSPackage.eINSTANCE.getGetFeatureType() );
-				}
-			}
-		}
-		
-		return request;
+		querySet( "sortBy", sortBy );
 	}
 	
 	protected EObject query() {
