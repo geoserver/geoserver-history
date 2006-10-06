@@ -155,7 +155,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
         // chain geoserver charset so that multibyte feature info responses
         // gets properly encoded, same as getCapabilities responses 
-        return format + ";charset=" + gs.getCharSet().displayName();
+        return format + ";charset=" + gs.getCharSet().name();
     }
 
     /**

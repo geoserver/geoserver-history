@@ -313,7 +313,7 @@ public class GeoServer extends GlobalLayerSupertype {
      * @return String the server default mimetype.
      */
     public String getMimeType() {
-        return "text/xml; charset=" + getCharSet().displayName();
+        return "text/xml; charset=" + getCharSet().name();
     }
 
     /**
