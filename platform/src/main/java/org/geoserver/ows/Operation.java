@@ -2,6 +2,9 @@ package org.geoserver.ows;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Bean wrapper for an operation.
@@ -68,7 +71,7 @@ public final class Operation {
 	public boolean set(String property, Object value) 
 		throws Exception {
 		
-		Method method = method( "set" + property, value.getClass() );
+		Method method = method( "set" + property, value != null ? value.getClass() : null );
 		if (method != null) {
 			method.invoke( operation, new Object[]{value} );
 			return true;
@@ -109,21 +112,29 @@ public final class Operation {
 
 	protected Method method ( String name, Class parameter ) {
 		Method[] methods = getOperation().getClass().getMethods();
+		List matches = new ArrayList();
+		
 		for ( int i = 0; i < methods.length; i++ ) {
 			Method method = methods[i];
 			if (method.getName().equalsIgnoreCase( name ) ) {
-				if ( parameter != null ) {
-					if ( method.getParameterTypes().length == 1) {
-						Class type = method.getParameterTypes()[0];
-						if ( type.isAssignableFrom( parameter ) ) {
-							return method;
-						}
+				if ( parameter == null ) { 
+					if ( method.getParameterTypes().length == 0 ) {
+						matches.add( method );
 					}
-				}else if(method.getParameterTypes().length == 0){
-				    return method;
+				}
+				else {
+					if ( method.getParameterTypes().length == 1 ) {
+						matches.add( method );
+					}
 				}
 			}
 		}
+		
+		if ( matches.isEmpty() )
+			return null;
+		
+		if ( matches.size() == 1 ) 
+			return (Method) matches.get( 0 );
 		
 		return null;
 	}
