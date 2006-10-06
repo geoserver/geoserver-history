@@ -6,9 +6,9 @@
  */
 package net.opengis.wfs;
 
-import org.eclipse.emf.common.util.EList;
-
 import java.util.List;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
 
@@ -61,8 +61,7 @@ public interface DescribeFeatureTypeType extends EObject{
 	 * @return the value of the '<em>Type Name</em>' attribute.
 	 * @see #setTypeName(Object)
 	 * @see net.opengis.wfs.WFSPackage#getDescribeFeatureTypeType_TypeName()
-	 * 
-	 * @model type="javax.xml.namespace.QName" 
+	 * @model type="javax.xml.namespace.QName"
 	 * 
 	 */
 	EList getTypeName();

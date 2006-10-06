@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 
-import org.opengis.filter.expression.PropertyName;
+import org.eclipse.emf.ecore.util.EDataTypeEList;
 
 /**
  * <!-- begin-user-doc -->

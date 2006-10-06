@@ -27,5 +27,5 @@ import org.eclipse.emf.ecore.EObject;
  * @model extendedMetaData="name='FeatureCollectionType' kind='empty'"
  * @generated
  */
-public interface FeatureCollectionType extends EObject {
+public interface FeatureCollectionType extends EObject{
 } // FeatureCollectionType

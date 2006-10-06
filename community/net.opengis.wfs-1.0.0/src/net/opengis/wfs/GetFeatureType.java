@@ -45,7 +45,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model extendedMetaData="name='GetFeatureType' kind='elementOnly'"
  * @generated
  */
-public interface GetFeatureType extends EObject {
+public interface GetFeatureType extends EObject{
 	/**
 	 * Returns the value of the '<em><b>Query</b></em>' containment reference list.
 	 * The list contents are of type {@link net.opengis.wfs.QueryType}.

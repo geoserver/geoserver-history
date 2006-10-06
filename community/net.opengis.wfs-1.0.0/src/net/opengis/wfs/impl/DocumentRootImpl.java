@@ -8,13 +8,24 @@ package net.opengis.wfs.impl;
 
 import java.util.Collection;
 
+import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.DescribeFeatureTypeType;
 import net.opengis.wfs.DocumentRoot;
+import net.opengis.wfs.EmptyType;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetCapabilitiesType;
 import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.GetFeatureWithLockType;
+import net.opengis.wfs.InsertElementType;
+import net.opengis.wfs.LockFeatureType;
+import net.opengis.wfs.NativeType;
+import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.QueryType;
+import net.opengis.wfs.TransactionType;
+import net.opengis.wfs.UpdateElementType;
+import net.opengis.wfs.WFSLockFeatureResponseType;
 import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WFSTransactionResponseType;
 
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -48,6 +59,20 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getGetCapabilities <em>Get Capabilities</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getGetFeature <em>Get Feature</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getQuery <em>Query</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getDelete <em>Delete</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getFailed <em>Failed</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getGetFeatureWithLock <em>Get Feature With Lock</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getInsert <em>Insert</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getLockFeature <em>Lock Feature</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getLockId <em>Lock Id</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getNative <em>Native</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getPartial <em>Partial</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getProperty <em>Property</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getSuccess <em>Success</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getTransaction <em>Transaction</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getUpdate <em>Update</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getWfsLockFeatureResponse <em>Wfs Lock Feature Response</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getWfsTransactionResponse <em>Wfs Transaction Response</em>}</li>
  * </ul>
  * </p>
  *
@@ -83,6 +108,16 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * @ordered
 	 */
 	protected EMap xSISchemaLocation = null;
+
+	/**
+	 * The default value of the '{@link #getLockId() <em>Lock Id</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLockId()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String LOCK_ID_EDEFAULT = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -278,6 +313,375 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public DeleteElementType getDelete() {
+		return (DeleteElementType)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_Delete(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetDelete(DeleteElementType newDelete, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WFSPackage.eINSTANCE.getDocumentRoot_Delete(), newDelete, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setDelete(DeleteElementType newDelete) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_Delete(), newDelete);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EmptyType getFailed() {
+		return (EmptyType)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_Failed(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetFailed(EmptyType newFailed, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WFSPackage.eINSTANCE.getDocumentRoot_Failed(), newFailed, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setFailed(EmptyType newFailed) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_Failed(), newFailed);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public GetFeatureWithLockType getGetFeatureWithLock() {
+		return (GetFeatureWithLockType)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_GetFeatureWithLock(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetGetFeatureWithLock(GetFeatureWithLockType newGetFeatureWithLock, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WFSPackage.eINSTANCE.getDocumentRoot_GetFeatureWithLock(), newGetFeatureWithLock, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setGetFeatureWithLock(GetFeatureWithLockType newGetFeatureWithLock) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_GetFeatureWithLock(), newGetFeatureWithLock);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public InsertElementType getInsert() {
+		return (InsertElementType)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_Insert(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetInsert(InsertElementType newInsert, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WFSPackage.eINSTANCE.getDocumentRoot_Insert(), newInsert, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setInsert(InsertElementType newInsert) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_Insert(), newInsert);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public LockFeatureType getLockFeature() {
+		return (LockFeatureType)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_LockFeature(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetLockFeature(LockFeatureType newLockFeature, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WFSPackage.eINSTANCE.getDocumentRoot_LockFeature(), newLockFeature, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setLockFeature(LockFeatureType newLockFeature) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_LockFeature(), newLockFeature);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getLockId() {
+		return (String)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_LockId(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setLockId(String newLockId) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_LockId(), newLockId);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NativeType getNative() {
+		return (NativeType)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_Native(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetNative(NativeType newNative, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WFSPackage.eINSTANCE.getDocumentRoot_Native(), newNative, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setNative(NativeType newNative) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_Native(), newNative);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EmptyType getPartial() {
+		return (EmptyType)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_Partial(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetPartial(EmptyType newPartial, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WFSPackage.eINSTANCE.getDocumentRoot_Partial(), newPartial, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setPartial(EmptyType newPartial) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_Partial(), newPartial);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public PropertyType getProperty() {
+		return (PropertyType)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_Property(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetProperty(PropertyType newProperty, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WFSPackage.eINSTANCE.getDocumentRoot_Property(), newProperty, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setProperty(PropertyType newProperty) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_Property(), newProperty);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EmptyType getSuccess() {
+		return (EmptyType)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_Success(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetSuccess(EmptyType newSuccess, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WFSPackage.eINSTANCE.getDocumentRoot_Success(), newSuccess, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setSuccess(EmptyType newSuccess) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_Success(), newSuccess);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public TransactionType getTransaction() {
+		return (TransactionType)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_Transaction(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetTransaction(TransactionType newTransaction, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WFSPackage.eINSTANCE.getDocumentRoot_Transaction(), newTransaction, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setTransaction(TransactionType newTransaction) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_Transaction(), newTransaction);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public UpdateElementType getUpdate() {
+		return (UpdateElementType)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_Update(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetUpdate(UpdateElementType newUpdate, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WFSPackage.eINSTANCE.getDocumentRoot_Update(), newUpdate, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setUpdate(UpdateElementType newUpdate) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_Update(), newUpdate);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public WFSLockFeatureResponseType getWfsLockFeatureResponse() {
+		return (WFSLockFeatureResponseType)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_WfsLockFeatureResponse(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetWfsLockFeatureResponse(WFSLockFeatureResponseType newWfsLockFeatureResponse, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WFSPackage.eINSTANCE.getDocumentRoot_WfsLockFeatureResponse(), newWfsLockFeatureResponse, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setWfsLockFeatureResponse(WFSLockFeatureResponseType newWfsLockFeatureResponse) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_WfsLockFeatureResponse(), newWfsLockFeatureResponse);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public WFSTransactionResponseType getWfsTransactionResponse() {
+		return (WFSTransactionResponseType)getMixed().get(WFSPackage.eINSTANCE.getDocumentRoot_WfsTransactionResponse(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetWfsTransactionResponse(WFSTransactionResponseType newWfsTransactionResponse, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WFSPackage.eINSTANCE.getDocumentRoot_WfsTransactionResponse(), newWfsTransactionResponse, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setWfsTransactionResponse(WFSTransactionResponseType newWfsTransactionResponse) {
+		((FeatureMap.Internal)getMixed()).set(WFSPackage.eINSTANCE.getDocumentRoot_WfsTransactionResponse(), newWfsTransactionResponse);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
 		if (featureID >= 0) {
 			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
@@ -297,6 +701,32 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 					return basicSetGetFeature(null, msgs);
 				case WFSPackage.DOCUMENT_ROOT__QUERY:
 					return basicSetQuery(null, msgs);
+				case WFSPackage.DOCUMENT_ROOT__DELETE:
+					return basicSetDelete(null, msgs);
+				case WFSPackage.DOCUMENT_ROOT__FAILED:
+					return basicSetFailed(null, msgs);
+				case WFSPackage.DOCUMENT_ROOT__GET_FEATURE_WITH_LOCK:
+					return basicSetGetFeatureWithLock(null, msgs);
+				case WFSPackage.DOCUMENT_ROOT__INSERT:
+					return basicSetInsert(null, msgs);
+				case WFSPackage.DOCUMENT_ROOT__LOCK_FEATURE:
+					return basicSetLockFeature(null, msgs);
+				case WFSPackage.DOCUMENT_ROOT__NATIVE:
+					return basicSetNative(null, msgs);
+				case WFSPackage.DOCUMENT_ROOT__PARTIAL:
+					return basicSetPartial(null, msgs);
+				case WFSPackage.DOCUMENT_ROOT__PROPERTY:
+					return basicSetProperty(null, msgs);
+				case WFSPackage.DOCUMENT_ROOT__SUCCESS:
+					return basicSetSuccess(null, msgs);
+				case WFSPackage.DOCUMENT_ROOT__TRANSACTION:
+					return basicSetTransaction(null, msgs);
+				case WFSPackage.DOCUMENT_ROOT__UPDATE:
+					return basicSetUpdate(null, msgs);
+				case WFSPackage.DOCUMENT_ROOT__WFS_LOCK_FEATURE_RESPONSE:
+					return basicSetWfsLockFeatureResponse(null, msgs);
+				case WFSPackage.DOCUMENT_ROOT__WFS_TRANSACTION_RESPONSE:
+					return basicSetWfsTransactionResponse(null, msgs);
 				default:
 					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
 			}
@@ -327,6 +757,34 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return getGetFeature();
 			case WFSPackage.DOCUMENT_ROOT__QUERY:
 				return getQuery();
+			case WFSPackage.DOCUMENT_ROOT__DELETE:
+				return getDelete();
+			case WFSPackage.DOCUMENT_ROOT__FAILED:
+				return getFailed();
+			case WFSPackage.DOCUMENT_ROOT__GET_FEATURE_WITH_LOCK:
+				return getGetFeatureWithLock();
+			case WFSPackage.DOCUMENT_ROOT__INSERT:
+				return getInsert();
+			case WFSPackage.DOCUMENT_ROOT__LOCK_FEATURE:
+				return getLockFeature();
+			case WFSPackage.DOCUMENT_ROOT__LOCK_ID:
+				return getLockId();
+			case WFSPackage.DOCUMENT_ROOT__NATIVE:
+				return getNative();
+			case WFSPackage.DOCUMENT_ROOT__PARTIAL:
+				return getPartial();
+			case WFSPackage.DOCUMENT_ROOT__PROPERTY:
+				return getProperty();
+			case WFSPackage.DOCUMENT_ROOT__SUCCESS:
+				return getSuccess();
+			case WFSPackage.DOCUMENT_ROOT__TRANSACTION:
+				return getTransaction();
+			case WFSPackage.DOCUMENT_ROOT__UPDATE:
+				return getUpdate();
+			case WFSPackage.DOCUMENT_ROOT__WFS_LOCK_FEATURE_RESPONSE:
+				return getWfsLockFeatureResponse();
+			case WFSPackage.DOCUMENT_ROOT__WFS_TRANSACTION_RESPONSE:
+				return getWfsTransactionResponse();
 		}
 		return eDynamicGet(eFeature, resolve);
 	}
@@ -365,6 +823,48 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 			case WFSPackage.DOCUMENT_ROOT__QUERY:
 				setQuery((QueryType)newValue);
 				return;
+			case WFSPackage.DOCUMENT_ROOT__DELETE:
+				setDelete((DeleteElementType)newValue);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__FAILED:
+				setFailed((EmptyType)newValue);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__GET_FEATURE_WITH_LOCK:
+				setGetFeatureWithLock((GetFeatureWithLockType)newValue);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__INSERT:
+				setInsert((InsertElementType)newValue);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__LOCK_FEATURE:
+				setLockFeature((LockFeatureType)newValue);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__LOCK_ID:
+				setLockId((String)newValue);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__NATIVE:
+				setNative((NativeType)newValue);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__PARTIAL:
+				setPartial((EmptyType)newValue);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__PROPERTY:
+				setProperty((PropertyType)newValue);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__SUCCESS:
+				setSuccess((EmptyType)newValue);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__TRANSACTION:
+				setTransaction((TransactionType)newValue);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__UPDATE:
+				setUpdate((UpdateElementType)newValue);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__WFS_LOCK_FEATURE_RESPONSE:
+				setWfsLockFeatureResponse((WFSLockFeatureResponseType)newValue);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__WFS_TRANSACTION_RESPONSE:
+				setWfsTransactionResponse((WFSTransactionResponseType)newValue);
+				return;
 		}
 		eDynamicSet(eFeature, newValue);
 	}
@@ -400,6 +900,48 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 			case WFSPackage.DOCUMENT_ROOT__QUERY:
 				setQuery((QueryType)null);
 				return;
+			case WFSPackage.DOCUMENT_ROOT__DELETE:
+				setDelete((DeleteElementType)null);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__FAILED:
+				setFailed((EmptyType)null);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__GET_FEATURE_WITH_LOCK:
+				setGetFeatureWithLock((GetFeatureWithLockType)null);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__INSERT:
+				setInsert((InsertElementType)null);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__LOCK_FEATURE:
+				setLockFeature((LockFeatureType)null);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__LOCK_ID:
+				setLockId(LOCK_ID_EDEFAULT);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__NATIVE:
+				setNative((NativeType)null);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__PARTIAL:
+				setPartial((EmptyType)null);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__PROPERTY:
+				setProperty((PropertyType)null);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__SUCCESS:
+				setSuccess((EmptyType)null);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__TRANSACTION:
+				setTransaction((TransactionType)null);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__UPDATE:
+				setUpdate((UpdateElementType)null);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__WFS_LOCK_FEATURE_RESPONSE:
+				setWfsLockFeatureResponse((WFSLockFeatureResponseType)null);
+				return;
+			case WFSPackage.DOCUMENT_ROOT__WFS_TRANSACTION_RESPONSE:
+				setWfsTransactionResponse((WFSTransactionResponseType)null);
+				return;
 		}
 		eDynamicUnset(eFeature);
 	}
@@ -427,6 +969,34 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return getGetFeature() != null;
 			case WFSPackage.DOCUMENT_ROOT__QUERY:
 				return getQuery() != null;
+			case WFSPackage.DOCUMENT_ROOT__DELETE:
+				return getDelete() != null;
+			case WFSPackage.DOCUMENT_ROOT__FAILED:
+				return getFailed() != null;
+			case WFSPackage.DOCUMENT_ROOT__GET_FEATURE_WITH_LOCK:
+				return getGetFeatureWithLock() != null;
+			case WFSPackage.DOCUMENT_ROOT__INSERT:
+				return getInsert() != null;
+			case WFSPackage.DOCUMENT_ROOT__LOCK_FEATURE:
+				return getLockFeature() != null;
+			case WFSPackage.DOCUMENT_ROOT__LOCK_ID:
+				return LOCK_ID_EDEFAULT == null ? getLockId() != null : !LOCK_ID_EDEFAULT.equals(getLockId());
+			case WFSPackage.DOCUMENT_ROOT__NATIVE:
+				return getNative() != null;
+			case WFSPackage.DOCUMENT_ROOT__PARTIAL:
+				return getPartial() != null;
+			case WFSPackage.DOCUMENT_ROOT__PROPERTY:
+				return getProperty() != null;
+			case WFSPackage.DOCUMENT_ROOT__SUCCESS:
+				return getSuccess() != null;
+			case WFSPackage.DOCUMENT_ROOT__TRANSACTION:
+				return getTransaction() != null;
+			case WFSPackage.DOCUMENT_ROOT__UPDATE:
+				return getUpdate() != null;
+			case WFSPackage.DOCUMENT_ROOT__WFS_LOCK_FEATURE_RESPONSE:
+				return getWfsLockFeatureResponse() != null;
+			case WFSPackage.DOCUMENT_ROOT__WFS_TRANSACTION_RESPONSE:
+				return getWfsTransactionResponse() != null;
 		}
 		return eDynamicIsSet(eFeature);
 	}

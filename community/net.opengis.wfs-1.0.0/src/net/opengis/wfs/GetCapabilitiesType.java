@@ -33,7 +33,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model extendedMetaData="name='GetCapabilitiesType' kind='empty'"
  * @generated
  */
-public interface GetCapabilitiesType extends EObject {
+public interface GetCapabilitiesType extends EObject{
 	/**
 	 * Returns the value of the '<em><b>Service</b></em>' attribute.
 	 * The default value is <code>"WFS"</code>.

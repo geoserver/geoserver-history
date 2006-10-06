@@ -6,16 +6,12 @@
  */
 package net.opengis.wfs;
 
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EObject;
-
 import org.opengis.filter.Filter;
-
-import org.opengis.filter.expression.PropertyName;
 
 /**
  * <!-- begin-user-doc -->
@@ -44,20 +40,21 @@ import org.opengis.filter.expression.PropertyName;
  */
 public interface QueryType extends EObject{
 	/**
-	 * Returns the value of the '<em><b>Property Name</b></em>' attribute.
+	 * Returns the value of the '<em><b>Property Name</b></em>' attribute list.
+	 * The list contents are of type {@link java.lang.Object}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
 	 * 
 	 *                 The PropertyName element is used to specify one or more
 	 *                 properties of a feature whose values are to be retrieved
-	 *                 by a Web Feature Service.
-	 * 
+	 *                 by a Web Feature Service.  
+	 *                 
 	 *                 While a Web Feature Service should endeavour to satisfy
 	 *                 the exact request specified, in some instance this may
 	 *                 not be possible.  Specifically, a Web Feature Service
 	 *                 must generate a valid GML2 response to a Query operation.
-	 *                 The schema used to generate the output may include
+	 *                 The schema used to generate the output may include 
 	 *                 properties that are mandatory.  In order that the output
 	 *                 validates, these mandatory properties must be specified
 	 *                 in the request.  If they are not, a Web Feature Service
@@ -68,11 +65,11 @@ public interface QueryType extends EObject{
 	 *                 Of course, using the DescribeFeatureType request, a client
 	 *                 application can determine which properties are mandatory
 	 *                 and request them in the first place.
+	 *              
 	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Property Name</em>' attribute.
-	 * @see #setPropertyName(PropertyName)
+	 * @return the value of the '<em>Property Name</em>' attribute list.
 	 * @see net.opengis.wfs.WFSPackage#getQueryType_PropertyName()
-	 * @model type="net.opengis.wfs.PropertyName"
+	 * @model type="org.opengis.filter.expression.PropertyName" 
 	 * 
 	 */
 	EList getPropertyName();
@@ -88,12 +85,13 @@ public interface QueryType extends EObject{
 	 *                 the constraining geometry.  A full description of the Filter
 	 *                 element can be found in the Filter Encoding Implementation
 	 *                 Specification.
+	 *              
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Filter</em>' attribute.
-	 * @see #setFilter(Filter)
+	 * @see #setFilter(Object)
 	 * @see net.opengis.wfs.WFSPackage#getQueryType_Filter()
-	 * @model unique="false" dataType="net.opengis.wfs.Filter"
-	 * @generated
+	 * @model 
+	 * 
 	 */
 	Filter getFilter();
 
@@ -177,7 +175,6 @@ public interface QueryType extends EObject{
 	 * @return the value of the '<em>Type Name</em>' attribute.
 	 * @see #setTypeName(Object)
 	 * @see net.opengis.wfs.WFSPackage#getQueryType_TypeName()
-	 * 
 	 * @model 
 	 * 
 	 */

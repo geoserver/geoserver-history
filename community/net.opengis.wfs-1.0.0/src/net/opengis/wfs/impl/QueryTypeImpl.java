@@ -29,6 +29,8 @@ import org.opengis.filter.Filter;
 
 import org.opengis.filter.expression.PropertyName;
 
+import org.eclipse.emf.ecore.util.EDataTypeEList;
+
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Query Type</b></em>'.
