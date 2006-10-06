@@ -29,6 +29,12 @@
 		</property>
 	</bean-->
 	
+	<!-- schema catalog adapter -->
+	<bean id="schemaAdapterFactory" class="org.geoserver.wfs.xml.SchemaAdapterFactory">
+		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
+	</bean>
+	
 	<!-- version 1.0.0 operations -->
 	<bean id="getCapabilities-1.0.0" class="org.geoserver.wfs.GetCapabilities"
 		singleton="false">
@@ -41,6 +47,11 @@
 		<constructor-arg ref="catalog"/>
 	</bean>
 	<bean id="getFeature-1.0.0" class="org.geoserver.wfs.GetFeature" singleton="false">
+		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
+	</bean>
+	<bean id="transaction-1.0.0" class="org.geoserver.wfs.Transaction" 
+		singleton="false">
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="catalog"/>
 	</bean>
@@ -63,6 +74,18 @@
 		<constructor-arg index="0" value="GetFeature"/>
 		<constructor-arg index="1" ref="wfsService-1.0.0"/>
 		<constructor-arg index="2" ref="getFeature-1.0.0"/>
+	</bean>
+	<bean id="getFeatureWithLockOperation-1.0.0" 
+		class="org.geoserver.ows.Operation" singleton="false">
+		<constructor-arg index="0" value="GetFeatureWithLock"/>
+		<constructor-arg index="1" ref="wfsService-1.0.0"/>
+		<constructor-arg index="2" ref="getFeature-1.0.0"/>
+	</bean>
+	<bean id="transactionOperation-1.0.0"
+		class="org.geoserver.ows.Operation" singleton="false">
+		<constructor-arg index="0" value="Transaction"/>
+		<constructor-arg index="1" ref="wfsService-1.0.0"/>
+		<constructor-arg index="2" ref="transaction-1.0.0"/>
 	</bean>
 	
 	<!-- version 1.1.0 operations -->
@@ -123,7 +146,12 @@
 		<constructor-arg index="0" value="text/xml; subtype=gml/3.1.1"/>
 		<constructor-arg index="1" value="text/xml; subtype=gml/3.1.1"/>
 	</bean>
+	<bean id="transactionResponse-1.0.0"
+		class="org.geoserver.wfs.http.TransactionResponse">
+		<constructor-arg ref="wfs"/>
+	</bean>
 		
+	
 	<!-- http url mapping -->
 	<bean id="wfsURLMapping" 
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -158,28 +186,42 @@
 	<bean id="sortByKvpReader" class="org.geoserver.wfs.http.SortByKvpReader">
 		<constructor-arg ref="filterFactory"/>
 	</bean>
+	<bean id="expiryKvpReader" class="org.geoserver.wfs.http.ExpiryKvpReader"/>
 	
 	<!-- 1.0 xml readers -->
 	<bean id="getCapabilitiesXmlReader"
 		class="org.geoserver.wfs.http.WfsXmlReader">
 		<constructor-arg value="GetCapabilities"/>
+		<constructor-arg ref="catalog"/>
 	</bean>
 	<bean id="describeFetureTypeXmlReader"
 		class="org.geoserver.wfs.http.WfsXmlReader">
 		<constructor-arg value="DescribeFeatureType"/>
+		<constructor-arg ref="catalog"/>
 	</bean>
 	<bean id="getFeatureXmlReader" class="org.geoserver.wfs.http.WfsXmlReader">
 		<constructor-arg value="GetFeature"/>
+		<constructor-arg ref="catalog"/>
+	</bean>
+	<bean id="getFeatureWithLockXmlReader" class="org.geoserver.wfs.http.WfsXmlReader">
+		<constructor-arg value="GetFeatureWithLock"/>
+		<constructor-arg ref="catalog"/>
+	</bean>
+	<bean id="transactionXmlReader" class="org.geoserver.wfs.http.WfsXmlReader">
+		<constructor-arg value="Transaction"/>
+		<constructor-arg ref="catalog"/>
 	</bean>
 	
 	<!-- 1.1 xml readers -->
 	<bean id="getCapabilitiesXmlReader-1.1.0"
 		class="org.geoserver.wfs.v1_1_0.http.WfsXmlReader">
 		<constructor-arg type="java.lang.String" value="GetCapabilities"/>
+		<constructor-arg ref="catalog"/>
 	</bean>
 	<bean id="describeFetureTypeXmlReader-1.1.0"
 		class="org.geoserver.wfs.v1_1_0.http.WfsXmlReader">
 		<constructor-arg value="DescribeFeatureType"/>
+		<constructor-arg ref="catalog"/>
 	</bean>
 	
 	<!-- default get feature producers -->
