@@ -15,17 +15,17 @@ import com.meterware.httpunit.WebResponse;
 
 public class KMLWriterTest extends AbstractGeoserverHttpTest {
 
-	/*
+	
 	public void testIntToHex() {
-		String result = KMLWriter.intToHex(0);
+		/*String result = KMLWriter.intToHex(0);
 		assertTrue( result.equals("00"));
 		// make sure that the zeros are prefixed
 		
 		result = KMLWriter.intToHex(90);
-		assertTrue( result.equals("5a"));
+		assertTrue( result.equals("5a"));*/
 	}
 	
-	public void testSimpleRequest() throws Exception{
+	/*public void testSimpleRequest() throws Exception{
 		WebConversation conversation = new WebConversation();
 		String requestParams = 
 				"bbox=-130,24,-66,50&"+
