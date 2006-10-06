@@ -13,6 +13,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -122,10 +123,6 @@ public class Dispatcher extends AbstractController {
 			opBean.set( key, val );
 		}
 		
-		// operations may wish to directly write to output stream
-		boolean outputStream = 
-			opBean.set( "outputStream", httpResponse.getOutputStream() );
-		
 		//step 4: execute
 		Object result = null;
 		try {
@@ -134,7 +131,24 @@ public class Dispatcher extends AbstractController {
 			}
 			else {
 				Object input = parseXML( cache );
-				result = opBean.run( input );
+				if ( input != null ) {
+					//transfer properties from parsed object to the bean
+					Method[] methods = input.getClass().getMethods();
+					for ( int i= 0; i < methods.length; i++ ) {
+						Method m = methods[ i ];
+						if ( m.getName().startsWith( "get" ) && m.getParameterTypes().length == 0 ) {
+							//a getter
+							String propName = m.getName().substring( 3 ); 
+							Object propValu = m.invoke( input, null );
+							opBean.set( propName, propValu );
+						}
+					}
+					
+					result = opBean.run( null );
+				}
+				else {
+					result = opBean.run( null );
+				}
 			}
 	
 		}
@@ -630,6 +644,8 @@ public class Dispatcher extends AbstractController {
 			response.setContentType( "text/xml" );
 			response.setCharacterEncoding( "UTF-8" );
 			response.getOutputStream().write( s.toString().getBytes() );
+			response.getOutputStream().flush();
+			
 		} 
 		catch (IOException ioe) {
 			throw new RuntimeException( ioe );
