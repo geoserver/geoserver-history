@@ -1,5 +1,6 @@
 package org.vfny.geoserver.jetty;
 
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -33,6 +34,7 @@ public class Start {
 			wah.setContextPath("/geoserver");
 			wah.setWar("src/main/webapp");
 			jettyServer.setHandler(wah);
+                        wah.setTempDirectory(new File("target/work"));
 
 			jettyServer.start();
 		} catch (Exception e) {

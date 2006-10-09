@@ -222,6 +222,61 @@
     </tr>
     
     <tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.dataFeatureTypeMetadataURLs"/>">
+			<bean:message key="label.metadataURL"/>:
+		</span>
+	  </td>
+	  <td class="datum">
+	  	  <table cellspacing="0">
+	  	  	<tr>
+	  	  	  <td align="left">
+				<span class="help" title="<bean:message key="help.dataFeatureTypeMetadataURLType"/>">
+					<bean:message key="label.metadataURLType"/>
+				</span>
+			  </td>
+			  <td align="left">
+				<span class="help" title="<bean:message key="help.dataFeatureTypeMetadataURLFormat"/>">
+					<bean:message key="label.metadataURLFormat"/>
+				</span>
+			  </td>
+			  <td align="left">
+				<span class="help" title="<bean:message key="help.dataFeatureTypeMetadataURLLink"/>">
+					<bean:message key="label.metadataURLLink" />
+				</span>
+			  </td>
+	  	  	</tr>
+	  	  	<tr>
+	  	  	  <td class="datum">
+	  	  	  	<html:select property="metadataLink[0].metadataType">
+	  	  	  	  <html:options property="allMetadataURLTypes"/>
+	  	  	  	</html:select>
+	  	  	  </td>
+	  	  	  <td class="datum">
+	  	  	  	<html:text property="metadataLink[0].type"/>
+	  	  	  </td>
+	  	  	  <td class="datum">
+	  	  	  	<html:text property="metadataLink[0].content" size="60"/>
+	  	  	  </td>
+	  	  	</tr>
+	  	  	<tr>
+	  	  	  <td class="datum">
+	  	  	  	<html:select property="metadataLink[1].metadataType">
+	  	  	  	  <html:options property="allMetadataURLTypes"/>
+	  	  	  	</html:select>
+	  	  	  </td>
+	  	  	  <td class="datum">
+	  	  	  	<html:text property="metadataLink[1].type"/>
+	  	  	  </td>
+	  	  	  <td class="datum">
+	  	  	  	<html:text property="metadataLink[1].content" size="60"/>
+	  	  	  </td>
+	  	  	</tr>
+	  	  </table>
+	  </td>
+    </tr>
+    
+    <tr>
 	    <td class="label">
     		<span class="help" title="<bean:message key="help.type.cachingEnabled" />">
     			<bean:message key="label.cachingEnabled" />:

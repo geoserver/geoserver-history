@@ -26,6 +26,7 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.LegendURL;
+import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
@@ -232,9 +233,9 @@ public class WMSCapsTransformer extends TransformerBase {
     	}
 
         /**
-         * DOCUMENT ME!
+         * Turns the keyword list to XML
          *
-         * @param keywords DOCUMENT ME!
+         * @param keywords 
          */
         private void handleKeywordList(List keywords) {
             start("KeywordList");
@@ -244,6 +245,34 @@ public class WMSCapsTransformer extends TransformerBase {
             }
 
             end("KeywordList");
+        }
+        
+        /**
+         * Turns the metadata URL list to XML
+         *
+         * @param keywords 
+         */
+        private void handleMetadataList(List metadataURLs) {
+            if(metadataURLs == null) return;
+            for (Iterator it = metadataURLs.iterator(); it.hasNext();) {
+                MetaDataLink link = (MetaDataLink) it.next();
+                
+                AttributesImpl lnkAtts = new AttributesImpl();
+                lnkAtts.addAttribute("", "type", "type", "", link.getMetadataType());
+                start("MetadataURL", lnkAtts);
+                
+                element("Format", link.getType());
+                
+                AttributesImpl orAtts = new AttributesImpl();
+                orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
+                orAtts.addAttribute(XLINK_NS, "xlink:type", "xlink:type", "",
+                    "simple");
+                orAtts.addAttribute("", "xlink:href", "xlink:href", "",
+                    link.getContent());
+                element("OnlineResource", null, orAtts);
+                
+                end("MetadataURL");
+            }
         }
 
         /**
@@ -587,6 +616,9 @@ public class WMSCapsTransformer extends TransformerBase {
             }
 
             handleLatLonBBox(bbox);
+            
+            // handle metadata URLs
+            handleMetadataList(ftype.getMetadataLinks());
 
             //add the layer style
             start("Style");

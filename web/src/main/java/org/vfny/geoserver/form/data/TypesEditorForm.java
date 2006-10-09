@@ -6,6 +6,7 @@ package org.vfny.geoserver.form.data;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -39,6 +40,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.StyleConfig;
+import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
@@ -56,12 +58,14 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class TypesEditorForm extends ActionForm {
     static final List schemaBases;
+    static final List allMetadataURLTypes;
 
     static {
         List bases = new ArrayList();
         bases.add("--");
         bases.addAll(DataTransferObjectFactory.schemaBaseMap.keySet());
         schemaBases = Collections.unmodifiableList(bases);
+        allMetadataURLTypes = Arrays.asList(new String[] {"FGDC", "TC211"});
     }
 
     /** Identiy DataStore responsible for this FeatureType */
@@ -118,6 +122,15 @@ public class TypesEditorForm extends ActionForm {
 
     /** List of keywords, often grouped with brackets */
     private String keywords;
+    
+    /** Metadata URL
+     *  This is a quick hack, the user interface and configuration code is really too broken
+     *  to waste time on it... 
+     **/
+    private MetaDataLink[] metadataLinks;
+    
+    /** Metadata URL types **/
+    private String[] metadataURLTypes;
 
     /** FeatureType abstract */
     private String description;
@@ -307,6 +320,20 @@ public class TypesEditorForm extends ActionForm {
         }
 
         this.keywords = buf.toString();
+        
+        metadataLinks = new MetaDataLink[2];
+        metadataLinks[0] = new MetaDataLink(); metadataLinks[0].setType("text/plain");
+        metadataLinks[1] = new MetaDataLink(); metadataLinks[1].setType("text/plain");
+        if(type.getMetadataLinks() != null && type.getMetadataLinks().size() > 0) {
+            List links = new ArrayList(type.getMetadataLinks());
+            MetaDataLink link = (MetaDataLink) links.get(0);
+            metadataLinks[0] = new MetaDataLink(link);
+           
+            if(links.size() > 1) {
+                link = (MetaDataLink) links.get(1);
+                metadataLinks[1] = new MetaDataLink(link);
+            } 
+        }
 
         styles = new TreeSet();
 
@@ -492,6 +519,10 @@ public class TypesEditorForm extends ActionForm {
     public List getAllYourBase() {
         return schemaBases;
     }
+    
+    public List getAllMetadataURLTypes() {
+        return allMetadataURLTypes;
+    }
 
     //
     // Generated Accessors for Editor.jsp
@@ -567,6 +598,10 @@ public class TypesEditorForm extends ActionForm {
      */
     public void setKeywords(String keywords) {
         this.keywords = keywords;
+    }
+    
+    public MetaDataLink getMetadataLink(int index) {
+        return metadataLinks[index];
     }
 
     /**

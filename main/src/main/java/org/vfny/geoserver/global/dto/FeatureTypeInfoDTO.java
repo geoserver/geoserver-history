@@ -89,6 +89,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /** A list of keywords to associate with this featuretype. */
     private List keywords;
+    
+    /** A list of metadataURLs to associate with this featuretype. */
+    private List metadataLinks;
 
     /** Used to limit the number of decimals used in GML representations. */
     private int numDecimals;
@@ -173,6 +176,12 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
             keywords = CloneLibrary.clone(dto.getKeywords()); //clone?
         } catch (Exception e) {
             keywords = new LinkedList();
+        }
+        
+        try {
+            metadataLinks = CloneLibrary.clone(dto.getMetadataLinks()); //clone?
+        } catch (Exception e) {
+            metadataLinks = new LinkedList();
         }
 
         defaultStyle = dto.getDefaultStyle();
@@ -259,6 +268,12 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         } else if (f.getKeywords() != null) {
             return false;
         }
+        
+        if (metadataLinks != null) {
+            r = r && EqualsLibrary.equals(metadataLinks, f.getMetadataLinks());
+        } else if (f.getMetadataLinks() != null) {
+            return false;
+        }
 
         r = r && (dirName == f.getDirName());
         r = r && (schemaName == f.getSchemaName());
@@ -337,6 +352,15 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      */
     public List getKeywords() {
         return keywords;
+    }
+    
+    /**
+     * List of metadataURLs (limited to text).
+     *
+     * @return List of metadataURLs about this FeatureType
+     */
+    public List getMetadataLinks() {
+        return metadataLinks;
     }
 
     /**
@@ -433,6 +457,15 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      */
     public void setKeywords(List list) {
         keywords = list;
+    }
+    
+    /**
+     * Sets the MetadataURL list for this feature type
+     *
+     * @param list
+     */
+    public void setMetadataLinks(List list) {
+        metadataLinks = list;
     }
 
     /**

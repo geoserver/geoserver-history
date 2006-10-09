@@ -22,7 +22,6 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.DynaActionForm;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
@@ -48,6 +47,7 @@ import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.AttributeForm;
 import org.vfny.geoserver.form.data.TypesEditorForm;
+import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
 
@@ -277,7 +277,8 @@ public class TypesEditorAction extends ConfigAction {
     	config.setTitle(form.getTitle());
     	config.setLatLongBBox(getBoundingBox(form));
     	config.setKeywords(keyWords(form));
-		config.setWmsPath(form.getWmsPath());
+        config.setMetadataLinks(metadataLinks(form));
+        config.setWmsPath(form.getWmsPath());
         config.setCacheMaxAge(form.getCacheMaxAge());
         config.setCachingEnabled(form.isCachingEnabled());
         if (!form.isCachingEnabledChecked()) {
@@ -337,6 +338,8 @@ public class TypesEditorAction extends ConfigAction {
     	LOGGER.fine("config schema atts is " + config.getSchemaAttributes());
     	//config.setSchemaAttributes(form.toSchemaAttributes());
     }
+
+    
 
     private void executeAdd(ActionMapping mapping, TypesEditorForm form,
         UserContainer user, HttpServletRequest request) {
@@ -434,6 +437,25 @@ public class TypesEditorAction extends ConfigAction {
         }
 
         return keywords;
+    }
+    
+    private Set metadataLinks(TypesEditorForm typeForm) {
+        HashSet links = new HashSet();
+        
+        MetaDataLink link = getLink(typeForm, 0);
+        if(link != null) links.add(link);
+        link = getLink(typeForm, 1);
+        if(link != null) links.add(link);
+        
+        return links;
+    }
+
+    private MetaDataLink getLink(TypesEditorForm typeForm, int index) {
+        MetaDataLink link = typeForm.getMetadataLink(index);
+        if(link.getContent() == null || link.getContent().trim().equals("")) {
+            return null;
+        }
+        return link;
     }
 
     DataStore aquireDataStore(String dataStoreID) throws IOException {
