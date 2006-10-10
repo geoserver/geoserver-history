@@ -14,6 +14,10 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -140,5 +144,15 @@ public class GeoServerHttpTestSupport extends TestCase {
 		}
 		
 		reader.close();
+	}
+	
+	protected void print( Document dom , PrintStream stream ) throws Exception {
+		
+		Transformer tx = TransformerFactory.newInstance().newTransformer();
+		DOMSource source = new DOMSource( dom );
+		StreamResult result = new StreamResult( stream );
+		
+		
+		tx.transform( source, result );
 	}
 }
