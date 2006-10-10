@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.awt.Color;
 import java.awt.Paint;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -40,12 +41,14 @@ import org.geotools.gml.producer.GeometryTransformer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.renderer.style.LineStyle2D;
+import org.geotools.renderer.style.MarkStyle2D;
 import org.geotools.renderer.style.PolygonStyle2D;
 import org.geotools.renderer.style.SLDStyleFactory;
 import org.geotools.renderer.style.Style2D;
 import org.geotools.renderer.style.TextStyle2D;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.LineSymbolizer;
+import org.geotools.styling.Mark;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.PolygonSymbolizer;
 import org.geotools.styling.RasterSymbolizer;
@@ -817,6 +820,12 @@ public class KMLWriter extends OutputStreamWriter {
 	/**
 	 * Writes out the KML for a ground overlay. The image is processed later on.
 	 * 
+	 * This will style the KML for raster output.
+	 * There are no descriptions with vector output, as that would make the result 
+	 * really large (assuming that they chose raster output because a lot of features 
+	 * were requested).
+     * 
+     * 
 	 * @param feature
 	 * @param symbolizers
 	 * @param order
@@ -1203,9 +1212,51 @@ public class KMLWriter extends OutputStreamWriter {
             
             write(styleString.toString());
 	    }
-        // What about PointSymbolizers?!
-        // - GE doesn't have points, it has placemarks. You can't style placemarks or do anything
-        // neat with them, so there is no point in reading the point symbolizer.
+        else if(style instanceof MarkStyle2D && sym instanceof PointSymbolizer){
+        	// we can sorta style points. Just with color however.
+        	final StringBuffer styleString = new StringBuffer();
+        	PointSymbolizer pointSym = (PointSymbolizer) sym;
+        	
+        	styleString.append("<IconStyle><color>");
+        	if ( pointSym.getGraphic() != null && pointSym.getGraphic().getMarks() != null)
+	    	{
+        		Mark[] marks = pointSym.getGraphic().getMarks();
+        		if (marks.length > 0 && marks[0] != null)
+        		{
+        			Mark mark = marks[0];
+        			
+        			int opacity = 255;
+    	        	if (mark.getFill().getOpacity() != null) {
+    	        		float op = getOpacity(mark.getFill().getOpacity());
+    	        		opacity = (new Float(255*op)).intValue();
+    	        	}
+    	        	
+    	        	Paint p = ((MarkStyle2D)style).getFill();
+    	        	if(p instanceof Color){
+    	            	styleString.append("#").append(intToHex(opacity)).append(colorToHex((Color)p));//transparancy needs to come from the opacity value.
+    	            } else{
+    	            	styleString.append("#ffaaaaaa");//should not occure in normal parsing
+    	            }
+        			
+        		}
+        		else
+        			styleString.append("#ffaaaaaa");
+	        	
+	    	}
+	    	else
+	    	{
+	    		styleString.append("#ffaaaaaa");
+	    	}
+        	
+        	styleString.append("</color>");
+        	styleString.append("<colorMode>normal</colorMode>");
+        	styleString.append("<Icon><href>root://icons/palette-4.png</href>");
+        	styleString.append("<x>32</x><y>128</y><w>32</w><h>32</h></Icon>");
+		
+        	styleString.append("</IconStyle>");
+        	
+        	write(styleString.toString());
+        }
     }
     
     /**
@@ -1359,13 +1410,14 @@ public class KMLWriter extends OutputStreamWriter {
     }
     
     /**
-     * Utility method to convert an int into kex, padded to two characters.
+     * Utility method to convert an int into hex, padded to two characters.
      * handy for generating colour strings.
      *
      * @param i Int to convert
      * @return String a two character hex representation of i
+     * NOTE: this is a utility method and should be put somewhere more useful.
      */
-    private String intToHex(int i){
+    protected static String intToHex(int i){
         String prelim = Integer.toHexString(i);
         if (prelim.length() < 2){
             prelim = "0" + prelim;

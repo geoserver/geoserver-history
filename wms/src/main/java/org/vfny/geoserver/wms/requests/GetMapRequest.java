@@ -123,6 +123,15 @@ public class GetMapRequest extends WMSRequest {
     public List getStyles() {
         return this.mandatoryParams.styles;
     }
+    
+    /**
+     * Gets a list of the the filters that will be applied to each layer before rendering 
+     *
+     * @return -
+     */
+    public List getFilters() {
+        return this.optionalParams.filters;
+    }
 
     /**
      * DOCUMENT ME!
@@ -227,6 +236,15 @@ public class GetMapRequest extends WMSRequest {
     public void setStyles(List styles) {
         this.mandatoryParams.styles = styles;
     }
+    
+    /**
+     * Sets a list of filters, one for each layer
+     *
+     * @param styles List&lt;org.geotools.styling.Style&gt;
+     */
+    public void setFilters(List filters) {
+        this.optionalParams.filters = filters;
+    }
 
     /**
      * DOCUMENT ME!
@@ -316,6 +334,9 @@ public class GetMapRequest extends WMSRequest {
 
         /** from SRS (1.1) or CRS (1.2) param */
         CoordinateReferenceSystem crs;
+        
+        /** vendor extensions, allows to filter each layer with a user defined filter */
+        List filters;
 
         /** DOCUMENT ME!  */
         String exceptions = SE_XML;

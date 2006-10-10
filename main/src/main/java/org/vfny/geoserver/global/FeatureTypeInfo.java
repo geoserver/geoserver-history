@@ -125,6 +125,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      */
     private List keywords;
     /**
+     * List of keywords for Web Register Services
+     */
+    private List metadataLinks;
+    /**
      * Number of decimals used in GML output.
      */
     private int numDecimals;
@@ -236,6 +240,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         definitionQuery = dto.getDefinitionQuery();
         dirName = dto.getDirName();
         keywords = dto.getKeywords();
+        metadataLinks = dto.getMetadataLinks();
         latLongBBox = dto.getLatLongBBox();
         typeName = dto.getName();
         wmsPath = dto.getWmsPath();
@@ -286,6 +291,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         dto.setDefinitionQuery(definitionQuery);
         dto.setDirName(dirName);
         dto.setKeywords(keywords);
+        dto.setMetadataLinks(metadataLinks);
         dto.setLatLongBBox(latLongBBox);
         dto.setName(typeName);
         dto.setWmsPath(wmsPath);
@@ -727,6 +733,15 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      */
     public List getKeywords() {
         return keywords;
+    }
+    
+    /**
+     * Metadata links providing metadata access for FeatureTypes.
+     * 
+     * @return List the FeatureTypeInfo metadata links
+     */
+    public List getMetadataLinks() {
+        return metadataLinks;
     }
 
     /**

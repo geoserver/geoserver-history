@@ -29,8 +29,10 @@ import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.LegendURL;
 import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
@@ -214,32 +216,92 @@ public class WMSCapsTransformer extends TransformerBase {
 			orAtts.addAttribute("", "xlink:href", "xlink:href", "", wms
 					.getOnlineResource().toExternalForm());
 			element("OnlineResource", null, orAtts);
+            
+            handleContactInfo(wms.getGeoServer());
 
 			element("Fees", wms.getFees());
 			element("AccessConstraints", wms.getAccessConstraints());
 			end("Service");
 		}
+        
+        /**
+         * Encodes contact information in the WMS capabilities document
+         * @param geoServer
+         */
+        public void handleContactInfo(GeoServer geoServer) {
+    		start("ContactInformation");
+    		
+    		start("ContactPersonPrimary");
+    		element("ContactPerson", geoServer.getContactPerson());
+    		element("ContactOrganization", geoServer.getContactOrganization());
+    		end("ContactPersonPrimary");
+    		
+    		element("ContactPosition", geoServer.getContactPosition());
+    		
+    		start("ContactAddress");
+    		element("AddressType", geoServer.getAddressType());
+    		element("Address", geoServer.getAddress());
+    		element("City", geoServer.getAddressCity());
+    		element("StateOrProvince", geoServer.getAddressState());
+    		element("PostCode", geoServer.getAddressPostalCode());
+    		element("Country", geoServer.getAddressCountry());
+    		end("ContactAddress");
+    		
+    		element("ContactVoiceTelephone", geoServer.getContactVoice());
+    		element("ContactFacsimileTelephone", geoServer.getContactFacsimile());
+    		element("ContactElectronicMailAddress", geoServer.getContactEmail());
+    		
+    		end("ContactInformation");
+    		
+    	}
 
-		/**
-		 * DOCUMENT ME!
-		 * 
-		 * @param keywords
-		 *            DOCUMENT ME!
-		 */
-		private void handleKeywordList(List keywords) {
-			start("KeywordList");
+        /**
+         * Turns the keyword list to XML
+         *
+         * @param keywords 
+         */
+        private void handleKeywordList(List keywords) {
+            start("KeywordList");
 
-			for (Iterator it = keywords.iterator(); it.hasNext();) {
-				element("Keyword", String.valueOf(it.next()));
-			}
+            for (Iterator it = keywords.iterator(); it.hasNext();) {
+                element("Keyword", String.valueOf(it.next()));
+            }
 
-			end("KeywordList");
-		}
+            end("KeywordList");
+        }
+        
+        /**
+         * Turns the metadata URL list to XML
+         *
+         * @param keywords 
+         */
+        private void handleMetadataList(List metadataURLs) {
+            if(metadataURLs == null) return;
+            for (Iterator it = metadataURLs.iterator(); it.hasNext();) {
+                MetaDataLink link = (MetaDataLink) it.next();
+                
+                AttributesImpl lnkAtts = new AttributesImpl();
+                lnkAtts.addAttribute("", "type", "type", "", link.getMetadataType());
+                start("MetadataURL", lnkAtts);
+                
+                element("Format", link.getType());
+                
+                AttributesImpl orAtts = new AttributesImpl();
+                orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
+                orAtts.addAttribute(XLINK_NS, "xlink:type", "xlink:type", "",
+                    "simple");
+                orAtts.addAttribute("", "xlink:href", "xlink:href", "",
+                    link.getContent());
+                element("OnlineResource", null, orAtts);
+                
+                end("MetadataURL");
+            }
+        }
 
-		/**
-		 * Encodes the capabilities metadata section of a WMS capabilities
-		 * document
-		 */
+        /**
+         * Encodes the capabilities metadata section of a WMS capabilities
+         * document
+         */
 		private void handleCapability() {
 			start("Capability");
 			handleRequest();
@@ -303,16 +365,15 @@ public class WMSCapsTransformer extends TransformerBase {
 			end("Request");
 		}
 
-		/**
-		 * Encodes a <code>DCPType</code> fragment for HTTP GET and POST
-		 * methods.
-		 * 
-		 * @param getUrl
-		 *            the URL of the onlineresource for HTTP GET method requests
-		 * @param postUrl
-		 *            the URL of the onlineresource for HTTP POST method
-		 *            requests
-		 */
+        /**
+         * Encodes a <code>DCPType</code> fragment for HTTP GET and POST
+         * methods.
+         *
+         * @param getUrl the URL of the onlineresource for HTTP GET method
+         *        requests
+         * @param postUrl the URL of the onlineresource for HTTP POST method
+         *        requests
+         */
 		private void handleDcpType(String getUrl, String postUrl) {
 			AttributesImpl orAtts = new AttributesImpl();
 			orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
@@ -373,15 +434,14 @@ public class WMSCapsTransformer extends TransformerBase {
 					supportsUserStyle);
 			sldAtts.addAttribute("", "RemoteWFS", "RemoteWFS", "",
 					supportsRemoteWFS);
-
-			start("UserDefinedSymbolization", sldAtts);
-			// djb: this was removed, even though they are correct - the CITE
-			// tests have an incorrect DTD
-			// element("SupportedSLDVersion","1.0.0"); //djb: added that we
-			// support this. We support partial 1.1
-			end("UserDefinedSymbolization");
-			// element("UserDefinedSymbolization", null, sldAtts);
-		}
+            
+            
+            start("UserDefinedSymbolization",sldAtts);
+//          djb: this was removed, even though they are correct - the CITE tests have an incorrect DTD
+           //       element("SupportedSLDVersion","1.0.0");  //djb: added that we support this.  We support partial 1.1
+            end ("UserDefinedSymbolization");
+            //element("UserDefinedSymbolization", null, sldAtts);
+        }
 
 		/**
 		 * Handles the encoding of the layers elements.
@@ -691,6 +751,8 @@ public class WMSCapsTransformer extends TransformerBase {
 
 			handleLatLonBBox(llbbox);
 			handleBBox(bbox, EPSG + ftype.getSRS());
+            // handle metadata URLs
+            handleMetadataList(ftype.getMetadataLinks());
 
 			// add the layer style
 			start("Style");

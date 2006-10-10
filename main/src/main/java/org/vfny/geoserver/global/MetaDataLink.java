@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.global;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * Represents a MetadataLink Attribute.
  *
@@ -36,6 +38,21 @@ public class MetaDataLink extends GlobalLayerSupertype {
 	 * @uml.property name="content" multiplicity="(0 1)"
 	 */
 	private String content;
+        
+        
+        /**
+         * Builds an empty metadata link
+         */
+        public MetaDataLink() {
+            
+        }
+        
+        public MetaDataLink(MetaDataLink other) {
+            this.type = other.type;
+            this.about = other.about;
+            this.metadataType = other.metadataType;
+            this.content = other.content;
+        }
 
 	
 	/* (non-Javadoc)
@@ -116,5 +133,10 @@ public class MetaDataLink extends GlobalLayerSupertype {
 	public void setContent(String content) {
 		this.content = content;
 	}
+        
+	public String toString() {
+	    return new ToStringBuilder(this).append(content).append(type).append(
+                    metadataType).append(about).toString();
+        }
 
 }

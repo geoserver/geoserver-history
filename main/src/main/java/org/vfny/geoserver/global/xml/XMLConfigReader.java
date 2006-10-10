@@ -1482,7 +1482,17 @@ public class XMLConfigReader {
 				
 				ft.setKeywords(l);
 			}
-			
+                        
+                        Element urls = ReaderUtils.getChildElement(fTypeRoot, "metadataLinks");
+                        if(urls != null) {
+                            Element[] childs = ReaderUtils.getChildElements(urls, "metadataLink");
+                            List l = new LinkedList();
+                            for (int i = 0; i < childs.length; i++) {
+                                l.add(getMetaDataLink(childs[i]));
+                            }
+                            ft.setMetadataLinks(l);
+                        }
+
 			ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore", true));
 			ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot, "SRS",
 					true)));

@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -48,6 +50,8 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 
+import java.text.SimpleDateFormat;
+
 /**
  * A GetMapResponse object is responsible of generating a map based on a GetMap
  * request. The way the map is generated is independent of this class, wich will
@@ -61,74 +65,69 @@ public class GetMapResponse implements Response {
 	private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class
 			.getPackage().getName());
 
-	/**
-	 * The map producer that will be used for the production of a map in the
-	 * requested format.
-	 */
-	private GetMapProducer delegate;
-
-	/**
-	 * The map context
-	 */
-	private WMSMapContext map;
-
-	/**
-	 * WMS module
-	 */
-	private WMS wms;
-
-	/**
-	 * custom response headers
-	 */
-	private HashMap responseHeaders;
+    /**
+     * The map producer that will be used for the production of a map in the
+     * requested format.
+     */
+    private GetMapProducer delegate;
+    /**
+     * The map context
+     */
+    private WMSMapContext map;
+    /**
+     * WMS module
+     */
+    private WMS wms;
+    
+    /**
+     * custom response headers
+     */
+    private HashMap responseHeaders;
 
 	private ApplicationContext applicationContext;
-
-	/**
-	 * Creates a new GetMapResponse object.
-	 * 
-	 * @param applicationContext
-	 */
-	public GetMapResponse(WMS wms, ApplicationContext applicationContext) {
-		this.wms = wms;
-		this.applicationContext = applicationContext;
+    
+    /**
+     * Creates a new GetMapResponse object.
+     * @param applicationContext 
+     */
+    public GetMapResponse(WMS wms, ApplicationContext applicationContext) {
+        this.wms = wms;
+        this.applicationContext=applicationContext;
 		responseHeaders = new HashMap(10);
-	}
+    }
 
-	/**
-	 * Returns any extra headers that this service might want to set in the HTTP
-	 * response object.
-	 */
-	public HashMap getResponseHeaders() {
-		return responseHeaders;
-	}
+    /**
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     */
+    public HashMap getResponseHeaders() {
+    	return responseHeaders;
+    }
+    
+    /**
+     * DOCUMENT ME!
+     *
+     * @param req DOCUMENT ME!
+     *
+     * @throws ServiceException DOCUMENT ME!
+     * @throws WmsException DOCUMENT ME!
+     */
+    public void execute(Request req) throws ServiceException {
+        GetMapRequest request = (GetMapRequest) req;
+        
+        final String outputFormat = request.getFormat();
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param req
-	 *            DOCUMENT ME!
-	 * 
-	 * @throws ServiceException
-	 *             DOCUMENT ME!
-	 * @throws WmsException
-	 *             DOCUMENT ME!
-	 */
-	public void execute(Request req) throws ServiceException {
-		GetMapRequest request = (GetMapRequest) req;
+        this.delegate = getDelegate(outputFormat, wms);
 
-		final String outputFormat = request.getFormat();
-		this.delegate = getDelegate(outputFormat, wms);
 		final MapLayerInfo[] layers = request.getLayers();
 		final Style[] styles = (Style[]) request.getStyles().toArray(
 				new Style[] {});
 
-		// JD:make instance variable in order to release resources later
-		// final WMSMapContext map = new WMSMapContext();
-		map = new WMSMapContext(request);
-
-		// DJB: the WMS spec says that the request must not be 0 area
-		// if it is, throw a service exception!
+        //JD:make instance variable in order to release resources later
+        //final WMSMapContext map = new WMSMapContext();
+        map = new WMSMapContext(request);
+        
+        //DJB: the WMS spec says that the request must not be 0 area
+        //     if it is, throw a service exception!
 		final Envelope env = request.getBbox();
 		if (env.isNull() || (env.getWidth() <= 0) || (env.getHeight() <= 0)) {
 			throw new WmsException(new StringBuffer(
@@ -337,79 +336,72 @@ public class GetMapResponse implements Response {
 		}
 	}
 
-	/**
-	 * asks the internal GetMapDelegate for the MIME type of the map that it
-	 * will generate or is ready to, and returns it
-	 * 
-	 * @param gs
-	 *            DOCUMENT ME!
-	 * 
-	 * @return the MIME type of the map generated or ready to generate
-	 * 
-	 * @throws IllegalStateException
-	 *             if a GetMapDelegate is not setted yet
-	 */
-	public String getContentType(GeoServer gs) throws IllegalStateException {
-		if (this.delegate == null) {
-			throw new IllegalStateException("No request has been processed");
-		}
+    /**
+     * asks the internal GetMapDelegate for the MIME type of the map that it
+     * will generate or is ready to, and returns it
+     *
+     * @param gs DOCUMENT ME!
+     *
+     * @return the MIME type of the map generated or ready to generate
+     *
+     * @throws IllegalStateException if a GetMapDelegate is not setted yet
+     */
+    public String getContentType(GeoServer gs) throws IllegalStateException {
+        if (this.delegate == null) {
+            throw new IllegalStateException("No request has been processed");
+        }
 
-		return this.delegate.getContentType();
-	}
+        return this.delegate.getContentType();
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public String getContentEncoding() {
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public String getContentEncoding() {
 		if (LOGGER.isLoggable(Level.FINER)) {
 			LOGGER.finer("returning content encoding null");
 		}
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * if a GetMapDelegate is set, calls it's abort method. Elsewere do nothing.
-	 * 
-	 * @param gs
-	 *            DOCUMENT ME!
-	 */
-	public void abort(Service gs) {
-		if (this.delegate != null) {
+    /**
+     * if a GetMapDelegate is set, calls it's abort method. Elsewere do
+     * nothing.
+     *
+     * @param gs DOCUMENT ME!
+     */
+    public void abort(Service gs) {
+        if (this.delegate != null) {
 			if (LOGGER.isLoggable(Level.FINE)) {
 				LOGGER.fine("asking delegate for aborting the process");
 			}
-			this.delegate.abort();
-		}
-	}
+            this.delegate.abort();
+        }
+    }
 
-	/**
-	 * delegates the writing and encoding of the results of the request to the
-	 * <code>GetMapDelegate</code> wich is actually processing it, and has
-	 * been obtained when <code>execute(Request)</code> was called
-	 * 
-	 * @param out
-	 *            the output to where the map must be written
-	 * 
-	 * @throws ServiceException
-	 *             if the delegate throws a ServiceException inside its
-	 *             <code>writeTo(OuptutStream)</code>, mostly due to
-	 * @throws IOException
-	 *             if the delegate throws an IOException inside its
-	 *             <code>writeTo(OuptutStream)</code>, mostly due to
-	 * @throws IllegalStateException
-	 *             if this method is called before <code>execute(Request)</code>
-	 *             has succeed
-	 */
-	public void writeTo(OutputStream out) throws ServiceException, IOException {
-
-		try { // mapcontext can leak memory -- we make sure we done (see
-			// finally block)
+    /**
+     * delegates the writing and encoding of the results of the request to the
+     * <code>GetMapDelegate</code> wich is actually processing it, and has
+     * been obtained when <code>execute(Request)</code> was called
+     *
+     * @param out the output to where the map must be written
+     *
+     * @throws ServiceException if the delegate throws a ServiceException
+     *         inside its <code>writeTo(OuptutStream)</code>, mostly due to
+     * @throws IOException if the delegate throws an IOException inside its
+     *         <code>writeTo(OuptutStream)</code>, mostly due to
+     * @throws IllegalStateException if this method is called before
+     *         <code>execute(Request)</code> has succeed
+     */
+    public void writeTo(OutputStream out) throws ServiceException, IOException {
+    	
+        try { // mapcontext can leak memory -- we make sure we done (see finally block)
 			if (this.delegate == null) {
-				throw new IllegalStateException(
-						"No GetMapDelegate is setted, make sure you have called execute and it has succeed");
+			    throw new IllegalStateException(
+			        "No GetMapDelegate is setted, make sure you have called execute and it has succeed");
 			}
 
 			if (LOGGER.isLoggable(Level.FINER)) {
@@ -432,64 +424,64 @@ public class GetMapResponse implements Response {
 
 	}
 
-	/**
-	 * Creates a GetMapDelegate specialized in generating the requested map
-	 * format
-	 * 
-	 * @param outputFormat
-	 *            a request parameter object wich holds the processed request
-	 *            objects, such as layers, bbox, outpu format, etc.
-	 * 
-	 * @return A specialization of <code>GetMapDelegate</code> wich can
-	 *         produce the requested output map format
-	 * 
-	 * @throws WmsException
-	 *             if no specialization is configured for the output format
-	 *             specified in <code>request</code> or if it can't be
-	 *             instantiated
-	 */
-	private GetMapProducer getDelegate(String outputFormat, WMS wms)
-			throws WmsException {
-		Map beans = applicationContext
-				.getBeansOfType(GetMapProducerFactorySpi.class);
-		Collection producers = beans.values();
+    /**
+     * Creates a GetMapDelegate specialized in generating the requested map
+     * format
+     *
+     * @param outputFormat a request parameter object wich holds the processed
+     *        request objects, such as layers, bbox, outpu format, etc.
+     *
+     * @return A specialization of <code>GetMapDelegate</code> wich can produce
+     *         the requested output map format
+     *
+     * @throws WmsException if no specialization is configured for the output
+     *         format specified in <code>request</code> or if it can't be
+     *         instantiated
+     */
+    private GetMapProducer getDelegate(String outputFormat, WMS wms)
+        throws WmsException {
+		Map beans=applicationContext.getBeansOfType(GetMapProducerFactorySpi.class);
+		Collection producers=beans.values();
 		GetMapProducerFactorySpi factory;
 		for (Iterator iter = producers.iterator(); iter.hasNext();) {
 			factory = (GetMapProducerFactorySpi) iter.next();
 			if (factory.canProduce(outputFormat)) {
 				return factory.createMapProducer(outputFormat, wms);
 			}
-
+			
 		}
-
-		throw new WmsException("There is no support for creating maps in "
-				+ outputFormat + " format", "InvalidFormat");
+		
+		WmsException e = new WmsException(
+			"There is no support for creating maps in " + outputFormat + " format" 
+		);
+		e.setCode( "InvalidFormat" );
+		throw e;
 	}
 
-	/**
-	 * Convenient mehtod to inspect the available
-	 * <code>GetMapProducerFactorySpi</code> and return the set of all the map
-	 * formats' MIME types that the producers can handle
-	 * 
-	 * @return a Set&lt;String&gt; with the supported mime types.
-	 */
-	public Set getMapFormats() {
-		return loadImageFormats(applicationContext);
-	}
+    /**
+     * Convenient mehtod to inspect the available
+     * <code>GetMapProducerFactorySpi</code> and return the set of all the map
+     * formats' MIME types that the producers can handle
+     *
+     * @return a Set&lt;String&gt; with the supported mime types.
+     */
+    public Set getMapFormats() {
+    		Set wmsGetMapFormats=loadImageFormats(applicationContext);
+        return wmsGetMapFormats;
+    }
 
-	/**
-	 * Convenience method for processing the GetMapProducerFactorySpi extension
-	 * point and returning the set of available image formats.
-	 * 
-	 * @param applicationContext
-	 *            The application context.
-	 * 
-	 */
+    /**
+     * Convenience method for processing the GetMapProducerFactorySpi 
+     * extension point and returning the set of available image formats.
+     * 
+     * @param applicationContext The application context.
+     * 
+     */
 	public static Set loadImageFormats(ApplicationContext applicationContext) {
 		Map beans = applicationContext
 				.getBeansOfType(GetMapProducerFactorySpi.class);
-		Collection producers = beans.values();
-		Set formats = new HashSet();
+		Collection producers=beans.values();
+		Set formats=new HashSet();
 		GetMapProducerFactorySpi producer;
 		for (Iterator iter = producers.iterator(); iter.hasNext();) {
 			producer = (GetMapProducerFactorySpi) iter.next();
@@ -497,9 +489,10 @@ public class GetMapResponse implements Response {
 		}
 		return formats;
 	}
-
+	
 	public String getContentDisposition() {
+		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 }

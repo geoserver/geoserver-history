@@ -1006,6 +1006,21 @@ public class XMLConfigWriter {
 
                 cw.textTag("keywords", s);
             }
+            
+            if ((ft.getMetadataLinks() != null) && (ft.getMetadataLinks().size() != 0)) {
+                cw.openTag("metadataLinks");
+                
+                for (Iterator it = ft.getMetadataLinks().iterator(); it.hasNext();) {
+                    MetaDataLink ml = (MetaDataLink) it.next();
+                    Map mlAttr = new HashMap();
+                    mlAttr.put("about",ml.getAbout());
+                    mlAttr.put("type",ml.getType());
+                    mlAttr.put("metadataType",ml.getMetadataType());
+                    cw.textTag("metadataLink", mlAttr, ml.getContent());
+                }
+                
+                cw.closeTag("metadataLinks");
+            }
 
             if (ft.getLatLongBBox() != null) {
                 m = new HashMap();

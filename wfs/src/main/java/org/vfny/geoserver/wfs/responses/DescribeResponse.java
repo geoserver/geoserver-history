@@ -178,7 +178,7 @@ public class DescribeResponse implements Response {
         }
 
         tempResponse.append("<?xml version=\"1.0\" encoding=\""
-            + wfsRequest.getGeoServer().getCharSet().displayName() + "\"?>"
+            + wfsRequest.getGeoServer().getCharSet().name() + "\"?>"
             + "\n<xs:schema ");
 
         //allSameType will throw WfsException if there are types that are not found.

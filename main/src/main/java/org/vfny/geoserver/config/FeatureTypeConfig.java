@@ -109,6 +109,14 @@ public class FeatureTypeConfig {
      * </p>
      */
     private Set keywords;
+    
+    /**
+     * A list of metadata links to associate with this featuretype.
+     * <p>
+     * Metadata URLs are distinct URLs.
+     * </p>
+     */
+    private Set metadataLinks;
 
     /** Configuration information used to specify numeric percision */
     private int numDecimals;
@@ -200,6 +208,7 @@ public class FeatureTypeConfig {
         keywords = new HashSet();
         keywords.add(dataStoreId);
         keywords.add(name);
+        metadataLinks = new HashSet();
         numDecimals = 8;
         definitionQuery = null;
         dirName = dataStoreId + "_" + name;
@@ -256,6 +265,12 @@ public class FeatureTypeConfig {
         } catch (Exception e) {
             keywords = new HashSet();
         }
+        
+        try {
+            metadataLinks = new HashSet(dto.getMetadataLinks());
+        } catch (Exception e) {
+            metadataLinks = new HashSet();
+        }
 
         defaultStyle = dto.getDefaultStyle();
         dirName = dto.getDirName();
@@ -304,6 +319,12 @@ public class FeatureTypeConfig {
 
         try {
             f.setKeywords(new ArrayList(keywords));
+        } catch (Exception e) {
+            // do nothing, defaults already exist.
+        }
+        
+        try {
+            f.setMetadataLinks(new ArrayList(metadataLinks));
         } catch (Exception e) {
             // do nothing, defaults already exist.
         }
@@ -453,6 +474,22 @@ public class FeatureTypeConfig {
      */
     public void setKeywords(Set keywords) {
         this.keywords = keywords;
+    }
+    /**
+     * Access metadataURLs property.
+     * 
+     * @return Returns the metadataURLs.
+     */
+    public Set getMetadataLinks() {
+        return metadataLinks;
+    }
+    /**
+     * Set metadataURLs to metadataURLs.
+     *
+     * @param metadataURLs The metadataURLs to set.
+     */
+    public void setMetadataLinks(Set metadataURLs) {
+        this.metadataLinks = metadataURLs;
     }
     /**
      * Access latLongBBox property.
