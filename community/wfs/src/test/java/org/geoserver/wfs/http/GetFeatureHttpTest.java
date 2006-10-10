@@ -20,40 +20,14 @@ public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
 		if ( isOffline() )
 			return;
 		
-		WebResponse response = get( "wfs?request=GetFeature&typename=cgf:Points" );
-		
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); 
-		factory.setNamespaceAware( true );
-		factory.setValidating( true );
-		
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document doc = builder.parse( response.getInputStream() );
-		
+		WebResponse response = get( "wfs?request=GetFeature&typename=cdf:Fifteen" );
+		Document doc = dom( response );
+		print( doc, System.out );
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
 		
 		NodeList featureMembers = doc.getElementsByTagName( "gml:featureMember" );
 		assertFalse( featureMembers.getLength() == 0 );
 	}
-	
-//	public void testGetWithLock() throws Exception {
-//		if ( isOffline() )
-//			return;
-//		
-//		WebResponse response = get( "wfs?request=GetFeatureWithLock&typename=cgf:Points&expiry=-1" );
-//		
-//		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); 
-//		factory.setNamespaceAware( true );
-//		factory.setValidating( true );
-//		
-//		DocumentBuilder builder = factory.newDocumentBuilder();
-//		Document doc = builder.parse( response.getInputStream() );
-//		
-//		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
-//		assertTrue( doc.getDocumentElement().hasAttribute( "lockId" ) );
-//		
-//		NodeList featureMembers = doc.getElementsByTagName( "gml:featureMember" );
-//		assertFalse( featureMembers.getLength() == 0 );
-//	}
 	
 	public void testPost() throws Exception {
 		
@@ -84,36 +58,6 @@ public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
 		assertFalse( featureMembers.getLength() == 0 );
 	
 	}
-	
-
-//	public void testPostWithLock() throws Exception {
-//		
-//		if ( isOffline() )
-//			return;
-//		
-//		String xml = "<wfs:GetFeatureWithLock " + 
-//		  "service=\"WFS\" " + 
-//		  "version=\"1.0.0\" " +
-//		  "expiry=\"1\" " + 
-//		  "xmlns:cdf=\"http://www.opengis.net/cite/data\" " + 
-//		  "xmlns:ogc=\"http://www.opengis.net/ogc\" " + 
-//		  "xmlns:wfs=\"http://www.opengis.net/wfs\" " + 
-//		"> " + 
-//		  "<wfs:Query typeName=\"cdf:Other\"> " + 
-//		    "<ogc:PropertyName>cdf:string2</ogc:PropertyName> " + 
-//		  "</wfs:Query> " + 
-//		"</wfs:GetFeatureWithLock>";
-//		
-//		WebResponse response = post( "wfs", xml );
-//		Document doc = dom( response );
-//		
-//		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
-//		assertTrue( doc.getDocumentElement().hasAttribute( "lockId" ) );
-//		
-//		NodeList featureMembers = doc.getElementsByTagName( "gml:featureMember" );
-//		assertFalse( featureMembers.getLength() == 0 );
-//	
-//	}
 	
 	public void testPostWithFilter() throws Exception {
 		if ( isOffline() )

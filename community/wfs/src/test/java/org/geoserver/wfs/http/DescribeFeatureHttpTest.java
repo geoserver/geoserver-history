@@ -11,8 +11,8 @@ public class DescribeFeatureHttpTest extends GeoServerHttpTestSupport {
 		if ( isOffline() )
 			return;
 		
-		WebResponse response = get( "wfs?service=WFS&request=DescribeFeatureType" );
-		Document doc = response.getDOM();
+		WebResponse response = get( "wfs?service=WFS&request=DescribeFeatureType&version=1.0.0" );
+		Document doc = dom( response );
 		assertEquals( "xs:schema", doc.getDocumentElement().getNodeName() );
     }
 	

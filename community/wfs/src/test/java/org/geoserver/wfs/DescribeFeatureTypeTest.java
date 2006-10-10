@@ -28,7 +28,7 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
 		FeatureTypeInfo[] infos = op.describeFeatureType();
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		new XmlSchemaEncoder( wfs, catalog ).write( infos, output, descriptor );
+		new XmlSchemaEncoder( wfs, catalog ).encode( infos, output );
 		
 		String result = new String( output.toByteArray() );
 		Element schemaDoc = ReaderUtils.parse( new StringReader ( result ) );

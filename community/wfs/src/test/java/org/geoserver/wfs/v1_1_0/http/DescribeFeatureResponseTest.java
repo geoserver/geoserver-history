@@ -17,7 +17,7 @@ public class DescribeFeatureResponseTest extends WFSTestSupport {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		
 		XmlSchemaEncoder response = new XmlSchemaEncoder( wfs, catalog );
-		response.write( new FeatureTypeInfo[]{ meta  }, output, null );
+		response.encode( new FeatureTypeInfo[]{ meta  }, output );
 		
 		Element schema = 
 			ReaderUtils.parse( new StringReader( new String( output.toByteArray() ) ) );
@@ -35,7 +35,7 @@ public class DescribeFeatureResponseTest extends WFSTestSupport {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		
 		XmlSchemaEncoder response = new XmlSchemaEncoder( wfs, catalog );
-		response.write( new FeatureTypeInfo[]{ meta1, meta2 }, output, null );
+		response.encode( new FeatureTypeInfo[]{ meta1, meta2 }, output );
 		
 		Element schema = 
 			ReaderUtils.parse( new StringReader( new String( output.toByteArray() ) ) );
