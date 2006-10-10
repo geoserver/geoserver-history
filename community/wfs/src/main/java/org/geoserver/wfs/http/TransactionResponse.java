@@ -7,13 +7,16 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Iterator;
 
+import net.opengis.wfs.InsertResultType;
 import net.opengis.wfs.TransactionResultType;
+import net.opengis.wfs.WFSTransactionResponseType;
 
 import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.Operation;
 import org.geoserver.ows.ServiceException;
 import org.geoserver.ows.http.Response;
 import org.geoserver.wfs.WFS;
+import org.opengis.filter.FeatureId;
 
 public class TransactionResponse extends Response {
 
@@ -24,7 +27,7 @@ public class TransactionResponse extends Response {
     WFS wfs;
     
 	public TransactionResponse( WFS wfs ) {
-		super( TransactionResultType.class );
+		super( WFSTransactionResponseType.class );
 		this.wfs = wfs;
 	}
 
@@ -35,7 +38,8 @@ public class TransactionResponse extends Response {
 	public void write(Object value, OutputStream output, Operation operation)
 			throws IOException, ServiceException {
 		
-		TransactionResultType result = (TransactionResultType) value;
+		WFSTransactionResponseType response = (WFSTransactionResponseType) value;
+		TransactionResultType result = response.getTransactionResult();
 		
 		Writer writer = new OutputStreamWriter( output );
         writer = new BufferedWriter(writer);
@@ -69,15 +73,24 @@ public class TransactionResponse extends Response {
         writer.write(baseUrl);
         writer.write("\">");
 
-        //TODO: JD: append fids, not sure if teh spec requires this
-//        if (insertResults != null) {
-//            Iterator iter = insertResults.iterator();
-//
-//            while (iter.hasNext()) {
-//                ((InsertResult) iter.next()).writeXml(writer);
-//            }
-//        }
-
+        for ( Iterator i = response.getInsertResult().iterator(); i.hasNext(); ) {
+        	InsertResultType insertResult = (InsertResultType) i.next();
+        	writer.write( "<wfs:InsertResult" );
+        	if ( insertResult.getHandle() != null ) {
+        		writer.write( " handle=\"" + insertResult.getHandle() + "\"" );
+        	}
+        	writer.write( ">" );
+        	
+        	for ( Iterator f = insertResult.getFeatureId().iterator(); f.hasNext(); ) {
+        		FeatureId featureId = (FeatureId) f.next();
+        		for ( Iterator s = featureId.getIDs().iterator(); s.hasNext(); ) {
+        			String fid = (String) s.next();
+        			writer.write( "<ogc:FeatureId fid=\"" + fid + "\"/>" );
+        		}
+        	}
+        	writer.write( "</wfs:InsertResult>" );
+        }
+        
         writer.write(indent + "<wfs:TransactionResult");
         
         if ( result.getHandle() != null) {

@@ -61,6 +61,7 @@
 		singleton="false">
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="catalog"/>
+		<property name="filterFactory" ref="filterFactory"/>
 	</bean>
 	<bean id="releaseLockOperation" class="org.geoserver.ows.Operation">
 		<!-- this operaiton is only for testing, and should not be released -->

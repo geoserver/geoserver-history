@@ -17,6 +17,7 @@ import javax.xml.namespace.QName;
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.InsertElementType;
+import net.opengis.wfs.InsertResultType;
 import net.opengis.wfs.NativeType;
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.StatusType;
@@ -24,6 +25,7 @@ import net.opengis.wfs.TransactionOperation;
 import net.opengis.wfs.TransactionResultType;
 import net.opengis.wfs.UpdateElementType;
 import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WFSTransactionResponseType;
 
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.DataStoreInfo;
@@ -49,6 +51,7 @@ import org.geotools.filter.FidFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
+import org.opengis.filter.FeatureId;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -89,6 +92,10 @@ public class Transaction {
 	 * Release action 
 	 */
 	AllSomeType releaseAction;
+	/**
+	 * Filter factory
+	 */
+	FilterFactory filterFactory;
 	
 	/** Geotools2 transaction used for this opperations */
     protected org.geotools.data.Transaction transaction;
@@ -96,6 +103,10 @@ public class Transaction {
 	public Transaction( WFS wfs, GeoServerCatalog catalog ) {
 		this.wfs = wfs;
 		this.catalog = catalog;
+	}
+	
+	public void setFilterFactory(FilterFactory filterFactory) {
+		this.filterFactory = filterFactory;
 	}
 	
 	public void setOperation( List operation ) {
@@ -118,7 +129,7 @@ public class Transaction {
 		this.releaseAction = releaseAction;
 	}
 
-	public TransactionResultType transaction() throws WFSException {
+	public WFSTransactionResponseType transaction() throws WFSException {
 		//make sure server is supporting transactions
 		if (( wfs.getServiceLevel() & WFS.TRANSACTIONAL) == 0) {
             throw new WFSException("Transaction support is not enabled");
@@ -179,7 +190,7 @@ public class Transaction {
      * @throws WfsException
      * @throws WfsTransactionException DOCUMENT ME!
      */
-    protected TransactionResultType execute() throws Exception {
+    protected WFSTransactionResponseType execute() throws Exception {
          
     	//some defaults
     	if ( releaseAction == null ) {
@@ -190,9 +201,10 @@ public class Transaction {
         transaction = new DefaultTransaction();
         
         //result
-        TransactionResultType result = WFSFactory.eINSTANCE.createTransactionResultType();
-        result.setHandle( handle );
-        result.setStatus( WFSFactory.eINSTANCE.createStatusType() );
+        WFSTransactionResponseType result = WFSFactory.eINSTANCE.createWFSTransactionResponseType();
+        result.setTransactionResult( WFSFactory.eINSTANCE.createTransactionResultType() );
+        result.getTransactionResult().setHandle( handle );
+        result.getTransactionResult().setStatus( WFSFactory.eINSTANCE.createStatusType() );
         
         //
         // We are going to preprocess our elements,
@@ -502,9 +514,10 @@ public class Transaction {
                     //featureValidation( typeInfo.getDataStore().getId(), schema, collection );
 
                     Set fids = store.addFeatures(reader);
-                    
-                    //TODO: JD, report back fids?
-                    //build.addInsertResult( insert.getHandle(), fids );
+                    InsertResultType insertResult = WFSFactory.eINSTANCE.createInsertResultType();
+                    insertResult.setHandle( insert.getHandle() );
+                    insertResult.getFeatureId().add( filterFactory.featureId( fids ) );
+                    result.getInsertResult().add( insertResult );
                     
                     //
                     // Add to validation check envelope                                
@@ -569,8 +582,8 @@ public class Transaction {
 	                	// exceptions here - throw a transaction FAIL instead of serice exception 
 	                	
 	                	//this failed - we want a FAILED not a service exception!
-	                	result.getStatus().setFAILED( WFSFactory.eINSTANCE.createEmptyType() );
-	                	result.setMessage( e.getLocalizedMessage() );
+	                	result.getTransactionResult().getStatus().setFAILED( WFSFactory.eINSTANCE.createEmptyType() );
+	                	result.getTransactionResult().setMessage( e.getLocalizedMessage() );
 	                	
 	                	// DJB: it looks like the transaction is rolled back in writeTo()
 	                }                   
@@ -605,18 +618,18 @@ public class Transaction {
         }
 
         
-        if ( result.getStatus().getPARTIAL() != null ) {
+        if ( result.getTransactionResult().getStatus().getPARTIAL() != null ) {
             throw new WFSException("Canceling PARTIAL response");
         }
         
         try {
-        	if ( result.getStatus().getFAILED() != null ) {
+        	if ( result.getTransactionResult().getStatus().getFAILED() != null ) {
             	//transaction failed, roll it back
             	transaction.rollback();
             }
         	else {
         		transaction.commit();
-        		result.getStatus().setSUCCESS( WFSFactory.eINSTANCE.createEmptyType() );
+        		result.getTransactionResult().getStatus().setSUCCESS( WFSFactory.eINSTANCE.createEmptyType() );
         	}
         	
         }
