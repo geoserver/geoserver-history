@@ -11,6 +11,7 @@ import org.geoserver.wfs.xml.FeatureTypeSchema;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
 import org.geotools.filter.v1_0.OGCConfiguration;
 import org.geotools.gml2.GMLConfiguration;
+import org.geotools.gml2.bindings.GML;
 import org.geotools.xml.BindingConfiguration;
 import org.geotools.xml.Configuration;
 import org.picocontainer.MutablePicoContainer;
@@ -57,6 +58,15 @@ public class WFSConfiguration extends Configuration {
 		
 		context.registerComponentInstance( WFSFactory.eINSTANCE );
 		context.registerComponentInstance( new WFSHandlerFactory( catalog, FeatureTypeSchema.GML2.class ) );
+		context.registerComponentInstance( catalog );
 	}
+	
+	protected void configureBindings(MutablePicoContainer bindings) {
+		super.configureBindings( bindings );
+		
+		//override the GMLAbstractFeatureTypeBinding
+		bindings.registerComponentImplementation( GML.ABSTRACTFEATURETYPE, GMLAbstractFeatureTypeBinding.class );
+	}
+	
 	
 }
