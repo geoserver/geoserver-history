@@ -17,14 +17,18 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.LockType;
 import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WFSLockFeatureResponseType;
 import net.opengis.wfs.WFSPackage;
 
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.AttributeTypeInfo;
+import org.geoserver.data.feature.DataStoreInfo;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.ows.ServiceException;
 import org.geoserver.wfs.http.TypeNameKvpReader;
@@ -35,6 +39,7 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.LockingManager;
 import org.geotools.data.Transaction;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
@@ -432,62 +437,6 @@ public class GetFeature implements ApplicationContextAware {
         return query;	
     }
     
-   
-    
-    /**
-     * Turn this request into a FeatureLock.
-     * 
-     * <p>
-     * You will return FeatureLock.getAuthorization() to your user so they can
-     * refer to this lock again.
-     * </p>
-     * 
-     * <p>
-     * The getAuthorization() value is based on getHandle(), with a default of
-     * "GeoServer" if the user has not provided a handle.
-     * </p>
-     * The FeatureLock produced is based on expiry:
-     * 
-     * <ul>
-     * <li>
-     * negative expiry: reports if lock is available
-     * </li>
-     * <li>
-     * zero expiry: perma lock that never expires!
-     * </li>
-     * <li>
-     * postive expiry: lock expires in a number of minuets
-     * </li>
-     * </ul>
-     * 
-     *
-     * @return
-     */
-    protected FeatureLock featureLock() {
-      
-        if ((handle == null) || (handle.length() == 0))	 {
-            handle = "GeoServer";
-        }
-
-        if ( expiry == null ) {
-        	expiry = BigInteger.valueOf( 0 );
-        }
-        	
-        int lockExpiry = expiry.intValue();
-        if (lockExpiry < 0) {
-            // negative time used to query if lock is available!
-            return FeatureLockFactory.generate(handle, lockExpiry);
-        }
-
-        if (lockExpiry == 0) {
-            // perma lock with no expiry!
-            return FeatureLockFactory.generate(handle, 0);
-        }
-
-        // FeatureLock is specified in seconds
-        return FeatureLockFactory.generate(handle, lockExpiry * 60 * 1000);
-    }
-
     /**
      * Performs a getFeatures, or getFeaturesWithLock (using gt2 locking ).
      * 
@@ -519,13 +468,21 @@ public class GetFeature implements ApplicationContextAware {
     
     public GetFeatureResults getFeatureWithLock() throws ServiceException {
 		GetFeatureResults results = init();
+		results.setLocking( true );
 		
-		FeatureLock lock = featureLock();
-		results.setFeatureLock( lock );
+		try {
+			run( results );	
+		}
+		catch( Exception e ) {
+			//free locks
+			LockFeature lockFeature = new LockFeature( wfs, catalog );
+			if ( results.getLockId() != null ) {
+				lockFeature.setLockId( results.getLockId() );
+				lockFeature.release();
+			}
 		
-		LOGGER.finest("FeatureWithLock using Lock:" + lock.getAuthorization());
-		
-		run( results );
+			throw new WFSException( e );
+		}
 		
 		return results;
     }
@@ -622,7 +579,7 @@ public class GetFeature implements ApplicationContextAware {
                 //DJB: note if maxFeatures gets to 0 the while loop above takes care of this! (this is a subtle situation)
                 
                 org.geotools.data.Query gtQuery = query.toDataQuery( maxFeatures );
-                FeatureResults features = source.getFeatures();
+                FeatureResults features = source.getFeatures( gtQuery );
                 if (it.hasNext()) //DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
                 	maxFeatures -= features.getCount();
 
@@ -652,76 +609,26 @@ public class GetFeature implements ApplicationContextAware {
                 //encoding if it was a lock request. may be after ensuring the lock
                 //succeed?
                 results.addFeatures(meta, features);
+                if ( results.isLocking() ) {
+                	LockFeature lockFeature = new LockFeature( wfs, catalog );
+                	lockFeature.setFilterFactory( filterFactory );
+                    lockFeature.setExpiry( expiry );
+                    lockFeature.setHandle( handle );
+                    lockFeature.setLockAction( AllSomeType.ALL_LITERAL );
+                    
+                	LockType lockType = WFSFactory.eINSTANCE.createLockType();
+                	lockType.setFilter( query.getFilter() );
+                	lockType.setHandle( query.getHandle() );
+                	lockType.setTypeName( query.getTypeName() );
+                	
+                	ArrayList lock = new ArrayList();
+                	lock.add( lockType );
+                	lockFeature.setLock( lock );
+                	
+                	WFSLockFeatureResponseType response = lockFeature.lockFeature();
+                	results.setLockId( response.getLockId() );
 
-                if (results.getFeatureLock() != null) {
-                		FeatureLock featureLock = results.getFeatureLock();
-                    // geotools2 locking code
-                    if (source instanceof FeatureLocking) {
-                        ((FeatureLocking) source).setFeatureLock(featureLock);
-                    }
-
-                    FeatureReader reader = null;
-
-                    try {
-                        for (reader = features.reader(); reader.hasNext();) {
-                            feature = reader.next();
-                            fid = feature.getID();
-
-                            if (!(source instanceof FeatureLocking)) {
-                                LOGGER.finest("Lock " + fid
-                                    + " not supported by data store (authID:"
-                                    + featureLock.getAuthorization() + ")");
-                                lockFailedFids.add(fid);
-
-                                continue; // locking is not supported!
-                            } else {
-                                fidFilter = filterFactory.createFidFilter(fid);
-                                numberLocked = ((FeatureLocking) source)
-                                    .lockFeatures(fidFilter);
-
-                                if (numberLocked == 1) {
-                                    LOGGER.finest("Lock " + fid + " (authID:"
-                                        + featureLock.getAuthorization() + ")");
-                                    lockedFids.add(fid);
-                                } else if (numberLocked == 0) {
-                                    LOGGER.finest("Lock " + fid
-                                        + " conflict (authID:"
-                                        + featureLock.getAuthorization() + ")");
-                                    lockFailedFids.add(fid);
-                                } else {
-                                    LOGGER.warning("Lock " + numberLocked + " "
-                                        + fid + " (authID:"
-                                        + featureLock.getAuthorization()
-                                        + ") duplicated FeatureID!");
-                                    lockedFids.add(fid);
-                                }
-                            }
-                        }
-                    } finally {
-                        if (reader != null) {
-                            reader.close();
-                        }
-                    }
-
-                    if (!lockedFids.isEmpty()) {
-                        Transaction t = new DefaultTransaction();
-
-                        try {
-                            t.addAuthorization(featureLock.getAuthorization());
-                            source.getDataStore().getLockingManager().refresh(featureLock
-                                .getAuthorization(), t);
-                        } finally {
-                            t.commit();
-                        }
-                    }
                 }
-            }
-
-            if ((results.getFeatureLock() != null) && !lockFailedFids.isEmpty()) {
-                // I think we need to release and fail when lockAll fails
-                //
-                // abort will take care of releasing the locks
-                throw new WFSException( "Could not aquire locks for:" + lockFailedFids );
             }
             
         } 
@@ -730,15 +637,7 @@ public class GetFeature implements ApplicationContextAware {
     				"problem with FeatureResults", e, getHandle()
         		);
         } 
-        catch (NoSuchElementException e) {
-            throw new ServiceException(
-            		"problem with FeatureResults", e, getHandle()
-        		);
-        } catch (IllegalAttributeException e) {
-            throw new ServiceException(
-            		"problem with FeatureResults", e, getHandle()
-        		);
-        }
+       
     }
     
     FeatureTypeInfo featureTypeInfo( QName name ) throws WFSException, IOException {
