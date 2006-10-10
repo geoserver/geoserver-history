@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.EReference;
  * @model kind="package"
  * @generated
  */
-public interface WFSPackage extends EPackage{
+public interface WFSPackage extends EPackage {
 	/**
 	 * The package name.
 	 * <!-- begin-user-doc -->
@@ -1282,7 +1282,7 @@ public interface WFSPackage extends EPackage{
 	int WFS_LOCK_FEATURE_RESPONSE_TYPE__LOCK_ID = 0;
 
 	/**
-	 * The feature id for the '<em><b>Features Locked</b></em>' containment reference.
+	 * The feature id for the '<em><b>Features Locked</b></em>' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1291,7 +1291,7 @@ public interface WFSPackage extends EPackage{
 	int WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED = 1;
 
 	/**
-	 * The feature id for the '<em><b>Features Not Locked</b></em>' containment reference.
+	 * The feature id for the '<em><b>Features Not Locked</b></em>' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1374,7 +1374,6 @@ public interface WFSPackage extends EPackage{
 	 */
 	int ALL_SOME_TYPE_OBJECT = 25;
 
-
 	/**
 	 * The meta object id for the '<em>QName</em>' data type.
 	 * <!-- begin-user-doc -->
@@ -1405,7 +1404,6 @@ public interface WFSPackage extends EPackage{
 	 */
 	int PROPERTY_NAME = 28;
 
-
 	/**
 	 * The meta object id for the '<em>Feature</em>' data type.
 	 * <!-- begin-user-doc -->
@@ -1416,7 +1414,6 @@ public interface WFSPackage extends EPackage{
 	 */
 	int FEATURE = 29;
 
-
 	/**
 	 * The meta object id for the '<em>Feature Collection</em>' data type.
 	 * <!-- begin-user-doc -->
@@ -1426,6 +1423,16 @@ public interface WFSPackage extends EPackage{
 	 * @generated
 	 */
 	int FEATURE_COLLECTION = 30;
+
+	/**
+	 * The meta object id for the '<em>Feature Id</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.opengis.filter.FeatureId
+	 * @see net.opengis.wfs.impl.WFSPackageImpl#getFeatureId()
+	 * @generated
+	 */
+	int FEATURE_ID = 31;
 
 
 	/**
@@ -2617,26 +2624,26 @@ public interface WFSPackage extends EPackage{
 	EAttribute getWFSLockFeatureResponseType_LockId();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link net.opengis.wfs.WFSLockFeatureResponseType#getFeaturesLocked <em>Features Locked</em>}'.
+	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.WFSLockFeatureResponseType#getFeaturesLocked <em>Features Locked</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Features Locked</em>'.
+	 * @return the meta object for the attribute list '<em>Features Locked</em>'.
 	 * @see net.opengis.wfs.WFSLockFeatureResponseType#getFeaturesLocked()
 	 * @see #getWFSLockFeatureResponseType()
 	 * @generated
 	 */
-	EReference getWFSLockFeatureResponseType_FeaturesLocked();
+	EAttribute getWFSLockFeatureResponseType_FeaturesLocked();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link net.opengis.wfs.WFSLockFeatureResponseType#getFeaturesNotLocked <em>Features Not Locked</em>}'.
+	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.WFSLockFeatureResponseType#getFeaturesNotLocked <em>Features Not Locked</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Features Not Locked</em>'.
+	 * @return the meta object for the attribute list '<em>Features Not Locked</em>'.
 	 * @see net.opengis.wfs.WFSLockFeatureResponseType#getFeaturesNotLocked()
 	 * @see #getWFSLockFeatureResponseType()
 	 * @generated
 	 */
-	EReference getWFSLockFeatureResponseType_FeaturesNotLocked();
+	EAttribute getWFSLockFeatureResponseType_FeaturesNotLocked();
 
 	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.WFSTransactionResponseType <em>Transaction Response Type</em>}'.
@@ -2767,6 +2774,17 @@ public interface WFSPackage extends EPackage{
 	 * @generated
 	 */
 	EDataType getFeatureCollection();
+
+	/**
+	 * Returns the meta object for data type '{@link org.opengis.filter.FeatureId <em>Feature Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>Feature Id</em>'.
+	 * @see org.opengis.filter.FeatureId
+	 * @model instanceClass="org.opengis.filter.FeatureId"
+	 * @generated
+	 */
+	EDataType getFeatureId();
 
 	/**
 	 * Returns the factory that creates the instances of the model.

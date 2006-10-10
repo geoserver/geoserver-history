@@ -17,6 +17,7 @@
     <genDataTypes ecoreDataType="wfs.ecore#//PropertyName"/>
     <genDataTypes ecoreDataType="wfs.ecore#//Feature"/>
     <genDataTypes ecoreDataType="wfs.ecore#//FeatureCollection"/>
+    <genDataTypes ecoreDataType="wfs.ecore#//FeatureId"/>
     <genClasses ecoreClass="wfs.ecore#//DeleteElementType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//DeleteElementType/filter"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//DeleteElementType/handle"/>
@@ -146,8 +147,8 @@
     </genClasses>
     <genClasses ecoreClass="wfs.ecore#//WFSLockFeatureResponseType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//WFSLockFeatureResponseType/lockId"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference wfs.ecore#//WFSLockFeatureResponseType/featuresLocked"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference wfs.ecore#//WFSLockFeatureResponseType/featuresNotLocked"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute wfs.ecore#//WFSLockFeatureResponseType/featuresLocked"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute wfs.ecore#//WFSLockFeatureResponseType/featuresNotLocked"/>
     </genClasses>
     <genClasses ecoreClass="wfs.ecore#//WFSTransactionResponseType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference wfs.ecore#//WFSTransactionResponseType/insertResult"/>

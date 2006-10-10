@@ -38,12 +38,10 @@ public interface PropertyType extends EObject{
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
 	 * @see net.opengis.wfs.WFSPackage#getPropertyType_Name()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
-	 *        extendedMetaData="kind='element' name='Name' namespace='##targetNamespace'"
-	 * @generated
+	 * @model 
 	 */
 	String getName();
-
+	
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.PropertyType#getName <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->

@@ -6,20 +6,24 @@
  */
 package net.opengis.wfs.impl;
 
-import net.opengis.wfs.FeaturesLockedType;
-import net.opengis.wfs.FeaturesNotLockedType;
+import java.util.Collection;
+
 import net.opengis.wfs.WFSLockFeatureResponseType;
 import net.opengis.wfs.WFSPackage;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
+
+import org.opengis.filter.FeatureId;
 
 /**
  * <!-- begin-user-doc -->
@@ -58,24 +62,24 @@ public class WFSLockFeatureResponseTypeImpl extends EObjectImpl implements WFSLo
 	protected String lockId = LOCK_ID_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getFeaturesLocked() <em>Features Locked</em>}' containment reference.
+	 * The cached value of the '{@link #getFeaturesLocked() <em>Features Locked</em>}' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getFeaturesLocked()
 	 * @generated
 	 * @ordered
 	 */
-	protected FeaturesLockedType featuresLocked = null;
+	protected EList featuresLocked = null;
 
 	/**
-	 * The cached value of the '{@link #getFeaturesNotLocked() <em>Features Not Locked</em>}' containment reference.
+	 * The cached value of the '{@link #getFeaturesNotLocked() <em>Features Not Locked</em>}' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getFeaturesNotLocked()
 	 * @generated
 	 * @ordered
 	 */
-	protected FeaturesNotLockedType featuresNotLocked = null;
+	protected EList featuresNotLocked = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -121,7 +125,10 @@ public class WFSLockFeatureResponseTypeImpl extends EObjectImpl implements WFSLo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FeaturesLockedType getFeaturesLocked() {
+	public EList getFeaturesLocked() {
+		if (featuresLocked == null) {
+			featuresLocked = new EDataTypeUniqueEList(FeatureId.class, this, WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED);
+		}
 		return featuresLocked;
 	}
 
@@ -130,95 +137,11 @@ public class WFSLockFeatureResponseTypeImpl extends EObjectImpl implements WFSLo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetFeaturesLocked(FeaturesLockedType newFeaturesLocked, NotificationChain msgs) {
-		FeaturesLockedType oldFeaturesLocked = featuresLocked;
-		featuresLocked = newFeaturesLocked;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED, oldFeaturesLocked, newFeaturesLocked);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
+	public EList getFeaturesNotLocked() {
+		if (featuresNotLocked == null) {
+			featuresNotLocked = new EDataTypeUniqueEList(FeatureId.class, this, WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED);
 		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setFeaturesLocked(FeaturesLockedType newFeaturesLocked) {
-		if (newFeaturesLocked != featuresLocked) {
-			NotificationChain msgs = null;
-			if (featuresLocked != null)
-				msgs = ((InternalEObject)featuresLocked).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED, null, msgs);
-			if (newFeaturesLocked != null)
-				msgs = ((InternalEObject)newFeaturesLocked).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED, null, msgs);
-			msgs = basicSetFeaturesLocked(newFeaturesLocked, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED, newFeaturesLocked, newFeaturesLocked));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public FeaturesNotLockedType getFeaturesNotLocked() {
 		return featuresNotLocked;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetFeaturesNotLocked(FeaturesNotLockedType newFeaturesNotLocked, NotificationChain msgs) {
-		FeaturesNotLockedType oldFeaturesNotLocked = featuresNotLocked;
-		featuresNotLocked = newFeaturesNotLocked;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED, oldFeaturesNotLocked, newFeaturesNotLocked);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setFeaturesNotLocked(FeaturesNotLockedType newFeaturesNotLocked) {
-		if (newFeaturesNotLocked != featuresNotLocked) {
-			NotificationChain msgs = null;
-			if (featuresNotLocked != null)
-				msgs = ((InternalEObject)featuresNotLocked).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED, null, msgs);
-			if (newFeaturesNotLocked != null)
-				msgs = ((InternalEObject)newFeaturesNotLocked).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED, null, msgs);
-			msgs = basicSetFeaturesNotLocked(newFeaturesNotLocked, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED, newFeaturesNotLocked, newFeaturesNotLocked));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED:
-					return basicSetFeaturesLocked(null, msgs);
-				case WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED:
-					return basicSetFeaturesNotLocked(null, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
-		}
-		return eBasicSetContainer(null, featureID, msgs);
 	}
 
 	/**
@@ -249,10 +172,12 @@ public class WFSLockFeatureResponseTypeImpl extends EObjectImpl implements WFSLo
 				setLockId((String)newValue);
 				return;
 			case WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED:
-				setFeaturesLocked((FeaturesLockedType)newValue);
+				getFeaturesLocked().clear();
+				getFeaturesLocked().addAll((Collection)newValue);
 				return;
 			case WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED:
-				setFeaturesNotLocked((FeaturesNotLockedType)newValue);
+				getFeaturesNotLocked().clear();
+				getFeaturesNotLocked().addAll((Collection)newValue);
 				return;
 		}
 		eDynamicSet(eFeature, newValue);
@@ -269,10 +194,10 @@ public class WFSLockFeatureResponseTypeImpl extends EObjectImpl implements WFSLo
 				setLockId(LOCK_ID_EDEFAULT);
 				return;
 			case WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED:
-				setFeaturesLocked((FeaturesLockedType)null);
+				getFeaturesLocked().clear();
 				return;
 			case WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED:
-				setFeaturesNotLocked((FeaturesNotLockedType)null);
+				getFeaturesNotLocked().clear();
 				return;
 		}
 		eDynamicUnset(eFeature);
@@ -288,9 +213,9 @@ public class WFSLockFeatureResponseTypeImpl extends EObjectImpl implements WFSLo
 			case WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__LOCK_ID:
 				return LOCK_ID_EDEFAULT == null ? lockId != null : !LOCK_ID_EDEFAULT.equals(lockId);
 			case WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED:
-				return featuresLocked != null;
+				return featuresLocked != null && !featuresLocked.isEmpty();
 			case WFSPackage.WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED:
-				return featuresNotLocked != null;
+				return featuresNotLocked != null && !featuresNotLocked.isEmpty();
 		}
 		return eDynamicIsSet(eFeature);
 	}
@@ -306,6 +231,10 @@ public class WFSLockFeatureResponseTypeImpl extends EObjectImpl implements WFSLo
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (lockId: ");
 		result.append(lockId);
+		result.append(", featuresLocked: ");
+		result.append(featuresLocked);
+		result.append(", featuresNotLocked: ");
+		result.append(featuresNotLocked);
 		result.append(')');
 		return result.toString();
 	}

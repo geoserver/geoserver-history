@@ -6,6 +6,8 @@
  */
 package net.opengis.wfs.impl;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.WFSPackage;
 

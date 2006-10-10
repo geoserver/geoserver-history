@@ -618,14 +618,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="&#xA;            This type defines the Lock element.  The Lock element&#xA;            defines a locking operation on feature instances of&#xA;            a single type. An OGC Filter is used to constrain the&#xA;            scope of the operation.  Features to be locked can be&#xA;            identified individually by using their feature identifier&#xA;            or they can be locked by satisfying the spatial and&#xA;            non-spatial constraints defined in the filter."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" unique="false"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//AnySimpleType">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="element"/>
-        <details key="name" value="Filter"/>
-        <details key="namespace" value="http://www.opengis.net/ogc"/>
-      </eAnnotations>
-    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="#//Filter"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="handle" unique="false"
         eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -633,13 +626,7 @@
         <details key="name" value="handle"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" unique="false"
-        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//QName">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="attribute"/>
-        <details key="name" value="typeName"/>
-      </eAnnotations>
-    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" eType="#//QName"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NativeType" eSuperTypes="#//TransactionOperation">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -673,13 +660,7 @@
       <details key="name" value="PropertyType"/>
       <details key="kind" value="elementOnly"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="element"/>
-        <details key="name" value="Name"/>
-        <details key="namespace" value="##targetNamespace"/>
-      </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&#xA;                  The Name element contains the name of a feature property&#xA;                  to be updated."/>
       </eAnnotations>
@@ -912,24 +893,14 @@
         <details key="documentation" value="&#xA;                  The WFS_LockFeatureResponse includes a LockId element&#xA;                  that contains a lock identifier.  The lock identifier&#xA;                  can be used by a client, in subsequent operations, to&#xA;                  operate upon the locked feature instances."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="featuresLocked" eType="#//FeaturesLockedType"
-        containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="element"/>
-        <details key="name" value="FeaturesLocked"/>
-        <details key="namespace" value="##targetNamespace"/>
-      </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="featuresLocked" upperBound="-1"
+        eType="#//FeatureId">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&#xA;                  The LockFeature or GetFeatureWithLock operations&#xA;                  identify and attempt to lock a set of feature&#xA;                  instances that satisfy the constraints specified&#xA;                  in the request.  In the event that the lockAction&#xA;                  attribute (on the LockFeature or GetFeatureWithLock&#xA;                  elements) is set to SOME, a Web Feature Service will&#xA;                  attempt to lock as many of the feature instances from&#xA;                  the result set as possible.&#xA;&#xA;                  The FeaturesLocked element contains list of ogc:FeatureId&#xA;                  elements enumerating the feature instances that a WFS&#xA;                  actually managed to lock."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="featuresNotLocked" eType="#//FeaturesNotLockedType"
-        containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="element"/>
-        <details key="name" value="FeaturesNotLocked"/>
-        <details key="namespace" value="##targetNamespace"/>
-      </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="featuresNotLocked" upperBound="-1"
+        eType="#//FeatureId">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&#xA;                  In contrast to the FeaturesLocked element, the&#xA;                  FeaturesNotLocked element contains a list of&#xA;                  ogc:Filter elements identifying feature instances&#xA;                  that a WFS did not manage to lock because they were&#xA;                  already locked by another process."/>
       </eAnnotations>
@@ -990,4 +961,5 @@
   <eClassifiers xsi:type="ecore:EDataType" name="PropertyName" instanceClassName="org.opengis.filter.expression.PropertyName"/>
   <eClassifiers xsi:type="ecore:EDataType" name="Feature" instanceClassName="org.geotools.feature.Feature"/>
   <eClassifiers xsi:type="ecore:EDataType" name="FeatureCollection" instanceClassName="org.geotools.feature.FeatureCollection"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="FeatureId" instanceClassName="org.opengis.filter.FeatureId"/>
 </ecore:EPackage>

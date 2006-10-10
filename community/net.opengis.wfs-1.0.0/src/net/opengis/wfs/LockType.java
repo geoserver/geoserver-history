@@ -6,7 +6,10 @@
  */
 package net.opengis.wfs;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.emf.ecore.EObject;
+import org.opengis.filter.Filter;
 
 /**
  * <!-- begin-user-doc -->
@@ -49,11 +52,9 @@ public interface LockType extends EObject{
 	 * @return the value of the '<em>Filter</em>' attribute.
 	 * @see #setFilter(Object)
 	 * @see net.opengis.wfs.WFSPackage#getLockType_Filter()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnySimpleType"
-	 *        extendedMetaData="kind='element' name='Filter' namespace='http://www.opengis.net/ogc'"
-	 * @generated
+	 * @model 
 	 */
-	Object getFilter();
+	Filter getFilter();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.LockType#getFilter <em>Filter</em>}' attribute.
@@ -63,7 +64,7 @@ public interface LockType extends EObject{
 	 * @see #getFilter()
 	 * @generated
 	 */
-	void setFilter(Object value);
+	void setFilter(Filter value);
 
 	/**
 	 * Returns the value of the '<em><b>Handle</b></em>' attribute.
@@ -103,11 +104,9 @@ public interface LockType extends EObject{
 	 * @return the value of the '<em>Type Name</em>' attribute.
 	 * @see #setTypeName(Object)
 	 * @see net.opengis.wfs.WFSPackage#getLockType_TypeName()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.QName" required="true"
-	 *        extendedMetaData="kind='attribute' name='typeName'"
-	 * @generated
+	 * @model
 	 */
-	Object getTypeName();
+	QName getTypeName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.LockType#getTypeName <em>Type Name</em>}' attribute.
@@ -117,6 +116,6 @@ public interface LockType extends EObject{
 	 * @see #getTypeName()
 	 * @generated
 	 */
-	void setTypeName(Object value);
+	void setTypeName(QName value);
 
 } // LockType

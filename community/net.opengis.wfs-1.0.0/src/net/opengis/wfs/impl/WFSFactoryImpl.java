@@ -17,9 +17,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 import org.geotools.feature.Feature;
-
 import org.geotools.feature.FeatureCollection;
 
+import org.opengis.filter.FeatureId;
 import org.opengis.filter.Filter;
 
 import org.opengis.filter.expression.PropertyName;
@@ -101,6 +101,8 @@ public class WFSFactoryImpl extends EFactoryImpl implements WFSFactory {
 				return createFeatureFromString(eDataType, initialValue);
 			case WFSPackage.FEATURE_COLLECTION:
 				return createFeatureCollectionFromString(eDataType, initialValue);
+			case WFSPackage.FEATURE_ID:
+				return createFeatureIdFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -127,6 +129,8 @@ public class WFSFactoryImpl extends EFactoryImpl implements WFSFactory {
 				return convertFeatureToString(eDataType, instanceValue);
 			case WFSPackage.FEATURE_COLLECTION:
 				return convertFeatureCollectionToString(eDataType, instanceValue);
+			case WFSPackage.FEATURE_ID:
+				return convertFeatureIdToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -477,6 +481,24 @@ public class WFSFactoryImpl extends EFactoryImpl implements WFSFactory {
 	 * @generated
 	 */
 	public String convertFeatureCollectionToString(EDataType eDataType, Object instanceValue) {
+		return super.convertToString(eDataType, instanceValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public FeatureId createFeatureIdFromString(EDataType eDataType, String initialValue) {
+		return (FeatureId)super.createFromString(eDataType, initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertFeatureIdToString(EDataType eDataType, Object instanceValue) {
 		return super.convertToString(eDataType, instanceValue);
 	}
 

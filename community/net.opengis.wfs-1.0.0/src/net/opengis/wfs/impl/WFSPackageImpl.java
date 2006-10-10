@@ -43,10 +43,7 @@ import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
-import org.eclipse.emf.ecore.EcorePackage;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
 import org.eclipse.emf.ecore.impl.EcorePackageImpl;
 
 import org.eclipse.emf.ecore.xml.namespace.impl.XMLNamespacePackageImpl;
@@ -56,9 +53,9 @@ import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 import org.eclipse.emf.ecore.xml.type.impl.XMLTypePackageImpl;
 
 import org.geotools.feature.Feature;
-
 import org.geotools.feature.FeatureCollection;
 
+import org.opengis.filter.FeatureId;
 import org.opengis.filter.Filter;
 
 import org.opengis.filter.expression.PropertyName;
@@ -286,6 +283,13 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 	 * @generated
 	 */
 	private EDataType featureCollectionEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType featureIdEDataType = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -1355,8 +1359,8 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getWFSLockFeatureResponseType_FeaturesLocked() {
-		return (EReference)wfsLockFeatureResponseTypeEClass.getEStructuralFeatures().get(1);
+	public EAttribute getWFSLockFeatureResponseType_FeaturesLocked() {
+		return (EAttribute)wfsLockFeatureResponseTypeEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1364,8 +1368,8 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getWFSLockFeatureResponseType_FeaturesNotLocked() {
-		return (EReference)wfsLockFeatureResponseTypeEClass.getEStructuralFeatures().get(2);
+	public EAttribute getWFSLockFeatureResponseType_FeaturesNotLocked() {
+		return (EAttribute)wfsLockFeatureResponseTypeEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1474,6 +1478,15 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 	 */
 	public EDataType getFeatureCollection() {
 		return featureCollectionEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getFeatureId() {
+		return featureIdEDataType;
 	}
 
 	/**
@@ -1635,8 +1648,8 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 
 		wfsLockFeatureResponseTypeEClass = createEClass(WFS_LOCK_FEATURE_RESPONSE_TYPE);
 		createEAttribute(wfsLockFeatureResponseTypeEClass, WFS_LOCK_FEATURE_RESPONSE_TYPE__LOCK_ID);
-		createEReference(wfsLockFeatureResponseTypeEClass, WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED);
-		createEReference(wfsLockFeatureResponseTypeEClass, WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED);
+		createEAttribute(wfsLockFeatureResponseTypeEClass, WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED);
+		createEAttribute(wfsLockFeatureResponseTypeEClass, WFS_LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED);
 
 		wfsTransactionResponseTypeEClass = createEClass(WFS_TRANSACTION_RESPONSE_TYPE);
 		createEReference(wfsTransactionResponseTypeEClass, WFS_TRANSACTION_RESPONSE_TYPE__INSERT_RESULT);
@@ -1655,6 +1668,7 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 		propertyNameEDataType = createEDataType(PROPERTY_NAME);
 		featureEDataType = createEDataType(FEATURE);
 		featureCollectionEDataType = createEDataType(FEATURE_COLLECTION);
+		featureIdEDataType = createEDataType(FEATURE_ID);
 	}
 
 	/**
@@ -1774,16 +1788,16 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 		initEAttribute(getLockFeatureType_Version(), theXMLTypePackage.getString(), "version", "1.0.0", 1, 1, LockFeatureType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(lockTypeEClass, LockType.class, "LockType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getLockType_Filter(), theXMLTypePackage.getAnySimpleType(), "filter", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLockType_Filter(), this.getFilter(), "filter", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLockType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getLockType_TypeName(), theXMLTypePackage.getQName(), "typeName", null, 1, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLockType_TypeName(), this.getQName(), "typeName", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(nativeTypeEClass, NativeType.class, "NativeType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getNativeType_SafeToIgnore(), theXMLTypePackage.getBoolean(), "safeToIgnore", null, 1, 1, NativeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getNativeType_VendorId(), theXMLTypePackage.getString(), "vendorId", null, 1, 1, NativeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(propertyTypeEClass, PropertyType.class, "PropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getPropertyType_Name(), theXMLTypePackage.getString(), "name", null, 1, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPropertyType_Name(), ecorePackage.getEString(), "name", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPropertyType_Value(), ecorePackage.getEJavaObject(), "value", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(queryTypeEClass, QueryType.class, "QueryType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1821,8 +1835,8 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 
 		initEClass(wfsLockFeatureResponseTypeEClass, WFSLockFeatureResponseType.class, "WFSLockFeatureResponseType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getWFSLockFeatureResponseType_LockId(), theXMLTypePackage.getString(), "lockId", null, 1, 1, WFSLockFeatureResponseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getWFSLockFeatureResponseType_FeaturesLocked(), this.getFeaturesLockedType(), null, "featuresLocked", null, 0, 1, WFSLockFeatureResponseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getWFSLockFeatureResponseType_FeaturesNotLocked(), this.getFeaturesNotLockedType(), null, "featuresNotLocked", null, 0, 1, WFSLockFeatureResponseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getWFSLockFeatureResponseType_FeaturesLocked(), this.getFeatureId(), "featuresLocked", null, 0, -1, WFSLockFeatureResponseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getWFSLockFeatureResponseType_FeaturesNotLocked(), this.getFeatureId(), "featuresNotLocked", null, 0, -1, WFSLockFeatureResponseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(wfsTransactionResponseTypeEClass, WFSTransactionResponseType.class, "WFSTransactionResponseType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getWFSTransactionResponseType_InsertResult(), this.getInsertResultType(), null, "insertResult", null, 0, -1, WFSTransactionResponseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1843,6 +1857,7 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 		initEDataType(propertyNameEDataType, PropertyName.class, "PropertyName", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(featureEDataType, Feature.class, "Feature", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(featureCollectionEDataType, FeatureCollection.class, "FeatureCollection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(featureIdEDataType, FeatureId.class, "FeatureId", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);
@@ -2358,26 +2373,11 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 			 "kind", "elementOnly"
 		   });			
 		addAnnotation
-		  (getLockType_Filter(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "Filter",
-			 "namespace", "http://www.opengis.net/ogc"
-		   });		
-		addAnnotation
 		  (getLockType_Handle(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "handle"
-		   });		
-		addAnnotation
-		  (getLockType_TypeName(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "typeName"
 		   });		
 		addAnnotation
 		  (nativeTypeEClass, 
@@ -2406,14 +2406,6 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 		   new String[] {
 			 "name", "PropertyType",
 			 "kind", "elementOnly"
-		   });		
-		addAnnotation
-		  (getPropertyType_Name(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "Name",
-			 "namespace", "##targetNamespace"
 		   });				
 		addAnnotation
 		  (queryTypeEClass, 
@@ -2591,23 +2583,7 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 			 "kind", "element",
 			 "name", "LockId",
 			 "namespace", "##targetNamespace"
-		   });			
-		addAnnotation
-		  (getWFSLockFeatureResponseType_FeaturesLocked(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "FeaturesLocked",
-			 "namespace", "##targetNamespace"
-		   });			
-		addAnnotation
-		  (getWFSLockFeatureResponseType_FeaturesNotLocked(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "FeaturesNotLocked",
-			 "namespace", "##targetNamespace"
-		   });			
+		   });					
 		addAnnotation
 		  (wfsTransactionResponseTypeEClass, 
 		   source, 

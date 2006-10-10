@@ -6,6 +6,10 @@
  */
 package net.opengis.wfs;
 
+import org.eclipse.emf.common.util.EList;
+
+import java.util.List;
+
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -86,22 +90,10 @@ public interface WFSLockFeatureResponseType extends EObject{
 	 * @return the value of the '<em>Features Locked</em>' containment reference.
 	 * @see #setFeaturesLocked(FeaturesLockedType)
 	 * @see net.opengis.wfs.WFSPackage#getWFSLockFeatureResponseType_FeaturesLocked()
-	 * @model containment="true" resolveProxies="false"
-	 *        extendedMetaData="kind='element' name='FeaturesLocked' namespace='##targetNamespace'"
-	 * @generated
+	 * @model type="org.opengis.filter.FeatureId"
 	 */
-	FeaturesLockedType getFeaturesLocked();
-
-	/**
-	 * Sets the value of the '{@link net.opengis.wfs.WFSLockFeatureResponseType#getFeaturesLocked <em>Features Locked</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Features Locked</em>' containment reference.
-	 * @see #getFeaturesLocked()
-	 * @generated
-	 */
-	void setFeaturesLocked(FeaturesLockedType value);
-
+	EList getFeaturesLocked();
+	
 	/**
 	 * Returns the value of the '<em><b>Features Not Locked</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
@@ -117,20 +109,8 @@ public interface WFSLockFeatureResponseType extends EObject{
 	 * @return the value of the '<em>Features Not Locked</em>' containment reference.
 	 * @see #setFeaturesNotLocked(FeaturesNotLockedType)
 	 * @see net.opengis.wfs.WFSPackage#getWFSLockFeatureResponseType_FeaturesNotLocked()
-	 * @model containment="true" resolveProxies="false"
-	 *        extendedMetaData="kind='element' name='FeaturesNotLocked' namespace='##targetNamespace'"
-	 * @generated
+	 * @model type="org.opengis.filter.FeatureId"
 	 */
-	FeaturesNotLockedType getFeaturesNotLocked();
-
-	/**
-	 * Sets the value of the '{@link net.opengis.wfs.WFSLockFeatureResponseType#getFeaturesNotLocked <em>Features Not Locked</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Features Not Locked</em>' containment reference.
-	 * @see #getFeaturesNotLocked()
-	 * @generated
-	 */
-	void setFeaturesNotLocked(FeaturesNotLockedType value);
+	EList getFeaturesNotLocked();
 
 } // WFSLockFeatureResponseType
