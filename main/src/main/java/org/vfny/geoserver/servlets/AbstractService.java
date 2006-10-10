@@ -268,6 +268,14 @@ public abstract class AbstractService extends HttpServlet
     }
 
     /**
+     * Override and use spring set servlet context.
+     */
+    public ServletContext getServletContext() {
+    	//override and use spring 
+    	return ((WebApplicationContext)context).getServletContext();
+    }
+    
+    /**
      * DOCUMENT ME!
      *
      * @param request DOCUMENT ME!
@@ -708,10 +716,11 @@ public abstract class AbstractService extends HttpServlet
     protected ServiceStrategy createServiceStrategy() throws ServiceException {
         //If verbose exceptions is on then lets make sure they actually get the
         //exception by using the file strategy.
-    		if (geoServer.isVerboseExceptions()) {
-        		strategy = (ServiceStrategy) context.getBean("fileServiceStrategy");
-        	} 
+		if (geoServer.isVerboseExceptions()) {
+    		strategy = (ServiceStrategy) context.getBean("fileServiceStrategy");
+    	} 
         else {
+        		
     			//do we have a prototype?
         		if (strategy != null) {
         			//yes, make sure it still matched up with id set
@@ -723,6 +732,12 @@ public abstract class AbstractService extends HttpServlet
         		}
         		
         		if (strategy == null) {
+        			if ( serviceStrategy == null ) {
+        				//none set, look up in web applicatino context
+        				serviceStrategy = 
+        					getServletContext().getInitParameter( "serviceStrategy" );
+        			}
+        			
         			//do a lookup
         			Map strategies = context.getBeansOfType(ServiceStrategy.class);
         			for (Iterator itr = strategies.values().iterator(); itr.hasNext();) {
