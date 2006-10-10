@@ -27,9 +27,14 @@ import org.geotools.data.FeatureResults;
  */
 public class GetFeatureResults {
    
-    /** the lock object created from a GetFeatureWithLock request */
-    private FeatureLock featureLock;
-
+	/**
+	 * Flag indicating wether locking is occuring
+	 */
+	private boolean isLocking;
+	/**
+	 * id of feature lock
+	 */
+	private String lockId;
     /**
      * List of FeatureResults obtained from excecuting the queries from the
      * GetFeature request
@@ -57,25 +62,22 @@ public class GetFeatureResults {
         queries = new ArrayList();
     }
 
-    /**
-     * Returns the feature lock being used in the request.
-     * 
-     * @return The feature lock, or null if none is being used.
-     * 
-     */
-    public FeatureLock getFeatureLock() {
-        return featureLock;
-    }
-
-    /**
-     * Sets the feature lock being used in the request.
-     * 
-     * @param featureLock The feature lock.
-     */
-    public void setFeatureLock(FeatureLock featureLock) {
-      this.featureLock = featureLock;
-    }
-
+    public void setLocking(boolean isLocking) {
+		this.isLocking = isLocking;
+	}
+    
+    public boolean isLocking() {
+		return isLocking;
+	}
+    
+    public void setLockId(String lockId) {
+		this.lockId = lockId;
+	}
+    
+    public String getLockId() {
+		return lockId;
+	}
+    
     /**
      * @return handle or application specific name given to the request.
      * 
