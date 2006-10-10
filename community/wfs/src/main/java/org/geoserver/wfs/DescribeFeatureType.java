@@ -6,6 +6,7 @@ package org.geoserver.wfs;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -86,6 +87,13 @@ public class DescribeFeatureType {
     public FeatureTypeInfo[] describeFeatureType() throws WFSException {
     
     	//some initial sanity
+    	if ( getTypeName() == null ) {
+    		setTypeName( Collections.EMPTY_LIST );
+    	}
+    	if ( getOutputFormat() == null ) {
+    		setOutputFormat( "XMLSCHEMA" );
+    	}
+    	
 		List names = new ArrayList( getTypeName() );
 		
 		try {
@@ -118,6 +126,7 @@ public class DescribeFeatureType {
 			}
 			else {
 				//if there are no specific requested types then get all.
+				requested.addAll( infos );
 			}
 
 			return (FeatureTypeInfo[]) requested.toArray( new FeatureTypeInfo[ requested.size() ] );
