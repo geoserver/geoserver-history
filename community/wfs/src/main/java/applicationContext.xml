@@ -35,6 +35,7 @@
 		<constructor-arg ref="catalog"/>
 	</bean>
 	
+	
 	<!-- version 1.0.0 operations -->
 	<bean id="getCapabilities-1.0.0" class="org.geoserver.wfs.GetCapabilities"
 		singleton="false">
@@ -49,11 +50,23 @@
 	<bean id="getFeature-1.0.0" class="org.geoserver.wfs.GetFeature" singleton="false">
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="catalog"/>
+		<property name="filterFactory" ref="filterFactory"/>
+	</bean>
+	<bean id="lockFeature-1.0.0" class="org.geoserver.wfs.LockFeature" singleton="false">
+		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
+		<property name="filterFactory" ref="filterFactory"/>
 	</bean>
 	<bean id="transaction-1.0.0" class="org.geoserver.wfs.Transaction" 
 		singleton="false">
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="catalog"/>
+	</bean>
+	<bean id="releaseLockOperation" class="org.geoserver.ows.Operation">
+		<!-- this operaiton is only for testing, and should not be released -->
+		<constructor-arg index="0" value="Release"/>
+		<constructor-arg ref="wfsService-1.0.0"/>
+		<constructor-arg ref="lockFeature-1.0.0"/>
 	</bean>
 	
 	<!-- version 1.0.0 operation descriptors -->
@@ -80,6 +93,12 @@
 		<constructor-arg index="0" value="GetFeatureWithLock"/>
 		<constructor-arg index="1" ref="wfsService-1.0.0"/>
 		<constructor-arg index="2" ref="getFeature-1.0.0"/>
+	</bean>
+	<bean id="lockFeatureOperation-1.0.0" 
+		class="org.geoserver.ows.Operation" singleton="false">
+		<constructor-arg index="0" value="LockFeature"/>
+		<constructor-arg index="1" ref="wfsService-1.0.0"/>
+		<constructor-arg index="2" ref="lockFeature-1.0.0"/>
 	</bean>
 	<bean id="transactionOperation-1.0.0"
 		class="org.geoserver.ows.Operation" singleton="false">
@@ -124,34 +143,20 @@
 	
 	<!-- responses -->
 	<bean id="getCapabilitiesResponse"
-		class="org.geoserver.wfs.http.WFSCapsTransformerResponse"/>
-		
-	<bean id="describeFeatureTypeResponse-1.0.0"
-		class="org.geoserver.wfs.http.XmlSchemaEncoder">
+		class="org.geoserver.wfs.http.WFSCapsTransformerResponse" singleton="false"/>
+	<bean id="describeFeatureTypeResponse"
+		class="org.geoserver.wfs.http.FeatureTypeInfoResponse" singleton="false"/>
+	<bean id="getFeatureResponse"
+		class="org.geoserver.wfs.http.GetFeatureResultsEncoder" singleton="false"/>
+	<bean id="lockFeatureResponse"
+		class="org.geoserver.wfs.http.LockFeatureTypeResponse" singleton="false">
 		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
-	</bean>
-	<bean id="describeFeatureTypeResponse-1.1.0"
-		class="org.geoserver.wfs.v1_1_0.http.XmlSchemaEncoder">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
-	</bean>
-	<bean id="getFeatureResponse-1.0.0"
-		class="org.geoserver.wfs.http.GetFeatureResultsEncoder">
-		<constructor-arg index="0" value="text/xml"/>
-		<constructor-arg index="1" value="GML2"/>
-	</bean>
-	<bean id="getFeatureResponse-1.1.0"
-		class="org.geoserver.wfs.http.GetFeatureResultsEncoder">
-		<constructor-arg index="0" value="text/xml; subtype=gml/3.1.1"/>
-		<constructor-arg index="1" value="text/xml; subtype=gml/3.1.1"/>
 	</bean>
 	<bean id="transactionResponse-1.0.0"
-		class="org.geoserver.wfs.http.TransactionResponse">
+		class="org.geoserver.wfs.http.TransactionResponse" singleton="false">
 		<constructor-arg ref="wfs"/>
 	</bean>
 		
-	
 	<!-- http url mapping -->
 	<bean id="wfsURLMapping" 
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -207,6 +212,10 @@
 		<constructor-arg value="GetFeatureWithLock"/>
 		<constructor-arg ref="catalog"/>
 	</bean>
+	<bean id="lockFeatureXmlReader" class="org.geoserver.wfs.http.WfsXmlReader">
+		<constructor-arg value="LockFeature"/>
+		<constructor-arg ref="catalog"/>
+	</bean>
 	<bean id="transactionXmlReader" class="org.geoserver.wfs.http.WfsXmlReader">
 		<constructor-arg value="Transaction"/>
 		<constructor-arg ref="catalog"/>
@@ -224,6 +233,17 @@
 		<constructor-arg ref="catalog"/>
 	</bean>
 	
+	<!-- default feature type encoders -->
+	<bean id="gml2FeatureTypeEncoder" 
+		class="org.geoserver.wfs.http.XmlSchemaEncoder">
+		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
+	</bean>
+	<bean id="gml3FeatureTypeEncoder" 
+		class="org.geoserver.wfs.v1_1_0.http.XmlSchemaEncoder">
+		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
+	</bean>
 	<!-- default get feature producers -->
 	<bean id="gml2FeatureProducer" 
 		class="org.geoserver.wfs.GML2FeatureProducer" singleton="false">
