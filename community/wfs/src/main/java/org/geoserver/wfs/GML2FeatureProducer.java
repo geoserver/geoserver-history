@@ -153,10 +153,8 @@ public class GML2FeatureProducer implements FeatureProducer {
 
         transformer.setGmlPrefixing(wfs.getCiteConformanceHacks());
 
-        FeatureLock featureLock = results.getFeatureLock();
-
-        if (featureLock != null) {
-            transformer.setLockId(featureLock.getAuthorization());
+        if (results.getLockId() != null) {
+            transformer.setLockId( results.getLockId() );
         }
 
         transformer.setSrsName(wfs.getSrsPrefix() + meta.getSRS());
