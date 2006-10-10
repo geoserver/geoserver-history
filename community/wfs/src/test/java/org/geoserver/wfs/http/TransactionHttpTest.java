@@ -67,6 +67,37 @@ public class TransactionHttpTest extends GeoServerHttpTestSupport {
 		
 	}
 	
+	public void testInsert1() throws Exception {
+		if ( isOffline() )
+			return;
+		
+		String xml = 
+			"<wfs:Transaction" +
+			"  service=\"WFS\"" +
+			"  version=\"1.0.0\"" +
+			"  xmlns:cdf=\"http://www.opengis.net/cite/data\"" +
+			"  xmlns:gml=\"http://www.opengis.net/gml\"" +
+			"  xmlns:ogc=\"http://www.opengis.net/ogc\"" +
+			"  xmlns:wfs=\"http://www.opengis.net/wfs\"" +
+			">" +
+			"  <wfs:Insert>" +
+			"    <cdf:Inserts>" +
+			"      <gml:boundedBy>" +
+			"        <gml:Box srsName=\"EPSG:32615\">" +
+			"          <gml:coordinates>500000,500000 500100,500100</gml:coordinates>" +
+			"        </gml:Box>" +
+			"      </gml:boundedBy>" +
+			"      <cdf:id>ti0000</cdf:id>" +
+			"      <gml:pointProperty>" +
+			"        <gml:Point srsName=\"EPSG:32615\">" +
+			"          <gml:coordinates>500050,500050</gml:coordinates>" +
+			"        </gml:Point>" +
+			"      </gml:pointProperty>" +
+			"    </cdf:Inserts>" +
+			"  </wfs:Insert>" +
+			"</wfs:Transaction>";
+	}
+	
 	public void testInsert() throws Exception {
 		if ( isOffline() ) 
 			return;
@@ -112,6 +143,8 @@ public class TransactionHttpTest extends GeoServerHttpTestSupport {
 		response = post( "wfs", insert );
 		//print( response, System.out );
 		dom = dom( response );
+		assertTrue( dom.getElementsByTagName( "wfs:SUCCESS" ).getLength() != 0 );
+		assertTrue( dom.getElementsByTagName( "wfs:InsertResult" ).getLength() != 0 );
 		
 //		do another get feature
 		response = post( "wfs", getFeature );
