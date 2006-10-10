@@ -4,6 +4,7 @@ package org.geoserver.wfs.xml.wfs;
 import java.util.Map;
 
 import org.geotools.xml.*;
+import org.geotools.xs.bindings.XSQNameBinding;
 
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.WFSFactory;		
@@ -79,7 +80,13 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
 		PropertyType property = wfsfactory.createPropertyType();
 		
 		//&lt;xsd:element name="Name" type="xsd:string"&gt;
-		property.setName( (String) node.getChildValue( "Name" ) );
+		
+		//TODO: be nice to have qualified name here
+		String name = (String) node.getChildValue( "Name" );
+		if ( name.indexOf( ':' ) != -1 ) {
+			name = name.split( ":")[ 1 ];
+		}
+		property.setName( name );
 		
 		//&lt;xsd:element minOccurs="0" name="Value"&gt;
 		if ( node.hasChild( "Value" ) ) {
