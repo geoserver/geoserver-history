@@ -21,24 +21,12 @@ import org.geoserver.ows.ServiceException;
 public abstract class Response {
 
 	/**
-	 * Mime type of the response.
-	 */
-	String mimeType;
-	/**
 	 * Class of object to serialize
 	 */
 	Class binding;
 	
-	public Response( String mimeType, Class binding ) {
-		this.mimeType = mimeType;
+	public Response( Class binding ) {
 		this.binding = binding;
-	}
-	
-	/**
-	 * @return The mime type of the response.
-	 */
-	public final String getMimeType() {
-		return mimeType;
 	}
 	
 	/**
@@ -65,6 +53,15 @@ public abstract class Response {
 	public boolean canHandle( Operation operation ) {
 		return true;
 	}
+
+	/**
+	 * Returns the mime type to be uses when writing the response.
+	 * 
+	 * @param operation The operation being performed.
+	 * 
+	 * @return The mime type of the response.
+	 */
+	abstract public String getMimeType( Operation operation ) throws ServiceException;
 	
 	/**
 	 * Serializes <code>value</code> to <code>output</code>.

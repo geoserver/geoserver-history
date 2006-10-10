@@ -215,7 +215,10 @@ public class Dispatcher extends AbstractController {
 			}
 			
 			Response response = (Response) matches.get( 0 );
-			httpResponse.setContentType( response.getMimeType() );
+			
+			//set the mime type
+			httpResponse.setContentType( response.getMimeType( opBean ) );
+			
 			//TODO: initialize any header params (gzip,deflate,etc...)
 			
 			OutputStream output = httpResponse.getOutputStream();

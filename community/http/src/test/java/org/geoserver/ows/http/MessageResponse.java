@@ -8,9 +8,13 @@ import org.geoserver.ows.Operation;
 public class MessageResponse extends Response {
 
 	public MessageResponse() {
-		super( "text/plain", Message.class );
+		super( Message.class );
 	}
 
+	public String getMimeType(Operation operation) {
+		return "text/plain";
+	}
+	
 	public void write(Object value, OutputStream output, Operation operation)
 			throws IOException {
 		
