@@ -141,12 +141,12 @@ public class TransactionTypeBinding extends AbstractComplexBinding {
 		WFSBindingUtils.version( transaction, node );
 		
 		//handle
-		if ( node.hasChild( "handle" ) )
-			transaction.setHandle( (String) node.getChildValue( "handle" ) );
+		if ( node.hasAttribute( "handle" ) )
+			transaction.setHandle( (String) node.getAttributeValue( "handle" ) );
 		
 		//release action
-		if ( node.hasChild( AllSomeType.class ) )
-			transaction.setReleaseAction( (AllSomeType) node.getChildValue( AllSomeType.class ) );
+		if ( node.hasAttribute( AllSomeType.class ) )
+			transaction.setReleaseAction( (AllSomeType) node.getAttributeValue	( AllSomeType.class ) );
 		
 		return transaction;
 	}
