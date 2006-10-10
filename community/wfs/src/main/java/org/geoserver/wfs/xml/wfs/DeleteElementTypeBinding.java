@@ -83,8 +83,8 @@ public class DeleteElementTypeBinding extends AbstractComplexBinding {
 		deleteElement.setFilter( (Filter) node.getChildValue( Filter.class ) );
 		
 		//&lt;xsd:attribute name="handle" type="xsd:string" use="optional"/&gt;
-		if ( node.hasChild( "handle" ) ) 
-			deleteElement.setHandle( (String) node.getChildValue( "handle" ) );
+		if ( node.hasAttribute( "handle" ) ) 
+			deleteElement.setHandle( (String) node.getAttributeValue( "handle" ) );
 		
 		//&lt;xsd:attribute name="typeName" type="xsd:QName" use="required"/&gt;
 		deleteElement.setTypeName( (QName) node.getAttributeValue( QName.class ) );

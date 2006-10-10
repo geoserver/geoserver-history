@@ -87,8 +87,8 @@ public class UpdateElementTypeBinding extends AbstractComplexBinding {
 		updateElement.setFilter( (Filter) node.getChildValue( Filter.class ) );
 		
 		//&lt;xsd:attribute name="handle" type="xsd:string" use="optional"/&gt;
-		if ( node.hasChild( "handle" ) )
-			updateElement.setHandle( (String) node.getChildValue( "handle" ) );
+		if ( node.hasAttribute( "handle" ) )
+			updateElement.setHandle( (String) node.getAttributeValue( "handle" ) );
 		
 		//&lt;xsd:attribute name="typeName" type="xsd:QName" use="required"/&gt;
 		updateElement.setTypeName( (QName) node.getAttributeValue( "typeName" ) ); 

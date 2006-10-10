@@ -85,8 +85,8 @@ public class InsertElementTypeBinding extends AbstractComplexBinding {
 		insertElement.getFeature().addAll( node.getChildValues( Feature.class ) );
 		
 		//handle
-		if ( node.hasChild( "handle") )
-			insertElement.setHandle( (String) node.getChildValue( "handle" ) );
+		if ( node.hasAttribute( "handle") )
+			insertElement.setHandle( (String) node.getAttributeValue( "handle" ) );
 		
 		return insertElement;
 		
