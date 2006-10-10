@@ -90,7 +90,7 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
 		writer = (ImageWriter) it.next();
 		if (writer.getClass().getName().equals(
 				"com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter")
-				&& !this.JPEGNativeAcc)
+				&& !this.JPEGNativeAcc.booleanValue())
 			writer = (ImageWriter) it.next();
 		// /////////////////////////////////////////////////////////////////
 		//
@@ -103,7 +103,7 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
 		iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 		// lossy compression
 		iwp.setCompressionType("JPEG");
-		iwp.setCompressionQuality(0.6f);// we can control quality here
+		iwp.setCompressionQuality(0.75f);// we can control quality here
 		writer.setOutput(memOutStream);
 
 		if (LOGGER.isLoggable(Level.FINE))

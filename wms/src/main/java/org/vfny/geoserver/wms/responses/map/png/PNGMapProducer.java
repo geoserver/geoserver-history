@@ -149,7 +149,7 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
 				//
 				// /////////////////////////////////////////////////////////////////
 				"com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")
-				&& this.PNGNativeAcc) {
+				&& this.PNGNativeAcc.booleanValue()) {
 			if (LOGGER.isLoggable(Level.FINE))
 				LOGGER.fine("Writer is native");
 			iwp = writer.getDefaultWriteParam();
@@ -174,7 +174,7 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
 			// //
 			if (writer.getClass().getName().equals(
 					"com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")
-					&& !PNGNativeAcc)
+					&& !PNGNativeAcc.booleanValue())
 				writer = (ImageWriter) it.next();
 			if (LOGGER.isLoggable(Level.FINE))
 				LOGGER.fine("Writer is NOT native");
