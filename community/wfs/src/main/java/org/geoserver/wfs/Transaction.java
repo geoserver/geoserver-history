@@ -32,6 +32,8 @@ import org.geoserver.ows.ServiceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureLock;
+import org.geotools.data.FeatureLockFactory;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
@@ -126,9 +128,11 @@ public class Transaction {
 			return execute();	
 		}
 		catch( WFSException e ) {
+			abort();	//release any locks
 			throw e;
 		}
 		catch( Exception e ) {
+			abort();	//release any locks
 			throw new WFSException( e );
 		}
 		
@@ -652,6 +656,50 @@ public class Transaction {
         //response = build;
     }
 
+    /* (non-Javadoc)
+     * @see org.vfny.geoserver.responses.Response#abort()
+     */
+    public void abort() {
+        if (transaction == null) {
+            return; // no transaction to rollback
+        }
+
+        try {
+            transaction.rollback();
+            transaction.close();
+        } catch (IOException ioException) {
+            // nothing we can do here
+            LOGGER.log(Level.SEVERE,
+                "Failed trying to rollback a transaction:" + ioException);
+        }
+
+        if ( lockId != null ) { 
+        
+        	if ( releaseAction == AllSomeType.SOME_LITERAL ) {
+        		try {
+					lockRefresh( lockId );
+				} 
+        		catch (Exception e) {
+        			LOGGER.log( Level.WARNING, "Error occured refreshing lock", e );
+				}
+        	}
+        	else if ( releaseAction == AllSomeType.ALL_LITERAL ) {
+        		try {
+					lockRelease( lockId );
+				} 
+        		catch (Exception e) {
+        			LOGGER.log( Level.WARNING, "Error occured releasing lock", e );
+				}
+        	}
+        }
+
+    }
+    
+    void lockRelease( String lockId ) throws WFSException {
+    	LockFeature lockFeature = new LockFeature( wfs, catalog );
+    	lockFeature.setLockId( lockId );
+    	lockFeature.release();
+    }
     
     /**
      * Implement lockExists.
@@ -663,137 +711,13 @@ public class Transaction {
      * @see org.geotools.data.Data#lockExists(java.lang.String)
      */
     private boolean lockExists( String lockID) throws Exception {
-    	List dataStores = catalog.dataStores();
-		
-    	for (Iterator i = dataStores.iterator(); i.hasNext();) {
-            DataStoreInfo meta = (DataStoreInfo) i.next();
-
-            if (!meta.isEnabled()) {
-                continue; // disabled
-            }
-
-            DataStore dataStore;
-
-            try {
-                dataStore = meta.getDataStore();
-            } catch (IllegalStateException notAvailable) {
-                continue; // not available
-            }
-
-            LockingManager lockingManager = dataStore.getLockingManager();
-
-            if (lockingManager == null) {
-                continue; // locks not supported
-            }
-
-            if (lockingManager.exists(lockID)) {
-                return true;
-            }
-        }
-
-        return false;
+    	LockFeature lockFeature = new LockFeature( wfs, catalog );
+    	lockFeature.setLockId( lockId );
+    	
+    	return lockFeature.exists();
     }
     
-    /**
-     * Release all feature locks currently held.
-     * 
-     * <p>
-     * This is the implementation for the Admin "free lock" action, transaction
-     * locks are not released.
-     * </p>
-     *
-     * @return Number of locks released
-     */
-    private int lockReleaseAll() throws Exception {
-        int count = 0;
-
-        List dataStores = catalog.dataStores();
-        for (Iterator i = dataStores.iterator(); i.hasNext();) {
-            DataStoreInfo meta = (DataStoreInfo) i.next();
-
-            if (!meta.isEnabled()) {
-                continue; // disabled
-            }
-
-            DataStore dataStore;
-
-            try {
-                dataStore = meta.getDataStore();
-            } catch (IllegalStateException notAvailable) {
-                continue; // not available
-            } catch (Throwable huh) {
-                continue; // not even working
-            }
-
-            LockingManager lockingManager = dataStore.getLockingManager();
-
-            if (lockingManager == null) {
-                continue; // locks not supported
-            }
-
-            // TODO: implement LockingManger.releaseAll()
-            //count += lockingManager.releaseAll();            
-        }
-
-        return count;
-    }
-
-    /**
-     * Release lock by authorization
-     *
-     * @param lockID
-     */
-    private void lockRelease(String lockID) throws Exception {
-        boolean refresh = false;
-
-        List dataStores = catalog.dataStores();
-        for (Iterator i = dataStores.iterator(); i.hasNext();) {
-            DataStoreInfo meta = (DataStoreInfo) i.next();
-
-            if (!meta.isEnabled()) {
-                continue; // disabled
-            }
-
-            DataStore dataStore;
-
-            try {
-                dataStore = meta.getDataStore();
-            } catch (IllegalStateException notAvailable) {
-                continue; // not available
-            }
-
-            LockingManager lockingManager = dataStore.getLockingManager();
-
-            if (lockingManager == null) {
-                continue; // locks not supported
-            }
-
-            org.geotools.data.Transaction t = 
-            	new DefaultTransaction("Refresh " + meta.getNamespacePrefix() );
-
-            try {
-                t.addAuthorization(lockID);
-
-                if (lockingManager.release(lockID, t)) {
-                    refresh = true;
-                }
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, e.getMessage(), e);
-            } finally {
-                try {
-                    t.close();
-                } catch (IOException closeException) {
-                    LOGGER.log(Level.FINEST, closeException.getMessage(),
-                        closeException);
-                }
-            }
-        }
-
-        if (!refresh) {
-            // throw exception? or ignore...
-        }
-    }
-    
+   
     /**
      * Refresh lock by authorization
      * 
@@ -804,53 +728,9 @@ public class Transaction {
      * @param lockID
      */
     private void lockRefresh(String lockID) throws Exception {
-        boolean refresh = false;
-
-        List dataStores = catalog.dataStores();
-        for (Iterator i = dataStores.iterator(); i.hasNext();) {
-            DataStoreInfo meta = (DataStoreInfo) i.next();
-
-            if (!meta.isEnabled()) {
-                continue; // disabled
-            }
-
-            DataStore dataStore;
-
-            try {
-                dataStore = meta.getDataStore();
-            } catch (IllegalStateException notAvailable) {
-                continue; // not available
-            }
-
-            LockingManager lockingManager = dataStore.getLockingManager();
-
-            if (lockingManager == null) {
-                continue; // locks not supported
-            }
-
-            org.geotools.data.Transaction t = 
-            	new DefaultTransaction("Refresh " + meta.getNamespacePrefix());
-
-            try {
-                t.addAuthorization(lockID);
-
-                if (lockingManager.refresh(lockID, t)) {
-                    refresh = true;
-                }
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, e.getMessage(), e);
-            } finally {
-                try {
-                    t.close();
-                } catch (IOException closeException) {
-                    LOGGER.log(Level.FINEST, closeException.getMessage(),
-                        closeException);
-                }
-            }
-        }
-
-        if (!refresh) {
-            // throw exception? or ignore...
-        }
+        LockFeature lockFeature = new LockFeature( wfs, catalog );
+        lockFeature.setLockId( lockId );
+        
+        lockFeature.refresh();
     }
 }
