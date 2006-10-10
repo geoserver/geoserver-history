@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.EReference;
  * @model kind="package"
  * @generated
  */
-public interface WFSPackage extends EPackage {
+public interface WFSPackage extends EPackage{
 	/**
 	 * The package name.
 	 * <!-- begin-user-doc -->
@@ -750,7 +750,7 @@ public interface WFSPackage extends EPackage {
 	int INSERT_RESULT_TYPE = 11;
 
 	/**
-	 * The feature id for the '<em><b>Feature Id</b></em>' attribute.
+	 * The feature id for the '<em><b>Feature Id</b></em>' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2106,10 +2106,10 @@ public interface WFSPackage extends EPackage {
 	EClass getInsertResultType();
 
 	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.InsertResultType#getFeatureId <em>Feature Id</em>}'.
+	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.InsertResultType#getFeatureId <em>Feature Id</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Feature Id</em>'.
+	 * @return the meta object for the attribute list '<em>Feature Id</em>'.
 	 * @see net.opengis.wfs.InsertResultType#getFeatureId()
 	 * @see #getInsertResultType()
 	 * @generated

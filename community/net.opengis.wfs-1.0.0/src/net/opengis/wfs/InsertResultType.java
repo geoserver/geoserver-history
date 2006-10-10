@@ -6,6 +6,8 @@
  */
 package net.opengis.wfs;
 
+import java.util.List;
+
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
@@ -39,22 +41,11 @@ public interface InsertResultType extends EObject{
 	 * @return the value of the '<em>Feature Id</em>' attribute.
 	 * @see #setFeatureId(Object)
 	 * @see net.opengis.wfs.WFSPackage#getInsertResultType_FeatureId()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnySimpleType" required="true"
-	 *        extendedMetaData="kind='element' name='FeatureId' namespace='http://www.opengis.net/ogc'"
-	 * @generated
+	 * @model type="org.opengis.filter.FeatureId"
 	 */
-	Object getFeatureId();
+	EList getFeatureId();
 
-	/**
-	 * Sets the value of the '{@link net.opengis.wfs.InsertResultType#getFeatureId <em>Feature Id</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Feature Id</em>' attribute.
-	 * @see #getFeatureId()
-	 * @generated
-	 */
-	void setFeatureId(Object value);
-
+	
 	/**
 	 * Returns the value of the '<em><b>Handle</b></em>' attribute.
 	 * <!-- begin-user-doc -->

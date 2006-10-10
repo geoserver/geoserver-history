@@ -21,6 +21,10 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
+
+import org.opengis.filter.FeatureId;
+
 import org.eclipse.emf.ecore.util.EDataTypeEList;
 
 /**
@@ -39,24 +43,14 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
  */
 public class InsertResultTypeImpl extends EObjectImpl implements InsertResultType {
 	/**
-	 * The default value of the '{@link #getFeatureId() <em>Feature Id</em>}' attribute.
+	 * The cached value of the '{@link #getFeatureId() <em>Feature Id</em>}' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getFeatureId()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object FEATURE_ID_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getFeatureId() <em>Feature Id</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getFeatureId()
-	 * @generated
-	 * @ordered
-	 */
-	protected Object featureId = FEATURE_ID_EDEFAULT;
+	protected EList featureId = null;
 
 	/**
 	 * The default value of the '{@link #getHandle() <em>Handle</em>}' attribute.
@@ -101,20 +95,11 @@ public class InsertResultTypeImpl extends EObjectImpl implements InsertResultTyp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getFeatureId() {
+	public EList getFeatureId() {
+		if (featureId == null) {
+			featureId = new EDataTypeUniqueEList(FeatureId.class, this, WFSPackage.INSERT_RESULT_TYPE__FEATURE_ID);
+		}
 		return featureId;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setFeatureId(Object newFeatureId) {
-		Object oldFeatureId = featureId;
-		featureId = newFeatureId;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.INSERT_RESULT_TYPE__FEATURE_ID, oldFeatureId, featureId));
 	}
 
 	/**
@@ -161,7 +146,8 @@ public class InsertResultTypeImpl extends EObjectImpl implements InsertResultTyp
 	public void eSet(EStructuralFeature eFeature, Object newValue) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WFSPackage.INSERT_RESULT_TYPE__FEATURE_ID:
-				setFeatureId((Object)newValue);
+				getFeatureId().clear();
+				getFeatureId().addAll((Collection)newValue);
 				return;
 			case WFSPackage.INSERT_RESULT_TYPE__HANDLE:
 				setHandle((String)newValue);
@@ -178,7 +164,7 @@ public class InsertResultTypeImpl extends EObjectImpl implements InsertResultTyp
 	public void eUnset(EStructuralFeature eFeature) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WFSPackage.INSERT_RESULT_TYPE__FEATURE_ID:
-				setFeatureId(FEATURE_ID_EDEFAULT);
+				getFeatureId().clear();
 				return;
 			case WFSPackage.INSERT_RESULT_TYPE__HANDLE:
 				setHandle(HANDLE_EDEFAULT);
@@ -195,7 +181,7 @@ public class InsertResultTypeImpl extends EObjectImpl implements InsertResultTyp
 	public boolean eIsSet(EStructuralFeature eFeature) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WFSPackage.INSERT_RESULT_TYPE__FEATURE_ID:
-				return FEATURE_ID_EDEFAULT == null ? featureId != null : !FEATURE_ID_EDEFAULT.equals(featureId);
+				return featureId != null && !featureId.isEmpty();
 			case WFSPackage.INSERT_RESULT_TYPE__HANDLE:
 				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
 		}
