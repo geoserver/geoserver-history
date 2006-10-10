@@ -24,10 +24,14 @@ public class TransactionResponse extends Response {
     WFS wfs;
     
 	public TransactionResponse( WFS wfs ) {
-		super( "text/xml", TransactionResultType.class );
+		super( TransactionResultType.class );
 		this.wfs = wfs;
 	}
 
+	public String getMimeType(Operation operation) throws ServiceException {
+		return "text/xml";
+	}
+	
 	public void write(Object value, OutputStream output, Operation operation)
 			throws IOException, ServiceException {
 		

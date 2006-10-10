@@ -12,9 +12,13 @@ import org.geotools.xml.transform.TransformerBase;
 public class WFSCapsTransformerResponse extends Response {
 
 	public WFSCapsTransformerResponse() {
-		super( "text/xml", TransformerBase.class );
+		super( TransformerBase.class );
 	}
 
+	public String getMimeType(Operation operation) {
+		return "text/xml";
+	}
+	
 	public void write( Object value, OutputStream output, Operation operation )
 			throws IOException {
 		

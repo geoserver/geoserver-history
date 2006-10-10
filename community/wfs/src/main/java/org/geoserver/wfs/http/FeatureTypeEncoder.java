@@ -11,50 +11,34 @@ import org.geoserver.ows.http.Response;
 /**
  * Encodes feature type info in a particular format.
  * <p>
- * This class is used by {@link DescribeFeatureTypeResponse} to support 
+ * This class is used by {@link FeatureTypeInfoResponse} to support 
  * particular output format type.
  * </p>
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public abstract class FeatureTypeEncoder extends Response {
+public abstract class FeatureTypeEncoder {
 
+	/**
+	 * The mime type
+	 */
+	private String mimeType;
+	/**
+	 * The output format
+	 */
 	private String outputFormat;
 	
 	public FeatureTypeEncoder( String mimeType, String outputFormat ) {
-		super( mimeType, FeatureTypeInfo[].class );
+		this.mimeType = mimeType;
 		this.outputFormat = outputFormat;
+	}
+	
+	public String getMimeType() {
+		return mimeType;
 	}
 	
 	public final String getOutputFormat() {
 		return outputFormat;
-	}
-	
-	public final boolean canHandle(Operation operation) {
-		if ( !"DescribeFeatureType".equalsIgnoreCase( operation.getId() ) )
-			return false;
-		
-		if ( !"WFS".equalsIgnoreCase( operation.getService().getId() ) ) 
-			return false;
-		
-		Object outputFormat;
-		try {
-			outputFormat = operation.get( "outputFormat" );
-		} 
-		catch (Exception e) {
-			return false;
-		}
-		
-		if ( outputFormat == null || !( outputFormat instanceof String ) )
-			return false;
-		
-		return this.outputFormat.equalsIgnoreCase( (String) outputFormat );
-	}
-	
-	public final void write(Object value, OutputStream output, Operation operation) 
-		throws IOException, ServiceException {
-		
-		encode( (FeatureTypeInfo[]) value, output );
 	}
 	
 	public abstract void encode( FeatureTypeInfo[] featureTypeInfos, OutputStream output ) 

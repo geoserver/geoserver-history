@@ -25,14 +25,8 @@ public class GetFeatureResultsEncoder extends Response
 	 * Application context for loading feature producers 
 	 */
 	ApplicationContext context;
-	/**
-	 * The output format being used
-	 */
-	String outputFormat;
-	
-	public GetFeatureResultsEncoder( String mimeType, String outputFormat ) {
-		super( mimeType, GetFeatureResults.class );
-		this.outputFormat = outputFormat;
+	public GetFeatureResultsEncoder( ) {
+		super( GetFeatureResults.class );
 	}
 
 	public void setApplicationContext( ApplicationContext context ) throws BeansException {
@@ -40,22 +34,36 @@ public class GetFeatureResultsEncoder extends Response
 	}
 	
 	public boolean canHandle( Operation operation ) {
-		if ( operation.getOperation() instanceof GetFeature ) {
-			GetFeature getFeature = (GetFeature) operation.getOperation();
-			return outputFormat.equals( getFeature.getOutputFormat() );
-		}
-		
-		return false;
+		return "WFS".equalsIgnoreCase( operation.getService().getId() ) && ( 
+			"GetFeature".equalsIgnoreCase( operation.getId() ) || 
+			"GetFeatureWithLock".equalsIgnoreCase( operation.getId() )
+		);
+			
+	}
+	
+	public String getMimeType( Operation operation) throws ServiceException {
+		String outputFormat = outputFormat( operation );
+		return lookupProducer( outputFormat ).getMimeType();
 	}
 	
 	public void write( Object value, OutputStream output, Operation operation )
 			throws IOException, ServiceException {
 		
+		String outputFormat = outputFormat( operation );
 		FeatureProducer producer = lookupProducer( outputFormat );
 		producer.produce( outputFormat, (GetFeatureResults) value, output );
 		
 	}
 
+	protected String outputFormat( Operation operation ) throws WFSException {
+		try {
+			return  (String) operation.get( "outputFormat" );
+		}
+		catch (Exception e) {
+			throw new WFSException( e );
+		}
+	}
+	
 	 protected FeatureProducer lookupProducer( String outputFormat ) 
 		throws WFSException {
 	
