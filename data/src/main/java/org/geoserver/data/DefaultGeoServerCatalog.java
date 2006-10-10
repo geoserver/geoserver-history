@@ -101,9 +101,19 @@ public class DefaultGeoServerCatalog extends AdaptingCatalog implements
 			return null;
 		}
 		
+		NamespaceSupport ns = getNamespaceSupport();
+		
 		if ( nsPrefix == null ) {
-			NamespaceSupport ns = getNamespaceSupport();
+			//assume default namespace
 			nsPrefix = ns.getPrefix( ns.getURI( "" ) );
+		}
+		
+		if ( ns.getURI( nsPrefix ) == null ) {
+			//did they pass us in a uri?
+			String prefix = ns.getPrefix( nsPrefix );
+			if ( prefix != null ) {
+				nsPrefix = prefix;
+			}
 		}
 		
 		List featureTypes = featureTypes();
