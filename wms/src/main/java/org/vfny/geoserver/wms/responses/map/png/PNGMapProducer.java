@@ -5,15 +5,17 @@
 package org.vfny.geoserver.wms.responses.map.png;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.DirectColorModel;
+import java.awt.image.ComponentColorModel;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
@@ -24,25 +26,59 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
+import com.sun.imageio.plugins.png.PNGImageWriter;
+import com.sun.media.jai.codecimpl.PNGImageEncoder;
+
 /**
  * Handles a GetMap request that spects a map in GIF format.
  * 
+ * @author Simone Giannecchini
  * @author Didier Richard
  * @version $Id
  */
 public final class PNGMapProducer extends DefaultRasterMapProducer {
-	/** DOCUMENT ME! */
+	/** Logger */
 	private static final Logger LOGGER = Logger.getLogger(PNGMapProducer.class
 			.getPackage().getName());
 
-	/** PNG Native Acceleration Mode **/
+	/**
+	 * Workaround class for compressing PNG using the default
+	 * {@link PNGImageEncoder} shipped with the JDK.
+	 * 
+	 * <p>
+	 * {@link PNGImageWriter} does not support
+	 * {@link ImageWriteParam#setCompressionMode(int)} set to
+	 * {@link ImageWriteParam#MODE_EXPLICIT}, it only allows
+	 * {@link ImageWriteParam#MODE_DEFAULT}.
+	 * 
+	 * <p>
+	 * 
+	 * 
+	 * @author Simone Giannecchini.
+	 * 
+	 */
+	public final static class PNGImageWriteParam extends ImageWriteParam {
+
+		/**
+		 * Default construnctor.
+		 * 
+		 * @param local
+		 */
+		public PNGImageWriteParam() {
+			super();
+			this.canWriteProgressive = true;
+			this.canWriteCompressed = true;
+			this.locale = Locale.getDefault();
+		}
+	}
+
+	/** PNG Native Acceleration Mode * */
 	private Boolean PNGNativeAcc;
 
 	public PNGMapProducer(String format, WMS wms) {
 		super(format, wms);
 		/**
-		 * TODO
-		 * 	To check Native Acceleration mode use the following variable
+		 * TODO To check Native Acceleration mode use the following variable
 		 */
 		this.PNGNativeAcc = wms.getGeoServer().getPNGNativeAcceleration();
 	}
@@ -77,7 +113,7 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
 		if (LOGGER.isLoggable(Level.FINE))
 			LOGGER.fine("Preparing for writing for png image");
 		final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(image);
-		final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel ? new ImageWorker(
+		final PlanarImage finalImage = !(encodedImage.getColorModel() instanceof ComponentColorModel) ? new ImageWorker(
 				encodedImage).forceComponentColorModel().getPlanarImage()
 				: encodedImage;
 		if (LOGGER.isLoggable(Level.FINE))
@@ -98,28 +134,56 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
 
 		// /////////////////////////////////////////////////////////////////
 		//
-		// Compression is available only on native lib
+		// getting a stream
 		//
 		// /////////////////////////////////////////////////////////////////
 		if (LOGGER.isLoggable(Level.FINE))
 			LOGGER.fine("Setting write parameters for this writer");
-		final ImageWriteParam iwp = writer.getDefaultWriteParam();
+		ImageWriteParam iwp = null;
 		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
 				outStream);
 		if (writer.getClass().getName().equals(
-				"com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")) {
+		// /////////////////////////////////////////////////////////////////
+				//
+				// compressing with native
+				//
+				// /////////////////////////////////////////////////////////////////
+				"com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")
+				&& this.PNGNativeAcc) {
 			if (LOGGER.isLoggable(Level.FINE))
 				LOGGER.fine("Writer is native");
+			iwp = writer.getDefaultWriteParam();
+			// Define compression mode
 			iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-			iwp.setCompressionType("HUFFMAN_ONLY");//best speed
-			iwp.setCompressionQuality(8.0F/9.0F);// we can control quality here
+			// best compression
+			iwp.setCompressionType("FILTERED");
+			// we can control quality here
+			iwp.setCompressionQuality(0);
+			// destination image type
+			iwp.setDestinationType(new ImageTypeSpecifier(finalImage
+					.getColorModel(), finalImage.getSampleModel()));
 
-		}
-		else
+		} else {
+			// /////////////////////////////////////////////////////////////////
+			//
+			// compressing with pure java
+			//
+			// /////////////////////////////////////////////////////////////////
+			// //
+			// pure java from native
+			// //
+			if (writer.getClass().getName().equals(
+					"com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")
+					&& !PNGNativeAcc)
+				writer = (ImageWriter) it.next();
 			if (LOGGER.isLoggable(Level.FINE))
 				LOGGER.fine("Writer is NOT native");
-		
-		
+			// instantiating PNGImageWriteParam
+			iwp = new PNGImageWriteParam();
+			// Define compression mode
+			iwp.setCompressionMode(ImageWriteParam.MODE_DEFAULT);
+		}
+
 		if (LOGGER.isLoggable(Level.FINE))
 			LOGGER.fine("About to write png image");
 		writer.setOutput(memOutStream);
@@ -128,14 +192,14 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
 		memOutStream.flush();
 		writer.dispose();
 		memOutStream.close();
-		
+
 		if (LOGGER.isLoggable(Level.FINE))
 			LOGGER.fine("Writing png image done!");
 
 	}
+
 	protected BufferedImage prepareImage(int width, int height) {
-		return new BufferedImage(width, height,
-				BufferedImage.TYPE_4BYTE_ABGR);
-		
+		return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+
 	}
 }

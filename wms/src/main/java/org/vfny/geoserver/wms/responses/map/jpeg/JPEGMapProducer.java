@@ -6,7 +6,6 @@ import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,7 +13,6 @@ import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
-import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
 
@@ -34,37 +32,13 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
 	private final static Logger LOGGER = Logger.getLogger(JPEGMapProducer.class
 			.toString());
 
-	/** JPEG Native Acceleration Mode **/
+	/** JPEG Native Acceleration Mode * */
 	private Boolean JPEGNativeAcc;
-
-	/**
-	 * This class overrides the setCompressionQuality() method to workaround a
-	 * problem in compressing JPEG images using the javax.imageio package.
-	 */
-	public static class MyImageWriteParam extends JPEGImageWriteParam {
-		public MyImageWriteParam() {
-			super(Locale.getDefault());
-		}
-
-		/**
-		 * This method accepts quality levels between 0 (lowest) and 1 (highest)
-		 * and simply converts it to a range between 0 and 256; this is not a
-		 * correct conversion algorithm. However, a proper alternative is a lot
-		 * more complicated. This should do until the bug is fixed.
-		 */
-		public void setCompressionQuality(float quality) {
-			if (quality < 0.0F || quality > 1.0F) {
-				throw new IllegalArgumentException("Quality out-of-bounds!");
-			}
-			this.compressionQuality = 256 - (quality * 256);
-		}
-	}
 
 	public JPEGMapProducer(String outputFormat, WMS wms) {
 		super(outputFormat, wms);
 		/**
-		 * TODO
-		 * 	To check Native Acceleration mode use the following variable
+		 * TODO To check Native Acceleration mode use the following variable
 		 */
 		this.JPEGNativeAcc = wms.getGeoServer().getJPEGNativeAcceleration();
 	}
@@ -77,7 +51,6 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
 					" is not the same as expected: ").append(
 					JPEGMapProducerFactory.MIME_TYPE).toString());
 
-		
 		if (LOGGER.isLoggable(Level.FINE))
 			LOGGER.fine("About to write a JPEG image.");
 		// /////////////////////////////////////////////////////////////////
@@ -115,35 +88,22 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
 		if (!it.hasNext())
 			throw new IllegalStateException("No JPEG ImageWriter found");
 		writer = (ImageWriter) it.next();
-		// //
-		//
-		// XXX Attention the native JPEG writer gives strange results I am doing
-		// what follows to avoid using it.
-		//
-		// //
 		if (writer.getClass().getName().equals(
-				"com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter"))
+				"com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter")
+				&& !this.JPEGNativeAcc)
 			writer = (ImageWriter) it.next();
-
 		// /////////////////////////////////////////////////////////////////
 		//
-		// Compression is available only on native lib
+		// Compression is available on both lib
 		//
 		// /////////////////////////////////////////////////////////////////
-		final ImageWriteParam iwp;
+		final ImageWriteParam iwp = writer.getDefaultWriteParam();
 		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
 				outStream);
-		if (writer.getClass().getName().equals(
-				"com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter")) {
-			iwp = writer.getDefaultWriteParam();
-			iwp.setCompressionType("JPEG");
-
-		} else {
-			iwp = new MyImageWriteParam();
-
-		}
 		iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-		iwp.setCompressionQuality(0.75f);// we can control quality here
+		// lossy compression
+		iwp.setCompressionType("JPEG");
+		iwp.setCompressionQuality(0.6f);// we can control quality here
 		writer.setOutput(memOutStream);
 
 		if (LOGGER.isLoggable(Level.FINE))

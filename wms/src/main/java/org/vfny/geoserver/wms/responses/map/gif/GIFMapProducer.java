@@ -102,7 +102,7 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
 		if (!(cm instanceof IndexColorModel))
 			encodedImage = ImageUtilities
 					.componentColorModel2IndexColorModel4GIF(encodedImage);
-		
+
 		encodedImage = ImageUtilities
 				.convertIndexColorModelAlpha4GIF(encodedImage);
 
@@ -145,6 +145,6 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
 		//
 		// // Combine the color model and raster into a buffered image
 		// return new BufferedImage(DEFAULT_PALETTE, raster, false, null);
-		return new BufferedImage(width, height,BufferedImage.TYPE_4BYTE_ABGR);
+		return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 	}
 }
