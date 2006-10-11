@@ -2759,7 +2759,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEAttribute(getLockFeatureType_LockAction(), this.getAllSomeType(), "lockAction", "ALL", 0, 1, LockFeatureType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(lockTypeEClass, LockType.class, "LockType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getLockType_Filter(), this.getFilter_1(), "filter", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLockType_Filter(), this.getFilter(), "filter", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLockType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLockType_TypeName(), theXMLTypePackage.getQName(), "typeName", null, 1, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

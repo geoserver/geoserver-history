@@ -17,6 +17,8 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
+import org.opengis.filter.Filter;
+
 import org.geotools.filter.Filter;
 
 /**

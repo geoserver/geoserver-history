@@ -1079,7 +1079,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="&#xA;            This type defines the Lock element.  The Lock element&#xA;            defines a locking operation on feature instances of&#xA;            a single type. An OGC Filter is used to constrain the&#xA;            scope of the operation.  Features to be locked can be&#xA;            identified individually by using their feature identifier&#xA;            or they can be locked by satisfying the spatial and&#xA;            non-spatial constraints defined in the filter."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="#//Filter_1"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="#//Filter"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="handle" unique="false"
         eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
