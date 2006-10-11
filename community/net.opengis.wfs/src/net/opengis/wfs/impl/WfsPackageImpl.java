@@ -1767,8 +1767,8 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getPropertyType_Value() {
-		return (EReference)propertyTypeEClass.getEStructuralFeatures().get(1);
+	public EAttribute getPropertyType_Value() {
+		return (EAttribute)propertyTypeEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -2509,7 +2509,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 
 		propertyTypeEClass = createEClass(PROPERTY_TYPE);
 		createEAttribute(propertyTypeEClass, PROPERTY_TYPE__NAME);
-		createEReference(propertyTypeEClass, PROPERTY_TYPE__VALUE);
+		createEAttribute(propertyTypeEClass, PROPERTY_TYPE__VALUE);
 
 		queryTypeEClass = createEClass(QUERY_TYPE);
 		createEAttribute(queryTypeEClass, QUERY_TYPE__GROUP);
@@ -2783,7 +2783,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 
 		initEClass(propertyTypeEClass, PropertyType.class, "PropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getPropertyType_Name(), this.getQName(), "name", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getPropertyType_Value(), ecorePackage.getEObject(), null, "value", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPropertyType_Value(), ecorePackage.getEJavaObject(), "value", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(queryTypeEClass, QueryType.class, "QueryType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getQueryType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3806,15 +3806,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		   new String[] {
 			 "name", "PropertyType",
 			 "kind", "elementOnly"
-		   });			
-		addAnnotation
-		  (getPropertyType_Value(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "Value",
-			 "namespace", "##targetNamespace"
-		   });			
+		   });				
 		addAnnotation
 		  (queryTypeEClass, 
 		   source, 

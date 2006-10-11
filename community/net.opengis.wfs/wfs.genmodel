@@ -203,7 +203,7 @@
     </genClasses>
     <genClasses ecoreClass="wfs.ecore#//PropertyType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//PropertyType/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference wfs.ecore#//PropertyType/value"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute wfs.ecore#//PropertyType/value"/>
     </genClasses>
     <genClasses ecoreClass="wfs.ecore#//QueryType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute wfs.ecore#//QueryType/group"/>
