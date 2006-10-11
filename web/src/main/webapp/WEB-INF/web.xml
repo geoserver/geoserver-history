@@ -5,7 +5,7 @@
   <description>Web Mapping and Feature Services</description>
 
   <context-param>
-    <param-name>serviceStratagy</param-name>
+    <param-name>serviceStrategy</param-name>
     <!-- Meaning of the different values :
     	 
     	 PARTIAL-BUFFER

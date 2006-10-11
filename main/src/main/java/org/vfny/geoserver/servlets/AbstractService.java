@@ -722,6 +722,12 @@ public abstract class AbstractService extends HttpServlet
             theStrategy = (ServiceStrategy) context
                     .getBean("fileServiceStrategy");
         } else {
+            if (serviceStrategy == null) {
+                // none set, look up in web applicatino context
+                serviceStrategy = getServletContext().getInitParameter(
+                        "serviceStrategy");
+            }
+            
             // do a lookup
             if(serviceStrategy != null) {
                 Map strategies = context.getBeansOfType(ServiceStrategy.class);
@@ -732,7 +738,7 @@ public abstract class AbstractService extends HttpServlet
                         break;
                     }
                 }
-            }
+            } 
         }
 
         if (theStrategy == null) {
