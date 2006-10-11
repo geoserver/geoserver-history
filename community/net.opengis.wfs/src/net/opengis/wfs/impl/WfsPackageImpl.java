@@ -2761,7 +2761,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEClass(lockTypeEClass, LockType.class, "LockType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getLockType_Filter(), this.getFilter(), "filter", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLockType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getLockType_TypeName(), theXMLTypePackage.getQName(), "typeName", null, 1, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLockType_TypeName(), this.getQName(), "typeName", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(metadataURLTypeEClass, MetadataURLType.class, "MetadataURLType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getMetadataURLType_Value(), theXMLTypePackage.getString(), "value", null, 0, 1, MetadataURLType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3698,14 +3698,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "handle"
-		   });			
-		addAnnotation
-		  (getLockType_TypeName(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "typeName"
-		   });			
+		   });				
 		addAnnotation
 		  (metadataURLTypeEClass, 
 		   source, 

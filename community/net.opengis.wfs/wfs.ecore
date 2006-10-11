@@ -1090,12 +1090,7 @@
         <details key="documentation" value="&#xA;               The handle attribute allows a client application&#xA;               to assign a client-generated request identifier&#xA;               to a Lock action.  The handle is included to&#xA;               facilitate error reporting.  If one of a set of&#xA;               Lock actions failed while processing a LockFeature&#xA;               request, a WFS may report the handle in an exception&#xA;               report to localize the error.  If a handle is not&#xA;               present then a WFS may employ some other means of&#xA;               localizing the error (e.g. line number)."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" unique="false"
-        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//QName">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="attribute"/>
-        <details key="name" value="typeName"/>
-      </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" eType="#//QName">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&#xA;              The value of the typeName attribute is the name&#xA;              of the feature type to be updated. The name&#xA;              specified must be a valid type that belongs to&#xA;              the feature content as defined by the GML&#xA;              Application Schema."/>
       </eAnnotations>

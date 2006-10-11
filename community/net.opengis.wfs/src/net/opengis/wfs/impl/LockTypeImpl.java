@@ -6,6 +6,8 @@
  */
 package net.opengis.wfs.impl;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.WfsPackage;
 
@@ -85,7 +87,7 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object TYPE_NAME_EDEFAULT = null;
+	protected static final QName TYPE_NAME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
@@ -95,7 +97,7 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	 * @generated
 	 * @ordered
 	 */
-	protected Object typeName = TYPE_NAME_EDEFAULT;
+	protected QName typeName = TYPE_NAME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -162,7 +164,7 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getTypeName() {
+	public QName getTypeName() {
 		return typeName;
 	}
 
@@ -171,8 +173,8 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTypeName(Object newTypeName) {
-		Object oldTypeName = typeName;
+	public void setTypeName(QName newTypeName) {
+		QName oldTypeName = typeName;
 		typeName = newTypeName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.LOCK_TYPE__TYPE_NAME, oldTypeName, typeName));
@@ -209,7 +211,7 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 				setHandle((String)newValue);
 				return;
 			case WfsPackage.LOCK_TYPE__TYPE_NAME:
-				setTypeName((Object)newValue);
+				setTypeName((QName)newValue);
 				return;
 		}
 		eDynamicSet(eFeature, newValue);

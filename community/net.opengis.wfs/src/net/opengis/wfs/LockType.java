@@ -6,6 +6,8 @@
  */
 package net.opengis.wfs;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.emf.ecore.EObject;
 import org.opengis.filter.Filter;
 
@@ -114,11 +116,9 @@ public interface LockType extends EObject{
 	 * @return the value of the '<em>Type Name</em>' attribute.
 	 * @see #setTypeName(Object)
 	 * @see net.opengis.wfs.WfsPackage#getLockType_TypeName()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.QName" required="true"
-	 *        extendedMetaData="kind='attribute' name='typeName'"
-	 * @generated
+	 * @model 
 	 */
-	Object getTypeName();
+	QName getTypeName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.LockType#getTypeName <em>Type Name</em>}' attribute.
@@ -128,6 +128,6 @@ public interface LockType extends EObject{
 	 * @see #getTypeName()
 	 * @generated
 	 */
-	void setTypeName(Object value);
+	void setTypeName(QName value);
 
 } // LockType
