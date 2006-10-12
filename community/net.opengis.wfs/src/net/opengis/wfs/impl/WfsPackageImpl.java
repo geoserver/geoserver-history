@@ -1875,6 +1875,15 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getTransactionResultsType_Handle() {
+		return (EAttribute)transactionResultsTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getTransactionSummaryType() {
 		return transactionSummaryTypeEClass;
 	}
@@ -2479,6 +2488,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 
 		transactionResultsTypeEClass = createEClass(TRANSACTION_RESULTS_TYPE);
 		createEReference(transactionResultsTypeEClass, TRANSACTION_RESULTS_TYPE__ACTION);
+		createEAttribute(transactionResultsTypeEClass, TRANSACTION_RESULTS_TYPE__HANDLE);
 
 		transactionSummaryTypeEClass = createEClass(TRANSACTION_SUMMARY_TYPE);
 		createEAttribute(transactionSummaryTypeEClass, TRANSACTION_SUMMARY_TYPE__TOTAL_INSERTED);
@@ -2748,6 +2758,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 
 		initEClass(transactionResultsTypeEClass, TransactionResultsType.class, "TransactionResultsType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getTransactionResultsType_Action(), this.getActionType(), null, "action", null, 0, -1, TransactionResultsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransactionResultsType_Handle(), ecorePackage.getEString(), "handle", null, 0, 1, TransactionResultsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(transactionSummaryTypeEClass, TransactionSummaryType.class, "TransactionSummaryType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getTransactionSummaryType_TotalInserted(), theXMLTypePackage.getNonNegativeInteger(), "totalInserted", null, 0, 1, TransactionSummaryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

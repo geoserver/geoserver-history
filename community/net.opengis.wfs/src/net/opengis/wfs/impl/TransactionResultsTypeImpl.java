@@ -12,6 +12,7 @@ import net.opengis.wfs.ActionType;
 import net.opengis.wfs.TransactionResultsType;
 import net.opengis.wfs.WfsPackage;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
@@ -20,6 +21,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
@@ -33,6 +35,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link net.opengis.wfs.impl.TransactionResultsTypeImpl#getAction <em>Action</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.TransactionResultsTypeImpl#getHandle <em>Handle</em>}</li>
  * </ul>
  * </p>
  *
@@ -48,6 +51,26 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	 * @ordered
 	 */
 	protected EList action = null;
+
+	/**
+	 * The default value of the '{@link #getHandle() <em>Handle</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getHandle()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String HANDLE_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getHandle() <em>Handle</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getHandle()
+	 * @generated
+	 * @ordered
+	 */
+	protected String handle = HANDLE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -84,6 +107,27 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getHandle() {
+		return handle;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setHandle(String newHandle) {
+		String oldHandle = handle;
+		handle = newHandle;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE, oldHandle, handle));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
 		if (featureID >= 0) {
 			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
@@ -105,6 +149,8 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
 				return getAction();
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
+				return getHandle();
 		}
 		return eDynamicGet(eFeature, resolve);
 	}
@@ -120,6 +166,9 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 				getAction().clear();
 				getAction().addAll((Collection)newValue);
 				return;
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
+				setHandle((String)newValue);
+				return;
 		}
 		eDynamicSet(eFeature, newValue);
 	}
@@ -134,6 +183,9 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 			case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
 				getAction().clear();
 				return;
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
+				setHandle(HANDLE_EDEFAULT);
+				return;
 		}
 		eDynamicUnset(eFeature);
 	}
@@ -147,8 +199,25 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
 				return action != null && !action.isEmpty();
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
+				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
 		}
 		return eDynamicIsSet(eFeature);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (handle: ");
+		result.append(handle);
+		result.append(')');
+		return result.toString();
 	}
 
 } //TransactionResultsTypeImpl

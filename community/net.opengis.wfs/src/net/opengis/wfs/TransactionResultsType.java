@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link net.opengis.wfs.TransactionResultsType#getAction <em>Action</em>}</li>
+ *   <li>{@link net.opengis.wfs.TransactionResultsType#getHandle <em>Handle</em>}</li>
  * </ul>
  * </p>
  *
@@ -46,6 +47,16 @@ public interface TransactionResultsType extends EObject{
 	 */
 	String getHandle();
 	
+	/**
+	 * Sets the value of the '{@link net.opengis.wfs.TransactionResultsType#getHandle <em>Handle</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Handle</em>' attribute.
+	 * @see #getHandle()
+	 * @generated
+	 */
+	void setHandle(String value);
+
 	/**
 	 * Returns the value of the '<em><b>Action</b></em>' containment reference list.
 	 * The list contents are of type {@link net.opengis.wfs.ActionType}.

@@ -1302,6 +1302,7 @@
         <details key="documentation" value="&#xA;                  The Action element reports an exception code&#xA;                  and exception message indicating why the&#xA;                  corresponding action of a transaction request&#xA;                  failed."/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="handle" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TransactionSummaryType">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">

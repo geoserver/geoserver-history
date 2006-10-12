@@ -1920,13 +1920,22 @@ public interface WfsPackage extends EPackage{
 	int TRANSACTION_RESULTS_TYPE__ACTION = 0;
 
 	/**
+	 * The feature id for the '<em><b>Handle</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSACTION_RESULTS_TYPE__HANDLE = 1;
+
+	/**
 	 * The number of structural features of the the '<em>Transaction Results Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TRANSACTION_RESULTS_TYPE_FEATURE_COUNT = 1;
+	int TRANSACTION_RESULTS_TYPE_FEATURE_COUNT = 2;
 
 	/**
 	 * The meta object id for the '{@link net.opengis.wfs.impl.TransactionSummaryTypeImpl <em>Transaction Summary Type</em>}' class.
@@ -4049,6 +4058,17 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 */
 	EReference getTransactionResultsType_Action();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.TransactionResultsType#getHandle <em>Handle</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Handle</em>'.
+	 * @see net.opengis.wfs.TransactionResultsType#getHandle()
+	 * @see #getTransactionResultsType()
+	 * @generated
+	 */
+	EAttribute getTransactionResultsType_Handle();
 
 	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.TransactionSummaryType <em>Transaction Summary Type</em>}'.
