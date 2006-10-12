@@ -93,7 +93,7 @@ public interface QueryType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Property Name</em>' attribute list.
 	 * @see net.opengis.wfs.WfsPackage#getQueryType_PropertyName()
-	 * @model type="javax.xml.namespace.QName"
+	 * @model type="org.opengis.filter.expression.PropertyName"
 	 */
 	EList getPropertyName();
 

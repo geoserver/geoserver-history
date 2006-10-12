@@ -34,6 +34,8 @@ import org.opengis.filter.Filter;
 
 import org.opengis.filter.expression.Function;
 
+import org.opengis.filter.expression.PropertyName;
+
 import org.opengis.filter.sort.SortBy;
 
 /**
@@ -225,6 +227,8 @@ public class WfsValidator extends EObjectValidator {
 				return validateFilter((Filter)value, diagnostics, context);
 			case WfsPackage.FILTER_1:
 				return validateFilter_1((org.geotools.filter.Filter)value, diagnostics, context);
+			case WfsPackage.PROPERTY_NAME:
+				return validatePropertyName((PropertyName)value, diagnostics, context);
 			default: 
 				return true;
 		}
@@ -827,6 +831,15 @@ public class WfsValidator extends EObjectValidator {
 	 * @generated
 	 */
 	public boolean validateFilter_1(org.geotools.filter.Filter filter_1, DiagnosticChain diagnostics, Map context) {
+		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validatePropertyName(PropertyName propertyName, DiagnosticChain diagnostics, Map context) {
 		return true;
 	}
 

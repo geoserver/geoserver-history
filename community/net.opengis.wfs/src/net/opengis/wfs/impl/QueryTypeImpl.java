@@ -35,6 +35,8 @@ import org.opengis.filter.Filter;
 
 import org.opengis.filter.expression.Function;
 
+import org.opengis.filter.expression.PropertyName;
+
 import org.opengis.filter.sort.SortBy;
 
 /**
@@ -246,7 +248,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 */
 	public EList getPropertyName() {
 		if (propertyName == null) {
-			propertyName = new EDataTypeUniqueEList(QName.class, this, WfsPackage.QUERY_TYPE__PROPERTY_NAME);
+			propertyName = new EDataTypeUniqueEList(PropertyName.class, this, WfsPackage.QUERY_TYPE__PROPERTY_NAME);
 		}
 		return propertyName;
 	}

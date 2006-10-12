@@ -2485,6 +2485,17 @@ public interface WfsPackage extends EPackage{
 
 
 	/**
+	 * The meta object id for the '<em>Property Name</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.opengis.filter.expression.PropertyName
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getPropertyName()
+	 * @generated
+	 */
+	int PROPERTY_NAME = 55;
+
+
+	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.ActionType <em>Action Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4564,6 +4575,17 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 */
 	EDataType getFilter_1();
+
+	/**
+	 * Returns the meta object for data type '{@link org.opengis.filter.expression.PropertyName <em>Property Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>Property Name</em>'.
+	 * @see org.opengis.filter.expression.PropertyName
+	 * @model instanceClass="org.opengis.filter.expression.PropertyName"
+	 * @generated
+	 */
+	EDataType getPropertyName();
 
 	/**
 	 * Returns the factory that creates the instances of the model.

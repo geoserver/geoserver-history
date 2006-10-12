@@ -80,6 +80,8 @@ import org.opengis.filter.Filter;
 
 import org.opengis.filter.expression.Function;
 
+import org.opengis.filter.expression.PropertyName;
+
 import org.opengis.filter.sort.SortBy;
 
 /**
@@ -473,6 +475,13 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * @generated
 	 */
 	private EDataType filter_1EDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType propertyNameEDataType = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -2289,6 +2298,15 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EDataType getPropertyName() {
+		return propertyNameEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public WfsFactory getWfsFactory() {
 		return (WfsFactory)getEFactoryInstance();
 	}
@@ -2542,6 +2560,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		featureCollectionEDataType = createEDataType(FEATURE_COLLECTION);
 		filterEDataType = createEDataType(FILTER);
 		filter_1EDataType = createEDataType(FILTER_1);
+		propertyNameEDataType = createEDataType(PROPERTY_NAME);
 	}
 
 	/**
@@ -2741,7 +2760,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 
 		initEClass(queryTypeEClass, QueryType.class, "QueryType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getQueryType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getQueryType_PropertyName(), this.getQName(), "propertyName", null, 0, -1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getQueryType_PropertyName(), this.getPropertyName(), "propertyName", null, 0, -1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getQueryType_Function(), this.getFunction(), "function", null, 0, -1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getQueryType_Filter(), this.getFilter(), "filter", null, 0, 1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getQueryType_SortBy(), this.getSortBy(), "sortBy", null, 0, 1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2828,6 +2847,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEDataType(featureCollectionEDataType, FeatureCollection.class, "FeatureCollection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(filterEDataType, Filter.class, "Filter", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(filter_1EDataType, org.geotools.filter.Filter.class, "Filter_1", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(propertyNameEDataType, PropertyName.class, "PropertyName", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);

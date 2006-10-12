@@ -1168,7 +1168,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="propertyName" upperBound="-1"
-        eType="#//QName">
+        eType="#//PropertyName">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&#xA;                   The Property element is used to specify one or more&#xA;                   properties of a feature whose values are to be retrieved&#xA;                   by a Web Feature Service.&#xA;&#xA;                   While a Web Feature Service should endeavour to satisfy&#xA;                   the exact request specified, in some instance this may&#xA;                   not be possible.  Specifically, a Web Feature Service&#xA;                   must generate a valid GML3 response to a Query operation.&#xA;                   The schema used to generate the output may include&#xA;                   properties that are mandatory.  In order that the output&#xA;                   validates, these mandatory properties must be specified&#xA;                   in the request.  If they are not, a Web Feature Service&#xA;                   may add them automatically to the Query before processing&#xA;                   it.  Thus a client application should, in general, be&#xA;                   prepared to receive more properties than it requested.&#xA;&#xA;                   Of course, using the DescribeFeatureType request, a client&#xA;                   application can determine which properties are mandatory&#xA;                   and request them in the first place."/>
       </eAnnotations>
@@ -1615,4 +1615,5 @@
   <eClassifiers xsi:type="ecore:EDataType" name="FeatureCollection" instanceClassName="org.geotools.feature.FeatureCollection"/>
   <eClassifiers xsi:type="ecore:EDataType" name="Filter" instanceClassName="org.opengis.filter.Filter"/>
   <eClassifiers xsi:type="ecore:EDataType" name="Filter_1" instanceClassName="org.geotools.filter.Filter"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="PropertyName" instanceClassName="org.opengis.filter.expression.PropertyName"/>
 </ecore:EPackage>

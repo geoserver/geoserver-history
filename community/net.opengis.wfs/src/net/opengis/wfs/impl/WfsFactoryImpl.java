@@ -32,6 +32,8 @@ import org.opengis.filter.Filter;
 
 import org.opengis.filter.expression.Function;
 
+import org.opengis.filter.expression.PropertyName;
+
 import org.opengis.filter.sort.SortBy;
 
 /**
@@ -156,6 +158,8 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 				return createFilterFromString(eDataType, initialValue);
 			case WfsPackage.FILTER_1:
 				return createFilter_1FromString(eDataType, initialValue);
+			case WfsPackage.PROPERTY_NAME:
+				return createPropertyNameFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -208,6 +212,8 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 				return convertFilterToString(eDataType, instanceValue);
 			case WfsPackage.FILTER_1:
 				return convertFilter_1ToString(eDataType, instanceValue);
+			case WfsPackage.PROPERTY_NAME:
+				return convertPropertyNameToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -852,6 +858,24 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * @generated
 	 */
 	public String convertFilter_1ToString(EDataType eDataType, Object instanceValue) {
+		return super.convertToString(eDataType, instanceValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public PropertyName createPropertyNameFromString(EDataType eDataType, String initialValue) {
+		return (PropertyName)super.createFromString(eDataType, initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertPropertyNameToString(EDataType eDataType, Object instanceValue) {
 		return super.convertToString(eDataType, instanceValue);
 	}
 
