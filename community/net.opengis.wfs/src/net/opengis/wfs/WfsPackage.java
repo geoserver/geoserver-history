@@ -46,7 +46,7 @@ import org.eclipse.emf.ecore.EReference;
  * @model kind="package"
  * @generated
  */
-public interface WfsPackage extends EPackage{
+public interface WfsPackage extends EPackage {
 	/**
 	 * The package name.
 	 * <!-- begin-user-doc -->
@@ -972,7 +972,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__HANDLE = BASE_REQUEST_TYPE__HANDLE;
+	int GET_FEATURE_WITH_LOCK_TYPE__HANDLE = GET_FEATURE_TYPE__HANDLE;
 
 	/**
 	 * The feature id for the '<em><b>Service</b></em>' attribute.
@@ -981,7 +981,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__SERVICE = BASE_REQUEST_TYPE__SERVICE;
+	int GET_FEATURE_WITH_LOCK_TYPE__SERVICE = GET_FEATURE_TYPE__SERVICE;
 
 	/**
 	 * The feature id for the '<em><b>Version</b></em>' attribute.
@@ -990,7 +990,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__VERSION = BASE_REQUEST_TYPE__VERSION;
+	int GET_FEATURE_WITH_LOCK_TYPE__VERSION = GET_FEATURE_TYPE__VERSION;
 
 	/**
 	 * The feature id for the '<em><b>Query</b></em>' containment reference list.
@@ -999,16 +999,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__QUERY = BASE_REQUEST_TYPE_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Expiry</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__EXPIRY = BASE_REQUEST_TYPE_FEATURE_COUNT + 1;
+	int GET_FEATURE_WITH_LOCK_TYPE__QUERY = GET_FEATURE_TYPE__QUERY;
 
 	/**
 	 * The feature id for the '<em><b>Max Features</b></em>' attribute.
@@ -1017,7 +1008,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__MAX_FEATURES = BASE_REQUEST_TYPE_FEATURE_COUNT + 2;
+	int GET_FEATURE_WITH_LOCK_TYPE__MAX_FEATURES = GET_FEATURE_TYPE__MAX_FEATURES;
 
 	/**
 	 * The feature id for the '<em><b>Output Format</b></em>' attribute.
@@ -1026,7 +1017,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__OUTPUT_FORMAT = BASE_REQUEST_TYPE_FEATURE_COUNT + 3;
+	int GET_FEATURE_WITH_LOCK_TYPE__OUTPUT_FORMAT = GET_FEATURE_TYPE__OUTPUT_FORMAT;
 
 	/**
 	 * The feature id for the '<em><b>Result Type</b></em>' attribute.
@@ -1035,7 +1026,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__RESULT_TYPE = BASE_REQUEST_TYPE_FEATURE_COUNT + 4;
+	int GET_FEATURE_WITH_LOCK_TYPE__RESULT_TYPE = GET_FEATURE_TYPE__RESULT_TYPE;
 
 	/**
 	 * The feature id for the '<em><b>Traverse Xlink Depth</b></em>' attribute.
@@ -1044,7 +1035,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_DEPTH = BASE_REQUEST_TYPE_FEATURE_COUNT + 5;
+	int GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_DEPTH = GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH;
 
 	/**
 	 * The feature id for the '<em><b>Traverse Xlink Expiry</b></em>' attribute.
@@ -1053,7 +1044,16 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_EXPIRY = BASE_REQUEST_TYPE_FEATURE_COUNT + 6;
+	int GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_EXPIRY = GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY;
+
+	/**
+	 * The feature id for the '<em><b>Expiry</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GET_FEATURE_WITH_LOCK_TYPE__EXPIRY = GET_FEATURE_TYPE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the the '<em>Get Feature With Lock Type</em>' class.
@@ -1062,7 +1062,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE_FEATURE_COUNT = BASE_REQUEST_TYPE_FEATURE_COUNT + 7;
+	int GET_FEATURE_WITH_LOCK_TYPE_FEATURE_COUNT = GET_FEATURE_TYPE_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link net.opengis.wfs.impl.GetGmlObjectTypeImpl <em>Get Gml Object Type</em>}' class.
@@ -2385,7 +2385,6 @@ public interface WfsPackage extends EPackage{
 	 */
 	int TYPE_TYPE = 46;
 
-
 	/**
 	 * The meta object id for the '<em>QName</em>' data type.
 	 * <!-- begin-user-doc -->
@@ -3280,17 +3279,6 @@ public interface WfsPackage extends EPackage{
 	EClass getGetFeatureWithLockType();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link net.opengis.wfs.GetFeatureWithLockType#getQuery <em>Query</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Query</em>'.
-	 * @see net.opengis.wfs.GetFeatureWithLockType#getQuery()
-	 * @see #getGetFeatureWithLockType()
-	 * @generated
-	 */
-	EReference getGetFeatureWithLockType_Query();
-
-	/**
 	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GetFeatureWithLockType#getExpiry <em>Expiry</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3300,61 +3288,6 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 */
 	EAttribute getGetFeatureWithLockType_Expiry();
-
-	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GetFeatureWithLockType#getMaxFeatures <em>Max Features</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Max Features</em>'.
-	 * @see net.opengis.wfs.GetFeatureWithLockType#getMaxFeatures()
-	 * @see #getGetFeatureWithLockType()
-	 * @generated
-	 */
-	EAttribute getGetFeatureWithLockType_MaxFeatures();
-
-	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GetFeatureWithLockType#getOutputFormat <em>Output Format</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Output Format</em>'.
-	 * @see net.opengis.wfs.GetFeatureWithLockType#getOutputFormat()
-	 * @see #getGetFeatureWithLockType()
-	 * @generated
-	 */
-	EAttribute getGetFeatureWithLockType_OutputFormat();
-
-	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GetFeatureWithLockType#getResultType <em>Result Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Result Type</em>'.
-	 * @see net.opengis.wfs.GetFeatureWithLockType#getResultType()
-	 * @see #getGetFeatureWithLockType()
-	 * @generated
-	 */
-	EAttribute getGetFeatureWithLockType_ResultType();
-
-	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GetFeatureWithLockType#getTraverseXlinkDepth <em>Traverse Xlink Depth</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Traverse Xlink Depth</em>'.
-	 * @see net.opengis.wfs.GetFeatureWithLockType#getTraverseXlinkDepth()
-	 * @see #getGetFeatureWithLockType()
-	 * @generated
-	 */
-	EAttribute getGetFeatureWithLockType_TraverseXlinkDepth();
-
-	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GetFeatureWithLockType#getTraverseXlinkExpiry <em>Traverse Xlink Expiry</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Traverse Xlink Expiry</em>'.
-	 * @see net.opengis.wfs.GetFeatureWithLockType#getTraverseXlinkExpiry()
-	 * @see #getGetFeatureWithLockType()
-	 * @generated
-	 */
-	EAttribute getGetFeatureWithLockType_TraverseXlinkExpiry();
 
 	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.GetGmlObjectType <em>Get Gml Object Type</em>}'.

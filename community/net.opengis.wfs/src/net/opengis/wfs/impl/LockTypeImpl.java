@@ -21,8 +21,6 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.opengis.filter.Filter;
 
-import org.geotools.filter.Filter;
-
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Lock Type</b></em>'.
