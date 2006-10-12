@@ -47,6 +47,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link net.opengis.wfs.impl.TransactionTypeImpl#getDelete <em>Delete</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.TransactionTypeImpl#getNative <em>Native</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.TransactionTypeImpl#getReleaseAction <em>Release Action</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.TransactionTypeImpl#getHandle <em>Handle</em>}</li>
  * </ul>
  * </p>
  *
@@ -111,6 +112,26 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 	 * @ordered
 	 */
 	protected boolean releaseActionESet = false;
+
+	/**
+	 * The default value of the '{@link #getHandle() <em>Handle</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getHandle()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String HANDLE_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getHandle() <em>Handle</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getHandle()
+	 * @generated
+	 * @ordered
+	 */
+	protected String handle = HANDLE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -250,6 +271,27 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getHandle() {
+		return handle;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setHandle(String newHandle) {
+		String oldHandle = handle;
+		handle = newHandle;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_TYPE__HANDLE, oldHandle, handle));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
 		if (featureID >= 0) {
 			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
@@ -305,6 +347,8 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 				return getNative();
 			case WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION:
 				return getReleaseAction();
+			case WfsPackage.TRANSACTION_TYPE__HANDLE:
+				return getHandle();
 		}
 		return eDynamicGet(eFeature, resolve);
 	}
@@ -354,6 +398,9 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 			case WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION:
 				setReleaseAction((AllSomeType)newValue);
 				return;
+			case WfsPackage.TRANSACTION_TYPE__HANDLE:
+				setHandle((String)newValue);
+				return;
 		}
 		eDynamicSet(eFeature, newValue);
 	}
@@ -398,6 +445,9 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 			case WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION:
 				unsetReleaseAction();
 				return;
+			case WfsPackage.TRANSACTION_TYPE__HANDLE:
+				setHandle(HANDLE_EDEFAULT);
+				return;
 		}
 		eDynamicUnset(eFeature);
 	}
@@ -431,6 +481,8 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 				return !getNative().isEmpty();
 			case WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION:
 				return isSetReleaseAction();
+			case WfsPackage.TRANSACTION_TYPE__HANDLE:
+				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
 		}
 		return eDynamicIsSet(eFeature);
 	}
@@ -450,6 +502,8 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 		result.append(group);
 		result.append(", releaseAction: ");
 		if (releaseActionESet) result.append(releaseAction); else result.append("<unset>");
+		result.append(", handle: ");
+		result.append(handle);
 		result.append(')');
 		return result.toString();
 	}

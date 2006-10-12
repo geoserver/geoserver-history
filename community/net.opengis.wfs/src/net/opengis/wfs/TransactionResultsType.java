@@ -34,6 +34,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface TransactionResultsType extends EObject{
+	
 	/**
 	 * Returns the value of the '<em><b>Action</b></em>' containment reference list.
 	 * The list contents are of type {@link net.opengis.wfs.ActionType}.

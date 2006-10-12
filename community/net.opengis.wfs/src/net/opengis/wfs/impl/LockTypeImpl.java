@@ -23,6 +23,8 @@ import org.opengis.filter.Filter;
 
 /**
  * <!-- begin-user-doc -->
+ * 
+ * 
  * An implementation of the model object '<em><b>Lock Type</b></em>'.
  * <!-- end-user-doc -->
  * <p>

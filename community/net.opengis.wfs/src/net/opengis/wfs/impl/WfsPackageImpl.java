@@ -1983,6 +1983,15 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getTransactionType_Handle() {
+		return (EAttribute)transactionTypeEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getUpdateElementType() {
 		return updateElementTypeEClass;
 	}
@@ -2484,6 +2493,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		createEReference(transactionTypeEClass, TRANSACTION_TYPE__DELETE);
 		createEReference(transactionTypeEClass, TRANSACTION_TYPE__NATIVE);
 		createEAttribute(transactionTypeEClass, TRANSACTION_TYPE__RELEASE_ACTION);
+		createEAttribute(transactionTypeEClass, TRANSACTION_TYPE__HANDLE);
 
 		updateElementTypeEClass = createEClass(UPDATE_ELEMENT_TYPE);
 		createEReference(updateElementTypeEClass, UPDATE_ELEMENT_TYPE__PROPERTY);
@@ -2752,6 +2762,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEReference(getTransactionType_Delete(), this.getDeleteElementType(), null, "delete", null, 0, -1, TransactionType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getTransactionType_Native(), this.getNativeType(), null, "native", null, 0, -1, TransactionType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTransactionType_ReleaseAction(), this.getAllSomeType(), "releaseAction", "ALL", 0, 1, TransactionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransactionType_Handle(), ecorePackage.getEString(), "handle", null, 0, 1, TransactionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(updateElementTypeEClass, UpdateElementType.class, "UpdateElementType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getUpdateElementType_Property(), this.getPropertyType(), null, "property", null, 1, -1, UpdateElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

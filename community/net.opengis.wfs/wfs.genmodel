@@ -232,6 +232,7 @@
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference wfs.ecore#//TransactionType/delete"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference wfs.ecore#//TransactionType/native"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//TransactionType/releaseAction"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//TransactionType/handle"/>
     </genClasses>
     <genClasses ecoreClass="wfs.ecore#//UpdateElementType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference wfs.ecore#//UpdateElementType/property"/>

@@ -46,7 +46,7 @@ import org.eclipse.emf.ecore.EReference;
  * @model kind="package"
  * @generated
  */
-public interface WfsPackage extends EPackage {
+public interface WfsPackage extends EPackage{
 	/**
 	 * The package name.
 	 * <!-- begin-user-doc -->
@@ -2084,13 +2084,22 @@ public interface WfsPackage extends EPackage {
 	int TRANSACTION_TYPE__RELEASE_ACTION = OWSPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 6;
 
 	/**
+	 * The feature id for the '<em><b>Handle</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSACTION_TYPE__HANDLE = OWSPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 7;
+
+	/**
 	 * The number of structural features of the the '<em>Transaction Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TRANSACTION_TYPE_FEATURE_COUNT = OWSPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 7;
+	int TRANSACTION_TYPE_FEATURE_COUNT = OWSPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 8;
 
 	/**
 	 * The meta object id for the '{@link net.opengis.wfs.impl.UpdateElementTypeImpl <em>Update Element Type</em>}' class.
@@ -4170,6 +4179,17 @@ public interface WfsPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getTransactionType_ReleaseAction();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.TransactionType#getHandle <em>Handle</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Handle</em>'.
+	 * @see net.opengis.wfs.TransactionType#getHandle()
+	 * @see #getTransactionType()
+	 * @generated
+	 */
+	EAttribute getTransactionType_Handle();
 
 	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.UpdateElementType <em>Update Element Type</em>}'.

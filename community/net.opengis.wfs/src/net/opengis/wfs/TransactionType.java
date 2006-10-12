@@ -36,6 +36,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link net.opengis.wfs.TransactionType#getDelete <em>Delete</em>}</li>
  *   <li>{@link net.opengis.wfs.TransactionType#getNative <em>Native</em>}</li>
  *   <li>{@link net.opengis.wfs.TransactionType#getReleaseAction <em>Release Action</em>}</li>
+ *   <li>{@link net.opengis.wfs.TransactionType#getHandle <em>Handle</em>}</li>
  * </ul>
  * </p>
  *
@@ -44,6 +45,28 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * @generated
  */
 public interface TransactionType extends GetCapabilitiesType{
+	
+	/**
+	 * The handle used for the request. 
+	 * <p>
+	 * Adding this to maintain backwards compatability with wfs 1.0.0.
+	 * </p>
+	 * @return The handle given to the request.
+	 * 
+	 * @model
+	 */
+	String getHandle();
+	
+	/**
+	 * Sets the value of the '{@link net.opengis.wfs.TransactionType#getHandle <em>Handle</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Handle</em>' attribute.
+	 * @see #getHandle()
+	 * @generated
+	 */
+	void setHandle(String value);
+
 	/**
 	 * Returns the value of the '<em><b>Lock Id</b></em>' attribute.
 	 * <!-- begin-user-doc -->
