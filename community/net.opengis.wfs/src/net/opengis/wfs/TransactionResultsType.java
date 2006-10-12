@@ -36,6 +36,17 @@ import org.eclipse.emf.ecore.EObject;
 public interface TransactionResultsType extends EObject{
 	
 	/**
+	 * The handle used for the request. 
+	 * <p>
+	 * Adding this to maintain backwards compatability with wfs 1.0.0.
+	 * </p>
+	 * @return The handle given to the request.
+	 * 
+	 * @model
+	 */
+	String getHandle();
+	
+	/**
 	 * Returns the value of the '<em><b>Action</b></em>' containment reference list.
 	 * The list contents are of type {@link net.opengis.wfs.ActionType}.
 	 * <!-- begin-user-doc -->
