@@ -26,11 +26,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
-			<artifactId>net.opengis.wfs-1.0.0</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geoserver</groupId>
-			<artifactId>net.opengis.wfs-1.1.0</artifactId>
+			<artifactId>net.opengis.wfs</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
