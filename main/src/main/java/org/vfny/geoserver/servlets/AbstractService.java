@@ -747,6 +747,8 @@ public abstract class AbstractService extends HttpServlet
             theStrategy = (ServiceStrategy) context.getBean("bufferServiceStrategy");
         }
 
+        // clone the strategy since at the moment the strategies are marked as singletons
+        // in the web.xml file.
         try {
         	theStrategy = (ServiceStrategy) theStrategy.clone();
         } catch(CloneNotSupportedException e) {
