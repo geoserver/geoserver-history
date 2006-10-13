@@ -47,7 +47,7 @@
   	 class="org.geotools.catalog.postgis.PostGISServiceFactory"/>
   	 
   <!-- controller which dispatches to ows services -->
-  <bean id="dispatcher" class="org.geoserver.ows.http.Dispatcher"/>
+  <bean id="dispatcher" class="org.geoserver.ows.http.OWSDispatcher"/>
   	
   <!-- interceptor which initializes ows services -->
   <bean id="owsInitializer" class="org.geoserver.ows.http.OWSInitializer"/>
