@@ -2,20 +2,31 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
+	<!-- factories -->
+	<bean id="filterFactory" class="org.geotools.filter.FilterFactoryImpl"/>
+
+	<!-- wfs configuration bean -->
 	<bean id="wfs" class="org.geoserver.wfs.WFS">
 		<property name="citeConformanceHacks" value="true" />
+	</bean>
+	
+	<!-- wfs service -->
+	<bean id="wfsService" class="org.geoserver.wfs.WebFeatureService">
+		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
+		<property name="filterFactory" ref="filterFactory"/>
 	</bean>
 	
 	<!-- service descriptors -->
 	<bean id="wfsService-1.0.0" class="org.geoserver.ows.Service">
 		<constructor-arg index="0" value="wfs"/>
-		<constructor-arg index="1" ref="wfs"/>
+		<constructor-arg index="1" ref="wfsService"/>
 		<constructor-arg index="2" value="1.0.0"/>
 	</bean>
 	
 	<bean id="wfsService-1.1.0" class="org.geoserver.ows.Service">
 		<constructor-arg index="0" value="wfs"/>
-		<constructor-arg index="1" ref="wfs"/>
+		<constructor-arg index="1" ref="wfsService"/>
 		<constructor-arg index="2" value="1.1.0"/>
 	</bean>
 	
@@ -35,112 +46,6 @@
 		<constructor-arg ref="catalog"/>
 	</bean>
 	
-	
-	<!-- version 1.0.0 operations -->
-	<bean id="getCapabilities-1.0.0" class="org.geoserver.wfs.GetCapabilities"
-		singleton="false">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
-	</bean>
-	<bean id="describeFeatureType-1.0.0" class="org.geoserver.wfs.DescribeFeatureType"
-		singleton="false">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
-	</bean>
-	<bean id="getFeature-1.0.0" class="org.geoserver.wfs.GetFeature" singleton="false">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
-		<property name="filterFactory" ref="filterFactory"/>
-	</bean>
-	<bean id="lockFeature-1.0.0" class="org.geoserver.wfs.LockFeature" singleton="false">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
-		<property name="filterFactory" ref="filterFactory"/>
-	</bean>
-	<bean id="transaction-1.0.0" class="org.geoserver.wfs.Transaction" 
-		singleton="false">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
-		<property name="filterFactory" ref="filterFactory"/>
-	</bean>
-	<bean id="releaseLockOperation" class="org.geoserver.ows.Operation">
-		<!-- this operaiton is only for testing, and should not be released -->
-		<constructor-arg index="0" value="Release"/>
-		<constructor-arg ref="wfsService-1.0.0"/>
-		<constructor-arg ref="lockFeature-1.0.0"/>
-	</bean>
-	
-	<!-- version 1.0.0 operation descriptors -->
-	<bean id="getCapabilitiesOperation-1.0.0" 
-		class="org.geoserver.ows.Operation" singleton="false">
-		<constructor-arg index="0" value="GetCapabilities"/>
-		<constructor-arg index="1" ref="wfsService-1.0.0"/>
-		<constructor-arg index="2" ref="getCapabilities-1.0.0"/>
-	</bean>
-	<bean id="describeFeatureTypesOperation-1.0.0" 
-		class="org.geoserver.ows.Operation" singleton="false">
-		<constructor-arg index="0" value="DescribeFeatureType"/>
-		<constructor-arg index="1" ref="wfsService-1.0.0"/>
-		<constructor-arg index="2" ref="describeFeatureType-1.0.0"/>
-	</bean>
-	<bean id="getFeatureOperation-1.0.0" 
-		class="org.geoserver.ows.Operation" singleton="false">
-		<constructor-arg index="0" value="GetFeature"/>
-		<constructor-arg index="1" ref="wfsService-1.0.0"/>
-		<constructor-arg index="2" ref="getFeature-1.0.0"/>
-	</bean>
-	<bean id="getFeatureWithLockOperation-1.0.0" 
-		class="org.geoserver.ows.Operation" singleton="false">
-		<constructor-arg index="0" value="GetFeatureWithLock"/>
-		<constructor-arg index="1" ref="wfsService-1.0.0"/>
-		<constructor-arg index="2" ref="getFeature-1.0.0"/>
-	</bean>
-	<bean id="lockFeatureOperation-1.0.0" 
-		class="org.geoserver.ows.Operation" singleton="false">
-		<constructor-arg index="0" value="LockFeature"/>
-		<constructor-arg index="1" ref="wfsService-1.0.0"/>
-		<constructor-arg index="2" ref="lockFeature-1.0.0"/>
-	</bean>
-	<bean id="transactionOperation-1.0.0"
-		class="org.geoserver.ows.Operation" singleton="false">
-		<constructor-arg index="0" value="Transaction"/>
-		<constructor-arg index="1" ref="wfsService-1.0.0"/>
-		<constructor-arg index="2" ref="transaction-1.0.0"/>
-	</bean>
-	
-	<!-- version 1.1.0 operations -->
-	<bean id="getCapabilities-1.1.0" class="org.geoserver.wfs.v1_1_0.GetCapabilities">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
-	</bean>
-	<bean id="describeFeatureType-1.1.0" class="org.geoserver.wfs.v1_1_0.DescribeFeatureType">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
-	</bean>
-	<bean id="getFeature-1.1.0" class="org.geoserver.wfs.v1_1_0.GetFeature" singleton="false">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
-	</bean>
-	
-	<!-- version 1.1.0 operation descriptors -->
-	<bean id="getCapabilitiesOperation-1.1.0" 
-		class="org.geoserver.ows.Operation" singleton="false">
-		<constructor-arg index="0" value="GetCapabilities"/>
-		<constructor-arg index="1" ref="wfsService-1.1.0"/>
-		<constructor-arg index="2" ref="getCapabilities-1.1.0"/>
-	</bean>
-	<bean id="describeFeatureTypeOperation-1.1.0" 
-		class="org.geoserver.ows.Operation" singleton="false">
-		<constructor-arg index="0" value="DescribeFeatureType"/>
-		<constructor-arg index="1" ref="wfsService-1.1.0"/>
-		<constructor-arg index="2" ref="describeFeatureType-1.1.0"/>
-	</bean>
-	<bean id="getFeatureOperation-1.1.0" 
-		class="org.geoserver.ows.Operation" singleton="false">
-		<constructor-arg index="0" value="GetFeature"/>
-		<constructor-arg index="1" ref="wfsService-1.1.0"/>
-		<constructor-arg index="2" ref="getFeature-1.1.0"/>
-	</bean>
 	
 	<!-- responses -->
 	<bean id="getCapabilitiesResponse"
@@ -174,25 +79,45 @@
 		</property>
 	</bean>
 	
-	<!-- factories -->
-	<bean id="filterFactory" class="org.geotools.filter.FilterFactoryImpl"/>
 	
-	<!-- http protocol bindings -->
-	<bean id="typeNameKvpReader" class="org.geoserver.wfs.http.TypeNameKvpReader">
+	<!-- kvp parsers -->
+	<bean id="typeNameKvpParser" class="org.geoserver.wfs.http.TypeNameKvpReader">
 		<constructor-arg ref="catalog"/>
 	</bean>
-	<bean id="featureIdKvpReader" class="org.geoserver.wfs.http.FeatureIdKvpReader"/>
-	<bean id="bboxKvpReader" class="org.geoserver.wfs.http.BBoxKvpReader"/>
-	<bean id="filterKvpReader" class="org.geoserver.wfs.http.FilterKvpReader"/>
-	<bean id="propertyNameKvpReader" class="org.geoserver.wfs.http.PropertyNameKvpReader">
+	<bean id="featureIdKvpParser" class="org.geoserver.wfs.http.FeatureIdKvpReader"/>
+	<bean id="bboxKvpParser" class="org.geoserver.wfs.http.BBoxKvpReader"/>
+	<bean id="filterKvpParser" class="org.geoserver.wfs.http.FilterKvpReader"/>
+	<bean id="propertyNameKvpParser" class="org.geoserver.wfs.http.PropertyNameKvpReader">
 		<constructor-arg ref="filterFactory"/>
 	</bean>
-	<bean id="maxFeatureKvpReader" class="org.geoserver.wfs.http.MaxFeaturesKvpReader"/>
-	<bean id="srsNameFeatureKvpReader" class="org.geoserver.wfs.http.SrsNameKvpReader"/>
-	<bean id="sortByKvpReader" class="org.geoserver.wfs.http.SortByKvpReader">
+	<bean id="maxFeatureKvpParser" class="org.geoserver.wfs.http.MaxFeaturesKvpReader"/>
+	<bean id="srsNameFeatureKvpParser" class="org.geoserver.wfs.http.SrsNameKvpReader"/>
+	<bean id="sortByKvpParser" class="org.geoserver.wfs.http.SortByKvpReader">
 		<constructor-arg ref="filterFactory"/>
 	</bean>
-	<bean id="expiryKvpReader" class="org.geoserver.wfs.http.ExpiryKvpReader"/>
+	<bean id="expiryKvpParser" class="org.geoserver.wfs.http.ExpiryKvpReader"/>
+	
+	<!-- kvp request readers -->
+	<bean id="describeFeatureTypeKvpReader" 
+		class="org.geoserver.wfs.http.DescribeFeatureTypeKvpRequestReader"/>
+
+	<bean id="getFeatureKvpReader" class="org.geoserver.wfs.http.GetFeatureKvpRequestReader">
+		<constructor-arg value="net.opengis.wfs.GetFeatureType"/>
+		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="filterFactory"/>
+	</bean>
+	<bean id="getFeatureWithLockKvpReader" class="org.geoserver.wfs.http.GetFeatureKvpRequestReader">
+		<constructor-arg value="net.opengis.wfs.GetFeatureWithLockType"/>
+		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="filterFactory"/>
+	</bean>
+	<bean id="lockFeatureKvpReader" class="org.geoserver.wfs.http.WFSKvpRequestReader">
+		<constructor-arg value="net.opengis.wfs.LockFeatureType"/>
+	</bean>
+	<bean id="transactionKvpReader" class="org.geoserver.wfs.http.WFSKvpRequestReader">
+		<constructor-arg value="net.opengis.wfs.TransactionType"/>
+	</bean>
+	<bean id="releaseLockKvpReader" class="org.geoserver.wfs.http.ReleaseLockKvpRequestReader"/>
 	
 	<!-- 1.0 xml readers -->
 	<bean id="getCapabilitiesXmlReader"
