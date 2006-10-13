@@ -25,7 +25,7 @@ public class EMFUtils {
 	 * @return <code>true</code> if the property exists, otherwise <code>false</code.
 	 */
 	public static boolean has( EObject eobject, String property ) {
-		return eobject.eClass().getEStructuralFeature( property ) != null;
+		return feature( eobject, property ) != null;
 	}
 	
 	/**
@@ -36,7 +36,7 @@ public class EMFUtils {
 	 * @param value The value of the property.
 	 */
 	public static void set( EObject eobject, String property, Object value ) {
-		EStructuralFeature feature = eobject.eClass().getEStructuralFeature( property );
+		EStructuralFeature feature = feature( eobject, property );
 		eobject.eSet( feature, value );
 	}
 	
@@ -49,8 +49,33 @@ public class EMFUtils {
 	 * @return The value of the property.
 	 */
 	public static Object get( EObject eobject, String property ) {
-		EStructuralFeature feature = eobject.eClass().getEStructuralFeature( property );
+		EStructuralFeature feature = feature( eobject, property );
 		return eobject.eGet( feature );
+	}
+	
+	/**
+	 * Method which looks up a structure feature of an eobject, first doing 
+	 * an exact name match, then a case insensitive one.
+	 * 
+	 * @param eobject The eobject.
+	 * @param property The property
+	 * 
+	 * @return The structure feature, or <code>null</code> if not found.
+	 */
+	private static EStructuralFeature feature( EObject eobject, String property ) {
+		EStructuralFeature feature = eobject.eClass().getEStructuralFeature( property );
+		if ( feature != null ) 
+			return feature;
+		
+		//do a case insentive check
+		for ( Iterator itr = eobject.eClass().getEStructuralFeatures().iterator(); itr.hasNext(); ) {
+			feature = (EStructuralFeature) itr.next();
+			if ( feature.getName().equalsIgnoreCase( property ) ) {
+				return feature;
+			}
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -105,7 +130,7 @@ public class EMFUtils {
 		List values = new ArrayList();
 		for ( int i = 0; i < objects.size(); i++ ) {
 			EObject eobject = (EObject) objects.get( i );
-			EStructuralFeature feature = eobject.eClass().getEStructuralFeature( property );
+			EStructuralFeature feature = feature( eobject, property );
 			
 			values.add( eobject.eGet( feature ) );
 		}
@@ -124,7 +149,7 @@ public class EMFUtils {
 	 */
 	public static boolean isSet( EObject eobject, String property ) {
 	
-		EStructuralFeature feature = eobject.eClass().getEStructuralFeature( property );
+		EStructuralFeature feature = feature( eobject, property );
 		return eobject.eIsSet( feature );
 	
 	}
