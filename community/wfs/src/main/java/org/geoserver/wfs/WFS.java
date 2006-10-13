@@ -47,6 +47,10 @@ public class WFS extends OWS {
     private boolean citeConformanceHacks;
     private boolean featureBounding;
 
+    public WFS() {
+    	super( "wfs" );
+    }
+    
    /**
      * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
      * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
