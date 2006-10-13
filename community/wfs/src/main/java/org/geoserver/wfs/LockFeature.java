@@ -12,9 +12,10 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.AllSomeType;
+import net.opengis.wfs.LockFeatureResponseType;
+import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
-import net.opengis.wfs.WFSFactory;
-import net.opengis.wfs.WFSLockFeatureResponseType;
+import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.DataStoreInfo;
@@ -63,28 +64,6 @@ public class LockFeature {
 	GeoServerCatalog catalog;
 	
 	/**
-	 * List of locks
-	 */
-	List lock;
-	/**
-	 * Locking release action
-	 */
-	AllSomeType lockAction;
-	/**
-	 * The handle
-	 */
-	String handle;
-	/** 
-	 * The time to hold the lock for 
-	 * */
-    BigInteger expiry;
-    
-    /**
-     * Lock id, used for release lock operation
-     */
-    String lockId;
-    
-    /**
      * Filter factory
      */
 	FilterFactory filterFactory;
@@ -102,56 +81,21 @@ public class LockFeature {
     public void setFilterFactory(FilterFactory filterFactory) {
 		this.filterFactory = filterFactory;
 	}
-    
-	public void setLock(List lock) {
-		this.lock = lock;
-	}
-	
-	public List getLock() {
-		return lock;
-	}
-	
-	public void setLockAction(AllSomeType lockAction) {
-		this.lockAction = lockAction;
-	}
-	
-	public AllSomeType getLockAction() {
-		return lockAction;
-	}
-	
-	public void setHandle(String handle) {
-		this.handle = handle;
-	}
-	
-	public String getHandle() {
-		return handle;
-	}
-	
-	public void setExpiry(BigInteger expiry) {
-		this.expiry = expiry;
-	}
-	public BigInteger getExpiry() {
-		return expiry;
-	}
-	
-	public WFSLockFeatureResponseType lockFeature() throws WFSException {
+  
+	public LockFeatureResponseType lockFeature( LockFeatureType request ) throws WFSException {
 	
 		//get the locks
-		List locks = getLock();
+		List locks = request.getLock();
         if ( locks == null || locks.isEmpty() ) {
         	String msg = "A LockFeature request must contain at least one LOCK element";
             throw new WFSException( msg );
         }
 
         //should we releas all? if not set default to true
-        boolean lockAll = !( getLockAction() == AllSomeType.SOME_LITERAL ); 
+        boolean lockAll = !( request.getLockAction() == AllSomeType.SOME_LITERAL ); 
         
         //create a new lock
-        FeatureLock fLock = newFeatureLock();
-        
-//        Set lockedFids = new HashSet();
-//        Set lockFailedFids = new HashSet();
-        
+        FeatureLock fLock = newFeatureLock( request );
         
         LOGGER.info("locks size is " + locks.size());
 
@@ -159,8 +103,10 @@ public class LockFeature {
         	throw new WFSException( "Request contains no locks." );
         }
 
-        WFSLockFeatureResponseType response = WFSFactory.eINSTANCE.createWFSLockFeatureResponseType();
+        LockFeatureResponseType response = WfsFactory.eINSTANCE.createLockFeatureResponseType();
         response.setLockId( fLock.getAuthorization() );
+        response.setFeaturesLocked( WfsFactory.eINSTANCE.createFeaturesLockedType() );
+        response.setFeaturesNotLocked( WfsFactory.eINSTANCE.createFeaturesNotLockedType() );
         
         for (int i = 0, n = locks.size(); i < n; i++) {
         	LockType lock = (LockType) locks.get( i );
@@ -195,7 +141,7 @@ public class LockFeature {
                         LOGGER.fine("Lock " + fid +
                                 " not supported by data store (authID:"
                                 + fLock.getAuthorization() + ")");
-                        response.getFeaturesNotLocked().add( fid );
+                        response.getFeaturesNotLocked().getFeatureId().add( fid );
                         //lockFailedFids.add(fid);
                     }
                     else {
@@ -213,12 +159,12 @@ public class LockFeature {
 
                         if (numberLocked == 1) {
                             LOGGER.fine("Lock " + fid + " (authID:" + fLock.getAuthorization() + ")");
-                            response.getFeaturesLocked().add( fid );
+                            response.getFeaturesLocked().getFeatureId().add( fid );
                             //lockedFids.add(fid);
                         } 
                         else if (numberLocked == 0) {
                             LOGGER.fine("Lock " + fid + " conflict (authID:" + fLock.getAuthorization() + ")");
-                            response.getFeaturesNotLocked().add( fid );
+                            response.getFeaturesNotLocked().getFeatureId().add( fid );
                             //lockFailedFids.add(fid);
                         } 
                         else {
@@ -226,7 +172,7 @@ public class LockFeature {
                         		"Lock " + numberLocked + " " + fid + " (authID:" + 
                         		fLock.getAuthorization() + ") duplicated FeatureID!"
                     		);
-                            response.getFeaturesLocked().add( fid );
+                            response.getFeaturesLocked().getFeatureId().add( fid );
                             //lockedFids.add(fid);
                         }
                     }
@@ -256,7 +202,7 @@ public class LockFeature {
                 }
             }
             
-            if (!response.getFeaturesLocked().isEmpty()) {
+            if (!response.getFeaturesLocked().getFeatureId().isEmpty()) {
             	//JD: Why is this necessary, arent the features already locked?
                 Transaction t = new DefaultTransaction();
 
@@ -275,7 +221,7 @@ public class LockFeature {
         }
 
         //if (lockAll && !lockFailedFids.isEmpty()) {
-        if ( lockAll && !response.getFeaturesNotLocked().isEmpty() ) {
+        if ( lockAll && !response.getFeaturesNotLocked().getFeatureId().isEmpty() ) {
             // I think we need to release and fail when lockAll fails
             //
             // abort will release the locks
@@ -285,91 +231,68 @@ public class LockFeature {
         return response;
     }
 	
-	public void setLockId(String lockId) {
-		this.lockId = lockId;
-	}
-	
-	public void release() throws WFSException {
-		if ( lockId == null )
-			return;
-		
-		try {
-			lockRelease();
-		} 
-		catch (Exception e) {
-			throw new WFSException( e );
-		}
-	}
-	
-	public void releaseAll() throws WFSException {
-		try {
-			lockReleaseAll();
-		} 
-		catch (Exception e) {
-			throw new WFSException( e );
-		}
-	}
-	
-	  /**
+	/**
      * Release lock by authorization
      *
      * @param lockID
      */
-    private void lockRelease() throws Exception {
-    	if ( lockId == null ) 
-    		return;
-    	
-        boolean refresh = false;
+	public void release( String lockId ) throws WFSException {
+		try {
+			boolean refresh = false;
 
-        List dataStores = catalog.dataStores();
-        for (Iterator i = dataStores.iterator(); i.hasNext();) {
-            DataStoreInfo meta = (DataStoreInfo) i.next();
+	        List dataStores = catalog.dataStores();
+	        for (Iterator i = dataStores.iterator(); i.hasNext();) {
+	            DataStoreInfo meta = (DataStoreInfo) i.next();
 
-            if (!meta.isEnabled()) {
-                continue; // disabled
-            }
+	            if (!meta.isEnabled()) {
+	                continue; // disabled
+	            }
 
-            DataStore dataStore;
+	            DataStore dataStore;
 
-            try {
-                dataStore = meta.getDataStore();
-            } catch (IllegalStateException notAvailable) {
-                continue; // not available
-            }
+	            try {
+	                dataStore = meta.getDataStore();
+	            } catch (IllegalStateException notAvailable) {
+	                continue; // not available
+	            }
 
-            LockingManager lockingManager = dataStore.getLockingManager();
+	            LockingManager lockingManager = dataStore.getLockingManager();
 
-            if (lockingManager == null) {
-                continue; // locks not supported
-            }
+	            if (lockingManager == null) {
+	                continue; // locks not supported
+	            }
 
-            org.geotools.data.Transaction t = 
-            	new DefaultTransaction("Refresh " + meta.getNamespacePrefix() );
+	            org.geotools.data.Transaction t = 
+	            	new DefaultTransaction("Refresh " + meta.getNamespacePrefix() );
 
-            try {
-                t.addAuthorization(lockId);
+	            try {
+	                t.addAuthorization(lockId);
 
-                if (lockingManager.release(lockId, t)) {
-                    refresh = true;
-                }
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, e.getMessage(), e);
-            } finally {
-                try {
-                    t.close();
-                } catch (IOException closeException) {
-                    LOGGER.log(Level.FINEST, closeException.getMessage(),
-                        closeException);
-                }
-            }
-        }
+	                if (lockingManager.release(lockId, t)) {
+	                    refresh = true;
+	                }
+	            } catch (IOException e) {
+	                LOGGER.log(Level.WARNING, e.getMessage(), e);
+	            } finally {
+	                try {
+	                    t.close();
+	                } catch (IOException closeException) {
+	                    LOGGER.log(Level.FINEST, closeException.getMessage(),
+	                        closeException);
+	                }
+	            }
+	        }
 
-        if (!refresh) {
-            // throw exception? or ignore...
-        }
-    }
-    
-    /**
+	        if (!refresh) {
+	            // throw exception? or ignore...
+	        }
+		} 
+		catch (Exception e) {
+			throw new WFSException( e );
+		}
+	}
+	
+	/**
      * Release all feature locks currently held.
      * 
      * <p>
@@ -379,177 +302,165 @@ public class LockFeature {
      *
      * @return Number of locks released
      */
-    private int lockReleaseAll() throws Exception {
-        int count = 0;
+	public void releaseAll() throws WFSException {
+		try {
+			
+			List dataStores = catalog.dataStores();
+	        for (Iterator i = dataStores.iterator(); i.hasNext();) {
+	            DataStoreInfo meta = (DataStoreInfo) i.next();
 
-        List dataStores = catalog.dataStores();
-        for (Iterator i = dataStores.iterator(); i.hasNext();) {
-            DataStoreInfo meta = (DataStoreInfo) i.next();
+	            if (!meta.isEnabled()) {
+	                continue; // disabled
+	            }
 
-            if (!meta.isEnabled()) {
-                continue; // disabled
-            }
+	            DataStore dataStore;
 
-            DataStore dataStore;
+	            try {
+	                dataStore = meta.getDataStore();
+	            } catch (IllegalStateException notAvailable) {
+	                continue; // not available
+	            } catch (Throwable huh) {
+	                continue; // not even working
+	            }
 
-            try {
-                dataStore = meta.getDataStore();
-            } catch (IllegalStateException notAvailable) {
-                continue; // not available
-            } catch (Throwable huh) {
-                continue; // not even working
-            }
+	            LockingManager lockingManager = dataStore.getLockingManager();
 
-            LockingManager lockingManager = dataStore.getLockingManager();
+	            if (lockingManager == null) {
+	                continue; // locks not supported
+	            }
 
-            if (lockingManager == null) {
-                continue; // locks not supported
-            }
-
-            // TODO: implement LockingManger.releaseAll()
-            //count += lockingManager.releaseAll();            
-        }
-
-        return count;
-    }
-
-    public boolean exists() throws WFSException {
-    	try {
-			return lockExists();
+	            // TODO: implement LockingManger.releaseAll()
+	            //count += lockingManager.releaseAll();            
+	        }
 		} 
-    	catch (Exception e) {
-    		throw new WFSException( e );
+		catch (Exception e) {
+			throw new WFSException( e );
 		}
-    
-    }
-    
-    private boolean lockExists() throws Exception {
-    	if ( lockId == null ) 
-    		return false;
-    	
-    	List dataStores = catalog.dataStores();
-		
-    	for (Iterator i = dataStores.iterator(); i.hasNext();) {
-            DataStoreInfo meta = (DataStoreInfo) i.next();
-
-            if (!meta.isEnabled()) {
-                continue; // disabled
-            }
-
-            DataStore dataStore;
-
-            try {
-                dataStore = meta.getDataStore();
-            } catch (IllegalStateException notAvailable) {
-                continue; // not available
-            }
-
-            LockingManager lockingManager = dataStore.getLockingManager();
-
-            if (lockingManager == null) {
-                continue; // locks not supported
-            }
-            
-            if (lockingManager.exists(lockId)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    
-    public void refresh() throws WFSException {
+	}
+	
+	
+	public boolean exists( String lockId ) throws WFSException {
     	try {
-			lockRefresh();
-		} 
-    	catch (Exception e) {
-    		throw new WFSException( e );
-		}
-    }
-    
-    private void lockRefresh() throws Exception {
-    	if ( lockId == null ) 
-    		return;
-    	
-    	boolean refresh = false;
+    		List dataStores = catalog.dataStores();
+    		
+        	for (Iterator i = dataStores.iterator(); i.hasNext();) {
+                DataStoreInfo meta = (DataStoreInfo) i.next();
 
-        List dataStores = catalog.dataStores();
-        for (Iterator i = dataStores.iterator(); i.hasNext();) {
-            DataStoreInfo meta = (DataStoreInfo) i.next();
-
-            if (!meta.isEnabled()) {
-                continue; // disabled
-            }
-
-            DataStore dataStore;
-
-            try {
-                dataStore = meta.getDataStore();
-            } catch (IllegalStateException notAvailable) {
-                continue; // not available
-            }
-
-            LockingManager lockingManager = dataStore.getLockingManager();
-
-            if (lockingManager == null) {
-                continue; // locks not supported
-            }
-
-            org.geotools.data.Transaction t = 
-            	new DefaultTransaction("Refresh " + meta.getNamespacePrefix());
-
-            try {
-                t.addAuthorization( lockId );
-
-                if (lockingManager.refresh( lockId , t)) {
-                    refresh = true;
+                if (!meta.isEnabled()) {
+                    continue; // disabled
                 }
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, e.getMessage(), e);
-            } finally {
+
+                DataStore dataStore;
+
                 try {
-                    t.close();
-                } catch (IOException closeException) {
-                    LOGGER.log(Level.FINEST, closeException.getMessage(),
-                        closeException);
+                    dataStore = meta.getDataStore();
+                } catch (IllegalStateException notAvailable) {
+                    continue; // not available
+                }
+
+                LockingManager lockingManager = dataStore.getLockingManager();
+
+                if (lockingManager == null) {
+                    continue; // locks not supported
+                }
+                
+                if (lockingManager.exists(lockId)) {
+                    return true;
                 }
             }
-        }
 
-        if (!refresh) {
-            // throw exception? or ignore...
-        }
+            return false;
+		} 
+    	catch (Exception e) {
+    		throw new WFSException( e );
+		}
+    
     }
     
-	private FeatureId fid( String fid ) {
+    public void refresh( String lockId ) throws WFSException {
+    	try {
+    		boolean refresh = false;
+
+            List dataStores = catalog.dataStores();
+            for (Iterator i = dataStores.iterator(); i.hasNext();) {
+                DataStoreInfo meta = (DataStoreInfo) i.next();
+
+                if (!meta.isEnabled()) {
+                    continue; // disabled
+                }
+
+                DataStore dataStore;
+
+                try {
+                    dataStore = meta.getDataStore();
+                } catch (IllegalStateException notAvailable) {
+                    continue; // not available
+                }
+
+                LockingManager lockingManager = dataStore.getLockingManager();
+
+                if (lockingManager == null) {
+                    continue; // locks not supported
+                }
+
+                org.geotools.data.Transaction t = 
+                	new DefaultTransaction("Refresh " + meta.getNamespacePrefix());
+
+                try {
+                    t.addAuthorization( lockId );
+
+                    if (lockingManager.refresh( lockId , t)) {
+                        refresh = true;
+                    }
+                } catch (IOException e) {
+                    LOGGER.log(Level.WARNING, e.getMessage(), e);
+                } finally {
+                    try {
+                        t.close();
+                    } catch (IOException closeException) {
+                        LOGGER.log(Level.FINEST, closeException.getMessage(),
+                            closeException);
+                    }
+                }
+            }
+
+            if (!refresh) {
+                // throw exception? or ignore...
+            }
+		} 
+    	catch (Exception e) {
+    		throw new WFSException( e );
+		}
+    }
+    
+   private FeatureId fid( String fid ) {
 		Set fids = new HashSet();
 		fids.add( fid );
 		
 		return filterFactory.featureId( fids );
 	}
 	
-	protected FeatureLock newFeatureLock() {
+	protected FeatureLock newFeatureLock( LockFeatureType request ) {
 	      
-        if ((handle == null) || (handle.length() == 0))	 {
-            handle = "GeoServer";
+		if ( request.getHandle() == null || request.getHandle().equals( "" ) ) {
+			request.setHandle( "GeoServer" );
+		}
+        if ( request.getExpiry() == null ) {
+        	request.setExpiry( BigInteger.valueOf( 0 ) );
         }
 
-        if ( expiry == null ) {
-        	expiry = BigInteger.valueOf( 0 );
-        }
-        	
-        int lockExpiry = expiry.intValue();
+        int lockExpiry = request.getExpiry().intValue();
         if (lockExpiry < 0) {
             // negative time used to query if lock is available!
-            return FeatureLockFactory.generate(handle, lockExpiry);
+            return FeatureLockFactory.generate( request.getHandle(), lockExpiry );
         }
 
         if (lockExpiry == 0) {
             // perma lock with no expiry!
-            return FeatureLockFactory.generate(handle, 0);
+            return FeatureLockFactory.generate( request.getHandle(), 0 );
         }
 
         // FeatureLock is specified in seconds
-        return FeatureLockFactory.generate(handle, lockExpiry * 60 * 1000);
+        return FeatureLockFactory.generate(request.getHandle(), lockExpiry * 60 * 1000);
     }
 }

@@ -12,6 +12,8 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.DescribeFeatureTypeType;
+
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.xml.sax.helpers.NamespaceSupport;
@@ -38,15 +40,6 @@ public class DescribeFeatureType {
 	 */
     private WFS wfs;
     
-    /**
-     * the output format
-     */
-    private String outputFormat;
-    /**
-     * requested type names
-     */
-    private List typeName;
-    
     public DescribeFeatureType( WFS wfs, GeoServerCatalog catalog ) {
 		this.catalog = catalog;
 		this.wfs = wfs;
@@ -68,33 +61,10 @@ public class DescribeFeatureType {
 		this.catalog = catalog;
 	}
     
-    public void setOutputFormat(String outputFormat) {
-		this.outputFormat = outputFormat;
-	}
+    public FeatureTypeInfo[] describeFeatureType( DescribeFeatureTypeType request ) throws WFSException {
     
-    public String getOutputFormat() {
-		return outputFormat;
-	}
-    
-    public void setTypeName(List typeName) {
-		this.typeName = typeName;
-	}
-
-    public List getTypeName() {
-    	return typeName;
-	}
-    
-    public FeatureTypeInfo[] describeFeatureType() throws WFSException {
-    
-    	//some initial sanity
-    	if ( getTypeName() == null ) {
-    		setTypeName( Collections.EMPTY_LIST );
-    	}
-    	if ( getOutputFormat() == null ) {
-    		setOutputFormat( "XMLSCHEMA" );
-    	}
     	
-		List names = new ArrayList( getTypeName() );
+		List names = new ArrayList( request.getTypeName() );
 		
 		try {
 			//list of catalog handles

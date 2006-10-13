@@ -19,10 +19,11 @@ import javax.xml.namespace.QName;
 
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.GetFeatureWithLockType;
+import net.opengis.wfs.LockFeatureResponseType;
+import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
-import net.opengis.wfs.WFSFactory;
-import net.opengis.wfs.WFSLockFeatureResponseType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsFactory;
 
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -70,36 +71,12 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Rob Hranac, TOPP
  * @version $Id$
  */
-public class GetFeature implements ApplicationContextAware {
+public class GetFeature {
 	
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
-    /** The model factory */
-    protected EFactory factory;
-    
-    /** The time to hold the lock for */
-    protected BigInteger expiry;
-
-    /** The max features */
-    protected BigInteger maxFeatures;
-
-    /** The well known name given to the query */
-    protected String handle;
-    
-    /** The output format of the response */
-    protected String outputFormat = "GML2";
-    
-    /** feature id filters */
-    protected List featureId;
-    
-    /** bounding box */
-    protected Envelope bbox;
-   
-    /** queries */
-    protected List query;
-    
     /** The catalog */
     protected GeoServerCatalog catalog;
     
@@ -108,27 +85,14 @@ public class GetFeature implements ApplicationContextAware {
     
     /** filter factory */
     protected FilterFactory filterFactory;
-    
-    /** Spring application context */
-    protected ApplicationContext applicationContext;
-    
+   
     /**
      * Creates the GetFeature operation.
      * 
      */
     public GetFeature( WFS wfs, GeoServerCatalog catalog) {
-		this( wfs, catalog, WFSFactory.eINSTANCE );
-    }
-    
-    /**
-     * Creates the GetFeature operation supplied the efactory used to create
-     * model objects.
-     * 
-     */
-    public GetFeature( WFS wfs, GeoServerCatalog catalog, EFactory factory ) {
-    	this.wfs = wfs;
-    	this.catalog = catalog;
-    	this.factory = factory;
+		this.wfs = wfs;
+		this.catalog = catalog;
     }
     
     /**
@@ -155,273 +119,38 @@ public class GetFeature implements ApplicationContextAware {
 	}
     
     /**
-     * Sets the output format for this GetFeature request.
-     */
-    public void setOutputFormat(String outputFormat) {
-        this.outputFormat = outputFormat;
-    }
-
-    /**
-     * @return the output format for this GetFeature request.
-     */
-    public String getOutputFormat() {
-    	return outputFormat;
-	}
-
-    /**
-     * Sets the user-defined name for this request.
-     *
-     * @param handle The string to be used in reporting errors.
-     */
-    public void setHandle(String handle) {
-    	this.handle = handle;
-    }
-    
-    /**
-     * Returns the user-defined name for the entire GetFeature request.
-     *
-     * @return The string to use in error reporting with this request.
-     */
-    public String getHandle() {
-    	return handle;
-    }
-    
-    /**
-     * Sets the maximum number of features this request should return.
-     *
-     * @param maxFeatures The maximum number of features to return.
-     */
-    public void setMaxFeatures( BigInteger maxFeatures ) {
-        this.maxFeatures = maxFeatures;
-    }
-
-    /**
-     * Returns the maximum number of features for this request.
-     *
-     * @return Maximum number of features this request will return.
-     */
-    public BigInteger getMaxFeatures() {
-        return maxFeatures;
-    }
-
-   /**
-     * Sets the expiration of the locks (in minutes).
-     *
-     * @param expiry How many minutes till the lock should expire.
-     */
-    public void setExpiry( BigInteger expiry ) {
-		this.expiry = expiry;
-    }
-    
-    /**
-     * Gets the expiration of the locks (in minutes).
-     *
-     * @return How many minutes till the lock should expire.
-     */
-    public BigInteger getExpiry() {
-		return expiry;
-    }
-  
-    public void setTypeName(List typeName) throws WFSException {
-		querySet( "typeName", typeName );
-	}
-    
-    public void setFilter( List filter ) throws WFSException {
-		querySet( "filter", filter );
-	}
-    
-    public void setPropertyName(List propertyName) throws WFSException {
-		querySet( "propertyName", propertyName );
-	}
-    
-    public void setBBOX(Envelope bbox) {
-		this.bbox = bbox;
-	}
-    
-    public Envelope getBBOX() {
-		return bbox;
-	}
-    
-    public void setQuery( List query ) {
-    	this.query = query;
-    }
-    
-    protected void querySet( String property, List values ) throws WFSException {
-		
-    	//no values specified, do nothing
-    	if ( values == null ) 
-    		return;
-    	
-    	if ( query == null ) 
-			query = new ArrayList();
-		
-		int m = values.size();
-		int n = query.size();
-		
-		if ( m == 1 && n > 1 ) {
-			//apply single value to all queries
-			EMFUtils.set( query, property, values.get( 0 ) );
-			return;
-		}
-		
-		//match up sizes
-		if ( m > n ) {
-			
-			if ( n == 0 ) {
-				//make same size, with empty objects
-				for ( int i = 0; i < m; i++ ) {
-					query.add( query() );
-				}
-			}
-			else if ( n == 1 ) {
-				//clone single object up to 
-				EObject q = (EObject) query.get( 0 );
-				for ( int i = 1; i < m; i++ ) {
-					query.add( EMFUtils.clone( q, factory ) );
-				}
-				return;
-			}
-			else {
-				//illegal
-    			String msg = "Specified " + m + " " + property + " for " + n + " queries.";
-    			throw new WFSException( msg );	
-			}
-		}
-		
-		EMFUtils.set( query, property, values );
-	}
-    
-    protected EObject query() {
-    	return factory.create( WFSPackage.eINSTANCE.getQueryType() );
-    }
-    
-    /**
-     * Sets the application context.
-     * <p>
-     * This method is usually called by the spring container.
-     * </p>
-     */
-    public void setApplicationContext(ApplicationContext applicationContext) 
-    		throws BeansException {
-    		this.applicationContext = applicationContext;
-    }
-    
-    /**
      * Initializes a getFeature operation by reading the outputFormat and 
      * looking up the feature producer.
      * 
      * @return A GetFeatureResults object.
      */
-    protected GetFeatureResults init() throws ServiceException {
+    protected GetFeatureResults init( GetFeatureType request ) throws WFSException {
     	
-    	if ( query == null || query.isEmpty() ) {
-    		String msg = "No query specified";
-			throw new WFSException( msg );
-		}
-			
-		if ( EMFUtils.isUnset( query, "typeName" ) ) {
-			//no type names specified, try to infer from feature ids
-			if ( featureId != null ) {
-				ArrayList typeNames = new ArrayList();
-				TypeNameKvpReader reader = new TypeNameKvpReader( catalog );
-				for ( Iterator i = featureId.iterator(); i.hasNext(); ) {
-					String fid = (String) i.next();
-					int pos = fid.indexOf(".");
-	                if ( pos != -1 ) {
-                		String typeName = fid.substring( 0, fid.lastIndexOf( "." ) );
-                		typeNames.add( reader.qName( typeName ) );
-	                }
-				}
-				
-				EMFUtils.set( query, "typeName", typeNames );
-			}
+    	List queries = request.getQuery();
+    	
+    	if ( queries.isEmpty() ) {
+    		throw new WFSException( "No query specified" );
 		}
 		
-		if ( EMFUtils.isUnset( query, "typeName") ) {
+		if ( EMFUtils.isUnset( queries, "typeName") ) {
 			String msg = "No feature types specified";
 			throw new WFSException( msg );
 		}
 		
-		//make sure not both featureid and filter specified
-		if ( featureId != null && EMFUtils.isSet( query, "filter" ) ) {
-			String msg = "featureid and filter both specified but are mutually exclusive";
-			throw new WFSException( msg );
-		}
-		//make sure not both featureid and bbox specified
-		if ( featureId != null && bbox != null ) {
-			String msg = "featureid and bbox both specified but are mutually exclusive";
-			throw new WFSException( msg );
-		}
-		//make sure not both filter and bbox specified
-		if ( bbox != null && EMFUtils.isSet( query, "filter") ) {
-			String msg = "bbox and filter both specified but are mutually exclusive";
-			throw new WFSException( msg );
-		}
-		
-		if ( featureId != null ) {
-			//set filters to fids
-			List filters = new ArrayList();
-			
-			for ( Iterator i = featureId.iterator(); i.hasNext(); ) {
-				String fid = (String) i.next();
-				Set fids = new HashSet();
-				fids.add( fid );
-				
-				FeatureId filter = filterFactory.featureId( fids );
-				filters.add( filter );
-			}
-			
-			EMFUtils.set( query, "filter", filters );
-		}
-		
-		if ( bbox != null ) {
-			List filters = new ArrayList();
-			for ( Iterator q = query.iterator(); q.hasNext(); ) {
-				EObject query = (EObject) q.next();
-				QName typeName = (QName) EMFUtils.get( query, "typeName" );
-				
-				FeatureTypeInfo featureTypeInfo = null;
-				FeatureType featureType = null;
-				try {
-					featureTypeInfo = 
-						catalog.featureType( typeName.getPrefix(), typeName.getLocalPart() );
-					featureType = featureTypeInfo.featureType();
-				}
-				catch( IOException e ) {
-					String msg = "Unable to load feature type: " + typeName;
-					throw new WFSException( msg, e );
-				}
-				
-				String name = featureType.getDefaultGeometry().getName();
-				BBOX filter = filterFactory.bbox( 
-					name, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), null	
-				);
-				filters.add( filter );
-			}
-			
-			EMFUtils.set( query, "filter", filters );
-		}
-		
 		GetFeatureResults results = new GetFeatureResults();
-	    for ( Iterator q = query.iterator(); q.hasNext(); ) {
+	    for ( Iterator q = queries.iterator(); q.hasNext(); ) {
 	    	EObject query = (EObject) q.next();
     		results.addQuery( query( query ) );
 	    }
-	    
-		//look up an output format, default to GML
-	    String outputFormat = getOutputFormat();
-		if ( outputFormat == null ) {
-			//default to GML
-			outputFormat = "GML2";
-		}
-		
+	 
 	    return results;
     }
     
     protected Query query( EObject q ) {
 		Query query = new Query();
-    		
-        query.setTypeName( (QName) EMFUtils.get( q, "typeName" ) );
+    	List typeName = (List) EMFUtils.get( q, "typeName" );	
+		
+        query.setTypeName( (QName) typeName.get( 0 ) );
         
         List propertyNames = (List) EMFUtils.get( q, "propertyName" );
         for (int i = 0; i < propertyNames.size(); i++) {
@@ -458,27 +187,26 @@ public class GetFeature implements ApplicationContextAware {
      *       able to, we just need to get the reporting right, use the
      *       AllSameType function as  Describe does.
      */
-    public GetFeatureResults getFeature() throws ServiceException {
-    	GetFeatureResults results = init();
+    public GetFeatureResults getFeature( GetFeatureType request ) throws WFSException {
+    	GetFeatureResults results = init( request );
         
-		run( results );
+		run( request, results );
 		
 		return results;
     }
     
-    public GetFeatureResults getFeatureWithLock() throws ServiceException {
-		GetFeatureResults results = init();
+    public GetFeatureResults getFeatureWithLock( GetFeatureWithLockType request ) throws WFSException {
+		GetFeatureResults results = init( request );
 		results.setLocking( true );
 		
 		try {
-			run( results );	
+			run( request, results );	
 		}
 		catch( Exception e ) {
 			//free locks
-			LockFeature lockFeature = new LockFeature( wfs, catalog );
 			if ( results.getLockId() != null ) {
-				lockFeature.setLockId( results.getLockId() );
-				lockFeature.release();
+				LockFeature lockFeature = new LockFeature( wfs, catalog );
+				lockFeature.release( results.getLockId() );
 			}
 		
 			throw new WFSException( e );
@@ -487,7 +215,7 @@ public class GetFeature implements ApplicationContextAware {
 		return results;
     }
     
-    protected void run( GetFeatureResults results) throws ServiceException {
+    protected void run( GetFeatureType request, GetFeatureResults results ) throws WFSException {
     	
         // Optimization Idea
         //
@@ -509,11 +237,11 @@ public class GetFeature implements ApplicationContextAware {
         
         Query query;
         
-        int maxFeatures = Integer.MAX_VALUE;
-        if ( this.maxFeatures != null ) {
-    		maxFeatures = this.maxFeatures.intValue();
+        if ( request.getMaxFeatures() == null) {
+        	request.setMaxFeatures( BigInteger.valueOf( Integer.MAX_VALUE ) );
         }
-
+        int maxFeatures = request.getMaxFeatures().intValue();
+        
         Set lockedFids = new HashSet();
         Set lockFailedFids = new HashSet();
 
@@ -604,38 +332,40 @@ public class GetFeature implements ApplicationContextAware {
 						throw new WFSException( msg, e );
 					}
                 }
-                
                 //GR: I don't know if the featuresults should be added here for later
                 //encoding if it was a lock request. may be after ensuring the lock
                 //succeed?
                 results.addFeatures(meta, features);
-                if ( results.isLocking() ) {
+                if ( request instanceof GetFeatureWithLockType ) {
+                	GetFeatureWithLockType withLockRequest = (GetFeatureWithLockType) request;
+                	
+                	LockType lock = WfsFactory.eINSTANCE.createLockType();
+                	lock.setFilter( query.getFilter() );
+                	lock.setHandle( query.getHandle() );
+                	lock.setTypeName( query.getTypeName() );
+                	
+                	LockFeatureType lockRequest = WfsFactory.eINSTANCE.createLockFeatureType();
+                	lockRequest.setExpiry( withLockRequest.getExpiry() );
+                	lockRequest.setHandle( withLockRequest.getHandle() );
+                	lockRequest.setLockAction( AllSomeType.ALL_LITERAL );
+                	lockRequest.getLock().add( lock );
+                	
                 	LockFeature lockFeature = new LockFeature( wfs, catalog );
                 	lockFeature.setFilterFactory( filterFactory );
-                    lockFeature.setExpiry( expiry );
-                    lockFeature.setHandle( handle );
-                    lockFeature.setLockAction( AllSomeType.ALL_LITERAL );
-                    
-                	LockType lockType = WFSFactory.eINSTANCE.createLockType();
-                	lockType.setFilter( query.getFilter() );
-                	lockType.setHandle( query.getHandle() );
-                	lockType.setTypeName( query.getTypeName() );
                 	
-                	ArrayList lock = new ArrayList();
-                	lock.add( lockType );
-                	lockFeature.setLock( lock );
-                	
-                	WFSLockFeatureResponseType response = lockFeature.lockFeature();
+                	LockFeatureResponseType response = lockFeature.lockFeature( lockRequest );
                 	results.setLockId( response.getLockId() );
+                }
+                
+                if ( results.isLocking() ) {
+                	
 
                 }
             }
             
         } 
         catch (IOException e) {
-        		throw new ServiceException(
-    				"problem with FeatureResults", e, getHandle()
-        		);
+    		throw new WFSException( "problem with FeatureResults", e, request.getHandle() );
         } 
        
     }
@@ -653,20 +383,4 @@ public class GetFeature implements ApplicationContextAware {
         return meta;
     }
     
-    /**
-     * Standard override of toString()
-     *
-     * @return a String representation of this request.
-     */
-    public String toString() {
-        StringBuffer returnString = new StringBuffer("\nRequest");
-        returnString.append(": " + getHandle() );
-        returnString.append("\n output format:" + getOutputFormat() );
-        returnString.append("\n max features:" + getMaxFeatures() );
-        
-        returnString.append("\n queries: ");
-
-        return returnString.toString();
-    }
-
 }
