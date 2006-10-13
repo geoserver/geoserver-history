@@ -587,7 +587,7 @@ public abstract class AbstractService extends HttpServlet
 
             return;
         } catch (IOException ioException) { // strategyOutput error
-            LOGGER.log(Level.SEVERE, "Error writing out" + ioException.getMessage(), ioException);
+            LOGGER.log(Level.SEVERE, "Error writing out " + ioException.getMessage(), ioException);
             serviceResponse.abort(s);
             strategy.abort();
             sendError(request, response, ioException);
@@ -744,10 +744,16 @@ public abstract class AbstractService extends HttpServlet
 
         if (theStrategy == null) {
             // default to buffer
-            theStrategy = (ServiceStrategy) context
-                    .getBean("bufferServiceStrategy");
+            theStrategy = (ServiceStrategy) context.getBean("bufferServiceStrategy");
         }
 
+        try {
+        	theStrategy = (ServiceStrategy) theStrategy.clone();
+        } catch(CloneNotSupportedException e) {
+        	LOGGER.log(Level.SEVERE, "Programming error found, service strategies should be cloneable, " + e, e);
+        	throw new RuntimeException("Found a strategy that does not support cloning...", e);
+        }
+           
         // TODO: this hack should be removed once modules have their own config
         if (theStrategy instanceof PartialBufferStrategy) {
             if(partialBufferSize == 0) {
@@ -776,7 +782,6 @@ public abstract class AbstractService extends HttpServlet
                     .setBufferSize(partialBufferSize);
         }
         return theStrategy;
-
     }
 
     
