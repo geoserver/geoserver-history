@@ -2,11 +2,11 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-	<bean id="dispatcher" class="org.geoserver.ows.http.Dispatcher"/>
+	<bean id="dispatcher" class="org.geoserver.ows.http.OWSDispatcher"/>
 	
-	<bean id="messageKvpParser" class="org.geoserver.ows.http.MessageKvpParser"/>
-	
-	<bean id="messageXmlParser" 
+	<bean id="messageKvpReader" class="org.geoserver.ows.http.MessageKvpRequestReader"/>
+
+	<bean id="messageXmlReader" 
 		class="org.geoserver.ows.http.MessageXmlParser"/>
 	
 	<bean id="messageResponse"
@@ -21,11 +21,5 @@
 		<constructor-arg index="0" value="hello"/>
 		<constructor-arg index="1" ref="helloWorld"/>
 	</bean>
-	<bean id="helloWorldOperation" 
-		class="org.geoserver.ows.Operation">
-		<constructor-arg index="0" value="hello"/>
-		<constructor-arg index="1" ref="helloWorldService"/>
-		<constructor-arg index="2" ref="helloWorld"/>
-	</bean>
-
+	
 </beans>

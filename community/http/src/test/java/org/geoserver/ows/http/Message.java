@@ -7,6 +7,9 @@ public class Message {
 	
 	public String message;
 	
+	public Message() {
+	}
+	
 	public Message( String message ) {
 		this.message = message;
 	}
@@ -14,6 +17,11 @@ public class Message {
 	public Message getMessage() {
 		return this;
 	}
+	
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
 	
 	public boolean equals(Object obj) {
 		if (obj instanceof Message) {
