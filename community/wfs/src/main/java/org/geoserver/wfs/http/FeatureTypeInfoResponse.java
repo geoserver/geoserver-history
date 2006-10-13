@@ -6,10 +6,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import net.opengis.wfs.DescribeFeatureTypeType;
+
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.ows.Operation;
 import org.geoserver.ows.ServiceException;
+import org.geoserver.ows.http.OWSUtils;
 import org.geoserver.ows.http.Response;
+import org.geoserver.wfs.DescribeFeatureType;
 import org.geoserver.wfs.WFSException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -51,13 +55,11 @@ public class FeatureTypeInfoResponse extends Response
 	
 	private FeatureTypeEncoder featureTypeEncoder( Operation operation ) throws ServiceException {
 		
-		String outputFormat = null;
-		try {
-			outputFormat = (String) operation.get( "outputFormat" );
-		} 
-		catch (Exception e) {
-			throw new ServiceException( e );
-		}
+		//get the output format
+		DescribeFeatureTypeType request = (DescribeFeatureTypeType) OWSUtils.parameter( 
+			operation.getParameters(), DescribeFeatureTypeType.class 
+		);
+		String outputFormat = request.getOutputFormat();
 		
 		Collection featureTypeEncoders = context.getBeansOfType( FeatureTypeEncoder.class ).values();
 		for ( Iterator itr = featureTypeEncoders.iterator(); itr.hasNext(); ) {

@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.geoserver.http.util.KvpUtils;
-import org.geoserver.ows.http.KvpReader;
+import org.geoserver.ows.http.KvpParser;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.v1_0.OGCBindingConfiguration;
 import org.geotools.filter.v1_0.OGCConfiguration;
@@ -26,7 +26,7 @@ import org.picocontainer.MutablePicoContainer;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequenceFactory;
 
-public class FilterKvpReader extends KvpReader {
+public class FilterKvpReader extends KvpParser {
 
 	public FilterKvpReader() {
 		super( "filter", List.class );

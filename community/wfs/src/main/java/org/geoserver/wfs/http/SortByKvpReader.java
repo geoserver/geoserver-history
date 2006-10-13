@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.geoserver.http.util.KvpUtils;
-import org.geoserver.ows.http.KvpReader;
+import org.geoserver.ows.http.KvpParser;
 import org.geotools.filter.FilterFactory;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortOrder;
@@ -17,7 +17,7 @@ import org.opengis.filter.sort.SortOrder;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class SortByKvpReader extends KvpReader {
+public class SortByKvpReader extends KvpParser {
 
 	FilterFactory filterFactory;
 	

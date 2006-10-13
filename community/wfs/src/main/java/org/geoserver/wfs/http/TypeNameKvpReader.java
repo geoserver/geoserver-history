@@ -8,7 +8,7 @@ import javax.xml.namespace.QName;
 
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.http.util.KvpUtils;
-import org.geoserver.ows.http.KvpReader;
+import org.geoserver.ows.http.KvpParser;
 
 /**
  * Parses a kvp value of hte form 'typeName=', into a {@link javax.xml.namespace.QName}..
@@ -16,7 +16,7 @@ import org.geoserver.ows.http.KvpReader;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class TypeNameKvpReader extends KvpReader {
+public class TypeNameKvpReader extends KvpParser {
 
 	/**
 	 * catalog for namespace lookups.
@@ -24,7 +24,7 @@ public class TypeNameKvpReader extends KvpReader {
 	GeoServerCatalog catalog;
 	
 	public TypeNameKvpReader( GeoServerCatalog catalog ) {
-		super( "typeName", QName.class );
+		super( "typeName", List.class );
 		this.catalog = catalog;
 	}
 

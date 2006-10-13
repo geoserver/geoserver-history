@@ -4,11 +4,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.geoserver.http.util.KvpUtils;
-import org.geoserver.ows.http.KvpReader;
+import org.geoserver.ows.http.KvpParser;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-public class BBoxKvpReader extends KvpReader {
+public class BBoxKvpReader extends KvpParser {
 
 	public BBoxKvpReader() {
 		super( "bbox", Envelope.class );

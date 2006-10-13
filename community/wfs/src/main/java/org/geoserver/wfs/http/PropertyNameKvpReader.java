@@ -3,10 +3,10 @@ package org.geoserver.wfs.http;
 import java.util.List;
 
 import org.geoserver.http.util.KvpUtils;
-import org.geoserver.ows.http.KvpReader;
+import org.geoserver.ows.http.KvpParser;
 import org.geotools.filter.FilterFactory;
 
-public class PropertyNameKvpReader extends KvpReader {
+public class PropertyNameKvpReader extends KvpParser {
 
 	FilterFactory filterFactory;
 	

@@ -2,9 +2,9 @@ package org.geoserver.wfs.http;
 
 import java.math.BigInteger;
 
-import org.geoserver.ows.http.KvpReader;
+import org.geoserver.ows.http.KvpParser;
 
-public class MaxFeaturesKvpReader extends KvpReader {
+public class MaxFeaturesKvpReader extends KvpParser {
 
 	public MaxFeaturesKvpReader() {
 		super( "maxFeatures", BigInteger.class );

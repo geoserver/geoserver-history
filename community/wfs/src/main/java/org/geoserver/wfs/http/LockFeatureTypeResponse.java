@@ -5,8 +5,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Iterator;
+import java.util.List;
 
-import net.opengis.wfs.WFSLockFeatureResponseType;
+import net.opengis.wfs.LockFeatureResponseType;
 
 import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.Operation;
@@ -20,7 +21,7 @@ public class LockFeatureTypeResponse extends Response {
 	WFS wfs;
 	
 	public LockFeatureTypeResponse( WFS wfs ) {
-		super( WFSLockFeatureResponseType.class );
+		super( LockFeatureResponseType.class );
 		this.wfs = wfs;
 	}
 	
@@ -31,7 +32,7 @@ public class LockFeatureTypeResponse extends Response {
 	public void write(Object value, OutputStream output, Operation operation)
 			throws IOException, ServiceException {
 		
-		WFSLockFeatureResponseType lockResponse = (WFSLockFeatureResponseType) value;
+		LockFeatureResponseType lockResponse = (LockFeatureResponseType) value;
 		
 		String indent = wfs.isVerbose() ? "   " : "";
 		BufferedWriter writer = new BufferedWriter( 
@@ -54,10 +55,12 @@ public class LockFeatureTypeResponse extends Response {
 	        
         writer.write( indent + "<LockId>" + lockResponse.getLockId() + "</LockId>" + "\n" );
 
-        if ( !lockResponse.getFeaturesNotLocked().isEmpty() ) {
-        	if ( !lockResponse.getFeaturesLocked().isEmpty() ) {
+        List featuresLocked = lockResponse.getFeaturesLocked().getFeatureId();
+        List featuresNotLocked = lockResponse.getFeaturesNotLocked().getFeatureId();
+        if ( !featuresNotLocked.isEmpty() ) {
+        	if ( !featuresLocked.isEmpty() ) {
 
-                for (Iterator i = lockResponse.getFeaturesLocked().iterator(); i.hasNext();) {
+                for (Iterator i = featuresLocked.iterator(); i.hasNext();) {
                     writer.write( indent + indent);
                    
                     FeatureId featureId = (FeatureId) i.next();
@@ -72,7 +75,7 @@ public class LockFeatureTypeResponse extends Response {
 
         	writer.write( "<FeaturesNotLocked>" + "\n");
 
-            for (Iterator i = lockResponse.getFeaturesNotLocked().iterator(); i.hasNext();) {
+            for (Iterator i = featuresNotLocked.iterator(); i.hasNext();) {
             	writer.write( indent + indent);
                 
                 FeatureId featureId = (FeatureId) i.next();

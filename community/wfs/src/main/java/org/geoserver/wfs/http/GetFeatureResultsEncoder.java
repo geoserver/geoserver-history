@@ -7,8 +7,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import net.opengis.wfs.GetFeatureType;
+
 import org.geoserver.ows.Operation;
 import org.geoserver.ows.ServiceException;
+import org.geoserver.ows.http.OWSUtils;
 import org.geoserver.ows.http.Response;
 import org.geoserver.wfs.FeatureProducer;
 import org.geoserver.wfs.GetFeature;
@@ -56,12 +59,9 @@ public class GetFeatureResultsEncoder extends Response
 	}
 
 	protected String outputFormat( Operation operation ) throws WFSException {
-		try {
-			return  (String) operation.get( "outputFormat" );
-		}
-		catch (Exception e) {
-			throw new WFSException( e );
-		}
+		GetFeatureType request = 
+			(GetFeatureType) OWSUtils.parameter( operation.getParameters(), GetFeatureType.class );
+		return request.getOutputFormat();
 	}
 	
 	 protected FeatureProducer lookupProducer( String outputFormat ) 
