@@ -207,7 +207,8 @@ public class DataConfig {
 //            styles.put(key,
 //                new StyleConfig((StyleDTO) data.getStyles().get(key)));
 //        }
-		update(data);
+        this();
+	update(data);
     }
     
     /**

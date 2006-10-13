@@ -13,6 +13,7 @@ import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
+import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
 
@@ -105,6 +106,17 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
 		iwp.setCompressionType("JPEG");
 		iwp.setCompressionQuality(0.75f);// we can control quality here
 		writer.setOutput(memOutStream);
+		if(iwp instanceof JPEGImageWriteParam)
+		{
+			((JPEGImageWriteParam)iwp).setOptimizeHuffmanTables(true);
+			try{
+			((JPEGImageWriteParam)iwp).setProgressiveMode(JPEGImageWriteParam.MODE_DEFAULT);
+			}
+			catch (UnsupportedOperationException e) {
+				LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+			}
+		
+		}
 
 		if (LOGGER.isLoggable(Level.FINE))
 			LOGGER.fine("Writing out...");

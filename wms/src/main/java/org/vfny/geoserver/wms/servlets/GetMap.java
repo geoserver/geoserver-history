@@ -63,7 +63,7 @@ public class GetMap extends WMService {
 
         //DJB: added post support
         Request serviceRequest = null;
-        this.curRequest = request;
+//        this.curRequest = request;
 
         if (!isServiceEnabled(request)) {
             response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
@@ -77,10 +77,10 @@ public class GetMap extends WMService {
             Reader xml = request.getReader();
             serviceRequest = xmlPostReader.read(xml, request);
         } catch (ServiceException se) {
-            sendError(response, se);
+            sendError(request, response, se);
             return;
         } catch (Throwable e) {
-            sendError(response, e);
+            sendError(request, response, e);
             return;
         }
 
