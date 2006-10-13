@@ -55,6 +55,7 @@ public class TransactionHttpTest extends GeoServerHttpTestSupport {
 		response = post( "wfs", delete );
 		//print( response, System.out );
 		dom = dom( response );
+		print( dom, System.out );
 		
 		assertEquals( "WFS_TransactionResponse", dom.getDocumentElement().getLocalName() );
 		assertEquals( 1, dom.getElementsByTagName( "wfs:SUCCESS" ).getLength() );
@@ -141,12 +142,13 @@ public class TransactionHttpTest extends GeoServerHttpTestSupport {
 					"</wfs:Transaction>";
 	
 		response = post( "wfs", insert );
-		//print( response, System.out );
 		dom = dom( response );
+		print( dom, System.out );
+		
 		assertTrue( dom.getElementsByTagName( "wfs:SUCCESS" ).getLength() != 0 );
 		assertTrue( dom.getElementsByTagName( "wfs:InsertResult" ).getLength() != 0 );
 		
-//		do another get feature
+		//do another get feature
 		response = post( "wfs", getFeature );
 		dom = dom( response );
 		

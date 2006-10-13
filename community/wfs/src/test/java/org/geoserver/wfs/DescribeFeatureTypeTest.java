@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.DescribeFeatureTypeType;
+import net.opengis.wfs.WfsFactory;
+
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.ows.Operation;
 import org.geoserver.ows.Service;
@@ -17,15 +20,12 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
 
 	public void testDescribeFeatureType() throws Exception {
 		
-		DescribeFeatureType op = new DescribeFeatureType( wfs, catalog );
-		Service service = new Service( "wfs", wfs );
-		Operation descriptor = new Operation( "DescribeFeatureType", service, op );
-		ArrayList typeName = new ArrayList();
-		typeName.add( qname( BASIC_POLYGONS_TYPE ) );
-		op.setTypeName( typeName );
-		op.setOutputFormat( "XMLSCHEMA" );
+		DescribeFeatureTypeType request = WfsFactory.eINSTANCE.createDescribeFeatureTypeType();
 		
-		FeatureTypeInfo[] infos = op.describeFeatureType();
+		request.getTypeName().add( qname( BASIC_POLYGONS_TYPE ) );
+		request.setOutputFormat( "XMLSCHEMA" );
+		
+		FeatureTypeInfo[] infos = webFeatureService.describeFeatureType( request );
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		new XmlSchemaEncoder( wfs, catalog ).encode( infos, output );

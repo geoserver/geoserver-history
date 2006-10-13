@@ -6,7 +6,7 @@
 	<bean id="resourceLoader"
 		class="org.geoserver.GeoServerResourceLoader"/>
 		
-	<bean id="dispatcher" class="org.geoserver.ows.http.Dispatcher"/>
+	<bean id="dispatcher" class="org.geoserver.ows.http.OWSDispatcher"/>
 	
 	<!-- redifine wfs bean and supply some properties -->
 	<bean id="wfs" class="org.geoserver.wfs.WFS">

@@ -26,7 +26,7 @@ public class DescribeFeatureHttpTest extends GeoServerHttpTestSupport {
 			"xmlns:wfs=\"http://www.opengis.net/wfs\" />";
 	
 		WebResponse response = post( "wfs", xml );
-        	Document doc = response.getDOM();
+        Document doc = dom( response );
 		assertEquals( "xs:schema", doc.getDocumentElement().getNodeName() );
 	}
 	

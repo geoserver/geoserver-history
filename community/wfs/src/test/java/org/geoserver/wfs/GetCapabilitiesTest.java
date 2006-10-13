@@ -5,21 +5,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 
 import org.geoserver.util.ReaderUtils;
+import org.geotools.xml.transform.TransformerBase;
 import org.w3c.dom.Element;
 
 public class GetCapabilitiesTest extends WFSTestSupport {
 
-	GetCapabilities getCapabilities;
-	
 	protected void setUp() throws Exception {
 		super.setUp();
-		
-		getCapabilities = new GetCapabilities( wfs, catalog );
 	}
 	
 	public void testGetCapabilities() throws Exception {
 		
-		WFSCapsTransformer tx = getCapabilities.getCapabilities();
+		TransformerBase tx = webFeatureService.getCapabilities();
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		tx.transform( null, outputStream );
 		

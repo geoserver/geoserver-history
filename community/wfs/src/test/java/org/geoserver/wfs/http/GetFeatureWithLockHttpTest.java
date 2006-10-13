@@ -77,15 +77,19 @@ public class GetFeatureWithLockHttpTest extends GeoServerHttpTestSupport {
 		"  </wfs:Update> " +
 		"</wfs:Transaction> ";
 		
+
+		
 		response = post( "wfs", xml );
 		dom = dom( response );
 		print( dom, System.out );
+
+		//release the lock
+		get( "wfs?request=ReleaseLock&lockId=" + lockId );
 		
 		assertEquals( "wfs:WFS_TransactionResponse", dom.getDocumentElement().getNodeName() );
 		assertEquals( 1, dom.getElementsByTagName( "wfs:SUCCESS" ).getLength() );
 		
-		//release the lock
-		get( "wfs?request=Release&lockId=" + lockId );
+		
 	}
 	
 	public void testUpdateLockedFeatureWithoutLockId() throws Exception {
@@ -157,11 +161,17 @@ public class GetFeatureWithLockHttpTest extends GeoServerHttpTestSupport {
 		response = post( "wfs", xml );
 		dom = dom( response );
 		
-		assertEquals( "wfs:WFS_TransactionResponse", dom.getDocumentElement().getNodeName() );
-		assertEquals( 1, dom.getElementsByTagName( "wfs:FAILED" ).getLength() );
-		
 		//release the lock
-		get( "wfs?request=Release&lockId=" + lockId );
+		get( "wfs?request=ReleaseLock&lockId=" + lockId );
+		
+		
+		//assertEquals( "wfs:WFS_TransactionResponse", dom.getDocumentElement().getNodeName() );
+		assertTrue( 
+			1 == dom.getElementsByTagName( "wfs:FAILED" ).getLength() || 
+			"ServiceExceptionReport".equals( dom.getDocumentElement().getNodeName() ) 
+		);
+		
+		
 	}
 	
 	public void testGetFeatureWithLockReleaseActionSome() throws Exception {
@@ -263,10 +273,14 @@ public class GetFeatureWithLockHttpTest extends GeoServerHttpTestSupport {
 		response = post( "wfs", xml );
 		dom = dom( response );
 		print( dom, System.out );
+		
+		//release locks
+		get( "wfs?request=ReleaseLock&lockId=" + lockId );
+		
 		assertEquals( "wfs:WFS_TransactionResponse", dom.getDocumentElement().getNodeName() );
 		assertEquals( 1, dom.getElementsByTagName( "wfs:SUCCESS" ).getLength() );
 		
-		get( "wfs?request=Release&lockId=" + lockId );
+		
 		
 	}
 }

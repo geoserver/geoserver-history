@@ -7,6 +7,7 @@ import org.geoserver.data.DataTestSupport;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.GeoServerResolveAdapterFactoryFinder;
 import org.geoserver.data.feature.InfoAdapterFactory;
+import org.geotools.filter.FilterFactoryFinder;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**
@@ -18,7 +19,15 @@ import org.springframework.context.support.GenericApplicationContext;
  */
 public class WFSTestSupport extends DataTestSupport {
 
+	/**
+	 * The wfs configuration
+	 */
 	protected WFS wfs;
+	
+	/**
+	 * The service implementation
+	 */
+	protected WebFeatureService webFeatureService;
 	
 	/**
 	 * Configures the application context and the WFS configuraiton bean.
@@ -29,22 +38,17 @@ public class WFSTestSupport extends DataTestSupport {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-//		finder = new GeoServerResolveAdapterFactoryFinder();
-//		
-//		context = new GenericApplicationContext();
-//		context.getBeanFactory().registerSingleton( "loader", loader );
-//		context.getBeanFactory().registerSingleton( "catalog", catalog );
-//		context.getBeanFactory().registerSingleton( "finder", finder );
-//		context.getBeanFactory().registerSingleton( 
-//			"infoAdapterFactory", new InfoAdapterFactory( catalog, loader ) 
-//		);
-//		
-//		//create wfs service bean and populate
+		//create wfs service bean and populate
 		wfs = new WFS();
 		wfs.setOnlineResource( new URL( "http://localhost:8080/geoserver/wfs?" ) );
 		wfs.setSchemaBaseURL( "http://schemas.opengis.net/" );
 		wfs.setCharSet( Charset.forName( "UTF-8" ) );
 		
+		//create the service implementation
+		webFeatureService = new WebFeatureService( wfs, catalog );
+		webFeatureService.setFilterFactory( FilterFactoryFinder.createFilterFactory() );
+		
 		context.getBeanFactory().registerSingleton( "wfs", wfs );
+		context.getBeanFactory().registerSingleton( "webFeatureService", webFeatureService );
 	}
 }
