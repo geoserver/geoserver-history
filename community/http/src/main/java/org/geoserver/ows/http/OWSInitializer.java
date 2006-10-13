@@ -43,20 +43,16 @@ public class OWSInitializer implements HandlerInterceptor, ApplicationContextAwa
 	) throws Exception {
 		
 		//only for the OWS dispatched
-		if ( handler instanceof Dispatcher ) {
-			Collection descriptors = 
-				applicationContext.getBeansOfType( Service.class ).values();
-			for ( Iterator d = descriptors.iterator(); d.hasNext(); ) {
-				Service descriptor = (Service) d.next();
-				Object service = descriptor.getService();
-				
-				if ( service instanceof OWS ) {
-					OWS ows = (OWS) service;
+		if ( handler instanceof OWSDispatcher ) {
+			Collection services = 
+				applicationContext.getBeansOfType( OWS.class ).values();
+			for ( Iterator s = services.iterator(); s.hasNext(); ) {
+					OWS ows = (OWS) s.next();
 					
 					//set the online resource
 					try {
 						URL url = new URL(
-							RequestUtils.baseURL( request ) + descriptor.getId()
+							RequestUtils.baseURL( request ) + ows.getId()
 						);
 						ows.setOnlineResource( url );
 					} 
@@ -81,7 +77,7 @@ public class OWSInitializer implements HandlerInterceptor, ApplicationContextAwa
 					
 					ows.setCharSet( charSet );
 				}
-			}
+			
 		}
 		
 		return true;
