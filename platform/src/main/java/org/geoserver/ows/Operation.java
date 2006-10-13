@@ -1,19 +1,10 @@
 package org.geoserver.ows;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
- * Bean wrapper for an operation.
+ * Operation of a service
  * <p>
- * An operation is nothing more then a Plain Old Java Object (POJO). It does 
- * not implement any GeoServer specific interface.
- * </p>
- * <p>
- * An operation descriptor is identified by an id,service pair. Two operation
+ * An operation is identified by an id,service pair. Two operation
  * descriptors are considred equal if they have the same id, service pair.
  * </p>
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
@@ -29,24 +20,25 @@ public final class Operation {
 	/**
 	 * Service this operation is a component of.
 	 */
-	Service  service;
+	Service service;
 
 	/**
-	 * The operation itself.
+	 * Parameters of the operation
 	 */
-	Object operation;
+	Object[] parameters;
 	
 	/**
 	 * Creates a new operation descriptor.
 	 * 
 	 * @param id Id of the operation, must not be <code>null</code>
 	 * @param service The service containing the operation, must not be <code>null</code>
-	 * @param operation
+	 * @param parameters The parameters of the operation, may be <code>null</code>
+	 * 
 	 */
-	public Operation( String id, Service service, Object operation ) {
+	public Operation( String id, Service service, Object[] parameters ) {
 		this.id = id;
 		this.service = service;
-		this.operation = operation;
+		this.parameters = parameters;
 		
 		if ( id == null ) 
 			throw new NullPointerException( "id" );
@@ -56,87 +48,25 @@ public final class Operation {
 		}
 	}
 	
+	/**
+	 * @return The id of the operation.
+	 */
 	public String getId() {
 		return id;
 	}
 	
+	/**
+	 * @return The service implementing the operation.
+	 */
 	public Service getService() {
 		return service;
 	}
 	
-	public Object getOperation() {
-		return operation;
-	}
-	
-	public boolean set(String property, Object value) 
-		throws Exception {
-		
-		Method method = method( "set" + property, value != null ? value.getClass() : null );
-		if (method != null) {
-			method.invoke( operation, new Object[]{value} );
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public Object get( String property ) throws Exception {
-		
-		Method method = method( "get" + property, null );
-		if ( method != null ) {
-			return method.invoke( operation, null ); 
-		}
-		
-		return null;
-	}
-	
-	public Object run ( Object input ) throws Exception {
-		
-		Method method = null;
-		
-		if ( input != null ) {
-			method = method( getId(), input.getClass() );	
-		}
-		else {
-			method = method( getId(), null );
-		}
-		
-		if (method != null ) {
-			Object[] parameters = input != null ? new Object[]{input} : null;
-			
-			return method.invoke( operation, parameters );	
-		}
-		
-		return null;
-	}
-
-	protected Method method ( String name, Class parameter ) {
-		Method[] methods = getOperation().getClass().getMethods();
-		List matches = new ArrayList();
-		
-		for ( int i = 0; i < methods.length; i++ ) {
-			Method method = methods[i];
-			if (method.getName().equalsIgnoreCase( name ) ) {
-				if ( parameter == null ) { 
-					if ( method.getParameterTypes().length == 0 ) {
-						matches.add( method );
-					}
-				}
-				else {
-					if ( method.getParameterTypes().length == 1 ) {
-						matches.add( method );
-					}
-				}
-			}
-		}
-		
-		if ( matches.isEmpty() )
-			return null;
-		
-		if ( matches.size() == 1 ) 
-			return (Method) matches.get( 0 );
-		
-		return null;
+	/**
+	 * @return The parameters supplied to the operation
+	 */
+	public Object[] getParameters() {
+		return parameters;
 	}
 	
 	public boolean equals(Object obj) {
