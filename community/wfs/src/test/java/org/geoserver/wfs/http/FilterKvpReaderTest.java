@@ -5,6 +5,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.geoserver.wfs.http.kvp.FilterKvpReader;
 import org.opengis.filter.Filter;
 import org.opengis.filter.PropertyIsEqualTo;
 
