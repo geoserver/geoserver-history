@@ -6,7 +6,6 @@ package org.geoserver.wfs;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,16 +18,19 @@ import org.geoserver.data.feature.FeatureTypeInfo;
 import org.xml.sax.helpers.NamespaceSupport;
 
 /**
- * Handles a DescribeFeatureType request and creates a DescribeFeatureType
- * response GML string.
- *
+ * Web Feature Service DescribeFeatureType operation.
+ * <p>
+ * This operation returns an array of  {@link org.geoserver.data.feature.FeatureTypeInfo} metadata
+ * objects corresponding to the feature type names specified in the request.
+ * </p>
+ * 
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
+ * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ * 
  * @version $Id: DescribeResponse.java,v 1.22 2004/04/16 07:06:10 jive Exp $
- *
- * @task TODO: implement the response streaming in writeTo instead of the
- *       current String generation
  */
+
 public class DescribeFeatureType {
 
 	/**
@@ -40,6 +42,12 @@ public class DescribeFeatureType {
 	 */
     private WFS wfs;
     
+    /**
+	 * Creates a new wfs DescribeFeatureType operation.
+	 * 
+	 * @param wfs The wfs configuration
+	 * @param catalog The geoserver catalog.
+	 */
     public DescribeFeatureType( WFS wfs, GeoServerCatalog catalog ) {
 		this.catalog = catalog;
 		this.wfs = wfs;
@@ -61,7 +69,7 @@ public class DescribeFeatureType {
 		this.catalog = catalog;
 	}
     
-    public FeatureTypeInfo[] describeFeatureType( DescribeFeatureTypeType request ) throws WFSException {
+    public FeatureTypeInfo[] run( DescribeFeatureTypeType request ) throws WFSException {
     
     	
 		List names = new ArrayList( request.getTypeName() );

@@ -160,6 +160,10 @@ public class GML2FeatureProducer implements FeatureProducer {
         transformer.setSrsName(wfs.getSrsPrefix() + meta.getSRS());
     }
 
+    public String getOutputFormat() {
+    	return "GML2";
+    }
+    
     /**
      * DOCUMENT ME!
      *
@@ -168,9 +172,7 @@ public class GML2FeatureProducer implements FeatureProducer {
      * @return DOCUMENT ME!
      */
     public String getMimeType() {
-		//JD: fix this
-		//return gs.getMimeType();
-		return null;
+		return "text/xml";
     }
 
     /**

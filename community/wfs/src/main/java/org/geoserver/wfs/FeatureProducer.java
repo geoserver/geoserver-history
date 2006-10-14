@@ -31,14 +31,9 @@ import org.geoserver.ows.ServiceException;
 public interface FeatureProducer {
 	
 	/**
-	 * Sets a reference to the operation executing the producer.
-	 * <p>
-	 * This is the first method in the life cycle of the producer and is called before any other 
-	 * methods, directly after instantiation.
-	 * </p>
-	 * @param getFeature The GetFeature operation delegating to the procuder for output.
+	 * @return The named output format supported by the feature producer.
 	 */
-	//void setOperation( GetFeature getFeature );
+	String getOutputFormat();
 	
 	/**
 	 * Returns any special content encoding.

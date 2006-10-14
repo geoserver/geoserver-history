@@ -1,11 +1,11 @@
 package org.geoserver.wfs;
 
 import net.opengis.wfs.DescribeFeatureTypeType;
+import net.opengis.wfs.GetCapabilitiesType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.GetFeatureWithLockType;
 import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
-import net.opengis.wfs.LockType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 
@@ -50,14 +50,16 @@ public class WebFeatureService {
 	/**
 	 * WFS GetCapabilities operation.
 	 * 
+	 * @param request The get capabilities request.
+	 * 
 	 * @return A transformer instance capable of serializing a wfs capabilities 
 	 * document. 
 	 * 
 	 * @throws WFSException Any service exceptions.
 	 */
-	public TransformerBase getCapabilities() throws WFSException {
+	public TransformerBase getCapabilities( GetCapabilitiesType request ) throws WFSException {
 		
-		return new GetCapabilities( wfs, catalog ).getCapabilities();
+		return new GetCapabilities( wfs, catalog ).run( request );
 	}
 	
 	/**
@@ -72,7 +74,7 @@ public class WebFeatureService {
 	public FeatureTypeInfo[] describeFeatureType( DescribeFeatureTypeType request ) 
 		throws WFSException {
 		
-		return new DescribeFeatureType( wfs, catalog ).describeFeatureType( request ); 
+		return new DescribeFeatureType( wfs, catalog ).run( request ); 
 	}
 	
 	/**
@@ -145,4 +147,7 @@ public class WebFeatureService {
 		new LockFeature( wfs, catalog ).release( lockId );
 	}
 	
+	public void releaseAllLocks() throws WFSException {
+		new LockFeature( wfs, catalog ).releaseAll();
+	}
 }

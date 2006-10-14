@@ -6,12 +6,10 @@ package org.geoserver.wfs;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -25,50 +23,30 @@ import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.WfsFactory;
 
-import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.AttributeTypeInfo;
-import org.geoserver.data.feature.DataStoreInfo;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.ows.ServiceException;
-import org.geoserver.wfs.http.TypeNameKvpReader;
-import org.geotools.data.DefaultTransaction;
-import org.geotools.data.FeatureLock;
-import org.geotools.data.FeatureLockFactory;
-import org.geotools.data.FeatureLocking;
-import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.LockingManager;
-import org.geotools.data.Transaction;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
-import org.opengis.filter.FeatureId;
 import org.opengis.filter.expression.PropertyName;
-import org.opengis.filter.spatial.BBOX;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
- * Implements the WFS GetFeature interface, which responds to requests for GML.
- * This servlet accepts a getFeatures request and returns GML2.0 structured
- * XML docs.  It is made up of the standard request params, plus one or  more
- * {@link Query} objects, plus a user-assigned handle.  There are also params
- * for feature versioning and alternate formats, but GeoServer does not yet
- * support those.
- *
+ * Web Feature Service GetFeature operation.
+ * <p>
+ * </p>
+ * 
  * @author Rob Hranac, TOPP
+ * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ * 
  * @version $Id$
  */
 public class GetFeature {

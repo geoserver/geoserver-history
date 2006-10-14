@@ -8,7 +8,7 @@ import org.eclipse.xsd.util.XSDResourceImpl;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.wfs.WFS;
-import org.geoserver.wfs.http.FeatureTypeEncoder;
+import org.geoserver.wfs.http.response.FeatureTypeEncoder;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 
 public class XmlSchemaEncoder extends FeatureTypeEncoder {
@@ -34,8 +34,6 @@ public class XmlSchemaEncoder extends FeatureTypeEncoder {
 		//serialize
 		schema.updateElement();
 		XSDResourceImpl.serialize( output, schema.getElement() );
-		
-		
 		
 	}
 
