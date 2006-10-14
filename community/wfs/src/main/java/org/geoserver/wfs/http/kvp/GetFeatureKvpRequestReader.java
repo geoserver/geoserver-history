@@ -1,4 +1,4 @@
-package org.geoserver.wfs.http;
+package org.geoserver.wfs.http.kvp;
 
 import java.io.IOException;
 import java.util.ArrayList;

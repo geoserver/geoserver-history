@@ -1,4 +1,4 @@
-package org.geoserver.wfs.http;
+package org.geoserver.wfs.http.kvp;
 
 import java.util.ArrayList;
 import java.util.Iterator;

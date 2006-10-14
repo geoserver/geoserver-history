@@ -1,4 +1,4 @@
-package org.geoserver.wfs.http;
+package org.geoserver.wfs.http.response;
 
 import java.io.File;
 import java.io.FileInputStream;

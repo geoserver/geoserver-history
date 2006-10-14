@@ -1,13 +1,13 @@
-package org.geoserver.wfs.http;
+package org.geoserver.wfs.http.kvp;
 
 import java.math.BigInteger;
 
 import org.geoserver.ows.http.KvpParser;
 
-public class MaxFeaturesKvpReader extends KvpParser {
+public class ExpiryKvpReader extends KvpParser {
 
-	public MaxFeaturesKvpReader() {
-		super( "maxFeatures", BigInteger.class );
+	public ExpiryKvpReader() {
+		super( "expiry", BigInteger.class );
 	}
 	
 	public Object parse( String value ) throws Exception {
