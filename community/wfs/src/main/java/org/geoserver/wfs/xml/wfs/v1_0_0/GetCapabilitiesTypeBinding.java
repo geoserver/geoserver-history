@@ -3,6 +3,7 @@ package org.geoserver.wfs.xml.wfs.v1_0_0;
 
 import org.geotools.xml.*;
 
+import net.opengis.ows.v1_0_0.OWSFactory;
 import net.opengis.wfs.GetCapabilitiesType;
 import net.opengis.wfs.WfsFactory;		
 
@@ -33,9 +34,18 @@ import javax.xml.namespace.QName;
  */
 public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
-	public GetCapabilitiesTypeBinding( WfsFactory wfsfactory ) {
-		this.wfsfactory = wfsfactory;
+	/**
+	 * Wfs factory
+	 */
+	WfsFactory wfsFactory;
+	/**
+	 * Ows Factory
+	 */
+	OWSFactory owsFactory;
+	
+	public GetCapabilitiesTypeBinding( WfsFactory wfsFactory, OWSFactory owsFactory ) {
+		this.wfsFactory = wfsFactory;
+		this.owsFactory = owsFactory;
 	}
 
 	/**
@@ -64,11 +74,13 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		GetCapabilitiesType getCapabilities = 
-			wfsfactory.createGetCapabilitiesType();
+		GetCapabilitiesType getCapabilities = wfsFactory.createGetCapabilitiesType();
+		getCapabilities.setAcceptVersions( owsFactory.createAcceptVersionsType() );
 		
 		WFSBindingUtils.service( getCapabilities, node );
-		WFSBindingUtils.version( getCapabilities, node );
+		
+		getCapabilities.getAcceptVersions().getVersion().add( node.getAttribute( "version" ) );
+		
 		
 		return getCapabilities;
 	}
