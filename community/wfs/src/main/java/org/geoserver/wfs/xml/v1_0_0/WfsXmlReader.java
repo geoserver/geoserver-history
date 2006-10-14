@@ -1,11 +1,10 @@
-package org.geoserver.wfs.http;
+package org.geoserver.wfs.xml.v1_0_0;
 
 import java.io.InputStream;
 
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.ows.http.XmlRequestReader;
-import org.geoserver.wfs.xml.wfs.v1_0_0.WFS;
-import org.geoserver.wfs.xml.wfs.v1_0_0.WFSConfiguration;
+
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
 
