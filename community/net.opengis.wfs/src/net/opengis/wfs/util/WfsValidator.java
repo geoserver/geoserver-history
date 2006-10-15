@@ -6,6 +6,7 @@
  */
 package net.opengis.wfs.util;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -229,6 +230,8 @@ public class WfsValidator extends EObjectValidator {
 				return validateFilter_1((org.geotools.filter.Filter)value, diagnostics, context);
 			case WfsPackage.PROPERTY_NAME:
 				return validatePropertyName((PropertyName)value, diagnostics, context);
+			case WfsPackage.CALENDAR:
+				return validateCalendar((Calendar)value, diagnostics, context);
 			default: 
 				return true;
 		}
@@ -840,6 +843,15 @@ public class WfsValidator extends EObjectValidator {
 	 * @generated
 	 */
 	public boolean validatePropertyName(PropertyName propertyName, DiagnosticChain diagnostics, Map context) {
+		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateCalendar(Calendar calendar, DiagnosticChain diagnostics, Map context) {
 		return true;
 	}
 

@@ -45,6 +45,7 @@
     <genDataTypes ecoreDataType="wfs.ecore#//Filter"/>
     <genDataTypes ecoreDataType="wfs.ecore#//Filter_1"/>
     <genDataTypes ecoreDataType="wfs.ecore#//PropertyName"/>
+    <genDataTypes ecoreDataType="wfs.ecore#//Calendar"/>
     <genClasses ecoreClass="wfs.ecore#//ActionType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//ActionType/message"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//ActionType/code"/>
@@ -93,7 +94,12 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//DocumentRoot/xlinkPropertyName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//DocumentRoot/propertyName"/>
     </genClasses>
-    <genClasses ecoreClass="wfs.ecore#//FeatureCollectionType"/>
+    <genClasses ecoreClass="wfs.ecore#//FeatureCollectionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//FeatureCollectionType/lockId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//FeatureCollectionType/numberOfFeatures"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//FeatureCollectionType/feature"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//FeatureCollectionType/timeStamp"/>
+    </genClasses>
     <genClasses ecoreClass="wfs.ecore#//FeaturesLockedType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute wfs.ecore#//FeaturesLockedType/group"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//FeaturesLockedType/featureId"/>

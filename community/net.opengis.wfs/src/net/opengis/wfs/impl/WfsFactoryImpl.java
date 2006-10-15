@@ -7,6 +7,7 @@
 package net.opengis.wfs.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -160,6 +161,8 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 				return createFilter_1FromString(eDataType, initialValue);
 			case WfsPackage.PROPERTY_NAME:
 				return createPropertyNameFromString(eDataType, initialValue);
+			case WfsPackage.CALENDAR:
+				return createCalendarFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -214,6 +217,8 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 				return convertFilter_1ToString(eDataType, instanceValue);
 			case WfsPackage.PROPERTY_NAME:
 				return convertPropertyNameToString(eDataType, instanceValue);
+			case WfsPackage.CALENDAR:
+				return convertCalendarToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -876,6 +881,24 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * @generated
 	 */
 	public String convertPropertyNameToString(EDataType eDataType, Object instanceValue) {
+		return super.convertToString(eDataType, instanceValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Calendar createCalendarFromString(EDataType eDataType, String initialValue) {
+		return (Calendar)super.createFromString(eDataType, initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertCalendarToString(EDataType eDataType, Object instanceValue) {
 		return super.convertToString(eDataType, instanceValue);
 	}
 

@@ -554,13 +554,49 @@ public interface WfsPackage extends EPackage{
 	int FEATURE_COLLECTION_TYPE = 5;
 
 	/**
+	 * The feature id for the '<em><b>Lock Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE_COLLECTION_TYPE__LOCK_ID = 0;
+
+	/**
+	 * The feature id for the '<em><b>Number Of Features</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES = 1;
+
+	/**
+	 * The feature id for the '<em><b>Feature</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE_COLLECTION_TYPE__FEATURE = 2;
+
+	/**
+	 * The feature id for the '<em><b>Time Stamp</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE_COLLECTION_TYPE__TIME_STAMP = 3;
+
+	/**
 	 * The number of structural features of the the '<em>Feature Collection Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE_COLLECTION_TYPE_FEATURE_COUNT = 0;
+	int FEATURE_COLLECTION_TYPE_FEATURE_COUNT = 4;
 
 	/**
 	 * The meta object id for the '{@link net.opengis.wfs.impl.FeaturesLockedTypeImpl <em>Features Locked Type</em>}' class.
@@ -2496,6 +2532,17 @@ public interface WfsPackage extends EPackage{
 
 
 	/**
+	 * The meta object id for the '<em>Calendar</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see java.util.Calendar
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getCalendar()
+	 * @generated
+	 */
+	int CALENDAR = 56;
+
+
+	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.ActionType <em>Action Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2972,6 +3019,50 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 */
 	EClass getFeatureCollectionType();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.FeatureCollectionType#getLockId <em>Lock Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Lock Id</em>'.
+	 * @see net.opengis.wfs.FeatureCollectionType#getLockId()
+	 * @see #getFeatureCollectionType()
+	 * @generated
+	 */
+	EAttribute getFeatureCollectionType_LockId();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.FeatureCollectionType#getNumberOfFeatures <em>Number Of Features</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Number Of Features</em>'.
+	 * @see net.opengis.wfs.FeatureCollectionType#getNumberOfFeatures()
+	 * @see #getFeatureCollectionType()
+	 * @generated
+	 */
+	EAttribute getFeatureCollectionType_NumberOfFeatures();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.FeatureCollectionType#getFeature <em>Feature</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Feature</em>'.
+	 * @see net.opengis.wfs.FeatureCollectionType#getFeature()
+	 * @see #getFeatureCollectionType()
+	 * @generated
+	 */
+	EAttribute getFeatureCollectionType_Feature();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.FeatureCollectionType#getTimeStamp <em>Time Stamp</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Time Stamp</em>'.
+	 * @see net.opengis.wfs.FeatureCollectionType#getTimeStamp()
+	 * @see #getFeatureCollectionType()
+	 * @generated
+	 */
+	EAttribute getFeatureCollectionType_TimeStamp();
 
 	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.FeaturesLockedType <em>Features Locked Type</em>}'.
@@ -4586,6 +4677,17 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 */
 	EDataType getPropertyName();
+
+	/**
+	 * Returns the meta object for data type '{@link java.util.Calendar <em>Calendar</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>Calendar</em>'.
+	 * @see java.util.Calendar
+	 * @model instanceClass="java.util.Calendar"
+	 * @generated
+	 */
+	EDataType getCalendar();
 
 	/**
 	 * Returns the factory that creates the instances of the model.

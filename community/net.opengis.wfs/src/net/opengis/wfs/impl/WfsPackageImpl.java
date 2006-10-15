@@ -6,6 +6,7 @@
  */
 package net.opengis.wfs.impl;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -484,6 +485,13 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	private EDataType propertyNameEDataType = null;
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType calendarEDataType = null;
+
+	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
 	 * package URI value.
@@ -959,6 +967,42 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 */
 	public EClass getFeatureCollectionType() {
 		return featureCollectionTypeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getFeatureCollectionType_LockId() {
+		return (EAttribute)featureCollectionTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getFeatureCollectionType_NumberOfFeatures() {
+		return (EAttribute)featureCollectionTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getFeatureCollectionType_Feature() {
+		return (EAttribute)featureCollectionTypeEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getFeatureCollectionType_TimeStamp() {
+		return (EAttribute)featureCollectionTypeEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -2307,6 +2351,15 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EDataType getCalendar() {
+		return calendarEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public WfsFactory getWfsFactory() {
 		return (WfsFactory)getEFactoryInstance();
 	}
@@ -2379,6 +2432,10 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		createEAttribute(documentRootEClass, DOCUMENT_ROOT__PROPERTY_NAME);
 
 		featureCollectionTypeEClass = createEClass(FEATURE_COLLECTION_TYPE);
+		createEAttribute(featureCollectionTypeEClass, FEATURE_COLLECTION_TYPE__LOCK_ID);
+		createEAttribute(featureCollectionTypeEClass, FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES);
+		createEAttribute(featureCollectionTypeEClass, FEATURE_COLLECTION_TYPE__FEATURE);
+		createEAttribute(featureCollectionTypeEClass, FEATURE_COLLECTION_TYPE__TIME_STAMP);
 
 		featuresLockedTypeEClass = createEClass(FEATURES_LOCKED_TYPE);
 		createEAttribute(featuresLockedTypeEClass, FEATURES_LOCKED_TYPE__GROUP);
@@ -2561,6 +2618,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		filterEDataType = createEDataType(FILTER);
 		filter_1EDataType = createEDataType(FILTER_1);
 		propertyNameEDataType = createEDataType(PROPERTY_NAME);
+		calendarEDataType = createEDataType(CALENDAR);
 	}
 
 	/**
@@ -2650,6 +2708,10 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEAttribute(getDocumentRoot_PropertyName(), theXMLTypePackage.getAnySimpleType(), "propertyName", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
 		initEClass(featureCollectionTypeEClass, FeatureCollectionType.class, "FeatureCollectionType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getFeatureCollectionType_LockId(), ecorePackage.getEString(), "lockId", null, 0, 1, FeatureCollectionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getFeatureCollectionType_NumberOfFeatures(), ecorePackage.getEBigInteger(), "numberOfFeatures", null, 0, 1, FeatureCollectionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getFeatureCollectionType_Feature(), this.getFeatureCollection(), "feature", null, 0, -1, FeatureCollectionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getFeatureCollectionType_TimeStamp(), this.getCalendar(), "timeStamp", null, 0, 1, FeatureCollectionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(featuresLockedTypeEClass, FeaturesLockedType.class, "FeaturesLockedType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFeaturesLockedType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, FeaturesLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2848,6 +2910,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEDataType(filterEDataType, Filter.class, "Filter", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(filter_1EDataType, org.geotools.filter.Filter.class, "Filter_1", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(propertyNameEDataType, PropertyName.class, "PropertyName", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(calendarEDataType, Calendar.class, "Calendar", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);
