@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 
 import net.opengis.ows.v1_0_0.OWSFactory;
 import net.opengis.wfs.GetCapabilitiesType;
-import net.opengis.wfs.WfsFactory;
+import net.opengis.wfs.WFSFactory;
 
 import org.geoserver.util.ReaderUtils;
 import org.geotools.xml.transform.TransformerBase;
@@ -16,7 +16,7 @@ public class GetCapabilitiesTest extends WFSTestSupport {
 
 	public void testGetCapabilities() throws Exception {
 		
-		GetCapabilitiesType request = WfsFactory.eINSTANCE.createGetCapabilitiesType();
+		GetCapabilitiesType request = WFSFactory.eINSTANCE.createGetCapabilitiesType();
 		request.setAcceptVersions( OWSFactory.eINSTANCE.createAcceptVersionsType() );
 		request.getAcceptVersions().getVersion().add( "1.0.0" );
 		

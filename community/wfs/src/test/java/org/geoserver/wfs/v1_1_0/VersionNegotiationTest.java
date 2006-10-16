@@ -2,7 +2,7 @@ package org.geoserver.wfs.v1_1_0;
 
 import net.opengis.ows.v1_0_0.OWSFactory;
 import net.opengis.wfs.GetCapabilitiesType;
-import net.opengis.wfs.WfsFactory;
+import net.opengis.wfs.WFSFactory;
 
 import org.geoserver.wfs.CapabilitiesTransformer;
 import org.geoserver.wfs.GetCapabilities;
@@ -12,7 +12,7 @@ import org.geotools.xml.transform.TransformerBase;
 public class VersionNegotiationTest extends WFSTestSupport {
 
 	GetCapabilities getCaps;
-	WfsFactory factory;
+	WFSFactory factory;
 	OWSFactory owsFactory;
 	
 	protected void setUp() throws Exception {
@@ -20,7 +20,7 @@ public class VersionNegotiationTest extends WFSTestSupport {
 		
 		getCaps = new GetCapabilities( wfs, catalog );
 		
-		factory = WfsFactory.eINSTANCE;
+		factory = WFSFactory.eINSTANCE;
 		owsFactory = OWSFactory.eINSTANCE;
 		
 	}

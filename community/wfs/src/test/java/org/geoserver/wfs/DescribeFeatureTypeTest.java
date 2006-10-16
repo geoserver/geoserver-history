@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.DescribeFeatureTypeType;
-import net.opengis.wfs.WfsFactory;
+import net.opengis.wfs.WFSFactory;
 
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.ows.Operation;
@@ -20,7 +20,7 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
 
 	public void testDescribeFeatureType() throws Exception {
 		
-		DescribeFeatureTypeType request = WfsFactory.eINSTANCE.createDescribeFeatureTypeType();
+		DescribeFeatureTypeType request = WFSFactory.eINSTANCE.createDescribeFeatureTypeType();
 		
 		request.getTypeName().add( qname( BASIC_POLYGONS_TYPE ) );
 		request.setOutputFormat( "XMLSCHEMA" );

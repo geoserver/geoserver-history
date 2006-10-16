@@ -13,7 +13,7 @@ import javax.xml.namespace.QName;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
-import net.opengis.wfs.WfsFactory;
+import net.opengis.wfs.WFSFactory;
 
 import org.geoserver.util.ReaderUtils;
 import org.geotools.filter.FilterFactory;
@@ -27,13 +27,13 @@ public class GetFeatureTest extends WFSTestSupport {
 	public void testGetFeature() throws Exception {
 		FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
 		
-		GetFeatureType request = WfsFactory.eINSTANCE.createGetFeatureType();
+		GetFeatureType request = WFSFactory.eINSTANCE.createGetFeatureType();
 		request.setMaxFeatures( BigInteger.valueOf( 10 ) );
 		request.setOutputFormat( GML2FeatureProducer.formatName );
 		
-		QueryType query = WfsFactory.eINSTANCE.createQueryType();
-		query.getPropertyName().add( filterFactory.property( "ID" )  );
-		query.getPropertyName().add( filterFactory.property( "the_geom" ) );
+		QueryType query = WFSFactory.eINSTANCE.createQueryType();
+		query.getPropertyName().add( new QName( "ID" )  );
+		query.getPropertyName().add( new QName( "the_geom" ) );
 		query.setTypeName( 
 			Arrays.asList( new QName[] { new QName( CITE_URI, "BasicPolygons", CITE_PREFIX ) } )	
 		);
