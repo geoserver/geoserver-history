@@ -210,4 +210,17 @@ public class EMFUtils {
 		
 		return clone;
 	}
+	
+	/**
+	 * Copies all the properties from one object to anoter.
+	 * 
+	 * @param source The object to copy from.
+	 * @param target The object to copy to.
+	 */
+	public static void copy( EObject source, EObject target ) {
+		for ( Iterator i = source.eClass().getEStructuralFeatures().iterator(); i.hasNext(); ) {
+			EStructuralFeature feature = (EStructuralFeature) i.next();
+			target.eSet( feature, source.eGet( feature ) );
+		}
+	}
 }
