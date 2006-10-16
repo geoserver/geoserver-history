@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +39,6 @@ import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.opengis.filter.FeatureId;
-
 
 /**
  * Web Feature Service 1.0 LockFeature Operation.
@@ -84,151 +84,170 @@ public class LockFeature {
   
 	public LockFeatureResponseType lockFeature( LockFeatureType request ) throws WFSException {
 	
-		//get the locks
-		List locks = request.getLock();
-        if ( locks == null || locks.isEmpty() ) {
-        	String msg = "A LockFeature request must contain at least one LOCK element";
-            throw new WFSException( msg );
-        }
-
-        //should we releas all? if not set default to true
-        boolean lockAll = !( request.getLockAction() == AllSomeType.SOME_LITERAL ); 
-        
-        //create a new lock
-        FeatureLock fLock = newFeatureLock( request );
-        
-        LOGGER.info("locks size is " + locks.size());
-
-        if ( locks.size() == 0 ) {
-        	throw new WFSException( "Request contains no locks." );
-        }
-
-        LockFeatureResponseType response = WfsFactory.eINSTANCE.createLockFeatureResponseType();
-        response.setLockId( fLock.getAuthorization() );
-        response.setFeaturesLocked( WfsFactory.eINSTANCE.createFeaturesLockedType() );
-        response.setFeaturesNotLocked( WfsFactory.eINSTANCE.createFeaturesNotLockedType() );
-        
-        for (int i = 0, n = locks.size(); i < n; i++) {
-        	LockType lock = (LockType) locks.get( i );
-        	LOGGER.info("curLock is " + lock);
-
-        	QName typeName = lock.getTypeName();
-            Filter filter = (Filter) lock.getFilter();
-            
-            FeatureTypeInfo meta;
-			FeatureSource source;
-			FeatureResults features;
-			try {
-				meta = catalog.featureType( typeName.getNamespaceURI(), typeName.getLocalPart() );
-				source = meta.featureSource();
-				features = source.getFeatures( filter );
-
-				if( source instanceof FeatureLocking){
-				    ((FeatureLocking)source).setFeatureLock( fLock );
-				}
-			} 
-			catch ( IOException e ) {
-				throw new WFSException( e );
+		FeatureLock fLock = null;
+		try {
+			//get the locks
+			List locks = request.getLock();
+			if ( locks == null || locks.isEmpty() ) {
+				String msg = "A LockFeature request must contain at least one LOCK element";
+			    throw new WFSException( msg );
 			}
-          
-            FeatureReader reader = null;
-            try {
-                for (reader = features.reader(); reader.hasNext();) {
-                    Feature feature = reader.next();
-                    FeatureId fid = fid( feature.getID() );
-                    
-                    if( !(source instanceof FeatureLocking) ){
-                        LOGGER.fine("Lock " + fid +
-                                " not supported by data store (authID:"
-                                + fLock.getAuthorization() + ")");
-                        response.getFeaturesNotLocked().getFeatureId().add( fid );
-                        //lockFailedFids.add(fid);
-                    }
-                    else {
-                        
-                        //DEFQuery is just some indirection, should be in the locking interface.
-                        //int numberLocked = ((DEFQueryFeatureLocking)source).lockFeature(feature);
-                        //HACK: Query.NO_NAMES isn't working in postgis right now,
-                        //so we'll just use all.
-                        Query query = new DefaultQuery( 
-                    		meta.getTypeName(), (Filter) fid, Query.DEFAULT_MAX, Query.ALL_NAMES, 
-                    		lock.getHandle()
-                		);
-                        
-                        int numberLocked = ((FeatureLocking)source).lockFeatures( query );
 
-                        if (numberLocked == 1) {
-                            LOGGER.fine("Lock " + fid + " (authID:" + fLock.getAuthorization() + ")");
-                            response.getFeaturesLocked().getFeatureId().add( fid );
-                            //lockedFids.add(fid);
-                        } 
-                        else if (numberLocked == 0) {
-                            LOGGER.fine("Lock " + fid + " conflict (authID:" + fLock.getAuthorization() + ")");
-                            response.getFeaturesNotLocked().getFeatureId().add( fid );
-                            //lockFailedFids.add(fid);
-                        } 
-                        else {
-                            LOGGER.warning(
-                        		"Lock " + numberLocked + " " + fid + " (authID:" + 
-                        		fLock.getAuthorization() + ") duplicated FeatureID!"
-                    		);
-                            response.getFeaturesLocked().getFeatureId().add( fid );
-                            //lockedFids.add(fid);
-                        }
-                    }
-                }
-            }
-            catch ( IOException ioe ) {
-            	throw new WFSException( ioe );
-            } 
-            catch (IllegalAttributeException e) {
-                // TODO: JG - I really dont like this
-                // reader says it will throw this if the attribtues do not match
-                // the FeatureTypeInfo
-                // I figure if this is thrown we are poorly configured or
-                // the DataStoreInfo needs some quality control
-                //
-                // should rollback the lock as well :-(
-            	String msg = "Lock request " + filter + " did not match " + typeName;
-                throw new WFSException( msg );
-            } finally {
-                if (reader != null) {
-                    try {
-						reader.close();
-					} 
-                    catch (IOException e) {
-                    	LOGGER.log( Level.WARNING, e.getLocalizedMessage(), e );
-                    }
-                }
-            }
-            
-            if (!response.getFeaturesLocked().getFeatureId().isEmpty()) {
-            	//JD: Why is this necessary, arent the features already locked?
-                Transaction t = new DefaultTransaction();
+			//should we releas all? if not set default to true
+			boolean lockAll = !( request.getLockAction() == AllSomeType.SOME_LITERAL ); 
+			
+			//create a new lock
+			fLock = newFeatureLock( request );
+			
+			LOGGER.info("locks size is " + locks.size());
 
-                try {
-					try {
-					    t.addAuthorization( response.getLockId() );
-					    source.getDataStore().getLockingManager().refresh( response.getLockId(), t);
-					} finally {
-					    t.commit();
+			if ( locks.size() == 0 ) {
+				throw new WFSException( "Request contains no locks." );
+			}
+
+			LockFeatureResponseType response = WfsFactory.eINSTANCE.createLockFeatureResponseType();
+			response.setLockId( fLock.getAuthorization() );
+			response.setFeaturesLocked( WfsFactory.eINSTANCE.createFeaturesLockedType() );
+			response.setFeaturesNotLocked( WfsFactory.eINSTANCE.createFeaturesNotLockedType() );
+			
+			for (int i = 0, n = locks.size(); i < n; i++) {
+				LockType lock = (LockType) locks.get( i );
+				LOGGER.info("curLock is " + lock);
+
+				QName typeName = lock.getTypeName();
+			    Filter filter = (Filter) lock.getFilter();
+			    
+			    FeatureTypeInfo meta;
+				FeatureSource source;
+				FeatureResults features;
+				try {
+					meta = catalog.featureType( typeName.getNamespaceURI(), typeName.getLocalPart() );
+					source = meta.featureSource();
+					features = source.getFeatures( filter );
+
+					if( source instanceof FeatureLocking){
+					    ((FeatureLocking)source).setFeatureLock( fLock );
 					}
 				} 
-                catch (IOException e) {
-                	throw new WFSException( e );
+				catch ( IOException e ) {
+					throw new WFSException( e );
 				}
-            }
-        }
+			  
+			    FeatureReader reader = null;
+			    int numberLocked = -1;
+			    try {
+			        for (reader = features.reader(); reader.hasNext();) {
+			            Feature feature = reader.next();
+			            FeatureId fid = fid( feature.getID() );
+			            
+			            if( !(source instanceof FeatureLocking) ){
+			                LOGGER.fine("Lock " + fid +
+			                        " not supported by data store (authID:"
+			                        + fLock.getAuthorization() + ")");
+			                response.getFeaturesNotLocked().getFeatureId().add( fid );
+			                //lockFailedFids.add(fid);
+			            }
+			            else {
+			                
+			                //DEFQuery is just some indirection, should be in the locking interface.
+			                //int numberLocked = ((DEFQueryFeatureLocking)source).lockFeature(feature);
+			                //HACK: Query.NO_NAMES isn't working in postgis right now,
+			                //so we'll just use all.
+			                Query query = new DefaultQuery( 
+			            		meta.getTypeName(), (Filter) fid, Query.DEFAULT_MAX, Query.ALL_NAMES, 
+			            		lock.getHandle()
+			        		);
+			                
+			                numberLocked = ((FeatureLocking)source).lockFeatures( query );
 
-        //if (lockAll && !lockFailedFids.isEmpty()) {
-        if ( lockAll && !response.getFeaturesNotLocked().getFeatureId().isEmpty() ) {
-            // I think we need to release and fail when lockAll fails
-            //
-            // abort will release the locks
-            throw new WFSException("Could not aquire locks for:" + response.getFeaturesNotLocked());
-        }
+			                if (numberLocked == 1) {
+			                    LOGGER.fine("Lock " + fid + " (authID:" + fLock.getAuthorization() + ")");
+			                    response.getFeaturesLocked().getFeatureId().add( fid );
+			                    //lockedFids.add(fid);
+			                } 
+			                else if (numberLocked == 0) {
+			                    LOGGER.fine("Lock " + fid + " conflict (authID:" + fLock.getAuthorization() + ")");
+			                    response.getFeaturesNotLocked().getFeatureId().add( fid );
+			                    //lockFailedFids.add(fid);
+			                } 
+			                else {
+			                    LOGGER.warning(
+			                		"Lock " + numberLocked + " " + fid + " (authID:" + 
+			                		fLock.getAuthorization() + ") duplicated FeatureID!"
+			            		);
+			                    response.getFeaturesLocked().getFeatureId().add( fid );
+			                    //lockedFids.add(fid);
+			                }
+			            }
+			        }
+			    }
+			    catch ( IOException ioe ) {
+			    	throw new WFSException( ioe );
+			    } 
+			    catch (IllegalAttributeException e) {
+			        // TODO: JG - I really dont like this
+			        // reader says it will throw this if the attribtues do not match
+			        // the FeatureTypeInfo
+			        // I figure if this is thrown we are poorly configured or
+			        // the DataStoreInfo needs some quality control
+			        //
+			        // should rollback the lock as well :-(
+			    	String msg = "Lock request " + filter + " did not match " + typeName;
+			        throw new WFSException( msg );
+			    } finally {
+			        if (reader != null) {
+			            try {
+							reader.close();
+						} 
+			            catch (IOException e) {
+			            	LOGGER.log( Level.WARNING, e.getLocalizedMessage(), e );
+			            }
+			        }
+			    }
+			    
+			    if ( numberLocked > 0 ) {
+			    	//JD: Why is this necessary, arent the features already locked?
+			        Transaction t = new DefaultTransaction();
 
-        return response;
+			        try {
+						try {
+						    t.addAuthorization( response.getLockId() );
+						    source.getDataStore().getLockingManager().refresh( response.getLockId(), t);
+						} finally {
+						    t.commit();
+						}
+					} 
+			        catch (IOException e) {
+			        	throw new WFSException( e );
+					}
+			    }
+			}
+
+			if ( lockAll && !response.getFeaturesNotLocked().getFeatureId().isEmpty() ) {
+			    // I think we need to release and fail when lockAll fails
+			    //
+			    // abort will release the locks
+			    throw new WFSException("Could not aquire locks for:" + response.getFeaturesNotLocked());
+			}
+
+			return response;
+		} 
+		catch( WFSException e ) {
+		
+			//release locks when something fails
+			if ( fLock != null ) {
+				try {
+					release( fLock.getAuthorization() );
+				} 
+				catch ( WFSException e1 ) {
+					//log it
+					LOGGER.log( Level.SEVERE, "Error occured releasing locks", e1 );
+				}
+	        }
+
+		
+	       throw e;
+		}
     }
 	
 	/**
