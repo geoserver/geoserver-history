@@ -6,6 +6,8 @@
  */
 package net.opengis.wfs.impl;
 
+import java.net.URI;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -179,7 +181,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String SRS_NAME_EDEFAULT = null;
+	protected static final URI SRS_NAME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getSrsName() <em>Srs Name</em>}' attribute.
@@ -189,7 +191,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected String srsName = SRS_NAME_EDEFAULT;
+	protected URI srsName = SRS_NAME_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
@@ -248,7 +250,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 */
 	public EList getPropertyName() {
 		if (propertyName == null) {
-			propertyName = new EDataTypeUniqueEList(PropertyName.class, this, WfsPackage.QUERY_TYPE__PROPERTY_NAME);
+			propertyName = new EDataTypeUniqueEList(QName.class, this, WfsPackage.QUERY_TYPE__PROPERTY_NAME);
 		}
 		return propertyName;
 	}
@@ -354,7 +356,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getSrsName() {
+	public URI getSrsName() {
 		return srsName;
 	}
 
@@ -363,8 +365,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setSrsName(String newSrsName) {
-		String oldSrsName = srsName;
+	public void setSrsName(URI newSrsName) {
+		URI oldSrsName = srsName;
 		srsName = newSrsName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__SRS_NAME, oldSrsName, srsName));
@@ -469,7 +471,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				setHandle((String)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__SRS_NAME:
-				setSrsName((String)newValue);
+				setSrsName((URI)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__TYPE_NAME:
 				setTypeName((List)newValue);

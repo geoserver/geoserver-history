@@ -6,6 +6,7 @@
  */
 package net.opengis.wfs;
 
+import java.net.URI;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
@@ -93,7 +94,7 @@ public interface QueryType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Property Name</em>' attribute list.
 	 * @see net.opengis.wfs.WfsPackage#getQueryType_PropertyName()
-	 * @model type="org.opengis.filter.expression.PropertyName"
+	 * @model type="javax.xml.namespace.QName"
 	 */
 	EList getPropertyName();
 
@@ -258,11 +259,9 @@ public interface QueryType extends EObject{
 	 * @return the value of the '<em>Srs Name</em>' attribute.
 	 * @see #setSrsName(String)
 	 * @see net.opengis.wfs.WfsPackage#getQueryType_SrsName()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnyURI"
-	 *        extendedMetaData="kind='attribute' name='srsName'"
-	 * @generated
+	 * @model 
 	 */
-	String getSrsName();
+	URI getSrsName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.QueryType#getSrsName <em>Srs Name</em>}' attribute.
@@ -272,7 +271,7 @@ public interface QueryType extends EObject{
 	 * @see #getSrsName()
 	 * @generated
 	 */
-	void setSrsName(String value);
+	void setSrsName(URI value);
 
 	/**
 	 * Returns the value of the '<em><b>Type Name</b></em>' attribute.

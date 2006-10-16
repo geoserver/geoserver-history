@@ -6,6 +6,8 @@
  */
 package net.opengis.wfs.util;
 
+import java.net.URI;
+
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
@@ -232,6 +234,8 @@ public class WfsValidator extends EObjectValidator {
 				return validatePropertyName((PropertyName)value, diagnostics, context);
 			case WfsPackage.CALENDAR:
 				return validateCalendar((Calendar)value, diagnostics, context);
+			case WfsPackage.URI:
+				return validateURI((URI)value, diagnostics, context);
 			default: 
 				return true;
 		}
@@ -852,6 +856,15 @@ public class WfsValidator extends EObjectValidator {
 	 * @generated
 	 */
 	public boolean validateCalendar(Calendar calendar, DiagnosticChain diagnostics, Map context) {
+		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateURI(URI uri, DiagnosticChain diagnostics, Map context) {
 		return true;
 	}
 

@@ -2543,6 +2543,17 @@ public interface WfsPackage extends EPackage{
 
 
 	/**
+	 * The meta object id for the '<em>URI</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see java.net.URI
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getURI()
+	 * @generated
+	 */
+	int URI = 57;
+
+
+	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.ActionType <em>Action Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4688,6 +4699,17 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 */
 	EDataType getCalendar();
+
+	/**
+	 * Returns the meta object for data type '{@link java.net.URI <em>URI</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>URI</em>'.
+	 * @see java.net.URI
+	 * @model instanceClass="java.net.URI"
+	 * @generated
+	 */
+	EDataType getURI();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
