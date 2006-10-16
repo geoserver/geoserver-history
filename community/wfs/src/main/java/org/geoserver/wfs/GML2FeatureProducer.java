@@ -6,13 +6,18 @@ package org.geoserver.wfs;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
 import javax.xml.transform.TransformerException;
+
+import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
@@ -20,6 +25,7 @@ import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.ServiceException;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureResults;
+import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 
@@ -80,19 +86,7 @@ public class GML2FeatureProducer implements FeatureProducer {
     		this.catalog = catalog;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param outputFormat DOCUMENT ME!
-     *
-     * @return true if <code>outputFormat</code> is GML2 or GML2-GZIP
-     */
-    public boolean canProduce(String outputFormat) {
-        return formatName.equalsIgnoreCase(outputFormat)
-        || formatNameCompressed.equalsIgnoreCase(outputFormat);
-    }
-
-    /**
+     /**
      * prepares for encoding into GML2 format, optionally compressing its
      * output in gzip, if outputFormat is equal to GML2-GZIP
      *
@@ -101,25 +95,27 @@ public class GML2FeatureProducer implements FeatureProducer {
      *
      * @throws IOException DOCUMENT ME!
      */
-    public void prepare(String outputFormat, GetFeatureResults results)
+    public void prepare(String outputFormat, FeatureCollectionType results)
         throws IOException {
         this.compressOutput = formatNameCompressed.equalsIgnoreCase(outputFormat);
         
         transformer = createTransformer();
 
         FeatureTypeNamespaces ftNames = transformer.getFeatureTypeNamespaces();
-     
-        FeatureResults features;
-        FeatureTypeInfo meta = null;
-        String prefix = null;
-        
-        int resCount = results.getResultsetsCount();
-        Map ftNamespaces = new HashMap(resCount);
+        Map ftNamespaces = new HashMap();
 
-        for (int resIndex = 0; resIndex < resCount; resIndex++) {
-            features = results.getFeatures(resIndex);
-            meta = results.getTypeInfo(resIndex);
-            prefix = meta.namespacePrefix();
+        //TODO: the srs is a back, it only will work property when there is 
+        // one type, we really need to set it on the feature level
+        int srs = -1;
+        for ( Iterator f = results.getFeature().iterator(); f.hasNext(); ) {
+            FeatureResults features = (FeatureResults) f.next();
+            FeatureType featureType = features.getSchema();
+            
+            FeatureTypeInfo meta = catalog.featureType( 
+        		featureType.getNamespace().toString(), featureType.getTypeName()
+            );
+            
+        	String prefix = meta.namespacePrefix();
             String uri = catalog.getNamespaceSupport().getURI( prefix );
             
             ftNames.declareNamespace(features.getSchema(), prefix, uri);
@@ -132,6 +128,8 @@ public class GML2FeatureProducer implements FeatureProducer {
             	String location = typeSchemaLocation( wfs, meta );
         		ftNamespaces.put( uri, location );
             }
+            
+            srs = meta.getSRS();
         }
 
         System.setProperty("javax.xml.transform.TransformerFactory",
@@ -156,12 +154,16 @@ public class GML2FeatureProducer implements FeatureProducer {
         if (results.getLockId() != null) {
             transformer.setLockId( results.getLockId() );
         }
-
-        transformer.setSrsName(wfs.getSrsPrefix() + meta.getSRS());
+        
+        if ( srs != -1 ) {
+        	transformer.setSrsName( wfs.getSrsPrefix() + srs );	
+        }
     }
 
-    public String getOutputFormat() {
-    	return "GML2";
+    public Set getOutputFormats() {
+    	return new HashSet(
+			Arrays.asList( new String[] { "GML2", "text/xml; subtype=gml/2.1.2" } )
+    	);
     }
     
     /**
@@ -193,7 +195,7 @@ public class GML2FeatureProducer implements FeatureProducer {
      * @throws IOException DOCUMENT ME!
      * @throws IllegalStateException DOCUMENT ME!
      */
-    public void encode( OutputStream output, GetFeatureResults results )
+    public void encode( OutputStream output, FeatureCollectionType results )
         throws ServiceException, IOException {
     	
         if (results == null) {
@@ -213,7 +215,7 @@ public class GML2FeatureProducer implements FeatureProducer {
         // including the lockID
         //
         // execute should also fail if all of the locks could not be aquired
-        List resultsList = results.getFeatures();
+        List resultsList = results.getFeature();
         FeatureResults[] featureResults = (FeatureResults[]) resultsList
             .toArray(new FeatureResults[resultsList.size()]);
 
@@ -228,14 +230,14 @@ public class GML2FeatureProducer implements FeatureProducer {
             }
         } 
         catch (TransformerException gmlException) {
-            ServiceException serviceException = 
-            		new ServiceException(results.getHandle() + " error:" + gmlException.getMessage());
-            serviceException.initCause(gmlException);
-            throw serviceException;
+        	String msg = " error:" + gmlException.getMessage();
+            throw new ServiceException ( msg, gmlException ); 
         }
     }
     
-    public void produce(String outputFormat, GetFeatureResults results, OutputStream output) throws ServiceException, IOException {
+    public void produce(String outputFormat, FeatureCollectionType results, OutputStream output) 
+    	throws ServiceException, IOException {
+    	
     		prepare( outputFormat, results );
     		encode( output, results  );
     }
