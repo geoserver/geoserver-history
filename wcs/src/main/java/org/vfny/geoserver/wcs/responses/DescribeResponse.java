@@ -393,22 +393,20 @@ public class DescribeResponse implements Response {
 			tempResponse.append("\n  <rangeSet>");
 			tempResponse.append("\n   <RangeSet>");
 			tempResponse.append("\n    <name>" + cv.getName() + "</name>");
-			tempResponse.append("\n    <label>" + cv.getLabel() + "</label>");
+			tempResponse.append("\n    <label>" + cv.getLabel() + "</label>");			
+			tempResponse.append("\n      <axisDescription>");
+			tempResponse.append("\n        <AxisDescription>");
+			tempResponse.append("\n          <name>SampleDimensions</name>");
+			tempResponse.append("\n          <label>Grid Sample Dimensions</label>");
+			tempResponse.append("\n          <values>");
+			tempResponse.append("\n            <interval>");
+			tempResponse.append("\n              <min>0</min>");
+			tempResponse.append("\n              <max>" + numSampleDimensions + "</max>");
+			tempResponse.append("\n            </interval>");
+			tempResponse.append("\n          </values>");
+			tempResponse.append("\n        </AxisDescription>");
+			tempResponse.append("\n      </axisDescription>");
 			for (int sample = 0; sample < numSampleDimensions; sample++) {
-				tempResponse.append("\n      <axisDescription>");
-				tempResponse.append("\n        <AxisDescription>");
-				tempResponse.append("\n          <name>" + dims[sample].getName() + "</name>");
-				tempResponse.append("\n          <label>" + dims[sample].getDescription() + "</label>");
-				tempResponse.append("\n          <values>");
-				tempResponse.append("\n            <interval>");
-				tempResponse.append("\n              <min>"
-						+ dims[sample].getRange().getMinimum(true) + "</min>");
-				tempResponse.append("\n              <max>"
-						+ dims[sample].getRange().getMaximum(true) + "</max>");
-				tempResponse.append("\n            </interval>");
-				tempResponse.append("\n          </values>");
-				tempResponse.append("\n        </AxisDescription>");
-					tempResponse.append("\n      </axisDescription>");
 				Double[] nodata = dims[sample].getNullValues();
 				if (nodata != null)
 					for (int nd = 0; nd < nodata.length; nd++) {
