@@ -29,7 +29,13 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
+ *   <li>{@link net.opengis.wfs.GetFeatureWithLockType#getQuery <em>Query</em>}</li>
  *   <li>{@link net.opengis.wfs.GetFeatureWithLockType#getExpiry <em>Expiry</em>}</li>
+ *   <li>{@link net.opengis.wfs.GetFeatureWithLockType#getMaxFeatures <em>Max Features</em>}</li>
+ *   <li>{@link net.opengis.wfs.GetFeatureWithLockType#getOutputFormat <em>Output Format</em>}</li>
+ *   <li>{@link net.opengis.wfs.GetFeatureWithLockType#getResultType <em>Result Type</em>}</li>
+ *   <li>{@link net.opengis.wfs.GetFeatureWithLockType#getTraverseXlinkDepth <em>Traverse Xlink Depth</em>}</li>
+ *   <li>{@link net.opengis.wfs.GetFeatureWithLockType#getTraverseXlinkExpiry <em>Traverse Xlink Expiry</em>}</li>
  * </ul>
  * </p>
  *
@@ -37,7 +43,24 @@ import org.eclipse.emf.common.util.EList;
  * @model extendedMetaData="name='GetFeatureWithLockType' kind='elementOnly'"
  * @generated
  */
-public interface GetFeatureWithLockType extends GetFeatureType{
+public interface GetFeatureWithLockType extends BaseRequestType{
+	/**
+	 * Returns the value of the '<em><b>Query</b></em>' containment reference list.
+	 * The list contents are of type {@link net.opengis.wfs.QueryType}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Query</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Query</em>' containment reference list.
+	 * @see net.opengis.wfs.WfsPackage#getGetFeatureWithLockType_Query()
+	 * @model type="net.opengis.wfs.QueryType" containment="true" resolveProxies="false" required="true"
+	 *        extendedMetaData="kind='element' name='Query' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	EList getQuery();
+
 	/**
 	 * Returns the value of the '<em><b>Expiry</b></em>' attribute.
 	 * The default value is <code>"5"</code>.
@@ -98,5 +121,199 @@ public interface GetFeatureWithLockType extends GetFeatureType{
 	 * @generated
 	 */
 	boolean isSetExpiry();
+
+	/**
+	 * Returns the value of the '<em><b>Max Features</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * 
+	 *                      See definition of wfs:GetFeatureType.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Max Features</em>' attribute.
+	 * @see #setMaxFeatures(BigInteger)
+	 * @see net.opengis.wfs.WfsPackage#getGetFeatureWithLockType_MaxFeatures()
+	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.PositiveInteger"
+	 *        extendedMetaData="kind='attribute' name='maxFeatures'"
+	 * @generated
+	 */
+	BigInteger getMaxFeatures();
+
+	/**
+	 * Sets the value of the '{@link net.opengis.wfs.GetFeatureWithLockType#getMaxFeatures <em>Max Features</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Max Features</em>' attribute.
+	 * @see #getMaxFeatures()
+	 * @generated
+	 */
+	void setMaxFeatures(BigInteger value);
+
+	/**
+	 * Returns the value of the '<em><b>Output Format</b></em>' attribute.
+	 * The default value is <code>"text/xml; subtype=gml/3.1.1"</code>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * 
+	 *                      See definition of wfs:GetFeatureType.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Output Format</em>' attribute.
+	 * @see #isSetOutputFormat()
+	 * @see #unsetOutputFormat()
+	 * @see #setOutputFormat(String)
+	 * @see net.opengis.wfs.WfsPackage#getGetFeatureWithLockType_OutputFormat()
+	 * @model default="text/xml; subtype=gml/3.1.1" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
+	 *        extendedMetaData="kind='attribute' name='outputFormat'"
+	 * @generated
+	 */
+	String getOutputFormat();
+
+	/**
+	 * Sets the value of the '{@link net.opengis.wfs.GetFeatureWithLockType#getOutputFormat <em>Output Format</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Output Format</em>' attribute.
+	 * @see #isSetOutputFormat()
+	 * @see #unsetOutputFormat()
+	 * @see #getOutputFormat()
+	 * @generated
+	 */
+	void setOutputFormat(String value);
+
+	/**
+	 * Unsets the value of the '{@link net.opengis.wfs.GetFeatureWithLockType#getOutputFormat <em>Output Format</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isSetOutputFormat()
+	 * @see #getOutputFormat()
+	 * @see #setOutputFormat(String)
+	 * @generated
+	 */
+	void unsetOutputFormat();
+
+	/**
+	 * Returns whether the value of the '{@link net.opengis.wfs.GetFeatureWithLockType#getOutputFormat <em>Output Format</em>}' attribute is set.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return whether the value of the '<em>Output Format</em>' attribute is set.
+	 * @see #unsetOutputFormat()
+	 * @see #getOutputFormat()
+	 * @see #setOutputFormat(String)
+	 * @generated
+	 */
+	boolean isSetOutputFormat();
+
+	/**
+	 * Returns the value of the '<em><b>Result Type</b></em>' attribute.
+	 * The default value is <code>"results"</code>.
+	 * The literals are from the enumeration {@link net.opengis.wfs.ResultTypeType}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * 
+	 *                      See definition of wfs:GetFeatureType.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Result Type</em>' attribute.
+	 * @see net.opengis.wfs.ResultTypeType
+	 * @see #isSetResultType()
+	 * @see #unsetResultType()
+	 * @see #setResultType(ResultTypeType)
+	 * @see net.opengis.wfs.WfsPackage#getGetFeatureWithLockType_ResultType()
+	 * @model default="results" unique="false" unsettable="true"
+	 *        extendedMetaData="kind='attribute' name='resultType'"
+	 * @generated
+	 */
+	ResultTypeType getResultType();
+
+	/**
+	 * Sets the value of the '{@link net.opengis.wfs.GetFeatureWithLockType#getResultType <em>Result Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Result Type</em>' attribute.
+	 * @see net.opengis.wfs.ResultTypeType
+	 * @see #isSetResultType()
+	 * @see #unsetResultType()
+	 * @see #getResultType()
+	 * @generated
+	 */
+	void setResultType(ResultTypeType value);
+
+	/**
+	 * Unsets the value of the '{@link net.opengis.wfs.GetFeatureWithLockType#getResultType <em>Result Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isSetResultType()
+	 * @see #getResultType()
+	 * @see #setResultType(ResultTypeType)
+	 * @generated
+	 */
+	void unsetResultType();
+
+	/**
+	 * Returns whether the value of the '{@link net.opengis.wfs.GetFeatureWithLockType#getResultType <em>Result Type</em>}' attribute is set.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return whether the value of the '<em>Result Type</em>' attribute is set.
+	 * @see #unsetResultType()
+	 * @see #getResultType()
+	 * @see #setResultType(ResultTypeType)
+	 * @generated
+	 */
+	boolean isSetResultType();
+
+	/**
+	 * Returns the value of the '<em><b>Traverse Xlink Depth</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * 
+	 *                      See definition of wfs:GetFeatureType.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Traverse Xlink Depth</em>' attribute.
+	 * @see #setTraverseXlinkDepth(String)
+	 * @see net.opengis.wfs.WfsPackage#getGetFeatureWithLockType_TraverseXlinkDepth()
+	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
+	 *        extendedMetaData="kind='attribute' name='traverseXlinkDepth'"
+	 * @generated
+	 */
+	String getTraverseXlinkDepth();
+
+	/**
+	 * Sets the value of the '{@link net.opengis.wfs.GetFeatureWithLockType#getTraverseXlinkDepth <em>Traverse Xlink Depth</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Traverse Xlink Depth</em>' attribute.
+	 * @see #getTraverseXlinkDepth()
+	 * @generated
+	 */
+	void setTraverseXlinkDepth(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Traverse Xlink Expiry</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * 
+	 *                      See definition of wfs:GetFeatureType.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Traverse Xlink Expiry</em>' attribute.
+	 * @see #setTraverseXlinkExpiry(BigInteger)
+	 * @see net.opengis.wfs.WfsPackage#getGetFeatureWithLockType_TraverseXlinkExpiry()
+	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.PositiveInteger"
+	 *        extendedMetaData="kind='attribute' name='traverseXlinkExpiry'"
+	 * @generated
+	 */
+	BigInteger getTraverseXlinkExpiry();
+
+	/**
+	 * Sets the value of the '{@link net.opengis.wfs.GetFeatureWithLockType#getTraverseXlinkExpiry <em>Traverse Xlink Expiry</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Traverse Xlink Expiry</em>' attribute.
+	 * @see #getTraverseXlinkExpiry()
+	 * @generated
+	 */
+	void setTraverseXlinkExpiry(BigInteger value);
 
 } // GetFeatureWithLockType

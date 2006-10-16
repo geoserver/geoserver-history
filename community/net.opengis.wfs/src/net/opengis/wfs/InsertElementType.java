@@ -246,25 +246,11 @@ public interface InsertElementType extends EObject{
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
 	 * 
-	 *       The optional srsName attribute is used to assert the SRS of the
-	 *       incoming feature data, which can be useful if the incoming feature
-	 *       data does not have an SRS declared for each geometry. If the
-	 *       srsName attribute exists on an &lt;Insert&gt; element, its value shall
-	 *       be equivalent to the value of &lt;DefaultSRS&gt; or any of the
-	 *       &lt;OtherSRS&gt; of the relevant feature types. If, however, the SRS is
-	 *       not supported, the WFS shall raise an exception as described in
-	 *       subclause 7.7. If the srsName is not specified on the &lt;Insert&gt;
-	 *       element, the WFS shall interpret this to mean that the feature
-	 *       data is given in the &lt;DefaultSRS&gt; list, except where an SRS is
-	 *       specified on the feature geometry. In this case, if the SRS for
-	 *       such a geometry is one of the &lt;DefaultSRS&gt; or &lt;OtherSR&gt; values
-	 *       for the respective feature types, it will be transformed as
-	 *       required before insertion. However, if the aforesaid SRS is not
-	 *       supported for the respective feature type, the entire transaction
-	 *       shall fail and the WFS shall raise an exception as described in
-	 *       subclause 7.7. If atomic transactions are not supported by the
-	 *       underlying DBMS, the WFS shall skip any feature with an
-	 *       unsupported SRS and continue
+	 *               ===== PAV 12NOV2004 ====
+	 *               WHY IS THIS HERE? WOULDN'T WE KNOW THE INCOMING SRS FROM THE
+	 *               GML GEOMETRY ELEMENTS?   I ASSUME THAT IF THE INCOMING SRS
+	 *               DOES NOT MATCH ONE OF THE STORAGE SRS(s) THEN THE WFS WOULD
+	 *               EITHER PROJECT INTO THE STORAGE SRS OR RAISE AN EXCEPTION.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Srs Name</em>' attribute.
 	 * @see #setSrsName(String)

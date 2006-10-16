@@ -68,7 +68,7 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
 	 * @generated
 	 * @ordered
 	 */
-	protected static final QName NAME_EDEFAULT = null;
+	protected static final Object NAME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -78,7 +78,7 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
 	 * @generated
 	 * @ordered
 	 */
-	protected QName name = NAME_EDEFAULT;
+	protected Object name = NAME_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getTitle() <em>Title</em>}' attribute.
@@ -243,7 +243,7 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public QName getName() {
+	public Object getName() {
 		return name;
 	}
 
@@ -252,8 +252,8 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setName(QName newName) {
-		QName oldName = name;
+	public void setName(Object newName) {
+		Object oldName = name;
 		name = newName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.FEATURE_TYPE_TYPE__NAME, oldName, name));
@@ -576,7 +576,7 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
 	public void eSet(EStructuralFeature eFeature, Object newValue) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WfsPackage.FEATURE_TYPE_TYPE__NAME:
-				setName((QName)newValue);
+				setName((Object)newValue);
 				return;
 			case WfsPackage.FEATURE_TYPE_TYPE__TITLE:
 				setTitle((String)newValue);

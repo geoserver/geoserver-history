@@ -30,6 +30,8 @@ import net.opengis.wfs.UpdateElementType;
 import net.opengis.wfs.WFSCapabilitiesType;
 import net.opengis.wfs.WfsPackage;
 
+import net.opengis.wfs.XlinkPropertyNameType;
+
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EMap;
@@ -71,7 +73,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getLockId <em>Lock Id</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getNative <em>Native</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getProperty <em>Property</em>}</li>
- *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getProperyName <em>Propery Name</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getQuery <em>Query</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getServesGMLObjectTypeList <em>Serves GML Object Type List</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.DocumentRootImpl#getSupportsGMLObjectTypeList <em>Supports GML Object Type List</em>}</li>
@@ -128,26 +129,6 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	protected static final String LOCK_ID_EDEFAULT = null;
 
 	/**
-	 * The default value of the '{@link #getProperyName() <em>Propery Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getProperyName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final Object PROPERY_NAME_EDEFAULT = null;
-
-	/**
-	 * The default value of the '{@link #getXlinkPropertyName() <em>Xlink Property Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getXlinkPropertyName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final Object XLINK_PROPERTY_NAME_EDEFAULT = null;
-
-	/**
 	 * The default value of the '{@link #getPropertyName() <em>Property Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -155,7 +136,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object PROPERTY_NAME_EDEFAULT = null;
+	protected static final String PROPERTY_NAME_EDEFAULT = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -585,24 +566,6 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getProperyName() {
-		return (Object)getMixed().get(WfsPackage.eINSTANCE.getDocumentRoot_ProperyName(), true);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setProperyName(Object newProperyName) {
-		((FeatureMap.Internal)getMixed()).set(WfsPackage.eINSTANCE.getDocumentRoot_ProperyName(), newProperyName);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public QueryType getQuery() {
 		return (QueryType)getMixed().get(WfsPackage.eINSTANCE.getDocumentRoot_Query(), true);
 	}
@@ -792,8 +755,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getXlinkPropertyName() {
-		return (Object)getMixed().get(WfsPackage.eINSTANCE.getDocumentRoot_XlinkPropertyName(), true);
+	public XlinkPropertyNameType getXlinkPropertyName() {
+		return (XlinkPropertyNameType)getMixed().get(WfsPackage.eINSTANCE.getDocumentRoot_XlinkPropertyName(), true);
 	}
 
 	/**
@@ -801,7 +764,16 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setXlinkPropertyName(Object newXlinkPropertyName) {
+	public NotificationChain basicSetXlinkPropertyName(XlinkPropertyNameType newXlinkPropertyName, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(WfsPackage.eINSTANCE.getDocumentRoot_XlinkPropertyName(), newXlinkPropertyName, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setXlinkPropertyName(XlinkPropertyNameType newXlinkPropertyName) {
 		((FeatureMap.Internal)getMixed()).set(WfsPackage.eINSTANCE.getDocumentRoot_XlinkPropertyName(), newXlinkPropertyName);
 	}
 
@@ -810,8 +782,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getPropertyName() {
-		return (Object)getMixed().get(WfsPackage.eINSTANCE.getDocumentRoot_PropertyName(), true);
+	public String getPropertyName() {
+		return (String)getMixed().get(WfsPackage.eINSTANCE.getDocumentRoot_PropertyName(), true);
 	}
 
 	/**
@@ -819,7 +791,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setPropertyName(Object newPropertyName) {
+	public void setPropertyName(String newPropertyName) {
 		((FeatureMap.Internal)getMixed()).set(WfsPackage.eINSTANCE.getDocumentRoot_PropertyName(), newPropertyName);
 	}
 
@@ -877,6 +849,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 					return basicSetUpdate(null, msgs);
 				case WfsPackage.DOCUMENT_ROOT__WFS_CAPABILITIES:
 					return basicSetWfsCapabilities(null, msgs);
+				case WfsPackage.DOCUMENT_ROOT__XLINK_PROPERTY_NAME:
+					return basicSetXlinkPropertyName(null, msgs);
 				default:
 					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
 			}
@@ -925,8 +899,6 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return getNative();
 			case WfsPackage.DOCUMENT_ROOT__PROPERTY:
 				return getProperty();
-			case WfsPackage.DOCUMENT_ROOT__PROPERY_NAME:
-				return getProperyName();
 			case WfsPackage.DOCUMENT_ROOT__QUERY:
 				return getQuery();
 			case WfsPackage.DOCUMENT_ROOT__SERVES_GML_OBJECT_TYPE_LIST:
@@ -1010,9 +982,6 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 			case WfsPackage.DOCUMENT_ROOT__PROPERTY:
 				setProperty((PropertyType)newValue);
 				return;
-			case WfsPackage.DOCUMENT_ROOT__PROPERY_NAME:
-				setProperyName((Object)newValue);
-				return;
 			case WfsPackage.DOCUMENT_ROOT__QUERY:
 				setQuery((QueryType)newValue);
 				return;
@@ -1035,10 +1004,10 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				setWfsCapabilities((WFSCapabilitiesType)newValue);
 				return;
 			case WfsPackage.DOCUMENT_ROOT__XLINK_PROPERTY_NAME:
-				setXlinkPropertyName((Object)newValue);
+				setXlinkPropertyName((XlinkPropertyNameType)newValue);
 				return;
 			case WfsPackage.DOCUMENT_ROOT__PROPERTY_NAME:
-				setPropertyName((Object)newValue);
+				setPropertyName((String)newValue);
 				return;
 		}
 		eDynamicSet(eFeature, newValue);
@@ -1102,9 +1071,6 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 			case WfsPackage.DOCUMENT_ROOT__PROPERTY:
 				setProperty((PropertyType)null);
 				return;
-			case WfsPackage.DOCUMENT_ROOT__PROPERY_NAME:
-				setProperyName(PROPERY_NAME_EDEFAULT);
-				return;
 			case WfsPackage.DOCUMENT_ROOT__QUERY:
 				setQuery((QueryType)null);
 				return;
@@ -1127,7 +1093,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				setWfsCapabilities((WFSCapabilitiesType)null);
 				return;
 			case WfsPackage.DOCUMENT_ROOT__XLINK_PROPERTY_NAME:
-				setXlinkPropertyName(XLINK_PROPERTY_NAME_EDEFAULT);
+				setXlinkPropertyName((XlinkPropertyNameType)null);
 				return;
 			case WfsPackage.DOCUMENT_ROOT__PROPERTY_NAME:
 				setPropertyName(PROPERTY_NAME_EDEFAULT);
@@ -1177,8 +1143,6 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				return getNative() != null;
 			case WfsPackage.DOCUMENT_ROOT__PROPERTY:
 				return getProperty() != null;
-			case WfsPackage.DOCUMENT_ROOT__PROPERY_NAME:
-				return PROPERY_NAME_EDEFAULT == null ? getProperyName() != null : !PROPERY_NAME_EDEFAULT.equals(getProperyName());
 			case WfsPackage.DOCUMENT_ROOT__QUERY:
 				return getQuery() != null;
 			case WfsPackage.DOCUMENT_ROOT__SERVES_GML_OBJECT_TYPE_LIST:
@@ -1194,7 +1158,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 			case WfsPackage.DOCUMENT_ROOT__WFS_CAPABILITIES:
 				return getWfsCapabilities() != null;
 			case WfsPackage.DOCUMENT_ROOT__XLINK_PROPERTY_NAME:
-				return XLINK_PROPERTY_NAME_EDEFAULT == null ? getXlinkPropertyName() != null : !XLINK_PROPERTY_NAME_EDEFAULT.equals(getXlinkPropertyName());
+				return getXlinkPropertyName() != null;
 			case WfsPackage.DOCUMENT_ROOT__PROPERTY_NAME:
 				return PROPERTY_NAME_EDEFAULT == null ? getPropertyName() != null : !PROPERTY_NAME_EDEFAULT.equals(getPropertyName());
 		}

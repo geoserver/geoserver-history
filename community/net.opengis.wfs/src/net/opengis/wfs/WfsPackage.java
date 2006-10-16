@@ -26,27 +26,11 @@ import org.eclipse.emf.ecore.EReference;
  *   <li>and each data type</li>
  * </ul>
  * <!-- end-user-doc -->
- * <!-- begin-model-doc -->
- * This XML Schema Document defines the GetCapabilities operation request and response XML elements and types, which are common to all OWSs. This XML Schema shall be edited by each OWS, for example, to specify a specific value for the "service" attribute.
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
- * This XML Schema Document encodes the common "ServiceIdentification" section of the GetCapabilities operation response, known as the Capabilities XML document. This section encodes the SV_ServiceIdentification class of ISO 19119 (OGC Abstract Specification Topic 12).
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
- * This XML Schema Document encodes the parts of the MD_DataIdentification class of ISO 19115 (OGC Abstract Specification Topic 11) which are expected to be used for most datasets. This Schema also encodes the parts of this class that are expected to be useful for other metadata. Both are expected to be used within the Contents section of OWS service metadata (Capabilities) documents.
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
- * This XML Schema Document encodes various parameters and parameter types that can be used in OWS operation requests and responses.
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
- * This XML Schema Document encodes the parts of ISO 19115 used by the common "ServiceIdentification" and "ServiceProvider" sections of the GetCapabilities operation response, known as the service metadata XML document. The parts encoded here are the MD_Keywords, CI_ResponsibleParty, and related classes. This XML Schema largely follows the current draft for ISO 19139, with the addition of documentation text extracted and edited from Annex B of ISO 19115. The UML package prefixes were omitted from XML names, and the XML element names were all capitalized, for consistency with other OWS Schemas. Also, the optional smXML:id attributes were omitted, as not being useful in a service metadata document.
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
- * This XML Schema Document encodes the common "ServiceProvider" section of the GetCapabilities operation response, known as the Capabilities XML document. This section encodes the SV_ServiceProvider class of ISO 19119 (OGC Abstract Specification Topic 12).
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
- * This XML Schema Document encodes the basic contents of the "OperationsMetadata" section of the GetCapabilities operation response, also known as the Capabilities XML document.
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
- * <!-- end-model-doc -->
  * @see net.opengis.wfs.WfsFactory
  * @model kind="package"
  * @generated
  */
-public interface WfsPackage extends EPackage{
+public interface WfsPackage extends EPackage {
 	/**
 	 * The package name.
 	 * <!-- begin-user-doc -->
@@ -61,7 +45,7 @@ public interface WfsPackage extends EPackage{
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "http://www.opengis.net/wfs";
+	String eNS_URI = "http:///net/opengis/wfs.ecore";
 
 	/**
 	 * The package namespace name.
@@ -69,7 +53,7 @@ public interface WfsPackage extends EPackage{
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_PREFIX = "wfs";
+	String eNS_PREFIX = "net.opengis.wfs";
 
 	/**
 	 * The singleton instance of the package.
@@ -445,22 +429,13 @@ public interface WfsPackage extends EPackage{
 	int DOCUMENT_ROOT__PROPERTY = 16;
 
 	/**
-	 * The feature id for the '<em><b>Propery Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DOCUMENT_ROOT__PROPERY_NAME = 17;
-
-	/**
 	 * The feature id for the '<em><b>Query</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__QUERY = 18;
+	int DOCUMENT_ROOT__QUERY = 17;
 
 	/**
 	 * The feature id for the '<em><b>Serves GML Object Type List</b></em>' containment reference.
@@ -469,7 +444,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__SERVES_GML_OBJECT_TYPE_LIST = 19;
+	int DOCUMENT_ROOT__SERVES_GML_OBJECT_TYPE_LIST = 18;
 
 	/**
 	 * The feature id for the '<em><b>Supports GML Object Type List</b></em>' containment reference.
@@ -478,7 +453,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__SUPPORTS_GML_OBJECT_TYPE_LIST = 20;
+	int DOCUMENT_ROOT__SUPPORTS_GML_OBJECT_TYPE_LIST = 19;
 
 	/**
 	 * The feature id for the '<em><b>Transaction</b></em>' containment reference.
@@ -487,7 +462,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__TRANSACTION = 21;
+	int DOCUMENT_ROOT__TRANSACTION = 20;
 
 	/**
 	 * The feature id for the '<em><b>Transaction Response</b></em>' containment reference.
@@ -496,7 +471,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__TRANSACTION_RESPONSE = 22;
+	int DOCUMENT_ROOT__TRANSACTION_RESPONSE = 21;
 
 	/**
 	 * The feature id for the '<em><b>Update</b></em>' containment reference.
@@ -505,7 +480,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__UPDATE = 23;
+	int DOCUMENT_ROOT__UPDATE = 22;
 
 	/**
 	 * The feature id for the '<em><b>Wfs Capabilities</b></em>' containment reference.
@@ -514,16 +489,16 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__WFS_CAPABILITIES = 24;
+	int DOCUMENT_ROOT__WFS_CAPABILITIES = 23;
 
 	/**
-	 * The feature id for the '<em><b>Xlink Property Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Xlink Property Name</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__XLINK_PROPERTY_NAME = 25;
+	int DOCUMENT_ROOT__XLINK_PROPERTY_NAME = 24;
 
 	/**
 	 * The feature id for the '<em><b>Property Name</b></em>' attribute.
@@ -532,7 +507,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__PROPERTY_NAME = 26;
+	int DOCUMENT_ROOT__PROPERTY_NAME = 25;
 
 	/**
 	 * The number of structural features of the the '<em>Document Root</em>' class.
@@ -541,7 +516,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT_FEATURE_COUNT = 27;
+	int DOCUMENT_ROOT_FEATURE_COUNT = 26;
 
 	/**
 	 * The meta object id for the '{@link net.opengis.wfs.impl.FeatureCollectionTypeImpl <em>Feature Collection Type</em>}' class.
@@ -563,13 +538,22 @@ public interface WfsPackage extends EPackage{
 	int FEATURE_COLLECTION_TYPE__LOCK_ID = 0;
 
 	/**
+	 * The feature id for the '<em><b>Time Stamp</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE_COLLECTION_TYPE__TIME_STAMP = 1;
+
+	/**
 	 * The feature id for the '<em><b>Number Of Features</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES = 1;
+	int FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES = 2;
 
 	/**
 	 * The feature id for the '<em><b>Feature</b></em>' attribute list.
@@ -578,16 +562,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE_COLLECTION_TYPE__FEATURE = 2;
-
-	/**
-	 * The feature id for the '<em><b>Time Stamp</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FEATURE_COLLECTION_TYPE__TIME_STAMP = 3;
+	int FEATURE_COLLECTION_TYPE__FEATURE = 3;
 
 	/**
 	 * The number of structural features of the the '<em>Feature Collection Type</em>' class.
@@ -599,80 +574,6 @@ public interface WfsPackage extends EPackage{
 	int FEATURE_COLLECTION_TYPE_FEATURE_COUNT = 4;
 
 	/**
-	 * The meta object id for the '{@link net.opengis.wfs.impl.FeaturesLockedTypeImpl <em>Features Locked Type</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see net.opengis.wfs.impl.FeaturesLockedTypeImpl
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFeaturesLockedType()
-	 * @generated
-	 */
-	int FEATURES_LOCKED_TYPE = 6;
-
-	/**
-	 * The feature id for the '<em><b>Group</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FEATURES_LOCKED_TYPE__GROUP = 0;
-
-	/**
-	 * The feature id for the '<em><b>Feature Id</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FEATURES_LOCKED_TYPE__FEATURE_ID = 1;
-
-	/**
-	 * The number of structural features of the the '<em>Features Locked Type</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FEATURES_LOCKED_TYPE_FEATURE_COUNT = 2;
-
-	/**
-	 * The meta object id for the '{@link net.opengis.wfs.impl.FeaturesNotLockedTypeImpl <em>Features Not Locked Type</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see net.opengis.wfs.impl.FeaturesNotLockedTypeImpl
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFeaturesNotLockedType()
-	 * @generated
-	 */
-	int FEATURES_NOT_LOCKED_TYPE = 7;
-
-	/**
-	 * The feature id for the '<em><b>Group</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FEATURES_NOT_LOCKED_TYPE__GROUP = 0;
-
-	/**
-	 * The feature id for the '<em><b>Feature Id</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FEATURES_NOT_LOCKED_TYPE__FEATURE_ID = 1;
-
-	/**
-	 * The number of structural features of the the '<em>Features Not Locked Type</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FEATURES_NOT_LOCKED_TYPE_FEATURE_COUNT = 2;
-
-	/**
 	 * The meta object id for the '{@link net.opengis.wfs.impl.FeatureTypeListTypeImpl <em>Feature Type List Type</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -680,7 +581,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFeatureTypeListType()
 	 * @generated
 	 */
-	int FEATURE_TYPE_LIST_TYPE = 8;
+	int FEATURE_TYPE_LIST_TYPE = 6;
 
 	/**
 	 * The feature id for the '<em><b>Operations</b></em>' containment reference.
@@ -717,7 +618,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFeatureTypeType()
 	 * @generated
 	 */
-	int FEATURE_TYPE_TYPE = 9;
+	int FEATURE_TYPE_TYPE = 7;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -828,6 +729,172 @@ public interface WfsPackage extends EPackage{
 	int FEATURE_TYPE_TYPE_FEATURE_COUNT = 11;
 
 	/**
+	 * The meta object id for the '{@link net.opengis.wfs.impl.FeaturesLockedTypeImpl <em>Features Locked Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see net.opengis.wfs.impl.FeaturesLockedTypeImpl
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFeaturesLockedType()
+	 * @generated
+	 */
+	int FEATURES_LOCKED_TYPE = 8;
+
+	/**
+	 * The feature id for the '<em><b>Group</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURES_LOCKED_TYPE__GROUP = 0;
+
+	/**
+	 * The feature id for the '<em><b>Feature Id</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURES_LOCKED_TYPE__FEATURE_ID = 1;
+
+	/**
+	 * The number of structural features of the the '<em>Features Locked Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURES_LOCKED_TYPE_FEATURE_COUNT = 2;
+
+	/**
+	 * The meta object id for the '{@link net.opengis.wfs.impl.FeaturesNotLockedTypeImpl <em>Features Not Locked Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see net.opengis.wfs.impl.FeaturesNotLockedTypeImpl
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFeaturesNotLockedType()
+	 * @generated
+	 */
+	int FEATURES_NOT_LOCKED_TYPE = 9;
+
+	/**
+	 * The feature id for the '<em><b>Group</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURES_NOT_LOCKED_TYPE__GROUP = 0;
+
+	/**
+	 * The feature id for the '<em><b>Feature Id</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURES_NOT_LOCKED_TYPE__FEATURE_ID = 1;
+
+	/**
+	 * The number of structural features of the the '<em>Features Not Locked Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURES_NOT_LOCKED_TYPE_FEATURE_COUNT = 2;
+
+	/**
+	 * The meta object id for the '{@link net.opengis.wfs.impl.GMLObjectTypeListTypeImpl <em>GML Object Type List Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see net.opengis.wfs.impl.GMLObjectTypeListTypeImpl
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getGMLObjectTypeListType()
+	 * @generated
+	 */
+	int GML_OBJECT_TYPE_LIST_TYPE = 10;
+
+	/**
+	 * The feature id for the '<em><b>GML Object Type</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE = 0;
+
+	/**
+	 * The number of structural features of the the '<em>GML Object Type List Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GML_OBJECT_TYPE_LIST_TYPE_FEATURE_COUNT = 1;
+
+	/**
+	 * The meta object id for the '{@link net.opengis.wfs.impl.GMLObjectTypeTypeImpl <em>GML Object Type Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see net.opengis.wfs.impl.GMLObjectTypeTypeImpl
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getGMLObjectTypeType()
+	 * @generated
+	 */
+	int GML_OBJECT_TYPE_TYPE = 11;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GML_OBJECT_TYPE_TYPE__NAME = 0;
+
+	/**
+	 * The feature id for the '<em><b>Title</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GML_OBJECT_TYPE_TYPE__TITLE = 1;
+
+	/**
+	 * The feature id for the '<em><b>Abstract</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GML_OBJECT_TYPE_TYPE__ABSTRACT = 2;
+
+	/**
+	 * The feature id for the '<em><b>Keywords</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GML_OBJECT_TYPE_TYPE__KEYWORDS = 3;
+
+	/**
+	 * The feature id for the '<em><b>Output Formats</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS = 4;
+
+	/**
+	 * The number of structural features of the the '<em>GML Object Type Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GML_OBJECT_TYPE_TYPE_FEATURE_COUNT = 5;
+
+	/**
 	 * The meta object id for the '{@link net.opengis.wfs.impl.GetCapabilitiesTypeImpl <em>Get Capabilities Type</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -835,7 +902,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getGetCapabilitiesType()
 	 * @generated
 	 */
-	int GET_CAPABILITIES_TYPE = 10;
+	int GET_CAPABILITIES_TYPE = 12;
 
 	/**
 	 * The feature id for the '<em><b>Accept Versions</b></em>' containment reference.
@@ -899,7 +966,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getGetFeatureType()
 	 * @generated
 	 */
-	int GET_FEATURE_TYPE = 11;
+	int GET_FEATURE_TYPE = 13;
 
 	/**
 	 * The feature id for the '<em><b>Handle</b></em>' attribute.
@@ -999,7 +1066,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getGetFeatureWithLockType()
 	 * @generated
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE = 12;
+	int GET_FEATURE_WITH_LOCK_TYPE = 14;
 
 	/**
 	 * The feature id for the '<em><b>Handle</b></em>' attribute.
@@ -1008,7 +1075,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__HANDLE = GET_FEATURE_TYPE__HANDLE;
+	int GET_FEATURE_WITH_LOCK_TYPE__HANDLE = BASE_REQUEST_TYPE__HANDLE;
 
 	/**
 	 * The feature id for the '<em><b>Service</b></em>' attribute.
@@ -1017,7 +1084,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__SERVICE = GET_FEATURE_TYPE__SERVICE;
+	int GET_FEATURE_WITH_LOCK_TYPE__SERVICE = BASE_REQUEST_TYPE__SERVICE;
 
 	/**
 	 * The feature id for the '<em><b>Version</b></em>' attribute.
@@ -1026,7 +1093,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__VERSION = GET_FEATURE_TYPE__VERSION;
+	int GET_FEATURE_WITH_LOCK_TYPE__VERSION = BASE_REQUEST_TYPE__VERSION;
 
 	/**
 	 * The feature id for the '<em><b>Query</b></em>' containment reference list.
@@ -1035,52 +1102,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__QUERY = GET_FEATURE_TYPE__QUERY;
-
-	/**
-	 * The feature id for the '<em><b>Max Features</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__MAX_FEATURES = GET_FEATURE_TYPE__MAX_FEATURES;
-
-	/**
-	 * The feature id for the '<em><b>Output Format</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__OUTPUT_FORMAT = GET_FEATURE_TYPE__OUTPUT_FORMAT;
-
-	/**
-	 * The feature id for the '<em><b>Result Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__RESULT_TYPE = GET_FEATURE_TYPE__RESULT_TYPE;
-
-	/**
-	 * The feature id for the '<em><b>Traverse Xlink Depth</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_DEPTH = GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH;
-
-	/**
-	 * The feature id for the '<em><b>Traverse Xlink Expiry</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_EXPIRY = GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY;
+	int GET_FEATURE_WITH_LOCK_TYPE__QUERY = BASE_REQUEST_TYPE_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Expiry</b></em>' attribute.
@@ -1089,7 +1111,52 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE__EXPIRY = GET_FEATURE_TYPE_FEATURE_COUNT + 0;
+	int GET_FEATURE_WITH_LOCK_TYPE__EXPIRY = BASE_REQUEST_TYPE_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Max Features</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GET_FEATURE_WITH_LOCK_TYPE__MAX_FEATURES = BASE_REQUEST_TYPE_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Output Format</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GET_FEATURE_WITH_LOCK_TYPE__OUTPUT_FORMAT = BASE_REQUEST_TYPE_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Result Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GET_FEATURE_WITH_LOCK_TYPE__RESULT_TYPE = BASE_REQUEST_TYPE_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Traverse Xlink Depth</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_DEPTH = BASE_REQUEST_TYPE_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Traverse Xlink Expiry</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_EXPIRY = BASE_REQUEST_TYPE_FEATURE_COUNT + 6;
 
 	/**
 	 * The number of structural features of the the '<em>Get Feature With Lock Type</em>' class.
@@ -1098,7 +1165,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int GET_FEATURE_WITH_LOCK_TYPE_FEATURE_COUNT = GET_FEATURE_TYPE_FEATURE_COUNT + 1;
+	int GET_FEATURE_WITH_LOCK_TYPE_FEATURE_COUNT = BASE_REQUEST_TYPE_FEATURE_COUNT + 7;
 
 	/**
 	 * The meta object id for the '{@link net.opengis.wfs.impl.GetGmlObjectTypeImpl <em>Get Gml Object Type</em>}' class.
@@ -1108,7 +1175,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getGetGmlObjectType()
 	 * @generated
 	 */
-	int GET_GML_OBJECT_TYPE = 13;
+	int GET_GML_OBJECT_TYPE = 15;
 
 	/**
 	 * The feature id for the '<em><b>Handle</b></em>' attribute.
@@ -1183,135 +1250,6 @@ public interface WfsPackage extends EPackage{
 	int GET_GML_OBJECT_TYPE_FEATURE_COUNT = BASE_REQUEST_TYPE_FEATURE_COUNT + 4;
 
 	/**
-	 * The meta object id for the '{@link net.opengis.wfs.impl.GMLObjectTypeListTypeImpl <em>GML Object Type List Type</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see net.opengis.wfs.impl.GMLObjectTypeListTypeImpl
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getGMLObjectTypeListType()
-	 * @generated
-	 */
-	int GML_OBJECT_TYPE_LIST_TYPE = 14;
-
-	/**
-	 * The feature id for the '<em><b>GML Object Type</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE = 0;
-
-	/**
-	 * The number of structural features of the the '<em>GML Object Type List Type</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GML_OBJECT_TYPE_LIST_TYPE_FEATURE_COUNT = 1;
-
-	/**
-	 * The meta object id for the '{@link net.opengis.wfs.impl.GMLObjectTypeTypeImpl <em>GML Object Type Type</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see net.opengis.wfs.impl.GMLObjectTypeTypeImpl
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getGMLObjectTypeType()
-	 * @generated
-	 */
-	int GML_OBJECT_TYPE_TYPE = 15;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GML_OBJECT_TYPE_TYPE__NAME = 0;
-
-	/**
-	 * The feature id for the '<em><b>Title</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GML_OBJECT_TYPE_TYPE__TITLE = 1;
-
-	/**
-	 * The feature id for the '<em><b>Abstract</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GML_OBJECT_TYPE_TYPE__ABSTRACT = 2;
-
-	/**
-	 * The feature id for the '<em><b>Keywords</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GML_OBJECT_TYPE_TYPE__KEYWORDS = 3;
-
-	/**
-	 * The feature id for the '<em><b>Output Formats</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS = 4;
-
-	/**
-	 * The number of structural features of the the '<em>GML Object Type Type</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GML_OBJECT_TYPE_TYPE_FEATURE_COUNT = 5;
-
-	/**
-	 * The meta object id for the '{@link net.opengis.wfs.impl.InsertedFeatureTypeImpl <em>Inserted Feature Type</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see net.opengis.wfs.impl.InsertedFeatureTypeImpl
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getInsertedFeatureType()
-	 * @generated
-	 */
-	int INSERTED_FEATURE_TYPE = 16;
-
-	/**
-	 * The feature id for the '<em><b>Feature Id</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSERTED_FEATURE_TYPE__FEATURE_ID = 0;
-
-	/**
-	 * The feature id for the '<em><b>Handle</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSERTED_FEATURE_TYPE__HANDLE = 1;
-
-	/**
-	 * The number of structural features of the the '<em>Inserted Feature Type</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSERTED_FEATURE_TYPE_FEATURE_COUNT = 2;
-
-	/**
 	 * The meta object id for the '{@link net.opengis.wfs.impl.InsertElementTypeImpl <em>Insert Element Type</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1319,7 +1257,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getInsertElementType()
 	 * @generated
 	 */
-	int INSERT_ELEMENT_TYPE = 17;
+	int INSERT_ELEMENT_TYPE = 16;
 
 	/**
 	 * The feature id for the '<em><b>Feature Collection</b></em>' attribute.
@@ -1392,7 +1330,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getInsertResultType()
 	 * @generated
 	 */
-	int INSERT_RESULT_TYPE = 18;
+	int INSERT_RESULT_TYPE = 17;
 
 	/**
 	 * The feature id for the '<em><b>Feature</b></em>' containment reference list.
@@ -1413,6 +1351,71 @@ public interface WfsPackage extends EPackage{
 	int INSERT_RESULT_TYPE_FEATURE_COUNT = 1;
 
 	/**
+	 * The meta object id for the '{@link net.opengis.wfs.impl.InsertResultsTypeImpl <em>Insert Results Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see net.opengis.wfs.impl.InsertResultsTypeImpl
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getInsertResultsType()
+	 * @generated
+	 */
+	int INSERT_RESULTS_TYPE = 18;
+
+	/**
+	 * The feature id for the '<em><b>Feature</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_RESULTS_TYPE__FEATURE = 0;
+
+	/**
+	 * The number of structural features of the the '<em>Insert Results Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERT_RESULTS_TYPE_FEATURE_COUNT = 1;
+
+	/**
+	 * The meta object id for the '{@link net.opengis.wfs.impl.InsertedFeatureTypeImpl <em>Inserted Feature Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see net.opengis.wfs.impl.InsertedFeatureTypeImpl
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getInsertedFeatureType()
+	 * @generated
+	 */
+	int INSERTED_FEATURE_TYPE = 19;
+
+	/**
+	 * The feature id for the '<em><b>Feature Id</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERTED_FEATURE_TYPE__FEATURE_ID = 0;
+
+	/**
+	 * The feature id for the '<em><b>Handle</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERTED_FEATURE_TYPE__HANDLE = 1;
+
+	/**
+	 * The number of structural features of the the '<em>Inserted Feature Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSERTED_FEATURE_TYPE_FEATURE_COUNT = 2;
+
+	/**
 	 * The meta object id for the '{@link net.opengis.wfs.impl.LockFeatureResponseTypeImpl <em>Lock Feature Response Type</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1420,7 +1423,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getLockFeatureResponseType()
 	 * @generated
 	 */
-	int LOCK_FEATURE_RESPONSE_TYPE = 19;
+	int LOCK_FEATURE_RESPONSE_TYPE = 20;
 
 	/**
 	 * The feature id for the '<em><b>Lock Id</b></em>' attribute.
@@ -1466,7 +1469,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getLockFeatureType()
 	 * @generated
 	 */
-	int LOCK_FEATURE_TYPE = 20;
+	int LOCK_FEATURE_TYPE = 21;
 
 	/**
 	 * The feature id for the '<em><b>Handle</b></em>' attribute.
@@ -1539,7 +1542,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getLockType()
 	 * @generated
 	 */
-	int LOCK_TYPE = 21;
+	int LOCK_TYPE = 22;
 
 	/**
 	 * The feature id for the '<em><b>Filter</b></em>' attribute.
@@ -1585,7 +1588,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getMetadataURLType()
 	 * @generated
 	 */
-	int METADATA_URL_TYPE = 22;
+	int METADATA_URL_TYPE = 23;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -1631,7 +1634,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getNativeType()
 	 * @generated
 	 */
-	int NATIVE_TYPE = 23;
+	int NATIVE_TYPE = 24;
 
 	/**
 	 * The feature id for the '<em><b>Safe To Ignore</b></em>' attribute.
@@ -1668,7 +1671,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getNoSRSType()
 	 * @generated
 	 */
-	int NO_SRS_TYPE = 24;
+	int NO_SRS_TYPE = 25;
 
 	/**
 	 * The number of structural features of the the '<em>No SRS Type</em>' class.
@@ -1687,7 +1690,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getOperationsType()
 	 * @generated
 	 */
-	int OPERATIONS_TYPE = 25;
+	int OPERATIONS_TYPE = 26;
 
 	/**
 	 * The feature id for the '<em><b>Operation</b></em>' attribute list.
@@ -1715,7 +1718,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getOutputFormatListType()
 	 * @generated
 	 */
-	int OUTPUT_FORMAT_LIST_TYPE = 26;
+	int OUTPUT_FORMAT_LIST_TYPE = 27;
 
 	/**
 	 * The feature id for the '<em><b>Group</b></em>' attribute list.
@@ -1752,7 +1755,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getPropertyType()
 	 * @generated
 	 */
-	int PROPERTY_TYPE = 27;
+	int PROPERTY_TYPE = 28;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1764,7 +1767,7 @@ public interface WfsPackage extends EPackage{
 	int PROPERTY_TYPE__NAME = 0;
 
 	/**
-	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * The feature id for the '<em><b>Value</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1789,7 +1792,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getQueryType()
 	 * @generated
 	 */
-	int QUERY_TYPE = 28;
+	int QUERY_TYPE = 29;
 
 	/**
 	 * The feature id for the '<em><b>Group</b></em>' attribute list.
@@ -1810,13 +1813,22 @@ public interface WfsPackage extends EPackage{
 	int QUERY_TYPE__PROPERTY_NAME = 1;
 
 	/**
+	 * The feature id for the '<em><b>Xlink Property Name</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int QUERY_TYPE__XLINK_PROPERTY_NAME = 2;
+
+	/**
 	 * The feature id for the '<em><b>Function</b></em>' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int QUERY_TYPE__FUNCTION = 2;
+	int QUERY_TYPE__FUNCTION = 3;
 
 	/**
 	 * The feature id for the '<em><b>Filter</b></em>' attribute.
@@ -1825,7 +1837,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int QUERY_TYPE__FILTER = 3;
+	int QUERY_TYPE__FILTER = 4;
 
 	/**
 	 * The feature id for the '<em><b>Sort By</b></em>' attribute.
@@ -1834,7 +1846,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int QUERY_TYPE__SORT_BY = 4;
+	int QUERY_TYPE__SORT_BY = 5;
 
 	/**
 	 * The feature id for the '<em><b>Feature Version</b></em>' attribute.
@@ -1843,7 +1855,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int QUERY_TYPE__FEATURE_VERSION = 5;
+	int QUERY_TYPE__FEATURE_VERSION = 6;
 
 	/**
 	 * The feature id for the '<em><b>Handle</b></em>' attribute.
@@ -1852,7 +1864,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int QUERY_TYPE__HANDLE = 6;
+	int QUERY_TYPE__HANDLE = 7;
 
 	/**
 	 * The feature id for the '<em><b>Srs Name</b></em>' attribute.
@@ -1861,7 +1873,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int QUERY_TYPE__SRS_NAME = 7;
+	int QUERY_TYPE__SRS_NAME = 8;
 
 	/**
 	 * The feature id for the '<em><b>Type Name</b></em>' attribute.
@@ -1870,7 +1882,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int QUERY_TYPE__TYPE_NAME = 8;
+	int QUERY_TYPE__TYPE_NAME = 9;
 
 	/**
 	 * The number of structural features of the the '<em>Query Type</em>' class.
@@ -1879,7 +1891,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int QUERY_TYPE_FEATURE_COUNT = 9;
+	int QUERY_TYPE_FEATURE_COUNT = 10;
 
 	/**
 	 * The meta object id for the '{@link net.opengis.wfs.impl.TransactionResponseTypeImpl <em>Transaction Response Type</em>}' class.
@@ -1889,7 +1901,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getTransactionResponseType()
 	 * @generated
 	 */
-	int TRANSACTION_RESPONSE_TYPE = 29;
+	int TRANSACTION_RESPONSE_TYPE = 30;
 
 	/**
 	 * The feature id for the '<em><b>Transaction Summary</b></em>' containment reference.
@@ -1944,16 +1956,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getTransactionResultsType()
 	 * @generated
 	 */
-	int TRANSACTION_RESULTS_TYPE = 30;
-
-	/**
-	 * The feature id for the '<em><b>Action</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TRANSACTION_RESULTS_TYPE__ACTION = 0;
+	int TRANSACTION_RESULTS_TYPE = 31;
 
 	/**
 	 * The feature id for the '<em><b>Handle</b></em>' attribute.
@@ -1962,7 +1965,16 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int TRANSACTION_RESULTS_TYPE__HANDLE = 1;
+	int TRANSACTION_RESULTS_TYPE__HANDLE = 0;
+
+	/**
+	 * The feature id for the '<em><b>Action</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSACTION_RESULTS_TYPE__ACTION = 1;
 
 	/**
 	 * The number of structural features of the the '<em>Transaction Results Type</em>' class.
@@ -1981,7 +1993,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getTransactionSummaryType()
 	 * @generated
 	 */
-	int TRANSACTION_SUMMARY_TYPE = 31;
+	int TRANSACTION_SUMMARY_TYPE = 32;
 
 	/**
 	 * The feature id for the '<em><b>Total Inserted</b></em>' attribute.
@@ -2027,106 +2039,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getTransactionType()
 	 * @generated
 	 */
-	int TRANSACTION_TYPE = 32;
-
-	/**
-	 * The feature id for the '<em><b>Accept Versions</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TRANSACTION_TYPE__ACCEPT_VERSIONS = OWSPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS;
-
-	/**
-	 * The feature id for the '<em><b>Sections</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TRANSACTION_TYPE__SECTIONS = OWSPackage.GET_CAPABILITIES_TYPE__SECTIONS;
-
-	/**
-	 * The feature id for the '<em><b>Accept Formats</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TRANSACTION_TYPE__ACCEPT_FORMATS = OWSPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS;
-
-	/**
-	 * The feature id for the '<em><b>Update Sequence</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TRANSACTION_TYPE__UPDATE_SEQUENCE = OWSPackage.GET_CAPABILITIES_TYPE__UPDATE_SEQUENCE;
-
-	/**
-	 * The feature id for the '<em><b>Lock Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TRANSACTION_TYPE__LOCK_ID = OWSPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Group</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TRANSACTION_TYPE__GROUP = OWSPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Insert</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TRANSACTION_TYPE__INSERT = OWSPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>Update</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TRANSACTION_TYPE__UPDATE = OWSPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 3;
-
-	/**
-	 * The feature id for the '<em><b>Delete</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TRANSACTION_TYPE__DELETE = OWSPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 4;
-
-	/**
-	 * The feature id for the '<em><b>Native</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TRANSACTION_TYPE__NATIVE = OWSPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 5;
-
-	/**
-	 * The feature id for the '<em><b>Release Action</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TRANSACTION_TYPE__RELEASE_ACTION = OWSPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 6;
+	int TRANSACTION_TYPE = 33;
 
 	/**
 	 * The feature id for the '<em><b>Handle</b></em>' attribute.
@@ -2135,7 +2048,88 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int TRANSACTION_TYPE__HANDLE = OWSPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 7;
+	int TRANSACTION_TYPE__HANDLE = BASE_REQUEST_TYPE__HANDLE;
+
+	/**
+	 * The feature id for the '<em><b>Service</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSACTION_TYPE__SERVICE = BASE_REQUEST_TYPE__SERVICE;
+
+	/**
+	 * The feature id for the '<em><b>Version</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSACTION_TYPE__VERSION = BASE_REQUEST_TYPE__VERSION;
+
+	/**
+	 * The feature id for the '<em><b>Lock Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSACTION_TYPE__LOCK_ID = BASE_REQUEST_TYPE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Group</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSACTION_TYPE__GROUP = BASE_REQUEST_TYPE_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Insert</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSACTION_TYPE__INSERT = BASE_REQUEST_TYPE_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Update</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSACTION_TYPE__UPDATE = BASE_REQUEST_TYPE_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Delete</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSACTION_TYPE__DELETE = BASE_REQUEST_TYPE_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Native</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSACTION_TYPE__NATIVE = BASE_REQUEST_TYPE_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Release Action</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSACTION_TYPE__RELEASE_ACTION = BASE_REQUEST_TYPE_FEATURE_COUNT + 6;
 
 	/**
 	 * The number of structural features of the the '<em>Transaction Type</em>' class.
@@ -2144,7 +2138,7 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 * @ordered
 	 */
-	int TRANSACTION_TYPE_FEATURE_COUNT = OWSPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 8;
+	int TRANSACTION_TYPE_FEATURE_COUNT = BASE_REQUEST_TYPE_FEATURE_COUNT + 7;
 
 	/**
 	 * The meta object id for the '{@link net.opengis.wfs.impl.UpdateElementTypeImpl <em>Update Element Type</em>}' class.
@@ -2154,7 +2148,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getUpdateElementType()
 	 * @generated
 	 */
-	int UPDATE_ELEMENT_TYPE = 33;
+	int UPDATE_ELEMENT_TYPE = 34;
 
 	/**
 	 * The feature id for the '<em><b>Property</b></em>' containment reference list.
@@ -2227,7 +2221,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getWFSCapabilitiesType()
 	 * @generated
 	 */
-	int WFS_CAPABILITIES_TYPE = 34;
+	int WFS_CAPABILITIES_TYPE = 35;
 
 	/**
 	 * The feature id for the '<em><b>Service Identification</b></em>' containment reference.
@@ -2320,6 +2314,52 @@ public interface WfsPackage extends EPackage{
 	int WFS_CAPABILITIES_TYPE_FEATURE_COUNT = OWSPackage.CAPABILITIES_BASE_TYPE_FEATURE_COUNT + 4;
 
 	/**
+	 * The meta object id for the '{@link net.opengis.wfs.impl.XlinkPropertyNameTypeImpl <em>Xlink Property Name Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see net.opengis.wfs.impl.XlinkPropertyNameTypeImpl
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getXlinkPropertyNameType()
+	 * @generated
+	 */
+	int XLINK_PROPERTY_NAME_TYPE = 36;
+
+	/**
+	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int XLINK_PROPERTY_NAME_TYPE__VALUE = 0;
+
+	/**
+	 * The feature id for the '<em><b>Traverse Xlink Depth</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_DEPTH = 1;
+
+	/**
+	 * The feature id for the '<em><b>Traverse Xlink Expiry</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_EXPIRY = 2;
+
+	/**
+	 * The number of structural features of the the '<em>Xlink Property Name Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int XLINK_PROPERTY_NAME_TYPE_FEATURE_COUNT = 3;
+
+	/**
 	 * The meta object id for the '{@link net.opengis.wfs.AllSomeType <em>All Some Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2327,7 +2367,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getAllSomeType()
 	 * @generated
 	 */
-	int ALL_SOME_TYPE = 35;
+	int ALL_SOME_TYPE = 37;
 
 	/**
 	 * The meta object id for the '{@link net.opengis.wfs.IdentifierGenerationOptionType <em>Identifier Generation Option Type</em>}' enum.
@@ -2337,7 +2377,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getIdentifierGenerationOptionType()
 	 * @generated
 	 */
-	int IDENTIFIER_GENERATION_OPTION_TYPE = 36;
+	int IDENTIFIER_GENERATION_OPTION_TYPE = 38;
 
 	/**
 	 * The meta object id for the '{@link net.opengis.wfs.OperationType <em>Operation Type</em>}' enum.
@@ -2347,7 +2387,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getOperationType()
 	 * @generated
 	 */
-	int OPERATION_TYPE = 37;
+	int OPERATION_TYPE = 39;
 
 	/**
 	 * The meta object id for the '{@link net.opengis.wfs.ResultTypeType <em>Result Type Type</em>}' enum.
@@ -2357,77 +2397,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getResultTypeType()
 	 * @generated
 	 */
-	int RESULT_TYPE_TYPE = 38;
-
-	/**
-	 * The meta object id for the '<em>All Some Type Object</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see net.opengis.wfs.AllSomeType
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getAllSomeTypeObject()
-	 * @generated
-	 */
-	int ALL_SOME_TYPE_OBJECT = 39;
-
-	/**
-	 * The meta object id for the '<em>Base Type Name List Type</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see java.util.List
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getBaseTypeNameListType()
-	 * @generated
-	 */
-	int BASE_TYPE_NAME_LIST_TYPE = 40;
-
-	/**
-	 * The meta object id for the '<em>Format Type</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see java.lang.String
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFormatType()
-	 * @generated
-	 */
-	int FORMAT_TYPE = 41;
-
-	/**
-	 * The meta object id for the '<em>Identifier Generation Option Type Object</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see net.opengis.wfs.IdentifierGenerationOptionType
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getIdentifierGenerationOptionTypeObject()
-	 * @generated
-	 */
-	int IDENTIFIER_GENERATION_OPTION_TYPE_OBJECT = 42;
-
-	/**
-	 * The meta object id for the '<em>Operation Type Object</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see net.opengis.wfs.OperationType
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getOperationTypeObject()
-	 * @generated
-	 */
-	int OPERATION_TYPE_OBJECT = 43;
-
-	/**
-	 * The meta object id for the '<em>Result Type Type Object</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see net.opengis.wfs.ResultTypeType
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getResultTypeTypeObject()
-	 * @generated
-	 */
-	int RESULT_TYPE_TYPE_OBJECT = 44;
-
-	/**
-	 * The meta object id for the '<em>Type Name List Type</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see java.util.List
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getTypeNameListType()
-	 * @generated
-	 */
-	int TYPE_NAME_LIST_TYPE = 45;
+	int RESULT_TYPE_TYPE = 40;
 
 	/**
 	 * The meta object id for the '<em>Type Type</em>' data type.
@@ -2437,57 +2407,7 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getTypeType()
 	 * @generated
 	 */
-	int TYPE_TYPE = 46;
-
-	/**
-	 * The meta object id for the '<em>QName</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see javax.xml.namespace.QName
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getQName()
-	 * @generated
-	 */
-	int QNAME = 47;
-
-	/**
-	 * The meta object id for the '<em>Sort By</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.opengis.filter.sort.SortBy
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getSortBy()
-	 * @generated
-	 */
-	int SORT_BY = 48;
-
-	/**
-	 * The meta object id for the '<em>Feature Id</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.opengis.filter.FeatureId
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFeatureId()
-	 * @generated
-	 */
-	int FEATURE_ID = 49;
-
-	/**
-	 * The meta object id for the '<em>Feature</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.geotools.feature.Feature
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFeature()
-	 * @generated
-	 */
-	int FEATURE = 50;
-
-	/**
-	 * The meta object id for the '<em>Function</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.opengis.filter.expression.Function
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFunction()
-	 * @generated
-	 */
-	int FUNCTION = 51;
+	int TYPE_TYPE = 41;
 
 	/**
 	 * The meta object id for the '<em>Feature Collection</em>' data type.
@@ -2497,39 +2417,27 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFeatureCollection()
 	 * @generated
 	 */
-	int FEATURE_COLLECTION = 52;
+	int FEATURE_COLLECTION = 42;
 
 	/**
-	 * The meta object id for the '<em>Filter</em>' data type.
+	 * The meta object id for the '<em>Feature</em>' data type.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.opengis.filter.Filter
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFilter()
+	 * @see org.geotools.feature.Feature
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFeature()
 	 * @generated
 	 */
-	int FILTER = 53;
+	int FEATURE = 43;
 
 	/**
-	 * The meta object id for the '<em>Filter 1</em>' data type.
+	 * The meta object id for the '<em>Format Type</em>' data type.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.geotools.filter.Filter
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFilter_1()
+	 * @see java.lang.String
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFormatType()
 	 * @generated
 	 */
-	int FILTER_1 = 54;
-
-
-	/**
-	 * The meta object id for the '<em>Property Name</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.opengis.filter.expression.PropertyName
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getPropertyName()
-	 * @generated
-	 */
-	int PROPERTY_NAME = 55;
-
+	int FORMAT_TYPE = 44;
 
 	/**
 	 * The meta object id for the '<em>Calendar</em>' data type.
@@ -2539,18 +2447,47 @@ public interface WfsPackage extends EPackage{
 	 * @see net.opengis.wfs.impl.WfsPackageImpl#getCalendar()
 	 * @generated
 	 */
-	int CALENDAR = 56;
-
+	int CALENDAR = 45;
 
 	/**
-	 * The meta object id for the '<em>URI</em>' data type.
+	 * The meta object id for the '<em>QName</em>' data type.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see java.net.URI
-	 * @see net.opengis.wfs.impl.WfsPackageImpl#getURI()
+	 * @see javax.xml.namespace.QName
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getQName()
 	 * @generated
 	 */
-	int URI = 57;
+	int QNAME = 46;
+
+	/**
+	 * The meta object id for the '<em>Type Name List Type</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see java.util.List
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getTypeNameListType()
+	 * @generated
+	 */
+	int TYPE_NAME_LIST_TYPE = 47;
+
+	/**
+	 * The meta object id for the '<em>Feature Id</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.opengis.filter.FeatureId
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFeatureId()
+	 * @generated
+	 */
+	int FEATURE_ID = 48;
+
+	/**
+	 * The meta object id for the '<em>Function</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.opengis.filter.expression.Function
+	 * @see net.opengis.wfs.impl.WfsPackageImpl#getFunction()
+	 * @generated
+	 */
+	int FUNCTION = 49;
 
 
 	/**
@@ -2912,17 +2849,6 @@ public interface WfsPackage extends EPackage{
 	EReference getDocumentRoot_Property();
 
 	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.DocumentRoot#getProperyName <em>Propery Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Propery Name</em>'.
-	 * @see net.opengis.wfs.DocumentRoot#getProperyName()
-	 * @see #getDocumentRoot()
-	 * @generated
-	 */
-	EAttribute getDocumentRoot_ProperyName();
-
-	/**
 	 * Returns the meta object for the containment reference '{@link net.opengis.wfs.DocumentRoot#getQuery <em>Query</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3000,15 +2926,15 @@ public interface WfsPackage extends EPackage{
 	EReference getDocumentRoot_WfsCapabilities();
 
 	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.DocumentRoot#getXlinkPropertyName <em>Xlink Property Name</em>}'.
+	 * Returns the meta object for the containment reference '{@link net.opengis.wfs.DocumentRoot#getXlinkPropertyName <em>Xlink Property Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Xlink Property Name</em>'.
+	 * @return the meta object for the containment reference '<em>Xlink Property Name</em>'.
 	 * @see net.opengis.wfs.DocumentRoot#getXlinkPropertyName()
 	 * @see #getDocumentRoot()
 	 * @generated
 	 */
-	EAttribute getDocumentRoot_XlinkPropertyName();
+	EReference getDocumentRoot_XlinkPropertyName();
 
 	/**
 	 * Returns the meta object for the attribute '{@link net.opengis.wfs.DocumentRoot#getPropertyName <em>Property Name</em>}'.
@@ -3043,6 +2969,17 @@ public interface WfsPackage extends EPackage{
 	EAttribute getFeatureCollectionType_LockId();
 
 	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.FeatureCollectionType#getTimeStamp <em>Time Stamp</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Time Stamp</em>'.
+	 * @see net.opengis.wfs.FeatureCollectionType#getTimeStamp()
+	 * @see #getFeatureCollectionType()
+	 * @generated
+	 */
+	EAttribute getFeatureCollectionType_TimeStamp();
+
+	/**
 	 * Returns the meta object for the attribute '{@link net.opengis.wfs.FeatureCollectionType#getNumberOfFeatures <em>Number Of Features</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3063,81 +3000,6 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 */
 	EAttribute getFeatureCollectionType_Feature();
-
-	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.FeatureCollectionType#getTimeStamp <em>Time Stamp</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Time Stamp</em>'.
-	 * @see net.opengis.wfs.FeatureCollectionType#getTimeStamp()
-	 * @see #getFeatureCollectionType()
-	 * @generated
-	 */
-	EAttribute getFeatureCollectionType_TimeStamp();
-
-	/**
-	 * Returns the meta object for class '{@link net.opengis.wfs.FeaturesLockedType <em>Features Locked Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Features Locked Type</em>'.
-	 * @see net.opengis.wfs.FeaturesLockedType
-	 * @generated
-	 */
-	EClass getFeaturesLockedType();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.FeaturesLockedType#getGroup <em>Group</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Group</em>'.
-	 * @see net.opengis.wfs.FeaturesLockedType#getGroup()
-	 * @see #getFeaturesLockedType()
-	 * @generated
-	 */
-	EAttribute getFeaturesLockedType_Group();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.FeaturesLockedType#getFeatureId <em>Feature Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Feature Id</em>'.
-	 * @see net.opengis.wfs.FeaturesLockedType#getFeatureId()
-	 * @see #getFeaturesLockedType()
-	 * @generated
-	 */
-	EAttribute getFeaturesLockedType_FeatureId();
-
-	/**
-	 * Returns the meta object for class '{@link net.opengis.wfs.FeaturesNotLockedType <em>Features Not Locked Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Features Not Locked Type</em>'.
-	 * @see net.opengis.wfs.FeaturesNotLockedType
-	 * @generated
-	 */
-	EClass getFeaturesNotLockedType();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.FeaturesNotLockedType#getGroup <em>Group</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Group</em>'.
-	 * @see net.opengis.wfs.FeaturesNotLockedType#getGroup()
-	 * @see #getFeaturesNotLockedType()
-	 * @generated
-	 */
-	EAttribute getFeaturesNotLockedType_Group();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.FeaturesNotLockedType#getFeatureId <em>Feature Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Feature Id</em>'.
-	 * @see net.opengis.wfs.FeaturesNotLockedType#getFeatureId()
-	 * @see #getFeaturesNotLockedType()
-	 * @generated
-	 */
-	EAttribute getFeaturesNotLockedType_FeatureId();
 
 	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.FeatureTypeListType <em>Feature Type List Type</em>}'.
@@ -3303,6 +3165,156 @@ public interface WfsPackage extends EPackage{
 	EReference getFeatureTypeType_MetadataURL();
 
 	/**
+	 * Returns the meta object for class '{@link net.opengis.wfs.FeaturesLockedType <em>Features Locked Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Features Locked Type</em>'.
+	 * @see net.opengis.wfs.FeaturesLockedType
+	 * @generated
+	 */
+	EClass getFeaturesLockedType();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.FeaturesLockedType#getGroup <em>Group</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Group</em>'.
+	 * @see net.opengis.wfs.FeaturesLockedType#getGroup()
+	 * @see #getFeaturesLockedType()
+	 * @generated
+	 */
+	EAttribute getFeaturesLockedType_Group();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.FeaturesLockedType#getFeatureId <em>Feature Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Feature Id</em>'.
+	 * @see net.opengis.wfs.FeaturesLockedType#getFeatureId()
+	 * @see #getFeaturesLockedType()
+	 * @generated
+	 */
+	EAttribute getFeaturesLockedType_FeatureId();
+
+	/**
+	 * Returns the meta object for class '{@link net.opengis.wfs.FeaturesNotLockedType <em>Features Not Locked Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Features Not Locked Type</em>'.
+	 * @see net.opengis.wfs.FeaturesNotLockedType
+	 * @generated
+	 */
+	EClass getFeaturesNotLockedType();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.FeaturesNotLockedType#getGroup <em>Group</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Group</em>'.
+	 * @see net.opengis.wfs.FeaturesNotLockedType#getGroup()
+	 * @see #getFeaturesNotLockedType()
+	 * @generated
+	 */
+	EAttribute getFeaturesNotLockedType_Group();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.FeaturesNotLockedType#getFeatureId <em>Feature Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Feature Id</em>'.
+	 * @see net.opengis.wfs.FeaturesNotLockedType#getFeatureId()
+	 * @see #getFeaturesNotLockedType()
+	 * @generated
+	 */
+	EAttribute getFeaturesNotLockedType_FeatureId();
+
+	/**
+	 * Returns the meta object for class '{@link net.opengis.wfs.GMLObjectTypeListType <em>GML Object Type List Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>GML Object Type List Type</em>'.
+	 * @see net.opengis.wfs.GMLObjectTypeListType
+	 * @generated
+	 */
+	EClass getGMLObjectTypeListType();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link net.opengis.wfs.GMLObjectTypeListType#getGMLObjectType <em>GML Object Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>GML Object Type</em>'.
+	 * @see net.opengis.wfs.GMLObjectTypeListType#getGMLObjectType()
+	 * @see #getGMLObjectTypeListType()
+	 * @generated
+	 */
+	EReference getGMLObjectTypeListType_GMLObjectType();
+
+	/**
+	 * Returns the meta object for class '{@link net.opengis.wfs.GMLObjectTypeType <em>GML Object Type Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>GML Object Type Type</em>'.
+	 * @see net.opengis.wfs.GMLObjectTypeType
+	 * @generated
+	 */
+	EClass getGMLObjectTypeType();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GMLObjectTypeType#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see net.opengis.wfs.GMLObjectTypeType#getName()
+	 * @see #getGMLObjectTypeType()
+	 * @generated
+	 */
+	EAttribute getGMLObjectTypeType_Name();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GMLObjectTypeType#getTitle <em>Title</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Title</em>'.
+	 * @see net.opengis.wfs.GMLObjectTypeType#getTitle()
+	 * @see #getGMLObjectTypeType()
+	 * @generated
+	 */
+	EAttribute getGMLObjectTypeType_Title();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GMLObjectTypeType#getAbstract <em>Abstract</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Abstract</em>'.
+	 * @see net.opengis.wfs.GMLObjectTypeType#getAbstract()
+	 * @see #getGMLObjectTypeType()
+	 * @generated
+	 */
+	EAttribute getGMLObjectTypeType_Abstract();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link net.opengis.wfs.GMLObjectTypeType#getKeywords <em>Keywords</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Keywords</em>'.
+	 * @see net.opengis.wfs.GMLObjectTypeType#getKeywords()
+	 * @see #getGMLObjectTypeType()
+	 * @generated
+	 */
+	EReference getGMLObjectTypeType_Keywords();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link net.opengis.wfs.GMLObjectTypeType#getOutputFormats <em>Output Formats</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Output Formats</em>'.
+	 * @see net.opengis.wfs.GMLObjectTypeType#getOutputFormats()
+	 * @see #getGMLObjectTypeType()
+	 * @generated
+	 */
+	EReference getGMLObjectTypeType_OutputFormats();
+
+	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.GetCapabilitiesType <em>Get Capabilities Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3410,6 +3422,17 @@ public interface WfsPackage extends EPackage{
 	EClass getGetFeatureWithLockType();
 
 	/**
+	 * Returns the meta object for the containment reference list '{@link net.opengis.wfs.GetFeatureWithLockType#getQuery <em>Query</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Query</em>'.
+	 * @see net.opengis.wfs.GetFeatureWithLockType#getQuery()
+	 * @see #getGetFeatureWithLockType()
+	 * @generated
+	 */
+	EReference getGetFeatureWithLockType_Query();
+
+	/**
 	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GetFeatureWithLockType#getExpiry <em>Expiry</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3419,6 +3442,61 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 */
 	EAttribute getGetFeatureWithLockType_Expiry();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GetFeatureWithLockType#getMaxFeatures <em>Max Features</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Max Features</em>'.
+	 * @see net.opengis.wfs.GetFeatureWithLockType#getMaxFeatures()
+	 * @see #getGetFeatureWithLockType()
+	 * @generated
+	 */
+	EAttribute getGetFeatureWithLockType_MaxFeatures();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GetFeatureWithLockType#getOutputFormat <em>Output Format</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Output Format</em>'.
+	 * @see net.opengis.wfs.GetFeatureWithLockType#getOutputFormat()
+	 * @see #getGetFeatureWithLockType()
+	 * @generated
+	 */
+	EAttribute getGetFeatureWithLockType_OutputFormat();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GetFeatureWithLockType#getResultType <em>Result Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Result Type</em>'.
+	 * @see net.opengis.wfs.GetFeatureWithLockType#getResultType()
+	 * @see #getGetFeatureWithLockType()
+	 * @generated
+	 */
+	EAttribute getGetFeatureWithLockType_ResultType();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GetFeatureWithLockType#getTraverseXlinkDepth <em>Traverse Xlink Depth</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Traverse Xlink Depth</em>'.
+	 * @see net.opengis.wfs.GetFeatureWithLockType#getTraverseXlinkDepth()
+	 * @see #getGetFeatureWithLockType()
+	 * @generated
+	 */
+	EAttribute getGetFeatureWithLockType_TraverseXlinkDepth();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GetFeatureWithLockType#getTraverseXlinkExpiry <em>Traverse Xlink Expiry</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Traverse Xlink Expiry</em>'.
+	 * @see net.opengis.wfs.GetFeatureWithLockType#getTraverseXlinkExpiry()
+	 * @see #getGetFeatureWithLockType()
+	 * @generated
+	 */
+	EAttribute getGetFeatureWithLockType_TraverseXlinkExpiry();
 
 	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.GetGmlObjectType <em>Get Gml Object Type</em>}'.
@@ -3473,124 +3551,6 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 */
 	EAttribute getGetGmlObjectType_TraverseXlinkExpiry();
-
-	/**
-	 * Returns the meta object for class '{@link net.opengis.wfs.GMLObjectTypeListType <em>GML Object Type List Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>GML Object Type List Type</em>'.
-	 * @see net.opengis.wfs.GMLObjectTypeListType
-	 * @generated
-	 */
-	EClass getGMLObjectTypeListType();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link net.opengis.wfs.GMLObjectTypeListType#getGMLObjectType <em>GML Object Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>GML Object Type</em>'.
-	 * @see net.opengis.wfs.GMLObjectTypeListType#getGMLObjectType()
-	 * @see #getGMLObjectTypeListType()
-	 * @generated
-	 */
-	EReference getGMLObjectTypeListType_GMLObjectType();
-
-	/**
-	 * Returns the meta object for class '{@link net.opengis.wfs.GMLObjectTypeType <em>GML Object Type Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>GML Object Type Type</em>'.
-	 * @see net.opengis.wfs.GMLObjectTypeType
-	 * @generated
-	 */
-	EClass getGMLObjectTypeType();
-
-	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GMLObjectTypeType#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see net.opengis.wfs.GMLObjectTypeType#getName()
-	 * @see #getGMLObjectTypeType()
-	 * @generated
-	 */
-	EAttribute getGMLObjectTypeType_Name();
-
-	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GMLObjectTypeType#getTitle <em>Title</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Title</em>'.
-	 * @see net.opengis.wfs.GMLObjectTypeType#getTitle()
-	 * @see #getGMLObjectTypeType()
-	 * @generated
-	 */
-	EAttribute getGMLObjectTypeType_Title();
-
-	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.GMLObjectTypeType#getAbstract <em>Abstract</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Abstract</em>'.
-	 * @see net.opengis.wfs.GMLObjectTypeType#getAbstract()
-	 * @see #getGMLObjectTypeType()
-	 * @generated
-	 */
-	EAttribute getGMLObjectTypeType_Abstract();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link net.opengis.wfs.GMLObjectTypeType#getKeywords <em>Keywords</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Keywords</em>'.
-	 * @see net.opengis.wfs.GMLObjectTypeType#getKeywords()
-	 * @see #getGMLObjectTypeType()
-	 * @generated
-	 */
-	EReference getGMLObjectTypeType_Keywords();
-
-	/**
-	 * Returns the meta object for the containment reference '{@link net.opengis.wfs.GMLObjectTypeType#getOutputFormats <em>Output Formats</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Output Formats</em>'.
-	 * @see net.opengis.wfs.GMLObjectTypeType#getOutputFormats()
-	 * @see #getGMLObjectTypeType()
-	 * @generated
-	 */
-	EReference getGMLObjectTypeType_OutputFormats();
-
-	/**
-	 * Returns the meta object for class '{@link net.opengis.wfs.InsertedFeatureType <em>Inserted Feature Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Inserted Feature Type</em>'.
-	 * @see net.opengis.wfs.InsertedFeatureType
-	 * @generated
-	 */
-	EClass getInsertedFeatureType();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.InsertedFeatureType#getFeatureId <em>Feature Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Feature Id</em>'.
-	 * @see net.opengis.wfs.InsertedFeatureType#getFeatureId()
-	 * @see #getInsertedFeatureType()
-	 * @generated
-	 */
-	EAttribute getInsertedFeatureType_FeatureId();
-
-	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.InsertedFeatureType#getHandle <em>Handle</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Handle</em>'.
-	 * @see net.opengis.wfs.InsertedFeatureType#getHandle()
-	 * @see #getInsertedFeatureType()
-	 * @generated
-	 */
-	EAttribute getInsertedFeatureType_Handle();
 
 	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.InsertElementType <em>Insert Element Type</em>}'.
@@ -3688,6 +3648,59 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 */
 	EReference getInsertResultType_Feature();
+
+	/**
+	 * Returns the meta object for class '{@link net.opengis.wfs.InsertResultsType <em>Insert Results Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Insert Results Type</em>'.
+	 * @see net.opengis.wfs.InsertResultsType
+	 * @generated
+	 */
+	EClass getInsertResultsType();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link net.opengis.wfs.InsertResultsType#getFeature <em>Feature</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Feature</em>'.
+	 * @see net.opengis.wfs.InsertResultsType#getFeature()
+	 * @see #getInsertResultsType()
+	 * @generated
+	 */
+	EReference getInsertResultsType_Feature();
+
+	/**
+	 * Returns the meta object for class '{@link net.opengis.wfs.InsertedFeatureType <em>Inserted Feature Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Inserted Feature Type</em>'.
+	 * @see net.opengis.wfs.InsertedFeatureType
+	 * @generated
+	 */
+	EClass getInsertedFeatureType();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.InsertedFeatureType#getFeatureId <em>Feature Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Feature Id</em>'.
+	 * @see net.opengis.wfs.InsertedFeatureType#getFeatureId()
+	 * @see #getInsertedFeatureType()
+	 * @generated
+	 */
+	EAttribute getInsertedFeatureType_FeatureId();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.InsertedFeatureType#getHandle <em>Handle</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Handle</em>'.
+	 * @see net.opengis.wfs.InsertedFeatureType#getHandle()
+	 * @see #getInsertedFeatureType()
+	 * @generated
+	 */
+	EAttribute getInsertedFeatureType_Handle();
 
 	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.LockFeatureResponseType <em>Lock Feature Response Type</em>}'.
@@ -3978,15 +3991,15 @@ public interface WfsPackage extends EPackage{
 	EAttribute getPropertyType_Name();
 
 	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.PropertyType#getValue <em>Value</em>}'.
+	 * Returns the meta object for the reference '{@link net.opengis.wfs.PropertyType#getValue <em>Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Value</em>'.
+	 * @return the meta object for the reference '<em>Value</em>'.
 	 * @see net.opengis.wfs.PropertyType#getValue()
 	 * @see #getPropertyType()
 	 * @generated
 	 */
-	EAttribute getPropertyType_Value();
+	EReference getPropertyType_Value();
 
 	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.QueryType <em>Query Type</em>}'.
@@ -4019,6 +4032,17 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 */
 	EAttribute getQueryType_PropertyName();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link net.opengis.wfs.QueryType#getXlinkPropertyName <em>Xlink Property Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Xlink Property Name</em>'.
+	 * @see net.opengis.wfs.QueryType#getXlinkPropertyName()
+	 * @see #getQueryType()
+	 * @generated
+	 */
+	EReference getQueryType_XlinkPropertyName();
 
 	/**
 	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.QueryType#getFunction <em>Function</em>}'.
@@ -4162,17 +4186,6 @@ public interface WfsPackage extends EPackage{
 	EClass getTransactionResultsType();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link net.opengis.wfs.TransactionResultsType#getAction <em>Action</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Action</em>'.
-	 * @see net.opengis.wfs.TransactionResultsType#getAction()
-	 * @see #getTransactionResultsType()
-	 * @generated
-	 */
-	EReference getTransactionResultsType_Action();
-
-	/**
 	 * Returns the meta object for the attribute '{@link net.opengis.wfs.TransactionResultsType#getHandle <em>Handle</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4182,6 +4195,17 @@ public interface WfsPackage extends EPackage{
 	 * @generated
 	 */
 	EAttribute getTransactionResultsType_Handle();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link net.opengis.wfs.TransactionResultsType#getAction <em>Action</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Action</em>'.
+	 * @see net.opengis.wfs.TransactionResultsType#getAction()
+	 * @see #getTransactionResultsType()
+	 * @generated
+	 */
+	EReference getTransactionResultsType_Action();
 
 	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.TransactionSummaryType <em>Transaction Summary Type</em>}'.
@@ -4314,17 +4338,6 @@ public interface WfsPackage extends EPackage{
 	EAttribute getTransactionType_ReleaseAction();
 
 	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.TransactionType#getHandle <em>Handle</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Handle</em>'.
-	 * @see net.opengis.wfs.TransactionType#getHandle()
-	 * @see #getTransactionType()
-	 * @generated
-	 */
-	EAttribute getTransactionType_Handle();
-
-	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.UpdateElementType <em>Update Element Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4455,6 +4468,49 @@ public interface WfsPackage extends EPackage{
 	EAttribute getWFSCapabilitiesType_FilterCapabilities();
 
 	/**
+	 * Returns the meta object for class '{@link net.opengis.wfs.XlinkPropertyNameType <em>Xlink Property Name Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Xlink Property Name Type</em>'.
+	 * @see net.opengis.wfs.XlinkPropertyNameType
+	 * @generated
+	 */
+	EClass getXlinkPropertyNameType();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.XlinkPropertyNameType#getValue <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Value</em>'.
+	 * @see net.opengis.wfs.XlinkPropertyNameType#getValue()
+	 * @see #getXlinkPropertyNameType()
+	 * @generated
+	 */
+	EAttribute getXlinkPropertyNameType_Value();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.XlinkPropertyNameType#getTraverseXlinkDepth <em>Traverse Xlink Depth</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Traverse Xlink Depth</em>'.
+	 * @see net.opengis.wfs.XlinkPropertyNameType#getTraverseXlinkDepth()
+	 * @see #getXlinkPropertyNameType()
+	 * @generated
+	 */
+	EAttribute getXlinkPropertyNameType_TraverseXlinkDepth();
+
+	/**
+	 * Returns the meta object for the attribute '{@link net.opengis.wfs.XlinkPropertyNameType#getTraverseXlinkExpiry <em>Traverse Xlink Expiry</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Traverse Xlink Expiry</em>'.
+	 * @see net.opengis.wfs.XlinkPropertyNameType#getTraverseXlinkExpiry()
+	 * @see #getXlinkPropertyNameType()
+	 * @generated
+	 */
+	EAttribute getXlinkPropertyNameType_TraverseXlinkExpiry();
+
+	/**
 	 * Returns the meta object for enum '{@link net.opengis.wfs.AllSomeType <em>All Some Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4495,155 +4551,15 @@ public interface WfsPackage extends EPackage{
 	EEnum getResultTypeType();
 
 	/**
-	 * Returns the meta object for data type '{@link net.opengis.wfs.AllSomeType <em>All Some Type Object</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>All Some Type Object</em>'.
-	 * @see net.opengis.wfs.AllSomeType
-	 * @model instanceClass="net.opengis.wfs.AllSomeType"
-	 *        extendedMetaData="name='AllSomeType:Object' baseType='AllSomeType'" 
-	 * @generated
-	 */
-	EDataType getAllSomeTypeObject();
-
-	/**
-	 * Returns the meta object for data type '{@link java.util.List <em>Base Type Name List Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Base Type Name List Type</em>'.
-	 * @see java.util.List
-	 * @model instanceClass="java.util.List"
-	 *        extendedMetaData="name='Base_TypeNameListType' itemType='http://www.eclipse.org/emf/2003/XMLType#QName'" 
-	 * @generated
-	 */
-	EDataType getBaseTypeNameListType();
-
-	/**
-	 * Returns the meta object for data type '{@link java.lang.String <em>Format Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Format Type</em>'.
-	 * @see java.lang.String
-	 * @model instanceClass="java.lang.String"
-	 *        extendedMetaData="name='format_._type' baseType='http://www.eclipse.org/emf/2003/XMLType#NMTOKEN' enumeration='text/xml text/html text/sgml text/plain'" 
-	 * @generated
-	 */
-	EDataType getFormatType();
-
-	/**
-	 * Returns the meta object for data type '{@link net.opengis.wfs.IdentifierGenerationOptionType <em>Identifier Generation Option Type Object</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Identifier Generation Option Type Object</em>'.
-	 * @see net.opengis.wfs.IdentifierGenerationOptionType
-	 * @model instanceClass="net.opengis.wfs.IdentifierGenerationOptionType"
-	 *        extendedMetaData="name='IdentifierGenerationOptionType:Object' baseType='IdentifierGenerationOptionType'" 
-	 * @generated
-	 */
-	EDataType getIdentifierGenerationOptionTypeObject();
-
-	/**
-	 * Returns the meta object for data type '{@link net.opengis.wfs.OperationType <em>Operation Type Object</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Operation Type Object</em>'.
-	 * @see net.opengis.wfs.OperationType
-	 * @model instanceClass="net.opengis.wfs.OperationType"
-	 *        extendedMetaData="name='OperationType:Object' baseType='OperationType'" 
-	 * @generated
-	 */
-	EDataType getOperationTypeObject();
-
-	/**
-	 * Returns the meta object for data type '{@link net.opengis.wfs.ResultTypeType <em>Result Type Type Object</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Result Type Type Object</em>'.
-	 * @see net.opengis.wfs.ResultTypeType
-	 * @model instanceClass="net.opengis.wfs.ResultTypeType"
-	 *        extendedMetaData="name='ResultTypeType:Object' baseType='ResultTypeType'" 
-	 * @generated
-	 */
-	EDataType getResultTypeTypeObject();
-
-	/**
-	 * Returns the meta object for data type '{@link java.util.List <em>Type Name List Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Type Name List Type</em>'.
-	 * @see java.util.List
-	 * @model instanceClass="java.util.List"
-	 *        extendedMetaData="name='TypeNameListType' baseType='Base_TypeNameListType' pattern='((\\w:)?\\w(=\\w)?){1,}'" 
-	 * @generated
-	 */
-	EDataType getTypeNameListType();
-
-	/**
 	 * Returns the meta object for data type '{@link java.lang.String <em>Type Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for data type '<em>Type Type</em>'.
 	 * @see java.lang.String
 	 * @model instanceClass="java.lang.String"
-	 *        extendedMetaData="name='type_._type' baseType='http://www.eclipse.org/emf/2003/XMLType#NMTOKEN' enumeration='TC211 FGDC 19115 19139'" 
 	 * @generated
 	 */
 	EDataType getTypeType();
-
-	/**
-	 * Returns the meta object for data type '{@link javax.xml.namespace.QName <em>QName</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>QName</em>'.
-	 * @see javax.xml.namespace.QName
-	 * @model instanceClass="javax.xml.namespace.QName"
-	 * @generated
-	 */
-	EDataType getQName();
-
-	/**
-	 * Returns the meta object for data type '{@link org.opengis.filter.sort.SortBy <em>Sort By</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Sort By</em>'.
-	 * @see org.opengis.filter.sort.SortBy
-	 * @model instanceClass="org.opengis.filter.sort.SortBy"
-	 * @generated
-	 */
-	EDataType getSortBy();
-
-	/**
-	 * Returns the meta object for data type '{@link org.opengis.filter.FeatureId <em>Feature Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Feature Id</em>'.
-	 * @see org.opengis.filter.FeatureId
-	 * @model instanceClass="org.opengis.filter.FeatureId"
-	 * @generated
-	 */
-	EDataType getFeatureId();
-
-	/**
-	 * Returns the meta object for data type '{@link org.geotools.feature.Feature <em>Feature</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Feature</em>'.
-	 * @see org.geotools.feature.Feature
-	 * @model instanceClass="org.geotools.feature.Feature"
-	 * @generated
-	 */
-	EDataType getFeature();
-
-	/**
-	 * Returns the meta object for data type '{@link org.opengis.filter.expression.Function <em>Function</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Function</em>'.
-	 * @see org.opengis.filter.expression.Function
-	 * @model instanceClass="org.opengis.filter.expression.Function"
-	 * @generated
-	 */
-	EDataType getFunction();
 
 	/**
 	 * Returns the meta object for data type '{@link org.geotools.feature.FeatureCollection <em>Feature Collection</em>}'.
@@ -4657,37 +4573,26 @@ public interface WfsPackage extends EPackage{
 	EDataType getFeatureCollection();
 
 	/**
-	 * Returns the meta object for data type '{@link org.opengis.filter.Filter <em>Filter</em>}'.
+	 * Returns the meta object for data type '{@link org.geotools.feature.Feature <em>Feature</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Filter</em>'.
-	 * @see org.opengis.filter.Filter
-	 * @model instanceClass="org.opengis.filter.Filter"
+	 * @return the meta object for data type '<em>Feature</em>'.
+	 * @see org.geotools.feature.Feature
+	 * @model instanceClass="org.geotools.feature.Feature"
 	 * @generated
 	 */
-	EDataType getFilter();
+	EDataType getFeature();
 
 	/**
-	 * Returns the meta object for data type '{@link org.geotools.filter.Filter <em>Filter 1</em>}'.
+	 * Returns the meta object for data type '{@link java.lang.String <em>Format Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Filter 1</em>'.
-	 * @see org.geotools.filter.Filter
-	 * @model instanceClass="org.geotools.filter.Filter"
+	 * @return the meta object for data type '<em>Format Type</em>'.
+	 * @see java.lang.String
+	 * @model instanceClass="java.lang.String"
 	 * @generated
 	 */
-	EDataType getFilter_1();
-
-	/**
-	 * Returns the meta object for data type '{@link org.opengis.filter.expression.PropertyName <em>Property Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>Property Name</em>'.
-	 * @see org.opengis.filter.expression.PropertyName
-	 * @model instanceClass="org.opengis.filter.expression.PropertyName"
-	 * @generated
-	 */
-	EDataType getPropertyName();
+	EDataType getFormatType();
 
 	/**
 	 * Returns the meta object for data type '{@link java.util.Calendar <em>Calendar</em>}'.
@@ -4701,15 +4606,48 @@ public interface WfsPackage extends EPackage{
 	EDataType getCalendar();
 
 	/**
-	 * Returns the meta object for data type '{@link java.net.URI <em>URI</em>}'.
+	 * Returns the meta object for data type '{@link javax.xml.namespace.QName <em>QName</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>URI</em>'.
-	 * @see java.net.URI
-	 * @model instanceClass="java.net.URI"
+	 * @return the meta object for data type '<em>QName</em>'.
+	 * @see javax.xml.namespace.QName
+	 * @model instanceClass="javax.xml.namespace.QName"
 	 * @generated
 	 */
-	EDataType getURI();
+	EDataType getQName();
+
+	/**
+	 * Returns the meta object for data type '{@link java.util.List <em>Type Name List Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>Type Name List Type</em>'.
+	 * @see java.util.List
+	 * @model instanceClass="java.util.List"
+	 * @generated
+	 */
+	EDataType getTypeNameListType();
+
+	/**
+	 * Returns the meta object for data type '{@link org.opengis.filter.FeatureId <em>Feature Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>Feature Id</em>'.
+	 * @see org.opengis.filter.FeatureId
+	 * @model instanceClass="org.opengis.filter.FeatureId"
+	 * @generated
+	 */
+	EDataType getFeatureId();
+
+	/**
+	 * Returns the meta object for data type '{@link org.opengis.filter.expression.Function <em>Function</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>Function</em>'.
+	 * @see org.opengis.filter.expression.Function
+	 * @model instanceClass="org.opengis.filter.expression.Function"
+	 * @generated
+	 */
+	EDataType getFunction();
 
 	/**
 	 * Returns the factory that creates the instances of the model.

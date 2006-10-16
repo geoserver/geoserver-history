@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EFactory;
  * @see net.opengis.wfs.WfsPackage
  * @generated
  */
-public interface WfsFactory extends EFactory {
+public interface WfsFactory extends EFactory{
 	/**
 	 * The singleton instance of the factory.
 	 * <!-- begin-user-doc -->
@@ -179,13 +179,13 @@ public interface WfsFactory extends EFactory {
 	InsertElementType createInsertElementType();
 
 	/**
-	 * Returns a new object of class '<em>Insert Result Type</em>'.
+	 * Returns a new object of class '<em>Insert Results Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Insert Result Type</em>'.
+	 * @return a new object of class '<em>Insert Results Type</em>'.
 	 * @generated
 	 */
-	InsertResultType createInsertResultType();
+	InsertResultsType createInsertResultsType();
 
 	/**
 	 * Returns a new object of class '<em>Lock Feature Response Type</em>'.
@@ -330,6 +330,24 @@ public interface WfsFactory extends EFactory {
 	 * @generated
 	 */
 	WFSCapabilitiesType createWFSCapabilitiesType();
+
+	/**
+	 * Returns a new object of class '<em>Xlink Property Name Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Xlink Property Name Type</em>'.
+	 * @generated
+	 */
+	XlinkPropertyNameType createXlinkPropertyNameType();
+
+	/**
+	 * Returns a new object of class '<em>Insert Result Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Insert Result Type</em>'.
+	 * @generated
+	 */
+	InsertResultType createInsertResultType();
 
 	/**
 	 * Returns the package supported by this factory.

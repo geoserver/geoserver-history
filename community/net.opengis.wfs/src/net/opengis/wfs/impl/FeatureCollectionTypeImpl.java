@@ -37,9 +37,9 @@ import org.geotools.feature.FeatureCollection;
  * The following features are implemented:
  * <ul>
  *   <li>{@link net.opengis.wfs.impl.FeatureCollectionTypeImpl#getLockId <em>Lock Id</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.FeatureCollectionTypeImpl#getTimeStamp <em>Time Stamp</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.FeatureCollectionTypeImpl#getNumberOfFeatures <em>Number Of Features</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.FeatureCollectionTypeImpl#getFeature <em>Feature</em>}</li>
- *   <li>{@link net.opengis.wfs.impl.FeatureCollectionTypeImpl#getTimeStamp <em>Time Stamp</em>}</li>
  * </ul>
  * </p>
  *
@@ -65,6 +65,26 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 	 * @ordered
 	 */
 	protected String lockId = LOCK_ID_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getTimeStamp() <em>Time Stamp</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTimeStamp()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final Calendar TIME_STAMP_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getTimeStamp() <em>Time Stamp</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTimeStamp()
+	 * @generated
+	 * @ordered
+	 */
+	protected Calendar timeStamp = TIME_STAMP_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getNumberOfFeatures() <em>Number Of Features</em>}' attribute.
@@ -95,26 +115,6 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 	 * @ordered
 	 */
 	protected EList feature = null;
-
-	/**
-	 * The default value of the '{@link #getTimeStamp() <em>Time Stamp</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getTimeStamp()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final Calendar TIME_STAMP_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getTimeStamp() <em>Time Stamp</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getTimeStamp()
-	 * @generated
-	 * @ordered
-	 */
-	protected Calendar timeStamp = TIME_STAMP_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -160,6 +160,27 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public Calendar getTimeStamp() {
+		return timeStamp;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setTimeStamp(Calendar newTimeStamp) {
+		Calendar oldTimeStamp = timeStamp;
+		timeStamp = newTimeStamp;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP, oldTimeStamp, timeStamp));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public BigInteger getNumberOfFeatures() {
 		return numberOfFeatures;
 	}
@@ -193,37 +214,16 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Calendar getTimeStamp() {
-		return timeStamp;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setTimeStamp(Calendar newTimeStamp) {
-		Calendar oldTimeStamp = timeStamp;
-		timeStamp = newTimeStamp;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP, oldTimeStamp, timeStamp));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WfsPackage.FEATURE_COLLECTION_TYPE__LOCK_ID:
 				return getLockId();
+			case WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
+				return getTimeStamp();
 			case WfsPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES:
 				return getNumberOfFeatures();
 			case WfsPackage.FEATURE_COLLECTION_TYPE__FEATURE:
 				return getFeature();
-			case WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
-				return getTimeStamp();
 		}
 		return eDynamicGet(eFeature, resolve);
 	}
@@ -238,15 +238,15 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 			case WfsPackage.FEATURE_COLLECTION_TYPE__LOCK_ID:
 				setLockId((String)newValue);
 				return;
+			case WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
+				setTimeStamp((Calendar)newValue);
+				return;
 			case WfsPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES:
 				setNumberOfFeatures((BigInteger)newValue);
 				return;
 			case WfsPackage.FEATURE_COLLECTION_TYPE__FEATURE:
 				getFeature().clear();
 				getFeature().addAll((Collection)newValue);
-				return;
-			case WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
-				setTimeStamp((Calendar)newValue);
 				return;
 		}
 		eDynamicSet(eFeature, newValue);
@@ -262,14 +262,14 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 			case WfsPackage.FEATURE_COLLECTION_TYPE__LOCK_ID:
 				setLockId(LOCK_ID_EDEFAULT);
 				return;
+			case WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
+				setTimeStamp(TIME_STAMP_EDEFAULT);
+				return;
 			case WfsPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES:
 				setNumberOfFeatures(NUMBER_OF_FEATURES_EDEFAULT);
 				return;
 			case WfsPackage.FEATURE_COLLECTION_TYPE__FEATURE:
 				getFeature().clear();
-				return;
-			case WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
-				setTimeStamp(TIME_STAMP_EDEFAULT);
 				return;
 		}
 		eDynamicUnset(eFeature);
@@ -284,12 +284,12 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WfsPackage.FEATURE_COLLECTION_TYPE__LOCK_ID:
 				return LOCK_ID_EDEFAULT == null ? lockId != null : !LOCK_ID_EDEFAULT.equals(lockId);
+			case WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
+				return TIME_STAMP_EDEFAULT == null ? timeStamp != null : !TIME_STAMP_EDEFAULT.equals(timeStamp);
 			case WfsPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES:
 				return NUMBER_OF_FEATURES_EDEFAULT == null ? numberOfFeatures != null : !NUMBER_OF_FEATURES_EDEFAULT.equals(numberOfFeatures);
 			case WfsPackage.FEATURE_COLLECTION_TYPE__FEATURE:
 				return feature != null && !feature.isEmpty();
-			case WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
-				return TIME_STAMP_EDEFAULT == null ? timeStamp != null : !TIME_STAMP_EDEFAULT.equals(timeStamp);
 		}
 		return eDynamicIsSet(eFeature);
 	}
@@ -305,12 +305,12 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (lockId: ");
 		result.append(lockId);
+		result.append(", timeStamp: ");
+		result.append(timeStamp);
 		result.append(", numberOfFeatures: ");
 		result.append(numberOfFeatures);
 		result.append(", feature: ");
 		result.append(feature);
-		result.append(", timeStamp: ");
-		result.append(timeStamp);
 		result.append(')');
 		return result.toString();
 	}

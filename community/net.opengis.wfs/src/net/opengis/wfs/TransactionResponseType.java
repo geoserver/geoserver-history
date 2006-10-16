@@ -107,13 +107,13 @@ public interface TransactionResponseType extends EObject{
 	 *                   report the identifiers of the newly created features.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Insert Results</em>' containment reference.
-	 * @see #setInsertResults(InsertResultType)
+	 * @see #setInsertResults(InsertResultsType)
 	 * @see net.opengis.wfs.WfsPackage#getTransactionResponseType_InsertResults()
 	 * @model containment="true" resolveProxies="false" required="true"
 	 *        extendedMetaData="kind='element' name='InsertResults' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	InsertResultType getInsertResults();
+	InsertResultsType getInsertResults();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.TransactionResponseType#getInsertResults <em>Insert Results</em>}' containment reference.
@@ -123,7 +123,7 @@ public interface TransactionResponseType extends EObject{
 	 * @see #getInsertResults()
 	 * @generated
 	 */
-	void setInsertResults(InsertResultType value);
+	void setInsertResults(InsertResultsType value);
 
 	/**
 	 * Returns the value of the '<em><b>Version</b></em>' attribute.

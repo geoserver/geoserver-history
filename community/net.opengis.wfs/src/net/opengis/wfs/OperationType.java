@@ -38,19 +38,19 @@ public final class OperationType extends AbstractEnumerator {
 	public static final int INSERT = 0;
 
 	/**
-	 * The '<em><b>Unsert</b></em>' literal value.
+	 * The '<em><b>Update</b></em>' literal value.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of '<em><b>Unsert</b></em>' literal object isn't clear,
+	 * If the meaning of '<em><b>Update</b></em>' literal object isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @see #UNSERT_LITERAL
-	 * @model name="Unsert"
+	 * @see #UPDATE_LITERAL
+	 * @model name="Update"
 	 * @generated
 	 * @ordered
 	 */
-	public static final int UNSERT = 1;
+	public static final int UPDATE = 1;
 
 	/**
 	 * The '<em><b>Delete</b></em>' literal value.
@@ -123,14 +123,14 @@ public final class OperationType extends AbstractEnumerator {
 	public static final OperationType INSERT_LITERAL = new OperationType(INSERT, "Insert");
 
 	/**
-	 * The '<em><b>Unsert</b></em>' literal object.
+	 * The '<em><b>Update</b></em>' literal object.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #UNSERT
+	 * @see #UPDATE
 	 * @generated
 	 * @ordered
 	 */
-	public static final OperationType UNSERT_LITERAL = new OperationType(UNSERT, "Unsert");
+	public static final OperationType UPDATE_LITERAL = new OperationType(UPDATE, "Update");
 
 	/**
 	 * The '<em><b>Delete</b></em>' literal object.
@@ -181,7 +181,7 @@ public final class OperationType extends AbstractEnumerator {
 	private static final OperationType[] VALUES_ARRAY =
 		new OperationType[] {
 			INSERT_LITERAL,
-			UNSERT_LITERAL,
+			UPDATE_LITERAL,
 			DELETE_LITERAL,
 			QUERY_LITERAL,
 			LOCK_LITERAL,
@@ -221,7 +221,7 @@ public final class OperationType extends AbstractEnumerator {
 	public static OperationType get(int value) {
 		switch (value) {
 			case INSERT: return INSERT_LITERAL;
-			case UNSERT: return UNSERT_LITERAL;
+			case UPDATE: return UPDATE_LITERAL;
 			case DELETE: return DELETE_LITERAL;
 			case QUERY: return QUERY_LITERAL;
 			case LOCK: return LOCK_LITERAL;

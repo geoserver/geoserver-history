@@ -60,7 +60,7 @@ public interface FeatureTypeType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getFeatureTypeType_Name()
 	 * @model 
 	 */
-	QName getName();
+	Object getName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.FeatureTypeType#getName <em>Name</em>}' attribute.
@@ -70,7 +70,7 @@ public interface FeatureTypeType extends EObject{
 	 * @see #getName()
 	 * @generated
 	 */
-	void setName(QName value);
+	void setName(Object value);
 
 	/**
 	 * Returns the value of the '<em><b>Title</b></em>' attribute.

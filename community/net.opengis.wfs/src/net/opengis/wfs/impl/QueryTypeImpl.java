@@ -50,6 +50,7 @@ import org.opengis.filter.sort.SortBy;
  * <ul>
  *   <li>{@link net.opengis.wfs.impl.QueryTypeImpl#getGroup <em>Group</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.QueryTypeImpl#getPropertyName <em>Property Name</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.QueryTypeImpl#getXlinkPropertyName <em>Xlink Property Name</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.QueryTypeImpl#getFunction <em>Function</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.QueryTypeImpl#getFilter <em>Filter</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.QueryTypeImpl#getSortBy <em>Sort By</em>}</li>
@@ -101,7 +102,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Filter FILTER_EDEFAULT = null;
+	protected static final Object FILTER_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
@@ -111,7 +112,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected Filter filter = FILTER_EDEFAULT;
+	protected Object filter = FILTER_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getSortBy() <em>Sort By</em>}' attribute.
@@ -121,7 +122,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final SortBy SORT_BY_EDEFAULT = null;
+	protected static final Object SORT_BY_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getSortBy() <em>Sort By</em>}' attribute.
@@ -131,7 +132,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected SortBy sortBy = SORT_BY_EDEFAULT;
+	protected Object sortBy = SORT_BY_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getFeatureVersion() <em>Feature Version</em>}' attribute.
@@ -181,7 +182,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final URI SRS_NAME_EDEFAULT = null;
+	protected static final String SRS_NAME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getSrsName() <em>Srs Name</em>}' attribute.
@@ -191,7 +192,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected URI srsName = SRS_NAME_EDEFAULT;
+	protected String srsName = SRS_NAME_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
@@ -260,6 +261,15 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList getXlinkPropertyName() {
+		return ((FeatureMap)getGroup()).list(WfsPackage.eINSTANCE.getQueryType_XlinkPropertyName());
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EList getFunction() {
 		if (function == null) {
 			function = new EDataTypeUniqueEList(Function.class, this, WfsPackage.QUERY_TYPE__FUNCTION);
@@ -272,7 +282,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Filter getFilter() {
+	public Object getFilter() {
 		return filter;
 	}
 
@@ -281,8 +291,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setFilter(Filter newFilter) {
-		Filter oldFilter = filter;
+	public void setFilter(Object newFilter) {
+		Object oldFilter = filter;
 		filter = newFilter;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__FILTER, oldFilter, filter));
@@ -293,7 +303,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SortBy getSortBy() {
+	public Object getSortBy() {
 		return sortBy;
 	}
 
@@ -302,8 +312,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setSortBy(SortBy newSortBy) {
-		SortBy oldSortBy = sortBy;
+	public void setSortBy(Object newSortBy) {
+		Object oldSortBy = sortBy;
 		sortBy = newSortBy;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__SORT_BY, oldSortBy, sortBy));
@@ -356,7 +366,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public URI getSrsName() {
+	public String getSrsName() {
 		return srsName;
 	}
 
@@ -365,8 +375,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setSrsName(URI newSrsName) {
-		URI oldSrsName = srsName;
+	public void setSrsName(String newSrsName) {
+		String oldSrsName = srsName;
 		srsName = newSrsName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__SRS_NAME, oldSrsName, srsName));
@@ -403,6 +413,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
 				case WfsPackage.QUERY_TYPE__GROUP:
 					return ((InternalEList)getGroup()).basicRemove(otherEnd, msgs);
+				case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
+					return ((InternalEList)getXlinkPropertyName()).basicRemove(otherEnd, msgs);
 				default:
 					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
 			}
@@ -421,6 +433,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				return getGroup();
 			case WfsPackage.QUERY_TYPE__PROPERTY_NAME:
 				return getPropertyName();
+			case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
+				return getXlinkPropertyName();
 			case WfsPackage.QUERY_TYPE__FUNCTION:
 				return getFunction();
 			case WfsPackage.QUERY_TYPE__FILTER:
@@ -454,15 +468,19 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				getPropertyName().clear();
 				getPropertyName().addAll((Collection)newValue);
 				return;
+			case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
+				getXlinkPropertyName().clear();
+				getXlinkPropertyName().addAll((Collection)newValue);
+				return;
 			case WfsPackage.QUERY_TYPE__FUNCTION:
 				getFunction().clear();
 				getFunction().addAll((Collection)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__FILTER:
-				setFilter((Filter)newValue);
+				setFilter((Object)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__SORT_BY:
-				setSortBy((SortBy)newValue);
+				setSortBy((Object)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__FEATURE_VERSION:
 				setFeatureVersion((String)newValue);
@@ -471,7 +489,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				setHandle((String)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__SRS_NAME:
-				setSrsName((URI)newValue);
+				setSrsName((String)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__TYPE_NAME:
 				setTypeName((List)newValue);
@@ -492,6 +510,9 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				return;
 			case WfsPackage.QUERY_TYPE__PROPERTY_NAME:
 				getPropertyName().clear();
+				return;
+			case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
+				getXlinkPropertyName().clear();
 				return;
 			case WfsPackage.QUERY_TYPE__FUNCTION:
 				getFunction().clear();
@@ -529,6 +550,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				return group != null && !group.isEmpty();
 			case WfsPackage.QUERY_TYPE__PROPERTY_NAME:
 				return propertyName != null && !propertyName.isEmpty();
+			case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
+				return !getXlinkPropertyName().isEmpty();
 			case WfsPackage.QUERY_TYPE__FUNCTION:
 				return function != null && !function.isEmpty();
 			case WfsPackage.QUERY_TYPE__FILTER:

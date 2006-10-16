@@ -54,7 +54,7 @@ public interface LockType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getLockType_Filter()
 	 * @model 
 	 */
-	Filter getFilter();
+	Object getFilter();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.LockType#getFilter <em>Filter</em>}' attribute.
@@ -64,7 +64,7 @@ public interface LockType extends EObject{
 	 * @see #getFilter()
 	 * @generated
 	 */
-	void setFilter(Filter value);
+	void setFilter(Object value);
 
 	/**
 	 * Returns the value of the '<em><b>Handle</b></em>' attribute.
@@ -118,7 +118,7 @@ public interface LockType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getLockType_TypeName()
 	 * @model 
 	 */
-	QName getTypeName();
+	Object getTypeName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.LockType#getTypeName <em>Type Name</em>}' attribute.
@@ -128,6 +128,6 @@ public interface LockType extends EObject{
 	 * @see #getTypeName()
 	 * @generated
 	 */
-	void setTypeName(QName value);
+	void setTypeName(Object value);
 
 } // LockType

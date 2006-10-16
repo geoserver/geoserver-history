@@ -80,7 +80,7 @@ public interface UpdateElementType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getUpdateElementType_Filter()
 	 * @model 
 	 */
-	Filter getFilter();
+	Object getFilter();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.UpdateElementType#getFilter <em>Filter</em>}' attribute.
@@ -90,7 +90,7 @@ public interface UpdateElementType extends EObject{
 	 * @see #getFilter()
 	 * @generated
 	 */
-	void setFilter(Filter value);
+	void setFilter(Object value);
 
 	/**
 	 * Returns the value of the '<em><b>Handle</b></em>' attribute.
@@ -235,7 +235,7 @@ public interface UpdateElementType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getUpdateElementType_TypeName()
 	 * @model 
 	 */
-	QName getTypeName();
+	Object getTypeName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.UpdateElementType#getTypeName <em>Type Name</em>}' attribute.
@@ -245,6 +245,6 @@ public interface UpdateElementType extends EObject{
 	 * @see #getTypeName()
 	 * @generated
 	 */
-	void setTypeName(QName value);
+	void setTypeName(Object value);
 
 } // UpdateElementType

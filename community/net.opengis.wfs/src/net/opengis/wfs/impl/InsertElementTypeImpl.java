@@ -199,27 +199,6 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FeatureCollection getFeatureCollection() {
-		return featureCollection;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setFeatureCollection(FeatureCollection newFeatureCollection) {
-		FeatureCollection oldFeatureCollection = featureCollection;
-		featureCollection = newFeatureCollection;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.INSERT_ELEMENT_TYPE__FEATURE_COLLECTION, oldFeatureCollection, featureCollection));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EList getFeature() {
 		if (feature == null) {
 			feature = new EDataTypeUniqueEList(Feature.class, this, WfsPackage.INSERT_ELEMENT_TYPE__FEATURE);
@@ -359,6 +338,27 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 		srsName = newSrsName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.INSERT_ELEMENT_TYPE__SRS_NAME, oldSrsName, srsName));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public FeatureCollection getFeatureCollection() {
+		return featureCollection;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setFeatureCollection(FeatureCollection newFeatureCollection) {
+		FeatureCollection oldFeatureCollection = featureCollection;
+		featureCollection = newFeatureCollection;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.INSERT_ELEMENT_TYPE__FEATURE_COLLECTION, oldFeatureCollection, featureCollection));
 	}
 
 	/**

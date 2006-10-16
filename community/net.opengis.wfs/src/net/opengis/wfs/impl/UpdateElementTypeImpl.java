@@ -68,7 +68,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Filter FILTER_EDEFAULT = null;
+	protected static final Object FILTER_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
@@ -78,7 +78,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * @generated
 	 * @ordered
 	 */
-	protected Filter filter = FILTER_EDEFAULT;
+	protected Object filter = FILTER_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getHandle() <em>Handle</em>}' attribute.
@@ -157,7 +157,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * @generated
 	 * @ordered
 	 */
-	protected static final QName TYPE_NAME_EDEFAULT = null;
+	protected static final Object TYPE_NAME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
@@ -167,7 +167,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * @generated
 	 * @ordered
 	 */
-	protected QName typeName = TYPE_NAME_EDEFAULT;
+	protected Object typeName = TYPE_NAME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -204,7 +204,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Filter getFilter() {
+	public Object getFilter() {
 		return filter;
 	}
 
@@ -213,8 +213,8 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setFilter(Filter newFilter) {
-		Filter oldFilter = filter;
+	public void setFilter(Object newFilter) {
+		Object oldFilter = filter;
 		filter = newFilter;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.UPDATE_ELEMENT_TYPE__FILTER, oldFilter, filter));
@@ -313,7 +313,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public QName getTypeName() {
+	public Object getTypeName() {
 		return typeName;
 	}
 
@@ -322,8 +322,8 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTypeName(QName newTypeName) {
-		QName oldTypeName = typeName;
+	public void setTypeName(Object newTypeName) {
+		Object oldTypeName = typeName;
 		typeName = newTypeName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME, oldTypeName, typeName));
@@ -381,7 +381,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 				getProperty().addAll((Collection)newValue);
 				return;
 			case WfsPackage.UPDATE_ELEMENT_TYPE__FILTER:
-				setFilter((Filter)newValue);
+				setFilter((Object)newValue);
 				return;
 			case WfsPackage.UPDATE_ELEMENT_TYPE__HANDLE:
 				setHandle((String)newValue);
@@ -393,7 +393,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 				setSrsName((String)newValue);
 				return;
 			case WfsPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME:
-				setTypeName((QName)newValue);
+				setTypeName((Object)newValue);
 				return;
 		}
 		eDynamicSet(eFeature, newValue);

@@ -17,7 +17,7 @@
    <xsd:import namespace="http://www.opengis.net/ogc"
                schemaLocation="../../filter/1.1.0/filter.xsd"/>
    <xsd:import namespace="http://www.opengis.net/ows"
-               schemaLocation="../../ows/1.0.0/owsGetCapabilities.xsd"/>
+               schemaLocation="../../ows/1.0.0/owsAll.xsd"/>
 
    <!-- ================================================================== -->
    <!-- =   BASE REQUEST TYPE                                            = -->
@@ -83,9 +83,32 @@
    <!-- ============================================================== -->
    <!-- = PROPERTY NAME ELEMENT                                      = -->
    <!-- ============================================================== -->
-   <xsd:element name="ProperyName" type="xsd:QName"/>
-   <xsd:element name="XlinkPropertyName" type="xsd:QName" 
-                substitutionGroup="wfs:PropertyName">
+   <xsd:element name="PropertyName" type="xsd:string">
+      <xsd:annotation>
+         <xsd:documentation>
+            The Property element is used to specify one or more
+            properties of a feature whose values are to be retrieved
+            by a Web Feature Service.
+
+            While a Web Feature Service should endeavour to satisfy
+            the exact request specified, in some instance this may
+            not be possible.  Specifically, a Web Feature Service
+            must generate a valid GML3 response to a Query operation.
+            The schema used to generate the output may include
+            properties that are mandatory.  In order that the output
+            validates, these mandatory properties must be specified
+            in the request.  If they are not, a Web Feature Service
+            may add them automatically to the Query before processing
+            it.  Thus a client application should, in general, be
+            prepared to receive more properties than it requested.
+
+            Of course, using the DescribeFeatureType request, a client
+            application can determine which properties are mandatory
+            and request them in the first place.
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="XlinkPropertyName">
       <xsd:annotation>
          <xsd:documentation>
             This element may be used in place of an wfs:PropertyName element
@@ -97,10 +120,12 @@
          </xsd:documentation>
       </xsd:annotation>
       <xsd:complexType>
-         <xsd:attribute name="traverseXlinkDepth"
-                        type="xsd:string" use="required">
-            <xsd:annotation>
-               <xsd:documentation>
+         <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+               <xsd:attribute name="traverseXlinkDepth"
+                              type="xsd:string" use="required">
+                  <xsd:annotation>
+                     <xsd:documentation>
                   This attribute indicates the depth to which nested property
                   XLink linking element locator attribute (href) XLinks are
                   traversed and resolved if possible.  A value of "1" indicates
@@ -113,20 +138,22 @@
                   traversed and the referenced elements returned if possible.
                   The range of valid values for this attribute consists of
                   positive integers plus "*".
-               </xsd:documentation>
-            </xsd:annotation>
-         </xsd:attribute>
-         <xsd:attribute name="traverseXlinkExpiry"
-                        type="xsd:positiveInteger"
-                        use="optional">
-            <xsd:annotation>
-               <xsd:documentation>
+                     </xsd:documentation>
+                  </xsd:annotation>
+               </xsd:attribute>
+               <xsd:attribute name="traverseXlinkExpiry"
+                              type="xsd:positiveInteger"
+                              use="optional">
+                  <xsd:annotation>
+                     <xsd:documentation>
                   The traverseXlinkExpiry attribute value is specified in
                   minutes It indicates how long a Web Feature Service should
                   wait to receive a response to a nested GetGmlObject request.	
-               </xsd:documentation>
-            </xsd:annotation>
-         </xsd:attribute>
+                     </xsd:documentation>
+                  </xsd:annotation>
+               </xsd:attribute>
+            </xsd:extension>
+         </xsd:simpleContent>
       </xsd:complexType>
    </xsd:element>
 
@@ -160,8 +187,7 @@
    </xsd:complexType>
    <!-- RESPONSE -->
    <xsd:element name="WFS_Capabilities"
-                type="wfs:WFS_CapabilitiesType"
-                substitutionGroup="ows:Capabilities"/>
+                type="wfs:WFS_CapabilitiesType"/>
    <xsd:complexType name="WFS_CapabilitiesType">
       <xsd:annotation>
          <xsd:documentation>
@@ -301,7 +327,7 @@
    <xsd:simpleType name="OperationType">
       <xsd:restriction base="xsd:string">
          <xsd:enumeration value="Insert"/>
-         <xsd:enumeration value="Unsert"/>
+         <xsd:enumeration value="Update"/>
          <xsd:enumeration value="Delete"/>
          <xsd:enumeration value="Query"/>
          <xsd:enumeration value="Lock"/>
@@ -331,7 +357,7 @@
          <xsd:extension base="xsd:string">
             <xsd:attribute name="type" use="required">
                <xsd:simpleType>
-                  <xsd:restriction base="xsd:NMTOKEN">
+                  <xsd:restriction base="xsd:string">
                      <xsd:enumeration value="TC211"/>
                      <xsd:enumeration value="FGDC"/>
                      <xsd:enumeration value="19115"/>
@@ -341,7 +367,7 @@
             </xsd:attribute>
             <xsd:attribute name="format" use="required">
                <xsd:simpleType>
-                  <xsd:restriction base="xsd:NMTOKEN">
+                  <xsd:restriction base="xsd:string">
                      <xsd:enumeration value="text/xml"/>
                      <xsd:enumeration value="text/html"/>
                      <xsd:enumeration value="text/sgml"/>
@@ -693,6 +719,7 @@
                 </xsd:documentation>
              </xsd:annotation>
           </xsd:element>
+          <xsd:element ref="wfs:XlinkPropertyName"/>
           <xsd:element ref="ogc:Function">
              <xsd:annotation>
                 <xsd:documentation>
@@ -1250,7 +1277,7 @@
          </xsd:documentation>
       </xsd:annotation>
       <xsd:complexContent>
-         <xsd:extension base="ows:GetCapabilitiesType">
+         <xsd:extension base="wfs:BaseRequestType">
             <xsd:sequence>
                <xsd:element ref="wfs:LockId" minOccurs="0">
                   <xsd:annotation>
@@ -1339,12 +1366,9 @@
             repository.
          </xsd:documentation>
       </xsd:annotation>
-      <xsd:choice>
-         <xsd:element ref="gml:_FeatureCollection" />
-         <xsd:sequence>
-            <xsd:element ref="gml:_Feature" maxOccurs="unbounded"/>
-         </xsd:sequence>
-      </xsd:choice>
+      <xsd:sequence>
+         <xsd:element ref="gml:_Feature" maxOccurs="unbounded"/>
+      </xsd:sequence>
       <xsd:attribute name="idgen"
                      type="wfs:IdentifierGenerationOptionType" 
                      use="optional" default="GenerateNew">
@@ -1392,25 +1416,11 @@
       <xsd:attribute name="srsName" type="xsd:anyURI" use="optional">
         <xsd:annotation>
            <xsd:documentation>
-      The optional srsName attribute is used to assert the SRS of the
-      incoming feature data, which can be useful if the incoming feature
-      data does not have an SRS declared for each geometry. If the
-      srsName attribute exists on an &lt;Insert&gt; element, its value shall
-      be equivalent to the value of &lt;DefaultSRS&gt; or any of the
-      &lt;OtherSRS&gt; of the relevant feature types. If, however, the SRS is
-      not supported, the WFS shall raise an exception as described in
-      subclause 7.7. If the srsName is not specified on the &lt;Insert&gt;
-      element, the WFS shall interpret this to mean that the feature
-      data is given in the &lt;DefaultSRS&gt; list, except where an SRS is
-      specified on the feature geometry. In this case, if the SRS for
-      such a geometry is one of the &lt;DefaultSRS&gt; or &lt;OtherSR&gt; values
-      for the respective feature types, it will be transformed as
-      required before insertion. However, if the aforesaid SRS is not
-      supported for the respective feature type, the entire transaction
-      shall fail and the WFS shall raise an exception as described in
-      subclause 7.7. If atomic transactions are not supported by the
-      underlying DBMS, the WFS shall skip any feature with an
-      unsupported SRS and continue
+              ===== PAV 12NOV2004 ====
+              WHY IS THIS HERE? WOULDN'T WE KNOW THE INCOMING SRS FROM THE 
+              GML GEOMETRY ELEMENTS?   I ASSUME THAT IF THE INCOMING SRS
+              DOES NOT MATCH ONE OF THE STORAGE SRS(s) THEN THE WFS WOULD
+              EITHER PROJECT INTO THE STORAGE SRS OR RAISE AN EXCEPTION.
            </xsd:documentation>
         </xsd:annotation>
       </xsd:attribute>
@@ -1703,7 +1713,7 @@
             </xsd:annotation>
          </xsd:element>
          <xsd:element name="InsertResults"
-                      type="wfs:InsertResultType">
+                      type="wfs:InsertResultsType">
             <xsd:annotation>
                <xsd:documentation xml:lang="en">
                   A transaction is a collection of Insert,Update and Delete
@@ -1806,7 +1816,7 @@
          </xsd:annotation>
       </xsd:attribute>
    </xsd:complexType>
-   <xsd:complexType name="InsertResultType">
+   <xsd:complexType name="InsertResultsType">
       <xsd:annotation>
          <xsd:documentation xml:lang="en">
             Reports the list of identifiers of all features created 

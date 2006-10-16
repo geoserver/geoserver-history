@@ -47,13 +47,12 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link net.opengis.wfs.impl.TransactionTypeImpl#getDelete <em>Delete</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.TransactionTypeImpl#getNative <em>Native</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.TransactionTypeImpl#getReleaseAction <em>Release Action</em>}</li>
- *   <li>{@link net.opengis.wfs.impl.TransactionTypeImpl#getHandle <em>Handle</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements TransactionType {
+public class TransactionTypeImpl extends BaseRequestTypeImpl implements TransactionType {
 	/**
 	 * The default value of the '{@link #getLockId() <em>Lock Id</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -112,26 +111,6 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 	 * @ordered
 	 */
 	protected boolean releaseActionESet = false;
-
-	/**
-	 * The default value of the '{@link #getHandle() <em>Handle</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getHandle()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String HANDLE_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getHandle() <em>Handle</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getHandle()
-	 * @generated
-	 * @ordered
-	 */
-	protected String handle = HANDLE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -271,36 +250,9 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getHandle() {
-		return handle;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setHandle(String newHandle) {
-		String oldHandle = handle;
-		handle = newHandle;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_TYPE__HANDLE, oldHandle, handle));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
 		if (featureID >= 0) {
 			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WfsPackage.TRANSACTION_TYPE__ACCEPT_VERSIONS:
-					return basicSetAcceptVersions(null, msgs);
-				case WfsPackage.TRANSACTION_TYPE__SECTIONS:
-					return basicSetSections(null, msgs);
-				case WfsPackage.TRANSACTION_TYPE__ACCEPT_FORMATS:
-					return basicSetAcceptFormats(null, msgs);
 				case WfsPackage.TRANSACTION_TYPE__GROUP:
 					return ((InternalEList)getGroup()).basicRemove(otherEnd, msgs);
 				case WfsPackage.TRANSACTION_TYPE__INSERT:
@@ -325,14 +277,12 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 	 */
 	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WfsPackage.TRANSACTION_TYPE__ACCEPT_VERSIONS:
-				return getAcceptVersions();
-			case WfsPackage.TRANSACTION_TYPE__SECTIONS:
-				return getSections();
-			case WfsPackage.TRANSACTION_TYPE__ACCEPT_FORMATS:
-				return getAcceptFormats();
-			case WfsPackage.TRANSACTION_TYPE__UPDATE_SEQUENCE:
-				return getUpdateSequence();
+			case WfsPackage.TRANSACTION_TYPE__HANDLE:
+				return getHandle();
+			case WfsPackage.TRANSACTION_TYPE__SERVICE:
+				return getService();
+			case WfsPackage.TRANSACTION_TYPE__VERSION:
+				return getVersion();
 			case WfsPackage.TRANSACTION_TYPE__LOCK_ID:
 				return getLockId();
 			case WfsPackage.TRANSACTION_TYPE__GROUP:
@@ -347,8 +297,6 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 				return getNative();
 			case WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION:
 				return getReleaseAction();
-			case WfsPackage.TRANSACTION_TYPE__HANDLE:
-				return getHandle();
 		}
 		return eDynamicGet(eFeature, resolve);
 	}
@@ -360,17 +308,14 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 	 */
 	public void eSet(EStructuralFeature eFeature, Object newValue) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WfsPackage.TRANSACTION_TYPE__ACCEPT_VERSIONS:
-				setAcceptVersions((AcceptVersionsType)newValue);
+			case WfsPackage.TRANSACTION_TYPE__HANDLE:
+				setHandle((String)newValue);
 				return;
-			case WfsPackage.TRANSACTION_TYPE__SECTIONS:
-				setSections((SectionsType)newValue);
+			case WfsPackage.TRANSACTION_TYPE__SERVICE:
+				setService((String)newValue);
 				return;
-			case WfsPackage.TRANSACTION_TYPE__ACCEPT_FORMATS:
-				setAcceptFormats((AcceptFormatsType)newValue);
-				return;
-			case WfsPackage.TRANSACTION_TYPE__UPDATE_SEQUENCE:
-				setUpdateSequence((String)newValue);
+			case WfsPackage.TRANSACTION_TYPE__VERSION:
+				setVersion((String)newValue);
 				return;
 			case WfsPackage.TRANSACTION_TYPE__LOCK_ID:
 				setLockId((String)newValue);
@@ -398,9 +343,6 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 			case WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION:
 				setReleaseAction((AllSomeType)newValue);
 				return;
-			case WfsPackage.TRANSACTION_TYPE__HANDLE:
-				setHandle((String)newValue);
-				return;
 		}
 		eDynamicSet(eFeature, newValue);
 	}
@@ -412,17 +354,14 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 	 */
 	public void eUnset(EStructuralFeature eFeature) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WfsPackage.TRANSACTION_TYPE__ACCEPT_VERSIONS:
-				setAcceptVersions((AcceptVersionsType)null);
+			case WfsPackage.TRANSACTION_TYPE__HANDLE:
+				setHandle(HANDLE_EDEFAULT);
 				return;
-			case WfsPackage.TRANSACTION_TYPE__SECTIONS:
-				setSections((SectionsType)null);
+			case WfsPackage.TRANSACTION_TYPE__SERVICE:
+				unsetService();
 				return;
-			case WfsPackage.TRANSACTION_TYPE__ACCEPT_FORMATS:
-				setAcceptFormats((AcceptFormatsType)null);
-				return;
-			case WfsPackage.TRANSACTION_TYPE__UPDATE_SEQUENCE:
-				setUpdateSequence(UPDATE_SEQUENCE_EDEFAULT);
+			case WfsPackage.TRANSACTION_TYPE__VERSION:
+				unsetVersion();
 				return;
 			case WfsPackage.TRANSACTION_TYPE__LOCK_ID:
 				setLockId(LOCK_ID_EDEFAULT);
@@ -445,9 +384,6 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 			case WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION:
 				unsetReleaseAction();
 				return;
-			case WfsPackage.TRANSACTION_TYPE__HANDLE:
-				setHandle(HANDLE_EDEFAULT);
-				return;
 		}
 		eDynamicUnset(eFeature);
 	}
@@ -459,14 +395,12 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 	 */
 	public boolean eIsSet(EStructuralFeature eFeature) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WfsPackage.TRANSACTION_TYPE__ACCEPT_VERSIONS:
-				return acceptVersions != null;
-			case WfsPackage.TRANSACTION_TYPE__SECTIONS:
-				return sections != null;
-			case WfsPackage.TRANSACTION_TYPE__ACCEPT_FORMATS:
-				return acceptFormats != null;
-			case WfsPackage.TRANSACTION_TYPE__UPDATE_SEQUENCE:
-				return UPDATE_SEQUENCE_EDEFAULT == null ? updateSequence != null : !UPDATE_SEQUENCE_EDEFAULT.equals(updateSequence);
+			case WfsPackage.TRANSACTION_TYPE__HANDLE:
+				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
+			case WfsPackage.TRANSACTION_TYPE__SERVICE:
+				return isSetService();
+			case WfsPackage.TRANSACTION_TYPE__VERSION:
+				return isSetVersion();
 			case WfsPackage.TRANSACTION_TYPE__LOCK_ID:
 				return LOCK_ID_EDEFAULT == null ? lockId != null : !LOCK_ID_EDEFAULT.equals(lockId);
 			case WfsPackage.TRANSACTION_TYPE__GROUP:
@@ -481,8 +415,6 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 				return !getNative().isEmpty();
 			case WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION:
 				return isSetReleaseAction();
-			case WfsPackage.TRANSACTION_TYPE__HANDLE:
-				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
 		}
 		return eDynamicIsSet(eFeature);
 	}
@@ -502,8 +434,6 @@ public class TransactionTypeImpl extends GetCapabilitiesTypeImpl implements Tran
 		result.append(group);
 		result.append(", releaseAction: ");
 		if (releaseActionESet) result.append(releaseAction); else result.append("<unset>");
-		result.append(", handle: ");
-		result.append(handle);
 		result.append(')');
 		return result.toString();
 	}

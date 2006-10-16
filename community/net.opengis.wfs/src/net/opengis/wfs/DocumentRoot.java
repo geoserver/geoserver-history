@@ -37,7 +37,6 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link net.opengis.wfs.DocumentRoot#getLockId <em>Lock Id</em>}</li>
  *   <li>{@link net.opengis.wfs.DocumentRoot#getNative <em>Native</em>}</li>
  *   <li>{@link net.opengis.wfs.DocumentRoot#getProperty <em>Property</em>}</li>
- *   <li>{@link net.opengis.wfs.DocumentRoot#getProperyName <em>Propery Name</em>}</li>
  *   <li>{@link net.opengis.wfs.DocumentRoot#getQuery <em>Query</em>}</li>
  *   <li>{@link net.opengis.wfs.DocumentRoot#getServesGMLObjectTypeList <em>Serves GML Object Type List</em>}</li>
  *   <li>{@link net.opengis.wfs.DocumentRoot#getSupportsGMLObjectTypeList <em>Supports GML Object Type List</em>}</li>
@@ -517,33 +516,6 @@ public interface DocumentRoot extends EObject{
 	void setProperty(PropertyType value);
 
 	/**
-	 * Returns the value of the '<em><b>Propery Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Propery Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Propery Name</em>' attribute.
-	 * @see #setProperyName(Object)
-	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_ProperyName()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.QName" upper="-2" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='ProperyName' namespace='##targetNamespace'"
-	 * @generated
-	 */
-	Object getProperyName();
-
-	/**
-	 * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getProperyName <em>Propery Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Propery Name</em>' attribute.
-	 * @see #getProperyName()
-	 * @generated
-	 */
-	void setProperyName(Object value);
-
-	/**
 	 * Returns the value of the '<em><b>Query</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -729,7 +701,7 @@ public interface DocumentRoot extends EObject{
 	 * @see #setWfsCapabilities(WFSCapabilitiesType)
 	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_WfsCapabilities()
 	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='WFS_Capabilities' namespace='##targetNamespace' affiliation='http://www.opengis.net/ows#Capabilities'"
+	 *        extendedMetaData="kind='element' name='WFS_Capabilities' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	WFSCapabilitiesType getWfsCapabilities();
@@ -745,7 +717,7 @@ public interface DocumentRoot extends EObject{
 	void setWfsCapabilities(WFSCapabilitiesType value);
 
 	/**
-	 * Returns the value of the '<em><b>Xlink Property Name</b></em>' attribute.
+	 * Returns the value of the '<em><b>Xlink Property Name</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
@@ -757,24 +729,24 @@ public interface DocumentRoot extends EObject{
 	 *             -- GetFeatureWithLock, LockFeature, Insert, Update, Delete -- in
 	 *             this version of the WFS specification.
 	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Xlink Property Name</em>' attribute.
-	 * @see #setXlinkPropertyName(Object)
+	 * @return the value of the '<em>Xlink Property Name</em>' containment reference.
+	 * @see #setXlinkPropertyName(XlinkPropertyNameType)
 	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_XlinkPropertyName()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.QName" upper="-2" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='XlinkPropertyName' namespace='##targetNamespace' affiliation='PropertyName'"
+	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 *        extendedMetaData="kind='element' name='XlinkPropertyName' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	Object getXlinkPropertyName();
+	XlinkPropertyNameType getXlinkPropertyName();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getXlinkPropertyName <em>Xlink Property Name</em>}' attribute.
+	 * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getXlinkPropertyName <em>Xlink Property Name</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Xlink Property Name</em>' attribute.
+	 * @param value the new value of the '<em>Xlink Property Name</em>' containment reference.
 	 * @see #getXlinkPropertyName()
 	 * @generated
 	 */
-	void setXlinkPropertyName(Object value);
+	void setXlinkPropertyName(XlinkPropertyNameType value);
 
 	/**
 	 * Returns the value of the '<em><b>Property Name</b></em>' attribute.
@@ -784,14 +756,36 @@ public interface DocumentRoot extends EObject{
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * 
+	 *             The Property element is used to specify one or more
+	 *             properties of a feature whose values are to be retrieved
+	 *             by a Web Feature Service.
+	 * 
+	 *             While a Web Feature Service should endeavour to satisfy
+	 *             the exact request specified, in some instance this may
+	 *             not be possible.  Specifically, a Web Feature Service
+	 *             must generate a valid GML3 response to a Query operation.
+	 *             The schema used to generate the output may include
+	 *             properties that are mandatory.  In order that the output
+	 *             validates, these mandatory properties must be specified
+	 *             in the request.  If they are not, a Web Feature Service
+	 *             may add them automatically to the Query before processing
+	 *             it.  Thus a client application should, in general, be
+	 *             prepared to receive more properties than it requested.
+	 * 
+	 *             Of course, using the DescribeFeatureType request, a client
+	 *             application can determine which properties are mandatory
+	 *             and request them in the first place.
+	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Property Name</em>' attribute.
-	 * @see #setPropertyName(Object)
+	 * @see #setPropertyName(String)
 	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_PropertyName()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnySimpleType" upper="-2" transient="true" volatile="true" derived="true"
+	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='PropertyName' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	Object getPropertyName();
+	String getPropertyName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getPropertyName <em>Property Name</em>}' attribute.
@@ -801,6 +795,6 @@ public interface DocumentRoot extends EObject{
 	 * @see #getPropertyName()
 	 * @generated
 	 */
-	void setPropertyName(Object value);
+	void setPropertyName(String value);
 
 } // DocumentRoot

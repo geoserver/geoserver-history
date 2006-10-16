@@ -6,6 +6,7 @@
  */
 package net.opengis.wfs.impl;
 
+import net.opengis.wfs.InsertResultsType;
 import net.opengis.wfs.InsertResultType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionResultsType;
@@ -67,7 +68,7 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 	 * @generated
 	 * @ordered
 	 */
-	protected InsertResultType insertResults = null;
+	protected InsertResultsType insertResults = null;
 
 	/**
 	 * The default value of the '{@link #getVersion() <em>Version</em>}' attribute.
@@ -207,7 +208,7 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InsertResultType getInsertResults() {
+	public InsertResultsType getInsertResults() {
 		return insertResults;
 	}
 
@@ -216,8 +217,8 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetInsertResults(InsertResultType newInsertResults, NotificationChain msgs) {
-		InsertResultType oldInsertResults = insertResults;
+	public NotificationChain basicSetInsertResults(InsertResultsType newInsertResults, NotificationChain msgs) {
+		InsertResultsType oldInsertResults = insertResults;
 		insertResults = newInsertResults;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS, oldInsertResults, newInsertResults);
@@ -231,7 +232,7 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setInsertResults(InsertResultType newInsertResults) {
+	public void setInsertResults(InsertResultsType newInsertResults) {
 		if (newInsertResults != insertResults) {
 			NotificationChain msgs = null;
 			if (insertResults != null)
@@ -345,7 +346,7 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 				setTransactionResults((TransactionResultsType)newValue);
 				return;
 			case WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS:
-				setInsertResults((InsertResultType)newValue);
+				setInsertResults((InsertResultsType)newValue);
 				return;
 			case WfsPackage.TRANSACTION_RESPONSE_TYPE__VERSION:
 				setVersion((String)newValue);
@@ -368,7 +369,7 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 				setTransactionResults((TransactionResultsType)null);
 				return;
 			case WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS:
-				setInsertResults((InsertResultType)null);
+				setInsertResults((InsertResultsType)null);
 				return;
 			case WfsPackage.TRANSACTION_RESPONSE_TYPE__VERSION:
 				unsetVersion();

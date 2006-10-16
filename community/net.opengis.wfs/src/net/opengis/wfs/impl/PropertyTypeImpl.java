@@ -45,7 +45,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final QName NAME_EDEFAULT = null;
+	protected static final Object NAME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -55,27 +55,17 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * @generated
 	 * @ordered
 	 */
-	protected QName name = NAME_EDEFAULT;
+	protected Object name = NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
+	 * The cached value of the '{@link #getValue() <em>Value</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object VALUE_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getValue()
-	 * @generated
-	 * @ordered
-	 */
-	protected Object value = VALUE_EDEFAULT;
+	protected EObject value = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -100,7 +90,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public QName getName() {
+	public Object getName() {
 		return name;
 	}
 
@@ -109,8 +99,8 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setName(QName newName) {
-		QName oldName = name;
+	public void setName(Object newName) {
+		Object oldName = name;
 		name = newName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.PROPERTY_TYPE__NAME, oldName, name));
@@ -121,7 +111,15 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getValue() {
+	public EObject getValue() {
+		if (value != null && value.eIsProxy()) {
+			EObject oldValue = value;
+			value = (EObject)eResolveProxy((InternalEObject)value);
+			if (value != oldValue) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, WfsPackage.PROPERTY_TYPE__VALUE, oldValue, value));
+			}
+		}
 		return value;
 	}
 
@@ -130,8 +128,17 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setValue(Object newValue) {
-		Object oldValue = value;
+	public EObject basicGetValue() {
+		return value;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setValue(EObject newValue) {
+		EObject oldValue = value;
 		value = newValue;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.PROPERTY_TYPE__VALUE, oldValue, value));
@@ -147,7 +154,8 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 			case WfsPackage.PROPERTY_TYPE__NAME:
 				return getName();
 			case WfsPackage.PROPERTY_TYPE__VALUE:
-				return getValue();
+				if (resolve) return getValue();
+				return basicGetValue();
 		}
 		return eDynamicGet(eFeature, resolve);
 	}
@@ -160,10 +168,10 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	public void eSet(EStructuralFeature eFeature, Object newValue) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WfsPackage.PROPERTY_TYPE__NAME:
-				setName((QName)newValue);
+				setName((Object)newValue);
 				return;
 			case WfsPackage.PROPERTY_TYPE__VALUE:
-				setValue((Object)newValue);
+				setValue((EObject)newValue);
 				return;
 		}
 		eDynamicSet(eFeature, newValue);
@@ -180,7 +188,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 				setName(NAME_EDEFAULT);
 				return;
 			case WfsPackage.PROPERTY_TYPE__VALUE:
-				setValue(VALUE_EDEFAULT);
+				setValue((EObject)null);
 				return;
 		}
 		eDynamicUnset(eFeature);
@@ -196,7 +204,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 			case WfsPackage.PROPERTY_TYPE__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case WfsPackage.PROPERTY_TYPE__VALUE:
-				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+				return value != null;
 		}
 		return eDynamicIsSet(eFeature);
 	}
@@ -212,8 +220,6 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (name: ");
 		result.append(name);
-		result.append(", value: ");
-		result.append(value);
 		result.append(')');
 		return result.toString();
 	}

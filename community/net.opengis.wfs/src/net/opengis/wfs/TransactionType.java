@@ -6,8 +6,6 @@
  */
 package net.opengis.wfs;
 
-import net.opengis.ows.v1_0_0.GetCapabilitiesType;
-
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.util.FeatureMap;
@@ -36,7 +34,6 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link net.opengis.wfs.TransactionType#getDelete <em>Delete</em>}</li>
  *   <li>{@link net.opengis.wfs.TransactionType#getNative <em>Native</em>}</li>
  *   <li>{@link net.opengis.wfs.TransactionType#getReleaseAction <em>Release Action</em>}</li>
- *   <li>{@link net.opengis.wfs.TransactionType#getHandle <em>Handle</em>}</li>
  * </ul>
  * </p>
  *
@@ -44,29 +41,8 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * @model extendedMetaData="name='TransactionType' kind='elementOnly'"
  * @generated
  */
-public interface TransactionType extends GetCapabilitiesType{
+public interface TransactionType extends BaseRequestType{
 	
-	/**
-	 * The handle used for the request. 
-	 * <p>
-	 * Adding this to maintain backwards compatability with wfs 1.0.0.
-	 * </p>
-	 * @return The handle given to the request.
-	 * 
-	 * @model
-	 */
-	String getHandle();
-	
-	/**
-	 * Sets the value of the '{@link net.opengis.wfs.TransactionType#getHandle <em>Handle</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Handle</em>' attribute.
-	 * @see #getHandle()
-	 * @generated
-	 */
-	void setHandle(String value);
-
 	/**
 	 * Returns the value of the '<em><b>Lock Id</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -118,7 +94,7 @@ public interface TransactionType extends GetCapabilitiesType{
 	 * @return the value of the '<em>Group</em>' attribute list.
 	 * @see net.opengis.wfs.WfsPackage#getTransactionType_Group()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="true"
-	 *        extendedMetaData="kind='group' name='group:5'"
+	 *        extendedMetaData="kind='group' name='group:4'"
 	 * @generated
 	 */
 	FeatureMap getGroup();
@@ -135,7 +111,7 @@ public interface TransactionType extends GetCapabilitiesType{
 	 * @return the value of the '<em>Insert</em>' containment reference list.
 	 * @see net.opengis.wfs.WfsPackage#getTransactionType_Insert()
 	 * @model type="net.opengis.wfs.InsertElementType" containment="true" resolveProxies="false" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='Insert' namespace='##targetNamespace' group='#group:5'"
+	 *        extendedMetaData="kind='element' name='Insert' namespace='##targetNamespace' group='#group:4'"
 	 * @generated
 	 */
 	EList getInsert();
@@ -152,7 +128,7 @@ public interface TransactionType extends GetCapabilitiesType{
 	 * @return the value of the '<em>Update</em>' containment reference list.
 	 * @see net.opengis.wfs.WfsPackage#getTransactionType_Update()
 	 * @model type="net.opengis.wfs.UpdateElementType" containment="true" resolveProxies="false" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='Update' namespace='##targetNamespace' group='#group:5'"
+	 *        extendedMetaData="kind='element' name='Update' namespace='##targetNamespace' group='#group:4'"
 	 * @generated
 	 */
 	EList getUpdate();
@@ -169,7 +145,7 @@ public interface TransactionType extends GetCapabilitiesType{
 	 * @return the value of the '<em>Delete</em>' containment reference list.
 	 * @see net.opengis.wfs.WfsPackage#getTransactionType_Delete()
 	 * @model type="net.opengis.wfs.DeleteElementType" containment="true" resolveProxies="false" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='Delete' namespace='##targetNamespace' group='#group:5'"
+	 *        extendedMetaData="kind='element' name='Delete' namespace='##targetNamespace' group='#group:4'"
 	 * @generated
 	 */
 	EList getDelete();
@@ -186,7 +162,7 @@ public interface TransactionType extends GetCapabilitiesType{
 	 * @return the value of the '<em>Native</em>' containment reference list.
 	 * @see net.opengis.wfs.WfsPackage#getTransactionType_Native()
 	 * @model type="net.opengis.wfs.NativeType" containment="true" resolveProxies="false" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='Native' namespace='##targetNamespace' group='#group:5'"
+	 *        extendedMetaData="kind='element' name='Native' namespace='##targetNamespace' group='#group:4'"
 	 * @generated
 	 */
 	EList getNative();

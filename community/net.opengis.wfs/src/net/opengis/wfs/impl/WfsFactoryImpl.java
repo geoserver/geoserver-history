@@ -68,19 +68,20 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 			case WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE: return createDescribeFeatureTypeType();
 			case WfsPackage.DOCUMENT_ROOT: return createDocumentRoot();
 			case WfsPackage.FEATURE_COLLECTION_TYPE: return createFeatureCollectionType();
-			case WfsPackage.FEATURES_LOCKED_TYPE: return createFeaturesLockedType();
-			case WfsPackage.FEATURES_NOT_LOCKED_TYPE: return createFeaturesNotLockedType();
 			case WfsPackage.FEATURE_TYPE_LIST_TYPE: return createFeatureTypeListType();
 			case WfsPackage.FEATURE_TYPE_TYPE: return createFeatureTypeType();
+			case WfsPackage.FEATURES_LOCKED_TYPE: return createFeaturesLockedType();
+			case WfsPackage.FEATURES_NOT_LOCKED_TYPE: return createFeaturesNotLockedType();
+			case WfsPackage.GML_OBJECT_TYPE_LIST_TYPE: return createGMLObjectTypeListType();
+			case WfsPackage.GML_OBJECT_TYPE_TYPE: return createGMLObjectTypeType();
 			case WfsPackage.GET_CAPABILITIES_TYPE: return createGetCapabilitiesType();
 			case WfsPackage.GET_FEATURE_TYPE: return createGetFeatureType();
 			case WfsPackage.GET_FEATURE_WITH_LOCK_TYPE: return createGetFeatureWithLockType();
 			case WfsPackage.GET_GML_OBJECT_TYPE: return createGetGmlObjectType();
-			case WfsPackage.GML_OBJECT_TYPE_LIST_TYPE: return createGMLObjectTypeListType();
-			case WfsPackage.GML_OBJECT_TYPE_TYPE: return createGMLObjectTypeType();
-			case WfsPackage.INSERTED_FEATURE_TYPE: return createInsertedFeatureType();
 			case WfsPackage.INSERT_ELEMENT_TYPE: return createInsertElementType();
 			case WfsPackage.INSERT_RESULT_TYPE: return createInsertResultType();
+			case WfsPackage.INSERT_RESULTS_TYPE: return createInsertResultsType();
+			case WfsPackage.INSERTED_FEATURE_TYPE: return createInsertedFeatureType();
 			case WfsPackage.LOCK_FEATURE_RESPONSE_TYPE: return createLockFeatureResponseType();
 			case WfsPackage.LOCK_FEATURE_TYPE: return createLockFeatureType();
 			case WfsPackage.LOCK_TYPE: return createLockType();
@@ -97,6 +98,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 			case WfsPackage.TRANSACTION_TYPE: return createTransactionType();
 			case WfsPackage.UPDATE_ELEMENT_TYPE: return createUpdateElementType();
 			case WfsPackage.WFS_CAPABILITIES_TYPE: return createWFSCapabilitiesType();
+			case WfsPackage.XLINK_PROPERTY_NAME_TYPE: return createXlinkPropertyNameType();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -129,44 +131,24 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 				if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 				return result;
 			}
-			case WfsPackage.ALL_SOME_TYPE_OBJECT:
-				return createAllSomeTypeObjectFromString(eDataType, initialValue);
-			case WfsPackage.BASE_TYPE_NAME_LIST_TYPE:
-				return createBaseTypeNameListTypeFromString(eDataType, initialValue);
-			case WfsPackage.FORMAT_TYPE:
-				return createFormatTypeFromString(eDataType, initialValue);
-			case WfsPackage.IDENTIFIER_GENERATION_OPTION_TYPE_OBJECT:
-				return createIdentifierGenerationOptionTypeObjectFromString(eDataType, initialValue);
-			case WfsPackage.OPERATION_TYPE_OBJECT:
-				return createOperationTypeObjectFromString(eDataType, initialValue);
-			case WfsPackage.RESULT_TYPE_TYPE_OBJECT:
-				return createResultTypeTypeObjectFromString(eDataType, initialValue);
-			case WfsPackage.TYPE_NAME_LIST_TYPE:
-				return createTypeNameListTypeFromString(eDataType, initialValue);
 			case WfsPackage.TYPE_TYPE:
 				return createTypeTypeFromString(eDataType, initialValue);
-			case WfsPackage.QNAME:
-				return createQNameFromString(eDataType, initialValue);
-			case WfsPackage.SORT_BY:
-				return createSortByFromString(eDataType, initialValue);
-			case WfsPackage.FEATURE_ID:
-				return createFeatureIdFromString(eDataType, initialValue);
-			case WfsPackage.FEATURE:
-				return createFeatureFromString(eDataType, initialValue);
-			case WfsPackage.FUNCTION:
-				return createFunctionFromString(eDataType, initialValue);
 			case WfsPackage.FEATURE_COLLECTION:
 				return createFeatureCollectionFromString(eDataType, initialValue);
-			case WfsPackage.FILTER:
-				return createFilterFromString(eDataType, initialValue);
-			case WfsPackage.FILTER_1:
-				return createFilter_1FromString(eDataType, initialValue);
-			case WfsPackage.PROPERTY_NAME:
-				return createPropertyNameFromString(eDataType, initialValue);
+			case WfsPackage.FEATURE:
+				return createFeatureFromString(eDataType, initialValue);
+			case WfsPackage.FORMAT_TYPE:
+				return createFormatTypeFromString(eDataType, initialValue);
 			case WfsPackage.CALENDAR:
 				return createCalendarFromString(eDataType, initialValue);
-			case WfsPackage.URI:
-				return createURIFromString(eDataType, initialValue);
+			case WfsPackage.QNAME:
+				return createQNameFromString(eDataType, initialValue);
+			case WfsPackage.TYPE_NAME_LIST_TYPE:
+				return createTypeNameListTypeFromString(eDataType, initialValue);
+			case WfsPackage.FEATURE_ID:
+				return createFeatureIdFromString(eDataType, initialValue);
+			case WfsPackage.FUNCTION:
+				return createFunctionFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -187,44 +169,24 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 				return instanceValue == null ? null : instanceValue.toString();
 			case WfsPackage.RESULT_TYPE_TYPE:
 				return instanceValue == null ? null : instanceValue.toString();
-			case WfsPackage.ALL_SOME_TYPE_OBJECT:
-				return convertAllSomeTypeObjectToString(eDataType, instanceValue);
-			case WfsPackage.BASE_TYPE_NAME_LIST_TYPE:
-				return convertBaseTypeNameListTypeToString(eDataType, instanceValue);
-			case WfsPackage.FORMAT_TYPE:
-				return convertFormatTypeToString(eDataType, instanceValue);
-			case WfsPackage.IDENTIFIER_GENERATION_OPTION_TYPE_OBJECT:
-				return convertIdentifierGenerationOptionTypeObjectToString(eDataType, instanceValue);
-			case WfsPackage.OPERATION_TYPE_OBJECT:
-				return convertOperationTypeObjectToString(eDataType, instanceValue);
-			case WfsPackage.RESULT_TYPE_TYPE_OBJECT:
-				return convertResultTypeTypeObjectToString(eDataType, instanceValue);
-			case WfsPackage.TYPE_NAME_LIST_TYPE:
-				return convertTypeNameListTypeToString(eDataType, instanceValue);
 			case WfsPackage.TYPE_TYPE:
 				return convertTypeTypeToString(eDataType, instanceValue);
-			case WfsPackage.QNAME:
-				return convertQNameToString(eDataType, instanceValue);
-			case WfsPackage.SORT_BY:
-				return convertSortByToString(eDataType, instanceValue);
-			case WfsPackage.FEATURE_ID:
-				return convertFeatureIdToString(eDataType, instanceValue);
-			case WfsPackage.FEATURE:
-				return convertFeatureToString(eDataType, instanceValue);
-			case WfsPackage.FUNCTION:
-				return convertFunctionToString(eDataType, instanceValue);
 			case WfsPackage.FEATURE_COLLECTION:
 				return convertFeatureCollectionToString(eDataType, instanceValue);
-			case WfsPackage.FILTER:
-				return convertFilterToString(eDataType, instanceValue);
-			case WfsPackage.FILTER_1:
-				return convertFilter_1ToString(eDataType, instanceValue);
-			case WfsPackage.PROPERTY_NAME:
-				return convertPropertyNameToString(eDataType, instanceValue);
+			case WfsPackage.FEATURE:
+				return convertFeatureToString(eDataType, instanceValue);
+			case WfsPackage.FORMAT_TYPE:
+				return convertFormatTypeToString(eDataType, instanceValue);
 			case WfsPackage.CALENDAR:
 				return convertCalendarToString(eDataType, instanceValue);
-			case WfsPackage.URI:
-				return convertURIToString(eDataType, instanceValue);
+			case WfsPackage.QNAME:
+				return convertQNameToString(eDataType, instanceValue);
+			case WfsPackage.TYPE_NAME_LIST_TYPE:
+				return convertTypeNameListTypeToString(eDataType, instanceValue);
+			case WfsPackage.FEATURE_ID:
+				return convertFeatureIdToString(eDataType, instanceValue);
+			case WfsPackage.FUNCTION:
+				return convertFunctionToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -405,9 +367,9 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InsertResultType createInsertResultType() {
-		InsertResultTypeImpl insertResultType = new InsertResultTypeImpl();
-		return insertResultType;
+	public InsertResultsType createInsertResultsType() {
+		InsertResultsTypeImpl insertResultsType = new InsertResultsTypeImpl();
+		return insertResultsType;
 	}
 
 	/**
@@ -575,8 +537,9 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public AllSomeType createAllSomeTypeObjectFromString(EDataType eDataType, String initialValue) {
-		return (AllSomeType)WfsFactory.eINSTANCE.createFromString(WfsPackage.eINSTANCE.getAllSomeType(), initialValue);
+	public XlinkPropertyNameType createXlinkPropertyNameType() {
+		XlinkPropertyNameTypeImpl xlinkPropertyNameType = new XlinkPropertyNameTypeImpl();
+		return xlinkPropertyNameType;
 	}
 
 	/**
@@ -584,40 +547,9 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertAllSomeTypeObjectToString(EDataType eDataType, Object instanceValue) {
-		return WfsFactory.eINSTANCE.convertToString(WfsPackage.eINSTANCE.getAllSomeType(), instanceValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public List createBaseTypeNameListTypeFromString(EDataType eDataType, String initialValue) {
-		if (initialValue == null) return null;
-		List result = new ArrayList();
-		for (StringTokenizer stringTokenizer = new StringTokenizer(initialValue); stringTokenizer.hasMoreTokens(); ) {
-			String item = stringTokenizer.nextToken();
-			result.add(XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.eINSTANCE.getQName(), item));
-		}
-		return result;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertBaseTypeNameListTypeToString(EDataType eDataType, Object instanceValue) {
-		if (instanceValue == null) return null;
-		List list = (List)instanceValue;
-		if (list.isEmpty()) return "";
-		StringBuffer result = new StringBuffer();
-		for (Iterator i = list.iterator(); i.hasNext(); ) {
-			result.append(XMLTypeFactory.eINSTANCE.convertToString(XMLTypePackage.eINSTANCE.getQName(), i.next()));
-			result.append(' ');
-		}
-		return result.substring(0, result.length() - 1);
+	public InsertResultType createInsertResultType() {
+		InsertResultTypeImpl insertResultType = new InsertResultTypeImpl();
+		return insertResultType;
 	}
 
 	/**
@@ -626,7 +558,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * @generated
 	 */
 	public String createFormatTypeFromString(EDataType eDataType, String initialValue) {
-		return (String)XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.eINSTANCE.getNMTOKEN(), initialValue);
+		return (String)super.createFromString(eDataType, initialValue);
 	}
 
 	/**
@@ -635,61 +567,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * @generated
 	 */
 	public String convertFormatTypeToString(EDataType eDataType, Object instanceValue) {
-		return XMLTypeFactory.eINSTANCE.convertToString(XMLTypePackage.eINSTANCE.getNMTOKEN(), instanceValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public IdentifierGenerationOptionType createIdentifierGenerationOptionTypeObjectFromString(EDataType eDataType, String initialValue) {
-		return (IdentifierGenerationOptionType)WfsFactory.eINSTANCE.createFromString(WfsPackage.eINSTANCE.getIdentifierGenerationOptionType(), initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertIdentifierGenerationOptionTypeObjectToString(EDataType eDataType, Object instanceValue) {
-		return WfsFactory.eINSTANCE.convertToString(WfsPackage.eINSTANCE.getIdentifierGenerationOptionType(), instanceValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public OperationType createOperationTypeObjectFromString(EDataType eDataType, String initialValue) {
-		return (OperationType)WfsFactory.eINSTANCE.createFromString(WfsPackage.eINSTANCE.getOperationType(), initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertOperationTypeObjectToString(EDataType eDataType, Object instanceValue) {
-		return WfsFactory.eINSTANCE.convertToString(WfsPackage.eINSTANCE.getOperationType(), instanceValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ResultTypeType createResultTypeTypeObjectFromString(EDataType eDataType, String initialValue) {
-		return (ResultTypeType)WfsFactory.eINSTANCE.createFromString(WfsPackage.eINSTANCE.getResultTypeType(), initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertResultTypeTypeObjectToString(EDataType eDataType, Object instanceValue) {
-		return WfsFactory.eINSTANCE.convertToString(WfsPackage.eINSTANCE.getResultTypeType(), instanceValue);
+		return super.convertToString(eDataType, instanceValue);
 	}
 
 	/**
@@ -698,7 +576,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * @generated
 	 */
 	public List createTypeNameListTypeFromString(EDataType eDataType, String initialValue) {
-		return (List)WfsFactory.eINSTANCE.createFromString(WfsPackage.eINSTANCE.getBaseTypeNameListType(), initialValue);
+		return (List)super.createFromString(eDataType, initialValue);
 	}
 
 	/**
@@ -707,7 +585,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * @generated
 	 */
 	public String convertTypeNameListTypeToString(EDataType eDataType, Object instanceValue) {
-		return WfsFactory.eINSTANCE.convertToString(WfsPackage.eINSTANCE.getBaseTypeNameListType(), instanceValue);
+		return super.convertToString(eDataType, instanceValue);
 	}
 
 	/**
@@ -716,7 +594,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * @generated
 	 */
 	public String createTypeTypeFromString(EDataType eDataType, String initialValue) {
-		return (String)XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.eINSTANCE.getNMTOKEN(), initialValue);
+		return (String)super.createFromString(eDataType, initialValue);
 	}
 
 	/**
@@ -725,7 +603,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * @generated
 	 */
 	public String convertTypeTypeToString(EDataType eDataType, Object instanceValue) {
-		return XMLTypeFactory.eINSTANCE.convertToString(XMLTypePackage.eINSTANCE.getNMTOKEN(), instanceValue);
+		return super.convertToString(eDataType, instanceValue);
 	}
 
 	/**
@@ -751,8 +629,8 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SortBy createSortByFromString(EDataType eDataType, String initialValue) {
-		return (SortBy)super.createFromString(eDataType, initialValue);
+	public Function createFunctionFromString(EDataType eDataType, String initialValue) {
+		return (Function)super.createFromString(eDataType, initialValue);
 	}
 
 	/**
@@ -760,7 +638,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertSortByToString(EDataType eDataType, Object instanceValue) {
+	public String convertFunctionToString(EDataType eDataType, Object instanceValue) {
 		return super.convertToString(eDataType, instanceValue);
 	}
 
@@ -805,24 +683,6 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Function createFunctionFromString(EDataType eDataType, String initialValue) {
-		return (Function)super.createFromString(eDataType, initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertFunctionToString(EDataType eDataType, Object instanceValue) {
-		return super.convertToString(eDataType, instanceValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public FeatureCollection createFeatureCollectionFromString(EDataType eDataType, String initialValue) {
 		return (FeatureCollection)super.createFromString(eDataType, initialValue);
 	}
@@ -841,60 +701,6 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Filter createFilterFromString(EDataType eDataType, String initialValue) {
-		return (Filter)super.createFromString(eDataType, initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertFilterToString(EDataType eDataType, Object instanceValue) {
-		return super.convertToString(eDataType, instanceValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public org.geotools.filter.Filter createFilter_1FromString(EDataType eDataType, String initialValue) {
-		return (org.geotools.filter.Filter)super.createFromString(eDataType, initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertFilter_1ToString(EDataType eDataType, Object instanceValue) {
-		return super.convertToString(eDataType, instanceValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public PropertyName createPropertyNameFromString(EDataType eDataType, String initialValue) {
-		return (PropertyName)super.createFromString(eDataType, initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertPropertyNameToString(EDataType eDataType, Object instanceValue) {
-		return super.convertToString(eDataType, instanceValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public Calendar createCalendarFromString(EDataType eDataType, String initialValue) {
 		return (Calendar)super.createFromString(eDataType, initialValue);
 	}
@@ -905,24 +711,6 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * @generated
 	 */
 	public String convertCalendarToString(EDataType eDataType, Object instanceValue) {
-		return super.convertToString(eDataType, instanceValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public URI createURIFromString(EDataType eDataType, String initialValue) {
-		return (URI)super.createFromString(eDataType, initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertURIToString(EDataType eDataType, Object instanceValue) {
 		return super.convertToString(eDataType, instanceValue);
 	}
 

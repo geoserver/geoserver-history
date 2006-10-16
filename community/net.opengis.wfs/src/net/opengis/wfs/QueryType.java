@@ -32,6 +32,7 @@ import org.opengis.filter.sort.SortBy;
  * <ul>
  *   <li>{@link net.opengis.wfs.QueryType#getGroup <em>Group</em>}</li>
  *   <li>{@link net.opengis.wfs.QueryType#getPropertyName <em>Property Name</em>}</li>
+ *   <li>{@link net.opengis.wfs.QueryType#getXlinkPropertyName <em>Xlink Property Name</em>}</li>
  *   <li>{@link net.opengis.wfs.QueryType#getFunction <em>Function</em>}</li>
  *   <li>{@link net.opengis.wfs.QueryType#getFilter <em>Filter</em>}</li>
  *   <li>{@link net.opengis.wfs.QueryType#getSortBy <em>Sort By</em>}</li>
@@ -99,6 +100,23 @@ public interface QueryType extends EObject{
 	EList getPropertyName();
 
 	/**
+	 * Returns the value of the '<em><b>Xlink Property Name</b></em>' containment reference list.
+	 * The list contents are of type {@link net.opengis.wfs.XlinkPropertyNameType}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Xlink Property Name</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Xlink Property Name</em>' containment reference list.
+	 * @see net.opengis.wfs.WfsPackage#getQueryType_XlinkPropertyName()
+	 * @model type="net.opengis.wfs.XlinkPropertyNameType" containment="true" resolveProxies="false" transient="true" volatile="true" derived="true"
+	 *        extendedMetaData="kind='element' name='XlinkPropertyName' namespace='##targetNamespace' group='#group:0'"
+	 * @generated
+	 */
+	EList getXlinkPropertyName();
+
+	/**
 	 * Returns the value of the '<em><b>Function</b></em>' attribute list.
 	 * The list contents are of type {@link java.lang.Object}.
 	 * <!-- begin-user-doc -->
@@ -135,7 +153,7 @@ public interface QueryType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getQueryType_Filter()
 	 * @model 
 	 */
-	Filter getFilter();
+	Object getFilter();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.QueryType#getFilter <em>Filter</em>}' attribute.
@@ -145,7 +163,7 @@ public interface QueryType extends EObject{
 	 * @see #getFilter()
 	 * @generated
 	 */
-	void setFilter(Filter value);
+	void setFilter(Object value);
 
 	/**
 	 * Returns the value of the '<em><b>Sort By</b></em>' attribute.
@@ -163,7 +181,7 @@ public interface QueryType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getQueryType_SortBy()
 	 * @model 
 	 */
-	SortBy getSortBy();
+	Object getSortBy();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.QueryType#getSortBy <em>Sort By</em>}' attribute.
@@ -173,7 +191,7 @@ public interface QueryType extends EObject{
 	 * @see #getSortBy()
 	 * @generated
 	 */
-	void setSortBy(SortBy value);
+	void setSortBy(Object value);
 
 	/**
 	 * Returns the value of the '<em><b>Feature Version</b></em>' attribute.
@@ -261,7 +279,7 @@ public interface QueryType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getQueryType_SrsName()
 	 * @model 
 	 */
-	URI getSrsName();
+	String getSrsName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.QueryType#getSrsName <em>Srs Name</em>}' attribute.
@@ -271,7 +289,7 @@ public interface QueryType extends EObject{
 	 * @see #getSrsName()
 	 * @generated
 	 */
-	void setSrsName(URI value);
+	void setSrsName(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Type Name</b></em>' attribute.

@@ -43,7 +43,7 @@ public interface PropertyType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getPropertyType_Name()
 	 * @model 
 	 */
-	QName getName();
+	Object getName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.PropertyType#getName <em>Name</em>}' attribute.
@@ -53,7 +53,7 @@ public interface PropertyType extends EObject{
 	 * @see #getName()
 	 * @generated
 	 */
-	void setName(QName value);
+	void setName(Object value);
 
 	/**
 	 * Returns the value of the '<em><b>Value</b></em>' containment reference.
@@ -69,16 +69,16 @@ public interface PropertyType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getPropertyType_Value()
 	 * @model
 	 */
-	Object getValue();
+	EObject getValue();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.wfs.PropertyType#getValue <em>Value</em>}' attribute.
+	 * Sets the value of the '{@link net.opengis.wfs.PropertyType#getValue <em>Value</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Value</em>' attribute.
+	 * @param value the new value of the '<em>Value</em>' reference.
 	 * @see #getValue()
 	 * @generated
 	 */
-	void setValue(Object value);
+	void setValue(EObject value);
 
 } // PropertyType
