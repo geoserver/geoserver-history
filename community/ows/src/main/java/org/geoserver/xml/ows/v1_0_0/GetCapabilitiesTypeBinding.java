@@ -90,10 +90,10 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
 		throws Exception {
 		final GetCapabilitiesType getCapabilities;
 
-        if(value != null){
-            getCapabilities = (GetCapabilitiesType)value;
-        }else{
+        if(value == null){
             getCapabilities = owsfactory.createGetCapabilitiesType();
+        }else{
+            getCapabilities = (GetCapabilitiesType)value;
         }
 	
 		getCapabilities.setAcceptVersions( 
