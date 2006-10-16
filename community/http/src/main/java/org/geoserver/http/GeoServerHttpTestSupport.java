@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -149,8 +150,10 @@ public class GeoServerHttpTestSupport extends TestCase {
 	protected void print( Document dom , PrintStream stream ) throws Exception {
 		
 		Transformer tx = TransformerFactory.newInstance().newTransformer();
+		tx.setOutputProperty( OutputKeys.INDENT, "yes" );
 		DOMSource source = new DOMSource( dom );
 		StreamResult result = new StreamResult( stream );
+		
 		
 		
 		tx.transform( source, result );
