@@ -5,14 +5,13 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.opengis.wfs.WfsFactory;
-import net.opengis.wfs.WfsPackage;
+import net.opengis.wfs.WFSFactory;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.geoserver.ows.EMFUtils;
 import org.geoserver.ows.http.KvpRequestReader;
 import org.geoserver.ows.http.OWSUtils;
-import org.geoserver.wfs.EMFUtils;
 
 /**
  * Web Feature Service Key Value Pair Request reader.
@@ -28,7 +27,7 @@ public class WFSKvpRequestReader extends KvpRequestReader {
 	/**
 	 * WFs factory used to create model objects / requests.
 	 */
-	WfsFactory wfsFactory;
+	WFSFactory wfsFactory;
 	
 	/**
 	 * Creates the Wfs Kvp Request reader.
@@ -44,7 +43,7 @@ public class WFSKvpRequestReader extends KvpRequestReader {
 			throw new IllegalArgumentException( msg );
 		}
 		
-		wfsFactory = WfsFactory.eINSTANCE;
+		wfsFactory = WFSFactory.eINSTANCE;
 	}
 
 	/**
@@ -58,7 +57,7 @@ public class WFSKvpRequestReader extends KvpRequestReader {
 			className = className.substring( index + 1 );
 		}
 		
-		Method create = OWSUtils.method( WfsFactory.class, "create" + className );
+		Method create = OWSUtils.method( WFSFactory.class, "create" + className );
 		try {
 			return create.invoke( wfsFactory, null );
 		} 
