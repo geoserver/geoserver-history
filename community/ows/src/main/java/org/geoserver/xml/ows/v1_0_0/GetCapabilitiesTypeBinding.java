@@ -77,14 +77,24 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
 	
 	/**
 	 * <!-- begin-user-doc -->
+     * @param value an instance of {@link GetCapabilitiesType} (possibly a subclass) if
+     * a binding for a specific service's GetCapabilities request used {@link Binding#BEFORE} 
+     * {@link #getExecutionMode() execution mode}, and thus relies on this binding to fill
+     * the common properties. <code>null</code> otherwise.
+     * 
 	 * <!-- end-user-doc -->
 	 *	
 	 * @generated modifiable
 	 */	
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
-		
-		GetCapabilitiesType getCapabilities = owsfactory.createGetCapabilitiesType();
+		final GetCapabilitiesType getCapabilities;
+
+        if(value != null){
+            getCapabilities = (GetCapabilitiesType)value;
+        }else{
+            getCapabilities = owsfactory.createGetCapabilitiesType();
+        }
 	
 		getCapabilities.setAcceptVersions( 
 			(AcceptVersionsType) node.getChildValue( AcceptVersionsType.class )
