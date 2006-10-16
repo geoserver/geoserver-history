@@ -88,7 +88,7 @@
 	<bean id="bboxKvpParser" class="org.geoserver.wfs.http.kvp.BBoxKvpReader"/>
 	<bean id="filterKvpParser" class="org.geoserver.wfs.http.kvp.FilterKvpReader"/>
 	<bean id="propertyNameKvpParser" class="org.geoserver.wfs.http.kvp.PropertyNameKvpReader">
-		<constructor-arg ref="filterFactory"/>
+		<constructor-arg ref="catalog"/>
 	</bean>
 	<bean id="maxFeatureKvpParser" class="org.geoserver.wfs.http.kvp.MaxFeaturesKvpReader"/>
 	<bean id="srsNameFeatureKvpParser" class="org.geoserver.wfs.http.kvp.SrsNameKvpReader"/>
@@ -151,17 +151,18 @@
 	</bean>
 	
 	<!-- 1.1 xml readers -->
-	<bean id="getCapabilitiesXmlReader-1.1.0"
-		class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader">
+	<bean id="getCapabilitiesXmlReader-1.1.0" class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader">
 		<constructor-arg type="java.lang.String" value="GetCapabilities"/>
 		<constructor-arg ref="catalog"/>
 	</bean>
-	<bean id="describeFetureTypeXmlReader-1.1.0"
-		class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader">
+	<bean id="describeFeatureTypeXmlReader-1.1.0" class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader">
 		<constructor-arg value="DescribeFeatureType"/>
 		<constructor-arg ref="catalog"/>
 	</bean>
-	
+	<bean id="getFeatureTypeXmlReader-1.1.0" class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader">
+		<constructor-arg value="GetFeature"/>
+		<constructor-arg ref="catalog"/>
+	</bean>
 	<!-- default feature type encoders -->
 	<bean id="gml2FeatureTypeEncoder" 
 		class="org.geoserver.wfs.xml.v1_0_0.XmlSchemaEncoder">
