@@ -2,16 +2,19 @@ package org.geoserver.wfs.xml.v1_0_0;
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.geotools.xml.*;
+import org.geotools.xs.bindings.XSQNameBinding;
 import org.opengis.feature.Feature;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterVisitor;
 import org.opengis.filter.expression.PropertyName;
+import org.xml.sax.helpers.NamespaceSupport;
 
 import net.opengis.wfs.QueryType;
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -90,9 +93,18 @@ import javax.xml.namespace.QName;
  */
 public class QueryTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
-	public QueryTypeBinding( WfsFactory wfsfactory ) {
+	/**
+	 * Wfs Factory
+	 */
+	WFSFactory wfsfactory;
+	/**
+	 * namespace mappings
+	 */
+	NamespaceSupport namespaceSupport;
+	
+	public QueryTypeBinding( WFSFactory wfsfactory, NamespaceSupport namespaceSupport ) {
 		this.wfsfactory = wfsfactory;
+		this.namespaceSupport = namespaceSupport;
 	}
 
 	/**
@@ -124,8 +136,19 @@ public class QueryTypeBinding extends AbstractComplexBinding {
 		QueryType queryType = wfsfactory.createQueryType();
 		
 		//<xsd:element maxOccurs="unbounded" minOccurs="0" ref="ogc:PropertyName">
-		queryType.getPropertyName()
-			.addAll( node.getChildValues( PropertyName.class ) );
+		//JD:difference in spec here, moved from ogc:PropertyName to QName
+		List propertyNames = node.getChildren( PropertyName.class );
+		for ( Iterator p = propertyNames.iterator(); p.hasNext(); ) {
+			Node propertyName = (Node) p.next();
+			
+			//TODO: PropertyName binding throws away namespace prefix so we need
+			// to use the raw unparsed text as the value to teh qname binding
+			QName qName = (QName) new XSQNameBinding( namespaceSupport ).parse( 
+				propertyName.getComponent(), propertyName.getComponent().getText() 	
+			);
+		
+			queryType.getPropertyName().add( qName );
+		}
 		
 		//<xsd:element maxOccurs="1" minOccurs="0" ref="ogc:Filter">
 		Filter filter = (Filter) node.getChildValue( Filter.class );

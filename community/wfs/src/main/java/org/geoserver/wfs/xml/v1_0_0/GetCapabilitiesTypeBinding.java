@@ -5,7 +5,7 @@ import org.geotools.xml.*;
 
 import net.opengis.ows.v1_0_0.OWSFactory;
 import net.opengis.wfs.GetCapabilitiesType;
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -37,13 +37,13 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
 	/**
 	 * Wfs factory
 	 */
-	WfsFactory wfsFactory;
+	WFSFactory wfsFactory;
 	/**
 	 * Ows Factory
 	 */
 	OWSFactory owsFactory;
 	
-	public GetCapabilitiesTypeBinding( WfsFactory wfsFactory, OWSFactory owsFactory ) {
+	public GetCapabilitiesTypeBinding( WFSFactory wfsFactory, OWSFactory owsFactory ) {
 		this.wfsFactory = wfsFactory;
 		this.owsFactory = owsFactory;
 	}

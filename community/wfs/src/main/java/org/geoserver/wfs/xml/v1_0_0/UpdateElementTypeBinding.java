@@ -6,7 +6,7 @@ import org.opengis.filter.Filter;
 
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.UpdateElementType;
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -47,8 +47,8 @@ import javax.xml.namespace.QName;
  */
 public class UpdateElementTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
-	public UpdateElementTypeBinding( WfsFactory wfsfactory ) {
+	WFSFactory wfsfactory;		
+	public UpdateElementTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 

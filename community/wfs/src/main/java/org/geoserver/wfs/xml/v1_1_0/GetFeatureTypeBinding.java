@@ -1,9 +1,16 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 
+import java.math.BigInteger;
+
+import org.geoserver.ows.EMFUtils;
 import org.geotools.xml.*;
 
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.BaseRequestType;
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.QueryType;
+import net.opengis.wfs.ResultTypeType;
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -127,8 +134,8 @@ import javax.xml.namespace.QName;
  */
 public class GetFeatureTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
-	public GetFeatureTypeBinding( WfsFactory wfsfactory ) {
+	WFSFactory wfsfactory;		
+	public GetFeatureTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 
@@ -140,13 +147,20 @@ public class GetFeatureTypeBinding extends AbstractComplexBinding {
 	}
 	
 	/**
+	 * Sets execution mode to be before
+	 */
+	public int getExecutionMode() {
+		return BEFORE;
+	}
+	
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 *	
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return GetFeatureType.class;
 	}
 	
 	/**
@@ -158,8 +172,40 @@ public class GetFeatureTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		GetFeatureType getFeature = wfsfactory.createGetFeatureType();
+		
+		//lt;xsd:element maxOccurs="unbounded" ref="wfs:Query"/&gt;
+		getFeature.getQuery().addAll( node.getChildValues( QueryType.class ) );
+		
+		//&lt;xsd:attribute default="results" name="resultType"
+		//      type="wfs:ResultTypeType" use="optional"&gt;
+		if ( node.hasAttribute( "resultType" ) ) {
+			getFeature.setResultType( (ResultTypeType) node.getAttributeValue( "resultType" ) );
+		}
+		
+		//&lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
+		//		name="outputFormat" type="xsd:string" use="optional"&gt;
+		if ( node.hasAttribute( "outputFormat" ) ) {
+			getFeature.setOutputFormat( (String) node.getAttributeValue( "outputFormat" ) );
+		}
+	
+		//&lt;xsd:attribute name="maxFeatures" type="xsd:positiveInteger" use="optional"&gt;
+		if ( node.hasAttribute( "maxFeatures" ) ) {
+			getFeature.setMaxFeatures( (BigInteger) node.getAttributeValue( "maxFeatures") );
+		}
+		
+		//&lt;xsd:attribute name="traverseXlinkDepth" type="xsd:string" use="optional"&gt;
+		if ( node.hasAttribute( "traverseXlinkDepth" ) ) {
+			getFeature.setTraverseXlinkDepth( (String) node.getAttributeValue( "traverseXlinkDepth") );
+		}
+		
+		//&lt;xsd:attribute name="traverseXlinkExpiry"
+		//		type="xsd:positiveInteger" use="optional"&gt;
+		if ( node.hasAttribute( "traverseXlinkExpiry" ) ) {
+			getFeature.setTraverseXlinkExpiry( (BigInteger) node.getAttributeValue( "traverseXlinkExpiry") );
+		}
+		
+		return getFeature;
 	}
 
 }

@@ -9,7 +9,7 @@ import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.PropertyType;
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -74,8 +74,8 @@ import javax.xml.namespace.QName;
  */
 public class LockFeatureTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
-	public LockFeatureTypeBinding( WfsFactory wfsfactory ) {
+	WFSFactory wfsfactory;		
+	public LockFeatureTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 

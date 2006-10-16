@@ -3,7 +3,7 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import org.geotools.xml.*;
 
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -43,8 +43,8 @@ import javax.xml.namespace.QName;
  */
 public class TransactionResultsTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
-	public TransactionResultsTypeBinding( WfsFactory wfsfactory ) {
+	WFSFactory wfsfactory;		
+	public TransactionResultsTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 

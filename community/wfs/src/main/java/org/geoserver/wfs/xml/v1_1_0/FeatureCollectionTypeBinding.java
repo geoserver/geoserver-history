@@ -3,7 +3,7 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import org.geotools.xml.*;
 
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -68,8 +68,8 @@ import javax.xml.namespace.QName;
  */
 public class FeatureCollectionTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
-	public FeatureCollectionTypeBinding( WfsFactory wfsfactory ) {
+	WFSFactory wfsfactory;		
+	public FeatureCollectionTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 

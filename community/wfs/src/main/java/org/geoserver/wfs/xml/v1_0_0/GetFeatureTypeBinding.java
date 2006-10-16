@@ -7,7 +7,7 @@ import org.geotools.xml.*;
 
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -67,8 +67,8 @@ import javax.xml.namespace.QName;
  */
 public class GetFeatureTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
-	public GetFeatureTypeBinding( WfsFactory wfsfactory ) {
+	WFSFactory wfsfactory;		
+	public GetFeatureTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 

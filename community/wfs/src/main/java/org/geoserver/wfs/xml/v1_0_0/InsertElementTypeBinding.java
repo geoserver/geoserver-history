@@ -11,7 +11,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.xml.*;
 
 import net.opengis.wfs.InsertElementType;
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -36,9 +36,9 @@ import javax.xml.namespace.QName;
  */
 public class InsertElementTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
+	WFSFactory wfsfactory;		
 	
-	public InsertElementTypeBinding( WfsFactory wfsfactory) {
+	public InsertElementTypeBinding( WFSFactory wfsfactory) {
 		this.wfsfactory = wfsfactory;
 	}
 

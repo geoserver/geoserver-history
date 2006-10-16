@@ -1,9 +1,12 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 
+import org.eclipse.emf.ecore.EObject;
+import org.geoserver.ows.EMFUtils;
 import org.geotools.xml.*;
 
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.BaseRequestType;
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -76,8 +79,8 @@ import javax.xml.namespace.QName;
  */
 public class BaseRequestTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
-	public BaseRequestTypeBinding( WfsFactory wfsfactory ) {
+	WFSFactory wfsfactory;		
+	public BaseRequestTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 
@@ -95,7 +98,7 @@ public class BaseRequestTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return BaseRequestType.class;
 	}
 	
 	/**
@@ -107,8 +110,25 @@ public class BaseRequestTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		//this binding needs to be executed after the child
+		EObject request = (EObject) value;
+		
+		//&lt;xsd:attribute default="WFS" name="service" type="ows:ServiceType" use="optional"&gt;
+		if ( node.hasAttribute( "service" ) ) {
+			EMFUtils.set( request, "service", node.getAttributeValue( "service" ) );
+		}
+		
+		//&lt;xsd:attribute default="1.1.0" name="version" type="xsd:string" use="optional"&gt;
+		if ( node.hasAttribute( "version") ) {
+			EMFUtils.set( request, "version", node.getAttributeValue( "version") );
+		}
+		
+		//&lt;xsd:attribute name="handle" type="xsd:string" use="optional"&gt;
+		if ( node.hasAttribute( "handle") ) {
+			EMFUtils.set( request, "handle", node.getAttributeValue( "handle" ) );
+		}
+		 
+		return request;
 	}
 
 }

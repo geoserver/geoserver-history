@@ -7,7 +7,7 @@ import javax.xml.namespace.QName;
 
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.TransactionType;
-import net.opengis.wfs.WfsFactory;
+import net.opengis.wfs.WFSFactory;
 
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
@@ -95,8 +95,8 @@ import org.geotools.xml.Node;
  */
 public class TransactionTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
-	public TransactionTypeBinding( WfsFactory wfsfactory ) {
+	WFSFactory wfsfactory;		
+	public TransactionTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 

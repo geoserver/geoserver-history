@@ -1,9 +1,15 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 
-import org.geotools.xml.*;
+import java.net.URI;
+import java.util.List;
 
-import net.opengis.wfs.WfsFactory;		
+import org.geotools.xml.*;
+import org.opengis.filter.Filter;
+import org.opengis.filter.sort.SortBy;
+
+import net.opengis.wfs.QueryType;
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -142,8 +148,8 @@ import javax.xml.namespace.QName;
  */
 public class QueryTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
-	public QueryTypeBinding( WfsFactory wfsfactory ) {
+	WFSFactory wfsfactory;		
+	public QueryTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 
@@ -161,7 +167,7 @@ public class QueryTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return QueryType.class;
 	}
 	
 	/**
@@ -173,8 +179,49 @@ public class QueryTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		QueryType query = wfsfactory.createQueryType();
+		
+		//&lt;xsd:choice maxOccurs="unbounded" minOccurs="0"&gt;
+		//&lt;xsd:element ref="wfs:PropertyName"&gt;
+		if ( node.hasChild( "PropertyName" ) ) {
+			query.getPropertyName().addAll( node.getChildValues( "PropertyName" ) );
+		}
+		
+		//&lt;xsd:element ref="ogc:Function"&gt;
+		if ( node.hasChild( "Function" ) ) {
+			query.getFunction().add( node.getChildValues( "Function") );
+		}
+		//&lt;/xsd:choice&gt;
+		 
+		//&lt;xsd:element maxOccurs="1" minOccurs="0" ref="ogc:Filter"&gt;
+		if ( node.hasChild( Filter.class ) ) {
+			query.setFilter( (Filter) node.getChildValue( Filter.class ) );
+		}
+		
+		//&lt;xsd:element maxOccurs="1" minOccurs="0" ref="ogc:SortBy"&gt;
+		if ( node.hasChild( SortBy.class ) ) {
+			query.setSortBy( (SortBy) node.getChildValue( SortBy.class ) );
+		}
+		
+		//&lt;xsd:attribute name="handle" type="xsd:string" use="optional"&gt;
+		if ( node.hasAttribute( "handle" ) ) {
+			query.setHandle( (String) node.getAttributeValue( "handle" ) );
+		}
+		
+		//&lt;xsd:attribute name="typeName" type="wfs:TypeNameListType" use="required"&gt;
+		query.setTypeName( (List) node.getAttributeValue( "typeName" ) );
+		
+		//&lt;xsd:attribute name="featureVersion" type="xsd:string" use="optional"&gt;
+		if ( node.hasAttribute( "featureVersion" ) ) {
+			query.setFeatureVersion( (String) node.getAttributeValue( "featureVersion" ) );
+		}
+		
+		//&lt;xsd:attribute name="srsName" type="xsd:anyURI" use="optional"&gt;
+		if ( node.hasAttribute( "srsName" ) ) {
+			query.setSrsName( (URI) node.getAttributeValue( "srsName" ) );
+		}
+		
+		return query;
 	}
 
 }

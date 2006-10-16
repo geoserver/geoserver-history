@@ -3,7 +3,7 @@ package org.geoserver.wfs.xml.v1_1_0;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import net.opengis.wfs.WfsFactory;
+import net.opengis.wfs.WFSFactory;
 
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geoserver.data.GeoServerCatalog;
@@ -52,7 +52,7 @@ public class WFSConfiguration extends Configuration {
 	public void configureContext(MutablePicoContainer context) {
 		super.configureContext( context );
 		
-		context.registerComponentInstance( WfsFactory.eINSTANCE );
+		context.registerComponentInstance( WFSFactory.eINSTANCE );
 		context.registerComponentInstance( new WFSHandlerFactory( catalog, FeatureTypeSchema.GML3.class ) );
 	}
 

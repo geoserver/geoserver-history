@@ -5,7 +5,7 @@ import org.geotools.xml.*;
 import org.opengis.filter.Filter;
 
 import net.opengis.wfs.LockType;
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -42,8 +42,8 @@ import javax.xml.namespace.QName;
  */
 public class LockTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
-	public LockTypeBinding( WfsFactory wfsfactory ) {
+	WFSFactory wfsfactory;		
+	public LockTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 

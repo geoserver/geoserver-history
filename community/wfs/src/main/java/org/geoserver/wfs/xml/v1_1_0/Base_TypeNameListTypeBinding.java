@@ -3,7 +3,7 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import org.geotools.xml.*;
 
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -25,8 +25,8 @@ import javax.xml.namespace.QName;
  */
 public class Base_TypeNameListTypeBinding extends AbstractSimpleBinding {
 
-	WfsFactory wfsfactory;		
-	public Base_TypeNameListTypeBinding( WfsFactory wfsfactory ) {
+	WFSFactory wfsfactory;		
+	public Base_TypeNameListTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 

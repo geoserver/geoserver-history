@@ -3,7 +3,8 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import org.geotools.xml.*;
 
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.ResultTypeType;
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -47,8 +48,8 @@ import javax.xml.namespace.QName;
  */
 public class ResultTypeTypeBinding extends AbstractSimpleBinding {
 
-	WfsFactory wfsfactory;		
-	public ResultTypeTypeBinding( WfsFactory wfsfactory ) {
+	WFSFactory wfsfactory;		
+	public ResultTypeTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 
@@ -66,7 +67,7 @@ public class ResultTypeTypeBinding extends AbstractSimpleBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return ResultTypeType.class;
 	}
 	
 	/**
@@ -78,7 +79,14 @@ public class ResultTypeTypeBinding extends AbstractSimpleBinding {
 	public Object parse(InstanceComponent instance, Object value) 
 		throws Exception {
 		
-		//TODO: implement
+		if ( "results".equals( value ) ) {
+			return ResultTypeType.RESULTS_LITERAL;
+		}
+		
+		if ( "hits".equals( value ) ) {
+			return ResultTypeType.HITS_LITERAL;
+		}
+		
 		return null;
 	}
 

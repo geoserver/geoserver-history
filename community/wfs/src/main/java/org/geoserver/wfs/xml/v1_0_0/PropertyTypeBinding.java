@@ -8,7 +8,7 @@ import org.geotools.xs.bindings.XSQNameBinding;
 import org.xml.sax.helpers.NamespaceSupport;
 
 import net.opengis.wfs.PropertyType;
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -50,13 +50,13 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
 	/**
 	 * The wfs factory
 	 */
-	WfsFactory wfsfactory;
+	WFSFactory wfsfactory;
 	/**
 	 * Namespace support
 	 */
 	NamespaceSupport namespaceSupport;
 	
-	public PropertyTypeBinding( WfsFactory wfsfactory, NamespaceSupport namespaceSupport ) {
+	public PropertyTypeBinding( WFSFactory wfsfactory, NamespaceSupport namespaceSupport ) {
 		this.wfsfactory = wfsfactory;
 		this.namespaceSupport = namespaceSupport;
 	}

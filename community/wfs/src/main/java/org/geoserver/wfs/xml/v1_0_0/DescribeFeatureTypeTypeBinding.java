@@ -5,7 +5,7 @@ import org.geotools.xml.*;
 import org.xml.sax.helpers.NamespaceSupport;
 
 import net.opengis.wfs.DescribeFeatureTypeType;
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -63,9 +63,9 @@ import javax.xml.namespace.QName;
  */
 public class DescribeFeatureTypeTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
+	WFSFactory wfsfactory;		
 	
-	public DescribeFeatureTypeTypeBinding( WfsFactory wfsfactory ) {
+	public DescribeFeatureTypeTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 

@@ -4,7 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import net.opengis.ows.v1_0_0.OWSFactory;
-import net.opengis.wfs.WfsFactory;
+import net.opengis.wfs.WFSFactory;
 
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geoserver.data.GeoServerCatalog;
@@ -58,7 +58,7 @@ public class WFSConfiguration extends Configuration {
 		super.configureContext( context );
 		
 		context.registerComponentInstance( OWSFactory.eINSTANCE );
-		context.registerComponentInstance( WfsFactory.eINSTANCE );
+		context.registerComponentInstance( WFSFactory.eINSTANCE );
 		context.registerComponentInstance( new WFSHandlerFactory( catalog, FeatureTypeSchema.GML2.class ) );
 		context.registerComponentInstance( catalog );
 	}

@@ -5,7 +5,7 @@ import org.geotools.xml.*;
 import org.opengis.filter.Filter;
 
 import net.opengis.wfs.DeleteElementType;
-import net.opengis.wfs.WfsFactory;		
+import net.opengis.wfs.WFSFactory;		
 
 import javax.xml.namespace.QName;
 
@@ -46,8 +46,8 @@ import javax.xml.namespace.QName;
  */
 public class DeleteElementTypeBinding extends AbstractComplexBinding {
 
-	WfsFactory wfsfactory;		
-	public DeleteElementTypeBinding( WfsFactory wfsfactory ) {
+	WFSFactory wfsfactory;		
+	public DeleteElementTypeBinding( WFSFactory wfsfactory ) {
 		this.wfsfactory = wfsfactory;
 	}
 
