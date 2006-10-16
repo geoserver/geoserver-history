@@ -1,3 +1,21 @@
+GeoServer 1.4.0-RC1
+------------------
+
+This is the first release candidate for the 1.4 series of GeoServer.
+Major features / improvements of this release include:
+
+- WMS GetMap filter support
+- More robust KML point styling
+- Integration with OSCache, please see: http://docs.codehaus.org/display/GEOSDOC/Caching
+- Numerous bug fixes and improvements
+
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12666
+
+Based on GeoTools 2.2.1
+
+
 GeoServer 1.4.0-M2
 ------------------
 
