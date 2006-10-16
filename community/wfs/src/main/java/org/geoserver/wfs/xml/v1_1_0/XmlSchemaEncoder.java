@@ -1,4 +1,4 @@
-package org.geoserver.wfs.v1_1_0.http;
+package org.geoserver.wfs.xml.v1_1_0;
 
 import java.io.IOException;
 import java.io.OutputStream;
