@@ -15,6 +15,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.geoserver.GeoServerExtensions;
 import org.geoserver.GeoServerResourceLoader;
 import org.geoserver.data.feature.InfoAdapterFactory;
 import org.geotools.catalog.Service;
@@ -201,8 +202,13 @@ public class DataTestSupport extends TestCase {
 	   setup( CGF_PREFIX, POLYGONS_TYPE );
 
 	   context = new GenericApplicationContext();
+	   GeoServerExtensions extensions = new GeoServerExtensions();
+	   context.getBeanFactory().registerSingleton( "geoServerExtensions", extensions );
+	   extensions.setApplicationContext( context );
+	   
 	   loader = new GeoServerResourceLoader( data );
 	   context.getBeanFactory().registerSingleton( "resourceLoader", loader );
+	   
 	   
 	   catalog = createCiteCatalog( context );
 	}
@@ -221,6 +227,7 @@ public class DataTestSupport extends TestCase {
 		directory.mkdir();
 		File to = new File( directory, type + ".properties" ); 
 		copy( from, to );
+		
    	}
 
     void copy ( InputStream from, File to ) throws IOException {
