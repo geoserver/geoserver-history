@@ -47,7 +47,7 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object FILTER_EDEFAULT = null;
+	protected static final Filter FILTER_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
@@ -57,7 +57,7 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	 * @generated
 	 * @ordered
 	 */
-	protected Object filter = FILTER_EDEFAULT;
+	protected Filter filter = FILTER_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getHandle() <em>Handle</em>}' attribute.
@@ -122,7 +122,7 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getFilter() {
+	public Filter getFilter() {
 		return filter;
 	}
 
@@ -131,8 +131,8 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setFilter(Object newFilter) {
-		Object oldFilter = filter;
+	public void setFilter(Filter newFilter) {
+		Filter oldFilter = filter;
 		filter = newFilter;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.LOCK_TYPE__FILTER, oldFilter, filter));
@@ -205,7 +205,7 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	public void eSet(EStructuralFeature eFeature, Object newValue) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WfsPackage.LOCK_TYPE__FILTER:
-				setFilter((Object)newValue);
+				setFilter((Filter)newValue);
 				return;
 			case WfsPackage.LOCK_TYPE__HANDLE:
 				setHandle((String)newValue);

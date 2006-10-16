@@ -66,38 +66,49 @@ public interface QueryType extends EObject{
 	FeatureMap getGroup();
 
 	/**
-	 * Returns the value of the '<em><b>Property Name</b></em>' attribute list.
-	 * The list contents are of type {@link java.lang.Object}.
+	 * Returns the value of the '<em><b>Property Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
 	 * 
 	 *                    The Property element is used to specify one or more
 	 *                    properties of a feature whose values are to be retrieved
-	 *                    by a Web Feature Service.  
-	 *                    
+	 *                    by a Web Feature Service.
+	 * 
 	 *                    While a Web Feature Service should endeavour to satisfy
 	 *                    the exact request specified, in some instance this may
 	 *                    not be possible.  Specifically, a Web Feature Service
 	 *                    must generate a valid GML3 response to a Query operation.
-	 *                    The schema used to generate the output may include 
+	 *                    The schema used to generate the output may include
 	 *                    properties that are mandatory.  In order that the output
 	 *                    validates, these mandatory properties must be specified
 	 *                    in the request.  If they are not, a Web Feature Service
 	 *                    may add them automatically to the Query before processing
 	 *                    it.  Thus a client application should, in general, be
 	 *                    prepared to receive more properties than it requested.
-	 *    
+	 * 
 	 *                    Of course, using the DescribeFeatureType request, a client
 	 *                    application can determine which properties are mandatory
 	 *                    and request them in the first place.
-	 *                 
 	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Property Name</em>' attribute list.
+	 * @return the value of the '<em>Property Name</em>' attribute.
+	 * @see #setPropertyName(String)
 	 * @see net.opengis.wfs.WfsPackage#getQueryType_PropertyName()
-	 * @model type="javax.xml.namespace.QName"
+	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" transient="true" volatile="true" derived="true"
+	 *        extendedMetaData="kind='element' name='PropertyName' namespace='##targetNamespace' group='#group:0'"
+	 * @generated
 	 */
-	EList getPropertyName();
+	String getPropertyName();
+
+	/**
+	 * Sets the value of the '{@link net.opengis.wfs.QueryType#getPropertyName <em>Property Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Property Name</em>' attribute.
+	 * @see #getPropertyName()
+	 * @generated
+	 */
+	void setPropertyName(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Xlink Property Name</b></em>' containment reference list.
@@ -153,7 +164,7 @@ public interface QueryType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getQueryType_Filter()
 	 * @model 
 	 */
-	Object getFilter();
+	Filter getFilter();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.QueryType#getFilter <em>Filter</em>}' attribute.
@@ -163,7 +174,7 @@ public interface QueryType extends EObject{
 	 * @see #getFilter()
 	 * @generated
 	 */
-	void setFilter(Object value);
+	void setFilter(Filter value);
 
 	/**
 	 * Returns the value of the '<em><b>Sort By</b></em>' attribute.
@@ -181,7 +192,7 @@ public interface QueryType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getQueryType_SortBy()
 	 * @model 
 	 */
-	Object getSortBy();
+	SortBy getSortBy();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.QueryType#getSortBy <em>Sort By</em>}' attribute.
@@ -191,7 +202,7 @@ public interface QueryType extends EObject{
 	 * @see #getSortBy()
 	 * @generated
 	 */
-	void setSortBy(Object value);
+	void setSortBy(SortBy value);
 
 	/**
 	 * Returns the value of the '<em><b>Feature Version</b></em>' attribute.
@@ -279,7 +290,7 @@ public interface QueryType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getQueryType_SrsName()
 	 * @model 
 	 */
-	String getSrsName();
+	URI getSrsName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.QueryType#getSrsName <em>Srs Name</em>}' attribute.
@@ -289,7 +300,7 @@ public interface QueryType extends EObject{
 	 * @see #getSrsName()
 	 * @generated
 	 */
-	void setSrsName(String value);
+	void setSrsName(URI value);
 
 	/**
 	 * Returns the value of the '<em><b>Type Name</b></em>' attribute.

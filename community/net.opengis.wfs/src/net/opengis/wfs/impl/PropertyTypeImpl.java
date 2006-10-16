@@ -45,7 +45,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object NAME_EDEFAULT = null;
+	protected static final QName NAME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -55,7 +55,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * @generated
 	 * @ordered
 	 */
-	protected Object name = NAME_EDEFAULT;
+	protected QName name = NAME_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getValue() <em>Value</em>}' reference.
@@ -90,7 +90,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getName() {
+	public QName getName() {
 		return name;
 	}
 
@@ -99,8 +99,8 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setName(Object newName) {
-		Object oldName = name;
+	public void setName(QName newName) {
+		QName oldName = name;
 		name = newName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.PROPERTY_TYPE__NAME, oldName, name));
@@ -168,7 +168,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	public void eSet(EStructuralFeature eFeature, Object newValue) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
 			case WfsPackage.PROPERTY_TYPE__NAME:
-				setName((Object)newValue);
+				setName((QName)newValue);
 				return;
 			case WfsPackage.PROPERTY_TYPE__VALUE:
 				setValue((EObject)newValue);

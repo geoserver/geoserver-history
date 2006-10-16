@@ -53,7 +53,7 @@ public interface DeleteElementType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getDeleteElementType_Filter()
 	 * @model 
 	 */
-	Object getFilter();
+	Filter getFilter();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.DeleteElementType#getFilter <em>Filter</em>}' attribute.
@@ -63,7 +63,7 @@ public interface DeleteElementType extends EObject{
 	 * @see #getFilter()
 	 * @generated
 	 */
-	void setFilter(Object value);
+	void setFilter(Filter value);
 
 	/**
 	 * Returns the value of the '<em><b>Handle</b></em>' attribute.

@@ -34,14 +34,24 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link net.opengis.wfs.impl.TransactionResultsTypeImpl#getHandle <em>Handle</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.TransactionResultsTypeImpl#getAction <em>Action</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.TransactionResultsTypeImpl#getHandle <em>Handle</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
 public class TransactionResultsTypeImpl extends EObjectImpl implements TransactionResultsType {
+	/**
+	 * The cached value of the '{@link #getAction() <em>Action</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getAction()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList action = null;
+
 	/**
 	 * The default value of the '{@link #getHandle() <em>Handle</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -61,16 +71,6 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	 * @ordered
 	 */
 	protected String handle = HANDLE_EDEFAULT;
-
-	/**
-	 * The cached value of the '{@link #getAction() <em>Action</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getAction()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList action = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -147,10 +147,10 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	 */
 	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
-				return getHandle();
 			case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
 				return getAction();
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
+				return getHandle();
 		}
 		return eDynamicGet(eFeature, resolve);
 	}
@@ -162,12 +162,12 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	 */
 	public void eSet(EStructuralFeature eFeature, Object newValue) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
-				setHandle((String)newValue);
-				return;
 			case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
 				getAction().clear();
 				getAction().addAll((Collection)newValue);
+				return;
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
+				setHandle((String)newValue);
 				return;
 		}
 		eDynamicSet(eFeature, newValue);
@@ -180,11 +180,11 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	 */
 	public void eUnset(EStructuralFeature eFeature) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
-				setHandle(HANDLE_EDEFAULT);
-				return;
 			case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
 				getAction().clear();
+				return;
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
+				setHandle(HANDLE_EDEFAULT);
 				return;
 		}
 		eDynamicUnset(eFeature);
@@ -197,10 +197,10 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	 */
 	public boolean eIsSet(EStructuralFeature eFeature) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
-				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
 			case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
 				return action != null && !action.isEmpty();
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
+				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
 		}
 		return eDynamicIsSet(eFeature);
 	}

@@ -6,6 +6,8 @@
  */
 package net.opengis.wfs;
 
+import java.net.URI;
+
 import javax.xml.namespace.QName;
 
 import org.eclipse.emf.common.util.EList;
@@ -80,7 +82,7 @@ public interface UpdateElementType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getUpdateElementType_Filter()
 	 * @model 
 	 */
-	Object getFilter();
+	Filter getFilter();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.UpdateElementType#getFilter <em>Filter</em>}' attribute.
@@ -90,7 +92,7 @@ public interface UpdateElementType extends EObject{
 	 * @see #getFilter()
 	 * @generated
 	 */
-	void setFilter(Object value);
+	void setFilter(Filter value);
 
 	/**
 	 * Returns the value of the '<em><b>Handle</b></em>' attribute.
@@ -197,15 +199,14 @@ public interface UpdateElementType extends EObject{
 	 * <!-- begin-model-doc -->
 	 * 
 	 *                DO WE NEED THIS HERE?
+	 *            
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Srs Name</em>' attribute.
 	 * @see #setSrsName(String)
 	 * @see net.opengis.wfs.WfsPackage#getUpdateElementType_SrsName()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnyURI"
-	 *        extendedMetaData="kind='attribute' name='srsName'"
-	 * @generated
+	 * @model 
 	 */
-	String getSrsName();
+	URI getSrsName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.UpdateElementType#getSrsName <em>Srs Name</em>}' attribute.
@@ -215,7 +216,7 @@ public interface UpdateElementType extends EObject{
 	 * @see #getSrsName()
 	 * @generated
 	 */
-	void setSrsName(String value);
+	void setSrsName(URI value);
 
 	/**
 	 * Returns the value of the '<em><b>Type Name</b></em>' attribute.
@@ -235,7 +236,7 @@ public interface UpdateElementType extends EObject{
 	 * @see net.opengis.wfs.WfsPackage#getUpdateElementType_TypeName()
 	 * @model 
 	 */
-	Object getTypeName();
+	QName getTypeName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.UpdateElementType#getTypeName <em>Type Name</em>}' attribute.
@@ -245,6 +246,6 @@ public interface UpdateElementType extends EObject{
 	 * @see #getTypeName()
 	 * @generated
 	 */
-	void setTypeName(Object value);
+	void setTypeName(QName value);
 
 } // UpdateElementType

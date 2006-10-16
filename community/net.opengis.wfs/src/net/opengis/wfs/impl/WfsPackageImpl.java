@@ -34,7 +34,7 @@ import net.opengis.wfs.GetFeatureWithLockType;
 import net.opengis.wfs.GetGmlObjectType;
 import net.opengis.wfs.IdentifierGenerationOptionType;
 import net.opengis.wfs.InsertElementType;
-import net.opengis.wfs.InsertResultType;
+
 import net.opengis.wfs.InsertResultsType;
 import net.opengis.wfs.InsertedFeatureType;
 import net.opengis.wfs.LockFeatureResponseType;
@@ -59,12 +59,16 @@ import net.opengis.wfs.WfsFactory;
 import net.opengis.wfs.WfsPackage;
 import net.opengis.wfs.XlinkPropertyNameType;
 
+import net.opengis.wfs.util.WfsValidator;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
+
+import org.eclipse.emf.ecore.EValidator;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
@@ -77,7 +81,11 @@ import org.geotools.feature.FeatureCollection;
 
 import org.opengis.filter.FeatureId;
 
+import org.opengis.filter.Filter;
+
 import org.opengis.filter.expression.Function;
+
+import org.opengis.filter.sort.SortBy;
 
 /**
  * <!-- begin-user-doc -->
@@ -204,13 +212,6 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * @generated
 	 */
 	private EClass insertElementTypeEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass insertResultTypeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -378,49 +379,21 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	private EDataType allSomeTypeObjectEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType baseTypeNameListTypeEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	private EDataType typeTypeEDataType = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType featureCollectionEDataType = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType featureEDataType = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType formatTypeEDataType = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType calendarEDataType = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType qNameEDataType = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType typeNameListTypeEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -435,6 +408,90 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * @generated
 	 */
 	private EDataType functionEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType qNameEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType uriEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType filterEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType calendarEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType featureEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType sortByEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType featureCollectionEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType formatTypeEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType identifierGenerationOptionTypeObjectEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType operationTypeObjectEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType resultTypeTypeObjectEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType typeNameListTypeEDataType = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -502,6 +559,15 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 
 		// Initialize created meta-data
 		theWfsPackage.initializePackageContents();
+
+		// Register package validator
+		EValidator.Registry.INSTANCE.put
+			(theWfsPackage, 
+			 new EValidator.Descriptor() {
+				 public EValidator getEValidator() {
+					 return WfsValidator.INSTANCE;
+				 }
+			 });
 
 		// Mark meta-data to indicate it can't be changed
 		theWfsPackage.freeze();
@@ -812,15 +878,6 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * @generated
 	 */
 	public EReference getDocumentRoot_Query() {
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(17);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getDocumentRoot_ServesGMLObjectTypeList() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(18);
 	}
 
@@ -829,7 +886,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_SupportsGMLObjectTypeList() {
+	public EReference getDocumentRoot_ServesGMLObjectTypeList() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(19);
 	}
 
@@ -838,7 +895,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_Transaction() {
+	public EReference getDocumentRoot_SupportsGMLObjectTypeList() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(20);
 	}
 
@@ -847,7 +904,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_TransactionResponse() {
+	public EReference getDocumentRoot_Transaction() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(21);
 	}
 
@@ -856,7 +913,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_Update() {
+	public EReference getDocumentRoot_TransactionResponse() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(22);
 	}
 
@@ -865,7 +922,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_WfsCapabilities() {
+	public EReference getDocumentRoot_Update() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(23);
 	}
 
@@ -874,7 +931,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_XlinkPropertyName() {
+	public EReference getDocumentRoot_WfsCapabilities() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(24);
 	}
 
@@ -883,8 +940,17 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getDocumentRoot_XlinkPropertyName() {
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(25);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EAttribute getDocumentRoot_PropertyName() {
-		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(25);
+		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(17);
 	}
 
 	/**
@@ -1405,7 +1471,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInsertElementType_FeatureCollection() {
+	public EAttribute getInsertElementType_Feature() {
 		return (EAttribute)insertElementTypeEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -1414,7 +1480,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInsertElementType_Feature() {
+	public EAttribute getInsertElementType_Handle() {
 		return (EAttribute)insertElementTypeEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -1423,7 +1489,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInsertElementType_Handle() {
+	public EAttribute getInsertElementType_Idgen() {
 		return (EAttribute)insertElementTypeEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -1432,7 +1498,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInsertElementType_Idgen() {
+	public EAttribute getInsertElementType_InputFormat() {
 		return (EAttribute)insertElementTypeEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -1441,7 +1507,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInsertElementType_InputFormat() {
+	public EAttribute getInsertElementType_SrsName() {
 		return (EAttribute)insertElementTypeEClass.getEStructuralFeatures().get(4);
 	}
 
@@ -1450,26 +1516,8 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInsertElementType_SrsName() {
+	public EAttribute getInsertElementType_FeatureCollection() {
 		return (EAttribute)insertElementTypeEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getInsertResultType() {
-		return insertResultTypeEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getInsertResultType_Feature() {
-		return (EReference)insertResultTypeEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1927,8 +1975,8 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTransactionResultsType_Handle() {
-		return (EAttribute)transactionResultsTypeEClass.getEStructuralFeatures().get(0);
+	public EReference getTransactionResultsType_Action() {
+		return (EReference)transactionResultsTypeEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1936,8 +1984,8 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getTransactionResultsType_Action() {
-		return (EReference)transactionResultsTypeEClass.getEStructuralFeatures().get(1);
+	public EAttribute getTransactionResultsType_Handle() {
+		return (EAttribute)transactionResultsTypeEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -2233,62 +2281,26 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EDataType getAllSomeTypeObject() {
+		return allSomeTypeObjectEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getBaseTypeNameListType() {
+		return baseTypeNameListTypeEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EDataType getTypeType() {
 		return typeTypeEDataType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EDataType getFeatureCollection() {
-		return featureCollectionEDataType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EDataType getFeature() {
-		return featureEDataType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EDataType getFormatType() {
-		return formatTypeEDataType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EDataType getCalendar() {
-		return calendarEDataType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EDataType getQName() {
-		return qNameEDataType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EDataType getTypeNameListType() {
-		return typeNameListTypeEDataType;
 	}
 
 	/**
@@ -2307,6 +2319,114 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 */
 	public EDataType getFunction() {
 		return functionEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getQName() {
+		return qNameEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getURI() {
+		return uriEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getFilter() {
+		return filterEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getCalendar() {
+		return calendarEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getFeature() {
+		return featureEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getSortBy() {
+		return sortByEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getFeatureCollection() {
+		return featureCollectionEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getFormatType() {
+		return formatTypeEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getIdentifierGenerationOptionTypeObject() {
+		return identifierGenerationOptionTypeObjectEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getOperationTypeObject() {
+		return operationTypeObjectEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getResultTypeTypeObject() {
+		return resultTypeTypeObjectEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getTypeNameListType() {
+		return typeNameListTypeEDataType;
 	}
 
 	/**
@@ -2374,6 +2494,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		createEAttribute(documentRootEClass, DOCUMENT_ROOT__LOCK_ID);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__NATIVE);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__PROPERTY);
+		createEAttribute(documentRootEClass, DOCUMENT_ROOT__PROPERTY_NAME);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__QUERY);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__SERVES_GML_OBJECT_TYPE_LIST);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__SUPPORTS_GML_OBJECT_TYPE_LIST);
@@ -2382,13 +2503,20 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		createEReference(documentRootEClass, DOCUMENT_ROOT__UPDATE);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__WFS_CAPABILITIES);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__XLINK_PROPERTY_NAME);
-		createEAttribute(documentRootEClass, DOCUMENT_ROOT__PROPERTY_NAME);
 
 		featureCollectionTypeEClass = createEClass(FEATURE_COLLECTION_TYPE);
 		createEAttribute(featureCollectionTypeEClass, FEATURE_COLLECTION_TYPE__LOCK_ID);
 		createEAttribute(featureCollectionTypeEClass, FEATURE_COLLECTION_TYPE__TIME_STAMP);
 		createEAttribute(featureCollectionTypeEClass, FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES);
 		createEAttribute(featureCollectionTypeEClass, FEATURE_COLLECTION_TYPE__FEATURE);
+
+		featuresLockedTypeEClass = createEClass(FEATURES_LOCKED_TYPE);
+		createEAttribute(featuresLockedTypeEClass, FEATURES_LOCKED_TYPE__GROUP);
+		createEAttribute(featuresLockedTypeEClass, FEATURES_LOCKED_TYPE__FEATURE_ID);
+
+		featuresNotLockedTypeEClass = createEClass(FEATURES_NOT_LOCKED_TYPE);
+		createEAttribute(featuresNotLockedTypeEClass, FEATURES_NOT_LOCKED_TYPE__GROUP);
+		createEAttribute(featuresNotLockedTypeEClass, FEATURES_NOT_LOCKED_TYPE__FEATURE_ID);
 
 		featureTypeListTypeEClass = createEClass(FEATURE_TYPE_LIST_TYPE);
 		createEReference(featureTypeListTypeEClass, FEATURE_TYPE_LIST_TYPE__OPERATIONS);
@@ -2406,24 +2534,6 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		createEReference(featureTypeTypeEClass, FEATURE_TYPE_TYPE__OUTPUT_FORMATS);
 		createEReference(featureTypeTypeEClass, FEATURE_TYPE_TYPE__WGS84_BOUNDING_BOX);
 		createEReference(featureTypeTypeEClass, FEATURE_TYPE_TYPE__METADATA_URL);
-
-		featuresLockedTypeEClass = createEClass(FEATURES_LOCKED_TYPE);
-		createEAttribute(featuresLockedTypeEClass, FEATURES_LOCKED_TYPE__GROUP);
-		createEAttribute(featuresLockedTypeEClass, FEATURES_LOCKED_TYPE__FEATURE_ID);
-
-		featuresNotLockedTypeEClass = createEClass(FEATURES_NOT_LOCKED_TYPE);
-		createEAttribute(featuresNotLockedTypeEClass, FEATURES_NOT_LOCKED_TYPE__GROUP);
-		createEAttribute(featuresNotLockedTypeEClass, FEATURES_NOT_LOCKED_TYPE__FEATURE_ID);
-
-		gmlObjectTypeListTypeEClass = createEClass(GML_OBJECT_TYPE_LIST_TYPE);
-		createEReference(gmlObjectTypeListTypeEClass, GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE);
-
-		gmlObjectTypeTypeEClass = createEClass(GML_OBJECT_TYPE_TYPE);
-		createEAttribute(gmlObjectTypeTypeEClass, GML_OBJECT_TYPE_TYPE__NAME);
-		createEAttribute(gmlObjectTypeTypeEClass, GML_OBJECT_TYPE_TYPE__TITLE);
-		createEAttribute(gmlObjectTypeTypeEClass, GML_OBJECT_TYPE_TYPE__ABSTRACT);
-		createEReference(gmlObjectTypeTypeEClass, GML_OBJECT_TYPE_TYPE__KEYWORDS);
-		createEReference(gmlObjectTypeTypeEClass, GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS);
 
 		getCapabilitiesTypeEClass = createEClass(GET_CAPABILITIES_TYPE);
 		createEAttribute(getCapabilitiesTypeEClass, GET_CAPABILITIES_TYPE__SERVICE);
@@ -2451,23 +2561,30 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		createEAttribute(getGmlObjectTypeEClass, GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH);
 		createEAttribute(getGmlObjectTypeEClass, GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY);
 
+		gmlObjectTypeListTypeEClass = createEClass(GML_OBJECT_TYPE_LIST_TYPE);
+		createEReference(gmlObjectTypeListTypeEClass, GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE);
+
+		gmlObjectTypeTypeEClass = createEClass(GML_OBJECT_TYPE_TYPE);
+		createEAttribute(gmlObjectTypeTypeEClass, GML_OBJECT_TYPE_TYPE__NAME);
+		createEAttribute(gmlObjectTypeTypeEClass, GML_OBJECT_TYPE_TYPE__TITLE);
+		createEAttribute(gmlObjectTypeTypeEClass, GML_OBJECT_TYPE_TYPE__ABSTRACT);
+		createEReference(gmlObjectTypeTypeEClass, GML_OBJECT_TYPE_TYPE__KEYWORDS);
+		createEReference(gmlObjectTypeTypeEClass, GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS);
+
+		insertedFeatureTypeEClass = createEClass(INSERTED_FEATURE_TYPE);
+		createEAttribute(insertedFeatureTypeEClass, INSERTED_FEATURE_TYPE__FEATURE_ID);
+		createEAttribute(insertedFeatureTypeEClass, INSERTED_FEATURE_TYPE__HANDLE);
+
 		insertElementTypeEClass = createEClass(INSERT_ELEMENT_TYPE);
-		createEAttribute(insertElementTypeEClass, INSERT_ELEMENT_TYPE__FEATURE_COLLECTION);
 		createEAttribute(insertElementTypeEClass, INSERT_ELEMENT_TYPE__FEATURE);
 		createEAttribute(insertElementTypeEClass, INSERT_ELEMENT_TYPE__HANDLE);
 		createEAttribute(insertElementTypeEClass, INSERT_ELEMENT_TYPE__IDGEN);
 		createEAttribute(insertElementTypeEClass, INSERT_ELEMENT_TYPE__INPUT_FORMAT);
 		createEAttribute(insertElementTypeEClass, INSERT_ELEMENT_TYPE__SRS_NAME);
-
-		insertResultTypeEClass = createEClass(INSERT_RESULT_TYPE);
-		createEReference(insertResultTypeEClass, INSERT_RESULT_TYPE__FEATURE);
+		createEAttribute(insertElementTypeEClass, INSERT_ELEMENT_TYPE__FEATURE_COLLECTION);
 
 		insertResultsTypeEClass = createEClass(INSERT_RESULTS_TYPE);
 		createEReference(insertResultsTypeEClass, INSERT_RESULTS_TYPE__FEATURE);
-
-		insertedFeatureTypeEClass = createEClass(INSERTED_FEATURE_TYPE);
-		createEAttribute(insertedFeatureTypeEClass, INSERTED_FEATURE_TYPE__FEATURE_ID);
-		createEAttribute(insertedFeatureTypeEClass, INSERTED_FEATURE_TYPE__HANDLE);
 
 		lockFeatureResponseTypeEClass = createEClass(LOCK_FEATURE_RESPONSE_TYPE);
 		createEAttribute(lockFeatureResponseTypeEClass, LOCK_FEATURE_RESPONSE_TYPE__LOCK_ID);
@@ -2525,8 +2642,8 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		createEAttribute(transactionResponseTypeEClass, TRANSACTION_RESPONSE_TYPE__VERSION);
 
 		transactionResultsTypeEClass = createEClass(TRANSACTION_RESULTS_TYPE);
-		createEAttribute(transactionResultsTypeEClass, TRANSACTION_RESULTS_TYPE__HANDLE);
 		createEReference(transactionResultsTypeEClass, TRANSACTION_RESULTS_TYPE__ACTION);
+		createEAttribute(transactionResultsTypeEClass, TRANSACTION_RESULTS_TYPE__HANDLE);
 
 		transactionSummaryTypeEClass = createEClass(TRANSACTION_SUMMARY_TYPE);
 		createEAttribute(transactionSummaryTypeEClass, TRANSACTION_SUMMARY_TYPE__TOTAL_INSERTED);
@@ -2568,15 +2685,23 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		resultTypeTypeEEnum = createEEnum(RESULT_TYPE_TYPE);
 
 		// Create data types
-		typeTypeEDataType = createEDataType(TYPE_TYPE);
-		featureCollectionEDataType = createEDataType(FEATURE_COLLECTION);
-		featureEDataType = createEDataType(FEATURE);
+		allSomeTypeObjectEDataType = createEDataType(ALL_SOME_TYPE_OBJECT);
+		baseTypeNameListTypeEDataType = createEDataType(BASE_TYPE_NAME_LIST_TYPE);
 		formatTypeEDataType = createEDataType(FORMAT_TYPE);
-		calendarEDataType = createEDataType(CALENDAR);
-		qNameEDataType = createEDataType(QNAME);
+		identifierGenerationOptionTypeObjectEDataType = createEDataType(IDENTIFIER_GENERATION_OPTION_TYPE_OBJECT);
+		operationTypeObjectEDataType = createEDataType(OPERATION_TYPE_OBJECT);
+		resultTypeTypeObjectEDataType = createEDataType(RESULT_TYPE_TYPE_OBJECT);
 		typeNameListTypeEDataType = createEDataType(TYPE_NAME_LIST_TYPE);
+		typeTypeEDataType = createEDataType(TYPE_TYPE);
 		featureIdEDataType = createEDataType(FEATURE_ID);
 		functionEDataType = createEDataType(FUNCTION);
+		qNameEDataType = createEDataType(QNAME);
+		uriEDataType = createEDataType(URI);
+		filterEDataType = createEDataType(FILTER);
+		calendarEDataType = createEDataType(CALENDAR);
+		featureEDataType = createEDataType(FEATURE);
+		sortByEDataType = createEDataType(SORT_BY);
+		featureCollectionEDataType = createEDataType(FEATURE_COLLECTION);
 	}
 
 	/**
@@ -2628,7 +2753,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEAttribute(getBaseRequestType_Version(), theXMLTypePackage.getString(), "version", "1.1.0", 0, 1, BaseRequestType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(deleteElementTypeEClass, DeleteElementType.class, "DeleteElementType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDeleteElementType_Filter(), ecorePackage.getEJavaObject(), "filter", null, 0, 1, DeleteElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDeleteElementType_Filter(), this.getFilter(), "filter", null, 0, 1, DeleteElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDeleteElementType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, DeleteElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDeleteElementType_TypeName(), ecorePackage.getEJavaObject(), "typeName", null, 0, 1, DeleteElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -2654,6 +2779,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEAttribute(getDocumentRoot_LockId(), theXMLTypePackage.getString(), "lockId", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Native(), this.getNativeType(), null, "native", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Property(), this.getPropertyType(), null, "property", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDocumentRoot_PropertyName(), theXMLTypePackage.getString(), "propertyName", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Query(), this.getQueryType(), null, "query", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_ServesGMLObjectTypeList(), this.getGMLObjectTypeListType(), null, "servesGMLObjectTypeList", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_SupportsGMLObjectTypeList(), this.getGMLObjectTypeListType(), null, "supportsGMLObjectTypeList", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
@@ -2662,13 +2788,20 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEReference(getDocumentRoot_Update(), this.getUpdateElementType(), null, "update", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_WfsCapabilities(), this.getWFSCapabilitiesType(), null, "wfsCapabilities", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_XlinkPropertyName(), this.getXlinkPropertyNameType(), null, "xlinkPropertyName", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDocumentRoot_PropertyName(), theXMLTypePackage.getString(), "propertyName", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
 		initEClass(featureCollectionTypeEClass, FeatureCollectionType.class, "FeatureCollectionType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFeatureCollectionType_LockId(), ecorePackage.getEString(), "lockId", null, 0, 1, FeatureCollectionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFeatureCollectionType_TimeStamp(), this.getCalendar(), "timeStamp", null, 0, 1, FeatureCollectionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFeatureCollectionType_NumberOfFeatures(), ecorePackage.getEBigInteger(), "numberOfFeatures", null, 0, 1, FeatureCollectionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFeatureCollectionType_Feature(), this.getFeatureCollection(), "feature", null, 0, -1, FeatureCollectionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(featuresLockedTypeEClass, FeaturesLockedType.class, "FeaturesLockedType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getFeaturesLockedType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, FeaturesLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getFeaturesLockedType_FeatureId(), this.getFeatureId(), "featureId", null, 0, -1, FeaturesLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(featuresNotLockedTypeEClass, FeaturesNotLockedType.class, "FeaturesNotLockedType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getFeaturesNotLockedType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, FeaturesNotLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getFeaturesNotLockedType_FeatureId(), this.getFeatureId(), "featureId", null, 0, -1, FeaturesNotLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(featureTypeListTypeEClass, FeatureTypeListType.class, "FeatureTypeListType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getFeatureTypeListType_Operations(), this.getOperationsType(), null, "operations", null, 0, 1, FeatureTypeListType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2686,24 +2819,6 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEReference(getFeatureTypeType_OutputFormats(), this.getOutputFormatListType(), null, "outputFormats", null, 0, 1, FeatureTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFeatureTypeType_WGS84BoundingBox(), theOWSPackage.getWGS84BoundingBoxType(), null, "wGS84BoundingBox", null, 1, -1, FeatureTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFeatureTypeType_MetadataURL(), this.getMetadataURLType(), null, "metadataURL", null, 0, -1, FeatureTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(featuresLockedTypeEClass, FeaturesLockedType.class, "FeaturesLockedType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getFeaturesLockedType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, FeaturesLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getFeaturesLockedType_FeatureId(), this.getFeatureId(), "featureId", null, 0, -1, FeaturesLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(featuresNotLockedTypeEClass, FeaturesNotLockedType.class, "FeaturesNotLockedType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getFeaturesNotLockedType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, FeaturesNotLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getFeaturesNotLockedType_FeatureId(), this.getFeatureId(), "featureId", null, 0, -1, FeaturesNotLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(gmlObjectTypeListTypeEClass, GMLObjectTypeListType.class, "GMLObjectTypeListType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getGMLObjectTypeListType_GMLObjectType(), this.getGMLObjectTypeType(), null, "gMLObjectType", null, 1, -1, GMLObjectTypeListType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(gmlObjectTypeTypeEClass, GMLObjectTypeType.class, "GMLObjectTypeType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getGMLObjectTypeType_Name(), theXMLTypePackage.getQName(), "name", null, 1, 1, GMLObjectTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getGMLObjectTypeType_Title(), theXMLTypePackage.getString(), "title", null, 0, 1, GMLObjectTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getGMLObjectTypeType_Abstract(), theXMLTypePackage.getString(), "abstract", null, 0, 1, GMLObjectTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getGMLObjectTypeType_Keywords(), theOWSPackage.getKeywordsType(), null, "keywords", null, 0, -1, GMLObjectTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getGMLObjectTypeType_OutputFormats(), this.getOutputFormatListType(), null, "outputFormats", null, 0, 1, GMLObjectTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(getCapabilitiesTypeEClass, GetCapabilitiesType.class, "GetCapabilitiesType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getGetCapabilitiesType_Service(), theOWSPackage.getServiceType(), "service", "WFS", 0, 1, GetCapabilitiesType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2731,23 +2846,30 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEAttribute(getGetGmlObjectType_TraverseXlinkDepth(), theXMLTypePackage.getString(), "traverseXlinkDepth", null, 1, 1, GetGmlObjectType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getGetGmlObjectType_TraverseXlinkExpiry(), theXMLTypePackage.getPositiveInteger(), "traverseXlinkExpiry", null, 0, 1, GetGmlObjectType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(insertElementTypeEClass, InsertElementType.class, "InsertElementType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getInsertElementType_FeatureCollection(), this.getFeatureCollection(), "featureCollection", null, 0, 1, InsertElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getInsertElementType_Feature(), this.getFeature(), "feature", null, 0, -1, InsertElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getInsertElementType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, InsertElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getInsertElementType_Idgen(), this.getIdentifierGenerationOptionType(), "idgen", "GenerateNew", 0, 1, InsertElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getInsertElementType_InputFormat(), theXMLTypePackage.getString(), "inputFormat", "text/xml; subtype=gml/3.1.1", 0, 1, InsertElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getInsertElementType_SrsName(), theXMLTypePackage.getAnyURI(), "srsName", null, 0, 1, InsertElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(gmlObjectTypeListTypeEClass, GMLObjectTypeListType.class, "GMLObjectTypeListType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getGMLObjectTypeListType_GMLObjectType(), this.getGMLObjectTypeType(), null, "gMLObjectType", null, 1, -1, GMLObjectTypeListType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(insertResultTypeEClass, InsertResultType.class, "InsertResultType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getInsertResultType_Feature(), this.getInsertedFeatureType(), null, "feature", null, 1, -1, InsertResultType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(insertResultsTypeEClass, InsertResultsType.class, "InsertResultsType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getInsertResultsType_Feature(), this.getInsertedFeatureType(), null, "feature", null, 1, -1, InsertResultsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(gmlObjectTypeTypeEClass, GMLObjectTypeType.class, "GMLObjectTypeType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getGMLObjectTypeType_Name(), theXMLTypePackage.getQName(), "name", null, 1, 1, GMLObjectTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGMLObjectTypeType_Title(), theXMLTypePackage.getString(), "title", null, 0, 1, GMLObjectTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGMLObjectTypeType_Abstract(), theXMLTypePackage.getString(), "abstract", null, 0, 1, GMLObjectTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getGMLObjectTypeType_Keywords(), theOWSPackage.getKeywordsType(), null, "keywords", null, 0, -1, GMLObjectTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getGMLObjectTypeType_OutputFormats(), this.getOutputFormatListType(), null, "outputFormats", null, 0, 1, GMLObjectTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(insertedFeatureTypeEClass, InsertedFeatureType.class, "InsertedFeatureType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getInsertedFeatureType_FeatureId(), this.getFeatureId(), "featureId", null, 0, -1, InsertedFeatureType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getInsertedFeatureType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, InsertedFeatureType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(insertElementTypeEClass, InsertElementType.class, "InsertElementType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getInsertElementType_Feature(), this.getFeature(), "feature", null, 0, -1, InsertElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInsertElementType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, InsertElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInsertElementType_Idgen(), this.getIdentifierGenerationOptionType(), "idgen", "GenerateNew", 0, 1, InsertElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInsertElementType_InputFormat(), theXMLTypePackage.getString(), "inputFormat", "text/xml; subtype=gml/3.1.1", 0, 1, InsertElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInsertElementType_SrsName(), this.getURI(), "srsName", null, 0, 1, InsertElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInsertElementType_FeatureCollection(), this.getFeatureCollection(), "featureCollection", null, 0, 1, InsertElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(insertResultsTypeEClass, InsertResultsType.class, "InsertResultsType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getInsertResultsType_Feature(), this.getInsertedFeatureType(), null, "feature", null, 1, -1, InsertResultsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(lockFeatureResponseTypeEClass, LockFeatureResponseType.class, "LockFeatureResponseType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getLockFeatureResponseType_LockId(), theXMLTypePackage.getString(), "lockId", null, 1, 1, LockFeatureResponseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2760,7 +2882,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEAttribute(getLockFeatureType_LockAction(), this.getAllSomeType(), "lockAction", "ALL", 0, 1, LockFeatureType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(lockTypeEClass, LockType.class, "LockType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getLockType_Filter(), ecorePackage.getEJavaObject(), "filter", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLockType_Filter(), this.getFilter(), "filter", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLockType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLockType_TypeName(), ecorePackage.getEJavaObject(), "typeName", null, 0, 1, LockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -2783,19 +2905,19 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEAttribute(getOutputFormatListType_Format(), theXMLTypePackage.getString(), "format", null, 1, 1, OutputFormatListType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
 		initEClass(propertyTypeEClass, PropertyType.class, "PropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getPropertyType_Name(), ecorePackage.getEJavaObject(), "name", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPropertyType_Name(), this.getQName(), "name", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPropertyType_Value(), ecorePackage.getEObject(), null, "value", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(queryTypeEClass, QueryType.class, "QueryType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getQueryType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getQueryType_PropertyName(), this.getQName(), "propertyName", null, 0, -1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getQueryType_PropertyName(), theXMLTypePackage.getString(), "propertyName", null, 0, 1, QueryType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getQueryType_XlinkPropertyName(), this.getXlinkPropertyNameType(), null, "xlinkPropertyName", null, 0, -1, QueryType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEAttribute(getQueryType_Function(), this.getFunction(), "function", null, 0, -1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getQueryType_Filter(), ecorePackage.getEJavaObject(), "filter", null, 0, 1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getQueryType_SortBy(), ecorePackage.getEJavaObject(), "sortBy", null, 0, 1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getQueryType_Filter(), this.getFilter(), "filter", null, 0, 1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getQueryType_SortBy(), this.getSortBy(), "sortBy", null, 0, 1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getQueryType_FeatureVersion(), theXMLTypePackage.getString(), "featureVersion", null, 0, 1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getQueryType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getQueryType_SrsName(), ecorePackage.getEString(), "srsName", null, 0, 1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getQueryType_SrsName(), this.getURI(), "srsName", null, 0, 1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getQueryType_TypeName(), this.getTypeNameListType(), "typeName", null, 1, 1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(transactionResponseTypeEClass, TransactionResponseType.class, "TransactionResponseType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -2805,8 +2927,8 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		initEAttribute(getTransactionResponseType_Version(), theXMLTypePackage.getString(), "version", "1.1.0", 1, 1, TransactionResponseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(transactionResultsTypeEClass, TransactionResultsType.class, "TransactionResultsType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getTransactionResultsType_Handle(), ecorePackage.getEString(), "handle", null, 0, 1, TransactionResultsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTransactionResultsType_Action(), this.getActionType(), null, "action", null, 0, -1, TransactionResultsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransactionResultsType_Handle(), ecorePackage.getEString(), "handle", null, 0, 1, TransactionResultsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(transactionSummaryTypeEClass, TransactionSummaryType.class, "TransactionSummaryType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getTransactionSummaryType_TotalInserted(), theXMLTypePackage.getNonNegativeInteger(), "totalInserted", null, 0, 1, TransactionSummaryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2824,11 +2946,11 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 
 		initEClass(updateElementTypeEClass, UpdateElementType.class, "UpdateElementType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getUpdateElementType_Property(), this.getPropertyType(), null, "property", null, 1, -1, UpdateElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getUpdateElementType_Filter(), ecorePackage.getEJavaObject(), "filter", null, 0, 1, UpdateElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getUpdateElementType_Filter(), this.getFilter(), "filter", null, 0, 1, UpdateElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getUpdateElementType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, UpdateElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getUpdateElementType_InputFormat(), theXMLTypePackage.getString(), "inputFormat", "x-application/gml:3", 0, 1, UpdateElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getUpdateElementType_SrsName(), theXMLTypePackage.getAnyURI(), "srsName", null, 0, 1, UpdateElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getUpdateElementType_TypeName(), ecorePackage.getEJavaObject(), "typeName", null, 0, 1, UpdateElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getUpdateElementType_SrsName(), this.getURI(), "srsName", null, 0, 1, UpdateElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getUpdateElementType_TypeName(), this.getQName(), "typeName", null, 0, 1, UpdateElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(wfsCapabilitiesTypeEClass, WFSCapabilitiesType.class, "WFSCapabilitiesType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getWFSCapabilitiesType_FeatureTypeList(), this.getFeatureTypeListType(), null, "featureTypeList", null, 0, 1, WFSCapabilitiesType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2864,15 +2986,23 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		addEEnumLiteral(resultTypeTypeEEnum, ResultTypeType.HITS_LITERAL);
 
 		// Initialize data types
-		initEDataType(typeTypeEDataType, String.class, "TypeType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(featureCollectionEDataType, FeatureCollection.class, "FeatureCollection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(featureEDataType, Feature.class, "Feature", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(allSomeTypeObjectEDataType, AllSomeType.class, "AllSomeTypeObject", IS_SERIALIZABLE, IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(baseTypeNameListTypeEDataType, List.class, "BaseTypeNameListType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(formatTypeEDataType, String.class, "FormatType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(calendarEDataType, Calendar.class, "Calendar", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(qNameEDataType, QName.class, "QName", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(identifierGenerationOptionTypeObjectEDataType, IdentifierGenerationOptionType.class, "IdentifierGenerationOptionTypeObject", IS_SERIALIZABLE, IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(operationTypeObjectEDataType, OperationType.class, "OperationTypeObject", IS_SERIALIZABLE, IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(resultTypeTypeObjectEDataType, ResultTypeType.class, "ResultTypeTypeObject", IS_SERIALIZABLE, IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(typeNameListTypeEDataType, List.class, "TypeNameListType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(typeTypeEDataType, String.class, "TypeType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(featureIdEDataType, FeatureId.class, "FeatureId", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(functionEDataType, Function.class, "Function", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(qNameEDataType, QName.class, "QName", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(uriEDataType, java.net.URI.class, "URI", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(filterEDataType, Filter.class, "Filter", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(calendarEDataType, Calendar.class, "Calendar", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(featureEDataType, Feature.class, "Feature", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(sortByEDataType, SortBy.class, "SortBy", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(featureCollectionEDataType, FeatureCollection.class, "FeatureCollection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);
@@ -2889,7 +3019,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 	 * @generated
 	 */
 	protected void createExtendedMetaDataAnnotations() {
-		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";		
+		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";			
 		addAnnotation
 		  (actionTypeEClass, 
 		   source, 
@@ -3117,6 +3247,14 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 			 "namespace", "##targetNamespace"
 		   });			
 		addAnnotation
+		  (getDocumentRoot_PropertyName(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "PropertyName",
+			 "namespace", "##targetNamespace"
+		   });			
+		addAnnotation
 		  (getDocumentRoot_Query(), 
 		   source, 
 		   new String[] {
@@ -3181,20 +3319,40 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 			 "namespace", "##targetNamespace"
 		   });			
 		addAnnotation
-		  (getDocumentRoot_PropertyName(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "PropertyName",
-			 "namespace", "##targetNamespace"
-		   });			
-		addAnnotation
 		  (featureCollectionTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "FeatureCollectionType",
 			 "kind", "empty"
 		   });			
+		addAnnotation
+		  (featuresLockedTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "FeaturesLockedType",
+			 "kind", "elementOnly"
+		   });		
+		addAnnotation
+		  (getFeaturesLockedType_Group(), 
+		   source, 
+		   new String[] {
+			 "kind", "group",
+			 "name", "group:0"
+		   });		
+		addAnnotation
+		  (featuresNotLockedTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "FeaturesNotLockedType",
+			 "kind", "elementOnly"
+		   });		
+		addAnnotation
+		  (getFeaturesNotLockedType_Group(), 
+		   source, 
+		   new String[] {
+			 "kind", "group",
+			 "name", "group:0"
+		   });		
 		addAnnotation
 		  (featureTypeListTypeEClass, 
 		   source, 
@@ -3303,96 +3461,6 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		   new String[] {
 			 "kind", "element",
 			 "name", "MetadataURL",
-			 "namespace", "##targetNamespace"
-		   });		
-		addAnnotation
-		  (featuresLockedTypeEClass, 
-		   source, 
-		   new String[] {
-			 "name", "FeaturesLockedType",
-			 "kind", "elementOnly"
-		   });		
-		addAnnotation
-		  (getFeaturesLockedType_Group(), 
-		   source, 
-		   new String[] {
-			 "kind", "group",
-			 "name", "group:0"
-		   });		
-		addAnnotation
-		  (featuresNotLockedTypeEClass, 
-		   source, 
-		   new String[] {
-			 "name", "FeaturesNotLockedType",
-			 "kind", "elementOnly"
-		   });		
-		addAnnotation
-		  (getFeaturesNotLockedType_Group(), 
-		   source, 
-		   new String[] {
-			 "kind", "group",
-			 "name", "group:0"
-		   });		
-		addAnnotation
-		  (gmlObjectTypeListTypeEClass, 
-		   source, 
-		   new String[] {
-			 "name", "GMLObjectTypeListType",
-			 "kind", "elementOnly"
-		   });		
-		addAnnotation
-		  (getGMLObjectTypeListType_GMLObjectType(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "GMLObjectType",
-			 "namespace", "##targetNamespace"
-		   });			
-		addAnnotation
-		  (gmlObjectTypeTypeEClass, 
-		   source, 
-		   new String[] {
-			 "name", "GMLObjectTypeType",
-			 "kind", "elementOnly"
-		   });			
-		addAnnotation
-		  (getGMLObjectTypeType_Name(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "Name",
-			 "namespace", "##targetNamespace"
-		   });			
-		addAnnotation
-		  (getGMLObjectTypeType_Title(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "Title",
-			 "namespace", "##targetNamespace"
-		   });			
-		addAnnotation
-		  (getGMLObjectTypeType_Abstract(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "Abstract",
-			 "namespace", "##targetNamespace"
-		   });			
-		addAnnotation
-		  (getGMLObjectTypeType_Keywords(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "Keywords",
-			 "namespace", "http://www.opengis.net/ows"
-		   });		
-		addAnnotation
-		  (getGMLObjectTypeType_OutputFormats(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "OutputFormats",
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
@@ -3553,6 +3621,82 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 			 "name", "traverseXlinkExpiry"
 		   });			
 		addAnnotation
+		  (gmlObjectTypeListTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "GMLObjectTypeListType",
+			 "kind", "elementOnly"
+		   });		
+		addAnnotation
+		  (getGMLObjectTypeListType_GMLObjectType(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "GMLObjectType",
+			 "namespace", "##targetNamespace"
+		   });			
+		addAnnotation
+		  (gmlObjectTypeTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "GMLObjectTypeType",
+			 "kind", "elementOnly"
+		   });			
+		addAnnotation
+		  (getGMLObjectTypeType_Name(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "Name",
+			 "namespace", "##targetNamespace"
+		   });			
+		addAnnotation
+		  (getGMLObjectTypeType_Title(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "Title",
+			 "namespace", "##targetNamespace"
+		   });			
+		addAnnotation
+		  (getGMLObjectTypeType_Abstract(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "Abstract",
+			 "namespace", "##targetNamespace"
+		   });			
+		addAnnotation
+		  (getGMLObjectTypeType_Keywords(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "Keywords",
+			 "namespace", "http://www.opengis.net/ows"
+		   });		
+		addAnnotation
+		  (getGMLObjectTypeType_OutputFormats(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "OutputFormats",
+			 "namespace", "##targetNamespace"
+		   });		
+		addAnnotation
+		  (insertedFeatureTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "InsertedFeatureType",
+			 "kind", "elementOnly"
+		   });			
+		addAnnotation
+		  (getInsertedFeatureType_Handle(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "handle"
+		   });			
+		addAnnotation
 		  (insertElementTypeEClass, 
 		   source, 
 		   new String[] {
@@ -3579,29 +3723,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "inputFormat"
-		   });			
-		addAnnotation
-		  (getInsertElementType_SrsName(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "srsName"
-		   });			
-		addAnnotation
-		  (insertResultTypeEClass, 
-		   source, 
-		   new String[] {
-			 "name", "InsertResultType",
-			 "kind", "elementOnly"
-		   });			
-		addAnnotation
-		  (getInsertResultType_Feature(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "Feature",
-			 "namespace", "##targetNamespace"
-		   });		
+		   });				
 		addAnnotation
 		  (insertResultsTypeEClass, 
 		   source, 
@@ -3617,20 +3739,6 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 			 "name", "Feature",
 			 "namespace", "##targetNamespace"
 		   });		
-		addAnnotation
-		  (insertedFeatureTypeEClass, 
-		   source, 
-		   new String[] {
-			 "name", "InsertedFeatureType",
-			 "kind", "elementOnly"
-		   });			
-		addAnnotation
-		  (getInsertedFeatureType_Handle(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "handle"
-		   });			
 		addAnnotation
 		  (lockFeatureResponseTypeEClass, 
 		   source, 
@@ -3819,6 +3927,15 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		   new String[] {
 			 "kind", "group",
 			 "name", "group:0"
+		   });		
+		addAnnotation
+		  (getQueryType_PropertyName(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "PropertyName",
+			 "namespace", "##targetNamespace",
+			 "group", "#group:0"
 		   });			
 		addAnnotation
 		  (getQueryType_XlinkPropertyName(), 
@@ -4027,14 +4144,7 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "inputFormat"
-		   });			
-		addAnnotation
-		  (getUpdateElementType_SrsName(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "srsName"
-		   });				
+		   });					
 		addAnnotation
 		  (wfsCapabilitiesTypeEClass, 
 		   source, 
@@ -4101,7 +4211,66 @@ public class WfsPackageImpl extends EPackageImpl implements WfsPackage {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "traverseXlinkExpiry"
-		   });						
+		   });								
+		addAnnotation
+		  (allSomeTypeObjectEDataType, 
+		   source, 
+		   new String[] {
+			 "name", "AllSomeType:Object",
+			 "baseType", "AllSomeType"
+		   });		
+		addAnnotation
+		  (baseTypeNameListTypeEDataType, 
+		   source, 
+		   new String[] {
+			 "name", "Base_TypeNameListType",
+			 "itemType", "http://www.eclipse.org/emf/2003/XMLType#QName"
+		   });		
+		addAnnotation
+		  (formatTypeEDataType, 
+		   source, 
+		   new String[] {
+			 "name", "format_._type",
+			 "baseType", "http://www.eclipse.org/emf/2003/XMLType#string",
+			 "enumeration", "text/xml text/html text/sgml text/plain"
+		   });		
+		addAnnotation
+		  (identifierGenerationOptionTypeObjectEDataType, 
+		   source, 
+		   new String[] {
+			 "name", "IdentifierGenerationOptionType:Object",
+			 "baseType", "IdentifierGenerationOptionType"
+		   });		
+		addAnnotation
+		  (operationTypeObjectEDataType, 
+		   source, 
+		   new String[] {
+			 "name", "OperationType:Object",
+			 "baseType", "OperationType"
+		   });		
+		addAnnotation
+		  (resultTypeTypeObjectEDataType, 
+		   source, 
+		   new String[] {
+			 "name", "ResultTypeType:Object",
+			 "baseType", "ResultTypeType"
+		   });		
+		addAnnotation
+		  (typeNameListTypeEDataType, 
+		   source, 
+		   new String[] {
+			 "name", "TypeNameListType",
+			 "baseType", "Base_TypeNameListType",
+			 "pattern", "((\\w:)?\\w(=\\w)?){1,}"
+		   });		
+		addAnnotation
+		  (typeTypeEDataType, 
+		   source, 
+		   new String[] {
+			 "name", "type_._type",
+			 "baseType", "http://www.eclipse.org/emf/2003/XMLType#string",
+			 "enumeration", "TC211 FGDC 19115 19139"
+		   });
 	}
 
 } //WfsPackageImpl

@@ -75,14 +75,14 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	protected FeatureMap group = null;
 
 	/**
-	 * The cached value of the '{@link #getPropertyName() <em>Property Name</em>}' attribute list.
+	 * The default value of the '{@link #getPropertyName() <em>Property Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getPropertyName()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList propertyName = null;
+	protected static final String PROPERTY_NAME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getFunction() <em>Function</em>}' attribute list.
@@ -102,7 +102,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object FILTER_EDEFAULT = null;
+	protected static final Filter FILTER_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
@@ -112,7 +112,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected Object filter = FILTER_EDEFAULT;
+	protected Filter filter = FILTER_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getSortBy() <em>Sort By</em>}' attribute.
@@ -122,7 +122,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object SORT_BY_EDEFAULT = null;
+	protected static final SortBy SORT_BY_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getSortBy() <em>Sort By</em>}' attribute.
@@ -132,7 +132,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected Object sortBy = SORT_BY_EDEFAULT;
+	protected SortBy sortBy = SORT_BY_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getFeatureVersion() <em>Feature Version</em>}' attribute.
@@ -182,7 +182,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String SRS_NAME_EDEFAULT = null;
+	protected static final URI SRS_NAME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getSrsName() <em>Srs Name</em>}' attribute.
@@ -192,7 +192,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 * @ordered
 	 */
-	protected String srsName = SRS_NAME_EDEFAULT;
+	protected URI srsName = SRS_NAME_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
@@ -249,11 +249,17 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList getPropertyName() {
-		if (propertyName == null) {
-			propertyName = new EDataTypeUniqueEList(QName.class, this, WfsPackage.QUERY_TYPE__PROPERTY_NAME);
-		}
-		return propertyName;
+	public String getPropertyName() {
+		return (String)getGroup().get(WfsPackage.eINSTANCE.getQueryType_PropertyName(), true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setPropertyName(String newPropertyName) {
+		((FeatureMap.Internal)getGroup()).set(WfsPackage.eINSTANCE.getQueryType_PropertyName(), newPropertyName);
 	}
 
 	/**
@@ -282,7 +288,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getFilter() {
+	public Filter getFilter() {
 		return filter;
 	}
 
@@ -291,8 +297,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setFilter(Object newFilter) {
-		Object oldFilter = filter;
+	public void setFilter(Filter newFilter) {
+		Filter oldFilter = filter;
 		filter = newFilter;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__FILTER, oldFilter, filter));
@@ -303,7 +309,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getSortBy() {
+	public SortBy getSortBy() {
 		return sortBy;
 	}
 
@@ -312,8 +318,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setSortBy(Object newSortBy) {
-		Object oldSortBy = sortBy;
+	public void setSortBy(SortBy newSortBy) {
+		SortBy oldSortBy = sortBy;
 		sortBy = newSortBy;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__SORT_BY, oldSortBy, sortBy));
@@ -366,7 +372,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getSrsName() {
+	public URI getSrsName() {
 		return srsName;
 	}
 
@@ -375,8 +381,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setSrsName(String newSrsName) {
-		String oldSrsName = srsName;
+	public void setSrsName(URI newSrsName) {
+		URI oldSrsName = srsName;
 		srsName = newSrsName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__SRS_NAME, oldSrsName, srsName));
@@ -465,8 +471,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				getGroup().addAll((Collection)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__PROPERTY_NAME:
-				getPropertyName().clear();
-				getPropertyName().addAll((Collection)newValue);
+				setPropertyName((String)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
 				getXlinkPropertyName().clear();
@@ -477,10 +482,10 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				getFunction().addAll((Collection)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__FILTER:
-				setFilter((Object)newValue);
+				setFilter((Filter)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__SORT_BY:
-				setSortBy((Object)newValue);
+				setSortBy((SortBy)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__FEATURE_VERSION:
 				setFeatureVersion((String)newValue);
@@ -489,7 +494,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				setHandle((String)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__SRS_NAME:
-				setSrsName((String)newValue);
+				setSrsName((URI)newValue);
 				return;
 			case WfsPackage.QUERY_TYPE__TYPE_NAME:
 				setTypeName((List)newValue);
@@ -509,7 +514,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				getGroup().clear();
 				return;
 			case WfsPackage.QUERY_TYPE__PROPERTY_NAME:
-				getPropertyName().clear();
+				setPropertyName(PROPERTY_NAME_EDEFAULT);
 				return;
 			case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
 				getXlinkPropertyName().clear();
@@ -549,7 +554,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 			case WfsPackage.QUERY_TYPE__GROUP:
 				return group != null && !group.isEmpty();
 			case WfsPackage.QUERY_TYPE__PROPERTY_NAME:
-				return propertyName != null && !propertyName.isEmpty();
+				return PROPERTY_NAME_EDEFAULT == null ? getPropertyName() != null : !PROPERTY_NAME_EDEFAULT.equals(getPropertyName());
 			case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
 				return !getXlinkPropertyName().isEmpty();
 			case WfsPackage.QUERY_TYPE__FUNCTION:
@@ -581,8 +586,6 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (group: ");
 		result.append(group);
-		result.append(", propertyName: ");
-		result.append(propertyName);
 		result.append(", function: ");
 		result.append(function);
 		result.append(", filter: ");

@@ -6,6 +6,8 @@
  */
 package net.opengis.wfs.impl;
 
+import java.net.URI;
+
 import java.util.Collection;
 
 import net.opengis.wfs.IdentifierGenerationOptionType;
@@ -36,38 +38,18 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link net.opengis.wfs.impl.InsertElementTypeImpl#getFeatureCollection <em>Feature Collection</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.InsertElementTypeImpl#getFeature <em>Feature</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.InsertElementTypeImpl#getHandle <em>Handle</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.InsertElementTypeImpl#getIdgen <em>Idgen</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.InsertElementTypeImpl#getInputFormat <em>Input Format</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.InsertElementTypeImpl#getSrsName <em>Srs Name</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.InsertElementTypeImpl#getFeatureCollection <em>Feature Collection</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
 public class InsertElementTypeImpl extends EObjectImpl implements InsertElementType {
-	/**
-	 * The default value of the '{@link #getFeatureCollection() <em>Feature Collection</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getFeatureCollection()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final FeatureCollection FEATURE_COLLECTION_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getFeatureCollection() <em>Feature Collection</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getFeatureCollection()
-	 * @generated
-	 * @ordered
-	 */
-	protected FeatureCollection featureCollection = FEATURE_COLLECTION_EDEFAULT;
-
 	/**
 	 * The cached value of the '{@link #getFeature() <em>Feature</em>}' attribute list.
 	 * <!-- begin-user-doc -->
@@ -164,7 +146,7 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String SRS_NAME_EDEFAULT = null;
+	protected static final URI SRS_NAME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getSrsName() <em>Srs Name</em>}' attribute.
@@ -174,7 +156,27 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 * @generated
 	 * @ordered
 	 */
-	protected String srsName = SRS_NAME_EDEFAULT;
+	protected URI srsName = SRS_NAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getFeatureCollection() <em>Feature Collection</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFeatureCollection()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final FeatureCollection FEATURE_COLLECTION_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getFeatureCollection() <em>Feature Collection</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFeatureCollection()
+	 * @generated
+	 * @ordered
+	 */
+	protected FeatureCollection featureCollection = FEATURE_COLLECTION_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -324,7 +326,7 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getSrsName() {
+	public URI getSrsName() {
 		return srsName;
 	}
 
@@ -333,8 +335,8 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setSrsName(String newSrsName) {
-		String oldSrsName = srsName;
+	public void setSrsName(URI newSrsName) {
+		URI oldSrsName = srsName;
 		srsName = newSrsName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.INSERT_ELEMENT_TYPE__SRS_NAME, oldSrsName, srsName));
@@ -368,8 +370,6 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 */
 	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE_COLLECTION:
-				return getFeatureCollection();
 			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE:
 				return getFeature();
 			case WfsPackage.INSERT_ELEMENT_TYPE__HANDLE:
@@ -380,6 +380,8 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 				return getInputFormat();
 			case WfsPackage.INSERT_ELEMENT_TYPE__SRS_NAME:
 				return getSrsName();
+			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE_COLLECTION:
+				return getFeatureCollection();
 		}
 		return eDynamicGet(eFeature, resolve);
 	}
@@ -391,9 +393,6 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 */
 	public void eSet(EStructuralFeature eFeature, Object newValue) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE_COLLECTION:
-				setFeatureCollection((FeatureCollection)newValue);
-				return;
 			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE:
 				getFeature().clear();
 				getFeature().addAll((Collection)newValue);
@@ -408,7 +407,10 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 				setInputFormat((String)newValue);
 				return;
 			case WfsPackage.INSERT_ELEMENT_TYPE__SRS_NAME:
-				setSrsName((String)newValue);
+				setSrsName((URI)newValue);
+				return;
+			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE_COLLECTION:
+				setFeatureCollection((FeatureCollection)newValue);
 				return;
 		}
 		eDynamicSet(eFeature, newValue);
@@ -421,9 +423,6 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 */
 	public void eUnset(EStructuralFeature eFeature) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE_COLLECTION:
-				setFeatureCollection(FEATURE_COLLECTION_EDEFAULT);
-				return;
 			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE:
 				getFeature().clear();
 				return;
@@ -439,6 +438,9 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 			case WfsPackage.INSERT_ELEMENT_TYPE__SRS_NAME:
 				setSrsName(SRS_NAME_EDEFAULT);
 				return;
+			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE_COLLECTION:
+				setFeatureCollection(FEATURE_COLLECTION_EDEFAULT);
+				return;
 		}
 		eDynamicUnset(eFeature);
 	}
@@ -450,8 +452,6 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 */
 	public boolean eIsSet(EStructuralFeature eFeature) {
 		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE_COLLECTION:
-				return FEATURE_COLLECTION_EDEFAULT == null ? featureCollection != null : !FEATURE_COLLECTION_EDEFAULT.equals(featureCollection);
 			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE:
 				return feature != null && !feature.isEmpty();
 			case WfsPackage.INSERT_ELEMENT_TYPE__HANDLE:
@@ -462,6 +462,8 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 				return isSetInputFormat();
 			case WfsPackage.INSERT_ELEMENT_TYPE__SRS_NAME:
 				return SRS_NAME_EDEFAULT == null ? srsName != null : !SRS_NAME_EDEFAULT.equals(srsName);
+			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE_COLLECTION:
+				return FEATURE_COLLECTION_EDEFAULT == null ? featureCollection != null : !FEATURE_COLLECTION_EDEFAULT.equals(featureCollection);
 		}
 		return eDynamicIsSet(eFeature);
 	}
@@ -475,9 +477,7 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (featureCollection: ");
-		result.append(featureCollection);
-		result.append(", feature: ");
+		result.append(" (feature: ");
 		result.append(feature);
 		result.append(", handle: ");
 		result.append(handle);
@@ -487,6 +487,8 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 		if (inputFormatESet) result.append(inputFormat); else result.append("<unset>");
 		result.append(", srsName: ");
 		result.append(srsName);
+		result.append(", featureCollection: ");
+		result.append(featureCollection);
 		result.append(')');
 		return result.toString();
 	}

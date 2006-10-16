@@ -37,6 +37,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link net.opengis.wfs.DocumentRoot#getLockId <em>Lock Id</em>}</li>
  *   <li>{@link net.opengis.wfs.DocumentRoot#getNative <em>Native</em>}</li>
  *   <li>{@link net.opengis.wfs.DocumentRoot#getProperty <em>Property</em>}</li>
+ *   <li>{@link net.opengis.wfs.DocumentRoot#getPropertyName <em>Property Name</em>}</li>
  *   <li>{@link net.opengis.wfs.DocumentRoot#getQuery <em>Query</em>}</li>
  *   <li>{@link net.opengis.wfs.DocumentRoot#getServesGMLObjectTypeList <em>Serves GML Object Type List</em>}</li>
  *   <li>{@link net.opengis.wfs.DocumentRoot#getSupportsGMLObjectTypeList <em>Supports GML Object Type List</em>}</li>
@@ -45,7 +46,6 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link net.opengis.wfs.DocumentRoot#getUpdate <em>Update</em>}</li>
  *   <li>{@link net.opengis.wfs.DocumentRoot#getWfsCapabilities <em>Wfs Capabilities</em>}</li>
  *   <li>{@link net.opengis.wfs.DocumentRoot#getXlinkPropertyName <em>Xlink Property Name</em>}</li>
- *   <li>{@link net.opengis.wfs.DocumentRoot#getPropertyName <em>Property Name</em>}</li>
  * </ul>
  * </p>
  *

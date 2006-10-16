@@ -6,6 +6,8 @@
  */
 package net.opengis.wfs;
 
+import java.net.URI;
+
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
@@ -26,12 +28,12 @@ import org.geotools.feature.FeatureCollection;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link net.opengis.wfs.InsertElementType#getFeatureCollection <em>Feature Collection</em>}</li>
  *   <li>{@link net.opengis.wfs.InsertElementType#getFeature <em>Feature</em>}</li>
  *   <li>{@link net.opengis.wfs.InsertElementType#getHandle <em>Handle</em>}</li>
  *   <li>{@link net.opengis.wfs.InsertElementType#getIdgen <em>Idgen</em>}</li>
  *   <li>{@link net.opengis.wfs.InsertElementType#getInputFormat <em>Input Format</em>}</li>
  *   <li>{@link net.opengis.wfs.InsertElementType#getSrsName <em>Srs Name</em>}</li>
+ *   <li>{@link net.opengis.wfs.InsertElementType#getFeatureCollection <em>Feature Collection</em>}</li>
  * </ul>
  * </p>
  *
@@ -247,19 +249,18 @@ public interface InsertElementType extends EObject{
 	 * <!-- begin-model-doc -->
 	 * 
 	 *               ===== PAV 12NOV2004 ====
-	 *               WHY IS THIS HERE? WOULDN'T WE KNOW THE INCOMING SRS FROM THE
+	 *               WHY IS THIS HERE? WOULDN'T WE KNOW THE INCOMING SRS FROM THE 
 	 *               GML GEOMETRY ELEMENTS?   I ASSUME THAT IF THE INCOMING SRS
 	 *               DOES NOT MATCH ONE OF THE STORAGE SRS(s) THEN THE WFS WOULD
 	 *               EITHER PROJECT INTO THE STORAGE SRS OR RAISE AN EXCEPTION.
+	 *            
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Srs Name</em>' attribute.
 	 * @see #setSrsName(String)
 	 * @see net.opengis.wfs.WfsPackage#getInsertElementType_SrsName()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnyURI"
-	 *        extendedMetaData="kind='attribute' name='srsName'"
-	 * @generated
+	 * @model 
 	 */
-	String getSrsName();
+	URI getSrsName();
 
 	/**
 	 * Sets the value of the '{@link net.opengis.wfs.InsertElementType#getSrsName <em>Srs Name</em>}' attribute.
@@ -269,6 +270,6 @@ public interface InsertElementType extends EObject{
 	 * @see #getSrsName()
 	 * @generated
 	 */
-	void setSrsName(String value);
+	void setSrsName(URI value);
 
 } // InsertElementType

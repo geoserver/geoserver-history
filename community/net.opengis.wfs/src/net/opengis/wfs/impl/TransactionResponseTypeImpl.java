@@ -7,7 +7,7 @@
 package net.opengis.wfs.impl;
 
 import net.opengis.wfs.InsertResultsType;
-import net.opengis.wfs.InsertResultType;
+
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionResultsType;
 import net.opengis.wfs.TransactionSummaryType;
