@@ -6,42 +6,45 @@ package org.geoserver.wfs;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.HashSet;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.AllSomeType;
+import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.GetFeatureWithLockType;
 import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
+import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WfsFactory;
 
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.AttributeTypeInfo;
 import org.geoserver.data.feature.FeatureTypeInfo;
-import org.geoserver.ows.ServiceException;
-import org.geotools.data.FeatureResults;
+import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
-import org.geotools.feature.Feature;
-import org.geotools.filter.FidFilter;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
+import org.geotools.referencing.CRS;
 import org.opengis.filter.expression.PropertyName;
+import org.opengis.filter.sort.SortBy;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * Web Feature Service GetFeature operation.
  * <p>
+ * This operation returns an array of {@link org.geotools.feature.FeatureCollection} 
+ * instances.
  * </p>
  * 
  * @author Rob Hranac, TOPP
@@ -96,14 +99,7 @@ public class GetFeature {
 		this.filterFactory = filterFactory;
 	}
     
-    /**
-     * Initializes a getFeature operation by reading the outputFormat and 
-     * looking up the feature producer.
-     * 
-     * @return A GetFeatureResults object.
-     */
-    protected GetFeatureResults init( GetFeatureType request ) throws WFSException {
-    	
+    public FeatureCollectionType run( GetFeatureType request ) throws WFSException {
     	List queries = request.getQuery();
     	
     	if ( queries.isEmpty() ) {
@@ -115,87 +111,7 @@ public class GetFeature {
 			throw new WFSException( msg );
 		}
 		
-		GetFeatureResults results = new GetFeatureResults();
-	    for ( Iterator q = queries.iterator(); q.hasNext(); ) {
-	    	EObject query = (EObject) q.next();
-    		results.addQuery( query( query ) );
-	    }
-	 
-	    return results;
-    }
-    
-    protected Query query( EObject q ) {
-		Query query = new Query();
-    	List typeName = (List) EMFUtils.get( q, "typeName" );	
-		
-        query.setTypeName( (QName) typeName.get( 0 ) );
-        
-        List propertyNames = (List) EMFUtils.get( q, "propertyName" );
-        for (int i = 0; i < propertyNames.size(); i++) {
-    		PropertyName propertyName = (PropertyName) propertyNames.get( i );
-            query.addPropertyName( propertyName.getPropertyName() );
-        }
-        
-        Filter filter = (Filter) EMFUtils.get( q, "filter" );
-        if ( filter != null) {
-            query.addFilter( filter );
-        }
-
-        return query;	
-    }
-    
-    /**
-     * Performs a getFeatures, or getFeaturesWithLock (using gt2 locking ).
-     * 
-     * <p>
-     * The idea is to grab the FeatureResulsts during execute, and use them
-     * during writeTo.
-     * </p>
-     *
-     * @param request
-     *
-     * @throws ServiceException
-     * @throws WfsException DOCUMENT ME!
-     *
-     * @task TODO: split this up a bit more?  Also get the proper namespace
-     *       declrations and schema locations.  Right now we're back up to
-     *       where we were with 1.0., as we can return two FeatureTypes in the
-     *       same namespace.  CITE didn't check for two in different
-     *       namespaces, and gml builder just couldn't deal.  Now we should be
-     *       able to, we just need to get the reporting right, use the
-     *       AllSameType function as  Describe does.
-     */
-    public GetFeatureResults getFeature( GetFeatureType request ) throws WFSException {
-    	GetFeatureResults results = init( request );
-        
-		run( request, results );
-		
-		return results;
-    }
-    
-    public GetFeatureResults getFeatureWithLock( GetFeatureWithLockType request ) throws WFSException {
-		GetFeatureResults results = init( request );
-		results.setLocking( true );
-		
-		try {
-			run( request, results );	
-		}
-		catch( Exception e ) {
-			//free locks
-			if ( results.getLockId() != null ) {
-				LockFeature lockFeature = new LockFeature( wfs, catalog );
-				lockFeature.release( results.getLockId() );
-			}
-		
-			throw new WFSException( e );
-		}
-		
-		return results;
-    }
-    
-    protected void run( GetFeatureType request, GetFeatureResults results ) throws WFSException {
-    	
-        // Optimization Idea
+		// Optimization Idea
         //
         // We should be able to reduce this to a two pass opperations.
         //
@@ -211,83 +127,78 @@ public class GetFeature {
         // - if we fail to aquire all the locks we will need to fail and
         //   itterate through the the FeatureSources to release the locks
         //
-        FeatureTypeInfo meta = null;
-        
-        Query query;
-        
         if ( request.getMaxFeatures() == null) {
         	request.setMaxFeatures( BigInteger.valueOf( Integer.MAX_VALUE ) );
         }
         int maxFeatures = request.getMaxFeatures().intValue();
         
-        Set lockedFids = new HashSet();
-        Set lockFailedFids = new HashSet();
-
-        FeatureSource source;
-        Feature feature;
-        String fid;
-        FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
-        FidFilter fidFilter;
-        int numberLocked;
-
+        
+        
+        FeatureCollectionType result = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        int count = 0;	//should probably be long
         try {
-            for (Iterator it = results.getQueries().iterator(); it.hasNext() && (maxFeatures > 0);) {
-                query = (Query) it.next();
+        	for ( int i = 0; i < request.getQuery().size() && ( count <= maxFeatures ); i++ ) {
+        		QueryType query = (QueryType) request.getQuery().get( i );
+        		
+            	FeatureTypeInfo meta = null;
+            	if ( query.getTypeName().size() == 1 ) {
+            		meta = featureTypeInfo( (QName) query.getTypeName().get( 0 ) );
+            	}
+            	else {
+            		//TODO: a join is taking place
+            	}
+            	
+                FeatureSource source = meta.featureSource();
+
+                List atts = meta.getAttributes();
+                List attNames = meta.attributeNames();
                 
-                meta = featureTypeInfo( query.getTypeName() );
-                source = meta.featureSource();
-
-                List attrs = meta.getAttributes();
-                List propNames = query.getPropertyNames(); // REAL LIST: be careful here :)
-                List attributeNames = meta.attributeNames();
-
+                List propNames = query.getPropertyName(); 
+                
                 for (Iterator iter = propNames.iterator(); iter.hasNext();) {
-                    String propName = (String) iter.next();
-
-                    if (!attributeNames.contains(propName)) {
-                        String mesg = "Requested property: " + propName
-                            + " is " + "not available for "
-                            + query.getTypeName() + ".  "
-                            + "The possible propertyName values are: "
-                            + attributeNames;
+                	PropertyName propName = (PropertyName) iter.next();
+                	
+                	if ( !attNames.contains( propName.getPropertyName() ) ) {
+                        String mesg = "Requested property: " + propName + " is " + "not available " +
+                        		"for " + query.getTypeName() + ".  " + "The possible propertyName " +
+                				"values are: " + attNames;
+                        
                         throw new WFSException( mesg );
                     }
                 }
 
                 if (propNames.size() != 0) {
-                    Iterator ii = attrs.iterator();
+                    Iterator ii = atts.iterator();
                     List tmp = new LinkedList();
 
                     while (ii.hasNext()) {
                         AttributeTypeInfo ati = (AttributeTypeInfo) ii.next();
+                        LOGGER.finer("checking to see if " + propNames + " contains" + ati);
 
-                        //String attName = (String) ii.next();
-                        LOGGER.finer("checking to see if " + propNames
-                            + " contains" + ati);
-
-                        if (((ati.getMinOccurs() > 0)
-                                && (ati.getMaxOccurs() != 0))
+                        if (( (ati.getMinOccurs() > 0) && (ati.getMaxOccurs() != 0) )
                                 || propNames.contains(ati.getName())) {
-                            tmp.add(ati.getName());
+                        	
+                        	tmp.add( filterFactory.property( ati.getName() ) );
+                            
                         }
                     }
 
-                    query.setPropertyNames(tmp);
+                    //replace property names
+                    query.getPropertyName().clear();
+                    query.getPropertyName().addAll( tmp );
                 }
 
-                // This doesn't seem to be working?
-                // Run through features and record FeatureIDs
-                // Lock FeatureIDs as required
-                //}
-                LOGGER.fine("Query is " + query + "\n To gt2: "
-                    + query.toDataQuery(maxFeatures));
+                org.geotools.data.Query gtQuery = toDataQuery( query, maxFeatures - count );
+                LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery );
 
-                //DJB: note if maxFeatures gets to 0 the while loop above takes care of this! (this is a subtle situation)
+                FeatureCollection features = source.getFeatures( gtQuery );
+                count += features.getCount();
                 
-                org.geotools.data.Query gtQuery = query.toDataQuery( maxFeatures );
-                FeatureResults features = source.getFeatures( gtQuery );
-                if (it.hasNext()) //DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
-                	maxFeatures -= features.getCount();
+                //JD: TODO reoptimize
+//                if ( i == request.getQuery().size() - 1 ) { 
+//                	//DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
+//                	maxFeatures -= features.getCount();
+//                }
 
                 //JD: reproject if neccessary
                 if ( gtQuery.getCoordinateSystemReproject() != null ) {
@@ -310,42 +221,119 @@ public class GetFeature {
 						throw new WFSException( msg, e );
 					}
                 }
+                
                 //GR: I don't know if the featuresults should be added here for later
                 //encoding if it was a lock request. may be after ensuring the lock
                 //succeed?
-                results.addFeatures(meta, features);
-                if ( request instanceof GetFeatureWithLockType ) {
-                	GetFeatureWithLockType withLockRequest = (GetFeatureWithLockType) request;
-                	
-                	LockType lock = WfsFactory.eINSTANCE.createLockType();
-                	lock.setFilter( query.getFilter() );
-                	lock.setHandle( query.getHandle() );
-                	lock.setTypeName( query.getTypeName() );
-                	
-                	LockFeatureType lockRequest = WfsFactory.eINSTANCE.createLockFeatureType();
-                	lockRequest.setExpiry( withLockRequest.getExpiry() );
-                	lockRequest.setHandle( withLockRequest.getHandle() );
-                	lockRequest.setLockAction( AllSomeType.ALL_LITERAL );
-                	lockRequest.getLock().add( lock );
-                	
-                	LockFeature lockFeature = new LockFeature( wfs, catalog );
-                	lockFeature.setFilterFactory( filterFactory );
-                	
-                	LockFeatureResponseType response = lockFeature.lockFeature( lockRequest );
-                	results.setLockId( response.getLockId() );
-                }
+                result.getFeature().add( features );
                 
-                if ( results.isLocking() ) {
-                	
-
-                }
             }
             
         } 
         catch (IOException e) {
-    		throw new WFSException( "problem with FeatureResults", e, request.getHandle() );
+    		throw new WFSException( "Error occurred getting features", e, request.getHandle() );
         } 
+        
+        //locking
+        if ( request instanceof GetFeatureWithLockType ) {
+        	GetFeatureWithLockType withLockRequest = (GetFeatureWithLockType) request;
+        	
+        	LockFeatureType lockRequest = WfsFactory.eINSTANCE.createLockFeatureType();
+        	lockRequest.setExpiry( withLockRequest.getExpiry() );
+        	lockRequest.setHandle( withLockRequest.getHandle() );
+        	lockRequest.setLockAction( AllSomeType.ALL_LITERAL );
+        	
+        	for ( int i = 0; i < request.getQuery().size(); i++ ) {
+        		QueryType query = (QueryType) request.getQuery().get( i );
+        		
+        		LockType lock = WfsFactory.eINSTANCE.createLockType();
+            	lock.setFilter( query.getFilter() );
+            	lock.setHandle( query.getHandle() );
+            	
+            	//TODO: joins?
+            	lock.setTypeName( (QName) query.getTypeName().get( 0 ) );
+            	lockRequest.getLock().add( lock );
+        	}
+        	
+        	LockFeature lockFeature = new LockFeature( wfs, catalog );
+        	lockFeature.setFilterFactory( filterFactory );
+        	
+        	LockFeatureResponseType response = lockFeature.lockFeature( lockRequest );
+        	result.setLockId( response.getLockId() );
+        }
+        
+        result.setNumberOfFeatures( BigInteger.valueOf( count ) );
+        result.setTimeStamp( Calendar.getInstance());
        
+        return result;
+    }
+    
+    /**
+     * Get this query as a geotools Query.
+     * 
+     * <p>
+     * if maxFeatures is a not positive value DefaultQuery.DEFAULT_MAX will be
+     * used.
+     * </p>
+     * 
+     * <p>
+     * The method name is changed to toDataStoreQuery since this is a one way
+     * conversion.
+     * </p>
+     *
+     * @param maxFeatures number of features, or 0 for DefaultQuery.DEFAULT_MAX
+     *
+     * @return A Query for use with the FeatureSource interface
+     * 
+     */
+    public org.geotools.data.Query toDataQuery( QueryType query, int maxFeatures ) 
+    	throws WFSException {
+    	
+    	if ( maxFeatures <= 0  ) {
+    		maxFeatures = DefaultQuery.DEFAULT_MAX;
+    	}
+        
+    	String[] props = null;
+    	if ( !query.getPropertyName().isEmpty() ) {
+    		props = new String[ query.getPropertyName().size() ];
+    		for ( int p = 0; p < query.getPropertyName().size(); p++ ) {
+    			PropertyName propertyName = (PropertyName) query.getPropertyName().get( p );
+    			props[ p ] = propertyName.getPropertyName();
+    		}
+    	}
+
+    	Filter filter = (Filter) query.getFilter();
+        if ( filter == null ) {
+        	filter = Filter.NONE;
+        }
+        	
+        //only handle non-joins for now
+        QName typeName = (QName) query.getTypeName().get( 0 );
+        DefaultQuery dataQuery = new DefaultQuery(
+    		typeName.getLocalPart(), filter, maxFeatures, props, query.getHandle()
+		);
+
+        //handle reprojection
+        if ( query.getSrsName() != null ) {
+        	CoordinateReferenceSystem crs;
+			try {
+				crs = CRS.decode(  query.getSrsName() );
+			} 
+			catch ( Exception e ) {
+				String msg = "Unable to support srsName: " + query.getSrsName();
+				throw new WFSException( msg , e );
+			}
+			
+        	dataQuery.setCoordinateSystem( crs );
+        	dataQuery.setCoordinateSystemReproject( crs );
+        }
+        
+        //handle sorting
+        if ( query.getSortBy() != null ) {
+        	dataQuery.setSortBy( new SortBy[] { query.getSortBy() } );
+        }
+        
+        return dataQuery;
     }
     
     FeatureTypeInfo featureTypeInfo( QName name ) throws WFSException, IOException {
