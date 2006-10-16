@@ -15,7 +15,7 @@ import net.opengis.wfs.QueryType;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
-import org.geoserver.wfs.EMFUtils;
+import org.geoserver.ows.EMFUtils;
 import org.geoserver.wfs.WFSException;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.FilterFactory;
@@ -71,8 +71,14 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 		
 		//outputFormat
 		if ( !EMFUtils.isSet( eObject, "outputFormat") ) {
-			//set to wfs 1.0 default because the wfs 1.1 default is differnt
-			EMFUtils.set( eObject, "outputFormat", "GML2" );
+			//set the default
+			String version = (String) EMFUtils.get( eObject, "version" );
+			if ( version != null && version.startsWith( "1.0" ) ) {
+				EMFUtils.set( eObject, "outputFormat", "GML2" );	
+			}
+			else {
+				EMFUtils.set( eObject, "outputFormat", "text/xml; subtype=gml/3.1.1" );
+			}
 		}
 		
 		//typeName
