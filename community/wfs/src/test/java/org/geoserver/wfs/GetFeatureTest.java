@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WfsFactory;
@@ -38,7 +39,7 @@ public class GetFeatureTest extends WFSTestSupport {
 		);
 		request.getQuery().add( query );
 		
-		GetFeatureResults results = webFeatureService.getFeature( request );
+		FeatureCollectionType results = webFeatureService.getFeature( request );
 		
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		GML2FeatureProducer producer = new GML2FeatureProducer( wfs, catalog );

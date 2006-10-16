@@ -13,7 +13,7 @@ import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.ows.Operation;
 import org.geoserver.ows.Service;
 import org.geoserver.util.ReaderUtils;
-import org.geoserver.wfs.http.response.XmlSchemaEncoder;
+import org.geoserver.wfs.xml.v1_0_0.XmlSchemaEncoder;
 import org.w3c.dom.Element;
 
 public class DescribeFeatureTypeTest extends WFSTestSupport {

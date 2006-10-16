@@ -6,6 +6,7 @@ import java.io.StringReader;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.util.ReaderUtils;
 import org.geoserver.wfs.WFSTestSupport;
+import org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
