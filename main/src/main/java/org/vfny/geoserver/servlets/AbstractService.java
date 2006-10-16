@@ -890,7 +890,7 @@ public abstract class AbstractService extends HttpServlet
         String mimeType = se.getMimeType(geoServer);
 
         send(response,
-            se.getXmlResponse(geoServer.isVerboseExceptions(), request),
+            se.getXmlResponse(geoServer.isVerboseExceptions(), request, geoServer),
             mimeType);
         se.printStackTrace();
     }

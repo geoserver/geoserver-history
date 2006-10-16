@@ -64,7 +64,7 @@ public class Dispatcher extends AbstractController {
 		}
 		catch(ServiceException se) {
 			String tempResponse = 
-				se.getXmlResponse(geoServer.isVerboseExceptions(), httpRequest);
+				se.getXmlResponse(geoServer.isVerboseExceptions(), httpRequest, geoServer);
 
             httpResponse.setContentType(geoServer.getCharSet().toString());
             httpResponse.getWriter().write(tempResponse);

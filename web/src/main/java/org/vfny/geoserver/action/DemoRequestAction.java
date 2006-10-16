@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.form.DemoRequestForm;
+import org.vfny.geoserver.util.Requests;
 
 /**
  * <b>DemoRequestAction</b><br>
@@ -66,7 +67,7 @@ public class DemoRequestAction extends GeoServerAction
 
         File dir = demoForm.getDir();
         String demo = demoForm.getDemo();
-        String baseUrl = org.vfny.geoserver.util.Requests.getBaseUrl(request);
+        String baseUrl = Requests.getBaseUrl(request, getGeoServer());
         
         if (demo == null)
         	demo = "";
@@ -75,7 +76,7 @@ public class DemoRequestAction extends GeoServerAction
             demoForm.setBody("");
         }
 
-        String url = org.vfny.geoserver.util.Requests.getBaseUrl(request)
+        String url = Requests.getBaseUrl(request, getGeoServer())
             + "wfs";
         
         File file = new File(dir, demo);

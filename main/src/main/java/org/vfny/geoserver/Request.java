@@ -212,7 +212,7 @@ abstract public class Request {
     * @return The url that the client used to make the request.
     */
 	public String getBaseUrl(){
-		return Requests.getBaseUrl( getHttpServletRequest() );
+		return Requests.getBaseUrl( getHttpServletRequest(), serviceRef.getGeoServer() );
 	}
 	
 	/**
@@ -224,7 +224,7 @@ abstract public class Request {
 	 * @return the base url of the schemas.  Will be getBaseUrl() + data/capabilities.
 	 */
 	public String getSchemaBaseUrl(){
-		return Requests.getSchemaBaseUrl( getHttpServletRequest() );
+		return Requests.getSchemaBaseUrl( getHttpServletRequest(), serviceRef.getGeoServer() );
 	}
 	
 	/**

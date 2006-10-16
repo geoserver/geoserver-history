@@ -218,6 +218,14 @@ public class XMLConfigWriter {
                     + "for validation.");
                 cw.textTag("SchemaBaseUrl", g.getSchemaBaseUrl());
             }
+            
+            if ((g.getProxyBaseUrl() != null) && (g.getSchemaBaseUrl() != "")) {
+                cw.comment(
+                    "Define a base url for the geoserver application.\n" +
+                    "By default GeoServer uses the local one, but it may " +
+                            "be wrong if you're using a reverse proxy in front of Geoserver");
+                cw.textTag("ProxyBaseUrl", g.getProxyBaseUrl());
+            }
 
             if ((g.getAdminUserName() != null) && (g.getAdminUserName() != "")) {
                 cw.comment(

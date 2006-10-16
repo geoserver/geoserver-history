@@ -100,7 +100,7 @@ public class GlobalConfig {
      * JG - can we figure this out at runtime?
      * </p>
      */
-    private String baseUrl;
+    private String proxyBaseUrl;
 
     /**
      * Define a base url for the location of the wfs schemas.
@@ -159,7 +159,7 @@ public class GlobalConfig {
         verbose = true;
         numDecimals = 8;
         charSet = Charset.forName("UTF-8");
-        baseUrl = null;
+        proxyBaseUrl = null;
         schemaBaseUrl = null;
         contact = null;
         verboseExceptions = true;
@@ -197,6 +197,7 @@ public class GlobalConfig {
         verbose = g.isVerbose();
         numDecimals = g.getNumDecimals();
         charSet = g.getCharSet();
+        proxyBaseUrl = g.getProxyBaseUrl();
         schemaBaseUrl = g.getSchemaBaseUrl();
         loggingLevel = g.getLoggingLevel();
         adminUserName = g.getAdminUserName();
@@ -237,6 +238,7 @@ public class GlobalConfig {
         numDecimals = g.getNumDecimals();
         charSet = g.getCharSet();
         schemaBaseUrl = g.getSchemaBaseUrl();
+        proxyBaseUrl = g.getProxyBaseUrl();
         
         loggingLevel = g.getLoggingLevel();
 		verboseExceptions = g.isVerboseExceptions();
@@ -276,6 +278,7 @@ public class GlobalConfig {
         g.setContact((ContactDTO) contact.toDTO());
         g.setLoggingToFile(loggingToFile);
         g.setLogLocation(logLocation);
+        g.setProxyBaseUrl(proxyBaseUrl);
 
         return g;
     }
@@ -289,8 +292,8 @@ public class GlobalConfig {
      *
      * @return
      */
-    public String getBaseUrl() {
-        return baseUrl;
+    public String getProxyBaseUrl() {
+        return proxyBaseUrl;
     }
 
     /**
@@ -380,8 +383,8 @@ public class GlobalConfig {
      *
      * @param url
      */
-    public void setBaseUrl(String url) {
-        baseUrl = url;
+    public void setProxyBaseUrl(String url) {
+        proxyBaseUrl = url;
     }
 
     /**

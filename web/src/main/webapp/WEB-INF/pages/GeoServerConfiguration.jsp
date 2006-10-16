@@ -60,18 +60,18 @@
 	  </td>
 	</tr>
 	
-	<!--tr>
+	<tr>
 	  <td class="label">
-		<span class="help" title="<bean:message key="help.global.baseURL"/>">
-			<bean:message key="label.baseURL"/>:
+		<span class="help" title="<bean:message key="help.global.proxyBaseURL"/>">
+			<bean:message key="label.proxyBaseURL"/>:
 		</span>
       </td>
 	  <td class="datum">
-		<html:text property="baseURL" size="60"/>
+		<html:text property="proxyBaseUrl" size="60"/>
 	  </td>
 	</tr>
 
-	<tr>
+	<!--tr>
 	  <td class="label">
 		<span class="help" title="<bean:message key="help.global.schemaBaseURL"/>">
 			<bean:message key="label.schemaBaseURL"/>:

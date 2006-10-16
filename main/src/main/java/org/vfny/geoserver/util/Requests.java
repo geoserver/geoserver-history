@@ -7,6 +7,7 @@ package org.vfny.geoserver.util;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 
 /**
@@ -110,21 +111,41 @@ public final class Requests {
 //    }
 
     /**
-     * Get base url used - it is not any more assumed to be http://server:port/geoserver/
+     * Get base url used - it is not any more assumed to be
+     * http://server:port/geoserver/
      * 
-     * Removed the hardcoded "http://" and replaced it with httpServletRequest.getScheme() because
-     * the https case was not being handled.
+     * Removed the hardcoded "http://" and replaced it with
+     * httpServletRequest.getScheme() because the https case was not being
+     * handled.
+     * 
      * @param httpServletRequest
      * @return http://server:port/path-defined-context/
      */
-    public static String getBaseUrl(HttpServletRequest httpServletRequest) {
-	String url = httpServletRequest.getSession().getServletContext()
-	    .getInitParameter(PROXY_PARAM);
+    public static String getBaseUrl(HttpServletRequest httpServletRequest,
+            GeoServer geoserver) {
+        // try with the web interface configuration, if it fails, look into
+        // web.xml just to keep compatibility (should be removed next version)
+        // and finally, if nothing is found, give up and return the default base URL
+        String url = null;
+        if(geoserver != null)
+            url = geoserver.getProxyBaseUrl();
         if (url == null || url.trim().length() == 0) {
-    	url = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName() + ":"
-        + httpServletRequest.getServerPort() + httpServletRequest.getContextPath() +"/";
-	}
-	return url;
+            if(httpServletRequest != null)
+                url = httpServletRequest.getSession().getServletContext()
+                    .getInitParameter(PROXY_PARAM);
+            if (url == null || url.trim().length() == 0) {
+                url = httpServletRequest.getScheme() + "://"
+                        + httpServletRequest.getServerName() + ":"
+                        + httpServletRequest.getServerPort()
+                        + httpServletRequest.getContextPath() + "/";
+            }
+        }
+        
+        // take care of incompletely setup path
+        if(!url.endsWith("/"))
+            url = url + "/";
+        
+        return url;
     }
     
     /**
@@ -133,8 +154,8 @@ public final class Requests {
      * @param httpServletRequest
      * @return http://server:port/path-defined-context/data/capabilities
      */
-    public static String getSchemaBaseUrl(HttpServletRequest httpServletRequest) {
-    	return getBaseUrl(httpServletRequest) + "schemas/";
+    public static String getSchemaBaseUrl(HttpServletRequest httpServletRequest, GeoServer geoserver) {
+    	return getBaseUrl(httpServletRequest, geoserver) + "schemas/";
     }
     
     /**

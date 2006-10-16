@@ -131,9 +131,9 @@ public class WMSContentForm extends ActionForm {
         	String[] baseMapTitleArray = (String[]) config.getBaseMapLayers().keySet().toArray(new String[0]);
 	        String[] baseMapLayersArray = (String[]) config.getBaseMapLayers().values().toArray(new String[0]);
 	        String[] baseMapStylesArray = (String[]) config.getBaseMapStyles().values().toArray(new String[0]);
-	        baseMapTitle = baseMapTitleArray[0];
-	        baseMapLayers = baseMapLayersArray[0];
-	        baseMapStyles = baseMapStylesArray[0];
+	        baseMapTitle = baseMapTitleArray.length > 0 ? baseMapTitleArray[0]: "";
+	        baseMapLayers = baseMapLayersArray.length > 0 ? baseMapLayersArray[0]: "";
+	        baseMapStyles = baseMapStylesArray.length > 0 ? baseMapStylesArray[0]: "";
         }
         
     }

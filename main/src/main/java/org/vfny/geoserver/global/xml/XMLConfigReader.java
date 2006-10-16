@@ -466,6 +466,15 @@ public class XMLConfigReader {
 			    //on the url passed in.
 			    geoServer.setSchemaBaseUrl(root.toString() + "/data/capabilities/");
 			}
+            
+            String proxyBaseUrl = ReaderUtils.getChildText(globalElem,
+                    "ProxyBaseUrl");
+
+            if (proxyBaseUrl != null) {
+                geoServer.setProxyBaseUrl(proxyBaseUrl);
+            } else {
+                geoServer.setSchemaBaseUrl(null);
+            }
 
 			String adminUserName = ReaderUtils.getChildText(globalElem,
 			        "adminUserName");
@@ -562,7 +571,7 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException When an error occurs.
      *
-     * @see GlobalData#getBaseUrl()
+     * @see GlobalData#getProxyBaseUrl()
      */
     protected void loadWFS(Element wfsElement) throws ConfigurationException {
         wfs = new WFSDTO();
@@ -651,7 +660,7 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException When an error occurs.
      *
-     * @see GlobalData#getBaseUrl()
+     * @see GlobalData#getProxyBaseUrl()
      */
     protected void loadWMS(Element wmsElement) throws ConfigurationException {
         wms = new WMSDTO();
