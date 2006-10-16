@@ -345,12 +345,18 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 }
                 else {
                 	//FULL MONTY
-                	Collection featureProducers = GeoServerExtensions.extensions( FeatureProducer.class );
+                	Collection featureProducers = 
+                		GeoServerExtensions.extensions( FeatureProducer.class );
+                	
                 	for ( Iterator i = featureProducers.iterator(); i.hasNext(); ) {
                 		FeatureProducer producer = (FeatureProducer) i.next();
-                		String format = producer.getOutputFormat();
+                		if ( producer.getOutputFormats() != null ) {
+                			for ( Iterator f = producer.getOutputFormats().iterator(); f.hasNext(); ) {
+                				String format = (String) f.next(); 
+                				element ( format, null );
+                			}
+                		}
                 		
-                		element ( format, null );
                 	}
                 }
 
