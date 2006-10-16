@@ -2878,7 +2878,7 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 
 		initEClass(queryTypeEClass, QueryType.class, "QueryType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getQueryType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getQueryType_PropertyName(), theXMLTypePackage.getString(), "propertyName", null, 0, 1, QueryType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEAttribute(getQueryType_PropertyName(), this.getFormatType(), "propertyName", null, 0, -1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getQueryType_XlinkPropertyName(), this.getXlinkPropertyNameType(), null, "xlinkPropertyName", null, 0, -1, QueryType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEAttribute(getQueryType_Function(), this.getFunction(), "function", null, 0, -1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getQueryType_Filter(), this.getFilter(), "filter", null, 0, 1, QueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3894,15 +3894,6 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 		   new String[] {
 			 "kind", "group",
 			 "name", "group:0"
-		   });		
-		addAnnotation
-		  (getQueryType_PropertyName(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "PropertyName",
-			 "namespace", "##targetNamespace",
-			 "group", "#group:0"
 		   });			
 		addAnnotation
 		  (getQueryType_XlinkPropertyName(), 

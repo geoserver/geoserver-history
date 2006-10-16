@@ -94,21 +94,9 @@ public interface QueryType extends EObject{
 	 * @return the value of the '<em>Property Name</em>' attribute.
 	 * @see #setPropertyName(String)
 	 * @see net.opengis.wfs.WFSPackage#getQueryType_PropertyName()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='PropertyName' namespace='##targetNamespace' group='#group:0'"
-	 * @generated
+	 * @model type="java.lang.String"
 	 */
-	String getPropertyName();
-
-	/**
-	 * Sets the value of the '{@link net.opengis.wfs.QueryType#getPropertyName <em>Property Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Property Name</em>' attribute.
-	 * @see #getPropertyName()
-	 * @generated
-	 */
-	void setPropertyName(String value);
+	EList getPropertyName();
 
 	/**
 	 * Returns the value of the '<em><b>Xlink Property Name</b></em>' containment reference list.

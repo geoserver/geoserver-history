@@ -71,14 +71,14 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	protected FeatureMap group = null;
 
 	/**
-	 * The default value of the '{@link #getPropertyName() <em>Property Name</em>}' attribute.
+	 * The cached value of the '{@link #getPropertyName() <em>Property Name</em>}' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getPropertyName()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String PROPERTY_NAME_EDEFAULT = null;
+	protected EList propertyName = null;
 
 	/**
 	 * The cached value of the '{@link #getFunction() <em>Function</em>}' attribute list.
@@ -245,17 +245,11 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getPropertyName() {
-		return (String)getGroup().get(WFSPackage.eINSTANCE.getQueryType_PropertyName(), true);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setPropertyName(String newPropertyName) {
-		((FeatureMap.Internal)getGroup()).set(WFSPackage.eINSTANCE.getQueryType_PropertyName(), newPropertyName);
+	public EList getPropertyName() {
+		if (propertyName == null) {
+			propertyName = new EDataTypeUniqueEList(String.class, this, WFSPackage.QUERY_TYPE__PROPERTY_NAME);
+		}
+		return propertyName;
 	}
 
 	/**
@@ -467,7 +461,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				getGroup().addAll((Collection)newValue);
 				return;
 			case WFSPackage.QUERY_TYPE__PROPERTY_NAME:
-				setPropertyName((String)newValue);
+				getPropertyName().clear();
+				getPropertyName().addAll((Collection)newValue);
 				return;
 			case WFSPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
 				getXlinkPropertyName().clear();
@@ -510,7 +505,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				getGroup().clear();
 				return;
 			case WFSPackage.QUERY_TYPE__PROPERTY_NAME:
-				setPropertyName(PROPERTY_NAME_EDEFAULT);
+				getPropertyName().clear();
 				return;
 			case WFSPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
 				getXlinkPropertyName().clear();
@@ -550,7 +545,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 			case WFSPackage.QUERY_TYPE__GROUP:
 				return group != null && !group.isEmpty();
 			case WFSPackage.QUERY_TYPE__PROPERTY_NAME:
-				return PROPERTY_NAME_EDEFAULT == null ? getPropertyName() != null : !PROPERTY_NAME_EDEFAULT.equals(getPropertyName());
+				return propertyName != null && !propertyName.isEmpty();
 			case WFSPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
 				return !getXlinkPropertyName().isEmpty();
 			case WFSPackage.QUERY_TYPE__FUNCTION:
@@ -582,6 +577,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (group: ");
 		result.append(group);
+		result.append(", propertyName: ");
+		result.append(propertyName);
 		result.append(", function: ");
 		result.append(function);
 		result.append(", filter: ");

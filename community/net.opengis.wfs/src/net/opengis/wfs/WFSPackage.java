@@ -1787,7 +1787,7 @@ public interface WFSPackage extends EPackage{
 	int QUERY_TYPE__GROUP = 0;
 
 	/**
-	 * The feature id for the '<em><b>Property Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Property Name</b></em>' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -4045,10 +4045,10 @@ public interface WFSPackage extends EPackage{
 	EAttribute getQueryType_Group();
 
 	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.QueryType#getPropertyName <em>Property Name</em>}'.
+	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.QueryType#getPropertyName <em>Property Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Property Name</em>'.
+	 * @return the meta object for the attribute list '<em>Property Name</em>'.
 	 * @see net.opengis.wfs.QueryType#getPropertyName()
 	 * @see #getQueryType()
 	 * @generated
