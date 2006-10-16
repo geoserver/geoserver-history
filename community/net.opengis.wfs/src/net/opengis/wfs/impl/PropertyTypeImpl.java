@@ -58,14 +58,24 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	protected QName name = NAME_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getValue() <em>Value</em>}' containment reference.
+	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected EObject value = null;
+	protected static final Object VALUE_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getValue()
+	 * @generated
+	 * @ordered
+	 */
+	protected Object value = VALUE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -111,7 +121,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EObject getValue() {
+	public Object getValue() {
 		return value;
 	}
 
@@ -120,50 +130,11 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetValue(EObject newValue, NotificationChain msgs) {
-		EObject oldValue = value;
+	public void setValue(Object newValue) {
+		Object oldValue = value;
 		value = newValue;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WFSPackage.PROPERTY_TYPE__VALUE, oldValue, newValue);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setValue(EObject newValue) {
-		if (newValue != value) {
-			NotificationChain msgs = null;
-			if (value != null)
-				msgs = ((InternalEObject)value).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WFSPackage.PROPERTY_TYPE__VALUE, null, msgs);
-			if (newValue != null)
-				msgs = ((InternalEObject)newValue).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WFSPackage.PROPERTY_TYPE__VALUE, null, msgs);
-			msgs = basicSetValue(newValue, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.PROPERTY_TYPE__VALUE, newValue, newValue));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.PROPERTY_TYPE__VALUE:
-					return basicSetValue(null, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
-		}
-		return eBasicSetContainer(null, featureID, msgs);
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.PROPERTY_TYPE__VALUE, oldValue, value));
 	}
 
 	/**
@@ -192,7 +163,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 				setName((QName)newValue);
 				return;
 			case WFSPackage.PROPERTY_TYPE__VALUE:
-				setValue((EObject)newValue);
+				setValue((Object)newValue);
 				return;
 		}
 		eDynamicSet(eFeature, newValue);
@@ -209,7 +180,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 				setName(NAME_EDEFAULT);
 				return;
 			case WFSPackage.PROPERTY_TYPE__VALUE:
-				setValue((EObject)null);
+				setValue(VALUE_EDEFAULT);
 				return;
 		}
 		eDynamicUnset(eFeature);
@@ -225,7 +196,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 			case WFSPackage.PROPERTY_TYPE__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case WFSPackage.PROPERTY_TYPE__VALUE:
-				return value != null;
+				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
 		}
 		return eDynamicIsSet(eFeature);
 	}
@@ -241,6 +212,8 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (name: ");
 		result.append(name);
+		result.append(", value: ");
+		result.append(value);
 		result.append(')');
 		return result.toString();
 	}

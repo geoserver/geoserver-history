@@ -67,20 +67,18 @@ public interface PropertyType extends EObject{
 	 * @return the value of the '<em>Value</em>' containment reference.
 	 * @see #setValue(EObject)
 	 * @see net.opengis.wfs.WFSPackage#getPropertyType_Value()
-	 * @model containment="true" resolveProxies="false"
-	 *        extendedMetaData="kind='element' name='Value' namespace='##targetNamespace'"
-	 * @generated
+	 * @model 
 	 */
-	EObject getValue();
+	Object getValue();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.wfs.PropertyType#getValue <em>Value</em>}' containment reference.
+	 * Sets the value of the '{@link net.opengis.wfs.PropertyType#getValue <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Value</em>' containment reference.
+	 * @param value the new value of the '<em>Value</em>' attribute.
 	 * @see #getValue()
 	 * @generated
 	 */
-	void setValue(EObject value);
+	void setValue(Object value);
 
 } // PropertyType
