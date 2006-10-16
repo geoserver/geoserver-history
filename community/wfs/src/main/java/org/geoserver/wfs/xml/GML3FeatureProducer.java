@@ -1,5 +1,9 @@
 package org.geoserver.wfs.xml;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.http.util.ResponseUtils;
@@ -13,8 +17,11 @@ public class GML3FeatureProducer extends GML2FeatureProducer {
 		super(wfs, catalog);
 	}
 
-	public boolean canProduce(String outputFormat) {
-		return "text/xml; subtype=gml/3.1.1".equals( outputFormat );
+	public Set getOutputFormats() {
+		return new HashSet( 
+			Arrays.asList( new String[] { "text/xml; subtype=gml/3.1.1" } )
+		);
+				
 	}
 	
 	protected FeatureTransformer createTransformer() {
