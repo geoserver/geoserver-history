@@ -7,7 +7,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.ResultTypeType;
 
 import org.geoserver.ows.Operation;
 import org.geoserver.ows.ServiceException;
@@ -15,21 +17,22 @@ import org.geoserver.ows.http.OWSUtils;
 import org.geoserver.ows.http.Response;
 import org.geoserver.wfs.FeatureProducer;
 import org.geoserver.wfs.GetFeature;
-import org.geoserver.wfs.GetFeatureResults;
+
 import org.geoserver.wfs.WFSException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class GetFeatureResultsEncoder extends Response 
+public class FeatureCollectionTypeResponse extends Response 
 	implements ApplicationContextAware {
 
 	/** 
 	 * Application context for loading feature producers 
 	 */
 	ApplicationContext context;
-	public GetFeatureResultsEncoder( ) {
-		super( GetFeatureResults.class );
+	
+	public FeatureCollectionTypeResponse( ) {
+		super( FeatureCollectionType.class );
 	}
 
 	public void setApplicationContext( ApplicationContext context ) throws BeansException {
@@ -44,7 +47,13 @@ public class GetFeatureResultsEncoder extends Response
 			
 	}
 	
-	public String getMimeType( Operation operation) throws ServiceException {
+	public String getMimeType( Operation operation ) throws ServiceException {
+		if ( resultType( operation ) == ResultTypeType.HITS_LITERAL ) {
+			//hits are always just xml
+			return "text/xml";
+		}
+		
+		//producer will determine the mime type
 		String outputFormat = outputFormat( operation );
 		return lookupProducer( outputFormat ).getMimeType();
 	}
@@ -52,15 +61,27 @@ public class GetFeatureResultsEncoder extends Response
 	public void write( Object value, OutputStream output, Operation operation )
 			throws IOException, ServiceException {
 		
+		if ( resultType( operation ) == ResultTypeType.HITS_LITERAL ) {
+			
+		}
+		
+		//look up the producer and go
 		String outputFormat = outputFormat( operation );
 		FeatureProducer producer = lookupProducer( outputFormat );
-		producer.produce( outputFormat, (GetFeatureResults) value, output );
+		producer.produce( outputFormat, (FeatureCollectionType) value, output );
 		
 	}
 
+	protected ResultTypeType resultType ( Operation operation ) {
+		GetFeatureType request = 
+			(GetFeatureType) OWSUtils.parameter( operation.getParameters(), GetFeatureType.class );
+		return request.getResultType();
+	}
+	
 	protected String outputFormat( Operation operation ) throws WFSException {
 		GetFeatureType request = 
 			(GetFeatureType) OWSUtils.parameter( operation.getParameters(), GetFeatureType.class );
+		
 		return request.getOutputFormat();
 	}
 	
@@ -72,8 +93,10 @@ public class GetFeatureResultsEncoder extends Response
 		for ( Iterator p = producers.iterator(); p.hasNext(); ) {
 			FeatureProducer producer = (FeatureProducer) p.next();
 			
-			if ( producer.canProduce( outputFormat ) ) 
+			if ( producer.getOutputFormats() != null && 
+					producer.getOutputFormats().contains( outputFormat ) ) {
 				matches.add( producer );
+			}
 		}
 		
 		if ( matches.isEmpty() ) {
