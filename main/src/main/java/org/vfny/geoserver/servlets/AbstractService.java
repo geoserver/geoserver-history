@@ -293,8 +293,7 @@ public abstract class AbstractService extends HttpServlet
         Request serviceRequest = null;
 
         if (!isServiceEnabled(request)) {
-            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-
+            sendDisabledServiceError(response);
             return;
         }
 
@@ -333,6 +332,17 @@ public abstract class AbstractService extends HttpServlet
 
         doService(request, response, serviceRequest);
     }
+
+    /**
+     * Sends the standard disabled service error message (a 503 error followed by an english description).
+     * @param response
+     * @throws IOException
+     */
+	protected void sendDisabledServiceError(HttpServletResponse response) throws IOException {
+		response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, 
+				getService() + " service is not enabled. " +
+						"You can enable it in the web admin tool.");
+	}
 
     /**
      * Performs the post method.  Simply passes itself on to the three argument
@@ -376,8 +386,7 @@ public abstract class AbstractService extends HttpServlet
 
         //TODO: This isn't a proper ogc service response.
         if (!isServiceEnabled(request)) {
-            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-
+            sendDisabledServiceError(response);
             return;
         }
 
@@ -471,12 +480,11 @@ public abstract class AbstractService extends HttpServlet
         LOGGER.info("handling request: " + serviceRequest);
 
         if (!isServiceEnabled(request)) {
-            try {
-                response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-            } catch (IOException e) {
-                // do nothing
-            }
-
+        	try {
+        		sendDisabledServiceError(response);
+        	} catch(IOException e) {
+        		LOGGER.log(Level.WARNING, "Error writing service unavailable response", e);
+        	}
             return;
         }
 

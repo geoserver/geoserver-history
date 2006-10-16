@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -223,7 +224,7 @@ public class TestWfsPost extends HttpServlet {
 					out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 					out.println("<servlet-exception>");
 					out.println("HTTP response: " + acon.getResponseCode()
-							+ "\n" + acon.getResponseMessage());
+							+ "\n" + URLDecoder.decode(acon.getResponseMessage(), "UTF-8"));
 					out.println("</servlet-exception>");
 					out.close();
 				} else {

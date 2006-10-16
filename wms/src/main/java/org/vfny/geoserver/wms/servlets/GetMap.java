@@ -49,6 +49,8 @@ public class GetMap extends WMService {
     		super("GetMap",wms);
     }
        
+    // TODO: check is this override adds any value compared to the superclass one,
+    // remove otherwise
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
     	
@@ -64,9 +66,8 @@ public class GetMap extends WMService {
         //DJB: added post support
         Request serviceRequest = null;
 //        this.curRequest = request;
-
         if (!isServiceEnabled(request)) {
-            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            sendDisabledServiceError(response);
             return;
         }
 
