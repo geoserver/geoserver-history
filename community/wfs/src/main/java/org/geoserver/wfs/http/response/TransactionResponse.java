@@ -8,7 +8,7 @@ import java.io.Writer;
 import java.util.Iterator;
 
 import net.opengis.wfs.ActionType;
-import net.opengis.wfs.InsertResultType;
+import net.opengis.wfs.InsertResultsType;
 import net.opengis.wfs.InsertedFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionResultsType;
@@ -74,7 +74,7 @@ public class TransactionResponse extends Response {
         writer.write(baseUrl);
         writer.write("\">");
 
-        InsertResultType insertResults = response.getInsertResults();
+        InsertResultsType insertResults = response.getInsertResults();
         if ( insertResults != null ) {
         	for ( Iterator i = insertResults.getFeature().iterator(); i.hasNext(); ) {
     			InsertedFeatureType insertedFeature = (InsertedFeatureType) i.next();

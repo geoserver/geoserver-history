@@ -20,20 +20,21 @@ import net.opengis.wfs.ActionType;
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.InsertElementType;
-import net.opengis.wfs.InsertResultType;
+
 import net.opengis.wfs.InsertedFeatureType;
 import net.opengis.wfs.NativeType;
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.UpdateElementType;
-import net.opengis.wfs.WfsFactory;
+import net.opengis.wfs.WFSFactory;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.DataStoreInfo;
 import org.geoserver.data.feature.FeatureTypeInfo;
+import org.geoserver.ows.EMFUtils;
 import org.geoserver.ows.ServiceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
@@ -331,10 +332,10 @@ public class Transaction {
         }
 
         //result
-        TransactionResponseType result = WfsFactory.eINSTANCE.createTransactionResponseType();
-        result.setTransactionResults( WfsFactory.eINSTANCE.createTransactionResultsType() );
+        TransactionResponseType result = WFSFactory.eINSTANCE.createTransactionResponseType();
+        result.setTransactionResults( WFSFactory.eINSTANCE.createTransactionResultsType() );
         result.getTransactionResults().setHandle( request.getHandle() );
-        result.setTransactionSummary( WfsFactory.eINSTANCE.createTransactionSummaryType() );
+        result.setTransactionSummary( WFSFactory.eINSTANCE.createTransactionSummaryType() );
         
         //operatinos counters
         long deleted = 0;
@@ -489,14 +490,12 @@ public class Transaction {
 			            FeatureType schema = store.getSchema();
 			            
 			            //they either specified a feature collection, or a list of features
-			            FeatureCollection collection = insert.getFeatureCollection();
-			            if ( collection == null ) {
-			            	if ( !insert.getFeature().isEmpty() ) {
-			            		collection = 
-			            			new DefaultFeatureCollection( null, schema ) {};
-			            		collection.addAll( insert.getFeature() );
-			            	}
-			            }
+			            FeatureCollection collection = null;
+			            if ( !insert.getFeature().isEmpty() ) {
+		            		collection = new DefaultFeatureCollection( null, schema ) {};
+		            		collection.addAll( insert.getFeature() );
+		            	}
+			            
 			            
 			            Set fids = null;
 			            if( collection != null ) {
@@ -526,12 +525,12 @@ public class Transaction {
 			           
 			            //set the result
 			            InsertedFeatureType insertedFeature =
-			            	WfsFactory.eINSTANCE.createInsertedFeatureType();
+			            	WFSFactory.eINSTANCE.createInsertedFeatureType();
 			            insertedFeature.setHandle( insert.getHandle() );
 			            insertedFeature.getFeatureId().add( filterFactory.featureId( fids ) );
 			            
 			            if ( result.getInsertResults() == null ) {
-			            	result.setInsertResults( WfsFactory.eINSTANCE.createInsertResultType() );
+			            	result.setInsertResults( WFSFactory.eINSTANCE.createInsertResultsType() );
 			            }
 			            result.getInsertResults().getFeature().add( insertedFeature );
 			          
@@ -636,7 +635,7 @@ public class Transaction {
 		} 
         catch (WFSTransactionException e) {
         	//transaction failed, rollback
-        	ActionType action = WfsFactory.eINSTANCE.createActionType();
+        	ActionType action = WFSFactory.eINSTANCE.createActionType();
         	action.setCode( e.getCode() );
         	action.setLocator( e.getLocator() );
         	action.setMessage( e.getMessage() );

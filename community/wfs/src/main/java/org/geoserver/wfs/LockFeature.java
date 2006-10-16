@@ -16,7 +16,7 @@ import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
-import net.opengis.wfs.WfsFactory;
+import net.opengis.wfs.WFSFactory;
 
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.DataStoreInfo;
@@ -105,10 +105,10 @@ public class LockFeature {
 				throw new WFSException( "Request contains no locks." );
 			}
 
-			LockFeatureResponseType response = WfsFactory.eINSTANCE.createLockFeatureResponseType();
+			LockFeatureResponseType response = WFSFactory.eINSTANCE.createLockFeatureResponseType();
 			response.setLockId( fLock.getAuthorization() );
-			response.setFeaturesLocked( WfsFactory.eINSTANCE.createFeaturesLockedType() );
-			response.setFeaturesNotLocked( WfsFactory.eINSTANCE.createFeaturesNotLockedType() );
+			response.setFeaturesLocked( WFSFactory.eINSTANCE.createFeaturesLockedType() );
+			response.setFeaturesNotLocked( WFSFactory.eINSTANCE.createFeaturesNotLockedType() );
 			
 			for (int i = 0, n = locks.size(); i < n; i++) {
 				LockType lock = (LockType) locks.get( i );

@@ -22,12 +22,13 @@ import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.QueryType;
-import net.opengis.wfs.WfsFactory;
+import net.opengis.wfs.WFSFactory;
 
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.AttributeTypeInfo;
 import org.geoserver.data.feature.FeatureTypeInfo;
+import org.geoserver.ows.EMFUtils;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
@@ -134,7 +135,7 @@ public class GetFeature {
         
         
         
-        FeatureCollectionType result = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        FeatureCollectionType result = WFSFactory.eINSTANCE.createFeatureCollectionType();
         int count = 0;	//should probably be long
         try {
         	for ( int i = 0; i < request.getQuery().size() && ( count <= maxFeatures ); i++ ) {
@@ -156,9 +157,9 @@ public class GetFeature {
                 List propNames = query.getPropertyName(); 
                 
                 for (Iterator iter = propNames.iterator(); iter.hasNext();) {
-                	PropertyName propName = (PropertyName) iter.next();
+                	String propName = (String) iter.next();
                 	
-                	if ( !attNames.contains( propName.getPropertyName() ) ) {
+                	if ( !attNames.contains( propName ) ) {
                         String mesg = "Requested property: " + propName + " is " + "not available " +
                         		"for " + query.getTypeName() + ".  " + "The possible propertyName " +
                 				"values are: " + attNames;
@@ -178,7 +179,7 @@ public class GetFeature {
                         if (( (ati.getMinOccurs() > 0) && (ati.getMaxOccurs() != 0) )
                                 || propNames.contains(ati.getName())) {
                         	
-                        	tmp.add( filterFactory.property( ati.getName() ) );
+                        	tmp.add(  ati.getName() );
                             
                         }
                     }
@@ -238,7 +239,7 @@ public class GetFeature {
         if ( request instanceof GetFeatureWithLockType ) {
         	GetFeatureWithLockType withLockRequest = (GetFeatureWithLockType) request;
         	
-        	LockFeatureType lockRequest = WfsFactory.eINSTANCE.createLockFeatureType();
+        	LockFeatureType lockRequest = WFSFactory.eINSTANCE.createLockFeatureType();
         	lockRequest.setExpiry( withLockRequest.getExpiry() );
         	lockRequest.setHandle( withLockRequest.getHandle() );
         	lockRequest.setLockAction( AllSomeType.ALL_LITERAL );
@@ -246,7 +247,7 @@ public class GetFeature {
         	for ( int i = 0; i < request.getQuery().size(); i++ ) {
         		QueryType query = (QueryType) request.getQuery().get( i );
         		
-        		LockType lock = WfsFactory.eINSTANCE.createLockType();
+        		LockType lock = WFSFactory.eINSTANCE.createLockType();
             	lock.setFilter( query.getFilter() );
             	lock.setHandle( query.getHandle() );
             	
@@ -297,8 +298,8 @@ public class GetFeature {
     	if ( !query.getPropertyName().isEmpty() ) {
     		props = new String[ query.getPropertyName().size() ];
     		for ( int p = 0; p < query.getPropertyName().size(); p++ ) {
-    			PropertyName propertyName = (PropertyName) query.getPropertyName().get( p );
-    			props[ p ] = propertyName.getPropertyName();
+    			String propertyName = (String) query.getPropertyName().get( p ); 
+    			props[ p ] = propertyName;
     		}
     	}
 
@@ -317,7 +318,7 @@ public class GetFeature {
         if ( query.getSrsName() != null ) {
         	CoordinateReferenceSystem crs;
 			try {
-				crs = CRS.decode(  query.getSrsName() );
+				crs = CRS.decode(  query.getSrsName().toString() );
 			} 
 			catch ( Exception e ) {
 				String msg = "Unable to support srsName: " + query.getSrsName();
