@@ -134,13 +134,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//GetFeatureType/traverseXlinkExpiry"/>
     </genClasses>
     <genClasses ecoreClass="wfs.ecore#//GetFeatureWithLockType">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference wfs.ecore#//GetFeatureWithLockType/query"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//GetFeatureWithLockType/expiry"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//GetFeatureWithLockType/maxFeatures"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//GetFeatureWithLockType/outputFormat"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//GetFeatureWithLockType/resultType"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//GetFeatureWithLockType/traverseXlinkDepth"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//GetFeatureWithLockType/traverseXlinkExpiry"/>
     </genClasses>
     <genClasses ecoreClass="wfs.ecore#//GetGmlObjectType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//GetGmlObjectType/gmlObjectId"/>

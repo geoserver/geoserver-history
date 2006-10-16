@@ -1271,62 +1271,8 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getGetFeatureWithLockType_Query() {
-		return (EReference)getFeatureWithLockTypeEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EAttribute getGetFeatureWithLockType_Expiry() {
-		return (EAttribute)getFeatureWithLockTypeEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getGetFeatureWithLockType_MaxFeatures() {
-		return (EAttribute)getFeatureWithLockTypeEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getGetFeatureWithLockType_OutputFormat() {
-		return (EAttribute)getFeatureWithLockTypeEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getGetFeatureWithLockType_ResultType() {
-		return (EAttribute)getFeatureWithLockTypeEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getGetFeatureWithLockType_TraverseXlinkDepth() {
-		return (EAttribute)getFeatureWithLockTypeEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getGetFeatureWithLockType_TraverseXlinkExpiry() {
-		return (EAttribute)getFeatureWithLockTypeEClass.getEStructuralFeatures().get(6);
+		return (EAttribute)getFeatureWithLockTypeEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -2518,13 +2464,7 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 		createEAttribute(getFeatureTypeEClass, GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY);
 
 		getFeatureWithLockTypeEClass = createEClass(GET_FEATURE_WITH_LOCK_TYPE);
-		createEReference(getFeatureWithLockTypeEClass, GET_FEATURE_WITH_LOCK_TYPE__QUERY);
 		createEAttribute(getFeatureWithLockTypeEClass, GET_FEATURE_WITH_LOCK_TYPE__EXPIRY);
-		createEAttribute(getFeatureWithLockTypeEClass, GET_FEATURE_WITH_LOCK_TYPE__MAX_FEATURES);
-		createEAttribute(getFeatureWithLockTypeEClass, GET_FEATURE_WITH_LOCK_TYPE__OUTPUT_FORMAT);
-		createEAttribute(getFeatureWithLockTypeEClass, GET_FEATURE_WITH_LOCK_TYPE__RESULT_TYPE);
-		createEAttribute(getFeatureWithLockTypeEClass, GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_DEPTH);
-		createEAttribute(getFeatureWithLockTypeEClass, GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_EXPIRY);
 
 		getGmlObjectTypeEClass = createEClass(GET_GML_OBJECT_TYPE);
 		createEAttribute(getGmlObjectTypeEClass, GET_GML_OBJECT_TYPE__GML_OBJECT_ID);
@@ -2704,7 +2644,7 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 		describeFeatureTypeTypeEClass.getESuperTypes().add(this.getBaseRequestType());
 		getCapabilitiesTypeEClass.getESuperTypes().add(theOWSPackage.getGetCapabilitiesType());
 		getFeatureTypeEClass.getESuperTypes().add(this.getBaseRequestType());
-		getFeatureWithLockTypeEClass.getESuperTypes().add(this.getBaseRequestType());
+		getFeatureWithLockTypeEClass.getESuperTypes().add(this.getGetFeatureType());
 		getGmlObjectTypeEClass.getESuperTypes().add(this.getBaseRequestType());
 		lockFeatureTypeEClass.getESuperTypes().add(this.getBaseRequestType());
 		transactionTypeEClass.getESuperTypes().add(this.getBaseRequestType());
@@ -2801,13 +2741,7 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 		initEAttribute(getGetFeatureType_TraverseXlinkExpiry(), theXMLTypePackage.getPositiveInteger(), "traverseXlinkExpiry", null, 0, 1, GetFeatureType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(getFeatureWithLockTypeEClass, GetFeatureWithLockType.class, "GetFeatureWithLockType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getGetFeatureWithLockType_Query(), this.getQueryType(), null, "query", null, 1, -1, GetFeatureWithLockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getGetFeatureWithLockType_Expiry(), theXMLTypePackage.getPositiveInteger(), "expiry", "5", 0, 1, GetFeatureWithLockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getGetFeatureWithLockType_MaxFeatures(), theXMLTypePackage.getPositiveInteger(), "maxFeatures", null, 0, 1, GetFeatureWithLockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getGetFeatureWithLockType_OutputFormat(), theXMLTypePackage.getString(), "outputFormat", "text/xml; subtype=gml/3.1.1", 0, 1, GetFeatureWithLockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getGetFeatureWithLockType_ResultType(), this.getResultTypeType(), "resultType", "results", 0, 1, GetFeatureWithLockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getGetFeatureWithLockType_TraverseXlinkDepth(), theXMLTypePackage.getString(), "traverseXlinkDepth", null, 0, 1, GetFeatureWithLockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getGetFeatureWithLockType_TraverseXlinkExpiry(), theXMLTypePackage.getPositiveInteger(), "traverseXlinkExpiry", null, 0, 1, GetFeatureWithLockType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(getGmlObjectTypeEClass, GetGmlObjectType.class, "GetGmlObjectType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getGetGmlObjectType_GmlObjectId(), theXMLTypePackage.getAnySimpleType(), "gmlObjectId", null, 1, 1, GetGmlObjectType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3502,54 +3436,11 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 			 "kind", "elementOnly"
 		   });			
 		addAnnotation
-		  (getGetFeatureWithLockType_Query(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "Query",
-			 "namespace", "##targetNamespace"
-		   });		
-		addAnnotation
 		  (getGetFeatureWithLockType_Expiry(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "expiry"
-		   });			
-		addAnnotation
-		  (getGetFeatureWithLockType_MaxFeatures(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "maxFeatures"
-		   });			
-		addAnnotation
-		  (getGetFeatureWithLockType_OutputFormat(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "outputFormat"
-		   });			
-		addAnnotation
-		  (getGetFeatureWithLockType_ResultType(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "resultType"
-		   });			
-		addAnnotation
-		  (getGetFeatureWithLockType_TraverseXlinkDepth(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "traverseXlinkDepth"
-		   });			
-		addAnnotation
-		  (getGetFeatureWithLockType_TraverseXlinkExpiry(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "traverseXlinkExpiry"
 		   });			
 		addAnnotation
 		  (getGmlObjectTypeEClass, 
