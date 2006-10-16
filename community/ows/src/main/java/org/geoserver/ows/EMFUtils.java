@@ -1,4 +1,4 @@
-package org.geoserver.wfs;
+package org.geoserver.ows;
 
 import java.util.ArrayList;
 import java.util.Iterator;
