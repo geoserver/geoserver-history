@@ -6,6 +6,9 @@ package org.geoserver.wfs;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Set;
+
+import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.ows.ServiceException;
 
@@ -31,9 +34,9 @@ import org.geoserver.ows.ServiceException;
 public interface FeatureProducer {
 	
 	/**
-	 * @return The named output format supported by the feature producer.
+	 * @return The names output formats supported by the produce.
 	 */
-	String getOutputFormat();
+	Set getOutputFormats();
 	
 	/**
 	 * Returns any special content encoding.
@@ -54,16 +57,6 @@ public interface FeatureProducer {
 	String getMimeType();
 	
 	/**
-	 * Determines if the producer is capable of producing features in the 
-	 * specified format.
-	 * 
-	 * @param outputFormat The outputFormat being used to encode features.
-	 * 
-	 * @return True if the producer supports the format, otherwise false.
-	 */
-    boolean canProduce( String outputFormat );
-
-    /**
      * Produces the features. 
      * <p>
      * This method is never called unless canProduce( outputFormat ) returns
@@ -71,13 +64,14 @@ public interface FeatureProducer {
      * </p>
      * 
      * @param outputFormat The output format being used.
+     * @param results The wfs feature collection.
      * @param output The output stream to encode features to.
      * 
      * @throws ServiceException Any errors that occur while interacting with the
      * service.
      * @throws IOException Any I/O errors that occur.
      */
-    void produce( String outputFormat, GetFeatureResults results, OutputStream output ) 
+    void produce( String outputFormat, FeatureCollectionType results, OutputStream output ) 
     		throws ServiceException, IOException;
 
 }
