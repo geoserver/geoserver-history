@@ -9,9 +9,9 @@ import org.geoserver.ows.Operation;
 import org.geoserver.ows.http.Response;
 import org.geotools.xml.transform.TransformerBase;
 
-public class WFSCapsTransformerResponse extends Response {
+public class TransformerResponse extends Response {
 
-	public WFSCapsTransformerResponse() {
+	public TransformerResponse() {
 		super( TransformerBase.class );
 	}
 
