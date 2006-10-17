@@ -27,6 +27,7 @@ public class GetFeatureWithLockHttpTest extends GeoServerHttpTestSupport {
 		
 		WebResponse response = post( "wfs", xml );
 		Document dom = dom( response );
+		print( dom, System.out );
 		
 		//get a fid
 		assertEquals( "wfs:FeatureCollection", dom.getDocumentElement().getNodeName() );

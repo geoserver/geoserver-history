@@ -55,4 +55,5 @@ public class GetCapabilitiesHttpTest extends GeoServerHttpTestSupport {
 		assertEquals( "WFS_Capabilities", doc.getDocumentElement().getNodeName() );
 		assertEquals( "1.1.0", doc.getDocumentElement().getAttribute( "version" ) );
 	}
+	
 }

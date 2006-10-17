@@ -32,8 +32,8 @@ public class GetFeatureTest extends WFSTestSupport {
 		request.setOutputFormat( GML2FeatureProducer.formatName );
 		
 		QueryType query = WFSFactory.eINSTANCE.createQueryType();
-		query.getPropertyName().add( new QName( "ID" )  );
-		query.getPropertyName().add( new QName( "the_geom" ) );
+		query.getPropertyName().add( "ID"  );
+		query.getPropertyName().add( "the_geom" );
 		query.setTypeName( 
 			Arrays.asList( new QName[] { new QName( CITE_URI, "BasicPolygons", CITE_PREFIX ) } )	
 		);
