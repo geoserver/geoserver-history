@@ -72,7 +72,7 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return GetCapabilitiesType.class;
 	}
 	
 	/**
