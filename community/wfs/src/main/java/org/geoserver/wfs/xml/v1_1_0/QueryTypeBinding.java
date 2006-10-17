@@ -2,6 +2,7 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 
 import java.net.URI;
+import java.util.Iterator;
 import java.util.List;
 
 import org.geotools.xml.*;
@@ -184,7 +185,14 @@ public class QueryTypeBinding extends AbstractComplexBinding {
 		//&lt;xsd:choice maxOccurs="unbounded" minOccurs="0"&gt;
 		//&lt;xsd:element ref="wfs:PropertyName"&gt;
 		if ( node.hasChild( "PropertyName" ) ) {
-			query.getPropertyName().addAll( node.getChildValues( "PropertyName" ) );
+			//HACK, stripping of namespace prefix
+			for ( Iterator p = node.getChildValues( "ProprertyName" ).iterator(); p.hasNext(); ) {
+				String propertyName = (String) p.next();
+				if ( propertyName.indexOf( ':' ) != -1 ) {
+					propertyName = propertyName.substring( propertyName.indexOf( ':' ) + 1 );
+				}
+				query.getPropertyName().add( propertyName );
+			}
 		}
 		
 		//&lt;xsd:element ref="ogc:Function"&gt;
