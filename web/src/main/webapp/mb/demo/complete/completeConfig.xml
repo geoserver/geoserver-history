@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<MapbuilderConfig version="0.2.1" id="referenceTemplate" xmlns="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mapbuilder.sourceforge.net/mapbuilder ../../lib/schemas/config.xsd">
+	<!--
+    Description: This configuration file determines what components from the
+                 Mapbuilder library are to be included in a Main Mapbuilder web
+                 page.
+    Licence:     LGPL as per: hhttp://www.gnu.org/copyleft/lesser.html
+
+    $Id$
+  -->
+	<!--
+    All static images should be relative to this URL.
+    This dir is relative the dir of the main html file.
+  -->
+	<models>
+		<!--Logger id="eventLogDoc">
+      <serializeUrl>../../writeXml</serializeUrl>
+      <widgets>
+        <Widget id="eventLog">
+          <stylesheet>../../lib/widget/EventLog.xsl</stylesheet>
+        </Widget>
+      </widgets>
+    </Logger-->
+		<Context id="mainMap">
+			<defaultModelUrl>../data/context/demisWorldMap.xml</defaultModelUrl>
+			<widgets>
+				<MapPane id="mainMapWidget">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<mapContainerId>mainMapContainer</mapContainerId>
+				</MapPane>
+				<MapScaleBar id="scalebar">
+        	<!--all of these properties are optional--> 
+        	<!--displaySystem>english</displaySystem--> 
+        	<displaySystem>metric</displaySystem> 
+          <minWidth>100</minWidth>
+          <maxWidth>300</maxWidth>
+        	<divisions>4</divisions>
+          <subdivisions>2</subdivisions>
+        	<showMinorMeasures>false</showMinorMeasures>
+          <abbreviateLabel>true</abbreviateLabel>
+          <singleLine>false</singleLine>
+          <align>left</align>  <!-- left, center, or right -->
+        </MapScaleBar>
+				<Loading id="loading"/>
+        <Loading2 id="loading2">
+					<mapContainerId>mainMapContainer</mapContainerId>
+        </Loading2>
+				<AoiBoxDHTML id="aoiBoxMain">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<mapContainerId>mainMapContainer</mapContainerId>
+					<lineColor>#FF0000</lineColor>
+					<lineWidth>1</lineWidth>
+					<crossSize>15</crossSize>
+				</AoiBoxDHTML>
+				<CursorTrack id="cursorTrack">
+					<mouseHandler>mainMap</mouseHandler>
+					<showXY>false</showXY>
+				</CursorTrack>
+				<Legend id="legend"/>
+				<Widget id="abstract">
+					<stylesheet>../../lib/widget/Abstract.xsl</stylesheet>
+				</Widget>
+				<Widget id="mapTitle">
+					<stylesheet>../../lib/widget/MapTitle.xsl</stylesheet>
+				</Widget>
+				<!--AoiForm id="aoiForm"/-->
+				<MapScaleText id="mapScaleText"/>
+				<SaveModel id="saveModelWidget">
+					<htmlTagId>saveModel</htmlTagId>
+				</SaveModel>
+				<LayerControl id="layerControl">
+          <moveUpImage>/images/LayerMoveUpDisable.png</moveUpImage>
+          <moveDownImage>/images/LayerMoveDownDisable.png</moveDownImage>
+          <deleteImage>/images/LayerRemoveDisable.png</deleteImage>
+				</LayerControl>
+				<!--
+        <SearchForm id="searchForm">
+        </SearchForm>
+        -->
+			</widgets>
+			<tools>
+				<AoiMouseHandler id="mainAoi"/>
+				<DragPanHandler id="mainDragPan">
+					<enabled>false</enabled>
+				</DragPanHandler>
+				<MouseClickHandler id="mainMouseClick"/>
+        <History id="extentHistory">
+          <targetModel>mainMap</targetModel>
+        </History>
+			</tools>
+		</Context>
+		<Context id="locator">
+			<defaultModelUrl>../data/context/locatorMap.xml</defaultModelUrl>
+			<widgets>
+				<MapPane id="locatorWidget">
+					<htmlTagId>locatorMap</htmlTagId>
+					<mapContainerId>locatorContainer</mapContainerId>
+					<fixedWidth>180</fixedWidth>
+					<extraAttributes>false</extraAttributes>
+				</MapPane>
+				<AoiBoxDHTML id="aoiBoxLocator">
+					<htmlTagId>locatorMap</htmlTagId>
+					<stylesheet>../../lib/widget/GmlRenderer.xsl</stylesheet>
+					<mapContainerId>locatorContainer</mapContainerId>
+					<lineColor>#FF0000</lineColor>
+					<lineWidth>1</lineWidth>
+					<crossSize>15</crossSize>
+				</AoiBoxDHTML>
+				<ModelUrlInput id="urlInput">
+					<defaultUrl>../data/context/modisWorld.xml</defaultUrl>
+				</ModelUrlInput>
+			</widgets>
+			<tools>
+				<AoiMouseHandler id="locatorAoi"/>
+				<ZoomToAoi id="locatorZoomToAoi">
+					<targetModel>mainMap</targetModel>
+				</ZoomToAoi>
+			</tools>
+		</Context>
+		<ContextCollection id="collectionGroup">
+			<defaultModelUrl>../data/context/demoCollection.xml</defaultModelUrl>
+			<widgets>
+				<CollectionList id="collectionList">
+					<targetModel>mainMap</targetModel>
+				</CollectionList>
+			</widgets>
+		</ContextCollection>
+		<Model id="locations">
+			<defaultModelUrl>../data/locations/Global.xml</defaultModelUrl>
+			<widgets>
+				<Locations id="locationsSelect">
+					<targetModel>mainMap</targetModel>
+				</Locations>
+			</widgets>
+			<tools>
+				<ZoomToAoi id="locationsZoomToAoi">
+					<targetModel>mainMap</targetModel>
+				</ZoomToAoi>
+			</tools>
+		</Model>
+		<Transaction id="transaction">
+			<widgets>
+				<TransactionResponse id="transactionResponse">
+        </TransactionResponse>
+			</widgets>
+		</Transaction>
+    <Model id="featureInfoResponse" template="true">
+      <namespace>xmlns:gml='http://www.opengis.net/gml' xmlns:wfs='http://www.opengis.net/wfs' xmlns:topp='http://www.openplans.org/topp'</namespace>
+      <widgets>
+        <FeatureInfo id="features">
+          <htmlTagId>featureInfo</htmlTagId>
+        </FeatureInfo>
+      </widgets>
+    </Model>
+		<FeatureCollection id="featureCollection">
+			<widgets>
+				<GmlRendererWZ id="testGmlRenderer">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<targetModel>mainMap</targetModel>
+					<mapContainerId>mainMapContainer</mapContainerId>
+					<lineColor>#FF0000</lineColor>
+					<lineWidth>1</lineWidth>
+					<pointDiameter>10</pointDiameter>
+				</GmlRendererWZ>
+			
+			</widgets>
+			<namespace>xmlns:gml='http://www.opengis.net/gml' xmlns:wfs='http://www.opengis.net/wfs' xmlns:topp='http://www.openplans.org/topp'</namespace>
+		</FeatureCollection>
+		<FeatureCollection id="ntsGml" template="true">
+			<!--defaultModelUrl>gml/NTSLookup.xml</defaultModelUrl-->
+			<widgets>
+				<GmlRendererWZ id="testNTSRenderer">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<targetModel>mainMap</targetModel>
+					<mapContainerId>mainMapContainer</mapContainerId>
+					<lineColor>#FF00FF</lineColor>
+					<lineWidth>2</lineWidth>
+					<pointDiameter>10</pointDiameter>
+				</GmlRendererWZ>
+			</widgets>
+		</FeatureCollection>
+		<FeatureCollection id="watershedGml">
+			<!--defaultModelUrl>gml/NTSLookup.xml</defaultModelUrl-->
+			<widgets>
+				<GmlRendererWZ id="watershedRenderer">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<targetModel>mainMap</targetModel>
+					<mapContainerId>mainMapContainer</mapContainerId>
+					<lineColor>#0000FF</lineColor>
+					<lineWidth>1</lineWidth>
+					<pointDiameter>10</pointDiameter>
+				</GmlRendererWZ>
+			</widgets>
+		</FeatureCollection>
+		<!-- example of the point feature renderer
+    <FeatureCollection id="pointFeatures">
+      <defaultModelUrl>../data/gml/topp_cities.xml</defaultModelUrl>
+      <namespace>xmlns:gml='http://www.opengis.net/gml' xmlns:wfs='http://www.opengis.net/wfs' xmlns:topp='http://www.openplans.org/topp'</namespace>
+      <nodeSelectXpath>/wfs:FeatureCollection/gml:featureMember/topp:tasmania_cities</nodeSelectXpath>
+      <widgets>
+        <GmlPointRenderer id="pointRenderer">
+          <htmlTagId>mainMapPane</htmlTagId>
+          <mapContainerId>mainMapContainer</mapContainerId>
+          <normalImage>/images/MarkerA.gif</normalImage>
+          <highlightImage>/images/MarkerB.gif</highlightImage>
+        </GmlPointRenderer>
+      </widgets>
+    </FeatureCollection>
+    -->
+		<WmsCapabilities id="wmsCapTemplate">
+			<widgets>
+				<Widget id="loadAllLayers">
+					<stylesheet>../../lib/widget/SelectAllMapLayers.xsl</stylesheet>
+				</Widget>
+				<ModelStatus id="wmsLoadStatus">
+					<htmlTagId>layerList</htmlTagId>
+					<outputNodeId>layerListCanvas</outputNodeId>
+				</ModelStatus>
+				<Widget id="layerListWidget">
+					<htmlTagId>layerList</htmlTagId>
+					<outputNodeId>layerListCanvas</outputNodeId>
+					<stylesheet>../../lib/widget/SelectMapLayers.xsl</stylesheet>
+				</Widget>
+			</widgets>
+			<tools>
+				<Caps2Context id="convertCaps">
+					<targetModel>mainMap</targetModel>
+				</Caps2Context>
+        <EditContext id="editContext">
+          <targetModel>mainMap</targetModel>
+        </EditContext>
+			</tools>
+			<nodeSelectXpath>//Layer</nodeSelectXpath>
+		</WmsCapabilities>
+	</models>
+	<widgets>
+		<ModelUrlInput id="wmsCapsUrlInput">
+			<targetModel>wmsCapTemplate</targetModel>
+			<defaultUrl>http://localhost:8080/geoserver/wms/GetCapabilities</defaultUrl>
+		</ModelUrlInput>
+		<WebServiceForm id="ntsLookupForm">
+			<targetModel>ntsGml</targetModel>
+			<stylesheet>../../lib/widget/NtsForm.xsl</stylesheet>
+			<webServiceUrl>http://geoservices.cgdi.ca/NTS/NTSLookup</webServiceUrl>
+		</WebServiceForm>
+		<WebServiceForm id="watershedLookupForm">
+			<htmlTagId>ntsLookupForm</htmlTagId>
+			<targetModel>watershedGml</targetModel>
+			<stylesheet>../../lib/widget/CdnWatershedForm.xsl</stylesheet>
+			<webServiceUrl>http://devgeo.cciw.ca:8080/WatershedLookupServlet/WatershedLookupServlet</webServiceUrl>
+		</WebServiceForm>
+    <Back id="back">
+      <buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/UndoDisable.png</disabledSrc>
+    </Back>
+    <Forward id="forward">
+      <buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/RedoDisable.png</disabledSrc>
+    </Forward>
+		<ZoomIn id="zoomIn">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<selected>true</selected>
+			<enabledSrc>/images/ZoomInEnable.png</enabledSrc>
+			<disabledSrc>/images/ZoomInDisable.png</disabledSrc>
+		</ZoomIn>
+		<ZoomOut id="zoomOut">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/ZoomOutEnable.png</enabledSrc>
+			<disabledSrc>/images/ZoomOutDisable.png</disabledSrc>
+		</ZoomOut>
+		<DragPan id="dragPan">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainDragPan</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/PanEnable.png</enabledSrc>
+			<disabledSrc>/images/PanDisable.png</disabledSrc>
+		</DragPan>
+		<SetAoi id="setAoi">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/SetAoiEnable.png</enabledSrc>
+			<disabledSrc>/images/SetAoiDisable.png</disabledSrc>
+		</SetAoi>
+		<Reset id="reset">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/ResetExtentDisable.png</disabledSrc>
+		</Reset>
+		<GetFeatureInfo id="getFeatureInfo">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>featureInfoResponse</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/QueryEnable.png</enabledSrc>
+			<disabledSrc>/images/QueryDisable.png</disabledSrc>
+			<context>mainMap</context>
+		</GetFeatureInfo>
+		<!--EditPoint id="editPoint">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>featureCollection</targetModel>
+			<mouseHandler>mainMouseClick</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/EditPointEnable.png</enabledSrc>
+			<disabledSrc>/images/EditPointDisable.png</disabledSrc>
+			<transactionResponseModel>transaction</transactionResponseModel>
+			<webServiceUrl>http://localhost:8080/geoserver/wfs</webServiceUrl>
+			<featureXpath>/gml:featureMember/points/_SHAPE_/gml:MultiPoint/gml:pointMember/gml:Point/gml:coordinates</featureXpath>
+			<defaultModelUrl>../data/gml/defaultAddPoint.xml</defaultModelUrl>
+			<targetContext>mainMap</targetContext>
+		</EditPoint-->
+		<!--EditLine id="editLine">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>featureCollection</targetModel>
+			<mouseHandler>mainMouseClick</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/EditLineEnable.png</enabledSrc>
+			<disabledSrc>/images/EditLineDisable.png</disabledSrc>
+			<transactionResponseModel>transaction</transactionResponseModel>
+			<webServiceUrl>http://localhost:8080/geoserver/wfs</webServiceUrl>
+			<featureXpath>/gml:featureMember/topp:bc_roads/topp:the_geom/gml:MultiLineString/gml:lineStringMember/gml:LineString/gml:coordinates</featureXpath>
+			<defaultModelUrl>../data/gml/roads.xml</defaultModelUrl>
+			<targetContext>mainMap</targetContext>
+		</EditLine-->
+		<Save id="save">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/SaveDisable.png</disabledSrc>
+			<popupWindowName>modelXML</popupWindowName>
+		</Save>
+	</widgets>
+	<skinDir>../../lib/skin/default</skinDir>
+	<languages>en,fr,fr-CA</languages>
+	<widgetTextUrl>widgetText.xml</widgetTextUrl>
+	<!-- relative to the skinDir + language subdir -->
+	<!-- example of overriding the server config values -->
+</MapbuilderConfig>

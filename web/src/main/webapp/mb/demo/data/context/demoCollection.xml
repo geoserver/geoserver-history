@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<ViewContextCollection version="1.0.0" xmlns="http://www.opengis.net/context" 
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.opengis.net http://schemas.opengeospatial.net/context/1.0.0/collection.xsd">
+	<!-- List of context XML URLs -->
+	<ViewContextReference version="1.0.0" id="atlas">
+		<Title>Atlas World base map</Title>
+		<ContextURL>
+			<OnlineResource xlink:type="simple" xlink:href="../data/context/atlasWorld.xml"/>
+		</ContextURL>
+	</ViewContextReference>
+	<ViewContextReference version="1.0.0" id="demis">
+		<Title>Demis World map</Title>
+		<ContextURL>
+			<OnlineResource xlink:type="simple" xlink:href="../data/context/demisWorldMap.xml"/>
+		</ContextURL>
+	</ViewContextReference>
+	<ViewContextReference version="1.0.0" id="cded">
+    <Title>Canadian Digital Elevation Data (GeoBase)</Title>
+		<ContextURL>
+			<OnlineResource xlink:type="simple" xlink:href="../data/context/cded.xml"/>
+		</ContextURL>
+	</ViewContextReference>
+	<ViewContextReference version="1.0.0" id="lsat7Ortho">
+		<Title>Landsat Orthorectified Imagery over Canada</Title>
+		<ContextURL>
+			<OnlineResource xlink:type="simple" xlink:href="../data/context/lsat7Ortho.xml"/>
+		</ContextURL>
+	</ViewContextReference>
+	<ViewContextReference version="1.0.0" id="mars">
+		<Title>Mars landings</Title>
+		<ContextURL>
+			<OnlineResource xlink:type="simple" xlink:href="../data/context/mars.xml"/>
+		</ContextURL>
+	</ViewContextReference>
+	<ViewContextReference version="1.0.0" id="modisWorldMosaic">
+    <Title>MODIS world mosaic</Title>
+		<ContextURL>
+			<OnlineResource xlink:type="simple" xlink:href="../data/context/modisWorld.xml"/>
+		</ContextURL>
+	</ViewContextReference>
+	<ViewContextReference version="1.0.0" id="radarsatMosaicCanada">
+    <Title>Radarsat Mosaic of Canada</Title>
+		<ContextURL>
+			<OnlineResource xlink:type="simple" xlink:href="../data/context/radarsatMosaic.xml"/>
+		</ContextURL>
+	</ViewContextReference>
+  <ViewContextReference version="1.0.0" id="cite">
+		<Title>Cite Reference (local geoserver)</Title>
+		<ContextURL>
+      <OnlineResource xlink:type="simple" xlink:href="../data/context/cite.xml"/>
+		</ContextURL>
+	</ViewContextReference>
+  <ViewContextReference version="1.0.0" id="cite">
+		<Title>Cite Reference (deegree server)</Title>
+		<ContextURL>
+      <OnlineResource xlink:type="simple" xlink:href="../data/context/cite_deegree.xml"/>
+		</ContextURL>
+	</ViewContextReference>
+  <ViewContextReference version="1.0.0" id="sldExample">
+		<Title>SLD param example</Title>
+		<ContextURL>
+      <OnlineResource xlink:type="simple" xlink:href="../data/context/SLDParamExample.xml"/>
+		</ContextURL>
+	</ViewContextReference>
+  <ViewContextReference version="1.0.0" id="boston">
+		<Title>Boston</Title>
+		<ContextURL>
+      <OnlineResource xlink:type="simple" xlink:href="../data/context/boston.xml"/>
+		</ContextURL>
+	</ViewContextReference>
+  <ViewContextReference version="1.0.0" id="local">
+    <Title>http://localhost:8080/geoserver</Title>
+		<ContextURL>
+      <OnlineResource xlink:type="simple" xlink:href="../data/context/local.xml"/>
+		</ContextURL>
+	</ViewContextReference>
+	<ViewContextReference version="1.0.0" id="aafc">
+		<Title>External server example (requires proxy script)</Title>
+		<ContextURL>
+			<OnlineResource xlink:type="simple" xlink:href="http://geodiscover.cgdi.ca/gdp/contexts/radarsatMosaic.xml"/>
+		</ContextURL>
+	</ViewContextReference>
+  
+</ViewContextCollection>

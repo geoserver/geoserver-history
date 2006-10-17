@@ -40,13 +40,15 @@ public class SurefireReportMerger extends AbstractMojo {
 		
 		//find the root
 		MavenProject root = project;
+		getLog().debug( "Executing from: "  + root.getName() );
 		while( !root.isExecutionRoot() && root.hasParent()) {
 			root = root.getParent();
+			getLog().debug( "Moving to: "  + root.getName() );
 		}
 		
 		if ( !root.isExecutionRoot() ) {
-			String msg = "Could not locate execution root";
-			throw new MojoExecutionException( msg );
+			String msg = "Could not find execution root for:" + project.getName() + ". Skipping.";
+			getLog().warn( msg );
 		}
 		
 		//make the target reports directory

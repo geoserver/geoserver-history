@@ -18,15 +18,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import javax.swing.Icon;
-
 import org.geotools.catalog.Catalog;
 import org.geotools.catalog.Resolve;
 import org.geotools.catalog.ResolveChangeEvent;
 import org.geotools.catalog.ResolveChangeListener;
 import org.geotools.catalog.Service;
 import org.geotools.catalog.ServiceInfo;
-import org.geotools.catalog.Resolve.Status;
 import org.geotools.catalog.defaults.DefaultServiceInfo;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;

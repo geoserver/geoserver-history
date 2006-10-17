@@ -305,7 +305,7 @@ public class LockResponse implements Response {
         Set lockedFeatures, Set notLockedFeatures, WFSRequest request) {
         String indent = verbose ? "   " : "";
         String xmlHeader = "<?xml version=\"1.0\" encoding=\""
-            + request.getWFS().getGeoServer().getCharSet().displayName() + "\"?>";
+            + request.getWFS().getGeoServer().getCharSet().name() + "\"?>";
         StringBuffer returnXml = new StringBuffer(xmlHeader);
         returnXml.append(nl + "<WFS_LockFeatureResponse " + nl);
         returnXml.append(indent + "xmlns=\"http://www.opengis.net/wfs\" " + nl);
@@ -402,4 +402,9 @@ public class LockResponse implements Response {
             LOGGER.warning("Abort not complete:" + ioException);
         }
     }
+
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

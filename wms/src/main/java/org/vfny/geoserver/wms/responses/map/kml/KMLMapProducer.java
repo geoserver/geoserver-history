@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
@@ -37,8 +33,6 @@ class KMLMapProducer implements GetMapProducer {
 	 */
 	private EncodeKML kmlEncoder;
 
-    /** lag between 'encode' call and 'writeTo' requires temporary storage' */
-    private File temp;
     
     /**
      * Request that encoding be halted if possible.

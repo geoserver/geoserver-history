@@ -71,6 +71,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      */
     private String name;
 
+
+	private String wmsPath;
+
     /**
      * The featuretype directory name. This is used to write to, and is  stored
      * because it may be longer than the name, as this often includes
@@ -86,6 +89,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /** A list of keywords to associate with this featuretype. */
     private List keywords;
+    
+    /** A list of metadataURLs to associate with this featuretype. */
+    private List metadataLinks;
 
     /** Used to limit the number of decimals used in GML representations. */
     private int numDecimals;
@@ -156,6 +162,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         SRS = dto.getSRS();
         schema = dto.getSchemaAttributes();
         name = dto.getName();
+        wmsPath = dto.getWmsPath();
         title = dto.getTitle();
         _abstract = dto.getAbstract();
         numDecimals = dto.getNumDecimals();
@@ -169,6 +176,12 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
             keywords = CloneLibrary.clone(dto.getKeywords()); //clone?
         } catch (Exception e) {
             keywords = new LinkedList();
+        }
+        
+        try {
+            metadataLinks = CloneLibrary.clone(dto.getMetadataLinks()); //clone?
+        } catch (Exception e) {
+            metadataLinks = new LinkedList();
         }
 
         defaultStyle = dto.getDefaultStyle();
@@ -239,6 +252,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         //-- Modif C. Kolbowicz - 06/10/2004 
         r = r && (defaultStyle == f.getDefaultStyle());
         r = r && (name == f.getName());
+        r = r && (wmsPath == f.getWmsPath());
         r = r && (title == f.getTitle());
         r = r && (_abstract == f.getAbstract());
         r = r && (numDecimals == f.getNumDecimals());
@@ -252,6 +266,12 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         if (keywords != null) {
             r = r && EqualsLibrary.equals(keywords, f.getKeywords());
         } else if (f.getKeywords() != null) {
+            return false;
+        }
+        
+        if (metadataLinks != null) {
+            r = r && EqualsLibrary.equals(metadataLinks, f.getMetadataLinks());
+        } else if (f.getMetadataLinks() != null) {
             return false;
         }
 
@@ -332,6 +352,15 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      */
     public List getKeywords() {
         return keywords;
+    }
+    
+    /**
+     * List of metadataURLs (limited to text).
+     *
+     * @return List of metadataURLs about this FeatureType
+     */
+    public List getMetadataLinks() {
+        return metadataLinks;
     }
 
     /**
@@ -428,6 +457,15 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      */
     public void setKeywords(List list) {
         keywords = list;
+    }
+    
+    /**
+     * Sets the MetadataURL list for this feature type
+     *
+     * @param list
+     */
+    public void setMetadataLinks(List list) {
+        metadataLinks = list;
     }
 
     /**
@@ -763,6 +801,12 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         + ", caching?: " + cachingEnabled + ", max-age: " + cacheMaxAge;
     }
     
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
+	}
     public boolean isCachingEnabled() {
 		return cachingEnabled;
 	}

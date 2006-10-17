@@ -16,6 +16,10 @@
 		class="org.vfny.geoserver.global.GeoServer">
 		<constructor-arg ref="config"/>
 	</bean>
+	<bean id="globalConfig"
+		class="org.vfny.geoserver.config.GlobalConfig">
+		<constructor-arg ref="geoServer"/>
+	</bean>	
 	
 	<!-- data module -->
 	<bean id="data"
@@ -43,6 +47,12 @@
 		
 		<constructor-arg type="java.lang.String" value="Config.Data"/>
  		<constructor-arg ref="dataConfig"/>
+ 	</bean>
+	<bean id="globalConfigRegisterar"
+		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
+		
+		<constructor-arg type="java.lang.String" value="Config.Global"/>
+ 		<constructor-arg ref="globalConfig"/>
  	</bean>
  	
 	<bean id="geoServerRegisterar"

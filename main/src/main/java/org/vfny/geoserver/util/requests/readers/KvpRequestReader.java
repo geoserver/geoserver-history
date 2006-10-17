@@ -19,12 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
-import org.geotools.filter.GeometryFilter;
-import org.geotools.filter.IllegalFilterException;
-import org.geotools.filter.LiteralExpression;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.servlets.AbstractService;
 
 /**

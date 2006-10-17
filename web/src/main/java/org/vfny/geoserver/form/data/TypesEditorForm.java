@@ -6,6 +6,7 @@ package org.vfny.geoserver.form.data;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -17,14 +18,20 @@ import java.util.TreeSet;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
+import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureType;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.factory.epsg.DefaultFactory;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
@@ -33,6 +40,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.StyleConfig;
+import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
@@ -50,12 +58,14 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class TypesEditorForm extends ActionForm {
     static final List schemaBases;
+    static final List allMetadataURLTypes;
 
     static {
         List bases = new ArrayList();
         bases.add("--");
         bases.addAll(DataTransferObjectFactory.schemaBaseMap.keySet());
         schemaBases = Collections.unmodifiableList(bases);
+        allMetadataURLTypes = Arrays.asList(new String[] {"FGDC", "TC211"});
     }
 
     /** Identiy DataStore responsible for this FeatureType */
@@ -74,11 +84,16 @@ public class TypesEditorForm extends ActionForm {
     private String typeName;
 
     /**
-     * Representation of the Spatial Reference System.
-     * 
-     * <p>
-     * Empty represents unknown, usually assumed to be Cartisian Coordinates.
-     * </p>
+	 * 
+	 */
+	private String wmsPath;
+
+	/**
+	 * Representation of the Spatial Reference System.
+	 * 
+	 * <p>
+	 * Empty represents unknown, usually assumed to be Cartisian Coordinates.
+	 * </p>
      */
     private String SRS;
     
@@ -107,6 +122,15 @@ public class TypesEditorForm extends ActionForm {
 
     /** List of keywords, often grouped with brackets */
     private String keywords;
+    
+    /** Metadata URL
+     *  This is a quick hack, the user interface and configuration code is really too broken
+     *  to waste time on it... 
+     **/
+    private MetaDataLink[] metadataLinks;
+    
+    /** Metadata URL types **/
+    private String[] metadataURLTypes;
 
     /** FeatureType abstract */
     private String description;
@@ -229,6 +253,7 @@ public class TypesEditorForm extends ActionForm {
 
         
         title = type.getTitle();
+        wmsPath = type.getWmsPath();
 
         System.out.println("rest based on schemaBase: " + type.getSchemaBase());
 
@@ -295,6 +320,20 @@ public class TypesEditorForm extends ActionForm {
         }
 
         this.keywords = buf.toString();
+        
+        metadataLinks = new MetaDataLink[2];
+        metadataLinks[0] = new MetaDataLink(); metadataLinks[0].setType("text/plain");
+        metadataLinks[1] = new MetaDataLink(); metadataLinks[1].setType("text/plain");
+        if(type.getMetadataLinks() != null && type.getMetadataLinks().size() > 0) {
+            List links = new ArrayList(type.getMetadataLinks());
+            MetaDataLink link = (MetaDataLink) links.get(0);
+            metadataLinks[0] = new MetaDataLink(link);
+           
+            if(links.size() > 1) {
+                link = (MetaDataLink) links.get(1);
+                metadataLinks[1] = new MetaDataLink(link);
+            } 
+        }
 
         styles = new TreeSet();
 
@@ -416,7 +455,7 @@ public class TypesEditorForm extends ActionForm {
         Locale locale = (Locale) request.getLocale();
         //MessageResources messages = servlet.getResources();
         //TODO: not sure about this, changed for struts 1.2.8 upgrade
-        MessageResources messages = servlet.getInternal();
+        MessageResources messages = (MessageResources) request.getAttribute(Globals.MESSAGES_KEY);
         final String BBOX = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
         final String SLDWIZARD = HTMLEncoder.decode(messages.getMessage(locale,
@@ -479,6 +518,10 @@ public class TypesEditorForm extends ActionForm {
      */
     public List getAllYourBase() {
         return schemaBases;
+    }
+    
+    public List getAllMetadataURLTypes() {
+        return allMetadataURLTypes;
     }
 
     //
@@ -556,6 +599,10 @@ public class TypesEditorForm extends ActionForm {
     public void setKeywords(String keywords) {
         this.keywords = keywords;
     }
+    
+    public MetaDataLink getMetadataLink(int index) {
+        return metadataLinks[index];
+    }
 
     /**
      * Access name property.
@@ -622,30 +669,35 @@ public class TypesEditorForm extends ActionForm {
      */
     public void setSRS(String srs) 
     {
-    
-        SRS = srs;
-        try{
-        	   // srs should be an Integer - according to FeatureTypeConfig
-        	// TODO: make everything consistent for SRS - either its an int or a
-        	//       string.
-        	String newSrs = srs;
-        	if (newSrs.indexOf(':') == -1)
-        	{
-        		newSrs = "EPSG:"+srs;
-        	}
-        	CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
-        	SRSWKT = crsTheirData.toWKT();
-        }
-        catch (Exception e)  // couldnt decode their code
+
+		SRS = srs;
+		try {
+			// srs should be an Integer - according to FeatureTypeConfig
+			// TODO: make everything consistent for SRS - either its an int or a
+			//       string.
+			String newSrs = srs;
+			if (newSrs.indexOf(':') == -1) {
+				newSrs = "EPSG:" + srs;
+			}
+			//CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
+			CRSAuthorityFactory crsFactory = FactoryFinder
+				.getCRSAuthorityFactory("EPSG", new Hints(
+					Hints.CRS_AUTHORITY_FACTORY,
+					CRSAuthorityFactory.class));
+			CoordinateReferenceSystem crsTheirData = (CoordinateReferenceSystem) crsFactory
+				.createCoordinateReferenceSystem(newSrs);
+
+			SRSWKT = crsTheirData.toWKT();
+		} catch (FactoryException e) // couldnt decode their code
 		{
-        	// DJB:
-        	// dont know how to internationize this inside a set() method!!!
-        	// I think I need the request to get the local, then I can get MessageResources
-        	// from the servlet and call an appropriate method.  
-        	// Unforutunately, I dont know how to get the local!  
-        	SRSWKT = "Could not find a definition for: EPSG:"+srs;
+			// DJB:
+			// dont know how to internationize this inside a set() method!!!
+			// I think I need the request to get the local, then I can get MessageResources
+			// from the servlet and call an appropriate method.  
+			// Unforutunately, I dont know how to get the local!  
+			SRSWKT = "Could not find a definition for: EPSG:" + srs;
 		}
-    }
+	}
 
     /**
      * Access title property.
@@ -878,6 +930,13 @@ public class TypesEditorForm extends ActionForm {
     	return dataMaxY;
     }
     
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
+	}
+
     public String getCacheMaxAge() {
 		return cacheMaxAge;
 	}

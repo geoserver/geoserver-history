@@ -71,10 +71,9 @@ public class PutStyles extends AbstractService {
     	.createStyleFactory();
 	
 	
-	
 	public PutStyles(WMS wms)
 	{
-		super("SLD","PutStyles",wms);
+		super("WMS","PutStyles",wms);
 	}
 	
 	protected boolean isServiceEnabled(HttpServletRequest req) {
@@ -458,6 +457,7 @@ public class PutStyles extends AbstractService {
         // get our featureType by the layerName
         List keys = dataConfig.getFeatureTypeConfigKeys();
         Iterator it = keys.iterator();
+        layerName = null;
         while (it.hasNext())// get the full featureType name that has the datastore prefix
         {
         	String o = it.next().toString();
@@ -469,9 +469,12 @@ public class PutStyles extends AbstractService {
         	}
         }
         
-        // get the feature type and save the style for it
-        FeatureTypeConfig featureTypeConfig = dataConfig.getFeatureTypeConfig(layerName);
-        featureTypeConfig.setDefaultStyle(styleName);
+        // get the feature type and save the style for it, if the feature type exists yet
+        // If there is no FT there that may mean that the user is just creating it.
+        if (layerName != null) {
+        	FeatureTypeConfig featureTypeConfig = dataConfig.getFeatureTypeConfig(layerName);
+        	featureTypeConfig.setDefaultStyle(styleName);
+        }
         
 		// if successful, return "success"
 		//response.setContentType(success_mime_type);

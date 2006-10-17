@@ -53,7 +53,12 @@ public class FeatureTypeConfig {
     /** Name (must match DataStore typeName). */
     private String name;
 
-    /**
+	/**
+	 * 
+	 */
+	private String wmsPath;
+
+	/**
      * The schema name.
      * <p>
      * Usually  name + "_Type"                
@@ -104,6 +109,14 @@ public class FeatureTypeConfig {
      * </p>
      */
     private Set keywords;
+    
+    /**
+     * A list of metadata links to associate with this featuretype.
+     * <p>
+     * Metadata URLs are distinct URLs.
+     * </p>
+     */
+    private Set metadataLinks;
 
     /** Configuration information used to specify numeric percision */
     private int numDecimals;
@@ -189,11 +202,13 @@ public class FeatureTypeConfig {
         }
         defaultStyle = "";
         name = schema.getTypeName();
+		wmsPath = "/";
         title = schema.getTypeName() + "_Type";
         _abstract = "Generated from " + dataStoreId;
         keywords = new HashSet();
         keywords.add(dataStoreId);
         keywords.add(name);
+        metadataLinks = new HashSet();
         numDecimals = 8;
         definitionQuery = null;
         dirName = dataStoreId + "_" + name;
@@ -239,6 +254,7 @@ public class FeatureTypeConfig {
             }
         }
         name = dto.getName();
+		wmsPath = dto.getWmsPath();
         title = dto.getTitle();
         _abstract = dto.getAbstract();
         numDecimals = dto.getNumDecimals();
@@ -248,6 +264,12 @@ public class FeatureTypeConfig {
             keywords = new HashSet(dto.getKeywords());
         } catch (Exception e) {
             keywords = new HashSet();
+        }
+        
+        try {
+            metadataLinks = new HashSet(dto.getMetadataLinks());
+        } catch (Exception e) {
+            metadataLinks = new HashSet();
         }
 
         defaultStyle = dto.getDefaultStyle();
@@ -289,6 +311,7 @@ public class FeatureTypeConfig {
             f.setSchemaAttributes(s);            
         }        
         f.setName(name);
+        f.setWmsPath(wmsPath);
         f.setTitle(title);
         f.setAbstract(_abstract);
         f.setNumDecimals(numDecimals);
@@ -296,6 +319,12 @@ public class FeatureTypeConfig {
 
         try {
             f.setKeywords(new ArrayList(keywords));
+        } catch (Exception e) {
+            // do nothing, defaults already exist.
+        }
+        
+        try {
+            f.setMetadataLinks(new ArrayList(metadataLinks));
         } catch (Exception e) {
             // do nothing, defaults already exist.
         }
@@ -447,6 +476,22 @@ public class FeatureTypeConfig {
         this.keywords = keywords;
     }
     /**
+     * Access metadataURLs property.
+     * 
+     * @return Returns the metadataURLs.
+     */
+    public Set getMetadataLinks() {
+        return metadataLinks;
+    }
+    /**
+     * Set metadataURLs to metadataURLs.
+     *
+     * @param metadataURLs The metadataURLs to set.
+     */
+    public void setMetadataLinks(Set metadataURLs) {
+        this.metadataLinks = metadataURLs;
+    }
+    /**
      * Access latLongBBox property.
      * 
      * @return Returns the latLongBBox.
@@ -581,7 +626,13 @@ public class FeatureTypeConfig {
 	    + " SRS: " + SRS + " schemaAttributes: " + schemaAttributes + 
 	    " schemaBase " + schemaBase + "]";
     }
-    
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
+	}
+
     public boolean isCachingEnabled() {
 		return cachingEnabled;
 	}

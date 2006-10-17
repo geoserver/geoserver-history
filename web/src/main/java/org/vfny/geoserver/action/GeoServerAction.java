@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.Action;
 import org.springframework.web.struts.ActionSupport;
 import org.vfny.geoserver.global.ApplicationState;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
@@ -132,6 +133,15 @@ public class GeoServerAction extends ActionSupport {
     public WFS getWFS(HttpServletRequest request) {
     		 return (WFS) getWebApplicationContext().getBean("wfs");
     }
+    
+    /**
+     * Aquire global configuration from the Spring context.
+
+     * @return Global configuration of this web app
+     */
+    public GeoServer getGeoServer() {
+             return (GeoServer) getWebApplicationContext().getBean("geoServer");
+    }
 
     /**
      * Access GeoServer Application State from the WebContainer.
@@ -141,6 +151,6 @@ public class GeoServerAction extends ActionSupport {
      * @return Configuration model for Catalog information.
      */
     protected ApplicationState getApplicationState(HttpServletRequest request) {
-        return (ApplicationState) getWebApplicationContext().getBean("applicationRequest");
+        return (ApplicationState) getWebApplicationContext().getBean("applicationState");
     }
 }

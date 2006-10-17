@@ -21,6 +21,14 @@ import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
+import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -53,6 +61,7 @@ import com.vividsolutions.jts.geom.Polygon;
  * @author James Macgill, PSU
  * @author Gabriel Roldan, Axios
  * @author Chris Holmes, TOPP
+ * @author Brent Owens, TOPP
  */
 public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate {
     /** A logger for this class. */
@@ -144,7 +153,9 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 "Content type unknown since execute() has not been called yet");
         }
 
-        return format;
+        // chain geoserver charset so that multibyte feature info responses
+        // gets properly encoded, same as getCapabilities responses 
+        return format + ";charset=" + gs.getCharSet().name();
     }
 
     /**
@@ -163,11 +174,12 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         this.format = request.getInfoFormat();
 
         GetMapRequest getMapReq = request.getGetMapRequest();
-
+        CoordinateReferenceSystem requestedCRS = getMapReq.getCrs(); // optional, may be null
+        
         int width = getMapReq.getWidth();
         int height = getMapReq.getHeight();
         Envelope bbox = getMapReq.getBbox();
-
+        
         Coordinate upperLeft = pixelToWorld(x - 2, y - 2, bbox, width, height);
         Coordinate lowerRight = pixelToWorld(x + 2, y + 2, bbox, width, height);
 
@@ -189,7 +201,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
             //       Thats why max features is handled at the query portion!
         GeometryFactory geomFac = new GeometryFactory();
 
-        LinearRing boundary = geomFac.createLinearRing(coords);
+        LinearRing boundary = geomFac.createLinearRing(coords); // this needs to be done with each FT so it can be reprojected
 
         Polygon pixelRect = geomFac.createPolygon(boundary, null);
 
@@ -197,23 +209,38 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
         GeometryFilter getFInfoFilter = null;
 
-        try {
-            getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
-            getFInfoFilter.addLeftGeometry(filterFac.createLiteralExpression(
-                    pixelRect));
-        } catch (IllegalFilterException e) {
-            e.printStackTrace();
-            throw new WmsException(null, "Internal error : " + e.getMessage());
-        }
-
+        
         int layerCount = requestedLayers.length;
         results = new ArrayList(layerCount);
         metas = new ArrayList(layerCount);
 
-        
         try {
             for (int i = 0; i < layerCount; i++) {
                 FeatureTypeInfo finfo = requestedLayers[i];
+                
+                CoordinateReferenceSystem dataCRS = finfo.getFeatureType().getDefaultGeometry().getCoordinateSystem();
+                // reproject the bounding box
+                if (requestedCRS != null && !CRS.equalsIgnoreMetadata(dataCRS, requestedCRS)) {
+            		try {
+            			MathTransform transform = CRS.transform(requestedCRS, dataCRS, true);
+            			pixelRect = (Polygon) JTS.transform(pixelRect, transform); // reprojected
+        			} catch (MismatchedDimensionException e) {
+        	            LOGGER.severe( e.getLocalizedMessage() );
+        			} catch (TransformException e) {
+        	            LOGGER.severe( e.getLocalizedMessage() );
+        			} catch (FactoryException e) {
+        	            LOGGER.severe( e.getLocalizedMessage() );
+        			}
+            	}
+                
+                try {
+                    getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
+                    getFInfoFilter.addLeftGeometry(filterFac.createLiteralExpression(pixelRect));
+                } catch (IllegalFilterException e) {
+                    e.printStackTrace();
+                    throw new WmsException(null, "Internal error : " + e.getMessage());
+                }
+                
                 Query q = new DefaultQuery( finfo.getTypeName(), null, getFInfoFilter,request.getFeatureCount(), Query.ALL_NAMES, null ); 
                 FeatureResults match = finfo.getFeatureSource().getFeatures(q);
 
@@ -238,8 +265,8 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      * @param x horizontal coordinate on device space
      * @param y vertical coordinate on device space
      * @param map The map extent
-     * @param width DOCUMENT ME!
-     * @param height DOCUMENT ME!
+     * @param width image width
+     * @param height image height
      *
      * @return The correspondent real world coordinate
      *

@@ -21,6 +21,8 @@ import org.vfny.geoserver.util.Requests;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: Request.java,v 1.16 2004/09/08 17:36:35 cholmesny Exp $
  */
 abstract public class Request {
@@ -210,7 +212,7 @@ abstract public class Request {
     * @return The url that the client used to make the request.
     */
 	public String getBaseUrl(){
-		return Requests.getBaseUrl( getHttpServletRequest() );
+		return Requests.getBaseUrl( getHttpServletRequest(), serviceRef.getGeoServer() );
 	}
 	
 	/**
@@ -222,7 +224,7 @@ abstract public class Request {
 	 * @return the base url of the schemas.  Will be getBaseUrl() + data/capabilities.
 	 */
 	public String getSchemaBaseUrl(){
-		return Requests.getSchemaBaseUrl( getHttpServletRequest() );
+		return Requests.getSchemaBaseUrl( getHttpServletRequest(), serviceRef.getGeoServer() );
 	}
 	
 	/**

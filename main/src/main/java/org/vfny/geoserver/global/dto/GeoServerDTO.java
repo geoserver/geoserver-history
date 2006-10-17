@@ -66,6 +66,8 @@ public final class GeoServerDTO implements DataTransferObject {
 		public static final boolean LoggingToFile = false;
 		/** Default logging location on disk **/
 		public static final String LogLocation = null;
+        
+        public static final String BaseURL = null;
 		
 	}
 	
@@ -123,7 +125,13 @@ public final class GeoServerDTO implements DataTransferObject {
      * </p>
      */
     private Charset charSet = Defaults.Encoding;
-
+    
+    /**
+     * The public network URL base, to be used when Geoserver is behind a reverse proxy
+     * so that getCapabilities return the proper URLs.
+     */
+    private String proxyBaseUrl;
+    
     /**
      * Define a base url for the location of the wfs schemas.
      * 
@@ -205,6 +213,7 @@ public final class GeoServerDTO implements DataTransferObject {
         numDecimals = g.getNumDecimals();
         charSet = g.getCharSet();
         schemaBaseUrl = g.getSchemaBaseUrl();
+        proxyBaseUrl = g.getProxyBaseUrl();
         loggingLevel = g.getLoggingLevel();
         verboseExceptions = g.isVerboseExceptions();
         
@@ -265,6 +274,8 @@ public final class GeoServerDTO implements DataTransferObject {
         }
 
         r = r && (schemaBaseUrl == g.getSchemaBaseUrl());
+        
+        r = r && (proxyBaseUrl == g.getProxyBaseUrl());
 
         if (contact != null) {
             r = r && contact.equals(g.getContact());
@@ -365,6 +376,14 @@ public final class GeoServerDTO implements DataTransferObject {
     public int getNumDecimals() {
         return numDecimals;
     }
+    
+    /**
+     * Getter for the {@link #proxyBaseUrl} property
+     * @return
+     */
+    public String getProxyBaseUrl() {
+        return proxyBaseUrl;
+    }
 
     /**
      * getSchemaBaseUrl purpose.
@@ -463,6 +482,14 @@ public final class GeoServerDTO implements DataTransferObject {
      */
     public void setSchemaBaseUrl(String url) {
         schemaBaseUrl = url;
+    }
+
+    /**
+     * Setter for the {@linkplain #proxyBaseUrl} property
+     * @param url
+     */
+    public void setProxyBaseUrl(String url) {
+        proxyBaseUrl = url;
     }
 
     /**

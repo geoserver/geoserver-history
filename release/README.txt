@@ -1,3 +1,57 @@
+GeoServer 1.4.0-RC1
+------------------
+
+This is the first release candidate for the 1.4 series of GeoServer.
+Major features / improvements of this release include:
+
+- WMS GetMap filter support
+- More robust KML point styling
+- Integration with OSCache, please see: http://docs.codehaus.org/display/GEOSDOC/Caching
+- Numerous bug fixes and improvements
+
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12666
+
+Based on GeoTools 2.2.1
+
+
+GeoServer 1.4.0-M2
+------------------
+
+Major features / improvements of this release include:
+
+- Upgraded MapBuilder demo version
+- WMS Base-map option
+- GetFeatureInfo now supports reprojection
+- KML Reprojection
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12950
+
+Base on Geotools 2.2.0 (tag = 2.2.0)
+
+
+GeoServer 1.4.0-M1
+------------------
+
+Major features / improvements of this release include:
+
+- GetMap factoring out to spring extension point
+- Developer Documentation 
+
+Along with numerous ui bug fixes coming out of the move to Spring.
+Special thanks to the following people for contributions / bug fixing:
+
+- Saul Farber
+- Allesio Fabiani
+
+The issue log for this release is here:
+
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&mode=hide&sorter/order=ASC&sorter/field=priority&pid=10311&fixfor=12710
+
+Base on Geotools 2.2.0 (tag = 2.2.0)
+
 GeoServer 1.4.0-M0
 ------------------
 
@@ -5,13 +59,13 @@ The issue log for this release is here:
 
 http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=11555
 
-The first release of the GeoServer 1.4.x series. This development stream represents
-a major refactoring of the core codebase. The purpose of which is to move to a more 
-component-oriented framework. 
+The first release of the GeoServer 1.4.x series. This development 
+stream represents a major refactoring of the core codebase. The 
+purpose of which is to move to a more component-oriented framework. 
 
-The major changehas been the move to the spring framework. Spring is a IOC container 
-that GeoServer now loads to bootstrap itself and manages component dependencies in the 
-system.
+The major changehas been the move to the spring framework. Spring 
+is a IOC container that GeoServer now loads to bootstrap itself and 
+manages component dependencies in the system.
 
 Based on geotools 2.2.x (tag = geoserver-1.4.0-M0)
 

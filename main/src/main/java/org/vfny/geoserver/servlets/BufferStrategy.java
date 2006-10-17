@@ -1,6 +1,5 @@
 package org.vfny.geoserver.servlets;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -58,9 +57,9 @@ public class BufferStrategy implements ServiceStrategy {
         }
 
         OutputStream out = response.getOutputStream();
-        BufferedOutputStream buffOut = new BufferedOutputStream(out, 1024 * 1024);
-        buffer.writeTo(buffOut);
-        buffOut.flush();
+        buffer.writeTo(out);
+        
+        buffer = null;
     }
 
     /**
@@ -69,9 +68,7 @@ public class BufferStrategy implements ServiceStrategy {
      * @see org.vfny.geoserver.servlets.ServiceStrategy#abort()
      */
     public void abort() {
-        if (buffer == null) {
-            return;
-        }
+        buffer = null;
     }
     
     public Object clone() throws CloneNotSupportedException {

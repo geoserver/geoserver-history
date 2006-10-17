@@ -47,7 +47,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     private boolean verbose;
     private int numDecimals;
     private String charset;
-    private String baseURL;
+    private String proxyBaseUrl;
     private String schemaBaseURL;
     private String loggingLevel;
     private String adminUserName;
@@ -111,7 +111,7 @@ public class GeoServerConfigurationForm extends ActionForm {
         verboseExceptionsChecked = false;
         numDecimals = globalConfig.getNumDecimals();
         charset = globalConfig.getCharSet().name();
-        baseURL = globalConfig.getBaseUrl();
+        proxyBaseUrl = globalConfig.getProxyBaseUrl();
         schemaBaseURL = globalConfig.getSchemaBaseUrl();
         adminUserName = globalConfig.getAdminUserName();
 		adminPassword = globalConfig.getAdminPassword();
@@ -284,8 +284,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * 
 	 * @return Returns the baseURL.
 	 */
-	public String getBaseURL() {
-		return baseURL;
+	public String getProxyBaseUrl() {
+		return proxyBaseUrl;
 	}
 
 	/**
@@ -293,8 +293,8 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 *
 	 * @param baseURL The baseURL to set.
 	 */
-	public void setBaseURL(String baseURL) {
-		this.baseURL = baseURL;
+	public void setProxyBaseUrl(String baseURL) {
+		this.proxyBaseUrl = baseURL;
 	}
 
 	/**

@@ -36,6 +36,7 @@ import org.geotools.filter.FilterDOMParser;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
@@ -465,6 +466,15 @@ public class XMLConfigReader {
 			    //on the url passed in.
 			    geoServer.setSchemaBaseUrl(root.toString() + "/data/capabilities/");
 			}
+            
+            String proxyBaseUrl = ReaderUtils.getChildText(globalElem,
+                    "ProxyBaseUrl");
+
+            if (proxyBaseUrl != null) {
+                geoServer.setProxyBaseUrl(proxyBaseUrl);
+            } else {
+                geoServer.setSchemaBaseUrl(null);
+            }
 
 			String adminUserName = ReaderUtils.getChildText(globalElem,
 			        "adminUserName");
@@ -544,6 +554,8 @@ public class XMLConfigReader {
                 "ContactFacsimileTelephone"));
         c.setContactEmail(ReaderUtils.getChildText(contactInfoElement,
                 "ContactElectronicMailAddress"));
+		c.setOnlineResource(ReaderUtils.getChildText(contactInfoElement,
+		"ContactOnlineResource"));
 
         return c;
     }
@@ -559,7 +571,7 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException When an error occurs.
      *
-     * @see GlobalData#getBaseUrl()
+     * @see GlobalData#getProxyBaseUrl()
      */
     protected void loadWFS(Element wfsElement) throws ConfigurationException {
         wfs = new WFSDTO();
@@ -648,7 +660,7 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException When an error occurs.
      *
-     * @see GlobalData#getBaseUrl()
+     * @see GlobalData#getProxyBaseUrl()
      */
     protected void loadWMS(Element wmsElement) throws ConfigurationException {
         wms = new WMSDTO();
@@ -657,8 +669,41 @@ public class XMLConfigReader {
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
         wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(
                     wmsElement, "svgAntiAlias")));
+        
+        loadBaseMapLayers(wmsElement);
+        
     }
 
+    private void loadBaseMapLayers(Element wmsElement)
+    {
+    	HashMap layerMap = new HashMap();
+        HashMap styleMap = new HashMap();
+        
+    	Element groupBase = ReaderUtils.getChildElement(wmsElement, "BaseMapGroups");
+    	if (groupBase == null) {
+    		LOGGER.info("No baseMap groups defined yet");
+    		return;
+    	}
+    	
+    	Element[] groups = ReaderUtils.getChildElements(groupBase, "BaseMapGroup");
+    	for (int i=0; i<groups.length; i++)
+    	{
+    		Element group = groups[i];
+    		try {
+    			String title = ReaderUtils.getAttribute(group, "baseMapTitle", true);
+    			String layers = ReaderUtils.getChildText(group, "baseMapLayers");
+    	        String styles = ReaderUtils.getChildText(group, "baseMapStyles");
+    	        layerMap.put(title, layers);
+    	        styleMap.put(title, styles);
+    		} catch(Exception ex) {
+    			ex.printStackTrace();
+    		}
+    	}
+        
+        wms.setBaseMapLayers(layerMap);
+        wms.setBaseMapStyles(styleMap);
+    }
+    
     /**
      * loadService purpose.
      * 
@@ -682,6 +727,8 @@ public class XMLConfigReader {
 			s.setAbstract(ReaderUtils.getChildText(serviceRoot, "abstract"));
 			s.setKeywords(ReaderUtils.getKeyWords(ReaderUtils.getChildElement(
 			            serviceRoot, "keywords")));
+			s.setMetadataLink(getMetaDataLink(ReaderUtils
+					.getChildElement(serviceRoot, "metadataLink")));
 			s.setFees(ReaderUtils.getChildText(serviceRoot, "fees"));
 			s.setAccessConstraints(ReaderUtils.getChildText(serviceRoot,
 			        "accessConstraints"));
@@ -907,7 +954,10 @@ public class XMLConfigReader {
     protected Map loadConnectionParams(Element connElem)
         throws ConfigurationException {
         Map connectionParams = new HashMap();
-
+		
+		if (connElem == null)
+			return connectionParams;
+		
         NodeList paramElems = connElem.getElementsByTagName("parameter");
         int pCount = paramElems.getLength();
         Element param;
@@ -1123,7 +1173,10 @@ public class XMLConfigReader {
 			ft.setName(ReaderUtils.getChildText(fTypeRoot, "name", true));
 			ft.setTitle(ReaderUtils.getChildText(fTypeRoot, "title", true));
 			ft.setAbstract(ReaderUtils.getChildText(fTypeRoot, "abstract"));
-
+			ft
+			.setWmsPath(ReaderUtils
+					.getChildText(fTypeRoot, "wmspath"/* , true */));
+			
 			String keywords = ReaderUtils.getChildText(fTypeRoot, "keywords");
 
 			if (keywords != null) {
@@ -1135,6 +1188,16 @@ public class XMLConfigReader {
 
 			    ft.setKeywords(l);
 			}
+                        
+                        Element urls = ReaderUtils.getChildElement(fTypeRoot, "metadataLinks");
+                        if(urls != null) {
+                            Element[] childs = ReaderUtils.getChildElements(urls, "metadataLink");
+                            List l = new LinkedList();
+                            for (int i = 0; i < childs.length; i++) {
+                                l.add(getMetaDataLink(childs[i]));
+                            }
+                            ft.setMetadataLinks(l);
+                        }
 
 			ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore", true));
 			ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot, "SRS",
@@ -1190,7 +1253,24 @@ public class XMLConfigReader {
     }
 
     /**
-     * getKeyWords purpose.
+	
+	protected MetaDataLink loadMetaDataLink(Element metalinkRoot) {
+		MetaDataLink ml = new MetaDataLink();
+		try {
+			ml.setAbout(ReaderUtils.getAttribute(metalinkRoot, "about", false));
+			ml.setType(ReaderUtils.getAttribute(metalinkRoot, "type", false));
+			ml.setMetadataType(ReaderUtils.getAttribute(metalinkRoot,
+					"metadataType", false));
+			ml.setContent(ReaderUtils.getElementText(metalinkRoot));
+		} catch (Exception e) {
+			ml = null;
+		}
+		
+		return ml;
+	}
+	
+	/**
+	 * getKeyWords purpose.
      * 
      * <p>
      * Converts a DOM tree into a List of Strings representing keywords.
@@ -1543,6 +1623,44 @@ public class XMLConfigReader {
     public WMSDTO getWms() {
         return wms;
     }
-
 	
+	/**
+	 * getMetaDataLink purpose.
+	 * 
+	 * <p>
+	 * Used to help with XML manipulations. Returns a metedataLink Attribute
+	 * </p>
+	 *
+	 * @param metadataElem The root element to look for children in.
+	 *
+	 * @return The MetaDataLink that was found.
+	 * @throws Exception 
+	 */
+	public static MetaDataLink getMetaDataLink(Element metadataElem) throws Exception {
+		MetaDataLink mdl = new MetaDataLink();
+		String tmp;
+		if( metadataElem != null ) {
+			tmp = ReaderUtils.getElementText(metadataElem, false);
+			if( (tmp != null) && (tmp != "") ) {
+				mdl.setContent(tmp);
+			}
+			
+			tmp = ReaderUtils.getAttribute(metadataElem, "about", false);
+			if( (tmp != null) && (tmp != "") ) {
+				mdl.setAbout(tmp);
+			}
+			
+			tmp = ReaderUtils.getAttribute(metadataElem, "type", false);
+			if( (tmp != null) && (tmp != "") ) {
+				mdl.setType(tmp);
+			}
+			
+			tmp = ReaderUtils.getAttribute(metadataElem, "metadataType", false);
+			if( (tmp != null) && (tmp != "") ) {
+				mdl.setMetadataType(tmp);
+			}
+		}
+		
+		return mdl;
+	}	
 }

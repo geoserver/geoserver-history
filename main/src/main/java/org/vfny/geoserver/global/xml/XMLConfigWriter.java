@@ -20,6 +20,7 @@ import javax.xml.transform.TransformerException;
 import org.geotools.filter.FilterTransformer;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
@@ -217,6 +218,14 @@ public class XMLConfigWriter {
                     + "for validation.");
                 cw.textTag("SchemaBaseUrl", g.getSchemaBaseUrl());
             }
+            
+            if ((g.getProxyBaseUrl() != null) && (g.getSchemaBaseUrl() != "")) {
+                cw.comment(
+                    "Define a base url for the geoserver application.\n" +
+                    "By default GeoServer uses the local one, but it may " +
+                            "be wrong if you're using a reverse proxy in front of Geoserver");
+                cw.textTag("ProxyBaseUrl", g.getProxyBaseUrl());
+            }
 
             if ((g.getAdminUserName() != null) && (g.getAdminUserName() != "")) {
                 cw.comment(
@@ -292,6 +301,7 @@ public class XMLConfigWriter {
             cw.textTag("ContactVoiceTelephone", c.getContactVoice());
             cw.textTag("ContactFacsimileTelephone", c.getContactFacsimile());
             cw.textTag("ContactElectronicMailAddress", c.getContactEmail());
+			cw.textTag("ContactOnlineResource", c.getOnlineResource());
             cw.closeTag("ContactInformation");
         }
     }
@@ -315,12 +325,15 @@ public class XMLConfigWriter {
         LOGGER.finer("In method storeService");
 
         ServiceDTO s = null;
+        String u = null;
         String t = "";
         
         boolean fBounds = false;
         boolean srsXmlStyle = false;
         int serviceLevel = 0;
         String svgRenderer = null;
+        Map baseMapLayers = null;
+        Map baseMapStyles = null;
         boolean svgAntiAlias = false;
         boolean citeConformanceHacks = false;
 
@@ -339,6 +352,8 @@ public class XMLConfigWriter {
             t = "WMS";
             svgRenderer = w.getSvgRenderer();
             svgAntiAlias = w.getSvgAntiAlias();
+            baseMapLayers = w.getBaseMapLayers();
+            baseMapStyles = w.getBaseMapStyles();
         } else {
             throw new ConfigurationException("Invalid object: not WMS of WFS");
         }
@@ -362,7 +377,14 @@ public class XMLConfigWriter {
         if ((s.getAbstract() != null) && (s.getAbstract() != "")) {
             cw.textTag("abstract", s.getAbstract());
         }
-
+		if (s.getMetadataLink() != null) {
+			MetaDataLink ml = s.getMetadataLink();
+			Map mlAttr = new HashMap();
+			mlAttr.put("about",ml.getAbout());
+			mlAttr.put("type",ml.getType());
+			mlAttr.put("metadataType",ml.getMetadataType());
+			cw.textTag("metadataLink", mlAttr, ml.getContent());
+		}
         if (s.getKeywords().length != 0) {
             cw.openTag("keywords");
 
@@ -411,6 +433,22 @@ public class XMLConfigWriter {
             cw.textTag("svgRenderer", svgRenderer);
         }
 
+        if (baseMapLayers != null && baseMapStyles != null) {
+        	cw.openTag("BaseMapGroups");
+        	// for each title/layer combo, write it out
+        	String[] titles = (String[]) baseMapLayers.keySet().toArray(new String[0]);
+        	for (int i=0; i<titles.length; i++)	
+        	{
+        		HashMap titleMap = new HashMap();
+        		titleMap.put("baseMapTitle", titles[i]);
+        		cw.openTag("BaseMapGroup", titleMap);
+        		cw.textTag("baseMapLayers", baseMapLayers.get(titles[i]).toString());
+        		cw.textTag("baseMapStyles", baseMapStyles.get(titles[i]).toString());
+        		cw.closeTag("BaseMapGroup");
+        	}
+        	cw.closeTag("BaseMapGroups");
+        }
+        
         if (obj instanceof WMSDTO) {
             cw.textTag("svgAntiAlias", svgAntiAlias + "");
         }
@@ -792,6 +830,10 @@ public class XMLConfigWriter {
                 cw.textTag("abstract", ft.getAbstract());
             }
 
+            if ((ft.getWmsPath() != null) && (ft.getWmsPath() != "")) {
+                cw.textTag("wmspath", ft.getWmsPath());
+            }
+
             cw.valueTag("numDecimals", ft.getNumDecimals() + "");
 
             if ((ft.getKeywords() != null) && (ft.getKeywords().size() != 0)) {
@@ -807,6 +849,21 @@ public class XMLConfigWriter {
                 }
 
                 cw.textTag("keywords", s);
+            }
+            
+            if ((ft.getMetadataLinks() != null) && (ft.getMetadataLinks().size() != 0)) {
+                cw.openTag("metadataLinks");
+                
+                for (Iterator it = ft.getMetadataLinks().iterator(); it.hasNext();) {
+                    MetaDataLink ml = (MetaDataLink) it.next();
+                    Map mlAttr = new HashMap();
+                    mlAttr.put("about",ml.getAbout());
+                    mlAttr.put("type",ml.getType());
+                    mlAttr.put("metadataType",ml.getMetadataType());
+                    cw.textTag("metadataLink", mlAttr, ml.getContent());
+                }
+                
+                cw.closeTag("metadataLinks");
             }
 
             if (ft.getLatLongBBox() != null) {

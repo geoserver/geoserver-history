@@ -172,7 +172,6 @@ class PDFMapProducer implements GetMapProducer {
             // height of document-object is height*72 inches
             com.lowagie.text.Rectangle pageSize = new com.lowagie.text.Rectangle(width,
                     height);
-            pageSize.setBackgroundColor(new java.awt.Color(0xFF, 0xFF, 0xDE));
 
             Document document = new Document(pageSize);
             document.setMargins(0, 0, 0, 0);

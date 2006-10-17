@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>org.geoserver</groupId>
+	<artifactId>statusreporter</artifactId>
+	<packaging>pom</packaging>
+	<version>0.4</version>
+	<name>statusreporter</name>
+	
+	<modules>
+		<module>core</module>
+		<!--module>web</module-->
+	</modules>
+	<build>
+		<extensions> 
+			<extension> 
+				<groupId>org.apache.maven.wagon</groupId> 
+				<artifactId>wagon-webdav</artifactId> 
+			</extension> 
+		</extensions> 
+	</build>
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>refractions</id>
+      <name>Refractions Research Repository</name>
+      <url>dav:http://lists.refractions.net/m2</url>
+    </repository>
+  </distributionManagement>
+</project>

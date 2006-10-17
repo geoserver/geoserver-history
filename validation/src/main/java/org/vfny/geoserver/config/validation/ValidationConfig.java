@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.geotools.validation.dto.PlugInDTO;
 import org.geotools.validation.dto.TestSuiteDTO;
+import org.vfny.geoserver.global.GeoValidator;
 /**
  * ValidationConfig purpose.
  * <p>
@@ -40,6 +41,17 @@ public class ValidationConfig {
 		super();
 		plugIns = new HashMap();
 		testSuites = new HashMap();
+	}
+	
+	/**
+	 * ValidationConfig constructor.
+	 * <p>
+	 * Description
+	 * </p>
+	 * @param validator GeoValidator
+	 */
+	public ValidationConfig(GeoValidator validator) {
+		this(validator.getPlugIns(), validator.getTestSuites());
 	}
 	
 	/**
