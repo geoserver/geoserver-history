@@ -1,7 +1,12 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.geotools.xml.*;
+import org.geotools.xs.bindings.XSQNameBinding;
+import org.xml.sax.helpers.NamespaceSupport;
 
 import net.opengis.wfs.WFSFactory;		
 
@@ -39,8 +44,11 @@ import javax.xml.namespace.QName;
 public class TypeNameListTypeBinding extends AbstractSimpleBinding {
 
 	WFSFactory wfsfactory;		
-	public TypeNameListTypeBinding( WFSFactory wfsfactory ) {
+	NamespaceSupport namespaceSupport;
+	
+	public TypeNameListTypeBinding( WFSFactory wfsfactory, NamespaceSupport namespaceSupport ) {
 		this.wfsfactory = wfsfactory;
+		this.namespaceSupport = namespaceSupport;
 	}
 
 	/**
@@ -57,7 +65,7 @@ public class TypeNameListTypeBinding extends AbstractSimpleBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return List.class;
 	}
 	
 	/**
@@ -69,8 +77,25 @@ public class TypeNameListTypeBinding extends AbstractSimpleBinding {
 	public Object parse(InstanceComponent instance, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		//TODO: implement list support in parser so that passed in value is a list
+		//&lt;xsd:pattern value="((\w:)?\w(=\w)?){1,}"&gt;
+		
+		String[] tokens = ( (String) value ).split( "," );
+		List qNames = new ArrayList();
+		for ( int i = 0; i < tokens.length; i++ ) {
+			//skip aliases for now
+			int index = tokens[ i ].indexOf( "=" );
+			if ( index != -1 ) {
+				tokens[ i ] = tokens[ i ].substring( 0 , i );
+			}
+			
+			qNames.add(  
+				(QName) new XSQNameBinding( namespaceSupport ).parse( instance, tokens[ i ] )
+			);
+		}
+		
+		return qNames;
+		
 	}
 
 }
