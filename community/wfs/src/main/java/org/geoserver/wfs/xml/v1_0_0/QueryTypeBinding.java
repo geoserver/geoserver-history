@@ -136,18 +136,11 @@ public class QueryTypeBinding extends AbstractComplexBinding {
 		QueryType queryType = wfsfactory.createQueryType();
 		
 		//<xsd:element maxOccurs="unbounded" minOccurs="0" ref="ogc:PropertyName">
-		//JD:difference in spec here, moved from ogc:PropertyName to QName
-		List propertyNames = node.getChildren( PropertyName.class );
+		//JD:difference in spec here, moved from ogc:PropertyName to string
+		List propertyNames = node.getChildValues( PropertyName.class );
 		for ( Iterator p = propertyNames.iterator(); p.hasNext(); ) {
-			Node propertyName = (Node) p.next();
-			
-			//TODO: PropertyName binding throws away namespace prefix so we need
-			// to use the raw unparsed text as the value to teh qname binding
-			QName qName = (QName) new XSQNameBinding( namespaceSupport ).parse( 
-				propertyName.getComponent(), propertyName.getComponent().getText() 	
-			);
-		
-			queryType.getPropertyName().add( qName );
+			PropertyName propertyName = (PropertyName) p.next();
+			queryType.getPropertyName().add( propertyName.getPropertyName() );
 		}
 		
 		//<xsd:element maxOccurs="1" minOccurs="0" ref="ogc:Filter">
