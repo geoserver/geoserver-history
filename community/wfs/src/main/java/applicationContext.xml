@@ -53,7 +53,9 @@
 	<bean id="describeFeatureTypeResponse"
 		class="org.geoserver.wfs.http.response.FeatureTypeInfoResponse" singleton="false"/>
 	<bean id="getFeatureResponse"
-		class="org.geoserver.wfs.http.response.FeatureCollectionTypeResponse" singleton="false"/>
+		class="org.geoserver.wfs.http.response.FeatureCollectionTypeResponse" singleton="false">
+		<constructor-arg ref="wfs"/>
+	</bean>
 	<bean id="lockFeatureResponse"
 		class="org.geoserver.wfs.http.response.LockFeatureTypeResponse" singleton="false">
 		<constructor-arg ref="wfs"/>
@@ -96,7 +98,7 @@
 		<constructor-arg ref="filterFactory"/>
 	</bean>
 	<bean id="expiryKvpParser" class="org.geoserver.wfs.http.kvp.ExpiryKvpReader"/>
-	
+	<bean id="resultTypeKvpParser" class="org.geoserver.wfs.http.kvp.ResultTypeKvpParser"/>
 	<!-- kvp request readers -->
 	<bean id="getCapabilitiesKvpReader"  
 		class="org.geoserver.wfs.http.kvp.GetCapabilitiesKvpRequestReader"/>
