@@ -396,13 +396,18 @@ public class DescribeResponse implements Response {
 			tempResponse.append("\n    <label>" + cv.getLabel() + "</label>");			
 			tempResponse.append("\n      <axisDescription>");
 			tempResponse.append("\n        <AxisDescription>");
-			tempResponse.append("\n          <name>SampleDimensions</name>");
-			tempResponse.append("\n          <label>Grid Sample Dimensions</label>");
+			tempResponse.append("\n          <name>Band</name>");
+			tempResponse.append("\n          <label>Band</label>");
 			tempResponse.append("\n          <values>");
-			tempResponse.append("\n            <interval>");
-			tempResponse.append("\n              <min>0</min>");
-			tempResponse.append("\n              <max>" + numSampleDimensions + "</max>");
-			tempResponse.append("\n            </interval>");
+			
+			if (numSampleDimensions == 1) {
+				tempResponse.append("\n            <singleValue>").append("1").append("</singleValue>");
+			} else {
+				tempResponse.append("\n            <interval>");
+				tempResponse.append("\n              <min>1</min>");
+				tempResponse.append("\n              <max>" + numSampleDimensions + "</max>");
+				tempResponse.append("\n            </interval>");
+			}
 			tempResponse.append("\n          </values>");
 			tempResponse.append("\n        </AxisDescription>");
 			tempResponse.append("\n      </axisDescription>");
@@ -415,8 +420,9 @@ public class DescribeResponse implements Response {
 						}
 					}
 			}
+
+			tempResponse.append("\n      <nullValues>");
 			if (nodataValues.size() > 0) {
-				tempResponse.append("\n      <nullValues>");
 				if (nodataValues.size() == 1) {
 					tempResponse.append("\n        <singleValue>"
 							+ (Double) nodataValues.first() + "</singleValue>");
@@ -428,8 +434,11 @@ public class DescribeResponse implements Response {
 							+ (Double) nodataValues.last() + "</max>");
 					tempResponse.append("\n        <interval>");
 				}
-				tempResponse.append("\n      </nullValues>");
+			} else {
+				tempResponse.append("\n        <singleValue>0</singleValue>");
 			}
+			tempResponse.append("\n      </nullValues>");
+
 			tempResponse.append("\n   </RangeSet>");
 			tempResponse.append("\n  </rangeSet>");
 		}

@@ -400,7 +400,7 @@ public class CoverageResponse implements Response {
 						/**
 						 * Band Select
 						 */
-						Coverage bandSelectedCoverage = WCSUtils.bandSelect(request.getParameters().keySet(), coverage);
+						Coverage bandSelectedCoverage = WCSUtils.bandSelect(request.getParameters(), coverage);
 
 						/**
 						 * Crop

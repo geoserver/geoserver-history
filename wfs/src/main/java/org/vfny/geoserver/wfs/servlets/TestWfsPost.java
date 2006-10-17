@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -215,24 +216,37 @@ public class TestWfsPost extends HttpServlet {
                     xmlOut.write(requestString);
                     xmlOut.flush();
                 }
+                
+                // Above 400 they're all error codes, see:
+				// http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+				if (acon.getResponseCode() >= 400) {
+					PrintWriter out = response.getWriter();
+					out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+					out.println("<servlet-exception>");
+					out.println("HTTP response: " + acon.getResponseCode()
+							+ "\n" + URLDecoder.decode(acon.getResponseMessage(), "UTF-8"));
+					out.println("</servlet-exception>");
+					out.close();
+				} else {
 
-                //xmlIn = new BufferedReader(new InputStreamReader(
-                //            acon.getInputStream()));
-                String line;
+					// xmlIn = new BufferedReader(new InputStreamReader(
+					// acon.getInputStream()));
+					// String line;
 
-                //System.out.println("got encoding from acon: "
-                //    + acon.getContentType());
-                response.setContentType(acon.getContentType());
+					// System.out.println("got encoding from acon: "
+					// + acon.getContentType());
+					response.setContentType(acon.getContentType());
 
-                OutputStream output = response.getOutputStream();
-                int c;
-                InputStream in = acon.getInputStream();
+					OutputStream output = response.getOutputStream();
+					int c;
+					InputStream in = acon.getInputStream();
 
-                while ((c = in.read()) != -1)
-                    output.write(c);
+					while ((c = in.read()) != -1)
+						output.write(c);
 
-                in.close();
-                output.close();
+					in.close();
+					output.close();
+				}
 
                 //while ((line = xmlIn.readLine()) != null) {
                 //    out.print(line);

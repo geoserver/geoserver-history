@@ -72,6 +72,10 @@ public class WCSUtils {
 	
 	private final static Hints hints = new Hints(new HashMap(5));
 	
+	static {
+		hints.add(LENIENT_HINT);
+	}
+	
 	/**
 	 * <strong>Reprojecting</strong><br>
 	 * The new grid geometry can have a different coordinate reference system than the underlying
@@ -260,7 +264,7 @@ public class WCSUtils {
 	 * @param coverage GridCoverage
 	 * @return Coverage
 	 */
-	public static Coverage bandSelect(final Set params, final GridCoverage coverage) {
+	public static Coverage bandSelect(final Map params, final GridCoverage coverage) {
 		// ///////////////////////////////////////////////////////////////////
 		//
 		// BAND SELECT
@@ -272,15 +276,38 @@ public class WCSUtils {
 		final ArrayList selectedBands = new ArrayList();
 		
 		for (int d = 0; d < numDimensions; d++) {
-			dims.put(coverage.getSampleDimension(d).getDescription().toString(
-					Locale.getDefault()).toUpperCase(), new Integer(d));
+			dims.put("band" + (d+1), new Integer(d));
 		}
 		
 		if (!params.isEmpty()) {
-			for (Iterator p = params.iterator(); p.hasNext();) {
+			for (Iterator p = params.keySet().iterator(); p.hasNext();) {
 				final String param = (String) p.next();
-				if (dims.containsKey(param)) {
-					selectedBands.add(dims.get(param));
+				if (param.equalsIgnoreCase("BAND")) {
+					try {						
+						final String values = (String)params.get(param);
+						
+						if (values.indexOf("/") > 0) {
+							final String[] minMaxRes = values.split("/");
+							final int min = (int) Math.round(Double.parseDouble(minMaxRes[0]));
+							final int max = (int) Math.round(Double.parseDouble(minMaxRes[1]));
+							final double res = (minMaxRes.length > 2 ? Double.parseDouble(minMaxRes[2]) : 0.0);
+
+							for (int v=min;v<=max;v++) {
+								final String key = param.toLowerCase() + v;
+								if (dims.containsKey(key))
+									selectedBands.add(dims.get(key));
+							}
+						} else {
+							final String[] bands = values.split(",");
+							for (int v=0;v<bands.length;v++) {
+								final String key = param.toLowerCase() + bands[v];
+								if (dims.containsKey(key))
+									selectedBands.add(dims.get(key));
+							}
+						}
+					} catch (Exception e) {
+						LOGGER.severe("BAND SELECT: Param Incorrectly Specified.");
+					}
 				}
 			}
 		}
