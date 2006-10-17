@@ -11,14 +11,17 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.ResultTypeType;
 
+import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.Operation;
 import org.geoserver.ows.ServiceException;
 import org.geoserver.ows.http.OWSUtils;
 import org.geoserver.ows.http.Response;
 import org.geoserver.wfs.FeatureProducer;
 import org.geoserver.wfs.GetFeature;
+import org.geoserver.wfs.WFS;
 
 import org.geoserver.wfs.WFSException;
+import org.geotools.xs.bindings.XSDateTimeBinding;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -31,8 +34,14 @@ public class FeatureCollectionTypeResponse extends Response
 	 */
 	ApplicationContext context;
 	
-	public FeatureCollectionTypeResponse( ) {
+	/**
+	 * WFS configuration
+	 */
+	WFS wfs;
+	
+	public FeatureCollectionTypeResponse( WFS wfs ) {
 		super( FeatureCollectionType.class );
+		this.wfs = wfs;
 	}
 
 	public void setApplicationContext( ApplicationContext context ) throws BeansException {
@@ -62,7 +71,21 @@ public class FeatureCollectionTypeResponse extends Response
 			throws IOException, ServiceException {
 		
 		if ( resultType( operation ) == ResultTypeType.HITS_LITERAL ) {
+			//just write out feature collection directly
+			FeatureCollectionType result = (FeatureCollectionType) value;
 			
+			//we know it must be 1.1, 1.0 doesn't support "hits"
+			WfsXmlWriter writer = new WfsXmlWriter.WFS1_1( wfs, output );
+			writer.openTag( 
+				"wfs", "FeatureCollection", new String[] { 
+					"timeStamp", new XSDateTimeBinding().encode( result.getTimeStamp(), null ),  
+					"numberOfFeatures", result.getNumberOfFeatures().toString() 
+				}
+			);
+			writer.closeTag( "wfs", "FeatureCollection" );
+			writer.close();
+			
+			return;
 		}
 		
 		//look up the producer and go
