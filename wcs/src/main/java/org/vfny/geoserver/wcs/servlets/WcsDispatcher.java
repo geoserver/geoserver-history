@@ -173,7 +173,7 @@ public class WcsDispatcher extends Dispatcher {
             HttpSession session = request.getSession();
             ServletContext context = session.getServletContext();
             GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
-            String tempResponse = ((WcsException) wcs).getXmlResponse(geoServer.isVerboseExceptions(), request);
+            String tempResponse = ((WcsException) wcs).getXmlResponse(geoServer.isVerboseExceptions(), request, geoServer);
 
             response.setContentType(geoServer.getCharSet().toString());
             response.getWriter().write(tempResponse);

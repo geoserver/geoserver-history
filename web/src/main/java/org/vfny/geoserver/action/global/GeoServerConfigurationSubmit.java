@@ -76,7 +76,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
 	    saveErrors(request, errors);
 	    return mapping.findForward("config.server");
 	}
-        String baseURL = form.getBaseURL();
+        String baseURL = form.getProxyBaseUrl();
         String schemaBaseURL = form.getSchemaBaseURL(); 
         String stringLevel = form.getLoggingLevel();
         Level loggingLevel = Level.parse(stringLevel);
@@ -145,7 +145,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setMaxFeatures(maxFeatures);
         globalConfig.setVerbose(verbose);
         globalConfig.setNumDecimals(numDecimals);
-        globalConfig.setBaseUrl(baseURL);
+        globalConfig.setProxyBaseUrl(baseURL);
         globalConfig.setSchemaBaseUrl(schemaBaseURL);
         globalConfig.setCharSet(charset);
         globalConfig.setAdminUserName(adminUserName);

@@ -605,7 +605,16 @@ public class XMLConfigReader {
 				//on the url passed in.
 				geoServer.setSchemaBaseUrl(root.toString() + "/data/capabilities/");
 			}
-			
+            
+            String proxyBaseUrl = ReaderUtils.getChildText(globalElem,
+                    "ProxyBaseUrl");
+
+            if (proxyBaseUrl != null) {
+                geoServer.setProxyBaseUrl(proxyBaseUrl);
+            } else {
+                geoServer.setSchemaBaseUrl(null);
+            }
+
 			String adminUserName = ReaderUtils.getChildText(globalElem,
 			"adminUserName");
 			

@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.util.Requests;
 
 /**
@@ -91,11 +92,11 @@ public class WcsException extends ServiceException {
      *       mime type here.
      */
     public String getXmlResponse(boolean printStackTrace,
-        HttpServletRequest request) {
+        HttpServletRequest request, GeoServer geoserver) {
         //Perhaps not the best place to do this, but it's by far the best place to ensure
         //that all logged errors get recorded in the same way, as there all must return
         //xml responses.
-        LOGGER.warning("encountered error: " + getMessage() + "\nStackTrace: " + createStackTrace());
+        LOGGER.warning("encountered error: " + getMessage());
 
         String indent = "   ";
 
@@ -114,7 +115,7 @@ public class WcsException extends ServiceException {
 
         returnXml.append("xsi:schemaLocation=\"http://www.opengis.net/ogc ");
 
-        returnXml.append(Requests.getSchemaBaseUrl(request)
+        returnXml.append(Requests.getSchemaBaseUrl(request, geoserver)
             + "wcs/1.0.0/OGC-exception.xsd\">\n");
 
         //REVISIT: handle multiple service exceptions?  must refactor class.

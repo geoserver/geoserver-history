@@ -7,7 +7,7 @@
 	<groupId>org.geoserver</groupId>
 	<artifactId>geoserver</artifactId>
 	<packaging>pom</packaging>
-	<version>1.4.0-M2-WCS</version>
+	<version>1.5.x</version>
 	<name>GeoServer</name>
 
 	<organization>
@@ -537,7 +537,7 @@
 						<descriptor>release/bin.xml</descriptor>
 						<descriptor>release/doc.xml</descriptor>
 					</descriptors>
-					<finalName>geoserver-1.4.0-M2-WCS</finalName>
+					<finalName>geoserver-1.5.x</finalName>
 					<outputDirectory>
 						${project.build.directory}/release
 					</outputDirectory>
@@ -751,13 +751,13 @@
 		<module>wms</module>
 		<module>validation</module>
 		<module>web</module>
-		<module>maven</module>
 		<!--module>release</module-->
+		<module>maven</module>
 		<module>test</module>
 	</modules>
 
 	<properties>
-		<gs.version>1.4.0-M2-WCS</gs.version>
+		<gs.version>1.5.x</gs.version>
 		<gt.version>2.3.0-RC1-SNAPSHOT</gt.version>
 	</properties>
 
@@ -774,12 +774,12 @@
 				<module>platform</module>
 				<module>data</module>
 				<module>main</module>
-				<module>maven</module>
 				<module>wcs</module>
 				<module>wfs</module>
 				<module>wms</module>
 				<module>validation</module>
 				<module>web</module>
+				<module>maven</module>
 				<module>test</module>
 				<module>community</module>
 			</modules>

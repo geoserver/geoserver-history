@@ -53,6 +53,7 @@ public class GeoServer extends GlobalLayerSupertype {
     private String adminUserName = "admin";
     private String adminPassword;
     private String schemaBaseUrl;
+    private String proxyBaseUrl;
     private String contactPerson;
     private String contactOrganization;
     private String contactPosition;
@@ -370,6 +371,15 @@ public class GeoServer extends GlobalLayerSupertype {
     public String getSchemaBaseUrl() {
         return schemaBaseUrl;
     }
+    
+    /**
+     * Used when Geoserver is running behind a reverse-proxy so that url 
+     * in getCapabilities documents are fine
+     * @return
+     */
+    public String getProxyBaseUrl() {
+        return proxyBaseUrl;
+    }
 
     /**
      * whether xml documents should be pretty formatted
@@ -430,6 +440,7 @@ public class GeoServer extends GlobalLayerSupertype {
 			numDecimals = dto.getNumDecimals();
 			onlineResource = dto.getContact().getOnlineResource();
          schemaBaseUrl = dto.getSchemaBaseUrl();
+         proxyBaseUrl = dto.getProxyBaseUrl();
          verbose = dto.isVerbose();
          adminUserName = dto.getAdminUserName();
          adminPassword = dto.getAdminPassword();
@@ -590,6 +601,7 @@ public class GeoServer extends GlobalLayerSupertype {
         dto.setMaxFeatures(maxFeatures);
         dto.setNumDecimals(numDecimals);
         dto.setSchemaBaseUrl(schemaBaseUrl);
+        dto.setProxyBaseUrl(proxyBaseUrl);
         dto.setVerbose(verbose);
         dto.setAdminUserName(adminUserName);
         dto.setAdminPassword(adminPassword);

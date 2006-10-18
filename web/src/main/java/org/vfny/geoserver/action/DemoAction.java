@@ -8,6 +8,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.form.DemoForm;
+import org.vfny.geoserver.util.Requests;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -56,14 +58,14 @@ public class DemoAction extends GeoServerAction {
 
         File dir = demoForm.getDir();
         String demo = demoForm.getDemo();
-        String baseUrl = org.vfny.geoserver.util.Requests.getBaseUrl(request);
+        String baseUrl = Requests.getBaseUrl(request, getGeoServer());
 
         if (demo.equals("")) {
             demoForm.setUrl(baseUrl);
             demoForm.setBody("");
         }
 
-        String url = org.vfny.geoserver.util.Requests.getBaseUrl(request)
+        String url = Requests.getBaseUrl(request, getGeoServer())
             + (demo.indexOf("Coverage") > 0 ? "wcs" : "wfs");
 
         File file = new File(dir, demo);

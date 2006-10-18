@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.4.0-M2-WCS</version>
+		<version>1.5.x</version>
 	</parent>
 	
 	<groupId>org.geoserver</groupId>
@@ -19,6 +19,10 @@
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty-util</artifactId>
 		</dependency>
 		<!--dependency>
 			<groupId>org.mortbay.jetty</groupId>

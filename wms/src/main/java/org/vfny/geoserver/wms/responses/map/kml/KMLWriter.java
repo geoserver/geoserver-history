@@ -885,7 +885,7 @@ public class KMLWriter extends OutputStreamWriter {
     
     	final AbstractGridCoverage2DReader gcReader = (AbstractGridCoverage2DReader) feature.getAttribute("grid");
 		final HttpServletRequest request = this.mapContext.getRequest().getHttpServletRequest();
-		final String baseURL = org.vfny.geoserver.util.Requests.getBaseUrl(request);    	
+		final String baseURL = org.vfny.geoserver.util.Requests.getBaseUrl(request, null);    	
 
     	com.vividsolutions.jts.geom.Envelope envelope = this.mapContext.getRequest().getBbox();
         write(new StringBuffer("<GroundOverlay>").
