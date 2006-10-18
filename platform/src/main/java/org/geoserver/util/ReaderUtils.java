@@ -294,7 +294,7 @@ public class ReaderUtils {
 	}
 	
 	/**
-	 * getAttribute purpose.
+	 * getIntAttribute purpose.
 	 * 
 	 * <p>
 	 * Used to help with XML manipulations. Returns the first child integer

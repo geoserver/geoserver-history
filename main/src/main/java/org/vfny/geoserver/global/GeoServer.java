@@ -15,11 +15,15 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
+import javax.imageio.ImageIO;
+import javax.media.jai.JAI;
+import javax.media.jai.RecyclingTileFactory;
 import javax.servlet.ServletContext;
 
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 
+import com.sun.media.jai.util.SunTileCache;
 
 /**
  * complete configuration ser for the whole server
@@ -44,6 +48,8 @@ public class GeoServer extends GlobalLayerSupertype {
     private boolean verbose = true;
     private int numDecimals = 4;
     private Charset charSet = Charset.forName("UTF-8");
+	private final JAI jaiDef = JAI.getDefaultInstance();
+	private SunTileCache jaiCache;
     private String adminUserName = "admin";
     private String adminPassword;
     private String schemaBaseUrl;
@@ -61,8 +67,16 @@ public class GeoServer extends GlobalLayerSupertype {
     private String contactFacsimile;
     private String contactEmail;
 	private String onlineResource;
-    
-    /** Should we throw the stack traces back in responses? */
+	private long memoryCapacity;
+	private double memoryThreshold;
+	private int tileThreads;
+	private int tilePriority;
+	private Boolean recycling;
+	private Boolean imageIOCache;
+	private Boolean JPEGnativeAcc;
+	private Boolean PNGnativeAcc;
+
+	/** Should we throw the stack traces back in responses? */
     private boolean verboseExceptions = false;
 
     /** Default Logging level */
@@ -411,9 +425,19 @@ public class GeoServer extends GlobalLayerSupertype {
 //         catch (IOException e) {
 //         	throw new ConfigurationException(e);
 //			}
-         
-         maxFeatures = dto.getMaxFeatures();
-         numDecimals = dto.getNumDecimals();
+			memoryCapacity = dto.getJaiMemoryCapacity();
+			memoryThreshold = dto.getJaiMemoryThreshold();
+			tileThreads = dto.getJaiTileThreads();
+			tilePriority = dto.getJaiTilePriority();
+			recycling = dto.getJaiRecycling();
+			imageIOCache = dto.getImageIOCache();
+			JPEGnativeAcc = dto.getJaiJPEGNative();
+			PNGnativeAcc = dto.getJaiPNGNative();
+			
+			initJAI(memoryCapacity, memoryThreshold, recycling, imageIOCache);
+			
+			maxFeatures = dto.getMaxFeatures();
+			numDecimals = dto.getNumDecimals();
 			onlineResource = dto.getContact().getOnlineResource();
          schemaBaseUrl = dto.getSchemaBaseUrl();
          proxyBaseUrl = dto.getProxyBaseUrl();
@@ -532,6 +556,33 @@ public class GeoServer extends GlobalLayerSupertype {
         		Logger.getLogger("org.geotools").addHandler(handler);
         }
     }
+	
+	public void initJAI(final long memCapacity, final double memoryThreshold,
+			final Boolean recycling, final Boolean ImageIOCache) {
+		// setting JAI wide hints
+		jaiDef.setRenderingHint(JAI.KEY_CACHED_TILE_RECYCLING_ENABLED,
+				recycling);
+		// tile factory and recycler
+		final RecyclingTileFactory recyclingFactory = new RecyclingTileFactory();
+		jaiDef.setRenderingHint(JAI.KEY_TILE_FACTORY, recyclingFactory);
+		jaiDef.setRenderingHint(JAI.KEY_TILE_RECYCLER, recyclingFactory);
+		
+		// Setting up Cache Capacity
+		jaiCache = (SunTileCache) jaiDef.getTileCache();
+		jaiCache.setMemoryCapacity(memCapacity);
+		
+		// Setting up Cahce Threshold
+		jaiCache.setMemoryThreshold((float) memoryThreshold);
+		
+		jaiDef.getTileScheduler().setParallelism(tileThreads);
+		jaiDef.getTileScheduler().setPrefetchParallelism(tileThreads);
+		jaiDef.getTileScheduler().setPriority(tilePriority);
+		jaiDef.getTileScheduler().setPrefetchPriority(tilePriority);
+		
+		// ImageIO Caching
+		ImageIO.setUseCache(ImageIOCache.booleanValue());
+	}
+	
     /**
      * toDTO purpose.
      * 
@@ -557,6 +608,14 @@ public class GeoServer extends GlobalLayerSupertype {
         dto.setVerboseExceptions(verboseExceptions);
         dto.setLoggingToFile(loggingToFile);
         dto.setLogLocation(logLocation);
+		dto.setJaiMemoryCapacity(memoryCapacity);
+		dto.setJaiMemoryThreshold(memoryThreshold);
+		dto.setJaiTileThreads(tileThreads);
+		dto.setJaiTilePriority(tilePriority);
+		dto.setJaiRecycling(recycling);
+		dto.setImageIOCache(imageIOCache);
+		dto.setJaiJPEGNative(JPEGnativeAcc);
+		dto.setJaiPNGNative(PNGnativeAcc);
         
         ContactDTO cdto = new ContactDTO();
         dto.setContact(cdto);
@@ -696,5 +755,48 @@ public class GeoServer extends GlobalLayerSupertype {
 	 */
 	public void setLoggingToFile(boolean loggingToFile) {
 		this.loggingToFile = loggingToFile;
+	}
+	
+	public JAI getJAIDefault() {
+		return jaiDef;
+	}
+	
+	public SunTileCache getJaiCache() {
+		return jaiCache;
+	}
+	
+	public long getMemoryCapacity() {
+		return memoryCapacity;
+	}
+	
+	public Boolean getRecycling() {
+		return recycling;
+	}
+
+	public Boolean getJPEGNativeAcceleration() {
+		return JPEGnativeAcc;
+	}
+
+	public Boolean getPNGNativeAcceleration() {
+		return PNGnativeAcc;
+	}
+
+	public double getMemoryThreshold() {
+		return memoryThreshold;
+	}
+	
+	/**
+	 * @return Returns the imageIOCache.
+	 */
+	public Boolean getImageIOCache() {
+		return imageIOCache;
+	}
+
+	public int getTilePriority() {
+		return tilePriority;
+	}
+
+	public int getTileThreads() {
+		return tileThreads;
 	}
 }

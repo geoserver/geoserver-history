@@ -66,7 +66,23 @@ public final class GeoServerDTO implements DataTransferObject {
 		public static final boolean LoggingToFile = false;
 		/** Default logging location on disk **/
 		public static final String LogLocation = null;
+		
+		public static final long JaiMemoryCapacity = 200 * 1024 * 1024;
+		
+		public static final double JaiMemoryThreshold = 0.75;
+		
+		public static final int JaiTileThreads = 7;
+		
+		public static final int JaiTilePriority = Thread.NORM_PRIORITY;
+		
+		public static final Boolean JaiRecycling = Boolean.TRUE;
         
+        public static final Boolean ImageIOCache = Boolean.FALSE;
+
+		public static final Boolean JaiJPEGNative = Boolean.TRUE;
+
+		public static final Boolean JaiPNGNative = Boolean.TRUE;
+
         public static final String BaseURL = null;
 		
 	}
@@ -180,6 +196,22 @@ public final class GeoServerDTO implements DataTransferObject {
     /** Where on disk the server should log to **/
     private String logLocation = Defaults.LogLocation;
     
+    private long jaiMemoryCapacity = Defaults.JaiMemoryCapacity;
+    
+    private double jaiMemoryThreshold = Defaults.JaiMemoryThreshold;
+    
+    private int jaiTileThreads = Defaults.JaiTileThreads;
+    
+    private int jaiTilePriority = Defaults.JaiTilePriority;
+    
+    private Boolean jaiRecycling = Defaults.JaiRecycling;
+    
+    private Boolean imageIOCache = Defaults.ImageIOCache;
+
+    private Boolean jaiJPEGNative = Defaults.JaiJPEGNative;
+
+    private Boolean jaiPNGNative = Defaults.JaiPNGNative;
+
     /**
      * GlobalConfig constructor.
      * 
@@ -219,6 +251,15 @@ public final class GeoServerDTO implements DataTransferObject {
         
         loggingToFile = g.getLoggingToFile();
         logLocation = g.getLogLocation();
+        
+        jaiMemoryCapacity = g.getJaiMemoryCapacity();
+        jaiMemoryThreshold = g.getJaiMemoryThreshold();
+        jaiTileThreads = g.getJaiTileThreads();
+        jaiTilePriority = g.getJaiTilePriority();
+        jaiRecycling = g.getJaiRecycling();
+        imageIOCache = g.getImageIOCache();
+        jaiJPEGNative = g.getJaiJPEGNative();
+        jaiPNGNative = g.getJaiPNGNative();
         
         if (g.getContact() != null) {
             contact = (ContactDTO) (g.getContact().clone());
@@ -289,6 +330,15 @@ public final class GeoServerDTO implements DataTransferObject {
         }
         else if (g.getLogLocation() != null)
         	return false;
+        
+        r = r && (jaiMemoryCapacity == g.getJaiMemoryCapacity()) ;
+        r = r && (jaiMemoryThreshold == g.getJaiMemoryThreshold()) ;
+        r = r && (jaiTileThreads == g.getJaiTileThreads()) ;
+        r = r && (jaiTilePriority == g.getJaiTilePriority()) ;       
+        r = r && (jaiRecycling == g.getJaiRecycling());        
+        r = r && (imageIOCache == g.getImageIOCache());
+        r = r && (jaiJPEGNative == g.getJaiJPEGNative());
+        r = r && (jaiPNGNative == g.getJaiPNGNative());
         
         return r;
     }
@@ -637,4 +687,72 @@ public final class GeoServerDTO implements DataTransferObject {
         return dto.toString();
     }
 
+	public long getJaiMemoryCapacity() {
+		return jaiMemoryCapacity;
+	}
+
+	public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
+		this.jaiMemoryCapacity = jaiMemoryCapacity;
+	}
+
+	public Boolean getJaiRecycling() {
+		return jaiRecycling;
+	}
+
+	public void setJaiRecycling(Boolean jaiRecycling) {
+		this.jaiRecycling = jaiRecycling;
+	}
+
+	public Boolean getJaiJPEGNative() {
+		return jaiJPEGNative;
+	}
+
+	public void setJaiJPEGNative(Boolean jaiJPEGNative) {
+		this.jaiJPEGNative = jaiJPEGNative;
+	}
+
+	public Boolean getJaiPNGNative() {
+		return jaiPNGNative;
+	}
+
+	public void setJaiPNGNative(Boolean jaiPNGNative) {
+		this.jaiPNGNative = jaiPNGNative;
+	}
+
+	public double getJaiMemoryThreshold() {
+		return jaiMemoryThreshold;
+	}
+	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
+		this.jaiMemoryThreshold = jaiMemoryThreshold;
+	}
+
+    /**
+     * @return Returns the imageIOCache.
+     */
+    public Boolean getImageIOCache() {
+        return imageIOCache;
+    }
+
+    /**
+     * @param imageIOCache The imageIOCache to set.
+     */
+    public void setImageIOCache(Boolean imageIOCache) {
+        this.imageIOCache = imageIOCache;
+    }
+
+	public int getJaiTilePriority() {
+		return jaiTilePriority;
+	}
+
+	public void setJaiTilePriority(int jaiTilePriority) {
+		this.jaiTilePriority = jaiTilePriority;
+	}
+
+	public int getJaiTileThreads() {
+		return jaiTileThreads;
+	}
+
+	public void setJaiTileThreads(int jaiTileThreads) {
+		this.jaiTileThreads = jaiTileThreads;
+	}
 }

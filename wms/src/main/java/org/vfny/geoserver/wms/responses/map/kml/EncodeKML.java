@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -25,7 +26,6 @@ import javax.media.jai.GraphicsJAI;
 
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.Hints;
@@ -33,30 +33,24 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
-import org.geotools.filter.BBoxExpression;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.FilterFactoryImpl;
-import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
-import org.geotools.filter.Expression;
 import org.geotools.filter.IllegalFilterException;
+import org.geotools.filter.BBoxExpression;
+import org.geotools.filter.Expression;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
-import org.geotools.renderer.lite.RendererUtilities;
-import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.FactoryFinder;
+import org.geotools.renderer.lite.RendererUtilities;
+import org.geotools.renderer.lite.StreamingRenderer;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.CoordinateOperationFactory;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.responses.map.png.PngEncoder;
-import org.vfny.geoserver.wms.responses.map.png.PngEncoderB;
-
-import org.opengis.referencing.operation.MathTransform;
-import org.geotools.geometry.JTS;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -307,12 +301,15 @@ public class EncodeKML {
             writer.setRequestedScale(scaleDenominator);
             
             String[] attributes;
+            boolean isRaster = false;
 			
             AttributeType[] ats = schema.getAttributeTypes();
             final int length = ats.length;
             attributes = new String[length];
             for (int t = 0; t < length; t++) {
             	attributes[t] = ats[t].getName();
+            	if(attributes[t].equals("grid"))
+            		isRaster = true;
             }
 
             try {
@@ -351,16 +348,17 @@ public class EncodeKML {
                 
                 FeatureCollection fc = fSource.getFeatures(q);
                 
-                //featureReader = fSource.getFeatures(bboxQuery).reader();
-                //FeatureCollection fc = fSource.getFeatures(bboxQuery);
-                
                 int kmscore = mapContext.getRequest().getKMScore(); //KMZ score value
                 boolean useVector = useVectorOutput(kmscore, fc.size()); // kmscore = render vector/raster
                 if (useVector || !kmz)
                 {
                 	LOGGER.info("Layer ("+layer.getTitle()+") rendered with KML vector output.");
                 	layerRenderList.add(new Integer(i)); // save layer number so it won't be rendered
-                	writer.writeFeaturesAsVectors(fc, layer); // vector
+                	if (!isRaster) {
+                    	writer.writeFeaturesAsVectors(fc, layer); // vector
+                	} else {
+                		writer.writeCoverages(fc, layer); // coverage
+                	}
                 }
                 else
                 {
@@ -504,9 +502,9 @@ public class EncodeKML {
 			*/
 			
 			//---------------------- bo- new
-			PngEncoderB png = new PngEncoderB(curImage, PngEncoder.ENCODE_ALPHA, 0, 1);
-			byte[] pngbytes = png.pngEncode();
-			memOutStream.write(pngbytes);
+//			PngEncoderB png = new PngEncoderB(curImage, PngEncoder.ENCODE_ALPHA, 0, 1);
+//			byte[] pngbytes = png.pngEncode();
+//			memOutStream.write(pngbytes);
 			//----------------------
 			
 			//imgWriter.setOutput(memOutStream);
@@ -541,6 +539,7 @@ public class EncodeKML {
             
             //DJB: added this for better error messages!
 			if (attType == null) {
+				if (LOGGER.isLoggable(Level.FINE))
 					LOGGER.fine(new StringBuffer("Could not find '").append(
 							attributes[j]).append("' in the FeatureType (")
 							.append(schema.getTypeName()).append(")")

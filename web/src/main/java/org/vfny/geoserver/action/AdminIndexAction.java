@@ -6,6 +6,7 @@
  */
 package org.vfny.geoserver.action;
 
+import javax.media.jai.JAI;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +34,21 @@ public class AdminIndexAction extends ConfigAction {
             UserContainer user, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
     	ServletContext sc = request.getSession().getServletContext();
+    	
+    	final JAI jaiDef = ((GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY)).getJAIDefault();
+    	final SunTileCache jaiCache = ((GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY)).getJaiCache();
+    	final long memCapacity = jaiCache.getMemoryCapacity()/ 1024;
+    	final long memUsed = jaiCache.getCacheMemoryUsed()/ 1024;
+    	final float memThreshold = jaiCache.getMemoryThreshold()* 100;
+    	final int numThreads = jaiDef.getTileScheduler().getParallelism();
+    	final int priiority = jaiDef.getTileScheduler().getPriority();
+    	
+    	request.setAttribute("JAI_MEM_CAPACITY", new Long(memCapacity));
+    	request.setAttribute("JAI_MEM_USED", new Long(memUsed));
+    	request.setAttribute("JAI_MEM_THRESHOLD", new Float(memThreshold));
+    	request.setAttribute("JAI_TILE_THREADS", new Integer(numThreads));
+    	request.setAttribute("JAI_TILE_PRIORITY", new Integer(priiority));
+    	
     	// return back to the admin screen
     	//
         return mapping.findForward("admin.main");

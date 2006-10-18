@@ -61,7 +61,7 @@ public class ConfigPlugIn implements PlugIn {
      */
     public void init(ActionServlet arg0, ModuleConfig arg1)
         throws ServletException {
-    //JD: delete this	
+//JD: delete this	
 //        ServletContext sc = arg0.getServletContext();
 //        WMS wms = (WMS) sc.getAttribute(WMS.WEB_CONTAINER_KEY);
 //        WFS wfs = (WFS) sc.getAttribute(WFS.WEB_CONTAINER_KEY);

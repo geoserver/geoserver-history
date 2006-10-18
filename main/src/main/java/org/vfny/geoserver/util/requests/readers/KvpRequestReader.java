@@ -41,323 +41,347 @@ import org.vfny.geoserver.servlets.AbstractService;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @author Gabriel Rold?n
+ * @author Gabriel Roldan
  * @version $Id: KvpRequestReader.java,v 1.6 2004/02/09 23:29:47 dmzwiers Exp $
  */
 abstract public class KvpRequestReader {
-    /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.readers");
+	/** Class logger */
+	private static Logger LOGGER = Logger
+			.getLogger("org.vfny.geoserver.requests.readers");
 
-    /** Delimeter for KVPs in the raw string */
-    private static final String KEYWORD_DELIMITER = "&";
+	/** Delimeter for KVPs in the raw string */
+	private static final String KEYWORD_DELIMITER = "&";
 
-    /** Delimeter that seperates keywords from values */
-    private static final String VALUE_DELIMITER = "=";
+	/** Delimeter that seperates keywords from values */
+	private static final String VALUE_DELIMITER = "=";
 
-    /** Delimeter for outer value lists in the KVPs */
-    protected static final String OUTER_DELIMETER = "()";
+	/** Delimeter for outer value lists in the KVPs */
+	protected static final String OUTER_DELIMETER = "()";
 
-    /** Delimeter for inner value lists in the KVPs */
-    protected static final String INNER_DELIMETER = ",";
+	/** Delimeter for inner value lists in the KVPs */
+	protected static final String INNER_DELIMETER = ",";
 
-    /** Holds mappings between HTTP and ASCII encodings */
-    protected static FilterFactory factory = FilterFactoryFinder.createFilterFactory();
+	/** Holds mappings between HTTP and ASCII encodings */
+	protected final static FilterFactory factory = FilterFactoryFinder.createFilterFactory();
 
-    /** KVP pair listing; stores all data from the KVP request */
-    protected Map kvpPairs = new HashMap();
-    
-    /** Reference to the service using the reader */
-    protected AbstractService service;
-    
-    /**
-     * Creates a reader from paramters and a service.
-     * 
-     * @param kvpPairs The key-value pairs.
-     * @param service The service using the reader.
-     */
-    public KvpRequestReader(Map kvpPairs, AbstractService service) {
-    		this.kvpPairs = kvpPairs;
-    		this.service = service;
-    }
+	/** KVP pair listing; stores all data from the KVP request */
+	protected Map kvpPairs = new HashMap(10);
 
-    /**
-     * returns the value asociated with <code>key</code> on the set of
-     * key/value pairs of this request reader
-     *
-     * @param key DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    protected String getValue(String key) {
-        return (String) kvpPairs.get(key);
-    }
+	/** Reference to the service using the reader */
+	protected AbstractService service;
 
-    
-    /**
-     * DOCUMENT ME!
-     *
-     * @param key DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    protected boolean keyExists(String key) {
-        return kvpPairs.containsKey(key);
-    }
+	/**
+	 * Creates a reader from paramters and a service.
+	 * 
+	 * @param kvpPairs The key-value pairs.
+	 * @param service The service using the reader.
+	 */
+	public KvpRequestReader(Map kvpPairs, AbstractService service) {
+		this.kvpPairs = kvpPairs;
+		this.service = service;
+	}
 
-    /**
-     * returns the propper Request subclass for the set of parameters it was
-     * setted up and the kind of request it is specialized for
-     *
-     * @return DOCUMENT ME!
-     */
-    public abstract Request getRequest(HttpServletRequest request) throws ServiceException;
+	/**
+	 * returns the value asociated with <code>key</code> on the set of
+	 * key/value pairs of this request reader
+	 *
+	 * @param key DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	protected String getValue(String key) {
+		return (String) kvpPairs.get(key);
+	}
 
-    /**
-     * Attempts to parse out the proper typeNames from the FeatureId filters.
-     * It simply uses the value before the '.' character.
-     *
-     * @param rawFidList the strings after the FEATUREID url component.  Should
-     *        be found using kvpPairs.get("FEATUREID") in this class or one of
-     *        its children
-     *
-     * @return A list of typenames, made from the featureId filters.
-     *
-     * @throws WfsException If the structure can not be read.
-     */
-    protected static List getTypesFromFids(String rawFidList) {
-        List typeList = new ArrayList();
-        List unparsed = readNested(rawFidList);
-        Iterator i = unparsed.listIterator();
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param key DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	protected boolean keyExists(String key) {
+		return kvpPairs.containsKey(key);
+	}
 
-        while (i.hasNext()) {
-            List ids = (List) i.next();
-            ListIterator innerIterator = ids.listIterator();
+	/**
+	 * returns the propper Request subclass for the set of parameters it was
+	 * setted up and the kind of request it is specialized for
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public abstract Request getRequest(HttpServletRequest request)
+			throws ServiceException;
 
-            while (innerIterator.hasNext()) {
-                String fid = innerIterator.next().toString();
-                LOGGER.finer("looking at featureId" + fid);
+	/**
+	 * Attempts to parse out the proper typeNames from the FeatureId filters.
+	 * It simply uses the value before the '.' character.
+	 *
+	 * @param rawFidList the strings after the FEATUREID url component.  Should be found
+	 *            using kvpPairs.get("FEATUREID") in this class or one of its
+	 *            children
+	 * 
+	 * @return A list of typenames, made from the featureId filters.
+	 * 
+	 * @throws WfsException
+	 *             If the structure can not be read.
+	 */
+	protected static List getTypesFromFids(String rawFidList) {
+		List typeList = new ArrayList(10);
+		List unparsed = readNested(rawFidList);
+		Iterator i = unparsed.listIterator();
 
-                int pos = fid.indexOf(".");
-                String typeName = fid.substring(0, fid.lastIndexOf("."));
-                LOGGER.finer("adding typename: " + typeName + " from fid");
-                typeList.add(typeName);
-            }
-        }
+		while (i.hasNext()) {
+			List ids = (List) i.next();
+			ListIterator innerIterator = ids.listIterator();
 
-        return typeList;
-    }
+			while (innerIterator.hasNext()) {
+				String fid = innerIterator.next().toString();
+				if (LOGGER.isLoggable(Level.FINER))
+					LOGGER.finer("looking at featureId" + fid);
 
-    /**
-     * Reads a tokenized string and turns it into a list.  In this method, the
-     * tokenizer is quite flexible.  Note that if the list is unspecified (ie.
-     * is null) or is unconstrained (ie. is ''), then the method returns an
-     * empty list.
-     *
-     * @param rawList The tokenized string.
-     * @param delimiter The delimeter for the string tokens.
-     *
-     * @return A list of the tokenized string.
-     */
-    protected static List readFlat(String rawList, String delimiter) {
-        // handles implicit unconstrained case
-        if (rawList == null) {
-            return Collections.EMPTY_LIST;
+				
+				String typeName = fid.substring(0, fid.lastIndexOf("."));
+				if (LOGGER.isLoggable(Level.FINER))
+					LOGGER.finer("adding typename: " + typeName + " from fid");
+				typeList.add(typeName);
+			}
+		}
 
-            // handles explicit unconstrained case
-        } else if (rawList.equals("*")) {
-            return Collections.EMPTY_LIST;
+		return typeList;
+	}
 
-            // handles explicit, constrained element lists
-        } else {
-            List kvpList = null;
+	/**
+	 * Reads a tokenized string and turns it into a list. In this method, the
+	 * tokenizer is quite flexible. Note that if the list is unspecified (ie. is
+	 * null) or is unconstrained (ie. is ''), then the method returns an empty
+	 * list.
+	 * 
+	 * @param rawList
+	 *            The tokenized string.
+	 * @param delimiter
+	 *            The delimeter for the string tokens.
+	 * 
+	 * @return A list of the tokenized string.
+	 */
+	protected static List readFlat(String rawList, String delimiter) {
+		// handles implicit unconstrained case
+		if (rawList == null) {
+			return Collections.EMPTY_LIST;
 
-            /**
-             * GR: avoid using StringTokenizer because it does not returns
-             * empty trailing strings (i.e. if the string after the last match
-             * of the pattern is empty)
-             */
+			// handles explicit unconstrained case
+		} else if (rawList.equals("*")) {
+			return Collections.EMPTY_LIST;
 
-            //HACK: if there are more than one character in delimiter, I assume
-            //they are the parenthesis, for wich I don't know how to create
-            //a regular expression, so I keep using the StringTokenizer since
-            //it works for that case.
-            if (delimiter.length() == 1) {
-                int index = -1;
-                kvpList = new ArrayList();
+			// handles explicit, constrained element lists
+		} else {
+			List kvpList = null;
 
-                String token;
+			/**
+			 * GR: avoid using StringTokenizer because it does not returns empty
+			 * trailing strings (i.e. if the string after the last match of the
+			 * pattern is empty)
+			 */
 
-                //if(rawList.endsWith(delimiter))
-                rawList += delimiter;
+			// HACK: if there are more than one character in delimiter, I assume
+			// they are the parenthesis, for wich I don't know how to create
+			// a regular expression, so I keep using the StringTokenizer since
+			// it works for that case.
+			if (delimiter.length() == 1) {
+				int index = -1;
+				kvpList = new ArrayList(10);
 
-                while ((index = rawList.indexOf(delimiter)) > -1) {
-                    token = rawList.substring(0, index);
+				String token;
 
-                    if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.finest("adding simple element " + token);
-                    }
+				// if(rawList.endsWith(delimiter))
+				rawList += delimiter;
 
-                    kvpList.add(token);
-                    rawList = rawList.substring(++index);
-                }
-            } else {
-                StringTokenizer kvps = new StringTokenizer(rawList, delimiter);
-                kvpList = new ArrayList(kvps.countTokens());
+				while ((index = rawList.indexOf(delimiter)) > -1) {
+					token = rawList.substring(0, index);
 
-                while (kvps.hasMoreTokens()) {
-                    LOGGER.finest("adding simple element");
-                    kvpList.add(kvps.nextToken());
-                }
-            }
+					if (LOGGER.isLoggable(Level.FINEST)) {
+						LOGGER.finest("adding simple element " + token);
+					}
 
-            return kvpList;
-        }
-    }
+					kvpList.add(token);
+					rawList = rawList.substring(++index);
+				}
+			} else {
+				StringTokenizer kvps = new StringTokenizer(rawList, delimiter);
+				kvpList = new ArrayList(kvps.countTokens());
 
-    /**
-     * Reads a nested tokenized string and turns it into a list.  This method
-     * is much more specific to the KVP get request syntax than the more
-     * general readFlat method.  In this case, the outer tokenizer '()' and
-     * inner tokenizer ',' are both from the specification.  Returns a list of
-     * lists.
-     *
-     * @param rawList The tokenized string.
-     *
-     * @return A list of lists, containing outer and inner elements.
-     *
-     * @throws WfsException When the string structure cannot be read.
-     */
-    protected static List readNested(String rawList) {
-        LOGGER.finest("reading nested: " + rawList);
+				while (kvps.hasMoreTokens()) {
+					if (LOGGER.isLoggable(Level.FINEST))
+						LOGGER.finest("adding simple element");
+					kvpList.add(kvps.nextToken());
+				}
+			}
 
-        List kvpList = new ArrayList();
+			return kvpList;
+		}
+	}
 
-        // handles implicit unconstrained case
-        if (rawList == null) {
-            LOGGER.finest("found implicit all requested");
+	/**
+	 * Reads a nested tokenized string and turns it into a list. This method is
+	 * much more specific to the KVP get request syntax than the more general
+	 * readFlat method. In this case, the outer tokenizer '()' and inner
+	 * tokenizer ',' are both from the specification. Returns a list of lists.
+	 * 
+	 * @param rawList
+	 *            The tokenized string.
+	 * 
+	 * @return A list of lists, containing outer and inner elements.
+	 * 
+	 * @throws WfsException
+	 *             When the string structure cannot be read.
+	 */
+	protected static List readNested(String rawList) {
+		if (LOGGER.isLoggable(Level.FINEST))
+			LOGGER.finest("reading nested: " + rawList);
 
-            return kvpList;
+		List kvpList = new ArrayList(10);
 
-            // handles explicit unconstrained case
-        } else if (rawList.equals("*")) {
-            LOGGER.finest("found explicit all requested");
+		// handles implicit unconstrained case
+		if (rawList == null) {
+			if (LOGGER.isLoggable(Level.FINEST))
+				LOGGER.finest("found implicit all requested");
 
-            return kvpList;
+			return kvpList;
 
-            // handles explicit, constrained element lists
-        } else {
-            LOGGER.finest("found explicit requested");
+			// handles explicit unconstrained case
+		} else if (rawList.equals("*")) {
+			if (LOGGER.isLoggable(Level.FINEST))
+				LOGGER.finest("found explicit all requested");
 
-            // handles multiple elements list case
-            if (rawList.startsWith("(")) {
-                LOGGER.finest("reading complex list");
+			return kvpList;
 
-                List outerList = readFlat(rawList, OUTER_DELIMETER);
-                Iterator i = outerList.listIterator();
+			// handles explicit, constrained element lists
+		} else {
+			
+			if (LOGGER.isLoggable(Level.FINEST))
+				LOGGER.finest("found explicit requested");
 
-                while (i.hasNext()) {
-                    kvpList.add(readFlat((String) i.next(), INNER_DELIMETER));
-                }
+			// handles multiple elements list case
+			if (rawList.startsWith("(")) {
+				if (LOGGER.isLoggable(Level.FINEST))
+					LOGGER.finest("reading complex list");
 
-                // handles single element list case
-            } else {
-                LOGGER.finest("reading simple list");
-                kvpList.add(readFlat(rawList, INNER_DELIMETER));
-            }
+				List outerList = readFlat(rawList, OUTER_DELIMETER);
+				Iterator i = outerList.listIterator();
 
-            return kvpList;
-        }
-    }
+				while (i.hasNext()) {
+					kvpList.add(readFlat((String) i.next(), INNER_DELIMETER));
+				}
 
-    /**
-     * creates a Map of key/value pairs from a HTTP style query String
-     *
-     * @param qString DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public static Map parseKvpSet(String qString) {
-        // uses the request cleaner to remove HTTP junk
-        String cleanRequest = clean(qString);
-        LOGGER.fine("clean request is " + cleanRequest);
+				// handles single element list case
+			} else {
+				if (LOGGER.isLoggable(Level.FINEST))
+					LOGGER.finest("reading simple list");
+				kvpList.add(readFlat(rawList, INNER_DELIMETER));
+			}
 
-        Map kvps = new HashMap();
+			return kvpList;
+		}
+	}
 
-        // parses initial request sream into KVPs
-        StringTokenizer requestKeywords = new StringTokenizer(cleanRequest.trim(),
-                KEYWORD_DELIMITER);
+	/**
+	 * creates a Map of key/value pairs from a HTTP style query String
+	 * 
+	 * @param qString
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public static Map parseKvpSet(String qString) {
+		// uses the request cleaner to remove HTTP junk
+		String cleanRequest = clean(qString);
+		if (LOGGER.isLoggable(Level.FINE))
+			LOGGER.fine("clean request is " + cleanRequest);
 
-        // parses KVPs into values and keywords and puts them in a HashTable
-        while (requestKeywords.hasMoreTokens()) {
-            String kvpPair = requestKeywords.nextToken();
-            String key;
-            String value;
+		Map kvps = new HashMap(10);
 
-            // a bit of a horrible hack for filters, which handles problems of
-            //  delimeters, which may appear in XML (such as '=' for
-            //  attributes.  unavoidable and illustrates the problems with
-            //  mixing nasty KVP Get syntax and pure XML syntax!
-            if (kvpPair.toUpperCase().startsWith("FILTER")) {
-                String filterVal = kvpPair.substring(7);
+		// parses initial request sream into KVPs
+		StringTokenizer requestKeywords = new StringTokenizer(cleanRequest
+				.trim(), KEYWORD_DELIMITER);
 
-                //int index = filterVal.lastIndexOf("</Filter>");
-                //String filt2 = kvpPair.subString
-                LOGGER.finest("putting filter value " + filterVal);
-                kvps.put("FILTER", filterVal);
-            } else {
-                // handles all other standard cases by looking for the correct
-                //  delimeter and then sticking the KVPs into the hash table
-                StringTokenizer requestValues = new StringTokenizer(kvpPair,
-                        VALUE_DELIMITER);
+		// parses KVPs into values and keywords and puts them in a HashTable
+		while (requestKeywords.hasMoreTokens()) {
+			String kvpPair = requestKeywords.nextToken();
+			String key;
+			String value;
 
-                // make sure that there is a key token
-                if (requestValues.hasMoreTokens()) {
-                    // assign key as uppercase to eliminate case conflict
-                    key = requestValues.nextToken().toUpperCase();
+			// a bit of a horrible hack for filters, which handles problems of
+			// delimeters, which may appear in XML (such as '=' for
+			// attributes. unavoidable and illustrates the problems with
+			// mixing nasty KVP Get syntax and pure XML syntax!
+			if (kvpPair.toUpperCase().startsWith("FILTER")) {
+				String filterVal = kvpPair.substring(7);
 
-                    // make sure that there is a value token
-                    if (requestValues.hasMoreTokens()) {
-                        // assign value and store in hash with key
-                        value = requestValues.nextToken();
-                        LOGGER.finest("putting kvp pair: " + key + ": " + value);
-                        kvps.put(key, value);
-                    }
-                }
-            }
-        }
+				// int index = filterVal.lastIndexOf("</Filter>");
+				// String filt2 = kvpPair.subString
+				if (LOGGER.isLoggable(Level.FINEST))
+					LOGGER.finest("putting filter value " + filterVal);
+				kvps.put("FILTER", filterVal);
+			} else {
+				// handles all other standard cases by looking for the correct
+				// delimeter and then sticking the KVPs into the hash table
+				StringTokenizer requestValues = new StringTokenizer(kvpPair,
+						VALUE_DELIMITER);
 
-        LOGGER.fine("returning parsed " + kvps);
+				// make sure that there is a key token
+				if (requestValues.hasMoreTokens()) {
+					// assign key as uppercase to eliminate case conflict
+					key = requestValues.nextToken().toUpperCase();
 
-        return kvps;
-    }
+					// make sure that there is a value token
+					if (requestValues.hasMoreTokens()) {
+						// assign value and store in hash with key
+						value = requestValues.nextToken();
+						LOGGER
+								.finest("putting kvp pair: " + key + ": "
+										+ value);
+						kvps.put(key, value);
+					}
+				}
+			}
+		}
 
-    /**
-     * Cleans an HTTP string and returns pure ASCII as a string.
-     *
-     * @param raw The HTTP-encoded string.
-     *
-     * @return The string with the url escape characters replaced.
-     */
-    private static String clean(String raw) {
-        LOGGER.finest("raw request: " + raw);
+		if (LOGGER.isLoggable(Level.FINE))
+			LOGGER.fine("returning parsed " + kvps);
 
-        String clean = null;
+		return kvps;
+	}
 
-        if (raw != null) {
-            try {
-                clean = java.net.URLDecoder.decode(raw, "UTF-8");
-            } catch (java.io.UnsupportedEncodingException e) {
-                LOGGER.finer("Bad encoding for decoder " + e);
-            }
-        } else {
-            return "";
-        }
+	/**
+	 * Cleans an HTTP string and returns pure ASCII as a string.
+	 * 
+	 * @param raw
+	 *            The HTTP-encoded string.
+	 * 
+	 * @return The string with the url escape characters replaced.
+	 */
+	private static String clean(String raw) {
+		if (LOGGER.isLoggable(Level.FINEST))
+			LOGGER.finest("raw request: " + raw);
 
-        LOGGER.finest("cleaned request: " + raw);
+		String clean = null;
 
-        return clean;
-    }
+		if (raw != null) {
+			try {
+				clean = java.net.URLDecoder.decode(raw, "UTF-8");
+			} catch (java.io.UnsupportedEncodingException e) {
+				if (LOGGER.isLoggable(Level.FINER))
+					LOGGER.finer("Bad encoding for decoder " + e);
+			}
+		} else {
+			return "";
+		}
+
+		if (LOGGER.isLoggable(Level.FINEST))
+			LOGGER.finest("cleaned request: " + raw);
+
+		return clean;
+	}
 
 	/**
 	 * Returns the service handling request.
@@ -365,7 +389,7 @@ abstract public class KvpRequestReader {
 	public AbstractService getServiceRef() {
 		return service;
 	}
-	
+
 	/**
 	 * sets the service handling request.
 	 */

@@ -76,7 +76,7 @@ public class WmsException extends ServiceException {
      * Empty constructor.
      *
      * @param message The message for the .
-     * @param code Code representing the exception.
+     * @param locator The message for the .
      */
     public WmsException(String message, String code) {
         super(message);

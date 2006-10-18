@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
 
+import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -48,9 +49,12 @@ public class WMSCapabilitiesResponse implements Response {
      * List of formats accessible via a GetMap request.
      */
 	private Set formats;
+	
+	private ApplicationContext applicationContext;
 
-    public WMSCapabilitiesResponse(Set wmsGetMapFormats) {
-		this.formats=wmsGetMapFormats;
+    public WMSCapabilitiesResponse(Set wmsGetMapFormats, ApplicationContext applicationContext) {
+		this.formats = wmsGetMapFormats;
+		this.applicationContext = applicationContext;
 	}
 
 	/**
@@ -76,7 +80,7 @@ public class WMSCapabilitiesResponse implements Response {
         }
 
         WMSCapsTransformer transformer = new WMSCapsTransformer(request
-                .getSchemaBaseUrl(), formats);
+                .getSchemaBaseUrl(), formats, applicationContext);
 
        // if (request.getWFS().getGeoServer().isVerbose()) {
             transformer.setIndentation(2);

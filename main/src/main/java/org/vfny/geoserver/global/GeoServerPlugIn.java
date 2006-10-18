@@ -5,18 +5,12 @@
 package org.vfny.geoserver.global;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
-import org.geotools.validation.xml.XMLReader;
-import org.vfny.geoserver.global.xml.XMLConfigReader;
-
 
 /**
  * GeoServerPlugIn purpose.

@@ -6,8 +6,9 @@ package org.vfny.geoserver.wms;
 
 import java.awt.Color;
 
-import org.geotools.map.DefaultMapContext;
+import org.geotools.map.GraphicEnhancedMapContext;
 import org.geotools.map.MapLayer;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 
@@ -37,7 +38,7 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
-public class WMSMapContext extends DefaultMapContext {
+public class WMSMapContext extends GraphicEnhancedMapContext {
     /** requested map image width in output units (pixels) */
     private int mapWidth;
 

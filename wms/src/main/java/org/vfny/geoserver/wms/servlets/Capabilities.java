@@ -61,6 +61,6 @@ public class Capabilities extends WMService {
     	
     		Set wmsGetMapFormats = 
     			GetMapResponse.loadImageFormats(getApplicationContext());
-        return new WMSCapabilitiesResponse(wmsGetMapFormats);
+        return new WMSCapabilitiesResponse(wmsGetMapFormats, getApplicationContext());
     }
 }

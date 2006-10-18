@@ -10,6 +10,7 @@ import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -98,6 +99,19 @@ public class GeoServerConfigurationForm extends ActionForm {
 	private boolean loggingToFile;
 	private boolean loggingToFileChecked;
 	private String logLocation;
+	
+	private long jaiMemoryCapacity;
+	private double jaiMemoryThreshold;
+	private int jaiTileThreads;
+	private int jaiTilePriority;
+	private boolean jaiRecycling;
+	private boolean jaiRecyclingChecked;
+    private boolean imageIOCache;
+    private boolean imageIOCacheChecked;
+	private boolean jaiJPEGNative;
+	private boolean jaiJPEGNativeChecked;
+	private boolean jaiPNGNative;
+	private boolean jaiPNGNativeChecked;
 	 
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -125,6 +139,19 @@ public class GeoServerConfigurationForm extends ActionForm {
         loggingToFileChecked = false;
         logLocation = globalConfig.getLogLocation();
         
+        jaiMemoryCapacity = globalConfig.getJaiMemoryCapacity();
+        jaiMemoryThreshold = globalConfig.getJaiMemoryThreshold();
+        jaiTileThreads = globalConfig.getJaiTileThreads();
+        jaiTilePriority = globalConfig.getJaiTilePriority();
+        jaiRecycling = globalConfig.isJaiRecycling();
+        jaiRecyclingChecked = false;
+        imageIOCache = globalConfig.isImageIOCache();
+        imageIOCacheChecked = false;
+        jaiJPEGNative = globalConfig.isJaiJPEGNative();
+        jaiJPEGNativeChecked = false;
+        jaiPNGNative = globalConfig.isJaiPNGNative();
+        jaiPNGNativeChecked = false;
+        
         ContactConfig contactConfig = globalConfig.getContact();
         contactPerson = contactConfig.getContactPerson();
         contactOrganization = contactConfig.getContactOrganization();
@@ -146,6 +173,27 @@ public class GeoServerConfigurationForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping,
             HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
+        
+        final long maxMemoryAvailable = Runtime.getRuntime().maxMemory() - (4 * 1024 * 1024);
+        if( jaiMemoryCapacity > maxMemoryAvailable ) {
+        	errors.add("jaiMemCapacity",
+        			new ActionError("error.geoserver.JAIMemCapacity", new Long(maxMemoryAvailable)));
+        }
+
+        if( jaiMemoryThreshold < 0.0 || jaiMemoryThreshold > 1.0) {
+        	errors.add("jaiMemThreshold",
+        			new ActionError("error.geoserver.JAIMemThreshold"));
+        }
+        
+        if (jaiTileThreads < 0 || jaiTileThreads > 100) {
+        	errors.add("jaiTileThreads",
+        			new ActionError("error.geoserver.JAITileThreads"));
+        }
+        
+        if (jaiTilePriority < 1 || jaiTilePriority > 10) {
+        	errors.add("jaiTilePriority",
+        			new ActionError("error.geoserver.JAITilePriority"));
+        }
 
         return errors;
     }
@@ -611,4 +659,142 @@ public class GeoServerConfigurationForm extends ActionForm {
 		this.loggingToFileChecked = loggingToFileChecked;
 	}
 
+	public long getJaiMemoryCapacity() {
+		return jaiMemoryCapacity;
+	}
+
+	public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
+		this.jaiMemoryCapacity = jaiMemoryCapacity;
+	}
+
+	public boolean getJaiRecycling() {
+	    return jaiRecycling;
+	}
+	
+	public void setJaiRecycling(boolean jaiRecycling) {
+	    jaiRecyclingChecked = true;
+	    this.jaiRecycling = jaiRecycling;
+	}
+
+	public boolean getJaiJPEGNative() {
+	    return jaiJPEGNative;
+	}
+	
+	public void setJaiJPEGNative(boolean jaiJPEGNative) {
+	    jaiJPEGNativeChecked = true;
+	    this.jaiJPEGNative = jaiJPEGNative;
+	}
+
+	public boolean getJaiPNGNative() {
+	    return jaiPNGNative;
+	}
+	
+	public void setJaiPNGNative(boolean jaiPNGNative) {
+	    jaiPNGNativeChecked = true;
+	    this.jaiPNGNative = jaiPNGNative;
+	}
+
+	/**
+	 * Access recyclingChecked property.
+	 * 
+	 * @return Returns the recyclingChecked.
+	 */
+	public boolean isJaiRecyclingChecked() {
+	    return jaiRecyclingChecked;
+	}
+
+	/**
+	 * Access nativeChecked property.
+	 * 
+	 * @return Returns the nativeChecked.
+	 */
+	public boolean isJaiJPEGNativeChecked() {
+	    return jaiJPEGNativeChecked;
+	}
+
+	/**
+	 * Access nativeChecked property.
+	 * 
+	 * @return Returns the nativeChecked.
+	 */
+	public boolean isJaiPNGNativeChecked() {
+	    return jaiPNGNativeChecked;
+	}
+
+	/**
+	 * Set recyclingChecked to recyclingChecked.
+	 *
+	 * @param recyclingChecked The recyclingChecked to set.
+	 */
+	public void setJaiRecyclingChecked(boolean jaiRecyclingChecked) {
+	    this.jaiRecyclingChecked = jaiRecyclingChecked;
+	}
+
+	/**
+	 * Set nativeChecked to nativeChecked.
+	 *
+	 * @param nativeChecked The nativeChecked to set.
+	 */
+	public void setJaiJPEGNativeChecked(boolean jaiJPEGNativeChecked) {
+	    this.jaiJPEGNativeChecked = jaiJPEGNativeChecked;
+	}
+
+	/**
+	 * Set nativeChecked to nativeChecked.
+	 *
+	 * @param nativeChecked The nativeChecked to set.
+	 */
+	public void setJaiPNGNativeChecked(boolean jaiPNGNativeChecked) {
+	    this.jaiPNGNativeChecked = jaiPNGNativeChecked;
+	}
+
+    public boolean getImageIOCache() {
+        return imageIOCache;
+    }
+    
+    public void setImageIOCache(boolean imageIOCache) {
+        imageIOCacheChecked = true;
+        this.imageIOCache = imageIOCache;
+    }
+    
+    /**
+     * Access verboseChecked property.
+     * 
+     * @return Returns the verboseChecked.
+     */
+    public boolean isImageIOCacheChecked() {
+        return imageIOCacheChecked;
+    }
+    
+    /**
+     * Set verboseChecked to verboseChecked.
+     *
+     * @param verboseChecked The verboseChecked to set.
+     */
+    public void setImageIOCacheChecked(boolean imageIOCacheChecked) {
+        this.imageIOCacheChecked = imageIOCacheChecked;
+    }
+    
+    public double getJaiMemoryThreshold() {
+		return jaiMemoryThreshold;
+	}
+	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
+		this.jaiMemoryThreshold = jaiMemoryThreshold;
+	}
+
+	public int getJaiTilePriority() {
+		return jaiTilePriority;
+	}
+
+	public void setJaiTilePriority(int jaiTilePriority) {
+		this.jaiTilePriority = jaiTilePriority;
+	}
+
+	public int getJaiTileThreads() {
+		return jaiTileThreads;
+	}
+
+	public void setJaiTileThreads(int jaiTileThreads) {
+		this.jaiTileThreads = jaiTileThreads;
+	}
 }

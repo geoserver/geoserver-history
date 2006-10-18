@@ -109,8 +109,9 @@ public class GetMap extends WMService {
          * @todo Implement this org.vfny.geoserver.servlets.AbstractService
          *       abstract method
          */
-        throw new java.lang.UnsupportedOperationException(
-            "Method getXmlRequestReader() not yet implemented.");
+        /*throw new java.lang.UnsupportedOperationException(
+            "Method getXmlRequestReader() not yet implemented.");*/
+    	return new GetMapXmlReader(this);
     }
 
     /**

@@ -242,7 +242,7 @@ abstract public class Request {
 		uri = uri.toLowerCase();
 		}
 		// will happen if the dispatcher was called, as opposed to using the /wfs url.
-		if(uri.endsWith("/wfs") || uri.endsWith("/wms"))
+		if(uri.endsWith("/wcs") || uri.endsWith("/wfs") || uri.endsWith("/wms"))
 			return true;
 		return false;
 	}

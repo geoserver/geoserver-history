@@ -6,12 +6,16 @@ package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.geotools.factory.FactoryFinder;
+import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -19,6 +23,7 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
+import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 
 
@@ -29,15 +34,30 @@ import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
  * @version $Id$
  */
 public class GetLegendGraphicResponse implements Response {
-    /** DOCUMENT ME! */
-    private GetLegendGraphicProducer producer;
+	/** DOCUMENT ME! */
+	private static final Logger LOGGER = Logger.getLogger(GetLegendGraphicResponse.class
+			.getPackage().getName());
 
-    /**
-     *
-     */
-    public GetLegendGraphicResponse() {
-        super();
-    }
+	/**
+	 * The legend graphic producer that will be used for the production of a legend in the
+	 * requested format.
+	 */
+	private GetLegendGraphicProducer delegate;
+
+	/**
+	 * Application Context
+	 */
+
+	private ApplicationContext applicationContext;
+
+	/**
+	 * Creates a new GetLegendGraphicResponse object.
+	 * 
+	 * @param applicationContext
+	 */
+	public GetLegendGraphicResponse(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
 
     /**
      * Returns any extra headers that this service might want to set in the HTTP response object.
@@ -56,9 +76,10 @@ public class GetLegendGraphicResponse implements Response {
      */
     public void execute(Request req) throws ServiceException {
         GetLegendGraphicRequest request = (GetLegendGraphicRequest) req;
-        GetLegendGraphicProducerSpi glf = getProducerFactory(request.getFormat());
-        this.producer = glf.createLegendProducer(request.getFormat());
-        this.producer.produceLegendGraphic(request);
+
+        final String outputFormat = request.getFormat();
+		this.delegate = getDelegate(outputFormat);
+        this.delegate.produceLegendGraphic(request);
     }
 
     /**
@@ -70,22 +91,41 @@ public class GetLegendGraphicResponse implements Response {
      *
      * @throws IllegalStateException DOCUMENT ME!
      */
-    public String getContentType(GeoServer gs) throws IllegalStateException {
-        if (this.producer == null) {
-            throw new IllegalStateException("no legend producer");
-        }
+	public String getContentType(GeoServer gs) throws IllegalStateException {
+		if (this.delegate == null) {
+			throw new IllegalStateException("No request has been processed");
+		}
 
-        return this.producer.getContentType();
-    }
+		return this.delegate.getContentType();
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public String getContentEncoding() {
+		if (LOGGER.isLoggable(Level.FINER)) {
+			LOGGER.finer("returning content encoding null");
+		}
+
+		return null;
+	}
 
     /**
-     * DOCUMENT ME!
+     * Asks the GetLegendGraphicProducer obtained in execute() to abort the
+     * process.
      *
-     * @return DOCUMENT ME!
+     * @param gs not used.
      */
-    public String getContentEncoding() {
-        return null;
-    }
+	public void abort(Service gs) {
+		if (this.delegate != null) {
+			if (LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.fine("asking delegate for aborting the process");
+			}
+			this.delegate.abort();
+		}
+	}
 
     /**
      * DOCUMENT ME!
@@ -97,50 +137,62 @@ public class GetLegendGraphicResponse implements Response {
      * @throws IllegalStateException DOCUMENT ME!
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
-        if (this.producer == null) {
-            throw new IllegalStateException("no legend producer");
-        }
 
-        this.producer.writeTo(out);
-    }
+		try { // mapcontext can leak memory -- we make sure we done (see
+			// finally block)
+			if (this.delegate == null) {
+				throw new IllegalStateException(
+						"No GetMapDelegate is setted, make sure you have called execute and it has succeed");
+			}
 
-    /**
-     * Asks the GetLegendGraphicProducer obtained in execute() to abort the
-     * process.
-     *
-     * @param gs not used.
-     */
-    public void abort(Service gs) {
-        if (this.producer != null) {
-            this.producer.abort();
-        }
-    }
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer(new StringBuffer("asking delegate for write to ")
+						.append(out).toString());
+			}
+			this.delegate.writeTo(out);
+		} catch (Exception e) // we dont want to propogate a new error
+		{
+			if (LOGGER.isLoggable(Level.FINER)) {
+				LOGGER.finer(new StringBuffer("asking delegate for write to ")
+						.append(out).toString());
+			}
+		}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param mimeType DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    private static GetLegendGraphicProducerSpi getProducerFactory(
-        String mimeType) {
-        Iterator it = FactoryFinder.factories(GetLegendGraphicProducerSpi.class);
-        GetLegendGraphicProducerSpi glf = null;
+	}
 
-        while (it.hasNext()) {
-            GetLegendGraphicProducerSpi tmpGlf = (GetLegendGraphicProducerSpi) it
-                .next();
+	/**
+	 * Creates a GetMapDelegate specialized in generating the requested map
+	 * format
+	 * 
+	 * @param outputFormat
+	 *            a request parameter object wich holds the processed request
+	 *            objects, such as layers, bbox, outpu format, etc.
+	 * 
+	 * @return A specialization of <code>GetMapDelegate</code> wich can
+	 *         produce the requested output map format
+	 * 
+	 * @throws WmsException
+	 *             if no specialization is configured for the output format
+	 *             specified in <code>request</code> or if it can't be
+	 *             instantiated
+	 */
+	private GetLegendGraphicProducer getDelegate(String outputFormat)
+			throws WmsException {
+		Map beans = applicationContext
+				.getBeansOfType(GetLegendGraphicProducerSpi.class);
+		Collection producers = beans.values();
+		GetLegendGraphicProducerSpi factory;
+		for (Iterator iter = producers.iterator(); iter.hasNext();) {
+			factory = (GetLegendGraphicProducerSpi) iter.next();
+			if (factory.canProduce(outputFormat)) {
+				return factory.createLegendProducer(outputFormat);
+			}
 
-            if (tmpGlf.canProduce(mimeType)) {
-                glf = tmpGlf;
+		}
 
-                break;
-            }
-        }
-
-        return glf;
-    }
+		throw new WmsException("There is no support for creating legends in "
+				+ outputFormat + " format", "InvalidFormat");
+	}
 
     /**
      * Utility method to ask all the available legend graphic producer
@@ -152,8 +204,8 @@ public class GetLegendGraphicResponse implements Response {
      *
      * @return wether a legend producer can manage the specified format or not.
      */
-    public static boolean supportsFormat(String mimeType) {
-        return getProducerFactory(mimeType) != null;
+    public static boolean supportsFormat(String mimeType, ApplicationContext context) {    	
+        return loadLegendFormats(context).contains(mimeType);
     }
 
     /**
@@ -162,18 +214,32 @@ public class GetLegendGraphicResponse implements Response {
      *
      * @return the set of all the supported legend graphic formats.
      */
-    public static Set getFormats() {
-        Set allFormats = new HashSet();
-        Iterator it = FactoryFinder.factories(GetLegendGraphicProducerSpi.class);
+    public static Set getFormats(ApplicationContext context) {
+        return loadLegendFormats(context);
+	}
 
-        while (it.hasNext()) {
-            allFormats.addAll(((GetLegendGraphicProducerSpi) it.next())
-                .getSupportedFormats());
-        }
-
-        return allFormats;
-    }
-
+	/**
+	 * Convenience method for processing the GetMapProducerFactorySpi extension
+	 * point and returning the set of available image formats.
+	 * 
+	 * @param applicationContext
+	 *            The application context.
+	 * 
+	 */
+	private static Set loadLegendFormats(ApplicationContext applicationContext) {
+		Map beans = applicationContext
+				.getBeansOfType(GetLegendGraphicProducerSpi.class);
+		Collection producers = beans.values();
+		Set formats = new HashSet();
+		GetLegendGraphicProducerSpi producer;
+		for (Iterator iter = producers.iterator(); iter.hasNext();) {
+			producer = (GetLegendGraphicProducerSpi) iter.next();
+			formats.addAll(producer.getSupportedFormats());
+		}
+		
+        return formats;
+	}
+    
 	/* (non-Javadoc)
 	 * @see org.vfny.geoserver.Response#getContentDisposition()
 	 */

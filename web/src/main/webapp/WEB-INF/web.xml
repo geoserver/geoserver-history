@@ -2,7 +2,7 @@
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
   <display-name>GeoServer</display-name>
-  <description>Web Mapping and Feature Services</description>
+  <description>Web Mapping, Feature and Coverage Services</description>
 
   <context-param>
     <param-name>serviceStrategy</param-name>
@@ -75,10 +75,10 @@
    <!-- Struts config needs to load before all the other servlets. -->
    <servlet>
     <servlet-name>action</servlet-name>
-    <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+    <servlet-class>org.vfny.geoserver.config.web.MultipleActionServlet</servlet-class>
     <init-param>
       <param-name>config</param-name>
-      <param-value>/WEB-INF/struts-config.xml</param-value>
+      <param-value>/WEB-INF/struts-config.xml,classpath*:/WEB-INF/struts-config.xml</param-value>
     </init-param>
     <init-param>
       <param-name>debug</param-name>
@@ -173,6 +173,10 @@
   <servlet-mapping>
   	<servlet-name>dispatcher</servlet-name>
 	<url-pattern>/wms/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>dispatcher</servlet-name>
+	<url-pattern>/wcs/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>dispatcher</servlet-name>

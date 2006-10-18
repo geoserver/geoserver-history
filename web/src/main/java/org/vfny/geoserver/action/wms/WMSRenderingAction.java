@@ -31,6 +31,7 @@ public class WMSRenderingAction extends ConfigAction {
 	        
 	        config.setSvgRenderer(renderingForm.getSvgRenderer());
 	        config.setSvgAntiAlias(svgAntiAlias);
+	        config.setAllowInterpolation(renderingForm.getAllowInterpolation());
 	        getApplicationState().notifyConfigChanged();
 
 	        return mapping.findForward("config");

@@ -16,6 +16,11 @@
 	<name>Web Map Service Module</name>
 	
 	<dependencies>
+		<!--dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>streams</artifactId>
+		</dependency-->
+
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>main</artifactId>
@@ -27,12 +32,21 @@
 			<version>1.5.x</version>
 		</dependency>
 		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>wcs</artifactId>
+			<version>1.5.x</version>
+		</dependency>
+		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-render</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-epsg-wkt</artifactId>
+			<artifactId>gt2-epsg-hsql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-geotiff</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>batik</groupId>

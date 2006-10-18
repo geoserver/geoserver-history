@@ -145,6 +145,16 @@ public class GlobalConfig {
     /** location on disk to log to **/
     private String logLocation = null;
 
+    
+    private long jaiMemoryCapacity;
+    private double jaiMemoryThreshold;
+    private int jaiTileThreads;
+    private int jaiTilePriority;
+    private boolean jaiRecycling;
+    private boolean imageIOCache;
+    private boolean jaiJPEGNative;
+    private boolean jaiPNGNative;
+    
     /**
      * GlobalConfig constructor.
      * 
@@ -207,6 +217,15 @@ public class GlobalConfig {
         loggingToFile = g.getLoggingToFile();
         logLocation = g.getLogLocation();
         
+        jaiMemoryCapacity = g.getJaiMemoryCapacity();
+        jaiMemoryThreshold = g.getJaiMemoryThreshold();
+        jaiTileThreads = g.getJaiTileThreads();
+        jaiTilePriority = g.getJaiTilePriority();
+        jaiRecycling = g.getJaiRecycling().booleanValue();
+        imageIOCache = g.getImageIOCache().booleanValue();
+        jaiJPEGNative = g.getJaiJPEGNative().booleanValue();
+        jaiPNGNative = g.getJaiPNGNative().booleanValue();
+        
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
         } else {
@@ -246,6 +265,15 @@ public class GlobalConfig {
 		loggingToFile = g.getLoggingToFile();
 		logLocation = g.getLogLocation();
         
+        jaiMemoryCapacity = g.getJaiMemoryCapacity();
+        jaiMemoryThreshold = g.getJaiMemoryThreshold();
+        jaiTileThreads = g.getJaiTileThreads();
+        jaiTilePriority = g.getJaiTilePriority();
+        jaiRecycling = g.getJaiRecycling().booleanValue();
+        imageIOCache = g.getImageIOCache().booleanValue();
+        jaiJPEGNative = g.getJaiJPEGNative().booleanValue();
+        jaiPNGNative = g.getJaiPNGNative().booleanValue();
+        
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
         } else {
@@ -278,6 +306,14 @@ public class GlobalConfig {
         g.setContact((ContactDTO) contact.toDTO());
         g.setLoggingToFile(loggingToFile);
         g.setLogLocation(logLocation);
+        g.setJaiMemoryCapacity(jaiMemoryCapacity);
+        g.setJaiMemoryThreshold(jaiMemoryThreshold);
+        g.setJaiTileThreads(jaiTileThreads);
+        g.setJaiTilePriority(jaiTilePriority);
+        g.setJaiRecycling(Boolean.valueOf(jaiRecycling));
+        g.setImageIOCache(Boolean.valueOf(imageIOCache));
+        g.setJaiJPEGNative(Boolean.valueOf(jaiJPEGNative));
+        g.setJaiPNGNative(Boolean.valueOf(jaiPNGNative));
         g.setProxyBaseUrl(proxyBaseUrl);
 
         return g;
@@ -584,5 +620,68 @@ public class GlobalConfig {
 	 */
 	public void setLoggingToFile(boolean loggingToFile) {
 		this.loggingToFile = loggingToFile;
+	}
+
+	public long getJaiMemoryCapacity() {
+		return jaiMemoryCapacity;
+	}
+
+	public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
+		this.jaiMemoryCapacity = jaiMemoryCapacity;
+	}
+
+	public boolean isJaiRecycling() {
+		return jaiRecycling;
+	}
+
+	public void setJaiRecycling(boolean jaiRecycling) {
+		this.jaiRecycling = jaiRecycling;
+	}
+
+    public boolean isImageIOCache() {
+        return imageIOCache;
+    }
+
+    public void setImageIOCache(boolean imageIOCache) {
+        this.imageIOCache = imageIOCache;
+    }
+
+	public boolean isJaiJPEGNative() {
+		return jaiJPEGNative;
+	}
+
+	public void setJaiJPEGNative(boolean jaiJPEGNative) {
+		this.jaiJPEGNative = jaiJPEGNative;
+	}
+
+	public boolean isJaiPNGNative() {
+		return jaiPNGNative;
+	}
+
+	public void setJaiPNGNative(boolean jaiPNGNative) {
+		this.jaiPNGNative = jaiPNGNative;
+	}
+
+    public double getJaiMemoryThreshold() {
+		return jaiMemoryThreshold;
+	}
+	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
+		this.jaiMemoryThreshold = jaiMemoryThreshold;
+	}
+
+	public int getJaiTilePriority() {
+		return jaiTilePriority;
+	}
+
+	public void setJaiTilePriority(int jaiTilePriority) {
+		this.jaiTilePriority = jaiTilePriority;
+	}
+
+	public int getJaiTileThreads() {
+		return jaiTileThreads;
+	}
+
+	public void setJaiTileThreads(int jaiTileThreads) {
+		this.jaiTileThreads = jaiTileThreads;
 	}
 }

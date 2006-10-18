@@ -117,6 +117,30 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
 			}
 		}
 		
+		long jaiMemoryCapacity = form.getJaiMemoryCapacity();
+		double jaiMemoryThreshold = form.getJaiMemoryThreshold();
+		int jaiTileThreads = form.getJaiTileThreads();
+		int jaiTilePriority = form.getJaiTilePriority();
+		boolean jaiRecycling = form.getJaiRecycling();
+        if (form.isJaiRecyclingChecked() == false) {
+        	jaiRecycling = false;
+        }
+
+        boolean imageIOCache = form.getImageIOCache();
+        if (form.isImageIOCacheChecked() == false) {
+            imageIOCache = false;
+        }
+
+		boolean jaiJPEGNative = form.getJaiJPEGNative();
+        if (form.isJaiJPEGNativeChecked() == false) {
+        	jaiJPEGNative = false;
+        }
+
+		boolean jaiPNGNative = form.getJaiPNGNative();
+        if (form.isJaiPNGNativeChecked() == false) {
+        	jaiPNGNative = false;
+        }
+
 		GlobalConfig globalConfig = getGlobalConfig();
         globalConfig.setMaxFeatures(maxFeatures);
         globalConfig.setVerbose(verbose);
@@ -130,6 +154,14 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setLoggingToFile(loggingToFile);
         globalConfig.setLogLocation(logLocation);
         globalConfig.setVerboseExceptions(verboseExceptions);
+        globalConfig.setJaiMemoryCapacity(jaiMemoryCapacity);
+        globalConfig.setJaiMemoryThreshold(jaiMemoryThreshold);
+        globalConfig.setJaiTileThreads(jaiTileThreads);
+        globalConfig.setJaiTilePriority(jaiTilePriority);
+        globalConfig.setJaiRecycling(jaiRecycling);
+        globalConfig.setImageIOCache(imageIOCache);
+        globalConfig.setJaiJPEGNative(jaiJPEGNative);
+        globalConfig.setJaiPNGNative(jaiPNGNative);
         
         ContactConfig contactConfig = globalConfig.getContact();
         contactConfig.setContactPerson( form.getContactPerson() );

@@ -12,7 +12,7 @@ import javax.xml.transform.TransformerException;
 
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
@@ -129,7 +129,7 @@ public class DescribeLayerTransformer extends TransformerBase {
          * @param req
          */
         private void handleLayers(DescribeLayerRequest req) {
-            FeatureTypeInfo ft;
+            MapLayerInfo layer;
 
             String url = req.getBaseUrl() + "wfs/WfsDispatcher?";
 
@@ -141,12 +141,12 @@ public class DescribeLayerTransformer extends TransformerBase {
             queryAtts.addAttribute("", "typeName", "typeName", "", "");
 
             for (Iterator it = req.getLayers().iterator(); it.hasNext();) {
-                ft = (FeatureTypeInfo) it.next();
-                layerAtts.setAttribute(0, "", "name", "name", "", ft.getName());
+                layer = (MapLayerInfo) it.next();
+                layerAtts.setAttribute(0, "", "name", "name", "", layer.getName());
                 start("LayerDescription", layerAtts);
 
                 queryAtts.setAttribute(0, "", "typeName", "typeName", "",
-                    ft.getName());
+                    layer.getName());
                 element("Query", null, queryAtts);
 
                 end("LayerDescription");

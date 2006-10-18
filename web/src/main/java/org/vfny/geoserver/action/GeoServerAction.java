@@ -13,6 +13,7 @@ import org.springframework.web.struts.ActionSupport;
 import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.Requests;
@@ -115,6 +116,23 @@ public class GeoServerAction extends ActionSupport {
      */
     public WMS getWMS(HttpServletRequest request) {
     		return (WMS) getWebApplicationContext().getBean("wms");
+    }
+
+    /**
+     * Aquire WCS from Web Container.
+     * 
+     * <p>
+     * The WCS instance is create by a STRUTS plug-in and is available
+     * through the Web container. (Test cases may seed the request object with
+     * a Mock WebContainer and a Mock WMS)
+     * </p>
+     *
+     * @param request HttpServletRequest used to aquire session reference
+     *
+     * @return WCS instance for this Web Application
+     */
+    public WCS getWCS(HttpServletRequest request) {
+    		return (WCS) getWebApplicationContext().getBean("wcs");
     }
 
     /**

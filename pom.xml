@@ -39,7 +39,7 @@
 			<id>geotools</id>
 			<name>
 				Repository serving Geotools libraries built against
-				2.2.x branch
+				2.3.x branch
 			</name>
 			<url>http://maven.geotools.fr/repository/</url>
 			<snapshots>
@@ -100,6 +100,42 @@
 				<artifactId>gt2</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
+			<!--dependency>
+				<groupId>it.geosolutions</groupId>
+				<artifactId>streams</artifactId>
+				<version>1.0</version>
+			</dependency-->
+			<dependency>
+				<groupId>org.geotools</groupId>
+  			<artifactId>gt2-arcgrid</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-geotiff</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-gtopo30</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-image</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-imagemosaic</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-imagepyramid</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-api</artifactId>
@@ -132,12 +168,17 @@
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>gt2-epsg-wkt</artifactId>
+				<artifactId>gt2-epsg-hsql</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>gt2-epsg-hsql</artifactId>
+				<artifactId>gt2-coverage</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-referencing</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
@@ -367,6 +408,39 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<!--Dependencies for Javadoc-->
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+    </dependency>
+		<dependency>
+		  <groupId>org.geotools</groupId>
+		  <artifactId>gt2-api</artifactId>
+		</dependency>
+		<dependency>
+		  <groupId>org.geotools</groupId>
+		  <artifactId>gt2-main</artifactId>
+		</dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
 	<build>
 		<!-- TODO: the resources stuff hardcodes paths to source + test directories,
 			we should be able to use some properties here -->
@@ -376,6 +450,7 @@
 				<includes>
 					<include>**/*.txt</include>
 					<include>**/*.sql</include>
+					<include>**/*.html</include>
 					<include>**/*.xml</include>
 					<include>**/*.utf</include>
 					<include>**/*.properties</include>
@@ -398,6 +473,7 @@
 				<includes>
 					<include>META-INF/services/**</include>
 					<include>**/test-data/**</include>
+					<include>**/*.html</include>
 					<include>**/*.xml</include>
 					<include>**/*.xsd</include>
 					<include>**/*.csv</include>
@@ -431,8 +507,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-	        <source>1.4</source>  <!-- The -source argument for the Java compiler.                            -->
-	        <target>1.4</target>  <!-- The -target argument for the Java compiler.                            -->
+	        			<source>1.4</source>  <!-- The -source argument for the Java compiler.                            -->
+	        			<target>1.4</target>  <!-- The -target argument for the Java compiler.                            -->
 					<includes>
 						<include>**/*Test.java</include>
 					</includes>
@@ -670,18 +746,19 @@
 		<module>platform</module>
 		<module>data</module>
 		<module>main</module>
+		<module>wcs</module>
 		<module>wfs</module>
 		<module>wms</module>
 		<module>validation</module>
 		<module>web</module>
-		<module>maven</module>
 		<!--module>release</module-->
+		<module>maven</module>
 		<module>test</module>
 	</modules>
 
 	<properties>
 		<gs.version>1.5.x</gs.version>
-		<gt.version>2.2.1</gt.version>
+		<gt.version>2.3.0-RC1-SNAPSHOT</gt.version>
 	</properties>
 
 	<profiles>
@@ -697,11 +774,12 @@
 				<module>platform</module>
 				<module>data</module>
 				<module>main</module>
-				<module>maven</module>
+				<module>wcs</module>
 				<module>wfs</module>
 				<module>wms</module>
 				<module>validation</module>
 				<module>web</module>
+				<module>maven</module>
 				<module>test</module>
 				<module>community</module>
 			</modules>

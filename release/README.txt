@@ -15,6 +15,20 @@ http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=
 
 Based on GeoTools 2.2.1
 
+GeoServer 1.4.0-M2-WCS
+----------------------
+
+Major features / improvements of this release include:
+
+- WCS 0.4 (2D Coverages)
+- WMS Raster support
+- KML Raster support
+
+The issue log for this release is here:
+
+Base on Geotools 2.3.0-M0 (tag = 2.3.0-M0)
+        JAI      1.1.4+   (https://jai.dev.java.net/)
+        ImageIO  1.1+     (https://jai-imageio.dev.java.net/)
 
 GeoServer 1.4.0-M2
 ------------------
@@ -44,7 +58,7 @@ Along with numerous ui bug fixes coming out of the move to Spring.
 Special thanks to the following people for contributions / bug fixing:
 
 - Saul Farber
-- Allesio Fabiani
+- Alessio Fabiani
 
 The issue log for this release is here:
 

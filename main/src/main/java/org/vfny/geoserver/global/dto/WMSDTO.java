@@ -37,10 +37,11 @@ public final class WMSDTO implements DataTransferObject {
     private String svgRenderer;
     /** The antialisaing hint for the svg renderer **/
     private boolean svgAntiAlias;
-    
-    /** The base-map layers and styles */
+
+    /** The interpolation rendering hint **/
     private Map baseMapLayers;
     private Map baseMapStyles;
+    private String allowInterpolation;
     
     /**
      * WMS constructor.  does nothing
@@ -69,6 +70,7 @@ public final class WMSDTO implements DataTransferObject {
         gmlPrefixing = other.isGmlPrefixing();
         svgRenderer = other.getSvgRenderer();
         svgAntiAlias = other.getSvgAntiAlias();
+        allowInterpolation = other.getAllowInterpolation();
         baseMapLayers = other.getBaseMapLayers();
         baseMapStyles = other.getBaseMapStyles();
     }
@@ -106,7 +108,8 @@ public final class WMSDTO implements DataTransferObject {
         WMSDTO dto = (WMSDTO) other;
         
         boolean equals = gmlPrefixing == dto.gmlPrefixing && 
-        	svgAntiAlias == dto.svgAntiAlias;
+        	svgAntiAlias == dto.svgAntiAlias &&
+        	allowInterpolation == dto.allowInterpolation;
         if (equals) {
         	if (service == null) {
         		equals = dto.getService() == null;
@@ -146,6 +149,7 @@ public final class WMSDTO implements DataTransferObject {
     public int hashCode() {
         return (gmlPrefixing ? 1 : 0) 
         | (svgAntiAlias ? 1 : 0)
+        | ((allowInterpolation != null) ? 0 : allowInterpolation.hashCode())
         | ((service == null) ? 0 : service.hashCode()) 
         | ((svgRenderer == null) ? 0 : svgRenderer.hashCode())
         | ((baseMapLayers == null) ? 0 : baseMapLayers.hashCode())
@@ -257,4 +261,18 @@ public final class WMSDTO implements DataTransferObject {
     public Map getBaseMapStyles() {
     	return baseMapStyles;
     }
+    /**
+     * @param allowInterpolation interpolation hint.
+     */
+    public void setAllowInterpolation(String allowInterpolation) {
+    	this.allowInterpolation = allowInterpolation;
+    }
+    
+    /**
+     * @return The value of the interpolation rendering hint.
+     */
+    public String getAllowInterpolation() {
+    	return allowInterpolation;
+    }
+
 }

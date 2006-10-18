@@ -48,9 +48,10 @@ public class WMS extends Service {
     private String svgRenderer;
     /** svg anitalias or not **/
     private boolean svgAntiAlias;
-    
+    /** rendering interpolation or not **/
     private Map baseMapLayers;
     private Map baseMapStyles;
+    private String allowInterpolation;
     
     /**
      * WMS constructor.
@@ -66,6 +67,7 @@ public class WMS extends Service {
         super(config.getService());
         svgRenderer = config.getSvgRenderer();
         svgAntiAlias = config.getSvgAntiAlias();
+        allowInterpolation = config.getAllowInterpolation();
         baseMapLayers = config.getBaseMapLayers();
         baseMapStyles = config.getBaseMapStyles();
     }
@@ -98,6 +100,7 @@ public class WMS extends Service {
     	super.load(config.getService());
     	svgRenderer = config.getSvgRenderer();
     	svgAntiAlias = config.getSvgAntiAlias();
+    	allowInterpolation = config.getAllowInterpolation();
     	baseMapLayers = config.getBaseMapLayers();
     	baseMapStyles = config.getBaseMapStyles();
     }
@@ -135,6 +138,7 @@ public class WMS extends Service {
         w.setService((ServiceDTO)super.toDTO());
         w.setSvgRenderer(svgRenderer);
         w.setSvgAntiAlias(svgAntiAlias);
+        w.setAllowInterpolation(allowInterpolation);
         w.setBaseMapLayers(baseMapLayers);
         w.setBaseMapStyles(baseMapStyles);
         
@@ -239,6 +243,20 @@ public class WMS extends Service {
      */
     public void setSvgAntiAlias(boolean svgAntiAlias) {
 		this.svgAntiAlias = svgAntiAlias;
+	}
+
+    /**
+     * @return Flag indicating wether the renderer should interpolate or not.
+     */
+    public String getAllowInterpolation() {
+		return allowInterpolation;
+	}
+    
+    /**
+     * Sets the Flag indicating wether the renderer should interpolate or not.
+     */
+    public void setAllowInterpolation(String allowInterpolation) {
+		this.allowInterpolation = allowInterpolation;
 	}
     
     public Map getBaseMapLayers() {

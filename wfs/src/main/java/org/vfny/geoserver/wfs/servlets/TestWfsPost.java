@@ -248,9 +248,9 @@ public class TestWfsPost extends HttpServlet {
 					output.close();
 				}
 
-                // while ((line = xmlIn.readLine()) != null) {
-                // out.print(line);
-                // }
+                //while ((line = xmlIn.readLine()) != null) {
+                //    out.print(line);
+                //}
             } catch (Exception e) {
                 PrintWriter out = response.getWriter();
                 out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
