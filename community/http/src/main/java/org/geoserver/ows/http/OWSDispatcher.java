@@ -776,7 +776,7 @@ public class OWSDispatcher extends AbstractController {
 
 			if ( e.getMessage() != null && !e.getMessage().equals( "" ) ) {
 				s.append( ">\n" + tab + tab );
-				s.append( e.getMessage() );
+				s.append( ResponseUtils.encodeXML( e.getMessage() ) );
 				
 				ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
 				e.printStackTrace( new PrintStream( stackTrace ) );
