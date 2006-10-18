@@ -580,7 +580,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	protected List parseStylesParam(GetMapRequest request, MapLayerInfo[] layers)
 			throws WmsException {
         String rawStyles = getValue("STYLES");
-        List styles = styles = new ArrayList(layers.length);
+        List styles = new ArrayList(layers.length);
 
         int numLayers = layers.length;
 
@@ -1256,7 +1256,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 			throws WmsException {
 		MapLayerInfo[] layers;
 		String layersParam = getValue("LAYERS");
-		List layerNames = layerNames = readFlat(layersParam, INNER_DELIMETER);
+		List layerNames = readFlat(layersParam, INNER_DELIMETER);
 		int layerCount = layerNames.size();
 
 		if (layerCount == 0) {

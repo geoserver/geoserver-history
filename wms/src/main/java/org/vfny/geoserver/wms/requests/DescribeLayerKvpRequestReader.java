@@ -67,7 +67,7 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
 			LOGGER.fine(layersParam);
 		}
 		
-		List layers = layers = readFlat(layersParam, INNER_DELIMETER);
+		List layers = readFlat(layersParam, INNER_DELIMETER);
 		if (LOGGER.isLoggable(Level.FINE)) {
 			LOGGER.fine(layers.toString());
 		}

@@ -123,7 +123,7 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
      * exists, has no layer names, or has at least an invalid layer name.
      */
     private FeatureTypeInfo[] parseLayers() throws WmsException {
-        List layers = layers = readFlat(getValue("QUERY_LAYERS"), INNER_DELIMETER);
+        List layers = readFlat(getValue("QUERY_LAYERS"), INNER_DELIMETER);
         int layerCount = layers.size();
 
         if (layerCount == 0) {
