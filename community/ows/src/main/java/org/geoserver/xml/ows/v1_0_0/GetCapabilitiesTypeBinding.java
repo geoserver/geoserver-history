@@ -88,14 +88,16 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
 	 */	
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
-		final GetCapabilitiesType getCapabilities;
+		
+		GetCapabilitiesType getCapabilities;
 
-        if(value == null){
-            getCapabilities = owsfactory.createGetCapabilitiesType();
-        }else{
-            getCapabilities = (GetCapabilitiesType)value;
-        }
-	
+		if ( value != null && value instanceof GetCapabilitiesType ) {
+			getCapabilities = (GetCapabilitiesType) value;
+		}
+		else {
+			getCapabilities = owsfactory.createGetCapabilitiesType();
+		}
+        
 		getCapabilities.setAcceptVersions( 
 			(AcceptVersionsType) node.getChildValue( AcceptVersionsType.class )
 		);
