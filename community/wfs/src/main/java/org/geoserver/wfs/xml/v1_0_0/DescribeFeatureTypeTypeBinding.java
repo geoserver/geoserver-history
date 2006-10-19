@@ -1,13 +1,14 @@
 package org.geoserver.wfs.xml.v1_0_0;
 
 
-import org.geotools.xml.*;
-import org.xml.sax.helpers.NamespaceSupport;
+import javax.xml.namespace.QName;
 
 import net.opengis.wfs.DescribeFeatureTypeType;
-import net.opengis.wfs.WFSFactory;		
+import net.opengis.wfs.WFSFactory;
 
-import javax.xml.namespace.QName;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:DescribeFeatureTypeType.

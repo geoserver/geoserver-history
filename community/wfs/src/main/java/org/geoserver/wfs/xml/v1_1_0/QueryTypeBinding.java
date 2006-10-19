@@ -5,14 +5,16 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 
-import org.geotools.xml.*;
-import org.opengis.filter.Filter;
-import org.opengis.filter.sort.SortBy;
+import javax.xml.namespace.QName;
 
 import net.opengis.wfs.QueryType;
-import net.opengis.wfs.WFSFactory;		
+import net.opengis.wfs.WFSFactory;
 
-import javax.xml.namespace.QName;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
+import org.opengis.filter.Filter;
+import org.opengis.filter.sort.SortBy;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:QueryType.

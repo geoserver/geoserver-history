@@ -806,8 +806,9 @@ public class OWSDispatcher extends AbstractController {
 	 *
 	 */
 	private static class KvpMap extends HashMap {
-		
-		public boolean containsKey(Object key) {
+            private static final long serialVersionUID = 1L;
+
+        public boolean containsKey(Object key) {
 			return super.containsKey( lower( key ) );
 		}
 		

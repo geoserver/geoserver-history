@@ -3,14 +3,16 @@ package org.geoserver.wfs.xml.v1_0_0;
 
 import java.util.Map;
 
-import org.geotools.xml.*;
-import org.geotools.xs.bindings.XSQNameBinding;
-import org.xml.sax.helpers.NamespaceSupport;
+import javax.xml.namespace.QName;
 
 import net.opengis.wfs.PropertyType;
-import net.opengis.wfs.WFSFactory;		
+import net.opengis.wfs.WFSFactory;
 
-import javax.xml.namespace.QName;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
+import org.geotools.xs.bindings.XSQNameBinding;
+import org.xml.sax.helpers.NamespaceSupport;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:PropertyType.

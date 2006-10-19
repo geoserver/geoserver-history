@@ -4,11 +4,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import org.geoserver.data.DataTestSupport;
-import org.geoserver.data.GeoServerCatalog;
-import org.geoserver.data.GeoServerResolveAdapterFactoryFinder;
-import org.geoserver.data.feature.InfoAdapterFactory;
 import org.geotools.filter.FilterFactoryFinder;
-import org.springframework.context.support.GenericApplicationContext;
 
 /**
  * Abstract base class for wfs unit tests.

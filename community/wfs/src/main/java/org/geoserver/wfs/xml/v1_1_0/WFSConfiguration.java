@@ -9,7 +9,6 @@ import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.wfs.xml.FeatureTypeSchema;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
-
 import org.geoserver.xml.ows.v1_0_0.OWSConfiguration;
 import org.geotools.filter.v1_1.OGCConfiguration;
 import org.geotools.gml3.GMLConfiguration;

@@ -1,13 +1,11 @@
 package org.geoserver.wfs.http.kvp;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 
 import net.opengis.wfs.WFSFactory;
 
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.ows.EMFUtils;
 import org.geoserver.ows.http.KvpRequestReader;

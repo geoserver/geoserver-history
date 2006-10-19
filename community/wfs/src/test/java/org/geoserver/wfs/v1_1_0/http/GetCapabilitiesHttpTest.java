@@ -1,15 +1,8 @@
 package org.geoserver.wfs.v1_1_0.http;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import org.geoserver.http.GeoServerHttpTestSupport;
 import org.w3c.dom.Document;
 
-import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.PostMethodWebRequest;
-import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 public class GetCapabilitiesHttpTest extends GeoServerHttpTestSupport {

@@ -3,15 +3,16 @@ package org.geoserver.wfs.xml.v1_0_0;
 
 import java.math.BigInteger;
 
-import org.geotools.xml.*;
+import javax.xml.namespace.QName;
 
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
-import net.opengis.wfs.PropertyType;
-import net.opengis.wfs.WFSFactory;		
+import net.opengis.wfs.WFSFactory;
 
-import javax.xml.namespace.QName;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:LockFeatureType.

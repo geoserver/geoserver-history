@@ -6,7 +6,6 @@ import org.eclipse.xsd.XSDSchema;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.wfs.WFS;
-import org.geotools.feature.FeatureType;
 
 /**
  * An xml schema describing a wfs feature type.

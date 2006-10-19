@@ -1,11 +1,12 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 
-import org.geotools.xml.*;
-
-import net.opengis.wfs.WFSFactory;		
-
 import javax.xml.namespace.QName;
+
+import net.opengis.wfs.WFSFactory;
+
+import org.geotools.xml.AbstractSimpleBinding;
+import org.geotools.xml.InstanceComponent;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:AllSomeType.

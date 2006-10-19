@@ -1,14 +1,16 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 
-import org.eclipse.emf.ecore.EObject;
-import org.geoserver.ows.EMFUtils;
-import org.geotools.xml.*;
+import javax.xml.namespace.QName;
 
 import net.opengis.wfs.BaseRequestType;
-import net.opengis.wfs.WFSFactory;		
+import net.opengis.wfs.WFSFactory;
 
-import javax.xml.namespace.QName;
+import org.eclipse.emf.ecore.EObject;
+import org.geoserver.ows.EMFUtils;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:BaseRequestType.

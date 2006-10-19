@@ -1,13 +1,15 @@
 package org.geoserver.wfs.xml.v1_0_0;
 
 
-import org.geotools.xml.*;
-import org.opengis.filter.Filter;
+import javax.xml.namespace.QName;
 
 import net.opengis.wfs.LockType;
-import net.opengis.wfs.WFSFactory;		
+import net.opengis.wfs.WFSFactory;
 
-import javax.xml.namespace.QName;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
+import org.opengis.filter.Filter;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:LockType.

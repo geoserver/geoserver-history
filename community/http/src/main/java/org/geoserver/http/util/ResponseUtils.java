@@ -6,7 +6,6 @@ package org.geoserver.http.util;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.logging.Logger;
 
 
 //TODO: JD: move this class to http module

@@ -2,9 +2,7 @@ package org.geoserver.wfs.xml;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.geoserver.wfs.WFSTestSupport;
@@ -12,8 +10,6 @@ import org.geoserver.wfs.http.response.WfsXmlWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import junit.framework.TestCase;
 
 public class WfsXmlWriterTest extends WFSTestSupport {
 

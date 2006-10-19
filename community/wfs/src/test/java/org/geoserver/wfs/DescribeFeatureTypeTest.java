@@ -2,7 +2,6 @@ package org.geoserver.wfs;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
-import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
 
@@ -10,8 +9,6 @@ import net.opengis.wfs.DescribeFeatureTypeType;
 import net.opengis.wfs.WFSFactory;
 
 import org.geoserver.data.feature.FeatureTypeInfo;
-import org.geoserver.ows.Operation;
-import org.geoserver.ows.Service;
 import org.geoserver.util.ReaderUtils;
 import org.geoserver.wfs.xml.v1_0_0.XmlSchemaEncoder;
 import org.w3c.dom.Element;

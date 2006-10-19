@@ -9,7 +9,6 @@ import org.eclipse.xsd.XSDTypeDefinition;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.catalog.GeoResource;
-import org.geotools.catalog.ResolveAdapterFactory;
 
 public class SchemaAdapterFactoryTest extends WFSTestSupport {
 

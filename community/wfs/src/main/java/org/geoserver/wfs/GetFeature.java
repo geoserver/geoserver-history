@@ -24,7 +24,6 @@ import net.opengis.wfs.LockType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WFSFactory;
 
-import org.eclipse.emf.ecore.EObject;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.AttributeTypeInfo;
 import org.geoserver.data.feature.FeatureTypeInfo;
@@ -37,7 +36,6 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.referencing.CRS;
-import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 

@@ -13,7 +13,6 @@ import org.eclipse.xsd.XSDElementDeclaration;
 import org.eclipse.xsd.XSDSchema;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
-import org.geoserver.wfs.xml.v1_0_0.WFS;
 import org.geotools.catalog.GeoResource;
 import org.geotools.xml.impl.AttributeHandler;
 import org.geotools.xml.impl.DocumentHandler;

@@ -6,7 +6,6 @@ import javax.servlet.ServletContext;
 
 import org.geoserver.GeoServerResourceLoader;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.web.context.ServletContextAware;
 

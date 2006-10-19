@@ -1,7 +1,5 @@
 package org.geoserver.wfs.xml.v1_0_0;
 
-import java.util.Iterator;
-
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geotools.feature.AttributeType;

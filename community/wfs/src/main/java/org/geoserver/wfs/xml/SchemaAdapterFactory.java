@@ -2,7 +2,6 @@ package org.geoserver.wfs.xml;
 
 import java.io.IOException;
 
-import org.eclipse.xsd.XSDSchema;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.wfs.WFS;

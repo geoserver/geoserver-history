@@ -4,7 +4,6 @@ import java.io.InputStream;
 
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.ows.http.XmlRequestReader;
-
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
 

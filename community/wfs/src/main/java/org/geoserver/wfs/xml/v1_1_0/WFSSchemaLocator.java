@@ -8,7 +8,6 @@ import org.eclipse.xsd.util.XSDSchemaLocator;
 import org.geoserver.wfs.xml.v1_0_0.WFS;
 import org.geoserver.wfs.xml.v1_0_0.WFSSchemaLocationResolver;
 import org.geoserver.xml.ows.v1_0_0.OWSSchemaLocationResolver;
-
 import org.geotools.filter.v1_1.OGCSchemaLocationResolver;
 import org.geotools.gml3.bindings.GMLSchemaLocationResolver;
 import org.geotools.gml3.bindings.smil.SMIL20SchemaLocationResolver;

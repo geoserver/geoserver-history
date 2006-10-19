@@ -4,11 +4,9 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.net.MalformedURLException;
 import java.util.PropertyResourceBundle;
 import java.util.logging.Logger;
 
@@ -20,10 +18,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 import junit.framework.TestCase;
+
+import org.w3c.dom.Document;
 
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;

@@ -3,7 +3,6 @@ package org.geoserver.ows.http;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -12,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.http.util.RequestUtils;
 import org.geoserver.ows.OWS;
-import org.geoserver.ows.Service;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

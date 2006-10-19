@@ -7,7 +7,6 @@ import java.util.List;
 import org.geoserver.http.util.KvpUtils;
 import org.geoserver.ows.http.KvpParser;
 import org.geotools.filter.FilterFactory;
-import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortOrder;
 
 /**

@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.geoserver.data.feature.FeatureTypeInfo;
-import org.geoserver.ows.Operation;
-import org.geoserver.ows.ServiceException;
-import org.geoserver.ows.http.Response;
 
 /**
  * Encodes feature type info in a particular format.

@@ -1,13 +1,5 @@
 package org.geoserver.wfs.http;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.geoserver.http.GeoServerHttpTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;

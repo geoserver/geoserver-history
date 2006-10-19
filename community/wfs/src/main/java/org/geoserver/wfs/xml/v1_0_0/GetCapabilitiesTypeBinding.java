@@ -1,13 +1,15 @@
 package org.geoserver.wfs.xml.v1_0_0;
 
 
-import org.geotools.xml.*;
+import javax.xml.namespace.QName;
 
 import net.opengis.ows.v1_0_0.OWSFactory;
 import net.opengis.wfs.GetCapabilitiesType;
-import net.opengis.wfs.WFSFactory;		
+import net.opengis.wfs.WFSFactory;
 
-import javax.xml.namespace.QName;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:GetCapabilitiesType.

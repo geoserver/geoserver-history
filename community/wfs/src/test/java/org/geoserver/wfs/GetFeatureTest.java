@@ -4,9 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -18,7 +16,6 @@ import net.opengis.wfs.WFSFactory;
 import org.geoserver.util.ReaderUtils;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
-import org.opengis.filter.expression.PropertyName;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

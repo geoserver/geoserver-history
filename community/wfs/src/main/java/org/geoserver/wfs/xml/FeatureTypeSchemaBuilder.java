@@ -25,7 +25,6 @@ import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.wfs.WFS;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
-
 import org.opengis.feature.type.Name;
 
 /**

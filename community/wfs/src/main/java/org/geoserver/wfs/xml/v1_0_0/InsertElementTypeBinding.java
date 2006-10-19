@@ -1,19 +1,15 @@
 package org.geoserver.wfs.xml.v1_0_0;
 
 
-import java.util.List;
-
-import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureCollections;
-import org.geotools.feature.FeatureType;
-import org.geotools.xml.*;
+import javax.xml.namespace.QName;
 
 import net.opengis.wfs.InsertElementType;
-import net.opengis.wfs.WFSFactory;		
+import net.opengis.wfs.WFSFactory;
 
-import javax.xml.namespace.QName;
+import org.geotools.feature.Feature;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:InsertElementType.

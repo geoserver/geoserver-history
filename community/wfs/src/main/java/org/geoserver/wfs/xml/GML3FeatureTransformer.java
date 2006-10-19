@@ -2,11 +2,7 @@ package org.geoserver.wfs.xml;
 
 import org.geotools.feature.Feature;
 import org.geotools.gml.producer.FeatureTransformer;
-import org.geotools.gml.producer.FeatureTransformer.FeatureTranslator;
-import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.geotools.gml3.bindings.GML;
-import org.geotools.xml.transform.Translator;
-import org.geotools.xml.transform.TransformerBase.SchemaLocationSupport;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;

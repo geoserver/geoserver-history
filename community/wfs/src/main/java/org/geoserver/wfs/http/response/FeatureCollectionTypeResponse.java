@@ -11,15 +11,12 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.ResultTypeType;
 
-import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.Operation;
 import org.geoserver.ows.ServiceException;
 import org.geoserver.ows.http.OWSUtils;
 import org.geoserver.ows.http.Response;
 import org.geoserver.wfs.FeatureProducer;
-import org.geoserver.wfs.GetFeature;
 import org.geoserver.wfs.WFS;
-
 import org.geoserver.wfs.WFSException;
 import org.geotools.xs.bindings.XSDateTimeBinding;
 import org.springframework.beans.BeansException;

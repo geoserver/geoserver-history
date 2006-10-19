@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import net.opengis.wfs.DescribeFeatureTypeType;
 
@@ -13,7 +12,6 @@ import org.geoserver.ows.Operation;
 import org.geoserver.ows.ServiceException;
 import org.geoserver.ows.http.OWSUtils;
 import org.geoserver.ows.http.Response;
-import org.geoserver.wfs.DescribeFeatureType;
 import org.geoserver.wfs.WFSException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
