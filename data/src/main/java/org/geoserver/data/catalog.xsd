@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gs="http://www.geoserver.org/geoserver" targetNamespace="http://www.geoserver.org/geoserver">
+
+	<xsd:annotation>
+		Schema for GeoServer catalog.xml file.
+	</xsd:annotation>
+
+	<xsd:element name="catalog" type="gs:CatalogType">
+		<xsd:annotation>Root catalog element</xsd:annotation>
+	</xsd:element>
+
+	<xsd:complexType name="CatalogType">
+		<xsd:annotation>
+			Catalog containing datastores, namespaces, and styles.
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="datastores" type="gs:DatastoresType"/>
+			<xsd:element name="namespaces" type="gs:NamespacesType"/>
+			<xsd:element name="styles" type="gs:StylesType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="DatastoresType">
+		<xsd:sequence>
+			<xsd:element name="datastore" type="gs:DatastoreType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string"/>
+		<xsd:attribute name="namespace" type="xsd:string"/>
+		<xsd:attribute name="enabled" type="xsd:boolean"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="DatastoreType">
+		<xsd:annotation>
+			Defines attributes of a datastore, such as identifier and 
+			connection parameters.
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="connectionParams" type="gs:ConnectionParamsType"/> 
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ConnectionParamsType">
+		<xsd:annotation>
+			Defines the key value pairs describing the data store 
+			connection information.
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="parameter" type="gs:ParameterType" maxOccurs="unbounded"/> 
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ParameterType">
+		<xsd:annotation>
+			Datastore connection parameter, key value pair.
+		</xsd:annotation>
+		<xsd:attribute name="name" type="xsd:string"/>
+		<xsd:attribute name="value" type="xsd:string"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NamespacesType">
+		<xsd:sequence>
+			<xsd:element name="namespace" type="gs:NamespaceType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="NamespaceType">
+		<xsd:annotation>
+			Application namespace declaration containing prefix, uri, and 
+			flag indiciating if it is the default namespace of the server
+		</xsd:annotation>
+		<xsd:attribute name="uri" type="xsd:anyURI"/>
+		<xsd:attribute name="prefix" type="xsd:string"/>
+		<xsd:attribute name="default" type="xsd:boolean" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="StylesType">
+		<xsd:sequence>
+			<xsd:element name="style" type="gs:StyleType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="StyleType">
+		<xsd:annotation>
+			Style specified as a Style Layer Descritor document.
+		</xsd:annotation>
+		<xsd:attribute name="filename" type="xsd:string"/>
+		<xsd:attribute name="id" type="xsd:string"/>
+	</xsd:complexType>
+
+</xsd:schema>
