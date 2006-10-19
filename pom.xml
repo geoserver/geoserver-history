@@ -765,6 +765,52 @@
 				<module>community</module>
 			</modules>
 		</profile>
+		<profile>
+			<id>uml</id>
+			<activation>
+				<property>
+					<name>uml</name>
+				</property>
+			</activation>
+			<reporting>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<configuration>
+							<doclet>gr.spinellis.umlgraph.doclet.UmlGraphDoc</doclet>
+							<docletArtifact>
+								<groupId>gr.spinellis</groupId>
+								<artifactId>UmlGraph</artifactId>
+								<version>4.4</version>
+							</docletArtifact>
+							<additionalparam>
+								-inferrel -inferdep -quiet -hide java.* -collpackages java.util.* -qualify
+								-postfixpackage -nodefontsize 9
+								-nodefontpackagesize 7
+								-link http://java.sun.com/j2se/1.5/docs/api
+								-link http://java.sun.com/j2ee/1.4/docs/api
+								-link http://java.sun.com/products/java-media/jai/forDevelopers/jai-apidocs
+								-link http://java.sun.com/products/java-media/3D/forDevelopers/j3dapi
+								-link http://jsr-108.sourceforge.net/javadoc
+								-link http://geoapi.sourceforge.net/snapshot/javadoc
+								-link http://geoapi.sourceforge.net/pending/javadoc
+								-link http://geoapi.sourceforge.net/legacy/javadoc
+								-link http://www.jump-project.org/docs/jts/1.7/api
+								-link http://www.geotools.fr/javadoc/2.2/
+								-link http://xmlgraphics.apache.org/batik/javadoc
+								-link http://itextdocs.lowagie.com/docs
+								-tag todo:tfmc:TODO:
+								-tag task:tfmc:TODO:
+								-tag revisit:tfmc:TODO:
+								-tag source:Xt:Source:
+								-tag tutorial:Xt:Tutorial:
+							</additionalparam>
+						</configuration>
+					</plugin>
+				</plugins>
+			</reporting>
+		</profile>
 	</profiles>
 
 </project>
