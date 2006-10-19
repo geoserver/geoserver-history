@@ -18,6 +18,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
 
+import org.geotools.image.ImageWorker;
 import org.geotools.resources.image.ImageUtilities;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
@@ -92,33 +93,8 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
 					" is not the same as expected: ").append(
 					GifMapProducerFactory.MIME_TYPE).toString());
 
-		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
-				outStream);
-		PlanarImage encodedImage = PlanarImage.wrapRenderedImage(image);
-		final ColorModel cm = image.getColorModel();
-		if (cm instanceof PackedColorModel)
-			encodedImage = ImageUtilities
-					.reformatColorModel2ComponentColorModel(encodedImage);
-		if (!(cm instanceof IndexColorModel))
-			encodedImage = ImageUtilities
-					.componentColorModel2IndexColorModel4GIF(encodedImage);
-
-		encodedImage = ImageUtilities
-				.convertIndexColorModelAlpha4GIF(encodedImage);
-
-		final ImageWriter gifWriter = new GIFImageWriter(
-				new GIFImageWriterSpi());
-		final ImageWriteParam iwp = gifWriter.getDefaultWriteParam();
-		iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-		iwp.setCompressionType("LZW");
-		iwp.setCompressionQuality(0.75f);
-
-		gifWriter.setOutput(memOutStream);
-		gifWriter.write(null, new IIOImage(encodedImage, null, null), null);
-		memOutStream.flush();
-		memOutStream.close();
-		outStream.flush();
-		outStream.close();
+		new ImageWorker(image).forceIndexColorModelForGIF(true).writeGIF(
+				outStream, "LZW", 0.75f);
 
 	}
 
