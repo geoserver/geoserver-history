@@ -279,7 +279,7 @@ public class WCSUtils {
 			dims.put("band" + (d+1), new Integer(d));
 		}
 		
-		if (!params.isEmpty()) {
+		if (params!= null && !params.isEmpty()) {
 			for (Iterator p = params.keySet().iterator(); p.hasNext();) {
 				final String param = (String) p.next();
 				if (param.equalsIgnoreCase("BAND")) {
@@ -324,6 +324,7 @@ public class WCSUtils {
 			final ParameterValueGroup param = (ParameterValueGroup) bandSelectParams.clone();
 			param.parameter("Source").setValue(coverage);
 			param.parameter("SampleDimensions").setValue(bands);
+			param.parameter("VisibleSampleDimension").setValue(bands);
 			
 			bandSelectedCoverage = bandSelectFactory.doOperation(param, hints); 
 		} else

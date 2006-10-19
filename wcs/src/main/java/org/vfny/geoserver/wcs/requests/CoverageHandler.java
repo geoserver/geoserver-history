@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.wcs.requests;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,6 +49,13 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
     private boolean insideEnvelope = false;
 
     private boolean insideGrid = false;
+    
+    private boolean insideRange = false;
+    
+    private int paramNum = -1;
+    private ArrayList paramNames = new ArrayList();
+    private HashMap params = new HashMap();
+	private int minTmp;
 
     /**
      * Empty constructor.
@@ -104,6 +113,19 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
                     request.setGridDimension(atts.getValue(i));
                 }
             }
+        } else if (currentTag.equals("rangeSubset")) {
+            insideRange = true;
+        } else if (currentTag.equals("axisSubset") && insideRange) {
+            final int length = atts.getLength();
+            String curAtt;
+            for( int i = 0; i < length; i++ ) {
+                curAtt = atts.getLocalName(i);
+
+                if (curAtt.equals("name")) {
+                	paramNames.add(atts.getValue(i));
+                	paramNum++;
+                }
+            }
         }
     }
 
@@ -118,14 +140,18 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
     public void endElement( String namespaceURI, String localName, String rawName )
             throws SAXException {
         LOGGER.finer("at end element: " + localName);
-        currentTag = "";
+        currentTag = localName;
 
         if (currentTag.equals("Envelope")) {
             insideEnvelope = false;
         } else if (currentTag.equals("Grid") || currentTag.equals("RectifiedGrid")) {
             insideGrid = false;
+        } else if (currentTag.equals("rangeSubset")) {
+        	insideRange = false;
+        	request.setParameters(params);
         }
 
+        currentTag = "";
     }
 
     /**
@@ -157,6 +183,12 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
                 LOGGER.finest(new StringBuffer("found Output CRS: ").append(s).toString());
             }
             request.setCRS(s);
+            if (request.getResponseCRS() == null)
+            	request.setResponseCRS(s);
+        } else if (currentTag.equals("responseCrs")) {
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.finest(new StringBuffer("found Output CRS: ").append(s).toString());
+            }
             request.setResponseCRS(s);
         } else if (currentTag.equals("format")) {
             if (LOGGER.isLoggable(Level.FINEST)) {
@@ -269,6 +301,30 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
                 offsetVector[0] = null;
                 offsetVector[1] = null;
             }
+        } else if (currentTag.equals("singleValue") && insideRange && paramNum == paramNames.size()-1) {
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.finest(new StringBuffer("found axisSubset{" + paramNames.get(paramNum) +"} > singleValue: ").append(s).toString());
+            }
+            final String key = (String) paramNames.get(paramNum);
+            if (params.get(key) == null)
+            	params.put(key, s);
+        } else if (currentTag.equals("min") && insideRange && paramNum == paramNames.size()-1) {
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.finest(new StringBuffer("found axisSubset{" + paramNames.get(paramNum) +"} > min: ").append(s).toString());
+            }
+            minTmp = (int) Math.round(Double.parseDouble(s));
+        } else if (currentTag.equals("max") && insideRange && paramNum == paramNames.size()-1) {
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.finest(new StringBuffer("found axisSubset{" + paramNames.get(paramNum) +"} > max: ").append(s).toString());
+            }
+            final String key = (String) paramNames.get(paramNum);
+            if (params.get(key) == null) {
+            	int maxTmp = (int) Math.round(Double.parseDouble(s));
+            	params.put(key, minTmp + "/" + maxTmp);
+            	minTmp = 0;
+            }
         }
+        
+        currentTag = "";
     }
 }

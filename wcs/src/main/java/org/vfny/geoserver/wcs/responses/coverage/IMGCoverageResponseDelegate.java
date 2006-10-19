@@ -4,13 +4,20 @@
  */
 package org.vfny.geoserver.wcs.responses.coverage;
 
+import java.awt.image.ComponentColorModel;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Iterator;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
+import javax.media.jai.PlanarImage;
 
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.gce.image.WorldImageWriter;
-import org.opengis.coverage.grid.Format;
-import org.opengis.coverage.grid.GridCoverageWriter;
+import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
@@ -91,20 +98,59 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 					" or has not succeed").toString());
 		}
 
-		GridCoverageWriter writer = new WorldImageWriter(output);
-		// writing parameters for png
-		Format writerParams = writer.getFormat();
-		writerParams.getWriteParameters().parameter("Format").setValue(
-				this.outputFormat);
-		// writing
-		writer.write(sourceCoverage, null);
-		output.flush();
-		output.close();
-		// freeing everything
-		writer.dispose();
-		writer = null;
+//		GridCoverageWriter writer = new WorldImageWriter(output);
+//		// writing parameters for png
+//		Format writerParams = writer.getFormat();
+//		writerParams.getWriteParameters().parameter("Format").setValue(
+//				this.outputFormat);
+//		// writing
+//		writer.write(sourceCoverage, null);
+//		output.flush();
+//		output.close();
+//		// freeing everything
+//		writer.dispose();
+//		writer = null;
+//		this.sourceCoverage.dispose();
+//		this.sourceCoverage = null;
+//
+		
+		
+		// /////////////////////////////////////////////////////////////////
+		//
+		// Reformatting image
+		//
+		// /////////////////////////////////////////////////////////////////
+		final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(sourceCoverage.geophysics(false).getRenderedImage());
+		final PlanarImage finalImage = !(encodedImage.getColorModel() instanceof ComponentColorModel) ? new ImageWorker(
+				encodedImage).forceComponentColorModel().getPlanarImage()
+				: encodedImage;
+		// /////////////////////////////////////////////////////////////////
+		//
+		// Getting a writer
+		//
+		// /////////////////////////////////////////////////////////////////
+		final Iterator it = ImageIO.getImageWritersByMIMEType("image/" + this.outputFormat.toLowerCase());
+		ImageWriter imgWriter = null;
+		if (!it.hasNext()) {
+			throw new IllegalStateException("No PNG ImageWriter found");
+		} else
+			imgWriter = (ImageWriter) it.next();
+
+		// /////////////////////////////////////////////////////////////////
+		//
+		// getting a stream
+		//
+		// /////////////////////////////////////////////////////////////////
+		ImageWriteParam iwp = null;
+		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
+				output);
+		imgWriter.setOutput(memOutStream);
+		imgWriter.write(null, new IIOImage(finalImage, null, null), iwp);
+
+		memOutStream.flush();
+		imgWriter.dispose();
+		memOutStream.close();
 		this.sourceCoverage.dispose();
 		this.sourceCoverage = null;
-
 	}
 }

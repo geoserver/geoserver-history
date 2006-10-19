@@ -66,7 +66,7 @@ public class WMSRenderingForm extends ActionForm {
         
         allowInterpolation = config.getAllowInterpolation();
         if (allowInterpolation == null)
-        	allowInterpolation = WMSConfig.INT_NEAREST;
+        	allowInterpolation = WMSConfig.INT_BIlINEAR;
 	}
 
 	
