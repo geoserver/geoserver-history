@@ -102,7 +102,7 @@ abstract public class WCService extends AbstractService {
         Response serviceResponse = null;
 
         try {
-            strategy = new SpeedStrategy();
+            strategy = (ServiceStrategy) ((ServiceStrategy) getApplicationContext().getBean("speedServiceStrategy")).clone();
             LOGGER.fine("strategy is: " + strategy.getId());
             serviceResponse = getResponseHandler();
         } catch (Throwable t) {
