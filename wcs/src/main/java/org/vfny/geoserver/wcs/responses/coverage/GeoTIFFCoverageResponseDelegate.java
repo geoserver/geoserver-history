@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wcs.responses.coverage;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -109,6 +110,10 @@ public class GeoTIFFCoverageResponseDelegate implements
 		GridCoverageWriter writer = format.getWriter(output);
 		writer.write(this.sourceCoverage, (GeneralParameterValue[]) params.values()
 				.toArray(new GeneralParameterValue[1]));
+		
+		/*GridCoverageWriter writer2 = format.getWriter(new File("C:/wcs.tiff"));
+		writer2.write(this.sourceCoverage, (GeneralParameterValue[]) params.values()
+				.toArray(new GeneralParameterValue[1]));*/
 		
 		this.sourceCoverage.dispose();
 		this.sourceCoverage = null;
