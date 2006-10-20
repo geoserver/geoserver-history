@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.wcs.responses.coverage;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
