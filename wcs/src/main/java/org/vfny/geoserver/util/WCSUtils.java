@@ -3,26 +3,26 @@ package org.vfny.geoserver.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.media.jai.BorderExtender;
 import javax.media.jai.Interpolation;
+import javax.media.jai.InterpolationNearest;
 
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.processing.DefaultProcessor;
 import org.geotools.coverage.processing.operation.Crop;
+import org.geotools.coverage.processing.operation.FilteredSubsample;
 import org.geotools.coverage.processing.operation.Interpolate;
 import org.geotools.coverage.processing.operation.Resample;
+import org.geotools.coverage.processing.operation.Scale;
 import org.geotools.coverage.processing.operation.SelectSampleDimension;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridRange;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wcs.WcsException;
@@ -46,6 +46,10 @@ public class WCSUtils {
 	
 	private final static Interpolate interpolateFactory = new Interpolate();
 	
+	private final static Scale scaleFactory = new Scale();
+
+	private final static FilteredSubsample filteredSubsampleFactory = new FilteredSubsample();
+	
 	private final static Resample resampleFactory = new Resample();
 	
 	static {
@@ -56,10 +60,12 @@ public class WCSUtils {
 		//
 		// ///////////////////////////////////////////////////////////////////
 		final DefaultProcessor processor = new DefaultProcessor(LENIENT_HINT);
-		bandSelectParams 	= processor.getOperation("SelectSampleDimension").getParameters();
-		cropParams 			= processor.getOperation("CoverageCrop").getParameters();
-		interpolateParams 	= processor.getOperation("Interpolate").getParameters();
-		resampleParams 		= processor.getOperation("Resample").getParameters();
+		bandSelectParams 		= processor.getOperation("SelectSampleDimension").getParameters();
+		cropParams 				= processor.getOperation("CoverageCrop").getParameters();
+		interpolateParams 		= processor.getOperation("Interpolate").getParameters();
+		scaleParams 			= processor.getOperation("Scale").getParameters();
+		resampleParams 			= processor.getOperation("Resample").getParameters();
+		filteredSubsampleParams = processor.getOperation("FilteredSubsample").getParameters();
 	}
 	
 	private final static ParameterValueGroup bandSelectParams;
@@ -69,6 +75,10 @@ public class WCSUtils {
 	private final static ParameterValueGroup interpolateParams;
 	
 	private final static ParameterValueGroup resampleParams;
+	
+	private final static ParameterValueGroup scaleParams;
+	
+	private final static ParameterValueGroup filteredSubsampleParams;
 	
 	private final static Hints hints = new Hints(new HashMap(5));
 	
@@ -151,47 +161,135 @@ public class WCSUtils {
 		return coverage;
 	}
 	
+//	/**
+//	 * <strong>Scaling</strong><br>
+//	 * Let user to scale down to the EXACT needed resolution. This step does
+//	 * not prevent from having loaded an overview of the original image
+//	 * based on the requested scale.
+//	 * 
+//	 * @param coverage GridCoverage2D
+//	 * @param newGridRange GridRange
+//	 * @param sourceCoverage GridCoverage
+//	 * @param sourceCRS CoordinateReferenceSystem
+//	 * @return GridCoverage2D
+//	 */
+//	public static GridCoverage2D scale(
+//			final GridCoverage2D coverage,
+//			final GridRange newGridRange,
+//			final GridCoverage sourceCoverage, 
+//			final CoordinateReferenceSystem sourceCRS) {
+//		// ///////////////////////////////////////////////////////////////////
+//		//
+//		// SCALE to the needed resolution
+//		// Let me now scale down to the EXACT needed resolution. This step does
+//		// not prevent from having loaded an overview of the original image
+//		// based on the requested scale.
+//		//
+//		// ///////////////////////////////////////////////////////////////////
+//		GridGeometry2D scaledGridGeometry = new GridGeometry2D(newGridRange, sourceCoverage.getEnvelope());
+//		
+//		/*Operations.DEFAULT.resample(
+//		 coverage, 
+//		 sourceCRS, 
+//		 scaledGridGeometry,
+//		 Interpolation.getInstance(Interpolation.INTERP_NEAREST));*/
+//		final ParameterValueGroup param = (ParameterValueGroup) resampleParams.clone();
+//		param.parameter("Source").setValue(coverage);
+//		param.parameter("CoordinateReferenceSystem").setValue(sourceCRS);
+//		param.parameter("GridGeometry").setValue(scaledGridGeometry);
+//		param.parameter("InterpolationType").setValue(Interpolation.getInstance(Interpolation.INTERP_NEAREST));
+//		
+//		final GridCoverage2D scaledGridCoverage = (GridCoverage2D) resampleFactory.doOperation(param, hints);
+//		
+//		return scaledGridCoverage;
+//	}
+
 	/**
-	 * <strong>Scaling</strong><br>
-	 * Let user to scale down to the EXACT needed resolution. This step does
-	 * not prevent from having loaded an overview of the original image
-	 * based on the requested scale.
+	 * Scaling the input coverage using the provided parameters.
 	 * 
-	 * @param coverage GridCoverage2D
-	 * @param newGridRange GridRange
-	 * @param sourceCoverage GridCoverage
-	 * @param sourceCRS CoordinateReferenceSystem
-	 * @return GridCoverage2D
+	 * @param scaleX
+	 * @param scaleY
+	 * @param xTrans
+	 * @param yTrans
+	 * @param interpolation
+	 * @param be
+	 * @param gc
+	 * @return
 	 */
-	public static GridCoverage2D scale(
-			final GridCoverage2D coverage,
-			final GridRange newGridRange,
-			final GridCoverage sourceCoverage, 
-			final CoordinateReferenceSystem sourceCRS) {
-		// ///////////////////////////////////////////////////////////////////
-		//
-		// SCALE to the needed resolution
-		// Let me now scale down to the EXACT needed resolution. This step does
-		// not prevent from having loaded an overview of the original image
-		// based on the requested scale.
-		//
-		// ///////////////////////////////////////////////////////////////////
-		GridGeometry2D scaledGridGeometry = new GridGeometry2D(newGridRange, sourceCoverage.getEnvelope());
-		
-		/*Operations.DEFAULT.resample(
-		 coverage, 
-		 sourceCRS, 
-		 scaledGridGeometry,
-		 Interpolation.getInstance(Interpolation.INTERP_NEAREST));*/
-		final ParameterValueGroup param = (ParameterValueGroup) resampleParams.clone();
-		param.parameter("Source").setValue(coverage);
-		param.parameter("CoordinateReferenceSystem").setValue(sourceCRS);
-		param.parameter("GridGeometry").setValue(scaledGridGeometry);
-		param.parameter("InterpolationType").setValue(Interpolation.getInstance(Interpolation.INTERP_NEAREST));
-		
-		final GridCoverage2D scaledGridCoverage = (GridCoverage2D) resampleFactory.doOperation(param, hints);
-		
-		return scaledGridCoverage;
+	public static GridCoverage2D scale(final double scaleX, final double scaleY,
+			float xTrans, float yTrans, final Interpolation interpolation,
+			final BorderExtender be, final GridCoverage2D gc) {
+
+		final ParameterValueGroup param = (ParameterValueGroup) scaleParams
+				.clone();
+		param.parameter("source").setValue(gc);
+		param.parameter("xScale").setValue(new Float(scaleX));
+		param.parameter("yScale").setValue(new Float(scaleY));
+		param.parameter("xTrans").setValue(new Float(xTrans));
+		param.parameter("yTrans").setValue(new Float(yTrans));
+		param.parameter("Interpolation").setValue(interpolation);
+		param.parameter("BorderExtender").setValue(be);
+
+		return (GridCoverage2D) scaleFactory.doOperation(param, hints);
+
+	}
+
+	/**
+	 * Reprojecting the input coverage using the provided parameters.
+	 * 
+	 * @param gc
+	 * @param crs
+	 * @param interpolation
+	 * @return
+	 */
+	public static GridCoverage2D resample(final GridCoverage2D gc,
+			CoordinateReferenceSystem crs, final Interpolation interpolation) {
+
+		final ParameterValueGroup param = (ParameterValueGroup) resampleParams
+				.clone();
+		param.parameter("source").setValue(gc);
+		param.parameter("CoordinateReferenceSystem").setValue(crs);
+		param.parameter("InterpolationType").setValue(interpolation);
+		return (GridCoverage2D) resampleFactory.doOperation(param, hints);
+
+	}
+
+	/**
+	 * Subsampling the provided {@link GridCoverage2D} with the provided
+	 * parameters.
+	 * 
+	 * @param gc
+	 * @param scaleXInt
+	 * @param scaleYInt
+	 * @param interpolation
+	 * @param be
+	 * @return
+	 */
+	public static GridCoverage2D filteredSubsample(final GridCoverage2D gc,
+			int scaleXInt, int scaleYInt, final Interpolation interpolation,
+			final BorderExtender be) {
+		final GridCoverage2D preScaledGridCoverage;
+		if (scaleXInt == 1 && scaleYInt == 1)
+			preScaledGridCoverage = gc;
+		else {
+
+			final ParameterValueGroup param = (ParameterValueGroup) filteredSubsampleParams
+					.clone();
+			param.parameter("source").setValue(gc);
+			param.parameter("scaleX").setValue(new Integer(scaleXInt));
+			param.parameter("scaleY").setValue(new Integer(scaleYInt));
+			if (interpolation.equals(new InterpolationNearest()))
+				param.parameter("qsFilterArray").setValue(new float[] { 1.0F });
+			else
+				param.parameter("qsFilterArray").setValue(
+						new float[] { 0.5F, 1.0F / 3.0F, 0.0F, -1.0F / 12.0F });
+			param.parameter("Interpolation").setValue(interpolation);
+			param.parameter("BorderExtender").setValue(be);
+			preScaledGridCoverage = (GridCoverage2D) filteredSubsampleFactory
+					.doOperation(param, hints);
+
+		}
+		return preScaledGridCoverage;
 	}
 	
 	/**
@@ -324,7 +422,7 @@ public class WCSUtils {
 			final ParameterValueGroup param = (ParameterValueGroup) bandSelectParams.clone();
 			param.parameter("Source").setValue(coverage);
 			param.parameter("SampleDimensions").setValue(bands);
-			param.parameter("VisibleSampleDimension").setValue(bands);
+			//param.parameter("VisibleSampleDimension").setValue(bands);
 			
 			bandSelectedCoverage = bandSelectFactory.doOperation(param, hints); 
 		} else

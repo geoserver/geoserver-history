@@ -8,8 +8,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.gce.geotiff.GeoTiffWriter;
+import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.gce.geotiff.GeoTiffFormat;
+import org.geotools.gce.geotiff.GeoTiffWriteParams;
+import org.geotools.image.imageio.GeoToolsWriteParams;
 import org.opengis.coverage.grid.GridCoverageWriter;
+import org.opengis.parameter.GeneralParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
@@ -78,18 +83,36 @@ public class GeoTIFFCoverageResponseDelegate implements
 							+ " or has not succeed");
 		}
 
-		// getting a writer
+/*		// getting a writer
 		final GridCoverageWriter writer = new GeoTiffWriter(output);
 
 		// writing
 		writer.write(sourceCoverage.geophysics(false), null);
 		// freeing everything
-		writer.dispose();
+		writer.dispose();*/
 
+
+		
+		
+		final GeoTiffFormat format = new GeoTiffFormat();
+		final GeoTiffWriteParams wp = new GeoTiffWriteParams();
+		wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
+		wp.setCompressionType("LZW");
+		wp.setCompressionQuality(0.75F);
+		wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
+		wp.setTiling(256,256);
+		final ParameterValueGroup params = format.getWriteParameters();
+		params.parameter(
+				AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString())
+				.setValue(wp);
+
+		GridCoverageWriter writer = format.getWriter(output);
+		writer.write(this.sourceCoverage, (GeneralParameterValue[]) params.values()
+				.toArray(new GeneralParameterValue[1]));
+		
 		this.sourceCoverage.dispose();
 		this.sourceCoverage = null;
 		output.flush();
 		output.close();
-
 	}
 }

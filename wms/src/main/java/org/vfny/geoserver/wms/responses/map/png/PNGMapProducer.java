@@ -41,45 +41,13 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
 	private static final Logger LOGGER = Logger.getLogger(PNGMapProducer.class
 			.getPackage().getName());
 
-	/**
-	 * Workaround class for compressing PNG using the default
-	 * {@link PNGImageEncoder} shipped with the JDK.
-	 * 
-	 * <p>
-	 * {@link PNGImageWriter} does not support
-	 * {@link ImageWriteParam#setCompressionMode(int)} set to
-	 * {@link ImageWriteParam#MODE_EXPLICIT}, it only allows
-	 * {@link ImageWriteParam#MODE_DEFAULT}.
-	 * 
-	 * <p>
-	 * 
-	 * 
-	 * @author Simone Giannecchini.
-	 * 
-	 */
-	public final static class PNGImageWriteParam extends ImageWriteParam {
-
-		/**
-		 * Default construnctor.
-		 * 
-		 * @param local
-		 */
-		public PNGImageWriteParam() {
-			super();
-			this.canWriteProgressive = true;
-			this.canWriteCompressed = true;
-			this.locale = Locale.getDefault();
-		}
-	}
+	
 
 	/** PNG Native Acceleration Mode * */
 	private Boolean PNGNativeAcc;
 
 	public PNGMapProducer(String format, WMS wms) {
 		super(format, wms);
-		/**
-		 * TODO To check Native Acceleration mode use the following variable
-		 */
 		this.PNGNativeAcc = wms.getGeoServer().getPNGNativeAcceleration();
 	}
 
@@ -110,91 +78,7 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
 		// Reformatting this image for png
 		//
 		// /////////////////////////////////////////////////////////////////
-		if (LOGGER.isLoggable(Level.FINE))
-			LOGGER.fine("Preparing for writing for png image");
-		final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(image);
-		final PlanarImage finalImage = !(encodedImage.getColorModel() instanceof ComponentColorModel) ? new ImageWorker(
-				encodedImage).forceComponentColorModel().getPlanarImage()
-				: encodedImage;
-		if (LOGGER.isLoggable(Level.FINE))
-			LOGGER.fine("Encoded input image for png writer");
-		// /////////////////////////////////////////////////////////////////
-		//
-		// Getting a writer
-		//
-		// /////////////////////////////////////////////////////////////////
-		if (LOGGER.isLoggable(Level.FINE))
-			LOGGER.fine("Getting a writer");
-		final Iterator it = ImageIO.getImageWritersByMIMEType(format);
-		ImageWriter writer = null;
-		if (!it.hasNext()) {
-			throw new IllegalStateException("No PNG ImageWriter found");
-		} else
-			writer = (ImageWriter) it.next();
-
-		// /////////////////////////////////////////////////////////////////
-		//
-		// getting a stream
-		//
-		// /////////////////////////////////////////////////////////////////
-		if (LOGGER.isLoggable(Level.FINE))
-			LOGGER.fine("Setting write parameters for this writer");
-		ImageWriteParam iwp = null;
-		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
-				outStream);
-		if (writer.getClass().getName().equals(
-		// /////////////////////////////////////////////////////////////////
-				//
-				// compressing with native
-				//
-				// /////////////////////////////////////////////////////////////////
-				"com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")
-				&& this.PNGNativeAcc.booleanValue()) {
-			if (LOGGER.isLoggable(Level.FINE))
-				LOGGER.fine("Writer is native");
-			iwp = writer.getDefaultWriteParam();
-			// Define compression mode
-			iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-			// best compression
-			iwp.setCompressionType("FILTERED");
-			// we can control quality here
-			iwp.setCompressionQuality(0);
-			// destination image type
-			iwp.setDestinationType(new ImageTypeSpecifier(finalImage
-					.getColorModel(), finalImage.getSampleModel()));
-
-		} else {
-			// /////////////////////////////////////////////////////////////////
-			//
-			// compressing with pure java
-			//
-			// /////////////////////////////////////////////////////////////////
-			// //
-			// pure java from native
-			// //
-			if (writer.getClass().getName().equals(
-					"com.sun.media.imageioimpl.plugins.png.CLibPNGImageWriter")
-					&& !PNGNativeAcc.booleanValue())
-				writer = (ImageWriter) it.next();
-			if (LOGGER.isLoggable(Level.FINE))
-				LOGGER.fine("Writer is NOT native");
-			// instantiating PNGImageWriteParam
-			iwp = new PNGImageWriteParam();
-			// Define compression mode
-			iwp.setCompressionMode(ImageWriteParam.MODE_DEFAULT);
-		}
-
-		if (LOGGER.isLoggable(Level.FINE))
-			LOGGER.fine("About to write png image");
-		writer.setOutput(memOutStream);
-		writer.write(null, new IIOImage(finalImage, null, null), iwp);
-
-		memOutStream.flush();
-		writer.dispose();
-		memOutStream.close();
-
-		if (LOGGER.isLoggable(Level.FINE))
-			LOGGER.fine("Writing png image done!");
+		new ImageWorker(image).writePNG(outStream, "FILTERED", 0.75f, PNGNativeAcc.booleanValue(), true);
 
 	}
 

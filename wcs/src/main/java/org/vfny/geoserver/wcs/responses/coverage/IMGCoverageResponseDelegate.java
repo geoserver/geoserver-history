@@ -120,7 +120,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 		// Reformatting image
 		//
 		// /////////////////////////////////////////////////////////////////
-		final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(sourceCoverage.geophysics(false).getRenderedImage());
+		final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(sourceCoverage.getRenderedImage());
 		final PlanarImage finalImage = !(encodedImage.getColorModel() instanceof ComponentColorModel) ? new ImageWorker(
 				encodedImage).forceComponentColorModel().getPlanarImage()
 				: encodedImage;
