@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 import javax.media.jai.BorderExtender;
 import javax.media.jai.Interpolation;
-import javax.media.jai.InterpolationBilinear;
 import javax.media.jai.InterpolationNearest;
 
 import org.geotools.coverage.grid.GeneralGridRange;
@@ -80,7 +79,7 @@ public class CoverageResponse implements Response {
 	 * If after a scaling a coverage has all dimensions smaller than
 	 * {@link GridCoverageRenderer#MIN_DIM_TOLERANCE} we just do not draw it.
 	 */
-	private static final int MIN_DIM_TOLERANCE = 5;
+	private static final int MIN_DIM_TOLERANCE = 1;
 	
 	/**
 	 * 
@@ -385,6 +384,7 @@ public class CoverageResponse implements Response {
 				.getEnvelope()).getCoordinateReferenceSystem();
 		final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS
 		.transform(cvCRS, sourceCRS, true);
+		final MathTransform GCCRSTodeviceCRSTransform = CRS.transform(cvCRS, targetCRS, true);
 		final MathTransform deviceCRSToGCCRSTransform = GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform
 		.inverse();
 
@@ -459,7 +459,7 @@ public class CoverageResponse implements Response {
 							//
 							// ///////////////////////////////////////////////////////////////////
 							AffineTransform finalGridToWorldInGCCRS;
-							if (!GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform.isIdentity()) {
+							if (!GCCRSTodeviceCRSTransform.isIdentity()) {
 								finalGridToWorldInGCCRS = new AffineTransform(
 										(AffineTransform) GridGeometry2D.getTransform(
 												new GeneralGridRange(destinationSize),
@@ -582,7 +582,7 @@ public class CoverageResponse implements Response {
 									else
 										scaledGridCoverage = WCSUtils.scale(scaleX * scaleXInt, scaleY
 												* scaleYInt, 0f, 0f,
-												interpolation == null ? new InterpolationBilinear()
+												interpolation == null ? new InterpolationNearest()
 														: interpolation, BorderExtender
 														.createInstance(BorderExtender.BORDER_COPY),
 												preScaledGridCoverage);
@@ -593,9 +593,9 @@ public class CoverageResponse implements Response {
 									//
 									//
 									// ///////////////////////////////////////////////////////////////////
-									if (!GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform.isIdentity()) {
+									if (!GCCRSTodeviceCRSTransform.isIdentity()) {
 										preSymbolizer = WCSUtils.resample(scaledGridCoverage, targetCRS,
-												interpolation == null ? new InterpolationBilinear()
+												interpolation == null ? new InterpolationNearest()
 														: interpolation);
 										if (LOGGER.isLoggable(Level.FINE))
 											LOGGER.fine(new StringBuffer("Reprojecting to crs ")
@@ -612,10 +612,10 @@ public class CoverageResponse implements Response {
 									//
 									// ///////////////////////////////////////////////////////////////////
 									final GridCoverage2D reprojectedCoverage;
-									if (!GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform.isIdentity()) {
+									if (!GCCRSTodeviceCRSTransform.isIdentity()) {
 										reprojectedCoverage = WCSUtils.resample(croppedGridCoverage,
 												targetCRS,
-												interpolation == null ? new InterpolationBilinear()
+												interpolation == null ? new InterpolationNearest()
 														: interpolation);
 										if (LOGGER.isLoggable(Level.FINE))
 											LOGGER.fine(new StringBuffer("Reprojecting to crs ")
@@ -632,7 +632,7 @@ public class CoverageResponse implements Response {
 										LOGGER.fine(new StringBuffer("Scale up with factors ").append(
 												scaleX).append(scaleY).toString());
 									preSymbolizer = (GridCoverage2D) WCSUtils.scale(scaleX, scaleY, 0f, 0f,
-											interpolation == null ? new InterpolationBilinear()
+											interpolation == null ? new InterpolationNearest()
 													: interpolation, BorderExtender
 													.createInstance(BorderExtender.BORDER_COPY),
 											reprojectedCoverage);
