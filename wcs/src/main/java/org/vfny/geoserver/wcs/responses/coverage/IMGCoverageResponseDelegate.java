@@ -21,6 +21,7 @@ import org.geotools.gce.image.WorldImageWriter;
 import org.geotools.image.ImageWorker;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverageWriter;
+import org.opengis.parameter.GeneralParameterValue;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
@@ -101,16 +102,15 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 					" or has not succeed").toString());
 		}
 
-		GridCoverageWriter writer = new WorldImageWriter(output);
-		// writing parameters for png
-		Format writerParams = writer.getFormat();
-		writerParams.getWriteParameters().parameter("Format").setValue("image/" + this.outputFormat.toLowerCase());
+		final GridCoverageWriter writer = new WorldImageWriter(output);
+		// writing parameters for Image
+		final Format writerParams = writer.getFormat();
+		writerParams.getWriteParameters().parameter("Format").setValue(this.outputFormat.toLowerCase());
 		// writing
-		writer.write(sourceCoverage, null);
+		writer.write(sourceCoverage, (GeneralParameterValue[]) writerParams.getWriteParameters().values().toArray(new GeneralParameterValue[1]));
 
 		// freeing everything
 		writer.dispose();
-		writer = null;
 		this.sourceCoverage.dispose();
 		this.sourceCoverage = null;
 	}

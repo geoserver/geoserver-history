@@ -23,6 +23,7 @@ import javax.media.jai.InterpolationNearest;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
@@ -219,7 +220,7 @@ public class CoverageResponse implements Response {
 			}
 
 			final Format format = meta.getFormatInfo().getFormat();
-			final GridCoverageReader reader = meta.getReader();
+			final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta.getReader();
 
 			// /////////////////////////////////////////////////////////
 			//

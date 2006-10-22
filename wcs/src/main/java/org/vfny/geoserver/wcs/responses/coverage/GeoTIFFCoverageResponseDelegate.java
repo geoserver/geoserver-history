@@ -11,7 +11,9 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.gce.geotiff.GeoTiffFormat;
 import org.geotools.gce.geotiff.GeoTiffWriteParams;
+import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.image.imageio.GeoToolsWriteParams;
+import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverageWriter;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
@@ -82,21 +84,20 @@ public class GeoTIFFCoverageResponseDelegate implements
 					"It seems prepare() has not been called"
 							+ " or has not succeed");
 		}		
-		final GeoTiffFormat format = new GeoTiffFormat();
+		final GridCoverageWriter writer = new GeoTiffWriter(output);
 		final GeoTiffWriteParams wp = new GeoTiffWriteParams();
 		wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
 		wp.setCompressionType("LZW");
 		wp.setCompressionQuality(0.75F);
 		wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
 		wp.setTiling(256,256);
-		final ParameterValueGroup params = format.getWriteParameters();
-		params.parameter(
+
+		final Format writerParams = writer.getFormat();
+		writerParams.getWriteParameters().parameter(
 				AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString())
 				.setValue(wp);
 
-		GridCoverageWriter writer = format.getWriter(output);
-		writer.write(this.sourceCoverage, (GeneralParameterValue[]) params.values()
-				.toArray(new GeneralParameterValue[1]));
+		writer.write(sourceCoverage, (GeneralParameterValue[]) writerParams.getWriteParameters().values().toArray(new GeneralParameterValue[1]));
 
 		writer.dispose();
 		this.sourceCoverage.dispose();
