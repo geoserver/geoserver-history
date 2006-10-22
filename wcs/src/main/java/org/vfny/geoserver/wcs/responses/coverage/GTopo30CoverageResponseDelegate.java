@@ -106,8 +106,6 @@ public class GTopo30CoverageResponseDelegate implements
 		else
 			throw new ServiceException(
 					"Could not create a writer for the format Gtopo30!");
-		outZ.flush();
-		outZ.close();
 
 		// freeing everything
 		writer.dispose();

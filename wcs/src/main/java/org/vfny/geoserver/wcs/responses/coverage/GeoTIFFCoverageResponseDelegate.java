@@ -81,19 +81,7 @@ public class GeoTIFFCoverageResponseDelegate implements
 			throw new IllegalStateException(
 					"It seems prepare() has not been called"
 							+ " or has not succeed");
-		}
-
-/*		// getting a writer
-		final GridCoverageWriter writer = new GeoTiffWriter(output);
-
-		// writing
-		writer.write(sourceCoverage.geophysics(false), null);
-		// freeing everything
-		writer.dispose();*/
-
-
-		
-		
+		}		
 		final GeoTiffFormat format = new GeoTiffFormat();
 		final GeoTiffWriteParams wp = new GeoTiffWriteParams();
 		wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
@@ -109,14 +97,9 @@ public class GeoTIFFCoverageResponseDelegate implements
 		GridCoverageWriter writer = format.getWriter(output);
 		writer.write(this.sourceCoverage, (GeneralParameterValue[]) params.values()
 				.toArray(new GeneralParameterValue[1]));
-		
-		/*GridCoverageWriter writer2 = format.getWriter(new File("C:/wcs.tiff"));
-		writer2.write(this.sourceCoverage, (GeneralParameterValue[]) params.values()
-				.toArray(new GeneralParameterValue[1]));*/
-		
+
+		writer.dispose();
 		this.sourceCoverage.dispose();
 		this.sourceCoverage = null;
-		output.flush();
-		output.close();
 	}
 }

@@ -542,9 +542,9 @@ public class CoverageResponse implements Response {
 								// //
 								final GridCoverage2D preSymbolizer;
 								if (scaleX * scaleY <= 1.0) {
-									int scaleXInt = (int) Math.floor(1 / scaleX);
+									int scaleXInt = (int) Math.ceil(1 / scaleX);
 									scaleXInt = scaleXInt == 0 ? 1 : scaleXInt;
-									int scaleYInt = (int) Math.floor(1 / scaleY);
+									int scaleYInt = (int) Math.ceil(1 / scaleY);
 									scaleYInt = scaleYInt == 0 ? 1 : scaleYInt;
 
 									// ///////////////////////////////////////////////////////////////////
