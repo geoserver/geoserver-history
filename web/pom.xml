@@ -26,6 +26,7 @@
 			<artifactId>struts</artifactId>
 		</dependency>
 
+		<!-- Geoserver dependencies -->
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>platform</artifactId>
@@ -56,7 +57,38 @@
 			<artifactId>validation</artifactId>
 			<version>1.4.0-RC1</version>
 		</dependency>
+		
+		<!-- Geotools dependencies. Here be datastores we want to ship with the release -->
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-main</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-shapefile</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-shapefile</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-indexed-shapefile</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-postgis</artifactId>
+		</dependency>
 
+		<!-- Misc deps, web and spring -->
 		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
@@ -121,37 +153,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-main</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-shapefile</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-validation</artifactId>
-		</dependency>
-		<!--dependency>
-			<groupId>com.mockrunner</groupId>
-			<artifactId>mockrunner</artifactId>
-			<scope>test</scope>
-			</dependency>
-			<dependency>
-			<groupId>mockobjects</groupId>
-			<artifactId>mockobjects-jdk1.4-j2ee1.3</artifactId>
-			<scope>test</scope>
-			</dependency>
-			<dependency>
-			<groupId>httpunit</groupId>
-			<artifactId>httpunit</artifactId>
-			<scope>test</scope>
-			</dependency-->
 
 		<!--  Jetty starter dependencies -->
 		<dependency>
