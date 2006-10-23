@@ -11,6 +11,7 @@ import javax.media.jai.Interpolation;
 import javax.media.jai.InterpolationNearest;
 
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.processing.DefaultProcessor;
 import org.geotools.coverage.processing.operation.Crop;
 import org.geotools.coverage.processing.operation.FilteredSubsample;
@@ -23,6 +24,7 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.GridCoverage;
+import org.opengis.coverage.grid.GridRange;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wcs.WcsException;
@@ -161,48 +163,48 @@ public class WCSUtils {
 		return coverage;
 	}
 	
-//	/**
-//	 * <strong>Scaling</strong><br>
-//	 * Let user to scale down to the EXACT needed resolution. This step does
-//	 * not prevent from having loaded an overview of the original image
-//	 * based on the requested scale.
-//	 * 
-//	 * @param coverage GridCoverage2D
-//	 * @param newGridRange GridRange
-//	 * @param sourceCoverage GridCoverage
-//	 * @param sourceCRS CoordinateReferenceSystem
-//	 * @return GridCoverage2D
-//	 */
-//	public static GridCoverage2D scale(
-//			final GridCoverage2D coverage,
-//			final GridRange newGridRange,
-//			final GridCoverage sourceCoverage, 
-//			final CoordinateReferenceSystem sourceCRS) {
-//		// ///////////////////////////////////////////////////////////////////
-//		//
-//		// SCALE to the needed resolution
-//		// Let me now scale down to the EXACT needed resolution. This step does
-//		// not prevent from having loaded an overview of the original image
-//		// based on the requested scale.
-//		//
-//		// ///////////////////////////////////////////////////////////////////
-//		GridGeometry2D scaledGridGeometry = new GridGeometry2D(newGridRange, sourceCoverage.getEnvelope());
-//		
-//		/*Operations.DEFAULT.resample(
-//		 coverage, 
-//		 sourceCRS, 
-//		 scaledGridGeometry,
-//		 Interpolation.getInstance(Interpolation.INTERP_NEAREST));*/
-//		final ParameterValueGroup param = (ParameterValueGroup) resampleParams.clone();
-//		param.parameter("Source").setValue(coverage);
-//		param.parameter("CoordinateReferenceSystem").setValue(sourceCRS);
-//		param.parameter("GridGeometry").setValue(scaledGridGeometry);
-//		param.parameter("InterpolationType").setValue(Interpolation.getInstance(Interpolation.INTERP_NEAREST));
-//		
-//		final GridCoverage2D scaledGridCoverage = (GridCoverage2D) resampleFactory.doOperation(param, hints);
-//		
-//		return scaledGridCoverage;
-//	}
+	/**
+	 * <strong>Scaling</strong><br>
+	 * Let user to scale down to the EXACT needed resolution. This step does
+	 * not prevent from having loaded an overview of the original image
+	 * based on the requested scale.
+	 * 
+	 * @param coverage GridCoverage2D
+	 * @param newGridRange GridRange
+	 * @param sourceCoverage GridCoverage
+	 * @param sourceCRS CoordinateReferenceSystem
+	 * @return GridCoverage2D
+	 */
+	public static GridCoverage2D scale(
+			final GridCoverage2D coverage,
+			final GridRange newGridRange,
+			final GridCoverage sourceCoverage, 
+			final CoordinateReferenceSystem sourceCRS) {
+		// ///////////////////////////////////////////////////////////////////
+		//
+		// SCALE to the needed resolution
+		// Let me now scale down to the EXACT needed resolution. This step does
+		// not prevent from having loaded an overview of the original image
+		// based on the requested scale.
+		//
+		// ///////////////////////////////////////////////////////////////////
+		GridGeometry2D scaledGridGeometry = new GridGeometry2D(newGridRange, sourceCoverage.getEnvelope());
+		
+		/*Operations.DEFAULT.resample(
+		 coverage, 
+		 sourceCRS, 
+		 scaledGridGeometry,
+		 Interpolation.getInstance(Interpolation.INTERP_NEAREST));*/
+		final ParameterValueGroup param = (ParameterValueGroup) resampleParams.clone();
+		param.parameter("Source").setValue(coverage);
+		param.parameter("CoordinateReferenceSystem").setValue(sourceCRS);
+		param.parameter("GridGeometry").setValue(scaledGridGeometry);
+		param.parameter("InterpolationType").setValue(Interpolation.getInstance(Interpolation.INTERP_NEAREST));
+		
+		final GridCoverage2D scaledGridCoverage = (GridCoverage2D) resampleFactory.doOperation(param, hints);
+		
+		return scaledGridCoverage;
+	}
 
 	/**
 	 * Scaling the input coverage using the provided parameters.

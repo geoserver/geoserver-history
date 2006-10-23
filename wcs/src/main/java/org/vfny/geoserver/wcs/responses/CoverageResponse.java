@@ -33,7 +33,6 @@ import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.coverage.grid.GridRange;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterDescriptor;
@@ -438,11 +437,6 @@ public class CoverageResponse implements Response {
 									request.getGridHigh()[1].intValue() };
 							
 							Rectangle destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
-//							// new grid range
-//							final GeneralGridRange newGridrange = new GeneralGridRange(lowers,
-//									highers);
-//
-//							subCoverage = WCSUtils.scale(croppedGridCoverage, newGridrange, coverage, cvCRS);
 
 							// ///////////////////////////////////////////////////////////////////
 							//
@@ -543,9 +537,9 @@ public class CoverageResponse implements Response {
 								// //
 								final GridCoverage2D preSymbolizer;
 								if (scaleX * scaleY <= 1.0) {
-									int scaleXInt = (int) Math.ceil(1 / scaleX);
+									int scaleXInt = (int) Math.floor(1 / scaleX);
 									scaleXInt = scaleXInt == 0 ? 1 : scaleXInt;
-									int scaleYInt = (int) Math.ceil(1 / scaleY);
+									int scaleYInt = (int) Math.floor(1 / scaleY);
 									scaleYInt = scaleYInt == 0 ? 1 : scaleYInt;
 
 									// ///////////////////////////////////////////////////////////////////
@@ -580,13 +574,17 @@ public class CoverageResponse implements Response {
 									final GridCoverage2D scaledGridCoverage;
 									if (scaleX * scaleXInt == 1.0 && scaleY * scaleYInt == 1.0)
 										scaledGridCoverage = preScaledGridCoverage;
-									else
-										scaledGridCoverage = WCSUtils.scale(scaleX * scaleXInt, scaleY
-												* scaleYInt, 0f, 0f,
+									else {
+										/*scaledGridCoverage = WCSUtils.scale(scaleX * scaleXInt, scaleY * scaleYInt, 0f, 0f,
 												interpolation == null ? new InterpolationNearest()
 														: interpolation, BorderExtender
 														.createInstance(BorderExtender.BORDER_COPY),
-												preScaledGridCoverage);
+												preScaledGridCoverage);*/
+										final GeneralGridRange newGridrange = new GeneralGridRange(lowers,
+												highers);
+			
+										scaledGridCoverage = WCSUtils.scale(preScaledGridCoverage, newGridrange, croppedGridCoverage, cvCRS);
+									}
 
 									// ///////////////////////////////////////////////////////////////////
 									//
@@ -630,8 +628,7 @@ public class CoverageResponse implements Response {
 									//
 									// ///////////////////////////////////////////////////////////////////
 									if (LOGGER.isLoggable(Level.FINE))
-										LOGGER.fine(new StringBuffer("Scale up with factors ").append(
-												scaleX).append(scaleY).toString());
+										LOGGER.fine(new StringBuffer("Scale up with factors ").append(scaleX).append(scaleY).toString());
 									preSymbolizer = (GridCoverage2D) WCSUtils.scale(scaleX, scaleY, 0f, 0f,
 											interpolation == null ? new InterpolationNearest()
 													: interpolation, BorderExtender
