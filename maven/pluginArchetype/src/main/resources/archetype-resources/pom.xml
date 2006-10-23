@@ -1,0 +1,24 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>${groupId}</groupId>
+	<artifactId>${artifactId}</artifactId>
+  <version>${version}</version>
+
+	<dependencies>
+		<dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>platform</artifactId>
+		</dependency>
+
+		<!-- 
+		Additional GeoServer dependencies here, example:
+		<depdendecy>
+			<groupId>org.geoserver</groupId>
+			<artifactId>wfs</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+		-->
+
+	</dependencies>
+
+</project>

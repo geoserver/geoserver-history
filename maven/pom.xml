@@ -52,6 +52,8 @@
 	<modules>
 		<module>config</module>
 		<module>merger</module>
+		<module>pluginArchetype</module>
+		<module>appArchetype</module>
 	</modules>
 
 </project>

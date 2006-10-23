@@ -1,0 +1,37 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>${groupId}</groupId>
+	<artifactId>${artifactId}</artifactId>
+	<packaging>war</packaging>
+  <version>${version}</version>
+
+	<dependencies>
+		<dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+      <scope>provided</scope>
+    </dependency>
+		<dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>data</artifactId>
+			<version>ows4</version>
+		</dependency>
+		<dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>http</artifactId>
+			<version>ows4</version>
+		</dependency>
+
+		<!-- 
+		Additional GeoServer dependencies here, example:
+		<depdendecy>
+			<groupId>org.geoserver</groupId>
+			<artifactId>wfs</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+		-->
+
+	</dependencies>
+
+</project>

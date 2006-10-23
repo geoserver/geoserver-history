@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+  <!-- resource loader -->
+  <bean id="resourceLoader" class="org.geoserver.GeoServerResourceLoader"/>
+
+	<!-- GeoServer data directory -->
+  <bean id="resourceLoaderInitializer" class="org.geoserver.web.GeoServerDataDirectoryInitializer"/>
+  
+  <!-- catalog  -->
+  <bean id="catalog"
+		class="org.geoserver.data.DefaultGeoServerCatalog"/>
+  
+  <!-- adapter to turn catalog handles into "meta data" objects" -->
+  <bean id="infoAdapterFactory" class="org.geoserver.data.feature.InfoAdapterFactory">
+  	<constructor-arg ref="catalog"/>
+  	<constructor-arg ref="resourceLoader"/>
+  </bean>
+ 
+	<!-- service factory finder -->
+  <bean id="serviceFinder" class="org.geotools.catalog.adaptable.AdaptingServiceFinder">
+  	<constructor-arg ref="catalog"/>
+  	<constructor-arg>
+  	  <bean class="org.geoserver.data.GeoServerServiceFinder">
+	    <constructor-arg ref="catalog"></constructor-arg>	
+      </bean>
+  	</constructor-arg>
+  </bean>
+  
+  <!-- load catalog on startup -->
+  <bean id="catalogLoader" class="org.geoserver.data.CatalogLoader">
+  	<constructor-arg ref="resourceLoader"/>
+  	<constructor-arg ref="catalog"/>
+  	<constructor-arg ref="serviceFinder"/>
+  </bean>
+  
+  <!-- some default catalog service factories -->
+  <bean id="sldServiceFactory" 
+  	class="org.geotools.catalog.styling.SLDServiceFactory"/>
+  <!--  bean id="shapefileServiceFactory"
+  	 class="org.geotools.catalog.shapefile.ShapefileServiceFactory"/-->
+  <bean id="postgisServiceFactory"
+  	 class="org.geotools.catalog.postgis.PostGISServiceFactory"/>
+  	 
+  <!-- controller which dispatches to ows services -->
+  <bean id="dispatcher" class="org.geoserver.ows.http.OWSDispatcher"/>
+  	
+  <!-- interceptor which initializes ows services -->
+  <bean id="owsInitializer" class="org.geoserver.ows.http.OWSInitializer"/>
+  
+	<!-- dispatcher configuration -->
+  <bean id="owsDispatcherMapping" 
+  	class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+  	
+  	<property name="interceptors">
+  		<list>
+			 <ref bean="owsInitializer"/>
+  		</list>
+  	</property>
+  
+  	<property name="mappings">
+  	  <props>
+  	    <prop key="/ows">dispatcher</prop>
+      	<prop key="/ows/*">dispatcher</prop>
+      </props>
+    </property>
+    
+  </bean>
+  
+</beans>

@@ -1,0 +1,6 @@
+<archetype>
+ <id>geoserver-plugin-archetype</id>
+ <sources>
+		<source>src/main/java/applicationContext.xml</source>
+ </sources>
+</archetype>

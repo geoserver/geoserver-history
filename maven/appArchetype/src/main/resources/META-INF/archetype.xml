@@ -1,0 +1,9 @@
+<archetype>
+ <id>geoserver-app-archetype</id>
+ <sources>
+		<source>src/main/java/applicationContext.xml</source>
+ </sources>
+ <resources>
+    <resource>src/main/webapp/WEB-INF/web.xml</resource>
+ </resources>
+</archetype>
