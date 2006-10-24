@@ -7,7 +7,10 @@
 	<moduleSets>
 	  <moduleSet>
   		<includes>
+			<include>org.geoserver:data</include>
   			<include>org.geoserver:main</include>
+			<include>org.geoserver:maven</include>
+			<include>org.geoserver:platform</include>
   			<include>org.geoserver:wfs</include>
   			<include>org.geoserver:wms</include>
   			<include>org.geoserver:validation</include>

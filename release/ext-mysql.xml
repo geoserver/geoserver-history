@@ -19,5 +19,12 @@
 				<include>gt2-mysql*.jar</include>
 			</includes>
 		</fileSet>
+		<fileSet>
+			<directory>release/extensions</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>LICENSE.txt</include>
+			</includes>
+		</fileSet>
 	</fileSets>
 </assembly>
