@@ -38,19 +38,7 @@ public class GetFeatureTest extends WFSTestSupport {
 		request.getQuery().add( query );
 		
 		FeatureCollectionType results = webFeatureService.getFeature( request );
-		
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		GML2FeatureProducer producer = new GML2FeatureProducer( wfs, catalog );
-		producer.produce( GML2FeatureProducer.formatName, results, outputStream );
-		
-		Element fcElement = ReaderUtils.parse( 
-			new InputStreamReader( new ByteArrayInputStream( outputStream.toByteArray() ) )
-		);
-		assertEquals( "wfs:FeatureCollection", fcElement.getNodeName() );
-		
-		NodeList featureMemberElements = 
-			fcElement.getElementsByTagName( "gml:featureMember" );
-		assertEquals( 3, featureMemberElements.getLength() );
+		assertEquals( BigInteger.valueOf( 3 ), results.getNumberOfFeatures());
 	}
 	
 }
