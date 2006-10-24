@@ -57,6 +57,11 @@
 			<includes>
 				<include>*.jar</include>
 			</includes>
+			<excludes>
+				<exclude>gt2*.jar</exclude>
+				<exclude>mysql*.jar</exclude>
+				<exclude>ojdbc*.jar</exclude>
+			</excludes>
 		</fileSet>
 		<fileSet>
 			<directory>release/bin</directory>
