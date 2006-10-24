@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
@@ -37,6 +38,7 @@ import org.springframework.context.support.GenericApplicationContext;
  *
  */
 public class DataTestSupport extends TestCase {
+    protected static final Logger LOGGER = Logger.getLogger("org.geoserver.unittests");
 
 	//WMS
 	/**
