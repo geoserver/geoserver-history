@@ -102,7 +102,7 @@ public class GTopo30CoverageResponseDelegate implements
 
 		// writing
 		if (writer != null)
-			writer.write(this.sourceCoverage, null);
+			writer.write(sourceCoverage, null);
 		else
 			throw new ServiceException(
 					"Could not create a writer for the format Gtopo30!");

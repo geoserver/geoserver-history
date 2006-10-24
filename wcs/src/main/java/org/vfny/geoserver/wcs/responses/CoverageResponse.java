@@ -5,7 +5,6 @@
 package org.vfny.geoserver.wcs.responses;
 
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -15,10 +14,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.media.jai.BorderExtender;
-import javax.media.jai.Interpolation;
-import javax.media.jai.InterpolationNearest;
 
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -33,7 +28,6 @@ import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridRange;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
@@ -445,222 +439,17 @@ public class CoverageResponse implements Response {
 		/**
 		 * Scale
 		 */
-		GridCoverage2D subCoverage = croppedGridCoverage;
-		// ///////////////////////////////////////////////////////////////////
-		//
-		// DRAWING DIMENSIONS AND RESOLUTION
-		// I am here getting the final drawing dimensions (on the device) and
-		// the resolution for this renderer but in the CRS of the source
-		// coverage
-		// since I am going to compare this info with the same info for the
-		// source coverage. The objective is to come up with the needed scale
-		// factors for the original coverage in order to decide how to proceed.
-		// Options are first scale then reproject or the opposite.
-		//
-		// In case we need to upsample the coverage first we reproject and then
-		// we upsample otherwise we do the opposite in order
-		//
-		// ///////////////////////////////////////////////////////////////////
-		AffineTransform finalGridToWorldInGCCRS;
-		if (!GCCRSTodeviceCRSTransform.isIdentity()) {
-			finalGridToWorldInGCCRS = new AffineTransform(
-					(AffineTransform) GridGeometry2D.getTransform(
-							new GeneralGridRange(destinationSize),
-							destinationEnvelopeInSourceCRS, false));
-		} else {
-			finalGridToWorldInGCCRS = new AffineTransform((AffineTransform) GridGeometry2D
-					.getTransform(new GeneralGridRange(destinationSize),
-							destinationEnvelope, false));
-		}
+		final GeneralGridRange newGridrange = new GeneralGridRange(destinationSize);
+		GridCoverage2D subCoverage = WCSUtils.scale(croppedGridCoverage, newGridrange, croppedGridCoverage, cvCRS); 
+		
+		/**
+		 * Reproject
+		 */
+		subCoverage = WCSUtils.reproject(
+				subCoverage,
+				sourceCRS, 
+				targetCRS);
 
-		// ///////////////////////////////////////////////////////////////////
-		//
-		// SCALE and REPROJECT in the best order.
-		// Let me now scale down or up to the EXACT needed SPATIAL resolution.
-		// This step does not prevent from having loaded an overview of the
-		// original image based on the requested scale but it complements it.
-		//
-		// ///////////////////////////////////////////////////////////////////
-		// //
-		//
-		// First step is computing the needed resolution levels for this
-		// coverage in its original crs to see the scale factors.
-		//
-		// //
-		final AffineTransform croppedCoverageGridToWorldTransform = (AffineTransform) ((GridGeometry2D) croppedGridCoverage
-				.getGridGeometry()).getGridToCoordinateSystem2D();
-		final double actualScaleX = lonFirst ? croppedCoverageGridToWorldTransform
-				.getScaleX()
-				: croppedCoverageGridToWorldTransform.getShearY();
-				final double actualScaleY = lonFirst ? croppedCoverageGridToWorldTransform
-						.getScaleY()
-						: croppedCoverageGridToWorldTransform.getShearX();
-						final double scaleX = actualScaleX
-						/ (lonFirst ? finalGridToWorldInGCCRS.getScaleX()
-								: finalGridToWorldInGCCRS.getShearY());
-						final double scaleY = actualScaleY
-						/ (lonFirst ? finalGridToWorldInGCCRS.getScaleY()
-								: finalGridToWorldInGCCRS.getShearX());
-						if (LOGGER.isLoggable(Level.FINE))
-							LOGGER.fine(new StringBuffer("Scale factors are ").append(scaleX)
-									.append(" ").append(scaleY).toString());
-						final GridRange range = croppedGridCoverage.getGridGeometry().getGridRange();
-						final int actualW = range.getLength(0);
-						final int actualH = range.getLength(1);
-						if (! (Math.round(actualW * scaleX) < MIN_DIM_TOLERANCE
-								&& Math.round(actualH * scaleY) < MIN_DIM_TOLERANCE)) {
-							Interpolation interpolation = null;
-
-							/**
-							 * Interpolate (if necessary)
-							 */
-							final String interp_requested = request.getInterpolation();
-							if (interp_requested != null) {
-								int interp_type = -1;
-
-								if (interp_requested.equalsIgnoreCase("nearest neighbor"))
-									interp_type = Interpolation.INTERP_NEAREST;
-								else if (interp_requested.equalsIgnoreCase("bilinear"))
-									interp_type = Interpolation.INTERP_BILINEAR;
-								else if (interp_requested.equalsIgnoreCase("bicubic"))
-									interp_type = Interpolation.INTERP_BICUBIC;
-								else if (interp_requested.equalsIgnoreCase("bicubic_2"))
-									interp_type = Interpolation.INTERP_BICUBIC_2;
-								else
-									throw new WcsException(
-									"Unrecognized interpolation type. Allowed values are: nearest_neighbor, bilinear, bicubic, bicubic_2");
-
-								//subCoverage = WCSUtils.interpolate(subCoverage, Interpolation.getInstance(interp_type));
-								interpolation = Interpolation.getInstance(interp_type);
-							}
-
-							if (LOGGER.isLoggable(Level.FINE))
-								LOGGER.fine(new StringBuffer("Using interpolation ").append(
-										interpolation).toString());
-							// //
-							//
-							// Now if we are upsampling first reproject then scale else first scale
-							// then reproject.
-							//
-							// //
-							final GridCoverage2D preSymbolizer;
-							if (scaleX * scaleY <= 1.0) {
-								int scaleXInt = (int) Math.floor(1 / scaleX);
-								scaleXInt = scaleXInt == 0 ? 1 : scaleXInt;
-								int scaleYInt = (int) Math.floor(1 / scaleY);
-								scaleYInt = scaleYInt == 0 ? 1 : scaleYInt;
-
-								// ///////////////////////////////////////////////////////////////////
-								//
-								// SCALE DOWN to the needed resolution
-								//
-								// ///////////////////////////////////////////////////////////////////
-								// //
-								//
-								// first step for down smapling is filtered subsample which is fast.
-								// 
-								// //
-								if (LOGGER.isLoggable(Level.FINE))
-									LOGGER
-									.fine(new StringBuffer(
-									"Filtered subsample with factors ").append(
-											scaleXInt).append(scaleYInt).toString());
-								final GridCoverage2D preScaledGridCoverage = WCSUtils.filteredSubsample(
-										croppedGridCoverage, scaleXInt, scaleYInt,
-										new InterpolationNearest(), BorderExtender
-										.createInstance(BorderExtender.BORDER_COPY));
-
-								// //
-								//
-								// Second step is scale
-								//
-								// //
-								if (LOGGER.isLoggable(Level.FINE))
-									LOGGER.fine(new StringBuffer("Scale down with factors ")
-									.append(scaleX * scaleXInt).append(scaleY * scaleYInt)
-									.toString());
-								final GridCoverage2D scaledGridCoverage;
-								if (scaleX * scaleXInt == 1.0 && scaleY * scaleYInt == 1.0)
-									scaledGridCoverage = preScaledGridCoverage;
-								else {
-									/*scaledGridCoverage = WCSUtils.scale(scaleX * scaleXInt, scaleY * scaleYInt, 0f, 0f,
-								interpolation == null ? new InterpolationNearest()
-										: interpolation, BorderExtender
-										.createInstance(BorderExtender.BORDER_COPY),
-								preScaledGridCoverage);*/
-									final GeneralGridRange newGridrange = new GeneralGridRange(destinationSize);
-
-									scaledGridCoverage = WCSUtils.scale(preScaledGridCoverage, newGridrange, croppedGridCoverage, cvCRS);
-								}
-
-								// ///////////////////////////////////////////////////////////////////
-								//
-								// REPROJECT to the requested crs.
-								//
-								//
-								// ///////////////////////////////////////////////////////////////////
-								if (!GCCRSTodeviceCRSTransform.isIdentity()) {
-									preSymbolizer = WCSUtils.resample(scaledGridCoverage, targetCRS,
-											interpolation == null ? new InterpolationNearest()
-									: interpolation);
-									if (LOGGER.isLoggable(Level.FINE))
-										LOGGER.fine(new StringBuffer("Reprojecting to crs ")
-										.append(targetCRS.toWKT()).toString());
-								} else
-									preSymbolizer = scaledGridCoverage;
-
-							} else {
-
-								// ///////////////////////////////////////////////////////////////////
-								//
-								// REPROJECT to the requested crs
-								//
-								//
-								// ///////////////////////////////////////////////////////////////////
-								final GridCoverage2D reprojectedCoverage;
-								if (!GCCRSTodeviceCRSTransform.isIdentity()) {
-									reprojectedCoverage = WCSUtils.resample(croppedGridCoverage,
-											targetCRS,
-											interpolation == null ? new InterpolationNearest()
-									: interpolation);
-									if (LOGGER.isLoggable(Level.FINE))
-										LOGGER.fine(new StringBuffer("Reprojecting to crs ")
-										.append(targetCRS.toWKT()).toString());
-								} else
-									reprojectedCoverage = croppedGridCoverage;
-
-								// ///////////////////////////////////////////////////////////////////
-								//
-								// SCALE UP to the needed resolution
-								//
-								// ///////////////////////////////////////////////////////////////////
-								if (LOGGER.isLoggable(Level.FINE))
-									LOGGER.fine(new StringBuffer("Scale up with factors ").append(scaleX).append(scaleY).toString());
-								preSymbolizer = (GridCoverage2D) WCSUtils.scale(scaleX, scaleY, 0f, 0f,
-										interpolation == null ? new InterpolationNearest()
-								: interpolation, BorderExtender
-								.createInstance(BorderExtender.BORDER_COPY),
-								reprojectedCoverage);
-
-							}
-
-							subCoverage = preSymbolizer;
-						} else {
-							if (LOGGER.isLoggable(Level.FINE))
-								LOGGER
-								.fine(new StringBuffer(
-								"Skipping the actual coverage because one of the final dimension is null")
-								.toString());
-							subCoverage = croppedGridCoverage;
-							/**
-							 * Reproject
-							 */
-							subCoverage = WCSUtils.reproject(
-									subCoverage,
-									sourceCRS, 
-									targetCRS);
-						}
-
-						return subCoverage;
+		return subCoverage;
 	}
 }
