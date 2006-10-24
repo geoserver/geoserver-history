@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Collections;
 
 import javax.xml.namespace.QName;
 
@@ -32,7 +33,7 @@ public class GetFeatureTest extends WFSTestSupport {
 		query.getPropertyName().add( "ID"  );
 		query.getPropertyName().add( "the_geom" );
 		query.setTypeName( 
-			Arrays.asList( new QName[] { new QName( CITE_URI, "BasicPolygons", CITE_PREFIX ) } )	
+			Collections.singletonList(new QName( CITE_URI, "BasicPolygons", CITE_PREFIX ))	
 		);
 		request.getQuery().add( query );
 		
