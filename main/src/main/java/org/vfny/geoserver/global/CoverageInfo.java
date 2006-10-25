@@ -16,6 +16,7 @@ import java.util.logging.Level;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.resources.CRSUtilities;
@@ -533,6 +534,16 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 		//
 		// /////////////////////////////////////////////////////////
 		return data.getFormatInfo(formatId).getReader();
+
+	}
+
+	public GridCoverageReader createReader(Hints hints) {
+		// /////////////////////////////////////////////////////////
+		//
+		// Getting coverage config and then reader
+		//
+		// /////////////////////////////////////////////////////////
+		return data.getFormatInfo(formatId).createReader(hints);
 
 	}
 

@@ -70,6 +70,16 @@ public class CoverageResponse implements Response {
 
 	private final static Hints hints = new Hints(new HashMap(5));
 
+	static {
+		// ///////////////////////////////////////////////////////////////////
+		//
+		// HINTS
+		//
+		// ///////////////////////////////////////////////////////////////////
+		hints.add(LENIENT_HINT);
+		hints.add(IGNORE_OVERVIEWS);
+	}
+	
 	/**
 	 * Tolerance for NOT drawing a coverage.
 	 * 
@@ -216,7 +226,7 @@ public class CoverageResponse implements Response {
 			}
 
 			final Format format = meta.getFormatInfo().getFormat();
-			final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta.getReader();
+			final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta.createReader(hints);
 
 			// /////////////////////////////////////////////////////////
 			//
@@ -337,17 +347,6 @@ public class CoverageResponse implements Response {
 			List parameters
 	) throws WcsException, IOException, IndexOutOfBoundsException, FactoryException, TransformException 
 	{
-
-		// ///////////////////////////////////////////////////////////////////
-		//
-		// HINTS
-		//
-		// ///////////////////////////////////////////////////////////////////
-		hints.add(LENIENT_HINT);
-		hints.add(IGNORE_OVERVIEWS);
-		/*if (java2dHints != null)
-		 this.hints.add(java2dHints);*/
-
 		// This is the final Response CRS
 		final String responseCRS = request.getResponseCRS();
 		// - first check if the responseCRS is present on the Coverage

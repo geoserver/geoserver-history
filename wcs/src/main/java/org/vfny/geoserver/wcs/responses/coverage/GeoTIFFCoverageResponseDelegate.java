@@ -94,7 +94,6 @@ public class GeoTIFFCoverageResponseDelegate implements
 		writerParams.parameter(
 				AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString())
 				.setValue(wp);
-		writerParams.parameter("Geophysics").setValue(Boolean.TRUE);
 		
 		GridCoverageWriter writer = format.getWriter(output);
 		writer.write(sourceCoverage, (GeneralParameterValue[]) writerParams.values().toArray(new GeneralParameterValue[1]));

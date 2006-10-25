@@ -106,7 +106,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 		// writing parameters for Image
 		final Format writerParams = writer.getFormat();
 		writerParams.getWriteParameters().parameter("Format").setValue(this.outputFormat.toLowerCase());
-		writerParams.getWriteParameters().parameter("Geophysics").setValue(Boolean.TRUE);
+
 		// writing
 		writer.write(sourceCoverage, (GeneralParameterValue[]) writerParams.getWriteParameters().values().toArray(new GeneralParameterValue[1]));
 

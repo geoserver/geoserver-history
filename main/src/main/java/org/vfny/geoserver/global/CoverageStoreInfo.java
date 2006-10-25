@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.factory.Hints;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.parameter.InvalidParameterValueException;
@@ -54,6 +55,8 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 	private String id;
 
 	private GridCoverageReader reader=null;
+
+	private GridCoverageReader hintReader=null;
 
 	/**
 	 * 
@@ -411,7 +414,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 			final File obj=CoverageUtils.getResourceAsFile(gcInfo.getUrl(), null, gcInfo.getDataDir());
 
 			// XXX CACHING READERS HERE
-			reader= ((AbstractGridFormat) gcInfo.getFormat()).getReader(obj);
+			reader = ((AbstractGridFormat) gcInfo.getFormat()).getReader(obj);
 			return reader;
 
 		} catch (InvalidParameterValueException e) {
@@ -428,6 +431,46 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 		return null;
 	}
 
+	public synchronized GridCoverageReader createReader(Hints hints) {
+		if(hintReader!=null)
+			return hintReader;
+		else if(hints == null && reader != null)
+			return reader;
+		try {
+
+			// /////////////////////////////////////////////////////////
+			//
+			// Getting coverage config
+			//
+			// /////////////////////////////////////////////////////////
+			final CoverageStoreInfo gcInfo = data.getFormatInfo(id);
+			if (gcInfo == null)
+				return null;
+
+			// /////////////////////////////////////////////////////////
+			//
+			// Getting coverage reader using the format and the real path.
+			//
+			// /////////////////////////////////////////////////////////
+			final File obj=CoverageUtils.getResourceAsFile(gcInfo.getUrl(), null, gcInfo.getDataDir());
+
+			// XXX CACHING READERS HERE
+			hintReader = ((AbstractGridFormat) gcInfo.getFormat()).getReader(obj, hints);
+			return hintReader;
+		} catch (InvalidParameterValueException e) {
+			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+		} catch (ParameterNotFoundException e) {
+			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+		} catch (MalformedURLException e) {
+			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+		} catch (IllegalArgumentException e) {
+			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+		} catch (SecurityException e) {
+			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+		}
+		return null;
+	}
+	
 	public Map getParameters() {
 		return parameters;
 	}
