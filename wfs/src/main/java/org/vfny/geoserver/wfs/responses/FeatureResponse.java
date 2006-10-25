@@ -321,8 +321,14 @@ public class FeatureResponse implements Response {
                 
                 FeatureResults features = source.getFeatures(query.toDataQuery(
                             maxFeatures));
-                if (it.hasNext()) //DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
-                	maxFeatures -= features.getCount();
+                if (it.hasNext()) { //DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
+                        int count = features.getCount();
+                        // sometimes a service may return -1 if the count is deemed
+                        // to be too expensive, in this case we do a brute force counte
+                        // by reading features one by one (and counting)
+                        if(count < 0) count = bruteForceCount(features.reader());
+                	maxFeatures -= count;
+                }
 
                 //GR: I don't know if the featuresults should be added here for later
                 //encoding if it was a lock request. may be after ensuring the lock
@@ -413,6 +419,23 @@ public class FeatureResponse implements Response {
             throw new ServiceException(e, "problem with FeatureResults",
                 request.getHandle());
         }
+    }
+
+    /**
+     * Counts features by scrolling thru the feature reader
+     * @param reader
+     * @return
+     * @throws IllegalAttributeException 
+     * @throws IOException 
+     * @throws NoSuchElementException 
+     */
+    private int bruteForceCount(FeatureReader reader) throws NoSuchElementException, IOException, IllegalAttributeException {
+        int count = 0;
+        while(reader.hasNext()) {
+            reader.next();
+            count++;
+        }
+        return count;
     }
 
     /**
