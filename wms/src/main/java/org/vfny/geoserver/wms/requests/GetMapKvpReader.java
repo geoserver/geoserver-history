@@ -780,9 +780,14 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 */
 	protected void parseFilterParam(GetMapRequest request) throws WmsException {
 		String rawFilter = getValue("FILTER");
+                
+                // in case of a mixed request, get with sld in post body, layers
+                // are not parsed, so we can't parse filters neither...
+                if(request.getLayers() == null)
+                    return;
 		
 		int numLayers = request.getLayers().length;
-		if(request.getLayers() == null || numLayers == 0)
+		if(numLayers == 0)
 			throw new RuntimeException("parseFilterParam must be called after the layer list has been built!");
 
 		// if no filter, no need to proceed
