@@ -53,6 +53,8 @@ public class WMS extends Service {
     private Map baseMapStyles;
     private String allowInterpolation;
     
+    private WFS wfs;
+    
     /**
      * WMS constructor.
      * 
@@ -73,6 +75,7 @@ public class WMS extends Service {
     }
     
     
+    
     /**
      * Creates the WMS service by getting the WMSDTO object from the 
      * config and calling {@link #WMS(WMSDTO)}.
@@ -82,12 +85,21 @@ public class WMS extends Service {
      * @param geoServer
      * @throws ConfigurationException
      */
-    public WMS( Config config, Data data, GeoServer geoServer )  throws ConfigurationException {
+    public WMS( Config config, Data data, GeoServer geoServer, WFS wfs)  throws ConfigurationException {
 		this( config.getXMLReader().getWms() );
 		setData(data);
 		setGeoServer(geoServer);
-    	
-	}
+                this.wfs = wfs;
+    }
+    
+    /**
+     * Quick hack to fix geot-770, need a full class rewrite otherwise and
+     * we are too near release to do that
+     * @return
+     */
+    public WFS getWFS() {
+        return wfs;
+    }
 
     	/**
      * load purpose.

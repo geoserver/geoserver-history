@@ -9,6 +9,7 @@
 		<constructor-arg ref="config"/>
 		<constructor-arg ref="data"/>
 		<constructor-arg ref="geoServer"/>
+		<constructor-arg ref="wfs"/>
 	</bean>
 		
 	<bean id="wmsConfig"
