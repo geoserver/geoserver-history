@@ -65,6 +65,9 @@ public class CoverageResponse implements Response {
 	private final static Hints LENIENT_HINT = new Hints(
 			Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
 
+	private final static Hints IGNORE_OVERVIEWS = new Hints(
+			Hints.IGNORE_COVERAGE_OVERVIEW, Boolean.TRUE);
+
 	private final static Hints hints = new Hints(new HashMap(5));
 
 	/**
@@ -341,6 +344,7 @@ public class CoverageResponse implements Response {
 		//
 		// ///////////////////////////////////////////////////////////////////
 		hints.add(LENIENT_HINT);
+		hints.add(IGNORE_OVERVIEWS);
 		/*if (java2dHints != null)
 		 this.hints.add(java2dHints);*/
 
