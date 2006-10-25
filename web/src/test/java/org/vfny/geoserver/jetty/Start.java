@@ -2,7 +2,6 @@ package org.vfny.geoserver.jetty;
 
 import java.io.File;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.mortbay.jetty.Connector;
