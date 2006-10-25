@@ -120,6 +120,35 @@ public class GetMapTest extends AbstractGeoserverHttpTest {
         	fail("Could not read image returned from GetMap:" + t.getLocalizedMessage());
         }
     }
+        
+        public void testXmlPost() throws Exception {
+                if (isOffline())
+                        return ;
+                
+                InputStream in = 
+                        new ByteArrayInputStream(STATES_GETMAP.getBytes());
+                
+                WebConversation conversation = new WebConversation();
+                WebRequest request = 
+        new PostMethodWebRequest(
+                        getBaseUrl()+"/wms", 
+                                in, "text/xml"
+                                );
+
+    WebResponse response = conversation.getResponse( request );
+    assertEquals("image/png",response.getContentType());
+    
+    try {
+        BufferedImage image = ImageIO.read(response.getInputStream());
+        assertNotNull(image);
+        assertEquals(image.getWidth(),550);
+        assertEquals(image.getHeight(),250);
+    }
+    catch(Throwable t) {
+        t.printStackTrace();
+        fail("Could not read image returned from GetMap:" + t.getLocalizedMessage());
+    }
+}
 	
 	public static final String STATES_SLD = 
 "<StyledLayerDescriptor version=\"1.0.0\">" + 
@@ -150,4 +179,40 @@ public class GetMapTest extends AbstractGeoserverHttpTest {
     "</UserStyle>" + 
   "</UserLayer>" + 
 "</StyledLayerDescriptor>"; 
+        
+        public static final String STATES_GETMAP = //
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n "
+            + "<ogc:GetMap service=\"WMS\" \n "
+            + "        xmlns:gml=\"http://www.opengis.net/gml\"\n "
+            + "        xmlns:ogc=\"http://www.opengis.net/ows\"\n "
+            + "        xmlns:sld=\"http://www.opengis.net/sld\"\n "
+            + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n "
+            + "        xsi:schemaLocation=\"http://www.opengis.net/ows GetMap.xsd http://www.opengis.net/gml geometry.xsd http://www.opengis.net/sld StyledLayerDescriptor.xsd \">\n "
+            + "        <sld:StyledLayerDescriptor>\n "
+            + "                <sld:NamedLayer>\n "
+            + "                        <sld:Name>topp:states</sld:Name>\n "
+            + "                        <sld:NamedStyle>\n "
+            + "                                <sld:Name>population</sld:Name>\n "
+            + "                        </sld:NamedStyle>\n "
+            + "                </sld:NamedLayer>\n "
+            + "        </sld:StyledLayerDescriptor>\n "
+            + "        <ogc:BoundingBox srsName=\"4326\">\n "
+            + "                <gml:coord>\n "
+            + "                        <gml:X>-130</gml:X>\n "
+            + "                        <gml:Y>24</gml:Y>\n "
+            + "                </gml:coord>\n "
+            + "                <gml:coord>\n "
+            + "                        <gml:X>-66</gml:X>\n "
+            + "                        <gml:Y>50</gml:Y>\n "
+            + "                </gml:coord>\n "
+            + "        </ogc:BoundingBox>\n "
+            + "        <ogc:Output>\n "
+            + "                <ogc:Format>image/png</ogc:Format>\n "
+            + "                <ogc:Size>\n "
+            + "                        <ogc:Width>550</ogc:Width>\n "
+            + "                        <ogc:Height>250</ogc:Height>\n "
+            + "                </ogc:Size>\n "
+            + "        </ogc:Output>\n "
+            + "</ogc:GetMap>\n ";
+            
 }
