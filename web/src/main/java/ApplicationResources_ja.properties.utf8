@@ -310,7 +310,7 @@ help.global.contactEmail=eメールアドレス
 help.serviceLevel=WFS�?��??供�?�るサービスレベル�?�定義
 
 help.wms.svgRenderer=WMS SVGリクエストをサービス�?�る時�?�使用�?�るsvg �??画方法を�?�択�?��?��?�。
-help.wms.path=What is this?
+help.wms.path=Specifies the layer hierarchy in the WMS capabilities
 
 tab.description=説明
 tab.content=コンテンツ
