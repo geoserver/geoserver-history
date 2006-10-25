@@ -98,7 +98,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
                 return mapping.findForward("config.data.store.editor");
             }
 
-            if (value != null) {
+            if (value != null && !"".equals(value)) {
                 connectionParams.put(key, value);
 
                 String text = param.text(value);
