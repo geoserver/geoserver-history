@@ -371,7 +371,7 @@
           	  <html:image src="/geoserver/WEB-INF/images/up.png" 
           	  	          titleKey="type.title.up" 
           	  	          property="action" 
-          	  	          value="<%= "up_"+ index%>"/>
+          	  	          value='<%= "up_"+ index%>'/>
           	  <% } 
           	     first = false; %>
           	</td>
@@ -380,14 +380,14 @@
           	  <html:image src="/geoserver/WEB-INF/images/down.png" 
           	              titleKey="type.title.down" 
           	              property="action" 
-          	              value="<%= "down_"+ index%>"/>
+          	              value='<%= "down_"+ index%>'/>
           	  <% } %>
           	</td> 
           	<td width=16>
           	  <html:image src="/geoserver/WEB-INF/images/delete.png" 
           	  	          titleKey="type.title.delete" 
           	  	          property="action" 
-          	  	          value="<%= "delete_"+ index%>"/>
+          	  	          value='<%= "delete_"+ index%>'/>
 		    </td>
           <% } %>
           </tr>

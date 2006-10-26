@@ -1018,10 +1018,10 @@ function nothing()
 
 <body onload="setup()" text="#AAC0FF">
 
-<font color="#08809F" size="+2"><b>Create new SLD for FeatureType: &nbsp;<i><span id="span_ftName" name="span_ftName"><bean:write property="<%= "typeName" %>" name="typesEditorForm"/></span></font></i></b>
+<font color="#08809F" size="+2"><b>Create new SLD for FeatureType: &nbsp;<i><span id="span_ftName" name="span_ftName"><bean:write property='<%= "typeName" %>' name="typesEditorForm"/></span></font></i></b>
 <br>&nbsp;<br>
 
-<span id="hidden_ft_attrs" name="hidden_ft_attrs" style="display:none"><bean:write property="<%= "attributes" %>" name="typesEditorForm" /></span>
+<span id="hidden_ft_attrs" name="hidden_ft_attrs" style="display:none"><bean:write property='<%= "attributes" %>' name="typesEditorForm" /></span>
 
 <span id="hidden_ft_attrNames" name="hidden_ft_attrNames" style="display:none">
 <logic:iterate id="attribute" indexId="index" name="typesEditorForm" property="attributes">
