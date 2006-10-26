@@ -31,8 +31,8 @@
 %>              
           <html:link style="item"
                      forward="<%= forward %>"
-                     titleKey="<%= forward+".short" %>">
-            <bean:message key="<%= forward+".label" %>"/>
+                     titleKey='<%= forward+".short" %>'>
+            <bean:message key='<%= forward+".label" %>'/>
           </html:link>
 <%  }
 %>          
