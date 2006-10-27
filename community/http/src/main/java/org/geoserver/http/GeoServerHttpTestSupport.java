@@ -21,6 +21,9 @@ import javax.xml.transform.stream.StreamResult;
 import junit.framework.TestCase;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;
@@ -91,7 +94,7 @@ public class GeoServerHttpTestSupport extends TestCase {
 	protected boolean isOffline() {
 		try {
 			WebConversation conversation = new WebConversation();
-	        WebRequest request = 
+			WebRequest request = 
 	        	new GetMethodWebRequest(getBaseUrl()+"wfs?request=getCapabilities");
 	        
 	        conversation.getResponse( request );
@@ -134,6 +137,26 @@ public class GeoServerHttpTestSupport extends TestCase {
 		return builder.parse( response.getInputStream() );
 	}
 
+	protected Element element( Document parent, String name ) throws Exception {
+		
+		NodeList nodeList = parent.getElementsByTagName( name );
+		if ( nodeList.getLength() != 0 ) {
+			return (Element) nodeList.item( 0 );
+		}
+		
+		return null;
+	}
+
+	protected Element element( Element parent, String name ) throws Exception {
+		
+		NodeList nodeList = parent.getElementsByTagName( name );
+		if ( nodeList.getLength() != 0 ) {
+			return (Element) nodeList.item( 0 );
+		}
+		
+		return null;
+	}
+	
 	protected void print( WebResponse response, PrintStream stream ) throws Exception {
 		BufferedReader reader = reader( response );
 		String line = null;
