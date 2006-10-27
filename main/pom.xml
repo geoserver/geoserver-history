@@ -74,7 +74,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-validation</artifactId>
+			<artifactId>validation</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.mockrunner</groupId>

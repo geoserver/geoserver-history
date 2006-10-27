@@ -26,11 +26,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-render</artifactId>
+			<artifactId>render</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-epsg-wkt</artifactId>
+			<artifactId>epsg-wkt</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>batik</groupId>

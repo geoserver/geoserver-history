@@ -21,7 +21,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-demo-property</artifactId>
+			<artifactId>demo-property</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.mockrunner</groupId>
