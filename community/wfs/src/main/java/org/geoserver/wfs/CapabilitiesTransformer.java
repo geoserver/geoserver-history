@@ -1153,7 +1153,11 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     			element( "Title", featureType.getTitle() );
     			element( "Abstract", featureType.getAbstract() );
     			keywords( featureType.getKeywords() );
+    			
+    			//default srs
     			element( "DefaultSRS", "EPSG:" + featureType.getSRS() );
+    			
+    			//TODO: other srs's
     			
     			start( "OutputFormats" );
     			element( "OutputFormat", "text/gml; subtype=gml/3.1.1" );
