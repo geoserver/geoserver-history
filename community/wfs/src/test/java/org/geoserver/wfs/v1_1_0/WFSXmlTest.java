@@ -11,26 +11,19 @@ import org.w3c.dom.Element;
 
 public class WFSXmlTest extends XMLTestSupport {
 
-	protected Element createRootElement( Document doc ) {
-		Element root = doc.createElementNS( 
-			WFS.GETCAPABILITIES.getNamespaceURI(), WFS.GETCAPABILITIES.getLocalPart()
-		);
-		root.setAttribute( "version", "1.1.0" );
-		
-		return root;
-	}
-
-	protected void registerSchemaLocation( Element element ) {
-		element.setAttribute( 
-			"xs:schemaLocation", WFS.NAMESPACE + " wfs.xsd"	
-		);
-	}
-
+	
 	protected Configuration createConfiguration() {
 		return new WFSConfiguration( null );
 	}
 	
 	public void test() throws Exception {
+		Element root = document.createElementNS( 
+			WFS.GETCAPABILITIES.getNamespaceURI(), WFS.GETCAPABILITIES.getLocalPart()
+		);
+		root.setAttribute( "version", "1.1.0" );
+		
+		document.appendChild( root );
+			
 		GetCapabilitiesType getCapabilities = (GetCapabilitiesType) parse();
 		assertNotNull( getCapabilities );
 	}
