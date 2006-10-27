@@ -12,12 +12,14 @@ import net.opengis.wfs.InsertResultsType;
 import net.opengis.wfs.InsertedFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionResultsType;
+import net.opengis.wfs.TransactionSummaryType;
 
 import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.Operation;
 import org.geoserver.ows.ServiceException;
 import org.geoserver.ows.http.Response;
 import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.WFSException;
 import org.opengis.filter.FeatureId;
 
 public class TransactionResponse extends Response {
@@ -41,6 +43,17 @@ public class TransactionResponse extends Response {
 			throws IOException, ServiceException {
 		
 		TransactionResponseType response = (TransactionResponseType) value;
+		if ( "1.0.0".equals( operation.getService().getVersion() ) ) {
+			v_1_0( response, output );
+		}
+		else {
+			v_1_1( response, output );
+		}
+	}
+	
+	public void v_1_0( TransactionResponseType response, OutputStream output ) 
+		throws IOException, ServiceException {
+		
 		TransactionResultsType result = response.getTransactionResults();
 		
 		Writer writer = new OutputStreamWriter( output );
@@ -144,4 +157,64 @@ public class TransactionResponse extends Response {
         writer.close();
 	}
 
+	public void v_1_1( TransactionResponseType response, OutputStream output ) 
+		throws IOException, ServiceException {
+		
+		if ( !response.getTransactionResults().getAction().isEmpty() ) {
+			//since we do atomic transactions, an action failure means all we rolled back
+			// spec says to throw exception
+			ActionType action = 
+				(ActionType) response.getTransactionResults().getAction().iterator().next();
+			throw new WFSException ( action.getMessage(), action.getCode(), action.getLocator() );
+		}
+		
+		TransactionSummaryType summary = response.getTransactionSummary();
+		
+		WfsXmlWriter writer = new WfsXmlWriter.WFS1_1( wfs, output );
+		
+		writer.openTag( "wfs", "TransactionResponse" );
+		
+		//transaction summary
+		writer.openTag( "wfs", "TransactionSummary" );
+		
+		writer.openTag( "wfs", "totalInserted" );
+		writer.text( summary.getTotalInserted().toString() );
+		writer.closeTag( "wfs", "totalInserted" );
+		
+		writer.openTag( "wfs", "totalUpdated" );
+		writer.text( summary.getTotalUpdated().toString() );
+		writer.closeTag( "wfs", "totalUpdated" );
+		
+		writer.openTag( "wfs", "totalDeleted" );
+		writer.text( summary.getTotalDeleted().toString() );
+		writer.closeTag( "wfs", "totalDeleted" );
+		
+		writer.closeTag( "wfs", "TransactionSummary" );
+		//end stransaction summary
+		
+		if ( response.getInsertResults() != null ) {
+			InsertResultsType insertResults = response.getInsertResults();
+			writer.openTag( "wfs", "InsertResults" );
+			for ( Iterator i = insertResults.getFeature().iterator(); i.hasNext(); ) {
+				InsertedFeatureType insertedFeature = (InsertedFeatureType) i.next();
+				writer.openTag( "wfs", "Feature", new String[]{ "handle", insertedFeature.getHandle() } );
+				
+				for ( Iterator j = insertedFeature.getFeatureId().iterator(); j.hasNext(); ) {
+					FeatureId featureId = (FeatureId) j.next();
+					for ( Iterator f = featureId.getIDs().iterator(); f.hasNext(); ) {
+						String fid = (String) f.next();
+						writer.openTag( "ogc", "FeatureId", new String[]{ "fid", fid } );
+						writer.closeTag( "ogc", "FeatureId" );
+					}
+				}
+				
+				writer.closeTag( "wfs", "Feature" );
+			}
+				
+			writer.closeTag( "wfs", "InsertResults" );
+		}
+		writer.closeTag( "wfs", "TransactionResponse" );
+		
+		writer.close();
+	}
 }
