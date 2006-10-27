@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
+import org.geoserver.feature.ReprojectingFeatureReader;
 import org.geoserver.ows.EMFUtils;
 import org.geoserver.ows.ServiceException;
 import org.geotools.data.DataStore;
@@ -42,6 +43,7 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
+import org.geotools.data.crs.ReprojectFeatureReader;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.Feature;
@@ -52,6 +54,8 @@ import org.geotools.filter.FidFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -488,11 +492,30 @@ public class Transaction {
 		            		collection.addAll( insert.getFeature() );
 		            	}
 			            
-			            
 			            Set fids = null;
 			            if( collection != null ) {
 			            	 FeatureReader reader = collection.reader();
 			             	
+			            	 //reprojection
+			            	 CoordinateReferenceSystem target = 
+			            		 schema.getDefaultGeometry().getCoordinateSystem();
+			            	 
+			            	 if ( target == null ) {
+			            		 //default to 4326
+			            		 //TODO: maybe we should throw an exception, or just not reproject
+			            		 // at all
+			            		 target = CRS.decode( "EPSG:4326" );
+			            	 }
+			            	 
+			            	 reader = new ReprojectingFeatureReader( reader, target );
+			            	 
+			            	 if ( insert.getSrsName() != null ) {
+			            		 //supplied in request
+			            		 CoordinateReferenceSystem defaultSource
+			            		 	= CRS.decode( insert.getSrsName().toString() );
+			            		 ( (ReprojectingFeatureReader)reader ).setDefaultSource( defaultSource );
+			            	 }
+			            	 
 			                 // Need to use the namespace here for the lookup, due to our weird
 			                 // prefixed internal typenames.  see 
 			                 //   http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-143
@@ -626,6 +649,8 @@ public class Transaction {
 			}
 		} 
         catch (WFSTransactionException e) {
+        	LOGGER.log( Level.SEVERE, "Transaction failed", e );
+        	
         	//transaction failed, rollback
         	ActionType action = WFSFactory.eINSTANCE.createActionType();
         	action.setCode( e.getCode() );
