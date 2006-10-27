@@ -69,6 +69,11 @@ public abstract class WfsXmlWriter {
 	 */
 	HashMap schemaLocations;
 	/**
+	 * The wfs version
+	 */
+	String version;
+	
+	/**
 	 * writer
 	 */
 	BufferedWriter writer;
@@ -116,8 +121,6 @@ public abstract class WfsXmlWriter {
 			
 		}
 		
-		
-		
 		//schema locations
 		if ( !schemaLocations.isEmpty() ) {
 			StringBuffer buffer = new StringBuffer();
@@ -136,6 +139,7 @@ public abstract class WfsXmlWriter {
 			
 			attribute( "xs:schemaLocation", buffer.toString() );
 		}
+		
 	}
 	
 	private void attribute( String name, String value ) throws IOException {
@@ -208,6 +212,7 @@ public abstract class WfsXmlWriter {
 				ResponseUtils.appendPath( wfs.getSchemaBaseURL(), "1.0.0/WFS-transaction.xsd" )
 			);
 			
+			version = "1.0.0";
 		}
 	}
 	
@@ -223,6 +228,8 @@ public abstract class WfsXmlWriter {
 				org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, 
 				ResponseUtils.appendPath( wfs.getSchemaBaseURL(), "1.0.0/wfs.xsd" )
 			);
+			
+			version = "1.1.0";
 		}
 	}
 
