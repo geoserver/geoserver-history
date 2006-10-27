@@ -165,6 +165,15 @@
 		<constructor-arg value="GetFeature"/>
 		<constructor-arg ref="catalog"/>
 	</bean>
+	<bean id="lockFeatureXmlReader-1-1.0" class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader">
+		<constructor-arg value="LockFeature"/>
+		<constructor-arg ref="catalog"/>
+	</bean>
+	<bean id="transactionXmlReader-1.1.0" class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader">
+		<constructor-arg value="Transaction"/>
+		<constructor-arg ref="catalog"/>
+	</bean>
+	
 	<!-- default feature type encoders -->
 	<bean id="gml2FeatureTypeEncoder" 
 		class="org.geoserver.wfs.xml.v1_0_0.XmlSchemaEncoder">
