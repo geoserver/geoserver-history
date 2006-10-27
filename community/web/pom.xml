@@ -28,11 +28,11 @@
   	</dependency>
  	<dependency>
  		<groupId>org.geotools</groupId>	
- 		<artifactId>gt2-postgis</artifactId>
+ 		<artifactId>postgis</artifactId>
  	</dependency>
  	<dependency>
  		<groupId>org.geotools</groupId>	
- 		<artifactId>gt2-epsg-postgresql</artifactId>
+ 		<artifactId>epsg-postgresql</artifactId>
  	</dependency>
  </dependencies>
 
