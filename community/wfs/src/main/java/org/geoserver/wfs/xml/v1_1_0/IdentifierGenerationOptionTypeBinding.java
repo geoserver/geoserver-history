@@ -3,6 +3,7 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.IdentifierGenerationOptionType;
 import net.opengis.wfs.WFSFactory;
 
 import org.geotools.xml.AbstractSimpleBinding;
@@ -80,7 +81,7 @@ public class IdentifierGenerationOptionTypeBinding extends AbstractSimpleBinding
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return IdentifierGenerationOptionType.class;
 	}
 	
 	/**
@@ -92,7 +93,18 @@ public class IdentifierGenerationOptionTypeBinding extends AbstractSimpleBinding
 	public Object parse(InstanceComponent instance, Object value) 
 		throws Exception {
 		
-		//TODO: implement
+		if ( "UseExisting".equals( value ) ) {
+			return IdentifierGenerationOptionType.USE_EXISTING_LITERAL;
+		}
+		
+		if ( "ReplaceDuplicate".equals( value ) ) {
+			return IdentifierGenerationOptionType.REPLACE_DUPLICATE_LITERAL;
+		}
+		
+		if ( "GenerateNew".equals( value ) ) {
+			return IdentifierGenerationOptionType.GENERATE_NEW_LITERAL;
+		}
+		
 		return null;
 	}
 

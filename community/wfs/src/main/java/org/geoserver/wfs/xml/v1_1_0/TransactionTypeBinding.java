@@ -1,8 +1,12 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 
+import java.util.Iterator;
+
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.AllSomeType;
+import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.WFSFactory;
 
 import org.geotools.xml.AbstractComplexBinding;
@@ -108,13 +112,20 @@ public class TransactionTypeBinding extends AbstractComplexBinding {
 	}
 	
 	/**
+	 * Sets execution mode to be before
+	 */
+	public int getExecutionMode() {
+		return BEFORE;
+	}
+	
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 *	
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return TransactionType.class;
 	}
 	
 	/**
@@ -126,8 +137,43 @@ public class TransactionTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		TransactionType transaction = wfsfactory.createTransactionType();
+		
+		//&lt;xsd:element minOccurs="0" ref="wfs:LockId"&gt;
+		if ( node.hasChild( "LockId" ) ) {
+			transaction.setLockId( (String) node.getChildValue( "LockId" ) );
+		}
+		
+		//&lt;xsd:choice maxOccurs="unbounded" minOccurs="0"&gt;
+		//  &lt;xsd:element ref="wfs:Insert"/&gt;
+		//  &lt;xsd:element ref="wfs:Update"/&gt;
+		//  &lt;xsd:element ref="wfs:Delete"/&gt;
+		//  &lt;xsd:element ref="wfs:Native"/&gt;
+		//&lt;/xsd:choice&gt;
+		for ( Iterator itr = node.getChildren().iterator(); itr.hasNext(); ) {
+			Node child = (Node) itr.next();
+			String name = child.getComponent().getName();
+			
+			if ( "Insert".equals( name ) ) {
+				transaction.getInsert().add( child.getValue() );
+			}
+			else if ( "Update".equals( name ) ) {
+				transaction.getUpdate().add( child.getValue() );
+			}
+			else if ( "Delete".equals( name ) ) {
+				transaction.getDelete().add( child.getValue() );
+			}
+			else if ( "Native".equals( name ) ) {
+				transaction.getNative().add( child.getValue() );
+			}
+		}
+
+		//&lt;xsd:attribute name="releaseAction" type="wfs:AllSomeType" use="optional"&gt;
+		if ( node.hasChild( AllSomeType.class ) ) {
+			transaction.setReleaseAction( (AllSomeType) node.getChildValue( AllSomeType.class ) );
+		}
+		 
+		return transaction;
 	}
 
 }

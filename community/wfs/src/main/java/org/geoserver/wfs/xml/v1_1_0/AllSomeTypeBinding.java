@@ -3,6 +3,7 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.WFSFactory;
 
 import org.geotools.xml.AbstractSimpleBinding;
@@ -48,7 +49,7 @@ public class AllSomeTypeBinding extends AbstractSimpleBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return AllSomeType.class;
 	}
 	
 	/**
@@ -60,7 +61,14 @@ public class AllSomeTypeBinding extends AbstractSimpleBinding {
 	public Object parse(InstanceComponent instance, Object value) 
 		throws Exception {
 		
-		//TODO: implement
+		if ( "ALL".equals( value ) ) {
+			return AllSomeType.ALL_LITERAL;
+		}
+		
+		if ( "SOME".equals( value ) ) {
+			return AllSomeType.SOME_LITERAL;
+		}
+		
 		return null;
 	}
 

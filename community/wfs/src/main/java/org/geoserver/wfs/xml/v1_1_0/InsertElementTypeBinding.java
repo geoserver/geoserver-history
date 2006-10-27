@@ -1,10 +1,16 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 
+import java.net.URI;
+
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.IdentifierGenerationOptionType;
+import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.WFSFactory;
 
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -126,7 +132,7 @@ public class InsertElementTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return InsertElementType.class;
 	}
 	
 	/**
@@ -138,8 +144,45 @@ public class InsertElementTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		InsertElementType insertElement = wfsfactory.createInsertElementType();
+		
+		//&lt;xsd:choice&gt;
+		//   &lt;xsd:element ref="gml:_FeatureCollection"/&gt;
+		//   &lt;xsd:sequence&gt;
+		//       &lt;xsd:element maxOccurs="unbounded" ref="gml:_Feature"/&gt;
+		//   &lt;/xsd:sequence&gt;
+		//&lt;/xsd:choice&gt;
+		if ( node.hasChild( FeatureCollection.class ) ) {
+			FeatureCollection fc = (FeatureCollection) node.getChildValue( FeatureCollection.class );
+			insertElement.getFeature().addAll( fc );
+		}
+		else if ( node.hasChild( Feature.class ) ) {
+			insertElement.getFeature().addAll( node.getChildValues( Feature.class ) );
+		}
+		
+		//&lt;xsd:attribute default="GenerateNew" name="idgen"
+		//		type="wfs:IdentifierGenerationOptionType" use="optional"&gt;
+		if ( node.hasAttribute( "idgen" ) ) {
+			insertElement.setIdgen( (IdentifierGenerationOptionType) node.getAttributeValue( "idgen") );
+		}
+		
+		//&lt;xsd:attribute name="handle" type="xsd:string" use="optional"&gt;
+		if ( node.hasAttribute( "handle" ) ) {
+			insertElement.setHandle( (String) node.getAttributeValue( "idgen") );
+		}
+		
+		//&lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
+		//		 name="inputFormat" type="xsd:string" use="optional"&gt;
+		if ( node.hasAttribute( "inputFormat" ) ) {
+			insertElement.setInputFormat( (String) node.getAttributeValue( "inputFormat") );
+		}
+		
+		//&lt;xsd:attribute name="srsName" type="xsd:anyURI" use="optional"&gt;
+		if ( node.hasAttribute( "srsName" ) ) {
+			insertElement.setSrsName( (URI) node.getAttributeValue( "srsName") );
+		}
+		
+		return insertElement;
 	}
 
 }

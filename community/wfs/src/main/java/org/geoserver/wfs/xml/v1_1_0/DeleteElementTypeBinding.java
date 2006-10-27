@@ -3,11 +3,13 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.WFSFactory;
 
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.opengis.filter.Filter;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:DeleteElementType.
@@ -101,8 +103,18 @@ public class DeleteElementTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		DeleteElementType deleteElement = wfsfactory.createDeleteElementType();
+		
+		//&lt;xsd:element maxOccurs="1" minOccurs="1" ref="ogc:Filter"&gt;
+		deleteElement.setFilter( (Filter) node.getChildValue( Filter.class ) );
+		
+		//&lt;xsd:attribute name="handle" type="xsd:string" use="optional"/&gt;
+		if ( node.hasAttribute( "handle" ) ) 
+			deleteElement.setHandle( (String) node.getAttributeValue( "handle" ) );
+		
+		//&lt;xsd:attribute name="typeName" type="xsd:QName" use="required"/&gt;
+		deleteElement.setTypeName( (QName) node.getAttributeValue( QName.class ) );
+		return deleteElement;
 	}
 
 }
