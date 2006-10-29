@@ -148,6 +148,9 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	 */
 	private String defaultStyle;
 
+    /** Other Style Names. */
+    private ArrayList styles = new ArrayList();
+
 	private ArrayList paramHelp;
 
 	private List paramKeys;
@@ -208,6 +211,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
 		}
 
 		defaultStyle = dto.getDefaultStyle();
+		styles = dto.getStyles();
 		paramHelp = dto.getParamHelp();
 		paramKeys = dto.getParamKeys();
 		paramValues = dto.getParamValues();
@@ -246,6 +250,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
 			return false;
 		}
 		r = r && (defaultStyle == f.getDefaultStyle());
+		r = r && (styles == f.getStyles());
 		r = r && (dirName == f.getDirName());
 		r = r && (envelope == f.getEnvelope());
 		r = r && (grid == f.getGrid());
@@ -861,5 +866,21 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
 	public void setNativeCRS(String nativeCRS) {
 		this.nativeCRS = nativeCRS;
+	}
+
+	/**
+	 * Handling multiple styles
+	 */
+	public ArrayList getStyles() {
+		return styles;
+	}
+
+	public void addStyle(String styleName) {
+		if (!styles.contains(styleName))
+			styles.add(styleName);
+	}
+	
+	public void setStyles(ArrayList styles) {
+		this.styles = styles;
 	}
 }

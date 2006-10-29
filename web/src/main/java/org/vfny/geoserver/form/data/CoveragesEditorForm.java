@@ -66,6 +66,11 @@ public final class CoveragesEditorForm extends ActionForm {
 	 */
 	private String styleId;
 
+	/** Sorted Set of available styles */
+    private SortedSet panelStyleIds;
+    private SortedSet typeStyles;
+    private String[] otherSelectedStyles;
+    
 	/**
 	 * 
 	 */
@@ -372,6 +377,13 @@ public final class CoveragesEditorForm extends ActionForm {
 			}
 		}
 
+		typeStyles = new TreeSet();
+
+        for (Iterator i = type.getStyles().iterator(); i.hasNext();) {
+        	String styleName = (String) i.next();
+        	typeStyles.add(styleName);
+        }
+        
 		if (styles instanceof org.vfny.geoserver.form.data.AttributeDisplay) {
 			// TODO why I am here?
 		}
@@ -978,5 +990,21 @@ public final class CoveragesEditorForm extends ActionForm {
 
 	public void setNativeCRS(String nativeCRS) {
 		this.nativeCRS = nativeCRS;
+	}
+	
+	public String[] getOtherSelectedStyles() {
+		return otherSelectedStyles;
+	}
+
+	public void setOtherSelectedStyles(String[] otherSelectedStyles) {
+		this.otherSelectedStyles = otherSelectedStyles;
+	}
+
+	public SortedSet getPanelStyleIds() {
+		return panelStyleIds;
+	}
+
+	public SortedSet getTypeStyles() {
+		return typeStyles;
 	}
 }

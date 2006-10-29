@@ -70,6 +70,7 @@ import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -1510,6 +1511,17 @@ public class XMLConfigReader {
 			
 			if (tmp != null) {
 				ft.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
+				
+				final NodeList childrens = tmp.getChildNodes();
+				final int numChildNodes = childrens.getLength();
+				Node child;
+				for (int n=0;n<numChildNodes;n++) {
+					child = childrens.item(n);
+					if (child.getNodeType() == Node.ELEMENT_NODE) {
+						if (child.getNodeName().equals("style"))
+							ft.addStyle(ReaderUtils.getElementText((Element) child));
+					}
+				}
 			}
 			
 			Element cacheInfo = ReaderUtils.getChildElement(fTypeRoot, "cacheinfo");
@@ -1716,8 +1728,19 @@ public class XMLConfigReader {
 			
 			if (tmp != null) {
 				cv.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
+
+				final NodeList childrens = tmp.getChildNodes();
+				final int numChildNodes = childrens.getLength();
+				Node child;
+				for (int n=0;n<numChildNodes;n++) {
+					child = childrens.item(n);
+					if (child.getNodeType() == Node.ELEMENT_NODE) {
+						if (child.getNodeName().equals("style"))
+							cv.addStyle(ReaderUtils.getElementText((Element) child));
+					}
+				}
 			}
-			
+
 			// /////////////////////////////////////////////////////////////////////
 			//
 			// CRS

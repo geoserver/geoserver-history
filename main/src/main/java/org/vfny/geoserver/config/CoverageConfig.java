@@ -167,6 +167,11 @@ public class CoverageConfig {
 	private String defaultStyle;
 
 	/**
+     * Other WMS Styles
+     */
+    private ArrayList styles;
+    
+	/**
 	 * String representation of connection parameter keys
 	 */
 	private List paramKeys;
@@ -340,7 +345,8 @@ public class CoverageConfig {
 		interpolationMethods.add("bicubic");
 		interpolationMethods.add("bicubic_2");
 		defaultStyle = "raster";
-
+		styles = new ArrayList();
+		
 		/**
 		 * ReadParameters ...
 		 */
@@ -491,6 +497,7 @@ public class CoverageConfig {
 		defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
 		interpolationMethods = dto.getInterpolationMethods();
 		defaultStyle = dto.getDefaultStyle();
+		styles = dto.getStyles();
 		paramHelp = dto.getParamHelp();
 		paramKeys = dto.getParamKeys();
 		paramValues = dto.getParamValues();
@@ -522,6 +529,7 @@ public class CoverageConfig {
 		c.setDefaultInterpolationMethod(defaultInterpolationMethod);
 		c.setInterpolationMethods(interpolationMethods);
 		c.setDefaultStyle(defaultStyle);
+		c.setStyles(styles);
 		c.setParamHelp(paramHelp);
 		c.setParamKeys(paramKeys);
 		c.setParamValues(paramValues);
@@ -910,6 +918,19 @@ public class CoverageConfig {
 		this.defaultStyle = defaultStyle;
 	}
 
+	public ArrayList getStyles() {
+		return styles;
+	}
+
+	public void setStyles(ArrayList styles) {
+		this.styles = styles;
+	}
+	
+	public void addStyle(String style) {
+		if (!this.styles.contains(style))
+			this.styles.add(style);
+	}
+	
 	public String getSrsWKT() {
 		return srsWKT;
 	}

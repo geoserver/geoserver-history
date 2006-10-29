@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -1055,7 +1056,17 @@ public class XMLConfigWriter {
                     + "at least must contain the \"default\" attribute ");
                 m = new HashMap();
                 m.put("default", ft.getDefaultStyle());
-                cw.attrTag("styles", m);
+                
+                final ArrayList styles = ft.getStyles(); 
+                if (styles.isEmpty())
+                	cw.attrTag("styles", m);
+                else {
+                	cw.openTag("styles", m);
+                	Iterator s_IT = styles.iterator();
+                	while (s_IT.hasNext())
+                		cw.textTag("style", (String)s_IT.next());
+                	cw.closeTag("styles");
+                }
             }
             
             m = new HashMap();
@@ -1334,7 +1345,17 @@ public class XMLConfigWriter {
                     + "at least must contain the \"default\" attribute ");
                 m = new HashMap();
                 m.put("default", cv.getDefaultStyle());
-                cw.attrTag("styles", m);
+
+                final ArrayList styles = cv.getStyles(); 
+                if (styles.isEmpty())
+                	cw.attrTag("styles", m);
+                else {
+                	cw.openTag("styles", m);
+                	Iterator s_IT = styles.iterator();
+                	while (s_IT.hasNext())
+                		cw.textTag("style", (String)s_IT.next());
+                	cw.closeTag("styles");
+                }
             }
 
 			if (cv.getEnvelope() != null) {

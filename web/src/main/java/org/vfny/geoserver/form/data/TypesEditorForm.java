@@ -74,6 +74,11 @@ public class TypesEditorForm extends ActionForm {
     /** Identify Style used to render this feature type */
     private String styleId;
 
+    /** Sorted Set of available styles */
+    private SortedSet panelStyleIds;
+    private SortedSet typeStyles;
+    private String[] otherSelectedStyles;
+    
     /**
      * Name of featureType.
      * 
@@ -348,6 +353,13 @@ public class TypesEditorForm extends ActionForm {
             }
         }
 
+        typeStyles = new TreeSet();
+
+        for (Iterator i = type.getStyles().iterator(); i.hasNext();) {
+        	String styleName = (String) i.next();
+        	typeStyles.add(styleName);
+        }
+        
         Object attribute = styles;
 
         if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) {
@@ -956,5 +968,21 @@ public class TypesEditorForm extends ActionForm {
 
 	public boolean isCachingEnabledChecked() {
 		return cachingEnabledChecked;
+	}
+
+	public String[] getOtherSelectedStyles() {
+		return otherSelectedStyles;
+	}
+
+	public void setOtherSelectedStyles(String[] otherSelectedStyles) {
+		this.otherSelectedStyles = otherSelectedStyles;
+	}
+
+	public SortedSet getPanelStyleIds() {
+		return panelStyleIds;
+	}
+
+	public SortedSet getTypeStyles() {
+		return typeStyles;
 	}
 }

@@ -179,6 +179,11 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 	 */
 	private String defaultStyle;
 
+    /**
+     * Other WMS Styles
+     */
+    private ArrayList styles;
+
 	private ArrayList paramHelp;
 
 	private List paramKeys;
@@ -212,6 +217,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 		defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
 		interpolationMethods = dto.getInterpolationMethods();
 		defaultStyle = dto.getDefaultStyle();
+		styles = dto.getStyles();
 		paramHelp = dto.getParamHelp();
 		paramKeys = dto.getParamKeys();
 		paramValues = dto.getParamValues();
@@ -244,6 +250,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 		dto.setDefaultInterpolationMethod(defaultInterpolationMethod);
 		dto.setInterpolationMethods(interpolationMethods);
 		dto.setDefaultStyle(defaultStyle);
+		dto.setStyles(styles);
 		dto.setParamHelp(paramHelp);
 		dto.setParamKeys(paramKeys);
 		dto.setParamValues(paramValues);
@@ -426,6 +433,14 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 	public Style getDefaultStyle() {
 		return data.getStyle(defaultStyle);
 	}
+
+    public ArrayList getStyles(){
+    	final ArrayList realStyles = new ArrayList();
+    	Iterator s_IT = styles.iterator();
+    	while (s_IT.hasNext())
+    		realStyles.add(data.getStyle((String)s_IT.next()));
+    	return realStyles;
+    }
 
 	/**
 	 * 

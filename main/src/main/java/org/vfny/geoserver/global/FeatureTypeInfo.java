@@ -140,6 +140,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      * Default style used to render this FeatureType with WMS
      */
     private String defaultStyle;
+
+    /**
+     * Other WMS Styles
+     */
+    private ArrayList styles;
+
     /**
      * Title of this FeatureType as presented to End-Users.
      * <p>
@@ -231,6 +237,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         _abstract = dto.getAbstract();
         dataStoreId = dto.getDataStoreId();
         defaultStyle = dto.getDefaultStyle();        
+        styles = dto.getStyles();
         
         // Modif C. Kolbowicz - 07/10/2004
         if (dto.getLegendURL() != null) {
@@ -282,6 +289,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         dto.setAbstract(_abstract);
         dto.setDataStoreId(dataStoreId);
         dto.setDefaultStyle(defaultStyle);
+        dto.setStyles(styles);
         
         // Modif C. Kolbowicz - 07/10/2004
         if (legendURL != null) {
@@ -359,7 +367,15 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     public Style getDefaultStyle(){
     	return data.getStyle(defaultStyle);
     }
-    
+
+    public ArrayList getStyles(){
+    	final ArrayList realStyles = new ArrayList();
+    	Iterator s_IT = styles.iterator();
+    	while (s_IT.hasNext())
+    		realStyles.add(data.getStyle((String)s_IT.next()));
+    	return realStyles;
+    }
+
     /**
      * Indicates if this FeatureTypeInfo is enabled.  For now just gets whether
      * the backing datastore is enabled.

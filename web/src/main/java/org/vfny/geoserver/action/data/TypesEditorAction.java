@@ -273,6 +273,12 @@ public class TypesEditorAction extends ConfigAction {
     	config.setName(form.getTypeName());
     	config.setAbstract(form.getAbstract());
     	config.setDefaultStyle(form.getStyleId());
+    	if (form.getOtherSelectedStyles() != null) {
+    		config.getStyles().clear();
+    		for (int i=0;i<form.getOtherSelectedStyles().length;i++) {
+    			config.addStyle(form.getOtherSelectedStyles()[i]);
+    		}
+    	}
     	config.setSRS(Integer.parseInt(form.getSRS()));
     	config.setTitle(form.getTitle());
     	config.setLatLongBBox(getBoundingBox(form));

@@ -763,6 +763,18 @@ public class WMSCapsTransformer extends TransformerBase {
 			element("Abstract", ftStyle.getAbstract());
 			handleLegendURL(ftype);
 			end("Style");
+			
+			final ArrayList styles = ftype.getStyles();
+			Iterator s_IT = styles.iterator();
+			while (s_IT.hasNext()) {
+				ftStyle = (Style) s_IT.next();
+				start("Style");
+					element("Name", ftStyle.getName());
+					element("Title", ftStyle.getTitle());
+					element("Abstract", ftStyle.getAbstract());
+					handleLegendURL(ftype);
+				end("Style");
+			}
 
 			end("Layer");
 		}
@@ -879,14 +891,25 @@ public class WMSCapsTransformer extends TransformerBase {
 
 			// add the layer style
 			start("Style");
-
 			Style cvStyle = coverage.getDefaultStyle();
 			element("Name", cvStyle.getName());
 			element("Title", cvStyle.getTitle());
 			element("Abstract", cvStyle.getAbstract());
 			handleLegendURL(coverage);
 			end("Style");
-
+			
+			final ArrayList styles = coverage.getStyles();
+			Iterator s_IT = styles.iterator();
+			while (s_IT.hasNext()) {
+				cvStyle = (Style) s_IT.next();
+				start("Style");
+					element("Name", cvStyle.getName());
+					element("Title", cvStyle.getTitle());
+					element("Abstract", cvStyle.getAbstract());
+					handleLegendURL(coverage);
+				end("Style");
+			}
+			
 			end("Layer");
 		}
 

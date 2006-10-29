@@ -138,6 +138,11 @@ public class FeatureTypeConfig {
     private String defaultStyle;
 
     /**
+     * Other WMS Styles
+     */
+    private ArrayList styles;
+    
+    /**
      * A featureType-specific override for the defaultMaxAge defined in WMSConfig.  This value is added the
      * headers of generated maps, marking them as being both "cache-able" and designating the time for which
      * they are to remain valid.  The specific header added is "CacheControl: max-age="
@@ -201,6 +206,7 @@ public class FeatureTypeConfig {
             this.schemaAttributes = null;        
         }
         defaultStyle = "";
+        styles = new ArrayList();
         name = schema.getTypeName();
 		wmsPath = "/";
         title = schema.getTypeName() + "_Type";
@@ -273,6 +279,7 @@ public class FeatureTypeConfig {
         }
 
         defaultStyle = dto.getDefaultStyle();
+        styles = dto.getStyles();
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
         schemaBase = dto.getSchemaBase();
@@ -330,6 +337,7 @@ public class FeatureTypeConfig {
         }
 
         f.setDefaultStyle(defaultStyle);
+        f.setStyles(styles);
         f.setDirName(dirName);
         f.setSchemaBase(schemaBase);
         f.setSchemaName(schemaName);
@@ -427,6 +435,20 @@ public class FeatureTypeConfig {
     public void setDefaultStyle(String defaultStyle) {
         this.defaultStyle = defaultStyle;
     }
+    
+    public ArrayList getStyles() {
+		return styles;
+	}
+
+	public void setStyles(ArrayList styles) {
+		this.styles = styles;
+	}
+	
+	public void addStyle(String style) {
+		if (!this.styles.contains(style))
+			this.styles.add(style);
+	}
+	
     /**
      * Access definitionQuery property.
      * 

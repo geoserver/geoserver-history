@@ -282,7 +282,13 @@ public final class CoveragesEditorAction extends ConfigAction {
 						.parseWKT(form.getWKTString())));
 		config.setSupportedFormats(supportedFormats(form));
 		config.setDefaultStyle(form.getStyleId());
-
+		if (form.getOtherSelectedStyles() != null) {
+    		config.getStyles().clear();
+    		for (int i=0;i<form.getOtherSelectedStyles().length;i++) {
+    			config.addStyle(form.getOtherSelectedStyles()[i]);
+    		}
+    	}
+		
 		config.setName(form.getName());
 		config.setWmsPath(form.getWmsPath());
 		final StringBuffer temp = new StringBuffer(config.getFormatId());

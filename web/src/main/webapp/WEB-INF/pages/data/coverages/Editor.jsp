@@ -7,8 +7,43 @@
 //Be wary, ye who brave the dragon's lair.
 %>
 
+<script type="text/javascript">
+<!--
+function addStyle(){
+	for(i=0;i<document.coveragesEditorForm.panelStyleIds.length;i++){
+		if(document.coveragesEditorForm.panelStyleIds.options[i].selected == true){
+ 			new_element = new Option(document.coveragesEditorForm.panelStyleIds.options[i].value,document.coveragesEditorForm.panelStyleIds.options[i].value,false,false);
+ 			document.coveragesEditorForm.otherSelectedStyles.options[document.coveragesEditorForm.otherSelectedStyles.length] = new_element;
+ 		}
+ 	}
+}
+function removeStyle(){
+	var selected=0;
+	for(i=0;i<document.coveragesEditorForm.otherSelectedStyles.length;i++){
+		if(document.coveragesEditorForm.otherSelectedStyles.options[i].selected == true){
+			selected++;
+		}
+		if(selected>0){
+			for(i=0;i<document.coveragesEditorForm.otherSelectedStyles.length;i++){
+				if(document.coveragesEditorForm.otherSelectedStyles.options[i].selected == true){
+					document.coveragesEditorForm.otherSelectedStyles.options[i] = null;
+				}
+			}
+		removeStyle();
+		}
+	}
+}
+
+function prepareFormData(){
+	for(i=0;i<document.coveragesEditorForm.otherSelectedStyles.length;i++){
+		document.coveragesEditorForm.otherSelectedStyles.options[i].selected = true;
+	}
+}
+//-->
+</script>
+
 <% try { %>
-<html:form action="/config/data/coverageEditorSubmit">
+<html:form action="/config/data/coverageEditorSubmit" onsubmit="prepareFormData()">
   <table class="info">
 	<tr>
       <td class="label">
@@ -43,7 +78,35 @@
         	<html:options property="styles"/>
 		</html:select>
 	  </td>
-	</tr>    
+	</tr>   
+	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.type.style"/>">
+          <bean:message key="label.style"/>:
+        </span>
+      </td>
+      <td class="datum">
+        <table>
+        	<tr>
+        		<td>
+        			<html:select property="panelStyleIds" style="width:130" multiple="multiple">
+          				<html:options property="styles"/>
+        			</html:select>
+        		</td>
+        		<td style="font-size:10">
+        			<input type="button" value=">>" style="width:30" onClick="addStyle()">
+        			<br>
+        			<input type="button" value="<<" style="width:30" onClick="removeStyle()">
+        		</td>
+        		<td>
+        			<html:select property="otherSelectedStyles" style="width:130" multiple="multiple">
+        				<html:options property="typeStyles"/>
+        			</html:select>
+        		</td>
+        	</tr>
+        </table> 
+      </td>
+    </tr> 
 	<tr>
       <td class="label">
 		<span class="help" title="<bean:message key="help.coverage.srsName"/>">

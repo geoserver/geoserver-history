@@ -5,6 +5,7 @@
 package org.vfny.geoserver.global.dto;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -106,6 +107,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The default style name. */
     private String defaultStyle;
 
+    /** Other Style Names. */
+    private ArrayList styles = new ArrayList();
+    
     // Modif C. Kolbowicz - 06/10/2004 
 
     /** The legend icon description. */
@@ -185,6 +189,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         }
 
         defaultStyle = dto.getDefaultStyle();
+        styles = dto.getStyles();
 
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
@@ -251,6 +256,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
         //-- Modif C. Kolbowicz - 06/10/2004 
         r = r && (defaultStyle == f.getDefaultStyle());
+        r = r && (styles == f.getStyles());
         r = r && (name == f.getName());
         r = r && (wmsPath == f.getWmsPath());
         r = r && (title == f.getTitle());
@@ -821,5 +827,18 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
 	public void setCacheMaxAge(String cacheMaxAge) {
 		this.cacheMaxAge = cacheMaxAge;
+	}
+
+	public ArrayList getStyles() {
+		return styles;
+	}
+
+	public void addStyle(String styleName) {
+		if (!styles.contains(styleName))
+			styles.add(styleName);
+	}
+	
+	public void setStyles(ArrayList styles) {
+		this.styles = styles;
 	}
 }
