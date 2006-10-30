@@ -1,3 +1,20 @@
+GeoServer 1.4.0-RC2
+-------------------
+
+This is the second release candidate for the 1.4 series of GeoServer.
+
+- New version of imbedded Jetty server
+- More documentation
+- GML Datastore extra
+- German Translation
+- More bug fixes
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12967
+
+Based on GeoTools 2.2.2-SNAPSHOT
+
+
 GeoServer 1.4.0-RC1
 ------------------
 
