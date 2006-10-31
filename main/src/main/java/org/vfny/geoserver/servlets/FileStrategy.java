@@ -32,7 +32,7 @@ public class FileStrategy implements ServiceStrategy {
     static int sequence = 0;
 
     /** Class logger */
-    protected static Logger LOGGER = Logger.getLogger(
+    protected static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
 
     /** Response being targeted */
@@ -94,7 +94,7 @@ public class FileStrategy implements ServiceStrategy {
         if ((temp == null) || (response == null) || (safe == null)
                 || !temp.exists()) {
             LOGGER.fine("temp is " + temp + ", response is " + response
-                + " safe is " + safe + ", temp exists " + temp.exists());
+                + " safe is " + safe + (temp != null ? ", temp exists " + temp.exists(): ""));
             throw new IllegalStateException(
                 "flush should only be called after getDestination");
         }

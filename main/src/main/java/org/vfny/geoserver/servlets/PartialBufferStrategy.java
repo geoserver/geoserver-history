@@ -23,7 +23,7 @@ import org.vfny.geoserver.util.PartialBufferedOutputStream;
  */
 public class PartialBufferStrategy implements ServiceStrategy {
     /** Class logger */
-    protected static Logger LOGGER = Logger
+    protected static final Logger LOGGER = Logger
             .getLogger("org.vfny.geoserver.servlets");
 
     private PartialBufferedOutputStream out = null;

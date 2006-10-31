@@ -104,7 +104,6 @@ public class JSPCompiler extends HttpServlet {
     	try{
     		HttpURLConnection con = (HttpURLConnection)u.openConnection();
     		con.connect();
-    		String s = con.getResponseMessage();
     		BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
     		while(br.ready())
     			br.readLine();

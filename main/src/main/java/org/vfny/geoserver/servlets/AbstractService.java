@@ -104,7 +104,7 @@ public abstract class AbstractService extends HttpServlet
 	implements ApplicationContextAware {
 	
     /** Class logger */
-    protected static Logger LOGGER = Logger.getLogger(
+    protected static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.servlets");
 
     /**
@@ -914,6 +914,7 @@ public abstract class AbstractService extends HttpServlet
         } catch (IOException ex) { //stream closed, do nothing.
             LOGGER.info("apparently client has closed stream: "
                 + ex.getMessage());
+            return;
         }
 
         OutputStream out = new BufferedOutputStream(responseOut);

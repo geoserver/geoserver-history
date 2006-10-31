@@ -46,7 +46,7 @@ public class Dispatcher extends HttpServlet {
             "org.vfny.geoserver.servlets");
 
     /** Map metadata request type */
-    public static String META_REQUEST = "GetMeta";
+    public static final String META_REQUEST = "GetMeta";
 
     /** Map get capabilities request type */
     public static final int GET_CAPABILITIES_REQUEST = 1;
