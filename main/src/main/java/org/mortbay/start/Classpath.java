@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -109,6 +111,12 @@ public class Classpath {
         if (parent == null) {
             parent = ClassLoader.getSystemClassLoader();
         }
-        return new URLClassLoader(urls, parent);
+        final ClassLoader finalParent = parent;
+        final URL[] finalURLS = urls;
+        return (ClassLoader) AccessController.doPrivileged(new PrivilegedAction() {
+            public Object run() { 
+                return new URLClassLoader(finalURLS, finalParent);
+            }
+        });
     }
 }
