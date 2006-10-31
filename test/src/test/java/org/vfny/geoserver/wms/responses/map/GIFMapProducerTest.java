@@ -49,7 +49,8 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
         BufferedImage product = null;
         File tmpGif = null;
         try {
-        		tmpGif = File.createTempFile(testName,"gif");
+        		tmpGif = File.createTempFile(testName,".gif");
+                        tmpGif.deleteOnExit();
 		
 			//tmpGif.deleteOnExit();
 			OutputStream out = new FileOutputStream(tmpGif);
