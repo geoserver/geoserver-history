@@ -292,9 +292,7 @@ public class LockRequest extends WFSRequest {
                 LOGGER.finest("internal lock: " + internalLock);
                 LOGGER.finest("external lock: " + externalLock);
 
-                if (internalLock.equals(externalLock)) {
-                    isEqual = true && isEqual;
-                } else {
+                if (!internalLock.equals(externalLock)) {
                     isEqual = false;
                 }
 
@@ -331,7 +329,7 @@ public class LockRequest extends WFSRequest {
      */
     public static class Lock {
         /** The feature types to lock. */
-        protected String featureType = new String();
+        protected String featureType = "";
 
         /** Specifies the filter to define locked features. */
         protected Filter filter;

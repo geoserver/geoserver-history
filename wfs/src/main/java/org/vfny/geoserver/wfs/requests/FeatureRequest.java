@@ -305,7 +305,6 @@ public class FeatureRequest extends WFSRequest {
             } else {
                 if (((Query) internalIterator.next()).equals(
                             (Query) externalIterator.next())) {
-                    isEqual = true && isEqual;
                     LOGGER.finest("query properties match: " + isEqual);
                 } else {
                     isEqual = false;

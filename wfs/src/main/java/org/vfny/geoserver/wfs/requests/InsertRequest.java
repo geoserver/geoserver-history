@@ -216,9 +216,7 @@ public class InsertRequest extends SubTransactionRequest {
 
         if (this.handle != null) {
             isEqual = this.handle.equals(testInsert.handle);
-        } else {
-            isEqual = (testInsert == null);
-        }
+        } 
 
         LOGGER.finest("handles are equal: " + isEqual);
         isEqual = (this.releaseAll == testInsert.releaseAll) && isEqual;

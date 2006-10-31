@@ -78,7 +78,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     private Object curPropertyValue;
 
     /** holds the current lockId */
-    private String curLockId = new String();
+    private String curLockId = "";
 
     /** holds the list of features for an insert request. */
     private List curFeatures;
@@ -257,7 +257,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
                     curPropertyValue);
                 LOGGER.finer("setting update property " + curPropertyName
                     + " to " + curPropertyValue);
-                curPropertyName = new String();
+                curPropertyName = "";
                 curPropertyValue = null;
                 inProperty = false;
             } else {

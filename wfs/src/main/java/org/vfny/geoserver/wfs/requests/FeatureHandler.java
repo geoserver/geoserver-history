@@ -45,7 +45,7 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     private FeatureRequest request = null;
 
     /** Tracks tag we are currently inside: helps maintain state. */
-    private String insideTag = new String();
+    private String insideTag = "";
 
     /** Boolean to flag whether or not we are inside a query */
     private boolean insideQuery = false;

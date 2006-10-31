@@ -118,24 +118,24 @@ public class DescribeRequest extends WFSRequest {
      * @return A string of this request.
      */
     public String toString() {
-        String returnString = "DescribeFeatureType Request [outputFormat: ";
-        returnString = returnString + outputFormat + " [feature types: ";
+        StringBuffer sb = new StringBuffer("DescribeFeatureType Request [outputFormat: ");
+        sb.append(outputFormat).append(" [feature types: ");
         LOGGER.finest("all req: " + allRequested());
 
         if (this.allRequested()) {
-            return returnString + " ALL ]";
+            return sb.append(" ALL ]").toString();
         } else {
             Iterator i = featureTypes.listIterator();
 
             while (i.hasNext()) {
-                returnString = returnString + i.next();
+                sb.append(i.next());
 
                 if (i.hasNext()) {
-                    returnString = returnString + ", ";
+                    sb.append(", ");
                 }
             }
 
-            return returnString + "]";
+            return sb.append("]").toString();
         }
     }
 

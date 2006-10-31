@@ -161,8 +161,7 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
                 return filters;
                 
             } catch (IllegalFilterException e) {
-                new WfsException("Filter creation problem: " + filter)
-                	.initCause(e);
+                new WfsException("Filter creation problem: ").initCause(e);
             }
 
             // handles unconstrained case
