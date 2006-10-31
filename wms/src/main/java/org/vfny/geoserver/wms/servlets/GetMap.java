@@ -48,6 +48,10 @@ public class GetMap extends WMService {
     public GetMap(WMS wms) {
     		super("GetMap",wms);
     }
+    
+    protected GetMap(String id, WMS wms) {
+        super(id, wms);
+    }
        
     // TODO: check is this override adds any value compared to the superclass one,
     // remove otherwise

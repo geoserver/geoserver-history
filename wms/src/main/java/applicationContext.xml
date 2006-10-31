@@ -79,6 +79,11 @@
 		parent="wmsService">
 	</bean>	
 	
+	<bean id="wmsGetMapLegacy"
+		class="org.vfny.geoserver.wms.servlets.GetMapLegacy"
+		parent="wmsService">
+	</bean>	
+	
 	<bean id="wmsPutStyles"
 		class="org.vfny.geoserver.sld.servlets.PutStyles"
 		parent="wmsService">
