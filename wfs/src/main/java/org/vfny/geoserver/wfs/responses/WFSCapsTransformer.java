@@ -392,23 +392,23 @@ public class WFSCapsTransformer extends TransformerBase {
             start("FeatureTypeList");
             start("Operations");
 
-            if ((wfs.getServiceLevel() | WFSDTO.SERVICE_BASIC) != 0) {
+            if ((wfs.getServiceLevel() & WFSDTO.SERVICE_BASIC) != 0) {
                 element("Query", null);
             }
 
-            if ((wfs.getServiceLevel() | WFSDTO.SERVICE_INSERT) != 0) {
+            if ((wfs.getServiceLevel() & WFSDTO.SERVICE_INSERT) != 0) {
                 element("Insert", null);
             }
 
-            if ((wfs.getServiceLevel() | WFSDTO.SERVICE_UPDATE) != 0) {
+            if ((wfs.getServiceLevel() & WFSDTO.SERVICE_UPDATE) != 0) {
                 element("Update", null);
             }
 
-            if ((wfs.getServiceLevel() | WFSDTO.SERVICE_DELETE) != 0) {
+            if ((wfs.getServiceLevel() & WFSDTO.SERVICE_DELETE) != 0) {
                 element("Delete", null);
             }
 
-            if ((wfs.getServiceLevel() | WFSDTO.SERVICE_LOCKING) != 0) {
+            if ((wfs.getServiceLevel() & WFSDTO.SERVICE_LOCKING) != 0) {
                 element("Lock", null);
             }
 

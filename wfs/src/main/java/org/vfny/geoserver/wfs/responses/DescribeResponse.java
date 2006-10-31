@@ -68,7 +68,7 @@ public class DescribeResponse implements Response {
     private DescribeRequest request;
 
     /** Main XML class for interpretation and response. */
-    private String xmlResponse = new String();
+    private String xmlResponse = "";
 
     /**
      * Returns any extra headers that this service might want to set in the HTTP response object.
@@ -316,10 +316,10 @@ public class DescribeResponse implements Response {
     private String generateSpecifiedTypes(List requestedTypes, WFS gs)
         throws WfsException {
         //TypeRepository repository = TypeRepository.getInstance();
-        String tempResponse = new String();
-        String currentFile = new String();
-        String curTypeName = new String();
-        String generatedType = new String();
+        String tempResponse = "";
+        String currentFile = "";
+        String curTypeName = "";
+        String generatedType = "";
         Set validTypes = new HashSet();
 
         // Loop through requested tables to add element types
@@ -439,11 +439,12 @@ public class DescribeResponse implements Response {
     public String writeFile(File inputFile) throws WfsException {
         LOGGER.finest("writing file " + inputFile);
 
-        String finalOutput = new String();
+        String finalOutput = "";
 
+        FileInputStream inputStream = null;
         try {
 	    // File inputFile = new File(inputFileName);
-            FileInputStream inputStream = new FileInputStream(inputFile);
+            inputStream = new FileInputStream(inputFile);
             byte[] fileBuffer = new byte[inputStream.available()];
             int bytesRead;
 
@@ -457,6 +458,8 @@ public class DescribeResponse implements Response {
             //a describe all will choke if there is one ft with no schema.xml
             throw new WfsException("problem writing featureType information "
                 + " from " + inputFile);
+        } finally {
+            if(inputStream != null) try {inputStream.close(); } catch(Exception e){}; 
         }
 
         return finalOutput;

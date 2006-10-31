@@ -31,7 +31,7 @@ public class Query {
             "org.vfny.geoserver.requests");
 
     /** The user-specified name for the query. */
-    protected String handle = new String();
+    protected String handle = "";
 
     // UNIMPLEMENTED - YOU CAN SET THIS BUT IT DOES NOTHING
     // NOTE THAT THIS IS FOR 'EVOLVING FEATURES' OR WHATEVER

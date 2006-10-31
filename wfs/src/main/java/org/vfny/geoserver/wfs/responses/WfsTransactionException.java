@@ -30,7 +30,7 @@ public class WfsTransactionException extends WfsException {
     protected Exception standardException = new Exception();
 
     /** handle of the transaction request */
-    protected String handle = new String();
+    protected String handle = "";
 
     /**
      * Empty constructor.

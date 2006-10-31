@@ -176,10 +176,7 @@ public class TestWfsPost extends HttpServlet {
         } else {
             response.setContentType("application/xml");
 
-            BufferedReader xmlIn = null;
             PrintWriter xmlOut = null;
-            StringBuffer sbf = new StringBuffer();
-            String resp = null;
 
             try {
                 URL u = new URL(urlString);
@@ -260,19 +257,6 @@ public class TestWfsPost extends HttpServlet {
                 out.println("</servlet-exception>");
                 out.close();
             } finally {
-                try {
-                    if (xmlIn != null) {
-                        xmlIn.close();
-                    }
-                } catch (Exception e1) {
-                    PrintWriter out = response.getWriter();
-                    out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-                    out.println("<servlet-exception>");
-                    out.println(e1.toString());
-                    out.println("</servlet-exception>");
-                    out.close();
-                }
-
                 try {
                     if (xmlOut != null) {
                         xmlOut.close();
