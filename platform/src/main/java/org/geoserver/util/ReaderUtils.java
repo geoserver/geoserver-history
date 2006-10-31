@@ -216,9 +216,9 @@ public class ReaderUtils {
 			}
 			
 			child = child.getNextSibling();
-		}
+		} 
 		
-		if (mandatory && (child == null)) {
+		if (mandatory) {
 			throw new Exception(root.getNodeName()
 					+ " does not contains a child element named " + name);
 		}

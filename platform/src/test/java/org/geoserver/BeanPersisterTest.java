@@ -26,7 +26,7 @@ public class BeanPersisterTest extends TestCase {
 		context = new GenericApplicationContext();
 		context.getBeanFactory().registerSingleton( "resourceLoader", loader );
 
-		URL xml = getClass().getResource( "applicationContext.xml" );
+		URL xml = BeanPersisterTest.class.getResource( "applicationContext.xml" );
 		
 		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader( context );
 		reader.loadBeanDefinitions( new FileSystemResource( xml.getFile() ) );
