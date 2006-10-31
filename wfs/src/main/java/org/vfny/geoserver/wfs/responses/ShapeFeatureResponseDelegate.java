@@ -92,6 +92,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
 	 * the results of a getfeature request wich this object will encode as Shape
 	 */
 	private GetFeatureResults results;
+        private String featureTypeName;
 
 	/**
 	 * empty constructor required to be instantiated through
@@ -247,7 +248,9 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
 
 		zipOut.finish();
 		zipOut.flush();
-		zipOut.close();
+                // This is an error, because this closes the output stream too... it's
+                // not the right place to do so
+                // zipOut.close();
 	}
 
 	/**
@@ -303,5 +306,9 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
 		FeatureStore store = (FeatureStore) sfds.getFeatureSource(name);
 		store.addFeatures(reader);
 	}
+
+        public String getContentDisposition(String featureTypeName) {
+            return "attachment; filename=" + featureTypeName + ".zip";
+        }
 
 }

@@ -556,10 +556,15 @@ public abstract class AbstractService extends HttpServlet
             response.setContentType(mimeType);
 
             String encoding = serviceResponse.getContentEncoding();
-
             if (encoding != null) {
                 LOGGER.fine("content encoding is: " + encoding);
                 response.setHeader("Content-Encoding", encoding);
+            }
+            
+            String disposition = serviceResponse.getContentDisposition();
+            if(disposition != null) {
+                LOGGER.fine("content encoding is: " + encoding);
+                response.setHeader("Content-Disposition", disposition);
             }
         } catch (SocketException socketException) {
             LOGGER.fine(

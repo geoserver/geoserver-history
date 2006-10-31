@@ -56,6 +56,7 @@ public class FeatureResponse implements Response {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
     FeatureResponseDelegate delegate;
+    String featureTypeName;
 
     /**
      * This is the request provided to the execute( Request ) method.
@@ -204,6 +205,7 @@ public class FeatureResponse implements Response {
         LOGGER.finest("execute FeatureRequest response. Called request is: "
             + request);
         this.request = request;
+        this.featureTypeName = null;
 
         String outputFormat = request.getOutputFormat();
 
@@ -267,6 +269,13 @@ public class FeatureResponse implements Response {
             for (Iterator it = request.getQueries().iterator();
                     it.hasNext() && (maxFeatures > 0);) {
                 query = (Query) it.next();
+                
+                // the feature type name used in the content disposition response will match
+                // the first feature type
+                if(featureTypeName == null) {
+                    featureTypeName = query.getTypeName();
+                }
+                
                 meta = catalog.getFeatureTypeInfo(query.getTypeName());
                 namespace = meta.getDataStoreInfo().getNameSpace();
                 source = meta.getFeatureSource();
@@ -528,7 +537,8 @@ public class FeatureResponse implements Response {
     }
 
 	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
+            if(featureTypeName != null && featureTypeName.indexOf(':') != -1)
+                featureTypeName = featureTypeName.substring(featureTypeName.indexOf(':') + 1);
+	    return delegate.getContentDisposition(featureTypeName);
 	}
 }
