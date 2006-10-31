@@ -1292,7 +1292,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	    		replacedOne = true;
 	    		LOGGER.info("Using BASEMAP layer: "+titles[i]);
 	    		layerList = layerList + "," + layers.get(titles[i]); // append layers of index: titles[i]
-	    		if (styles != null && !styles.equals(""))
+	    		if (styles != null && !"".equals(styles.get(titles[i])))
 	    		{	// if the user specified styles, lets use them
 	    			styleList = styleList + "," + styles.get(titles[i]);	// append styles of index: titles[i]
 	    		}

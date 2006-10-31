@@ -295,7 +295,7 @@ public class GetMapRequest extends WMSRequest {
      * @author Gabriel Roldan, Axios Engineering
      * @version $Id$
      */
-    private class MandatoryParameters {
+    private static class MandatoryParameters {
         /** ordered list of requested layers */
         FeatureTypeInfo[] layers;
 
@@ -324,7 +324,7 @@ public class GetMapRequest extends WMSRequest {
      * @author Gabriel Roldan, Axios Engineering
      * @version $Id$
      */
-    private class OptionalParameters {
+    private static class OptionalParameters {
         /**
          * the map's background color requested, or the default (white) if not
          * specified
