@@ -467,10 +467,7 @@ public class GeoServer extends GlobalLayerSupertype {
     	File f = new File(logLocation);
 		if (f.exists()) {
 			 if (f.isDirectory()) {
-				//attach a file to the end of the directory
-				if (!logLocation.endsWith(File.separator))
-					logLocation += File.separator;
-				logLocation += "geoserver.log";
+                             f = new File(f, "geoserver.log");
 			 }
 		}
 		else {

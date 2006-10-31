@@ -822,6 +822,7 @@ public class XMLConfigReader {
             s.setFilename(new File(baseDir, "normal.sld"));
             s.setDefault(true);
             styles.put("normal", s);
+            return styles;
         }
 
         int styleCount = stylesList.getLength();
@@ -1127,8 +1128,6 @@ public class XMLConfigReader {
         File parentDir = infoFile.getParentFile();
         dto.setDirName(parentDir.getName());
 
-        List attributeList;
-
         File schemaFile = new File(parentDir, "schema.xml");
 
         if (schemaFile.exists() && schemaFile.isFile()) {
@@ -1140,7 +1139,6 @@ public class XMLConfigReader {
                 loadSchema(schemaFile, dto);
             } catch (Exception badDog) {
                 badDog.printStackTrace();
-                attributeList = Collections.EMPTY_LIST;
             }
         } else {
             dto.setSchemaAttributes(Collections.EMPTY_LIST);
@@ -1212,7 +1210,7 @@ public class XMLConfigReader {
 			Element cacheInfo = ReaderUtils.getChildElement(fTypeRoot, "cacheinfo");
 			if (cacheInfo != null) {
 				ft.setCacheMaxAge(ReaderUtils.getAttribute(cacheInfo, "maxage", false));// not mandatory
-				ft.setCachingEnabled((new Boolean(ReaderUtils.getAttribute(cacheInfo, "enabled", true))).booleanValue());
+				ft.setCachingEnabled((Boolean.valueOf(ReaderUtils.getAttribute(cacheInfo, "enabled", true))).booleanValue());
 			}
 
 			// Modif C. Kolbowicz - 06/10/2004

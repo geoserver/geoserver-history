@@ -216,7 +216,7 @@ public class DataTransferObjectFactory {
         }
         return new String[] {};
     }
-    public static Map schemaBaseMap = new HashMap();
+    public static final Map schemaBaseMap = new HashMap();
     static {
         schemaBaseMap.put("gml:AbstractFeatureType",
 			  new String[] {});//"description","name","boundedBy"} );
@@ -294,7 +294,7 @@ public class DataTransferObjectFactory {
     	NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
     	List result = new LinkedList();
     	
-    	if(name==null || name == "")
+    	if(name==null || "".equals(name))
     		throw new NullPointerException("Element name must be defined.");
     	if(type==null)
     		throw new NullPointerException("Element type must be defined.");

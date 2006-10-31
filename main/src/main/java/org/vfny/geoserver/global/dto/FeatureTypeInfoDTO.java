@@ -244,7 +244,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
         // Modif C. Kolbowicz - 06/10/2004
         if (legendURL != null) {
-            r = r && schema.equals(f.getLegendURL());
+            r = r && legendURL.equals(f.getLegendURL());
         } else if (f.getLegendURL() != null) {
             return false;
         }

@@ -197,7 +197,7 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo
     }
 
    
-    public synchronized AttributeTypeInfo AttributeTypeMetaData(
+    public synchronized AttributeTypeInfo attributeTypeMetaData(
         String attributeName) {
     	throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }

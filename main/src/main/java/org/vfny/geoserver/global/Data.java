@@ -1424,7 +1424,7 @@ SCHEMA:
      */
     public FeatureSource getFeatureSource(String prefix, String typeName)
         throws IOException {
-        if ((prefix == null) || (prefix == "")) {
+        if ((prefix == null) || ("".equals(prefix))) {
             prefix = defaultNameSpace.getPrefix();
         }
 

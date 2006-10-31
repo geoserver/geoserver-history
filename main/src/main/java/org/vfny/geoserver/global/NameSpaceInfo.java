@@ -8,12 +8,15 @@
  */
 package org.vfny.geoserver.global;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 
 /**
@@ -72,6 +75,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
         prefix = ns.getPrefix();
         uri = ns.getUri();
         _default = ns.isDefault();
+        meta = new HashMap();
     }
 
     /**
@@ -132,28 +136,6 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      */
     public Object clone() {
         return new NameSpaceInfo(this);
-    }
-
-    /**
-     * Implement equals.
-     * 
-     * <p>
-     * recursively tests to determine if the object passed in is a copy of this
-     * object.
-     * </p>
-     *
-     * @param obj The NameSpaceConfig object to test.
-     *
-     * @return true when the object passed is the same as this object.
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-        NameSpaceInfo ns = (NameSpaceInfo) obj;
-
-        return ((getPrefix() == ns.getPrefix())
-        && ((getUri() == ns.getUri())
-        && (isDefault() == ns.isDefault())));
     }
 
     /**
@@ -331,5 +313,29 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
 
     public String toString() {
         return getPrefix() + ":" + getUri();
+    }
+
+    /**
+     * @see java.lang.Object#equals(Object)
+     */
+    public boolean equals(Object object) {
+        if (!(object instanceof NameSpaceInfo)) {
+            return false;
+        }
+        NameSpaceInfo rhs = (NameSpaceInfo) object;
+        return new EqualsBuilder().appendSuper(super.equals(object)).append(
+                this._default, rhs._default).append(this.uri, rhs.uri).append(
+                this.data, rhs.data).append(this.prefix, rhs.prefix).append(
+                this.meta, rhs.meta).isEquals();
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return new HashCodeBuilder(2042082703, 233934749).appendSuper(
+                super.hashCode()).append(this._default).append(this.uri)
+                .append(this.data).append(this.prefix).append(this.meta)
+                .toHashCode();
     }
 }

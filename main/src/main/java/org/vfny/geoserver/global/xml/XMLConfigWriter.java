@@ -389,7 +389,7 @@ public class XMLConfigWriter {
             cw.openTag("keywords");
 
             for (int i = 0; i < s.getKeywords().length; i++) {
-                cw.textTag("keyword", (s.getKeywords())[i].toString());
+                cw.textTag("keyword", (s.getKeywords())[i]);
             }
 
             cw.closeTag("keywords");

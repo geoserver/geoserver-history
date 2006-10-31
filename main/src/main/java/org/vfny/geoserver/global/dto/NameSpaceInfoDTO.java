@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.global.dto;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+
 /**
  * Data Transfer Object for GeoServer NameSpaceInfo information.
  * 
@@ -88,31 +90,6 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
      */
     public Object clone() {
         return new NameSpaceInfoDTO(this);
-    }
-
-    /**
-     * Implement equals.
-     * 
-     * <p>
-     * recursively tests to determine if the object passed in is a copy of this
-     * object.
-     * </p>
-     *
-     * @param obj The NameSpaceConfig object to test.
-     *
-     * @return true when the object passed is the same as this object.
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-        if ((obj == null) || !(obj instanceof NameSpaceInfoDTO)) {
-            return false;
-        }
-
-        NameSpaceInfoDTO ns = (NameSpaceInfoDTO) obj;
-
-        return ((prefix == ns.getPrefix())
-        && ((uri == ns.getUri()) && (_default == ns.isDefault())));
     }
 
     /**
@@ -217,4 +194,17 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
 	public String toString() {
 		 return "xmlns:" + getPrefix() + "=\"" + getUri() + "\", isDefault=" + _default;
 	 }
+
+    /**
+     * @see java.lang.Object#equals(Object)
+     */
+    public boolean equals(Object object) {
+        if (!(object instanceof NameSpaceInfoDTO)) {
+            return false;
+        }
+        NameSpaceInfoDTO rhs = (NameSpaceInfoDTO) object;
+        return new EqualsBuilder().appendSuper(super.equals(object)).append(
+                this._default, rhs._default).append(this.uri, rhs.uri).append(
+                this.prefix, rhs.prefix).isEquals();
+    }
 }

@@ -130,8 +130,6 @@ public class Log4JFormatter extends Formatter {
      * @throws AssertionError Should never occur.
      */
     public synchronized String format(final LogRecord record) {
-        String logger = record.getLoggerName();
-
         final String recordLevel = record.getLevel().getLocalizedName();
 
         try {

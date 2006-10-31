@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -995,9 +996,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      *
      * @return
      *
-     * @see org.geotools.data.FeatureTypeMetaData#AttributeTypeMetaData(java.lang.String)
+     * @see org.geotools.data.FeatureTypeMetaData#attributeTypeMetaData(java.lang.String)
      */
-    public synchronized AttributeTypeInfo AttributeTypeMetaData(
+    public synchronized AttributeTypeInfo attributeTypeMetaData(
         String attributeName) {
         AttributeTypeInfo info = null;
 
@@ -1041,7 +1042,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      * @see org.geotools.data.MetaData#containsMetaData(java.lang.String)
      */
     public boolean containsMetaData(String key) {
-        return meta.containsKey(key);
+        return meta != null && meta.containsKey(key);
     }
 
     /**
@@ -1054,6 +1055,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      *      java.lang.Object)
      */
     public void putMetaData(String key, Object value) {
+        if(meta == null) meta = new HashMap();
         meta.put(key, value);
     }
 
@@ -1067,6 +1069,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
      */
     public Object getMetaData(String key) {
+        if(meta == null) return null;
         return meta.get(key);
     }
     

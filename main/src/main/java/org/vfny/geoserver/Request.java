@@ -239,11 +239,11 @@ abstract public class Request {
 		// will happen if the dispatcher was called, as opposed to using the /wfs url.
 		String uri = hsr.getRequestURI();
 		if(uri!=null) {
-		uri = uri.toLowerCase();
-		}
-		// will happen if the dispatcher was called, as opposed to using the /wfs url.
-		if(uri.endsWith("/wfs") || uri.endsWith("/wms"))
-			return true;
+        		uri = uri.toLowerCase();
+        		// will happen if the dispatcher was called, as opposed to using the /wfs url.
+        		if(uri.endsWith("/wfs") || uri.endsWith("/wms"))
+        			return true;
+                }
 		return false;
 	}
 	/**

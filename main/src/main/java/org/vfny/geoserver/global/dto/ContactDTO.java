@@ -4,6 +4,9 @@
  */
 package org.vfny.geoserver.global.dto;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 /**
  * Data Transfer Object for Contact information.
  * 
@@ -136,64 +139,6 @@ public final class ContactDTO implements DataTransferObject {
      */
     public Object clone() {
         return new ContactDTO(this);
-    }
-
-    /**
-     * Implement equals.
-     * 
-     * <p>
-     * Checks to see that the ContactConfig passed in is the same as this
-     * ContactConfig.
-     * </p>
-     *
-     * @param obj A ContactConfig object.
-     *
-     * @return true when they are the same.
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-        if (!(obj instanceof ContactDTO) || (obj == null)) {
-            return false;
-        }
-
-        ContactDTO c = (ContactDTO) obj;
-
-        return ((contactPerson == c.getContactPerson())
-        && ((contactOrganization == c.getContactOrganization())
-        && ((contactPosition == c.getContactPosition())
-        && ((addressType == c.getAddressType())
-        && ((address == c.getAddress())
-        && ((addressCity == c.getAddressCity())
-        && ((addressState == c.getAddressState())
-        && ((addressPostalCode == c.getAddressPostalCode())
-        && ((addressCountry == c.getAddressCountry())
-        && ((contactVoice == c.getContactVoice())
-        && ((contactFacsimile == c.getContactFacsimile())
-        && ((onlineResource == c.getOnlineResource())
-        && (contactEmail == c.getContactEmail())))))))))))));
-    }
-
-    public int hashCode() {
-        int i = 1;
-
-        if (contactPerson != null) {
-            i *= contactPerson.hashCode();
-        }
-
-        if (address != null) {
-            i *= address.hashCode();
-        }
-
-        if (contactVoice != null) {
-            i *= contactVoice.hashCode();
-        }
-
-        if (contactEmail != null) {
-            i *= contactEmail.hashCode();
-        }
-
-        return i;
     }
 
     /**
@@ -549,5 +494,43 @@ public final class ContactDTO implements DataTransferObject {
 			this.onlineResource = onlineResource;
 		}
 	}
+
+    /**
+     * @see java.lang.Object#equals(Object)
+     */
+    public boolean equals(Object object) {
+        if (!(object instanceof ContactDTO)) {
+            return false;
+        }
+        ContactDTO rhs = (ContactDTO) object;
+        return new EqualsBuilder().appendSuper(super.equals(object)).append(
+                this.contactPerson, rhs.contactPerson).append(
+                this.contactOrganization, rhs.contactOrganization).append(
+                this.contactPosition, rhs.contactPosition).append(this.address,
+                rhs.address).append(this.contactVoice, rhs.contactVoice)
+                .append(this.addressType, rhs.addressType).append(
+                        this.onlineResource, rhs.onlineResource).append(
+                        this.addressState, rhs.addressState).append(
+                        this.contactEmail, rhs.contactEmail).append(
+                        this.addressPostalCode, rhs.addressPostalCode).append(
+                        this.addressCountry, rhs.addressCountry).append(
+                        this.addressCity, rhs.addressCity).append(
+                        this.contactFacsimile, rhs.contactFacsimile).isEquals();
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return new HashCodeBuilder(-289181115, -105580363).appendSuper(
+                super.hashCode()).append(this.contactPerson).append(
+                this.contactOrganization).append(this.contactPosition).append(
+                this.address).append(this.contactVoice)
+                .append(this.addressType).append(this.onlineResource).append(
+                        this.addressState).append(this.contactEmail).append(
+                        this.addressPostalCode).append(this.addressCountry)
+                .append(this.addressCity).append(this.contactFacsimile)
+                .toHashCode();
+    }
 
 }

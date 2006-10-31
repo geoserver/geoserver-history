@@ -6,6 +6,8 @@ package org.vfny.geoserver.global.dto;
 
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+
 
 /**
  * Represents most of a xs:element for an XMLSchema.
@@ -110,37 +112,6 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
         maxOccurs = dto.getMaxOccurs();
         nillable = dto.isNillable();
         isComplex = dto.isComplex();
-    }
-
-    /**
-     * Implement equals.
-     * 
-     * <p>
-     * true when the data contained inside the objects is the same.
-     * </p>
-     *
-     * @param obj an instance of AttributeTypeInfoDTO to compare
-     *
-     * @return true when they are the same, false otherwise
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-        boolean r = true;
-
-        if ((obj == null) || !(obj instanceof AttributeTypeInfoDTO)) {
-            return false;
-        }
-
-        AttributeTypeInfoDTO dto = (AttributeTypeInfoDTO) obj;
-        r = r && (name == dto.getName());
-        r = r && (type == dto.getType());
-        r = r && (minOccurs == dto.getMinOccurs());
-        r = r && (maxOccurs == dto.getMaxOccurs());
-        r = r && (nillable == dto.isNillable());
-        r = r && (isComplex == dto.isComplex());
-
-        return r;
     }
 
     /**
@@ -345,5 +316,20 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
         return "[AttributeTypeInfoDTO " + name + " minOccurs=" + minOccurs
         + " maxOccurs=" + maxOccurs + " nillable=" + nillable + " type=" + type
         + " isComplex=" + isComplex + "]";
+    }
+
+    /**
+     * @see java.lang.Object#equals(Object)
+     */
+    public boolean equals(Object object) {
+        if (!(object instanceof AttributeTypeInfoDTO)) {
+            return false;
+        }
+        AttributeTypeInfoDTO rhs = (AttributeTypeInfoDTO) object;
+        return new EqualsBuilder().appendSuper(super.equals(object)).append(
+                this.isComplex, rhs.isComplex).append(this.type, rhs.type)
+                .append(this.minOccurs, rhs.minOccurs).append(this.nillable,
+                        rhs.nillable).append(this.name, rhs.name).append(
+                        this.maxOccurs, rhs.maxOccurs).isEquals();
     }
 }

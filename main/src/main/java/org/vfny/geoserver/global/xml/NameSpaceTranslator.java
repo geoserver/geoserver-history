@@ -119,7 +119,7 @@ public abstract class NameSpaceTranslator{
 	 * @return true when found, false otherwise.
 	 */
 	public boolean isValidDefinition(String definition){
-		if(definition == null || definition == "")
+		if(definition == null || "".equals(definition))
 			return false;
 		Set elems = getElements();
 		Iterator i = elems.iterator();
@@ -149,7 +149,7 @@ public abstract class NameSpaceTranslator{
 	 * @return true when found, false otherwise.
 	 */
 	public boolean isValidTypeRef(String type){
-		if(type == null || type == "")
+		if(type == null || "".equals(type))
 			return false;
 		Set elems = getElements();
 		Iterator i = elems.iterator();
