@@ -53,21 +53,21 @@ import org.vfny.geoserver.wms.responses.map.kml.KMLMapProducerFactory;
  */
 public class KMLReflector extends WMService {
 
-	private static Logger LOGGER = Logger.getLogger(
+	private static final Logger LOGGER = Logger.getLogger(
     					"org.vfny.geoserver.wms.servlets");
 	
-	final String KML_MIME_TYPE = "application/vnd.google-earth.kml+xml";
-	final String KMZ_MIME_TYPE = "application/vnd.google-earth.kmz+xml";
+	static final String KML_MIME_TYPE = "application/vnd.google-earth.kml+xml";
+        static final String KMZ_MIME_TYPE = "application/vnd.google-earth.kmz+xml";
 	
 	// Values for the prepared WMS request. Later move these to web.xml server config
-	final int KMSCORE = 30;
-	final boolean KMATTR = true;
-	final boolean TRANSPARENT = true;
-	final int WIDTH = 1024;
-	final int HEIGHT = 1024;
-	final String VERSION = "1.0.0";
-	final String SRS = "EPSG:4326";
-	final String DEFAULT_BBOX = "-180,-90,180,90";
+        static final int KMSCORE = 30;
+        static final boolean KMATTR = true;
+        static final boolean TRANSPARENT = true;
+        static final int WIDTH = 1024;
+        static final int HEIGHT = 1024;
+        static final String VERSION = "1.0.0";
+        static final String SRS = "EPSG:4326";
+        static final String DEFAULT_BBOX = "-180,-90,180,90";
 	
 	public KMLReflector(WMS wms) {
 		super("kml_reflect", wms );

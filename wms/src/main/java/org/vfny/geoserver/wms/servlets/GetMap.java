@@ -124,7 +124,7 @@ public class GetMap extends WMService {
     	
     	// filter layers and styles if the user specified "layers=basemap"
     	// This must happen after the kvp reader has been initially called
-    	if (layers != null && !layers.equals(""))
+    	if (layers != null)
     		kvp.filterBaseMap(layers, styles);
     	
         return kvp;
