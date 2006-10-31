@@ -188,8 +188,6 @@ public class PutStyles extends AbstractService {
         requestXml.close();
         out.flush();
         out.close();
-        requestXml = new BufferedReader(new FileReader(temp)); // pretend like nothing has happened
-        
         
         PutStylesRequest serviceRequest = new PutStylesRequest(this);
         serviceRequest.setSldBody(sb.toString());// save the SLD body in the request object

@@ -54,7 +54,7 @@ public class PutStylesRequest extends Request {
 	}
 	
 	
-	private class MandatoryParameters
+	private static class MandatoryParameters
 	{
 		/**
 		 * This gives the mode of the ?put?: either ?InsertAndReplace? or
@@ -68,7 +68,7 @@ public class PutStylesRequest extends Request {
 		String mode = ""; // either 'InsertAndReplace' or 'ReplaceAll'
 	}
 	
-	private class OptionalParameters
+	private static class OptionalParameters
 	{
 		/**
 		 * This parameter specifies a reference to an external SLD document.
