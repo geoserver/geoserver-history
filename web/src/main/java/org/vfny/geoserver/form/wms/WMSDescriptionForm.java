@@ -43,14 +43,13 @@ public final class WMSDescriptionForm extends ActionForm {
         this.title = config.getTitle();
         this.accessConstraints = config.getAccessConstraints();
 
-        String out = "";
-
+        StringBuffer sb = new StringBuffer();
+        String newline = System.getProperty("line.separator");
         for (int i = 0; i < config.getKeywords().length; i++) {
-            out = out + config.getKeywords()[i]
-                + System.getProperty("line.separator");
+            sb.append(config.getKeywords()[i]).append(newline);
         }
 
-        this.keywords = out;
+        this.keywords = sb.toString();
     }
 
     public ActionErrors validate(ActionMapping mapping,

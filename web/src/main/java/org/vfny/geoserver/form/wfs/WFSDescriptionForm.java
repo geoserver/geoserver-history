@@ -186,13 +186,13 @@ public final class WFSDescriptionForm extends ActionForm {
         this._abstract = config.getAbstract();
         this.fees = config.getFees();
 
-        String out = "";
-
+        StringBuffer sb = new StringBuffer();
+        String newline = System.getProperty("line.separator");
         for (int i = 0; i < config.getKeywords().length; i++) {
-            out = out + config.getKeywords()[i] + System.getProperty("line.separator");
+            sb.append(config.getKeywords()[i]).append(newline);
         }
 
-        this.keywords = out;
+        this.keywords = sb.toString();
 
     }
 

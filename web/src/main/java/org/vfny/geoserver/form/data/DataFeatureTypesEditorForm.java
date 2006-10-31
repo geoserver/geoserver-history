@@ -7,7 +7,6 @@ package org.vfny.geoserver.form.data;
 
 import java.util.Iterator;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
@@ -17,8 +16,6 @@ import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.util.Requests;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -56,10 +53,10 @@ public class DataFeatureTypesEditorForm extends ActionForm {
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
 
-        ServletContext context = getServlet().getServletContext();
-        DataConfig config = ConfigRequests.getDataConfig(request);
-
-        UserContainer user = Requests.getUserContainer(request);
+//        ServletContext context = getServlet().getServletContext();
+//        DataConfig config = ConfigRequests.getDataConfig(request);
+//
+//        UserContainer user = Requests.getUserContainer(request);
 
         // Richard can we please use this to store stuff?
         FeatureTypeConfig ftConfig; //= user.getFeatureTypeConfig();
@@ -104,7 +101,7 @@ public class DataFeatureTypesEditorForm extends ActionForm {
         HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        DataConfig data = ConfigRequests.getDataConfig(request);
+//        DataConfig data = ConfigRequests.getDataConfig(request);
 
         // check name exists in current DataStore?
         if ("".equals(latLonBoundingBoxMinX)
@@ -116,10 +113,10 @@ public class DataFeatureTypesEditorForm extends ActionForm {
                 new ActionError("error.latLonBoundingBox.required"));
         } else {
             try {
-                double minX = Double.parseDouble(latLonBoundingBoxMinX);
-                double minY = Double.parseDouble(latLonBoundingBoxMinY);
-                double maxX = Double.parseDouble(latLonBoundingBoxMaxX);
-                double maxY = Double.parseDouble(latLonBoundingBoxMaxY);
+                Double.parseDouble(latLonBoundingBoxMinX);
+                Double.parseDouble(latLonBoundingBoxMinY);
+                Double.parseDouble(latLonBoundingBoxMaxX);
+                Double.parseDouble(latLonBoundingBoxMaxY);
             } catch (NumberFormatException badNumber) {
                 errors.add("latlongBoundingBox",
                     new ActionError("error.latLonBoundingBox.invalid",

@@ -147,7 +147,7 @@ public class WMSContentForm extends ActionForm {
                     new ActionError("error.wms.onlineResource.required", onlineResource));
         } else {
             try {
-             URL url = new URL(onlineResource);   
+             new URL(onlineResource);   
             } catch (MalformedURLException badURL) {
              errors.add("onlineResource", 
                     new ActionError("error.wms.onlineResource.malformed", badURL));   
