@@ -30,43 +30,43 @@ import org.springframework.context.support.GenericApplicationContext;
 public class DataTestSupport extends TestCase {
 
 	 /** featuretype name for CITE BasicPolygons features */
-    public static String BASIC_POLYGONS_TYPE = "BasicPolygons";
+    public static final String BASIC_POLYGONS_TYPE = "BasicPolygons";
 
     /** featuretype name for CITE Bridges features */
-    public static String BRIDGES_TYPE = "Bridges";
+    public static final String BRIDGES_TYPE = "Bridges";
 
     /** featuretype name for CITE Buildings features */
-    public static String BUILDINGS_TYPE = "Buildings";
+    public static final String BUILDINGS_TYPE = "Buildings";
 
     /** featuretype name for CITE Divided Routes features */
-    public static String DIVIDED_ROUTES_TYPE = "DividedRoutes";
+    public static final String DIVIDED_ROUTES_TYPE = "DividedRoutes";
 
     /** featuretype name for CITE Forests features */
-    public static String FORESTS_TYPE = "Forests";
+    public static final String FORESTS_TYPE = "Forests";
 
     /** featuretype name for CITE Lakes features */
-    public static String LAKES_TYPE = "Lakes";
+    public static final String LAKES_TYPE = "Lakes";
 
     /** featuretype name for CITE Map Neatliine features */
-    public static String MAP_NEATLINE_TYPE = "MapNeatline";
+    public static final String MAP_NEATLINE_TYPE = "MapNeatline";
 
     /** featuretype name for CITE Named Places features */
-    public static String NAMED_PLACES_TYPE = "NamedPlaces";
+    public static final String NAMED_PLACES_TYPE = "NamedPlaces";
 
     /** featuretype name for CITE Ponds features */
-    public static String PONDS_TYPE = "Ponds";
+    public static final String PONDS_TYPE = "Ponds";
 
     /** featuretype name for CITE Road Segments features */
-    public static String ROAD_SEGMENTS_TYPE = "RoadSegments";
+    public static final String ROAD_SEGMENTS_TYPE = "RoadSegments";
 
     /** featuretype name for CITE Streams features */
-    public static String STREAMS_TYPE = "Streams";
+    public static final String STREAMS_TYPE = "Streams";
     
     /**
      * cite namespace + uri
      */
-    public static String CITE_PREFIX = "cite";
-    public static String CITE_URI = "http://www.opengis.net/cite";
+    public static final String CITE_PREFIX = "cite";
+    public static final String CITE_URI = "http://www.opengis.net/cite";
     
     /**
      * Temporary directory for property files.
