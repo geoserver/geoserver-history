@@ -151,6 +151,8 @@ public abstract class AbstractService extends HttpServlet
      * Reference to the service
      */
     Service serviceRef;
+
+	private String kvpString;
     
 //    /** DOCUMENT ME!  */
 //    protected HttpServletRequest curRequest;
@@ -288,7 +290,7 @@ public abstract class AbstractService extends HttpServlet
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         // implements the main request/response logic
-//        this.curRequest = request;
+    	// this.curRequest = request;
 
         Request serviceRequest = null;
 
@@ -298,19 +300,22 @@ public abstract class AbstractService extends HttpServlet
         }
 
         try {
-            String qString = request.getQueryString();
+            Map requestParams = new HashMap();
+            String qString = (this.kvpString != null ? this.kvpString : request.getQueryString());
             LOGGER.fine("reading request: " + qString);
 
-            //Map requestParams = KvpRequestReader.parseKvpSet(qString);
-            Map requestParams = new HashMap();
-            String paramName;
-            String paramValue;
+            if (this.kvpString != null)
+            	requestParams = KvpRequestReader.parseKvpSet(qString);
+            else {
+                String paramName;
+                String paramValue;
 
-            for (Enumeration pnames = request.getParameterNames();
-                    pnames.hasMoreElements();) {
-                paramName = (String) pnames.nextElement();
-                paramValue = request.getParameter(paramName);
-                requestParams.put(paramName.toUpperCase(), paramValue);
+                for (Enumeration pnames = request.getParameterNames();
+                        pnames.hasMoreElements();) {
+                    paramName = (String) pnames.nextElement();
+                    paramValue = request.getParameter(paramName);
+                    requestParams.put(paramName.toUpperCase(), paramValue);
+                }
             }
 
             KvpRequestReader requestReader = getKvpReader(requestParams );
@@ -332,7 +337,7 @@ public abstract class AbstractService extends HttpServlet
 
         doService(request, response, serviceRequest);
     }
-
+    
     /**
      * Sends the standard disabled service error message (a 503 error followed by an english description).
      * @param response
@@ -959,5 +964,13 @@ public abstract class AbstractService extends HttpServlet
 
         return supportsGzip;
     }
+
+	public String getKvpString() {
+		return kvpString;
+	}
+
+	public void setKvpString(String kvpString) {
+		this.kvpString = kvpString;
+	}
 }
 

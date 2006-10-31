@@ -25,6 +25,7 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.EncodingInfo;
 import org.vfny.geoserver.util.requests.XmlCharsetDetector;
+import org.vfny.geoserver.util.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.util.requests.readers.DispatcherXmlReader;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 
@@ -257,11 +258,21 @@ public class Dispatcher extends AbstractController {
 
         AbstractService target = null;
         //JD: GEOS-323, Adding char encoding support
+        boolean kvpRequestContent = false;
         if (disReader != null) {
-            DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
+        	try {
+        		DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
         		requestTypeAnalyzer.read(disReader, httpRequest);
+
+        		target = find(requestTypeAnalyzer.getService(),requestTypeAnalyzer.getRequest());
+        	} catch(ServiceException e) {
+        		DispatcherKvpReader requestTypeAnalyzer = new DispatcherKvpReader();
+        		requestTypeAnalyzer.read(requestReader, httpRequest);
         		
         		target = find(requestTypeAnalyzer.getService(),requestTypeAnalyzer.getRequest());
+        		target.setKvpString(requestTypeAnalyzer.getQueryString());
+        		kvpRequestContent = true;
+        	}
 		} 
        
         if (target == null) {
@@ -269,12 +280,15 @@ public class Dispatcher extends AbstractController {
         		throw new ServiceException( msg );
         }
         
-        if (requestReader != null) {
+        if (!kvpRequestContent)
+        	if (requestReader != null) {
         		target.doPost(httpRequest,httpResponse,requestReader);
-        }
-        else {
+        	}
+        	else {
         		target.doPost(httpRequest,httpResponse);
-        }
+        	}
+        else
+        	target.doGet(httpRequest, httpResponse);
         	
     }
 }
