@@ -243,7 +243,7 @@ public class KMLWriter extends OutputStreamWriter {
             setUpWriterHandler(featureType);
             FeatureTypeStyle[] fts = style.getFeatureTypeStyles();
             processStylersRaster(features, fts, layer, order);
-            LOGGER.fine("encoded " + featureType.getTypeName().toString() );
+            LOGGER.fine("encoded " + featureType.getTypeName());
         } catch (NoSuchElementException ex) {
             throw new DataSourceException(ex.getMessage(), ex);
         } catch (IllegalAttributeException ex) {
@@ -262,7 +262,7 @@ public class KMLWriter extends OutputStreamWriter {
             setUpWriterHandler(featureType);
             FeatureTypeStyle[] fts = style.getFeatureTypeStyles();
             processStylersVector(features, fts, layer);
-            LOGGER.fine("encoded " + featureType.getTypeName().toString() );
+            LOGGER.fine("encoded " + featureType.getTypeName());
         } catch (NoSuchElementException ex) {
             throw new DataSourceException(ex.getMessage(), ex);
         } catch (IllegalAttributeException ex) {

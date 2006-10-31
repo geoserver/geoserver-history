@@ -776,7 +776,7 @@ public class SVGEncoder {
         return x;
     }
 
-    private class AbortedException extends Exception {
+    private static class AbortedException extends Exception {
         public AbortedException(String msg) {
             super(msg);
         }

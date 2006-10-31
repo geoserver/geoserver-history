@@ -226,7 +226,7 @@ class PDFMapProducer implements GetMapProducer {
             //we already do everything that the optimized data loading does...
             //if we set it to true then it does it all twice...
             Map rendererParams = new HashMap();
-            rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
+            rendererParams.put("optimizedDataLoadingEnabled", Boolean.TRUE);
 
             renderer.setRendererHints(rendererParams);
 
