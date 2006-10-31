@@ -296,7 +296,6 @@ public class PlugInConfig{
 			if(ac.isFinal())
 				throw new IllegalArgumentException("Cannot include final arguments as part of a test.");
 			
-			StringReader sr = new StringReader(value);
 			try{
 				ac.setValue(ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(ac.getValue()),value));
 				return true;

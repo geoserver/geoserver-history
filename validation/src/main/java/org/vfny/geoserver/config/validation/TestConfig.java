@@ -23,6 +23,8 @@ import org.geotools.validation.dto.PlugInDTO;
 import org.geotools.validation.dto.TestDTO;
 import org.geotools.validation.xml.ArgHelper;
 import org.geotools.validation.xml.ValidationException;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 
 /**
@@ -137,87 +139,6 @@ public class TestConfig{
     }
 
     /**
-     * Implementation of equals.
-     *
-     * @param obj
-     *
-     * @return true when they have the same data.
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-    	if ((obj == null) || !(obj instanceof TestDTO)) {
-    		return false;
-    	}
-
-    	TestDTO t = (TestDTO) obj;
-    	boolean r = true;
-
-    	if (name != null) {
-    		r = r && (name.equals(t.getName()));
-    	}
-
-    	if (description != null) {
-    		r = r && (description.equals(t.getDescription()));
-    	}
-
-    	if (plugIn == null) {
-    		if (t.getPlugIn() != null) {
-    			return false;
-    		}
-    	} else {
-    		if (t.getPlugIn() != null) {
-    			r = r && plugIn.equals(t.getPlugIn());
-    		} else {
-    			return false;
-    		}
-    	}
-
-    	if (args == null) {
-    		if (t.getArgs() != null) {
-    			return false;
-    		}
-    	} else {
-    		if (t.getArgs() != null) {
-    			r = r && args.equals(t.getArgs());
-    		} else {
-    			return false;
-    		}
-    	}
-
-    	return r;
-    }
-
-    /**
-     * Implementation of hashCode.
-     *
-     * @return int hashcode
-     *
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-    	int r = 1;
-
-    	if (name != null) {
-    		r *= name.hashCode();
-    	}
-
-    	if (description != null) {
-    		r *= description.hashCode();
-    	}
-
-    	if (plugIn != null) {
-    		r *= plugIn.hashCode();
-    	}
-
-    	if (args != null) {
-    		r *= args.hashCode();
-    	}
-
-    	return r;
-    }
-    
-    /**
      * toDTO purpose.
      * <p>
      * Clones this config as a DTO.
@@ -319,7 +240,6 @@ public class TestConfig{
 			if(ac.isFinal())
 				throw new IllegalArgumentException("Cannot include final arguments as part of a test.");
 		
-			StringReader sr = new StringReader(value);
 			try{
 				ac.setValue(ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(ac.getValue()),value));
 				return true;
@@ -504,5 +424,29 @@ public class TestConfig{
 	public void setPlugIn(PlugInConfig plugIn) {
 		this.plugIn = plugIn;
 	}
+
+    /**
+     * @see java.lang.Object#equals(Object)
+     */
+    public boolean equals(Object object) {
+        if (!(object instanceof TestConfig)) {
+            return false;
+        }
+        TestConfig rhs = (TestConfig) object;
+        return new EqualsBuilder().appendSuper(super.equals(object)).append(
+                this.args, rhs.args).append(this.plugIn, rhs.plugIn).append(
+                this.description, rhs.description).append(this.pds, rhs.pds)
+                .append(this.name, rhs.name).isEquals();
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return new HashCodeBuilder(335894267, -1174578945).appendSuper(
+                super.hashCode()).append(this.args).append(this.plugIn).append(
+                this.description).append(this.pds).append(this.name)
+                .toHashCode();
+    }
 
 }
