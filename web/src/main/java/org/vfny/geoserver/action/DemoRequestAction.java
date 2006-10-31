@@ -80,14 +80,20 @@ public class DemoRequestAction extends GeoServerAction
             + "wfs";
         
         File file = new File(dir, demo);
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        
+        BufferedReader reader =  null;
         StringBuffer buf = new StringBuffer();
+        
+        try {
+            reader = new BufferedReader(new FileReader(file));
 
-        for (String line = reader.readLine(); line != null;
-                line = reader.readLine()) {
-            buf.append(line);
-            buf.append("\n");
+            for (String line = reader.readLine(); line != null;
+                    line = reader.readLine()) {
+                buf.append(line);
+                buf.append("\n");
+            }
+        } finally {
+            if(reader != null)
+                reader.close();
         }
 
         if (demo.endsWith(".url")) {

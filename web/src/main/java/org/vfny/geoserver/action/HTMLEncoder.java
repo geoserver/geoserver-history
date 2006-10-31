@@ -120,7 +120,7 @@ public class HTMLEncoder {
 
             return buf.toString();
         } else {
-            return new String("");
+            return "";
         }
     }
 
@@ -278,7 +278,7 @@ public class HTMLEncoder {
 
             return buf.toString();
         } else {
-            return new String("");
+            return "";
         }
     }
 

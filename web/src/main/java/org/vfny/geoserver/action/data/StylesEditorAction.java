@@ -106,9 +106,6 @@ public class StylesEditorAction extends ConfigAction {
             //if for some bizarre reason we don't fine the dir, make a new one.
             styleDir = new File(rootDir, "styles");
 	}
-        // send content of FormFile to /styles :
-        // there nothing to keep the styles in memory for XMLConfigWriter.store() 
-        InputStreamReader isr = new InputStreamReader(file.getInputStream());
         File newSldFile = new File(styleDir, filename);
 
         //here we do a check to see if the file we are trying to upload is
@@ -145,17 +142,25 @@ public class StylesEditorAction extends ConfigAction {
         //When we have time we should put this in a temp file, to be safe, before
         //we do the validation, and only write to the real style directory when we
         //have things set.  If only java had a nice file copy utility.
-        FileWriter fw = new FileWriter(newSldFile);
+        // send content of FormFile to /styles :
+        // there nothing to keep the styles in memory for XMLConfigWriter.store() 
+        InputStreamReader isr = null;
+        FileWriter fw = null;
         char[] tampon = new char[1024];
         int charsRead;
 
-        while ((charsRead = isr.read(tampon, 0, 1024)) != -1) {
-            fw.write(tampon, 0, charsRead);
+        try {
+            isr = new InputStreamReader(file.getInputStream());
+            fw = new FileWriter(newSldFile);
+            while ((charsRead = isr.read(tampon, 0, 1024)) != -1) {
+                fw.write(tampon, 0, charsRead);
+            }
+    
+            fw.flush();
+        } finally {
+            if(fw != null) fw.close();
+            if(isr != null) isr.close();
         }
-
-        fw.flush();
-        fw.close();
-        isr.close();
         style.setFilename(new File(styleDir, filename));
 
         style.setId(styleID);

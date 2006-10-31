@@ -128,8 +128,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
 			}
 			
 			
-			FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
-			        
+//			FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
 			// TODO translate to lat long, pending
 			//This should not be done by default, as it is an expensive operation.
 			//especially for very large tables.  User may know it, if not he

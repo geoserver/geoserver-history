@@ -103,7 +103,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
 			}
 			catch (IOException e) {
 				ActionErrors errors = new ActionErrors();
-				ActionError error = new ActionError("error.couldNotCreateFile",f.getAbsolutePath(),e.getLocalizedMessage());
+				ActionError error = new ActionError("error.couldNotCreateFile",f != null ? f.getAbsolutePath() : "",e.getLocalizedMessage());
 				errors.add(ActionErrors.GLOBAL_ERROR, error);
 			    saveErrors(request, errors);
 			    return mapping.findForward("config.server");

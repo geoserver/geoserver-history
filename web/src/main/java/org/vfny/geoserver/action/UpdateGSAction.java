@@ -87,9 +87,7 @@ public class UpdateGSAction extends ConfigAction {
     // UserContainer user,
     HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
-        GeoServer gs;
         ServletContext sc = request.getSession().getServletContext();
-        gs = (GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
 
         try {
             Map plugins = new HashMap();

@@ -152,7 +152,6 @@ public class SaveXMLAction extends ConfigAction {
                     XMLWriter.writeTestSuite(dto, fw);
                     fw.close();
                 } catch (Exception e) {
-                    System.err.println(dto.getClass());
                     e.printStackTrace();
                     throw new ServletException(e);
                 }

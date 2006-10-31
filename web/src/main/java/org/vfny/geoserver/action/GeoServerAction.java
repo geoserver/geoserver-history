@@ -62,7 +62,7 @@ import org.vfny.geoserver.util.Requests;
 public class GeoServerAction extends ActionSupport {
     
 	/** Class logger */
-	protected static Logger LOGGER = Logger.getLogger(
+	protected static final Logger LOGGER = Logger.getLogger(
 			"org.vfny.geoserver.action");
     
     /**

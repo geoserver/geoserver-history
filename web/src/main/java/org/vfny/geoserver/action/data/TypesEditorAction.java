@@ -226,8 +226,7 @@ public class TypesEditorAction extends ConfigAction {
         catch (NoSuchAuthorityCodeException e)
 		{
     		if (LOGGER.isLoggable(Level.FINE)) {
-    			LOGGER.fine(e.getLocalizedMessage() );
-    			LOGGER.fine(e.getStackTrace().toString());
+    			LOGGER.log(Level.FINE, e.getMessage(), e);
     		}
         	  ActionErrors errors = new ActionErrors();
               errors.add(ActionErrors.GLOBAL_ERROR,
