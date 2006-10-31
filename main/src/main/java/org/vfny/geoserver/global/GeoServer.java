@@ -504,7 +504,7 @@ public class GeoServer extends GlobalLayerSupertype {
         
         Logger logger = Logger.getLogger("org.vfny.geoserver");
 
-        Handler[] handlers = logger.getHandlers();
+//        Handler[] handlers = logger.getHandlers();
 //    	Handler old = null;
 //    	for (int i = 0; i < handlers.length; i++) {
 //    		Handler handler = handlers[i];

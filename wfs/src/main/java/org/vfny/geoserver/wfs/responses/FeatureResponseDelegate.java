@@ -41,4 +41,11 @@ public interface FeatureResponseDelegate {
     String getContentEncoding();
 
     void encode(OutputStream output) throws ServiceException, IOException;
+
+    /**
+     * Returns the content disposition header, or null if not needed.<br>
+     * It is advised that the returned file name, if present, matches the feature type name.
+     * See <a href="http://www.ietf.org/rfc/rfc1806.txt">rfc1806</a> for details.
+     */
+    String getContentDisposition(String featureTypeName);
 }
