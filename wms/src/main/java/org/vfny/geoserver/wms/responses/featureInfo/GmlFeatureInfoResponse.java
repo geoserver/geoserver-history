@@ -60,7 +60,7 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-        return null;
+    	return new HashMap();
     }
 
     /**

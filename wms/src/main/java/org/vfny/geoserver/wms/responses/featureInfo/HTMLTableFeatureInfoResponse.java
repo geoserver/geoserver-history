@@ -50,7 +50,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-    	return null;
+    	return new HashMap();
     }
     
     /**
@@ -70,28 +70,38 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
         FeatureReader reader = null;
         try {
-            for (int i = 0; i < results.size(); i++) {
-                FeatureResults fr = (FeatureResults) results.get(i);
-                FeatureType schema = fr.getSchema();
+        	final int size=results.size();
+        	FeatureResults fr;
+        	FeatureType schema;
+        	Feature f ;
+        	AttributeType[] types;
+        	int attCount;
+            for (int i = 0; i < size; i++) {
+                fr = (FeatureResults) results.get(i);
+                schema = fr.getSchema();
 
                 writer.println("<table border='1'>");
-                writer.println("<tr><th colspan=" + schema.getAttributeCount()
-                    + " scope='col'>" + schema.getTypeName() + " </th></tr>");
+                writer.println("<tr><th colspan="); 
+                writer.println( schema.getAttributeCount());
+                writer.println(" scope='col'>" );
+                writer.println( schema.getTypeName());
+                writer.println(" </th></tr>");
                 writer.println("<tr>");
 
-                for (int j = 0; j < schema.getAttributeCount(); j++) {
-                    writer.println("<td>"
-                        + schema.getAttributeType(j).getName() + "</td>");
+                attCount=schema.getAttributeCount();
+                for (int j = 0; j < attCount; j++) {
+                    writer.println("<td>");
+                    writer.println( schema.getAttributeType(j).getName());
+                    writer.println("</td>");
                 }
 
                 writer.println("</tr>");
 
                 //writer.println("Found " + fr.getCount() + " in " + schema.getTypeName());
                 reader = fr.reader();
-
                 while (reader.hasNext()) {
-                    Feature f = reader.next();
-                    AttributeType[] types = schema.getAttributeTypes();
+                    f = reader.next();
+                    types = schema.getAttributeTypes();
                     writer.println("<tr>");
 
                     for (int j = 0; j < types.length; j++) {
@@ -126,7 +136,6 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
     }
 
 	public String getContentDisposition() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

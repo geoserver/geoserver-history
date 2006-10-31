@@ -41,8 +41,6 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
 	private static final Logger LOGGER = Logger.getLogger(PNGMapProducer.class
 			.getPackage().getName());
 
-	
-
 	/** PNG Native Acceleration Mode * */
 	private Boolean PNGNativeAcc;
 
@@ -78,7 +76,8 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
 		// Reformatting this image for png
 		//
 		// /////////////////////////////////////////////////////////////////
-		new ImageWorker(image).writePNG(outStream, "FILTERED", 0.75f, PNGNativeAcc.booleanValue(), true);
+		new ImageWorker(image).writePNG(outStream, "FILTERED", 0.75f,
+				PNGNativeAcc.booleanValue(), false);
 
 	}
 

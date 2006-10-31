@@ -252,7 +252,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 //}
             }
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+           
             throw new WmsException(null, "Internal error : " + ioe.getMessage());
         }
     }
