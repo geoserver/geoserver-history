@@ -22,7 +22,7 @@ import org.vfny.geoserver.util.requests.readers.UCSReader;
  */
 public class XmlCharsetDetector {
 
-    protected static Logger LOGGER = Logger.getLogger(
+    protected static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests");
 
     /**
@@ -372,11 +372,11 @@ public class XmlCharsetDetector {
         int b1 = b4[1] & 0xFF;
         if (b0 == 0xFE && b1 == 0xFF) {
             // UTF-16, big-endian
-            return new EncodingInfo("UTF-16BE", new Boolean(true), true);
+            return new EncodingInfo("UTF-16BE", Boolean.TRUE, true);
         }
         if (b0 == 0xFF && b1 == 0xFE) {
             // UTF-16, little-endian
-            return new EncodingInfo("UTF-16LE", new Boolean(false), true);
+            return new EncodingInfo("UTF-16LE", Boolean.FALSE, true);
         }
 
         // default to UTF-8 if we don't have enough bytes to make a

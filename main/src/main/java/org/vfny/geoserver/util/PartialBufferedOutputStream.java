@@ -57,10 +57,10 @@ public class PartialBufferedOutputStream extends OutputStream
 	public static final int DEFAULT_BUFFER_SIZE = 50;
 	
 	/** the number of bytes in a kilobyte */
-	private final int KILOBYTE = 1024;
+	private static final int KILOBYTE = 1024;
 	
 	/** Buffer size for the temporary output stream */
-    private int BUFFER_SIZE = KILOBYTE;
+    private static int BUFFER_SIZE = KILOBYTE;
     
     /** Whether we should start streaming to the user or not */
     private boolean sendToUser = false;
@@ -248,7 +248,7 @@ public class PartialBufferedOutputStream extends OutputStream
 	 * 
 	 * @throws IOException
 	 */
-	public boolean abort() throws IOException
+	public synchronized boolean abort() throws IOException
 	{
 		if (out_buffer != null && out_buffer.size() < BUFFER_SIZE)
 		{

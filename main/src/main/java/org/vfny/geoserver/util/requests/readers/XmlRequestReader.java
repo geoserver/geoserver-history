@@ -25,7 +25,7 @@ import org.vfny.geoserver.servlets.AbstractService;
  */
 public abstract class XmlRequestReader {
     /** Class logger */
-    protected static Logger LOGGER = Logger.getLogger(
+    protected static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.readers");
 
 	/** The service handling the request **/

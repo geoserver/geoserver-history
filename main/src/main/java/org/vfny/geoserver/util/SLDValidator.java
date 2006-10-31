@@ -258,7 +258,7 @@ public class SLDValidator {
 
     // errors in the document will be put in "errors".
     // if errors.size() ==0  then there were no errors.
-    private class Validator extends DefaultHandler {
+    private static class Validator extends DefaultHandler {
         public ArrayList errors = new ArrayList();
 
         public void error(SAXParseException exception)
