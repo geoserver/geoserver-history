@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
@@ -41,9 +40,9 @@ class KMZMapProducer implements GetMapProducer {
 	 */
 	private EncodeKML kmlEncoder;
 
+	/** used to get the content disposition file name */
+	private WMSMapContext mapContext;
     
-    /** lag between 'encode' call and 'writeTo' requires temporary storage' */
-    private File temp;
     
     /**
      * Request that encoding be halted if possible.
@@ -88,7 +87,7 @@ class KMZMapProducer implements GetMapProducer {
      */
     public void produceMap(WMSMapContext map)
     throws WmsException {
-        
+    	this.mapContext = map;
     	kmlEncoder = new EncodeKML(map);
     }
     
@@ -113,4 +112,17 @@ class KMZMapProducer implements GetMapProducer {
     	outZ.finish();
         outZ.flush();
     }
+
+	public String getContentDisposition() {
+		if (this.mapContext.getLayer(0) != null) {
+			try {
+				String title = this.mapContext.getLayer(0).getFeatureSource().getSchema().getTypeName();
+				if (title != null && !title.equals("")) {
+					return "inline; filename=" + title + ".kmz";
+				}
+			} catch (NullPointerException e) {
+			}
+		}
+		return "inline; filename=geoserver.kmz";
+	}
 }

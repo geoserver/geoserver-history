@@ -67,4 +67,9 @@ class JAIMapProducer extends DefaultRasterMapProducer {
         OutputStream outStream) throws WmsException, IOException {
         JAISupport.encode(format, image, outStream);
     }
+
+	public String getContentDisposition() {
+		// this can be null
+		return null;
+	}
 }

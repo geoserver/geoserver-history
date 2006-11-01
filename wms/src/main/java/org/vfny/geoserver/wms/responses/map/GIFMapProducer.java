@@ -61,4 +61,9 @@ class GIFMapProducer extends DefaultRasterMapProducer {
             
         }
     }
+
+	public String getContentDisposition() {
+		// this can be null
+		return null;
+	}
 }

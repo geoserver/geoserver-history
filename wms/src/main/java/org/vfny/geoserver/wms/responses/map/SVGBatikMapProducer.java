@@ -155,4 +155,9 @@ public class SVGBatikMapProducer implements GetMapProducer {
         // Set up the context
         return SVGGeneratorContext.createDefault(document);
     }
+
+	public String getContentDisposition() {
+		// this can be null
+		return null;
+	}
 }

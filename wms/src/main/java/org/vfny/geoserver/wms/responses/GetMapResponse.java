@@ -76,6 +76,8 @@ public class GetMapResponse implements Response {
      */
     private HashMap responseHeaders;
 
+    String headerContentDisposition;
+    
 	private ApplicationContext applicationContext;
     
     /**
@@ -202,11 +204,15 @@ public class GetMapResponse implements Response {
 
             map.addLayer(layer);// mapcontext can leak memory -- we make sure we done (see finally block)
         }
-
+        
         this.delegate.produceMap(map);
         if (cachingPossible) {
-	    responseHeaders.put("Cache-Control", "max-age=" + maxAge);
-	}
+        	responseHeaders.put("Cache-Control", "max-age=" + maxAge);
+        }
+        String contentDisposition = this.delegate.getContentDisposition();
+        if (contentDisposition != null) {
+        	this.headerContentDisposition = contentDisposition;
+        }
     }
 
     /**
@@ -354,8 +360,7 @@ public class GetMapResponse implements Response {
 	}
 	
 	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
+		return headerContentDisposition;
 	}
 	
 }

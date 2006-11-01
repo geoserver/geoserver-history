@@ -138,6 +138,11 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
          */
         public void abort() {
         }
+
+		public String getContentDisposition() {
+			// TODO Auto-generated method stub
+			return null;
+		}
     }
 
 	/* (non-Javadoc)

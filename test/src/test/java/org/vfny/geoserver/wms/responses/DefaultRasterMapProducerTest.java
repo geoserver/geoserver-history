@@ -293,5 +293,10 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
              * abstract raster producer correctly generates a BufferedImage.
              */
         }
+
+		public String getContentDisposition() {
+			// TODO Auto-generated method stub
+			return null;
+		}
     }
 }

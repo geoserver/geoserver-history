@@ -33,7 +33,9 @@ class KMLMapProducer implements GetMapProducer {
 	 */
 	private EncodeKML kmlEncoder;
 
-    
+	/** used to get the content disposition file name */
+	private WMSMapContext mapContext;
+	
     /**
      * Request that encoding be halted if possible.
      *
@@ -73,6 +75,7 @@ class KMLMapProducer implements GetMapProducer {
      * @throws WmsException thrown if anything goes wrong during the production.
      */
     public void produceMap(WMSMapContext map) throws WmsException {
+    	this.mapContext = map;
     	this.kmlEncoder = new EncodeKML(map);
     }
     
@@ -92,4 +95,17 @@ class KMLMapProducer implements GetMapProducer {
     {
     	kmlEncoder.encodeKML(out);
     }
+
+	public String getContentDisposition() {
+		if (this.mapContext.getLayer(0) != null) {
+			try {
+				String title = this.mapContext.getLayer(0).getFeatureSource().getSchema().getTypeName();
+				if (title != null && !title.equals("")) {
+					return "inline; filename=" + title + ".kml";
+				}
+			} catch (NullPointerException e) {
+			}
+		}
+		return "inline; filename=geoserver.kml";
+	}
 }

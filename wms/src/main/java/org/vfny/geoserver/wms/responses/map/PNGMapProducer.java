@@ -46,4 +46,9 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
         outStream.write( pngbytes );		 
         outStream.flush();
     }
+
+	public String getContentDisposition() {
+		// this can be null
+		return null;
+	}
 }
