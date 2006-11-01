@@ -273,4 +273,17 @@ class PDFMapProducer implements GetMapProducer {
     protected WMSMapContext getMapContext() {
         return this.mapContext;
     }
+    
+    public String getContentDisposition() {
+		if (this.mapContext.getLayer(0) != null) {
+			try {
+				String title = this.mapContext.getLayer(0).getFeatureSource().getSchema().getTypeName();
+				if (title != null && !title.equals("")) {
+					return "inline; filename=" + title + ".pdf";
+				}
+			} catch (NullPointerException e) {
+			}
+		}
+		return "inline; filename=geoserver.pdf";
+	}
 }

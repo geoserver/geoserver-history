@@ -98,4 +98,9 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
 				BufferedImage.TYPE_4BYTE_ABGR);
 		
 	}
+
+	public String getContentDisposition() {
+		// can be null
+		return null;
+	}
 }

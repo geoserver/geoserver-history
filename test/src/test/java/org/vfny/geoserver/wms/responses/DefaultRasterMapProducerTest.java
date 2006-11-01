@@ -320,5 +320,10 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
 		return new BufferedImage(width, height,BufferedImage.TYPE_4BYTE_ABGR);
 	}
 
+	public String getContentDisposition() {
+		// can be null
+		return null;
+	}
+
     }
 }

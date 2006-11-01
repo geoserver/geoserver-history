@@ -96,4 +96,9 @@ public class SVGMapProducer implements GetMapProducer {
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         this.svgEncoder.encode(out);
     }
+
+	public String getContentDisposition() {
+		// can be null
+		return null;
+	}
 }

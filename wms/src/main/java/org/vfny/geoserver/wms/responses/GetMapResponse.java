@@ -84,6 +84,8 @@ public class GetMapResponse implements Response {
      */
     private HashMap responseHeaders;
 
+    String headerContentDisposition;
+    
 	private ApplicationContext applicationContext;
     
     /**
@@ -300,6 +302,12 @@ public class GetMapResponse implements Response {
 			this.delegate.produceMap(map);
 			if (cachingPossible)
 				responseHeaders.put("Cache-Control: max-age", maxAge + "s");
+			
+			String contentDisposition = this.delegate.getContentDisposition();
+	        if (contentDisposition != null) {
+	        	this.headerContentDisposition = contentDisposition;
+	        }
+	        
 		} catch (ClassCastException e) {
 			if (LOGGER.isLoggable(Level.WARNING)) {
 				LOGGER.log(Level.SEVERE, new StringBuffer(
@@ -491,8 +499,7 @@ public class GetMapResponse implements Response {
 	}
 	
 	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
+		return headerContentDisposition;
 	}
 	
 }
