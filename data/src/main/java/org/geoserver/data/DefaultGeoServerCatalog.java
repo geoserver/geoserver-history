@@ -9,6 +9,8 @@ import org.geotools.catalog.Catalog;
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.Service;
 import org.geotools.catalog.defaults.DefaultCatalog;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.xml.sax.helpers.NamespaceSupport;
 
 /**
@@ -24,6 +26,15 @@ public class DefaultGeoServerCatalog extends DefaultCatalog implements
 	
 	public DefaultGeoServerCatalog( ) {
 		namespaceSupport = new NamespaceSupport();
+                // force CRS subsystem initialization loading the base CRS system,
+                // if this is not there, don't even care to start up, nothing
+                // will work properly anyways
+                try {
+                    CRS.decode("EPSG:4326");
+                } catch (NoSuchAuthorityCodeException e) {
+                    throw new RuntimeException("Cannot resolve EPSG:4326, the CRS subsystem is not setup and working!");
+                }
+                
 	}
 	
 	public NamespaceSupport getNamespaceSupport() {

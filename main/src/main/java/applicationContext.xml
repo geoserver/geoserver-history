@@ -6,7 +6,6 @@
 	<!-- 
 		core modules
 	 -->
-	 
 	<!-- configuration module -->
 	<bean id="config"
 		class="org.vfny.geoserver.global.Config"/>

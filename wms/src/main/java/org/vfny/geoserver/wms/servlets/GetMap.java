@@ -4,6 +4,10 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
@@ -13,6 +17,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geotools.map.DefaultMapContext;
+import org.geotools.renderer.lite.StreamingRenderer;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
@@ -26,6 +32,8 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetMapKvpReader;
 import org.vfny.geoserver.wms.requests.GetMapXmlReader;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -46,7 +54,12 @@ public class GetMap extends WMService {
      *  
      */
     public GetMap(WMS wms) {
-    		super("GetMap",wms);
+	super("GetMap",wms);
+        // force StreamingRenderer initialization
+        BufferedImage image = new BufferedImage(100,100,BufferedImage.TYPE_4BYTE_ABGR);
+        StreamingRenderer sr = new StreamingRenderer();
+        sr.setContext(new DefaultMapContext());
+        sr.paint((Graphics2D) image.getGraphics(), new Rectangle(0,0,1,1), new AffineTransform());
     }
     
     protected GetMap(String id, WMS wms) {
