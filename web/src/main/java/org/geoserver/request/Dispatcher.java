@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geotools.validation.xml.XMLReader;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.vfny.geoserver.ServiceException;
@@ -217,63 +218,70 @@ public class Dispatcher extends AbstractController {
             	throw newE;
         }
         
-        temp.deleteOnExit();
-        FileOutputStream fos = new FileOutputStream(temp);
-        BufferedOutputStream out = new BufferedOutputStream(fos);
-
-        int c;
-
-        while (-1 != (c = is.read())) {
-            out.write(c);
-        }
-
-        is.close();
-        out.flush();
-        out.close();
-
-        //JD: GEOS-323, Adding char encoding support
-        EncodingInfo encInfo = new EncodingInfo();
-
-        BufferedReader disReader;
-        BufferedReader requestReader;
-
+        BufferedReader disReader = null;
+        BufferedReader requestReader = null;
         try {
-            disReader = new BufferedReader(
-                    XmlCharsetDetector.getCharsetAwareReader(
-                            new FileInputStream(temp), encInfo));
-
-            requestReader = new BufferedReader(
-                    XmlCharsetDetector.createReader(
-                            new FileInputStream(temp), encInfo));
-        } catch (Exception e) {
-            /*
-             * Any exception other than WfsException will "hang up" the
-             * process - no client output, no log entries, only "Internal
-             * server error". So this is a little trick to make detector's
-             * exceptions "visible".
-             */
-            throw new ServiceException(e);
-        }
-
-        AbstractService target = null;
-        //JD: GEOS-323, Adding char encoding support
-        if (disReader != null) {
-            DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
-        		requestTypeAnalyzer.read(disReader, httpRequest);
-        		
-        		target = find(requestTypeAnalyzer.getService(),requestTypeAnalyzer.getRequest());
-		} 
-       
-        if (target == null) {
-        		String msg = "Could not locate service for request";
-        		throw new ServiceException( msg );
-        }
-        
-        if (requestReader != null) {
-        		target.doPost(httpRequest,httpResponse,requestReader);
-        }
-        else {
-        		target.doPost(httpRequest,httpResponse);
+            FileOutputStream fos = new FileOutputStream(temp);
+            BufferedOutputStream out = new BufferedOutputStream(fos);
+    
+            int c;
+    
+            while (-1 != (c = is.read())) {
+                out.write(c);
+            }
+    
+            is.close();
+            out.flush();
+            out.close();
+    
+            //JD: GEOS-323, Adding char encoding support
+            EncodingInfo encInfo = new EncodingInfo();
+    
+            try {
+                disReader = new BufferedReader(
+                        XmlCharsetDetector.getCharsetAwareReader(
+                                new FileInputStream(temp), encInfo));
+    
+                requestReader = new BufferedReader(
+                        XmlCharsetDetector.createReader(
+                                new FileInputStream(temp), encInfo));
+            } catch (Exception e) {
+                /*
+                 * Any exception other than WfsException will "hang up" the
+                 * process - no client output, no log entries, only "Internal
+                 * server error". So this is a little trick to make detector's
+                 * exceptions "visible".
+                 */
+                throw new ServiceException(e);
+            }
+    
+            AbstractService target = null;
+            //JD: GEOS-323, Adding char encoding support
+            if (disReader != null) {
+                DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
+            		requestTypeAnalyzer.read(disReader, httpRequest);
+            		
+            		target = find(requestTypeAnalyzer.getService(),requestTypeAnalyzer.getRequest());
+    		} 
+           
+            if (target == null) {
+            		String msg = "Could not locate service for request";
+            		throw new ServiceException( msg );
+            }
+            
+            if (requestReader != null) {
+            		target.doPost(httpRequest,httpResponse,requestReader);
+            }
+            else {
+            		target.doPost(httpRequest,httpResponse);
+            }
+        } finally {
+            if(temp != null)
+                temp.delete();
+            if(disReader != null)
+                try {disReader.close(); } catch(IOException e) {e.printStackTrace();}
+            if(requestReader != null)
+                try {requestReader.close(); } catch(IOException e) {e.printStackTrace();}
         }
         	
     }
