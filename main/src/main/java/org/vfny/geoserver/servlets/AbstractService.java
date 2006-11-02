@@ -304,9 +304,9 @@ public abstract class AbstractService extends HttpServlet
             String qString = (this.kvpString != null ? this.kvpString : request.getQueryString());
             LOGGER.fine("reading request: " + qString);
 
-            if (this.kvpString != null)
+            if (this.kvpString != null) {
             	requestParams = KvpRequestReader.parseKvpSet(qString);
-            else {
+            } else {
                 String paramName;
                 String paramValue;
 
@@ -333,6 +333,8 @@ public abstract class AbstractService extends HttpServlet
             sendError(request, response, e);
 
             return;
+        } finally {
+        	this.kvpString = null;
         }
 
         doService(request, response, serviceRequest);

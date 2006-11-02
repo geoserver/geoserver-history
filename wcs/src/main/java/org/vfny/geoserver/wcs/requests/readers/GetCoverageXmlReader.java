@@ -74,6 +74,34 @@ public class GetCoverageXmlReader extends XmlRequestReader {
         }
 
         Request r = contentHandler.getRequest(req);
+
+        if (r.getService() != null) {
+        	final String service = r.getService();
+        	if (!service.equalsIgnoreCase("WCS")) {
+        		throw new WcsException("SERVICE parameter is wrong.");
+        	}
+        } else {
+        	throw new WcsException("SERVICE parameter is mandatory.");
+        }
+
+        if (r.getVersion() != null) {
+        	final String version = r.getVersion();
+        	if (!version.equals("1.0.0")) {
+        		throw new WcsException("VERSION parameter is wrong.");
+        	}
+        } else {
+        	throw new WcsException("VERSION parameter is mandatory.");
+        }
+
+        if (r.getRequest() != null) {
+        	final String requestType = r.getRequest();
+        	if (!requestType.equalsIgnoreCase("GetCoverage") ) {
+        		throw new WcsException("REQUEST parameter is wrong.");
+        	}
+        } else {
+        	throw new WcsException("REQUEST parameter is mandatory.");
+        }
+
         return r;
     }
 }

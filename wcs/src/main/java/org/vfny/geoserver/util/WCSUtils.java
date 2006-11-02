@@ -103,7 +103,8 @@ public class WCSUtils {
 	public static GridCoverage2D reproject(
 			GridCoverage2D coverage,
 			final CoordinateReferenceSystem sourceCRS,
-			final CoordinateReferenceSystem targetCRS
+			final CoordinateReferenceSystem targetCRS,
+			final Interpolation interpolation
 	) throws WcsException {
 		/////////////////////////////////////////////////////////////////////
 		//
@@ -121,7 +122,7 @@ public class WCSUtils {
 			param.parameter("Source").setValue(coverage);
 			param.parameter("CoordinateReferenceSystem").setValue(targetCRS);
 			param.parameter("GridGeometry").setValue(null);
-			param.parameter("InterpolationType").setValue(Interpolation.getInstance(Interpolation.INTERP_NEAREST));
+			param.parameter("InterpolationType").setValue(interpolation);
 			
 			coverage = (GridCoverage2D) resampleFactory.doOperation(param, hints);
 		}
@@ -363,8 +364,9 @@ public class WCSUtils {
 	 * @param params Set
 	 * @param coverage GridCoverage
 	 * @return Coverage
+	 * @throws WcsException 
 	 */
-	public static Coverage bandSelect(final Map params, final GridCoverage coverage) {
+	public static Coverage bandSelect(final Map params, final GridCoverage coverage) throws WcsException {
 		// ///////////////////////////////////////////////////////////////////
 		//
 		// BAND SELECT
@@ -404,9 +406,13 @@ public class WCSUtils {
 								if (dims.containsKey(key))
 									selectedBands.add(dims.get(key));
 							}
+							
+							if (selectedBands.size() == 0) {
+								throw new Exception("WRONG PARAM VALUES.");
+							}
 						}
 					} catch (Exception e) {
-						LOGGER.severe("BAND SELECT: Param Incorrectly Specified.");
+						throw new WcsException("Band parameters incorrectly specified: " + e.getLocalizedMessage());
 					}
 				}
 			}

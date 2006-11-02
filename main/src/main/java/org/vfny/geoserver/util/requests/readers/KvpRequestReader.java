@@ -126,7 +126,7 @@ abstract public class KvpRequestReader {
 	 * @throws WfsException
 	 *             If the structure can not be read.
 	 */
-	protected static List getTypesFromFids(String rawFidList) {
+	protected List getTypesFromFids(String rawFidList) {
 		List typeList = new ArrayList(10);
 		List unparsed = readNested(rawFidList);
 		Iterator i = unparsed.listIterator();
@@ -165,6 +165,7 @@ abstract public class KvpRequestReader {
 	 * @return A list of the tokenized string.
 	 */
 	protected static List readFlat(String rawList, String delimiter) {
+		List kvpList = null;
 		// handles implicit unconstrained case
 		if (rawList == null) {
 			return Collections.EMPTY_LIST;
@@ -175,8 +176,6 @@ abstract public class KvpRequestReader {
 
 			// handles explicit, constrained element lists
 		} else {
-			List kvpList = null;
-
 			/**
 			 * GR: avoid using StringTokenizer because it does not returns empty
 			 * trailing strings (i.e. if the string after the last match of the
@@ -298,7 +297,8 @@ abstract public class KvpRequestReader {
 		if (LOGGER.isLoggable(Level.FINE))
 			LOGGER.fine("clean request is " + cleanRequest);
 
-		Map kvps = new HashMap(10);
+		Map kvps = null;
+		kvps = new HashMap(10);
 
 		// parses initial request sream into KVPs
 		StringTokenizer requestKeywords = new StringTokenizer(cleanRequest

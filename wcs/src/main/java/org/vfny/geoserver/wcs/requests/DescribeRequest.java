@@ -76,7 +76,8 @@ public class DescribeRequest extends WCSRequest {
 	 * @uml.property name="coverages"
 	 */
 	public void setCoverages(List coverages) {
-		this.coverages = coverages;
+		this.coverages.clear();
+		this.coverages.addAll(coverages);
 		this.allRequested = false;
 	}
 
@@ -203,8 +204,14 @@ public class DescribeRequest extends WCSRequest {
 
 	public int hashCode() {
 		int result = super.hashCode();
-		result = (23 * result)
-				+ ((coverages == null) ? 0 : coverages.hashCode());
+		result = (23 * result);
+		
+		if (coverages != null) {
+			Iterator internal = coverages.listIterator();
+			while (internal.hasNext()) {
+				result *= internal.next().hashCode();
+			}
+		}
 
 		return result;
 	}

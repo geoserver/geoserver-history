@@ -343,7 +343,7 @@ public class CoverageConfig {
 		interpolationMethods.add("nearest neighbor");
 		interpolationMethods.add("bilinear");
 		interpolationMethods.add("bicubic");
-		interpolationMethods.add("bicubic_2");
+		//interpolationMethods.add("bicubic_2");
 		defaultStyle = "raster";
 		styles = new ArrayList();
 		

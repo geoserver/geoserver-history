@@ -15,6 +15,8 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.media.jai.Interpolation;
+
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
@@ -134,7 +136,7 @@ public class CoverageResponse implements Response {
 	 * @return DOCUMENT ME!
 	 */
 	public String getContentType(GeoServer gs) {
-		return delegate.getContentType(gs);
+		return /*delegate.getContentType(gs)*/"";
 	}
 
 	public String getContentEncoding() {
@@ -353,7 +355,7 @@ public class CoverageResponse implements Response {
 		// ResponseCRSs list
 		if (!meta.getResponseCRSs().contains(responseCRS)) {
 			throw new WcsException(
-			"This Coverage does not support the Response CRS requested.");
+			"This Coverage does not support the requested Response-CRS.");
 		}
 		// - then create the Coordinate Reference System
 		final CoordinateReferenceSystem targetCRS = CRS.decode(responseCRS,
@@ -364,7 +366,7 @@ public class CoverageResponse implements Response {
 		// RequestCRSs list
 		if (!meta.getResponseCRSs().contains(requestCRS)) {
 			throw new WcsException(
-			"This Coverage does not support the CRS requested.");
+			"This Coverage does not support the requested CRS.");
 		}
 		// - then create the Coordinate Reference System
 		final CoordinateReferenceSystem sourceCRS = CRS.decode(requestCRS);
@@ -409,8 +411,33 @@ public class CoverageResponse implements Response {
 
 			destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
 		} else {
-			destinationSize = coverageReader.getOriginalGridRange().toRectangle();
+			/*destinationSize = coverageReader.getOriginalGridRange().toRectangle();*/
+			throw new WcsException("Neither Grid Size nor Grid Resolution have been specified.");
 		}
+		
+		/**
+		 * Checking for supported Interpolation Methods
+		 */
+		Interpolation interpolation = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
+		final String interpolationType = request.getInterpolation();
+		if (interpolationType != null) {
+			boolean interpolationSupported = false;
+			Iterator internal = meta.getInterpolationMethods().iterator();
+			while (internal.hasNext()) {
+				if (interpolationType.equalsIgnoreCase((String)internal.next()))
+						interpolationSupported = true;
+			}
+			
+			if (!interpolationSupported)
+				throw new WcsException("The requested Interpolation method is not supported by this Coverage.");
+			else {
+				if (interpolationType.equalsIgnoreCase("bilinear"))
+					interpolation = Interpolation.getInstance(Interpolation.INTERP_BILINEAR);
+				else if (interpolationType.equalsIgnoreCase("bicubic"))
+					interpolation = Interpolation.getInstance(Interpolation.INTERP_BICUBIC);
+			}
+		}
+		
 		// /////////////////////////////////////////////////////////
 		//
 		// Reading the coverage
@@ -428,7 +455,12 @@ public class CoverageResponse implements Response {
 		/**
 		 * Band Select
 		 */
-		Coverage bandSelectedCoverage = WCSUtils.bandSelect(request.getParameters(), coverage);
+		Coverage bandSelectedCoverage = null;
+		try {
+			bandSelectedCoverage = WCSUtils.bandSelect(request.getParameters(), coverage);
+		} catch (WcsException e) {
+			throw new WcsException(e.getLocalizedMessage());
+		}
 
 		/**
 		 * Crop
@@ -451,7 +483,8 @@ public class CoverageResponse implements Response {
 		subCoverage = WCSUtils.reproject(
 				subCoverage,
 				sourceCRS, 
-				targetCRS);
+				targetCRS,
+				interpolation);
 
 		return subCoverage;
 	}

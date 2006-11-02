@@ -134,7 +134,7 @@ public class WcsDispatcher extends Dispatcher {
                                 new FileInputStream(temp), encInfo));
             } catch (Exception e) {
                 /*
-                 * Any exception other than WfsException will "hang up" the
+                 * Any exception other than WcsException will "hang up" the
                  * process - no client output, no log entries, only "Internal
                  * server error". So this is a little trick to make detector's
                  * exceptions "visible".
@@ -159,7 +159,7 @@ public class WcsDispatcher extends Dispatcher {
 					requestTypeAnalyzer.read(disReader, request);
 				} 
                 catch (ServiceException e) {
-                		throw new WcsException(e);
+                	throw new WcsException(e);
 				}
                 //targetRequest = requestTypeAnalyzer.getRequestType();
             } else {

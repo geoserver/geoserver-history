@@ -102,6 +102,17 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
             }
         } else if (currentTag.equals("Envelope")) {
             insideEnvelope = true;
+            final int length = atts.getLength();
+            String curAtt;
+            for( int i = 0; i < length; i++ ) {
+                curAtt = atts.getLocalName(i);
+
+                if (curAtt.equals("srsName")) {
+                    request.setCRS(atts.getValue(i));
+                    if (request.getResponseCRS() == null)
+                    	request.setResponseCRS(atts.getValue(i));
+                }
+            }
         } else if (currentTag.equals("Grid") || currentTag.equals("RectifiedGrid")) {
             insideGrid = true;
             final int length = atts.getLength();

@@ -29,6 +29,11 @@ public class WcsException extends ServiceException {
             "org.vfny.geoserver.wcs");
 	
     /**
+	 * The fixed MIME type of a WCS exception.
+	 */
+	private static final String SE_XML = "application/vnd.ogc.se_xml";
+	
+    /**
      * Empty constructor.
      */
     public WcsException() {
@@ -139,5 +144,19 @@ public class WcsException extends ServiceException {
         LOGGER.fine("return wfs exception is " + returnXml);
 
         return returnXml.toString();
+    }
+    
+    /**
+     * Returns the mime type that should be exposed to the client
+     * when sending the exception message.
+     * 
+     * <p>
+     * Defaults to <code>geoserver.getMimeType()</code>
+     * </p>
+     * 
+     * @return
+     */
+    public String getMimeType(GeoServer geoserver){
+    	return SE_XML+"; charset=" + geoserver.getCharSet().name();
     }
 }

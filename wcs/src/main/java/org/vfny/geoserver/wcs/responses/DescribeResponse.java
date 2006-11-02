@@ -451,30 +451,51 @@ public class DescribeResponse implements Response {
 				|| ((cv.getResponseCRSs() != null) && (cv.getResponseCRSs()
 						.size() > 0))) {
 			tempResponse.append("\n  <supportedCRSs>");
-			if ((cv.getRequestCRSs() != null)
-					&& (cv.getRequestCRSs().size() > 0)) {
+			if (   (cv.getResponseCRSs() != null) && (cv.getResponseCRSs().size() > 0)
+				&& (cv.getRequestCRSs() != null) && (cv.getRequestCRSs().size() > 0)) {
+				tempResponse.append("\n    <requestResponseCRSs>");
+				
+				ArrayList CRSs = new ArrayList();
 				for (int i = 0; i < cv.getRequestCRSs().size(); i++)
-					tempResponse.append("\n    <requestCRSs>"
-							+ cv.getRequestCRSs().get(i) + "</requestCRSs>");
-			}
-			if ((cv.getResponseCRSs() != null)
-					&& (cv.getResponseCRSs().size() > 0)) {
+					if (!CRSs.contains(cv.getRequestCRSs().get(i)))
+						CRSs.add(cv.getRequestCRSs().get(i));
 				for (int i = 0; i < cv.getResponseCRSs().size(); i++)
-					tempResponse.append("\n    <responseCRSs>"
-							+ cv.getResponseCRSs().get(i) + "</responseCRSs>");
+					if (!CRSs.contains(cv.getResponseCRSs().get(i)))
+						CRSs.add(cv.getResponseCRSs().get(i));
+
+				for (int i = 0; i < CRSs.size(); i++)
+					tempResponse.append(CRSs.get(i) + " ");
+				
+				tempResponse.append("\n    </requestResponseCRSs>");
+			}else {
+				if ((cv.getRequestCRSs() != null)
+						&& (cv.getRequestCRSs().size() > 0)) {
+					for (int i = 0; i < cv.getRequestCRSs().size(); i++)
+						tempResponse.append("\n    <requestCRSs>"
+								+ cv.getRequestCRSs().get(i) + "</requestCRSs>");
+				}
+				if ((cv.getResponseCRSs() != null)
+						&& (cv.getResponseCRSs().size() > 0)) {
+					for (int i = 0; i < cv.getResponseCRSs().size(); i++)
+						tempResponse.append("\n    <responseCRSs>"
+								+ cv.getResponseCRSs().get(i) + "</responseCRSs>");
+				}
 			}
 			tempResponse.append("\n  </supportedCRSs>");
 		}
 
+		final String nativeFormat = (cv.getNativeFormat() != null && cv.getNativeFormat().equalsIgnoreCase("GEOTIFF") ? "GeoTIFF" : cv.getNativeFormat());
+		String supportedFormat = "";
 		if (((cv.getSupportedFormats() != null) && (cv.getSupportedFormats()
 				.size() > 0))) {
 			tempResponse.append("\n  <supportedFormats"
-					+ (cv.getNativeFormat() != null
-							&& cv.getNativeFormat() != "" ? " nativeFormat=\""
-							+ cv.getNativeFormat() + "\"" : "") + ">");
-			for (int i = 0; i < cv.getSupportedFormats().size(); i++)
-				tempResponse.append("\n    <formats>"
-						+ cv.getSupportedFormats().get(i) + "</formats>");
+					+ (nativeFormat != null && nativeFormat != "" ? " nativeFormat=\"" + nativeFormat + "\"" : "") + ">");
+			for (int i = 0; i < cv.getSupportedFormats().size(); i++) {
+				supportedFormat = (String) cv.getSupportedFormats().get(i);
+				supportedFormat = (supportedFormat.equalsIgnoreCase("GEOTIFF") ? "GeoTIFF" : supportedFormat);
+				tempResponse.append("\n    <formats>" + supportedFormat + "</formats>");
+			}
+				
 			tempResponse.append("\n  </supportedFormats>");
 		}
 

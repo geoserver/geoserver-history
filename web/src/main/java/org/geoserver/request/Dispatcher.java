@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -157,6 +158,11 @@ public class Dispatcher extends AbstractController {
 			}
 		}	
 		
+		/**
+		 * ALFA: this is a HACK to let GeoServer do a getCapabilities request by default.
+		 */
+		/*request = (request == null ? "GetCapabilities" : request);*/
+		
 		
 		if (service == null || request == null) {
 			//check for a POST request specifying the request as the 
@@ -190,7 +196,7 @@ public class Dispatcher extends AbstractController {
 		
 	}
 	
-	static int sequence = 0;
+	//static int sequence = 0;
 	void post(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 		throws ServiceException, IOException, ServletException {
 		File temp;
@@ -202,10 +208,10 @@ public class Dispatcher extends AbstractController {
         // (In case we are running two GeoServers at once)
         // - Could we use response.getHandle() in the filename?
         // - ProcessID is traditional, I don't know how to find that in Java
-        sequence++;
+        long sequence = new Date().getTime();
         // test to see if we have permission to write, if not, throw an appropirate error
         try {
-            	temp = File.createTempFile("wfsdispatch" + sequence, "tmp");
+            	temp = File.createTempFile("dispatch" + sequence, "tmp");
             	if (!temp.canRead() || !temp.canWrite())
             	{
             		String errorMsg = "Temporary-file permission problem for location: " + temp.getPath();
@@ -218,7 +224,6 @@ public class Dispatcher extends AbstractController {
             	throw newE;
         }
         
-        temp.deleteOnExit();
         FileOutputStream fos = new FileOutputStream(temp);
         BufferedOutputStream out = new BufferedOutputStream(fos);
 
@@ -289,6 +294,9 @@ public class Dispatcher extends AbstractController {
         	}
         else
         	target.doGet(httpRequest, httpResponse);
-        	
+
+        disReader.close();
+        requestReader.close();
+        temp.delete();
     }
 }
