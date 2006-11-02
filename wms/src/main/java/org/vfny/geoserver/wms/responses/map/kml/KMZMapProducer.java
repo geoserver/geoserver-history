@@ -118,11 +118,11 @@ class KMZMapProducer implements GetMapProducer {
 			try {
 				String title = this.mapContext.getLayer(0).getFeatureSource().getSchema().getTypeName();
 				if (title != null && !title.equals("")) {
-					return "inline; filename=" + title + ".kmz";
+					return "attachment; filename=" + title + ".kmz";
 				}
 			} catch (NullPointerException e) {
 			}
 		}
-		return "inline; filename=geoserver.kmz";
+		return "attachment; filename=geoserver.kmz";
 	}
 }
