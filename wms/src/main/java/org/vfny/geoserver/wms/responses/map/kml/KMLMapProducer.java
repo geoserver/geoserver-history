@@ -101,11 +101,11 @@ class KMLMapProducer implements GetMapProducer {
 			try {
 				String title = this.mapContext.getLayer(0).getFeatureSource().getSchema().getTypeName();
 				if (title != null && !title.equals("")) {
-					return "inline; filename=" + title + ".kml";
+					return "attachment; filename=" + title + ".kml";
 				}
 			} catch (NullPointerException e) {
 			}
 		}
-		return "inline; filename=geoserver.kml";
+		return "attachment; filename=geoserver.kml";
 	}
 }

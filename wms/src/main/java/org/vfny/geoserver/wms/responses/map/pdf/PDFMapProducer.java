@@ -279,11 +279,11 @@ class PDFMapProducer implements GetMapProducer {
 			try {
 				String title = this.mapContext.getLayer(0).getFeatureSource().getSchema().getTypeName();
 				if (title != null && !title.equals("")) {
-					return "inline; filename=" + title + ".pdf";
+					return "attachment; filename=" + title + ".pdf";
 				}
 			} catch (NullPointerException e) {
 			}
 		}
-		return "inline; filename=geoserver.pdf";
+		return "attachment; filename=geoserver.pdf";
 	}
 }
