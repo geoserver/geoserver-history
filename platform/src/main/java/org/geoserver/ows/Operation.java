@@ -1,5 +1,7 @@
 package org.geoserver.ows;
 
+import java.lang.reflect.Method;
+
 
 /**
  * Operation of a service
@@ -23,6 +25,11 @@ public final class Operation {
 	Service service;
 
 	/**
+	 * The method implementing the operation
+	 */
+	Method method;
+	
+	/**
 	 * Parameters of the operation
 	 */
 	Object[] parameters;
@@ -32,13 +39,16 @@ public final class Operation {
 	 * 
 	 * @param id Id of the operation, must not be <code>null</code>
 	 * @param service The service containing the operation, must not be <code>null</code>
+	 * @param method THe method implementing the operation.
 	 * @param parameters The parameters of the operation, may be <code>null</code>
 	 * 
 	 */
-	public Operation( String id, Service service, Object[] parameters ) {
+	public Operation( String id, Service service, Method method, Object[] parameters ) {
 		this.id = id;
 		this.service = service;
+		this.method = method;
 		this.parameters = parameters;
+		
 		
 		if ( id == null ) 
 			throw new NullPointerException( "id" );
@@ -60,6 +70,13 @@ public final class Operation {
 	 */
 	public Service getService() {
 		return service;
+	}
+	
+	/**
+	 * @return The method implementing the operation.
+	 */
+	public Method getMethod() {
+		return method;
 	}
 	
 	/**
