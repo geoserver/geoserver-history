@@ -1,13 +1,19 @@
 package org.geoserver.http;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.io.Reader;
+import java.net.URL;
 import java.util.PropertyResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -17,9 +23,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
+import org.geoserver.util.ErrorHandler;
+import org.geoserver.util.ReaderUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -128,15 +137,46 @@ public class GeoServerHttpTestSupport extends TestCase {
 		return new BufferedReader( new InputStreamReader( response.getInputStream() ) );
 	}
 	
+	protected Document validate( WebResponse response, String targetNamespace, String schemaLocation ) 
+		throws Exception {
+		
+		//validate it
+		File tmp = File.createTempFile( "geoserver", "http" );
+		tmp.deleteOnExit();
+		
+		Transformer tx = TransformerFactory.newInstance().newTransformer();
+		tx.transform( new StreamSource( response.getInputStream() ), new StreamResult( tmp ) );
+		
+		Reader reader = new BufferedReader( new FileReader( tmp ) );
+		ErrorHandler handler = new ErrorHandler( logger, Level.WARNING );
+		ReaderUtils.validate( reader, handler, targetNamespace, schemaLocation );
+		if ( !handler.errors.isEmpty() ) {
+			return null;
+		}
+		reader.close();
+		
+		InputStream input = new BufferedInputStream( new FileInputStream( tmp ) );
+		try {
+			return dom( input );
+		}
+		finally {
+			input.close();
+		}
+	}
+	
 	protected Document dom( WebResponse response ) throws Exception {
+		return dom( response.getInputStream() );
+	}
+
+	protected Document dom( InputStream input ) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); 
 		factory.setNamespaceAware( true );
 		factory.setValidating( true );
 		
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		return builder.parse( response.getInputStream() );
+		return builder.parse( input );
 	}
-
+	
 	protected Element element( Document parent, String name ) throws Exception {
 		
 		NodeList nodeList = parent.getElementsByTagName( name );
