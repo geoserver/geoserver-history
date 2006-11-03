@@ -3,6 +3,8 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import junit.framework.TestCase;
+
 import org.apache.xerces.parsers.DOMParser;
 import org.vfny.geoserver.AbstractGeoserverHttpTest;
 import org.w3c.dom.Element;
@@ -13,7 +15,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-public class KMLWriterTest extends AbstractGeoserverHttpTest {
+public class KMLWriterTest extends TestCase {
 
 	
 	public void testIntToHex() {
