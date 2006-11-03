@@ -1,8 +1,13 @@
 package org.geoserver.data;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -13,14 +18,14 @@ public class CatalogReaderTest extends TestCase {
 	CatalogReader reader;
 	
 	public void setUp() throws Exception {
-		
 		File catalog = File.createTempFile( "catalog", "xml" );
 		catalog.deleteOnExit();
 		
 		BufferedWriter writer = new BufferedWriter( new FileWriter( catalog ) );
 		writer.write( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" );
-		writer.write( "<catalog>" );
-		
+		writer.write( "<gs:catalog xmlns:gs=\"http://www.geoserver.org/geoserver\" " );
+		writer.write( 		   "xmlns=\"http://www.geoserver.org/geoserver\" " );
+		writer.write( 		   "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"> " );
 		writer.write(   "<datastores>" );
 		writer.write(   	"<datastore id=\"ds1\" namespace=\"nsp1\" enabled=\"true\">" );
 		writer.write(   		"<connectionParams>" );
@@ -46,7 +51,7 @@ public class CatalogReaderTest extends TestCase {
 		writer.write(   	"<style filename=\"style2.sld\" id=\"style2\" />" );
 		writer.write(   "</styles>" );
 		
-		writer.write( "</catalog>" );
+		writer.write( "</gs:catalog>" );
 		writer.flush();
 		writer.close();
 		

@@ -11,7 +11,7 @@ import org.geoserver.GeoServerResourceLoader;
 /**
  * The GeoServer data directory.
  * <p>
- * This class contains convenience methods for locating GeoServer 
+ * This class is a facade which contains convenience methods for locating GeoServer 
  * configuration and data files.
  * </p>
  * @author Justin Deoliveira, The Open Planning Project
@@ -31,30 +31,42 @@ public class GeoServerDataDirectory {
 	}
 	
 	/**
-	 * @return
+	 * The 'featureTypes' directory which contains feature type metadata.
+	 * <p>
+	 * In the event the directory does not exists, an attempt will be made to create it.
+	 * </p>
+	 * 
+	 * @return The featureTypes directory.
+	 * 
+	 * @throws IOException Any io errors, or if the directory does not exist and could
+	 * not be created.
 	 */
-	public File featureTypes() {
-		try {
-			File featureTypes = loader.find( "featureTypes" );
-			if ( featureTypes == null ) {
-				throw new NullPointerException();
-			}
-			if ( !featureTypes.exists() ) {
-				throw new FileNotFoundException( featureTypes.getAbsolutePath() );
-			}
-			if ( !featureTypes.isDirectory() ) {
-				String msg = featureTypes.getAbsolutePath() + " is a file, not a directory";
-				throw new IllegalStateException( msg );
-			}
-			
-			return featureTypes;
-		} 
-		catch ( IOException e ) {
-			String msg = "Could not locate featureTypes directory";
-			logger.log( Level.WARNING, msg, e );
-		}
-		
-		return null;
+	public File featureTypes() throws IOException {
+		return directory( "featureTypes" );
 	}
 	
+	/**
+	 * The 'styles' directory which contains style data.
+	 * <p>
+	 * In the event the directory does not exists, an attempt will be made to create it.
+	 * </p>
+	 * 
+	 * @return The styles directory.
+	 * 
+	 * @throws IOException Any io errors, or if the directory does not exist and could
+	 * not be created.
+	 */
+	public File styles() throws IOException {
+		return directory( "styles" );
+	}
+	
+	File directory( String path ) throws IOException {
+		File directory = loader.find( path );
+		if ( directory == null ) {
+			logger.warning( path + " not found, creating." );
+			directory = loader.createDirectory( path );
+		}
+		
+		return directory;
+	}
 }

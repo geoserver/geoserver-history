@@ -3,14 +3,23 @@ package org.geoserver.data;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.util.ErrorHandler;
 import org.geoserver.util.ReaderUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Reads the GeoServer catalog.xml file.
@@ -36,7 +45,7 @@ public class CatalogReader {
 	/**
 	 * Logger
 	 */
-	Logger logger = Logger.getLogger( "org.geoserver.data" );
+	static Logger logger = Logger.getLogger( "org.geoserver.data" );
 
 	/** 
 	 * Root catalog element.
@@ -54,10 +63,27 @@ public class CatalogReader {
 	 * @throws IOException In event of a parser error.
 	 */
 	public void read( File file ) throws IOException {
-		FileReader reader = new FileReader( file );
+		
+		FileReader reader = null;
+		try {
+			reader = new FileReader( file );
+			
+			ErrorHandler errorHandler = new ErrorHandler();
+			String targetNamespace = "http://www.geoserver.org/geoserver";
+			String schemaLocation = getClass().getResource( "catalog.xsd" ).toString();
+			ReaderUtils.validate( reader, errorHandler, targetNamespace, schemaLocation );
+			if ( !errorHandler.errors.isEmpty() ) {
+				logger.log( Level.SEVERE, file + " failed to validate, turn logging to FINE to see validation warnings." );
+			}
+			
+		}
+		finally {
+			reader.close();
+		}
 		
 		try {
-			catalog = ReaderUtils.parse( reader );	
+			reader = new FileReader( file );
+			catalog = ReaderUtils.parse( reader );
 		}
 		finally {
 			reader.close();	
@@ -232,4 +258,5 @@ public class CatalogReader {
 		};
 		
 	}
+	
 }

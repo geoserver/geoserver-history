@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gs="http://www.geoserver.org/geoserver" targetNamespace="http://www.geoserver.org/geoserver">
+<xsd:schema targetNamespace="http://www.geoserver.org/geoserver"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:gs="http://www.geoserver.org/geoserver"
+	elementFormDefault="qualified">
 
 	<xsd:annotation>
+		<xsd:documentation>
 		Schema for GeoServer catalog.xml file.
+		</xsd:documentation>
 	</xsd:annotation>
 
 	<xsd:element name="catalog" type="gs:CatalogType">
-		<xsd:annotation>Root catalog element</xsd:annotation>
+		<xsd:annotation>
+			<xsd:documentation>
+			Root catalog element
+			</xsd:documentation>
+		</xsd:annotation>
 	</xsd:element>
 
 	<xsd:complexType name="CatalogType">
 		<xsd:annotation>
+			<xsd:documentation>
 			Catalog containing datastores, namespaces, and styles.
+			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="datastores" type="gs:DatastoresType"/>
@@ -31,18 +42,25 @@
 
 	<xsd:complexType name="DatastoreType">
 		<xsd:annotation>
+			<xsd:documentation>
 			Defines attributes of a datastore, such as identifier and 
 			connection parameters.
+			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="connectionParams" type="gs:ConnectionParamsType"/> 
 		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string"/>
+		<xsd:attribute name="namespace" type="xsd:string"/>
+		<xsd:attribute name="enabled" type="xsd:boolean" use="optional"/>
 	</xsd:complexType>
 
 	<xsd:complexType name="ConnectionParamsType">
 		<xsd:annotation>
+			<xsd:documentation>
 			Defines the key value pairs describing the data store 
 			connection information.
+			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="parameter" type="gs:ParameterType" maxOccurs="unbounded"/> 
@@ -51,7 +69,9 @@
 
 	<xsd:complexType name="ParameterType">
 		<xsd:annotation>
+			<xsd:documentation>
 			Datastore connection parameter, key value pair.
+			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:attribute name="name" type="xsd:string"/>
 		<xsd:attribute name="value" type="xsd:string"/>
@@ -65,8 +85,10 @@
 
 	<xsd:complexType name="NamespaceType">
 		<xsd:annotation>
+			<xsd:documentation>
 			Application namespace declaration containing prefix, uri, and 
 			flag indiciating if it is the default namespace of the server
+			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:attribute name="uri" type="xsd:anyURI"/>
 		<xsd:attribute name="prefix" type="xsd:string"/>
@@ -81,7 +103,9 @@
 
 	<xsd:complexType name="StyleType">
 		<xsd:annotation>
+			<xsd:documentation>
 			Style specified as a Style Layer Descritor document.
+			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:attribute name="filename" type="xsd:string"/>
 		<xsd:attribute name="id" type="xsd:string"/>
