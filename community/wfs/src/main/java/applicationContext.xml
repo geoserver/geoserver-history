@@ -30,6 +30,17 @@
 		<constructor-arg index="2" value="1.1.0"/>
 	</bean>
 	
+	<!-- service exception handler -->
+	<bean id="wfsExceptionHandler" class="org.geoserver.wfs.http.response.WfsExceptionHandler">
+		<constructor-arg>
+			<list>
+				<ref bean="wfsService-1.0.0"/>
+				<ref bean="wfsService-1.1.0"/>
+			</list>		
+		</constructor-arg>	
+		<constructor-arg ref="wfs"/>
+	</bean>
+	
 	<!-- persistance -->
 	<!-- bean id="wfsPersister" class="org.geoserver.BeanPersister">
 		<constructor-arg ref="resourceLoader"/>
