@@ -6,17 +6,23 @@ package org.geoserver.util;
 
 import java.io.File;
 import java.io.Reader;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.xerces.parsers.DOMParser;
+import org.apache.xerces.parsers.SAXParser;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 
 
@@ -69,7 +75,7 @@ public class ReaderUtils {
         dfactory.setIgnoringComments(true);
         dfactory.setCoalescing(true);
         dfactory.setIgnoringElementContentWhitespace(true);
-
+        
         Document doc;
 		try {
 			doc = dfactory.newDocumentBuilder().parse(in);
@@ -81,6 +87,51 @@ public class ReaderUtils {
         return doc.getDocumentElement();
     }
 	
+    /**
+     * Validates an xml document against a specified schema.
+     *
+     * @param xml Reader representing xml stream to parse.
+     * @param errorHandler The validation error handler. 
+     * @param targetNamespace The target namespace of the schema, may be <code>null</code>
+     * @param schemaLocation The location of the schema to validate against, may be <code>null</code>
+     *
+     * @throws RuntimeException If reader failed to parse properly.
+     */
+    public static void validate ( Reader xml, ErrorHandler errorHandler, String targetNamespace, String schemaLocation ) {
+        InputSource in = new InputSource( xml );
+        
+        SAXParser parser = new SAXParser();
+     
+        try {
+
+		   parser.setFeature("http://xml.org/sax/features/validation", true);
+	        parser.setFeature("http://apache.org/xml/features/validation/schema",
+	            true);
+	        parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking",
+	            true);
+
+	        if ( targetNamespace != null ) {
+	        	
+	        }
+	        if ( schemaLocation != null ) {
+	        	parser.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation",
+	    	            schemaLocation );
+	        	if ( targetNamespace != null ) {
+	        		parser.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
+		    	            targetNamespace + " " + schemaLocation );	
+	        	}
+    	    }
+	        
+	        parser.setErrorHandler(errorHandler);
+	        parser.parse( in );
+	        
+	    } 
+		catch( Exception e ) {
+			String msg = "Error reading : " + xml;
+	    		throw new RuntimeException ( msg, e );
+	    }
+	}
+    
 	/**
 	 * Checks to ensure the file is valid.
 	 * 
