@@ -23,7 +23,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 
-import org.opengis.filter.FeatureId;
+import org.opengis.filter.identity.FeatureId;
 
 import org.eclipse.emf.ecore.util.EDataTypeEList;
 

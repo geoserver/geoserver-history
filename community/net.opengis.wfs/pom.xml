@@ -38,7 +38,7 @@
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>api</artifactId>
+      <artifactId>gt2-api</artifactId>
     </dependency>
   </dependencies>
 

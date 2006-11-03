@@ -76,7 +76,7 @@ import org.eclipse.emf.ecore.xml.type.impl.XMLTypePackageImpl;
 
 import org.geotools.feature.FeatureCollection;
 
-import org.opengis.filter.FeatureId;
+import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.Filter;
 
 import org.opengis.filter.expression.Function;
@@ -481,6 +481,13 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 	 * @generated
 	 */
 	private EDataType featureIdEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType featureId_1EDataType = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -2351,6 +2358,15 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EDataType getFeatureId_1() {
+		return featureId_1EDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public WFSFactory getWFSFactory() {
 		return (WFSFactory)getEFactoryInstance();
 	}
@@ -2611,6 +2627,7 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 		uriEDataType = createEDataType(URI);
 		featureCollectionEDataType = createEDataType(FEATURE_COLLECTION);
 		featureIdEDataType = createEDataType(FEATURE_ID);
+		featureId_1EDataType = createEDataType(FEATURE_ID_1);
 	}
 
 	/**
@@ -2706,11 +2723,11 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 
 		initEClass(featuresLockedTypeEClass, FeaturesLockedType.class, "FeaturesLockedType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFeaturesLockedType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, FeaturesLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getFeaturesLockedType_FeatureId(), this.getFeatureId(), "featureId", null, 0, -1, FeaturesLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getFeaturesLockedType_FeatureId(), this.getFeatureId_1(), "featureId", null, 0, -1, FeaturesLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(featuresNotLockedTypeEClass, FeaturesNotLockedType.class, "FeaturesNotLockedType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFeaturesNotLockedType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, FeaturesNotLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getFeaturesNotLockedType_FeatureId(), this.getFeatureId(), "featureId", null, 0, -1, FeaturesNotLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getFeaturesNotLockedType_FeatureId(), this.getFeatureId_1(), "featureId", null, 0, -1, FeaturesNotLockedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(featureTypeListTypeEClass, FeatureTypeListType.class, "FeatureTypeListType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getFeatureTypeListType_Operations(), this.getOperationsType(), null, "operations", null, 0, 1, FeatureTypeListType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2760,7 +2777,7 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 		initEReference(getGMLObjectTypeType_OutputFormats(), this.getOutputFormatListType(), null, "outputFormats", null, 0, 1, GMLObjectTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(insertedFeatureTypeEClass, InsertedFeatureType.class, "InsertedFeatureType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getInsertedFeatureType_FeatureId(), this.getFeatureId(), "featureId", null, 0, -1, InsertedFeatureType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInsertedFeatureType_FeatureId(), this.getFeatureId_1(), "featureId", null, 0, -1, InsertedFeatureType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getInsertedFeatureType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, InsertedFeatureType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(insertElementTypeEClass, InsertElementType.class, "InsertElementType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -2904,6 +2921,7 @@ public class WFSPackageImpl extends EPackageImpl implements WFSPackage {
 		initEDataType(uriEDataType, java.net.URI.class, "URI", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(featureCollectionEDataType, FeatureCollection.class, "FeatureCollection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(featureIdEDataType, FeatureId.class, "FeatureId", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(featureId_1EDataType, org.opengis.filter.identity.FeatureId.class, "FeatureId_1", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);

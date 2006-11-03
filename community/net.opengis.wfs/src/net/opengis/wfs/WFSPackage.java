@@ -28,23 +28,23 @@ import org.eclipse.emf.ecore.EReference;
  * <!-- end-user-doc -->
  * <!-- begin-model-doc -->
  * This XML Schema Document includes and imports, directly and indirectly, all the XML Schemas defined by the OWS Common Implemetation Specification.
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
+ * 		Copyright ? 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
  * This XML Schema Document defines the GetCapabilities operation request and response XML elements and types, which are common to all OWSs. This XML Schema shall be edited by each OWS, for example, to specify a specific value for the "service" attribute.
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
+ * 		Copyright ? 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
  * This XML Schema Document encodes the common "ServiceIdentification" section of the GetCapabilities operation response, known as the Capabilities XML document. This section encodes the SV_ServiceIdentification class of ISO 19119 (OGC Abstract Specification Topic 12).
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
+ * 		Copyright ? 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
  * This XML Schema Document encodes the parts of the MD_DataIdentification class of ISO 19115 (OGC Abstract Specification Topic 11) which are expected to be used for most datasets. This Schema also encodes the parts of this class that are expected to be useful for other metadata. Both are expected to be used within the Contents section of OWS service metadata (Capabilities) documents.
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
+ * 		Copyright ? 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
  * This XML Schema Document encodes various parameters and parameter types that can be used in OWS operation requests and responses.
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
+ * 		Copyright ? 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
  * This XML Schema Document encodes the parts of ISO 19115 used by the common "ServiceIdentification" and "ServiceProvider" sections of the GetCapabilities operation response, known as the service metadata XML document. The parts encoded here are the MD_Keywords, CI_ResponsibleParty, and related classes. This XML Schema largely follows the current draft for ISO 19139, with the addition of documentation text extracted and edited from Annex B of ISO 19115. The UML package prefixes were omitted from XML names, and the XML element names were all capitalized, for consistency with other OWS Schemas. Also, the optional smXML:id attributes were omitted, as not being useful in a service metadata document.
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
+ * 		Copyright ? 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
  * This XML Schema Document encodes the common "ServiceProvider" section of the GetCapabilities operation response, known as the Capabilities XML document. This section encodes the SV_ServiceProvider class of ISO 19119 (OGC Abstract Specification Topic 12).
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
+ * 		Copyright ? 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
  * This XML Schema Document encodes the basic contents of the "OperationsMetadata" section of the GetCapabilities operation response, also known as the Capabilities XML document.
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
+ * 		Copyright ? 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
  * This XML Schema Document encodes the Exception Report response to all OWS operations.
- * 		Copyright © 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
+ * 		Copyright ? 2005 Open Geospatial Consortium, Inc. All Rights Reserved.
  * <!-- end-model-doc -->
  * @see net.opengis.wfs.WFSFactory
  * @model kind="package"
@@ -2545,6 +2545,17 @@ public interface WFSPackage extends EPackage{
 
 
 	/**
+	 * The meta object id for the '<em>Feature Id 1</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.opengis.filter.identity.FeatureId
+	 * @see net.opengis.wfs.impl.WFSPackageImpl#getFeatureId_1()
+	 * @generated
+	 */
+	int FEATURE_ID_1 = 56;
+
+
+	/**
 	 * Returns the meta object for class '{@link net.opengis.wfs.ActionType <em>Action Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4689,6 +4700,17 @@ public interface WFSPackage extends EPackage{
 	 * @generated
 	 */
 	EDataType getFeatureId();
+
+	/**
+	 * Returns the meta object for data type '{@link org.opengis.filter.identity.FeatureId <em>Feature Id 1</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>Feature Id 1</em>'.
+	 * @see org.opengis.filter.identity.FeatureId
+	 * @model instanceClass="org.opengis.filter.identity.FeatureId"
+	 * @generated
+	 */
+	EDataType getFeatureId_1();
 
 	/**
 	 * Returns the factory that creates the instances of the model.

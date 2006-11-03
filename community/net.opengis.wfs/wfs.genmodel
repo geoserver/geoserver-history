@@ -44,6 +44,7 @@
     <genDataTypes ecoreDataType="wfs.ecore#//URI"/>
     <genDataTypes ecoreDataType="wfs.ecore#//FeatureCollection"/>
     <genDataTypes ecoreDataType="wfs.ecore#//FeatureId"/>
+    <genDataTypes ecoreDataType="wfs.ecore#//FeatureId_1"/>
     <genClasses ecoreClass="wfs.ecore#//ActionType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//ActionType/message"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfs.ecore#//ActionType/code"/>

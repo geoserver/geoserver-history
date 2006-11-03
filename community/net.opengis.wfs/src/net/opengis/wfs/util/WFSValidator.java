@@ -31,7 +31,7 @@ import org.eclipse.emf.ecore.xml.type.util.XMLTypeValidator;
 
 import org.geotools.feature.FeatureCollection;
 
-import org.opengis.filter.FeatureId;
+import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.Filter;
 
 import org.opengis.filter.expression.Function;
@@ -229,6 +229,8 @@ public class WFSValidator extends EObjectValidator {
 				return validateFeatureCollection((FeatureCollection)value, diagnostics, context);
 			case WFSPackage.FEATURE_ID:
 				return validateFeatureId((FeatureId)value, diagnostics, context);
+			case WFSPackage.FEATURE_ID_1:
+				return validateFeatureId_1((org.opengis.filter.identity.FeatureId)value, diagnostics, context);
 			default: 
 				return true;
 		}
@@ -840,6 +842,15 @@ public class WFSValidator extends EObjectValidator {
 	 * @generated
 	 */
 	public boolean validateFeatureId(FeatureId featureId, DiagnosticChain diagnostics, Map context) {
+		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateFeatureId_1(org.opengis.filter.identity.FeatureId featureId_1, DiagnosticChain diagnostics, Map context) {
 		return true;
 	}
 

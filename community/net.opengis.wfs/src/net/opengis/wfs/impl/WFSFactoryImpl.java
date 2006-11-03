@@ -29,9 +29,9 @@ import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 import org.geotools.feature.FeatureCollection;
 
-import org.opengis.filter.FeatureId;
-import org.opengis.filter.Filter;
 
+import org.opengis.filter.Filter;
+import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.expression.Function;
 
 import org.opengis.filter.sort.SortBy;
@@ -159,6 +159,8 @@ public class WFSFactoryImpl extends EFactoryImpl implements WFSFactory {
 				return createFeatureCollectionFromString(eDataType, initialValue);
 			case WFSPackage.FEATURE_ID:
 				return createFeatureIdFromString(eDataType, initialValue);
+			case WFSPackage.FEATURE_ID_1:
+				return createFeatureId_1FromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -211,6 +213,8 @@ public class WFSFactoryImpl extends EFactoryImpl implements WFSFactory {
 				return convertFeatureCollectionToString(eDataType, instanceValue);
 			case WFSPackage.FEATURE_ID:
 				return convertFeatureIdToString(eDataType, instanceValue);
+			case WFSPackage.FEATURE_ID_1:
+				return convertFeatureId_1ToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -865,6 +869,24 @@ public class WFSFactoryImpl extends EFactoryImpl implements WFSFactory {
 	 * @generated
 	 */
 	public String convertFeatureIdToString(EDataType eDataType, Object instanceValue) {
+		return super.convertToString(eDataType, instanceValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public org.opengis.filter.identity.FeatureId createFeatureId_1FromString(EDataType eDataType, String initialValue) {
+		return (org.opengis.filter.identity.FeatureId)super.createFromString(eDataType, initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertFeatureId_1ToString(EDataType eDataType, Object instanceValue) {
 		return super.convertToString(eDataType, instanceValue);
 	}
 
