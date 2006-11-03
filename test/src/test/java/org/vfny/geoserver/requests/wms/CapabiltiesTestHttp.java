@@ -10,7 +10,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-public class CapabiltiesTest extends AbstractGeoserverHttpTest {
+public class CapabiltiesTestHttp extends AbstractGeoserverHttpTest {
 
 	public void testGetCapabilities() throws Exception {
 		if (isOffline())

@@ -14,7 +14,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-public class GetMapTest extends AbstractGeoserverHttpTest {
+public class GetMapTestHttp extends AbstractGeoserverHttpTest {
 	
 	String bbox = "-130,24,-66,50";
 	String styles = "population";
