@@ -1,8 +1,5 @@
 package org.geoserver.wfs.xml.v1_0_0;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import net.opengis.ows.v1_0_0.OWSFactory;
 import net.opengis.wfs.WFSFactory;
 
@@ -40,10 +37,10 @@ public class WFSConfiguration extends Configuration {
 		return WFS.NAMESPACE;
 	}
 
-	public URL getSchemaFileURL() throws MalformedURLException {
-		return new URL( 
-			getSchemaLocationResolver().resolveSchemaLocation( null, WFS.NAMESPACE, "WFS-transaction.xsd" )		
-		); 
+	public String getSchemaFileURL() {
+		return 
+			getSchemaLocationResolver().resolveSchemaLocation( null, WFS.NAMESPACE, "WFS-transaction.xsd" );		
+		
 	}
 
 	public BindingConfiguration getBindingConfiguration() {
