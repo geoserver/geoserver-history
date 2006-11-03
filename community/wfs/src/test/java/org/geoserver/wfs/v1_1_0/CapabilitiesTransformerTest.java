@@ -27,7 +27,7 @@ public class CapabilitiesTransformerTest extends WFSTestSupport {
 	
 		ErrorHandler handler = new ErrorHandler( logger, Level.WARNING );
 		ReaderUtils.validate( 
-			reader, handler, WFS.NAMESPACE, "/home/jdeolive/devel/ogc/wfs/1.1.0/wfs.xsd"  
+			reader, handler, WFS.NAMESPACE, "http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"  
 		);
 		
 		assertTrue( handler.errors.isEmpty() );
