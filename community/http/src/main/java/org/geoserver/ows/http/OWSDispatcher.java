@@ -21,10 +21,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.GeoServerExtensions;
 import org.geoserver.http.util.RequestUtils;
 import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.Operation;
@@ -37,23 +40,43 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 public class OWSDispatcher extends AbstractController {
 
+	static Logger logger = Logger.getLogger( "org.geoserver" );
+	
 	protected ModelAndView handleRequestInternal(
 		HttpServletRequest httpRequest, HttpServletResponse httpResponse
 	) throws Exception {
 	
+		File cache = cacheInputStream( httpRequest );
+		
 		try {
-			dispatch( httpRequest, httpResponse );
+			Operation operation = null;
+			try {
+				operation = dispatch( httpRequest, httpResponse, cache );
+			}
+			catch( Throwable t ) {
+				throw new RuntimeException( t );
+			}
+			
+			try {
+				execute( httpRequest, httpResponse, operation );
+			}
+			catch( ServiceException e ) {
+				exception( e, httpRequest, httpResponse, operation );
+			}
+			catch( Throwable t ) {
+				throw new RuntimeException( t );
+			}
+			
+			return null;
+		} 
+		finally {
+			if (cache != null) {
+				cache.delete();	
+			}
 		}
-		catch( ServiceException e ) {
-			exception( e, httpRequest, httpResponse );
-		}
-		catch( Throwable t ) {
-			throw new RuntimeException( t );
-		}
-		return null;
 	}
 	
-	void dispatch( HttpServletRequest httpRequest, HttpServletResponse httpResponse ) throws
+	Operation dispatch( HttpServletRequest httpRequest, HttpServletResponse httpResponse, File cache ) throws
 		Throwable {
 		
 		//step 1: parse kvp set
@@ -64,8 +87,6 @@ public class OWSDispatcher extends AbstractController {
 		String service = null;
 		String request = null;
 		String version = null;
-		
-		File cache = cacheInputStream( httpRequest );
 		
 		if ( "get".equalsIgnoreCase( method ) ) {
 			//lookup in query string
@@ -156,6 +177,17 @@ public class OWSDispatcher extends AbstractController {
 			}
 		}
 		
+		return new Operation( request, serviceDescriptor, operation, parameters );
+	}
+	
+	void execute( HttpServletRequest httpRequest, HttpServletResponse httpResponse, Operation opDescriptor ) 
+		throws Throwable {
+		
+		Service serviceDescriptor = opDescriptor.getService();
+		Object serviceBean = serviceDescriptor.getService();
+		Method operation = opDescriptor.getMethod();
+		Object[] parameters = opDescriptor.getParameters();
+		
 		//step 5: execute
 		Object result = null;
 		try {
@@ -173,7 +205,7 @@ public class OWSDispatcher extends AbstractController {
 			//TODO: choose based on request
 			Collection responses = 
 				getApplicationContext().getBeansOfType( Response.class ).values();
-			Operation opDescriptor = new Operation( request, serviceDescriptor, parameters );
+			
 			ArrayList matches = new ArrayList();
 			for( Iterator itr = responses.iterator(); itr.hasNext(); ) {
 				Response response = (Response) itr.next();
@@ -240,10 +272,6 @@ public class OWSDispatcher extends AbstractController {
 				//TODO: log
 			}
 			
-		}
-		
-		if (cache != null) {
-			cache.deleteOnExit();	
 		}
 		
 	}
@@ -751,52 +779,23 @@ public class OWSDispatcher extends AbstractController {
 		return map;
 	}
 	
-	void exception( ServiceException e, HttpServletRequest request, HttpServletResponse response ) {
+	void exception( 
+		ServiceException e, HttpServletRequest request, HttpServletResponse response, Operation operation 
+	) {
 		
-		try {
-			String tab = "   ";
-			
-			StringBuffer s = new StringBuffer();
-			s.append( "<?xml version=\"1.0\" ?>\n" );
-			s.append( "<ServiceExceptionReport\n" );
-			s.append( tab + "version=\"1.2.0\"\n" );
-			s.append( tab + "xmlns=\"http://www.opengis.net/ogc\"\n" );
-			s.append( tab + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" );
-			s.append( tab );
-			s.append( "xsi:schemaLocation=\"http://www.opengis.net/ogc " );
-			s.append( RequestUtils.baseURL(request)  + "schemas/wfs/1.0.0/OGC-exception.xsd\">\n" );
-
-			s.append( tab + "<ServiceException" );
-			if ( e.getCode() != null && !e.getCode().equals( "" ) ) {
-				s.append( " code=\"" + e.getCode() + "\"" );
+		//look up the service exception handler
+		Collection handlers =
+			getApplicationContext().getBeansOfType( ServiceExceptionHandler.class ).values();
+		
+		for ( Iterator h = handlers.iterator(); h.hasNext(); ) {
+			ServiceExceptionHandler handler = (ServiceExceptionHandler) h.next();
+			if ( handler.getServices().contains( operation.getService() ) )  {
+				//found one,
+				handler.handleServiceException( e, operation, response );
+				return;
 			}
-			if ( e.getLocator() != null && !e.getLocator().equals( "" ) ) {
-	            s.append(" locator=\"" + e.getLocator() + "\"" );
-	        }
-
-			if ( e.getMessage() != null && !e.getMessage().equals( "" ) ) {
-				s.append( ">\n" + tab + tab );
-				s.append( ResponseUtils.encodeXML( e.getMessage() ) );
-				
-				ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
-				e.printStackTrace( new PrintStream( stackTrace ) );
-				
-				s.append( ResponseUtils.encodeXML( new String( stackTrace.toByteArray() ) ) );
-			}
-			
-
-			s.append( "\n</ServiceException>" );
-			s.append( "</ServiceExceptionReport>" );
-			response.setContentType( "text/xml" );
-			response.setCharacterEncoding( "UTF-8" );
-			response.getOutputStream().write( s.toString().getBytes() );
-			response.getOutputStream().flush();
-			
-		} 
-		catch (IOException ioe) {
-			throw new RuntimeException( ioe );
 		}
-	
+		
 	}
 
 	/**
