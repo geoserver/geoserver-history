@@ -26,6 +26,7 @@ import org.geoserver.xml.ows.v1_0_0.OWS;
 import org.geotools.factory.FactoryFinder;
 import org.geotools.filter.FunctionExpression;
 import org.geotools.filter.v1_0.OGC;
+import org.geotools.gml3.bindings.GML;
 import org.geotools.xlink.bindings.XLINK;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
@@ -746,10 +747,14 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     					"version", "1.1.0", 
     					"xmlns:xsi", XSI_URI,
     					"xmlns", WFS_URI,
+    					"xmlns:wfs", WFS_URI,
     					"xmlns:ows", OWS.NAMESPACE,  
+    					"xmlns:gml", GML.NAMESPACE,
     					"xmlns:ogc", OGC.NAMESPACE, 
-    					"xmlns:xlink", XLINK.NAMESPACE
-    				}
+    					"xmlns:xlink", XLINK.NAMESPACE,
+    					"xsi:schemaLocation", 
+    					org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE + " " + ResponseUtils.appendPath( wfs.getSchemaBaseURL(), "1.1.0/wfs.xsd" ) 
+    	            }
     			);
                 
     			NamespaceSupport namespaces = catalog.getNamespaceSupport();
@@ -762,16 +767,16 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     attributes.addAttribute("", prefixDef, prefixDef, "", uri);
                 }
 
-        		start( "WFS_Capabilities", attributes );
+        		start( "wfs:WFS_Capabilities", attributes );
     			
     			serviceIdentification();
     			serviceProvider();
     			operationsMetadata();
     			featureTypeList();
-    			supportsGMLObjectTypeList();
+    			//supportsGMLObjectTypeList();
     			filterCapabilities();
     			
-    			end( "WFS_Capabilities" );
+    			end( "wfs:WFS_Capabilities" );
     		
     		}
 
@@ -824,12 +829,14 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     		void serviceIdentification() {
     			start( "ows:ServiceIdentification" );
     		
-    			element( "ows:ServiceType", "WFS" );
-    			element( "ows:ServiceTypeVersion" , "1.1.0" );
     			element( "ows:Title", wfs.getTitle() );
     			element( "ows:Abstract", wfs.getAbstract() );
     			
     			keywords( wfs.getKeywords() );
+    			
+    			element( "ows:ServiceType", "WFS" );
+    			element( "ows:ServiceTypeVersion" , "1.1.0" );
+    			
     			
     			element( "ows:Fees", wfs.getFees() );
     			element( "ows:AccessConstraints", wfs.getAccessConstraints() );
@@ -871,20 +878,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     			
     			element( "ows:ProviderName", null );
     			element( "ows:ProviderSite", null );
-    			
-    			start( "ows:ServiceContact" );
-    			element( "ows:ProviderName", null );
-    			element( "ows:ProviderSite", null );
-    			start( "ows:ContactInfo");
-    			start( "ows:Phone" );
-    			element( "ows:Voice", null );
-    			element( "ows:Facsimile", null );
-    			end( "ows:Phone" );
-    			start( "ows:Address" );
-    			end( "ows:Address" );
-    			end( "ows:ContactInfo");
-    			element( "ows:Role", null );
-    			end( "ows:ServiceContact" );
+    			element( "ows:ServiceContact", null );
     			
     			end( "ows:ServiceProvider" );
     		}
@@ -962,7 +956,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     					} 
     				) 
     			};
-    			operation( "GetCapabilities", parameters, false, true );
+    			operation( "GetCapabilities", parameters, true, true );
     		}
     		
     		/**
@@ -1017,23 +1011,23 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     			start("Operations");
 
                 if ((wfs.getServiceLevel() | WFS.SERVICE_BASIC) != 0) {
-                    element("Query", null);
+                    element( "Operation", "Query" );
                 }
 
                 if ((wfs.getServiceLevel() | WFS.SERVICE_INSERT) != 0) {
-                    element("Insert", null);
+                    element("Operation","Insert");
                 }
 
                 if ((wfs.getServiceLevel() | WFS.SERVICE_UPDATE) != 0) {
-                    element("Update", null);
+                    element("Operation","Update");
                 }
 
                 if ((wfs.getServiceLevel() | WFS.SERVICE_DELETE) != 0) {
-                    element("Delete", null);
+                    element("Operation","Delete");
                 }
 
                 if ((wfs.getServiceLevel() | WFS.SERVICE_LOCKING) != 0) {
-                    element("Lock", null);
+                    element("Operation","Lock");
                 }
 
                 end("Operations");
@@ -1160,7 +1154,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     			//TODO: other srs's
     			
     			start( "OutputFormats" );
-    			element( "OutputFormat", "text/gml; subtype=gml/3.1.1" );
+    			//TODO: process extension point
+    			element( "Format", "text/gml; subtype=gml/3.1.1" );
     			end( "OutputFormats" );
     			
     			Envelope bbox = null;
@@ -1230,19 +1225,19 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 
                 start("ogc:Spatial_Capabilities");
                 
-                start( "ogc:Geometry_Operands" );
+                start( "ogc:GeometryOperands" );
                 element( "ogc:GeometryOperand", "gml:Envelope" );
                 element( "ogc:GeometryOperand", "gml:Point" );
                 element( "ogc:GeometryOperand", "gml:LineString" );
                 element( "ogc:GeometryOperand", "gml:Polygon" );
-                end( "ogc:Geometry_Operands" );
+                end( "ogc:GeometryOperands" );
                 
                 start("ogc:SpatialOperators");
                 element("ogc:SpatialOperator", null, attributes( new String[]{ "name", "Disjoint" } ) );
                 element("ogc:SpatialOperator", null, attributes( new String[]{ "name", "Equals" } ) );
                 element("ogc:SpatialOperator", null, attributes( new String[]{ "name", "DWithin" } ) );
                 element("ogc:SpatialOperator", null, attributes( new String[]{ "name", "Beyond" } ) );
-                element("ogc:SpatialOperator", null, attributes( new String[]{ "name", "Intersect" } ) );
+                element("ogc:SpatialOperator", null, attributes( new String[]{ "name", "Intersects" } ) );
                 element("ogc:SpatialOperator", null, attributes( new String[]{ "name", "Touches" } ) );
                 element("ogc:SpatialOperator", null, attributes( new String[]{ "name", "Crosses" } ) );
                 element("ogc:SpatialOperator", null, attributes( new String[]{ "name", "Contains" } ) );
@@ -1259,8 +1254,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 start("ogc:ComparisonOperators");
                 element("ogc:ComparisonOperator","LessThan" );
                 element("ogc:ComparisonOperator","GreaterThan" );
-                element("ogc:ComparisonOperator","LessThanOrEqualTo" );
-                element("ogc:ComparisonOperator","GreaterThanOrEqualTo" );
+                element("ogc:ComparisonOperator","LessThanEqualTo" );
+                element("ogc:ComparisonOperator","GreaterThanEqualTo" );
                 element("ogc:ComparisonOperator","EqualTo" );
                 element("ogc:ComparisonOperator","NotEqualTo" );
                 element("ogc:ComparisonOperator","Like" );
@@ -1276,6 +1271,11 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 end("ogc:ArithmeticOperators");
                 
                 end("ogc:Scalar_Capabilities");
+                
+                start( "ogc:Id_Capabilities");
+                element( "ogc:FID", null );
+                end( "ogc:Id_Capabilities");
+                
                 end("ogc:Filter_Capabilities");
     		}
     		
@@ -1334,9 +1334,13 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     		 * @param keywords
     		 */
     		void keywords( String[] keywords ) {
+    			if ( keywords == null || keywords.length == 0 ) {
+    				return;
+    			}
+    			
     			start( "ows:Keywords" );
     			
-    			for ( int i = 0; keywords != null && i < keywords.length; i++ ) {
+    			for ( int i = 0; i < keywords.length; i++ ) {
     				element( "ows:Keyword", keywords[i] );
     			}
     			
@@ -1389,6 +1393,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     		
     			//dcp
     			start( "ows:DCP" );
+    			start( "ows:HTTP" );
     			if ( get ) {
     				String getURL = wfs.getOnlineResource().toString();
     				if ( getURL.indexOf( '?' ) == -1 ) {
@@ -1407,6 +1412,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     				}
     				element( "ows:Post", null, attributes( new String[] { "xlink:href", postURL } ) );
     			}
+    			end( "ows:HTTP" );
     			end( "ows:DCP" );
     			
     			//parameters
