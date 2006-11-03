@@ -7,7 +7,7 @@ package org.geoserver.wfs;
 import org.geoserver.ows.OWS;
 
 /**
- * Web Feature Service.
+ * Web Feature Service configuration.
  * 
  * @author Gabriel Rold???n
  * @author Chris Holmes
