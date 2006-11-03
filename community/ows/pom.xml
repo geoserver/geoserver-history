@@ -22,7 +22,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>xml2</artifactId>
+			<artifactId>gt2-xml-xsd</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

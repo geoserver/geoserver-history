@@ -1,8 +1,5 @@
 package org.geoserver.xml.ows.v1_0_0;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import net.opengis.ows.v1_0_0.OWSFactory;
 
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
@@ -38,10 +35,8 @@ public class OWSConfiguration extends Configuration {
 	/**
 	 * @return the owsAll.xsd file of the ows schema.
 	 */
-	public URL getSchemaFileURL() throws MalformedURLException {
-		return new URL( 
-			getSchemaLocationResolver().resolveSchemaLocation( null, getNamespaceURI(), "owsAll.xsd" )	
-		);
+	public String getSchemaFileURL() {
+		return getSchemaLocationResolver().resolveSchemaLocation( null, getNamespaceURI(), "owsAll.xsd" );	
 	}
 
 	/**
