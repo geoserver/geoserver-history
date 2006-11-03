@@ -139,72 +139,72 @@
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>api</artifactId>
+				<artifactId>gt2-api</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>main</artifactId>
+				<artifactId>gt2-main</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>shapefile</artifactId>
+				<artifactId>gt2-shapefile</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>validation</artifactId>
+				<artifactId>gt2-validation</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>render</artifactId>
+				<artifactId>gt2-render</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>demo-property</artifactId>
+				<artifactId>gt2-demo-property</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>epsg-wkt</artifactId>
+				<artifactId>gt2-epsg-wkt</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>epsg-hsql</artifactId>
+				<artifactId>gt2-epsg-hsql</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>epsg-postgresql</artifactId>
+				<artifactId>gt2-epsg-postgresql</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>xml</artifactId>
+				<artifactId>gt2-xml</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>xml2</artifactId>
+				<artifactId>gt2-xml-xsd</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>xml-filter</artifactId>
+				<artifactId>gt2-xml-filter</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>xml-gml2</artifactId>
+				<artifactId>gt2-xml-gml2</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>postgis</artifactId>
+				<artifactId>gt2-postgis</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
@@ -320,22 +320,22 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-beans</artifactId>
-				<version>1.2.5</version>
+				<version>1.2.8</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
-				<version>1.2.5</version>
+				<version>1.2.8</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
-				<version>1.2.5</version>
+				<version>1.2.8</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
-				<version>1.2.5</version>
+				<version>1.2.8</version>
 			</dependency>
 			<dependency>
 				<groupId>log4j</groupId>
@@ -553,13 +553,13 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
+			<!--plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>2.3-SNAPSHOT</version>
 				<configuration>
 					<includeGroupId>true</includeGroupId>
 				</configuration>
-			</plugin>
+			</plugin-->
 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

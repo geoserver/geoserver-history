@@ -112,19 +112,19 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>api</artifactId>
+			<artifactId>gt2-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>main</artifactId>
+			<artifactId>gt2-main</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>shapefile</artifactId>
+			<artifactId>gt2-shapefile</artifactId>
 		</dependency>		
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>validation</artifactId>
+			<artifactId>gt2-validation</artifactId>
 		</dependency>
 		<!--dependency>
 			<groupId>com.mockrunner</groupId>
