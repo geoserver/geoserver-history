@@ -34,23 +34,23 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>main</artifactId>
+			<artifactId>gt2-main</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>epsg-hsql</artifactId>
+			<artifactId>gt2-epsg-hsql</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>xml</artifactId>
+			<artifactId>gt2-xml-xsd</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>xml-filter</artifactId>
+			<artifactId>gt2-xml-filter</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>xml-gml2</artifactId>
+			<artifactId>gt2-xml-gml2</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>xalan</groupId>

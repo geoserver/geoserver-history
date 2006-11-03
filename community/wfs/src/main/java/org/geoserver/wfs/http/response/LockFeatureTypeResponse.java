@@ -14,7 +14,7 @@ import org.geoserver.ows.Operation;
 import org.geoserver.ows.ServiceException;
 import org.geoserver.ows.http.Response;
 import org.geoserver.wfs.WFS;
-import org.opengis.filter.FeatureId;
+import org.opengis.filter.identity.FeatureId;
 
 public class LockFeatureTypeResponse extends Response {
 
@@ -64,9 +64,7 @@ public class LockFeatureTypeResponse extends Response {
                     writer.write( indent + indent);
                    
                     FeatureId featureId = (FeatureId) i.next();
-                    String fid = (String) featureId.getIDs().iterator().next();
-                    
-                    writer.write( "<ogc:FeatureId fid=\"" + fid + "\"/>" + "\n");
+                    writer.write( "<ogc:FeatureId fid=\"" + featureId + "\"/>" + "\n");
                 }
 
                 writer.write( indent + "</FeaturesLocked>" + "\n");
@@ -79,9 +77,7 @@ public class LockFeatureTypeResponse extends Response {
             	writer.write( indent + indent);
                 
                 FeatureId featureId = (FeatureId) i.next();
-                String fid = (String) featureId.getIDs().iterator().next();
-                
-                writer.write( "<ogc:FeatureId fid=\"" + fid + "\"/>" + "\n");
+                writer.write( "<ogc:FeatureId fid=\"" + featureId + "\"/>" + "\n");
             }
 
             writer.write( "</FeaturesNotLocked>" + "\n");

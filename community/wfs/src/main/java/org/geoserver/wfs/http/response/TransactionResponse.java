@@ -20,7 +20,7 @@ import org.geoserver.ows.ServiceException;
 import org.geoserver.ows.http.Response;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
-import org.opengis.filter.FeatureId;
+import org.opengis.filter.identity.FeatureId;
 
 public class TransactionResponse extends Response {
 
@@ -100,10 +100,7 @@ public class TransactionResponse extends Response {
             	
             	for ( Iterator id = insertedFeature.getFeatureId().iterator(); id.hasNext(); ) {
             		FeatureId featureId = (FeatureId) id.next();
-            		for ( Iterator s = featureId.getIDs().iterator(); s.hasNext(); ) {
-            			String fid = (String) s.next();
-            			writer.write( "<ogc:FeatureId fid=\"" + fid + "\"/>" );
-            		}
+            		writer.write( "<ogc:FeatureId fid=\"" + featureId.toString() + "\"/>" );
             	}
             	
             	writer.write( "</wfs:InsertResult>" );
@@ -201,11 +198,8 @@ public class TransactionResponse extends Response {
 				
 				for ( Iterator j = insertedFeature.getFeatureId().iterator(); j.hasNext(); ) {
 					FeatureId featureId = (FeatureId) j.next();
-					for ( Iterator f = featureId.getIDs().iterator(); f.hasNext(); ) {
-						String fid = (String) f.next();
-						writer.openTag( "ogc", "FeatureId", new String[]{ "fid", fid } );
-						writer.closeTag( "ogc", "FeatureId" );
-					}
+					writer.openTag( "ogc", "FeatureId", new String[]{ "fid", featureId.toString() } );
+					writer.closeTag( "ogc", "FeatureId" );
 				}
 				
 				writer.closeTag( "wfs", "Feature" );

@@ -542,7 +542,10 @@ public class Transaction {
 			            InsertedFeatureType insertedFeature =
 			            	WFSFactory.eINSTANCE.createInsertedFeatureType();
 			            insertedFeature.setHandle( insert.getHandle() );
-			            insertedFeature.getFeatureId().add( filterFactory.featureId( fids ) );
+			            for( Iterator f = fids.iterator(); f.hasNext(); ) {
+			            	String fid = (String) f.next();
+			            	insertedFeature.getFeatureId().add( filterFactory.featureId( fid ) );
+			            }
 			            
 			            if ( result.getInsertResults() == null ) {
 			            	result.setInsertResults( WFSFactory.eINSTANCE.createInsertResultsType() );

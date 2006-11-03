@@ -19,8 +19,8 @@ import org.geoserver.ows.EMFUtils;
 import org.geoserver.wfs.WFSException;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.FilterFactory;
-import org.opengis.filter.FeatureId;
 import org.opengis.filter.Filter;
+import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.spatial.BBOX;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -126,14 +126,14 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 			//set filter from featureId
 			List featureId = (List) kvp.get( "featureId" );
 			List filters = new ArrayList();
-			
+		
 			for ( Iterator i = featureId.iterator(); i.hasNext(); ) {
 				String fid = (String) i.next();
-				Set fids = new HashSet();
-				fids.add( fid );
+				FeatureId featureid = filterFactory.featureId( fid );
 				
-				FeatureId filter = filterFactory.featureId( fids );
-				filters.add( filter );
+				HashSet featureIds = new HashSet();
+				featureIds.add( featureId );
+				filters.add( filterFactory.id( featureIds) );
 			}
 			
 			querySet( eObject, "filter", filters );

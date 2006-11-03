@@ -36,7 +36,8 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
-import org.opengis.filter.FeatureId;
+import org.opengis.filter.Id;
+import org.opengis.filter.identity.FeatureId;
 
 /**
  * Web Feature Service 1.0 LockFeature Operation.
@@ -155,8 +156,9 @@ public class LockFeature {
                 try {
                     for (reader = features.reader(); reader.hasNext();) {
                         Feature feature = reader.next();
-                        FeatureId fid = fid(feature.getID());
-
+                        FeatureId fid = fid( feature.getID() );
+                        Id fidFilter = fidFilter( fid );
+                        
                         if (!(source instanceof FeatureLocking)) {
                             LOGGER.fine("Lock " + fid + " not supported by data store (authID:"
                                     + fLock.getAuthorization() + ")");
@@ -171,7 +173,7 @@ public class LockFeature {
                             // HACK: Query.NO_NAMES isn't working in postgis
                             // right now,
                             // so we'll just use all.
-                            Query query = new DefaultQuery(meta.getTypeName(), (Filter) fid,
+                            Query query = new DefaultQuery(meta.getTypeName(), (Filter) fidFilter,
                                     Query.DEFAULT_MAX, Query.ALL_NAMES, lock.getHandle());
 
                             numberLocked = ((FeatureLocking) source).lockFeatures(query);
@@ -461,11 +463,14 @@ public class LockFeature {
         }
     }
 
-    private FeatureId fid(String fid) {
-        Set fids = new HashSet();
-        fids.add(fid);
-
-        return filterFactory.featureId(fids);
+    private FeatureId fid ( String fid ) {
+    	return filterFactory.featureId( fid );
+    }
+    
+    private Id fidFilter( FeatureId fid) {
+    	HashSet ids = new HashSet();
+    	ids.add( fid  );
+    	return filterFactory.id( ids );
     }
 
     protected FeatureLock newFeatureLock(LockFeatureType request) {
