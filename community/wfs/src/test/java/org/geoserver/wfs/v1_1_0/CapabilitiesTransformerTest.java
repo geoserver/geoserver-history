@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.util.ErrorHandler;
 import org.geoserver.util.ReaderUtils;
 import org.geoserver.wfs.CapabilitiesTransformer;
