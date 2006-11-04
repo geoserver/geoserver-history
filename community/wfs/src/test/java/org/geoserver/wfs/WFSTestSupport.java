@@ -8,7 +8,7 @@ import org.geotools.filter.FilterFactoryFinder;
 
 /**
  * Abstract base class for wfs unit tests.
- 
+ *
  * 
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
