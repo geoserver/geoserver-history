@@ -53,16 +53,6 @@ public class GeoServerHttpTestSupport extends TestCase {
 	/** test fixture properties **/
 	PropertyResourceBundle properties;
 	
-	/**
-	 * Override to disable tests if no server is online.
-	 */
-	public int countTestCases() {
-		if ( isOffline() )
-			return 0;
-		
-		return super.countTestCases();
-	}
-	
 	protected void setUp() throws Exception {
 		try {
 			properties = new PropertyResourceBundle(
