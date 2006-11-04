@@ -22,16 +22,14 @@ import org.geoserver.data.feature.InfoAdapterFactory;
 import org.geotools.catalog.Service;
 import org.geotools.catalog.property.PropertyServiceFactory;
 import org.geotools.catalog.styling.SLDServiceFactory;
-
 import org.geotools.data.property.PropertyDataStoreFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**
  * Abstract test class for tests which need data or a catalog.
  * <p>
- * This class creates populates the catalog with data mimicing the WMS cite
- * setup.
+ * This class creates populates the catalog with data mimicing the WMS 1.1.1 and WFS 1.0 
+ * cite setup.
  * </p>
  * 
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
