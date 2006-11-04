@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+  <!-- controller which dispatches to ows services -->
+  <bean id="dispatcher" class="org.geoserver.ows.http.OWSDispatcher"/>
+  	
+  <!-- interceptor which initializes ows services -->
+  <bean id="owsInitializer" class="org.geoserver.ows.http.OWSInitializer"/>
+  
+  <!-- dispatcher mappings -->
+  <bean id="owsDispatcherMapping" 
+  	class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+  	
+  	<property name="interceptors">
+  		<list>
+			 <ref bean="owsInitializer"/>
+  		</list>
+  	</property>
+  	
+  	<!-- map ows by default -->
+  	<property name="mappings">
+  	  <props>
+  	    <prop key="/ows">dispatcher</prop>
+      	<prop key="/ows/*">dispatcher</prop>
+      </props>
+    </property>
+    
+  </bean>
+
+</beans>
