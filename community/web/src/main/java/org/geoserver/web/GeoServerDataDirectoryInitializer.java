@@ -38,7 +38,7 @@ import org.springframework.web.context.ServletContextAware;
 public class GeoServerDataDirectoryInitializer implements BeanPostProcessor, ServletContextAware {
 
 	/**
-	 * Teh servlet context
+	 * The servlet context
 	 */
 	ServletContext context;
 	
