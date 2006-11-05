@@ -1,22 +1,28 @@
 package org.geoserver.http.test;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.servlet.Servlet;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.http.OWSDispatcher;
 import org.geoserver.test.MockGeoServer;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.w3c.dom.Document;
 
 import com.mockobjects.servlet.MockHttpServletRequest;
 import com.mockobjects.servlet.MockHttpServletResponse;
+import com.mockobjects.servlet.MockServletConfig;
+import com.mockobjects.servlet.MockServletContext;
 import com.mockobjects.servlet.MockServletInputStream;
 import com.mockobjects.servlet.MockServletOutputStream;
 
@@ -43,11 +49,55 @@ public class GeoServerHttpTestSupport extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		geoServer = new MockGeoServer();
-		geoServer.loadBeanDefinitions( HttpApplicationContext.getApplicationContext() );
+		geoServer.getApplicationContext().setServletContext( new MockServletContext() );
+		geoServer.loadBeanDefinitions( HttpApplicationContext.getBeanDefinitions() );
 	}
 	
-	OWSDispatcher dispatcher() {
-		return (OWSDispatcher) geoServer.getApplicationContext().getBean( "dispatcher" );
+	/**
+	 * @return The mock geoserver instance.
+	 */
+	protected MockGeoServer getGeoServer() {
+		return geoServer;
+	}
+	
+	Servlet dispatcher() throws Exception {
+		geoServer.getApplicationContext().refresh();
+		
+		DispatcherServlet dispatcher = 
+			(DispatcherServlet) geoServer.getApplicationContext().getBean( "springDispatcher" ); 
+		
+		MockServletContext context = new MockServletContext() {
+			public InputStream getResourceAsStream(String string) {
+				if ( "/WEB-INF/dispatcher-servlet.xml".equals( string ) ) {
+					try {
+						return HttpApplicationContext.getDispatcherServletDefinitions();
+					} 
+					catch (IOException e) {
+						throw new RuntimeException( e );
+					}
+				}
+				
+				return super.getResourceAsStream( string );
+			}
+		};
+		context.setupGetAttribute( 
+			WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, geoServer.getApplicationContext() 
+		);
+		
+		MockServletConfig servletConfig = new MockServletConfig() {
+			public String getServletName() {
+				return "dispatcher";
+			}
+		};
+		
+		servletConfig.setServletContext( context );
+		
+		
+		dispatcher.init( servletConfig );
+		
+		//dispatcher.setApplicationContext( getGeoServer().getApplicationContext() );
+		
+		return dispatcher;
 	}
 	
 	Map kvp( String path ) {
@@ -87,11 +137,17 @@ public class GeoServerHttpTestSupport extends TestCase {
 		request.setupGetContextPath( "/geoserver" );
 		request.setupGetRequestURI( ResponseUtils.appendPath( "/geoserver/", path ) );
 		request.setupGetParameterMap( kvp( path ) );
+		request.setupGetRemoteAddr( "127.0.0.1" );
+
+		request.addExpectedGetAttributeName( DispatcherServlet.HANDLER_EXECUTION_CHAIN_ATTRIBUTE );
+		request.setupGetAttribute( null );
+		
+		request.setupGetInputStream( new MockServletInputStream() );
 		
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setupOutputStream( new MockServletOutputStream() );
 		        
-        dispatcher().handleRequest( request, response );
+        dispatcher().service( request, response );
         return new ByteArrayInputStream( response.getOutputStreamContents().getBytes() );
 	}
 	
@@ -120,7 +176,7 @@ public class GeoServerHttpTestSupport extends TestCase {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setupOutputStream( new MockServletOutputStream() );
 		        
-        dispatcher().handleRequest( request, response );
+        dispatcher().service( request, response );
         return new ByteArrayInputStream( response.getOutputStreamContents().getBytes() );
 	}
 	
