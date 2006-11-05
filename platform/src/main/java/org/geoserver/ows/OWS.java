@@ -58,7 +58,7 @@ public class OWS {
 	/**
 	 * Character set to use.
 	 */
-	private Charset charSet;
+	private Charset charSet = Charset.forName( "UTF-8" );
 	
 	/**
 	 * List of keywords associated with the service. 
@@ -83,7 +83,7 @@ public class OWS {
 	/**
 	 * Local used to look up schemas.
 	 */
-    private String schemaBaseURL;
+    private String schemaBaseURL = "http://schemas.opengis.net";
     
     /**
      * Creates a new OWS. 
