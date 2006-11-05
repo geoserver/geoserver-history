@@ -6,6 +6,7 @@ import java.io.InputStream;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.xml.sax.InputSource;
 
 /**
@@ -19,16 +20,16 @@ public class MockGeoServer {
 	/**
 	 * application context used to load beans.
 	 */
-	GenericApplicationContext applicationContext;
+	GenericWebApplicationContext applicationContext;
 	
 	public MockGeoServer() {
-		applicationContext = new GenericApplicationContext();
+		applicationContext = new GenericWebApplicationContext();
 	}
 	
 	/**
 	 * Returns the application context used by the mock GeoServer.
 	 */
-	public GenericApplicationContext getApplicationContext() {
+	public GenericWebApplicationContext getApplicationContext() {
 		return applicationContext;
 	}
 	
