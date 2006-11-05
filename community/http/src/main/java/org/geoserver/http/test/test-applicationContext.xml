@@ -3,6 +3,9 @@
 
 <beans>
 
+  <!-- spring dispatcher -->
+  <bean id="springDispatcher" class="org.springframework.web.servlet.DispatcherServlet"/>
+  
   <!-- controller which dispatches to ows services -->
   <bean id="dispatcher" class="org.geoserver.ows.http.OWSDispatcher"/>
   	
