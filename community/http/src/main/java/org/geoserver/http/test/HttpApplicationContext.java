@@ -44,7 +44,11 @@ import java.io.InputStream;
  */
 public class HttpApplicationContext {
 
-	public static InputStream getApplicationContext() throws IOException {
+	public static InputStream getBeanDefinitions() throws IOException {
 		return HttpApplicationContext.class.getResourceAsStream( "test-applicationContext.xml" );
+	}
+	
+	public static InputStream getDispatcherServletDefinitions() throws IOException {
+		return HttpApplicationContext.class.getResourceAsStream( "test-dispatcher-servlet.xml" );
 	}
 }
