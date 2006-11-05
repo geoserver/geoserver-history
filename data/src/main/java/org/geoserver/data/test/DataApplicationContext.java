@@ -12,7 +12,7 @@ import java.io.InputStream;
  */
 public class DataApplicationContext {
 
-	public static InputStream getApplicationContext( ) throws IOException {
+	public static InputStream getBeanDefinitions( ) throws IOException {
 		return DataApplicationContext.class.getResourceAsStream( "test-applicationContext.xml" );
 	}
 }
