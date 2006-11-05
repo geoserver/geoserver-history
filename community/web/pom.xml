@@ -12,7 +12,6 @@
 
   <groupId>org.geoserver</groupId>
   <artifactId>web2</artifactId>
-  <packaging>war</packaging>
   <name>Web Application Support Module</name>
 	<version>${parent.version}</version>
 
