@@ -875,6 +875,8 @@ public class FeatureTypeInfo {
     }
 
     
-    
+    public String toString() {
+    	return getTypeName();
+    }
 }
  
