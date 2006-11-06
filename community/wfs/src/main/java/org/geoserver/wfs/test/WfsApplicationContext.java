@@ -12,7 +12,7 @@ import java.io.InputStream;
  */
 public class WfsApplicationContext {
 
-	public static InputStream getApplicationContext() throws IOException {
+	public static InputStream getBeanDefinitions() throws IOException {
 		return WfsApplicationContext.class.getResourceAsStream( "test-applicationContext.xml" );
 	}
 }
