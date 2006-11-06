@@ -1,16 +1,15 @@
 package org.geoserver.wfs.http;
 
-import org.geoserver.http.GeoServerHttpTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.meterware.httpunit.WebResponse;
+public class LockFeatureHttpTest extends WfsHttpTestSupport {
 
-public class LockFeatureHttpTest extends GeoServerHttpTestSupport {
-
+	protected boolean isLogging() {
+		return true;
+	}
+	
 	public void testLockActionSomeAlreadyLocked() throws Exception {
-		if ( isOffline() )
-			return;
 		
 		//get a feature
 		String xml = 
@@ -25,9 +24,7 @@ public class LockFeatureHttpTest extends GeoServerHttpTestSupport {
 		"  <wfs:Query typeName=\"cdf:Locks\" />" +
 		"</wfs:GetFeature>";
 		
-		WebResponse response = post( "wfs", xml );
-		Document dom = dom( response );
-		
+		Document dom = postAsDOM( "wfs", xml );
 		assertEquals( "wfs:FeatureCollection", dom.getDocumentElement().getNodeName() );
 		
 		//get a fid
@@ -50,9 +47,8 @@ public class LockFeatureHttpTest extends GeoServerHttpTestSupport {
 			"    </ogc:Filter>" +
 			"  </wfs:Lock>" +
 			"</wfs:LockFeature>";
-		response = post( "wfs", xml );
-		dom = dom( response );
-		print( dom, System.out );
+		
+		dom = postAsDOM( "wfs", xml );
 		assertEquals( "WFS_LockFeatureResponse", dom.getDocumentElement().getNodeName() );
 		
 		String lockId = dom.getElementsByTagName( "LockId" ).item( 0 ).getFirstChild().getNodeValue();
@@ -74,25 +70,16 @@ public class LockFeatureHttpTest extends GeoServerHttpTestSupport {
 			"    </ogc:Filter>" +
 			"  </wfs:Lock>" +
 			"</wfs:LockFeature>";
-		response = post( "wfs", xml );
-		dom = dom( response );
-		print( dom, System.out );
+		dom = postAsDOM( "wfs", xml );
 		
 		//release the lock
 		get( "wfs?request=ReleaseLock&lockId=" + lockId );
 		
 		assertEquals( "WFS_LockFeatureResponse", dom.getDocumentElement().getNodeName() );
 		assertFalse ( dom.getElementsByTagName( "FeaturesNotLocked" ).getLength() == 0 );
-		
-		
 	}
 	
 	public void testDeleteWithoutLockId() throws Exception {
-		if ( isOffline() )
-			return;
-		
-		if ( true ) return;
-		
 		//get a feature
 		String xml = 
 		"<wfs:GetFeature" +
@@ -106,9 +93,7 @@ public class LockFeatureHttpTest extends GeoServerHttpTestSupport {
 		"  <wfs:Query typeName=\"cdf:Locks\" />" +
 		"</wfs:GetFeature>";
 		
-		WebResponse response = post( "wfs", xml );
-		Document dom = dom( response );
-		
+		Document dom  = postAsDOM( "wfs", xml );
 		assertEquals( "wfs:FeatureCollection", dom.getDocumentElement().getNodeName() );
 		
 		//get a fid
@@ -131,9 +116,7 @@ public class LockFeatureHttpTest extends GeoServerHttpTestSupport {
 			"    </ogc:Filter>" +
 			"  </wfs:Lock>" +
 			"</wfs:LockFeature>";
-		response = post( "wfs", xml );
-		dom = dom( response );
-		print( dom, System.out );
+		dom = postAsDOM( "wfs", xml );
 		assertEquals( "WFS_LockFeatureResponse", dom.getDocumentElement().getNodeName() );
 		
 		String lockId = dom.getElementsByTagName( "LockId" ).item( 0 ).getFirstChild().getNodeValue();
@@ -151,25 +134,19 @@ public class LockFeatureHttpTest extends GeoServerHttpTestSupport {
 		"    </ogc:Filter>" +
 		"  </wfs:Delete>" +
 		"</wfs:Transaction>";
-		response = post( "wfs", xml );
-		dom = dom( response );
-		print( dom, System.out );
-		
+		dom = postAsDOM( "wfs", xml );
+		 
 		//release the lock
 		get( "wfs?request=ReleaseLock&lockId=" + lockId );
 		
-		assertEquals( "ServiceExceptionReport", dom.getDocumentElement().getNodeName() );
-		
-		
+		assertTrue( 
+			"ServiceExceptionReport".equals( dom.getDocumentElement().getNodeName() ) || 
+			dom.getElementsByTagName( "wfs:FAILED" ).getLength() == 1
+		);
 		
 	}
 	
 	public void testUpdateWithLockId() throws Exception {
-		if ( isOffline() )
-			return;
-		
-		if ( true ) return;
-		
 		//get a feature
 		String xml = 
 		"<wfs:GetFeature" +
@@ -183,9 +160,7 @@ public class LockFeatureHttpTest extends GeoServerHttpTestSupport {
 		"  <wfs:Query typeName=\"cdf:Locks\" />" +
 		"</wfs:GetFeature>";
 		
-		WebResponse response = post( "wfs", xml );
-		Document dom = dom( response );
-		
+		Document dom = postAsDOM( "wfs", xml );
 		assertEquals( "wfs:FeatureCollection", dom.getDocumentElement().getNodeName() );
 		
 		//get a fid
@@ -208,9 +183,7 @@ public class LockFeatureHttpTest extends GeoServerHttpTestSupport {
 			"    </ogc:Filter>" +
 			"  </wfs:Lock>" +
 			"</wfs:LockFeature>";
-		response = post( "wfs", xml );
-		dom = dom( response );
-		print( dom, System.out );
+		dom = postAsDOM( "wfs", xml );
 		assertEquals( "WFS_LockFeatureResponse", dom.getDocumentElement().getNodeName() );
 	
 		//get the lockId
@@ -237,10 +210,8 @@ public class LockFeatureHttpTest extends GeoServerHttpTestSupport {
 			"    </ogc:Filter>" +
 			"  </wfs:Update>" +
 			"</wfs:Transaction>";
-		response = post( "wfs", xml );
-		dom = dom( response );
-		print( dom, System.out );
-		
+		dom = postAsDOM( "wfs", xml );
+		 
 		//release the lock
 		get( "wfs?request=ReleaseLock&lockId=" + lockId );
 		

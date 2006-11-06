@@ -14,6 +14,7 @@ import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WFSFactory;
 
+import org.geoserver.data.test.MockGeoServerDataDirectory;
 import org.geoserver.util.ReaderUtils;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
@@ -33,7 +34,9 @@ public class GetFeatureTest extends WFSTestSupport {
 		query.getPropertyName().add( "ID"  );
 		query.getPropertyName().add( "the_geom" );
 		query.setTypeName( 
-			Collections.singletonList(new QName( CITE_URI, "BasicPolygons", CITE_PREFIX ))	
+			Collections.singletonList(
+				new QName( MockGeoServerDataDirectory.CITE_URI, "BasicPolygons", MockGeoServerDataDirectory.CITE_PREFIX )
+			)	
 		);
 		request.getQuery().add( query );
 		

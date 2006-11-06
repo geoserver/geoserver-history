@@ -7,6 +7,7 @@ import org.eclipse.xsd.XSDElementDeclaration;
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.geoserver.data.feature.FeatureTypeInfo;
+import org.geoserver.data.test.MockGeoServerDataDirectory;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.gml2.bindings.GML;
 import org.geotools.xml.Schemas;
@@ -17,22 +18,27 @@ public class FeatureTypeInfoSchemaBuilderTest extends WFSTestSupport {
 		FeatureTypeSchemaBuilder builder = 
 			new FeatureTypeSchemaBuilder.GML2( wfs, catalog );
 		
-		FeatureTypeInfo lines = catalog.featureType( CGF_PREFIX, LINES_TYPE );
+		FeatureTypeInfo lines = catalog.featureType( 
+			MockGeoServerDataDirectory.CGF_PREFIX, MockGeoServerDataDirectory.LINES_TYPE 
+		);
 		XSDSchema schema = builder.build( new FeatureTypeInfo[] { lines } );
 		
 		assertNotNull( schema );
-		XSDElementDeclaration element = 
-			Schemas.getElementDeclaration( schema, new QName( CGF_URI, LINES_TYPE ) );
+		XSDElementDeclaration element = Schemas.getElementDeclaration( 
+			schema, new QName( MockGeoServerDataDirectory.CGF_URI, MockGeoServerDataDirectory.LINES_TYPE ) 
+		);
 		assertNotNull( element );
 		
 		assertTrue( element.getType() instanceof XSDComplexTypeDefinition );
 		
-		XSDElementDeclaration id = 
-			Schemas.getChildElementDeclaration( element, new QName( CGF_URI, "id" ) );
+		XSDElementDeclaration id = Schemas.getChildElementDeclaration( 
+			element, new QName( MockGeoServerDataDirectory.CGF_URI, "id" ) 
+		);
 		assertNotNull( id );
 		
-		XSDElementDeclaration lineStringProperty = 
-			Schemas.getChildElementDeclaration( element, new QName( CGF_URI, "lineStringProperty" ) );
+		XSDElementDeclaration lineStringProperty = Schemas.getChildElementDeclaration( 
+			element, new QName( MockGeoServerDataDirectory.CGF_URI, "lineStringProperty" ) 
+		);
 		assertNotNull( lineStringProperty );
 		
 		XSDTypeDefinition lineStringPropertyType = lineStringProperty.getType();

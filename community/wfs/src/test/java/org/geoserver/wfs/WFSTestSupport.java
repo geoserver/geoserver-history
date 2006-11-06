@@ -3,7 +3,7 @@ package org.geoserver.wfs;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import org.geoserver.data.DataTestSupport;
+import org.geoserver.data.test.DataTestSupport;
 import org.geotools.filter.FilterFactoryFinder;
 
 /**

@@ -1,20 +1,12 @@
 package org.geoserver.wfs.http;
 
-import org.geoserver.http.GeoServerHttpTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import com.meterware.httpunit.WebResponse;
-
-public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
+public class GetFeatureHttpTest extends WfsHttpTestSupport {
 
 	public void testGet() throws Exception {
-		if ( isOffline() )
-			return;
-		
-		WebResponse response = get( "wfs?request=GetFeature&typename=cdf:Fifteen" );
-		Document doc = dom( response );
-		print( doc, System.out );
+		Document doc = getAsDOM( "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.0.0" );
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
 		
 		NodeList featureMembers = doc.getElementsByTagName( "gml:featureMember" );
@@ -22,10 +14,7 @@ public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
 	}
 	
 	public void testPost() throws Exception {
-		
-		if ( isOffline() )
-			return;
-		
+	
 		String xml = "<wfs:GetFeature " + 
 		  "service=\"WFS\" " + 
 		  "version=\"1.0.0\" " +
@@ -38,11 +27,7 @@ public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
 		  "</wfs:Query> " + 
 		"</wfs:GetFeature>";
 		
-		WebResponse response = post( "wfs", xml );
-		
-	//	print( response, System.out );
-		
-		Document doc = dom( response );
+		Document doc = postAsDOM( "wfs", xml );
 		
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
 		
@@ -52,9 +37,7 @@ public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
 	}
 	
 	public void testPostWithFilter() throws Exception {
-		if ( isOffline() )
-			return;
-		
+	
 		String xml = "<wfs:GetFeature " + 
 		  "service=\"WFS\" " + 
 		  "version=\"1.0.0\" " + 
@@ -75,8 +58,7 @@ public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
 		  "</wfs:Query> " + 
 		"</wfs:GetFeature>";
 			
-		WebResponse response = post( "wfs", xml );
-		Document doc = dom( response );
+		Document doc  = postAsDOM( "wfs", xml );
 		
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
 		

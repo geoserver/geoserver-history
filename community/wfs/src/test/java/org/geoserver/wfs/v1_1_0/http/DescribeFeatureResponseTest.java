@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 
 import org.geoserver.data.feature.FeatureTypeInfo;
+import org.geoserver.data.test.MockGeoServerDataDirectory;
 import org.geoserver.util.ReaderUtils;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder;
@@ -13,7 +14,9 @@ import org.w3c.dom.NodeList;
 public class DescribeFeatureResponseTest extends WFSTestSupport {
 
 	public void testSingle() throws Exception {
-		FeatureTypeInfo meta = catalog.featureType( CITE_PREFIX, BASIC_POLYGONS_TYPE );
+		FeatureTypeInfo meta = catalog.featureType( 
+			MockGeoServerDataDirectory.CITE_PREFIX, MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE 
+		);
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		
@@ -30,8 +33,12 @@ public class DescribeFeatureResponseTest extends WFSTestSupport {
 	
 	public void testWithDifferntNamespaces() throws Exception {
 		
-		FeatureTypeInfo meta1 = catalog.featureType( CITE_PREFIX, BASIC_POLYGONS_TYPE );
-		FeatureTypeInfo meta2 = catalog.featureType( CGF_PREFIX, POLYGONS_TYPE );
+		FeatureTypeInfo meta1 = catalog.featureType( 
+			MockGeoServerDataDirectory.CITE_PREFIX, MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE 
+		);
+		FeatureTypeInfo meta2 = catalog.featureType( 
+			MockGeoServerDataDirectory.CGF_PREFIX, MockGeoServerDataDirectory.POLYGONS_TYPE 
+		);
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		

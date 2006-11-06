@@ -9,6 +9,7 @@ import net.opengis.wfs.DescribeFeatureTypeType;
 import net.opengis.wfs.WFSFactory;
 
 import org.geoserver.data.feature.FeatureTypeInfo;
+import org.geoserver.data.test.MockGeoServerDataDirectory;
 import org.geoserver.util.ReaderUtils;
 import org.geoserver.wfs.xml.v1_0_0.XmlSchemaEncoder;
 import org.w3c.dom.Element;
@@ -19,7 +20,7 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
 		
 		DescribeFeatureTypeType request = WFSFactory.eINSTANCE.createDescribeFeatureTypeType();
 		
-		request.getTypeName().add( qname( BASIC_POLYGONS_TYPE ) );
+		request.getTypeName().add( qname( MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE ) );
 		request.setOutputFormat( "XMLSCHEMA" );
 		
 		FeatureTypeInfo[] infos = webFeatureService.describeFeatureType( request );
@@ -33,7 +34,7 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
 		
 		Element ctElement = 
 			 (Element) schemaDoc.getElementsByTagName( "xs:complexType" ).item( 0 );
-		assertEquals( BASIC_POLYGONS_TYPE + "_Type", ctElement.getAttribute("name") );
+		assertEquals( MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE + "_Type", ctElement.getAttribute("name") );
 	
 		assertEquals( 
 			2, ctElement.getElementsByTagName("xs:element").getLength() 
@@ -48,10 +49,12 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
 	
 		Element eElement = 
 			(Element) schemaDoc.getElementsByTagName( "xs:element" ).item( 2 );
-		assertEquals( BASIC_POLYGONS_TYPE, eElement.getAttribute( "name" ) );
+		assertEquals( MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE, eElement.getAttribute( "name" ) );
 	}
 	
 	QName qname( String name ) {
-		return new QName( CITE_URI, name, CITE_PREFIX );
+		return new QName( 
+			MockGeoServerDataDirectory.CITE_URI, name, MockGeoServerDataDirectory.CITE_PREFIX 
+		);
 	}
 }

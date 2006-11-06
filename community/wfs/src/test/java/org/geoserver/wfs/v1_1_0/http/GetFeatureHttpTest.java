@@ -1,21 +1,14 @@
 package org.geoserver.wfs.v1_1_0.http;
 
-import org.geoserver.http.GeoServerHttpTestSupport;
+import org.geoserver.wfs.http.WfsHttpTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import com.meterware.httpunit.WebResponse;
-
-public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
+public class GetFeatureHttpTest extends WfsHttpTestSupport {
 
 	public void testGet() throws Exception {
-		if ( isOffline() )
-			return;
-		
-		WebResponse response = get( "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0" );
-		Document doc = dom( response );
-		print( doc, System.out );
+		Document doc = getAsDOM( "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0" );
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
 		
 		NodeList features = doc.getElementsByTagName( "cdf:Fifteen" );
@@ -29,9 +22,6 @@ public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
 	
 	public void testPost() throws Exception {
 		
-		if ( isOffline() )
-			return;
-		
 		String xml = "<wfs:GetFeature " + 
 		  "service=\"WFS\" " + 
 		  "version=\"1.1.0\" " +
@@ -44,10 +34,7 @@ public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
 		  "</wfs:Query> " + 
 		"</wfs:GetFeature>";
 		
-		WebResponse response = post( "wfs", xml );
-		Document doc = dom( response );
-		print( doc, System.out );
-		
+		Document doc = postAsDOM( "wfs", xml );
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
 		
 		NodeList features = doc.getElementsByTagName( "cdf:Other" );
@@ -61,9 +48,6 @@ public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
 	}
 	
 	public void testPostWithFilter() throws Exception {
-		if ( isOffline() )
-			return;
-		
 		String xml = "<wfs:GetFeature " + 
 		  "service=\"WFS\" " + 
 		  "version=\"1.1.0\" " + 
@@ -84,9 +68,7 @@ public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
 		  "</wfs:Query> " + 
 		"</wfs:GetFeature>";
 			
-		WebResponse response = post( "wfs", xml );
-		Document doc = dom( response );
-		
+		Document doc = postAsDOM( "wfs", xml );
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
 		
 		NodeList features = doc.getElementsByTagName( "cdf:Other" );
@@ -99,12 +81,7 @@ public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
 	}
 	
 	public void testResultTypeHitsGet() throws Exception {
-		if ( isOffline() )
-			return;
-		
-		WebResponse response = get( "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0&resultType=hits" );
-		Document doc = dom( response );
-		print( doc, System.out );
+		Document doc = getAsDOM( "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0&resultType=hits" );
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
 		
 		NodeList features = doc.getElementsByTagName( "cdf:Fifteen" );
@@ -114,9 +91,6 @@ public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
 	}
 	
 	public void testResultTypeHitsPost() throws Exception {
-		if ( isOffline() )
-			return;
-		
 		String xml = "<wfs:GetFeature " + 
 		  "service=\"WFS\" " + 
 		  "version=\"1.1.0\" " + 
@@ -128,9 +102,7 @@ public class GetFeatureHttpTest extends GeoServerHttpTestSupport {
 		  "<wfs:Query typeName=\"cdf:Seven\"/> " + 
 		"</wfs:GetFeature>";
 		
-		WebResponse response = post( "wfs", xml );
-		Document doc = dom( response );
-		print( doc, System.out );
+		Document doc = postAsDOM( "wfs", xml );
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
 		
 		NodeList features = doc.getElementsByTagName( "cdf:Fifteen" );

@@ -10,23 +10,31 @@ import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.WFSFactory;
 
+import org.geoserver.data.test.MockGeoServerDataDirectory;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 
 public class LockFeatureTest extends WFSTestSupport {
 
-    private static final QName BASIC_POLYGON_TYPE_QNAME = new QName(CITE_URI, BASIC_POLYGONS_TYPE,
-            CITE_PREFIX);
-    private static final QName BRIDGES_TYPE_QNAME = new QName(CITE_URI, BRIDGES_TYPE,
-            CITE_PREFIX);
+    private static final QName BASIC_POLYGON_TYPE_QNAME = new QName( 
+		MockGeoServerDataDirectory.CITE_URI, MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE,
+		MockGeoServerDataDirectory.CITE_PREFIX
+	);
+    private static final QName BRIDGES_TYPE_QNAME = new QName(
+		MockGeoServerDataDirectory.CITE_URI, MockGeoServerDataDirectory.BRIDGES_TYPE,
+		MockGeoServerDataDirectory.CITE_PREFIX
+	);
 
     public void testLockFailNoFeatureType() throws Exception {
         FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
 
         LockFeatureType request = WFSFactory.eINSTANCE.createLockFeatureType();
         LockType lock = WFSFactory.eINSTANCE.createLockType();
-        lock.setTypeName(new QName(CITE_URI, BASIC_POLYGONS_TYPE + "garbage", CITE_PREFIX));
+        lock.setTypeName( new QName( 
+    		MockGeoServerDataDirectory.CITE_URI, MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE + "garbage", 
+    		MockGeoServerDataDirectory.CITE_PREFIX)
+		);
         lock.setFilter(Filter.NONE);
         request.getLock().add(lock);
 

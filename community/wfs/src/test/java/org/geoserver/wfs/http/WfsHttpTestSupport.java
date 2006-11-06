@@ -1,7 +1,7 @@
 package org.geoserver.wfs.http;
 
 import org.geoserver.data.test.DataApplicationContext;
-import org.geoserver.http.test.GeoServerHttpTestSupport;
+import org.geoserver.web.test.GeoServerHttpTestSupport;
 import org.geoserver.web.test.WebApplicationContext;
 import org.geoserver.wfs.test.WfsApplicationContext;
 
@@ -20,6 +20,10 @@ public class WfsHttpTestSupport extends GeoServerHttpTestSupport {
 		getGeoServer().loadBeanDefinitions( DataApplicationContext.getBeanDefinitions() );
 		getGeoServer().loadBeanDefinitions( WebApplicationContext.getBeanDefinitions() );
 		getGeoServer().loadBeanDefinitions( WfsApplicationContext.getBeanDefinitions() );
+	}
+	
+	protected void tearDown() throws Exception {
+		super.tearDown();
 	}
 	
 }
