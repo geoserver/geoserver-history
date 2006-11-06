@@ -33,9 +33,10 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.filter.Filter;
+
 import org.geotools.filter.FilterFactory;
 import org.geotools.referencing.CRS;
+import org.opengis.filter.Filter;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -303,7 +304,7 @@ public class GetFeature {
 
     	Filter filter = (Filter) query.getFilter();
         if ( filter == null ) {
-        	filter = Filter.NONE;
+        	filter = org.geotools.filter.Filter.NONE;
         }
         	
         //only handle non-joins for now

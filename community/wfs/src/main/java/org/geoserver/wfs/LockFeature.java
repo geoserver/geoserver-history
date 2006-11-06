@@ -34,8 +34,8 @@ import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.feature.Feature;
 import org.geotools.feature.IllegalAttributeException;
-import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
+import org.opengis.filter.Filter;
 import org.opengis.filter.Id;
 import org.opengis.filter.identity.FeatureId;
 
@@ -131,7 +131,7 @@ public class LockFeature {
                 // provided
                 Filter filter = (Filter) lock.getFilter();
                 if (filter == null)
-                    filter = Filter.NONE;
+                    filter = org.geotools.filter.Filter.NONE;
 
                 FeatureTypeInfo meta;
                 FeatureSource source;

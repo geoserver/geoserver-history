@@ -33,6 +33,11 @@
 			<artifactId>data</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>web2</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-main</artifactId>
 		</dependency>
@@ -51,6 +56,10 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-xml-gml2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-postgis</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>xalan</groupId>
