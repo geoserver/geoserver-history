@@ -144,6 +144,8 @@ public class CatalogLoader implements InitializingBean, DisposableBean {
 					continue;
 				
 				info.setId( id );
+				
+				catalog.add( service );
 			}
 		}
 	}
