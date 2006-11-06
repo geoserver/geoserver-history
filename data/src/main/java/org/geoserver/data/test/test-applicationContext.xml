@@ -39,6 +39,8 @@
   <!-- some default catalog service factories -->
   <bean id="sldServiceFactory" 
   	class="org.geotools.catalog.styling.SLDServiceFactory"/>
+  <bean id="propertyServiceFactory"
+  	class="org.geotools.catalog.property.PropertyServiceFactory"/>
 
   	 
 </beans>
