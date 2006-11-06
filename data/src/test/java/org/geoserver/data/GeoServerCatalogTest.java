@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import org.geoserver.data.test.DataTestSupport;
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.Service;
 import org.geotools.data.DataStore;
