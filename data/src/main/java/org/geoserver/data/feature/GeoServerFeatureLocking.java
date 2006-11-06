@@ -13,9 +13,10 @@ import org.geotools.data.Query;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.FidFilter;
-import org.geotools.filter.Filter;
+
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
+import org.opengis.filter.Filter;
 
 
 /**
