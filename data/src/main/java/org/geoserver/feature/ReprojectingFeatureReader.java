@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 
 import org.geotools.data.FeatureReader;
 import org.geotools.factory.FactoryRegistryException;
+import org.geotools.factory.Hints;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypes;
@@ -62,6 +63,11 @@ public class ReprojectingFeatureReader implements FeatureReader {
 	 */
 	HashMap/*<CoordinateReferenceSystem,GeometryCoordinateSequenceTransformer>*/ transformers;
 	
+	/**
+	 * Transformation hints
+	 */
+	Hints hints = new Hints(  Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE );
+	
 	public ReprojectingFeatureReader( FeatureReader delegate, CoordinateReferenceSystem target ) 
 		throws SchemaException, OperationNotFoundException, FactoryRegistryException, FactoryException {
 		
@@ -76,7 +82,7 @@ public class ReprojectingFeatureReader implements FeatureReader {
 		CoordinateReferenceSystem source = 
 			delegate.getFeatureType().getDefaultGeometry().getCoordinateSystem();
 		if ( source != null ) {
-			MathTransform2D tx = (MathTransform2D) FactoryFinder.getCoordinateOperationFactory(null)
+			MathTransform2D tx = (MathTransform2D) FactoryFinder.getCoordinateOperationFactory(hints)
         		.createOperation(source,target).getMathTransform();
 			
 			GeometryCoordinateSequenceTransformer transformer = 
@@ -132,7 +138,7 @@ public class ReprojectingFeatureReader implements FeatureReader {
 						transformer = new GeometryCoordinateSequenceTransformer();
 						MathTransform2D tx;
 						try {
-							tx = (MathTransform2D) FactoryFinder.getCoordinateOperationFactory(null)
+							tx = (MathTransform2D) FactoryFinder.getCoordinateOperationFactory(hints)
 									.createOperation(crs,target).getMathTransform();
 						} catch ( Exception e ) {
 							String msg = "Could not transform for crs: " + crs;
