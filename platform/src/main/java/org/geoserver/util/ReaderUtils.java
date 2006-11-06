@@ -4,7 +4,10 @@
  */
 package org.geoserver.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
@@ -14,6 +17,13 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.apache.xerces.parsers.SAXParser;
@@ -87,6 +97,31 @@ public class ReaderUtils {
         return doc.getDocumentElement();
     }
 	
+    /**
+     * Validates an xml document against a specified schema.
+     *
+     * @param xml The document.
+     * @param errorHandler The validation error handler. 
+     * @param targetNamespace The target namespace of the schema, may be <code>null</code>
+     * @param schemaLocation The location of the schema to validate against, may be <code>null</code>
+     *
+     * @throws RuntimeException If reader failed to parse properly.
+     */
+    public static void validate( Document xml, ErrorHandler errorHandler, String targetNamespace, String schemaLocation ) {
+    	try {
+			Transformer tx = TransformerFactory.newInstance().newTransformer();
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			tx.transform( new DOMSource( xml ), new StreamResult( output ) );
+    	
+			InputStreamReader reader =
+				new InputStreamReader( new ByteArrayInputStream( output.toByteArray() ) );
+			validate( reader, errorHandler, targetNamespace, schemaLocation );
+    	}
+    	catch( Exception e ) {
+    		throw new RuntimeException( e );
+    	}
+    }
+    
     /**
      * Validates an xml document against a specified schema.
      *
