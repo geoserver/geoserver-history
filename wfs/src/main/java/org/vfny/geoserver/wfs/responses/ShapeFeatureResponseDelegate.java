@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -18,6 +19,7 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 
@@ -82,7 +84,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
 	private static final Logger LOGGER = Logger
 			.getLogger("org.vfny.geoserver.wfs.responses");
 
-	String tempDir = null;
+	String vmTempDir = null;
 
 	public static final String formatName = "SHAPE-ZIP";
 
@@ -135,15 +137,8 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
 					"It seems prepare() has not succeed. <results> is null");
 		}
 
-		tempDir = System.getProperty("java.io.tmpdir");
-		if (tempDir != null) {
-			// append file seperator if doesn't exist
-			if (!tempDir.endsWith(File.separator)) {
-				tempDir += File.separator;
-			}
-		}
-
-		if (tempDir == null) {
+		vmTempDir = System.getProperty("java.io.tmpdir");
+		if (vmTempDir == null) {
 			throw new NullPointerException("<tempDir> is null. "
 					+ "There is a problem with the java.io.tempdir directory.");
 		}
@@ -205,55 +200,93 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
 
 		ZipOutputStream zipOut = new ZipOutputStream(output);
 		output = zipOut;
-
+                
+                // the temp directory we're going to write to
+                File tempDir = createTempDirectory();
+                
+                try  {
 		List resultsList = results.getFeatures();
 		FeatureResults[] featureResults = (FeatureResults[]) resultsList
 				.toArray(new FeatureResults[resultsList.size()]);
-		FeatureReader reader = featureResults[0].reader();
-		String name = featureResults[0].getSchema().getTypeName();
-
-		String namePath = tempDir + name;
-
-		try {
-			writeOut(name, tempDir, featureResults, reader);
-		} catch (IOException e) {
-			throw e;
-		}
-
-		// BEGIN RELOADING and ZIPPING
-
-		// read in and write out .shp
-		ZipEntry entry = new ZipEntry(name + ".shp");
-		zipOut.putNextEntry(entry);
-		InputStream shp_in = new FileInputStream(namePath + ".shp");
-		readInWriteOutBytes(output, shp_in);
-		zipOut.closeEntry();
-		shp_in.close();
-
-		// read in and write out .dbf
-		entry = new ZipEntry(name + ".dbf");
-		zipOut.putNextEntry(entry);
-		InputStream dbf_in = new FileInputStream(namePath + ".dbf");
-		readInWriteOutBytes(output, dbf_in);
-		zipOut.closeEntry();
-		dbf_in.close();
-
-		// read in and write out .shx
-		entry = new ZipEntry(name + ".shx");
-		zipOut.putNextEntry(entry);
-		InputStream shx_in = new FileInputStream(namePath + ".shx");
-		readInWriteOutBytes(output, shx_in);
-		zipOut.closeEntry();
-		shx_in.close();
+		for(int i = 0; i < featureResults.length; i++) {
+                        FeatureReader reader = featureResults[i].reader();
+        		String name = featureResults[i].getSchema().getTypeName();
+        
+        		try {
+        			writeOut(name, tempDir, featureResults[i].getSchema(), reader);
+        		} catch (IOException e) {
+        			throw e;
+        		}
+        
+        		// BEGIN RELOADING and ZIPPING
+        
+        		// read in and write out .shp
+                        File f = new File(tempDir, name + ".shp");
+        		ZipEntry entry = new ZipEntry(name + ".shp");
+        		zipOut.putNextEntry(entry);
+        		InputStream shp_in = new FileInputStream(f);
+        		readInWriteOutBytes(output, shp_in);
+        		zipOut.closeEntry();
+        		shp_in.close();
+        
+        		// read in and write out .dbf
+                        f = new File(tempDir, name + ".dbf");
+        		entry = new ZipEntry(name + ".dbf");
+        		zipOut.putNextEntry(entry);
+        		InputStream dbf_in = new FileInputStream(f);
+        		readInWriteOutBytes(output, dbf_in);
+        		zipOut.closeEntry();
+        		dbf_in.close();
+        
+        		// read in and write out .shx
+                        f = new File(tempDir, name + ".shx");
+        		entry = new ZipEntry(name + ".shx");
+        		zipOut.putNextEntry(entry);
+        		InputStream shx_in = new FileInputStream(f);
+        		readInWriteOutBytes(output, shx_in);
+        		zipOut.closeEntry();
+        		shx_in.close();
+                        
+                        // if we generated the prj file, include it as well
+                        f = new File(tempDir, name + ".prj");
+                        entry = new ZipEntry(name + ".prj");
+                        zipOut.putNextEntry(entry);
+                        InputStream prj_in = new FileInputStream(f);
+                        readInWriteOutBytes(output, prj_in);
+                        zipOut.closeEntry();
+                        prj_in.close();
+                }
 
 		zipOut.finish();
 		zipOut.flush();
                 // This is an error, because this closes the output stream too... it's
                 // not the right place to do so
                 // zipOut.close();
+                } finally {
+                    // make sure we remove the temp directory and its contents completely now
+                    if(!removeDirectory(tempDir)) {
+                        LOGGER.warning("Could not delete temp directory: " + tempDir.getAbsolutePath());
+                    }
+                }
 	}
 
-	/**
+	private boolean removeDirectory(File tempDir) {
+            if(!tempDir.exists() || !tempDir.isDirectory())
+                return false;
+            
+            File[] files = tempDir.listFiles();
+            if(files == null)
+                return false;
+            for(int i = 0; i < files.length; i++) {
+                if(files[i].isDirectory())
+                    removeDirectory(files[i]);
+                else 
+                    files[i].delete();
+            }
+            return tempDir.delete();
+        }
+
+    /**
 	 * readInWriteOutBytes
 	 * 
 	 * Description: Reads in the bytes from the input stream and writes them to
@@ -293,15 +326,15 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
 	 * @param reader
 	 * @throws IOException
 	 */
-	private void writeOut(String name, String tempDir,
-			FeatureResults[] featureResults, FeatureReader reader)
+	private void writeOut(String name, File tempDir,
+			FeatureType schema, FeatureReader reader)
 			throws IOException {
 		// File file = new File(System.getProperty("java.io.tmpdir"),
 		// name+".zip");
 		File file = new File(tempDir, name/* +".zip" */);
 
 		ShapefileDataStore sfds = new ShapefileDataStore(file.toURL());
-		sfds.createSchema(featureResults[0].getSchema());
+		sfds.createSchema(schema);
 
 		FeatureStore store = (FeatureStore) sfds.getFeatureSource(name);
 		store.addFeatures(reader);
@@ -309,6 +342,21 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
 
         public String getContentDisposition(String featureTypeName) {
             return "attachment; filename=" + featureTypeName + ".zip";
+        }
+        
+        
+        private static int counter = 0; 
+        /**
+         * Temporary folder generator. Folders should be manually deleted afterwards
+         */
+        private synchronized File createTempDirectory() throws IOException
+            {
+                while(true) {
+                    counter++;
+                    File testFolder = new File(vmTempDir, "wfsshp" +  counter);
+                    if(!testFolder.exists() && testFolder.mkdir())
+                        return testFolder;
+            }
         }
 
 }
