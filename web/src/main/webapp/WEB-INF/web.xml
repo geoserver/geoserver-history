@@ -40,6 +40,14 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath*:/applicationContext.xml</param-value>
 	</context-param>
+	
+	<!-- 
+	<context-param>
+	  <param-name>PROXY_BASE_URL</param-name>
+	  <param-value>http://82.58.146.45/</param-value>
+	</context-param>
+	 -->
+	
 
    <!--
 	  <context-param>

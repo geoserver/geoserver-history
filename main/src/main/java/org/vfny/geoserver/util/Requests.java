@@ -126,9 +126,9 @@ public final class Requests {
         // try with the web interface configuration, if it fails, look into
         // web.xml just to keep compatibility (should be removed next version)
         // and finally, if nothing is found, give up and return the default base URL
-        String url = null;
-        if(geoserver != null)
-            url = geoserver.getProxyBaseUrl();
+        String url = geoserver.getProxyBaseUrl();
+        if(geoserver != null && url != null)
+            url = concatUrl(url,  httpServletRequest.getContextPath());
         if (url == null || url.trim().length() == 0) {
             if(httpServletRequest != null)
                 url = httpServletRequest.getSession().getServletContext()
@@ -138,6 +138,8 @@ public final class Requests {
                         + httpServletRequest.getServerName() + ":"
                         + httpServletRequest.getServerPort()
                         + httpServletRequest.getContextPath() + "/";
+            } else {
+                url = concatUrl(url, httpServletRequest.getContextPath());
             }
         }
         
@@ -148,6 +150,44 @@ public final class Requests {
         return url;
     }
     
+    public static String getBaseJspUrl(HttpServletRequest httpServletRequest,
+            GeoServer geoserver) {
+        // try with the web interface configuration, if it fails, look into
+        // web.xml just to keep compatibility (should be removed next version)
+        // and finally, if nothing is found, give up and return the default base URL
+        String url = geoserver.getProxyBaseUrl();
+        if(geoserver != null && url != null)
+            url = concatUrl(url,  httpServletRequest.getRequestURI());
+        if (url == null || url.trim().length() == 0) {
+            if(httpServletRequest != null)
+                url = httpServletRequest.getSession().getServletContext()
+                    .getInitParameter(PROXY_PARAM);
+            if (url == null || url.trim().length() == 0) {
+                url = httpServletRequest.getScheme() + "://"
+                        + httpServletRequest.getServerName() + ":"
+                        + httpServletRequest.getServerPort()
+                        + httpServletRequest.getRequestURI() + "/";
+            } else {
+                url = concatUrl(url, httpServletRequest.getRequestURI());
+            }
+        }
+        
+        if(url.endsWith("/"))
+            url = url.substring(0, url.length()-1);
+        
+        return url;
+    }
+    
+    
+    
+    public static String concatUrl(String url, String contextPath) {
+        if(url.endsWith("/"))
+            url = url.substring(0, url.length() - 1);
+        if(contextPath.startsWith("/"))
+            contextPath = contextPath.substring(1);
+        return url + "/" + contextPath;
+    }
+
     /**
      * Get capabilities base url used
      * 

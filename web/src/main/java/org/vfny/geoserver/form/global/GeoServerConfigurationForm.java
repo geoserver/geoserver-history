@@ -333,7 +333,7 @@ public class GeoServerConfigurationForm extends ActionForm {
 	 * @return Returns the baseURL.
 	 */
 	public String getProxyBaseUrl() {
-		return proxyBaseUrl;
+		return "".equals(proxyBaseUrl) ? null : proxyBaseUrl;
 	}
 
 	/**

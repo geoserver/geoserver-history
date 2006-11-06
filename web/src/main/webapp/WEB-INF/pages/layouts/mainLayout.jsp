@@ -13,6 +13,8 @@
 <bean:define id="keyWords"><tiles:getAsString name='key'/>.words</bean:define>
 <bean:define id="layer"><tiles:getAsString name='layer'/></bean:define>
 
+<%@page import="org.vfny.geoserver.global.GeoServer"%>
+<%@page import="org.vfny.geoserver.util.Requests"%>
 <html:html locale="true" xhtml="true">
   <head>
     <title>
@@ -58,7 +60,12 @@
   
     <link type="image/gif" href="<html:rewrite forward='icon'/>" rel="icon"/>
     <link href="<html:rewrite forward='favicon'/>" rel="SHORTCUT ICON"/>
-    <html:base/>
+    <% 
+	    GeoServer gs = (GeoServer) getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
+        String baseUrl = Requests.getBaseJspUrl(request, gs);
+    %>
+     <base href="<%=baseUrl%>"/> 
+    <!-- <html:base/> -->
   </head>
   <body>
   

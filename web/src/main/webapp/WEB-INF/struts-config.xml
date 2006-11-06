@@ -165,7 +165,11 @@
        		name="logout"
         	path="/admin/logout.do"/>
 
-        <!-- CONFIG -->        	
+        <!-- CONFIG -->     
+        <forward
+       		name="config.main"
+       		path="/config/main.do"/>
+        
        	<forward
        		name="config"
        		path="/config/index.do"/>
@@ -303,12 +307,17 @@
         	
         <!-- CONFIG -->
         <action
-        	path="/config/index"
+        	path ="/config"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config"
         	name="blankBean"/>
         <action
-        	path="/config"
+        	path ="/config/main"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.main"
+        	name="blankBean"/>
+        <action
+        	path="/config/index"
         	type="org.apache.struts.actions.ForwardAction"
         	parameter="config"
         	name="blankBean"/>
@@ -418,6 +427,11 @@
         	name="blankBean"/>
         	        	
         <!-- Config Actions -->
+        <action
+        	path="/config/index"
+        	type="org.vfny.geoserver.action.ConfigIndexAction"
+        	name="blankBean"/>
+        
 		<action    	
         	path="/config/geoServerSubmit"
         	type="org.vfny.geoserver.action.global.GeoServerConfigurationSubmit"

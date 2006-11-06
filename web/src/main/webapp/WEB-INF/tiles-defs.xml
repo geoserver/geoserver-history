@@ -75,7 +75,7 @@
    	</definition>   	
    	   	
    	<!-- CONFIG -->
-   	<definition name="config" extends=".mainLayout">
+   	<definition name="config.main" extends=".mainLayout">
    		<put name="key" value="config"/>
    		<put name="body" value="/WEB-INF/pages/Configuration.jsp"/>
    		<put name="layer" value="configuration"/>
