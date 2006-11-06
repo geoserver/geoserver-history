@@ -8,8 +8,10 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.geotools.filter.Filter;
+import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.FilterHandler;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.wfs.Query;
 import org.vfny.geoserver.wfs.servlets.WFService;
 import org.xml.sax.Attributes;
@@ -53,6 +55,9 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     /** Tracks current query */
     private Query currentQuery = new Query();
 
+    /** filter factory **/
+    private FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
+    
     /**
      * Empty constructor.
      */
@@ -206,7 +211,9 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
                 Filter queryFilter = query.getFilter();
 
                 if (queryFilter != null) {
-                    query.addFilter(queryFilter.and(filter));
+                    query.addFilter(
+                		filterFactory.and( queryFilter, filter )
+            		);
                 } else {
                     query.addFilter(filter);
                 }

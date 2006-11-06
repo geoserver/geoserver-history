@@ -38,12 +38,12 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.FidFilter;
-import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -328,7 +328,7 @@ public class TransactionResponse implements Response {
                 
                 //do a check for Filter.NONE, the spec specifically does not
                 // allow this
-                if (delete.getFilter() == Filter.NONE) {
+                if (delete.getFilter() == org.geotools.filter.Filter.NONE) {
                 	throw new ServiceException(
             			"Filter must be supplied for Transaction Delete"
                 	);

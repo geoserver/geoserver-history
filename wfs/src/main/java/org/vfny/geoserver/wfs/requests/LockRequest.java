@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLockFactory;
-import org.geotools.filter.Filter;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.wfs.servlets.WFService;
 
 

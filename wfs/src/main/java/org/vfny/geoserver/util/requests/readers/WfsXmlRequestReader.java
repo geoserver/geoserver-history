@@ -7,10 +7,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFilter;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.FilterHandlerImpl;
 import org.vfny.geoserver.wfs.WfsException;

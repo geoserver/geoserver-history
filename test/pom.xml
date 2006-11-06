@@ -20,7 +20,7 @@
 			<artifactId>web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.geotools</groupId>
+			<groupId>org.geotools.demo</groupId>
 			<artifactId>gt2-demo-property</artifactId>
 		</dependency>
 		<dependency>

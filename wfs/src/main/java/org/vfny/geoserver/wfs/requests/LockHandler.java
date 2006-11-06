@@ -8,8 +8,8 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.wfs.servlets.WFService;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;

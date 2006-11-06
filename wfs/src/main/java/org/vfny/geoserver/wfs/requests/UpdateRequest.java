@@ -11,8 +11,7 @@ import java.util.logging.Logger;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
-import org.geotools.filter.Filter;
-
+import org.opengis.filter.Filter;
 
 /**
  * This class represents an update request.  An update request consists of one
@@ -32,7 +31,7 @@ public class UpdateRequest extends SubTransactionRequest {
     private List properties;
 
     /** Specifies the features to change. */
-    private Filter filter = Filter.NONE;
+    private Filter filter = org.geotools.filter.Filter.NONE;
 
     /** Specifices the user-defined name for the entire get feature request */
     protected boolean releaseAll = true;

@@ -6,8 +6,7 @@ package org.vfny.geoserver.wfs.requests;
 
 import java.util.logging.Logger;
 
-import org.geotools.filter.Filter;
-
+import org.opengis.filter.Filter;
 
 /**
  * Defines a WFS Delete request, an element of TransactionRequest.
@@ -42,7 +41,7 @@ public class DeleteRequest extends SubTransactionRequest {
             "org.vfny.geoserver.requests.wfs");
 
     /** Specifies the features to lock. */
-    protected Filter filter = Filter.NONE;
+    protected Filter filter = org.geotools.filter.Filter.NONE;
 
     /** Whether all locks should be released after this transaction. */
     protected boolean releaseAll = true;

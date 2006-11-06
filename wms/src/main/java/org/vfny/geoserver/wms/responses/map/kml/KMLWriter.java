@@ -33,7 +33,7 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.Expression;
-import org.geotools.filter.Filter;
+
 import org.geotools.gml.producer.GeometryTransformer;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.style.LineStyle2D;
@@ -51,6 +51,7 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -421,7 +422,7 @@ public class KMLWriter extends OutputStreamWriter {
                             LOGGER.finer(new StringBuffer("applying rule: ").append(r.toString()).toString());
                             Filter filter = r.getFilter();
                             // if there is no filter or the filter says to do the feature anyways, render it
-                            if ((filter == null) || filter.contains(feature)) {
+                            if ((filter == null) || filter.evaluate(feature)) {
                                 doElse = false;
                                 LOGGER.finer("processing Symobolizer ...");
                                 Symbolizer[] symbolizers = r.getSymbolizers();
@@ -549,7 +550,7 @@ public class KMLWriter extends OutputStreamWriter {
                             Rule r = (Rule) it.next();
                             LOGGER.finer(new StringBuffer("applying rule: ").append(r.toString()).toString());
                             Filter filter = r.getFilter();
-                            if ((filter == null) || filter.contains(feature)) {
+                            if ((filter == null) || filter.evaluate(feature)) {
                                 doElse = false;
                                 LOGGER.finer("processing Symobolizer ...");
                                 Symbolizer[] symbolizers = r.getSymbolizers();

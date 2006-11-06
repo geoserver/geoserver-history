@@ -10,8 +10,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.geotools.data.DefaultQuery;
-import org.geotools.filter.Filter;
-
+import org.opengis.filter.Filter;
 
 /**
  * Provides an internal, generic representation of a query component to a
@@ -255,7 +254,7 @@ public class Query {
         }
 
         if (filter == null) {
-            filter = Filter.NONE;
+            filter = org.geotools.filter.Filter.NONE;
         }
 
         DefaultQuery query = new DefaultQuery(getName(), this.filter,
