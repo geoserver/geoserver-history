@@ -17,10 +17,32 @@
 
   <dependencies>
 		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>http</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>data</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+ 		<dependency>
+      <groupId>mockobjects</groupId>
+      <artifactId>mockobjects-jdk1.4-j2ee1.3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>mockobjects</groupId>
+      <artifactId>mockobjects-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
+
  </dependencies>
 
 </project>
