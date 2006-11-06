@@ -69,10 +69,9 @@ public class CatalogWriter {
 	 * Writes "datastore" elements to the catalog.xml file.
 	 * 
 	 * @param map of id to connection parameter map 
-	 
-	 * @throws Exception If error writing "datastores" element.
+	 *
 	 */
-	public void dataStores( Map/*<String,Map>*/ dataStores ) throws Exception {
+	public void dataStores( Map/*<String,Map>*/ dataStores )  {
 		Element dataStoresElement = document.createElement( "datastores" );
 		catalog.appendChild( dataStoresElement );
 		
@@ -116,9 +115,8 @@ public class CatalogWriter {
 	 * @param namespaces map of <prefix,uri>, default uri is located under 
 	 * the empty string key.
 	 *  
-	 * @throws Exception If error writing "namespaces" element.
 	 */
-	public void namespaces( Map namespaces ) throws Exception {
+	public void namespaces( Map namespaces )  {
 		Element namespacesElement = document.createElement( "namespaces" );
 		catalog.appendChild( namespacesElement );
 		
@@ -149,9 +147,8 @@ public class CatalogWriter {
 	 * 
 	 * @param styles map of <id,filename>
 	 * 
-	 * @throws Exception If error writing "styles" element.
 	 */
-	public void styles( Map styles ) throws Exception {
+	public void styles( Map styles ) {
 		Element stylesElement = document.createElement( "styles" );
 		catalog.appendChild( stylesElement );
 		
