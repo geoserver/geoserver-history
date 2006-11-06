@@ -39,6 +39,11 @@
 			</dependency>
 			<dependency>
 				<groupId>${parent.groupId}</groupId>
+				<artifactId>web2</artifactId>
+				<version>ows4</version>
+			</dependency>
+			<dependency>
+				<groupId>${parent.groupId}</groupId>
 				<artifactId>ows</artifactId>
 				<version>ows4</version>
 			</dependency>
@@ -71,5 +76,6 @@
 		<module>web</module>
 		<module>net.opengis.ows-1.0.0</module>
 		<module>net.opengis.wfs</module>
+		<module>geoserver</module>
 	</modules>
 </project>
