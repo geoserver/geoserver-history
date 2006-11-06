@@ -118,6 +118,21 @@ public class ResponseUtils {
     }
     
     /**
+     * Strips the query string off a request url.
+     * 
+     * @param url The url.
+     * 
+     * @return The original minus the query string.
+     */
+    public static String stripQueryString( String url ) {
+    	int index = url.indexOf( '?' );
+    	if ( index == -1 )
+    		return url;
+    	
+    	return url.substring( 0, index );
+    }
+    
+    /**
      * Appends a path tpo a url.
      * <p>
      * This method checks <code>url</code> to see if the appended path requires a '/' to be 
