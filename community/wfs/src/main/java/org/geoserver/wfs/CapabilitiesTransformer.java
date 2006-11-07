@@ -1401,23 +1401,28 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     			//dcp
     			start( "ows:DCP" );
     			start( "ows:HTTP" );
+    			String url = wfs.getOnlineResource().toString();
+    			if ( url.indexOf( '?' ) != -1 ) {
+    				url = url.substring( 0, url.indexOf( '?' ) );
+				}
+    			
     			if ( get ) {
-    				String getURL = wfs.getOnlineResource().toString();
-    				if ( getURL.indexOf( '?' ) == -1 ) {
-    					getURL += "?";
-    				}
-    				else {
-    					getURL = getURL.endsWith( "?" ) ? getURL : getURL + "&";
-    				}
+//    				String getURL = wfs.getOnlineResource().toString();
+//    				if ( getURL.indexOf( '?' ) == -1 ) {
+//    					getURL += "?";
+//    				}
+//    				else {
+//    					getURL = getURL.endsWith( "?" ) ? getURL : getURL + "&";
+//    				}
     				
-    				element( "ows:Get", null, attributes( new String[] { "xlink:href", getURL } ) );
+    				element( "ows:Get", null, attributes( new String[] { "xlink:href", url } ) );
     			}
     			if ( post ) {
-    				String postURL = wfs.getOnlineResource().toString();
-    				if ( postURL.indexOf( '?' ) != -1 ) {
-    					postURL = postURL.substring( 0, postURL.indexOf( '?' ) );
-    				}
-    				element( "ows:Post", null, attributes( new String[] { "xlink:href", postURL } ) );
+//    				String postURL = wfs.getOnlineResource().toString();
+//    				if ( postURL.indexOf( '?' ) != -1 ) {
+//    					postURL = postURL.substring( 0, postURL.indexOf( '?' ) );
+//    				}
+    				element( "ows:Post", null, attributes( new String[] { "xlink:href", url } ) );
     			}
     			end( "ows:HTTP" );
     			end( "ows:DCP" );
