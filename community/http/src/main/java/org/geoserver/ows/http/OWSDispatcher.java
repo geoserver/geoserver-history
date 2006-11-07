@@ -2,14 +2,12 @@ package org.geoserver.ows.http;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -21,15 +19,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.geoserver.GeoServerExtensions;
-import org.geoserver.http.util.RequestUtils;
-import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.Operation;
 import org.geoserver.ows.Service;
 import org.geoserver.ows.ServiceException;
