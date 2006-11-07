@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
+import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geoserver.feature.ReprojectingFeatureReader;
 import org.geoserver.ows.EMFUtils;
 import org.geoserver.ows.ServiceException;
@@ -494,9 +495,7 @@ public class Transaction {
 			            
 			            Set fids = null;
 			            if( collection != null ) {
-			            	 FeatureReader reader = collection.reader();
-			             	
-			            	 //reprojection
+			            	//reprojection
 			            	 CoordinateReferenceSystem target = 
 			            		 schema.getDefaultGeometry().getCoordinateSystem();
 			            	 
@@ -507,13 +506,13 @@ public class Transaction {
 			            		 target = CRS.decode( "EPSG:4326" );
 			            	 }
 			            	 
-			            	 reader = new ReprojectingFeatureReader( reader, target );
+			            	 collection = new ReprojectingFeatureCollection( collection, target );
 			            	 
 			            	 if ( insert.getSrsName() != null ) {
 			            		 //supplied in request
 			            		 CoordinateReferenceSystem defaultSource
 			            		 	= CRS.decode( insert.getSrsName().toString() );
-			            		 ( (ReprojectingFeatureReader)reader ).setDefaultSource( defaultSource );
+			            		 ( (ReprojectingFeatureCollection) collection ).setDefaultSource( defaultSource );
 			            	 }
 			            	 
 			                 // Need to use the namespace here for the lookup, due to our weird
@@ -532,7 +531,7 @@ public class Transaction {
 			                 LOGGER.finer("Use featureValidation to check contents of insert" );
 			                 //featureValidation( typeInfo.getDataStore().getId(), schema, collection );
 
-			                 fids = store.addFeatures(reader);
+			                 fids = store.addFeatures( collection );
 			            }
 			            else {
 			            	fids = Collections.EMPTY_SET;
