@@ -71,23 +71,6 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource
     
 
     /**
-     * addFeatures purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param reader Reader over Feature to be added
-     *
-     * @return Set of FIDs added
-     *
-     * @throws IOException If contents of reader could not be added
-     */
-    public Set addFeatures(FeatureReader reader) throws IOException {
-        return store().addFeatures(reader);
-    }
-    
-    /**
      * DOCUMENT ME!
      *
      * @param filter DOCUMENT ME!
