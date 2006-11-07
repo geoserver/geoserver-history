@@ -1,16 +1,14 @@
 package org.geoserver.feature;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.geotools.data.FeatureReader;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeBuilder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureFactoryImpl;
 import org.geotools.feature.simple.SimpleSchema;
@@ -27,8 +25,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
-
-import junit.framework.TestCase;
 
 public class ReprojectingFeatureReaderTest extends TestCase {
 
@@ -92,12 +88,13 @@ public class ReprojectingFeatureReaderTest extends TestCase {
 
 	public void testNormal() throws Exception {
 	
-		ReprojectingFeatureReader reproject = new ReprojectingFeatureReader( fc.reader(), target );
-		FeatureReader reader = fc.reader();
+		Iterator reproject = new ReprojectingFeatureCollection( fc, target ).iterator();
+		Iterator reader = fc.iterator();
+		
 		
 		while( reader.hasNext() ) {
-			Feature normal = reader.next();
-			Feature reprojected = reproject.next();
+			Feature normal = (Feature) reader.next();
+			Feature reprojected = (Feature) reproject.next();
 			
 			Point p1 = (Point) normal.getAttribute( "defaultGeom" );
 			p1 = (Point) transformer.transform( p1 );
@@ -112,8 +109,6 @@ public class ReprojectingFeatureReaderTest extends TestCase {
 			assertTrue( l1.equals( l2 ) );
 		}
 		
-		reader.close();
-		reproject.close();
 	}
 	
 	public void testWithDifferentCRS() throws Exception {
@@ -139,15 +134,15 @@ public class ReprojectingFeatureReaderTest extends TestCase {
 			}
 		}
 		
-		ReprojectingFeatureReader reproject = new ReprojectingFeatureReader( fc.reader(), target );
+		Iterator reproject = new ReprojectingFeatureCollection( fc, target ).iterator();
 		
-		FeatureReader reader = fc.reader();
+		Iterator reader = fc.iterator();
 		
 		i = 0;
 		
 		while( reader.hasNext() ) {
-			Feature normal = reader.next();
-			Feature reprojected = reproject.next();
+			Feature normal = (Feature) reader.next();
+			Feature reprojected = (Feature) reproject.next();
 			
 			if ( i % 2 != 0 ) {
 				Point p1 = (Point) normal.getAttribute( "defaultGeom" );
@@ -178,9 +173,6 @@ public class ReprojectingFeatureReaderTest extends TestCase {
 			
 			i++;
 		}
-		
-		reader.close();
-		reproject.close();
 	}
 
 	public void testReprojectDefaultFalse() throws Exception {
@@ -198,15 +190,15 @@ public class ReprojectingFeatureReaderTest extends TestCase {
 			}
 		}
 		
-		ReprojectingFeatureReader reproject = new ReprojectingFeatureReader( fc.reader(), target );
+		Iterator reproject = new ReprojectingFeatureCollection( fc, target ).iterator();
 		
-		FeatureReader reader = fc.reader();
+		Iterator reader = fc.iterator();
 		
 		i = 0;
 		
 		while( reader.hasNext() ) {
-			Feature normal = reader.next();
-			Feature reprojected = reproject.next();
+			Feature normal = (Feature) reader.next();
+			Feature reprojected = (Feature) reproject.next();
 			
 			if ( i % 2 != 0 ) {
 				Point p1 = (Point) normal.getAttribute( "defaultGeom" );
@@ -237,9 +229,6 @@ public class ReprojectingFeatureReaderTest extends TestCase {
 			
 			i++;
 		}
-		
-		reader.close();
-		reproject.close();
 	}
 	
 	public void testReprojectDefaultTrue() throws Exception {
@@ -257,13 +246,15 @@ public class ReprojectingFeatureReaderTest extends TestCase {
 			}
 		}
 		
-		ReprojectingFeatureReader reproject = new ReprojectingFeatureReader( fc.reader(), target );
-		reproject.setDefaultSource( src );
-		FeatureReader reader = fc.reader();
+		ReprojectingFeatureCollection rfc = new ReprojectingFeatureCollection( fc, target );
+		rfc.setDefaultSource( src );
+		
+		Iterator reproject = rfc.iterator();
+		Iterator reader = fc.iterator();
 		
 		while( reader.hasNext() ) {
-			Feature normal = reader.next();
-			Feature reprojected = reproject.next();
+			Feature normal = (Feature) reader.next();
+			Feature reprojected = (Feature) reproject.next();
 			
 			Point p1 = (Point) normal.getAttribute( "defaultGeom" );
 			p1 = (Point) transformer.transform( p1 );
@@ -278,8 +269,6 @@ public class ReprojectingFeatureReaderTest extends TestCase {
 			assertTrue( l1.equals( l2 ) );
 		}
 		
-		reader.close();
-		reproject.close();
 	}
 	
 	
