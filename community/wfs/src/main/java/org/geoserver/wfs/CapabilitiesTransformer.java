@@ -114,7 +114,10 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 for ( Enumeration p = namespaces.getPrefixes(); p.hasMoreElements(); ) {
             		String prefix = (String) p.nextElement();
             		String uri = namespaces.getURI( prefix );
-                		
+                	
+            		if ( "xml".equals( prefix ) )
+            			continue;
+            		
                     String prefixDef = "xmlns:" + prefix;
                     attributes.addAttribute("", prefixDef, prefixDef, "", uri);
                 }
@@ -761,7 +764,11 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 for ( Enumeration p = namespaces.getPrefixes(); p.hasMoreElements(); ) {
                 		String prefix = (String) p.nextElement();
                 		String uri = namespaces.getURI( prefix );
-                		
+                	
+                	//ignore xml prefix
+                    if ( "xml".equals( prefix ) ) 
+                    	continue;
+                    
                     String prefixDef = "xmlns:" + prefix;
                     
                     attributes.addAttribute("", prefixDef, prefixDef, "", uri);
