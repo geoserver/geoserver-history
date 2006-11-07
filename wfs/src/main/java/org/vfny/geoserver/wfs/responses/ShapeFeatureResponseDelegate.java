@@ -300,7 +300,8 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     	sfds.createSchema(featureResults[0].getSchema());
     	
     	FeatureStore store = (FeatureStore) sfds.getFeatureSource(name);
-    	store.addFeatures(reader);
+    	store.addFeatures( store.getFeatures() );
+    	
     }
   
     

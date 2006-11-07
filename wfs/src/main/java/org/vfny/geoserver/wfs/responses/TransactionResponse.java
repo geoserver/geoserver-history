@@ -422,7 +422,6 @@ public class TransactionResponse implements Response {
                     InsertRequest insert = (InsertRequest) element;
                     FeatureCollection collection = insert.getFeatures();
 
-                    FeatureReader reader = DataUtilities.reader(collection);
                     FeatureType schema = store.getSchema();
 
                     // Need to use the namespace here for the lookup, due to our weird
@@ -439,7 +438,7 @@ public class TransactionResponse implements Response {
                     LOGGER.finer("Use featureValidation to check contents of insert" );
                     featureValidation( typeInfo.getDataStoreInfo().getId(), schema, collection );
 
-                    Set fids = store.addFeatures(reader);
+                    Set fids = store.addFeatures( collection );
                     build.addInsertResult(element.getHandle(), fids);
 
                     //
