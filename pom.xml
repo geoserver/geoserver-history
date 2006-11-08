@@ -7,7 +7,7 @@
 	<groupId>org.geoserver</groupId>
 	<artifactId>geoserver</artifactId>
 	<packaging>pom</packaging>
-	<version>1.4.0-RC2</version>
+	<version>1.4.0-RC3</version>
 	<name>GeoServer</name>
 
 	<organization>
@@ -497,7 +497,7 @@
 						<descriptor>release/ext-vpf.xml</descriptor>
 						<descriptor>release/ext-wfs.xml</descriptor>
 					</descriptors>
-					<finalName>geoserver-1.4.0-RC2</finalName>
+					<finalName>geoserver-1.4.0-RC3</finalName>
 					<outputDirectory>
 						${project.build.directory}/release
 					</outputDirectory>
@@ -716,7 +716,7 @@
 	</modules>
 
 	<properties>
-		<gs.version>1.4.0-RC2</gs.version>
+		<gs.version>1.4.0-RC3</gs.version>
 		<gt.version>2.2.2-SNAPSHOT</gt.version>
 	</properties>
 
