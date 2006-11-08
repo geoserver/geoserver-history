@@ -1,7 +1,25 @@
+GeoServer 1.4.0-RC3
+-------------------
+
+This is the third release candidate for the 1.4 series of GeoServer.
+
+- Fixed reverse proxy issues
+- Run as a windows service is back
+- Avoid wfsdispath* files accumulation in temp directories
+- Shapefile delegate thread safety issues solved, and delegate
+  can now return multiple feature types
+- Better names for generated files (shape, gml.gz, pdf, kml)
+
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=13009
+
+Based on GeoTools 2.2.2-SNAPSHOT
+
 GeoServer 1.4.0-RC2
 -------------------
 
-This is the second release candidate for the 1.4 series of GeoServer.
+This is the thrid release candidate for the 1.4 series of GeoServer.
 
 - New version of imbedded Jetty server
 - More documentation
@@ -10,7 +28,7 @@ This is the second release candidate for the 1.4 series of GeoServer.
 - More bug fixes
 
 The issue log for this release is here:
-http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12967
+http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&styleName=Html&version=13009
 
 Based on GeoTools 2.2.2-SNAPSHOT
 
