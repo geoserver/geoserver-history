@@ -134,16 +134,9 @@ public class Dispatcher extends AbstractController {
 			//lookup in context path, (http://.../geoserver/service/request?)
 			
 			String path = httpRequest.getContextPath();
-			StringBuffer uriBuf = new StringBuffer(httpRequest.getRequestURI());
-			while (uriBuf.indexOf("/") == 0) {
-				uriBuf.deleteCharAt(0);
-			}
-			uriBuf.insert(0, "/");
-			String uri;
-			if (uriBuf.length() > path.length()) {
-				uri = uriBuf.substring(path.length()+1);
-			} else {
-				uri = uriBuf.toString();
+			String uri = httpRequest.getRequestURI();
+			if (uri.length() > path.length()) {
+				uri = uri.substring(path.length()+1);	
 			}
 			
 			int index = uri.indexOf('/'); 
