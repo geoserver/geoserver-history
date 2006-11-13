@@ -299,12 +299,12 @@ public class GetMapXmlReader extends XmlRequestReader {
 
         final List layers = new ArrayList();
         final List styles = new ArrayList();
-        MapLayerInfo currLayer = new MapLayerInfo();
-        Style currStyle;
+        MapLayerInfo currLayer;
 
         StyledLayer sl = null;
 
         for (int i = 0; i < slCount; i++) {
+            currLayer = new MapLayerInfo();
             sl = styledLayers[i];
 
             String layerName = sl.getName();
