@@ -141,7 +141,7 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
      *
      * @throws NullPointerException
      */
-    public void load(DataDTO config) {
+    public synchronized void load(DataDTO config) {
         if (config == null) {
             throw new NullPointerException("Non null DataDTO required for load");
         }
@@ -159,7 +159,7 @@ public class Data extends GlobalLayerSupertype /*implements Repository*/ {
         featureTypes = loadFeatureTypes(config);
     }
 
-    public Set getDataStores() {
+    public synchronized Set getDataStores() {
         return new HashSet(dataStores.values());
     }
 
@@ -600,7 +600,7 @@ SCHEMA:
      *
      * @return Map of Exception by dataStoreId:typeName
      */
-    public Map statusDataStores() {
+    public synchronized Map statusDataStores() {
         Map m = new HashMap();
         Iterator i = errors.entrySet().iterator();
 
@@ -623,7 +623,7 @@ SCHEMA:
      *
      * @return Map of Exception by prefix:typeName
      */
-    public Map statusNamespaces() {
+    public synchronized Map statusNamespaces() {
         Map m = new HashMap();
         Iterator i = errors.entrySet().iterator();
 
@@ -655,7 +655,7 @@ SCHEMA:
      *
      * @return DataDTO the generated object
      */
-    public Object toDTO() {
+    public synchronized Object toDTO() {
         DataDTO dto = new DataDTO();
 
         HashMap tmp;
@@ -721,7 +721,7 @@ SCHEMA:
      * @return the DataStoreInfo with id attribute equals to <code>id</code> or
      *         null if there no exists
      */
-    public DataStoreInfo getDataStoreInfo(String id) {
+    public synchronized DataStoreInfo getDataStoreInfo(String id) {
         DataStoreInfo dsi = (DataStoreInfo) dataStores.get(id);
 
         if ((dsi != null) && dsi.isEnabled()) {
@@ -740,7 +740,7 @@ SCHEMA:
      *
      * @return NameSpaceInfo[]
      */
-    public NameSpaceInfo[] getNameSpaces() {
+    public synchronized NameSpaceInfo[] getNameSpaces() {
         NameSpaceInfo[] ns = new NameSpaceInfo[nameSpaces.values().size()];
 
         return (NameSpaceInfo[]) new ArrayList(nameSpaces.values()).toArray(ns);
@@ -757,7 +757,7 @@ SCHEMA:
      *
      * @return NameSpaceInfo resulting from the specified prefix
      */
-    public NameSpaceInfo getNameSpace(String prefix) {
+    public synchronized NameSpaceInfo getNameSpace(String prefix) {
         NameSpaceInfo retNS = (NameSpaceInfo) nameSpaces.get(prefix);
 
         return retNS;
@@ -772,7 +772,7 @@ SCHEMA:
      *
      * @return NameSpaceInfo the default name space
      */
-    public NameSpaceInfo getDefaultNameSpace() {
+    public synchronized NameSpaceInfo getDefaultNameSpace() {
         return defaultNameSpace;
     }
 
@@ -785,11 +785,11 @@ SCHEMA:
      *
      * @return Map A map containing the Styles.
      */
-    public Map getStyles() {
+    public synchronized Map getStyles() {
         return this.styles;
     }
 
-    public Style getStyle(String id) {
+    public synchronized Style getStyle(String id) {
         return (Style) styles.get(id);
     }
 
@@ -823,7 +823,7 @@ SCHEMA:
      *
      * @throws NoSuchElementException
      */
-    public FeatureTypeInfo getFeatureTypeInfo(String name)
+    public synchronized FeatureTypeInfo getFeatureTypeInfo(String name)
         throws NoSuchElementException {
         LOGGER.fine("getting type " + name);
 
@@ -876,7 +876,7 @@ SCHEMA:
      *
      * @return FeatureTypeInfo
      */
-    public FeatureTypeInfo getFeatureTypeInfo(String typename, String uri) {
+    public synchronized FeatureTypeInfo getFeatureTypeInfo(String typename, String uri) {
         //System.out.println("Finding TypeName = "+typename+" URI = "+uri);
         for (Iterator it = featureTypes.values().iterator(); it.hasNext();) {
             FeatureTypeInfo fType = (FeatureTypeInfo) it.next();
@@ -912,7 +912,7 @@ SCHEMA:
      *
      * @return Map of FetureTypeInfo by prefix:typeName
      */
-    public Map getFeatureTypeInfos() {
+    public synchronized Map getFeatureTypeInfos() {
         return Collections.unmodifiableMap(featureTypes);
     }
 
@@ -969,7 +969,7 @@ SCHEMA:
      *
      * @return Number of available connections.
      */
-    public int getConnectionCount() {
+    public synchronized int getConnectionCount() {
         int count = 0;
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
@@ -1004,7 +1004,7 @@ SCHEMA:
      *
      * @return number of locks currently held
      */
-    public int getLockCount() {
+    public synchronized int getLockCount() {
         int count = 0;
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
@@ -1047,7 +1047,7 @@ SCHEMA:
      *
      * @return Number of locks released
      */
-    public int lockReleaseAll() {
+    public synchronized int lockReleaseAll() {
         int count = 0;
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
@@ -1085,7 +1085,7 @@ SCHEMA:
      *
      * @param lockID
      */
-    public void lockRelease(String lockID) {
+    public synchronized void lockRelease(String lockID) {
         boolean refresh = false;
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
@@ -1144,7 +1144,7 @@ SCHEMA:
      *
      * @param lockID
      */
-    public void lockRefresh(String lockID) {
+    public synchronized void lockRefresh(String lockID) {
         boolean refresh = false;
 
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
@@ -1207,7 +1207,7 @@ SCHEMA:
      * @see org.geotools.data.Data#lockRefresh(java.lang.String,
      *      org.geotools.data.Transaction)
      */
-    public boolean lockRefresh(String lockID, Transaction t)
+    public synchronized boolean lockRefresh(String lockID, Transaction t)
         throws IOException {
         boolean refresh = false;
 
@@ -1253,7 +1253,7 @@ SCHEMA:
      * @see org.geotools.data.Data#lockRelease(java.lang.String,
      *      org.geotools.data.Transaction)
      */
-    public boolean lockRelease(String lockID, Transaction t)
+    public synchronized boolean lockRelease(String lockID, Transaction t)
         throws IOException {
         boolean release = false;
 
@@ -1295,7 +1295,7 @@ SCHEMA:
      *
      * @see org.geotools.data.Data#lockExists(java.lang.String)
      */
-    public boolean lockExists(String lockID) {
+    public synchronized boolean lockExists(String lockID) {
         for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
 
@@ -1336,7 +1336,7 @@ SCHEMA:
      *
      * @see org.geotools.data.Catalog#getPrefixes()
      */
-    public Set getPrefixes() {
+    public synchronized Set getPrefixes() {
         return Collections.unmodifiableSet(nameSpaces.keySet());
     }
 
@@ -1347,7 +1347,7 @@ SCHEMA:
      *
      * @see org.geotools.data.Catalog#getDefaultPrefix()
      */
-    public String getDefaultPrefix() {
+    public synchronized String getDefaultPrefix() {
         return defaultNameSpace.getPrefix();
     }
 
@@ -1364,7 +1364,7 @@ SCHEMA:
      *
      * @see org.geotools.data.Catalog#getNamespace(java.lang.String)
      */
-    public NameSpaceInfo getNamespaceMetaData(String prefix) {
+    public synchronized NameSpaceInfo getNamespaceMetaData(String prefix) {
         return getNameSpace(prefix);
     }
 
@@ -1400,7 +1400,7 @@ SCHEMA:
      *
      * @see org.geotools.data.Catalog#registerDataStore(org.geotools.data.DataStore)
      */
-    public void registerDataStore(DataStore dataStore)
+    public synchronized void registerDataStore(DataStore dataStore)
         throws IOException {
     }
 
@@ -1422,7 +1422,7 @@ SCHEMA:
      * @see org.geotools.data.Catalog#getFeatureSource(java.lang.String,
      *      java.lang.String)
      */
-    public FeatureSource getFeatureSource(String prefix, String typeName)
+    public synchronized FeatureSource getFeatureSource(String prefix, String typeName)
         throws IOException {
         if ((prefix == null) || ("".equals(prefix))) {
             prefix = defaultNameSpace.getPrefix();
