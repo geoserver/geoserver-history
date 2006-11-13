@@ -97,6 +97,11 @@ public class MapPreviewAction extends GeoServerAction
 		ServletContext sc = request.getSession().getServletContext();
 		//File rootDir =  GeoserverDataDirectory.getGeoserverDataDirectory(sc);
 		//File previewDir = new File(sc.getRealPath("data/generated"));
+		if (sc.getRealPath("preview") == null) {
+			//There's a problem here, since we can't get a real path for the "preview" directory.
+			//On tomcat this happens when "unpackWars=false" is set for this context.
+			throw new RuntimeException("Couldn't populate preview directory...is the war running in unpacked mode?");
+		}
 		File previewDir = new File(sc.getRealPath("preview"));
 		//File previewDir = new File(rootDir, "data/generated");
 		if (!previewDir.exists())
