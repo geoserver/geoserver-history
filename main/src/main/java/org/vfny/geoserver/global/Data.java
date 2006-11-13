@@ -42,6 +42,16 @@ import org.vfny.geoserver.global.dto.StyleDTO;
 /**
  * This class stores all the information that a catalog would (and CatalogConfig
  * used to).
+ * <p>
+ * All public methods besides constructors and stuff used for dependency injection
+ * setters is synchronized to avoid response failures during the Geoserver reconfiguration
+ * process (basically, each time you apply a new configuration set on the user interface).
+ * </p>
+ * <p>
+ * A quick benchar did not show significant scalability loss. If one is to be encountered,
+ * a more complex Reader/Write synchronization will be used, based on the java 5 concurrency
+ * classes or their backport for java 1.4
+ * </p> 
  * 
  * @author Gabriel Roldan, Axios Engineering
  * @author Chris Holmes
@@ -202,7 +212,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @throws NullPointerException
 	 */
-	public void load(DataDTO config) {
+	public synchronized void load(DataDTO config) {
 		if (config == null) {
 			throw new NullPointerException("Non null DataDTO required for load");
 		}
@@ -222,11 +232,11 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 		coverages = loadCoverages(config);
 	}
 
-	public Set getDataStores() {
+	public synchronized Set getDataStores() {
 		return new HashSet(dataStores.values());
 	}
 
-	public Set getFormats() {
+	public synchronized Set getFormats() {
 		return new HashSet(formats.values());
 	}
 
@@ -881,7 +891,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @return Map of Exception by dataStoreId:typeName
 	 */
-	public Map statusDataStores() {
+	public synchronized Map statusDataStores() {
 		Map m = new HashMap();
 		Iterator i = errors.entrySet().iterator();
 
@@ -904,7 +914,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @return Map of Exception by prefix:typeName
 	 */
-	public Map statusNamespaces() {
+	public synchronized Map statusNamespaces() {
 		Map m = new HashMap();
 		Iterator i = errors.entrySet().iterator();
 
@@ -934,7 +944,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @return DataDTO the generated object
 	 */
-	public Object toDTO() {
+	public synchronized Object toDTO() {
 		DataDTO dto = new DataDTO();
 
 		HashMap tmp;
@@ -1026,7 +1036,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * @return the DataStoreInfo with id attribute equals to <code>id</code>
 	 *         or null if there no exists
 	 */
-	public DataStoreInfo getDataStoreInfo(String id) {
+	public synchronized DataStoreInfo getDataStoreInfo(String id) {
 		DataStoreInfo dsi = (DataStoreInfo) dataStores.get(id);
 
 		if ((dsi != null) && dsi.isEnabled()) {
@@ -1045,7 +1055,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * @return the CoverageStoreInfo with id attribute equals to <code>id</code>
 	 *         or null if there no exists
 	 */
-	public CoverageStoreInfo getFormatInfo(String id) {
+	public synchronized CoverageStoreInfo getFormatInfo(String id) {
 		CoverageStoreInfo dfi = (CoverageStoreInfo) formats.get(id);
 
 		if ((dfi != null) && dfi.isEnabled()) {
@@ -1064,7 +1074,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @return NameSpaceInfo[]
 	 */
-	public NameSpaceInfo[] getNameSpaces() {
+	public synchronized NameSpaceInfo[] getNameSpaces() {
 		NameSpaceInfo[] ns = new NameSpaceInfo[nameSpaces.values().size()];
 
 		return (NameSpaceInfo[]) new ArrayList(nameSpaces.values()).toArray(ns);
@@ -1081,7 +1091,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @return NameSpaceInfo resulting from the specified prefix
 	 */
-	public NameSpaceInfo getNameSpace(String prefix) {
+	public synchronized NameSpaceInfo getNameSpace(String prefix) {
 		NameSpaceInfo retNS = (NameSpaceInfo) nameSpaces.get(prefix);
 
 		return retNS;
@@ -1098,7 +1108,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @uml.property name="defaultNameSpace"
 	 */
-	public NameSpaceInfo getDefaultNameSpace() {
+	public synchronized NameSpaceInfo getDefaultNameSpace() {
 		return defaultNameSpace;
 	}
 
@@ -1113,11 +1123,11 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @uml.property name="styles"
 	 */
-	public Map getStyles() {
+	public synchronized Map getStyles() {
 		return this.styles;
 	}
 
-	public Style getStyle(String id) {
+	public synchronized Style getStyle(String id) {
 		return (Style) styles.get(id);
 	}
 
@@ -1147,7 +1157,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @throws NoSuchElementException
 	 */
-	public FeatureTypeInfo getFeatureTypeInfo(String name)
+	public synchronized FeatureTypeInfo getFeatureTypeInfo(String name)
 			throws NoSuchElementException {
 		if (LOGGER.isLoggable(Level.FINE)) {
 			LOGGER.fine(new StringBuffer("getting type ").append(name)
@@ -1204,7 +1214,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @return FeatureTypeInfo
 	 */
-	public FeatureTypeInfo getFeatureTypeInfo(String typename, String uri) {
+	public synchronized FeatureTypeInfo getFeatureTypeInfo(String typename, String uri) {
 		// System.out.println("Finding TypeName = "+typename+" URI = "+uri);
 		for (Iterator it = featureTypes.values().iterator(); it.hasNext();) {
 			FeatureTypeInfo fType = (FeatureTypeInfo) it.next();
@@ -1233,7 +1243,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 		return null;
 	}
 
-	public CoverageInfo getCoverageInfo(String name)
+	public synchronized CoverageInfo getCoverageInfo(String name)
 			throws NoSuchElementException {
 		LOGGER.fine("getting coverage " + name);
 
@@ -1268,7 +1278,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 				+ name + "'");
 	}
 
-	public CoverageInfo getCoverageInfo(String name, String uri) {
+	public synchronized CoverageInfo getCoverageInfo(String name, String uri) {
 		for (Iterator it = coverages.values().iterator(); it.hasNext();) {
 			CoverageInfo cvo = (CoverageInfo) it.next();
 
@@ -1295,11 +1305,11 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @return Map of FetureTypeInfo by prefix:typeName
 	 */
-	public Map getFeatureTypeInfos() {
+	public synchronized Map getFeatureTypeInfos() {
 		return Collections.unmodifiableMap(featureTypes);
 	}
 
-	public Map getCoverageInfos() {
+	public synchronized Map getCoverageInfos() {
 		return Collections.unmodifiableMap(coverages);
 	}
 
@@ -1359,7 +1369,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @return Number of available connections.
 	 */
-	public int getConnectionCount() {
+	public synchronized int getConnectionCount() {
 		int count = 0;
 		DataStoreInfo meta ;
 		DataStore dataStore;
@@ -1395,7 +1405,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @return number of locks currently held
 	 */
-	public int getLockCount() {
+	public synchronized int getLockCount() {
 		int count = 0;
 		DataStore dataStore;;
 		LockingManager lockingManager;
@@ -1439,7 +1449,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @return Number of locks released
 	 */
-	public int lockReleaseAll() {
+	public synchronized int lockReleaseAll() {
 		int count = 0;
 
 		for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
@@ -1477,7 +1487,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @param lockID
 	 */
-	public void lockRelease(String lockID) {
+	public synchronized void lockRelease(String lockID) {
 		boolean refresh = false;
 
 		for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
@@ -1540,7 +1550,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @param lockID
 	 */
-	public void lockRefresh(String lockID) {
+	public synchronized void lockRefresh(String lockID) {
 		boolean refresh = false;
 
 		for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
@@ -1607,7 +1617,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * @see org.geotools.data.Data#lockRefresh(java.lang.String,
 	 *      org.geotools.data.Transaction)
 	 */
-	public boolean lockRefresh(String lockID, Transaction t) throws IOException {
+	public synchronized boolean lockRefresh(String lockID, Transaction t) throws IOException {
 		boolean refresh = false;
 
 		for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
@@ -1652,7 +1662,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * @see org.geotools.data.Data#lockRelease(java.lang.String,
 	 *      org.geotools.data.Transaction)
 	 */
-	public boolean lockRelease(String lockID, Transaction t) throws IOException {
+	public synchronized boolean lockRelease(String lockID, Transaction t) throws IOException {
 		boolean release = false;
 
 		for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
@@ -1693,7 +1703,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @see org.geotools.data.Data#lockExists(java.lang.String)
 	 */
-	public boolean lockExists(String lockID) {
+	public synchronized boolean lockExists(String lockID) {
 		for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
 			DataStoreInfo meta = (DataStoreInfo) i.next();
 
@@ -1734,7 +1744,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @see org.geotools.data.Catalog#getPrefixes()
 	 */
-	public Set getPrefixes() {
+	public synchronized Set getPrefixes() {
 		return Collections.unmodifiableSet(nameSpaces.keySet());
 	}
 
@@ -1745,7 +1755,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @see org.geotools.data.Catalog#getDefaultPrefix()
 	 */
-	public String getDefaultPrefix() {
+	public synchronized String getDefaultPrefix() {
 		return defaultNameSpace.getPrefix();
 	}
 
@@ -1762,7 +1772,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @see org.geotools.data.Catalog#getNamespace(java.lang.String)
 	 */
-	public NameSpaceInfo getNamespaceMetaData(String prefix) {
+	public synchronized NameSpaceInfo getNamespaceMetaData(String prefix) {
 		return getNameSpace(prefix);
 	}
 
@@ -1798,7 +1808,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * 
 	 * @see org.geotools.data.Catalog#registerDataStore(org.geotools.data.DataStore)
 	 */
-	public void registerDataStore(DataStore dataStore) throws IOException {
+	public synchronized void registerDataStore(DataStore dataStore) throws IOException {
 	}
 
 	/**
@@ -1822,7 +1832,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 * @see org.geotools.data.Catalog#getFeatureSource(java.lang.String,
 	 *      java.lang.String)
 	 */
-	public FeatureSource getFeatureSource(String prefix, String typeName)
+	public synchronized FeatureSource getFeatureSource(String prefix, String typeName)
 			throws IOException {
 		if ((prefix == null) || (prefix == "")) {
 			prefix = defaultNameSpace.getPrefix();
