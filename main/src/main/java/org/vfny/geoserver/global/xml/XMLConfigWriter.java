@@ -861,8 +861,8 @@ public class XMLConfigWriter {
             	
             	try {	// encode the file name (this is to catch colons in FT names)
             		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
-            		if (LOGGER.isLoggable(Level.INFO)) {
-            			LOGGER.info(new StringBuffer("Writing encoded URL: ").append(ftDirName).toString());
+            		if (LOGGER.isLoggable(Level.FINER)) {
+            			LOGGER.finer(new StringBuffer("Writing encoded URL: ").append(ftDirName).toString());
             		}
 				} catch (UnsupportedEncodingException e1) {
 					throw new ConfigurationException(e1);
@@ -912,8 +912,8 @@ public class XMLConfigWriter {
                 String ftDirName = ft.getDirName();
                 try {	// encode the file name (this is to catch colons in FT names)
             		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
-            		if (LOGGER.isLoggable(Level.INFO)) {
-            			LOGGER.info(new StringBuffer("Decoded URL: ").append(ftDirName).toString());
+            		if (LOGGER.isLoggable(Level.FINER)) {
+            			LOGGER.finer(new StringBuffer("Decoded URL: ").append(ftDirName).toString());
             		}
 				} catch (UnsupportedEncodingException e1) {
 					throw new ConfigurationException(e1);
