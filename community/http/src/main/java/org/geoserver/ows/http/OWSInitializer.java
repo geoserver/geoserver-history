@@ -59,9 +59,7 @@ public class OWSInitializer implements HandlerInterceptor, ApplicationContextAwa
 					}
 							
 					//set the schema base
-					//TODO: JD. this is only temporary
-					//ows.setSchemaBaseURL( RequestUtils.baseURL( request ) + "schemas" );
-					ows.setSchemaBaseURL( "http://schemas.opengis.net/" + ows.getId().toLowerCase() );
+					ows.setSchemaBaseURL( RequestUtils.baseURL( request ) + "schemas" );
 					
 					//set the charset
 				
