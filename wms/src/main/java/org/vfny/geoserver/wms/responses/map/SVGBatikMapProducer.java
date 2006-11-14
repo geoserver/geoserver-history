@@ -28,6 +28,7 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -126,7 +127,11 @@ public class SVGBatikMapProducer implements GetMapProducer {
 			XMLSerializer serializer = new XMLSerializer(
 				new OutputStreamWriter(out,"UTF-8"), format
 			);
-			serializer.serialize(g.getDOMTreeManager().getRoot());
+                        // fix the root element so it has the right namespace
+                        // this way firefox will show it
+                        Element root = g.getDOMTreeManager().getRoot();
+                        root.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+			serializer.serialize(root);
 			
 			//this method does output the DOCTYPE def
 			//g.stream(new OutputStreamWriter(out,"UTF-8"));
@@ -150,7 +155,8 @@ public class SVGBatikMapProducer implements GetMapProducer {
         DocumentBuilder db = dbf.newDocumentBuilder();
         
         // Create an instance of org.w3c.dom.Document
-        document = db.getDOMImplementation().createDocument(null, "svg", null);
+        String svgNamespaceURI = "http://www.w3.org/2000/svg";
+        document = db.getDOMImplementation().createDocument(svgNamespaceURI , "svg", null);
         
         // Set up the context
         return SVGGeneratorContext.createDefault(document);
