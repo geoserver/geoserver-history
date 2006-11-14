@@ -38,7 +38,7 @@ public class SchemaAdapterFactoryTest extends WFSTestSupport {
 				(FeatureTypeInfo) resource.resolve( FeatureTypeInfo.class, null );
 		
 			XSDTypeDefinition type = (XSDTypeDefinition) schema.getTypeDefinitions().get( 0 );
-			assertEquals( featureTypeInfo.getTypeName() + "_Type", type.getName() );
+			assertEquals( featureTypeInfo.getTypeName() + "Type", type.getName() );
 
 			XSDElementDeclaration element = 
 				(XSDElementDeclaration) schema.getElementDeclarations().get( 0 );

@@ -111,6 +111,28 @@ public class GetFeatureHttpTest extends WfsHttpTestSupport {
 		assertEquals( "7", doc.getDocumentElement().getAttribute( "numberOfFeatures") );
 	}
 	
+	public void testWithGmlIdAttribute() throws Exception {
+		String xml = "<wfs:GetFeature " + 
+		  "service=\"WFS\" " + 
+		  "version=\"1.1.0\" " + 
+		  "outputFormat=\"text/xml; subtype=gml/3.1.1\" " + 
+		  "xmlns:cdf=\"http://www.opengis.net/cite/data\" " + 
+		  "xmlns:wfs=\"http://www.opengis.net/wfs\" " + 
+		  "xmlns:ogc=\"http://www.opengis.net/ogc\" > " + 
+		  "<wfs:Query typeName=\"cdf:Other\"> " + 
+		    "<ogc:Filter> " + 
+		      "<ogc:PropertyIsEqualTo> " + 
+		        "<ogc:PropertyName>@gml:id</ogc:PropertyName> " + 
+		        "<ogc:Literal>Other.0</ogc:Literal>" + 
+		      "</ogc:PropertyIsEqualTo> " + 
+		    "</ogc:Filter> " + 
+		  "</wfs:Query> " + 
+		"</wfs:GetFeature>";
+		
+		Document dom = postAsDOM( "wfs", xml );
+		assertEquals( 1, dom.getElementsByTagName( "gml:featureMember" ).getLength() );
+	}
+	
 }
 
 
