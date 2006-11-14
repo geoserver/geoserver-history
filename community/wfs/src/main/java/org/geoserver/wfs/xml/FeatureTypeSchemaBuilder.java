@@ -151,7 +151,7 @@ public abstract class FeatureTypeSchemaBuilder {
 		element.setSubstitutionGroupAffiliation( schema.resolveElementDeclaration( gmlNamespace, "_Feature" ) );
 		String namespaceURI = catalog.getNamespaceSupport().getURI( meta.namespacePrefix() );
 		element.setTypeDefinition( 
-			schema.resolveTypeDefinition( namespaceURI, meta.getTypeName() + "_Type" )	
+			schema.resolveTypeDefinition( namespaceURI, meta.getTypeName() + "Type" )	
 		);
 		 
 		schema.getContents().add( element );
@@ -161,7 +161,7 @@ public abstract class FeatureTypeSchemaBuilder {
 	void complexType( FeatureType featureType, XSDSchema schema, XSDFactory factory ) {
 		
 		 XSDComplexTypeDefinition complexType = factory.createXSDComplexTypeDefinition();
-		 complexType.setName( featureType.getTypeName() + "_Type" );
+		 complexType.setName( featureType.getTypeName() + "Type" );
 		  
 		 complexType.setDerivationMethod(XSDDerivationMethod.EXTENSION_LITERAL);
 		 complexType.setBaseTypeDefinition(
@@ -175,6 +175,18 @@ public abstract class FeatureTypeSchemaBuilder {
 		
 		 for ( int i = 0; i < attributes.length; i++ ) {
 			 AttributeType attribute = attributes[i];
+			 
+			 //ignore the attribute types from abstract feature type
+			 if ( 
+				 "name".equals( attribute.getName() ) || 
+				 "description".equals( attribute.getName() ) || 
+				 "location".equals( attribute.getName() ) || 
+				 "metaDataProperty".equals( attribute.getName() ) || 
+				 "boundedBy".equals( attribute.getName() )
+			 ) {
+				continue; 
+			 }
+				 
 			 XSDElementDeclaration element = factory.createXSDElementDeclaration();
 			 element.setName( attribute.getName() );
 			 element.setNillable( attribute.isNillable() );
