@@ -34,9 +34,12 @@ import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.feature.FeatureCollection;
 
+import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.expression.SimpleFeaturePropertyAccessorFactory;
 import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
+import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -158,6 +161,11 @@ public class GetFeature {
                 for (Iterator iter = propNames.iterator(); iter.hasNext();) {
                 	String propName = (String) iter.next();
                 	
+                	//HACK: strip off namespace
+                	if( propName.indexOf( ':' ) != -1 ) {
+                		propName = propName.substring( propName.indexOf( ':') + 1 );
+                	}
+                	
                 	if ( !attNames.contains( propName ) ) {
                         String mesg = "Requested property: " + propName + " is " + "not available " +
                         		"for " + query.getTypeName() + ".  " + "The possible propertyName " +
@@ -192,7 +200,7 @@ public class GetFeature {
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery );
 
                 FeatureCollection features = source.getFeatures( gtQuery );
-                count += features.getCount();
+                count += features.size();
                 
                 //JD: TODO reoptimize
 //                if ( i == request.getQuery().size() - 1 ) { 
