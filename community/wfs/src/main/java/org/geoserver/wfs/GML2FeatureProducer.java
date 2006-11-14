@@ -24,6 +24,7 @@ import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.ServiceException;
 import org.geotools.data.FeatureResults;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
@@ -107,7 +108,8 @@ public class GML2FeatureProducer implements FeatureProducer {
         // one type, we really need to set it on the feature level
         int srs = -1;
         for ( Iterator f = results.getFeature().iterator(); f.hasNext(); ) {
-            FeatureResults features = (FeatureResults) f.next();
+            //FeatureResults features = (FeatureResults) f.next();
+            FeatureCollection features = (FeatureCollection) f.next();
             FeatureType featureType = features.getSchema();
             
             FeatureTypeInfo meta = catalog.featureType( 
@@ -215,9 +217,9 @@ public class GML2FeatureProducer implements FeatureProducer {
         //
         // execute should also fail if all of the locks could not be aquired
         List resultsList = results.getFeature();
-        FeatureResults[] featureResults = (FeatureResults[]) resultsList
-            .toArray(new FeatureResults[resultsList.size()]);
-
+        FeatureCollection[] featureResults = 
+        	(FeatureCollection[]) resultsList.toArray( new FeatureCollection[ resultsList.size() ] );
+     
         try {
             transformer.transform(featureResults, output);
 
