@@ -52,6 +52,11 @@
   <!-- interceptor which initializes ows services -->
   <bean id="owsInitializer" class="org.geoserver.ows.http.OWSInitializer"/>
   
+  <!-- schema file publisher -->
+  <bean id="schemaPublisher" class="org.geoserver.web.SchemaPublisher">
+  	<constructor-arg ref="resourceLoader"/>
+  </bean>
+  
   <bean id="owsDispatcherMapping" 
   	class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
   	
@@ -65,6 +70,7 @@
   	  <props>
   	    <prop key="/ows">dispatcher</prop>
       	<prop key="/ows/*">dispatcher</prop>
+      	<prop key="/schemas/**/*.xsd">schemaPublisher</prop>
       </props>
     </property>
     
