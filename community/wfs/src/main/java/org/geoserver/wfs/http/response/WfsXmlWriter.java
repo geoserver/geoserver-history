@@ -209,7 +209,7 @@ public abstract class WfsXmlWriter {
 			//set the schema location
 			schemaLocations.put( 
 				org.geoserver.wfs.xml.v1_0_0.WFS.NAMESPACE, 
-				ResponseUtils.appendPath( wfs.getSchemaBaseURL(), "1.0.0/WFS-transaction.xsd" )
+				ResponseUtils.appendPath( wfs.getSchemaBaseURL(), "wfs/1.0.0/WFS-transaction.xsd" )
 			);
 			
 			version = "1.0.0";
@@ -226,7 +226,7 @@ public abstract class WfsXmlWriter {
 			//set the schema location
 			schemaLocations.put( 
 				org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, 
-				ResponseUtils.appendPath( wfs.getSchemaBaseURL(), "1.0.0/wfs.xsd" )
+				ResponseUtils.appendPath( wfs.getSchemaBaseURL(), "wfs/1.1.0/wfs.xsd" )
 			);
 			
 			version = "1.1.0";
