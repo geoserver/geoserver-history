@@ -26,6 +26,8 @@ public class GML3Profile extends TypeMappingProfile {
 		profile.add( new Name(  GML.NAMESPACE, GML.MultiPolygonType.getLocalPart() ) );
 		profile.add( new Name(  GML.NAMESPACE, GML.MultiPolygonPropertyType.getLocalPart() ) );
 		
+		profile.add( new Name( GML.NAMESPACE, GML.AbstractGeometryType.getLocalPart() ) );
+		
 	}
 	
 	public GML3Profile() {
