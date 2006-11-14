@@ -33,9 +33,10 @@ public class GML3FeatureProducer extends GML2FeatureProducer {
     }
     
     protected String typeSchemaLocation( WFS wfs, FeatureTypeInfo meta ) {
-    	return ResponseUtils.appendQueryString( 
-			wfs.getOnlineResource().toString(), "version=1.1.0&request=DescribeFeatureType&typeName=" + meta.name()
-		);
+    	return ResponseUtils.appendPath( wfs.getSchemaBaseURL(), "cite/cite-gmlsf0.xsd" );
+//    	return ResponseUtils.appendQueryString( 
+//			wfs.getOnlineResource().toString(), "version=1.1.0&request=DescribeFeatureType&typeName=" + meta.name()
+//		);
     }
 	
 	
