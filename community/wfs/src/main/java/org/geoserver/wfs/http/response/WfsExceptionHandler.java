@@ -66,7 +66,7 @@ public class WfsExceptionHandler extends ServiceExceptionHandler {
 			s.append( tab + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" );
 			s.append( tab );
 			s.append( "xsi:schemaLocation=\"http://www.opengis.net/ogc " );
-			s.append( ResponseUtils.appendPath( wfs.getSchemaBaseURL(), "1.0.0/OGC-exception.xsd") + "\">\n" );
+			s.append( ResponseUtils.appendPath( wfs.getSchemaBaseURL(), "wfs/1.0.0/OGC-exception.xsd") + "\">\n" );
 
 			s.append( tab + "<ServiceException" );
 			if ( e.getCode() != null && !e.getCode().equals( "" ) ) {
