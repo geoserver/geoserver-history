@@ -25,6 +25,7 @@ import org.geotools.data.Transaction;
 import org.geotools.factory.FactoryFinder;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFactory;
@@ -319,11 +320,11 @@ public class FeatureResponse implements Response {
 
                 //DJB: note if maxFeatures gets to 0 the while loop above takes care of this! (this is a subtle situation)
                 
-                FeatureResults features = source.getFeatures(query.toDataQuery(
+                FeatureCollection features = source.getFeatures(query.toDataQuery(
                             maxFeatures));
                 if (it.hasNext()) //DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
-                	maxFeatures -= features.getCount();
-
+                	maxFeatures -= features.size();
+                	
                 //GR: I don't know if the featuresults should be added here for later
                 //encoding if it was a lock request. may be after ensuring the lock
                 //succeed?

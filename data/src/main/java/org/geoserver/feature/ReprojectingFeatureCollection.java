@@ -281,21 +281,8 @@ public class ReprojectingFeatureCollection implements FeatureCollection {
 		return bounds;
 	}
 
-	public int getCount() throws IOException {
-		return delegate.getCount();
-	}
-
 	public FeatureCollection collection() throws IOException {
 		return this;
-	}
-
-	public FeatureCollection getParent() {
-		return delegate.getParent();
-	}
-
-	public void setParent(FeatureCollection parent) {
-		delegate.setParent( parent );
-		
 	}
 
 	public String getID() {

@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.geotools.data.FeatureLock;
-import org.geotools.data.FeatureResults;
+import org.geotools.feature.FeatureCollection;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
 
@@ -103,9 +103,10 @@ public class GetFeatureResults {
      * @throws ArrayIndexOutOfBoundsException if index is not in the range from
      * 0(zero) to FeatureResults' count -1
      */
-    public FeatureResults getFeatures(int index)
+    public FeatureCollection getFeatures(int index)
         throws ArrayIndexOutOfBoundsException {
-        return (FeatureResults) features.get(index);
+    	
+        return (FeatureCollection) features.get(index);
     }
 
     /**
@@ -159,8 +160,11 @@ public class GetFeatureResults {
      * @throws IllegalArgumentException if <code>meta</code> and
      *         <code>features</code> aren't from the same featuretype
      */
-    public void addFeatures(FeatureTypeInfo meta, FeatureResults features)
-        throws IOException {
+//    public void addFeatures(FeatureTypeInfo meta, FeatureResults features)
+//        throws IOException {
+    public void addFeatures(FeatureTypeInfo meta, FeatureCollection features)
+    	throws IOException {
+    	
         if ((meta == null) || (features == null)) {
             throw new NullPointerException(
                 "Both the metadata and results of querying a featuretype must be passed");

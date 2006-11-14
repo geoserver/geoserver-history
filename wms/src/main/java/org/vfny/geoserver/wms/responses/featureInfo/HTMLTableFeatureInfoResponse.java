@@ -15,6 +15,7 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 
@@ -71,7 +72,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         FeatureReader reader = null;
         try {
             for (int i = 0; i < results.size(); i++) {
-                FeatureResults fr = (FeatureResults) results.get(i);
+            	FeatureCollection fr = (FeatureCollection) results.get(i);
                 FeatureType schema = fr.getSchema();
 
                 writer.println("<table border='1'>");

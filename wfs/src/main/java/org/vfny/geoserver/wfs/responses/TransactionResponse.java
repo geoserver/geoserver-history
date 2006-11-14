@@ -520,7 +520,7 @@ public class TransactionResponse implements Response {
                         FidFilter modified = FilterFactoryFinder.createFilterFactory().createFidFilter();
                         modified.addAllFids( fids );
                     
-                        FeatureCollection changed = store.getFeatures( modified ).collection();
+                        FeatureCollection changed = store.getFeatures( modified );
                         envelope.expandToInclude( changed.getBounds() );
                     
                         FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(element.getTypeName());

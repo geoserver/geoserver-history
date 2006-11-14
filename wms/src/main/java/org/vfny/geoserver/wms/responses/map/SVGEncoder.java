@@ -17,6 +17,7 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.styling.Style;
@@ -242,9 +243,9 @@ public class SVGEncoder {
      *
      * @throws IOException DOCUMENT ME!
      */
-    public void encode(final FeatureResults features, final OutputStream out)
+    public void encode(final FeatureCollection features, final OutputStream out)
         throws IOException {
-        FeatureResults[] results = { features };
+    	FeatureCollection[] results = { features };
         encode(null, results, null, out);
     }
 
@@ -260,7 +261,7 @@ public class SVGEncoder {
      * @throws IOException DOCUMENT ME!
      */
     public void encode(final FeatureTypeInfo[] layers,
-        final FeatureResults[] results, final Style[] styles,
+        final FeatureCollection[] results, final Style[] styles,
         final OutputStream out) throws IOException {
         this.writer = new SVGWriter(out);
         abortProcess = false;
@@ -390,7 +391,7 @@ public class SVGEncoder {
         return viewBox;
     }
 
-    private void ensureSVGSpace(FeatureResults[] results)
+    private void ensureSVGSpace(FeatureCollection[] results)
         throws IOException {
         if (this.referenceSpace == null) {
             Envelope bounds = new Envelope();

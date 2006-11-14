@@ -18,6 +18,7 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.feature.FeatureCollection;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 
@@ -202,8 +203,9 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
         output = zipOut;
         
         List resultsList = results.getFeatures();
-        FeatureResults[] featureResults = (FeatureResults[]) resultsList
-            .toArray(new FeatureResults[resultsList.size()]);
+        
+        FeatureCollection[] featureResults = (FeatureCollection[]) resultsList
+        	.toArray(new FeatureCollection[resultsList.size()]);
         FeatureReader reader = featureResults[0].reader();
         String name = featureResults[0].getSchema().getTypeName();
         
@@ -289,7 +291,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      */
     private void writeOut(String name,
     						String tempDir, 
-				    		FeatureResults[] featureResults, 
+				    		FeatureCollection[] featureResults, 
 				    		FeatureReader reader) 
     throws IOException
     {
