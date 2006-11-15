@@ -82,7 +82,7 @@ public class DemoForm extends ActionForm {
         ServletContext context = getServlet().getServletContext();
         //DJB: changed this for geoserver_data_dir 
        // this.dir = new File(context.getRealPath("/data/demo"));
-        this.dir = new File(GeoserverDataDirectory.getGeoserverDataDirectory(context),"/data/demo");
+        this.dir = new File(GeoserverDataDirectory.getGeoserverDataDirectory(),"/data/demo");
         demoList = new ArrayList();
         demoList.add("");
                 

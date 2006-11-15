@@ -419,12 +419,12 @@ public class GeoServer extends GlobalLayerSupertype {
          logLocation = dto.getLogLocation();
          
          //TODO: logging needs to be revisited and done a better way
-//         try {
-//				initLogging(loggingLevel,loggingToFile,logLocation,context);
-//			} 
-//         catch (IOException e) {
-//         	throw new ConfigurationException(e);
-//			}
+         try {
+				initLogging(loggingLevel,loggingToFile,logLocation);
+			} 
+         catch (IOException e) {
+         	throw new ConfigurationException(e);
+			}
 			memoryCapacity = dto.getJaiMemoryCapacity();
 			memoryThreshold = dto.getJaiMemoryThreshold();
 			tileThreads = dto.getJaiTileThreads();
@@ -485,7 +485,7 @@ public class GeoServer extends GlobalLayerSupertype {
      * @return The file containing the absolute path to the log file.
      * @throws IOException
      */
-    public static File getLogLocation(String logLocation, ServletContext context) 
+    public static File getLogLocation(String logLocation) 
     	throws IOException {
     	
     	File f = new File(logLocation);
@@ -502,7 +502,7 @@ public class GeoServer extends GlobalLayerSupertype {
 			if (!f.isAbsolute()) {
 				//append to data dir
 				File data = GeoserverDataDirectory
-					.getGeoserverDataDirectory(context);
+					.getGeoserverDataDirectory();
 				f = new File(data,f.getPath());
 			}
 			
@@ -520,7 +520,7 @@ public class GeoServer extends GlobalLayerSupertype {
      * Initializes logging based on configuration paramters.
      *
      */
-    public static void initLogging(Level level,boolean logToFile,String location,ServletContext context) 
+    public static void initLogging(Level level,boolean logToFile,String location) 
     	throws IOException {
     	
     	Log4JFormatter.init("org.geotools", level);
@@ -543,7 +543,7 @@ public class GeoServer extends GlobalLayerSupertype {
 //    	}
     	if (logToFile && location != null) {
         	//map the location to an actual location on disk
-        	File logFile = GeoServer.getLogLocation(location,context);
+        	File logFile = GeoServer.getLogLocation(location);
         	
         	//add the new handler
         	Handler handler = new StreamHandler(

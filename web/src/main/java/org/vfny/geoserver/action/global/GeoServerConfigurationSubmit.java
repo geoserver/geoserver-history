@@ -99,7 +99,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
 		if (logLocation != null) {
 			File f = null;
 			try {
-				f = GeoServer.getLogLocation(logLocation,getServlet().getServletContext());
+				f = GeoServer.getLogLocation(logLocation);
 			}
 			catch (IOException e) {
 				ActionErrors errors = new ActionErrors();

@@ -96,7 +96,7 @@ public class StylesEditorAction extends ConfigAction {
 	ServletContext sc = getServlet().getServletContext();
         //DJB: changed for geoserver_data_dir
         //File rootDir = new File(getServlet().getServletContext().getRealPath("/"));
-        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 	
 	File styleDir;
 	try {

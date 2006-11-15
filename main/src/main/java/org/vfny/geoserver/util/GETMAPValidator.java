@@ -44,7 +44,7 @@ public class GETMAPValidator
 	public  List validateGETMAP(InputStream xml,ServletContext servContext)   
 	{
        // File schemaFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(servContext),"/data/capabilities/sld/StyledLayerDescriptor.xsd");
-	    File schemaFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(servContext),"/data/capabilities/sld/GetMap.xsd");
+	    File schemaFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(),"/data/capabilities/sld/GetMap.xsd");
 
         try {       	
         	return validateGETMAP(xml,schemaFile.toURL().toString());
@@ -82,7 +82,7 @@ public class GETMAPValidator
 	
 	public  List validateGETMAP(InputSource xml, ServletContext servContext)   
 	{
-	       File schemaFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(servContext),"/data/capabilities/sld/GetMap.xsd");
+	       File schemaFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(),"/data/capabilities/sld/GetMap.xsd");
 	       try {
 	       	return validateGETMAP(xml,schemaFile.toURL().toString());
 	       }

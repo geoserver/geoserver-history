@@ -72,7 +72,7 @@ public class CoverageUtils {
     	if (dataDir != null)
     		baseDir = dataDir;
     	else
-    		baseDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+    		baseDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
 		if (path.startsWith("file:")) {
 			path = path.substring(5); // remove 'file:' prefix
