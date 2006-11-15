@@ -82,7 +82,7 @@ public class LoadXMLAction extends ConfigAction {
         //DJB: changed for geoserver_data_dir    
        // File rootDir = new File(sc.getRealPath("/"));
         
-        File rootDir =  GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+        File rootDir =  GeoserverDataDirectory.getGeoserverDataDirectory();
 
         XMLConfigReader configReader;
 
@@ -158,7 +158,7 @@ public class LoadXMLAction extends ConfigAction {
         }
 
         //CH- fixed for data dir, looks like this got missed first time around.
-        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
         try {
             File plugInDir = findConfigDir(rootDir, "plugIns");

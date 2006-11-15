@@ -59,7 +59,7 @@ public class SaveXMLAction extends ConfigAction {
         ServletContext sc = request.getSession().getServletContext();
        
         //File rootDir = new File(sc.getRealPath("/"));
-        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
         try {
             XMLConfigWriter.store((WMSDTO) getWMS(request).toDTO(),
                 (WFSDTO) getWFS(request).toDTO(),
@@ -83,7 +83,7 @@ public class SaveXMLAction extends ConfigAction {
         throws IOException, ServletException {
         ServletContext sc = request.getSession().getServletContext();
         //CH: changed for geoserver_data_dir, forgotten first round.
-        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
 	File dataDir;
 	if (GeoserverDataDirectory.isTrueDataDir()){

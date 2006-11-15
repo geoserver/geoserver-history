@@ -49,60 +49,8 @@ public class GeoserverDataDirectory {
 	 * 
 	 * @return location of the geoserver data dir
 	 */
-	static public File getGeoserverDataDirectory(ServletContext servContext) {
-		// caching this, so we're not looking up everytime, and more
-		// importantly, so we can actually look up this stuff without
-		// having to pass in a ServletContext. This should be fine, since we
-		// don't allow a set method, as we recommend restarting GeoServer,
-		// so it should always get a ServletContext in the startup routine.
-		// If this assumption can't be made, then we can't allow data_dir
-		// _and_ webapp options with relative data/ links -ch
-
-		if (loader == null) {
-
-			File dataDir = null;
-
-			// see if there's a system property
-			String prop = System.getProperty("GEOSERVER_DATA_DIR");
-			if (prop != null && !prop.equals("")) {
-				// its defined!!
-				isTrueDataDir = true;
-				dataDir = new File(prop);
-				loader = new GeoServerResourceLoader(dataDir);
-				System.out.println("----------------------------------");
-				System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
-				System.out.println("----------------------------------");
-				return dataDir;
-			}
-
-			// try the webxml
-			String loc = servContext.getInitParameter("GEOSERVER_DATA_DIR");
-			if (loc != null) {
-				// its defined!!
-				isTrueDataDir = true;
-				dataDir = new File(loc);
-				loader = new GeoServerResourceLoader(dataDir);
-				System.out.println("----------------------------------");
-				System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
-				System.out.println("----------------------------------");
-				return dataDir;
-			}
-
-			// return default
-			isTrueDataDir = false;
-			String rootDir = servContext.getRealPath("/");
-			dataDir = new File(rootDir);
-			System.out.println("----------------------------------");
-			System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
-			System.out.println("----------------------------------");
-			
-			// create loader, and add some locations to the serach path
-			loader = new GeoServerResourceLoader(dataDir);
-			loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
-			loader.addSearchLocation(new File(servContext.getRealPath("data")));
-		}
-
-		return loader.getBaseDirectory();
+	static public File getGeoserverDataDirectory() {
+	    return loader.getBaseDirectory();
 	}
 
 	/**
@@ -155,4 +103,60 @@ public class GeoserverDataDirectory {
 			throw new ConfigurationException(e);
 		}
 	}
+
+        /**
+         * Initializes the data directory lookup service.
+         * @param servContext
+         */
+    public static void init(ServletContext servContext) {
+        // This was once in the GetGeoserverDataDirectory method, I've moved here so that servlet
+        // context is not needed as a parameter anymore.
+        // caching this, so we're not looking up everytime, and more
+        // importantly, so we can actually look up this stuff without
+        // having to pass in a ServletContext. This should be fine, since we
+        // don't allow a set method, as we recommend restarting GeoServer,
+        // so it should always get a ServletContext in the startup routine.
+        // If this assumption can't be made, then we can't allow data_dir
+        // _and_ webapp options with relative data/ links -ch
+        File dataDir = null;
+
+        // see if there's a system property
+        String prop = System.getProperty("GEOSERVER_DATA_DIR");
+        if (prop != null && !prop.equals("")) {
+                // its defined!!
+                isTrueDataDir = true;
+                dataDir = new File(prop);
+                loader = new GeoServerResourceLoader(dataDir);
+                System.out.println("----------------------------------");
+                System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
+                System.out.println("----------------------------------");
+                return;
+        }
+
+        // try the webxml
+        String loc = servContext.getInitParameter("GEOSERVER_DATA_DIR");
+        if (loc != null) {
+                // its defined!!
+                isTrueDataDir = true;
+                dataDir = new File(loc);
+                loader = new GeoServerResourceLoader(dataDir);
+                System.out.println("----------------------------------");
+                System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
+                System.out.println("----------------------------------");
+                return;
+        }
+
+        // return default
+        isTrueDataDir = false;
+        String rootDir = servContext.getRealPath("/");
+        dataDir = new File(rootDir);
+        System.out.println("----------------------------------");
+        System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
+        System.out.println("----------------------------------");
+        
+        // create loader, and add some locations to the serach path
+        loader = new GeoServerResourceLoader(dataDir);
+        loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
+        loader.addSearchLocation(new File(servContext.getRealPath("data")));
+    }
 }

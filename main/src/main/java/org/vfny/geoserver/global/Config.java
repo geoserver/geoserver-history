@@ -29,7 +29,7 @@ public class Config implements ApplicationContextAware {
 	
 	public File dataDirectory() {
 		ServletContext sc = this.context.getServletContext();
-		return GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+		return GeoserverDataDirectory.getGeoserverDataDirectory();
 	}
 	
 	public void setApplicationContext(ApplicationContext context) throws BeansException {
@@ -39,7 +39,8 @@ public class Config implements ApplicationContextAware {
 		ServletContext sc = this.context.getServletContext();
 		
 		try {
-			reader = new XMLConfigReader(dataDirectory(),sc);
+                    GeoserverDataDirectory.init(sc);
+                    reader = new XMLConfigReader(dataDirectory(),sc);
 		} 
 		catch (ConfigurationException e) {
 			String msg = "Error creating xml config reader";

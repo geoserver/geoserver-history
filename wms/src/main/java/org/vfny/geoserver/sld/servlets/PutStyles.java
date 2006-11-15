@@ -409,7 +409,7 @@ public class PutStyles extends AbstractService {
         style.setId( styleName );
         
         // make the SLD file in the data_dir/styles directory
-        File data_dir = GeoserverDataDirectory.getGeoserverDataDirectory(context);
+        File data_dir = GeoserverDataDirectory.getGeoserverDataDirectory();
         File style_dir;
     	try {
     		style_dir = GeoserverDataDirectory.findConfigDir(data_dir, "styles");
