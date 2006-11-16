@@ -600,6 +600,7 @@ public abstract class AbstractService extends HttpServlet
 
             return;
         } catch (IOException ioException) { // strategyOutput error
+        	response.setHeader("Content-Disposition", ""); // reset it so we get a proper XML error returned
             LOGGER.log(Level.SEVERE, "Error writing out " + ioException.getMessage(), ioException);
             serviceResponse.abort(s);
             strategy.abort();
@@ -607,12 +608,14 @@ public abstract class AbstractService extends HttpServlet
 
             return;
         } catch (ServiceException writeToFailure) { // writeTo Failure
+        	response.setHeader("Content-Disposition", ""); // reset it so we get a proper XML error returned
             serviceResponse.abort(s);
             strategy.abort();
             sendError(request, response, writeToFailure);
 
             return;
         } catch (Throwable help) { // This is an unexpected error(!)
+        	response.setHeader("Content-Disposition", ""); // reset it so we get a proper XML error returned
         	help.printStackTrace();
             serviceResponse.abort(s);
             strategy.abort();
