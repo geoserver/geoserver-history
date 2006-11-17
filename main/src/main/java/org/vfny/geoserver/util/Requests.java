@@ -126,7 +126,7 @@ public final class Requests {
         // try with the web interface configuration, if it fails, look into
         // web.xml just to keep compatibility (should be removed next version)
         // and finally, if nothing is found, give up and return the default base URL
-        String url = geoserver.getProxyBaseUrl();
+        String url = (geoserver != null ? geoserver.getProxyBaseUrl() : null);
         if(geoserver != null && url != null)
             url = concatUrl(url,  httpServletRequest.getContextPath());
         if (url == null || url.trim().length() == 0) {
