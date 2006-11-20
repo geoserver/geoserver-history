@@ -441,17 +441,17 @@ SCHEMA:
             } catch (IOException ioException) {
                 LOGGER.log(Level.SEVERE,
                     "FeatureTypeInfo " + key + " ignored - as DataStore "
-                    + dataStoreId + " is unavailable:" + ioException);
-                LOGGER.log(Level.FINEST, key + " unavailable", ioException);
+                    + dataStoreId + " is unavailable: " + ioException);
+                LOGGER.log(Level.FINE, key + " unavailable", ioException);
                 errors.put(featureTypeDTO, ioException);
 
                 continue;
             } catch (Throwable unExpected) {
                 LOGGER.log(Level.SEVERE,
                     "FeatureTypeInfo " + key + " ignored - as DataStore "
-                    + dataStoreId + " is broken:" + unExpected);
+                    + dataStoreId + " is broken: " + unExpected);
                 unExpected.printStackTrace();
-                LOGGER.log(Level.FINEST, key + " unavailable", unExpected);
+                LOGGER.log(Level.FINE, key + " unavailable", unExpected);
 
                 errors.put(featureTypeDTO, unExpected);
 
@@ -461,7 +461,7 @@ SCHEMA:
             String prefix = dataStoreInfo.getNamesSpacePrefix();
 
             LOGGER.finest("FeatureType " + key
-                + " creating FeatureTypeInfo for " + prefix + ":" + typeName);
+                + " creating FeatureTypeInfo for " + prefix + ": " + typeName);
 
             FeatureTypeInfo featureTypeInfo = null;
 
@@ -470,8 +470,8 @@ SCHEMA:
             } catch (ConfigurationException configException) {
                 LOGGER.log(Level.SEVERE,
                     "FeatureTypeInfo " + key
-                    + " ignored - configuration problem:" + configException);
-                LOGGER.log(Level.FINEST, key + " unavailable", configException);
+                    + " ignored - configuration problem: " + configException);
+                LOGGER.log(Level.FINE, key + " unavailable", configException);
                 errors.put(featureTypeDTO, configException);
 
                 continue;
@@ -1183,7 +1183,7 @@ SCHEMA:
                 try {
                     t.close();
                 } catch (IOException closeException) {
-                    LOGGER.log(Level.FINEST, closeException.getMessage(),
+                    LOGGER.log(Level.FINE, closeException.getMessage(),
                         closeException);
                 }
             }
