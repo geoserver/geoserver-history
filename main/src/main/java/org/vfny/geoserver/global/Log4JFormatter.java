@@ -5,6 +5,7 @@
 package org.vfny.geoserver.global;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.ConsoleHandler;
@@ -156,6 +157,13 @@ public class Log4JFormatter extends Formatter {
             writer.write(formatMessage(record));
             writer.setLineSeparator(lineSeparator);
             writer.write('\n');
+            if(record.getThrown() != null) {
+                try {
+                    writer.write(getStackTrace(record.getThrown()));
+                } catch(Exception e) {
+                    // do not write the exception...
+                }
+            }
             writer.flush();
         } catch (IOException exception) {
             // Should never happen, since we are writting into a StringBuffer.
@@ -163,6 +171,19 @@ public class Log4JFormatter extends Formatter {
         }
 
         return buffer.toString();
+    }
+
+    /**
+     * Returns the full stack trace of the given exception
+     * @param record
+     * @return
+     */
+    private String getStackTrace(Throwable t) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        t.printStackTrace(pw);
+        pw.close();
+        return sw.toString();
     }
 
     /**

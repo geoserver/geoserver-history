@@ -182,6 +182,8 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
                         path = path.substring(5); // remove 'file:' prefix
 
                         File file = new File(baseDir, path);
+                        if(!file.exists())
+                            file = new File(baseDir, path.substring(5));
                         entry.setValue(file.toURL().toExternalForm());
                     }
 		    //Not sure about this

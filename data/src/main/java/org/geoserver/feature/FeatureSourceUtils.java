@@ -1,6 +1,8 @@
 package org.geoserver.feature;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geotools.data.FeatureSource;
 
@@ -13,6 +15,8 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  */
 public class FeatureSourceUtils {
+    protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.feature");
+    
 
 	/**
 	 * Retreives the bounds for a feature source.
@@ -36,6 +40,7 @@ public class FeatureSourceUtils {
                 ev = fs.getFeatures().getBounds();
             } 
             catch(Throwable t){
+                LOGGER.log(Level.FINE, "Could not compute the data bounding box. Returning an empty envelope", t);
                 ev = new Envelope();
             }
         }

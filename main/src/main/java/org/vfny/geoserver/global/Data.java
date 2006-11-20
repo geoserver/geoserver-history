@@ -674,8 +674,8 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 							.append(" is unavailable:").append(ioException)
 							.toString());
 				}
-				if (LOGGER.isLoggable(Level.FINEST)) {
-					LOGGER.log(Level.FINEST, new StringBuffer(key).append(
+				if (LOGGER.isLoggable(Level.FINE)) {
+					LOGGER.log(Level.FINE, new StringBuffer(key).append(
 							" unavailable").toString(), ioException);
 				}
 				errors.put(featureTypeDTO, ioException);
@@ -690,8 +690,8 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 							.toString());
 				}
 				unExpected.printStackTrace();
-				if (LOGGER.isLoggable(Level.FINEST)) {
-					LOGGER.log(Level.FINEST, new StringBuffer(key).append(
+				if (LOGGER.isLoggable(Level.FINE)) {
+					LOGGER.log(Level.FINE, new StringBuffer(key).append(
 							" unavailable").toString(), unExpected);
 				}
 
