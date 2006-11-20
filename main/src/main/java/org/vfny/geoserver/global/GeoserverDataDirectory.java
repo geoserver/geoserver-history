@@ -127,6 +127,7 @@ public class GeoserverDataDirectory {
                 isTrueDataDir = true;
                 dataDir = new File(prop);
                 loader = new GeoServerResourceLoader(dataDir);
+                loader.addSearchLocation(new File(dataDir, "data"));
                 System.out.println("----------------------------------");
                 System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
                 System.out.println("----------------------------------");
