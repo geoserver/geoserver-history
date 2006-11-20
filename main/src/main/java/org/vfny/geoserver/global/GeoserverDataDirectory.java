@@ -154,6 +154,7 @@ public class GeoserverDataDirectory {
                 isTrueDataDir = false;
                 String rootDir = servContext.getRealPath("/");
                 dataDir = new File(rootDir);
+                loader.addSearchLocation(new File(dataDir, "data"));
                 System.out.println("----------------------------------");
                 System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
                 System.out.println("----------------------------------");
