@@ -953,6 +953,22 @@ public final class CoveragesEditorForm extends ActionForm {
 	}
 
 	/**
+	 * @param paramKey
+	 *            The paramHelp to set.
+	 */
+	/*public void setParamKey(int index, String value) {
+		this.paramKeys.set(index, value);
+	}*/
+
+	/**
+	 * @param paramValue
+	 *            The paramHelp to set.
+	 */
+	public void setParamValue(int index, String value) {
+		this.paramValues.set(index, value);
+	}
+
+	/**
 	 * DOCUMENT ME!
 	 * 
 	 * @param index

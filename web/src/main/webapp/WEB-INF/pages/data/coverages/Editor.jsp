@@ -337,16 +337,8 @@ function prepareFormData(){
     		</span>
           </td>
     	  <td class="datum">
-    <logic:notEqual name="coveragesEditorForm"
-    	    	        property='<%= "paramKey[" + ctr + "]"%>'
-    			        value="passwd">
+    		  
               <html:text property='<%= "paramValue[" + ctr + "]"%>' size="60"/>
-    </logic:notEqual>
-    <logic:equal name="coveragesEditorForm"
-       		     property='<%= "paramKey[" + ctr + "]"%>'
-                 value="passwd">
-              <html:password property='<%= "paramValue[" + ctr + "]"%>' size="12"/>
-    </logic:equal>			             
     	  </td>
     	</tr>
     </logic:notEqual>

@@ -294,6 +294,12 @@ public final class CoveragesEditorAction extends ConfigAction {
 		final StringBuffer temp = new StringBuffer(config.getFormatId());
 		temp.append("_").append(form.getName());
 		config.setDirName(temp.toString());
+
+		/**
+		 * Sync params
+		 */
+		config.setParamKeys(form.getParamKeys());
+		config.setParamValues(form.getParamValues());
 	}
 
 	/**
