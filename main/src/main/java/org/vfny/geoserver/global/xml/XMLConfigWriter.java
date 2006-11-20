@@ -523,10 +523,7 @@ public class XMLConfigWriter {
         //DJB: since datastore screws up if the tag is missing, I'm fixing it here too
         cw.openTag("styles");
         cw.comment(
-            "Defines the style ids to be used by the wms.  The files must be\n"
-            + "contained in geoserver/misc/wms/styles.  We're working on finding\n"
-            + "a better place for them, but for now that's where you must put them\n"
-            + "if you want them on the server.");
+            "Defines the style ids and file name to be used by the wms.");
 
         i = data.getStyles().keySet().iterator();
 
