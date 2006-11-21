@@ -5,12 +5,10 @@
 package org.vfny.geoserver.config;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import org.opengis.coverage.grid.*;
+import org.opengis.coverage.grid.Format;
 import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import org.vfny.geoserver.util.CoverageStoreUtils;
 
@@ -64,11 +62,6 @@ public class CoverageStoreConfig {
 	private String _abstract;
 
 	/**
-	 * connection parameters to create the DataFormatInfo
-	 */
-	private Map parameters;
-
-	/**
 	 * Config ONLY!
 	 */
 	private Format factory;
@@ -101,7 +94,6 @@ public class CoverageStoreConfig {
 		enabled = true;
 		title = "";
 		_abstract = "";
-		parameters = CoverageStoreUtils.defaultParams(factory);
 	}
 
 	/**
@@ -133,8 +125,7 @@ public class CoverageStoreConfig {
 			throw new NullPointerException("Non null CoverageStoreInfoDTO required");
 		}
 
-		factory = CoverageStoreUtils.aquireFactory(dto.getParameters(), dto
-				.getType());
+		factory = CoverageStoreUtils.aquireFactoryByType(dto.getType());
 
 		id = dto.getId();
         nameSpaceId = dto.getNameSpaceId();
@@ -142,7 +133,6 @@ public class CoverageStoreConfig {
 		url = dto.getUrl();
 		enabled = dto.isEnabled();
 		_abstract = dto.getAbstract();
-		parameters = new HashMap(dto.getParameters());
 	}
 
 	/**
@@ -172,12 +162,6 @@ public class CoverageStoreConfig {
 		url = df.getUrl();
 		enabled = df.isEnabled();
 		_abstract = df.getAbstract();
-
-		try {
-			parameters = new HashMap(df.getParameters()); // clone?
-		} catch (Exception e) {
-			parameters = new HashMap();
-		}
 	}
 
 	/**
@@ -200,12 +184,6 @@ public class CoverageStoreConfig {
 		ds.setEnabled(enabled);
 		ds.setAbstract(_abstract);
 
-		try {
-			ds.setParameters(new HashMap(parameters));
-		} catch (Exception e) {
-			// default already created
-		}
-
 		return ds;
 	}
 
@@ -220,19 +198,6 @@ public class CoverageStoreConfig {
 	 */
 	public String getAbstract() {
 		return _abstract;
-	}
-
-	/**
-	 * getConnectionParams purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 */
-	public Map getParameters() {
-		return parameters;
 	}
 
 	/**
@@ -287,19 +252,6 @@ public class CoverageStoreConfig {
 		if (string != null) {
 			_abstract = string;
 		}
-	}
-
-	/**
-	 * setConnectionParams purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param map
-	 */
-	public void setParameters(Map map) {
-		parameters = map;
 	}
 
 	/**

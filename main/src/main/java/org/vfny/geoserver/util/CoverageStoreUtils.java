@@ -129,11 +129,9 @@ public final class CoverageStoreUtils {
 	 * bleck
 	 * </p>
 	 * 
-	 * @param params
-	 * 
 	 * @return
 	 */
-	public static Format aquireFactory(Map params, String type) {
+	public static Format aquireFactoryByType(String type) {
 		final Format[] formats = GridFormatFinder.getFormatArray();
 		Format format = null;
 		final int length = formats.length;

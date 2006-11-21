@@ -25,7 +25,6 @@ import org.apache.struts.upload.FormFile;
 import org.apache.struts.upload.MultipartRequestHandler;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.opengis.coverage.grid.Format;
-import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.vfny.geoserver.config.CoverageStoreConfig;
@@ -177,67 +176,10 @@ public final class CoverageStoresEditorForm extends ActionForm {
 		//
 		//
 		// //
-		// Retrieve connection params
 		Format factory = dfConfig.getFactory();
 		type = (dfConfig.getType() != null && dfConfig.getType().length() > 0 ? dfConfig
 				.getType()
 				: factory.getName());
-		ParameterValueGroup params = factory.getReadParameters();
-		if (params != null && params.values().size() > 0) {
-			paramKeys = new ArrayList(params.values().size());
-			paramValues = new ArrayList(params.values().size());
-			paramHelp = new ArrayList(params.values().size());
-
-			List list = params.values();
-			Iterator it = list.iterator();
-			ParameterDescriptor descr = null;
-			ParameterValue val = null;
-			Object value;
-			String text;
-			final String readGeom = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName()
-					.toString();
-			while (it.hasNext()) {
-				val = (ParameterValue) it.next();
-				if (val != null) {
-					descr = (ParameterDescriptor) val.getDescriptor();
-					String key = descr.getName().toString();
-
-					if ("namespace".equals(key)) {
-						// skip namespace as it is *magic* and
-						// appears to be an entry used in all dataformats?
-						//
-						continue;
-					}
-
-					value = dfConfig.getParameters().get(key);
-					text = "";
-
-					// //
-					//
-					// Ignore the parameters used for decimation at run time
-					//
-					// //
-					if ("CRS".equalsIgnoreCase(key)
-							|| "envelope".equalsIgnoreCase(key)
-							|| readGeom.equalsIgnoreCase(key)) {
-						continue;
-
-					} else {
-						if (value == null) {
-							text = null;
-						} else if (value instanceof String) {
-							text = (String) value;
-						} else {
-							text = value.toString();
-						}
-					}
-
-					paramKeys.add(key);
-					paramValues.add((text != null) ? text : "");
-					paramHelp.add(key);
-				}
-			}
-		}
 	}
 
 	public ActionErrors validate(ActionMapping mapping,

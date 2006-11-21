@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -58,8 +57,6 @@ import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
-
-import java.text.SimpleDateFormat;
 
 /**
  * A GetMapResponse object is responsible of generating a map based on a GetMap
@@ -336,7 +333,6 @@ public class GetMapResponse implements Response {
 						}
 						
 						layer = new DefaultMapLayer(DataUtilities.wrapGcReader(reader, !parameters.isEmpty() ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]) : null), style); 
-								/*new DefaultMapLayer(reader, style)*/;
 						layer.setTitle(layers[i].getName());
 						layer.setQuery(Query.ALL);
 						map.addLayer(layer);

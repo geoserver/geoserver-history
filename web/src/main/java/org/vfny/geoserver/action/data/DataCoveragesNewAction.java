@@ -8,6 +8,7 @@ package org.vfny.geoserver.action.data;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -97,6 +98,9 @@ public class DataCoveragesNewAction extends ConfigAction {
 				throw new ConfigurationException(ex);
 			}
 
+		if (reader == null)
+			throw new ConfigurationException("Could not obtain a reader for the CoverageDataSet. Please check the CoverageDataSet configuration!");
+		
 		final ParameterValueGroup params = format.getReadParameters();
 
         // After extracting params into a map
@@ -125,10 +129,9 @@ public class DataCoveragesNewAction extends ConfigAction {
                 if (key.equalsIgnoreCase(readGeometryKey)) {
                     continue;
                 }
-				value = CoverageUtils.getCvParamValue(key, param, cvStoreInfo.getParameters());
+				value = CoverageUtils.getCvParamValue(key, param, new HashMap());
 
 				if (value != null) {
-                    //params.parameter(key).setValue(value);
                     parameters.add(new DefaultParameterDescriptor(key, value.getClass(), null, value).createValue());
                 }
 			}
@@ -136,7 +139,7 @@ public class DataCoveragesNewAction extends ConfigAction {
 		try {
 			// trying to read the created coverage in order to check the entered
 			// parameters
-			gc = reader.read((GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]));
+			gc = reader.read(parameters != null ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]) : null);
                     /*params != null ? (GeneralParameterValue[]) params
 					.values().toArray(
 							new GeneralParameterValue[params.values().size()])

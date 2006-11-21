@@ -77,20 +77,6 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
     /** a short description about this Format */
     private String _abstract;
 
-	/**
-	 * Parameters to create the CoverageStoreInfo
-	 * 
-	 * <p>
-	 * Limitied to Strings for both Keys and Values.
-	 * </p>
-	 * 
-	 * @uml.property name="parameters"
-	 * @uml.associationEnd elementType="java.lang.String" qualifier="key:java.lang.String
-	 * [Ljava.awt.Color;" multiplicity="(0 -1)" ordering="ordered"
-	 */
-	private Map parameters;
-
-    
     /**
      * CoverageStoreInfo constructor.
      * 
@@ -125,8 +111,6 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
         url = dto.getUrl();
         enabled = dto.isEnabled();
         _abstract = dto.getAbstract();
-
-        parameters = new HashMap(dto.getParameters());
     }
 
     /**
@@ -171,12 +155,6 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
         r = r && (url == ds.getUrl());
         r = r && (enabled == ds.isEnabled());
         r = r && (_abstract == ds.getAbstract());
-
-        if (parameters != null) {
-            r = r && parameters.equals(ds.getParameters());
-        } else if (ds.getParameters() != null) {
-            return false;
-        }
 
         return r;
     }
@@ -223,22 +201,6 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
         return _abstract;
     }
 
-	/**
-	 * Map of param:value both of which are represented as text.
-	 * 
-	 * <p>
-	 * The map is based on String Keys, and String values.
-	 * </p>
-	 * 
-	 * @return Map of Params for FormatFactoryAPI use
-	 * 
-	 * @uml.property name="parameters"
-	 */
-	public Map getParameters() {
-		return parameters;
-	}
-
-
     /**
      * Value is <code>true</code> if the Format should be enabled.
      *
@@ -283,23 +245,6 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
     public void setAbstract(String description) {
         _abstract = description;
     }
-
-	/**
-	 * Provide Format parameters.
-	 * 
-	 * <p>
-	 * Map is limited to text based keys and values
-	 * </p>
-	 * 
-	 * @param map
-	 * 
-	 * @uml.property name="parameters"
-	 */
-	public void setParameters(Map map) {
-		if (map != null) {
-			parameters = map;
-		}
-	}
 
 	/**
 	 * setEnabled purpose.

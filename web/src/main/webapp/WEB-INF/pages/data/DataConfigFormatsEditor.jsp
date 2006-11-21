@@ -76,42 +76,6 @@ response.setHeader("Cache-Control", "no-cache");
 	  </td>
 	</tr>
 
-
-<logic:notEmpty name="dataFormatsEditorForm"
-               property="paramKeys">
-<logic:iterate id="param"
-               indexId="ctr"
-               name="dataFormatsEditorForm"
-               property="paramKeys">
-<logic:notEqual name="dataFormatsEditorForm"
-                property='<%= "paramKey[" + ctr + "]"%>'
-                value="dbtype">
-    <tr>
-	  <td class="label">
-        <span class="help"
-		      title="<bean:write name="dataFormatsEditorForm"
-		      property='<%= "paramHelp[" + ctr + "]" %>'/>">
-          <bean:write name="dataFormatsEditorForm"
-                      property='<%= "paramKey[" + ctr + "]"%>'/>:
-		</span>
-      </td>
-	  <td class="datum">
-<logic:notEqual name="dataFormatsEditorForm"
-	    	        property='<%= "paramKey[" + ctr + "]"%>'
-			        value="passwd">
-          <html:text property='<%= "paramValues[" + ctr + "]"%>' size="60"/>
-</logic:notEqual>
-<logic:equal name="dataFormatsEditorForm"
-   		     property='<%= "paramKey[" + ctr + "]"%>'
-             value="passwd">
-          <html:password property='<%= "paramValues[" + ctr + "]"%>' size="12"/>
-</logic:equal>			             
-	  </td>
-	</tr>
-</logic:notEqual>
-</logic:iterate>
-</logic:notEmpty>
-
 	<tr>
 	  <td class="label">&nbsp;</td>
 	  <td class="datum">

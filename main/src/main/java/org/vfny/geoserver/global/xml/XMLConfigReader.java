@@ -1113,8 +1113,6 @@ public class XMLConfigReader {
 				LOGGER.finer(new StringBuffer("loading parameters for FormatDTO ")
 						.append(fm.getId()).toString());
 			}
-			fm.setParameters(loadConnectionParams(ReaderUtils.getChildElement(
-					fmElem, "parameters", false)));
 		} catch (Exception e) {
 			throw new ConfigurationException(e);
 		}

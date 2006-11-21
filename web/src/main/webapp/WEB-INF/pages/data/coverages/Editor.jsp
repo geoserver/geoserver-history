@@ -329,16 +329,23 @@ function prepareFormData(){
                     value="dbtype">
         <tr>
     	  <td class="label">
-            <span class="help"
-    		      title="<bean:write name="coveragesEditorForm"
-    		      property='<%= "paramHelp[" + ctr + "]" %>'/>">
-              <bean:write name="coveragesEditorForm"
-                          property='<%= "paramKey[" + ctr + "]"%>'/>:
-    		</span>
+		 	<logic:notEqual name="coveragesEditorForm"
+	    	        property='<%= "paramKey[" + ctr + "]"%>'
+			        value="ReadGridGeometry2D">
+	            <span class="help"
+	    		      title="<bean:write name="coveragesEditorForm"
+	    		      property='<%= "paramHelp[" + ctr + "]" %>'/>">
+	              <bean:write name="coveragesEditorForm"
+	                          property='<%= "paramKey[" + ctr + "]"%>'/>:
+	    		</span>
+			</logic:notEqual>
           </td>
     	  <td class="datum">
-    		  
+		 	<logic:notEqual name="coveragesEditorForm"
+	    	        property='<%= "paramKey[" + ctr + "]"%>'
+			        value="ReadGridGeometry2D">
               <html:text property='<%= "paramValue[" + ctr + "]"%>' size="60"/>
+			</logic:notEqual>
     	  </td>
     	</tr>
     </logic:notEqual>

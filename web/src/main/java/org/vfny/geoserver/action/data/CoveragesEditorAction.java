@@ -192,7 +192,7 @@ public final class CoveragesEditorAction extends ConfigAction {
 					if (AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString().equalsIgnoreCase(key))
 						value = null;
 					else
-					    value = CoverageUtils.getCvParamValue(key, param, cvStoreInfo.getParameters());
+					    value = CoverageUtils.getCvParamValue(key, param, coverageForm.getParams());
 					if (value != null) {
 					    //params.parameter(key).setValue(value);
 					    parameters.add(new DefaultParameterDescriptor(key, value.getClass(), null, value).createValue());

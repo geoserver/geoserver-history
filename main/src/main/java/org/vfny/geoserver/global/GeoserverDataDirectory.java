@@ -154,13 +154,13 @@ public class GeoserverDataDirectory {
                 isTrueDataDir = false;
                 String rootDir = servContext.getRealPath("/");
                 dataDir = new File(rootDir);
+
+                // create loader, and add some locations to the serach path
+                loader = new GeoServerResourceLoader(dataDir);
                 loader.addSearchLocation(new File(dataDir, "data"));
                 System.out.println("----------------------------------");
                 System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
                 System.out.println("----------------------------------");
-
-                // create loader, and add some locations to the serach path
-                loader = new GeoServerResourceLoader(dataDir);
                 loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
                 loader.addSearchLocation(new File(servContext.getRealPath("data")));
         }

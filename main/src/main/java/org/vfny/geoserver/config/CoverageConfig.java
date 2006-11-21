@@ -386,8 +386,7 @@ public class CoverageConfig {
 						//
 						continue;
 					}
-
-					Object value = cvConfig.getParameters().get(_key);
+					Object value = val.getValue();
 					String text = "";
 
 					if (value == null) {

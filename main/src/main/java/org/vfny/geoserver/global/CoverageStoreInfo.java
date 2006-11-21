@@ -82,8 +82,6 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 
 	private String _abstract;
 
-	private Map parameters;
-
 	/**
 	 * Storage for metadata
 	 */
@@ -114,7 +112,6 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 	public CoverageStoreInfo(CoverageStoreInfoDTO config, Data data) {
 		this.data = data;
 		meta = new HashMap(10);
-		parameters = config.getParameters();
 		enabled = config.isEnabled();
 		id = config.getId();
 		nameSpaceId = config.getNameSpaceId();
@@ -154,7 +151,6 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 	Object toDTO() {
 		CoverageStoreInfoDTO dto = new CoverageStoreInfoDTO();
 		dto.setAbstract(_abstract);
-		dto.setParameters(parameters);
 		dto.setEnabled(enabled);
 		dto.setId(id);
 		dto.setNameSpaceId(nameSpaceId);
@@ -176,11 +172,6 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 	 */
 	public String getId() {
 		return id;
-	}
-
-	protected Map getParams() {
-		Map params = new HashMap(parameters);
-		return getParams(params, data.getBaseDir().toString());
 	}
 
 	/**
@@ -309,8 +300,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 	public String toString() {
 		return new StringBuffer("FormatConfig[type=").append(getType()).append(
 				", enabled=").append(isEnabled()).append(", abstract=").append(
-				getAbstract()).append(", parameters=").append(getParams())
-				.append("]").toString();
+				getAbstract()).append("]").toString();
 	}
 
 	/**
@@ -471,8 +461,4 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 		return null;
 	}
 	
-	public Map getParameters() {
-		return parameters;
-	}
-
 }

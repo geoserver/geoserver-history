@@ -6,32 +6,21 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.geotools.data.coverage.grid.AbstractGridFormat;
-import org.opengis.coverage.grid.Format;
-import org.opengis.parameter.ParameterValue;
-import org.opengis.parameter.ParameterValueGroup;
 import org.vfny.geoserver.action.ConfigAction;
-import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.CoverageStoreConfig;
+import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.form.data.CoverageStoresEditorForm;
 import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.util.CoverageUtils;
-import org.vfny.geoserver.util.CoverageStoreUtils;
 
 /**
  * DOCUMENT ME!
@@ -65,94 +54,6 @@ public final class CoverageStoresEditorAction extends ConfigAction {
 					.getDataFormat(dataFormatID);
 		}
 
-		// After extracting params into a map
-		Map parameters = new HashMap(); // values used for connection
-		Map paramTexts = new HashMap(); // values as stored
-
-		Map params = dataFormatsForm.getParams();
-		Format factory = config.getFactory();
-		ParameterValueGroup info = factory.getReadParameters();
-
-		// Convert Params into the kind of Map we actually need
-		//
-		ParameterValue param;
-		String key;
-		Object value;
-		final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
-		for (Iterator i = params.keySet().iterator(); i.hasNext();) {
-			key = (String) i.next();
-			// //
-			//
-			// Skipping decimation parameters
-			//
-			// //
-			if (key.equalsIgnoreCase(readGeometryKey))
-				continue;
-			param = CoverageStoreUtils.find(info, key);
-			if (param == null) {
-
-				ActionErrors errors = new ActionErrors();
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-						"error.cannotProcessConnectionParams"));
-				saveErrors(request, errors);
-
-				return mapping.findForward("config.data.format.editor");
-			}
-
-			value = CoverageUtils.getCvParamValue(key, param, params);
-			if (value != null) {
-				parameters.put(key, value);
-				paramTexts.put(key, value.toString());
-
-			}
-		}
-
-		try {
-			ServletContext sc = request.getSession().getServletContext();
-			Map niceParams = CoverageStoreUtils.getParams(parameters, sc);
-			Format victim = factory;
-			String[] typeNames = null;
-			ParameterValueGroup vicParams = victim.getReadParameters();
-			if (niceParams != null && !niceParams.isEmpty()) {
-				typeNames = new String[victim.getReadParameters().values()
-						.size()];
-				int cnt = 0;
-				for (Iterator iT = niceParams.keySet().iterator(); iT.hasNext(); cnt++) {
-					key = (String) iT.next();
-					value = niceParams.get(key);
-					vicParams.parameter(key).setValue(value);
-					typeNames[cnt] = key;
-				}
-			}
-
-			// /////////////////////////////////////////////////////////////////
-			//
-			// Trying to see if we can accept this coverage with the choosen
-			// format.
-			//
-			// ///////////////////////////////////////////////////////////////
-			URL victimUrl = CoverageUtils.getResourceAsFile(url, getServletContext(), null).toURL();
-			if (!((AbstractGridFormat) victim).accepts(victimUrl)) {
-
-				ActionErrors errors = new ActionErrors();
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-						"error.invalidConnectionParams"));
-				saveErrors(request, errors);
-
-				return mapping.findForward("config.data.format.editor");
-			}
-			dump("typeNames", typeNames);
-		} catch (Throwable throwable) {
-
-			ActionErrors errors = new ActionErrors();
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"error.exception", throwable.getMessage()));
-
-			saveErrors(request, errors);
-
-			return mapping.findForward("config.data.format.editor");
-		}
-
 		// /////////////////////////////////////////////////////////////////
 		//
 		// If we got here everything was fine then we can save the
@@ -168,7 +69,6 @@ public final class CoverageStoresEditorAction extends ConfigAction {
 		config.setType(type);
 		config.setUrl(url);
 		config.setAbstract(description);
-		config.setParameters(paramTexts);
 		dataConfig.addDataFormat(config);
 		getUserContainer(request).setDataFormatConfig(null);
 		getApplicationState().notifyConfigChanged();
