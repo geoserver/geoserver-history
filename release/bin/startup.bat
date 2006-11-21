@@ -66,13 +66,13 @@ goto run
   if not exist "%GEOSERVER_DATA_DIR%" goto noDataDir
   goto execJava
 
-REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/conf/
+REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/data_dir/
 :noDataDir
-  if exist "%GEOSERVER_HOME%\webapps\geoserver\conf" goto setDataDir
+  if exist "%GEOSERVER_HOME%\data_dir" goto setDataDir
   goto execJava
 
 :setDataDir
-  set GEOSERVER_DATA_DIR=%GEOSERVER_HOME%\webapps\geoserver\conf
+  set GEOSERVER_DATA_DIR=%GEOSERVER_HOME%\data_dir
   goto execJava
 
 :execJava

@@ -53,8 +53,8 @@ fi
 
 #Find the configuration directory: GEOSERVER_DATA_DIR
 if [ -z $GEOSERVER_DATA_DIR ]; then
-    if [ -r "$GEOSERVER_HOME"/webapps/geoserver/conf/ ]; then
-        export GEOSERVER_DATA_DIR="$GEOSERVER_HOME"/webapps/geoserver/conf
+    if [ -r "$GEOSERVER_HOME"/data_dir/ ]; then
+        export GEOSERVER_DATA_DIR="$GEOSERVER_HOME"/data_dir
     else
         echo "No GEOSERVER_DATA_DIR found, using application defaults"
 	      GEOSERVER_DATA_DIR=""
