@@ -50,6 +50,13 @@
 				<include>taz_shapes/**/*</include>
 			</includes>
 		</fileSet>
+		<fileSet>
+			<directory>web/target/geoserver/data</directory>
+			<outputDirectory>geoserver/data_dir</outputDirectory>
+			<includes>
+				<include>/**/*</include>
+			</includes>
+		</fileSet>
 		
 		<fileSet>
 			<directory>release/target/dependency</directory>
