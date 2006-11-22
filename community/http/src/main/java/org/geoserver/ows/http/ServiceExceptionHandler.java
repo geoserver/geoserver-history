@@ -1,11 +1,9 @@
 package org.geoserver.ows.http;
 
-import java.io.OutputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.geoserver.ows.Operation;
 import org.geoserver.ows.Service;
 import org.geoserver.ows.ServiceException;
 
@@ -37,11 +35,11 @@ public abstract class ServiceExceptionHandler {
 	 * Handles the service exception.
 	 * 
 	 * @param exception The service exception.
-	 * @param operation The operation that generated the exception.
+	 * @param service The service that generated the exception
 	 * @param response The response to report the exception to.
 	 */
 	public abstract void handleServiceException( 
-		ServiceException exception, Operation operation, HttpServletResponse response
+		ServiceException exception, Service service, HttpServletResponse response
 	);
 	
 }
