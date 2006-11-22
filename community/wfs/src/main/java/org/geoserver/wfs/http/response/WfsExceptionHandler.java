@@ -11,6 +11,7 @@ import org.geoserver.http.util.ResponseUtils;
 
 import org.geoserver.ows.Service;
 import org.geoserver.ows.ServiceException;
+import org.geoserver.ows.http.DefaultServiceExceptionHandler;
 import org.geoserver.ows.http.ServiceExceptionHandler;
 import org.geoserver.wfs.WFS;
 
@@ -20,7 +21,7 @@ import org.geoserver.wfs.WFS;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class WfsExceptionHandler extends ServiceExceptionHandler {
+public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
 
 	/**
 	 * WFS configuration
@@ -45,11 +46,9 @@ public class WfsExceptionHandler extends ServiceExceptionHandler {
 		if ( "1.0.0".equals( version ) ) {
 			handle1_0( e, response );
 		}
-		if ( "1.1.0".equals( version ) ) {
-			handle1_1( e,  response );
+		else {
+			super.handleServiceException( e, service, response );
 		}
-		
-		//do nothing
 		
 	}
 	
@@ -105,55 +104,55 @@ public class WfsExceptionHandler extends ServiceExceptionHandler {
 
 	}
 
-	public void handle1_1( ServiceException e,
-			 HttpServletResponse response ) {
-		
-		try {
-			String tab = "   ";
-			
-			StringBuffer s = new StringBuffer();
-			s.append( "<?xml version=\"1.0\" ?>\n" );
-			s.append( "<ExceptionReport\n" );
-			s.append( tab + "version=\"1.1.0\"\n" );
-			s.append( tab + "xmlns=\"http://www.opengis.net/ows\"\n" );
-			s.append( tab + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" );
-			s.append( tab );
-			s.append( "xsi:schemaLocation=\"http://www.opengis.net/ows " );
-			//TODO: dont hardcode schmea location
-			s.append( "http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd\">\n" );
-
-			s.append( tab + "<Exception" );
-			s.append( " exceptionCode=\"" + e.getCode() + "\"" );
-			
-			if ( e.getLocator() != null && !e.getLocator().equals( "" ) ) {
-	            s.append(" locator=\"" + e.getLocator() + "\"" );
-	        }
-			s.append( ">");
-			
-			if ( e.getMessage() != null && !e.getMessage().equals( "" ) ) {
-				s.append( "\n" + tab + tab );
-				s.append( "<ExceptionText>\n");
-				s.append( ResponseUtils.encodeXML( e.getMessage() ) );
-				
-				ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
-				e.printStackTrace( new PrintStream( stackTrace ) );
-				
-				s.append( ResponseUtils.encodeXML( new String( stackTrace.toByteArray() ) ) );
-				s.append( "</ExceptionText>\n");
-			}
-			
-
-			s.append( "\n</Exception>" );
-			s.append( "</ExceptionReport>" );
-			
-			response.setContentType( "text/xml" );
-			response.setCharacterEncoding( "UTF-8" );
-			response.getOutputStream().write( s.toString().getBytes() );
-			response.getOutputStream().flush();
-			
-		} 
-		catch (IOException ioe) {
-			throw new RuntimeException( ioe );
-		}
-	}
+//	public void handle1_1( ServiceException e,
+//			 HttpServletResponse response ) {
+//		
+//		try {
+//			String tab = "   ";
+//			
+//			StringBuffer s = new StringBuffer();
+//			s.append( "<?xml version=\"1.0\" ?>\n" );
+//			s.append( "<ExceptionReport\n" );
+//			s.append( tab + "version=\"1.1.0\"\n" );
+//			s.append( tab + "xmlns=\"http://www.opengis.net/ows\"\n" );
+//			s.append( tab + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" );
+//			s.append( tab );
+//			s.append( "xsi:schemaLocation=\"http://www.opengis.net/ows " );
+//			//TODO: dont hardcode schmea location
+//			s.append( "http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd\">\n" );
+//
+//			s.append( tab + "<Exception" );
+//			s.append( " exceptionCode=\"" + e.getCode() + "\"" );
+//			
+//			if ( e.getLocator() != null && !e.getLocator().equals( "" ) ) {
+//	            s.append(" locator=\"" + e.getLocator() + "\"" );
+//	        }
+//			s.append( ">");
+//			
+//			if ( e.getMessage() != null && !e.getMessage().equals( "" ) ) {
+//				s.append( "\n" + tab + tab );
+//				s.append( "<ExceptionText>\n");
+//				s.append( ResponseUtils.encodeXML( e.getMessage() ) );
+//				
+//				ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
+//				e.printStackTrace( new PrintStream( stackTrace ) );
+//				
+//				s.append( ResponseUtils.encodeXML( new String( stackTrace.toByteArray() ) ) );
+//				s.append( "</ExceptionText>\n");
+//			}
+//			
+//
+//			s.append( "\n</Exception>" );
+//			s.append( "</ExceptionReport>" );
+//			
+//			response.setContentType( "text/xml" );
+//			response.setCharacterEncoding( "UTF-8" );
+//			response.getOutputStream().write( s.toString().getBytes() );
+//			response.getOutputStream().flush();
+//			
+//		} 
+//		catch (IOException ioe) {
+//			throw new RuntimeException( ioe );
+//		}
+//	}
 }
