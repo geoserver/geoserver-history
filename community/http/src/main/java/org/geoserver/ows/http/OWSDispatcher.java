@@ -46,26 +46,25 @@ public class OWSDispatcher extends AbstractController {
 		File cache = cacheInputStream( httpRequest );
 		Map kvp = parseKVP( httpRequest );
 		
-		//find the service
-		Service service = service( httpRequest, httpResponse, kvp, cache );
-
 		try {
 			
-			Operation operation = null;
+			
+			Service service = null;
 			try {
-				operation = dispatch( httpRequest, httpResponse, kvp, cache, service );
+				//find the service
+				try {
+					service = service( httpRequest, httpResponse, kvp, cache );
+				} catch ( Throwable t ) {
+					exception( t, null, httpRequest, httpResponse );
+					return null;
+				}
+
+				//dispatch the operation
+				Operation operation = dispatch( httpRequest, httpResponse, kvp, cache, service );
 				execute( httpRequest, httpResponse, operation );
 			}
 			catch( Throwable t ) {
-				ServiceException se = null;
-				if ( t instanceof ServiceException ) {
-					se = (ServiceException) t;
-				}
-				else {
-					se = new ServiceException( t );
-				}
-				
-				exception( se, service, httpRequest, httpResponse );
+				exception( t, service, httpRequest, httpResponse );
 			}
 		} 
 		finally {
@@ -105,18 +104,22 @@ public class OWSDispatcher extends AbstractController {
 			}
 		}
 		
-		if ( service == null ) {
-			//one last check from the uri
-			Map map = readOpContext( httpRequest );
-			if ( service == null ) {
-				service = (String) map.get( "service" );
-				version = (String) map.get( "version" );
-			}
-		}
+		//TODO: make this a configuration option to infer the service parameter from 
+		// the context
+//		if ( service == null ) {
+//			//one last check from the uri
+//			Map map = readOpContext( httpRequest );
+//			if ( service == null ) {
+//				service = (String) map.get( "service" );
+//				version = (String) map.get( "version" );
+//			}
+//		}
 		
 		if ( service == null ) {
 			//give up 
-			throw new RuntimeException( "Could not determine service from request" );
+			throw new ServiceException( 
+				"Could not determine service from request", "MissingParameterValue", "service" 
+			);
 		}
 		
 		//load from teh context
@@ -318,7 +321,7 @@ public class OWSDispatcher extends AbstractController {
 		return services;
 	}
 	
-	Service findService( String id, String version ) {
+	Service findService( String id, String version ) throws ServiceException {
 		Collection services = loadServices();
 		
 		//first just match on service,request
@@ -332,8 +335,8 @@ public class OWSDispatcher extends AbstractController {
 		}
 		
 		if ( matches.isEmpty() ) {
-			String msg = "No service: ( " + id + " )"; 
-			throw new RuntimeException( msg );
+			String msg = "No service: ( " + id + " )";
+			throw new ServiceException( msg, "InvalidParameterValue", id );
 		}
 		
 		Service sBean = null;
@@ -731,21 +734,41 @@ public class OWSDispatcher extends AbstractController {
 	}
 	
 	void exception( 
-		ServiceException e, Service service, HttpServletRequest request, HttpServletResponse response 
+		Throwable t, Service service, HttpServletRequest request, HttpServletResponse response 
 	) {
 		
-		//look up the service exception handler
-		Collection handlers =
-			getApplicationContext().getBeansOfType( ServiceExceptionHandler.class ).values();
+		//wrap in service exception if necessary
+		ServiceException se = null;
+		if ( t instanceof ServiceException ) {
+			se = (ServiceException) t;
+		}
+		else {
+			se = new ServiceException( t );
+		}
 		
-		for ( Iterator h = handlers.iterator(); h.hasNext(); ) {
-			ServiceExceptionHandler handler = (ServiceExceptionHandler) h.next();
-			if ( handler.getServices().contains( service ) )  {
-				//found one,
-				handler.handleServiceException( e, service, response );
-				return;
+		//find an exception handler
+		ServiceExceptionHandler handler = null;
+		if ( service != null ) {
+			//look up the service exception handler
+			Collection handlers =
+				getApplicationContext().getBeansOfType( ServiceExceptionHandler.class ).values();
+			
+			for ( Iterator h = handlers.iterator(); h.hasNext(); ) {
+				ServiceExceptionHandler seh = (ServiceExceptionHandler) h.next();
+				if ( seh.getServices().contains( service ) )  {
+					//found one,
+					handler = seh;
+					break;
+				}
 			}
 		}
+		
+		if ( handler == null ) {
+			//none found, fall back on default
+			handler = new DefaultServiceExceptionHandler();
+		}
+		
+		handler.handleServiceException( se, service, response );
 		
 	}
 

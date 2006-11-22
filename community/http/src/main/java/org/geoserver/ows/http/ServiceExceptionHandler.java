@@ -1,6 +1,7 @@
 package org.geoserver.ows.http;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,6 +16,11 @@ import org.geoserver.ows.ServiceException;
  */
 public abstract class ServiceExceptionHandler {
 
+	/**
+	 * Logger
+	 */
+	protected static Logger LOGGER = Logger.getLogger( "org.geoserver" );
+	
 	/**
 	 * The services this handler handles exceptions for.
 	 */
