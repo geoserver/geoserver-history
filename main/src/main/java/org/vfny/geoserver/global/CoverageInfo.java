@@ -8,28 +8,21 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.resources.CRSUtilities;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.coverage.grid.GridGeometry;
-import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.InvalidParameterValueException;
-import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterNotFoundException;
-import org.opengis.parameter.ParameterValue;
-import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -184,12 +177,11 @@ public final class CoverageInfo extends GlobalLayerSupertype {
      */
     private ArrayList styles;
 
-	private ArrayList paramHelp;
-
-	private List paramKeys;
-
-	private List paramValues;
-
+    /**
+	 * String representation of connection parameter values
+	 */
+	private Map parameters;
+	
 	public CoverageInfo(CoverageInfoDTO dto, Data data)
 			throws ConfigurationException {
 		this.data = data;
@@ -218,9 +210,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 		interpolationMethods = dto.getInterpolationMethods();
 		defaultStyle = dto.getDefaultStyle();
 		styles = dto.getStyles();
-		paramHelp = dto.getParamHelp();
-		paramKeys = dto.getParamKeys();
-		paramValues = dto.getParamValues();
+		parameters = dto.getParameters();
 	}
 
 	Object toDTO() {
@@ -251,9 +241,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 		dto.setInterpolationMethods(interpolationMethods);
 		dto.setDefaultStyle(defaultStyle);
 		dto.setStyles(styles);
-		dto.setParamHelp(paramHelp);
-		dto.setParamKeys(paramKeys);
-		dto.setParamValues(paramValues);
+		dto.setParameters(parameters);
 
 		return dto;
 	}
@@ -499,45 +487,6 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 		this.wmsPath = wmsPath;
 	}
 
-	/**
-	 * @return Returns the paramHelp.
-	 */
-	public ArrayList getParamHelp() {
-		return paramHelp;
-	}
-
-	/**
-	 * @return Returns the paramKeys.
-	 */
-	public List getParamKeys() {
-		return paramKeys;
-	}
-
-	/**
-	 * @return Returns the paramValues.
-	 */
-	public List getParamValues() {
-		return paramValues;
-	}
-
-	/**
-	 * @return
-	 */
-	public Map getParameters() {
-
-		if (this.paramKeys != null) {
-			final HashMap params = new HashMap(paramKeys.size());
-			int index = 0;
-			for (Iterator p_iT = this.paramKeys.iterator(); p_iT.hasNext();) {
-				params.put(p_iT.next(), this.paramValues.get(index));
-				index++;
-			}
-			return params;
-		} else
-			return new HashMap();
-
-	}
-
 	public String getNativeCRS() {
 		return nativeCRS;
 	}
@@ -560,6 +509,10 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 		// /////////////////////////////////////////////////////////
 		return data.getFormatInfo(formatId).createReader(hints);
 
+	}
+
+	public Map getParameters() {
+		return parameters;
 	}
 
 	public GridCoverage getCoverage() {
@@ -610,64 +563,10 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 
 			// /////////////////////////////////////////////////////////
 			//
-			// Setting coverage reading params.
-			//
-			// /////////////////////////////////////////////////////////
-			List parameters = new ArrayList();
-			final ParameterValueGroup params = reader.getFormat()
-					.getReadParameters();
-			final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D
-					.getName().toString();
-			if (params != null) {
-				List list = params.values();
-				Iterator it = list.iterator();
-				ParameterValue param;
-				ParameterDescriptor descr;
-				String key;
-				Object value;
-				while (it.hasNext()) {
-					param = ((ParameterValue) it.next());
-					descr = (ParameterDescriptor) param.getDescriptor();
-
-					key = descr.getName().toString();
-
-					// /////////////////////////////////////////////////////////
-					//
-					// request param for better management of coverage
-					//
-					// /////////////////////////////////////////////////////////
-					if (key.equalsIgnoreCase(readGeometryKey)
-							&& envelope != null) {
-						/* params.parameter(key).setValue(envelope); */
-						continue;
-					} else {
-						// /////////////////////////////////////////////////////////
-						//
-						// format specific params
-						//
-						// /////////////////////////////////////////////////////////
-						value = CoverageUtils.getCvParamValue(key, param,
-								getParameters());
-
-						if (value != null)
-							/* params.parameter(key).setValue(value); */
-							parameters.add(
-									new DefaultParameterDescriptor(key,
-									value.getClass(), null, value).createValue());
-					}
-				}
-			}
-
-			// /////////////////////////////////////////////////////////
-			//
 			// Reading the coverage
 			//
 			// /////////////////////////////////////////////////////////
-			gc = reader
-					.read(!parameters.isEmpty() ? (GeneralParameterValue[]) parameters
-							.toArray(new GeneralParameterValue[parameters
-									.size()])
-							: null);
+			gc = reader.read(CoverageUtils.getParameters(getReader().getFormat().getReadParameters(), getParameters()));
 
 			if (gc == null || !(gc instanceof GridCoverage2D))
 				throw new IOException(

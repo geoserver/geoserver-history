@@ -19,6 +19,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.parameter.DefaultParameterDescriptor;
 import org.opengis.coverage.grid.Format;
@@ -90,10 +91,10 @@ public class DataCoveragesNewAction extends ConfigAction {
 		GridCoverage gc = null;
 
 		final Format format = cvStoreInfo.getFormat(); 
-		GridCoverageReader reader = cvStoreInfo.getReader();
+		AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
 		if (reader == null)
 			try {
-				reader = ((AbstractGridFormat) format).getReader(CoverageUtils.getResourceAsFile(cvStoreInfo.getUrl(), getServletContext(), null/*catalog.getBaseDir()*/));
+				reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(CoverageUtils.getResourceAsFile(cvStoreInfo.getUrl(), getServletContext(), null/*catalog.getBaseDir()*/));
 			} catch (MalformedURLException ex) {
 				throw new ConfigurationException(ex);
 			}
@@ -101,69 +102,7 @@ public class DataCoveragesNewAction extends ConfigAction {
 		if (reader == null)
 			throw new ConfigurationException("Could not obtain a reader for the CoverageDataSet. Please check the CoverageDataSet configuration!");
 		
-		final ParameterValueGroup params = format.getReadParameters();
-
-        // After extracting params into a map
-        List parameters = new ArrayList(); // values used for connection
-
-		// Convert Params into the kind of Map we actually need
-        //
-        ParameterValue param;
-        String key;
-        Object value;
-        final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
-		if (params != null) {
-			final List list = params.values();
-			final Iterator it = list.iterator();
-			while (it.hasNext()) {
-				param = ((ParameterValue) it.next());
-				final ParameterDescriptor descr = (ParameterDescriptor) param
-						.getDescriptor();
-
-				key = descr.getName().toString();
-				// //
-                //
-                // Skipping decimation parameters
-                //
-                // //
-                if (key.equalsIgnoreCase(readGeometryKey)) {
-                    continue;
-                }
-				value = CoverageUtils.getCvParamValue(key, param, new HashMap());
-
-				if (value != null) {
-                    parameters.add(new DefaultParameterDescriptor(key, value.getClass(), null, value).createValue());
-                }
-			}
-		}
-		try {
-			// trying to read the created coverage in order to check the entered
-			// parameters
-			gc = reader.read(parameters != null ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]) : null);
-                    /*params != null ? (GeneralParameterValue[]) params
-					.values().toArray(
-							new GeneralParameterValue[params.values().size()])
-					: null);*/
-
-			if (gc == null || !(gc instanceof GridCoverage2D))
-				throw new IOException(
-						"The requested coverage could not be found.");
-		} catch (InvalidParameterValueException e) {
-			throw new ConfigurationException(e);
-		} catch (ParameterNotFoundException e) {
-			throw new ConfigurationException(e);
-		} catch (MalformedURLException e) {
-			throw new ConfigurationException(e);
-		} catch (IllegalArgumentException e) {
-			throw new ConfigurationException(e);
-		} catch (SecurityException e) {
-			throw new ConfigurationException(e);
-		} catch (IOException e) {
-			throw new ConfigurationException(e);
-		}
-
-		final GridCoverage2D finalCoverage = (GridCoverage2D) gc;
-		CoverageConfig coverageConfig = new CoverageConfig(formatID, format, finalCoverage, request);
+		CoverageConfig coverageConfig = new CoverageConfig(formatID, format, reader, request);
 
 		request.setAttribute(NEW_COVERAGE_KEY, "true");
 		request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE, coverageConfig);

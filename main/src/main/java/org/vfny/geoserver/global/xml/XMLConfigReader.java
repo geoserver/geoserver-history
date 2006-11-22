@@ -1880,8 +1880,7 @@ public class XMLConfigReader {
 			// READ PARAMETERS
 			//
 			// /////////////////////////////////////////////////////////////////////
-			cv.setParameters(loadConnectionParams(ReaderUtils.getChildElement(
-					coverageRoot, "parameters", false)));
+			cv.setParameters(loadConnectionParams(ReaderUtils.getChildElement(coverageRoot, "parameters", false)));
 			
 		} catch (Exception e) {
 			throw new ConfigurationException(e);

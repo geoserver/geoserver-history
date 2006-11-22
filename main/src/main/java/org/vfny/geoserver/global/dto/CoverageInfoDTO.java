@@ -5,7 +5,6 @@
 package org.vfny.geoserver.global.dto;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -151,11 +150,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
     /** Other Style Names. */
     private ArrayList styles = new ArrayList();
 
-	private ArrayList paramHelp;
-
-	private List paramKeys;
-
-	private List paramValues;
+    /**
+	 * String representation of connection parameter values
+	 */
+	private Map parameters;
 
 	public CoverageInfoDTO() {
 	}
@@ -212,9 +210,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
 		defaultStyle = dto.getDefaultStyle();
 		styles = dto.getStyles();
-		paramHelp = dto.getParamHelp();
-		paramKeys = dto.getParamKeys();
-		paramValues = dto.getParamValues();
+		parameters = dto.getParameters();
 	}
 
 	public Object clone() {
@@ -800,66 +796,6 @@ public final class CoverageInfoDTO implements DataTransferObject {
 		this.wmsPath = wmsPath;
 	}
 
-	/**
-	 * @return
-	 */
-	public ArrayList getParamHelp() {
-		return paramHelp;
-	}
-
-	/**
-	 * @return
-	 */
-	public List getParamKeys() {
-		return paramKeys;
-	}
-
-	/**
-	 * @return
-	 */
-	public List getParamValues() {
-		return paramValues;
-	}
-
-	/**
-	 * @param paramHelp
-	 */
-	public void setParamHelp(ArrayList paramHelp) {
-		this.paramHelp = paramHelp;
-	}
-
-	/**
-	 * @param paramKeys
-	 */
-	public void setParamKeys(List paramKeys) {
-		this.paramKeys = paramKeys;
-	}
-
-	/**
-	 * @param paramValues
-	 */
-	public void setParamValues(List paramValues) {
-		this.paramValues = paramValues;
-	}
-
-	/**
-	 * @param map
-	 */
-	public void setParameters(Map map) {
-		if (map != null) {
-			this.paramHelp = new ArrayList();
-			this.paramKeys = new ArrayList();
-			this.paramValues = new ArrayList();
-
-			for (Iterator p_iT = map.keySet().iterator(); p_iT.hasNext();) {
-				final String key = (String) p_iT.next();
-				paramHelp.add(key);
-				paramKeys.add(key);
-				paramValues.add(map.get(key));
-			}
-		}
-	}
-
 	public String getNativeCRS() {
 		return nativeCRS;
 	}
@@ -882,5 +818,13 @@ public final class CoverageInfoDTO implements DataTransferObject {
 	
 	public void setStyles(ArrayList styles) {
 		this.styles = styles;
+	}
+
+	public Map getParameters() {
+		return parameters;
+	}
+
+	public synchronized void setParameters(Map parameters) {
+		this.parameters = parameters;
 	}
 }

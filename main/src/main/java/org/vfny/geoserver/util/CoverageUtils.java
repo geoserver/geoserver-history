@@ -8,6 +8,9 @@ import java.awt.Color;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -16,11 +19,17 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
+import org.geotools.coverage.grid.GeneralGridGeometry;
+import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.BufferedCoordinateOperationFactory;
+import org.opengis.parameter.GeneralParameterValue;
+import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.CoordinateOperation;
@@ -85,6 +94,153 @@ public class CoverageUtils {
 
 	}
 
+	public static GeneralParameterValue[] getParameters(ParameterValueGroup params) {
+		final List parameters = new ArrayList();
+		final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
+		if (params != null && params.values().size() > 0) {
+			List list = params.values();
+			Iterator it = list.iterator();
+			ParameterDescriptor descr = null;
+			ParameterValue val = null;
+			while (it.hasNext()) {
+				val = (ParameterValue) it.next();
+				if (val != null) {
+					descr = (ParameterDescriptor) val.getDescriptor();
+					String _key = descr.getName().toString();
+
+					if ("namespace".equals(_key)) {
+						// skip namespace as it is *magic* and
+						// appears to be an entry used in all dataformats?
+						//
+						continue;
+					}
+					// /////////////////////////////////////////////////////////
+					//
+					// request param for better management of coverage
+					//
+					// /////////////////////////////////////////////////////////
+					if (_key.equalsIgnoreCase(readGeometryKey)) {
+						// IGNORING READ_GRIDGEOMETRY2D param
+						continue;
+					}
+					Object value = val.getValue();
+//					String text = "";
+//
+//					if (value == null) {
+//						text = null;
+//					} else if (value instanceof String) {
+//						text = (String) value;
+//					} else {
+//						text = value.toString();
+//					}
+
+					parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null, value).createValue());
+				}
+			}
+			return !parameters.isEmpty() ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]) : null;
+		} else {
+			return null;
+		}
+	}
+	
+	public static GeneralParameterValue[] getParameters(ParameterValueGroup params, Map values) {
+		return getParameters(params, values, false);
+	}
+	
+	public static GeneralParameterValue[] getParameters(ParameterValueGroup params, Map values, boolean readGeom) {
+		final List parameters = new ArrayList();
+		final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
+		if (params != null && params.values().size() > 0) {
+			List list = params.values();
+			Iterator it = list.iterator();
+			ParameterDescriptor descr = null;
+			ParameterValue val = null;
+			while (it.hasNext()) {
+				val = (ParameterValue) it.next();
+				if (val != null) {
+					descr = (ParameterDescriptor) val.getDescriptor();
+					String _key = descr.getName().toString();
+
+					if ("namespace".equals(_key)) {
+						// skip namespace as it is *magic* and
+						// appears to be an entry used in all dataformats?
+						//
+						continue;
+					}
+					// /////////////////////////////////////////////////////////
+					//
+					// request param for better management of coverage
+					//
+					// /////////////////////////////////////////////////////////
+					if (_key.equalsIgnoreCase(readGeometryKey) && !readGeom) {
+						// IGNORING READ_GRIDGEOMETRY2D param
+						continue;
+					}
+					// /////////////////////////////////////////////////////////
+					//
+					// format specific params
+					//
+					// /////////////////////////////////////////////////////////
+					Object value = CoverageUtils.getCvParamValue(_key, val, values);
+
+					parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null, value).createValue());
+				}
+			}
+			return !parameters.isEmpty() ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]) : null;
+		} else {
+			return null;
+		}
+	}
+	
+	public static Map getParametersKVP(ParameterValueGroup params) {
+		final Map parameters = new HashMap();
+		final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
+		if (params != null && params.values().size() > 0) {
+			List list = params.values();
+			Iterator it = list.iterator();
+			ParameterDescriptor descr = null;
+			ParameterValue val = null;
+			while (it.hasNext()) {
+				val = (ParameterValue) it.next();
+				if (val != null) {
+					descr = (ParameterDescriptor) val.getDescriptor();
+					String _key = descr.getName().toString();
+
+					if ("namespace".equals(_key)) {
+						// skip namespace as it is *magic* and
+						// appears to be an entry used in all dataformats?
+						//
+						continue;
+					}
+					// /////////////////////////////////////////////////////////
+					//
+					// request param for better management of coverage
+					//
+					// /////////////////////////////////////////////////////////
+					if (_key.equalsIgnoreCase(readGeometryKey)) {
+						// IGNORING READ_GRIDGEOMETRY2D param
+						continue;
+					}
+					Object value = val.getValue();
+					String text = "";
+
+					if (value == null) {
+						text = null;
+					} else if (value instanceof String) {
+						text = (String) value;
+					} else {
+						text = value.toString();
+					}
+
+					parameters.put(_key, text != null ? text : "");
+				}
+			}
+			return parameters;
+		} else {
+			return parameters;
+		}
+	}
+	
 	/**
 	 * @param paramValues
 	 * @param key
@@ -217,11 +373,37 @@ public class CoverageUtils {
 						}
 					}
 				}
+			} else if (key.equalsIgnoreCase(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString())) {
+				if (params.get(key) != null
+						&& params.get(key) instanceof String
+						&& ((String) params.get(key)).length() > 0) {
+					String tmp = (String) params.get(key);
+					if (tmp.indexOf("[") > 0
+							&& tmp.indexOf("]") > tmp.indexOf("[")) {
+						tmp = tmp.substring(tmp.indexOf("[") + 1,
+								tmp.indexOf("]")).trim();
+						tmp = tmp.replaceAll(",", "");
+						String[] strCoords = tmp.split(" ");
+						double[] coords = new double[strCoords.length];
+						if (strCoords.length == 4) {
+							for (int iT = 0; iT < 4; iT++) {
+								coords[iT] = Double.parseDouble(strCoords[iT]
+										.trim());
+							}
+
+							value = (org.opengis.spatialschema.geometry.Envelope) new GeneralEnvelope(
+									new double[] { coords[0], coords[1] },
+									new double[] { coords[2], coords[3] });
+						}
+					}
+				} else if (params.get(key) != null
+						&& params.get(key) instanceof GeneralGridGeometry) {
+					value = params.get(key);
+				}
 			} else {
 				Class[] clArray = { String.class };
 				Object[] inArray = { params.get(key) };
-				value = param.getValue().getClass().getConstructor(clArray)
-						.newInstance(inArray);
+				value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
 			}
 		} catch (Exception e) {
 			value = param.getValue();

@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.config;
 
+import java.awt.Rectangle;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,13 +18,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.units.Unit;
 
 import org.geotools.coverage.GridSampleDimension;
+import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
+import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.metadata.Identifier;
-import org.opengis.parameter.ParameterDescriptor;
-import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -33,6 +37,7 @@ import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.util.CoverageStoreUtils;
+import org.vfny.geoserver.util.CoverageUtils;
 
 /**
  * User interface Coverage staging area.
@@ -172,19 +177,9 @@ public class CoverageConfig {
     private ArrayList styles;
     
 	/**
-	 * String representation of connection parameter keys
-	 */
-	private List paramKeys;
-
-	/**
 	 * String representation of connection parameter values
 	 */
-	private List paramValues;
-
-	/**
-	 * Help text for Params if available
-	 */
-	private ArrayList paramHelp;
+	private Map parameters;
 
 	/**
 	 * Package visible constructor for test cases
@@ -200,7 +195,7 @@ public class CoverageConfig {
 	 * @param gc
 	 * @throws ConfigurationException
 	 */
-	public CoverageConfig(String formatId, Format format, GridCoverage2D gc,
+	public CoverageConfig(String formatId, Format format, AbstractGridCoverage2DReader reader,
 			HttpServletRequest request) throws ConfigurationException {
 		if ((formatId == null) || (formatId.length() == 0)) {
 			throw new IllegalArgumentException(
@@ -210,13 +205,26 @@ public class CoverageConfig {
 			throw new ConfigurationException(new StringBuffer(
 					"Cannot handle format: ").append(formatId).toString());
 		}
+		
 		this.formatId = formatId;
-		crs = gc.getCoordinateReferenceSystem();
+
+		final DataConfig dataConfig = getDataConfig(request);
+		final CoverageStoreConfig cvConfig = dataConfig.getDataFormat(formatId);
+		if (cvConfig == null) {
+			// something is horribly wrong no FormatID selected!
+			// The JSP needs to not include us if there is no
+			// selected Format
+			//
+			throw new RuntimeException(
+					"selectedCoverageSetId required in Session");
+		}
+
+		crs = reader.getCrs();
 		srsName = (crs != null && !crs.getIdentifiers().isEmpty() ? crs
 				.getIdentifiers().toArray()[0].toString() : "UNKNOWN");
 		srsWKT = (crs != null ? crs.toWKT() : "UNKNOWN");
 		nativeCRS = (!srsName.equals("UNKNOWN") ? null : "");
-		envelope = (GeneralEnvelope) gc.getEnvelope();
+		envelope = reader.getOriginalEnvelope();
 		try {
 			lonLatWGS84Envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(envelope);
 		} catch (IndexOutOfBoundsException e) {
@@ -239,10 +247,48 @@ public class CoverageConfig {
 			throw newEx;
 		}
 
-		grid = gc.getGridGeometry();
+		grid = new GridGeometry2D(reader.getOriginalGridRange(), reader.getOriginalEnvelope());
+
+		/**
+		 * Now reading a fake small GridCoverage just to retrieve meta information:
+		 * - calculating a new envelope which is 1/20 of the original one
+		 * - reading the GridCoverage subset
+		 */
+		final GridCoverage2D gc;
+		
 		try {
+			final ParameterValueGroup readParams = format.getReadParameters();
+			final Map parameters = CoverageUtils.getParametersKVP(readParams);
+
+			double[] minCP = envelope.getLowerCorner().getCoordinates();
+			double[] maxCP = new double[] {
+					minCP[0] + (envelope.getLength(0) / 20.0),
+					minCP[1] + (envelope.getLength(1) / 20.0)					
+			};
+			final GeneralEnvelope subEnvelope = new GeneralEnvelope(minCP, maxCP);
+			subEnvelope.setCoordinateReferenceSystem(reader.getCrs());
+			
+			parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), 
+					new GridGeometry2D(
+							reader.getOriginalGridRange(), 
+							subEnvelope
+					)
+			);
+			gc = (GridCoverage2D) reader.read(CoverageUtils.getParameters(readParams, parameters, true));
 			dimensions = parseCoverageDimesions(gc.getSampleDimensions());
 		} catch (UnsupportedEncodingException e) {
+			final ConfigurationException newEx = new ConfigurationException(
+					new StringBuffer("Coverage dimensions: ").append(
+							e.toString()).toString());
+			newEx.initCause(e);
+			throw newEx;
+		} catch (IllegalArgumentException e) {
+			final ConfigurationException newEx = new ConfigurationException(
+					new StringBuffer("Coverage dimensions: ").append(
+							e.toString()).toString());
+			newEx.initCause(e);
+			throw newEx;
+		} catch (IOException e) {
 			final ConfigurationException newEx = new ConfigurationException(
 					new StringBuffer("Coverage dimensions: ").append(
 							e.toString()).toString());
@@ -350,59 +396,7 @@ public class CoverageConfig {
 		/**
 		 * ReadParameters ...
 		 */
-		final DataConfig dataConfig = getDataConfig(request);
-		final CoverageStoreConfig cvConfig = dataConfig.getDataFormat(formatId);
-		if (cvConfig == null) {
-			// something is horribly wrong no FormatID selected!
-			// The JSP needs to not include us if there is no
-			// selected Format
-			//
-			throw new RuntimeException(
-					"selectedDataFormatId required in Session");
-		}
-
-		// Retrieve connection params
-		final Format factory = cvConfig.getFactory();
-		ParameterValueGroup params = factory.getReadParameters();
-
-		if (params != null && params.values().size() > 0) {
-			paramKeys = new ArrayList(params.values().size());
-			paramValues = new ArrayList(params.values().size());
-			paramHelp = new ArrayList(params.values().size());
-
-			List list = params.values();
-			it = list.iterator();
-			ParameterDescriptor descr = null;
-			ParameterValue val = null;
-			while (it.hasNext()) {
-				val = (ParameterValue) it.next();
-				if (val != null) {
-					descr = (ParameterDescriptor) val.getDescriptor();
-					String _key = descr.getName().toString();
-
-					if ("namespace".equals(_key)) {
-						// skip namespace as it is *magic* and
-						// appears to be an entry used in all dataformats?
-						//
-						continue;
-					}
-					Object value = val.getValue();
-					String text = "";
-
-					if (value == null) {
-						text = null;
-					} else if (value instanceof String) {
-						text = (String) value;
-					} else {
-						text = value.toString();
-					}
-
-					paramKeys.add(_key);
-					paramValues.add((text != null) ? text : "");
-					paramHelp.add(_key);
-				}
-			}
-		}
+		parameters = CoverageUtils.getParametersKVP(format.getReadParameters());
 	}
 
 	/**
@@ -497,9 +491,7 @@ public class CoverageConfig {
 		interpolationMethods = dto.getInterpolationMethods();
 		defaultStyle = dto.getDefaultStyle();
 		styles = dto.getStyles();
-		paramHelp = dto.getParamHelp();
-		paramKeys = dto.getParamKeys();
-		paramValues = dto.getParamValues();
+		parameters = dto.getParameters();
 	}
 
 	public CoverageInfoDTO toDTO() {
@@ -529,9 +521,7 @@ public class CoverageConfig {
 		c.setInterpolationMethods(interpolationMethods);
 		c.setDefaultStyle(defaultStyle);
 		c.setStyles(styles);
-		c.setParamHelp(paramHelp);
-		c.setParamKeys(paramKeys);
-		c.setParamValues(paramValues);
+		c.setParameters(parameters);
 
 		return c;
 	}
@@ -950,56 +940,19 @@ public class CoverageConfig {
 		this.wmsPath = wmsPath;
 	}
 
-	/**
-	 * @return Returns the paramHelp.
-	 */
-	public ArrayList getParamHelp() {
-		return paramHelp;
-	}
-
-	/**
-	 * @param paramHelp
-	 *            The paramHelp to set.
-	 */
-	public void setParamHelp(ArrayList paramHelp) {
-		this.paramHelp = paramHelp;
-	}
-
-	/**
-	 * @return Returns the paramKeys.
-	 */
-	public List getParamKeys() {
-		return paramKeys;
-	}
-
-	/**
-	 * @param paramKeys
-	 *            The paramKeys to set.
-	 */
-	public void setParamKeys(List paramKeys) {
-		this.paramKeys = paramKeys;
-	}
-
-	/**
-	 * @return Returns the paramValues.
-	 */
-	public List getParamValues() {
-		return paramValues;
-	}
-
-	/**
-	 * @param paramValues
-	 *            The paramValues to set.
-	 */
-	public void setParamValues(List paramValues) {
-		this.paramValues = paramValues;
-	}
-
 	public String getNativeCRS() {
 		return nativeCRS;
 	}
 
 	public void setNativeCRS(String nativeCRS) {
 		this.nativeCRS = nativeCRS;
+	}
+
+	public Map getParameters() {
+		return parameters;
+	}
+
+	public synchronized void setParameters(Map parameters) {
+		this.parameters = parameters;
 	}
 }

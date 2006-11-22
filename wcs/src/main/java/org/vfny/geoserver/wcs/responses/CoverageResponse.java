@@ -7,10 +7,9 @@ package org.vfny.geoserver.wcs.responses;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,15 +23,11 @@ import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.referencing.CRS;
 import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.parameter.GeneralParameterValue;
-import org.opengis.parameter.ParameterDescriptor;
-import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -235,50 +230,9 @@ public class CoverageResponse implements Response {
 			// Setting coverage reading params.
 			//
 			// /////////////////////////////////////////////////////////
-			List parameters = new ArrayList();
-			final ParameterValueGroup params = reader.getFormat()
-			.getReadParameters();
-			final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D
-			.getName().toString();
-			if (params != null) {
-				List list = params.values();
-				Iterator it = list.iterator();
-				ParameterValue param;
-				ParameterDescriptor descr;
-				String key;
-				Object value;
-				while (it.hasNext()) {
-					param = ((ParameterValue) it.next());
-					descr = (ParameterDescriptor) param.getDescriptor();
+			final ParameterValueGroup params = reader.getFormat().getReadParameters();
 
-					key = descr.getName().toString();
-
-					// /////////////////////////////////////////////////////////
-					//
-					// request param for better management of coverage
-					//
-					// /////////////////////////////////////////////////////////
-					if (key.equalsIgnoreCase(readGeometryKey)
-							&& request.getEnvelope() != null) {
-						/* params.parameter(key).setValue(envelope); */
-						continue;
-					} else {
-						// /////////////////////////////////////////////////////////
-						//
-						// format specific params
-						//
-						// /////////////////////////////////////////////////////////
-						value = CoverageUtils.getCvParamValue(key, param, meta.getParameters());
-
-						if (value != null)
-							/* params.parameter(key).setValue(value); */
-							parameters.add(new DefaultParameterDescriptor(key,
-									value.getClass(), null, value).createValue());
-					}
-				}
-			}
-
-			final GridCoverage2D finalCoverage = getFinalCoverage(request, meta, reader, parameters);
+			final GridCoverage2D finalCoverage = getFinalCoverage(request, meta, reader, CoverageUtils.getParametersKVP(params));
 			delegate.prepare(outputFormat, finalCoverage);
 		} catch (IOException e) {
 			final WcsException newEx = new WcsException(e, "problem with CoverageResults", request
@@ -346,7 +300,7 @@ public class CoverageResponse implements Response {
 	private static GridCoverage2D getFinalCoverage(CoverageRequest request,
 			CoverageInfo meta, 
 			AbstractGridCoverage2DReader coverageReader /*GridCoverage coverage*/, 
-			List parameters
+			Map parameters
 	) throws WcsException, IOException, IndexOutOfBoundsException, FactoryException, TransformException 
 	{
 		// This is the final Response CRS
@@ -443,10 +397,8 @@ public class CoverageResponse implements Response {
 		// Reading the coverage
 		//
 		// /////////////////////////////////////////////////////////
-		parameters.add(
-				new DefaultParameterDescriptor(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
-						GridGeometry2D.class, null, new GridGeometry2D(new GeneralGridRange(destinationSize), destinationEnvelopeInSourceCRS)).createValue());
-		final GridCoverage coverage = coverageReader.read(!parameters.isEmpty() ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]) : null);
+		parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), new GridGeometry2D(new GeneralGridRange(destinationSize), destinationEnvelopeInSourceCRS));
+		final GridCoverage coverage = coverageReader.read(CoverageUtils.getParameters(coverageReader.getFormat().getReadParameters(), parameters, true));
 
 		if (coverage == null || !(coverage instanceof GridCoverage2D))
 			throw new IOException(

@@ -6,12 +6,10 @@ package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -22,7 +20,6 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
-import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
@@ -30,13 +27,9 @@ import org.geotools.filter.Filter;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
-import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
-import org.opengis.parameter.GeneralParameterValue;
-import org.opengis.parameter.ParameterDescriptor;
-import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -292,47 +285,9 @@ public class GetMapResponse implements Response {
 						// Setting coverage reading params.
 						//
 						// /////////////////////////////////////////////////////////
-						List parameters = new ArrayList();
 						final ParameterValueGroup params = reader.getFormat().getReadParameters();
-						final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
-						if (params != null) {
-							List list = params.values();
-							Iterator it = list.iterator();
-							ParameterValue param;
-							ParameterDescriptor descr;
-							String key;
-							Object value;
-							while (it.hasNext()) {
-								param = ((ParameterValue) it.next());
-								descr = (ParameterDescriptor) param.getDescriptor();
-
-								key = descr.getName().toString();
-
-								// /////////////////////////////////////////////////////////
-								//
-								// request param for better management of coverage
-								//
-								// /////////////////////////////////////////////////////////
-								if (key.equalsIgnoreCase(readGeometryKey)) {
-									// IGNORING READ_GRIDGEOMETRY2D param
-									continue;
-								} else {
-									// /////////////////////////////////////////////////////////
-									//
-									// format specific params
-									//
-									// /////////////////////////////////////////////////////////
-									value = CoverageUtils.getCvParamValue(key, param, layers[i].getCoverage().getParameters());
-
-									if (value != null)
-										/* params.parameter(key).setValue(value); */
-										parameters.add(new DefaultParameterDescriptor(key,
-												value.getClass(), null, value).createValue());
-								}
-							}
-						}
 						
-						layer = new DefaultMapLayer(DataUtilities.wrapGcReader(reader, !parameters.isEmpty() ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]) : null), style); 
+						layer = new DefaultMapLayer(DataUtilities.wrapGcReader(reader, CoverageUtils.getParameters(params, layers[i].getCoverage().getParameters())), style); 
 						layer.setTitle(layers[i].getName());
 						layer.setQuery(Query.ALL);
 						map.addLayer(layer);

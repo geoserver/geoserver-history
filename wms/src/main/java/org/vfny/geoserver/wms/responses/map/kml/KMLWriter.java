@@ -884,6 +884,7 @@ public class KMLWriter extends OutputStreamWriter {
     	LOGGER.finer("applying one symbolizer: " + symbolizers[0].toString() );
     
     	final AbstractGridCoverage2DReader gcReader = (AbstractGridCoverage2DReader) feature.getAttribute("grid");
+    	// TODO add read parameters feature.getAttribute("params")
 		final HttpServletRequest request = this.mapContext.getRequest().getHttpServletRequest();
 		final String baseURL = org.vfny.geoserver.util.Requests.getBaseUrl(request, null);    	
 

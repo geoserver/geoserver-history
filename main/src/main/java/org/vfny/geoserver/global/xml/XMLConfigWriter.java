@@ -1472,17 +1472,16 @@ public class XMLConfigWriter {
 			// STORING READ PARAMETERS
 			//
 			// ///////////////////////////////////////////////////////////////////////
-			if (cv.getParamKeys() != null && cv.getParamKeys().size() != 0) {
+			if (cv.getParameters() != null && cv.getParameters().size() != 0) {
 				cw.openTag("parameters");
 				
-				final Iterator i = cv.getParamKeys().iterator();
+				final Iterator i = cv.getParameters().keySet().iterator();
 				final HashMap temp = new HashMap();
-				int index = 0;
 				while (i.hasNext()) {
 					String key = (String) i.next();
 					if( "values_palette".equalsIgnoreCase(key) ) {
 						String text = "";
-	                	Object palVal = cv.getParamValues().get(index);
+	                	Object palVal = cv.getParameters().get(key);
 	                    if(palVal instanceof Color[]) {
 							for(int col=0; col<((Color[])palVal).length; col++ ) {
 								String colString = "#" +
@@ -1499,10 +1498,9 @@ public class XMLConfigWriter {
 						temp.put("value", text);
 					} else {
 						temp.put("name", key);
-						temp.put("value", cv.getParamValues().get(index).toString().replaceAll("\"","'"));
+						temp.put("value", cv.getParameters().get(key).toString().replaceAll("\"","'"));
 					}
 					cw.attrTag("parameter", temp);
-					index++;
 				}
 				
 				cw.closeTag("parameters");

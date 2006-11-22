@@ -6,11 +6,12 @@ package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.servlet.ServletException;
@@ -21,20 +22,13 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
-import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.FactoryRegistryException;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridCoverageReader;
-import org.opengis.parameter.GeneralParameterValue;
-import org.opengis.parameter.InvalidParameterValueException;
-import org.opengis.parameter.ParameterDescriptor;
-import org.opengis.parameter.ParameterNotFoundException;
-import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -163,69 +157,19 @@ public final class CoveragesEditorAction extends ConfigAction {
 		if(cvStoreInfo == null) {
 			cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(), catalog);
 		}
-		GridCoverage gc = null; 
-		
-		try {
-			final Format format = cvStoreInfo.getFormat();
-			final ParameterValueGroup params = format.getReadParameters();
-			GridCoverageReader reader = cvStoreInfo.getReader();
-			if (reader == null)
-				try {
-					reader = ((AbstractGridFormat) format).getReader(CoverageUtils.getResourceAsFile(cvStoreInfo.getUrl(), getServletContext(), null/*catalog.getBaseDir()*/));
-				} catch (MalformedURLException ex) {
-					throw new ServletException(ex);
-				}
-            // After extracting params into a map
-            List parameters = new ArrayList(); // values used for connection
-			if (params != null) {
-				final List list = params.values();
-				final Iterator it = list.iterator();
-				ParameterValue param;
-				ParameterDescriptor descr;
-				String key;
-
-				Object value;
-				while (it.hasNext()) {
-					param = ((ParameterValue) it.next());
-					descr = (ParameterDescriptor) param.getDescriptor();
-					key = descr.getName().toString();
-					if (AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString().equalsIgnoreCase(key))
-						value = null;
-					else
-					    value = CoverageUtils.getCvParamValue(key, param, coverageForm.getParams());
-					if (value != null) {
-					    //params.parameter(key).setValue(value);
-					    parameters.add(new DefaultParameterDescriptor(key, value.getClass(), null, value).createValue());
-					}
-				}
+		final Format format = cvStoreInfo.getFormat();
+		AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
+		if (reader == null)
+			try {
+				reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(CoverageUtils.getResourceAsFile(cvStoreInfo.getUrl(), getServletContext(), null/*catalog.getBaseDir()*/));
+			} catch (MalformedURLException ex) {
+				throw new ServletException(ex);
 			}
-			gc = reader.read((GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]));
-			if (gc == null || !(gc instanceof GridCoverage2D))
-				throw new IOException(
-						"The requested coverage could not be found.");
-		} catch (InvalidParameterValueException e) {
-			throw new ServletException(e);
-		} catch (ParameterNotFoundException e) {
-			throw new ServletException(e);
-		} catch (MalformedURLException e) {
-			throw new ServletException(e);
-		} catch (IllegalArgumentException e) {
-			throw new ServletException(e);
-		} catch (SecurityException e) {
-			throw new ServletException(e);
-		} catch (IOException e) {
-			throw new ServletException(e);
-		}
 
 		try {
-			final GridCoverage2D coverage = (GridCoverage2D) gc;
-			final CoordinateReferenceSystem sourceCRS = coverage
-					.getEnvelope2D().getCoordinateReferenceSystem();
-			final GeneralEnvelope gEnvelope = (GeneralEnvelope) gc
-					.getEnvelope();
+			final CoordinateReferenceSystem sourceCRS = reader.getCrs();
+			final GeneralEnvelope gEnvelope = reader.getOriginalEnvelope();
 			final GeneralEnvelope targetEnvelope = gEnvelope;
-//			final GeneralEnvelope envelope = CoverageStoreUtils
-//					.adjustEnvelopeLongitudeFirst(sourceCRS, targetEnvelope);
 			final GeneralEnvelope envelope =  targetEnvelope;
 
 			if (!sourceCRS.getIdentifiers().isEmpty()) {
@@ -298,8 +242,18 @@ public final class CoveragesEditorAction extends ConfigAction {
 		/**
 		 * Sync params
 		 */
-		config.setParamKeys(form.getParamKeys());
-		config.setParamValues(form.getParamValues());
+		final Map params = new HashMap();
+		Iterator it = form.getParamKeys().iterator();
+		String paramKey;
+		String paramValue;
+		int index = 0;
+		while (it.hasNext()) {
+			paramKey = (String) it.next();
+			paramValue = (String) form.getParamValues().get(index);
+			params.put(paramKey, paramValue);
+			index++;
+		}
+		config.setParameters(params);
 	}
 
 	/**

@@ -7,20 +7,15 @@ package org.vfny.geoserver.wms.servlets;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetMapKvpReader;

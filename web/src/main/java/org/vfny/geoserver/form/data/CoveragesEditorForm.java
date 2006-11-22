@@ -169,7 +169,7 @@ public final class CoveragesEditorForm extends ActionForm {
 	 */
 	private String newCoverage;
 
-	private ArrayList paramHelp;
+	private List paramHelp;
 
 	private List paramKeys;
 
@@ -387,14 +387,27 @@ public final class CoveragesEditorForm extends ActionForm {
 		if (styles instanceof org.vfny.geoserver.form.data.AttributeDisplay) {
 			// TODO why I am here?
 		}
-		// //
-		//
-		//
-		//
-		// //
-		this.paramHelp = type.getParamHelp();
-		this.paramKeys = type.getParamKeys();
-		this.paramValues = type.getParamValues();
+
+		/**
+		 * Sync params
+		 */
+		Iterator it = type.getParameters().keySet().iterator();
+		String paramKey;
+		String paramValue;
+		List paramHelp = new ArrayList();
+		List paramKeys = new ArrayList();
+		List paramValues = new ArrayList();
+		while (it.hasNext()) {
+			paramKey = (String) it.next();
+			paramValue = (String) type.getParameters().get(paramKey);
+			paramHelp.add(paramKey);
+			paramKeys.add(paramKey);
+			paramValues.add(paramValue);
+		}
+		
+		this.paramHelp = paramHelp;
+		this.paramKeys = paramKeys;
+		this.paramValues = paramValues;
 	}
 
 	public ActionErrors validate(ActionMapping mapping,
