@@ -12,6 +12,7 @@ import java.util.TreeSet;
 import net.opengis.wfs.GetCapabilitiesType;
 
 import org.geoserver.data.GeoServerCatalog;
+import org.geoserver.ows.ServiceException;
 import org.geoserver.ows.http.VersionComparator;
 
 /**
@@ -56,6 +57,16 @@ public class GetCapabilities {
 				|| request.getAcceptVersions().getVersion().isEmpty() ) {
 			//no, respond with highest
 			return new CapabilitiesTransformer.WFS1_1( wfs, catalog );
+		}
+		
+		//first check the format of each of the version numbers
+		for ( Iterator i = request.getAcceptVersions().getVersion().iterator(); i.hasNext(); ) {
+			String version = (String) i.next();
+			if ( !version.matches( "[0-99]\\.[0-99]\\.[0-99]" ) ) {
+				String msg = version + " is an invalid version numver";
+				throw new WFSException( msg, "VersionNegotiationFailed");
+				
+			}
 		}
 		
 		VersionComparator vc = new VersionComparator( VersionComparator.DESCENDING );
