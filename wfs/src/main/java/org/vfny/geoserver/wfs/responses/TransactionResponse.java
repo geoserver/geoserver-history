@@ -472,20 +472,19 @@ public class TransactionResponse implements Response {
                     //
                     Set fids = new HashSet();
                     LOGGER.finer("Preprocess to remember modification as a set of fids" );                    
-                    FeatureReader preprocess = store.getFeatures( filter ).reader();
+                    FeatureCollection features = store.getFeatures( filter );
+                    Iterator preprocess = features.iterator();
                     try {
                         while( preprocess.hasNext() ){
-                            Feature feature = preprocess.next();
+                            Feature feature = (Feature) preprocess.next();
                             fids.add( feature.getID() );
                             envelope.expandToInclude( feature.getBounds() );
                         }
                     } catch (NoSuchElementException e) {
                         throw new ServiceException( "Could not aquire FeatureIDs", e );
-                    } catch (IllegalAttributeException e) {
-                        throw new ServiceException( "Could not aquire FeatureIDs", e );
-                    }
+                    } 
                     finally {
-                        preprocess.close();
+                        features.close( preprocess );
                     }
                     
                     try{
@@ -593,8 +592,8 @@ public class TransactionResponse implements Response {
 
         try {
 			// HACK: turned the collection into a feature reader for the validation processor
-			FeatureReader fr = DataUtilities.reader(collection);
-            validation.runFeatureTests(dsid, type, fr, results);
+			
+            validation.runFeatureTests(dsid, collection, results);
         } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
             throw new DataSourceException("Validation Failed", badIdea);

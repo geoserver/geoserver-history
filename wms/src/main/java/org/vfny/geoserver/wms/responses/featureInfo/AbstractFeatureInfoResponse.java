@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
@@ -215,7 +216,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
             for (int i = 0; i < layerCount; i++) {
                 FeatureTypeInfo finfo = requestedLayers[i];
                 Query q = new DefaultQuery( finfo.getTypeName(), null, getFInfoFilter,request.getFeatureCount(), Query.ALL_NAMES, null ); 
-                FeatureResults match = finfo.getFeatureSource().getFeatures(q);
+                FeatureCollection match = finfo.getFeatureSource().getFeatures(q);
 
                 //this was crashing Gml2FeatureResponseDelegate due to not setting
                 //the featureresults, thus not being able of querying the SRS

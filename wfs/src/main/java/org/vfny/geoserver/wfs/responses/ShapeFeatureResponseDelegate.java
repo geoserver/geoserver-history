@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -206,7 +207,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
         
         FeatureCollection[] featureResults = (FeatureCollection[]) resultsList
         	.toArray(new FeatureCollection[resultsList.size()]);
-        FeatureReader reader = featureResults[0].reader();
+        Iterator reader = featureResults[0].iterator();
         String name = featureResults[0].getSchema().getTypeName();
         
         String namePath = tempDir+name;
@@ -216,6 +217,9 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
         } catch (IOException e)
         {
         	throw e;
+        }
+        finally {
+        	featureResults[ 0 ].close( reader );
         }
         
         // BEGIN RELOADING and ZIPPING
@@ -292,7 +296,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     private void writeOut(String name,
     						String tempDir, 
 				    		FeatureCollection[] featureResults, 
-				    		FeatureReader reader) 
+				    		Iterator reader) 
     throws IOException
     {
     	//File file = new File(System.getProperty("java.io.tmpdir"), name+".zip");

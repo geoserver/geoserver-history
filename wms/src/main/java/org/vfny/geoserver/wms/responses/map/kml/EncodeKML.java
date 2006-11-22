@@ -264,7 +264,7 @@ public class EncodeKML {
         writer.startDocument("GeoServer", null);
         for (int i = 0; i < nLayers; i++) {
             MapLayer layer = layers[i];
-            FeatureReader featureReader = null;
+            Iterator featureReader = null;
             FeatureSource fSource = layer.getFeatureSource();
             FeatureType schema = fSource.getSchema();
             
@@ -317,7 +317,7 @@ public class EncodeKML {
                 Query bboxQuery = new DefaultQuery(schema.getTypeName(),
                         bboxFilter);
                 
-                featureReader = fSource.getFeatures(bboxQuery).reader();
+                
                 FeatureCollection fc = fSource.getFeatures(bboxQuery);
                 
                 int kmscore = mapContext.getRequest().getKMScore(); //KMZ score value
@@ -349,15 +349,8 @@ public class EncodeKML {
                         append(t.getMessage()).toString());
                 ioe.setStackTrace(t.getStackTrace());
                 throw ioe;
-            } finally {
-                if (featureReader != null) {
-                    try{
-                        featureReader.close();
-                    }catch(IOException ioe){
-                        //featureReader was probably closed already.
-                    }
-                }
-            }
+            } 
+               
         }
         writer.endDocument();
     }

@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
@@ -300,7 +301,7 @@ public class SVGEncoder {
     }
 
     private void writeLayers(FeatureTypeInfo[] layers,
-        FeatureResults[] results, Style[] styles)
+        FeatureCollection[] results, Style[] styles)
         throws IOException, AbortedException {
         int nLayers = results.length;
         int nConfigs = ((layers != null) && (layers.length >= nLayers))
@@ -316,12 +317,10 @@ public class SVGEncoder {
                 writer.setMaximunFractionDigits(defMaxDecimals);
             }
 
-            FeatureReader featureReader = null;
-
-            try {
+           try {
                 LOGGER.fine("obtaining FeatureReader for "
                     + layerConfig.getName());
-                featureReader = results[i].reader();
+                
                 LOGGER.fine("got FeatureReader, now writing");
 
                 String groupId = null;
@@ -336,7 +335,7 @@ public class SVGEncoder {
                 //}
                 writer.write("<g id=\"" + groupId + "\" class=\"" + groupId
                     + "\">\n");
-                writeFeatures(featureReader);
+                writeFeatures( results[i] );
                 writer.write("</g>\n");
             } catch (IOException ex) {
                 throw ex;
@@ -350,11 +349,7 @@ public class SVGEncoder {
                         + t.getMessage());
                 ioe.setStackTrace(t.getStackTrace());
                 throw ioe;
-            } finally {
-                if (featureReader != null) {
-                    featureReader.close();
-                }
-            }
+            } 
         }
     }
 
@@ -422,12 +417,13 @@ public class SVGEncoder {
      * @throws AbortedException DOCUMENT ME!
      * @throws DataSourceException DOCUMENT ME!
      */
-    private void writeFeatures(FeatureReader reader)
+    private void writeFeatures(FeatureCollection features)
         throws IOException, AbortedException {
         Feature ft;
 
+        Iterator reader = features.iterator();
         try {
-            this.featureType = reader.getFeatureType();
+            this.featureType = features.getSchema();
 
             int prevSkipCount = coordsSkipCount;
             coordsSkipCount = 0;
@@ -446,7 +442,7 @@ public class SVGEncoder {
                     throw new AbortedException("writing features");
                 }
 
-                ft = reader.next();
+                ft = (Feature) reader.next();
                 writeGeometry(ft);
             }
 
@@ -459,8 +455,11 @@ public class SVGEncoder {
             coordsSkipCount += prevSkipCount;
         } catch (NoSuchElementException ex) {
             throw new DataSourceException(ex.getMessage(), ex);
-        } catch (IllegalAttributeException ex) {
-            throw new DataSourceException(ex.getMessage(), ex);
+        } 
+        finally {
+        	if ( reader != null ) {
+        		features.close( reader );
+        	}
         }
     }
 

@@ -11,6 +11,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -19,6 +20,7 @@ import java.util.logging.Logger;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureReader;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -307,12 +309,13 @@ public class SVGWriter extends OutputStreamWriter {
         super.write('\n');
     }
 
-    public void writeFeatures(FeatureReader reader, String style)
+    public void writeFeatures(FeatureCollection features,  String style)
         throws IOException, AbortedException {
         Feature ft;
 
+        Iterator reader = features.iterator();
         try {
-            FeatureType featureType = reader.getFeatureType();
+            FeatureType featureType = features.getSchema();
             Class gtype = featureType.getDefaultGeometry().getType();
 
             boolean doCollect = false;
@@ -341,7 +344,7 @@ public class SVGWriter extends OutputStreamWriter {
             }
 
             while (reader.hasNext()) {
-                ft = reader.next();
+                ft = (Feature) reader.next();
                 writeFeature(ft);
                 ft = null;
             }
@@ -353,8 +356,11 @@ public class SVGWriter extends OutputStreamWriter {
             LOGGER.fine("encoded " + featureType.getTypeName());
         } catch (NoSuchElementException ex) {
             throw new DataSourceException(ex.getMessage(), ex);
-        } catch (IllegalAttributeException ex) {
-            throw new DataSourceException(ex.getMessage(), ex);
+        }
+        finally {
+        	if ( reader != null ) {
+        		features.close( reader );
+        	}
         }
     }
 

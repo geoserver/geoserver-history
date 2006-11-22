@@ -336,11 +336,11 @@ public class FeatureResponse implements Response {
                         ((FeatureLocking) source).setFeatureLock(featureLock);
                     }
 
-                    FeatureReader reader = null;
+                    Iterator reader = null;
 
                     try {
-                        for (reader = features.reader(); reader.hasNext();) {
-                            feature = reader.next();
+                        for (reader = features.iterator(); reader.hasNext();) {
+                            feature = (Feature) reader.next();
                             fid = feature.getID();
 
                             if (!(source instanceof FeatureLocking)) {
@@ -374,9 +374,7 @@ public class FeatureResponse implements Response {
                             }
                         }
                     } finally {
-                        if (reader != null) {
-                            reader.close();
-                        }
+                        features.close( reader );
                     }
 
                     if (!lockedFids.isEmpty()) {
@@ -410,10 +408,7 @@ public class FeatureResponse implements Response {
         } catch (NoSuchElementException e) {
             throw new ServiceException(e, "problem with FeatureResults",
                 request.getHandle());
-        } catch (IllegalAttributeException e) {
-            throw new ServiceException(e, "problem with FeatureResults",
-                request.getHandle());
-        }
+        } 
     }
 
     /**
@@ -445,7 +440,7 @@ public class FeatureResponse implements Response {
      *
      * @throws WfsException For any problems with the DataSource.
      */
-    private static FeatureResults getFeatures(Query query,
+    private static FeatureCollection getFeatures(Query query,
         FeatureTypeInfo meta, int maxFeatures) throws WfsException {
         LOGGER.finest("about to get query: " + query);
 
@@ -455,7 +450,7 @@ public class FeatureResponse implements Response {
             propertyNames = query.getPropertyNames();
         }
 
-        FeatureResults features = null;
+        FeatureCollection features = null;
 
         try {
             FeatureSource data = meta.getFeatureSource();

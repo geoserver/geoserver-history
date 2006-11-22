@@ -109,6 +109,7 @@ public class CatalogLoaderTest extends TestCase {
 		Element namespaceElement = doc.createElement( "namespace" );
 		namespaceElement.setAttribute( "uri", "http://somenamespace" );
 		namespaceElement.setAttribute( "prefix", "some" );
+		namespaceElement.setAttribute( "default", "true" );
 		namespacesElement.appendChild( namespaceElement );
 		
 		//create data stores

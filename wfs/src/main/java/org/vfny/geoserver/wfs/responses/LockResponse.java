@@ -23,6 +23,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
@@ -183,16 +184,16 @@ public class LockResponse implements Response {
             FeatureTypeInfo meta = catalog.getFeatureTypeInfo(curTypeName);
             NameSpaceInfo namespace = meta.getDataStoreInfo().getNameSpace();
             FeatureSource source = meta.getFeatureSource();
-            FeatureResults features = source.getFeatures(curFilter);
+            FeatureCollection features = source.getFeatures(curFilter);
 
             if( source instanceof FeatureLocking){
                 ((FeatureLocking)source).setFeatureLock(fLock);
             }
-            FeatureReader reader = null;
+            Iterator reader = null;
 
             try {
-                for (reader = features.reader(); reader.hasNext();) {
-                    Feature feature = reader.next();
+                for (reader = features.iterator(); reader.hasNext();) {
+                    Feature feature = (Feature) reader.next();
                     String fid = feature.getID();
                     if( !(source instanceof FeatureLocking)){
                         LOGGER.fine("Lock " + fid +
@@ -229,20 +230,9 @@ public class LockResponse implements Response {
                         }
                     }
                 }
-            } catch (IllegalAttributeException e) {
-                // TODO: JG - I really dont like this
-                // reader says it will throw this if the attribtues do not match
-                // the FeatureTypeInfo
-                // I figure if this is thrown we are poorly configured or
-                // the DataStoreInfo needs some quality control
-                //
-                // should rollback the lock as well :-(
-                throw new WfsException("Lock request " + curFilter
-                    + " did not match " + curTypeName);
-            } finally {
-                if (reader != null) {
-                    reader.close();
-                }
+            } 
+            finally {
+                features.close( reader );
             }
         }
 

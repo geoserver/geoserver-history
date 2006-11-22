@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureResults;
@@ -69,60 +70,62 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         PrintWriter writer = new PrintWriter(osw);
         writer.println("<html><body>");
 
-        FeatureReader reader = null;
-        try {
-            for (int i = 0; i < results.size(); i++) {
-            	FeatureCollection fr = (FeatureCollection) results.get(i);
-                FeatureType schema = fr.getSchema();
-
-                writer.println("<table border='1'>");
-                writer.println("<tr><th colspan=" + schema.getAttributeCount()
-                    + " scope='col'>" + schema.getTypeName() + " </th></tr>");
-                writer.println("<tr>");
-
-                for (int j = 0; j < schema.getAttributeCount(); j++) {
-                    writer.println("<td>"
-                        + schema.getAttributeType(j).getName() + "</td>");
-                }
-
-                writer.println("</tr>");
-
-                //writer.println("Found " + fr.getCount() + " in " + schema.getTypeName());
-                reader = fr.reader();
-
-                while (reader.hasNext()) {
-                    Feature f = reader.next();
-                    AttributeType[] types = schema.getAttributeTypes();
-                    writer.println("<tr>");
-
-                    for (int j = 0; j < types.length; j++) {
-                        if (Geometry.class.isAssignableFrom(types[j].getType())) {
-                            writer.println("<td>");
-                            writer.println("[GEOMETRY]");
-                            writer.println("</td>");
-                        } else {
-                            writer.println("<td>");
-                            writer.print(f.getAttribute(types[j].getName()));
-                            writer.println("</td>");
-                        }
-                    }
-
-                    writer.println("</tr>");
-                }
-
-                writer.println("</table>");
-                writer.println("<p>");
-                writer.println("</body></html>");
-            }
-        } catch (IllegalAttributeException ife) {
-            writer.println("Unable to generate information " + ife);
-        }
-        finally
-		{
-        	if (reader != null)
-        		reader.close();
-		}
+        Iterator reader = null;
         
+        for (int i = 0; i < results.size(); i++) {
+        	FeatureCollection fr = (FeatureCollection) results.get(i);
+            FeatureType schema = fr.getSchema();
+
+            writer.println("<table border='1'>");
+            writer.println("<tr><th colspan=" + schema.getAttributeCount()
+                + " scope='col'>" + schema.getTypeName() + " </th></tr>");
+            writer.println("<tr>");
+
+            for (int j = 0; j < schema.getAttributeCount(); j++) {
+                writer.println("<td>"
+                    + schema.getAttributeType(j).getName() + "</td>");
+            }
+
+            writer.println("</tr>");
+
+            //writer.println("Found " + fr.getCount() + " in " + schema.getTypeName());
+            reader = fr.iterator();
+
+            try {
+				while (reader.hasNext()) {
+				    Feature f = (Feature) reader.next();
+				    AttributeType[] types = schema.getAttributeTypes();
+				    writer.println("<tr>");
+
+				    for (int j = 0; j < types.length; j++) {
+				        if (Geometry.class.isAssignableFrom(types[j].getType())) {
+				            writer.println("<td>");
+				            writer.println("[GEOMETRY]");
+				            writer.println("</td>");
+				        } else {
+				            writer.println("<td>");
+				            writer.print(f.getAttribute(types[j].getName()));
+				            writer.println("</td>");
+				        }
+				    }
+
+				    writer.println("</tr>");
+				}
+			} 
+            finally {
+            	if ( reader != null ) {
+            		fr.close( reader );
+            	}
+            
+            }
+
+            writer.println("</table>");
+            writer.println("<p>");
+            writer.println("</body></html>");
+        }
+         
+        
+       
         writer.flush();
     }
 }

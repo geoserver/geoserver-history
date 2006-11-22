@@ -75,6 +75,7 @@
 		</xsd:annotation>
 		<xsd:attribute name="name" type="xsd:string"/>
 		<xsd:attribute name="value" type="xsd:string"/>
+		<xsd:attribute name="file" type="xsd:boolean"/>
 	</xsd:complexType>
 
 	<xsd:complexType name="NamespacesType">

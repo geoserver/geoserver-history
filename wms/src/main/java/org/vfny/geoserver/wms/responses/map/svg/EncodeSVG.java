@@ -6,12 +6,14 @@ package org.vfny.geoserver.wms.responses.map.svg;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.Expression;
@@ -189,7 +191,7 @@ public class EncodeSVG {
 
         for (int i = 0; i < nLayers; i++) {
             MapLayer layer = layers[i];
-            FeatureReader featureReader = null;
+            
             FeatureSource fSource = layer.getFeatureSource();
             FeatureType schema = fSource.getSchema();
 
@@ -206,7 +208,8 @@ public class EncodeSVG {
 
                 LOGGER.fine("obtaining FeatureReader for "
                     + schema.getTypeName());
-                featureReader = fSource.getFeatures(bboxQuery).reader();
+                FeatureCollection features = fSource.getFeatures(bboxQuery);
+                
                 LOGGER.fine("got FeatureReader, now writing");
 
                 String groupId = null;
@@ -226,7 +229,7 @@ public class EncodeSVG {
 
                 writeDefs(schema);
 
-                writer.writeFeatures(featureReader, styleName);
+                writer.writeFeatures(features, styleName);
                 writer.write("</g>\n");
             } catch (IOException ex) {
                 throw ex;
@@ -240,11 +243,7 @@ public class EncodeSVG {
                         + t.getMessage());
                 ioe.setStackTrace(t.getStackTrace());
                 throw ioe;
-            } finally {
-                if (featureReader != null) {
-                    featureReader.close();
-                }
-            }
+            } 
         }
     }
 }

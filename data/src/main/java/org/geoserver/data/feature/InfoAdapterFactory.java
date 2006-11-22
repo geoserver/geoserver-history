@@ -105,6 +105,13 @@ public class InfoAdapterFactory implements ResolveAdapterFactory,
 					info.setNamespacePrefix( catalog.getNamespaceSupport().getPrefix( schema ) );
 				}
 			}
+			else {
+				//set the default prefix
+				String prefix = catalog.getNamespaceSupport().getPrefix( 
+					catalog.getNamespaceSupport().getURI( "" )	
+				);
+				info.setNamespacePrefix( prefix );
+			}
 			
 			//TODO: set based on config
 			info.setEnabled( true );
