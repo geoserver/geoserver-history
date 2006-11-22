@@ -16,7 +16,7 @@ public class TransformerResponse extends Response {
 	}
 
 	public String getMimeType(Operation operation) {
-		return "text/xml";
+		return "application/xml";
 	}
 	
 	public void write( Object value, OutputStream output, Operation operation )
