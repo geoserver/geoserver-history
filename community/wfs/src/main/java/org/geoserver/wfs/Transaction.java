@@ -589,20 +589,20 @@ public class Transaction {
 			            //
 			            Set fids = new HashSet();
 			            LOGGER.finer("Preprocess to remember modification as a set of fids" );                    
-			            FeatureReader preprocess = store.getFeatures( filter ).reader();
+			            FeatureCollection features = store.getFeatures( filter );
+			            Iterator preprocess = features.iterator();
+			         
 			            try {
 			                while( preprocess.hasNext() ){
-			                    Feature feature = preprocess.next();
+			                    Feature feature = (Feature) preprocess.next();
 			                    fids.add( feature.getID() );
 			                    envelope.expandToInclude( feature.getBounds() );
 			                }
 			            } catch (NoSuchElementException e) {
 			                throw new WFSException( "Could not aquire FeatureIDs", e );
-			            } catch (IllegalAttributeException e) {
-			                throw new WFSException( "Could not aquire FeatureIDs", e );
-			            }
+			            } 
 			            finally {
-			                preprocess.close();
+			                features.close( preprocess );
 			            }
 			            
 			            try {
