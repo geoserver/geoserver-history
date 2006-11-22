@@ -1156,7 +1156,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     			keywords( featureType.getKeywords() );
     			
     			//default srs
-    			element( "DefaultSRS", "EPSG:" + featureType.getSRS() );
+    			element( "DefaultSRS", "urn:x-ogc:def:crs:EPSG:6.11.2:" + featureType.getSRS() );
     			
     			//TODO: other srs's
     			
@@ -1281,6 +1281,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 
                 start( "ogc:Id_Capabilities");
                 element( "ogc:FID", null );
+                element( "ogc:EID", null );
                 end( "ogc:Id_Capabilities");
                 
                 end("ogc:Filter_Capabilities");
@@ -1288,38 +1289,40 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     		
     		void functions() {
     			start("ogc:Functions");
-            	 	start("ogc:FunctionNames");
-            	 	
-            	 	Iterator itr = FactoryFinder.factories( FunctionExpression.class );
-            	 	
+    			
+    			Iterator itr = FactoryFinder.factories( FunctionExpression.class );
+    			if ( itr.hasNext() ) {
+    				start("ogc:FunctionNames");
             	 	SortedSet sortedFunctions = new TreeSet(
         	 			new Comparator(){
     	            	 	public int compare(Object o1, Object o2){
-                            String n1 = ((FunctionExpression) o1).getName();
-                            String n2 = ((FunctionExpression) o2).getName();
-                            return n1.toLowerCase().compareTo(n2.toLowerCase());
-    	            	 	}
-        	 			}
-     			);
+	                            String n1 = ((FunctionExpression) o1).getName();
+	                            String n2 = ((FunctionExpression) o2).getName();
+	                            return n1.toLowerCase().compareTo(n2.toLowerCase());
+		            	 	}
+	    	 			}
+	     			);
             	 	
-                 while (  itr.hasNext()   ) {
-                	 	sortedFunctions.add( itr.next() ); 
-                 }
+	                 while (  itr.hasNext()   ) {
+	            	 	sortedFunctions.add( itr.next() ); 
+	                 }
                  
-                 //write them now that functions are sorted by name
-                 FunctionExpression exp = null;
-                 itr = sortedFunctions.iterator();
-                 while (  itr.hasNext()   ) {
-                     FunctionExpression fe = (FunctionExpression) itr.next();
-                     String name = fe.getName();
-                     int nargs= fe.getArgCount();
-                     
-                     element( "ogc:FunctionName", name, attributes( new String[] { "nArgs", ""+nargs } ) );
-                     
-                 }
+	                 //write them now that functions are sorted by name
+	                 FunctionExpression exp = null;
+	                 itr = sortedFunctions.iterator();
+	                 while (  itr.hasNext()   ) {
+	                     FunctionExpression fe = (FunctionExpression) itr.next();
+	                     String name = fe.getName();
+	                     int nargs= fe.getArgCount();
+	                     
+	                     element( "ogc:FunctionName", name, attributes( new String[] { "nArgs", ""+nargs } ) );
+	                     
+	                 }
                  
-                 end( "ogc:FunctionNames");
-                 end( "ogc:Functions");
+	                 end( "ogc:FunctionNames");	
+    			}
+            	 	
+                end( "ogc:Functions");
             }
     		
     		/**
