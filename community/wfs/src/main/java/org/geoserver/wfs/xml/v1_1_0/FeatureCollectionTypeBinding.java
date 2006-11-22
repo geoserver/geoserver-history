@@ -5,6 +5,7 @@ import javax.xml.namespace.QName;
 
 import net.opengis.wfs.WFSFactory;
 
+import org.geotools.feature.FeatureCollection;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -75,6 +76,10 @@ public class FeatureCollectionTypeBinding extends AbstractComplexBinding {
 		this.wfsfactory = wfsfactory;
 	}
 
+	public int getExecutionMode() {
+		return AFTER;
+	}
+	
 	/**
 	 * @generated
 	 */
@@ -89,7 +94,7 @@ public class FeatureCollectionTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return FeatureCollection.class;
 	}
 	
 	/**
@@ -101,8 +106,7 @@ public class FeatureCollectionTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		return value;
 	}
 
 }
