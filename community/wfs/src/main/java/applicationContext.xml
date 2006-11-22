@@ -110,6 +110,8 @@
 	</bean>
 	<bean id="expiryKvpParser" class="org.geoserver.wfs.http.kvp.ExpiryKvpReader"/>
 	<bean id="resultTypeKvpParser" class="org.geoserver.wfs.http.kvp.ResultTypeKvpParser"/>
+	<bean id="acceptVersionsKvpParser" class="org.geoserver.wfs.http.kvp.AcceptVersionsKvpParser"/>
+
 	<!-- kvp request readers -->
 	<bean id="getCapabilitiesKvpReader"  
 		class="org.geoserver.wfs.http.kvp.GetCapabilitiesKvpRequestReader"/>
@@ -202,7 +204,7 @@
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="catalog"/>
 	</bean>
-	<bean id="gml3FeatureProducer" class="org.geoserver.wfs.xml.GML3FeatureProducer" 
+	<bean id="gml3FeatureProducer" class="org.geoserver.wfs.xml.GML3FeatureProducer2" 
 		parent="gml2FeatureProducer"/>
 		
 
