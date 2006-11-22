@@ -13,17 +13,20 @@ public class GetCapabilitiesKvpRequestReader extends WFSKvpRequestReader {
 	}
 	
 	public Object read(Object request, Map kvp) throws Exception {
-		//version
-		if ( kvp.containsKey( "version") ) {
-				
-			AcceptVersionsType acceptVersions = OWSFactory.eINSTANCE.createAcceptVersionsType();
-			acceptVersions.getVersion().add( kvp.get( "version") );
-			
-			GetCapabilitiesType getCapabilities = (GetCapabilitiesType) request;
-			getCapabilities.setAcceptVersions( acceptVersions );
-			
-		}
+		request = super.read( request, kvp );
 		
+		//TODO: remove this class
+//		//version
+//		if ( kvp.c7ontainsKey( "version") ) {
+//				
+//			AcceptVersionsType acceptVersions = OWSFactory.eINSTANCE.createAcceptVersionsType();
+//			acceptVersions.getVersion().add( kvp.get( "version") );
+//			
+//			GetCapabilitiesType getCapabilities = (GetCapabilitiesType) request;
+//			getCapabilities.setAcceptVersions( acceptVersions );
+//			
+//		}
+//		
 		return request;
 		
 	} 
