@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+  <!-- resource loader -->
+  <bean id="resourceLoader" class="org.geoserver.GeoServerResourceLoader"/>
+
+  <bean id="resourceLoaderInitializer" class="org.geoserver.web.GeoServerDataDirectoryInitializer"/>
+  
+  <!-- catalog  -->
+  <bean id="adapterFactoryFinder" class="org.geoserver.data.GeoServerResolveAdapterFactoryFinder"/>
+ 
+  <bean id="catalog"
+		class="org.geoserver.data.DefaultGeoServerCatalog">
+	<constructor-arg ref="adapterFactoryFinder"/>
+  </bean>
+  
+  <!-- adapter to turn catalog handles into "meta data" objects" -->
+  <bean id="infoAdapterFactory" class="org.geoserver.data.feature.InfoAdapterFactory">
+  	<constructor-arg ref="catalog"/>
+  	<constructor-arg ref="resourceLoader"/>
+  </bean>
+ 
+  <bean id="serviceFinder" class="org.geotools.catalog.adaptable.AdaptingServiceFinder">
+  	<constructor-arg ref="catalog"/>
+  	<constructor-arg>
+  	  <bean class="org.geoserver.data.GeoServerServiceFinder">
+	    <constructor-arg ref="catalog"></constructor-arg>	
+      </bean>
+  	</constructor-arg>
+  </bean>
+  
+  <!-- loading the catalog with data -->
+  <bean id="catalogLoader" class="org.geoserver.data.CatalogLoader">
+  	<constructor-arg ref="resourceLoader"/>
+  	<constructor-arg ref="catalog"/>
+  	<constructor-arg ref="serviceFinder"/>
+  </bean>
+  
+  <!-- some default catalog service factories -->
+  <bean id="sldServiceFactory" 
+  	class="org.geotools.catalog.styling.SLDServiceFactory"/>
+
+  <bean id="gmlServiceFactory" class="org.geotools.catalog.DataStoreFactoryServiceFactory">
+  	<constructor-arg>
+  		<bean class="org.geotools.data.gml.GMLDataStoreFactory"/>
+  	</constructor-arg>
+  </bean>  	 
+  
+  <!-- controller which dispatches to ows services -->
+  <bean id="dispatcher" class="org.geoserver.ows.http.OWSDispatcher"/>
+  	
+  <!-- interceptor which initializes ows services -->
+  <bean id="owsInitializer" class="org.geoserver.ows.http.OWSInitializer"/>
+  
+  <!-- schema file publisher -->
+  <bean id="schemaPublisher" class="org.geoserver.web.SchemaPublisher">
+  	<constructor-arg ref="resourceLoader"/>
+  </bean>
+  
+  <bean id="owsDispatcherMapping" 
+  	class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+  	
+  	<property name="interceptors">
+  		<list>
+			 <ref bean="owsInitializer"/>
+  		</list>
+  	</property>
+  	
+  	<property name="mappings">
+  	  <props>
+  	    <prop key="/ows">dispatcher</prop>
+      	<prop key="/ows/*">dispatcher</prop>
+      	<prop key="/schemas/**/*.xsd">schemaPublisher</prop>
+      </props>
+    </property>
+    
+  </bean>
+  
+  <!-- bean id="jspInitializer" class="org.geoserver.web.JSPInitializer"/-->
+</beans>
