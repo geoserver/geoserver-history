@@ -40,61 +40,63 @@ public class OWSDispatcher extends AbstractController {
 		HttpServletRequest httpRequest, HttpServletResponse httpResponse
 	) throws Exception {
 	
-		File cache = cacheInputStream( httpRequest );
+		//TODO: calls to readOpContext and readBody are made twice, make them here
 		
+		//read the input
+		File cache = cacheInputStream( httpRequest );
+		Map kvp = parseKVP( httpRequest );
+		
+		//find the service
+		Service service = service( httpRequest, httpResponse, kvp, cache );
+
 		try {
+			
 			Operation operation = null;
 			try {
-				operation = dispatch( httpRequest, httpResponse, cache );
-			}
-			catch( Throwable t ) {
-				throw new RuntimeException( t );
-			}
-			
-			try {
+				operation = dispatch( httpRequest, httpResponse, kvp, cache, service );
 				execute( httpRequest, httpResponse, operation );
 			}
-			catch( ServiceException e ) {
-				exception( e, httpRequest, httpResponse, operation );
-			}
 			catch( Throwable t ) {
-				throw new RuntimeException( t );
+				ServiceException se = null;
+				if ( t instanceof ServiceException ) {
+					se = (ServiceException) t;
+				}
+				else {
+					se = new ServiceException( t );
+				}
+				
+				exception( se, service, httpRequest, httpResponse );
 			}
-			
-			return null;
 		} 
 		finally {
 			if (cache != null) {
 				cache.delete();	
 			}
 		}
+		
+		return null;
 	}
 	
-	Operation dispatch( HttpServletRequest httpRequest, HttpServletResponse httpResponse, File cache ) throws
-		Throwable {
+	Service service( HttpServletRequest httpRequest, HttpServletResponse httpResponse, Map kvp, File cache ) 
+		throws Exception {
 		
-		//step 1: parse kvp set
-		Map kvp = parseKVP( httpRequest );
-		
-		//step 2: determine which operation is being called
-		String method = httpRequest.getMethod();
+		//determine which service is being requested
 		String service = null;
-		String request = null;
 		String version = null;
 		
-		if ( "get".equalsIgnoreCase( method ) ) {
-			//lookup in query string
+		String method = httpRequest.getMethod();
+		if ( "GET".equals( method ) ) {
+			//check kvp
 			service = (String) kvp.get( "service" );
-			request = (String) kvp.get( "request" );
 			version = (String) kvp.get( "version" );
 		}
-		else if ( "post".equalsIgnoreCase( method ) ) {
+		else {
+			//check the body
 			InputStream input = input( cache );
 			if ( input != null ) {
 				try {
 					Map xml = readOpPost( input );
 					service = (String) xml.get( "service" );
-					request = (String) xml.get( "request" );
 					version = (String) xml.get( "version" );
 				}
 				finally {
@@ -103,16 +105,53 @@ public class OWSDispatcher extends AbstractController {
 			}
 		}
 		
-		if ( service == null || request == null || version == null ) {
+		if ( service == null ) {
+			//one last check from the uri
 			Map map = readOpContext( httpRequest );
 			if ( service == null ) {
 				service = (String) map.get( "service" );
+				version = (String) map.get( "version" );
 			}
+		}
+		
+		if ( service == null ) {
+			//give up 
+			throw new RuntimeException( "Could not determine service from request" );
+		}
+		
+		//load from teh context
+		return findService( service, version );
+	}
+	
+	Operation dispatch( HttpServletRequest httpRequest, HttpServletResponse httpResponse, Map kvp, File cache,  Service serviceDescriptor ) throws
+		Throwable {
+		
+		//determine which operation is being called
+		String method = httpRequest.getMethod();
+		
+		String request = null;
+		if ( "get".equalsIgnoreCase( method ) ) {
+			//lookup in query string
+			request = (String) kvp.get( "request" );
+		}
+		else if ( "post".equalsIgnoreCase( method ) ) {
+			InputStream input = input( cache );
+			if ( input != null ) {
+				try {
+					Map xml = readOpPost( input );
+					request = (String) xml.get( "request" );
+				}
+				finally {
+					input.close();
+				}	
+			}
+		}
+		
+		if ( request == null ) {
+			Map map = readOpContext( httpRequest );
+			
 			if ( request == null ) {
 				request = (String) map.get( "request" );
-			}
-			if ( version == null ) {
-				version = (String) map.get( "version" );
 			}
 		}
 		
@@ -121,11 +160,9 @@ public class OWSDispatcher extends AbstractController {
 			throw new RuntimeException( msg );
 		}
 		
-		//step 2: look up the service
-		Service serviceDescriptor = findService( service, version );
+		// lookup the operation, initial lookup based on (service,request)
+		String service = serviceDescriptor.getId();
 		Object serviceBean = serviceDescriptor.getService();
-		
-		//step 3: lookup the operation, initial lookup based on (service,request)
 		Method operation = OWSUtils.method( serviceBean.getClass(), request );
 		if ( operation == null ) {
 			String msg = "Could not dispatch request: ( " + service + ", " + request + " )";
@@ -356,87 +393,7 @@ public class OWSDispatcher extends AbstractController {
 		
 		return sBean;
 	}
-	
-//	Operation findOperation( String service, String id, String version ) {
-//		Collection operations = loadOperations();
-//		
-//		//first just match on service,request
-//		List matches = new ArrayList();
-//		for ( Iterator itr = operations.iterator(); itr.hasNext(); ) {
-//			Operation opBean = (Operation) itr.next();
-//			Service sBean = opBean.getService();
-//			
-//			if (opBean.getId().equalsIgnoreCase( id ) ) {
-//				if ( service == null || service.equalsIgnoreCase( sBean.getId() ) ) {
-//					matches.add( opBean );
-//				}
-//			}
-//		}
-//		
-//		if ( matches.isEmpty() ) {
-//			String msg = "No operation: (" + service + "," + id + ",)"; 
-//			throw new RuntimeException( msg );
-//		}
-//		
-//		Operation opBean = null;
-//		//if multiple, use version to filter match
-//		if ( matches.size() > 1 ) {
-//			List vmatches = new ArrayList( matches );
-//			//match up the version
-//			if ( version != null ) {
-//				//version specified, look for a match
-//				for ( Iterator itr = vmatches.iterator(); itr.hasNext(); ) {
-//					Operation o = (Operation) itr.next();
-//					Service s = (Service) o.getService();
-//
-//					if ( version.equals( s.getVersion() ) ) 
-//						continue;
-//					
-//					itr.remove();
-//				}
-//				
-//				if ( vmatches.isEmpty() ) {
-//					//no matching version found, drop out and next step 
-//					// will sort to return highest version
-//					vmatches = new ArrayList( matches );
-//				}
-//			}
-//			
-//			//multiple operations found, sort by version
-//			if ( vmatches.size() > 1 ) {
-//				//use highest version
-//				Collections.sort( 
-//					vmatches, 
-//					new Comparator() {
-//
-//						public int compare( Object o1, Object o2 ) {
-//							String v1 = ((Operation)o1).getService().getVersion();
-//							String v2 = ((Operation)o2).getService().getVersion();
-//							
-//							if ( v1 != null ) {
-//								return -1*v1.compareTo( v2 );
-//							}
-//							else if ( v2 != null ) {
-//								return -1;
-//							}
-//							
-//							return 0;
-//						}
-//						
-//					}
-//				);
-//			}
-//			
-//			opBean = (Operation) vmatches.get( 0 );
-//		}
-//		else {
-//			//only a single match, that was easy
-//			opBean = (Operation) matches.get( 0 );
-//		}
-//		
-//		return opBean;
-//	}
-	
+
 	KvpRequestReader findKvpRequestReader( Class type ) {
 		Collection kvpReaders = 
 			getApplicationContext().getBeansOfType( KvpRequestReader.class ).values();
@@ -774,7 +731,7 @@ public class OWSDispatcher extends AbstractController {
 	}
 	
 	void exception( 
-		ServiceException e, HttpServletRequest request, HttpServletResponse response, Operation operation 
+		ServiceException e, Service service, HttpServletRequest request, HttpServletResponse response 
 	) {
 		
 		//look up the service exception handler
@@ -783,9 +740,9 @@ public class OWSDispatcher extends AbstractController {
 		
 		for ( Iterator h = handlers.iterator(); h.hasNext(); ) {
 			ServiceExceptionHandler handler = (ServiceExceptionHandler) h.next();
-			if ( handler.getServices().contains( operation.getService() ) )  {
+			if ( handler.getServices().contains( service ) )  {
 				//found one,
-				handler.handleServiceException( e, operation, response );
+				handler.handleServiceException( e, service, response );
 				return;
 			}
 		}
