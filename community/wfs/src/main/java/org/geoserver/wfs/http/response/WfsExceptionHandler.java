@@ -8,7 +8,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.http.util.ResponseUtils;
-import org.geoserver.ows.Operation;
+
+import org.geoserver.ows.Service;
 import org.geoserver.ows.ServiceException;
 import org.geoserver.ows.http.ServiceExceptionHandler;
 import org.geoserver.wfs.WFS;
@@ -38,14 +39,14 @@ public class WfsExceptionHandler extends ServiceExceptionHandler {
 	 * Encodes a ogc:ServiceExceptionReport to output.
 	 */
 	public void handleServiceException(ServiceException e,
-			Operation operation, HttpServletResponse response ) {
+			Service service, HttpServletResponse response ) {
 
-		String version = operation.getService().getVersion();
+		String version = service.getVersion();
 		if ( "1.0.0".equals( version ) ) {
-			handle1_0( e, operation, response );
+			handle1_0( e, response );
 		}
 		if ( "1.1.0".equals( version ) ) {
-			handle1_1( e, operation, response );
+			handle1_1( e,  response );
 		}
 		
 		//do nothing
@@ -53,7 +54,7 @@ public class WfsExceptionHandler extends ServiceExceptionHandler {
 	}
 	
 	public void handle1_0( ServiceException e,
-			Operation operation, HttpServletResponse response ) {
+			 HttpServletResponse response ) {
 		
 		try {
 			String tab = "   ";
@@ -105,7 +106,7 @@ public class WfsExceptionHandler extends ServiceExceptionHandler {
 	}
 
 	public void handle1_1( ServiceException e,
-			Operation operation, HttpServletResponse response ) {
+			 HttpServletResponse response ) {
 		
 		try {
 			String tab = "   ";
