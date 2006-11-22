@@ -46,6 +46,9 @@ public final class OWSBindingConfiguration
 		//container.registerComponentImplementation(OWS.UPDATESEQUENCETYPE,UpdateSequenceTypeBinding.class);
 		//container.registerComponentImplementation(OWS.VERSIONTYPE,VersionTypeBinding.class);
 		container.registerComponentImplementation(OWS.WGS84BOUNDINGBOXTYPE,WGS84BoundingBoxTypeBinding.class);
+	
+		//elements
+		container.registerComponentImplementation(OWS.EXCEPTIONREPORT, ExceptionReportBinding.class );
 	}
 
 }
