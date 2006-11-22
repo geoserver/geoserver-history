@@ -1,8 +1,12 @@
 package org.geoserver.xml.ows.v1_0_0;
 
 
+import org.geoserver.ows.ComplexEMFBinding;
 import org.geotools.xml.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import net.opengis.ows.v1_0_0.ExceptionType;
 import net.opengis.ows.v1_0_0.OWSFactory;		
 
 import javax.xml.namespace.QName;
@@ -43,9 +47,10 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class ExceptionTypeBinding extends AbstractComplexBinding {
+public class ExceptionTypeBinding extends ComplexEMFBinding {
 
 	OWSFactory owsfactory;		
+	
 	public ExceptionTypeBinding( OWSFactory owsfactory ) {
 		this.owsfactory = owsfactory;
 	}
@@ -64,7 +69,7 @@ public class ExceptionTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return ExceptionType.class;
 	}
 	
 	/**
@@ -79,5 +84,6 @@ public class ExceptionTypeBinding extends AbstractComplexBinding {
 		//TODO: implement
 		return null;
 	}
+	
 
 }
