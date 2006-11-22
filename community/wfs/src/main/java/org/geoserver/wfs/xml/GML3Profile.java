@@ -11,6 +11,10 @@ public class GML3Profile extends TypeMappingProfile {
 	
 	static Set profile = new HashSet();
 	static {
+		//basic
+		profile.add( new Name(  GML.NAMESPACE, GML.MeasureType.getLocalPart() ) );
+		
+		//geomtetries
 		profile.add( new Name(  GML.NAMESPACE, GML.PointType.getLocalPart() ) );
 		profile.add( new Name(  GML.NAMESPACE, GML.PointPropertyType.getLocalPart() ) );
 		profile.add( new Name(  GML.NAMESPACE, GML.MultiPointType.getLocalPart() ) );
@@ -23,10 +27,12 @@ public class GML3Profile extends TypeMappingProfile {
 		
 		profile.add( new Name(  GML.NAMESPACE, GML.PolygonType.getLocalPart() ) );
 		profile.add( new Name(  GML.NAMESPACE, GML.PolygonPropertyType.getLocalPart() ) );
+		profile.add( new Name(  GML.NAMESPACE, GML.SurfacePropertyType.getLocalPart() ) );
+		
 		profile.add( new Name(  GML.NAMESPACE, GML.MultiPolygonType.getLocalPart() ) );
 		profile.add( new Name(  GML.NAMESPACE, GML.MultiPolygonPropertyType.getLocalPart() ) );
 		
-		profile.add( new Name( GML.NAMESPACE, GML.AbstractGeometryType.getLocalPart() ) );
+		profile.add( new Name(  GML.NAMESPACE, GML.AbstractGeometryType.getLocalPart() ) );
 		
 	}
 	
