@@ -5,7 +5,7 @@
 
 	<parent>
 		<groupId>org.geoserver</groupId>
-		<artifactId>geoserver</artifactId>
+		<artifactId>community</artifactId>
 		<version>ows4</version>
 	</parent>
 
@@ -19,6 +19,11 @@
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>platform</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>ows</artifactId>
 		</dependency>
 
  		<dependency>
