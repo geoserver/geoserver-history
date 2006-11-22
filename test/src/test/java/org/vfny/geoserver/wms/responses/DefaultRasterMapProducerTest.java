@@ -8,11 +8,13 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.IllegalFilterException;
@@ -213,16 +215,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
      */
     private void testDefaultStyle(FeatureSource fSource)
         throws Exception {
-        /*System.out.println("****  Rendering "
-           + fSource.getSchema().getTypeName() + "   *********");
-         */
-        FeatureReader r = fSource.getFeatures().reader();
 
-        /*
-           while (r.hasNext()) {
-               System.out.println(r.next().getDefaultGeometry());
-           }
-         */
         Style style = getStyle("default.sld");
 
         Envelope env = getBlueLakeBounds();
