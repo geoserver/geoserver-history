@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -67,8 +68,8 @@ public class EMFUtils {
 		if ( feature != null ) 
 			return feature;
 		
-		//do a case insentive check
-		for ( Iterator itr = eobject.eClass().getEStructuralFeatures().iterator(); itr.hasNext(); ) {
+		//do a case insentive check, need to do the walk up the type hierarchy
+		for ( Iterator itr = eobject.eClass().getEAllStructuralFeatures().iterator(); itr.hasNext(); ) {
 			feature = (EStructuralFeature) itr.next();
 			if ( feature.getName().equalsIgnoreCase( property ) ) {
 				return feature;
