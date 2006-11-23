@@ -50,6 +50,16 @@ public class GetCapabilities {
 	
 	public CapabilitiesTransformer run( GetCapabilitiesType request ) throws WFSException {
 		
+		//TODO: this entire routine should be done by the dispatcher
+		
+		//make sure service is set, cite conformance thing
+		if ( !request.isSetService() ) {
+			//give up 
+			throw new WFSException( 
+				"Service not set", "MissingParameterValue", "service" 
+			);
+		}
+		
 		//do the version negotiation dance
 		
 		//any accepted versions
