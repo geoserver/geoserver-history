@@ -3,6 +3,7 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.DescribeFeatureTypeType;
 import net.opengis.wfs.WFSFactory;
 
 import org.geotools.xml.AbstractComplexBinding;
@@ -95,6 +96,10 @@ public class DescribeFeatureTypeTypeBinding extends AbstractComplexBinding {
 		return WFS.DESCRIBEFEATURETYPETYPE;
 	}
 	
+	public int getExecutionMode() {
+		return BEFORE;
+	}
+	
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -102,7 +107,7 @@ public class DescribeFeatureTypeTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return DescribeFeatureTypeType.class;
 	}
 	
 	/**
@@ -114,8 +119,19 @@ public class DescribeFeatureTypeTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		DescribeFeatureTypeType describeFeatureType = wfsfactory.createDescribeFeatureTypeType();
+		
+		//&lt;xsd:element maxOccurs="unbounded" minOccurs="0"
+        //   name="TypeName" type="xsd:QName"&gt;
+		describeFeatureType.getTypeName().addAll( node.getChildValues( QName.class ) );
+		
+		//lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
+		//   name="outputFormat" type="xsd:string" use="optional"&gt;
+		if ( node.hasAttribute( "outputFormat" ) ) {
+			describeFeatureType.setOutputFormat( (String) node.getAttributeValue( "outputFormat" ) );
+		}
+	
+		return describeFeatureType;
 	}
 
 }
