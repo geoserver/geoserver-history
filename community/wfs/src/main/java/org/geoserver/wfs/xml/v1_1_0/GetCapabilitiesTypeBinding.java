@@ -92,7 +92,9 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
 		getCapabilities.setSections( owsGetCapabilities.getSections() );
 		getCapabilities.setUpdateSequence( owsGetCapabilities.getUpdateSequence() );
 		
-		WFSBindingUtils.service( getCapabilities, node );
+		if ( node.hasAttribute( "service") ) {
+			getCapabilities.setService( (String) node.getAttributeValue( "service" ) );
+		}
 		
 		return getCapabilities;
 	}
