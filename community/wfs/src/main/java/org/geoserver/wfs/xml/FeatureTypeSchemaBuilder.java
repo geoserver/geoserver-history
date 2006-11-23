@@ -194,7 +194,9 @@ public abstract class FeatureTypeSchemaBuilder {
 			 Class binding = attribute.getType();
 			 Name typeName = findTypeName( binding );
 			 if ( typeName == null ) {
-				 throw new NullPointerException( "Could not find a type for class: " + binding.getName() );
+				 throw new NullPointerException( 
+					 "Could not find a type for property: " + attribute.getName() + " of type: " + binding.getName()
+				 );
 			 }
 			 
 			 XSDTypeDefinition type = schema.resolveTypeDefinition( 
