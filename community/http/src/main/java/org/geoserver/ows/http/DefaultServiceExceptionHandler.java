@@ -1,6 +1,8 @@
 package org.geoserver.ows.http;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -48,9 +50,24 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
 		OWSFactory factory = OWSFactory.eINSTANCE;
 		
 		ExceptionType e = factory.createExceptionType();
-		e.setExceptionCode( exception.getCode() );
+		if ( exception.getCode() != null ) {
+			e.setExceptionCode( exception.getCode() );	
+		}
+		else {
+			//set a default
+			e.setExceptionCode( "NoApplicableCode" );
+		}
+		
 		e.setLocator( exception.getLocator() );
+		
+		//add the message
 		e.getExceptionText().add( exception.getMessage() );
+		
+		//add the entire stack trace
+		//exception.
+		ByteArrayOutputStream trace = new ByteArrayOutputStream();
+		exception.printStackTrace( new PrintStream( trace ) );
+		e.getExceptionText().add( new String( trace.toByteArray() ) );
 		
 		ExceptionReportType report = factory.createExceptionReportType();
 		report.setVersion( "1.0.0" );
