@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,63 +41,77 @@ public class OWSDispatcher extends AbstractController {
 		HttpServletRequest httpRequest, HttpServletResponse httpResponse
 	) throws Exception {
 	
-		//TODO: calls to readOpContext and readBody are made twice, make them here
-		
-		//read the input
-		File cache = cacheInputStream( httpRequest );
-		Map kvp = parseKVP( httpRequest );
-		
+		Request request = init( httpRequest, httpResponse );
 		try {
-			
-			
 			Service service = null;
 			try {
 				//find the service
 				try {
-					service = service( httpRequest, httpResponse, kvp, cache );
+					service = service( request );
 				} catch ( Throwable t ) {
-					exception( t, null, httpRequest, httpResponse );
+					exception( t, null, request );
 					return null;
 				}
 
 				//dispatch the operation
-				Operation operation = dispatch( httpRequest, httpResponse, kvp, cache, service );
-				execute( httpRequest, httpResponse, operation );
+				Operation operation = dispatch( request , service );
+				execute( request, operation );
 			}
 			catch( Throwable t ) {
-				exception( t, service, httpRequest, httpResponse );
+				exception( t, service, request );
 			}
 		} 
 		finally {
-			if (cache != null) {
-				cache.delete();	
+			if ( request.input  != null) {
+				request.input.delete();	
 			}
 		}
 		
 		return null;
 	}
 	
-	Service service( HttpServletRequest httpRequest, HttpServletResponse httpResponse, Map kvp, File cache ) 
-		throws Exception {
+	Request init( HttpServletRequest httpRequest, HttpServletResponse httpResponse ) 
+		throws ServiceException, IOException {
 		
-		//determine which service is being requested
-		String service = null;
-		String version = null;
+		//create a new request instance
+		Request request = new Request();
 		
-		String method = httpRequest.getMethod();
-		if ( "GET".equals( method ) ) {
+		//set request / response
+		request.httpRequest = httpRequest;
+		request.httpResponse = httpResponse;
+		
+		//figure out method
+		request.get = "GET".equalsIgnoreCase( httpRequest.getMethod() ) || 
+			"application/x-www-form-urlencoded".equals( httpRequest.getContentType() );
+		
+		if ( request.get ) {
+			//create the kvp map
+			request.kvp = parseKVP( httpRequest );
+		}
+		else {
+			//cache the input
+			request.input = cacheInputStream( httpRequest );
+		}
+		return request;
+	}
+	
+	Service service( Request req ) throws Exception {
+	
+		if ( req.get )  {
 			//check kvp
-			service = (String) kvp.get( "service" );
-			version = (String) kvp.get( "version" );
+			req.service = (String) req.kvp.get( "service" );
+			req.version = (String) req.kvp.get( "version" );
+			req.request = (String) req.kvp.get( "request" );
 		}
 		else {
 			//check the body
-			InputStream input = input( cache );
+			InputStream input = input( req.input );
 			if ( input != null ) {
 				try {
 					Map xml = readOpPost( input );
-					service = (String) xml.get( "service" );
-					version = (String) xml.get( "version" );
+					req.service = (String) xml.get( "service" );
+					req.version = (String) xml.get( "version" );
+					req.request = (String) xml.get( "request" );
 				}
 				finally {
 					input.close();
@@ -106,69 +121,56 @@ public class OWSDispatcher extends AbstractController {
 		
 		//TODO: make this a configuration option to infer the service parameter from 
 		// the context
-//		if ( service == null ) {
-//			//one last check from the uri
-//			Map map = readOpContext( httpRequest );
-//			if ( service == null ) {
-//				service = (String) map.get( "service" );
-//				version = (String) map.get( "version" );
-//			}
-//		}
+		if ( req.service == null ) {
+			//one last check from the uri
+			Map map = readOpContext( req.httpRequest );
+			if ( req.service == null ) {
+				req.service = (String) map.get( "service" );
+			}
+			if ( req.request == null ) {
+				req.request = (String) map.get( "request" );
+			}
+			if ( req.version == null ) {
+				req.version = (String) map.get( "version" );
+			}
+		}
 		
-		if ( service == null ) {
+		if ( req.service == null ) {
 			//give up 
 			throw new ServiceException( 
-				"Could not determine service from request", "MissingParameterValue", "service" 
+				"Could not determine service", "MissingParameterValue", "service" 
 			);
 		}
 		
+		//TODO: another one of those lovley cite things, should make this configurable
+		if ( req.version == null ) {
+			//no version is only cool on a GetCapabilities request
+			if ( !"GetCapabilities".equals( req.request ) ) {
+				throw new ServiceException( 
+					"Could not determine version", "MissingParameterValue", "version"
+				);
+			}
+		}
+		
 		//load from teh context
-		return findService( service, version );
+		return findService( req.service, req.version );
 	}
 	
-	Operation dispatch( HttpServletRequest httpRequest, HttpServletResponse httpResponse, Map kvp, File cache,  Service serviceDescriptor ) throws
+	Operation dispatch( Request req, Service serviceDescriptor ) throws
 		Throwable {
 		
-		//determine which operation is being called
-		String method = httpRequest.getMethod();
-		
-		String request = null;
-		if ( "get".equalsIgnoreCase( method ) ) {
-			//lookup in query string
-			request = (String) kvp.get( "request" );
-		}
-		else if ( "post".equalsIgnoreCase( method ) ) {
-			InputStream input = input( cache );
-			if ( input != null ) {
-				try {
-					Map xml = readOpPost( input );
-					request = (String) xml.get( "request" );
-				}
-				finally {
-					input.close();
-				}	
-			}
-		}
-		
-		if ( request == null ) {
-			Map map = readOpContext( httpRequest );
-			
-			if ( request == null ) {
-				request = (String) map.get( "request" );
-			}
-		}
-		
-		if ( request == null ) {
+		if ( req.request == null ) {
 			String msg = "Could not determine request.";
 			throw new RuntimeException( msg );
 		}
 		
+		
 		// lookup the operation, initial lookup based on (service,request)
 		String service = serviceDescriptor.getId();
 		Object serviceBean = serviceDescriptor.getService();
-		Method operation = OWSUtils.method( serviceBean.getClass(), request );
+		Method operation = OWSUtils.method( serviceBean.getClass(), req.request );
 		if ( operation == null ) {
-			String msg = "Could not dispatch request: ( " + service + ", " + request + " )";
+			String msg = "Could not dispatch request: ( " + service + ", " + req.request + " )";
 			throw new ServiceException( msg ); 
 		}
 		
@@ -179,31 +181,31 @@ public class OWSDispatcher extends AbstractController {
 			
 			//first check for servlet request and response
 			if ( parameterType.isAssignableFrom( HttpServletRequest.class ) ) {
-				parameters[ i ] = httpRequest; 
+				parameters[ i ] = req.httpRequest; 
 			}
 			else if ( parameterType.isAssignableFrom( HttpServletResponse.class ) ) {
-				parameters[ i ] = httpResponse;
+				parameters[ i ] = req.httpResponse;
 			}
 			//next check for input and output
 			else if ( parameterType.isAssignableFrom( InputStream.class ) ) {
-				parameters[ i ] = httpRequest.getInputStream();
+				parameters[ i ] = req.httpRequest.getInputStream();
 			}
 			else if ( parameterType.isAssignableFrom( OutputStream.class ) ) {
-				parameters[ i ] = httpResponse.getOutputStream();
+				parameters[ i ] = req.httpResponse.getOutputStream();
 			}
 			else {
 				//check for a request object
-				if ( "get".equalsIgnoreCase( method ) ) {
+				if ( req.get ) {
 					//use the kvp reader mechanism
-					Object requestBean = parseRequestKVP( parameterType, kvp );
+					Object requestBean = parseRequestKVP( parameterType, req.kvp );
 					if ( requestBean != null ) {
 						parameters[ i ] = requestBean;
 					}
 					
 				}
-				else if ( "post".equalsIgnoreCase( method ) ){
+				else {
 					//use the xml reader mechanism
-					Object requestBean = parseRequestXML( cache );
+					Object requestBean = parseRequestXML( req.input );
 					if ( requestBean != null ) {
 						parameters[ i ] = requestBean;
 					}
@@ -211,11 +213,10 @@ public class OWSDispatcher extends AbstractController {
 			}
 		}
 		
-		return new Operation( request, serviceDescriptor, operation, parameters );
+		return new Operation( req.request, serviceDescriptor, operation, parameters );
 	}
 	
-	void execute( HttpServletRequest httpRequest, HttpServletResponse httpResponse, Operation opDescriptor ) 
-		throws Throwable {
+	void execute( Request req, Operation opDescriptor ) throws Throwable {
 		
 		Service serviceDescriptor = opDescriptor.getService();
 		Object serviceBean = serviceDescriptor.getService();
@@ -292,11 +293,11 @@ public class OWSDispatcher extends AbstractController {
 			Response response = (Response) matches.get( 0 );
 			
 			//set the mime type
-			httpResponse.setContentType( response.getMimeType( opDescriptor ) );
+			req.httpResponse.setContentType( response.getMimeType( opDescriptor ) );
 			
 			//TODO: initialize any header params (gzip,deflate,etc...)
 			
-			OutputStream output = httpResponse.getOutputStream();
+			OutputStream output = req.httpResponse.getOutputStream();
 			response.write( result, output, opDescriptor );
 		
 			try {
@@ -733,9 +734,7 @@ public class OWSDispatcher extends AbstractController {
 		return map;
 	}
 	
-	void exception( 
-		Throwable t, Service service, HttpServletRequest request, HttpServletResponse response 
-	) {
+	void exception( Throwable t, Service service, Request request ) {
 		
 		//wrap in service exception if necessary
 		ServiceException se = null;
@@ -768,7 +767,7 @@ public class OWSDispatcher extends AbstractController {
 			handler = new DefaultServiceExceptionHandler();
 		}
 		
-		handler.handleServiceException( se, service, response );
+		handler.handleServiceException( se, service, request.httpResponse );
 		
 	}
 
@@ -801,5 +800,40 @@ public class OWSDispatcher extends AbstractController {
 			return key;
 		}
 		
+	}
+	
+	/**
+	 * Helper class to hold attributes of hte request
+	 *
+	 */
+	static class Request {
+		
+		/**
+		 * Http request / response
+		 */
+		HttpServletRequest httpRequest;
+		HttpServletResponse httpResponse;
+		
+		/**
+		 * flag indicating if the request is get
+		 */
+		boolean get;
+		
+		/**
+		 * Kvp parameters, only non-null if get = true
+		 */
+		Map kvp;
+		
+		/**
+		 * Cached input stream, only non-null if get = false
+		 */
+		File input;
+		
+		/**
+		 * The ows service,request,version
+		 */
+		String service;
+		String version;
+		String request;
 	}
 }
