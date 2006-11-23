@@ -953,15 +953,15 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     		void getCapabilities() {
     			Map.Entry[] parameters = new Map.Entry[] {
     				parameter( "AcceptVersions", new String[]{ "1.0.0", "1.1.0" } ),
-    				parameter( "AcceptFormats", new String[]{ "text/xml" } ),
-    				parameter( 
-    					"Sections", 
-    					new String[]{ 
-    						"ServiceIdentification", "ServiceProvider", "OperationsMetadata",
-    						"FeatureTypeList", "ServesGMLObjectTypeList", "SupportsGMLObjectTypeList", 
-    						"Filter_Capabilities"
-    					} 
-    				) 
+    				parameter( "AcceptFormats", new String[]{ "text/xml" } )
+//    				parameter( 
+//    					"Sections", 
+//    					new String[]{ 
+//    						"ServiceIdentification", "ServiceProvider", "OperationsMetadata",
+//    						"FeatureTypeList", "ServesGMLObjectTypeList", "SupportsGMLObjectTypeList", 
+//    						"Filter_Capabilities"
+//    					} 
+//    				) 
     			};
     			operation( "GetCapabilities", parameters, true, true );
     		}
