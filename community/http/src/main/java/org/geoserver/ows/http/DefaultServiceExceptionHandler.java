@@ -74,7 +74,7 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
 		report.getException().add( e );
 		
 		response.setContentType( "application/xml" );
-		response.setCharacterEncoding( "UTF-8" );
+		//response.setCharacterEncoding( "UTF-8" );
 		
 		OWSConfiguration configuration = new OWSConfiguration();
 		
