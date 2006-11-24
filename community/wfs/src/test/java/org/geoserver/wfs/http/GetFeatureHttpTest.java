@@ -5,10 +5,6 @@ import org.w3c.dom.NodeList;
 
 public class GetFeatureHttpTest extends WfsHttpTestSupport {
 
-	protected boolean isLogging() {
-		return true;
-	}
-	
 	public void testGet() throws Exception {
 		Document doc = getAsDOM( "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.0.0" );
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );

@@ -5,10 +5,6 @@ import org.w3c.dom.Element;
 
 public class LockFeatureHttpTest extends WfsHttpTestSupport {
 
-	protected boolean isLogging() {
-		return true;
-	}
-	
 	public void testLockActionSomeAlreadyLocked() throws Exception {
 		
 		//get a feature
