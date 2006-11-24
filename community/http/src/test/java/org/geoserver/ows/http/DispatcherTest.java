@@ -134,6 +134,7 @@ public class DispatcherTest extends TestCase {
 		Map params = new HashMap();
 		params.put( "service", "hello" );
 		params.put( "request", "Hello" );
+		params.put( "version", "1.0.0" );
 		params.put( "message", "Hello world!");
 		
 		request.setupGetParameterMap( params );
@@ -158,13 +159,14 @@ public class DispatcherTest extends TestCase {
 		request.setupGetContextPath("/geoserver");
 		request.setupGetMethod("POST");
 		request.setupGetRequestURI( "http://localhost/geoserver/ows" );
+		request.setupGetContentType( "application/xml" );
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setupOutputStream( new MockServletOutputStream() );
 		
 		Map params = new HashMap();
 		request.setupGetParameterMap( params );
 		
-		String body = "<Hello service=\"hello\" message=\"Hello world!\"/>";
+		String body = "<Hello service=\"hello\" message=\"Hello world!\" version=\"1.0.0\" />";
 		MockServletInputStream input = new MockServletInputStream();
 		input.setupRead( body.getBytes() );
 		
