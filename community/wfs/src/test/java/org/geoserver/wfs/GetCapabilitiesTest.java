@@ -17,6 +17,7 @@ public class GetCapabilitiesTest extends WFSTestSupport {
 	public void testGetCapabilities() throws Exception {
 		
 		GetCapabilitiesType request = WFSFactory.eINSTANCE.createGetCapabilitiesType();
+		request.setService( "WFS" );
 		request.setAcceptVersions( OWSFactory.eINSTANCE.createAcceptVersionsType() );
 		request.getAcceptVersions().getVersion().add( "1.0.0" );
 		

@@ -7,6 +7,10 @@ import org.w3c.dom.NodeList;
 
 public class TransactionHttpTest extends WfsHttpTestSupport {
 
+	protected boolean isLogging() {
+		return true;
+	}
+	
 	public void testInsertWithNoSRS() throws Exception {
 		//1. do a getFeature
 		String getFeature = "<wfs:GetFeature " + 
@@ -56,10 +60,10 @@ public class TransactionHttpTest extends WfsHttpTestSupport {
 	
 	public void testInsertWithSRS() throws Exception {
 		
-		//TODO: figure out why this test does not pass in maven
 		if ( true ) 
 			return;
 		
+		//TODO: figure out why this test failes 
 		//1. do a getFeature
 		String getFeature = "<wfs:GetFeature " + 
 		  "service=\"WFS\" " + 
@@ -103,6 +107,16 @@ public class TransactionHttpTest extends WfsHttpTestSupport {
 		assertEquals( "1", numberInserted.getFirstChild().getNodeValue() );
 		
 		//do another get feature
+		getFeature = "<wfs:GetFeature " + 
+		  "service=\"WFS\" version=\"1.1.0\" " +
+		  "xmlns:cgf=\"http://www.opengis.net/cite/geometry\" " + 
+		  "xmlns:ogc=\"http://www.opengis.net/ogc\" " + 
+		  "xmlns:wfs=\"http://www.opengis.net/wfs\" " + 
+		"> " + 
+		  "<wfs:Query typeName=\"cgf:Points\"> " + 
+		    "<wfs:PropertyName>cite:id</wfs:PropertyName> " + 
+		  "</wfs:Query> " + 
+		"</wfs:GetFeature>";
 		dom = postAsDOM( "wfs", getFeature );
 	
 		NodeList pointsList = dom.getElementsByTagName( "cgf:Points" ); 

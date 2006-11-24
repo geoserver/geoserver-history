@@ -7,6 +7,10 @@ import org.w3c.dom.NodeList;
 
 public class GetFeatureHttpTest extends WfsHttpTestSupport {
 
+	protected boolean isLogging() {
+		return true;
+	}
+	
 	public void testGet() throws Exception {
 		Document doc = getAsDOM( "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0" );
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
@@ -129,6 +133,15 @@ public class GetFeatureHttpTest extends WfsHttpTestSupport {
 		  "</wfs:Query> " + 
 		"</wfs:GetFeature>";
 		
+		Document dom = postAsDOM( "wfs", xml );
+		assertEquals( 1, dom.getElementsByTagName( "gml:featureMember" ).getLength() );
+	}
+	
+	public void testWithSRS() throws Exception {
+		String xml =  "<wfs:GetFeature xmlns:wfs=\"http://www.opengis.net/wfs\" version=\"1.1.0\" service=\"WFS\">" + 
+        "<wfs:Query xmlns:cdf=\"http://www.opengis.net/cite/data\" typeName=\"cdf:Other\" srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\"/>" + 
+        "</wfs:GetFeature>";
+
 		Document dom = postAsDOM( "wfs", xml );
 		assertEquals( 1, dom.getElementsByTagName( "gml:featureMember" ).getLength() );
 	}
