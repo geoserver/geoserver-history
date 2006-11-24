@@ -27,6 +27,7 @@ import net.opengis.wfs.WFSFactory;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.AttributeTypeInfo;
 import org.geoserver.data.feature.FeatureTypeInfo;
+import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geoserver.ows.EMFUtils;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -41,6 +42,8 @@ import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
@@ -196,7 +199,7 @@ public class GetFeature {
                     query.getPropertyName().addAll( tmp );
                 }
 
-                org.geotools.data.Query gtQuery = toDataQuery( query, maxFeatures - count );
+                org.geotools.data.Query gtQuery = toDataQuery( query, maxFeatures - count, source );
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery );
 
                 FeatureCollection features = source.getFeatures( gtQuery );
@@ -208,28 +211,6 @@ public class GetFeature {
 //                	maxFeatures -= features.getCount();
 //                }
 
-                //JD: reproject if neccessary
-                if ( gtQuery.getCoordinateSystemReproject() != null ) {
-                	try {
-						features = new ReprojectFeatureResults( features, gtQuery.getCoordinateSystemReproject() );
-					} 
-                	catch ( Exception e ) {
-                		String msg = "Unable to reproject features";
-                		throw new WFSException( msg, e );
-					} 
-                }
-                
-                //JD: override crs if neccessary
-                if ( gtQuery.getCoordinateSystem() != null ) {
-                	try {
-						features = new ForceCoordinateSystemFeatureResults( features, gtQuery.getCoordinateSystem() );
-					} 
-            		catch (Exception e) {
-						String msg = "Unable to set coordinate system";
-						throw new WFSException( msg, e );
-					}
-                }
-                
                 //GR: I don't know if the featuresults should be added here for later
                 //encoding if it was a lock request. may be after ensuring the lock
                 //succeed?
@@ -294,7 +275,7 @@ public class GetFeature {
      * @return A Query for use with the FeatureSource interface
      * 
      */
-    public org.geotools.data.Query toDataQuery( QueryType query, int maxFeatures ) 
+    public org.geotools.data.Query toDataQuery( QueryType query, int maxFeatures, FeatureSource source ) 
     	throws WFSException {
     	
     	if ( maxFeatures <= 0  ) {
@@ -321,19 +302,37 @@ public class GetFeature {
     		typeName.getLocalPart(), filter, maxFeatures, props, query.getHandle()
 		);
 
+        //figure out the crs the data is in
+        CoordinateReferenceSystem crs = 
+        	source.getSchema().getDefaultGeometry() != null ? 
+    			source.getSchema().getDefaultGeometry().getCoordinateSystem() : null;
+		if ( crs == null ) {
+			//set to be the server default
+			try {
+				crs = CRS.decode( "EPSG:4326" );
+				dataQuery.setCoordinateSystem( crs );
+			} catch (Exception e) {
+				//should never happen
+				throw new RuntimeException( e );
+			}
+		}
+		
         //handle reprojection
         if ( query.getSrsName() != null ) {
-        	CoordinateReferenceSystem crs;
+        	CoordinateReferenceSystem target;
 			try {
-				crs = CRS.decode(  query.getSrsName().toString() );
+				target = CRS.decode(  query.getSrsName().toString() );
 			} 
 			catch ( Exception e ) {
 				String msg = "Unable to support srsName: " + query.getSrsName();
 				throw new WFSException( msg , e );
 			}
 			
-        	dataQuery.setCoordinateSystem( crs );
-        	dataQuery.setCoordinateSystemReproject( crs );
+			//if the crs are not equal, then reproject
+			if ( !crs.equals( target ) ) {
+				dataQuery.setCoordinateSystemReproject( crs );	
+			}
+        	
         }
         
         //handle sorting
