@@ -1,6 +1,7 @@
 package org.geoserver.feature;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,6 +11,7 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
 import org.geotools.factory.FactoryRegistryException;
 import org.geotools.factory.Hints;
+import org.geotools.feature.AttributeType;
 import org.geotools.feature.CollectionListener;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
@@ -323,10 +325,12 @@ public class ReprojectingFeatureCollection implements FeatureCollection {
 	
 	Feature reproject( Feature feature ) throws IOException {
 		
-		Object[] attributes = feature.getAttributes( null );
-		
+		Object[] attributes = new Object[ schema.getAttributeCount() ];
 		for ( int i = 0; i < attributes.length; i++ ) {
-			Object object = attributes[ i ];
+			AttributeType type = schema.getAttributeType( i );
+			
+			Object object = feature.getAttribute( type.getName() );
+			
 			if ( object instanceof Geometry ) {
 				//check for crs
 				Geometry geometry = (Geometry) object;
@@ -363,7 +367,7 @@ public class ReprojectingFeatureCollection implements FeatureCollection {
 					
 					//do the transformation
 					try {
-						attributes[ i ] = transformer.transform( geometry );
+						object = transformer.transform( geometry );
 					} 
 					catch (TransformException e) {
 						String msg = "Error occured transforming " + geometry.toString();
@@ -371,6 +375,8 @@ public class ReprojectingFeatureCollection implements FeatureCollection {
 					}
 				}
 			}
+			
+			attributes[ i ] = object;
 		}
 		
 		try {
