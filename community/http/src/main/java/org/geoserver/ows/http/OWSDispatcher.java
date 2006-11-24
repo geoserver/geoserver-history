@@ -145,7 +145,7 @@ public class OWSDispatcher extends AbstractController {
 		//TODO: another one of those lovley cite things, should make this configurable
 		if ( req.version == null ) {
 			//no version is only cool on a GetCapabilities request
-			if ( !"GetCapabilities".equals( req.request ) ) {
+			if ( !"GetCapabilities".equalsIgnoreCase( req.request ) ) {
 				throw new ServiceException( 
 					"Could not determine version", "MissingParameterValue", "version"
 				);
@@ -337,7 +337,7 @@ public class OWSDispatcher extends AbstractController {
 		
 		if ( matches.isEmpty() ) {
 			String msg = "No service: ( " + id + " )";
-			throw new ServiceException( msg, "InvalidParameterValue", id );
+			throw new ServiceException( msg, "InvalidParameterValue", "service" );
 		}
 		
 		Service sBean = null;
