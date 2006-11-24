@@ -5,6 +5,7 @@ import javax.xml.namespace.QName;
 
 import net.opengis.wfs.WFSFactory;
 
+import org.geoserver.ows.ComplexEMFBinding;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
@@ -69,7 +70,7 @@ import org.geotools.xml.Node;
  *
  * @generated
  */
-public class FeatureCollectionTypeBinding extends AbstractComplexBinding {
+public class FeatureCollectionTypeBinding extends ComplexEMFBinding {
 
 	WFSFactory wfsfactory;		
 	public FeatureCollectionTypeBinding( WFSFactory wfsfactory ) {
@@ -108,5 +109,5 @@ public class FeatureCollectionTypeBinding extends AbstractComplexBinding {
 		
 		return value;
 	}
-
+	
 }
