@@ -66,6 +66,7 @@
 	<bean id="getFeatureResponse"
 		class="org.geoserver.wfs.http.response.FeatureCollectionTypeResponse" singleton="false">
 		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
 	</bean>
 	<bean id="lockFeatureResponse"
 		class="org.geoserver.wfs.http.response.LockFeatureTypeResponse" singleton="false">
