@@ -245,6 +245,7 @@ public class GeoServerHttpTestSupport extends TestCase {
 	protected InputStream post( String path , String xml ) throws Exception {
 		MockHttpServletRequest request = request( path );
 		request.setupGetMethod( "POST" );
+		request.setupGetContentType( "application/xml" );
 		
 		((MockServletInputStream) request.getInputStream()).setupRead( xml.getBytes() );
 		
