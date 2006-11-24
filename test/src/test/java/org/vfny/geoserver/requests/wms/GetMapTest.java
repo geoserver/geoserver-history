@@ -7,6 +7,10 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.vfny.geoserver.AbstractGeoserverHttpTest;
 
@@ -182,7 +186,7 @@ public class GetMapTest extends AbstractGeoserverHttpTest {
         
         public static final String STATES_GETMAP = //
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n "
-            + "<ogc:GetMap service=\"WMS\" \n "
+            + "<ogc:GetMap service=\"WMS\" version=\"1.1.1\" \n "
             + "        xmlns:gml=\"http://www.opengis.net/gml\"\n "
             + "        xmlns:ogc=\"http://www.opengis.net/ows\"\n "
             + "        xmlns:sld=\"http://www.opengis.net/sld\"\n "
