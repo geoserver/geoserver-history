@@ -36,6 +36,10 @@ public class Start {
                         wah.setTempDirectory(new File("target/work"));
 
 			jettyServer.start();
+                        // use this to test normal stop behaviour, that is, to check stuff that
+                        // need to be done on container shutdown (and yes, this will make 
+                        // jetty stop just after you started it...)
+                        // jettyServer.stop(); 
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "Could not start the Jetty server: "
 					+ e.getMessage(), e);

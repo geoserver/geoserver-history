@@ -20,19 +20,22 @@ import javax.media.jai.JAI;
 import javax.media.jai.RecyclingTileFactory;
 import javax.servlet.ServletContext;
 
+import org.geotools.data.jdbc.ConnectionPoolManager;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 
 import com.sun.media.jai.util.SunTileCache;
 
 /**
- * complete configuration ser for the whole server
+ * Complete configuration ser for the whole server
  *
  * @author Gabriel Rold?n
  * @author dzwiers
  * @version $Id: GeoServer.java,v 1.23 2004/09/09 16:54:19 cholmesny Exp $
  */
-public class GeoServer extends GlobalLayerSupertype {
+public class GeoServer extends GlobalLayerSupertype implements DisposableBean, InitializingBean {
 
     /**
      * For finding the instance of this class to use from the web container
@@ -799,4 +802,43 @@ public class GeoServer extends GlobalLayerSupertype {
 	public int getTileThreads() {
 		return tileThreads;
 	}
+
+    public void destroy() throws Exception {
+        ConnectionPoolManager.getInstance().closeAll();
+
+        /*
+           HACK: we must get a standard API way for releasing resources...
+         */
+        try {
+            Class sdepfClass = Class.forName(
+                    "org.geotools.data.arcsde.ConnectionPoolFactory");
+
+            LOGGER.fine("SDE datasource found, releasing resources");
+
+            java.lang.reflect.Method m = sdepfClass.getMethod("getInstance",
+                    new Class[0]);
+            Object pfInstance = m.invoke(sdepfClass, new Object[0]);
+
+            LOGGER.fine("got sde connection pool factory instance: "
+                + pfInstance);
+
+            java.lang.reflect.Method closeMethod = pfInstance.getClass()
+                                                             .getMethod("closeAll",
+                    new Class[0]);
+
+            closeMethod.invoke(pfInstance, new Object[0]);
+            LOGGER.info("just asked SDE datasource to release connections");
+        } catch (ClassNotFoundException cnfe) {
+            LOGGER.fine("No SDE datasource found");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        //HACK: java.util.prefs are awful.  See
+        //http://www.allaboutbalance.com/disableprefs.  When the site comes
+        //back up we should implement their better way of fixing the problem.
+        System.setProperty("java.util.prefs.syncInterval", "5000000");
+    }
 }

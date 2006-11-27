@@ -144,7 +144,8 @@ public class Log4JFormatter extends Formatter {
             writer.write(PREFIX);
             writer.write(recordLevel);
             writer.write(SUFFIX);
-            writer.write(record.getSourceClassName());
+            if(record.getSourceClassName() != null)
+                writer.write(record.getSourceClassName());
             writer.write(" - ");
 
             /*
