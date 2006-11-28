@@ -178,6 +178,8 @@ public class GetFeature {
                     }
                 }
 
+                //we must also include any properties that are mandatory ( even if not requested ),
+                // ie. those with minOccurs > 0
                 if (propNames.size() != 0) {
                     Iterator ii = atts.iterator();
                     List tmp = new LinkedList();
