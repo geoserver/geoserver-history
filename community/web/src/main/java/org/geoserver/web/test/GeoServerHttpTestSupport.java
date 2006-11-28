@@ -203,12 +203,18 @@ public class GeoServerHttpTestSupport extends TestCase {
 		}
 			
 		MockHttpServletRequest request = new MockHttpServletRequest() {
+			String encoding = "UTF-8";
+			
 			public int getServerPort() {
 				return 8080;
 			}
 			
 			public String getCharacterEncoding() {
-				return "UTF-8";
+				return encoding;
+			}
+			
+			public void setCharacterEncoding(String encoding) {
+				this.encoding = encoding;
 			}
 			
 		};
