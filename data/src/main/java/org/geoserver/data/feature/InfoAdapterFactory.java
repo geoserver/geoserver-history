@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.geoserver.GeoServerResourceLoader;
@@ -17,6 +18,7 @@ import org.geotools.catalog.ServiceInfo;
 import org.geotools.catalog.adaptable.AdaptingResolve;
 import org.geotools.catalog.adaptable.AdaptingResolveAware;
 import org.geotools.data.DataStore;
+import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.util.ProgressListener;
@@ -170,6 +172,16 @@ public class InfoAdapterFactory implements ResolveAdapterFactory,
 			}
 			
 			info.setDataStore( dataStoreInfo );
+			
+			//set up the attributes
+			List attributes = new ArrayList();
+			FeatureType featureType = (FeatureType) handle.resolve( FeatureType.class , null );
+			for ( int i = 0; i < featureType.getAttributeCount(); i++ ) {
+				AttributeType type = (AttributeType) featureType.getAttributeType( i );
+				AttributeTypeInfo attribute = new AttributeTypeInfo( type );
+				attributes.add( attribute );
+			}
+			info.setAttributes( attributes );
 			
 			return info;
 		}
