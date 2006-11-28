@@ -142,13 +142,23 @@ public class OWSDispatcher extends AbstractController {
 			);
 		}
 		
-		//TODO: another one of those lovley cite things, should make this configurable
-		if ( req.version == null ) {
-			//no version is only cool on a GetCapabilities request
-			if ( !"GetCapabilities".equalsIgnoreCase( req.request ) ) {
+		//TODO: another couple of thos of those lovley cite things, should make this configurable
+		if ( !"GetCapabilities".equalsIgnoreCase( req.request ) ) {
+			if ( req.version == null ) {
+				//must be a version on non-capabilities requests
 				throw new ServiceException( 
 					"Could not determine version", "MissingParameterValue", "version"
 				);
+			}
+			else {
+				//version must be valid
+				if ( !req.version.matches( "[0-99].[0-99].[0-99]" ) ) {
+					throw new ServiceException( 
+						"Invalid version", "OperationNotSupported", req.request	
+					);
+				}
+				
+				//TODO:should probably check if the version actually exists
 			}
 		}
 		
@@ -166,12 +176,11 @@ public class OWSDispatcher extends AbstractController {
 		
 		
 		// lookup the operation, initial lookup based on (service,request)
-		String service = serviceDescriptor.getId();
 		Object serviceBean = serviceDescriptor.getService();
 		Method operation = OWSUtils.method( serviceBean.getClass(), req.request );
 		if ( operation == null ) {
-			String msg = "Could not dispatch request: ( " + service + ", " + req.request + " )";
-			throw new ServiceException( msg ); 
+			String msg = "No such operation";
+			throw new ServiceException( msg, "OperationNotSupported", req.request ); 
 		}
 		
 		//step 4: setup the paramters
