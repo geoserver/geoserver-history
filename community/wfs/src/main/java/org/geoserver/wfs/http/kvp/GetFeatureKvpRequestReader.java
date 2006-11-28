@@ -162,12 +162,10 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 					filter = bboxFilter( (QName) typeName.get( 0 ), bbox );
 				}
 				
-				
 				filters.add( filter );
-				
 			}
 			
-			EMFUtils.set( eObject, "filter", filters );
+			querySet( eObject, "filter", filters );
 		}
 				
 		//propertyName
