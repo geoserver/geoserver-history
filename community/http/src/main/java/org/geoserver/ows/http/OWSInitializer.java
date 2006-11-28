@@ -68,10 +68,12 @@ public class OWSInitializer implements HandlerInterceptor, ApplicationContextAwa
 						charSet = Charset.forName( request.getCharacterEncoding() );
 					}
 					catch( Exception e ) {
+						//TODO: make this server settable
 						charSet = Charset.forName( "UTF-8" );
 					}
 					
 					ows.setCharSet( charSet );
+					request.setCharacterEncoding( charSet.name() );
 				}
 			
 		}
