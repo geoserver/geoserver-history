@@ -103,9 +103,7 @@
 	<bean id="featureIdKvpParser" class="org.geoserver.wfs.http.kvp.FeatureIdKvpReader"/>
 	<bean id="bboxKvpParser" class="org.geoserver.wfs.http.kvp.BBoxKvpReader"/>
 	<bean id="filterKvpParser" class="org.geoserver.wfs.http.kvp.FilterKvpReader"/>
-	<bean id="propertyNameKvpParser" class="org.geoserver.wfs.http.kvp.PropertyNameKvpReader">
-		<constructor-arg ref="catalog"/>
-	</bean>
+	<bean id="propertyNameKvpParser" class="org.geoserver.wfs.http.kvp.PropertyNameKvpReader"/>
 	<bean id="maxFeatureKvpParser" class="org.geoserver.wfs.http.kvp.MaxFeaturesKvpReader"/>
 	<bean id="srsNameFeatureKvpParser" class="org.geoserver.wfs.http.kvp.SrsNameKvpReader"/>
 	<bean id="sortByKvpParser" class="org.geoserver.wfs.http.kvp.SortByKvpReader">
@@ -167,26 +165,27 @@
 	</bean>
 	
 	<!-- 1.1 xml readers -->
-	<bean id="getCapabilitiesXmlReader-1.1.0" class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader">
+	<!-- 1.1 xml readers -->
+	<bean id="xmlReader-1.1.0" class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader" abstract="true">
+		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
+	</bean>
+	<bean id="getCapabilitiesXmlReader-1.1.0" parent="xmlReader-1.1.0">
 		<constructor-arg type="java.lang.String" value="GetCapabilities"/>
-		<constructor-arg ref="catalog"/>
 	</bean>
-	<bean id="describeFeatureTypeXmlReader-1.1.0" class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader">
+	<bean id="describeFeatureTypeXmlReader-1.1.0" parent="xmlReader-1.1.0">
 		<constructor-arg value="DescribeFeatureType"/>
-		<constructor-arg ref="catalog"/>
 	</bean>
-	<bean id="getFeatureTypeXmlReader-1.1.0" class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader">
+	<bean id="getFeatureTypeXmlReader-1.1.0" parent="xmlReader-1.1.0">
 		<constructor-arg value="GetFeature"/>
-		<constructor-arg ref="catalog"/>
 	</bean>
-	<bean id="lockFeatureXmlReader-1-1.0" class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader">
+	<bean id="lockFeatureXmlReader-1-1.0" parent="xmlReader-1.1.0">
 		<constructor-arg value="LockFeature"/>
-		<constructor-arg ref="catalog"/>
 	</bean>
-	<bean id="transactionXmlReader-1.1.0" class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader">
+	<bean id="transactionXmlReader-1.1.0" parent="xmlReader-1.1.0">
 		<constructor-arg value="Transaction"/>
-		<constructor-arg ref="catalog"/>
 	</bean>
+	
 	
 	<!-- default feature type encoders -->
 	<bean id="gml2FeatureTypeEncoder" 
