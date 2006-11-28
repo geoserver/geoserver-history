@@ -188,7 +188,7 @@ public class QueryTypeBinding extends AbstractComplexBinding {
 		//&lt;xsd:element ref="wfs:PropertyName"&gt;
 		if ( node.hasChild( "PropertyName" ) ) {
 			//HACK, stripping of namespace prefix
-			for ( Iterator p = node.getChildValues( "ProprertyName" ).iterator(); p.hasNext(); ) {
+			for ( Iterator p = node.getChildValues( "PropertyName" ).iterator(); p.hasNext(); ) {
 				String propertyName = (String) p.next();
 				if ( propertyName.indexOf( ':' ) != -1 ) {
 					propertyName = propertyName.substring( propertyName.indexOf( ':' ) + 1 );
