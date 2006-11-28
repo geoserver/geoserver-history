@@ -3,10 +3,13 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.WFSFactory;
 
 import org.geoserver.ows.ComplexEMFBinding;
+import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -78,7 +81,7 @@ public class FeatureCollectionTypeBinding extends ComplexEMFBinding {
 	}
 
 	public int getExecutionMode() {
-		return AFTER;
+		return OVERRIDE;
 	}
 	
 	/**
@@ -109,5 +112,20 @@ public class FeatureCollectionTypeBinding extends ComplexEMFBinding {
 		
 		return value;
 	}
+	
+	public Object getProperty(Object object, QName name) throws Exception {
+		//check for feature collection memebers
+        if (GML.featureMembers.equals(name)) {
+        	FeatureCollectionType featureCollection = (FeatureCollectionType) object;
+        	//TODO: make FeatureCollectionType reference a single feature collection
+        	if ( !featureCollection.getFeature().isEmpty() ) {
+        		return featureCollection.getFeature().iterator().next();
+        	}
+        }
+        
+        //delegate to parent lookup
+        return super.getProperty( object, name );
+	}
+	
 	
 }
