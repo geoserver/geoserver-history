@@ -26,6 +26,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
 		FeatureCollection features = source.getFeatures();
 	
 		FeatureCollectionType fcType = WFSFactory.eINSTANCE.createFeatureCollectionType();
+		
 		fcType.getFeature().add( features );
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
