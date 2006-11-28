@@ -93,7 +93,7 @@ public class GML3FeatureProducer2 implements FeatureProducer {
 		);
 		
 		try {
-			encoder.write( features, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output );
+			encoder.write( results, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output );
 		} 
 		catch (SAXException e) {
 			String msg = "Error occurred encoding features";
