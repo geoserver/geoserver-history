@@ -1,3 +1,22 @@
+GeoServer 1.4.0-RC4
+-------------------
+
+This is the fourth, and hopefully final, release candidate for the 1.4 series of GeoServer.
+
+
+- The data directory is now located at the root of the geoserver install directory. Please tell us
+  if this works for you.
+- On the fly log level changes now possible.
+- Better error reporting
+- Windows service wrapper is a separate download now.
+- External data dir problems fixed
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=13034
+
+Based on GeoTools 2.2.2-SNAPSHOT
+
+
 GeoServer 1.4.0-RC3
 -------------------
 
