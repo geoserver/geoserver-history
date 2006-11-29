@@ -180,7 +180,7 @@ public class GetMapTestHttp extends AbstractGeoserverHttpTest {
         
         public static final String STATES_GETMAP = //
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n "
-            + "<ogc:GetMap service=\"WMS\" \n "
+            + "<ogc:GetMap service=\"WMS\"  version=\"1.1.1\" \n "
             + "        xmlns:gml=\"http://www.opengis.net/gml\"\n "
             + "        xmlns:ogc=\"http://www.opengis.net/ows\"\n "
             + "        xmlns:sld=\"http://www.opengis.net/sld\"\n "
