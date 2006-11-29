@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,6 @@ import org.vfny.geoserver.util.requests.EncodingInfo;
 import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.util.requests.readers.DispatcherXmlReader;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 
 
 
@@ -119,16 +119,24 @@ public class Dispatcher extends AbstractController {
 	void dispatch(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 		throws ServiceException, IOException, ServletException {
 		
+		//mark as get request if it is indeed a get request, or a post request with content type
+		// == 'application/x-www-form-urlencoded'
+		boolean isGet = "GET".equalsIgnoreCase( httpRequest.getMethod() ) || 
+			( httpRequest.getContentType() != null && 
+			httpRequest.getContentType().startsWith( "application/x-www-form-urlencoded" ) );
+	
 		String service = null;
 		String request = null;
 		
-		if (httpRequest.getQueryString() != null) { 
-			//process query string params
-			Map kvp = KvpRequestReader.parseKvpSet(httpRequest.getQueryString());
-			
-			//figure out service and request being processed
-			service = (String) kvp.get("SERVICE");
-			request = (String) kvp.get("REQUEST");
+		//look up service / request in key value pairs
+		for ( Enumeration e = httpRequest.getParameterNames(); e.hasMoreElements(); ) {
+			String key = (String) e.nextElement();
+			if ( "service".equalsIgnoreCase( key ) ) {
+				service = httpRequest.getParameter( key );
+			}
+			if ( "request".equalsIgnoreCase( key ) ) {
+				request = httpRequest.getParameter( key );
+			}
 		}
 		
 		if (service == null || request == null) {
@@ -173,7 +181,7 @@ public class Dispatcher extends AbstractController {
 		
 		if (service == null || request == null) {
 			//check for a POST request specifying the request as the 
-			if ("POST".equalsIgnoreCase(httpRequest.getMethod())) {
+			if ( !isGet ) {
 				post(httpRequest,httpResponse);
 				return;
 			}
@@ -183,17 +191,13 @@ public class Dispatcher extends AbstractController {
 		
 		if (target != null) {
 			//we have a servlet, do it
-			if ("GET".equalsIgnoreCase(httpRequest.getMethod())) {
+			if ( isGet ) {
 				target.doGet(httpRequest,httpResponse);
 			}
-			else if ("POST".equalsIgnoreCase(httpRequest.getMethod())) {
-				
+			else  {
 				target.doPost(httpRequest,httpResponse);
 			}
-			else {
-				String msg = "Unkown request method: " + httpRequest.getMethod();
-				throw new ServiceException( msg );
-			}
+			
 		}
 		else {
 			String msg = "Could not locate service mapping to: (" 
