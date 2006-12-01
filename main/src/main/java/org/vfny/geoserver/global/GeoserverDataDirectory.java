@@ -141,6 +141,7 @@ public class GeoserverDataDirectory {
                 isTrueDataDir = true;
                 dataDir = new File(loc);
                 loader = new GeoServerResourceLoader(dataDir);
+                loader.addSearchLocation(new File(dataDir, "data"));
                 System.out.println("----------------------------------");
                 System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
                 System.out.println("----------------------------------");
@@ -155,7 +156,7 @@ public class GeoserverDataDirectory {
         System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
         System.out.println("----------------------------------");
         
-        // create loader, and add some locations to the serach path
+        // create loader, and add some locations to the search path
         loader = new GeoServerResourceLoader(dataDir);
         loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
         loader.addSearchLocation(new File(servContext.getRealPath("data")));
