@@ -100,11 +100,6 @@
 				<artifactId>gt2</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
-			<!--dependency>
-				<groupId>it.geosolutions</groupId>
-				<artifactId>streams</artifactId>
-				<version>1.0</version>
-			</dependency-->
 			<dependency>
 				<groupId>org.geotools</groupId>
   			<artifactId>gt2-arcgrid</artifactId>
@@ -135,7 +130,7 @@
 				<artifactId>gt2-imagepyramid</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2-api</artifactId>
@@ -765,7 +760,7 @@
 
 	<properties>
 		<gs.version>1.5.x</gs.version>
-		<gt.version>2.3.0-RC1-SNAPSHOT</gt.version>
+		<gt.version>2.3.1-SNAPSHOT</gt.version>
 	</properties>
 
 	<profiles>
