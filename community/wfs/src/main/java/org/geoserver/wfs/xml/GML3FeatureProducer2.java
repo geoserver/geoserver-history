@@ -3,8 +3,11 @@ package org.geoserver.wfs.xml;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.opengis.wfs.FeatureCollectionType;
@@ -49,33 +52,60 @@ public class GML3FeatureProducer2 implements FeatureProducer {
 	public void produce(String outputFormat, FeatureCollectionType results,
 			OutputStream output) throws ServiceException, IOException {
 
-		if ( results.getFeature().size() != 1 ) {
-			throw new IllegalArgumentException( "A single feature collection expected" );
+		List featureCollections = results.getFeature();
+		
+		//round up the info objects for each feature collection
+		HashMap/*<String,Set>*/ ns2metas = new HashMap();
+		for ( Iterator fc = featureCollections.iterator(); fc.hasNext(); ) {
+			FeatureCollection features = (FeatureCollection) fc.next();
+			FeatureType featureType = features.getSchema();
+			
+			String namespaceURI = featureType.getNamespace().toString();
+			String prefix = catalog.getNamespaceSupport().getPrefix( namespaceURI );
+			
+			//load the metadata for the feature type
+			FeatureTypeInfo meta = catalog.featureType( prefix, featureType.getTypeName() );
+			
+			//add it to the map
+			Set metas = (Set) ns2metas.get( namespaceURI );
+			if ( metas == null ) {
+				metas = new HashSet();
+				ns2metas.put( namespaceURI, metas );
+			}
+			
+			metas.add( meta );
+			
 		}
 		
-		//TODO: multiple feature types
-		FeatureCollection features = (FeatureCollection) results.getFeature().get( 0 );
-		FeatureType featureType = features.getSchema();
-		String namespaceURI = featureType.getNamespace().toString();
-		String prefix = catalog.getNamespaceSupport().getPrefix( namespaceURI );
-		FeatureTypeInfo meta = catalog.featureType( prefix, featureType.getTypeName() );
-		
-		//build the "application schema"
-		XSDSchema schema = 
-			new FeatureTypeSchemaBuilder.GML3( wfs, catalog ).build( new FeatureTypeInfo[] { meta } );
-		
+		//get the wfs schema
 		WFSConfiguration configuration = new WFSConfiguration( catalog );
 		XSDSchema wfsSchema = configuration.getSchemaLocator().locateSchema( 
 			null, org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, null, null
 		);
 		
-		//incorporate the application schema into the wfs schema
-		wfsSchema.getQNamePrefixToNamespaceMap().put( prefix, namespaceURI );
-		for ( Iterator t = schema.getTypeDefinitions().iterator(); t.hasNext(); ) {
-			wfsSchema.getTypeDefinitions().add( t.next() );
-		}
-		for ( Iterator e = schema.getElementDeclarations().iterator(); e.hasNext(); ) {
-			wfsSchema.getElementDeclarations().add( e.next() );
+		//incorporate application schemas into the wfs schema
+		for ( Iterator i = ns2metas.entrySet().iterator(); i.hasNext(); ) {
+			Map.Entry entry = (Map.Entry) i.next();
+			String namespaceURI = (String) entry.getKey();
+			Set metas = (Set) entry.getValue();
+			
+			//build the schema for the types in the single namespace
+			XSDSchema schema = 
+				new FeatureTypeSchemaBuilder.GML3( wfs, catalog ).build( 
+					(FeatureTypeInfo[]) metas.toArray( new FeatureTypeInfo[ metas.size() ] ) 
+				);
+			
+			//declare the namespace
+			String prefix = catalog.getNamespaceSupport().getPrefix ( namespaceURI );
+			wfsSchema.getQNamePrefixToNamespaceMap().put( prefix, namespaceURI );
+			
+			//add the types + elements to the wfs schema
+			for ( Iterator t = schema.getTypeDefinitions().iterator(); t.hasNext(); ) {
+				wfsSchema.getTypeDefinitions().add( t.next() );
+			}
+			for ( Iterator e = schema.getElementDeclarations().iterator(); e.hasNext(); ) {
+				wfsSchema.getElementDeclarations().add( e.next() );
+			}
 		}
 		
 		Encoder encoder = new Encoder( configuration, wfsSchema );
@@ -85,12 +115,32 @@ public class GML3FeatureProducer2 implements FeatureProducer {
 			org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, 
 			ResponseUtils.appendPath( wfs.getSchemaBaseURL(), "wfs/1.1.0/wfs.xsd" )
 		);
-		//declare the application schema namespace declaration
-		encoder.setSchemaLocation( 
-			namespaceURI, ResponseUtils.appendQueryString( 
-				wfs.getOnlineResource().toString(), "version=1.1.0&request=DescribeFeatureType&typeName=" + meta.name() 
-			)
-		);
+		
+		//declare application schema namespaces
+		HashMap ns2types = new HashMap();
+		
+		for ( Iterator i = ns2metas.entrySet().iterator(); i.hasNext(); ) {
+			Map.Entry entry = (Map.Entry) i.next();
+			
+			String namespaceURI = (String) entry.getKey();
+			Set metas = (Set) entry.getValue();
+			
+			StringBuffer typeNames = new StringBuffer();
+			for ( Iterator m = metas.iterator(); m.hasNext(); ) {
+				FeatureTypeInfo meta = (FeatureTypeInfo) m.next();
+				typeNames.append( meta.name() );
+				
+				if ( m.hasNext() ) typeNames.append( "," );
+			}
+			
+			//set the schema location
+			encoder.setSchemaLocation( 
+				namespaceURI, ResponseUtils.appendQueryString( 
+					wfs.getOnlineResource().toString(), "version=1.1.0&request=DescribeFeatureType&typeName=" + typeNames.toString()
+				)
+			);
+			
+		}
 		
 		try {
 			encoder.write( results, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output );
