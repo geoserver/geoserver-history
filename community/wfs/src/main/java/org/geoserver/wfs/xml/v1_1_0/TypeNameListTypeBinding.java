@@ -4,6 +4,7 @@ package org.geoserver.wfs.xml.v1_1_0;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.WFSFactory;
@@ -45,11 +46,11 @@ import org.xml.sax.helpers.NamespaceSupport;
 public class TypeNameListTypeBinding extends AbstractSimpleBinding {
 
 	WFSFactory wfsfactory;		
-	NamespaceSupport namespaceSupport;
+	NamespaceContext namespaceContext;
 	
-	public TypeNameListTypeBinding( WFSFactory wfsfactory, NamespaceSupport namespaceSupport ) {
+	public TypeNameListTypeBinding( WFSFactory wfsfactory, NamespaceContext namespaceContext ) {
 		this.wfsfactory = wfsfactory;
-		this.namespaceSupport = namespaceSupport;
+		this.namespaceContext = namespaceContext;
 	}
 
 	/**
@@ -91,7 +92,7 @@ public class TypeNameListTypeBinding extends AbstractSimpleBinding {
 			}
 			
 			qNames.add(  
-				(QName) new XSQNameBinding( namespaceSupport ).parse( instance, tokens[ i ] )
+				(QName) new XSQNameBinding( namespaceContext ).parse( instance, tokens[ i ] )
 			);
 		}
 		
