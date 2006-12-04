@@ -117,12 +117,30 @@ public class BaseRequestTypeBinding extends AbstractComplexBinding {
 		
 		//&lt;xsd:attribute default="WFS" name="service" type="ows:ServiceType" use="optional"&gt;
 		if ( node.hasAttribute( "service" ) ) {
-			EMFUtils.set( request, "service", node.getAttributeValue( "service" ) );
+			String service = (String) node.getAttributeValue( "service" );
+			if ( service != null && !"".equals( service.trim() ) ) {
+				EMFUtils.set( request, "service", node.getAttributeValue( "service" ) );	
+			}
+			else {
+				EMFUtils.set( request, "service", "WFS" );	
+			}
+		}
+		else {
+			EMFUtils.set( request, "service", "WFS" );	
 		}
 		
 		//&lt;xsd:attribute default="1.1.0" name="version" type="xsd:string" use="optional"&gt;
 		if ( node.hasAttribute( "version") ) {
-			EMFUtils.set( request, "version", node.getAttributeValue( "version") );
+			String version = (String) node.getAttributeValue( "version" );
+			if ( version != null && !"".equals( version.trim() ) ) {
+				EMFUtils.set( request, "version", node.getAttributeValue( "version") );	
+			}
+			else {
+				EMFUtils.set( request, "version", "1.1.0" );
+			}
+		}
+		else {
+			EMFUtils.set( request, "version", "1.1.0" );
 		}
 		
 		//&lt;xsd:attribute name="handle" type="xsd:string" use="optional"&gt;
