@@ -325,16 +325,24 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
 	 * @param featureResults
 	 * @param reader
 	 * @throws IOException
+	 * @throws ServiceException 
 	 */
 	private void writeOut(String name, File tempDir,
 			FeatureType schema, FeatureReader reader)
-			throws IOException {
+			throws IOException, ServiceException {
 		// File file = new File(System.getProperty("java.io.tmpdir"),
 		// name+".zip");
 		File file = new File(tempDir, name/* +".zip" */);
-
+		
 		ShapefileDataStore sfds = new ShapefileDataStore(file.toURL());
-		sfds.createSchema(schema);
+		try {
+			sfds.createSchema(schema);
+		} catch (NullPointerException e) {
+			//removeDirectory(tempDir); // performed in encode() in the 'finally' clause
+			LOGGER.warning("Error in shapefile schema. It is possible you don't have a geometry set in the output. \n"+
+					"Please specify a <wfs:PropertyName>geom_column_name</wfs:PropertyName> in the request");
+			throw new ServiceException("Error in shapefile schema. It is possible you don't have a geometry set in the output.");
+		}
 
 		FeatureStore store = (FeatureStore) sfds.getFeatureSource(name);
 		store.addFeatures(reader);
