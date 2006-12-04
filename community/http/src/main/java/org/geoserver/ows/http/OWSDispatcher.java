@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -99,9 +98,9 @@ public class OWSDispatcher extends AbstractController {
 	
 		if ( req.get )  {
 			//check kvp
-			req.service = (String) req.kvp.get( "service" );
-			req.version = (String) req.kvp.get( "version" );
-			req.request = (String) req.kvp.get( "request" );
+			req.service = normalize( (String) req.kvp.get( "service" ) );
+			req.version = normalize( (String) req.kvp.get( "version" ) );
+			req.request = normalize( (String) req.kvp.get( "request" ) );
 		}
 		else {
 			//check the body
@@ -109,9 +108,9 @@ public class OWSDispatcher extends AbstractController {
 			if ( input != null ) {
 				try {
 					Map xml = readOpPost( input );
-					req.service = (String) xml.get( "service" );
-					req.version = (String) xml.get( "version" );
-					req.request = (String) xml.get( "request" );
+					req.service = normalize( (String) xml.get( "service" ) );
+					req.version = normalize( (String) xml.get( "version" ) );
+					req.request = normalize( (String) xml.get( "request" ) );
 				}
 				finally {
 					input.close();
@@ -125,13 +124,13 @@ public class OWSDispatcher extends AbstractController {
 			//one last check from the uri
 			Map map = readOpContext( req.httpRequest );
 			if ( req.service == null ) {
-				req.service = (String) map.get( "service" );
+				req.service = normalize( (String) map.get( "service" ) );
 			}
 			if ( req.request == null ) {
-				req.request = (String) map.get( "request" );
+				req.request = normalize( (String) map.get( "request" ) );
 			}
 			if ( req.version == null ) {
-				req.version = (String) map.get( "version" );
+				req.version = normalize( (String) map.get( "version" ) );
 			}
 		}
 		
@@ -142,28 +141,20 @@ public class OWSDispatcher extends AbstractController {
 			);
 		}
 		
-		//TODO: another couple of thos of those lovley cite things, should make this configurable
-		if ( !"GetCapabilities".equalsIgnoreCase( req.request ) ) {
-			if ( req.version == null ) {
-				//must be a version on non-capabilities requests
-				throw new ServiceException( 
-					"Could not determine version", "MissingParameterValue", "version"
-				);
-			}
-			else {
-				//version must be valid
-				if ( !req.version.matches( "[0-99].[0-99].[0-99]" ) ) {
-					throw new ServiceException( 
-						"Invalid version", "OperationNotSupported", req.request	
-					);
-				}
-				
-				//TODO:should probably check if the version actually exists
-			}
-		}
-		
 		//load from teh context
 		return findService( req.service, req.version );
+	}
+	
+	String normalize( String value ) {
+		if ( value == null ) {
+			return null;
+		}
+		
+		if ( "".equals( value.trim() ) ) {
+			return null;
+		}
+		
+		return value.trim();
 	}
 	
 	Operation dispatch( Request req, Service serviceDescriptor ) throws
@@ -204,21 +195,53 @@ public class OWSDispatcher extends AbstractController {
 			}
 			else {
 				//check for a request object
+				Object requestBean = null;
 				if ( req.get ) {
 					//use the kvp reader mechanism
-					Object requestBean = parseRequestKVP( parameterType, req.kvp );
-					if ( requestBean != null ) {
-						parameters[ i ] = requestBean;
-					}
-					
+					requestBean = parseRequestKVP( parameterType, req.kvp );
 				}
 				else {
 					//use the xml reader mechanism
-					Object requestBean = parseRequestXML( req.input );
-					if ( requestBean != null ) {
-						parameters[ i ] = requestBean;
-					}
+					requestBean = parseRequestXML( req.input );
 				}
+				
+				
+				if ( requestBean != null ) {
+					//if we dont have a version thus far, check the request object
+					if ( req.version == null ) {
+						String version = 
+							(String) OWSUtils.property( requestBean, "version", String.class );
+						if ( version != null ) {
+							req.version = normalize( version );
+						}
+					}	
+					
+					parameters[ i ] = requestBean;
+				}
+				
+			}
+		}
+		
+		// another couple of thos of those lovley cite things, version has to specified for 
+		// non capabilities request, so if we dont have a version thus far, check the request
+		// objects to try and find one
+		// TODO: should make this configurable
+		if ( !"GetCapabilities".equalsIgnoreCase( req.request ) ) {
+			if ( req.version == null ) {
+				//must be a version on non-capabilities requests
+				throw new ServiceException( 
+					"Could not determine version", "MissingParameterValue", "version"
+				);
+			}
+			else {
+				//version must be valid
+				if ( !req.version.matches( "[0-99].[0-99].[0-99]" ) ) {
+					throw new ServiceException( 
+						"Invalid version", "InvalidParameterValue", "version"	
+					);
+				}
+				
+				//TODO:should probably check if the version actually exists
 			}
 		}
 		
