@@ -39,7 +39,10 @@ public class GeoserverDataDirectory {
 
 	// caches the dataDir
 	private static GeoServerResourceLoader loader;
-
+	
+	private static final Logger LOGGER = Logger
+			.getLogger("org.vfny.geoserver.global");
+	
 	private static boolean isTrueDataDir = false;
 
 	/**
@@ -121,18 +124,23 @@ public class GeoserverDataDirectory {
         File dataDir = null;
 
         // see if there's a system property
-        String prop = System.getProperty("GEOSERVER_DATA_DIR");
-        if (prop != null && !prop.equals("")) {
-                // its defined!!
-                isTrueDataDir = true;
-                dataDir = new File(prop);
-                loader = new GeoServerResourceLoader(dataDir);
-                loader.addSearchLocation(new File(dataDir, "data"));
-                System.out.println("----------------------------------");
-                System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
-                System.out.println("----------------------------------");
-                return;
-        }
+        try {
+	        String prop = System.getProperty("GEOSERVER_DATA_DIR");
+	        if (prop != null && !prop.equals("")) {
+	                // its defined!!
+	                isTrueDataDir = true;
+	                dataDir = new File(prop);
+	                loader = new GeoServerResourceLoader(dataDir);
+	                loader.addSearchLocation(new File(dataDir, "data"));
+	                System.out.println("----------------------------------");
+	                System.out.println("- GEOSERVER_DATA_DIR: "+dataDir.getAbsolutePath());
+	                System.out.println("----------------------------------");
+	                return;
+	        }
+	    } catch (SecurityException e) {
+	    	// gobble exception
+	    	LOGGER.fine("Security exception occurred. This is usually not a big deal.\n"+e.getMessage());
+	    }
 
         // try the webxml
         String loc = servContext.getInitParameter("GEOSERVER_DATA_DIR");
