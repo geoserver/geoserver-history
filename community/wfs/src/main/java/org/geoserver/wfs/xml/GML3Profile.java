@@ -39,7 +39,8 @@ public class GML3Profile extends TypeMappingProfile {
 		//profile.add( new Name(  GML.NAMESPACE, GML.MultiSurfaceType.getLocalPart() ) );
 		profile.add( new Name(  GML.NAMESPACE, GML.MultiSurfacePropertyType.getLocalPart() ) );
 		
-		profile.add( new Name(  GML.NAMESPACE, GML.AbstractGeometryType.getLocalPart() ) );
+		//profile.add( new Name(  GML.NAMESPACE, GML.AbstractGeometryType.getLocalPart() ) );
+		profile.add( new Name(  GML.NAMESPACE, GML.GeometryPropertyType.getLocalPart() ) );
 		
 	}
 	
