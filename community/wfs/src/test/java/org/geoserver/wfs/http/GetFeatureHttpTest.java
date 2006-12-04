@@ -46,6 +46,7 @@ public class GetFeatureHttpTest extends WfsHttpTestSupport {
 		  "xmlns:wfs=\"http://www.opengis.net/wfs\" " + 
 		  "xmlns:ogc=\"http://www.opengis.net/ogc\" > " + 
 		  "<wfs:Query typeName=\"cdf:Other\"> " + 
+		   "<ogc:PropertyName>cdf:string2</ogc:PropertyName> " + 
 		    "<ogc:Filter> " + 
 		      "<ogc:PropertyIsEqualTo> " + 
 		        "<ogc:PropertyName>cdf:integers</ogc:PropertyName> " + 

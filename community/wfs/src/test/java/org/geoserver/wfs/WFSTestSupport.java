@@ -23,7 +23,7 @@ public class WFSTestSupport extends DataTestSupport {
 	/**
 	 * The service implementation
 	 */
-	protected WebFeatureService webFeatureService;
+	protected DefaultWebFeatureService webFeatureService;
 	
 	/**
 	 * Configures the application context and the WFS configuraiton bean.
@@ -41,7 +41,7 @@ public class WFSTestSupport extends DataTestSupport {
 		wfs.setCharSet( Charset.forName( "UTF-8" ) );
 		
 		//create the service implementation
-		webFeatureService = new WebFeatureService( wfs, catalog );
+		webFeatureService = new DefaultWebFeatureService( wfs, catalog );
 		webFeatureService.setFilterFactory( FilterFactoryFinder.createFilterFactory() );
 		
 		context.getBeanFactory().registerSingleton( "wfs", wfs );

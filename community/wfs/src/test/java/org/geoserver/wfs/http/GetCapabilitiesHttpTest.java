@@ -4,7 +4,6 @@ import org.w3c.dom.Document;
 
 public class GetCapabilitiesHttpTest extends WfsHttpTestSupport {
 
-	
 	public void testGet() throws Exception {
 		Document doc = getAsDOM( "wfs?service=WFS&request=getCapabilities" );
 		assertEquals( "wfs:WFS_Capabilities", doc.getDocumentElement().getNodeName() );
