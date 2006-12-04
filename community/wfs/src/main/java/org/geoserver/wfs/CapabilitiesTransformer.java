@@ -932,18 +932,18 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     			
     			getCapabilities();
     			describeFeatureType();
-        			getFeature();
+        		getFeature();
+        		
+        		if (wfs.getServiceLevel() == WFS.COMPLETE) { 
+                    lockFeature();
+                    getFeatureWithLock();
+                }
         		
     			if (wfs.getServiceLevel() >= WFS.TRANSACTIONAL) {
-                    //transaction();
+                    transaction();
                 }
 
-                if (wfs.getServiceLevel() == WFS.COMPLETE) { 
-                    //lock();
-                    //getFeatureWithLock();
-                }
-
-        			end( "ows:OperationsMetadata" );
+    			end( "ows:OperationsMetadata" );
     		}
     		
     		/**
@@ -988,6 +988,42 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     			};
     			
     			operation( "GetFeature", parameters, true, true );
+    		}
+    		
+    		/**
+    		 * Encodes the GetFeatureWithLock ows:Operation element. 
+    		 */
+    		void getFeatureWithLock() {
+    			Map.Entry[] parameters = new Map.Entry[] {
+    				parameter( "resultType", new String[] { "results", "hits" } ),
+    				parameter( "outputFormat", new String[] { "text/gml; subtype=gml/3.1.1" } )
+    			};
+    			
+    			operation( "GetFeatureWithLock", parameters, true, true );
+    		}
+    		
+    		/**
+    		 * Encodes the LockFeature ows:Operation element. 
+    		 */
+    		void lockFeature() {
+    			Map.Entry[] parameters = new Map.Entry[] {
+    				parameter( "releaseAction", new String[] { "ALL","SOME" } )
+    			};
+    			
+    			operation( "LockFeature", parameters, true, true );
+    		}
+    		
+    		/**
+    		 * Encodes the Transaction ows:Operation element. 
+    		 */
+    		void transaction() {
+    			Map.Entry[] parameters = new Map.Entry[] {
+    				parameter( "inputFormat", new String[] { "text/gml; subtype=gml/3.1.1" } ),
+    				parameter( "idgen", new String[] { "GenerateNew","UseExisting","ReplaceDuplicate" } ),
+    				parameter( "releaseAction", new String[] { "ALL","SOME" } )
+    			};
+    			
+    			operation( "Transaction", parameters, true, true );
     		}
     		
     		/**
