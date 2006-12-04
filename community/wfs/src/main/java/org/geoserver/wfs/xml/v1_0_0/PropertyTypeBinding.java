@@ -3,6 +3,7 @@ package org.geoserver.wfs.xml.v1_0_0;
 
 import java.util.Map;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.PropertyType;
@@ -56,11 +57,11 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
 	/**
 	 * Namespace support
 	 */
-	NamespaceSupport namespaceSupport;
+	NamespaceContext namespaceContext;
 	
-	public PropertyTypeBinding( WFSFactory wfsfactory, NamespaceSupport namespaceSupport ) {
+	public PropertyTypeBinding( WFSFactory wfsfactory, NamespaceContext namespaceContext ) {
 		this.wfsfactory = wfsfactory;
-		this.namespaceSupport = namespaceSupport;
+		this.namespaceContext = namespaceContext;
 	}
 
 	/**
@@ -95,7 +96,7 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
 		String name = (String) node.getChildValue( "Name" );
 		
 		//turn into qname
-		QName qName = (QName) new XSQNameBinding( namespaceSupport ).parse( null, name );
+		QName qName = (QName) new XSQNameBinding( namespaceContext ).parse( null, name );
 		property.setName( qName );
 		
 		
