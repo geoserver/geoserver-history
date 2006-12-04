@@ -76,8 +76,8 @@ public class DefaultGeoServerCatalog extends AdaptingCatalog implements
 			FeatureTypeInfo info = 
 				(FeatureTypeInfo) resource.resolve( FeatureTypeInfo.class, null );
 			
-			if ( info.isEnabled() ) 
-				active.add( info );
+//			if ( info.isEnabled() ) 
+			active.add( info );
 		}
 		
 		return active;
