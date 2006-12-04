@@ -294,7 +294,7 @@ public class GeoServerHttpTestSupport extends TestCase {
 	Document dom( InputStream input ) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); 
 		factory.setNamespaceAware( true );
-		factory.setValidating( true );
+		//factory.setValidating( true );
 		
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document dom = builder.parse( input );
