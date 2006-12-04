@@ -6,6 +6,7 @@ import javax.xml.namespace.QName;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.WFSFactory;
 
+import org.geoserver.feature.CompositeFeatureCollection;
 import org.geoserver.ows.ComplexEMFBinding;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
@@ -117,8 +118,14 @@ public class FeatureCollectionTypeBinding extends ComplexEMFBinding {
 		//check for feature collection memebers
         if (GML.featureMembers.equals(name)) {
         	FeatureCollectionType featureCollection = (FeatureCollectionType) object;
-        	//TODO: make FeatureCollectionType reference a single feature collection
+        	
         	if ( !featureCollection.getFeature().isEmpty() ) {
+        		if( featureCollection.getFeature().size() > 1 ) {
+        			//wrap in a single
+            		return new CompositeFeatureCollection( featureCollection.getFeature() ); 
+            	}	
+        		
+        		//just return the single
         		return featureCollection.getFeature().iterator().next();
         	}
         }
