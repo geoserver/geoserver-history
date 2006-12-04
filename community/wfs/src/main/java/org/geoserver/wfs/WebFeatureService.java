@@ -10,44 +10,17 @@ import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 
-import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
-import org.geotools.filter.FilterFactory;
 import org.geotools.xml.transform.TransformerBase;
 
 /**
- * Web Feature Service implementation.
+ * Web Feature Service.
  * 
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class WebFeatureService {
+public interface WebFeatureService {
 
-	/**
-	 * WFS service configuration.
-	 */
-	WFS wfs;
-	/**
-	 * The catalog
-	 */
-	GeoServerCatalog catalog;
-	/**
-	 * Filter factory
-	 */
-	FilterFactory filterFactory;
-	
-	public WebFeatureService( WFS wfs, GeoServerCatalog catalog ) {
-		this.wfs = wfs;
-		this.catalog = catalog;
-	}
-	
-	/**
-	 * Sets the fitler factory.
-	 */
-	public void setFilterFactory(FilterFactory filterFactory) {
-		this.filterFactory = filterFactory;
-	}
-	
 	/**
 	 * WFS GetCapabilities operation.
 	 * 
@@ -58,10 +31,7 @@ public class WebFeatureService {
 	 * 
 	 * @throws WFSException Any service exceptions.
 	 */
-	public TransformerBase getCapabilities( GetCapabilitiesType request ) throws WFSException {
-		
-		return new GetCapabilities( wfs, catalog ).run( request );
-	}
+	public TransformerBase getCapabilities( GetCapabilitiesType request ) throws WFSException;
 	
 	/**
 	 * WFS DescribeFeatureType operation.
@@ -73,10 +43,7 @@ public class WebFeatureService {
 	 * @throws WFSException Any service exceptions.
 	 */
 	public FeatureTypeInfo[] describeFeatureType( DescribeFeatureTypeType request ) 
-		throws WFSException {
-		
-		return new DescribeFeatureType( wfs, catalog ).run( request ); 
-	}
+		throws WFSException;
 	
 	/**
 	 * WFS GetFeature operation.
@@ -87,12 +54,7 @@ public class WebFeatureService {
 	 * 
 	 * @throws WFSException Any service exceptions.
 	 */
-	public FeatureCollectionType getFeature( GetFeatureType request ) throws WFSException {
-		GetFeature getFeature = new GetFeature( wfs, catalog );
-		getFeature.setFilterFactory( filterFactory );
-		
-		return getFeature.run( request );
-	}
+	public FeatureCollectionType getFeature( GetFeatureType request ) throws WFSException;
 	
 	/**
 	 * WFS GetFeatureWithLock operation.
@@ -103,11 +65,8 @@ public class WebFeatureService {
 	 * 
 	 * @throws WFSException Any service exceptions.
 	 */
-	public FeatureCollectionType getFeatureWithLock( GetFeatureWithLockType request ) 
-		throws WFSException {
-		
-		return getFeature( request );
-	}
+	public FeatureCollectionType getFeatureWithLock( GetFeatureWithLockType request )
+		throws WFSException;
 
 	/**
 	 * WFS LockFeatureType operation.
@@ -118,12 +77,7 @@ public class WebFeatureService {
 	 * 
 	 * @throws WFSException An service exceptions.
 	 */
-	public LockFeatureResponseType lockFeature( LockFeatureType request ) throws WFSException {
-		LockFeature lockFeature = new LockFeature( wfs, catalog );
-		lockFeature.setFilterFactory( filterFactory );
-		
-		return lockFeature.lockFeature( request );
-	}
+	public LockFeatureResponseType lockFeature( LockFeatureType request ) throws WFSException;
 	
 	/**
 	 * WFS transaction operation.
@@ -134,21 +88,8 @@ public class WebFeatureService {
 	 * 
 	 * @throws WFSException Any service exceptions.
 	 */
-	public TransactionResponseType transaction( TransactionType request ) throws WFSException {
+	public TransactionResponseType transaction( TransactionType request ) throws WFSException;
 	
-		Transaction transaction = new Transaction( wfs, catalog );
-		transaction.setFilterFactory( filterFactory );
-		
-		return transaction.transaction( request );
-	}
 	
-	//the following operations are not part of the spec
 	
-	public void releaseLock( String lockId ) throws WFSException {
-		new LockFeature( wfs, catalog ).release( lockId );
-	}
-	
-	public void releaseAllLocks() throws WFSException {
-		new LockFeature( wfs, catalog ).releaseAll();
-	}
 }

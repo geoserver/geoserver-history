@@ -11,12 +11,30 @@
 	</bean>
 	
 	<!-- wfs service -->
-	<bean id="wfsService" class="org.geoserver.wfs.WebFeatureService">
+	<!--bean id="wfsService" class="org.geoserver.wfs.DefaultWebFeatureService">
+		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
+		<property name="filterFactory" ref="filterFactory"/>
+	</bean-->
+	<bean id="wfsServiceTarget" class="org.geoserver.wfs.DefaultWebFeatureService">
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="catalog"/>
 		<property name="filterFactory" ref="filterFactory"/>
 	</bean>
-	
+
+	<bean id="wfsLogger" class="org.geoserver.wfs.WFSLogger"/>
+	<bean id="wfsService" class="org.springframework.aop.framework.ProxyFactoryBean">
+	  <property name="proxyInterfaces">
+	  	<value>org.geoserver.wfs.WebFeatureService</value>
+	  </property>
+	  <property name="interceptorNames">
+	  	<list>
+	  		<value>wfsLogger</value>
+	  		<value>wfsServiceTarget</value>
+	  	</list>
+	  </property>
+	</bean>
+		
 	<!-- service descriptors -->
 	<bean id="wfsService-1.0.0" class="org.geoserver.ows.Service">
 		<constructor-arg index="0" value="wfs"/>
