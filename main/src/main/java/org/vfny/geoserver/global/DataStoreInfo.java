@@ -178,7 +178,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
                 if (key != null && key.matches(".* *url") && value instanceof String) {
                     String path = (String) value;
                     LOGGER.finer("in string url");
-                    if (path.startsWith("file:data/")) {
+                    if (path.startsWith("file:")) {
                         path = path.substring(5); // remove 'file:' prefix
 
                         File file = new File(baseDir, path);
@@ -193,10 +193,10 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
                     URL url = (URL) value;
                     String path = url.getPath();
 		    LOGGER.finer("path is " + path);
-		    if (path.startsWith("data/")){
+		    //if (path.startsWith("data/")){
 			File file = new File(baseDir, path);
 			entry.setValue(file.toURL());
-		    }
+		    //}
                 } /*else if ("dbtype".equals(key) && value instanceof String) {
                     String val = (String) value;
 
