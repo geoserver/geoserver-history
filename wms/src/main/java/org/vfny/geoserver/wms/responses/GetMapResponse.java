@@ -122,7 +122,9 @@ public class GetMapResponse implements Response {
 		final MapLayerInfo[] layers = request.getLayers();
 		final Style[] styles = (Style[]) request.getStyles().toArray(
 				new Style[] {});
-
+		final Filter[] filters = (request.getFilters() != null ? (Filter[]) request.getFilters().toArray(
+				new Filter[] {}) : null); 
+		
         //JD:make instance variable in order to release resources later
         //final WMSMapContext map = new WMSMapContext();
         map = new WMSMapContext(request);
@@ -186,13 +188,19 @@ public class GetMapResponse implements Response {
 			FeatureSource source;
 			AbstractGridCoverage2DReader reader;
 			Style style;
-			Filter definitionFilter;
+			Filter definitionFilter, optionalFilter;
 			Query definitionQuery;
 			int nma;
 			final int length = layers.length;
 			for (int i = 0; i < length; i++) {
 				style = styles[i];
-
+				
+				try {
+					optionalFilter = filters[i];
+				} catch (Exception e) {
+					optionalFilter = null;
+				}
+				
 				if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
 					if (cachingPossible) {
 						if (layers[i].getFeature().isCachingEnabled()) {
@@ -259,12 +267,16 @@ public class GetMapResponse implements Response {
 					layer = new DefaultMapLayer(source, style);
 					layer.setTitle(layers[i].getName());
 
-					definitionFilter = layers[i].getFeature()
-							.getDefinitionQuery();
+					definitionFilter = layers[i].getFeature().getDefinitionQuery();
 
 					if (definitionFilter != null) {
 						definitionQuery = new DefaultQuery(source.getSchema()
 								.getTypeName(), definitionFilter);
+
+						layer.setQuery(definitionQuery);
+					} else if (optionalFilter != null) {
+						definitionQuery = new DefaultQuery(source.getSchema().getTypeName(), optionalFilter);
+						
 						layer.setQuery(definitionQuery);
 					}
 
