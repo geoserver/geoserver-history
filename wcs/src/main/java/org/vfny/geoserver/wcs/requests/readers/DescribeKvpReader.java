@@ -47,7 +47,7 @@ public class DescribeKvpReader extends KvpRequestReader {
     	
     	if (keyExists("SERVICE")) {
         	final String service = getValue("SERVICE");
-        	if (service.equalsIgnoreCase("WCS")) {
+        	if (service.trim().toUpperCase().startsWith("WCS")) {
         		currentRequest.setService(service);
         	} else {
         		throw new WcsException("SERVICE parameter is wrong.");

@@ -77,7 +77,7 @@ public class GetCoverageXmlReader extends XmlRequestReader {
 
         if (r.getService() != null) {
         	final String service = r.getService();
-        	if (!service.equalsIgnoreCase("WCS")) {
+        	if (!service.trim().toUpperCase().startsWith("WCS")) {
         		throw new WcsException("SERVICE parameter is wrong.");
         	}
         } else {
