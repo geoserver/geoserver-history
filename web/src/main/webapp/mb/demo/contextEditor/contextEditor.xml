@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!-- edited with XMLSPY v5 U (http://www.xmlspy.com) by Tom Kralidis (NRCAN CCRs) -->
+<MapbuilderConfig version="1.0.0" id="contextEditorDemoConfig" xmlns="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mapbuilder.sourceforge.net/mapbuilder ../../lib/schemas/config.xsd">
+	<!--
+    Description: This configuration file determines what components from the
+                 Mapbuilder library are to be included in a Main Mapbuilder web
+                 page.
+    Licence:     LGPL as per: http://www.gnu.org/copyleft/lesser.html 
+
+    $Id$
+  -->
+	<models>
+		<Context id="mainMap">
+			<defaultModelUrl>../data/context/DM_Canada.xml</defaultModelUrl>
+			<!--defaultModelUrl>../data/context/atlasWorld.xml</defaultModelUrl-->
+			<widgets>
+				<MapPane id="mainMapWidget">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<mapContainerId>mainMapContainer</mapContainerId>
+					<loadHidden>false</loadHidden>
+				</MapPane>
+				<CursorTrack id="cursorTrack">
+					<mouseHandler>mainMap</mouseHandler>
+				</CursorTrack>
+				<Widget id="mapTitle">
+					<stylesheet>../../lib/widget/MapTitle.xsl</stylesheet>
+				</Widget>
+				<LayerControl id="contextLegend">
+					<htmlTagId>workspace</htmlTagId>
+					<outputNodeId>workspaceCanvas</outputNodeId>
+					<moveUpImage>/images/LayerMoveUpDisable.png</moveUpImage>
+					<moveDownImage>/images/LayerMoveDownDisable.png</moveDownImage>
+					<deleteImage>/images/LayerRemoveDisable.png</deleteImage>
+				</LayerControl>
+				<OWSCatSearchForm id="owsCatSearchForm">
+					<htmlTagId>workspace</htmlTagId>
+					<outputNodeId>workspaceCanvas</outputNodeId>
+					<targetModel>owsCatSearch</targetModel>
+					<scriptFile>OWSCatSearchForm.js</scriptFile>
+					<stylesheet>owsCatSearchForm.xsl</stylesheet>
+				</OWSCatSearchForm>
+				<AoiBoxDHTML id="aoiBox2">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<mapContainerId>mainMapContainer</mapContainerId>
+					<lineColor>#FF0000</lineColor>
+					<lineWidth>1</lineWidth>
+					<crossSize>15</crossSize>
+				</AoiBoxDHTML>
+				<Loading2 id="loading2">
+					<mapContainerId>mainMapContainer</mapContainerId>
+				</Loading2>
+			</widgets>
+			<tools>
+				<AoiMouseHandler id="mainAoi"/>
+				<DragPanHandler id="mainDragPan">
+					<enabled>false</enabled>
+				</DragPanHandler>
+			</tools>
+		</Context>
+		<Context id="locator">
+			<defaultModelUrl>../data/context/locatorMap.xml</defaultModelUrl>
+			<widgets>
+				<MapPane id="locatorWidget">
+					<htmlTagId>locatorMap</htmlTagId>
+					<targetModel>mainMap</targetModel>
+					<mapContainerId>locatorContainer</mapContainerId>
+					<fixedWidth>180</fixedWidth>
+				</MapPane>
+				<AoiBoxDHTML id="locatorAoi">
+					<htmlTagId>locatorMap</htmlTagId>
+					<mapContainerId>locatorContainer</mapContainerId>
+					<lineColor>#FF0000</lineColor>
+					<lineWidth>1</lineWidth>
+					<crossSize>15</crossSize>
+				</AoiBoxDHTML>
+			</widgets>
+			<tools>
+				<AoiMouseHandler id="locatorMouse"/>
+				<ZoomToAoi id="locatorZoomToAoi">
+					<targetModel>mainMap</targetModel>
+				</ZoomToAoi>
+			</tools>
+		</Context>
+		<ContextCollection id="myMapCollection">
+			<!--defaultModelUrl>../data/context/demoCollection.xml</defaultModelUrl-->
+			<widgets>
+				<CollectionList id="collectionList">
+					<htmlTagId>workspace</htmlTagId>
+					<outputNodeId>workspaceCanvas</outputNodeId>
+					<targetModel>mainMap</targetModel>
+				</CollectionList>
+			</widgets>
+		</ContextCollection>
+		<!-- use this with a WFS capabilities model -->
+		<WfsCapabilities id="wfsCapTemplate">
+			<!--defaultModelUrl>http://webservices.ionicsoft.com/ionicweb/wfs/BOSTON_ORA?version=1.0.0&amp;service=WFS&amp;request=GetCapabilities</defaultModelUrl-->
+			<models>
+				<FeatureTypeSchema id="featureTypeTemplate" template="true">
+					<widgets>
+						<Widget id="attributeFilter">
+							<htmlTagId>workspace</htmlTagId>
+							<outputNodeId>workspaceCanvas</outputNodeId>
+							<stylesheet>../../lib/widget/FilterAttributes.xsl</stylesheet>
+						</Widget>
+					</widgets>
+				</FeatureTypeSchema>
+				<FeatureCollection id="getFeatureTemplate" template="true">
+					<method>get</method>
+					<widgets>
+						<GmlRendererWZ id="testGmlRenderer">
+							<htmlTagId>mainMapPane</htmlTagId>
+							<targetModel>mainMap</targetModel>
+							<mapContainerId>mainMapContainer</mapContainerId>
+							<lineColor>#FF00FF</lineColor>
+							<lineWidth>1</lineWidth>
+							<pointDiameter>10</pointDiameter>
+						</GmlRendererWZ>
+						<Legend id="wfsLegend">
+							<htmlTagId>workspace</htmlTagId>
+							<outputNodeId>workspaceCanvas</outputNodeId>
+						</Legend>
+					</widgets>
+				</FeatureCollection>
+				<!--Transaction id="transactionTemplate" template="true">
+          <method>post</method>
+          <widgets>
+            <ShowResponse id="transResponse"/>
+          </widgets>
+        </Transaction-->
+			</models>
+			<widgets>
+				<Widget id="featureTypes">
+					<htmlTagId>workspace</htmlTagId>
+					<outputNodeId>workspaceCanvas</outputNodeId>
+					<stylesheet>../../lib/widget/SelectFeatureType.xsl</stylesheet>
+				</Widget>
+			</widgets>
+			<tools>
+				<WebServiceRequest id="wfsGetFeature">
+					<targetModel>getFeatureTemplate</targetModel>
+					<requestName>wfs:GetFeature</requestName>
+					<maxFeatures>20</maxFeatures>
+				</WebServiceRequest>
+				<WebServiceRequest id="wfsDescribeFeature">
+					<targetModel>featureTypeTemplate</targetModel>
+					<requestName>wfs:DescribeFeatureType</requestName>
+				</WebServiceRequest>
+				<!--WebServiceRequest id="wfsTransaction">
+          <targetModel>transactionTemplate</targetModel>
+          <requestName>wfs:Transaction</requestName>
+        </WebServiceRequest-->
+			</tools>
+			<nodeSelectXpath>/wfs:WFS_Capabilities/wfs:FeatureTypeList/wfs:FeatureType</nodeSelectXpath>
+		</WfsCapabilities>
+		<WmsCapabilities id="wmsCapTemplate">
+			<!--defaultModelUrl>http://www.bsc-eoc.org/cgi-bin/bsc_ows.asp?version=1.1.1&amp;service=WMS&amp;request=GetCapabilities</defaultModelUrl-->
+			<title>OGC Web Map Server (WMS)</title>
+			<models>
+				<!--GetFeatureInfo id="featureTypeTemplate" template="true">
+          <widgets>
+            <Widget id="attributeFilter">
+              <stylesheet>../../lib/widget/FilterAttributes.xsl</stylesheet>
+              <outputNodeId>filterForm</outputNodeId>
+            </Widget>
+          </widgets>
+        </GetFeatureInfo-->
+			</models>
+			<widgets>
+				<Widget id="layerList">
+					<htmlTagId>workspace</htmlTagId>
+					<outputNodeId>workspaceCanvas</outputNodeId>
+					<stylesheet>../../lib/widget/SelectMapLayers.xsl</stylesheet>
+				</Widget>
+				<Loading2 id="loading3">
+					<htmlTagId>workspace</htmlTagId>
+					<outputNodeId>workspaceCanvas</outputNodeId>
+				</Loading2>
+			</widgets>
+			<tools>
+				<!--WebServiceRequest id="wmsController">
+          <targetModel>getMapTemplate</targetModel>
+          <requestName>GetMap</requestName>
+        </WebServiceRequest-->
+				<!--WebServiceRequest id="wmsController">
+          <targetModel>getFeatureInfoTemplate</targetModel>
+          <requestName>wms:GetFeatureInfo</requestName>
+        </WebServiceRequest-->
+				<EditContext id="editContext">
+					<targetModel>mainMap</targetModel>
+				</EditContext>
+			</tools>
+			<nodeSelectXpath>//Layer</nodeSelectXpath>
+		</WmsCapabilities>
+		<Model id="wmsServers">
+			<title>Web Map Servers</title>
+			<widgets>
+				<WebServiceForm id="wmsServerList">
+					<htmlTagId>workspace</htmlTagId>
+					<outputNodeId>workspaceCanvas</outputNodeId>
+					<targetModel>wmsCapTemplate</targetModel>
+					<stylesheet>../../lib/widget/ServiceRegistryList.xsl</stylesheet>
+					<serviceType>CgdiMapServices</serviceType>
+				</WebServiceForm>
+				<Loading2 id="loading1">
+					<htmlTagId>workspace</htmlTagId>
+					<outputNodeId>workspaceCanvas</outputNodeId>
+				</Loading2>
+			</widgets>
+		</Model>
+		<Model id="wfsServers">
+			<title>Web Feature Servers</title>
+			<widgets>
+				<WebServiceForm id="wfsServerList">
+					<htmlTagId>workspace</htmlTagId>
+					<outputNodeId>workspaceCanvas</outputNodeId>
+					<targetModel>wfsCapTemplate</targetModel>
+					<stylesheet>../../lib/widget/ServiceRegistryList.xsl</stylesheet>
+					<serviceType>CgdiFeatureServices</serviceType>
+				</WebServiceForm>
+				<Loading2 id="loadingWFSlist">
+					<htmlTagId>workspace</htmlTagId>
+					<outputNodeId>workspaceCanvas</outputNodeId>
+				</Loading2>
+			</widgets>
+		</Model>
+		<WfsCapabilities id="owsCatSearch">
+			<defaultModelUrl>http://devgeo.cciw.ca/cgi-bin/mapserv/owscat?version=1.0.0&amp;service=WFS&amp;request=GetCapabilities</defaultModelUrl>
+			<models>
+				<Model id="filterExpression">
+					<defaultModelUrl>OWSCatResourceFilter.xml</defaultModelUrl>
+				</Model>
+				<OwsCatResources id="owsCatResults">
+					<method>get</method>
+					<widgets>
+						<!--GmlRendererWZ id="resultBbox">
+              <htmlTagId>mainMapPane</htmlTagId>
+              <targetModel>mainMap</targetModel>
+              <lineColor>#FF0000</lineColor>
+              <lineWidth>2</lineWidth>
+              <pointDiameter>10</pointDiameter>
+              <mapContainerId>mainMapContainer</mapContainerId>
+            </GmlRendererWZ-->
+						<Widget id="resultList">
+							<htmlTagId>workspace</htmlTagId>
+							<outputNodeId>workspaceCanvas</outputNodeId>
+							<stylesheet>OWSCatResultList.xsl</stylesheet>
+						</Widget>
+					</widgets>
+					<tools>
+						<EditContext id="addLayer">
+							<targetModel>mainMap</targetModel>
+						</EditContext>
+					</tools>
+					<nodeSelectXpath>/wfs:FeatureCollection/gml:featureMember/owscat:service_resources</nodeSelectXpath>
+				</OwsCatResources>
+			</models>
+			<widgets>
+				<Loading2 id="loading">
+					<htmlTagId>workspace</htmlTagId>
+					<outputNodeId>workspaceCanvas</outputNodeId>
+				</Loading2>
+			</widgets>
+			<tools>
+				<WebServiceRequest id="owsCatGetFeature">
+					<targetModel>owsCatResults</targetModel>
+					<requestName>wfs:GetFeature</requestName>
+					<requestFilter>filterExpression</requestFilter>
+					<maxFeatures>20</maxFeatures>
+				</WebServiceRequest>
+			</tools>
+			<nodeSelectXpath>/wfs:WFS_Capabilities/wfs:FeatureTypeList/wfs:FeatureType</nodeSelectXpath>
+		</WfsCapabilities>
+	</models>
+	<widgets>
+		<!--TabbedContent id="tabBar">
+      <htmlWorkspace>workspace</htmlWorkspace>
+      <tab>wmsServerList</tab>
+      <tab>layerList</tab>
+      <tab>wfsServerList</tab>
+      <tab>featureTypes</tab>
+      <tab>contextLegend</tab>
+      <tab>owsCatSearchForm</tab>
+    </TabbedContent-->
+		<ModelUrlInput id="urlInput">
+			<htmlTagId>workspace</htmlTagId>
+			<outputNodeId>workspaceCanvas</outputNodeId>
+			<targetModel>wmsCapTemplate</targetModel>
+		</ModelUrlInput>
+		<ZoomIn id="zoomIn">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<selected>true</selected>
+			<enabledSrc>/images/ZoomInEnable.png</enabledSrc>
+			<disabledSrc>/images/ZoomInDisable.png</disabledSrc>
+		</ZoomIn>
+		<ZoomOut id="zoomOut">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/ZoomOutEnable.png</enabledSrc>
+			<disabledSrc>/images/ZoomOutDisable.png</disabledSrc>
+		</ZoomOut>
+		<DragPan id="dragPan">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainDragPan</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/PanEnable.png</enabledSrc>
+			<disabledSrc>/images/PanDisable.png</disabledSrc>
+		</DragPan>
+		<SetAoi id="setAoi">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/SetAoiEnable.png</enabledSrc>
+			<disabledSrc>/images/SetAoiDisable.png</disabledSrc>
+		</SetAoi>
+		<Reset id="reset">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/ResetExtentDisable.png</disabledSrc>
+		</Reset>
+		<Save id="save">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/SaveDisable.png</disabledSrc>
+			<popupWindowName>modelXML</popupWindowName>
+		</Save>
+		<Loading2 id="loadingConfig">
+			<htmlTagId>workspace</htmlTagId>
+			<outputNodeId>workspaceCanvas</outputNodeId>
+		</Loading2>
+	</widgets>
+	<!--
+    All static images should be relative to this URL.
+    This dir is relative the dir of the main html file.
+  -->
+	<skinDir>../../lib/skin/default</skinDir>
+	<widgetTextUrl>/widgetText.xml</widgetTextUrl>
+	<!-- in the skin dir -->
+</MapbuilderConfig>

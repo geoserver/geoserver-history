@@ -7,20 +7,15 @@ package org.vfny.geoserver.wms.servlets;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetMapKvpReader;
@@ -48,7 +43,13 @@ public class GetMap extends WMService {
     public GetMap(WMS wms) {
     		super("GetMap",wms);
     }
+    
+    protected GetMap(String id, WMS wms) {
+        super(id, wms);
+    }
        
+    // TODO: check is this override adds any value compared to the superclass one,
+    // remove otherwise
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
     	
@@ -63,10 +64,9 @@ public class GetMap extends WMService {
 
         //DJB: added post support
         Request serviceRequest = null;
-        this.curRequest = request;
-
+//        this.curRequest = request;
         if (!isServiceEnabled(request)) {
-            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            sendDisabledServiceError(response);
             return;
         }
 
@@ -77,10 +77,10 @@ public class GetMap extends WMService {
             Reader xml = request.getReader();
             serviceRequest = xmlPostReader.read(xml, request);
         } catch (ServiceException se) {
-            sendError(response, se);
+            sendError(request, response, se);
             return;
         } catch (Throwable e) {
-            sendError(response, e);
+            sendError(request, response, e);
             return;
         }
 
@@ -104,12 +104,7 @@ public class GetMap extends WMService {
      * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
-        /**
-         * @todo Implement this org.vfny.geoserver.servlets.AbstractService
-         *       abstract method
-         */
-        throw new java.lang.UnsupportedOperationException(
-            "Method getXmlRequestReader() not yet implemented.");
+        return new GetMapXmlReader(this);
     }
 
     /**
@@ -120,7 +115,18 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new GetMapKvpReader(params, this);
+    	
+    	Map layers = this.getWMS().getBaseMapLayers();
+    	Map styles = this.getWMS().getBaseMapStyles();
+    	
+    	GetMapKvpReader kvp = new GetMapKvpReader(params, this);
+    	
+    	// filter layers and styles if the user specified "layers=basemap"
+    	// This must happen after the kvp reader has been initially called
+    	if (layers != null && !layers.equals(""))
+    		kvp.filterBaseMap(layers, styles);
+    	
+        return kvp;
     }
 
     /**

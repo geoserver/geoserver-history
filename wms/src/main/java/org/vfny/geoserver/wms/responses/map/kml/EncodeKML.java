@@ -15,40 +15,42 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.GraphicsJAI;
-import javax.media.jai.PlanarImage;
 
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
-//import org.geotools.filter.FilterFactoryFinder;
+import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.FilterFactoryImpl;
-import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
+import org.geotools.filter.IllegalFilterException;
+import org.geotools.filter.BBoxExpression;
 import org.geotools.filter.Expression;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
+import org.geotools.referencing.CRS;
+import org.geotools.referencing.FactoryFinder;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.CoordinateOperationFactory;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.responses.map.png.PngEncoder;
-import org.vfny.geoserver.wms.responses.map.png.PngEncoderB;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -88,9 +90,18 @@ public class EncodeKML {
 	 */
 	private KMLWriter writer;
 
+	/** Filter factory for creating bounding box filters */
+    private FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
     
     /** Flag to be monotored by writer loops */
     private boolean abortProcess;
+    
+    /** Used for reprojection */
+    private final static CoordinateOperationFactory operationFactory;
+    static {
+        Hints hints=new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
+        operationFactory=FactoryFinder.getCoordinateOperationFactory(hints);
+    }
     
     /**
      * Creates a new EncodeKML object.
@@ -261,27 +272,59 @@ public class EncodeKML {
         
         FilterFactory fFac = new FilterFactoryImpl();
         
+        final int imageWidth = this.mapContext.getMapWidth();
+        final int imageHeight = this.mapContext.getMapHeight();
+        //final CoordinateReferenceSystem requestedCrs = mapContext.getCoordinateReferenceSystem();
+        //writer.setRequestedCRS(requestedCrs);
+        //writer.setScreenSize(new Rectangle(imageWidth, imageHeight));
+        
         writer.startDocument("GeoServer", null);
-        for (int i = 0; i < nLayers; i++) {
+        for (int i = 0; i < nLayers; i++) { // for every layer specified in the request
             MapLayer layer = layers[i];
-            FeatureReader featureReader = null;
+            //FeatureReader featureReader = null;
             FeatureSource fSource = layer.getFeatureSource();
             FeatureType schema = fSource.getSchema();
             
+
+            //GeometryAttributeType geometryAttribute = schema.getDefaultGeometry();
+        	//CoordinateReferenceSystem sourceCrs = geometryAttribute.getCoordinateSystem();
+        	Rectangle paintArea = new Rectangle(imageWidth, imageHeight);
+            AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(
+            		mapContext.getAreaOfInterest(), paintArea);
+            double scaleDenominator = 1;
+            try {
+            	scaleDenominator = RendererUtilities.calculateScale(mapContext.getAreaOfInterest(),mapContext.getCoordinateReferenceSystem(),paintArea.width,paintArea.height,90);// 90 = OGC standard DPI (see SLD spec page 37)
+            } catch (Exception e) // probably either (1) no CRS (2) error xforming
+            {
+            	scaleDenominator =  1 / worldToScreen.getScaleX(); //DJB old method - the best we can do
+            }
+            writer.setRequestedScale(scaleDenominator);
+            
             String[] attributes;
+            boolean isRaster = false;
 			
             AttributeType[] ats = schema.getAttributeTypes();
             final int length = ats.length;
             attributes = new String[length];
             for (int t = 0; t < length; t++) {
             	attributes[t] = ats[t].getName();
+            	if(attributes[t].equals("grid"))
+            		isRaster = true;
             }
 
             try {
+            	CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry().getCoordinateSystem();
+            	writer.setSourceCrs(sourceCrs);// it seems to work better getting it from the schema, here
+            	Envelope envelope = mapContext.getAreaOfInterest();
+            	ReferencedEnvelope aoi = new ReferencedEnvelope(envelope, mapContext.getCoordinateReferenceSystem());
+            	
+            	
             	Filter filter = null;
-            	/* WCS branch version with new Expressions
-            	BBoxExpression rightBBox = filterFactory.createBBoxExpression(mapContext
-                        .getAreaOfInterest());
+            	//ReferencedEnvelope aoi = mapContext.getAreaOfInterest();
+            	if (!CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(), schema.getDefaultGeometry().getCoordinateSystem())) {
+            		aoi = aoi.transform(schema.getDefaultGeometry().getCoordinateSystem(), true);
+            	}
+            	BBoxExpression rightBBox = filterFactory.createBBoxExpression(aoi);
                 filter = createBBoxFilters(schema, attributes, rightBBox);
                 
                 // now build the query using only the attributes and the bounding
@@ -301,24 +344,9 @@ public class EncodeKML {
                     }
                 }
                 
-                q.setCoordinateSystem(
-                        layer.getFeatureSource().getSchema().getDefaultGeometry().getCoordinateSystem());
+                q.setCoordinateSystem(layer.getFeatureSource().getSchema().getDefaultGeometry().getCoordinateSystem());
                 
-                featureReader = fSource.getFeatures(q).reader();
-                ----WCS version with new expressions*/
-            	
-                Expression bboxExpression = fFac.createBBoxExpression(mapContext
-                        .getAreaOfInterest());
-                GeometryFilter bboxFilter = fFac.createGeometryFilter(FilterType.GEOMETRY_INTERSECTS);
-                bboxFilter.addLeftGeometry(bboxExpression);
-                bboxFilter.addRightGeometry(fFac.createAttributeExpression(
-                        schema, schema.getDefaultGeometry().getName()));
-                
-                Query bboxQuery = new DefaultQuery(schema.getTypeName(),
-                        bboxFilter);
-                
-                featureReader = fSource.getFeatures(bboxQuery).reader();
-                FeatureCollection fc = fSource.getFeatures(bboxQuery);
+                FeatureCollection fc = fSource.getFeatures(q);
                 
                 int kmscore = mapContext.getRequest().getKMScore(); //KMZ score value
                 boolean useVector = useVectorOutput(kmscore, fc.size()); // kmscore = render vector/raster
@@ -326,13 +354,20 @@ public class EncodeKML {
                 {
                 	LOGGER.info("Layer ("+layer.getTitle()+") rendered with KML vector output.");
                 	layerRenderList.add(new Integer(i)); // save layer number so it won't be rendered
-                	writer.writeFeatures(fc, layer, i, false, useVector); // KML
+                	if (!isRaster) {
+                    	writer.writeFeaturesAsVectors(fc, layer); // vector
+                	} else {
+                		writer.writeCoverages(fc, layer); // coverage
+                	}
                 }
                 else
                 {
                 	// user requested KMZ and kmscore says render raster
                 	LOGGER.info("Layer ("+layer.getTitle()+") rendered with KMZ raster output.");
-                	writer.writeFeatures(fc, layer, i, true, useVector); // KMZ
+                	// layer order is only needed for raster results. In the <GroundOverlay> tag 
+                	// you need to point to a raster image, this image has the layer number as
+                	// part of the name. The kml will then reference the image via the layer number
+                	writer.writeFeaturesAsRaster(fc, layer, i); // raster
                 }
 
                	LOGGER.fine("finished writing");
@@ -350,13 +385,13 @@ public class EncodeKML {
                 ioe.setStackTrace(t.getStackTrace());
                 throw ioe;
             } finally {
-                if (featureReader != null) {
+                /*if (featureReader != null) {
                     try{
                         featureReader.close();
                     }catch(IOException ioe){
                         //featureReader was probably closed already.
                     }
-                }
+                }*/
             }
         }
         writer.endDocument();
@@ -467,9 +502,9 @@ public class EncodeKML {
 			*/
 			
 			//---------------------- bo- new
-			PngEncoderB png = new PngEncoderB(curImage, PngEncoder.ENCODE_ALPHA, 0, 1);
-			byte[] pngbytes = png.pngEncode();
-			memOutStream.write(pngbytes);
+//			PngEncoderB png = new PngEncoderB(curImage, PngEncoder.ENCODE_ALPHA, 0, 1);
+//			byte[] pngbytes = png.pngEncode();
+//			memOutStream.write(pngbytes);
 			//----------------------
 			
 			//imgWriter.setOutput(memOutStream);
@@ -494,7 +529,7 @@ public class EncodeKML {
      *         its corresponding <code>GeometryFilter</code>.
      * @throws IllegalFilterException if something goes wrong creating the filter
      */
-    /*private Filter createBBoxFilters( FeatureType schema, String[] attributes, BBoxExpression bbox )
+    private Filter createBBoxFilters( FeatureType schema, String[] attributes, BBoxExpression bbox )
     throws IllegalFilterException {
         Filter filter = null;
         
@@ -534,5 +569,5 @@ public class EncodeKML {
         }
         
         return filter;
-    }*/
+    }
 }

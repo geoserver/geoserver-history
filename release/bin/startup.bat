@@ -35,7 +35,7 @@ goto end
 
 REM Actions if GEOSERVER_HOME isn't defined
 :noGeo1
-  if exist start.jar goto doGeo1
+  if exist ..\start.jar goto doGeo1
   echo The GEOSERVER_HOME environment variable is not defined.
   echo This environment variable is needed to run this program.
 goto end
@@ -46,7 +46,7 @@ goto end
 goto setCurAsHome
 
 :noGeo2
-  if exist start.jar goto doGeo2
+  if exist ..\start.jar goto doGeo2
   echo The GEOSERVER_HOME environment variable is not defined correctly.
   echo This environment variable is needed to run this program.
 goto end
@@ -68,11 +68,11 @@ goto run
 
 REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/conf/
 :noDataDir
-  if exist "%GEOSERVER_HOME%\webapps\geoserver\conf\" goto setDataDir
+  if exist "%GEOSERVER_HOME%\webapps\geoserver\conf" goto setDataDir
   goto execJava
 
 :setDataDir
-  set GEOSERVER_DATA_DIR=%GEOSERVER_HOME%\webapps\geoserver\conf\
+  set GEOSERVER_DATA_DIR=%GEOSERVER_HOME%\webapps\geoserver\conf
   goto execJava
 
 :execJava
@@ -90,7 +90,7 @@ REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/conf/
 
 :runJava
   cd %GEOSERVER_HOME%
-  %RUN_JAVA% -DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -jar %GEOSERVER_HOME%\start.jar
+  %RUN_JAVA% -DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -Dorg.geotools.referencing.forceXY=true -jar %GEOSERVER_HOME%\start.jar
 
 
 :end

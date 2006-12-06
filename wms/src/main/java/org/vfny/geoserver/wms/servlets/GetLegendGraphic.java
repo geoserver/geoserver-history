@@ -23,6 +23,11 @@ import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
  */
 public class GetLegendGraphic extends WMService {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4957246942172056598L;
+
 	public GetLegendGraphic(WMS wms) {
 		super("GetLegendGraphic",wms);
 	}
@@ -33,7 +38,7 @@ public class GetLegendGraphic extends WMService {
      * @return a response handler to manage a GetLegendGraphic request
      */
     protected Response getResponseHandler() {
-        return new GetLegendGraphicResponse();
+        return new GetLegendGraphicResponse(getApplicationContext());
     }
 
     /**

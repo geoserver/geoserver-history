@@ -1,0 +1,291 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
+package org.vfny.geoserver.global;
+
+import java.io.IOException;
+
+import org.geotools.data.FeatureSource;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.styling.Style;
+import org.vfny.geoserver.global.dto.CoverageInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.util.DataStoreUtils;
+
+import com.vividsolutions.jts.geom.Envelope;
+
+/**
+ * DOCUMENT ME!
+ * 
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
+ */
+public final class MapLayerInfo extends GlobalLayerSupertype {
+	public static int TYPE_VECTOR = 0;
+
+	public static int TYPE_RASTER = 1;
+
+	/**
+	 * 
+	 * @uml.property name="feature"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private FeatureTypeInfo feature;
+
+	/**
+	 * 
+	 * @uml.property name="coverage"
+	 * @uml.associationEnd multiplicity="(0 1)"
+	 */
+	private CoverageInfo coverage;
+
+	/**
+	 * 
+	 * @uml.property name="type" multiplicity="(0 1)"
+	 */
+	private int type;
+
+	/**
+	 * 
+	 * @uml.property name="name" multiplicity="(0 1)"
+	 */
+	private String name;
+
+	/**
+	 * 
+	 * @uml.property name="label" multiplicity="(0 1)"
+	 */
+	private String label;
+
+	/**
+	 * 
+	 * @uml.property name="description" multiplicity="(0 1)"
+	 */
+	private String description;
+
+	/**
+	 * 
+	 * @uml.property name="dirName" multiplicity="(0 1)"
+	 */
+	private String dirName;
+
+	public MapLayerInfo() {
+		name = "";
+		label = "";
+		description = "";
+		dirName = "";
+
+		coverage = null;
+		feature = null;
+		type = -1;
+	}
+
+	public MapLayerInfo(CoverageInfoDTO dto, Data data)
+			throws ConfigurationException {
+
+		name = dto.getName();
+		label = dto.getLabel();
+		description = dto.getDescription();
+		dirName = dto.getDirName();
+
+		coverage = new CoverageInfo(dto, data);
+		feature = null;
+		type = TYPE_RASTER;
+	}
+
+	public MapLayerInfo(FeatureTypeInfoDTO dto, Data data)
+			throws ConfigurationException {
+
+		name = dto.getName();
+		label = dto.getTitle();
+		description = dto.getAbstract();
+		dirName = dto.getDirName();
+
+		feature = new FeatureTypeInfo(dto, data);
+		coverage = null;
+		type = TYPE_VECTOR;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
+	 */
+	Object toDTO() {
+		return null;
+	}
+
+	/**
+	 * getBoundingBox purpose.
+	 * 
+	 * <p>
+	 * The feature source bounds.
+	 * </p>
+	 * 
+	 * @return Envelope the feature source bounds.
+	 * 
+	 * @throws IOException
+	 *             when an error occurs
+	 */
+	public Envelope getBoundingBox() throws IOException {
+		if (this.type == TYPE_VECTOR) {
+			try {
+				return feature.getBoundingBox();
+			} catch (IllegalArgumentException e) {
+		        FeatureSource realSource = feature.getFeatureSource();
+
+		        return DataStoreUtils.getBoundingBoxEnvelope(realSource);
+			}
+		} else {
+
+			// using referenced envelope (experiment)
+			return new ReferencedEnvelope(coverage.getEnvelope(), coverage
+					.getCrs());
+		}
+	}
+
+	/**
+	 * 
+	 * @uml.property name="coverage"
+	 */
+	public CoverageInfo getCoverage() {
+		return coverage;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="coverage"
+	 */
+	public void setCoverage(CoverageInfo coverage) {
+		this.name = coverage.getName();
+		this.label = coverage.getLabel();
+		this.description = coverage.getDescription();
+		this.dirName = coverage.getDirName();
+		this.coverage = coverage;
+		this.feature = null;
+		this.type = TYPE_RASTER;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="description"
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="description"
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="dirName"
+	 */
+	public String getDirName() {
+		return dirName;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="dirName"
+	 */
+	public void setDirName(String dirName) {
+		this.dirName = dirName;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="feature"
+	 */
+	public FeatureTypeInfo getFeature() {
+		return feature;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="feature"
+	 */
+	public void setFeature(FeatureTypeInfo feature) {
+		// handle InlineFeatureStuff
+		try {
+			this.name = feature.getName();
+			this.label = feature.getTitle();
+			this.description = feature.getAbstract();
+			this.dirName = feature.getDirName();
+		} catch (IllegalArgumentException e) {
+			this.name = "";
+			this.label = "";
+			this.description = "";
+			this.dirName = "";
+		}
+		this.feature = feature;
+		this.coverage = null;
+		this.type = TYPE_VECTOR;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="label"
+	 */
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="label"
+	 */
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="name"
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="name"
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="type"
+	 */
+	public int getType() {
+		return type;
+	}
+
+	/**
+	 * 
+	 * @uml.property name="type"
+	 */
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public Style getDefaultStyle() {
+		if (this.type == TYPE_VECTOR)
+			return this.feature.getDefaultStyle();
+		else if (this.type == TYPE_RASTER)
+			return this.coverage.getDefaultStyle();
+
+		return null;
+	}
+
+}

@@ -5,9 +5,8 @@
 package org.vfny.geoserver.global;
 
 import org.vfny.geoserver.global.dto.ServiceDTO;
-import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-
+import java.util.Map;
 
 /**
  * WMS
@@ -49,6 +48,12 @@ public class WMS extends Service {
     private String svgRenderer;
     /** svg anitalias or not **/
     private boolean svgAntiAlias;
+    /** rendering interpolation or not **/
+    private Map baseMapLayers;
+    private Map baseMapStyles;
+    private String allowInterpolation;
+    
+    private WFS wfs;
     
     /**
      * WMS constructor.
@@ -64,7 +69,11 @@ public class WMS extends Service {
         super(config.getService());
         svgRenderer = config.getSvgRenderer();
         svgAntiAlias = config.getSvgAntiAlias();
+        allowInterpolation = config.getAllowInterpolation();
+        baseMapLayers = config.getBaseMapLayers();
+        baseMapStyles = config.getBaseMapStyles();
     }
+    
     
     
     /**
@@ -76,12 +85,21 @@ public class WMS extends Service {
      * @param geoServer
      * @throws ConfigurationException
      */
-    public WMS( Config config, Data data, GeoServer geoServer )  throws ConfigurationException {
+    public WMS( Config config, Data data, GeoServer geoServer, WFS wfs)  throws ConfigurationException {
 		this( config.getXMLReader().getWms() );
 		setData(data);
 		setGeoServer(geoServer);
-    	
-	}
+                this.wfs = wfs;
+    }
+    
+    /**
+     * Quick hack to fix geot-770, need a full class rewrite otherwise and
+     * we are too near release to do that
+     * @return
+     */
+    public WFS getWFS() {
+        return wfs;
+    }
 
     	/**
      * load purpose.
@@ -94,6 +112,9 @@ public class WMS extends Service {
     	super.load(config.getService());
     	svgRenderer = config.getSvgRenderer();
     	svgAntiAlias = config.getSvgAntiAlias();
+    	allowInterpolation = config.getAllowInterpolation();
+    	baseMapLayers = config.getBaseMapLayers();
+    	baseMapStyles = config.getBaseMapStyles();
     }
 
     /**
@@ -129,6 +150,9 @@ public class WMS extends Service {
         w.setService((ServiceDTO)super.toDTO());
         w.setSvgRenderer(svgRenderer);
         w.setSvgAntiAlias(svgAntiAlias);
+        w.setAllowInterpolation(allowInterpolation);
+        w.setBaseMapLayers(baseMapLayers);
+        w.setBaseMapStyles(baseMapStyles);
         
         return w;
     }
@@ -232,5 +256,35 @@ public class WMS extends Service {
     public void setSvgAntiAlias(boolean svgAntiAlias) {
 		this.svgAntiAlias = svgAntiAlias;
 	}
+
+    /**
+     * @return Flag indicating wether the renderer should interpolate or not.
+     */
+    public String getAllowInterpolation() {
+		return allowInterpolation;
+	}
+    
+    /**
+     * Sets the Flag indicating wether the renderer should interpolate or not.
+     */
+    public void setAllowInterpolation(String allowInterpolation) {
+		this.allowInterpolation = allowInterpolation;
+	}
+    
+    public Map getBaseMapLayers() {
+    	return baseMapLayers;
+    }
+    
+    public void setBaseMapLayers(Map layers) {
+    	baseMapLayers = layers;
+    }
+    
+    public Map getBaseMapStyles() {
+    	return baseMapStyles;
+    }
+    
+    public void setBaseMapStyles(Map styles) {
+    	baseMapStyles = styles;
+    }
     
 }

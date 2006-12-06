@@ -60,18 +60,18 @@
 	  </td>
 	</tr>
 	
-	<!--tr>
+	<tr>
 	  <td class="label">
-		<span class="help" title="<bean:message key="help.global.baseURL"/>">
-			<bean:message key="label.baseURL"/>:
+		<span class="help" title="<bean:message key="help.global.proxyBaseURL"/>">
+			<bean:message key="label.proxyBaseURL"/>:
 		</span>
       </td>
 	  <td class="datum">
-		<html:text property="baseURL" size="60"/>
+		<html:text property="proxyBaseUrl" size="60"/>
 	  </td>
 	</tr>
 
-	<tr>
+	<!--tr>
 	  <td class="label">
 		<span class="help" title="<bean:message key="help.global.schemaBaseURL"/>">
 			<bean:message key="label.schemaBaseURL"/>:
@@ -130,7 +130,94 @@
 
 		</td>
     </tr>	
-    
+
+	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiMemoryCapacity"/>">
+			<bean:message key="label.jaiMemoryCapacity"/>:
+		</span>
+      </td>
+	  <td class="datum">
+		<html:text property="jaiMemoryCapacity" size="60"/>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiMemoryThreshold"/>">
+			<bean:message key="label.jaiMemoryThreshold"/>:
+		</span>
+    </td>
+	  <td class="datum">
+		<html:text property="jaiMemoryThreshold" size="60"/>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiTileThreads"/>">
+			<bean:message key="label.jaiTileThreads"/>:
+		</span>
+    </td>
+	  <td class="datum">
+		<html:text property="jaiTileThreads" size="60"/>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiTilePriority"/>">
+			<bean:message key="label.jaiTilePriority"/>:
+		</span>
+    </td>
+	  <td class="datum">
+		<html:text property="jaiTilePriority" size="60"/>
+	  </td>
+	</tr>
+
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiRecycling"/>">
+			<bean:message key="label.jaiRecycling"/>:
+		</span>
+      </td>
+	  <td class="datum">
+	  	<html:checkbox property="jaiRecycling"/>
+	  </td>
+	 </tr> 
+
+    <tr>
+      <td class="label">
+        <span class="help" title="<bean:message key="help.global.imageIOCache"/>">
+            <bean:message key="label.imageIOCache"/>:
+        </span>
+      </td>
+      <td class="datum">
+        <html:checkbox property="imageIOCache"/>
+      </td>
+     </tr> 
+
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiJPEGNative"/>">
+			<bean:message key="label.jaiJPEGNative"/>:
+		</span>
+      </td>
+	  <td class="datum">
+	  	<html:checkbox property="jaiJPEGNative"/>
+	  </td>
+	 </tr> 
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiPNGNative"/>">
+			<bean:message key="label.jaiPNGNative"/>:
+		</span>
+      </td>
+	  <td class="datum">
+	  	<html:checkbox property="jaiPNGNative"/>
+	  </td>
+	 </tr> 
+
   </tbody>
 </table>
 

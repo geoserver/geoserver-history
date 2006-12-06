@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.5.x</version>
+		<version>1.5.0-beta1</version>
 	</parent>
 
 	<groupId>org.geoserver</groupId>
@@ -30,6 +30,18 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>javax.media</groupId>
+        <artifactId>jai_core</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>javax.media</groupId>
+        <artifactId>jai_codec</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>javax.media</groupId>
+        <artifactId>jai_imageio</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

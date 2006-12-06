@@ -20,10 +20,6 @@ import java.util.Map;
 public class OWS {
 
 	/**
-	 * id of the service
-	 */
-	private String id;
-	/**
 	 * Service enabled flag
 	 */
 	private boolean enabled;
@@ -84,22 +80,6 @@ public class OWS {
 	 * Local used to look up schemas.
 	 */
     private String schemaBaseURL;
-    
-    /**
-     * Creates a new OWS. 
-     * 
-     * @param id The id of the service.
-     */
-    public OWS( String id ) {
-    	this.id = id;
-    }
-    
-    /**
-     * @return The identifier of the service
-     */
-    public String getId() {
-		return id;
-	}
     
 	/**
      * <p>

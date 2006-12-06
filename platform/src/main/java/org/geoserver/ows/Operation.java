@@ -1,12 +1,14 @@
 package org.geoserver.ows;
 
+import java.lang.reflect.Method;
 
 /**
- * Operation of a service
+ * Bean wrapper for an operation.
  * <p>
- * An operation is identified by an id,service pair. Two operation
- * descriptors are considred equal if they have the same id, service pair.
+ * An operation is nothing more then a Plain Old Java Object (POJO). It does 
+ * not implement any GeoServer specific interface.
  * </p>
+ * 
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
@@ -20,79 +22,80 @@ public final class Operation {
 	/**
 	 * Service this operation is a component of.
 	 */
-	Service service;
+	Service  service;
 
 	/**
-	 * Parameters of the operation
+	 * The operation itself.
 	 */
-	Object[] parameters;
+	Object operation;
 	
-	/**
-	 * Creates a new operation descriptor.
-	 * 
-	 * @param id Id of the operation, must not be <code>null</code>
-	 * @param service The service containing the operation, must not be <code>null</code>
-	 * @param parameters The parameters of the operation, may be <code>null</code>
-	 * 
-	 */
-	public Operation( String id, Service service, Object[] parameters ) {
+	public Operation( String id, Service service, Object operation ) {
 		this.id = id;
 		this.service = service;
-		this.parameters = parameters;
-		
-		if ( id == null ) 
-			throw new NullPointerException( "id" );
-	
-		if ( service == null ) {
-			throw new NullPointerException( "service" );
-		}
+		this.operation = operation;
 	}
 	
-	/**
-	 * @return The id of the operation.
-	 */
 	public String getId() {
 		return id;
 	}
 	
-	/**
-	 * @return The service implementing the operation.
-	 */
 	public Service getService() {
 		return service;
 	}
 	
-	/**
-	 * @return The parameters supplied to the operation
-	 */
-	public Object[] getParameters() {
-		return parameters;
+	public Object getOperation() {
+		return operation;
 	}
 	
-	public boolean equals(Object obj) {
-		if ( obj == null )
-			return false;
+	public boolean set(String property, Object value) 
+		throws Exception {
 		
-		if ( !( obj instanceof Operation ) ) {
-			return false;
+		Method method = method( "set" + property, null );
+		if (method != null) {
+			method.invoke( operation, new Object[]{value} );
+			return true;
 		}
 		
-		Operation other = (Operation) obj;
-		if ( !id.equals( other.id ) ) 
-			return false;
+		return false;
+	}
+	
+	public Object run ( Object input ) 
+		throws Exception {
 		
-		if ( !service.equals( other.service ) )
-			return false;
+		Method method = null;
 		
-		return true;
+		if ( input != null ) {
+			method = method( getId(), input.getClass() );	
+		}
+		else {
+			method = method( getId(), null );
+		}
+		
+		if (method != null ) {
+			Object[] parameters = input != null ? new Object[]{input} : null;
+			return method.invoke( operation, parameters );
+		}
+		
+		return null;
 	}
-	
-	public int hashCode() {
-		return id.hashCode()*17 + service.hashCode();
+
+	protected Method method ( String name, Class parameter ) {
+		Method[] methods = getOperation().getClass().getMethods();
+		for ( int i = 0; i < methods.length; i++ ) {
+			Method method = methods[i];
+			if (method.getName().equalsIgnoreCase( name ) ) {
+				if ( parameter != null ) {
+					if ( method.getParameterTypes().length == 1) {
+						Class type = method.getParameterTypes()[0];
+						if ( type.isAssignableFrom( parameter ) ) {
+							return method;
+						}
+					}
+				}
+				else return method;
+			}
+		}
+		
+		return null;
 	}
-	
-	public String toString() {
-		return "Operation( " + id + ", " + service.getId() + " )";
-	}
-	
 }

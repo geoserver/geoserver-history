@@ -8,8 +8,11 @@ package org.vfny.geoserver.action;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,15 +28,20 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 
 
-
+/**
+ * 
+ * @author Simone Giannecchini, GeoSolutions
+ *
+ */
 public class SrsHelpAction extends Action {
+	private final static Logger LOGGER=Logger.getLogger(SrsHelpAction.class.toString());
 	
 	/**
 	 *  This is a simple action - it reads in the GT2 supported EPSG codes. 
 	 * 
 	 * DONE: once geosever support EPSG thats not in the properties file, this should
 	 *       be a bit more abstract and get a list of all EPSG defs from the 
-	 *       Factory (if possible).  Use toWKT() as its nicer to read.
+	 *       GDSFactory (if possible).  Use toWKT() as its nicer to read.
 	 * 
 	 *   Form has two properies - ids  (list of String - the epsg #)
 	 *                            defs (list of String - the epsg WKT definitions)
@@ -47,31 +55,34 @@ public class SrsHelpAction extends Action {
     	       
     	       Set codes = CRS.getSupportedCodes("EPSG");
     	       
-    	         // make an array of each code (as an int)
-    	       int[] ids = new int[codes.size()];
-    	       int t=0;
+    	       // make an array of each code (as an int)
+    	       ArrayList ids = new ArrayList();
     	       Iterator codeIt = codes.iterator();
     	       while (codeIt.hasNext())
     	       {
     	       		String code = (String) codeIt.next();
     	       		String id  = code.substring(code.indexOf(':')+1); //just the number
-    	       		ids[t] = Integer.parseInt(id);
-    	       		t++;
+    	       		if(!ids.contains(Integer.valueOf(id)))
+    	       			ids.add(Integer.valueOf(id));
     	       }
-    	       Arrays.sort(ids); //sort to get them in order
-    	       
-    	       for (t=0;t<ids.length;t++) //for each id (in sorted order)
+    	       Collections.sort(ids);//sort to get them in order
+    	       CoordinateReferenceSystem crs;
+    	       String def;
+    	       codeIt = ids.iterator();
+    	       Integer id;
+    	       while (codeIt.hasNext()) //for each id (in sorted order)
     	       {
+    	    	   id = (Integer) codeIt.next();
     	       	   try{  //get its definition
-    	       	   		CoordinateReferenceSystem crs = CRS.decode("EPSG:"+ids[t]);
-    	       	   		String def = crs.toWKT();
+    	       	   		crs = CRS.decode(new StringBuffer("EPSG:").append(id).toString(),true);
+    	       	   		def = crs.toWKT();
     	       	   		defs.add(def);
-    	       	   		ids_string.add(""+ids[t]);
+    	       	   		ids_string.add(id.toString());
     	       	   }
     	       	   catch(Exception e)
 				   {
-    	       	   	   System.out.println("tried to parse projection "+"EPSG:"+ids[t]+" but couldnt!");
-    	       	   	   //e.printStackTrace(); // dont really expect to get this, so we ignore that one code
+    	       		   LOGGER.log(Level.WARNING,e.getLocalizedMessage(),e);
+    	       	   	  
 				   }
     	       	   
     	       }

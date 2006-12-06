@@ -19,7 +19,7 @@ import org.geotools.styling.Style;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.config.WMSConfig;
-import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -147,7 +147,7 @@ public class KMLReflector extends WMService {
 			return;
 		}
         
-        final FeatureTypeInfo[] layers = serviceRequest.getLayers();
+        final MapLayerInfo[] layers = serviceRequest.getLayers();
         LOGGER.info("KML NetworkLink sharing "+layers.length+" layer(s) created.");
         Style[] styles = null;
         if (serviceRequest.getStyles() != null && !serviceRequest.getStyles().isEmpty())
@@ -177,27 +177,29 @@ public class KMLReflector extends WMService {
 		
 		// make a network link for every layer
 		for (int i=0; i<layers.length; i++) {
-			String style = "&styles="+layers[i].getDefaultStyle().getName();
-			if (styles != null && styles.length>=i+1) // if the user specified styles
-				style = "&styles="+styles[i].getName(); // use them, else we use the default style
-    		sb.append("<NetworkLink>\n");
-			sb.append("<name>"+layers[i].getName()+"</name>\n");
-			sb.append("<open>1</open>\n");
-			sb.append("<visibility>1</visibility>\n");
-			sb.append("<Url>\n");
-			sb.append("<href><![CDATA["+serviceRequest.getBaseUrl()+
-					"/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+XML"+
-					"&width="+WIDTH+
-					"&height="+HEIGHT+
-					"&srs="+SRS+
-					"&layers="+layers[i].getName()+
-					style+ // optional
-					"&KMScore="+KMSCORE+
-					"&KMAttr="+KMATTR+"]]></href>\n");
-			sb.append("<viewRefreshMode>onStop</viewRefreshMode>\n");
-			sb.append("<viewRefreshTime>3</viewRefreshTime>\n");
-			sb.append("</Url>\n");
-			sb.append("</NetworkLink>\n");
+			//if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
+				String style = "&styles="+layers[i].getDefaultStyle().getName();
+				if (styles != null && styles.length>=i+1) // if the user specified styles
+					style = "&styles="+styles[i].getName(); // use them, else we use the default style
+	    		sb.append("<NetworkLink>\n");
+				sb.append("<name>"+layers[i].getName()+"</name>\n");
+				sb.append("<open>1</open>\n");
+				sb.append("<visibility>1</visibility>\n");
+				sb.append("<Url>\n");
+				sb.append("<href><![CDATA["+serviceRequest.getBaseUrl()+
+						"/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+XML"+
+						"&width="+WIDTH+
+						"&height="+HEIGHT+
+						"&srs="+SRS+
+						"&layers="+layers[i].getName()+
+						style+ // optional
+						"&KMScore="+KMSCORE+
+						"&KMAttr="+KMATTR+"]]></href>\n");
+				sb.append("<viewRefreshMode>onStop</viewRefreshMode>\n");
+				sb.append("<viewRefreshTime>3</viewRefreshTime>\n");
+				sb.append("</Url>\n");
+				sb.append("</NetworkLink>\n");
+			//}
 		}
 		sb.append("</Folder>\n");
 		sb.append("</kml>\n");

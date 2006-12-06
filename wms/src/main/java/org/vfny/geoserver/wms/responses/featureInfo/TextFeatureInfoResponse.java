@@ -44,7 +44,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-    	return null;
+    	return new HashMap();
     }
     
     /**
@@ -70,12 +70,16 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         
         FeatureReader reader = null;
         try {
-            for (int i = 0; i < results.size(); i++)  //for each layer queried
-            {
-                FeatureResults fr = (FeatureResults) results.get(i);
+        	final int size=results.size();
+        	 FeatureResults fr;
+             Feature f = reader.next();
 
+             FeatureType schema;
+             AttributeType[] types;
+            for (int i = 0; i < size; i++)  //for each layer queried
+            {
+                fr = (FeatureResults) results.get(i);
                 reader = fr.reader();
-                
                 if ( reader.hasNext() && (featuresPrinted<maxfeatures) ) // if this layer has a hit and we're going to print it
                 {	
                 	writer.println("Results for FeatureType '"+ reader.getFeatureType().getTypeName() + "':");
@@ -83,10 +87,9 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
                 while (reader.hasNext()) 
                 {
-                    Feature f = reader.next();
-
-                    FeatureType schema = f.getFeatureType();
-                    AttributeType[] types = schema.getAttributeTypes();
+                    f = reader.next();
+                    schema = f.getFeatureType();
+                    types = schema.getAttributeTypes();
 
                     if (featuresPrinted<maxfeatures)
 					{
@@ -131,4 +134,9 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         }
         writer.flush();
     }
+
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

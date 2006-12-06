@@ -18,15 +18,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import javax.swing.Icon;
-
 import org.geotools.catalog.Catalog;
 import org.geotools.catalog.Resolve;
 import org.geotools.catalog.ResolveChangeEvent;
 import org.geotools.catalog.ResolveChangeListener;
 import org.geotools.catalog.Service;
 import org.geotools.catalog.ServiceInfo;
-import org.geotools.catalog.Resolve.Status;
 import org.geotools.catalog.defaults.DefaultServiceInfo;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
@@ -181,10 +178,12 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
                 if (key != null && key.matches(".* *url") && value instanceof String) {
                     String path = (String) value;
                     LOGGER.finer("in string url");
-                    if (path.startsWith("file:data/")) {
+                    if (path.startsWith("file:")) {
                         path = path.substring(5); // remove 'file:' prefix
 
                         File file = new File(baseDir, path);
+                        if(!file.exists())
+                            file = new File(baseDir, path.substring(5));
                         entry.setValue(file.toURL().toExternalForm());
                     }
 		    //Not sure about this
@@ -194,10 +193,10 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
                     URL url = (URL) value;
                     String path = url.getPath();
 		    LOGGER.finer("path is " + path);
-		    if (path.startsWith("data/")){
+		    //if (path.startsWith("data/")){
 			File file = new File(baseDir, path);
 			entry.setValue(file.toURL());
-		    }
+		    //}
                 } /*else if ("dbtype".equals(key) && value instanceof String) {
                     String val = (String) value;
 

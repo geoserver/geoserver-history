@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -56,7 +57,7 @@ public class DemoRequestForm extends ActionForm
 
         //DJB: changed this for geoserver_data_dir 
        // this.dir = new File(context.getRealPath("/data/demo"));
-        File dataDir = GeoserverDataDirectory.getGeoserverDataDirectory(context);
+        File dataDir = GeoserverDataDirectory.getGeoserverDataDirectory();
         try {
             this.dir = GeoserverDataDirectory.findConfigDir(dataDir, "demo/");
             //commented out, findConfigDir does this for us.    
@@ -68,7 +69,9 @@ public class DemoRequestForm extends ActionForm
                 	demoList.add( file.getName() );
             }            
         } catch (org.vfny.geoserver.global.ConfigurationException confE) {
-	    LOGGER.fine("Conf e: " + confE);
+    		if (LOGGER.isLoggable(Level.FINE)) {
+    			LOGGER.fine(new StringBuffer("Conf e: ").append(confE).toString());
+    		}
 	    //eat this, no demo dir, so we just don't get any demo requests.
 	}       
 	Collections.sort(demoList);

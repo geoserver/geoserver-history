@@ -68,6 +68,19 @@ public interface GetMapProducer {
     String getContentType() throws java.lang.IllegalStateException;
 
     /**
+     * The content disposition is the file name of the returned result.
+     * If there is no file name, null is returned.
+     * The returned string should be in the form:
+     * "inline; filename=name.ext"
+     * You need the "inline;" prefix and the filename can be whatever you want.
+     * An example would be:
+     * "inline; filename=states.pdf"
+     * 
+     * @return Header information for setting the file name
+     */
+    String getContentDisposition();
+    
+    /**
      * asks the legend graphic producer to stop processing since it will be no
      * longer needed (for example, because the request was interrupted by the
      * user)

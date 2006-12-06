@@ -180,7 +180,7 @@ public class WfsTransResponse {
         //String indent = ((verbose) ? "\n" + OFFSET : " ");
         String encoding = (request == null) ? "UTF-8"
                                             : request.getWFS().getGeoServer()
-                                                     .getCharSet().displayName();
+                                                     .getCharSet().name();
         String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + encoding
             + "\"?>";
 

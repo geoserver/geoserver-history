@@ -2,10 +2,10 @@
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
   <display-name>GeoServer</display-name>
-  <description>Web Mapping and Feature Services</description>
+  <description>Web Mapping, Feature and Coverage Services</description>
 
   <context-param>
-    <param-name>serviceStratagy</param-name>
+    <param-name>serviceStrategy</param-name>
     <!-- Meaning of the different values :
     	 
     	 PARTIAL-BUFFER
@@ -40,6 +40,14 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath*:/applicationContext.xml</param-value>
 	</context-param>
+	
+	<!-- 
+	<context-param>
+	  <param-name>PROXY_BASE_URL</param-name>
+	  <param-value>http://82.58.146.45/</param-value>
+	</context-param>
+	 -->
+	
 
    <!--
 	  <context-param>
@@ -75,10 +83,10 @@
    <!-- Struts config needs to load before all the other servlets. -->
    <servlet>
     <servlet-name>action</servlet-name>
-    <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+    <servlet-class>org.vfny.geoserver.config.web.MultipleActionServlet</servlet-class>
     <init-param>
       <param-name>config</param-name>
-      <param-value>/WEB-INF/struts-config.xml</param-value>
+      <param-value>/WEB-INF/struts-config.xml,classpath*:/WEB-INF/struts-config.xml</param-value>
     </init-param>
     <init-param>
       <param-name>debug</param-name>
@@ -176,6 +184,10 @@
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>dispatcher</servlet-name>
+	<url-pattern>/wcs/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>dispatcher</servlet-name>
 	<url-pattern>/wfs/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
@@ -246,9 +258,21 @@
   </mime-mapping>
 		      
   <welcome-file-list>
-    <welcome-file>/WEB-INF/pages/index.jsp</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
  
+  <error-page>
+  	<exception-type>java.lang.Exception</exception-type>
+		<location>/WEB-INF/pages/errors/Exception.jsp</location>
+  </error-page>
+  <error-page>
+  	<exception-type>javax.servlet.ServletException</exception-type>
+		<location>/WEB-INF/pages/errors/Exception.jsp</location>
+  </error-page>
+  <error-page>
+  	<exception-type>org.vfny.geoserver.global.ConfigurationException</exception-type>
+		<location>/WEB-INF/pages/errors/Exception.jsp</location>
+  </error-page>
 
   <taglib>
     <taglib-uri>/tags/struts-bean</taglib-uri>

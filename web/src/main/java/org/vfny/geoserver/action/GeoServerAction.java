@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.Action;
 import org.springframework.web.struts.ActionSupport;
 import org.vfny.geoserver.global.ApplicationState;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.Requests;
@@ -117,6 +119,23 @@ public class GeoServerAction extends ActionSupport {
     }
 
     /**
+     * Aquire WCS from Web Container.
+     * 
+     * <p>
+     * The WCS instance is create by a STRUTS plug-in and is available
+     * through the Web container. (Test cases may seed the request object with
+     * a Mock WebContainer and a Mock WMS)
+     * </p>
+     *
+     * @param request HttpServletRequest used to aquire session reference
+     *
+     * @return WCS instance for this Web Application
+     */
+    public WCS getWCS(HttpServletRequest request) {
+    		return (WCS) getWebApplicationContext().getBean("wcs");
+    }
+
+    /**
      * Aquire WFS from Web Container.
      * 
      * <p>
@@ -132,6 +151,15 @@ public class GeoServerAction extends ActionSupport {
     public WFS getWFS(HttpServletRequest request) {
     		 return (WFS) getWebApplicationContext().getBean("wfs");
     }
+    
+    /**
+     * Aquire global configuration from the Spring context.
+
+     * @return Global configuration of this web app
+     */
+    public GeoServer getGeoServer() {
+             return (GeoServer) getWebApplicationContext().getBean("geoServer");
+    }
 
     /**
      * Access GeoServer Application State from the WebContainer.
@@ -141,6 +169,6 @@ public class GeoServerAction extends ActionSupport {
      * @return Configuration model for Catalog information.
      */
     protected ApplicationState getApplicationState(HttpServletRequest request) {
-        return (ApplicationState) getWebApplicationContext().getBean("applicationRequest");
+        return (ApplicationState) getWebApplicationContext().getBean("applicationState");
     }
 }

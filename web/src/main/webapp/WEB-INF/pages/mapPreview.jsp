@@ -106,7 +106,7 @@
 
 <table border=1 width=90%>
 
-  <tr><th><B><U>FeatureType</U></B></th><th><B><U>DataStore</U></B><!--bean:message key="mapPreview.tableTitle"/--></th><th><B><U>Preview Map</U></B></th></tr>
+  <tr><th><B><U>Layer</U> (NameSpace:FeatureType)</B></th><th><B><U>DataStore</U></B><!--bean:message key="mapPreview.tableTitle"/--></th><th><B><U>Preview Map</U></B></th></tr>
   
   
 <!-- This iterator take idx from 0 to however many items there are in the list.
@@ -115,23 +115,24 @@
   -->
  <logic:iterate id="it_value" indexId="idx" name="mapPreviewForm" property="DSNameList">
  
-	<tr height=40>
+	<tr >
 	     <td width=30%>
-				<br>
-				<center><b><bean:write property="<%= "FTNamespaceList[" + idx + "]" %>" name="mapPreviewForm"/></b></center>
+				<center><b>
+				<a href="../../preview/<bean:write property='<%= "FTNameList[" + idx + "]" %>' name="mapPreviewForm"/>.html" target="_blank"><bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/></a>
+				</b></center>
 	     </td>
 	     <td class="greyedOut2" width=15%>
-				 <center><bean:write property="<%= "DSNameList[" + idx + "]" %>" name="mapPreviewForm"/></center>
+				 <center><bean:write property='<%= "DSNameList[" + idx + "]" %>' name="mapPreviewForm"/></center>
 	     </td>
 	<!--td class="greyedOut2" width=45%>
 	
 				<b>MinX, MinY, MaxX, MaxY</b><br>
-				<bean:write property="<%= "BBoxList[" + idx + "]" %>" name="mapPreviewForm"/>
+				<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>
 		 </td-->
 		 <td width=10%>
 			<!-- add link to FTNameList.html -->
 			<center><b>
-			<a href="../../data/generated/<bean:write property="<%= "FTNameList[" + idx + "]" %>" name="mapPreviewForm"/>.html" target="newwindow">Preview</a>
+			<a href="../../preview/<bean:write property='<%= "FTNameList[" + idx + "]" %>' name="mapPreviewForm"/>.html" target="_blank">Preview</a>
 			
 			</b></center>
 		 </td>

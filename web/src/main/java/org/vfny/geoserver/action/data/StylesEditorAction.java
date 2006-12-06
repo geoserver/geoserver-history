@@ -4,19 +4,6 @@
  */
 package org.vfny.geoserver.action.data;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -32,11 +19,27 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.form.data.StylesEditorForm;
-import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.util.SLDValidator;
 import org.xml.sax.SAXParseException;
+
+
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -93,7 +96,7 @@ public class StylesEditorAction extends ConfigAction {
 	ServletContext sc = getServlet().getServletContext();
         //DJB: changed for geoserver_data_dir
         //File rootDir = new File(getServlet().getServletContext().getRealPath("/"));
-        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 	
 	File styleDir;
 	try {

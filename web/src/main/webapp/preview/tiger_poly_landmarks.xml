@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<ViewContext version="1.0.0" id="atlas_world" xmlns="http://www.opengis.net/context" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd">
+  <General>
+    <Window width="500" height="285"/>
+    <BoundingBox SRS="EPSG:4326" minx="-74.047185" miny="40.679648" maxx="-73.90782" maxy="40.882078"/>
+    <Title>tiger:poly_landmarks Map</Title>
+    <KeywordList>
+      <Keyword>tiger:poly_landmarks</Keyword>
+    </KeywordList>
+    <Abstract></Abstract>
+  </General>
+  <LayerList>
+    <Layer queryable="1" hidden="0">
+      <Server service="OGC:WMS" version="1.1.1" title="tiger:poly_landmarks Preview">
+        <OnlineResource xlink:type="simple" xlink:href="../wms"/>
+      </Server>
+      <Name>tiger:poly_landmarks</Name>
+      <Title>tiger:poly_landmarks</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList><Format current="1">image/png</Format></FormatList>
+    </Layer>
+  </LayerList>
+</ViewContext>

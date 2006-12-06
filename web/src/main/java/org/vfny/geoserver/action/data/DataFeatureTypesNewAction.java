@@ -5,6 +5,7 @@
 
 package org.vfny.geoserver.action.data;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
@@ -106,6 +107,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
 			// attempt to get a better SRS
 			try {
 				CoordinateReferenceSystem crs = featureType.getDefaultGeometry().getCoordinateSystem();
+            if (crs != null) {
 				Set idents = crs.getIdentifiers();
 				Iterator it = idents.iterator();
 				while (it.hasNext())
@@ -120,6 +122,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
 						break;  // take the first EPSG
 					}
 				}
+            }
 			}catch(Exception e)
 			{
 				e.printStackTrace(); // not a big deal - we'll default to 0.
@@ -139,6 +142,15 @@ public class DataFeatureTypesNewAction extends ConfigAction {
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
+			
+			if (e instanceof FileNotFoundException)
+			{
+				ActionErrors errors = new ActionErrors();
+	            errors.add(ActionErrors.GLOBAL_ERROR,
+	                new ActionError("error.exception", "File not found: "+e.getMessage()));
+	            saveErrors(request, errors);
+	            return mapping.findForward("config.data.type.new");
+			}
 			
 			ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,

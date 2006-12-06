@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.5.x</version>
+		<version>1.5.0-beta1</version>
 	</parent>
 
 	<groupId>org.geoserver</groupId>
@@ -19,6 +19,7 @@
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>platform</artifactId>
+			<version>1.5.0-beta1</version>
 		</dependency>
 
  		<dependency>
@@ -42,12 +43,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <!--scope>test</scope-->
-    </dependency>
-    <dependency>
-      <groupId>httpunit</groupId>
-      <artifactId>httpunit</artifactId>
-      <!--scope>test</scope-->
+      <scope>test</scope>
     </dependency>
 
 	</dependencies>

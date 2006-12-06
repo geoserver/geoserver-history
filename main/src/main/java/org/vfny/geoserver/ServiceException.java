@@ -74,8 +74,6 @@ import org.vfny.geoserver.util.ResponseUtils;
  *       do this we need the request, as that's how we figure out the baseUrl.
  *       Would probably not be that hard to get the request included, and
  *       would lead to better  error reporting...
- *       
- * @deprecated use {@link org.geoserver.ows.ServiceException}.
  */
 public class ServiceException extends org.geoserver.ows.ServiceException {
     /** Class logger */
@@ -85,11 +83,14 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
     /** message inserted by GeoServer as to what it thinks happened */
     protected String preMessage = new String();
 
+    /** full classpath of originating GeoServer class */
+    protected String locator = new String();
+
     /**
      * Empty constructor.
      */
     public ServiceException() {
-        super( (String) null );
+        super( null );
     }
 
     /**
@@ -98,7 +99,7 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
      * @param message The message for the .
      */
     public ServiceException(String message) {
-        super( message, (String) null );
+        super( message, null );
 
         LOGGER.fine(this.getMessage());
     }
@@ -131,9 +132,11 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
      * @param locator The message for the .
      */
     public ServiceException(String message, String locator) {
-        super(message, (String) null, locator );
+        super(message);
 
-        LOGGER.fine("> [" + getLocator() + "]:\n  " + this.getMessage());
+        this.locator = locator;
+
+        LOGGER.fine("> [" + this.locator + "]:\n  " + this.getMessage());
     }
 
     /**
@@ -144,9 +147,11 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
      * @param locator The message for the .
      */
     public ServiceException(Throwable e, String preMessage, String locator) {
-        super( e, null, locator );
+        this( e );
 
         this.preMessage = preMessage;
+
+        this.locator = locator;
     }
 
   
@@ -236,7 +241,7 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
      *       mime type here.
      */
     public String getXmlResponse(boolean printStackTrace,
-        HttpServletRequest request) {
+        HttpServletRequest request, GeoServer geoserver) {
         //Perhaps not the best place to do this, but it's by far the best place to ensure
         //that all logged errors get recorded in the same way, as there all must return
         //xml responses.
@@ -260,7 +265,7 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
 
         returnXml.append("xsi:schemaLocation=\"http://www.opengis.net/ogc ");
 
-        returnXml.append(Requests.getSchemaBaseUrl(request)
+        returnXml.append(Requests.getSchemaBaseUrl(request, geoserver)
             + "/wfs/1.0.0/OGC-exception.xsd\">\n");
 
         //REVISIT: handle multiple service exceptions?  must refactor class.
@@ -270,8 +275,8 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
             returnXml.append(" code=\"" + getCode() + "\"");
         }
 
-        if (!isEmpty(getLocator())) {
-            returnXml.append(" locator=\"" + getLocator() + "\"");
+        if (!isEmpty(this.locator)) {
+            returnXml.append(" locator=\"" + this.locator + "\"");
         }
 
         returnXml.append(">\n" + indent + indent);

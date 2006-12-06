@@ -15,7 +15,6 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.sld.SldException;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.wms.servlets.WMService;
 
 
 public class PutStylesKvpReader extends KvpRequestReader {

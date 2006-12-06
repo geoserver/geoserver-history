@@ -179,7 +179,7 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
      * @return DOCUMENT ME!
      */
     public String getContentType(GeoServer gs) {
-        return gs.getMimeType();
+        return compressOutput ? "application/gzip": gs.getMimeType();
     }
 
     /**
@@ -188,7 +188,8 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
      * @return DOCUMENT ME!
      */
     public String getContentEncoding() {
-        return compressOutput ? "gzip" : null;
+//        return compressOutput ? "gzip" : null;
+        return null;
     }
 
     /**
@@ -239,5 +240,12 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
             serviceException.initCause(gmlException);
             throw serviceException;
         }
+    }
+
+    public String getContentDisposition(String featureTypeName) {
+        if(compressOutput)
+            return "attachment; filename=" + featureTypeName + ".gml.gz";
+        else
+            return "inline; filename=" + featureTypeName + ".gml";
     }
 }

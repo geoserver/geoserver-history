@@ -172,7 +172,6 @@ class PDFMapProducer implements GetMapProducer {
             // height of document-object is height*72 inches
             com.lowagie.text.Rectangle pageSize = new com.lowagie.text.Rectangle(width,
                     height);
-            pageSize.setBackgroundColor(new java.awt.Color(0xFF, 0xFF, 0xDE));
 
             Document document = new Document(pageSize);
             document.setMargins(0, 0, 0, 0);
@@ -274,4 +273,17 @@ class PDFMapProducer implements GetMapProducer {
     protected WMSMapContext getMapContext() {
         return this.mapContext;
     }
+    
+    public String getContentDisposition() {
+		if (this.mapContext.getLayer(0) != null) {
+			try {
+				String title = this.mapContext.getLayer(0).getFeatureSource().getSchema().getTypeName();
+				if (title != null && !title.equals("")) {
+					return "attachment; filename=" + title + ".pdf";
+				}
+			} catch (NullPointerException e) {
+			}
+		}
+		return "attachment; filename=geoserver.pdf";
+	}
 }

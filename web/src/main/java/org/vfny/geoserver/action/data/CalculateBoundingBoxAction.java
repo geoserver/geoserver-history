@@ -50,7 +50,7 @@ import org.vfny.geoserver.util.DataStoreUtils;
  * @author $Author: dmzwiers $ (last modification)
  * @version $Id: CalculateBoundingBoxAction.java,v 1.3 2004/03/09 01:37:40 dmzwiers Exp $
  */
-public class CalculateBoundingBoxAction extends ConfigAction {
+public final class CalculateBoundingBoxAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping,
             ActionForm form,
             UserContainer user,

@@ -4,15 +4,9 @@
  */
 package org.vfny.geoserver.servlets;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.net.SocketException;
@@ -24,14 +18,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.geotools.catalog.Catalog;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -43,7 +35,7 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
-
+import org.vfny.geoserver.util.PartialBufferedOutputStream;
 import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -153,15 +145,17 @@ public abstract class AbstractService extends HttpServlet
     /**
      * Cached service strategy object
      */
-    ServiceStrategy strategy;
+//    ServiceStrategy strategy;
     
     /**
      * Reference to the service
      */
     Service serviceRef;
+
+	private String kvpString;
     
-    /** DOCUMENT ME!  */
-    protected HttpServletRequest curRequest;
+//    /** DOCUMENT ME!  */
+//    protected HttpServletRequest curRequest;
 
     /**
      * Constructor for abstract service.
@@ -277,6 +271,14 @@ public abstract class AbstractService extends HttpServlet
     }
 
     /**
+     * Override and use spring set servlet context.
+     */
+    public ServletContext getServletContext() {
+    	//override and use spring 
+    	return ((WebApplicationContext)context).getServletContext();
+    }
+    
+    /**
      * DOCUMENT ME!
      *
      * @param request DOCUMENT ME!
@@ -288,30 +290,32 @@ public abstract class AbstractService extends HttpServlet
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         // implements the main request/response logic
-        this.curRequest = request;
+    	// this.curRequest = request;
 
         Request serviceRequest = null;
 
         if (!isServiceEnabled(request)) {
-            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-
+            sendDisabledServiceError(response);
             return;
         }
 
         try {
-            String qString = request.getQueryString();
+            Map requestParams = new HashMap();
+            String qString = (this.kvpString != null ? this.kvpString : request.getQueryString());
             LOGGER.fine("reading request: " + qString);
 
-            //Map requestParams = KvpRequestReader.parseKvpSet(qString);
-            Map requestParams = new HashMap();
-            String paramName;
-            String paramValue;
+            if (this.kvpString != null) {
+            	requestParams = KvpRequestReader.parseKvpSet(qString);
+            } else {
+                String paramName;
+                String paramValue;
 
-            for (Enumeration pnames = request.getParameterNames();
-                    pnames.hasMoreElements();) {
-                paramName = (String) pnames.nextElement();
-                paramValue = request.getParameter(paramName);
-                requestParams.put(paramName.toUpperCase(), paramValue);
+                for (Enumeration pnames = request.getParameterNames();
+                        pnames.hasMoreElements();) {
+                    paramName = (String) pnames.nextElement();
+                    paramValue = request.getParameter(paramName);
+                    requestParams.put(paramName.toUpperCase(), paramValue);
+                }
             }
 
             KvpRequestReader requestReader = getKvpReader(requestParams );
@@ -322,17 +326,30 @@ public abstract class AbstractService extends HttpServlet
 
             //serviceRequest.setHttpServletRequest(request);
         } catch (ServiceException se) {
-            sendError(response, se);
+            sendError(request, response, se);
 
             return;
         } catch (Throwable e) {
-            sendError(response, e);
+            sendError(request, response, e);
 
             return;
+        } finally {
+        	this.kvpString = null;
         }
 
         doService(request, response, serviceRequest);
     }
+    
+    /**
+     * Sends the standard disabled service error message (a 503 error followed by an english description).
+     * @param response
+     * @throws IOException
+     */
+	protected void sendDisabledServiceError(HttpServletResponse response) throws IOException {
+		response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, 
+				getService() + " service is not enabled. " +
+						"You can enable it in the web admin tool.");
+	}
 
     /**
      * Performs the post method.  Simply passes itself on to the three argument
@@ -370,14 +387,13 @@ public abstract class AbstractService extends HttpServlet
     public void doPost(HttpServletRequest request,
         HttpServletResponse response, Reader requestXml)
         throws ServletException, IOException {
-        this.curRequest = request;
+//        this.curRequest = request;
 
         Request serviceRequest = null;
 
         //TODO: This isn't a proper ogc service response.
         if (!isServiceEnabled(request)) {
-            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-
+            sendDisabledServiceError(response);
             return;
         }
 
@@ -433,11 +449,11 @@ public abstract class AbstractService extends HttpServlet
             serviceRequest = requestReader.read(xml, request);
             serviceRequest.setHttpServletRequest(request);
         } catch (ServiceException se) {
-            sendError(response, se);
+            sendError(request, response, se);
 
             return;
         } catch (Throwable e) {
-            sendError(response, e);
+            sendError(request, response, e);
 
             return;
         }
@@ -471,12 +487,11 @@ public abstract class AbstractService extends HttpServlet
         LOGGER.info("handling request: " + serviceRequest);
 
         if (!isServiceEnabled(request)) {
-            try {
-                response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-            } catch (IOException e) {
-                // do nothing
-            }
-
+        	try {
+        		sendDisabledServiceError(response);
+        	} catch(IOException e) {
+        		LOGGER.log(Level.WARNING, "Error writing service unavailable response", e);
+        	}
             return;
         }
 
@@ -488,7 +503,7 @@ public abstract class AbstractService extends HttpServlet
             LOGGER.fine("strategy is: " + strategy.getId());
             serviceResponse = getResponseHandler();
         } catch (Throwable t) {
-            sendError(response, t);
+            sendError(request, response, t);
 
             return;
         }
@@ -510,7 +525,7 @@ public abstract class AbstractService extends HttpServlet
         if (s == null) {
         		String msg = "No service found matching: " +
         			serviceRequest.getService();
-        		sendError(response,new ServiceException ( msg ));
+        		sendError(request, response,new ServiceException ( msg ));
         		return;
         }
         	
@@ -523,13 +538,13 @@ public abstract class AbstractService extends HttpServlet
             LOGGER.warning("service exception while executing request: "
                 + serviceRequest + "\ncause: " + serviceException.getMessage());
             serviceResponse.abort(s);
-            sendError(response, serviceException);
+            sendError(request, response, serviceException);
 
             return;
         } catch (Throwable t) {
             //we can safelly send errors here, since we have not touched response yet
             serviceResponse.abort(s);
-            sendError(response, t);
+            sendError(request, response, t);
 
             return;
         }
@@ -548,10 +563,15 @@ public abstract class AbstractService extends HttpServlet
             response.setContentType(mimeType);
 
             String encoding = serviceResponse.getContentEncoding();
-
             if (encoding != null) {
                 LOGGER.fine("content encoding is: " + encoding);
-                response.setHeader("content-encoding", encoding);
+                response.setHeader("Content-Encoding", encoding);
+            }
+            
+            String disposition = serviceResponse.getContentDisposition();
+            if(disposition != null) {
+                LOGGER.fine("content encoding is: " + encoding);
+                response.setHeader("Content-Disposition", disposition);
             }
         } catch (SocketException socketException) {
             LOGGER.fine(
@@ -571,7 +591,7 @@ public abstract class AbstractService extends HttpServlet
         } catch (IOException ex) {
             serviceResponse.abort(s);
             strategy.abort();
-            sendError(response, ex);
+            sendError(request, response, ex);
 
             return;
         }
@@ -587,22 +607,26 @@ public abstract class AbstractService extends HttpServlet
 
             return;
         } catch (IOException ioException) { // strategyOutput error
+        	response.setHeader("Content-Disposition", ""); // reset it so we get a proper XML error returned
+            LOGGER.log(Level.SEVERE, "Error writing out " + ioException.getMessage(), ioException);
             serviceResponse.abort(s);
             strategy.abort();
-            sendError(response, ioException);
+            sendError(request, response, ioException);
 
             return;
         } catch (ServiceException writeToFailure) { // writeTo Failure
+        	response.setHeader("Content-Disposition", ""); // reset it so we get a proper XML error returned
             serviceResponse.abort(s);
             strategy.abort();
-            sendError(response, writeToFailure);
+            sendError(request, response, writeToFailure);
 
             return;
         } catch (Throwable help) { // This is an unexpected error(!)
+        	response.setHeader("Content-Disposition", ""); // reset it so we get a proper XML error returned
         	help.printStackTrace();
             serviceResponse.abort(s);
             strategy.abort();
-            sendError(response, help);
+            sendError(request, response, help);
 
             return;
         }
@@ -715,58 +739,74 @@ public abstract class AbstractService extends HttpServlet
      * @see #init() for the code that sets the serviceStrategy.
      */
     protected ServiceStrategy createServiceStrategy() throws ServiceException {
-        //If verbose exceptions is on then lets make sure they actually get the
-        //exception by using the file strategy.
-    		if (geoServer.isVerboseExceptions()) {
-        		strategy = (ServiceStrategy) context.getBean("fileServiceStrategy");
-        	} 
-        else {
-    			//do we have a prototype?
-        		if (strategy != null) {
-        			//yes, make sure it still matched up with id set
-        			if (!strategy.getId().equals(serviceStrategy)) {
-        				
-        				//clear prototype to force another lookup
-        				strategy = null;
-        			}
-        		}
-        		
-        		if (strategy == null) {
-        			//do a lookup
-        			Map strategies = context.getBeansOfType(ServiceStrategy.class);
-        			for (Iterator itr = strategies.values().iterator(); itr.hasNext();) {
-        				ServiceStrategy bean = (ServiceStrategy) itr.next();
-        				if (bean.getId().equals(serviceStrategy)) {
-        					strategy = bean;
-        					break;
-        				}
-        					
-        			}
-        		}
-        		
-        		if (strategy == null) {
-        			//default to buffer
-        			strategy = 
-        				(ServiceStrategy) context.getBean("bufferServiceStrategy");
-        		}
-        	}
-        
+        // If verbose exceptions is on then lets make sure they actually get the
+        // exception by using the file strategy.
         ServiceStrategy theStrategy = null;
-        try {
-        		theStrategy = (ServiceStrategy) strategy.clone();	
+        if (geoServer.isVerboseExceptions()) {
+            theStrategy = (ServiceStrategy) context
+                    .getBean("fileServiceStrategy");
+        } else {
+            if (serviceStrategy == null) {
+                // none set, look up in web applicatino context
+                serviceStrategy = getServletContext().getInitParameter(
+                        "serviceStrategy");
+            }
+            
+            // do a lookup
+            if(serviceStrategy != null) {
+                Map strategies = context.getBeansOfType(ServiceStrategy.class);
+                for (Iterator itr = strategies.values().iterator(); itr.hasNext();) {
+                    ServiceStrategy bean = (ServiceStrategy) itr.next();
+                    if (bean.getId().equals(serviceStrategy)) {
+                        theStrategy = bean;
+                        break;
+                    }
+                }
+            } 
         }
-        catch(CloneNotSupportedException e) {
-        		String msg = 
-        			"Service strategy: " + strategy.getId() + " not cloneable";
-        		throw new ServiceException(msg,e);
-        	}
-        
-        //TODO: this hack should be removed once modules have their own config
+
+        if (theStrategy == null) {
+            // default to buffer
+            theStrategy = (ServiceStrategy) context.getBean("bufferServiceStrategy");
+        }
+
+        // clone the strategy since at the moment the strategies are marked as singletons
+        // in the web.xml file.
+        try {
+        	theStrategy = (ServiceStrategy) theStrategy.clone();
+        } catch(CloneNotSupportedException e) {
+        	LOGGER.log(Level.SEVERE, "Programming error found, service strategies should be cloneable, " + e, e);
+        	throw new RuntimeException("Found a strategy that does not support cloning...", e);
+        }
+           
+        // TODO: this hack should be removed once modules have their own config
         if (theStrategy instanceof PartialBufferStrategy) {
-        		((PartialBufferStrategy)theStrategy).setBufferSize(partialBufferSize);
+            if(partialBufferSize == 0) {
+                String size = getServletContext().getInitParameter(
+                    "PARTIAL_BUFFER_STRATEGY_SIZE");
+                if(size != null) {
+                try {
+                        partialBufferSize = Integer.valueOf(size).intValue();
+                        if (partialBufferSize <= 0) {
+                            LOGGER
+                                    .warning("Invalid partial buffer size, defaulting to "
+                                            + PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE
+                                            + " (was " + partialBufferSize + ")");
+                            partialBufferSize = 0;
+                        }
+                    } catch (NumberFormatException nfe) {
+                        LOGGER
+                                .warning("Invalid partial buffer size, defaulting to "
+                                        + PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE
+                                        + " (was " + partialBufferSize + ")");
+                        partialBufferSize = 0;
+                    }
+                }
+            }
+            ((PartialBufferStrategy) theStrategy)
+                    .setBufferSize(partialBufferSize);
         }
         return theStrategy;
-        
     }
 
     
@@ -832,9 +872,9 @@ public abstract class AbstractService extends HttpServlet
      * @param response DOCUMENT ME!
      * @param t DOCUMENT ME!
      */
-    protected void sendError(HttpServletResponse response, Throwable t) {
+    protected void sendError(HttpServletRequest request, HttpServletResponse response, Throwable t) {
         if (t instanceof ServiceException) {
-            sendError(response, (ServiceException) t);
+            sendError(request, response, (ServiceException) t);
 
             return;
         }
@@ -847,7 +887,7 @@ public abstract class AbstractService extends HttpServlet
         ExceptionHandler exHandler = getExceptionHandler();
         ServiceException se = exHandler.newServiceException(t);
 
-        sendError(response, se);
+        sendError(request, response, se);
 
         //GeoServer geoServer = (GeoServer) this.getServletConfig()
         //                                      .getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
@@ -860,12 +900,12 @@ public abstract class AbstractService extends HttpServlet
      * @param response DOCUMENT ME!
      * @param se DOCUMENT ME!
      */
-    protected void sendError(HttpServletResponse response, ServiceException se) {
+    protected void sendError(HttpServletRequest request, HttpServletResponse response, ServiceException se) {
     	
         String mimeType = se.getMimeType(geoServer);
 
         send(response,
-            se.getXmlResponse(geoServer.isVerboseExceptions(), curRequest),
+            se.getXmlResponse(geoServer.isVerboseExceptions(), request, geoServer),
             mimeType);
         se.printStackTrace();
     }
@@ -876,7 +916,7 @@ public abstract class AbstractService extends HttpServlet
      * @param response DOCUMENT ME!
      * @param result DOCUMENT ME!
      */
-    protected void send(HttpServletResponse response, Response result) {
+    protected void send(HttpServletRequest httpRequest, HttpServletResponse response, Response result) {
         OutputStream responseOut = null;
 
         try {
@@ -899,7 +939,7 @@ public abstract class AbstractService extends HttpServlet
             //user just closed the socket stream, do nothing
             LOGGER.fine("connection closed by user: " + ioe.getMessage());
         } catch (ServiceException ex) {
-            sendError(response, ex);
+            sendError(httpRequest, response, ex);
         }
     }
 
@@ -929,5 +969,13 @@ public abstract class AbstractService extends HttpServlet
 
         return supportsGzip;
     }
+
+	public String getKvpString() {
+		return kvpString;
+	}
+
+	public void setKvpString(String kvpString) {
+		this.kvpString = kvpString;
+	}
 }
 

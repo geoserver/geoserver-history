@@ -56,6 +56,7 @@ public class FeatureResponse implements Response {
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
     FeatureResponseDelegate delegate;
+    String featureTypeName;
 
     /**
      * This is the request provided to the execute( Request ) method.
@@ -204,6 +205,7 @@ public class FeatureResponse implements Response {
         LOGGER.finest("execute FeatureRequest response. Called request is: "
             + request);
         this.request = request;
+        this.featureTypeName = null;
 
         String outputFormat = request.getOutputFormat();
 
@@ -267,6 +269,13 @@ public class FeatureResponse implements Response {
             for (Iterator it = request.getQueries().iterator();
                     it.hasNext() && (maxFeatures > 0);) {
                 query = (Query) it.next();
+                
+                // the feature type name used in the content disposition response will match
+                // the first feature type
+                if(featureTypeName == null) {
+                    featureTypeName = query.getTypeName();
+                }
+                
                 meta = catalog.getFeatureTypeInfo(query.getTypeName());
                 namespace = meta.getDataStoreInfo().getNameSpace();
                 source = meta.getFeatureSource();
@@ -321,8 +330,14 @@ public class FeatureResponse implements Response {
                 
                 FeatureResults features = source.getFeatures(query.toDataQuery(
                             maxFeatures));
-                if (it.hasNext()) //DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
-                	maxFeatures -= features.getCount();
+                if (it.hasNext()) { //DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
+                        int count = features.getCount();
+                        // sometimes a service may return -1 if the count is deemed
+                        // to be too expensive, in this case we do a brute force counte
+                        // by reading features one by one (and counting)
+                        if(count < 0) count = bruteForceCount(features.reader());
+                	maxFeatures -= count;
+                }
 
                 //GR: I don't know if the featuresults should be added here for later
                 //encoding if it was a lock request. may be after ensuring the lock
@@ -416,6 +431,23 @@ public class FeatureResponse implements Response {
     }
 
     /**
+     * Counts features by scrolling thru the feature reader
+     * @param reader
+     * @return
+     * @throws IllegalAttributeException 
+     * @throws IOException 
+     * @throws NoSuchElementException 
+     */
+    private int bruteForceCount(FeatureReader reader) throws NoSuchElementException, IOException, IllegalAttributeException {
+        int count = 0;
+        while(reader.hasNext()) {
+            reader.next();
+            count++;
+        }
+        return count;
+    }
+
+    /**
      * Convenience method to get the handle information from a query, if it
      * exists.
      *
@@ -503,4 +535,10 @@ public class FeatureResponse implements Response {
         //
         catalog.lockRelease(featureLock.getAuthorization());
     }
+
+	public String getContentDisposition() {
+            if(featureTypeName != null && featureTypeName.indexOf(':') != -1)
+                featureTypeName = featureTypeName.substring(featureTypeName.indexOf(':') + 1);
+	    return delegate.getContentDisposition(featureTypeName);
+	}
 }

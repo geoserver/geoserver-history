@@ -79,7 +79,7 @@ public class WmsException extends ServiceException {
      * @param locator The message for the .
      */
     public WmsException(String message, String code) {
-        super(message, code);
+        super(message);
         setCode( code );
 }
 
@@ -103,10 +103,10 @@ public class WmsException extends ServiceException {
      *
      * @task REVISIT: adapt it to handle WMS too
      */
-    public String getXmlResponse(boolean printStackTrace, HttpServletRequest request) {
+    public String getXmlResponse(boolean printStackTrace, HttpServletRequest request, GeoServer geoserver) {
         StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\"");
         returnXml.append(" encoding=\"UTF-8\" standalone=\"no\" ?>");
-        String dtdUrl = Requests.getSchemaBaseUrl(request) + 
+        String dtdUrl = Requests.getSchemaBaseUrl(request, geoserver) + 
 			"/wms/1.1.1/WMS_exception_1_1_1.dtd";
         returnXml.append(
             "<!DOCTYPE ServiceExceptionReport SYSTEM \"" + dtdUrl + "\"> ");

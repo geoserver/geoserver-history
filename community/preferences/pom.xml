@@ -9,31 +9,10 @@
 	<packaging>pom</packaging>
 	<version>0.4</version>
 	<name>preferences</name>
-
-	<parent>
-		<groupId>org.geoserver</groupId>
-		<artifactId>community</artifactId>
-		<version>1.5.x</version>
-	</parent>
 	
 	<modules>
 		<module>core</module>
 		<module>web</module>
 	</modules>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>${parent.groupId}</groupId>
-				<artifactId>platform</artifactId>
-				<version>1.5.x</version>
-			</dependency>
-			<dependency>
-				<groupId>${parent.groupId}</groupId>
-				<artifactId>main</artifactId>
-				<version>1.5.x</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-	
 </project>

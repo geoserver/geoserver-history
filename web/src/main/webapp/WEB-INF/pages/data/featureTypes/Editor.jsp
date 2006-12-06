@@ -7,8 +7,43 @@
 //Be wary, ye who brave the dragon's lair.
 %>
 
+<script type="text/javascript">
+<!--
+function addStyle(){
+	for(i=0;i<document.typesEditorForm.panelStyleIds.length;i++){
+		if(document.typesEditorForm.panelStyleIds.options[i].selected == true){
+ 			new_element = new Option(document.typesEditorForm.panelStyleIds.options[i].value,document.typesEditorForm.panelStyleIds.options[i].value,false,false);
+ 			document.typesEditorForm.otherSelectedStyles.options[document.typesEditorForm.otherSelectedStyles.length] = new_element;
+ 		}
+ 	}
+}
+function removeStyle(){
+	var selected=0;
+	for(i=0;i<document.typesEditorForm.otherSelectedStyles.length;i++){
+		if(document.typesEditorForm.otherSelectedStyles.options[i].selected == true){
+			selected++;
+		}
+		if(selected>0){
+			for(i=0;i<document.typesEditorForm.otherSelectedStyles.length;i++){
+				if(document.typesEditorForm.otherSelectedStyles.options[i].selected == true){
+					document.typesEditorForm.otherSelectedStyles.options[i] = null;
+				}
+			}
+		removeStyle();
+		}
+	}
+}
+
+function prepareFormData(){
+	for(i=0;i<document.typesEditorForm.otherSelectedStyles.length;i++){
+		document.typesEditorForm.otherSelectedStyles.options[i].selected = true;
+	}
+}
+//-->
+</script>
+
 <% try { %>
-<html:form action="/config/data/typeEditorSubmit">
+<html:form action="/config/data/typeEditorSubmit" onsubmit="prepareFormData()">
   <table class="info">
 	<tr>
       <td class="label">
@@ -36,6 +71,34 @@
       </td>
     </tr>    
 	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.type.style"/>">
+          <bean:message key="label.style"/>:
+        </span>
+      </td>
+      <td class="datum">
+        <table>
+        	<tr>
+        		<td>
+        			<html:select property="panelStyleIds" style="width:130" multiple="multiple">
+          				<html:options property="styles"/>
+        			</html:select>
+        		</td>
+        		<td style="font-size:10">
+        			<input type="button" value=">>" style="width:30" onClick="addStyle()">
+        			<br>
+        			<input type="button" value="<<" style="width:30" onClick="removeStyle()">
+        		</td>
+        		<td>
+        			<html:select property="otherSelectedStyles" style="width:130" multiple="multiple">
+        				<html:options property="typeStyles"/>
+        			</html:select>
+        		</td>
+        	</tr>
+        </table> 
+      </td>
+    </tr>    
+	<tr>
       <td class="label">
 		<span class="help" title="<bean:message key="help.type.srs"/>">
           <bean:message key="label.SRS"/>:
@@ -54,7 +117,7 @@
         </td>
         <td>
         &nbsp;-&nbsp;
-        <a href="<%=org.vfny.geoserver.util.Requests.getBaseUrl(request)%>srsHelp.do">
+        <a href="../../../srsHelp.do">
               <bean:message key="label.SRSList"/>
             </a>
         </td>
@@ -211,6 +274,72 @@
       </td>
     </tr>
     
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.wms.path"/>">
+          <bean:message key="label.wms.path"/>:
+        </span>
+	  </td>
+	  <td class="datum">
+		<html:text property="wmsPath" size="60"/>
+	  </td>
+	</tr>
+
+    <tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.dataFeatureTypeMetadataURLs"/>">
+			<bean:message key="label.metadataURL"/>:
+		</span>
+	  </td>
+	  <td class="datum">
+	  	  <table cellspacing="0">
+	  	  	<tr>
+	  	  	  <td align="left">
+				<span class="help" title="<bean:message key="help.dataFeatureTypeMetadataURLType"/>">
+					<bean:message key="label.metadataURLType"/>
+				</span>
+			  </td>
+			  <td align="left">
+				<span class="help" title="<bean:message key="help.dataFeatureTypeMetadataURLFormat"/>">
+					<bean:message key="label.metadataURLFormat"/>
+				</span>
+			  </td>
+			  <td align="left">
+				<span class="help" title="<bean:message key="help.dataFeatureTypeMetadataURLLink"/>">
+					<bean:message key="label.metadataURLLink" />
+				</span>
+			  </td>
+	  	  	</tr>
+	  	  	<tr>
+	  	  	  <td class="datum">
+	  	  	  	<html:select property="metadataLink[0].metadataType">
+	  	  	  	  <html:options property="allMetadataURLTypes"/>
+	  	  	  	</html:select>
+	  	  	  </td>
+	  	  	  <td class="datum">
+	  	  	  	<html:text property="metadataLink[0].type"/>
+	  	  	  </td>
+	  	  	  <td class="datum">
+	  	  	  	<html:text property="metadataLink[0].content" size="60"/>
+	  	  	  </td>
+	  	  	</tr>
+	  	  	<tr>
+	  	  	  <td class="datum">
+	  	  	  	<html:select property="metadataLink[1].metadataType">
+	  	  	  	  <html:options property="allMetadataURLTypes"/>
+	  	  	  	</html:select>
+	  	  	  </td>
+	  	  	  <td class="datum">
+	  	  	  	<html:text property="metadataLink[1].type"/>
+	  	  	  </td>
+	  	  	  <td class="datum">
+	  	  	  	<html:text property="metadataLink[1].content" size="60"/>
+	  	  	  </td>
+	  	  	</tr>
+	  	  </table>
+	  </td>
+    </tr>
+    
     <tr>
 	    <td class="label">
     		<span class="help" title="<bean:message key="help.type.cachingEnabled" />">
@@ -302,26 +431,26 @@
             <td><bean:message key="label.max"/>:<html:text size="2" property='<%= "attributes[" + index + "].maxOccurs"%>'/></td>
             <td width=16>
               <% if (first == false) { %>
-          	  <html:image src="../../../images/up.png" 
+          	  <html:image src="../../../data/images/up.png" 
           	  	          titleKey="type.title.up" 
           	  	          property="action" 
-          	  	          value="<%= "up_"+ index%>"/>
+          	  	          value='<%= "up_"+ index%>'/>
           	  <% } 
           	     first = false; %>
           	</td>
           	<td width=16>
           	  <% if (attributesSize-1 != index.intValue()) { %>
-          	  <html:image src="../../../images/down.png" 
+          	  <html:image src="../../../data/images/down.png" 
           	              titleKey="type.title.down" 
           	              property="action" 
-          	              value="<%= "down_"+ index%>"/>
+          	              value='<%= "down_"+ index%>'/>
           	  <% } %>
           	</td> 
           	<td width=16>
-          	  <html:image src="../../../images/delete.png" 
+          	  <html:image src="../../../data/images/delete.png" 
           	  	          titleKey="type.title.delete" 
           	  	          property="action" 
-          	  	          value="<%= "delete_"+ index%>"/>
+          	  	          value='<%= "delete_"+ index%>'/>
 		    </td>
           <% } %>
           </tr>

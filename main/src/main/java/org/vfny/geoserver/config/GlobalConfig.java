@@ -7,7 +7,10 @@ package org.vfny.geoserver.config;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 
 
@@ -97,7 +100,7 @@ public class GlobalConfig {
      * JG - can we figure this out at runtime?
      * </p>
      */
-    private String baseUrl;
+    private String proxyBaseUrl;
 
     /**
      * Define a base url for the location of the wfs schemas.
@@ -142,6 +145,16 @@ public class GlobalConfig {
     /** location on disk to log to **/
     private String logLocation = null;
 
+    
+    private long jaiMemoryCapacity;
+    private double jaiMemoryThreshold;
+    private int jaiTileThreads;
+    private int jaiTilePriority;
+    private boolean jaiRecycling;
+    private boolean imageIOCache;
+    private boolean jaiJPEGNative;
+    private boolean jaiPNGNative;
+    
     /**
      * GlobalConfig constructor.
      * 
@@ -156,12 +169,22 @@ public class GlobalConfig {
         verbose = true;
         numDecimals = 8;
         charSet = Charset.forName("UTF-8");
-        baseUrl = null;
+        proxyBaseUrl = null;
         schemaBaseUrl = null;
         contact = null;
         verboseExceptions = true;
         logLocation = null;
     }
+
+    /**
+     * Instantiates the global config from the geoServer module.
+     * 
+     * @param geoserver The geoServer module.
+     */
+    public GlobalConfig ( GeoServer geoserver ) {
+    		this ( (GeoServerDTO) geoserver.toDTO() );
+    }
+ 
 
     /**
      * GlobalConfig constructor.
@@ -184,6 +207,7 @@ public class GlobalConfig {
         verbose = g.isVerbose();
         numDecimals = g.getNumDecimals();
         charSet = g.getCharSet();
+        proxyBaseUrl = g.getProxyBaseUrl();
         schemaBaseUrl = g.getSchemaBaseUrl();
         loggingLevel = g.getLoggingLevel();
         adminUserName = g.getAdminUserName();
@@ -192,6 +216,15 @@ public class GlobalConfig {
         
         loggingToFile = g.getLoggingToFile();
         logLocation = g.getLogLocation();
+        
+        jaiMemoryCapacity = g.getJaiMemoryCapacity();
+        jaiMemoryThreshold = g.getJaiMemoryThreshold();
+        jaiTileThreads = g.getJaiTileThreads();
+        jaiTilePriority = g.getJaiTilePriority();
+        jaiRecycling = g.getJaiRecycling().booleanValue();
+        imageIOCache = g.getImageIOCache().booleanValue();
+        jaiJPEGNative = g.getJaiJPEGNative().booleanValue();
+        jaiPNGNative = g.getJaiPNGNative().booleanValue();
         
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -224,12 +257,22 @@ public class GlobalConfig {
         numDecimals = g.getNumDecimals();
         charSet = g.getCharSet();
         schemaBaseUrl = g.getSchemaBaseUrl();
+        proxyBaseUrl = g.getProxyBaseUrl();
         
         loggingLevel = g.getLoggingLevel();
 		verboseExceptions = g.isVerboseExceptions();
         
 		loggingToFile = g.getLoggingToFile();
 		logLocation = g.getLogLocation();
+        
+        jaiMemoryCapacity = g.getJaiMemoryCapacity();
+        jaiMemoryThreshold = g.getJaiMemoryThreshold();
+        jaiTileThreads = g.getJaiTileThreads();
+        jaiTilePriority = g.getJaiTilePriority();
+        jaiRecycling = g.getJaiRecycling().booleanValue();
+        imageIOCache = g.getImageIOCache().booleanValue();
+        jaiJPEGNative = g.getJaiJPEGNative().booleanValue();
+        jaiPNGNative = g.getJaiPNGNative().booleanValue();
         
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -263,6 +306,15 @@ public class GlobalConfig {
         g.setContact((ContactDTO) contact.toDTO());
         g.setLoggingToFile(loggingToFile);
         g.setLogLocation(logLocation);
+        g.setJaiMemoryCapacity(jaiMemoryCapacity);
+        g.setJaiMemoryThreshold(jaiMemoryThreshold);
+        g.setJaiTileThreads(jaiTileThreads);
+        g.setJaiTilePriority(jaiTilePriority);
+        g.setJaiRecycling(Boolean.valueOf(jaiRecycling));
+        g.setImageIOCache(Boolean.valueOf(imageIOCache));
+        g.setJaiJPEGNative(Boolean.valueOf(jaiJPEGNative));
+        g.setJaiPNGNative(Boolean.valueOf(jaiPNGNative));
+        g.setProxyBaseUrl(proxyBaseUrl);
 
         return g;
     }
@@ -276,8 +328,8 @@ public class GlobalConfig {
      *
      * @return
      */
-    public String getBaseUrl() {
-        return baseUrl;
+    public String getProxyBaseUrl() {
+        return proxyBaseUrl;
     }
 
     /**
@@ -367,8 +419,8 @@ public class GlobalConfig {
      *
      * @param url
      */
-    public void setBaseUrl(String url) {
-        baseUrl = url;
+    public void setProxyBaseUrl(String url) {
+        proxyBaseUrl = url;
     }
 
     /**
@@ -568,5 +620,68 @@ public class GlobalConfig {
 	 */
 	public void setLoggingToFile(boolean loggingToFile) {
 		this.loggingToFile = loggingToFile;
+	}
+
+	public long getJaiMemoryCapacity() {
+		return jaiMemoryCapacity;
+	}
+
+	public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
+		this.jaiMemoryCapacity = jaiMemoryCapacity;
+	}
+
+	public boolean isJaiRecycling() {
+		return jaiRecycling;
+	}
+
+	public void setJaiRecycling(boolean jaiRecycling) {
+		this.jaiRecycling = jaiRecycling;
+	}
+
+    public boolean isImageIOCache() {
+        return imageIOCache;
+    }
+
+    public void setImageIOCache(boolean imageIOCache) {
+        this.imageIOCache = imageIOCache;
+    }
+
+	public boolean isJaiJPEGNative() {
+		return jaiJPEGNative;
+	}
+
+	public void setJaiJPEGNative(boolean jaiJPEGNative) {
+		this.jaiJPEGNative = jaiJPEGNative;
+	}
+
+	public boolean isJaiPNGNative() {
+		return jaiPNGNative;
+	}
+
+	public void setJaiPNGNative(boolean jaiPNGNative) {
+		this.jaiPNGNative = jaiPNGNative;
+	}
+
+    public double getJaiMemoryThreshold() {
+		return jaiMemoryThreshold;
+	}
+	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
+		this.jaiMemoryThreshold = jaiMemoryThreshold;
+	}
+
+	public int getJaiTilePriority() {
+		return jaiTilePriority;
+	}
+
+	public void setJaiTilePriority(int jaiTilePriority) {
+		this.jaiTilePriority = jaiTilePriority;
+	}
+
+	public int getJaiTileThreads() {
+		return jaiTileThreads;
+	}
+
+	public void setJaiTileThreads(int jaiTileThreads) {
+		this.jaiTileThreads = jaiTileThreads;
 	}
 }

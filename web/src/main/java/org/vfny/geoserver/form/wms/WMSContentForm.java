@@ -27,6 +27,9 @@ import org.vfny.geoserver.config.WMSConfig;
 public class WMSContentForm extends ActionForm {
     private boolean enabled;
     private String onlineResource;
+    private String baseMapLayers;
+    private String baseMapStyles;
+    private String baseMapTitle;
 
     /*
      * Because of the way that STRUTS works, if the user does not check the enabled box,
@@ -56,6 +59,36 @@ public class WMSContentForm extends ActionForm {
      */
     public String getOnlineResource() {
         return onlineResource;
+    }
+    
+    public void setBaseMapTitle(String title)
+    {
+    	baseMapTitle = title;
+    }
+    
+    public String getBaseMapTitle()
+    {
+    	return baseMapTitle;
+    }
+    
+    public String getBaseMapLayers()
+    {
+    	return baseMapLayers;
+    }
+    
+    public void setBaseMapLayers(String layers)
+    {
+    	baseMapLayers = layers;
+    }
+    
+    public String getBaseMapStyles()
+    {
+    	return baseMapStyles;
+    }
+    
+    public void setBaseMapStyles(String styles)
+    {
+    	baseMapStyles = styles;
     }
 
     /**
@@ -94,6 +127,15 @@ public class WMSContentForm extends ActionForm {
         } else {
             this.onlineResource = "";
         }
+        if (config.getBaseMapLayers() != null) {
+        	String[] baseMapTitleArray = (String[]) config.getBaseMapLayers().keySet().toArray(new String[0]);
+	        String[] baseMapLayersArray = (String[]) config.getBaseMapLayers().values().toArray(new String[0]);
+	        String[] baseMapStylesArray = (String[]) config.getBaseMapStyles().values().toArray(new String[0]);
+	        baseMapTitle = baseMapTitleArray.length > 0 ? baseMapTitleArray[0]: "";
+	        baseMapLayers = baseMapLayersArray.length > 0 ? baseMapLayersArray[0]: "";
+	        baseMapStyles = baseMapStylesArray.length > 0 ? baseMapStylesArray[0]: "";
+        }
+        
     }
 
     public ActionErrors validate(ActionMapping mapping,

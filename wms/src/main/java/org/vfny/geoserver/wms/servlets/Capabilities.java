@@ -4,12 +4,9 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
@@ -61,6 +58,6 @@ public class Capabilities extends WMService {
     	
     		Set wmsGetMapFormats = 
     			GetMapResponse.loadImageFormats(getApplicationContext());
-        return new WMSCapabilitiesResponse(wmsGetMapFormats);
+        return new WMSCapabilitiesResponse(wmsGetMapFormats, getApplicationContext());
     }
 }

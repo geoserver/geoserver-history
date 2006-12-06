@@ -12,7 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.struts.action.ActionServlet;
@@ -48,7 +47,7 @@ public class ApplicationState implements PlugIn, InitializingBean  {
     /** Non null if configuration has been edited (but not applied) */
     private Date configTimestamp;
     
-    /** Non null if the geoserve setup has been changed (but not saved) */
+    /** Non null if the geoserver setup has been changed (but not saved) */
     private Date appTimestamp;
     
     /** Non null if the modification date of the xml files is known */
@@ -194,6 +193,25 @@ public class ApplicationState implements PlugIn, InitializingBean  {
      */
     public void notifyConfigChanged() {
         configTimestamp = new Date();
+    }
+    /** Q: what is this supposed to do? */
+    public int getWcsGood(){
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0)){
+    		loadStatus();
+    	}
+    	return geoserverStatus[4];
+    }
+    /** q: What foul manner of magic is this? */
+    public int getWcsBad() {
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    		loadStatus();
+    	return geoserverStatus[5];
+    }
+    /** q: This does not make a lot of sense - did you want to consult both ConfigChanged and GeoServer changed? */
+    public int getWcsDisabled() {
+    	if(geoserverStatus[0] != (isAppChanged() ? 1 : 0)+(isConfigChanged() ? 2 : 0)+(isValidationChanged() ? 4 : 0))
+    		loadStatus();
+    	return geoserverStatus[6];
     }
     /** Q: what is this supposed to do? */
     public int getWfsGood(){
@@ -511,6 +529,14 @@ public class ApplicationState implements PlugIn, InitializingBean  {
     	return new LinkedList(getValidationErrors().values());
     }
     
+    public Map getWCSErrors(){
+    	return getNameSpaceErrors();
+    }
+    
+    public List getWCSErrorKeys(){
+    	return getNameSpaceErrorKeys();
+    }
+
     public Map getWFSErrors(){
     	return getNameSpaceErrors();
     }

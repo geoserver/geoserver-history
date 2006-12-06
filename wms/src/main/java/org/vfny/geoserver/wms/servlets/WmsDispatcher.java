@@ -8,18 +8,14 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.servlets.Dispatcher;
 import org.vfny.geoserver.util.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.wms.WmsException;
 
 
 /**

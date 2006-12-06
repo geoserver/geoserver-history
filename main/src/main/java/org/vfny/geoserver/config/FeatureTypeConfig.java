@@ -53,7 +53,12 @@ public class FeatureTypeConfig {
     /** Name (must match DataStore typeName). */
     private String name;
 
-    /**
+	/**
+	 * 
+	 */
+	private String wmsPath;
+
+	/**
      * The schema name.
      * <p>
      * Usually  name + "_Type"                
@@ -104,6 +109,14 @@ public class FeatureTypeConfig {
      * </p>
      */
     private Set keywords;
+    
+    /**
+     * A list of metadata links to associate with this featuretype.
+     * <p>
+     * Metadata URLs are distinct URLs.
+     * </p>
+     */
+    private Set metadataLinks;
 
     /** Configuration information used to specify numeric percision */
     private int numDecimals;
@@ -124,6 +137,11 @@ public class FeatureTypeConfig {
      */
     private String defaultStyle;
 
+    /**
+     * Other WMS Styles
+     */
+    private ArrayList styles;
+    
     /**
      * A featureType-specific override for the defaultMaxAge defined in WMSConfig.  This value is added the
      * headers of generated maps, marking them as being both "cache-able" and designating the time for which
@@ -188,12 +206,15 @@ public class FeatureTypeConfig {
             this.schemaAttributes = null;        
         }
         defaultStyle = "";
+        styles = new ArrayList();
         name = schema.getTypeName();
+		wmsPath = "/";
         title = schema.getTypeName() + "_Type";
         _abstract = "Generated from " + dataStoreId;
         keywords = new HashSet();
         keywords.add(dataStoreId);
         keywords.add(name);
+        metadataLinks = new HashSet();
         numDecimals = 8;
         definitionQuery = null;
         dirName = dataStoreId + "_" + name;
@@ -239,6 +260,7 @@ public class FeatureTypeConfig {
             }
         }
         name = dto.getName();
+		wmsPath = dto.getWmsPath();
         title = dto.getTitle();
         _abstract = dto.getAbstract();
         numDecimals = dto.getNumDecimals();
@@ -249,8 +271,15 @@ public class FeatureTypeConfig {
         } catch (Exception e) {
             keywords = new HashSet();
         }
+        
+        try {
+            metadataLinks = new HashSet(dto.getMetadataLinks());
+        } catch (Exception e) {
+            metadataLinks = new HashSet();
+        }
 
         defaultStyle = dto.getDefaultStyle();
+        styles = dto.getStyles();
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
         schemaBase = dto.getSchemaBase();
@@ -289,6 +318,7 @@ public class FeatureTypeConfig {
             f.setSchemaAttributes(s);            
         }        
         f.setName(name);
+        f.setWmsPath(wmsPath);
         f.setTitle(title);
         f.setAbstract(_abstract);
         f.setNumDecimals(numDecimals);
@@ -299,8 +329,15 @@ public class FeatureTypeConfig {
         } catch (Exception e) {
             // do nothing, defaults already exist.
         }
+        
+        try {
+            f.setMetadataLinks(new ArrayList(metadataLinks));
+        } catch (Exception e) {
+            // do nothing, defaults already exist.
+        }
 
         f.setDefaultStyle(defaultStyle);
+        f.setStyles(styles);
         f.setDirName(dirName);
         f.setSchemaBase(schemaBase);
         f.setSchemaName(schemaName);
@@ -398,6 +435,20 @@ public class FeatureTypeConfig {
     public void setDefaultStyle(String defaultStyle) {
         this.defaultStyle = defaultStyle;
     }
+    
+    public ArrayList getStyles() {
+		return styles;
+	}
+
+	public void setStyles(ArrayList styles) {
+		this.styles = styles;
+	}
+	
+	public void addStyle(String style) {
+		if (!this.styles.contains(style))
+			this.styles.add(style);
+	}
+	
     /**
      * Access definitionQuery property.
      * 
@@ -445,6 +496,22 @@ public class FeatureTypeConfig {
      */
     public void setKeywords(Set keywords) {
         this.keywords = keywords;
+    }
+    /**
+     * Access metadataURLs property.
+     * 
+     * @return Returns the metadataURLs.
+     */
+    public Set getMetadataLinks() {
+        return metadataLinks;
+    }
+    /**
+     * Set metadataURLs to metadataURLs.
+     *
+     * @param metadataURLs The metadataURLs to set.
+     */
+    public void setMetadataLinks(Set metadataURLs) {
+        this.metadataLinks = metadataURLs;
     }
     /**
      * Access latLongBBox property.
@@ -581,7 +648,13 @@ public class FeatureTypeConfig {
 	    + " SRS: " + SRS + " schemaAttributes: " + schemaAttributes + 
 	    " schemaBase " + schemaBase + "]";
     }
-    
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
+	}
+
     public boolean isCachingEnabled() {
 		return cachingEnabled;
 	}

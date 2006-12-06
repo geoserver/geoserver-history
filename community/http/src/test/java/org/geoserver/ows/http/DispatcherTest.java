@@ -23,7 +23,7 @@ public class DispatcherTest extends TestCase {
 		request.setupGetRequestURI( "/geoserver/hello" );
 		request.setupGetMethod( "get" );
 		
-		OWSDispatcher dispatcher = new OWSDispatcher();
+		Dispatcher dispatcher = new Dispatcher();
 		Map map = dispatcher.readOpContext( request );
 		
 		assertEquals( "hello", map.get( "service" ) );
@@ -59,7 +59,7 @@ public class DispatcherTest extends TestCase {
 		
 		request.setupGetInputStream( input );
 		
-		OWSDispatcher dispatcher = new OWSDispatcher();
+		Dispatcher dispatcher = new Dispatcher();
 		Map map = dispatcher.readOpPost( input );
 		
 		assertNotNull( map );
@@ -73,8 +73,8 @@ public class DispatcherTest extends TestCase {
 		FileSystemXmlApplicationContext context = 
 			new FileSystemXmlApplicationContext ( url.toString() );
 		
-		OWSDispatcher dispatcher = 
-			(OWSDispatcher) context.getBean( "dispatcher" );
+		Dispatcher dispatcher = 
+			(Dispatcher) context.getBean( "dispatcher" );
 		
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setupGetContextPath("/geoserver");
@@ -85,10 +85,9 @@ public class DispatcherTest extends TestCase {
 		params.put( "message", "Hello world!");
 		
 		request.setupGetParameterMap( params );
-		Map kvp = dispatcher.parseKVP( request );
 		
-		Message message = (Message) dispatcher.parseRequestKVP( Message.class, kvp );
-		assertEquals( new Message( "Hello world!" ) , message );
+		Map kvp = dispatcher.parseKVP( request );
+		assertEquals( new Message( "Hello world!" ), kvp.get( "message" ) );
 	}
 	
 	public void testParseXML() throws Exception {
@@ -97,8 +96,8 @@ public class DispatcherTest extends TestCase {
 		FileSystemXmlApplicationContext context = 
 			new FileSystemXmlApplicationContext ( url.toString() );
 		
-		OWSDispatcher dispatcher = 
-			(OWSDispatcher) context.getBean( "dispatcher" );
+		Dispatcher dispatcher = 
+			(Dispatcher) context.getBean( "dispatcher" );
 		
 		String body = "<Hello service=\"hello\" message=\"Hello world!\"/>";
 		File file = File.createTempFile("geoserver","req");
@@ -110,7 +109,7 @@ public class DispatcherTest extends TestCase {
 		MockServletInputStream input = new MockServletInputStream();
 		input.setupRead( body.getBytes() );
 		
-		Object object = dispatcher.parseRequestXML( file );
+		Object object = dispatcher.parseXML( file );
 		assertEquals( new Message( "Hello world!" ), object );
 	}
 	
@@ -120,11 +119,10 @@ public class DispatcherTest extends TestCase {
 		FileSystemXmlApplicationContext context = 
 			new FileSystemXmlApplicationContext ( url.toString() );
 		
-		OWSDispatcher dispatcher = 
-			(OWSDispatcher) context.getBean( "dispatcher" );
+		Dispatcher dispatcher = 
+			(Dispatcher) context.getBean( "dispatcher" );
 		
 		MockHttpServletRequest request = new MockHttpServletRequest();
-		
 		request.setupGetContextPath("/geoserver");
 		request.setupGetMethod("GET");
 		
@@ -138,9 +136,7 @@ public class DispatcherTest extends TestCase {
 		
 		request.setupGetParameterMap( params );
 		request.setupGetInputStream(null);
-		request.setupGetRequestURI( 
-			"http://localhost/geoserver/ows?service=hello&request=hello&message=HelloWorld" 
-		);
+		
 		dispatcher.handleRequest( request, response );
 		assertEquals( params.get( "message" ), response.getOutputStreamContents() );
 	}
@@ -151,13 +147,13 @@ public class DispatcherTest extends TestCase {
 		FileSystemXmlApplicationContext context = 
 			new FileSystemXmlApplicationContext ( url.toString() );
 		
-		OWSDispatcher dispatcher = 
-			(OWSDispatcher) context.getBean( "dispatcher" );
+		Dispatcher dispatcher = 
+			(Dispatcher) context.getBean( "dispatcher" );
 		
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setupGetContextPath("/geoserver");
 		request.setupGetMethod("POST");
-		request.setupGetRequestURI( "http://localhost/geoserver/ows" );
+		
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setupOutputStream( new MockServletOutputStream() );
 		

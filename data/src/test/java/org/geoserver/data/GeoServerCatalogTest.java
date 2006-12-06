@@ -1,6 +1,5 @@
 package org.geoserver.data;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,26 +14,22 @@ public class GeoServerCatalogTest extends DataTestSupport {
 
 	public void testServices() throws Exception {
 		List services = catalog.services( DataStore.class );
-		assertEquals( 3, services.size() );
+		assertEquals( 1, services.size() );
+		
 	}
 	
 	public void testResolveServices() throws Exception {
 		List services = catalog.services( DataStore.class );
-		List typeNames = new ArrayList();
+		Service service = (Service) services.get( 0 );
 		
-		for ( Iterator s = services.iterator(); s.hasNext(); ) {
-			Service service = (Service) s.next();
-			
-			DataStore dataStore = 
-				(DataStore) service.resolve( DataStore.class, null );
-			assertNotNull( dataStore );
-			
-			typeNames.addAll( Arrays.asList( dataStore.getTypeNames() ) );
-		}
+		DataStore dataStore = 
+			(DataStore) service.resolve( DataStore.class, null );
+		assertNotNull( dataStore );
 		
+		List typeNames = Arrays.asList( dataStore.getTypeNames() );
 		String[] citeTypeNames = citeTypeNames();
 		for ( int i = 0; i < citeTypeNames.length; i++ ) {
-			assertTrue( citeTypeNames[i] + " not found", typeNames.contains( citeTypeNames[i] ) );
+			assertTrue( typeNames.contains( citeTypeNames[i] ) );
 		}
 	}
 	
@@ -56,15 +51,5 @@ public class GeoServerCatalogTest extends DataTestSupport {
 			assertTrue( citeTypeNames.contains( typeName ) );
 			citeTypeNames.remove( typeName );
 		}
-	}
-	
-	public void testFeatureTypes() throws Exception {
-		List featureTypes = catalog.featureTypes();
-		assertEquals( citeTypeNames().length, featureTypes.size() );
-	}
-	
-	public void testStyles() throws Exception {
-		List styles = catalog.styles();
-		assertEquals( wmsCiteTypeNames().length, styles.size() );
 	}
 }

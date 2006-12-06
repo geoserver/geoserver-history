@@ -1,3 +1,74 @@
+GeoServer 1.5.0-beta1
+---------------------
+
+This is the first beta release for the 1.5 sereies of GeoServer.
+Major features / improvements of this release include:
+
+- A lot of Bug fixed against 1.4 series
+- JAI/ImageIO for Map Producers
+- WCS 0.4 (2D Coverages)
+- WMS Raster support
+- KML Raster support
+
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12870
+
+Based on GeoTools 2.3.1-SNAPSHOT
+
+NOTES:
+1.In order to get more performances, you should have a complete JAI/ImageIO install (with native interfaces too) into your JRE.
+Moreover, we suggest to use the latest daily distributions of JAI 1.1.4 and ImageIO 1.2.
+2.Very few CITE Tests are still failing. This distribution passes most of the WMS,WFS and WCS CITE Tests.
+
+GeoServer 1.4.0-RC1
+-------------------
+
+This is the first release candidate for the 1.4 series of GeoServer.
+Major features / improvements of this release include:
+
+- WMS GetMap filter support
+- More robust KML point styling
+- Integration with OSCache, please see: http://docs.codehaus.org/display/GEOSDOC/Caching
+- Numerous bug fixes and improvements
+
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12666
+
+Based on GeoTools 2.2.1
+
+GeoServer 1.4.0-M2-WCS
+----------------------
+
+Major features / improvements of this release include:
+
+- WCS 0.4 (2D Coverages)
+- WMS Raster support
+- KML Raster support
+
+The issue log for this release is here:
+
+Base on Geotools 2.3.0-M0 (tag = 2.3.0-M0)
+        JAI      1.1.4+   (https://jai.dev.java.net/)
+        ImageIO  1.1+     (https://jai-imageio.dev.java.net/)
+
+GeoServer 1.4.0-M2
+------------------
+
+Major features / improvements of this release include:
+
+- Upgraded MapBuilder demo version
+- WMS Base-map option
+- GetFeatureInfo now supports reprojection
+- KML Reprojection
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12950
+
+Base on Geotools 2.2.0 (tag = 2.2.0)
+
+
 GeoServer 1.4.0-M1
 ------------------
 
@@ -5,6 +76,12 @@ Major features / improvements of this release include:
 
 - GetMap factoring out to spring extension point
 - Developer Documentation 
+
+Along with numerous ui bug fixes coming out of the move to Spring.
+Special thanks to the following people for contributions / bug fixing:
+
+- Saul Farber
+- Alessio Fabiani
 
 The issue log for this release is here:
 

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vfny.geoserver.Request;
@@ -142,7 +143,9 @@ public class GetFeatureInfoResponse implements Response {
      */
     public void abort(Service gs) {
         if (delegate != null) {
-            LOGGER.fine("asking delegate for aborting the process");
+        	if (LOGGER.isLoggable(Level.FINE)) {
+        		LOGGER.fine("asking delegate for aborting the process");
+        	}
             delegate.abort(gs);
         }
     }
@@ -167,7 +170,9 @@ public class GetFeatureInfoResponse implements Response {
                 "No GetMapDelegate is setted, make sure you have called execute and it has succeed");
         }
 
-        LOGGER.finer("asking delegate for write to " + out);
+        if (LOGGER.isLoggable(Level.FINER)) {
+        	LOGGER.finer(new StringBuffer("asking delegate for write to ").append(out).toString());
+        }
         delegate.writeTo(out);
     }
 
@@ -188,7 +193,9 @@ public class GetFeatureInfoResponse implements Response {
     private static GetFeatureInfoDelegate getDelegate(
         GetFeatureInfoRequest request) throws WmsException {
         String requestFormat = request.getInfoFormat();
-        LOGGER.finer("request format is " + requestFormat);
+        if (LOGGER.isLoggable(Level.FINER)) {
+        	LOGGER.finer(new StringBuffer("request format is ").append(requestFormat).toString());
+        }
 
         GetFeatureInfoDelegate curDelegate = null;
         Class delegateClass = null;
@@ -198,7 +205,9 @@ public class GetFeatureInfoResponse implements Response {
 
             if (curDelegate.canProduce(requestFormat)) {
                 delegateClass = curDelegate.getClass();
-                LOGGER.finer("found GetFeatureInfoDelegate " + delegateClass);
+                if (LOGGER.isLoggable(Level.FINER)) {
+                	LOGGER.finer(new StringBuffer("found GetFeatureInfoDelegate ").append(delegateClass).toString());
+                }
 
                 break;
             }
@@ -231,4 +240,12 @@ public class GetFeatureInfoResponse implements Response {
     public static List getFormats() {
         return supportedMimeTypes;
     }
+
+	/* (non-Javadoc)
+	 * @see org.vfny.geoserver.Response#getContentDisposition()
+	 */
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

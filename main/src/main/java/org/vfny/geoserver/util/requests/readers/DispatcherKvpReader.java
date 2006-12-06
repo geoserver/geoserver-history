@@ -4,9 +4,21 @@
  */
 package org.vfny.geoserver.util.requests.readers;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.servlets.Dispatcher;
 
 
@@ -22,6 +34,34 @@ public class DispatcherKvpReader {
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.requests.readers");
 
+    private String queryString;
+    
+    private Map requestParams;
+    
+    /**
+     * Constructor with raw request string.  Calls parent.
+     *
+     * @param reader A reader of the request from the http client.
+     * @param req The actual request made.
+     *
+     * @throws ServiceException DOCUMENT ME!
+     * @throws IOException 
+     */
+    public void read(BufferedReader requestReader, HttpServletRequest req)
+        throws ServiceException, IOException {
+    	final StringBuffer output = new StringBuffer();
+        int c;
+
+        while (-1 != (c = requestReader.read())) {
+        	output.append((char)c);
+        }
+        requestReader.close();
+        this.queryString = output.toString();
+
+        this.requestParams = KvpRequestReader.parseKvpSet(this.queryString);
+        
+    }
+    
     /**
      * Returns the request type for a given KVP set.
      *
@@ -91,4 +131,30 @@ public class DispatcherKvpReader {
             return Dispatcher.UNKNOWN;
         }
     }
+    
+    /**
+     * @return The service, WFS,WMS,WCS,etc...
+     */
+    public String getService() {
+    	if (requestParams.containsKey("SERVICE")) {
+    		return (String) requestParams.get("SERVICE");
+    	} else {
+    		return null;
+    	}
+    }
+    
+    /**
+     * @return The request, GetCapabilities,GetMap,etc...
+     */
+    public String getRequest() {
+    	if (requestParams.containsKey("REQUEST")) {
+    		return (String) requestParams.get("REQUEST");
+    	} else {
+    		return null;
+    	}
+    }
+
+	public String getQueryString() {
+		return queryString;
+	}
 }

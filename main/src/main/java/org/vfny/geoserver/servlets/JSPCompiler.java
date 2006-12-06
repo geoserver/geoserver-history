@@ -50,7 +50,7 @@ public class JSPCompiler extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	if(spot<pages.length){
     		try{
-    		  String base = Requests.getBaseUrl(request);
+    		  String base = Requests.getBaseUrl(request, null);
     	      ServletContext session = request.getSession().getServletContext();
     	      synchronized (session) {
     	          UserContainer u2 = new UserContainer();

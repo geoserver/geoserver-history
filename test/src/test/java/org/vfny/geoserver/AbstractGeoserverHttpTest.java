@@ -1,25 +1,15 @@
 package org.vfny.geoserver;
 
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.MalformedURLException;
 import java.util.PropertyResourceBundle;
 
-import org.xml.sax.SAXException;
+import junit.framework.TestCase;
 
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import junit.framework.TestCase;
-
-/**
- * @deprecated use abstract class from http module
- * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
- */
 public abstract class AbstractGeoserverHttpTest extends TestCase {
 
 	/** test fixture properties **/

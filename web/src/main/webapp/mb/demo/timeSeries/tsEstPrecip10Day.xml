@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<ViewContext version="1.0.0" id="timeSeriesDemo" 
+    xmlns="http://www.opengis.net/context" 
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    xmlns:xsi="http://www.w3.org01/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd">
+  <General>
+    <Window width="320" height="300"/>
+    <BoundingBox SRS="EPSG:4326" minx="-20." miny="-40." maxx="55." maxy="40." resx="0.1" resy="0.1" />
+    <Title>Estimated Precipitation 10 Day (Africa)</Title>
+    <Abstract>Map Server maintained by International Research Institute for Climate Prediction, Columbia University, USA</Abstract>
+    <KeywordList>
+      <Keyword>precipitation</Keyword>
+    </KeywordList>
+    <DescriptionURL format="text/html">
+      <OnlineResource xlink:type="simple" xlink:href="http://iridl.ldeo.columbia.edu/" />
+    </DescriptionURL>
+    <ContactInformation>
+      <ContactPersonPrimary>
+        <ContactPerson></ContactPerson>
+        <ContactOrganization>IRI, Columbia U.</ContactOrganization>
+      </ContactPersonPrimary>
+      <ContactElectronicMailAddress>help@iri.columbia.edu</ContactElectronicMailAddress>
+    </ContactInformation>
+  </General>
+  <LayerList>
+    <Layer queryable="0" hidden="0">
+      <Server service="wms" version="1.3.0" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://iridl.ldeo.columbia.edu/SOURCES/.NOAA/.NCEP/.CPC/.FEWS/.Africa/.TEN-DAY/.RFEv2/wmsmap?"/>
+      </Server>
+      <Name>est_prcp</Name>
+      <Title>Estimated Precipitation</Title>
+      <Abstract>Estimated Precipitation. original title was: NOAA NCEP CPC FEWS Africa TEN-DAY RFEv2</Abstract>
+      <DimensionList>
+        <!--Dimension name="time" units="ISO8601" nearestValue="1">1999-12-1/10,1999-12-11/20,1999-12-21/31,2000-01-1/10,2000-01-11/20,2000-01-21/31,2000-02-1/10,2000-02-11/20,2000-02-21/29,2000-03-1/10,2000-03-11/20,2000-03-21/31,2000-04-1/10,2000-04-11/20,2000-04-21/30,2000-05-1/10,2000-05-11/20,2000-05-21/31,2000-06-1/10,2000-06-11/20,2000-06-21/30,2000-07-1/10,2000-07-11/20,2000-07-21/31,2000-08-1/10,2000-08-11/20,2000-08-21/31,2000-09-1/10,2000-09-11/20,2000-09-21/30,2000-10-1/10,2000-10-11/20,2000-10-21/31,2000-11-1/10,2000-11-11/20,2000-11-21/30,2000-12-1/10,2000-12-11/20,2000-12-21/31,2001-01-1/10,2001-01-11/20,2001-01-21/31,2001-02-1/10,2001-02-11/20,2001-02-21/28,2001-03-1/10,2001-03-11/20,2001-03-21/31,2001-04-1/10,2001-04-11/20,2001-04-21/30,2001-05-1/10,2001-05-11/20,2001-05-21/31,2001-06-1/10,2001-06-11/20,2001-06-21/30,2001-07-1/10,2001-07-11/20,2001-07-21/31,2001-08-1/10,2001-08-11/20,2001-08-21/31,2001-09-1/10,2001-09-11/20,2001-09-21/30,2001-10-1/10,2001-10-11/20,2001-10-21/31,2001-11-1/10,2001-11-11/20,2001-11-21/30,2001-12-1/10,2001-12-11/20,2001-12-21/31,2002-01-1/10,2002-01-11/20,2002-01-21/31,2002-02-1/10,2002-02-11/20,2002-02-21/28,2002-03-1/10,2002-03-11/20,2002-03-21/31,2002-04-1/10,2002-04-11/20,2002-04-21/30,2002-05-1/10,2002-05-11/20,2002-05-21/31,2002-06-1/10,2002-06-11/20,2002-06-21/30,2002-07-1/10,2002-07-11/20,2002-07-21/31,2002-08-1/10,2002-08-11/20,2002-08-21/31,2002-09-1/10,2002-09-11/20,2002-09-21/30,2002-10-1/10,2002-10-11/20,2002-10-21/31,2002-11-1/10,2002-11-11/20,2002-11-21/30,2002-12-1/10,2002-12-11/20,2002-12-21/31,2003-01-1/10,2003-01-11/20,2003-01-21/31,2003-02-1/10,2003-02-11/20,2003-02-21/28,2003-03-1/10,2003-03-11/20,2003-03-21/31,2003-04-1/10,2003-04-11/20,2003-04-21/30,2003-05-1/10,2003-05-11/20,2003-05-21/31,2003-06-1/10,2003-06-11/20,2003-06-21/30,2003-07-1/10,2003-07-11/20,2003-07-21/31,2003-08-1/10,2003-08-11/20,2003-08-21/31,2003-09-1/10,2003-09-11/20,2003-09-21/30,2003-10-1/10,2003-10-11/20,2003-10-21/31,2003-11-1/10,2003-11-11/20,2003-11-21/30,2003-12-1/10,2003-12-11/20,2003-12-21/31,2004-01-1/10,2004-01-11/20,2004-01-21/31,2004-02-1/10,2004-02-11/20,2004-02-21/29,2004-03-1/10,2004-03-11/20,2004-03-21/31,2004-04-1/10,2004-04-11/20,2004-04-21/30,2004-05-1/10,2004-05-11/20,2004-05-21/31,2004-06-1/10,2004-06-11/20,2004-06-21/30,2004-07-1/10,2004-07-11/20,2004-07-21/31,2004-08-1/10,2004-08-11/20,2004-08-21/31,2004-09-1/10,2004-09-11/20,2004-09-21/30,2004-10-1/10,2004-10-11/20,2004-10-21/31,2004-11-1/10,2004-11-11/20,2004-11-21/30,2004-12-1/10,2004-12-11/20,2004-12-21/31,2005-01-1/10,2005-01-11/20,2005-01-21/31,2005-02-1/10,2005-02-11/20,2005-02-21/28,2005-03-1/10,2005-03-11/20</Dimension-->
+        <Dimension name="time" units="ISO8601" nearestValue="1">2004-01-1,2004-01-11,2004-01-21,2004-02-1,2004-02-11,2004-02-21,2004-03-1,2004-03-11,2004-03-21,2004-04-1,2004-04-11,2004-04-21,2004-05-1,2004-05-11,2004-05-21,2004-06-1,2004-06-11,2004-06-21,2004-07-1,2004-07-11,2004-07-21,2004-08-1,2004-08-11,2004-08-21,2004-09-1,2004-09-11,2004-09-21,2004-10-1,2004-10-11,2004-10-21,2004-11-1,2004-11-11,2004-11-21,2004-12-1,2004-12-11,2004-12-21,2005-01-1,2005-01-11,2005-01-21,2005-02-1,2005-02-11,2005-02-21/28,2005-03-1,2005-03-11</Dimension>
+      </DimensionList>
+      <FormatList>
+        <Format current="1">image/png</Format>
+      </FormatList>
+    </Layer>
+    <Layer queryable="0" hidden="0">
+      <Server service="wms" version="1.1.0" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
+      </Server>
+      <Name>coast</Name>
+      <Title>coastline</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+      </FormatList>
+    </Layer>
+  </LayerList>
+</ViewContext>

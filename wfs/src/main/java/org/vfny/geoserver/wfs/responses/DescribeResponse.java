@@ -56,6 +56,7 @@ public class DescribeResponse implements Response {
     // ABSTRACT OUTSIDE CLASS, IF POSSIBLE
     private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema\"";
     private static final String XS_NAMESPACE = "\n  xmlns:xs=" + SCHEMA_URI;
+    private static final String CITEF_NAMESPACE = "\n  xmlns:citef=\"http://www.opengis.net/cite/functions\"";
     private static final String GML_URL = "\"http://www.opengis.net/gml\"";
     private static final String GML_NAMESPACE = "\n  xmlns:gml=" + GML_URL;
     private static final String ELEMENT_FORM_DEFAULT = "\n  elementFormDefault=\"qualified\"";
@@ -178,7 +179,7 @@ public class DescribeResponse implements Response {
         }
 
         tempResponse.append("<?xml version=\"1.0\" encoding=\""
-            + wfsRequest.getGeoServer().getCharSet().displayName() + "\"?>"
+            + wfsRequest.getGeoServer().getCharSet().name() + "\"?>"
             + "\n<xs:schema ");
 
         //allSameType will throw WfsException if there are types that are not found.
@@ -205,6 +206,7 @@ public class DescribeResponse implements Response {
             //+ "\"");
             tempResponse.append(GML_NAMESPACE);
             tempResponse.append(XS_NAMESPACE);
+            tempResponse.append(CITEF_NAMESPACE);
             tempResponse.append(ELEMENT_FORM_DEFAULT + ATTR_FORM_DEFAULT);
 
             //request.getBaseUrl should actually be GeoServer.getSchemaBaseUrl()
@@ -217,6 +219,7 @@ public class DescribeResponse implements Response {
         } else {
             //the featureTypes do not have all the same prefixes.
             tempResponse.append(XS_NAMESPACE);
+            tempResponse.append(CITEF_NAMESPACE);
             tempResponse.append(ELEMENT_FORM_DEFAULT + ATTR_FORM_DEFAULT);
 
             Set prefixes = new HashSet();
@@ -528,4 +531,9 @@ public class DescribeResponse implements Response {
     public void abort(Service gs) {
         // nothing to undo
     }
+
+	public String getContentDisposition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

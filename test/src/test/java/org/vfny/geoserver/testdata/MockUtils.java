@@ -1,9 +1,6 @@
 package org.vfny.geoserver.testdata;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -251,6 +248,12 @@ public class MockUtils {
 					"Expected cite test dataset directory at " + dir);
 		}
 
+		Map formats = new HashMap();
+		dataDto.setFormats(formats);
+		
+		Map coverages = new HashMap();
+		dataDto.setCoverages(coverages);
+		
 		Map dataStores = createDataStoresMap();
 		dataDto.setDataStores(dataStores);
 

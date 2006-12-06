@@ -13,11 +13,11 @@
 		for (int index = 0; index < array.length; index ++) {
 			%>
 			<html:link forward="<%= array[index] %>">
-				<bean:message key="<%= array[ index ]+".label" %>"/>
+				<bean:message key='<%= array[ index ]+".label" %>'/>
 			</html:link> |
 			<%
 		}
 	%>
   </logic:notEmpty>
-  <bean:message key="<%= request.getAttribute("key")+".label" %>"/>
+  <bean:message key='<%= request.getAttribute("key")+".label" %>'/>
 </span>

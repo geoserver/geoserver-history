@@ -15,15 +15,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.Icon;
-
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.GeoResourceInfo;
 import org.geotools.catalog.Resolve;
 import org.geotools.catalog.ResolveChangeEvent;
 import org.geotools.catalog.ResolveChangeListener;
 import org.geotools.catalog.Service;
-import org.geotools.catalog.Resolve.Status;
 import org.geotools.catalog.defaults.DefaultGeoResourceInfo;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
@@ -37,6 +34,7 @@ import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.geotools.util.ProgressListener;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -107,7 +105,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     /** typeName as defined by gt2 DataStore */
     private String typeName;
     
-    /**
+	/**
+	 * 
+	 */
+	private String wmsPath;
+	
+	/**
      * Directory where featureType is loaded from.
      * 
      * This may contain metadata files.
@@ -122,6 +125,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      */
     private List keywords;
     /**
+     * List of keywords for Web Register Services
+     */
+    private List metadataLinks;
+    /**
      * Number of decimals used in GML output.
      */
     private int numDecimals;
@@ -133,6 +140,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      * Default style used to render this FeatureType with WMS
      */
     private String defaultStyle;
+
+    /**
+     * Other WMS Styles
+     */
+    private ArrayList styles;
+
     /**
      * Title of this FeatureType as presented to End-Users.
      * <p>
@@ -224,6 +237,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         _abstract = dto.getAbstract();
         dataStoreId = dto.getDataStoreId();
         defaultStyle = dto.getDefaultStyle();        
+        styles = dto.getStyles();
         
         // Modif C. Kolbowicz - 07/10/2004
         if (dto.getLegendURL() != null) {
@@ -233,8 +247,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         definitionQuery = dto.getDefinitionQuery();
         dirName = dto.getDirName();
         keywords = dto.getKeywords();
+        metadataLinks = dto.getMetadataLinks();
         latLongBBox = dto.getLatLongBBox();
         typeName = dto.getName();
+        wmsPath = dto.getWmsPath();
         numDecimals = dto.getNumDecimals();
         List tmp = dto.getSchemaAttributes();
         schema = new LinkedList();
@@ -273,6 +289,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         dto.setAbstract(_abstract);
         dto.setDataStoreId(dataStoreId);
         dto.setDefaultStyle(defaultStyle);
+        dto.setStyles(styles);
         
         // Modif C. Kolbowicz - 07/10/2004
         if (legendURL != null) {
@@ -282,8 +299,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         dto.setDefinitionQuery(definitionQuery);
         dto.setDirName(dirName);
         dto.setKeywords(keywords);
+        dto.setMetadataLinks(metadataLinks);
         dto.setLatLongBBox(latLongBBox);
         dto.setName(typeName);
+        dto.setWmsPath(wmsPath);
         dto.setNumDecimals(numDecimals);
 
         List tmp = new LinkedList();
@@ -348,7 +367,15 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     public Style getDefaultStyle(){
     	return data.getStyle(defaultStyle);
     }
-    
+
+    public ArrayList getStyles(){
+    	final ArrayList realStyles = new ArrayList();
+    	Iterator s_IT = styles.iterator();
+    	while (s_IT.hasNext())
+    		realStyles.add(data.getStyle((String)s_IT.next()));
+    	return realStyles;
+    }
+
     /**
      * Indicates if this FeatureTypeInfo is enabled.  For now just gets whether
      * the backing datastore is enabled.
@@ -723,6 +750,15 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     public List getKeywords() {
         return keywords;
     }
+    
+    /**
+     * Metadata links providing metadata access for FeatureTypes.
+     * 
+     * @return List the FeatureTypeInfo metadata links
+     */
+    public List getMetadataLinks() {
+        return metadataLinks;
+    }
 
     /**
      * getTitle purpose.
@@ -1092,18 +1128,31 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     	{
     		//make and add to hash
     		try {
-				result = CRS.decode("EPSG:"+epsg);
-				SRSLookup.put( new Integer(epsg)  , result);
-		} 
-    		catch (Exception e) {
-			String msg = "Error looking up SRS for EPSG: " + epsg + 
-				":" + e.getLocalizedMessage();
+    			result = CRS.decode("EPSG:"+epsg,true);
+    			SRSLookup.put( new Integer(epsg)  , result);
+    		} catch (NoSuchAuthorityCodeException e) {
+    			String msg = "Error looking up SRS for EPSG: " + epsg + 
+    			":" + e.getLocalizedMessage();
     			LOGGER.warning( msg );
-		}
-    		
+    		} catch (FactoryException e) {
+    			String msg = "Error looking up SRS for EPSG: " + epsg + 
+    			":" + e.getLocalizedMessage();
+    			LOGGER.warning( msg );
+    		}
     	}
     	return result;
     }
+
+	public String getDirName() {
+		return dirName;
+	}
+
+	public String getWmsPath() {
+		return wmsPath;
+	}
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
+	}
 
     /**
      * This value is added the headers of generated maps, marking them as being both

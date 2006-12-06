@@ -3,10 +3,10 @@ package org.geoserver.data;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.geoserver.util.ReaderUtils;
 import org.w3c.dom.Element;
@@ -22,8 +22,8 @@ import org.w3c.dom.NodeList;
  * 		File catalog = new File( ".../catalog.xml" );
  * 		CatalogReader reader = new CatalogReader();
  * 		reader.read( catalog );
- * 		Map dataStores = reader.dataStores();
- * 		Map nameSpaces = reader.nameSpaces();
+ * 		List dataStores = reader.dataStores();
+ * 		LIst nameSpaces = reader.nameSpaces();
  * 	</code>
  * </pre>
  * </p>
@@ -32,11 +32,6 @@ import org.w3c.dom.NodeList;
  *
  */
 public class CatalogReader {
-	
-	/**
-	 * Logger
-	 */
-	Logger logger = Logger.getLogger( "org.geoserver.data" );
 
 	/** 
 	 * Root catalog element.
@@ -68,32 +63,31 @@ public class CatalogReader {
 	/**
 	 * Reads "datastore" elements from the catalog.xml file.
 	 * <p>
-	 *  For each datastore element read, a map of id to connectino paramters is created.
+	 *  For each datastore element read, a map of the connection parameters is
+	 *  created.
+	 *  </p>
 	 * 
-	 * @return A Map of (id,datastore connection parameters) entries
+	 * @return A list of Map objects containg the datastore connection parameters.
 	 * 
 	 * @throws Exception If error processing "datastores" element.
 	 */
-	public Map/*<String,Map>*/ dataStores() throws Exception {
+	public List/*<Map>*/ dataStores() throws Exception {
 		Element dataStoresElement = 
 			ReaderUtils.getChildElement( catalog, "datastores", true );
 		
 		NodeList dataStoreElements = 
 			dataStoresElement.getElementsByTagName( "datastore" );
-		HashMap dataStores = new HashMap();
+		ArrayList dataStores = new ArrayList();
 		
 		for ( int i = 0; i < dataStoreElements.getLength(); i++ ) {
 			Element dataStoreElement = (Element) dataStoreElements.item( i );
 			
 			try {
-				String id = dataStoreElement.getAttribute( "id" );
-				
 				Map params = dataStoreParams( dataStoreElement );
-				dataStores.put( id, params );
+				dataStores.add( params );
 			} 
 			catch (Exception e) {
-				String msg = "Error occured reading datastore.";
-				logger.log( Level.WARNING, msg, e );
+				//TODO: log this
 				continue;
 			}
 		}
@@ -133,45 +127,13 @@ public class CatalogReader {
 				}
 			} 
 			catch (Exception e) {
-				String msg = "Error occured reading namespace.";
-				logger.log( Level.WARNING, msg, e );
+				//TODO: log this
 				continue;
 			}
 		}
 		
 		return namespaces;
 	}
-	
-	/**
-	 * Reads "style" elements from the catalog.xml file.
-	 * <p>
-	 *  For each style element read, an entry of <id,filename> is created
-	 *  in a map.
-	 *  </p>
-	 * 
-	 * @return A map containing <id,filename> tuples.
-	 * 
-	 * @throws Exception If error processing "styles" element.
-	 */
-	public Map styles() throws Exception {
-		Element stylesElement = 
-			ReaderUtils.getChildElement( catalog, "styles", true );
-		
-		NodeList styleElements = 
-			stylesElement.getElementsByTagName( "style" );
-		Map styles = new HashMap();
-		
-		for ( int i = 0; i < styleElements.getLength(); i++ ) {
-			Element styleElement = (Element) styleElements.item( i );
-			String id = styleElement.getAttribute( "id" );
-			String file = styleElement.getAttribute( "filename" );
-			
-			styles.put( id, file );
-		}
-		
-		return styles;
-	}
-	
 	
 	/**
 	 * Convenience method for reading connection parameters from a datastore
@@ -185,7 +147,7 @@ public class CatalogReader {
 	 */
 	protected Map dataStoreParams( Element dataStoreElement ) throws Exception {
 		Element paramsElement = ReaderUtils.getChildElement( 
-				dataStoreElement, "connectionParams", true ); 
+				dataStoreElement, "connectionParameters", true ); 
 		NodeList paramList = paramsElement.getElementsByTagName( "parameter" );
 		
 		Map params = new HashMap();

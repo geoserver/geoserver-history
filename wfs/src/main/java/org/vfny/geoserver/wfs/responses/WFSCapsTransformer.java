@@ -19,7 +19,6 @@ import org.geotools.factory.FactoryFinder;
 import org.geotools.filter.FunctionExpression;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.WFS;

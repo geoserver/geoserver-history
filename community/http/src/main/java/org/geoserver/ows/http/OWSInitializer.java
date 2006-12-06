@@ -10,7 +10,6 @@ import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.geoserver.http.util.RequestUtils;
 import org.geoserver.ows.OWS;
 import org.geoserver.ows.Service;
 import org.springframework.beans.BeansException;
@@ -43,41 +42,54 @@ public class OWSInitializer implements HandlerInterceptor, ApplicationContextAwa
 	) throws Exception {
 		
 		//only for the OWS dispatched
-		if ( handler instanceof OWSDispatcher ) {
-			Collection services = 
-				applicationContext.getBeansOfType( OWS.class ).values();
-			for ( Iterator s = services.iterator(); s.hasNext(); ) {
-					OWS ows = (OWS) s.next();
+		if ( handler instanceof Dispatcher ) {
+			Collection descriptors = 
+				applicationContext.getBeansOfType( Service.class ).values();
+			for ( Iterator d = descriptors.iterator(); d.hasNext(); ) {
+				Service descriptor = (Service) d.next();
+				Object service = descriptor.getService();
+				
+				if ( service instanceof OWS ) {
+					OWS ows = (OWS) service;
 					
 					//set the online resource
-					try {
-						URL url = new URL(
-							RequestUtils.baseURL( request ) + ows.getId()
-						);
-						ows.setOnlineResource( url );
-					} 
-					catch (MalformedURLException e) {
-						throw new RuntimeException( e );
-					}
+					if ( ows.getOnlineResource() == null ) {
+						try {
+							URL url = new URL(
+								baseURL( request ) + descriptor.getId()
+							);
+							ows.setOnlineResource( url );
+						} 
+						catch (MalformedURLException e) {
+							throw new RuntimeException( e );
+						}
 							
+					}
+					
 					//set the schema base
-					//TODO: JD. this is only temporary
-					//ows.setSchemaBaseURL( RequestUtils.baseURL( request ) + "schemas" );
-					ows.setSchemaBaseURL( "http://schemas.opengis.net/" );
+					if ( ows.getSchemaBaseURL() == null ) {
+						ows.setSchemaBaseURL( baseURL( request ) + "schemas" );
+					}
 					
 					//set the charset
-				
-					Charset charSet = null;
-					try {
-						charSet = Charset.forName( request.getCharacterEncoding() );
-					}
-					catch( Exception e ) {
-						charSet = Charset.forName( "UTF-8" );
+					if ( ows.getCharSet() == null ) {
+						Charset charSet = null;
+						try {
+							charSet = Charset.forName( request.getCharacterEncoding() );
+						}
+						catch( UnsupportedCharsetException e ) {
+							charSet = Charset.forName( "UTF-8" );
+						}
+						
+						ows.setCharSet( charSet );
 					}
 					
-					ows.setCharSet( charSet );
+					//set the schema base
+					
+					
+					
 				}
-			
+			}
 		}
 		
 		return true;
@@ -99,5 +111,15 @@ public class OWSInitializer implements HandlerInterceptor, ApplicationContextAwa
 		
 		//do nothing
 
+	}
+	
+
+	//JD: move this method into utility class, and have old "Requests" class
+	// delegate to it
+	String baseURL( HttpServletRequest req ) {
+		String url = req.getScheme() + "://" + req.getServerName() + ":"
+        + req.getServerPort() + req.getContextPath() +"/";
+		
+		return url;
 	}
 }

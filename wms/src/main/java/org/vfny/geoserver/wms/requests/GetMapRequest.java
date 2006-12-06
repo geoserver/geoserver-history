@@ -8,7 +8,7 @@ import java.awt.Color;
 import java.util.List;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wfs.servlets.WFService;
 import org.vfny.geoserver.wms.servlets.WMService;
@@ -20,6 +20,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Represents a WMS GetMap request. as a extension to the WMS spec 1.1.
  *
  * @author Gabriel Roldan, Axios Engineering
+ * @author Simone Giannecchini
  * @version $Id: GetMapRequest.java,v 1.8 2004/03/14 16:00:54 groldan Exp $
  */
 public class GetMapRequest extends WMSRequest {
@@ -110,7 +111,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @return DOCUMENT ME!
      */
-    public FeatureTypeInfo[] getLayers() {
+	public MapLayerInfo[] getLayers() {
         return this.mandatoryParams.layers;
     }
 
@@ -121,6 +122,15 @@ public class GetMapRequest extends WMSRequest {
      */
     public List getStyles() {
         return this.mandatoryParams.styles;
+    }
+    
+    /**
+     * Gets a list of the the filters that will be applied to each layer before rendering 
+     *
+     * @return -
+     */
+    public List getFilters() {
+        return this.optionalParams.filters;
     }
 
     /**
@@ -214,7 +224,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @param layers DOCUMENT ME!
      */
-    public void setLayers(FeatureTypeInfo[] layers) {
+	public void setLayers(MapLayerInfo[] layers) {
         this.mandatoryParams.layers = layers;
     }
 
@@ -225,6 +235,15 @@ public class GetMapRequest extends WMSRequest {
      */
     public void setStyles(List styles) {
         this.mandatoryParams.styles = styles;
+    }
+    
+    /**
+     * Sets a list of filters, one for each layer
+     *
+     * @param styles List&lt;org.geotools.styling.Style&gt;
+     */
+    public void setFilters(List filters) {
+        this.optionalParams.filters = filters;
     }
 
     /**
@@ -279,7 +298,7 @@ public class GetMapRequest extends WMSRequest {
      */
     private class MandatoryParameters {
         /** ordered list of requested layers */
-        FeatureTypeInfo[] layers;
+		MapLayerInfo[] layers;
 
         /**
          * ordered list of requested layers' styles, in a one to one
@@ -315,6 +334,9 @@ public class GetMapRequest extends WMSRequest {
 
         /** from SRS (1.1) or CRS (1.2) param */
         CoordinateReferenceSystem crs;
+        
+        /** vendor extensions, allows to filter each layer with a user defined filter */
+        List filters;
 
         /** DOCUMENT ME!  */
         String exceptions = SE_XML;

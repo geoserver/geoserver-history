@@ -9,28 +9,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.mvc.ServletWrappingController;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.EncodingInfo;
 import org.vfny.geoserver.util.requests.XmlCharsetDetector;
+import org.vfny.geoserver.util.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.util.requests.readers.DispatcherXmlReader;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.wfs.WfsException;
 
 
 
@@ -68,7 +66,7 @@ public class Dispatcher extends AbstractController {
 		}
 		catch(ServiceException se) {
 			String tempResponse = 
-				se.getXmlResponse(geoServer.isVerboseExceptions(), httpRequest);
+				se.getXmlResponse(geoServer.isVerboseExceptions(), httpRequest, geoServer);
 
             httpResponse.setContentType(geoServer.getCharSet().toString());
             httpResponse.getWriter().write(tempResponse);
@@ -121,25 +119,40 @@ public class Dispatcher extends AbstractController {
 	void dispatch(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 		throws ServiceException, IOException, ServletException {
 		
+		//mark as get request if it is indeed a get request, or a post request with content type
+		// == 'application/x-www-form-urlencoded'
+		boolean isGet = "GET".equalsIgnoreCase( httpRequest.getMethod() ) || 
+			( httpRequest.getContentType() != null && 
+			httpRequest.getContentType().startsWith( "application/x-www-form-urlencoded" ) );
+	
 		String service = null;
 		String request = null;
 		
-		if (httpRequest.getQueryString() != null) { 
-			//process query string params
-			Map kvp = KvpRequestReader.parseKvpSet(httpRequest.getQueryString());
-			
-			//figure out service and request being processed
-			service = (String) kvp.get("SERVICE");
-			request = (String) kvp.get("REQUEST");
+		//look up service / request in key value pairs
+		for ( Enumeration e = httpRequest.getParameterNames(); e.hasMoreElements(); ) {
+			String key = (String) e.nextElement();
+			if ( "service".equalsIgnoreCase( key ) ) {
+				service = httpRequest.getParameter( key );
+			}
+			if ( "request".equalsIgnoreCase( key ) ) {
+				request = httpRequest.getParameter( key );
+			}
 		}
 		
 		if (service == null || request == null) {
 			//lookup in context path, (http://.../geoserver/service/request?)
 			
 			String path = httpRequest.getContextPath();
-			String uri = httpRequest.getRequestURI();
-			if (uri.length() > path.length()) {
-				uri = uri.substring(path.length()+1);	
+			StringBuffer uriBuf = new StringBuffer(httpRequest.getRequestURI());
+			while (uriBuf.indexOf("/") == 0) {
+				uriBuf.deleteCharAt(0);
+			}
+			uriBuf.insert(0, "/");
+			String uri;
+			if (uriBuf.length() > path.length()) {
+				uri = uriBuf.substring(path.length()+1);
+			} else {
+				uri = uriBuf.toString();
 			}
 			
 			int index = uri.indexOf('/'); 
@@ -160,10 +173,15 @@ public class Dispatcher extends AbstractController {
 			}
 		}	
 		
+		/**
+		 * ALFA: this is a HACK to let GeoServer do a getCapabilities request by default.
+		 */
+		/*request = (request == null ? "GetCapabilities" : request);*/
+		
 		
 		if (service == null || request == null) {
 			//check for a POST request specifying the request as the 
-			if ("POST".equalsIgnoreCase(httpRequest.getMethod())) {
+			if ( !isGet ) {
 				post(httpRequest,httpResponse);
 				return;
 			}
@@ -173,17 +191,13 @@ public class Dispatcher extends AbstractController {
 		
 		if (target != null) {
 			//we have a servlet, do it
-			if ("GET".equalsIgnoreCase(httpRequest.getMethod())) {
+			if ( isGet ) {
 				target.doGet(httpRequest,httpResponse);
 			}
-			else if ("POST".equalsIgnoreCase(httpRequest.getMethod())) {
-				
+			else  {
 				target.doPost(httpRequest,httpResponse);
 			}
-			else {
-				String msg = "Unkown request method: " + httpRequest.getMethod();
-				throw new ServiceException( msg );
-			}
+			
 		}
 		else {
 			String msg = "Could not locate service mapping to: (" 
@@ -193,7 +207,7 @@ public class Dispatcher extends AbstractController {
 		
 	}
 	
-	static int sequence = 0;
+	//static int sequence = 0;
 	void post(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 		throws ServiceException, IOException, ServletException {
 		File temp;
@@ -205,10 +219,10 @@ public class Dispatcher extends AbstractController {
         // (In case we are running two GeoServers at once)
         // - Could we use response.getHandle() in the filename?
         // - ProcessID is traditional, I don't know how to find that in Java
-        sequence++;
+        long sequence = new Date().getTime();
         // test to see if we have permission to write, if not, throw an appropirate error
         try {
-            	temp = File.createTempFile("wfsdispatch" + sequence, "tmp");
+            	temp = File.createTempFile("dispatch" + sequence, "tmp");
             	if (!temp.canRead() || !temp.canWrite())
             	{
             		String errorMsg = "Temporary-file permission problem for location: " + temp.getPath();
@@ -221,7 +235,6 @@ public class Dispatcher extends AbstractController {
             	throw newE;
         }
         
-        temp.deleteOnExit();
         FileOutputStream fos = new FileOutputStream(temp);
         BufferedOutputStream out = new BufferedOutputStream(fos);
 
@@ -261,11 +274,21 @@ public class Dispatcher extends AbstractController {
 
         AbstractService target = null;
         //JD: GEOS-323, Adding char encoding support
+        boolean kvpRequestContent = false;
         if (disReader != null) {
-            DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
+        	try {
+        		DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
         		requestTypeAnalyzer.read(disReader, httpRequest);
+
+        		target = find(requestTypeAnalyzer.getService(),requestTypeAnalyzer.getRequest());
+        	} catch(ServiceException e) {
+        		DispatcherKvpReader requestTypeAnalyzer = new DispatcherKvpReader();
+        		requestTypeAnalyzer.read(requestReader, httpRequest);
         		
         		target = find(requestTypeAnalyzer.getService(),requestTypeAnalyzer.getRequest());
+        		target.setKvpString(requestTypeAnalyzer.getQueryString());
+        		kvpRequestContent = true;
+        	}
 		} 
        
         if (target == null) {
@@ -273,12 +296,18 @@ public class Dispatcher extends AbstractController {
         		throw new ServiceException( msg );
         }
         
-        if (requestReader != null) {
+        if (!kvpRequestContent)
+        	if (requestReader != null) {
         		target.doPost(httpRequest,httpResponse,requestReader);
-        }
-        else {
+        	}
+        	else {
         		target.doPost(httpRequest,httpResponse);
-        }
-        	
+        	}
+        else
+        	target.doGet(httpRequest, httpResponse);
+
+        disReader.close();
+        requestReader.close();
+        temp.delete();
     }
 }

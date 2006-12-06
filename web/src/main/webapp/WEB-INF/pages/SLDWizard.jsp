@@ -181,8 +181,8 @@ function generateColorPicker(colorFieldName)
 	result = '<input name="'+colorFieldName+'" id="'+colorFieldName+'" size="7" ';
 	result += 'onChange="relateColor(\''+colorFieldName+'\', this.value);"> ';
 	result += '<script language="javascript">relateColor(\'pick'+colorFieldName+'\', getObj(\''+colorFieldName+'\').value);</scr'+'ipt> ';
-	result += '<a href="javascript:pickColor(\''+colorFieldName+'\');" id="pick'+colorFieldName+'" name="pick'+colorFieldName+'" style="border: 1px solid #000000; font-family:Verdana; font-size:10px; ';
-	result += 'text-decoration: none; " ><img src="../../images/colorpicker.jpg" width=12 height=12 border="none"></a>';
+	result += '<a href="javascript:pickColor(\''+colorFieldName+'\');" id="pick'+colorFieldName+'" name="pick'+colorFieldName+'" style="border: 1px solid #000000; font-family:Verdana; font-size:10px; background=#FFFF33; ';
+	result += 'text-decoration: none; " ><img src="colorpicker.jpg" width=12 height=12 border="none"></a>';
 
 	return result;
 }
@@ -436,7 +436,7 @@ function saveStyle(SLD)
 	}
 
 	// build XML POST query
-	URL  = "/geoserver/sld";//"http://"+SERVERHOSTNAME+"/
+	URL  = "/geoserver/wms?request=putstyles";//"http://"+SERVERHOSTNAME+"/
 
 	getXML(URL,SLD,XMLProgressFunction);
 	
@@ -639,6 +639,7 @@ function getXML(url,post,procfunction)
 		}
 		else if (window.XMLHttpRequest)
 		{
+			
 			// Mozilla and others
 			//log("getXML through Mozilla etc.");
 			geo_xmlhttp =  new XMLHttpRequest();
@@ -1017,10 +1018,10 @@ function nothing()
 
 <body onload="setup()" text="#AAC0FF">
 
-<font color="#08809F" size="+2"><b>Create new SLD for FeatureType: &nbsp;<i><span id="span_ftName" name="span_ftName"><bean:write property="<%= "typeName" %>" name="typesEditorForm"/></span></font></i></b>
+<font color="#08809F" size="+2"><b>Create new SLD for FeatureType: &nbsp;<i><span id="span_ftName" name="span_ftName"><bean:write property='<%= "typeName" %>' name="typesEditorForm"/></span></font></i></b>
 <br>&nbsp;<br>
 
-<span id="hidden_ft_attrs" name="hidden_ft_attrs" style="display:none"><bean:write property="<%= "attributes" %>" name="typesEditorForm" /></span>
+<span id="hidden_ft_attrs" name="hidden_ft_attrs" style="display:none"><bean:write property='<%= "attributes" %>' name="typesEditorForm" /></span>
 
 <span id="hidden_ft_attrNames" name="hidden_ft_attrNames" style="display:none">
 <logic:iterate id="attribute" indexId="index" name="typesEditorForm" property="attributes">

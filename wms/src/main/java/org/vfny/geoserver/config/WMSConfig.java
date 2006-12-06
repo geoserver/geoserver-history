@@ -10,6 +10,8 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * WMS purpose.
@@ -33,10 +35,21 @@ public class WMSConfig extends ServiceConfig {
     public static final String SVG_SIMPLE = "Simple";
     public static final String SVG_BATIK = "Batik";
     
+    /**
+     * Interpolation Types
+     */
+    public static final String INT_NEAREST = "Nearest";
+    public static final String INT_BIlINEAR = "Bilinear";
+    public static final String INT_BICUBIC = "Bicubic";
+    
     /** current svg renderer **/
     private String svgRenderer;
     /** anti aliasing hint for svg renderer **/
     private boolean svgAntiAlias;
+    /** rendering interpolation **/
+    private Map baseMapLayers;
+    private Map baseMapStyles;
+    private String allowInterpolation;
     
     /**
      * WMS constructor.
@@ -51,6 +64,9 @@ public class WMSConfig extends ServiceConfig {
         super();
         svgRenderer = SVG_SIMPLE;
         svgAntiAlias = true;
+        allowInterpolation = INT_NEAREST;
+        baseMapLayers = new HashMap();
+        baseMapStyles = new HashMap();
     }
 
     /**
@@ -67,6 +83,9 @@ public class WMSConfig extends ServiceConfig {
         super(w.getService());
         svgRenderer = w.getSvgRenderer();
         svgAntiAlias = w.getSvgAntiAlias();
+        allowInterpolation = w.getAllowInterpolation();
+        baseMapLayers = w.getBaseMapLayers();
+        baseMapStyles = w.getBaseMapStyles();
     }
 
     /**
@@ -99,6 +118,9 @@ public class WMSConfig extends ServiceConfig {
         super.update(dto.getService());
         svgRenderer = dto.getSvgRenderer();
         svgAntiAlias = dto.getSvgAntiAlias();
+        allowInterpolation = dto.getAllowInterpolation();
+        baseMapLayers = dto.getBaseMapLayers();
+        baseMapStyles = dto.getBaseMapStyles();
     }
 
     /**
@@ -117,6 +139,9 @@ public class WMSConfig extends ServiceConfig {
         wmsDto.setService((ServiceDTO) super.toServDTO());
         wmsDto.setSvgRenderer(svgRenderer);
         wmsDto.setSvgAntiAlias(svgAntiAlias);
+        wmsDto.setAllowInterpolation(allowInterpolation);
+        wmsDto.setBaseMapLayers(baseMapLayers);
+        wmsDto.setBaseMapStyles(baseMapStyles);
         return wmsDto;
     }
     
@@ -150,5 +175,48 @@ public class WMSConfig extends ServiceConfig {
      */
     public boolean getSvgAntiAlias() {
     	return svgAntiAlias;
+    }
+    
+    /**
+     * @param allowInterpolation rendering interpolation hint.
+     */
+    public void setAllowInterpolation(String allowInterpolation) {
+    	this.allowInterpolation = allowInterpolation;
+    }
+    
+    /**
+     * @return The value of the rendering interpolation rendering hint.
+     */
+    public String getAllowInterpolation() {
+    	return allowInterpolation;
+    }    
+    /**
+     * The comma separated list of feature types that make up the 
+     * base-map layer list.
+     * @return
+     */
+    public Map getBaseMapLayers()
+    {
+    	return baseMapLayers;
+    }
+    
+    public void setBaseMapLayers(Map layers)
+    {
+    	baseMapLayers = layers;
+    }
+    
+    /**
+     * The comma separated list of Styles that make up the 
+     * base-map style list.
+     * @return
+     */
+    public Map getBaseMapStyles()
+    {
+    	return baseMapStyles;
+    }
+    
+    public void setBaseMapStyles(Map styles)
+    {
+    	baseMapStyles = styles;
     }
 }

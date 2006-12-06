@@ -38,7 +38,7 @@ public abstract class DataStoreUtils {
         throws IOException {
     	//DJB: changed this for geoserver_data_dir   	
     	//String baseDir = sc.getRealPath("/");
-    	File baseDir =GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+    	File baseDir =GeoserverDataDirectory.getGeoserverDataDirectory();
     	
        	DataStore store = DataStoreFinder.getDataStore(getParams(params,baseDir.getAbsolutePath()));
         if (store == null) {
@@ -51,8 +51,9 @@ public abstract class DataStoreUtils {
     }
 
     public static Map getParams(Map m, ServletContext sc) {
-	String baseDir = sc.getRealPath("/");
-	return getParams(m, baseDir);
+    	File data_dir =GeoserverDataDirectory.getGeoserverDataDirectory();
+    	String baseDir = data_dir.getPath();
+    	return getParams(m, baseDir);
     }
 
     /**

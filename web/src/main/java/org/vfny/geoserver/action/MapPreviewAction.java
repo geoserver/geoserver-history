@@ -95,9 +95,14 @@ public class MapPreviewAction extends GeoServerAction
 		
 		// 2) delete any existing generated files in the generation directory
 		ServletContext sc = request.getSession().getServletContext();
-		File rootDir =  GeoserverDataDirectory.getGeoserverDataDirectory(sc);
-		File previewDir = new File(sc.getRealPath("data/generated"));
-		
+		//File rootDir =  GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+		//File previewDir = new File(sc.getRealPath("data/generated"));
+		if (sc.getRealPath("preview") == null) {
+			//There's a problem here, since we can't get a real path for the "preview" directory.
+			//On tomcat this happens when "unpackWars=false" is set for this context.
+			throw new RuntimeException("Couldn't populate preview directory...is the war running in unpacked mode?");
+		}
+		File previewDir = new File(sc.getRealPath("preview"));
 		//File previewDir = new File(rootDir, "data/generated");
 		if (!previewDir.exists())
 			previewDir.mkdirs();
@@ -173,8 +178,9 @@ public class MapPreviewAction extends GeoServerAction
 			else
 			{
 				if (f.exists())
-					if (!f.delete())	// try to delete the file
-						throw new FileNotFoundException("could not delete file: "+f.getName());
+					f.delete();
+//					if (!f.delete())	// try to delete the file
+//						throw new FileNotFoundException("could not delete file: "+f.getName());
 			}
 		}
 		
@@ -213,23 +219,33 @@ public class MapPreviewAction extends GeoServerAction
 		File config_file = new File(previewDir, ft_namespace + "_"+ ft_name+"Config.xml");
 		File xml_file = new File(previewDir, ft_namespace + "_"+ ft_name+".xml");
 		
+		//JD: making the exists check, since they dont have to be generated
+		// every time
+		
 		// *.html
-		FileOutputStream html_fos = new FileOutputStream(html_file);
-		PrintStream html_out = new PrintStream(html_fos);
-		createIndexHTML(html_out, ft_name, ft_namespace);
-		html_out.close();
+		if ( ! html_file.exists() ) {
+			FileOutputStream html_fos = new FileOutputStream(html_file);
+			PrintStream html_out = new PrintStream(html_fos);
+			createIndexHTML(html_out, ft_name, ft_namespace);
+			html_out.close();	
+		}
 		
-		// *Config.xml
-		FileOutputStream config_fos = new FileOutputStream(config_file);
-		PrintStream config_out = new PrintStream(config_fos);
-		createConfigXML(config_out, ft_name, ft_namespace);
-		config_out.close();
+		if ( ! config_file.exists() ) {
+			//*Config.xml
+			FileOutputStream config_fos = new FileOutputStream(config_file);
+			PrintStream config_out = new PrintStream(config_fos);
+			createConfigXML(config_out, ft_name, ft_namespace);
+			config_out.close();	
+		}
 		
-		// *.xml
-		FileOutputStream xml_fos = new FileOutputStream(xml_file);
-		PrintStream xml_out = new PrintStream(xml_fos);
-		createLayersXML(xml_out, ft_name, ft_namespace, bbox);
-		xml_out.close();
+		if ( !xml_file.exists() ) {
+			//*.xml
+			FileOutputStream xml_fos = new FileOutputStream(xml_file);
+			PrintStream xml_out = new PrintStream(xml_fos);
+			createLayersXML(xml_out, ft_name, ft_namespace, bbox);
+			xml_out.close();	
+		}
+		
 	}
 	
 	
@@ -250,7 +266,7 @@ public class MapPreviewAction extends GeoServerAction
 		out.println("");
 		out.println("<link rel=\"stylesheet\" href=\"../../style.css\"");
 		out.println("	type=\"text/css\">");
-		out.println("<link rel=\"stylesheet\" href=\"../mbdemos/lib/skin/default/html.css\"");
+		out.println("<link rel=\"stylesheet\" href=\"../mb/lib/skin/default/html.css\"");
 		out.println("	type=\"text/css\">");
 		out.println("");
 		out.println("<script type=\"text/javascript\">");
@@ -258,7 +274,7 @@ public class MapPreviewAction extends GeoServerAction
 		// CHANGE HERE
 		out.println("      var mbConfigUrl='"+ft_namespace+"_"+ft_name+"Config.xml"+"';");
 		out.println("    </script>");
-		out.println("<script type=\"text/javascript\" src=\"../mbdemos/lib/Mapbuilder.js\"></script>");
+		out.println("<script type=\"text/javascript\" src=\"../mb/lib/Mapbuilder.js\"></script>");
 		out.println("</head>");
 		out.println("");
 		out.println("<body onload=\"mbDoLoad()\">");
@@ -287,7 +303,7 @@ public class MapPreviewAction extends GeoServerAction
 		out.println("        <td align=\"left\" id=\"mapScaleText\"/>");
 		out.println("				<td align=\"right\">Powered by <a href=\"http://mapbuilder.sourceforge.net\">Community Map");
 		out.println("				Builder</a></td>");
-		out.println("				<td><img src=\"../mbdemos/lib/skin/default/images/Icon.gif\" alt=\"\" /></td>");
+		out.println("				<td><img src=\"../mb/lib/skin/default/images/Icon.gif\" alt=\"\" /></td>");
 		out.println("			</tr>");
 		out.println("		</table>");
 		out.println("		</td>");
@@ -343,7 +359,7 @@ public class MapPreviewAction extends GeoServerAction
 		out.println("        </MapPane>");
 		out.println("        <AoiBoxWZ id=\"aoiBox2\">");
 		out.println("          <htmlTagId>mainMapPane</htmlTagId>");
-		out.println("          <stylesheet>../mbdemos/lib/widget/GmlRenderer.xsl</stylesheet>");
+		out.println("          <stylesheet>../mb/lib/widget/GmlRenderer.xsl</stylesheet>");
 		out.println("          <lineColor>#FF0000</lineColor>");
 		out.println("          <lineWidth>1</lineWidth>");
 		out.println("          <crossSize>15</crossSize>");
@@ -378,7 +394,7 @@ public class MapPreviewAction extends GeoServerAction
 		out.println("        </MapPane>");
 		out.println("        <AoiBoxWZ id=\"aoiBox2\">");
 		out.println("          <htmlTagId>locatorMap</htmlTagId>");
-		out.println("          <stylesheet>../mbdemos/lib/widget/GmlRenderer.xsl</stylesheet>");
+		out.println("          <stylesheet>../mb/lib/widget/GmlRenderer.xsl</stylesheet>");
 		out.println("          <lineColor>#FF0000</lineColor>");
 		out.println("          <lineWidth>1</lineWidth>");
 		out.println("          <crossSize>15</crossSize>");
@@ -456,7 +472,7 @@ public class MapPreviewAction extends GeoServerAction
 		out.println("      <tooltip xml:lang=\"fr\">redonner la carte ses dimensions compl???ts</tooltip>");
 		out.println("    </Reset>");
 		out.println("  </widgets>");
-		out.println("  <skinDir>../mbdemos/lib/skin/default</skinDir>");
+		out.println("  <skinDir>../mb/lib/skin/default</skinDir>");
 		out.println("</MapbuilderConfig>");
 
 
@@ -486,7 +502,7 @@ public class MapPreviewAction extends GeoServerAction
 		out.println("    <Layer queryable=\"1\" hidden=\"0\">");
 		// CHANGE HERE
 		out.println("      <Server service=\"OGC:WMS\" version=\"1.1.1\" title=\""+ft_namespace+":"+ft_name+" Preview\">");
-		out.println("        <OnlineResource xlink:type=\"simple\" xlink:href=\"../../wms\"/>");
+		out.println("        <OnlineResource xlink:type=\"simple\" xlink:href=\"../wms\"/>");
 		out.println("      </Server>");
 		// CHANGE HERE
 		out.println("      <Name>"+ft_namespace+":"+ft_name+"</Name>");

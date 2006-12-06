@@ -98,7 +98,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
                 return mapping.findForward("config.data.store.editor");
             }
 
-            if (value != null) {
+            if (value != null && !"".equals(value)) {
                 connectionParams.put(key, value);
 
                 String text = param.text(value);
@@ -108,7 +108,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
         // put magic namespace into the mix
         // not sure if we want to do this, as we want the full namespace, not
-	//the id.  But getParams in DataStore may override this - ch
+	    //the id.  But getParams in DataStore may override this - ch
         connectionParams.put("namespace", dataStoresForm.getNamespaceId());
         paramTexts.put("namespace", dataStoresForm.getNamespaceId());
         

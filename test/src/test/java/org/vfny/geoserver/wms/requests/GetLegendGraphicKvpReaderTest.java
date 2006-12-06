@@ -117,22 +117,28 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
 		super.tearDown();
 	}
 
-	public void testVersion() throws Exception {
-		requiredParameters.put("VERSION", "WRONG");
-		
-		this.requestReader = 
-			new GetLegendGraphicKvpReader(requiredParameters, dummy);
-		try {
-			requestReader.getRequest(httpRequest);
-			fail("Expected ServiceException due to wrong VERSION parameter");
-		} catch (ServiceException e) {
-			// OK
-		}
-		requiredParameters.put("VERSION", "1.0.0");
-		GetLegendGraphicRequest parsedRequest;
-		parsedRequest = (GetLegendGraphicRequest) requestReader
-				.getRequest(httpRequest);
-	}
+	// disabled this test for the moment as a 
+//	fix for http://jira.codehaus.org/browse/GEOS-710
+//	Since at the moment none of the other request do check the version numbers, we 
+//	disable this check for the moment, and wait for a proper fix once the 
+//	we support more than one version of WMS/WFS specs
+
+//	public void testVersion() throws Exception {
+//		requiredParameters.put("VERSION", "WRONG");
+//		
+//		this.requestReader = 
+//			new GetLegendGraphicKvpReader(requiredParameters, dummy);
+//		try {
+//			requestReader.getRequest(httpRequest);
+//			fail("Expected ServiceException due to wrong VERSION parameter");
+//		} catch (ServiceException e) {
+//			// OK
+//		}
+//		requiredParameters.put("VERSION", "1.0.0");
+//		GetLegendGraphicRequest parsedRequest;
+//		parsedRequest = (GetLegendGraphicRequest) requestReader
+//				.getRequest(httpRequest);
+//	}
 
 	/**
 	 * This test ensures that when a SLD parameter has been passed that refers
