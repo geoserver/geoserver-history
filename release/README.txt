@@ -1,3 +1,18 @@
+GeoServer 1.4.0-RC5
+-------------------
+
+This is the fifth, and hopefully final, release candidate for the 1.4 series of GeoServer.
+
+
+- Fixed problems with the data directory
+- Better error reporting for shapefiles
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=13065
+
+Based on GeoTools 2.2.2-SNAPSHOT
+
+
 GeoServer 1.4.0-RC4
 -------------------
 
