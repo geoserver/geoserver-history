@@ -29,7 +29,8 @@ public class WfsXmlReader extends XmlRequestReader  {
 
 	public Object read(InputStream input) throws Exception {
 		Configuration configuration = new WFSConfiguration( catalog ); 
-	
+		//TODO: make this configurable?
+		configuration.getProperties().add( Parser.Properties.PARSE_UNKNOWN_ELEMENTS);
 		Parser parser = new Parser( configuration );
 		
 		//set the input source with the correct encoding
