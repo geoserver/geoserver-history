@@ -75,6 +75,7 @@
 	<bean id="schemaAdapterFactory" class="org.geoserver.wfs.xml.SchemaAdapterFactory">
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="resourceLoader"/>
 	</bean>
 	
 	
@@ -215,6 +216,7 @@
 		class="org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder">
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="resourceLoader"/>
 	</bean>
 	<!-- default get feature producers -->
 	<bean id="gml2FeatureProducer" 
