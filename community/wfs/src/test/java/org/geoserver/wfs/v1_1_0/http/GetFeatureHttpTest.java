@@ -1,6 +1,7 @@
 package org.geoserver.wfs.v1_1_0.http;
 
 import org.geoserver.wfs.http.WfsHttpTestSupport;
+import org.geotools.gml3.bindings.GML;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -141,6 +142,56 @@ public class GetFeatureHttpTest extends WfsHttpTestSupport {
 
 		Document dom = postAsDOM( "wfs", xml );
 		assertEquals( 1, dom.getElementsByTagName( "gml:featureMember" ).getLength() );
+	}
+	
+	public void testWithSillyLiteral() throws Exception {
+		String xml = 
+			 "<wfs:GetFeature xmlns:cdf=\"http://www.opengis.net/cite/data\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" version=\"1.1.0\" service=\"WFS\">" + 
+       "<wfs:Query  typeName=\"cdf:Other\" srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\">" + 
+         "<ogc:Filter>" + 
+         "  <ogc:PropertyIsEqualTo xmlns:p=\"http://www.opengis.net/ASDF\">" + 
+          "   <ogc:PropertyName>p:myProperty</ogc:PropertyName>" + 
+          "   <ogc:Literal>" + 
+          "       <p:literal version=\"1.0\">" + 
+          "         <p:value>ASDF</p:value>" + 
+          "       </p:literal>" + 
+          "   </ogc:Literal>" + 
+        "   </ogc:PropertyIsEqualTo>" + 
+        " </ogc:Filter>" + 
+       "</wfs:Query>" + 
+     "</wfs:GetFeature>";
+		
+		Document dom = postAsDOM( "wfs", xml );
+		assertEquals( "wfs:FeatureCollection", dom.getDocumentElement().getNodeName() );
+		assertEquals( 0, dom.getElementsByTagName( "gml:featureMember" ).getLength() );
+	}
+	
+	public void testWithGmlObjectId() throws Exception {
+		String xml = 
+			 "<wfs:GetFeature xmlns:cdf=\"http://www.opengis.net/cite/data\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" version=\"1.1.0\" service=\"WFS\">" + 
+      "<wfs:Query  typeName=\"cdf:Seven\" srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\">" + 
+      "</wfs:Query>" + 
+    "</wfs:GetFeature>";
+		
+		Document dom = postAsDOM( "wfs", xml );
+		assertEquals( "wfs:FeatureCollection", dom.getDocumentElement().getNodeName() );
+		assertEquals( 7, dom.getElementsByTagName( "gml:featureMember" ).getLength() );
+		
+		NodeList others = dom.getElementsByTagName( "cdf:Seven" );
+		String id = ((Element) others.item( 0 ) ).getAttributeNS( GML.NAMESPACE, "id" );
+		assertNotNull( id );
+		
+		xml = 
+			 "<wfs:GetFeature xmlns:cdf=\"http://www.opengis.net/cite/data\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" version=\"1.1.0\" service=\"WFS\">" + 
+     "<wfs:Query  typeName=\"cdf:Seven\" srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\">" + 
+     	"<ogc:Filter>" + 
+     		"<ogc:GmlObjectId gml:id=\"" + id + "\"/>" + 
+        "</ogc:Filter>" + 
+     "</wfs:Query>" + 
+   "</wfs:GetFeature>";
+		dom = postAsDOM( "wfs", xml );
+		
+		assertEquals( 1,  dom.getElementsByTagName( "gml:featureMember" ).getLength() );
 	}
 	
 }

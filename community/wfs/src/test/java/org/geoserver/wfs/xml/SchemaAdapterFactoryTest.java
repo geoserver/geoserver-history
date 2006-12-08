@@ -15,7 +15,7 @@ public class SchemaAdapterFactoryTest extends WFSTestSupport {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		SchemaAdapterFactory factory = new SchemaAdapterFactory( wfs, catalog );
+		SchemaAdapterFactory factory = new SchemaAdapterFactory( wfs, catalog, loader);
 		context.getBeanFactory().registerSingleton( "schemaAdapterFactory", factory );
 	}
 	

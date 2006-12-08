@@ -16,7 +16,7 @@ public class FeatureTypeInfoSchemaBuilderTest extends WFSTestSupport {
 
 	public void testBuildGml2() throws Exception {
 		FeatureTypeSchemaBuilder builder = 
-			new FeatureTypeSchemaBuilder.GML2( wfs, catalog );
+			new FeatureTypeSchemaBuilder.GML2( wfs, catalog, loader );
 		
 		FeatureTypeInfo lines = catalog.featureType( 
 			MockGeoServerDataDirectory.CGF_PREFIX, MockGeoServerDataDirectory.LINES_TYPE 

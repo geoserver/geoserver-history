@@ -30,7 +30,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
 		fcType.getFeature().add( features );
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		GML3FeatureProducer2 producer = new GML3FeatureProducer2( wfs, catalog );
+		GML3FeatureProducer2 producer = new GML3FeatureProducer2( wfs, catalog, loader );
 		producer.produce( null, fcType, output );
 		
 		System.out.println( new String( output.toByteArray() ) );
@@ -54,7 +54,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
 		);
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		GML3FeatureProducer2 producer = new GML3FeatureProducer2( wfs, catalog );
+		GML3FeatureProducer2 producer = new GML3FeatureProducer2( wfs, catalog , loader);
 		producer.produce( null, fcType, output );
 		
 		System.out.println( new String( output.toByteArray() ) );
@@ -81,7 +81,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
 		int npolys = polys.getDataStore().getFeatureSource( MockGeoServerDataDirectory.POLYGONS_TYPE ).getFeatures().size();
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		GML3FeatureProducer2 producer = new GML3FeatureProducer2( wfs, catalog );
+		GML3FeatureProducer2 producer = new GML3FeatureProducer2( wfs, catalog, loader );
 		producer.produce( null, fcType, output );
 		
 		System.out.println( new String( output.toByteArray() ) );
