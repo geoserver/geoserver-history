@@ -13,6 +13,7 @@ import java.util.Set;
 import net.opengis.wfs.FeatureCollectionType;
 
 import org.eclipse.xsd.XSDSchema;
+import org.geoserver.GeoServerResourceLoader;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.http.util.ResponseUtils;
@@ -29,10 +30,12 @@ public class GML3FeatureProducer2 implements FeatureProducer {
 
 	WFS wfs;
 	GeoServerCatalog catalog;
+	GeoServerResourceLoader resourceLoader;
 	
-	public GML3FeatureProducer2( WFS wfs, GeoServerCatalog catalog ) {
+	public GML3FeatureProducer2( WFS wfs, GeoServerCatalog catalog, GeoServerResourceLoader resourceLoader ) {
 		this.wfs = wfs;
 		this.catalog = catalog;
+		this.resourceLoader = resourceLoader;
 	}
 	
 	public Set getOutputFormats() {
@@ -91,7 +94,7 @@ public class GML3FeatureProducer2 implements FeatureProducer {
 			
 			//build the schema for the types in the single namespace
 			XSDSchema schema = 
-				new FeatureTypeSchemaBuilder.GML3( wfs, catalog ).build( 
+				new FeatureTypeSchemaBuilder.GML3( wfs, catalog, resourceLoader ).build( 
 					(FeatureTypeInfo[]) metas.toArray( new FeatureTypeInfo[ metas.size() ] ) 
 				);
 			
