@@ -13,6 +13,7 @@ import net.opengis.ows.v1_0_0.ExceptionReportType;
 import net.opengis.ows.v1_0_0.ExceptionType;
 import net.opengis.ows.v1_0_0.OWSFactory;
 
+import org.apache.xml.serialize.OutputFormat;
 import org.geoserver.ows.Service;
 import org.geoserver.ows.ServiceException;
 import org.geoserver.xml.ows.v1_0_0.OWS;
@@ -78,7 +79,13 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
 		
 		OWSConfiguration configuration = new OWSConfiguration();
 		
+		OutputFormat format = new OutputFormat();
+		format.setIndenting( true );
+		format.setIndent( 2 );
+		format.setLineWidth( 60 );
+		
 		Encoder encoder = new Encoder( configuration, configuration.schema() );
+		encoder.setOutputFormat( format );
 		
 		//TODO: dont hardcode schema location
 		encoder.setSchemaLocation( OWS.NAMESPACE, "http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd" );
