@@ -1,11 +1,14 @@
 package org.geoserver.wfs.xml;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.xsd.XSDComplexTypeDefinition;
 import org.eclipse.xsd.XSDCompositor;
@@ -16,15 +19,20 @@ import org.eclipse.xsd.XSDImport;
 import org.eclipse.xsd.XSDModelGroup;
 import org.eclipse.xsd.XSDParticle;
 import org.eclipse.xsd.XSDSchema;
+import org.eclipse.xsd.XSDSchemaContent;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.eclipse.xsd.util.XSDConstants;
 import org.eclipse.xsd.util.XSDSchemaLocator;
+import org.geoserver.GeoServerResourceLoader;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.wfs.WFS;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
+import org.geotools.gml2.GMLConfiguration;
+import org.geotools.xml.Configuration;
+import org.geotools.xml.Schemas;
 import org.opengis.feature.type.Name;
 
 /**
@@ -39,10 +47,15 @@ import org.opengis.feature.type.Name;
  */
 public abstract class FeatureTypeSchemaBuilder {
 
+	/** logging instance */
+	static Logger logger = Logger.getLogger( "org.geoserver.wfs" );
+	
 	/** wfs configuration */
 	WFS wfs;
 	/** the catalog */
 	GeoServerCatalog catalog;
+	/** resource loader */
+	GeoServerResourceLoader resourceLoader;
 	
 	/**
 	 * profiles used for type mapping.
@@ -55,10 +68,12 @@ public abstract class FeatureTypeSchemaBuilder {
 	protected XSDSchemaLocator gmlSchemaLocator;
 	protected String gmlNamespace;
 	protected String gmlSchemaLocation;
+	protected Configuration xmlConfiguration;
 	
-	protected FeatureTypeSchemaBuilder( WFS wfs, GeoServerCatalog catalog ) {
+	protected FeatureTypeSchemaBuilder( WFS wfs, GeoServerCatalog catalog, GeoServerResourceLoader resourceLoader ) {
 		this.wfs = wfs;
 		this.catalog = catalog;
+		this.resourceLoader = resourceLoader;
 		
 		profiles = new ArrayList();
 		profiles.add( new XSProfile() );
@@ -106,8 +121,7 @@ public abstract class FeatureTypeSchemaBuilder {
 			
 			//all types in same namespace, write out the schema
 			for ( int i = 0; i < featureTypeInfos.length; i++ ) {
-				complexType( featureTypeInfos[i].featureType(), schema, factory );
-				element( featureTypeInfos[i], schema, factory );
+				buildSchemaContent( featureTypeInfos[i], schema, factory );
 			}
 		}
 		else {
@@ -144,23 +158,48 @@ public abstract class FeatureTypeSchemaBuilder {
 		return schema;
 	}
 	
-	void element( FeatureTypeInfo meta, XSDSchema schema, XSDFactory factory ) {
-		XSDElementDeclaration element = factory.createXSDElementDeclaration();
-		element.setName( meta.getTypeName() );
+	void buildSchemaContent( FeatureTypeInfo featureTypeMeta, XSDSchema schema, XSDFactory factory )
+		throws IOException {
 		
-		element.setSubstitutionGroupAffiliation( schema.resolveElementDeclaration( gmlNamespace, "_Feature" ) );
-		String namespaceURI = catalog.getNamespaceSupport().getURI( meta.namespacePrefix() );
-		element.setTypeDefinition( 
-			schema.resolveTypeDefinition( namespaceURI, meta.getTypeName() + "Type" )	
-		);
-		 
-		schema.getContents().add( element );
-		schema.updateElement();
-	}
-	
-	void complexType( FeatureType featureType, XSDSchema schema, XSDFactory factory ) {
+		//look if the schema for the type is already defined
+		String prefix = featureTypeMeta.namespacePrefix();
+		String name = featureTypeMeta.getTypeName();
 		
-		 XSDComplexTypeDefinition complexType = factory.createXSDComplexTypeDefinition();
+		File schemaFile = null;
+		try {
+			schemaFile = resourceLoader.find( "featureTypes/" + prefix + "_" + name + "/schema.xsd" );
+		} 
+		catch (IOException e1) {}
+		
+		if ( schemaFile != null ) {
+			//schema file found, parse it and lookup the complex type
+			List resolvers = Schemas.findSchemaLocationResolvers( xmlConfiguration );
+			XSDSchema ftSchema = null;
+			try {
+				ftSchema = Schemas.parse( schemaFile.getAbsolutePath(), null, resolvers );
+			} 
+			catch (IOException e) {
+				logger.log( Level.WARNING, "Unable to parse schema: " + schemaFile.getAbsolutePath(), e );
+			}
+
+			if ( ftSchema != null ) {
+				//add the contents of this schema to the schema being built
+				//look up the complex type
+				List contents = ftSchema.getContents();
+				for ( Iterator i = contents.iterator(); i.hasNext(); ) {
+					XSDSchemaContent content = (XSDSchemaContent) i.next();
+					content.setElement( null );
+				}
+					
+				schema.getContents().addAll( contents );
+				schema.updateElement();
+				return;
+			}
+		}
+		
+		//build the type manually
+		 FeatureType featureType = featureTypeMeta.featureType();
+		 XSDComplexTypeDefinition complexType  = factory.createXSDComplexTypeDefinition();
 		 complexType.setName( featureType.getTypeName() + "Type" );
 		  
 		 complexType.setDerivationMethod(XSDDerivationMethod.EXTENSION_LITERAL);
@@ -215,8 +254,20 @@ public abstract class FeatureTypeSchemaBuilder {
 		 particle.setContent( group );
 		 
 		 complexType.setContent( particle );
-		 
+	
 		 schema.getContents().add(complexType);
+		 
+		XSDElementDeclaration element = factory.createXSDElementDeclaration();
+		element.setName( name );
+			
+		element.setSubstitutionGroupAffiliation( schema.resolveElementDeclaration( gmlNamespace, "_Feature" ) );
+		element.setTypeDefinition( 
+			complexType
+		);
+		 
+		schema.getContents().add( element );
+		schema.updateElement();
+		
 		 schema.updateElement();
 		 
 	}
@@ -235,28 +286,29 @@ public abstract class FeatureTypeSchemaBuilder {
 	
 	public static final class GML2 extends FeatureTypeSchemaBuilder {
 		
-		public GML2( WFS wfs, GeoServerCatalog catalog ) {
-			super(wfs, catalog);
+		public GML2( WFS wfs, GeoServerCatalog catalog, GeoServerResourceLoader resourceLoader ) {
+			super(wfs, catalog, resourceLoader);
 			
 			profiles.add( new GML2Profile() );
 			gmlSchemaLocator = new org.geotools.gml2.bindings.GMLSchemaLocator();
 			gmlNamespace = org.geotools.gml2.bindings.GML.NAMESPACE;
 			gmlSchemaLocation = "gml/2.1.2/feature.xsd";
-			
+			xmlConfiguration = new GMLConfiguration();
 		}
 		
 	}
 	
 	public static final class GML3 extends FeatureTypeSchemaBuilder {
 		
-		public GML3( WFS wfs, GeoServerCatalog catalog ) {
-			super( wfs, catalog );
+		public GML3( WFS wfs, GeoServerCatalog catalog, GeoServerResourceLoader resourceLoader  ) {
+			super( wfs, catalog, resourceLoader );
 			
 			profiles.add( new GML3Profile() );
 			
 			gmlSchemaLocator = new org.geotools.gml3.bindings.GMLSchemaLocator();
 			gmlNamespace = org.geotools.gml3.bindings.GML.NAMESPACE;
 			gmlSchemaLocation = "gml/3.1.1/base/feature.xsd";
+			xmlConfiguration = new org.geotools.gml3.GMLConfiguration();
 			
 		}
 	}

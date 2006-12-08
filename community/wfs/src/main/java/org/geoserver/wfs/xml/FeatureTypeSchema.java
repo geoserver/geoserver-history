@@ -3,6 +3,7 @@ package org.geoserver.wfs.xml;
 import java.io.IOException;
 
 import org.eclipse.xsd.XSDSchema;
+import org.geoserver.GeoServerResourceLoader;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.wfs.WFS;
@@ -53,9 +54,9 @@ public abstract class FeatureTypeSchema {
 	 */
 	public static final class GML2 extends FeatureTypeSchema {
 
-		public GML2( FeatureTypeInfo featureType, WFS wfs, GeoServerCatalog catalog ) {
+		public GML2( FeatureTypeInfo featureType, WFS wfs, GeoServerCatalog catalog, GeoServerResourceLoader resourceLoader ) {
 			super(featureType);
-			builder = new FeatureTypeSchemaBuilder.GML2( wfs, catalog );
+			builder = new FeatureTypeSchemaBuilder.GML2( wfs, catalog, resourceLoader );
 		}
 
 	}
@@ -67,9 +68,9 @@ public abstract class FeatureTypeSchema {
 	 */
 	public static final class GML3 extends FeatureTypeSchema {
 
-		protected GML3( FeatureTypeInfo featureType, WFS wfs, GeoServerCatalog catalog ) {
+		protected GML3( FeatureTypeInfo featureType, WFS wfs, GeoServerCatalog catalog, GeoServerResourceLoader resourceLoader ) {
 			super(featureType);
-			builder = new FeatureTypeSchemaBuilder.GML3( wfs, catalog );
+			builder = new FeatureTypeSchemaBuilder.GML3( wfs, catalog, resourceLoader );
 		}
 		
 		

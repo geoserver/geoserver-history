@@ -2,6 +2,7 @@ package org.geoserver.wfs.xml;
 
 import java.io.IOException;
 
+import org.geoserver.GeoServerResourceLoader;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.wfs.WFS;
@@ -55,11 +56,14 @@ public class SchemaAdapterFactory implements ResolveAdapterFactory, AdaptingReso
 	
 	GeoServerCatalog catalog;
 	
+	GeoServerResourceLoader resourceLoader;
+	
 	AdaptingResolve adaptingResolve;
 	
-	public SchemaAdapterFactory ( WFS wfs, GeoServerCatalog catalog ) {
+	public SchemaAdapterFactory ( WFS wfs, GeoServerCatalog catalog, GeoServerResourceLoader resourceLoader ) {
 		this.wfs = wfs;
 		this.catalog = catalog;
+		this.resourceLoader = resourceLoader;
 	}
 	
 	public void setAdaptingResolve( AdaptingResolve adaptingResolve ) {
@@ -84,11 +88,11 @@ public class SchemaAdapterFactory implements ResolveAdapterFactory, AdaptingReso
 		
 		//check for gml2
 		if ( adaptee == FeatureTypeSchema.GML2.class ) {
-			return new FeatureTypeSchema.GML2( meta, wfs, catalog );	
+			return new FeatureTypeSchema.GML2( meta, wfs, catalog, resourceLoader );	
 		}
 		
 		//default is gml3
-		return new FeatureTypeSchema.GML3( meta, wfs, catalog );
+		return new FeatureTypeSchema.GML3( meta, wfs, catalog, resourceLoader );
 	}
 
 	
