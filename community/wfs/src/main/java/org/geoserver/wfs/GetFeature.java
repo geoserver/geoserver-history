@@ -33,13 +33,19 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
+import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureType;
 
 import org.geotools.filter.AttributeExpression;
 import org.geotools.filter.FilterFactory;
+import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.expression.SimpleFeaturePropertyAccessorFactory;
+import org.geotools.filter.visitor.AbstractFilterVisitor;
 import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterVisitor;
+import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.referencing.FactoryException;
@@ -159,6 +165,7 @@ public class GetFeature {
                 List atts = meta.getAttributes();
                 List attNames = meta.attributeNames();
                 
+                //make sure property names are cool
                 List propNames = query.getPropertyName(); 
                 
                 for (Iterator iter = propNames.iterator(); iter.hasNext();) {
@@ -201,6 +208,23 @@ public class GetFeature {
                     query.getPropertyName().addAll( tmp );
                 }
 
+               //make sure filters are sane
+                if ( query.getFilter() != null ) {
+                	final FeatureType featureType = source.getSchema();
+                    ExpressionVisitor visitor = new AbstractExpressionVisitor() {
+                    	public Object visit(PropertyName name, Object data) {
+                    		// case of multiple geometries being returned
+                    		if ( name.evaluate( featureType ) == null ) {
+                    			//we want to throw wfs exception, but cant
+                    			throw new RuntimeException( "Illegal property name: " + name.getPropertyName() );
+                    		}
+                    		
+                    		return name;
+                    	};
+                    };
+                    query.getFilter().accept( new AbstractFilterVisitor( visitor ), null );
+                }
+                
                 org.geotools.data.Query gtQuery = toDataQuery( query, maxFeatures - count, source );
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery );
 
