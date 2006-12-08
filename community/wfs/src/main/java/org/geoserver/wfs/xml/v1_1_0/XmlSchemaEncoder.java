@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDResourceImpl;
+import org.geoserver.GeoServerResourceLoader;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.wfs.WFS;
@@ -17,18 +18,21 @@ public class XmlSchemaEncoder extends FeatureTypeEncoder {
 	WFS wfs;
 	/** the catalog */
 	GeoServerCatalog catalog;
+	/** the geoserver resource loader */
+	GeoServerResourceLoader resourceLoader;
 	
-	public XmlSchemaEncoder( WFS wfs, GeoServerCatalog catalog ) {
+	public XmlSchemaEncoder( WFS wfs, GeoServerCatalog catalog, GeoServerResourceLoader resourceLoader ) {
 		super( "text/xml; subtype=gml/3.1.1", "text/xml; subtype=gml/3.1.1" );
 		this.wfs = wfs;
 		this.catalog = catalog;
+		this.resourceLoader = resourceLoader;
 	}
 	
 	public void encode(FeatureTypeInfo[] metas, OutputStream output) throws IOException {
 		
 		//create the schema
 		FeatureTypeSchemaBuilder builder = 
-			new FeatureTypeSchemaBuilder.GML3( wfs, catalog );
+			new FeatureTypeSchemaBuilder.GML3( wfs, catalog, resourceLoader );
 		XSDSchema schema = builder.build( metas );
 		
 		//serialize
