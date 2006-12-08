@@ -42,6 +42,9 @@
   <bean id="sldServiceFactory" 
   	class="org.geotools.catalog.styling.SLDServiceFactory"/>
 
+  <bean id="postgisServiceFactory" class="org.geotools.catalog.postgis.PostGISServiceFactory">
+  </bean>
+  
   <bean id="gmlServiceFactory" class="org.geotools.catalog.DataStoreFactoryServiceFactory">
   	<constructor-arg>
   		<bean class="org.geotools.data.gml.GMLDataStoreFactory"/>
