@@ -24,6 +24,8 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.emf.ecore.EObject;
+import org.geoserver.ows.EMFUtils;
 import org.geoserver.ows.Operation;
 import org.geoserver.ows.Service;
 import org.geoserver.ows.ServiceException;
@@ -120,19 +122,19 @@ public class OWSDispatcher extends AbstractController {
 		
 		//TODO: make this a configuration option to infer the service parameter from 
 		// the context
-		if ( req.service == null ) {
-			//one last check from the uri
-			Map map = readOpContext( req.httpRequest );
-			if ( req.service == null ) {
-				req.service = normalize( (String) map.get( "service" ) );
-			}
-			if ( req.request == null ) {
-				req.request = normalize( (String) map.get( "request" ) );
-			}
-			if ( req.version == null ) {
-				req.version = normalize( (String) map.get( "version" ) );
-			}
-		}
+//		if ( req.service == null ) {
+//			//one last check from the uri
+//			Map map = readOpContext( req.httpRequest );
+//			if ( req.service == null ) {
+//				req.service = normalize( (String) map.get( "service" ) );
+//			}
+//			if ( req.request == null ) {
+//				req.request = normalize( (String) map.get( "request" ) );
+//			}
+//			if ( req.version == null ) {
+//				req.version = normalize( (String) map.get( "version" ) );
+//			}
+//		}
 		
 		if ( req.service == null ) {
 			//give up 
@@ -162,7 +164,7 @@ public class OWSDispatcher extends AbstractController {
 		
 		if ( req.request == null ) {
 			String msg = "Could not determine request.";
-			throw new RuntimeException( msg );
+			throw new ServiceException( msg , "MissingParameterValue", "request" );
 		}
 		
 		
@@ -209,11 +211,23 @@ public class OWSDispatcher extends AbstractController {
 				if ( requestBean != null ) {
 					//if we dont have a version thus far, check the request object
 					if ( req.version == null ) {
-						String version = 
-							(String) OWSUtils.property( requestBean, "version", String.class );
-						if ( version != null ) {
-							req.version = normalize( version );
+						if ( requestBean instanceof EObject ) {
+							//special case hack for eObject, we should move 
+							// this out into an extension ppint
+							EObject eObject = (EObject) requestBean;
+							if ( EMFUtils.isSet( eObject, "version" ) ) {
+								req.version = normalize( (String) EMFUtils.get( eObject, "version" ) );
+							}
 						}
+						else {
+							//straight reflection
+							String version = 
+								(String) OWSUtils.property( requestBean, "version", String.class );
+							if ( version != null ) {
+								req.version = normalize( version );
+							}	
+						}
+						
 					}	
 					
 					parameters[ i ] = requestBean;
@@ -774,6 +788,22 @@ public class OWSDispatcher extends AbstractController {
 			se = (ServiceException) t;
 		}
 		else {
+			//unwind the exception stack, look for a service exception
+			Throwable cause = t.getCause();
+			while( cause != null ) {
+				if ( cause instanceof ServiceException ) {
+					ServiceException cse = (ServiceException) cause;
+					se = new ServiceException( 
+						cse.getMessage(), t, cse.getCode(), cse.getLocator()	
+					);
+					break;
+				}
+				cause = cause.getCause();
+			}
+		}
+		
+		if ( se == null ) {
+			//couldn't find one, just wrap in one
 			se = new ServiceException( t );
 		}
 		
