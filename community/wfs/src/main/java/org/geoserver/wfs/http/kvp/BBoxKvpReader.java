@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.geoserver.http.util.KvpUtils;
 import org.geoserver.ows.http.KvpParser;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -19,28 +22,33 @@ public class BBoxKvpReader extends KvpParser {
          List unparsed = KvpUtils.readFlat( value, KvpUtils.INNER_DELIMETER );
          
          // check to make sure that the bounding box has 4 coordinates
-         if (unparsed.size() != 4) {
+         if (unparsed.size() < 4) {
              throw new IllegalArgumentException("Requested bounding box contains wrong"
                  + "number of coordinates (should have " + "4): " + unparsed.size());
          } 
 
-        	 //if it does, store them in an array of doubles
-        	 int j = 0;
-
-        	 Iterator i = unparsed.iterator();
-        	 double[] bbox = new double[4];
-         while ( i.hasNext() ) {
+    	 //if it does, store them in an array of doubles
+         double[] bbox = new double[4];
+         for ( int i = 0; i < 4; i++ ) {
              try {
-            	 	bbox[j] = Double.parseDouble((String) i.next());
-                j++;
+        	 	bbox[i] = Double.parseDouble((String)unparsed.get( i ));
              } 
              catch (NumberFormatException e) {
-                 throw new IllegalArgumentException("Bounding box coordinate " + j
-                     + " is not parsable:" + unparsed.get(j));
+                 throw new IllegalArgumentException("Bounding box coordinate " + i
+                     + " is not parsable:" + unparsed.get(i));
              }
          }
          
-         return new Envelope( bbox[0], bbox[1], bbox[2], bbox[3] );
+         //check for crs
+         CoordinateReferenceSystem crs = null;
+         if ( unparsed.size() > 4 ) {
+        	 crs = CRS.decode( (String) unparsed.get( 4 ) );
+         }
+         else {
+        	 //TODO: use the default crs of the system
+         }
+         
+         return new ReferencedEnvelope( bbox[0], bbox[2],bbox[1], bbox[3] , crs );
 	}
 
 }
