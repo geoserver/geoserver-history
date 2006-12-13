@@ -105,12 +105,21 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 				
 				ArrayList typeNames = new ArrayList();
 				TypeNameKvpReader reader = new TypeNameKvpReader( catalog );
-				for ( Iterator i = featureId.iterator(); i.hasNext(); ) {
-					String fid = (String) i.next();
+				for ( int i = 0; i < featureId.size(); i++ ) {
+					String fid = (String) featureId.get( i );
 					int pos = fid.indexOf(".");
 	                if ( pos != -1 ) {
                 		String typeName = fid.substring( 0, fid.lastIndexOf( "." ) );
-                		typeNames.add( reader.qName( typeName ) );
+                		fid = fid.substring( fid.lastIndexOf( "." ) + 1 );
+                		
+                		//update the fid in hte list ( for later when we parse the fid into a filter )
+                		featureId.set( i, fid );
+                		
+                		//add to a list to set on the query
+                		List l = new ArrayList();
+                		l.add( reader.qName( typeName ) );
+                		
+                		typeNames.add( l );
 	                }
 				}
 				
@@ -124,16 +133,16 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 		}
 		else if ( kvp.containsKey( "featureId" ) ) {
 			//set filter from featureId
-			List featureId = (List) kvp.get( "featureId" );
+			List featureIdList = (List) kvp.get( "featureId" );
 			List filters = new ArrayList();
 		
-			for ( Iterator i = featureId.iterator(); i.hasNext(); ) {
+			for ( Iterator i = featureIdList.iterator(); i.hasNext(); ) {
 				String fid = (String) i.next();
-				FeatureId featureid = filterFactory.featureId( fid );
+				FeatureId featureId = filterFactory.featureId( fid );
 				
 				HashSet featureIds = new HashSet();
 				featureIds.add( featureId );
-				filters.add( filterFactory.id( featureIds) );
+				filters.add( filterFactory.id( featureIds ) );
 			}
 			
 			querySet( eObject, "filter", filters );
