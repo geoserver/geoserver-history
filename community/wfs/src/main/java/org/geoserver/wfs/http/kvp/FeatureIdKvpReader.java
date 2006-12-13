@@ -18,7 +18,7 @@ public class FeatureIdKvpReader extends KvpParser {
 	}
 
 	public Object parse( String value ) throws Exception {
-		return KvpUtils.readNested( value );
+		return KvpUtils.readFlat( value );
 	}
 
 }
