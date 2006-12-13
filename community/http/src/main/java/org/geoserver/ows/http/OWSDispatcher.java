@@ -120,8 +120,6 @@ public class OWSDispatcher extends AbstractController {
 			}
 		}
 		
-		//TODO: make this a configuration option to infer the service parameter from 
-		// the context
 //		if ( req.service == null ) {
 //			//one last check from the uri
 //			Map map = readOpContext( req.httpRequest );
@@ -137,10 +135,18 @@ public class OWSDispatcher extends AbstractController {
 //		}
 		
 		if ( req.service == null ) {
+			//try to infer from context, but dont set on request object because we need to know 
+			// if the service was actually specified later
+			Map map = readOpContext( req.httpRequest );
+			if ( map.get( "service" ) != null ) {
+				return findService( normalize( (String) map.get( "service" ) ), req.version );
+			}
+			
 			//give up 
 			throw new ServiceException( 
 				"Could not determine service", "MissingParameterValue", "service" 
 			);
+			
 		}
 		
 		//load from teh context
@@ -207,28 +213,19 @@ public class OWSDispatcher extends AbstractController {
 					requestBean = parseRequestXML( req.input );
 				}
 				
-				
+				// another couple of thos of those lovley cite things, version+service has to specified for 
+				// non capabilities request, so if we dont have either thus far, check the request
+				// objects to try and find one
+				// TODO: should make this configurable
 				if ( requestBean != null ) {
 					//if we dont have a version thus far, check the request object
+					if ( req.service == null ) {
+						req.service = lookupRequestBeanProperty( requestBean, "service" );
+					}
+					
 					if ( req.version == null ) {
-						if ( requestBean instanceof EObject ) {
-							//special case hack for eObject, we should move 
-							// this out into an extension ppint
-							EObject eObject = (EObject) requestBean;
-							if ( EMFUtils.isSet( eObject, "version" ) ) {
-								req.version = normalize( (String) EMFUtils.get( eObject, "version" ) );
-							}
-						}
-						else {
-							//straight reflection
-							String version = 
-								(String) OWSUtils.property( requestBean, "version", String.class );
-							if ( version != null ) {
-								req.version = normalize( version );
-							}	
-						}
-						
-					}	
+						req.version = lookupRequestBeanProperty( requestBean, "version" );
+					}
 					
 					parameters[ i ] = requestBean;
 				}
@@ -236,10 +233,6 @@ public class OWSDispatcher extends AbstractController {
 			}
 		}
 		
-		// another couple of thos of those lovley cite things, version has to specified for 
-		// non capabilities request, so if we dont have a version thus far, check the request
-		// objects to try and find one
-		// TODO: should make this configurable
 		if ( !"GetCapabilities".equalsIgnoreCase( req.request ) ) {
 			if ( req.version == null ) {
 				//must be a version on non-capabilities requests
@@ -251,15 +244,59 @@ public class OWSDispatcher extends AbstractController {
 				//version must be valid
 				if ( !req.version.matches( "[0-99].[0-99].[0-99]" ) ) {
 					throw new ServiceException( 
-						"Invalid version", "InvalidParameterValue", "version"	
+						"Invalid version: " + req.version , "InvalidParameterValue", "version"	
 					);
 				}
 				
-				//TODO:should probably check if the version actually exists
+				//make sure the versoin actually exists
+				boolean found = false;
+				for ( Iterator s = loadServices().iterator(); s.hasNext(); ) {
+					Service service = (Service) s.next();
+					if ( req.version.equals( service.getVersion() ) ) {
+						found = true;
+						break;
+					}
+				}
+				
+				if ( !found ) {
+					throw new ServiceException( 
+						"Invalid version: " + req.version , "InvalidParameterValue", "version"	
+					);
+				}
+			}
+			
+			if ( req.service == null ) {
+				//give up 
+				throw new ServiceException( 
+					"Could not determine service", "MissingParameterValue", "service" 
+				);
 			}
 		}
 		
 		return new Operation( req.request, serviceDescriptor, operation, parameters );
+	}
+	
+	String lookupRequestBeanProperty( Object requestBean, String property ) {
+	
+		if ( requestBean instanceof EObject &&
+				EMFUtils.has((EObject) requestBean, property ) ) {
+			//special case hack for eObject, we should move 
+			// this out into an extension ppint
+			EObject eObject = (EObject) requestBean;
+			if ( EMFUtils.isSet( eObject, property ) ) {
+				return  normalize( (String) EMFUtils.get( eObject, "version" ) );
+			}
+		}
+		else {
+			//straight reflection
+			String version = 
+				(String) OWSUtils.property( requestBean, property , String.class );
+			if ( version != null ) {
+				return normalize( version );
+			}	
+		}
+		
+		return null;
 	}
 	
 	void execute( Request req, Operation opDescriptor ) throws Throwable {
