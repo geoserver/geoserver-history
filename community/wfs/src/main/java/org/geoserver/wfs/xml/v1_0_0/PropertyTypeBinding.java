@@ -104,7 +104,7 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
 		if ( node.hasChild( "Value" ) ) {
 			Map map = (Map) node.getChildValue( "Value");
 			if ( !map.isEmpty() ) {
-				//first check for some test
+				//first check for some text
 				if ( map.containsKey( null ) ) {
 					property.setValue( map.get( null ) );
 				}
