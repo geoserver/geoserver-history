@@ -45,7 +45,7 @@ public class DataTestSupport extends TestCase {
     protected static final Logger LOGGER = Logger.getLogger("org.geoserver.unittests");
 
     /**
-     * Mock data directory 
+     * Mock data directory + counter 
      */
     protected MockGeoServerDataDirectory data;
     
@@ -66,12 +66,16 @@ public class DataTestSupport extends TestCase {
     
     /**
 	 * Creates an instance of the geoserver catalog populated with cite data.
-	 * 
+	 * <p>
+	 * This method is marked as final, it calls {@link #setUpInternal()}, any 
+	 * initialization should be done there.
+	 * </p>
 	 */
-    protected void setUp() throws Exception {
+    protected final void setUp() throws Exception {
+		
 	   data = new MockGeoServerDataDirectory();
-	   data.setUp();
-	   
+	   data.setUp();	
+		
 	   context = new GenericApplicationContext();
 	   GeoServerExtensions extensions = new GeoServerExtensions();
 	   context.getBeanFactory().registerSingleton( "geoServerExtensions", extensions );
@@ -81,11 +85,40 @@ public class DataTestSupport extends TestCase {
 	   context.getBeanFactory().registerSingleton( "resourceLoader", loader );
 	   
 	   catalog = createCiteCatalog( context );
+	   
+	   setUpInternal();
 	}
     
-    protected void tearDown() throws Exception {
-    	data.tearDown();
+    /**
+     * Setup hook called by {@link #setUp()}. 
+     * <p>
+     * Subclasses should override this method if they need to initializatoin,
+     * the default implementation does nothing.
+     * </p>
+     * @throws Exception
+     */
+    protected void setUpInternal() throws Exception {}
+    
+    /**
+     * Tears down teh data directory and application context.
+     * <p>
+	 * This method is marked as final, it calls {@link #setUpInternal()}, any 
+	 * initialization should be done there.
+	 * </p>
+     */
+    protected final void tearDown() throws Exception {
+    	data.tearDown();	
     }
+    
+    /**
+     * Setup hook called by {@link #tearDown()()}. 
+     * <p>
+     * Subclasses should override this method if they need to finalization,
+     * the default implementation does nothing.
+     * </p>
+     * @throws Exception
+     */
+    protected void tearDownInternal() throws Exception { }
     
     /**
      * Creates the geosrever catalog and populates it with cite data.
@@ -126,17 +159,4 @@ public class DataTestSupport extends TestCase {
 		
 		return catalog;
 	}
-    
-    
-    protected String[] citeTypeNames() {
-    	return MockGeoServerDataDirectory.citeTypeNames;
-    }
-    
-    protected String[] wmsCiteTypeNames() {
-    	return MockGeoServerDataDirectory.wmsCiteTypeNames;
-    }
-    
-    protected String[] wfsCiteTypeNames() {
-    	return MockGeoServerDataDirectory.wfsCiteTypeNames;
-    }
 }

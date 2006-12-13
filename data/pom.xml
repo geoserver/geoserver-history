@@ -43,6 +43,10 @@
 	  <groupId>junit</groupId>
 	  <artifactId>junit</artifactId>
 	</dependency>
+	 <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis-xerces</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

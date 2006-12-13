@@ -9,142 +9,177 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+
+import javax.xml.namespace.QName;
 
 import org.geoserver.data.CatalogWriter;
 import org.geotools.data.property.PropertyDataStoreFactory;
 
 /**
  * Class used to build a mock GeoServer data directory.
- * 
+ * <p>
+ * Data is based off the wms and wfs "cite" datasets.
+ * </p>
  * @author Justin Deoliveira, The Open Planning Project
  * 
  */
 public class MockGeoServerDataDirectory {
 
-	// WMS
+	////// WMS 1.1.1
 	/**
-	 * cite namespace + uri
+	 *  WMS 1.1.1 cite namespace + uri
 	 */
 	public static String CITE_PREFIX = "cite";
-
 	public static String CITE_URI = "http://www.opengis.net/cite";
 
-	/** featuretype name for CITE BasicPolygons features */
-	public static String BASIC_POLYGONS_TYPE = "BasicPolygons";
+	/** featuretype name for WMS 1.1.1 CITE BasicPolygons features */
+	public static QName BASIC_POLYGONS = new QName( CITE_URI, "BasicPolygons", CITE_PREFIX );
 
-	/** featuretype name for CITE Bridges features */
-	public static String BRIDGES_TYPE = "Bridges";
+	/** featuretype name for WMS 1.1.1 CITE Bridges features */
+	public static QName BRIDGES = new QName( CITE_URI,  "Bridges", CITE_PREFIX );
 
-	/** featuretype name for CITE Buildings features */
-	public static String BUILDINGS_TYPE = "Buildings";
+	/** featuretype name for WMS 1.1.1 CITE Buildings features */
+	public static QName BUILDINGS = new QName( CITE_URI,  "Buildings", CITE_PREFIX );
 
-	/** featuretype name for CITE Divided Routes features */
-	public static String DIVIDED_ROUTES_TYPE = "DividedRoutes";
+	/** featuretype name for WMS 1.1.1 CITE Divided Routes features */
+	public static QName DIVIDED_ROUTES = new QName( CITE_URI,  "DividedRoutes", CITE_PREFIX );
 
-	/** featuretype name for CITE Forests features */
-	public static String FORESTS_TYPE = "Forests";
+	/** featuretype name for WMS 1.1.1 CITE Forests features */
+	public static QName FORESTS = new QName( CITE_URI,  "Forests", CITE_PREFIX );
 
-	/** featuretype name for CITE Lakes features */
-	public static String LAKES_TYPE = "Lakes";
+	/** featuretype name for WMS 1.1.1 CITE Lakes features */
+	public static QName LAKES = new QName( CITE_URI,  "Lakes", CITE_PREFIX );
 
-	/** featuretype name for CITE Map Neatliine features */
-	public static String MAP_NEATLINE_TYPE = "MapNeatline";
+	/** featuretype name for WMS 1.1.1 CITE Map Neatliine features */
+	public static QName MAP_NEATLINE = new QName( CITE_URI,  "MapNeatline", CITE_PREFIX );
 
-	/** featuretype name for CITE Named Places features */
-	public static String NAMED_PLACES_TYPE = "NamedPlaces";
+	/** featuretype name for WMS 1.1.1 CITE Named Places features */
+	public static QName NAMED_PLACES = new QName( CITE_URI,  "NamedPlaces", CITE_PREFIX );
 
-	/** featuretype name for CITE Ponds features */
-	public static String PONDS_TYPE = "Ponds";
+	/** featuretype name for WMS 1.1.1 CITE Ponds features */
+	public static QName PONDS = new QName( CITE_URI,  "Ponds", CITE_PREFIX );
 
-	/** featuretype name for CITE Road Segments features */
-	public static String ROAD_SEGMENTS_TYPE = "RoadSegments";
+	/** featuretype name for WMS 1.1.1 CITE Road Segments features */
+	public static QName ROAD_SEGMENTS = new QName( CITE_URI,  "RoadSegments", CITE_PREFIX );
 
-	/** featuretype name for CITE Streams features */
-	public static String STREAMS_TYPE = "Streams";
+	/** featuretype name for WMS 1.1.1 CITE Streams features */
+	public static QName STREAMS = new QName( CITE_URI,  "Streams", CITE_PREFIX );
 
-	// WFS
+	///// WFS 1.0
 	/**
-	 * cdf namespace + uri
+	 * WFS 1.0 cdf namespace + uri
 	 */
 	public static String CDF_PREFIX = "cdf";
-
 	public static String CDF_URI = "http://www.opengis.net/cite/data";
+
+	/** featuretype name for WFS 1.0 CITE Deletes features */
+	public static QName DELETES = new QName( CDF_URI,  "Deletes", CDF_PREFIX );
+
+	/** featuretype name for WFS 1.0 CITE Fifteen features */
+	public static QName FIFTEEN = new QName( CDF_URI,  "Fifteen", CDF_PREFIX );
+
+	/** featuretype name for WFS 1.0 CITE Inserts features */
+	public static QName INSERTS = new QName( CDF_URI,  "Inserts", CDF_PREFIX );
+
+	/** featuretype name for WFS 1.0 CITE Inserts features */
+	public static QName LOCKS = new QName( CDF_URI,  "Locks", CDF_PREFIX );
+
+	/** featuretype name for WFS 1.0 CITE Nulls features */
+	public static QName NULLS = new QName( CDF_URI,  "Nulls", CDF_PREFIX );
+
+	/** featuretype name for WFS 1.0 CITE Other features */
+	public static QName OTHER = new QName( CDF_URI,  "Other", CDF_PREFIX );
+
+	/** featuretype name for WFS 1.0 CITE Nulls features */
+	public static QName SEVEN = new QName( CDF_URI,  "Seven", CDF_PREFIX );
+
+	/** featuretype name for WFS 1.0 CITE Updates features */
+	public static QName UPDATES = new QName( CDF_URI,  "Updates", CDF_PREFIX );
 
 	/**
 	 * cgf namespace + uri
 	 */
 	public static String CGF_PREFIX = "cgf";
-
 	public static String CGF_URI = "http://www.opengis.net/cite/geometry";
+	
+	/** featuretype name for WFS 1.0 CITE Lines features */
+	public static QName LINES = new QName( CGF_URI, "Lines", CGF_PREFIX );
 
-	/** featuretype name for CITE Deletes features */
-	public static String DELETES_TYPE = "Deletes";
+	/** featuretype name for WFS 1.0 CITE MLines features */
+	public static QName MLINES = new QName( CGF_URI, "MLines", CGF_PREFIX );
 
-	/** featuretype name for CITE Fifteen features */
-	public static String FIFTEEN_TYPE = "Fifteen";
+	/** featuretype name for WFS 1.0 CITE MPoints features */
+	public static QName MPOINTS = new QName( CGF_URI, "MPoints", CGF_PREFIX );
 
-	/** featuretype name for CITE Inserts features */
-	public static String INSERTS_TYPE = "Inserts";
+	/** featuretype name for WFS 1.0 CITE MPolygons features */
+	public static QName MPOLYGONS = new QName( CGF_URI, "MPolygons", CGF_PREFIX );
 
-	/** featuretype name for CITE Inserts features */
-	public static String LOCKS_TYPE = "Locks";
+	/** featuretype name for WFS 1.0 CITE Points features */
+	public static QName POINTS = new QName( CGF_URI, "Points", CGF_PREFIX );
 
-	/** featuretype name for CITE Nulls features */
-	public static String NULLS_TYPE = "Nulls";
+	/** featuretype name for WFS 1.0 CITE Polygons features */
+	public static QName POLYGONS = new QName( CGF_URI, "Polygons", CGF_PREFIX );
 
-	/** featuretype name for CITE Other features */
-	public static String OTHER_TYPE = "Other";
+	////// WFS 1.1
+	/**
+	 * sf namespace + uri
+	 */
+	public static String SF_PREFIX = "sf";
+	public static String SF_URI = "http://cite.opengeospatial.org/gmlsf";
+	
+	public static QName PRIMITIVE_GEO_FEATURE = new QName( SF_URI, "PrimitiveGeoFeature", SF_PREFIX );
+	public static QName AGGREGATE_GEO_FEATURE = new QName( SF_URI, "AggregateGeoFeature", SF_PREFIX );
+	public static QName ENTITÉ_GÉNÉRIQUE = new QName( SF_URI, "EntitéGénérique", SF_PREFIX );
 
-	/** featuretype name for CITE Nulls features */
-	public static String SEVEN_TYPE = "Seven";
-
-	/** featuretype name for CITE Updates features */
-	public static String UPDATES_TYPE = "Updates";
-
-	/** featuretype name for CITE Lines features */
-	public static String LINES_TYPE = "Lines";
-
-	/** featuretype name for CITE MLines features */
-	public static String MLINES_TYPE = "MLines";
-
-	/** featuretype name for CITE MPoints features */
-	public static String MPOINTS_TYPE = "MPoints";
-
-	/** featuretype name for CITE MPolygons features */
-	public static String MPOLYGONS_TYPE = "MPolygons";
-
-	/** featuretype name for CITE Points features */
-	public static String POINTS_TYPE = "Points";
-
-	/** featuretype name for CITE Polygons features */
-	public static String POLYGONS_TYPE = "Polygons";
-
-	public static String[] citeTypeNames = new String[] {
-		BASIC_POLYGONS_TYPE, BRIDGES_TYPE, BUILDINGS_TYPE,
-		DIVIDED_ROUTES_TYPE, FORESTS_TYPE, LAKES_TYPE, MAP_NEATLINE_TYPE,
-		NAMED_PLACES_TYPE, PONDS_TYPE, ROAD_SEGMENTS_TYPE, STREAMS_TYPE,
-		DELETES_TYPE, FIFTEEN_TYPE, INSERTS_TYPE, LOCKS_TYPE, NULLS_TYPE, 
-		OTHER_TYPE, SEVEN_TYPE, UPDATES_TYPE, LINES_TYPE, MLINES_TYPE, 
-	    MPOINTS_TYPE, MPOLYGONS_TYPE, POINTS_TYPE, POLYGONS_TYPE
+	/**
+	 * List of all cite types names
+	 */
+	public static QName[] allNames = new QName[] {
+		//WMS 1.1.1
+		BASIC_POLYGONS, BRIDGES, BUILDINGS, DIVIDED_ROUTES, FORESTS, LAKES, MAP_NEATLINE,
+		NAMED_PLACES, PONDS, ROAD_SEGMENTS, STREAMS,
+		//WFS 1.0
+		DELETES, FIFTEEN, INSERTS, LOCKS, NULLS, OTHER, SEVEN, UPDATES, LINES, MLINES, 
+	    MPOINTS, MPOLYGONS, POINTS, POLYGONS,
+	    //WFS 1.1
+	    PRIMITIVE_GEO_FEATURE, AGGREGATE_GEO_FEATURE, ENTITÉ_GÉNÉRIQUE
 	};
 	
-	public static String[] wmsCiteTypeNames = new String[] {
-		BASIC_POLYGONS_TYPE, BRIDGES_TYPE, BUILDINGS_TYPE,
-		DIVIDED_ROUTES_TYPE, FORESTS_TYPE, LAKES_TYPE, MAP_NEATLINE_TYPE,
-		NAMED_PLACES_TYPE, PONDS_TYPE, ROAD_SEGMENTS_TYPE, STREAMS_TYPE 
+	/**
+	 * Convenience method to strip out local names from {@link #allNames}
+	 */
+	public static String[] allLocalNames() {
+		String[] localNames = new String[ allNames.length ];
+		for ( int i = 0; i < allNames.length; i++ ) {
+			localNames[ i ] =  allNames[ i ].getLocalPart();
+		}
+		
+		return localNames;
+	}
+	
+	public static QName[] wms1_1_1CiteTypeNames = new QName[] {
+		BASIC_POLYGONS, BRIDGES, BUILDINGS,
+		DIVIDED_ROUTES, FORESTS, LAKES, MAP_NEATLINE,
+		NAMED_PLACES, PONDS, ROAD_SEGMENTS, STREAMS 
 	};
 	
-	public static String[] wfsCiteTypeNames = new String[] {
-		DELETES_TYPE, FIFTEEN_TYPE, INSERTS_TYPE, LOCKS_TYPE, NULLS_TYPE, 
-		OTHER_TYPE, SEVEN_TYPE, UPDATES_TYPE, LINES_TYPE, MLINES_TYPE, 
-	    MPOINTS_TYPE, MPOLYGONS_TYPE, POINTS_TYPE, POLYGONS_TYPE
+	public static QName[] wfs1_0_0CiteTypeNames = new QName[] {
+		DELETES, FIFTEEN, INSERTS, LOCKS, NULLS, 
+		OTHER, SEVEN, UPDATES, LINES, MLINES, 
+	    MPOINTS, MPOLYGONS, POINTS, POLYGONS
+	};
+	
+	public static QName[] wfs1_1CiteTypeNames = new QName[] {
+		PRIMITIVE_GEO_FEATURE, AGGREGATE_GEO_FEATURE, ENTITÉ_GÉNÉRIQUE
 	};
 	
 	/** the base of the data directory */
 	File data;
+	/** the 'featureTypes' directory, under 'data' */
 	File featureTypes;
+	/** the 'styles' directory, under 'data' */ 
 	File styles;
 
 	/**
@@ -182,33 +217,37 @@ public class MockGeoServerDataDirectory {
 		styles.mkdir();
 
 		// set up types
-		setup(CITE_PREFIX, BASIC_POLYGONS_TYPE);
-		setup(CITE_PREFIX, BRIDGES_TYPE);
-		setup(CITE_PREFIX, BUILDINGS_TYPE);
-		setup(CITE_PREFIX, DIVIDED_ROUTES_TYPE);
-		setup(CITE_PREFIX, FORESTS_TYPE);
-		setup(CITE_PREFIX, LAKES_TYPE);
-		setup(CITE_PREFIX, MAP_NEATLINE_TYPE);
-		setup(CITE_PREFIX, NAMED_PLACES_TYPE);
-		setup(CITE_PREFIX, PONDS_TYPE);
-		setup(CITE_PREFIX, ROAD_SEGMENTS_TYPE);
-		setup(CITE_PREFIX, STREAMS_TYPE);
+		setup(BASIC_POLYGONS);
+		setup(BRIDGES);
+		setup(BUILDINGS);
+		setup(DIVIDED_ROUTES);
+		setup(FORESTS);
+		setup(LAKES);
+		setup(MAP_NEATLINE);
+		setup(NAMED_PLACES);
+		setup(PONDS);
+		setup(ROAD_SEGMENTS);
+		setup(STREAMS);
 
-		setup(CDF_PREFIX, DELETES_TYPE);
-		setup(CDF_PREFIX, FIFTEEN_TYPE);
-		setup(CDF_PREFIX, INSERTS_TYPE);
-		setup(CDF_PREFIX, LOCKS_TYPE);
-		setup(CDF_PREFIX, NULLS_TYPE);
-		setup(CDF_PREFIX, OTHER_TYPE);
-		setup(CDF_PREFIX, SEVEN_TYPE);
-		setup(CDF_PREFIX, UPDATES_TYPE);
+		setup(DELETES);
+		setup(FIFTEEN);
+		setup(INSERTS);
+		setup(LOCKS);
+		setup(NULLS);
+		setup(OTHER);
+		setup(SEVEN);
+		setup(UPDATES);
 
-		setup(CGF_PREFIX, LINES_TYPE);
-		setup(CGF_PREFIX, MLINES_TYPE);
-		setup(CGF_PREFIX, MPOINTS_TYPE);
-		setup(CGF_PREFIX, MPOLYGONS_TYPE);
-		setup(CGF_PREFIX, POINTS_TYPE);
-		setup(CGF_PREFIX, POLYGONS_TYPE);
+		setup(LINES);
+		setup(MLINES);
+		setup(MPOINTS);
+		setup(MPOLYGONS);
+		setup(POINTS);
+		setup(POLYGONS);
+		
+		setup(PRIMITIVE_GEO_FEATURE);
+		setup(AGGREGATE_GEO_FEATURE);
+		setup(ENTITÉ_GÉNÉRIQUE);
 		
 		//create the catalog.xml
 		CatalogWriter writer = new CatalogWriter();
@@ -231,6 +270,11 @@ public class MockGeoServerDataDirectory {
 		params.put( PropertyDataStoreFactory.NAMESPACE.key, CGF_URI );
 		dataStores.put( CGF_PREFIX, params );
 		
+		params = new HashMap();
+		params.put( PropertyDataStoreFactory.DIRECTORY.key, new File( data, SF_PREFIX ) );
+		params.put( PropertyDataStoreFactory.NAMESPACE.key, SF_URI );
+		dataStores.put( SF_PREFIX, params );
+		
 		writer.dataStores( dataStores );
 		
 		//setup the namespaces
@@ -238,15 +282,16 @@ public class MockGeoServerDataDirectory {
 		namespaces.put( CITE_PREFIX, CITE_URI );
 		namespaces.put( CDF_PREFIX, CDF_URI );
 		namespaces.put( CGF_PREFIX, CGF_URI );
+		namespaces.put( SF_PREFIX, SF_URI );
 		
 		writer.namespaces( namespaces );
 		
 		//styles
 		HashMap styles = new HashMap();
 		
-		for ( int i = 0; i < wmsCiteTypeNames.length; i++ ) {
-			String type = wmsCiteTypeNames[ i ];
-			styles.put( type, type + ".sld" );
+		for ( int i = 0; i < wms1_1_1CiteTypeNames.length; i++ ) {
+			QName type = wms1_1_1CiteTypeNames[ i ];
+			styles.put( type.getLocalPart(), type.getLocalPart() + ".sld" );
 		}
 		
 		writer.styles( styles );
@@ -254,20 +299,20 @@ public class MockGeoServerDataDirectory {
 		writer.write( new File( data, "catalog.xml" ) );
 	}
 
-	void setup(String prefix, String type) throws IOException {
-		properties(prefix, type);
-		info(prefix, type);
+	void setup( QName type ) throws IOException {
+		properties(type);
+		info(type);
 		style(type);
 	}
 
-	void properties(String prefix, String type) throws IOException {
+	void properties( QName name ) throws IOException {
 
 		// copy over the properties file
 		InputStream from = DataTestSupport.class.getResourceAsStream("data/"
-				+ type + ".properties");
-		File directory = new File(data, prefix);
+				+ name.getLocalPart() + ".properties");
+		File directory = new File(data, name.getPrefix());
 		directory.mkdir();
-		File to = new File(directory, type + ".properties");
+		File to = new File(directory, name.getLocalPart() + ".properties");
 		copy(from, to);
 
 	}
@@ -285,8 +330,11 @@ public class MockGeoServerDataDirectory {
 		out.close();
 	}
 
-	void info(String prefix, String type) throws IOException {
+	void info( QName name ) throws IOException {
 
+		String type = name.getLocalPart();
+		String prefix = name.getPrefix();
+		
 		File featureTypeDir = new File(featureTypes, prefix + "_" + type);
 		featureTypeDir.mkdir();
 
@@ -310,8 +358,10 @@ public class MockGeoServerDataDirectory {
 		writer.close();
 	}
 
-	void style(String type) throws IOException {
+	void style(QName name) throws IOException {
 
+		String type = name.getLocalPart();
+		
 		// copy over the properties file
 		if (DataTestSupport.class.getResource("data/" + type + ".sld") == null)
 			return;
