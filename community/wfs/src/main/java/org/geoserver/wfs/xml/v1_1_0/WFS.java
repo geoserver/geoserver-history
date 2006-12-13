@@ -76,8 +76,8 @@ public interface WFS {
 	public static final QName INSERTELEMENTTYPE = 
 		new QName("http://www.opengis.net/wfs","InsertElementType");
 	/** @generated */
-	public static final QName INSERTRESULTTYPE = 
-		new QName("http://www.opengis.net/wfs","InsertResultType");
+	public static final QName INSERTRESULTSTYPE = 
+		new QName("http://www.opengis.net/wfs","InsertResultsType");
 	/** @generated */
 	public static final QName LOCKFEATURERESPONSETYPE = 
 		new QName("http://www.opengis.net/wfs","LockFeatureResponseType");
