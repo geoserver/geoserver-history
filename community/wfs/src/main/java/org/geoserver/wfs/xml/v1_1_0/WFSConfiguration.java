@@ -1,16 +1,23 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+
 import net.opengis.wfs.WFSFactory;
 
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geoserver.data.GeoServerCatalog;
+import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.wfs.xml.FeatureTypeSchema;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
 import org.geoserver.wfs.xml.filter.v1_1.PropertyNameTypeBinding;
 import org.geoserver.wfs.xml.gml3.CircleTypeBinding;
 import org.geoserver.xml.ows.v1_0_0.OWSConfiguration;
+import org.geotools.feature.FeatureType;
 import org.geotools.filter.v1_1.OGC;
 import org.geotools.filter.v1_1.OGCConfiguration;
+import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.BindingConfiguration;
@@ -55,6 +62,21 @@ public class WFSConfiguration extends Configuration {
 		
 		context.registerComponentInstance( WFSFactory.eINSTANCE );
 		context.registerComponentInstance( new WFSHandlerFactory( catalog, FeatureTypeSchema.GML3.class ) );
+		
+		//seed the cache with entries from the catalog
+		FeatureTypeCache featureTypeCache = 
+			(FeatureTypeCache) context.getComponentInstanceOfType( FeatureTypeCache.class );
+		try {
+			List featureTypes = catalog.featureTypes();
+			for ( Iterator f = featureTypes.iterator(); f.hasNext(); ) {
+				FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
+				FeatureType featureType = meta.featureType();
+				
+				featureTypeCache.put( featureType );
+			}
+		} catch (IOException e) {
+			throw new RuntimeException( e );
+		}
 	}
 
 	protected void configureBindings(MutablePicoContainer container) {
