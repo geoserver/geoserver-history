@@ -3,8 +3,10 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.InsertResultsType;
 import net.opengis.wfs.WFSFactory;
 
+import org.geoserver.ows.ComplexEMFBinding;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -15,7 +17,7 @@ import org.geotools.xml.Node;
  * <p>
  *	<pre>
  *	 <code>
- *  &lt;xsd:complexType name="InsertResultType"&gt;
+ *  &lt;xsd:complexType name="InsertResultsType"&gt;
  *      &lt;xsd:annotation&gt;
  *          &lt;xsd:documentation xml:lang="en"&gt;
  *              Reports the list of identifiers of all features created 
@@ -39,7 +41,7 @@ import org.geotools.xml.Node;
  *
  * @generated
  */
-public class InsertResultTypeBinding extends AbstractComplexBinding {
+public class InsertResultTypeBinding extends ComplexEMFBinding {
 
 	WFSFactory wfsfactory;		
 	public InsertResultTypeBinding( WFSFactory wfsfactory ) {
@@ -50,7 +52,7 @@ public class InsertResultTypeBinding extends AbstractComplexBinding {
 	 * @generated
 	 */
 	public QName getTarget() {
-		return WFS.INSERTRESULTTYPE;
+		return WFS.INSERTRESULTSTYPE;
 	}
 	
 	/**
@@ -60,7 +62,7 @@ public class InsertResultTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return InsertResultsType.class;
 	}
 	
 	/**
