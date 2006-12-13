@@ -94,6 +94,7 @@
 	<bean id="transactionResponse-1.0.0"
 		class="org.geoserver.wfs.http.response.TransactionResponse" singleton="false">
 		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
 	</bean>
 		
 	<!-- http url mapping -->
@@ -129,6 +130,7 @@
 	<bean id="expiryKvpParser" class="org.geoserver.wfs.http.kvp.ExpiryKvpReader"/>
 	<bean id="resultTypeKvpParser" class="org.geoserver.wfs.http.kvp.ResultTypeKvpParser"/>
 	<bean id="acceptVersionsKvpParser" class="org.geoserver.wfs.http.kvp.AcceptVersionsKvpParser"/>
+	<bean id="acceptFormatsKvpParser" class="org.geoserver.wfs.http.kvp.AcceptFormatsKvpParser"/>
 
 	<!-- kvp request readers -->
 	<bean id="getCapabilitiesKvpReader"  
