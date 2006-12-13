@@ -3,8 +3,10 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.TransactionSummaryType;
 import net.opengis.wfs.WFSFactory;
 
+import org.geoserver.ows.ComplexEMFBinding;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -35,7 +37,7 @@ import org.geotools.xml.Node;
  *
  * @generated
  */
-public class TransactionSummaryTypeBinding extends AbstractComplexBinding {
+public class TransactionSummaryTypeBinding extends ComplexEMFBinding {
 
 	WFSFactory wfsfactory;		
 	public TransactionSummaryTypeBinding( WFSFactory wfsfactory ) {
@@ -56,7 +58,7 @@ public class TransactionSummaryTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return TransactionSummaryType.class;
 	}
 	
 	/**

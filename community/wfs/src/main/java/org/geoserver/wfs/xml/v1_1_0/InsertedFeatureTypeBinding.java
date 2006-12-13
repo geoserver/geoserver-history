@@ -3,8 +3,10 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.InsertedFeatureType;
 import net.opengis.wfs.WFSFactory;
 
+import org.geoserver.ows.ComplexEMFBinding;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -47,7 +49,7 @@ import org.geotools.xml.Node;
  *
  * @generated
  */
-public class InsertedFeatureTypeBinding extends AbstractComplexBinding {
+public class InsertedFeatureTypeBinding extends ComplexEMFBinding {
 
 	WFSFactory wfsfactory;		
 	public InsertedFeatureTypeBinding( WFSFactory wfsfactory ) {
@@ -68,7 +70,7 @@ public class InsertedFeatureTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return InsertedFeatureType.class;
 	}
 	
 	/**

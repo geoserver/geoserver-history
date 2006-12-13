@@ -168,7 +168,7 @@ public class InsertElementTypeBinding extends AbstractComplexBinding {
 		
 		//&lt;xsd:attribute name="handle" type="xsd:string" use="optional"&gt;
 		if ( node.hasAttribute( "handle" ) ) {
-			insertElement.setHandle( (String) node.getAttributeValue( "idgen") );
+			insertElement.setHandle( (String) node.getAttributeValue( "handle") );
 		}
 		
 		//&lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
