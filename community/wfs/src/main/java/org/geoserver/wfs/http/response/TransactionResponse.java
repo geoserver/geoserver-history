@@ -14,13 +14,17 @@ import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionResultsType;
 import net.opengis.wfs.TransactionSummaryType;
 
+import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.Operation;
 import org.geoserver.ows.ServiceException;
 import org.geoserver.ows.http.Response;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
+import org.geotools.xml.Encoder;
 import org.opengis.filter.identity.FeatureId;
+import org.xml.sax.SAXException;
 
 public class TransactionResponse extends Response {
 
@@ -29,10 +33,12 @@ public class TransactionResponse extends Response {
     private String offset = "";
     
     WFS wfs;
+    GeoServerCatalog catalog;
     
-	public TransactionResponse( WFS wfs ) {
+	public TransactionResponse( WFS wfs, GeoServerCatalog catalog ) {
 		super( TransactionResponseType.class );
 		this.wfs = wfs;
+		this.catalog = catalog;
 	}
 
 	public String getMimeType(Operation operation) throws ServiceException {
@@ -165,50 +171,19 @@ public class TransactionResponse extends Response {
 			throw new WFSException ( action.getMessage(), action.getCode(), action.getLocator() );
 		}
 		
-		TransactionSummaryType summary = response.getTransactionSummary();
+		WFSConfiguration configuration = new WFSConfiguration( catalog );
+		Encoder encoder = new Encoder( configuration, configuration.schema() );
 		
-		WfsXmlWriter writer = new WfsXmlWriter.WFS1_1( wfs, output );
+		encoder.setSchemaLocation( 
+			org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, 
+			ResponseUtils.appendPath( wfs.getSchemaBaseURL(), "wfs/1.1.0/wfs.xsd" )
+		);
 		
-		writer.openTag( "wfs", "TransactionResponse" );
-		
-		//transaction summary
-		writer.openTag( "wfs", "TransactionSummary" );
-		
-		writer.openTag( "wfs", "totalInserted" );
-		writer.text( summary.getTotalInserted().toString() );
-		writer.closeTag( "wfs", "totalInserted" );
-		
-		writer.openTag( "wfs", "totalUpdated" );
-		writer.text( summary.getTotalUpdated().toString() );
-		writer.closeTag( "wfs", "totalUpdated" );
-		
-		writer.openTag( "wfs", "totalDeleted" );
-		writer.text( summary.getTotalDeleted().toString() );
-		writer.closeTag( "wfs", "totalDeleted" );
-		
-		writer.closeTag( "wfs", "TransactionSummary" );
-		//end stransaction summary
-		
-		if ( response.getInsertResults() != null ) {
-			InsertResultsType insertResults = response.getInsertResults();
-			writer.openTag( "wfs", "InsertResults" );
-			for ( Iterator i = insertResults.getFeature().iterator(); i.hasNext(); ) {
-				InsertedFeatureType insertedFeature = (InsertedFeatureType) i.next();
-				writer.openTag( "wfs", "Feature", new String[]{ "handle", insertedFeature.getHandle() } );
-				
-				for ( Iterator j = insertedFeature.getFeatureId().iterator(); j.hasNext(); ) {
-					FeatureId featureId = (FeatureId) j.next();
-					writer.openTag( "ogc", "FeatureId", new String[]{ "fid", featureId.toString() } );
-					writer.closeTag( "ogc", "FeatureId" );
-				}
-				
-				writer.closeTag( "wfs", "Feature" );
-			}
-				
-			writer.closeTag( "wfs", "InsertResults" );
+		try {
+			encoder.write( response, org.geoserver.wfs.xml.v1_1_0.WFS.TRANSACTIONRESPONSE, output );
+		} 
+		catch (SAXException e) {
+			throw (IOException) new IOException().initCause( e );
 		}
-		writer.closeTag( "wfs", "TransactionResponse" );
-		
-		writer.close();
 	}
 }
