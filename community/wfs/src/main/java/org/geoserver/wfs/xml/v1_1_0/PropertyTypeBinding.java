@@ -1,8 +1,11 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.WFSFactory;
 
 import org.geotools.xml.AbstractComplexBinding;
@@ -63,7 +66,7 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return PropertyType.class;
 	}
 	
 	/**
@@ -75,8 +78,27 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		PropertyType property = wfsfactory.createPropertyType();
+		
+		//&lt;xsd:element name="Name" type="xsd:QName"&gt;
+		property.setName( (QName) node.getChildValue( QName.class ) );
+		
+		//&lt;xsd:element minOccurs="0" name="Value"&gt;
+		if ( node.hasChild( "Value" ) ) {
+			Map map = (Map) node.getChildValue( "Value");
+			if ( !map.isEmpty() ) {
+				//first check for some text
+				if ( map.containsKey( null ) ) {
+					property.setValue( map.get( null ) );
+				}
+				else {
+					//perhaps some other value
+					property.setValue( map.values().iterator().next() );
+				}	
+			}
+		}
+		
+		return property;
 	}
 
 }
