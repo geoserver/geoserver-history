@@ -2,6 +2,7 @@ package org.geoserver.web.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,12 +47,12 @@ public class GeoServerHttpTestSupport extends TestCase {
 	/**
 	 * Mock GeoServer instance
 	 */
-	MockGeoServer geoServer;
+	 MockGeoServer geoServer;
 	
 	/**
 	 * Internal flag to initialize application context.
 	 */
-	private boolean initialize;
+	boolean initialize;
 	
 	/**
 	 * Configures the mock GeoServer by registering beans from {@link HttpApplicationContext}. 
@@ -60,9 +61,9 @@ public class GeoServerHttpTestSupport extends TestCase {
 	 * application contexts.
 	 * </p>
 	 */
-	protected void setUp() throws Exception {
+	protected final void setUp() throws Exception {
 		data = new MockGeoServerDataDirectory();
-		data.setUp();
+		data.setUp();	
 		
 		geoServer = new MockGeoServer();
 		geoServer.getApplicationContext().setServletContext( new MockServletContext() );
@@ -73,11 +74,39 @@ public class GeoServerHttpTestSupport extends TestCase {
 		);
 		
 		initialize = true;
+	
+		setUpInternal();
+	}
+	
+	/**
+     * Setup hook called by {@link #setUp()}. 
+     * <p>
+     * Subclasses should override this method if they need to initializatoin,
+     * the default implementation does nothing.
+     * </p>
+     * @throws Exception
+     */
+	protected void setUpInternal() throws Exception {
 	}
 	
 	protected void tearDown() throws Exception {
+		
 		data.tearDown();
+		
 		initialize = false;
+
+		tearDownInternal();
+		
+	}
+	
+	/**
+     * Tears down teh data directory and application context.
+     * <p>
+	 * This method is marked as final, it calls {@link #setUpInternal()}, any 
+	 * initialization should be done there.
+	 * </p>
+     */
+	protected final void tearDownInternal() throws Exception {
 	}
 	
 	/**
