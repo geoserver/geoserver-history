@@ -20,6 +20,7 @@
 		class="org.geoserver.ows.Service">
 		<constructor-arg index="0" value="hello"/>
 		<constructor-arg index="1" ref="helloWorld"/>
+		<constructor-arg index="2" value="1.0.0"/>
 	</bean>
 	
 </beans>
