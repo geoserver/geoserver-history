@@ -39,7 +39,7 @@ public final class WFSBindingConfiguration
 		container.registerComponentImplementation(WFS.IDENTIFIERGENERATIONOPTIONTYPE,IdentifierGenerationOptionTypeBinding.class);
 		container.registerComponentImplementation(WFS.INSERTEDFEATURETYPE,InsertedFeatureTypeBinding.class);
 		container.registerComponentImplementation(WFS.INSERTELEMENTTYPE,InsertElementTypeBinding.class);
-		container.registerComponentImplementation(WFS.INSERTRESULTTYPE,InsertResultTypeBinding.class);
+		container.registerComponentImplementation(WFS.INSERTRESULTSTYPE,InsertResultTypeBinding.class);
 		container.registerComponentImplementation(WFS.LOCKFEATURERESPONSETYPE,LockFeatureResponseTypeBinding.class);
 		container.registerComponentImplementation(WFS.LOCKFEATURETYPE,LockFeatureTypeBinding.class);
 		container.registerComponentImplementation(WFS.LOCKTYPE,LockTypeBinding.class);
