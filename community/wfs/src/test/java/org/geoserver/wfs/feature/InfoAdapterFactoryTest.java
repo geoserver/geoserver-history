@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.geoserver.data.feature.DataStoreInfo;
 import org.geoserver.data.feature.FeatureTypeInfo;
+import org.geoserver.data.test.MockGeoServerDataDirectory;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.Service;
@@ -15,7 +16,7 @@ public class InfoAdapterFactoryTest extends WFSTestSupport {
 
 	public void testAdaptToDataStoreInfo() throws Exception {
 		List services = catalog.services( DataStoreInfo.class );
-		assertEquals( 3, services.size() );
+		assertEquals( 4, services.size() );
 		
 		Service service = (Service) services.get( 0 );
 		assertNotNull( service );
@@ -28,9 +29,9 @@ public class InfoAdapterFactoryTest extends WFSTestSupport {
 	
 	public void testAdaptToFeautreStoreInfo() throws Exception {
 		List resources = catalog.resources( FeatureTypeInfo.class );
-		assertEquals( citeTypeNames().length, resources.size() );
+		assertEquals( MockGeoServerDataDirectory.allNames.length, resources.size() );
 		
-		HashSet names = new HashSet(Arrays.asList( citeTypeNames() ) );
+		HashSet names = new HashSet(Arrays.asList( MockGeoServerDataDirectory.allLocalNames() ) );
 		for ( Iterator r = resources.iterator(); r.hasNext(); ) {
 			GeoResource resource = (GeoResource) r.next();
 			FeatureTypeInfo ftInfo = 

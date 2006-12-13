@@ -8,9 +8,8 @@ import org.w3c.dom.NodeList;
 
 public class GetFeatureHttpTest extends WfsHttpTestSupport {
 
-	
 	public void testGet() throws Exception {
-		Document doc = getAsDOM( "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0" );
+		Document doc = getAsDOM( "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0&service=wfs" );
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
 		
 		NodeList features = doc.getElementsByTagName( "cdf:Fifteen" );
@@ -83,7 +82,9 @@ public class GetFeatureHttpTest extends WfsHttpTestSupport {
 	}
 	
 	public void testResultTypeHitsGet() throws Exception {
-		Document doc = getAsDOM( "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0&resultType=hits" );
+		Document doc = getAsDOM( 
+			"wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0&resultType=hits&service=wfs" 
+		);
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
 		
 		NodeList features = doc.getElementsByTagName( "cdf:Fifteen" );
@@ -113,28 +114,6 @@ public class GetFeatureHttpTest extends WfsHttpTestSupport {
 		assertEquals( "7", doc.getDocumentElement().getAttribute( "numberOfFeatures") );
 	}
 	
-	public void testWithGmlIdAttribute() throws Exception {
-		String xml = "<wfs:GetFeature " + 
-		  "service=\"WFS\" " + 
-		  "version=\"1.1.0\" " + 
-		  "outputFormat=\"text/xml; subtype=gml/3.1.1\" " + 
-		  "xmlns:cdf=\"http://www.opengis.net/cite/data\" " + 
-		  "xmlns:wfs=\"http://www.opengis.net/wfs\" " + 
-		  "xmlns:ogc=\"http://www.opengis.net/ogc\" > " + 
-		  "<wfs:Query typeName=\"cdf:Other\"> " + 
-		    "<ogc:Filter> " + 
-		      "<ogc:PropertyIsEqualTo> " + 
-		        "<ogc:PropertyName>@gml:id</ogc:PropertyName> " + 
-		        "<ogc:Literal>Other.0</ogc:Literal>" + 
-		      "</ogc:PropertyIsEqualTo> " + 
-		    "</ogc:Filter> " + 
-		  "</wfs:Query> " + 
-		"</wfs:GetFeature>";
-		
-		Document dom = postAsDOM( "wfs", xml );
-		assertEquals( 1, dom.getElementsByTagName( "gml:featureMember" ).getLength() );
-	}
-	
 	public void testWithSRS() throws Exception {
 		String xml =  "<wfs:GetFeature xmlns:wfs=\"http://www.opengis.net/wfs\" version=\"1.1.0\" service=\"WFS\">" + 
         "<wfs:Query xmlns:cdf=\"http://www.opengis.net/cite/data\" typeName=\"cdf:Other\" srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\"/>" + 
@@ -150,7 +129,7 @@ public class GetFeatureHttpTest extends WfsHttpTestSupport {
        "<wfs:Query  typeName=\"cdf:Other\" srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\">" + 
          "<ogc:Filter>" + 
          "  <ogc:PropertyIsEqualTo xmlns:p=\"http://www.opengis.net/ASDF\">" + 
-          "   <ogc:PropertyName>p:myProperty</ogc:PropertyName>" + 
+          "   <ogc:PropertyName>description</ogc:PropertyName>" + 
           "   <ogc:Literal>" + 
           "       <p:literal version=\"1.0\">" + 
           "         <p:value>ASDF</p:value>" + 

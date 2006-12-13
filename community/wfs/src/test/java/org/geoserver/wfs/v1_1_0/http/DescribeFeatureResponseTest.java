@@ -15,7 +15,8 @@ public class DescribeFeatureResponseTest extends WFSTestSupport {
 
 	public void testSingle() throws Exception {
 		FeatureTypeInfo meta = catalog.featureType( 
-			MockGeoServerDataDirectory.CITE_PREFIX, MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE 
+			MockGeoServerDataDirectory.BASIC_POLYGONS.getPrefix(), 
+			MockGeoServerDataDirectory.BASIC_POLYGONS.getLocalPart()
 		);
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -34,10 +35,12 @@ public class DescribeFeatureResponseTest extends WFSTestSupport {
 	public void testWithDifferntNamespaces() throws Exception {
 		
 		FeatureTypeInfo meta1 = catalog.featureType( 
-			MockGeoServerDataDirectory.CITE_PREFIX, MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE 
+			MockGeoServerDataDirectory.BASIC_POLYGONS.getPrefix(), 
+			MockGeoServerDataDirectory.BASIC_POLYGONS.getLocalPart() 
 		);
 		FeatureTypeInfo meta2 = catalog.featureType( 
-			MockGeoServerDataDirectory.CGF_PREFIX, MockGeoServerDataDirectory.POLYGONS_TYPE 
+			MockGeoServerDataDirectory.POLYGONS.getPrefix(), 
+			MockGeoServerDataDirectory.POLYGONS.getLocalPart()
 		);
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();

@@ -17,22 +17,13 @@ import org.geotools.filter.FilterFactoryFinder;
 
 public class LockFeatureTest extends WFSTestSupport {
 
-    private static final QName BASIC_POLYGON_TYPE_QNAME = new QName( 
-		MockGeoServerDataDirectory.CITE_URI, MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE,
-		MockGeoServerDataDirectory.CITE_PREFIX
-	);
-    private static final QName BRIDGES_TYPE_QNAME = new QName(
-		MockGeoServerDataDirectory.CITE_URI, MockGeoServerDataDirectory.BRIDGES_TYPE,
-		MockGeoServerDataDirectory.CITE_PREFIX
-	);
-
-    public void testLockFailNoFeatureType() throws Exception {
+	public void testLockFailNoFeatureType() throws Exception {
         FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
 
         LockFeatureType request = WFSFactory.eINSTANCE.createLockFeatureType();
         LockType lock = WFSFactory.eINSTANCE.createLockType();
         lock.setTypeName( new QName( 
-    		MockGeoServerDataDirectory.CITE_URI, MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE + "garbage", 
+    		MockGeoServerDataDirectory.CITE_URI, MockGeoServerDataDirectory.BASIC_POLYGONS.getLocalPart() + "garbage", 
     		MockGeoServerDataDirectory.CITE_PREFIX)
 		);
         lock.setFilter(Filter.NONE);
@@ -52,7 +43,7 @@ public class LockFeatureTest extends WFSTestSupport {
 
         LockFeatureType request = WFSFactory.eINSTANCE.createLockFeatureType();
         LockType lock = WFSFactory.eINSTANCE.createLockType();
-        lock.setTypeName(BASIC_POLYGON_TYPE_QNAME);
+        lock.setTypeName(MockGeoServerDataDirectory.BASIC_POLYGONS);
         lock.setFilter(Filter.NONE);
 
         try {
@@ -69,7 +60,7 @@ public class LockFeatureTest extends WFSTestSupport {
 
         LockFeatureType request = WFSFactory.eINSTANCE.createLockFeatureType();
         LockType lock = WFSFactory.eINSTANCE.createLockType();
-        lock.setTypeName(BASIC_POLYGON_TYPE_QNAME);
+        lock.setTypeName(MockGeoServerDataDirectory.BASIC_POLYGONS);
         // I don't specify a filter, the spec does not require it
         request.getLock().add(lock);
 
@@ -86,10 +77,10 @@ public class LockFeatureTest extends WFSTestSupport {
 
         LockFeatureType request = WFSFactory.eINSTANCE.createLockFeatureType();
         LockType lock1 = WFSFactory.eINSTANCE.createLockType();
-        lock1.setTypeName(BASIC_POLYGON_TYPE_QNAME);
+        lock1.setTypeName(MockGeoServerDataDirectory.BASIC_POLYGONS);
         request.getLock().add(lock1);
         LockType lock2 = WFSFactory.eINSTANCE.createLockType();
-        lock2.setTypeName(BRIDGES_TYPE_QNAME);
+        lock2.setTypeName(MockGeoServerDataDirectory.BRIDGES);
         request.getLock().add(lock2);
 
         LockFeatureResponseType results = webFeatureService.lockFeature(request);
@@ -106,7 +97,7 @@ public class LockFeatureTest extends WFSTestSupport {
 
         LockFeatureType request = WFSFactory.eINSTANCE.createLockFeatureType();
         LockType lock = WFSFactory.eINSTANCE.createLockType();
-        lock.setTypeName(BASIC_POLYGON_TYPE_QNAME);
+        lock.setTypeName(MockGeoServerDataDirectory.BASIC_POLYGONS);
         lock.setFilter(filterFactory.createFidFilter("BasicPolygons.1107531493630"));
         request.getLock().add(lock);
 
@@ -126,7 +117,7 @@ public class LockFeatureTest extends WFSTestSupport {
 
         LockFeatureType request1 = WFSFactory.eINSTANCE.createLockFeatureType();
         LockType lock1 = WFSFactory.eINSTANCE.createLockType();
-        lock1.setTypeName(BASIC_POLYGON_TYPE_QNAME);
+        lock1.setTypeName(MockGeoServerDataDirectory.BASIC_POLYGONS);
         lock1.setFilter(filterFactory.createFidFilter("BasicPolygons.1107531493630"));
         request1.getLock().add(lock1);
 
@@ -137,7 +128,7 @@ public class LockFeatureTest extends WFSTestSupport {
         LockFeatureType request2 = WFSFactory.eINSTANCE.createLockFeatureType();
         request2.setLockAction(AllSomeType.SOME_LITERAL);
         LockType lock2 = WFSFactory.eINSTANCE.createLockType();
-        lock2.setTypeName(BASIC_POLYGON_TYPE_QNAME);
+        lock2.setTypeName(MockGeoServerDataDirectory.BASIC_POLYGONS);
         lock2.setFilter(Filter.NONE);
         request2.getLock().add(lock2);
         
@@ -154,7 +145,7 @@ public class LockFeatureTest extends WFSTestSupport {
 
         LockFeatureType request1 = WFSFactory.eINSTANCE.createLockFeatureType();
         LockType lock1 = WFSFactory.eINSTANCE.createLockType();
-        lock1.setTypeName(BASIC_POLYGON_TYPE_QNAME);
+        lock1.setTypeName(MockGeoServerDataDirectory.BASIC_POLYGONS);
         lock1.setFilter(Filter.NONE);
         request1.getLock().add(lock1);
 
@@ -164,7 +155,7 @@ public class LockFeatureTest extends WFSTestSupport {
         // now let's try to lock the rest
         LockFeatureType request2 = WFSFactory.eINSTANCE.createLockFeatureType();
         LockType lock2 = WFSFactory.eINSTANCE.createLockType();
-        lock2.setTypeName(BASIC_POLYGON_TYPE_QNAME);
+        lock2.setTypeName(MockGeoServerDataDirectory.BASIC_POLYGONS);
         lock2.setFilter(filterFactory.createFidFilter("BasicPolygons.1107531493630"));
         request2.getLock().add(lock2);
         

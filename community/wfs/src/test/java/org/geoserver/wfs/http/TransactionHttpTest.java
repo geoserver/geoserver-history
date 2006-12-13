@@ -10,7 +10,7 @@ import org.w3c.dom.Document;
  *
  */
 public class TransactionHttpTest extends WfsHttpTestSupport {
-
+	
 	public void testDelete() throws Exception {
 
 		//1. do a getFeature

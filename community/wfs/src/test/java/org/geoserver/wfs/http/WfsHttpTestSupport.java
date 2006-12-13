@@ -13,17 +13,12 @@ import org.geoserver.wfs.test.WfsApplicationContext;
  */
 public class WfsHttpTestSupport extends GeoServerHttpTestSupport {
 
-	protected void setUp() throws Exception {
-		super.setUp();
+	protected void setUpInternal() throws Exception {
 		
 		//load up some bean definitions
 		getGeoServer().loadBeanDefinitions( DataApplicationContext.getBeanDefinitions() );
 		getGeoServer().loadBeanDefinitions( WebApplicationContext.getBeanDefinitions() );
 		getGeoServer().loadBeanDefinitions( WfsApplicationContext.getBeanDefinitions() );
-	}
-	
-	protected void tearDown() throws Exception {
-		super.tearDown();
 	}
 	
 }

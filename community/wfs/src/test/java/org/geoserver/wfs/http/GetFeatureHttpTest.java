@@ -6,7 +6,7 @@ import org.w3c.dom.NodeList;
 public class GetFeatureHttpTest extends WfsHttpTestSupport {
 
 	public void testGet() throws Exception {
-		Document doc = getAsDOM( "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.0.0" );
+		Document doc = getAsDOM( "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.0.0&service=wfs" );
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
 		
 		NodeList featureMembers = doc.getElementsByTagName( "gml:featureMember" );

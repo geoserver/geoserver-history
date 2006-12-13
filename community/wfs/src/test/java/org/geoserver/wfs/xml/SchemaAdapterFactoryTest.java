@@ -12,8 +12,8 @@ import org.geotools.catalog.GeoResource;
 
 public class SchemaAdapterFactoryTest extends WFSTestSupport {
 
-	protected void setUp() throws Exception {
-		super.setUp();
+	protected void setUpInternal() throws Exception {
+		super.setUpInternal();
 		
 		SchemaAdapterFactory factory = new SchemaAdapterFactory( wfs, catalog, loader);
 		context.getBeanFactory().registerSingleton( "schemaAdapterFactory", factory );

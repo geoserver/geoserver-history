@@ -20,7 +20,7 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
 		
 		DescribeFeatureTypeType request = WFSFactory.eINSTANCE.createDescribeFeatureTypeType();
 		
-		request.getTypeName().add( qname( MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE ) );
+		request.getTypeName().add( MockGeoServerDataDirectory.BASIC_POLYGONS );
 		request.setOutputFormat( "XMLSCHEMA" );
 		
 		FeatureTypeInfo[] infos = webFeatureService.describeFeatureType( request );
@@ -34,7 +34,7 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
 		
 		Element ctElement = 
 			 (Element) schemaDoc.getElementsByTagName( "xs:complexType" ).item( 0 );
-		assertEquals( MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE + "_Type", ctElement.getAttribute("name") );
+		assertEquals( MockGeoServerDataDirectory.BASIC_POLYGONS.getLocalPart() + "_Type", ctElement.getAttribute("name") );
 	
 		assertEquals( 
 			2, ctElement.getElementsByTagName("xs:element").getLength() 
@@ -49,12 +49,6 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
 	
 		Element eElement = 
 			(Element) schemaDoc.getElementsByTagName( "xs:element" ).item( 2 );
-		assertEquals( MockGeoServerDataDirectory.BASIC_POLYGONS_TYPE, eElement.getAttribute( "name" ) );
-	}
-	
-	QName qname( String name ) {
-		return new QName( 
-			MockGeoServerDataDirectory.CITE_URI, name, MockGeoServerDataDirectory.CITE_PREFIX 
-		);
+		assertEquals( MockGeoServerDataDirectory.BASIC_POLYGONS.getLocalPart(), eElement.getAttribute( "name" ) );
 	}
 }

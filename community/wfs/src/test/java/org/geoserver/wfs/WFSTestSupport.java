@@ -31,8 +31,8 @@ public class WFSTestSupport extends DataTestSupport {
 	 * This method should be <b>extended</b>, not <b>overridden</b>
 	 * </p>
 	 */
-	protected void setUp() throws Exception {
-		super.setUp();
+	protected void setUpInternal() throws Exception {
+		super.setUpInternal();
 		
 		//create wfs service bean and populate
 		wfs = new WFS();

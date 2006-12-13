@@ -15,8 +15,8 @@ public class VersionNegotiationTest extends WFSTestSupport {
 	WFSFactory factory;
 	OWSFactory owsFactory;
 	
-	protected void setUp() throws Exception {
-		super.setUp();
+	protected void setUpInternal() throws Exception {
+		super.setUpInternal();
 		
 		getCaps = new GetCapabilities( wfs, catalog );
 		

@@ -22,7 +22,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
 	public void testSingle() throws Exception {
 		DataStoreInfo dataStore = catalog.dataStore( MockGeoServerDataDirectory.CDF_PREFIX );
 		FeatureSource source = 
-			dataStore.getDataStore().getFeatureSource( MockGeoServerDataDirectory.SEVEN_TYPE );
+			dataStore.getDataStore().getFeatureSource( MockGeoServerDataDirectory.SEVEN.getLocalPart() );
 		FeatureCollection features = source.getFeatures();
 	
 		FeatureCollectionType fcType = WFSFactory.eINSTANCE.createFeatureCollectionType();
@@ -47,10 +47,10 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
  
 		FeatureCollectionType fcType = WFSFactory.eINSTANCE.createFeatureCollectionType();
 		fcType.getFeature().add( 
-			dataStore.getDataStore().getFeatureSource( MockGeoServerDataDirectory.SEVEN_TYPE ).getFeatures()
+			dataStore.getDataStore().getFeatureSource( MockGeoServerDataDirectory.SEVEN.getLocalPart() ).getFeatures()
 		);
 		fcType.getFeature().add( 
-			dataStore.getDataStore().getFeatureSource( MockGeoServerDataDirectory.FIFTEEN_TYPE ).getFeatures()
+			dataStore.getDataStore().getFeatureSource( MockGeoServerDataDirectory.FIFTEEN.getLocalPart() ).getFeatures()
 		);
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -73,12 +73,12 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
 		
 		FeatureCollectionType fcType = WFSFactory.eINSTANCE.createFeatureCollectionType();
 		fcType.getFeature().add( 
-			seven.getDataStore().getFeatureSource( MockGeoServerDataDirectory.SEVEN_TYPE ).getFeatures()
+			seven.getDataStore().getFeatureSource( MockGeoServerDataDirectory.SEVEN.getLocalPart() ).getFeatures()
 		);
 		fcType.getFeature().add( 
-			polys.getDataStore().getFeatureSource( MockGeoServerDataDirectory.POLYGONS_TYPE ).getFeatures()
+			polys.getDataStore().getFeatureSource( MockGeoServerDataDirectory.POLYGONS.getLocalPart() ).getFeatures()
 		);
-		int npolys = polys.getDataStore().getFeatureSource( MockGeoServerDataDirectory.POLYGONS_TYPE ).getFeatures().size();
+		int npolys = polys.getDataStore().getFeatureSource( MockGeoServerDataDirectory.POLYGONS.getLocalPart() ).getFeatures().size();
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		GML3FeatureProducer2 producer = new GML3FeatureProducer2( wfs, catalog, loader );

@@ -19,13 +19,14 @@ public class FeatureTypeInfoSchemaBuilderTest extends WFSTestSupport {
 			new FeatureTypeSchemaBuilder.GML2( wfs, catalog, loader );
 		
 		FeatureTypeInfo lines = catalog.featureType( 
-			MockGeoServerDataDirectory.CGF_PREFIX, MockGeoServerDataDirectory.LINES_TYPE 
+			MockGeoServerDataDirectory.LINES.getPrefix(), 
+			MockGeoServerDataDirectory.LINES.getLocalPart()
 		);
 		XSDSchema schema = builder.build( new FeatureTypeInfo[] { lines } );
 		
 		assertNotNull( schema );
 		XSDElementDeclaration element = Schemas.getElementDeclaration( 
-			schema, new QName( MockGeoServerDataDirectory.CGF_URI, MockGeoServerDataDirectory.LINES_TYPE ) 
+			schema, MockGeoServerDataDirectory.LINES
 		);
 		assertNotNull( element );
 		
