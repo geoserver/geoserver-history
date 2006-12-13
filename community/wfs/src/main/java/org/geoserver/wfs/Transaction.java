@@ -181,7 +181,7 @@ public class Transaction {
         Map stores2= new HashMap();
 
         // List of type names, maintain this list because of the insert hack described below
-        List typeNames = new ArrayList();
+        //List typeNames = new ArrayList();
         
         // Gather FeatureStores required by Transaction Elements
         // and configure them with our transaction
@@ -192,9 +192,7 @@ public class Transaction {
         	FeatureMap.Entry entry = (FeatureMap.Entry) i.next();
         	EObject element = (EObject) entry.getValue();
 
-            String typeRef = null;
-            QName elementName = null;
-            FeatureTypeInfo meta = null;
+            List metas = new ArrayList(); 
             
             if ( element instanceof NativeType ) {
             	throw new WFSException( "Native transactions unsupported" );
@@ -206,40 +204,34 @@ public class Transaction {
                 // Option 1: Guess FeatureStore based on insert request
                 //
             	if ( !insert.getFeature().isEmpty() ) {
-                	Feature feature = (Feature) insert.getFeature().iterator().next();
-                	
-                    String name = feature.getFeatureType().getTypeName();
-                    String namespaceURI = null;
-                    if ( feature.getFeatureType().getNamespace() != null ) {
-                    	namespaceURI = feature.getFeatureType().getNamespace().toString();
-                    }
-                    else {
-                    	//default
-                    	namespaceURI = catalog.getNamespaceSupport().getURI( "" );
-                    }
-                    
-                    String prefix = 
-                    	catalog.getNamespaceSupport().getPrefix( namespaceURI );
-                    
-                    LOGGER.fine("Locating FeatureSource uri:'"+namespaceURI+"' name:'"+name+"'");                                       
-                    meta = catalog.featureType( prefix, name );
-                
-                    //HACK: The insert request does not get the correct typename,
-                    //as we can no longer hack in the prefix since we are using the
-                    //real featureType.  So this is the only good place to do the
-                    //look-up for the internal typename to use.  We should probably
-                    //rethink our use of prefixed internal typenames (cdf:bc_roads),
-                    //and have our requests actually use a type uri and type name.
-                    //Internally we can keep the prefixes, but if we do that then
-                    //this will be less hacky and we'll also be able to read in xml
-                    //for real, since the prefix should refer to the uri.
-                    //
-                    // JG:
-                    // Transalation Insert does not have a clue about prefix - this provides the clue
-                   
-                    elementName = new QName( namespaceURI, name, prefix );
-                    
-                    //element.setTypeName( meta.getNameSpace().getPrefix()+":"+meta.getTypeName() );
+            		for ( Iterator f = insert.getFeature().iterator(); f.hasNext(); ) {
+            			Feature feature = (Feature) f.next();
+                    	
+                        String name = feature.getFeatureType().getTypeName();
+                        String namespaceURI = null;
+                        if ( feature.getFeatureType().getNamespace() != null ) {
+                        	namespaceURI = feature.getFeatureType().getNamespace().toString();
+                        }
+                        else {
+                        	//default
+                        	namespaceURI = catalog.getNamespaceSupport().getURI( "" );
+                        }
+                        
+                        String prefix = 
+                        	catalog.getNamespaceSupport().getPrefix( namespaceURI );
+                        
+                        LOGGER.fine("Locating FeatureSource uri:'"+namespaceURI+"' name:'"+name+"'");  
+                        
+                        FeatureTypeInfo meta = catalog.featureType( prefix, name );
+                        if ( meta == null ) {
+                        	String msg = name + " is not available: ";
+                        	String handle = (String) EMFUtils.get( element, "handle" );
+                            throw new WFSTransactionException( msg, (String) null, handle );
+                        }
+                        
+                        
+                        metas.add( meta );
+            		}
                 }
                 else {
                     LOGGER.finer("Insert was empty - does not need a FeatuerSoruce");
@@ -247,59 +239,58 @@ public class Transaction {
                 }
             }
             else {
-                // Option 2: lookup based on elmentName (assume prefix:typeName)
-                typeRef = null; // unknown at this time
+                // Option 2: either update or delete, only one type
+                QName elementName = (QName) EMFUtils.get( element, "typeName" );
+                FeatureTypeInfo meta = 
+                	catalog.featureType( elementName.getPrefix(), elementName.getLocalPart() );
+                if ( meta == null ) {
+                	String msg = elementName + " is not available: ";
+                	String handle = (String) EMFUtils.get( element, "handle" );
+                    throw new WFSTransactionException( msg, (String) null, handle );
+                }
                 
-                //one of DeleteElementType, or UpdateElementType, both contain typeName property
-                elementName = (QName) EMFUtils.get( element, "typeName" );
-                
-                if( stores.containsKey( elementName )) {
-                    LOGGER.finer("FeatureSource '"+elementName+"' already loaded." );
+                metas.add( meta );
+            }
+            
+            //go through all meta data objects, and load feature stores
+            for ( Iterator m = metas.iterator(); m.hasNext(); ) {
+            	 
+            	FeatureTypeInfo meta = (FeatureTypeInfo) m.next();
+            	String typeRef = meta.getDataStore().getId()+":"+meta.getTypeName();
+            	
+            	QName elementName = new QName( 
+        			catalog.getNamespaceSupport().getURI( meta.namespacePrefix() ), meta.getTypeName(), 
+        			meta.namespacePrefix()
+    			);
+            	
+            	LOGGER.fine("located FeatureType w/ typeRef '"+typeRef+"' and elementName '"+elementName+"'" );                          
+                if (stores.containsKey(elementName)) {
+                    // typeName already loaded
                     continue;
                 }
-                LOGGER.fine("Locating FeatureSource '"+elementName+"'...");
                 
-                meta = catalog.featureType( elementName.getPrefix(), elementName.getLocalPart() );
-                
-                String namespaceURI = 
-                	catalog.getNamespaceSupport().getURI( meta.namespacePrefix() );
-                
-                EMFUtils.set( 
-            		element, "typeName", new QName( namespaceURI, meta.getTypeName(), meta.namespacePrefix() )
-				);
-            
-            }
-            
-            typeRef = meta.getDataStore().getId()+":"+meta.getTypeName();
-            
-            LOGGER.fine("located FeatureType w/ typeRef '"+typeRef+"' and elementName '"+elementName+"'" );                          
-            if (stores.containsKey(elementName)) {
-                // typeName already loaded
-                continue;
-            }
-            
-            typeNames.add( elementName );
-            
-            try {
-                FeatureSource source = meta.featureSource();
-                if (source instanceof FeatureStore) {
-                    FeatureStore store = (FeatureStore) source;
-                    store.setTransaction(transaction);
-                    stores.put( elementName, source );
-                    stores2.put( typeRef, source );
+                try {
+	                FeatureSource source = meta.featureSource();
+                    if (source instanceof FeatureStore) {
+                        FeatureStore store = (FeatureStore) source;
+                        store.setTransaction(transaction);
+                        stores.put( elementName, source );
+                        stores2.put( typeRef, source );
+                    } 
+                    else {
+                    	String msg = elementName + " is read-only";
+                    	String handle = (String) EMFUtils.get( element, "handle" );
+                    	
+                    	throw new WFSTransactionException( msg, (String) null, handle );
+                    }
                 } 
-                else {
-                	String msg = elementName + " is read-only";
+                catch (IOException ioException) {
+                	String msg = elementName + " is not available: " + ioException.getLocalizedMessage();
                 	String handle = (String) EMFUtils.get( element, "handle" );
-                	
-                	throw new WFSTransactionException( msg, (String) null, handle );
+                    throw new WFSTransactionException( msg, ioException, handle );
                 }
-            } 
-            catch (IOException ioException) {
-            	String msg = elementName + " is not available: " + ioException.getLocalizedMessage();
-            	String handle = (String) EMFUtils.get( element, "handle" );
-                throw new WFSTransactionException( msg, ioException, handle );
             }
+            
         }
 
         // provide authorization for transaction
@@ -355,126 +346,213 @@ public class Transaction {
 			    // We expect element name to be of the format prefix:typeName
 			    // We take care to force the insert element to have this format above.
 			    //
-			    // JD: changd to maintain teh list in a seperate list
-			    //String elementName = element.getTypeName();
-			    QName elementName = (QName) typeNames.get( i );
-			    String handle = (String) EMFUtils.get( element, "handle" );
-			    
-			    FeatureStore store = (FeatureStore) stores.get(elementName);
-			    if( store == null ){
-			    	throw new WFSException( "Could not locate FeatureStore for '"+elementName+"'" );                        
+			    if ( element instanceof UpdateElementType || element instanceof DeleteElementType  ) {
+			    	QName elementName = (QName) EMFUtils.get( element, "typeName" );
+				    String handle = (String) EMFUtils.get( element, "handle" );
+				    
+				    FeatureStore store = (FeatureStore) stores.get(elementName);
+				    if( store == null ){
+				    	throw new WFSException( "Could not locate FeatureStore for '"+elementName+"'" );                        
+				    }
+				    String typeName = store.getSchema().getTypeName();
+				    
+				    if (element instanceof DeleteElementType ) {
+				        if (( wfs.getServiceLevel() & WFS.SERVICE_DELETE) == 0) {
+				            // could we catch this during the handler, rather than during execution?
+				            throw new WFSException( "Transaction Delete support is not enabled");
+				        }
+				        
+				        DeleteElementType delete = (DeleteElementType) element;
+				        
+				        //do a check for Filter.NONE, the spec specifically does not
+				        // allow this
+				        if (delete.getFilter() == Filter.NONE) {
+				        	throw new WFSException( "Filter must be supplied for Transaction Delete" );
+				        }
+				        
+				        LOGGER.finer( "Transaction Delete:"+element );
+				        try {
+				            Filter filter = (Filter) delete.getFilter();
+
+				            Envelope damaged = store.getBounds(
+				        		new DefaultQuery( delete.getTypeName().getLocalPart(), filter));
+
+				            if (damaged == null) {
+				                damaged = store.getFeatures(filter).getBounds();
+				            }
+
+				            if ((request.getLockId() != null)
+				                    && store instanceof FeatureLocking
+				                    && (request.getReleaseAction() == AllSomeType.SOME_LITERAL)) {
+				                FeatureLocking locking = (FeatureLocking) store;
+
+				                // TODO: Revisit Lock/Delete interaction in gt2 
+				                if (false) {
+				                    // REVISIT: This is bad - by releasing locks before
+				                    // we remove features we open ourselves up to the danger
+				                    // of someone else locking the features we are about to
+				                    // remove.
+				                    //
+				                    // We cannot do it the other way round, as the Features will
+				                    // not exist
+				                    //
+				                    // We cannot grab the fids offline using AUTO_COMMIT
+				                    // because we may have removed some of them earlier in the
+				                    // transaction
+				                    //
+				                    locking.unLockFeatures(filter);
+				                    store.removeFeatures(filter);
+				                } else {
+				                    // This a bit better and what should be done, we will
+				                    // need to rework the gt2 locking api to work with
+				                    // fids or something
+				                    //
+				                    // The only other thing that would work would be
+				                    // to specify that FeatureLocking is required to
+				                    // remove locks when removing Features.
+				                    // 
+				                    // While that sounds like a good idea, it would be
+				                    // extra work when doing release mode ALL.
+				                    // 
+				                    DataStore data = store.getDataStore();
+				                    FilterFactory factory = FilterFactoryFinder
+				                        .createFilterFactory();
+				                    FeatureWriter writer;                            
+				                    writer = data.getFeatureWriter(typeName, filter, transaction);
+
+				                    try {
+				                        while (writer.hasNext()) {
+				                            String fid = writer.next().getID();
+				                            locking.unLockFeatures(factory.createFidFilter(fid));
+				                            writer.remove();
+				                            deleted++;
+				                        }
+				                    } finally {
+				                        writer.close();
+				                    }
+
+				                    store.removeFeatures(filter);
+				                }
+				            } else {
+				                // We don't have to worry about locking right now
+				                //
+				            	//store.removeFeatures(filter);
+				            	//JD: changing to track number of deletes
+				            	FeatureWriter writer = 
+				            		store.getDataStore().getFeatureWriter( typeName, filter, transaction );
+				                try {
+				                	while( writer.hasNext() ) {
+				                		writer.next();
+				                    	writer.remove();
+				                    	deleted++;
+				                    }	
+				                }
+				                finally {
+				                	writer.close();
+				                }
+				            	
+				            }
+
+				            envelope.expandToInclude(damaged);
+				        } catch (IOException ioException) {
+				        	
+				        	String msg = ioException.getMessage();
+				        	String eHandle = (String) EMFUtils.get( element, "handle" );
+				        	throw new WFSTransactionException(msg, (String) null, eHandle, handle );
+				        	
+				        }
+				    }	//end delete
+				    
+				    if (element instanceof UpdateElementType) {
+				        if ((wfs.getServiceLevel() & WFS.SERVICE_UPDATE) == 0) {
+				            // could we catch this during the handler, rather than during execution?
+				            throw new WFSException( "Transaction Update support is not enabled");
+				        }
+				        
+				        LOGGER.finer( "Transaction Update:"+element);
+				        UpdateElementType update = (UpdateElementType) element;
+				        try {
+				            Filter filter = (Filter) update.getFilter();
+
+				            AttributeType[] types = new AttributeType[ update.getProperty().size() ];
+				            Object[] values = new Object[ update.getProperty().size() ];
+				            for ( int j = 0; j < update.getProperty().size(); j++ ) {
+				            	PropertyType property = (PropertyType) update.getProperty().get( j );
+				            	types[ j ] = store.getSchema().getAttributeType( property.getName().getLocalPart() );
+				            	values[ j ] = property.getValue();
+				            }
+				             
+				            DefaultQuery query = 
+				            	new DefaultQuery(update.getTypeName().getLocalPart(), filter);
+
+				            // Pass through data to collect fids and damaged region
+				            // for validation
+				            //
+				            Set fids = new HashSet();
+				            LOGGER.finer("Preprocess to remember modification as a set of fids" );                    
+				            FeatureCollection features = store.getFeatures( filter );
+				            Iterator preprocess = features.iterator();
+				         
+				            try {
+				                while( preprocess.hasNext() ){
+				                    Feature feature = (Feature) preprocess.next();
+				                    fids.add( feature.getID() );
+				                    envelope.expandToInclude( feature.getBounds() );
+				                }
+				            } catch (NoSuchElementException e) {
+				                throw new WFSException( "Could not aquire FeatureIDs", e );
+				            } 
+				            finally {
+				                features.close( preprocess );
+				            }
+				            
+				            try {
+				                if (types.length == 1) {
+				                    store.modifyFeatures(types[0], values[0], filter);
+				                } else {
+				                    store.modifyFeatures(types, values, filter);
+				                }
+				        	}
+				            finally {
+				            	// make sure we unlock
+				            	if (( request.getLockId() != null)
+				                        && store instanceof FeatureLocking
+				                        && ( request.getReleaseAction() == AllSomeType.SOME_LITERAL )) {
+				                    FeatureLocking locking = (FeatureLocking) store;
+				                    locking.unLockFeatures(filter);
+				                }
+				            }
+				            
+				            // Post process - check features for changed boundary and
+				            // pass them off to the ValidationProcessor
+				            //
+				            if( !fids.isEmpty() ) {
+				                LOGGER.finer("Post process update for boundary update and featureValidation");
+				                FidFilter modified = FilterFactoryFinder.createFilterFactory().createFidFilter();
+				                modified.addAllFids( fids );
+				            
+				                FeatureCollection changed = store.getFeatures( modified );
+				                envelope.expandToInclude( changed.getBounds() );
+				            
+				                FeatureTypeInfo typeInfo = //catalog.getFeatureTypeInfo(element.getTypeName());
+				                	catalog.featureType( update.getTypeName().getPrefix(), update.getTypeName().getLocalPart() );
+				                
+				                //featureValidation(typeInfo.getDataStore().getId(),store.getSchema(), changed);                    
+				            }
+				            
+				            //update the update counter
+				            updated += fids.size();
+				            
+				            
+				        } catch (IOException ioException) {
+				        	//JD: changing from throwing service exception to adding action that failed
+				        	throw new WFSTransactionException( ioException, update.getHandle(), handle );
+				        } 
+				    } //end update
 			    }
-			    String typeName = store.getSchema().getTypeName();
-			    
-			    if (element instanceof DeleteElementType ) {
-			        if (( wfs.getServiceLevel() & WFS.SERVICE_DELETE) == 0) {
-			            // could we catch this during the handler, rather than during execution?
-			            throw new WFSException( "Transaction Delete support is not enabled");
-			        }
-			        
-			        DeleteElementType delete = (DeleteElementType) element;
-			        
-			        //do a check for Filter.NONE, the spec specifically does not
-			        // allow this
-			        if (delete.getFilter() == Filter.NONE) {
-			        	throw new WFSException( "Filter must be supplied for Transaction Delete" );
-			        }
-			        
-			        LOGGER.finer( "Transaction Delete:"+element );
-			        try {
-			            Filter filter = (Filter) delete.getFilter();
-
-			            Envelope damaged = store.getBounds(
-			        		new DefaultQuery( delete.getTypeName().getLocalPart(), filter));
-
-			            if (damaged == null) {
-			                damaged = store.getFeatures(filter).getBounds();
-			            }
-
-			            if ((request.getLockId() != null)
-			                    && store instanceof FeatureLocking
-			                    && (request.getReleaseAction() == AllSomeType.SOME_LITERAL)) {
-			                FeatureLocking locking = (FeatureLocking) store;
-
-			                // TODO: Revisit Lock/Delete interaction in gt2 
-			                if (false) {
-			                    // REVISIT: This is bad - by releasing locks before
-			                    // we remove features we open ourselves up to the danger
-			                    // of someone else locking the features we are about to
-			                    // remove.
-			                    //
-			                    // We cannot do it the other way round, as the Features will
-			                    // not exist
-			                    //
-			                    // We cannot grab the fids offline using AUTO_COMMIT
-			                    // because we may have removed some of them earlier in the
-			                    // transaction
-			                    //
-			                    locking.unLockFeatures(filter);
-			                    store.removeFeatures(filter);
-			                } else {
-			                    // This a bit better and what should be done, we will
-			                    // need to rework the gt2 locking api to work with
-			                    // fids or something
-			                    //
-			                    // The only other thing that would work would be
-			                    // to specify that FeatureLocking is required to
-			                    // remove locks when removing Features.
-			                    // 
-			                    // While that sounds like a good idea, it would be
-			                    // extra work when doing release mode ALL.
-			                    // 
-			                    DataStore data = store.getDataStore();
-			                    FilterFactory factory = FilterFactoryFinder
-			                        .createFilterFactory();
-			                    FeatureWriter writer;                            
-			                    writer = data.getFeatureWriter(typeName, filter, transaction);
-
-			                    try {
-			                        while (writer.hasNext()) {
-			                            String fid = writer.next().getID();
-			                            locking.unLockFeatures(factory.createFidFilter(fid));
-			                            writer.remove();
-			                            deleted++;
-			                        }
-			                    } finally {
-			                        writer.close();
-			                    }
-
-			                    store.removeFeatures(filter);
-			                }
-			            } else {
-			                // We don't have to worry about locking right now
-			                //
-			            	//store.removeFeatures(filter);
-			            	//JD: changing to track number of deletes
-			            	FeatureWriter writer = 
-			            		store.getDataStore().getFeatureWriter( typeName, filter, transaction );
-			                try {
-			                	while( writer.hasNext() ) {
-			                		writer.next();
-			                    	writer.remove();
-			                    	deleted++;
-			                    }	
-			                }
-			                finally {
-			                	writer.close();
-			                }
-			            	
-			            }
-
-			            envelope.expandToInclude(damaged);
-			        } catch (IOException ioException) {
-			        	
-			        	String msg = ioException.getMessage();
-			        	String eHandle = (String) EMFUtils.get( element, "handle" );
-			        	throw new WFSTransactionException(msg, (String) null, eHandle, handle );
-			        	
-			        }
-			    }
-
-			    if (element instanceof InsertElementType) {
-			        if ((wfs.getServiceLevel() & WFS.SERVICE_INSERT) == 0) {
+			    else {
+			    	//insert
+			    	 if ((wfs.getServiceLevel() & WFS.SERVICE_INSERT) == 0) {
 			            // could we catch this during the handler, rather than during execution?
 			            throw new WFSException( "Transaction INSERT support is not enabled" );
 			        }
@@ -483,172 +561,107 @@ public class Transaction {
 			        InsertElementType insert = (InsertElementType) element;
 			        
 			        try {
-			            
-			            FeatureType schema = store.getSchema();
-			            
-			            //they either specified a feature collection, or a list of features
-			            FeatureCollection collection = null;
-			            if ( !insert.getFeature().isEmpty() ) {
-		            		collection = new DefaultFeatureCollection( null, schema ) {};
-		            		collection.addAll( insert.getFeature() );
-		            	}
-			            
-			            Set fids = null;
-			            if( collection != null ) {
-			            	//reprojection
-			            	 CoordinateReferenceSystem target = 
-			            		 schema.getDefaultGeometry().getCoordinateSystem();
-			            	 
-			            	 if ( target == null ) {
-			            		 //default to 4326
-			            		 //TODO: maybe we should throw an exception, or just not reproject
-			            		 // at all
-			            		 target = CRS.decode( "EPSG:4326" );
-			            	 }
-			            	 
-			            	 collection = new ReprojectingFeatureCollection( collection, target );
-			            	 
-			            	 if ( insert.getSrsName() != null ) {
-			            		 //supplied in request
-			            		 CoordinateReferenceSystem defaultSource
-			            		 	= CRS.decode( insert.getSrsName().toString() );
-			            		 ( (ReprojectingFeatureCollection) collection ).setDefaultSource( defaultSource );
-			            	 }
-			            	 
-			                 // Need to use the namespace here for the lookup, due to our weird
-			                 // prefixed internal typenames.  see 
-			                 //   http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-143
-			                 
-			                 // Once we get our datastores making features with the correct namespaces
-			                 // we can do something like this:
-			                 // FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(schema.getTypeName(), schema.getNamespace());
-			                 // until then (when geos-144 is resolved) we're stuck with:
-			                 QName qName = (QName) typeNames.get( i );
-			                 FeatureTypeInfo typeInfo = 
-			                 	catalog.featureType( qName.getPrefix(), qName.getLocalPart() );
+			            //group features by their schmea
+			        	HashMap/*<FeatureType,FeatureCollection>*/ schema2features = new HashMap();
+			        	for ( Iterator f = insert.getFeature().iterator(); f.hasNext(); ) {
+			        		Feature feature = (Feature) f.next();
+			        		FeatureType schema = feature.getFeatureType();
+			        		FeatureCollection collection = 
+			        			(FeatureCollection) schema2features.get( schema );
+			        		if ( collection == null ) {
+			        			collection = new DefaultFeatureCollection( null, schema ) {};
+			        			schema2features.put( schema, collection );
+			        		}
+			        		
+			        		collection.add( feature );
+			        	}
+			        	
+			        	//JD: change from set fo list because if inserting features into 
+			        	// differnt feature stores, they could very well get given the same id
+			        	//Set fids = new HashSet();
+			        	List fids = new ArrayList();
+			        	for ( Iterator c = schema2features.values().iterator(); c.hasNext(); ) {
+			        		FeatureCollection collection = (FeatureCollection) c.next();
+			        		FeatureType schema = collection.getSchema();
+			        		
+			        		QName elementName = new QName( schema.getNamespace().toString(), schema.getTypeName() );
+			        		FeatureStore store = (FeatureStore) stores.get(elementName);
+						    if( store == null ){
+						    	throw new WFSException( "Could not locate FeatureStore for '"+elementName+"'" );                        
+						    }
+						   
+				            if( collection != null ) {
+				            	//reprojection
+				            	 CoordinateReferenceSystem target = 
+				            		 schema.getDefaultGeometry().getCoordinateSystem();
+				            	 
+				            	 if ( target == null ) {
+				            		 //default to 4326
+				            		 //TODO: maybe we should throw an exception, or just not reproject
+				            		 // at all
+				            		 target = CRS.decode( "EPSG:4326" );
+				            	 }
+				            	 
+				            	 collection = new ReprojectingFeatureCollection( collection, target );
+				            	 
+				            	 if ( insert.getSrsName() != null ) {
+				            		 //supplied in request
+				            		 CoordinateReferenceSystem defaultSource
+				            		 	= CRS.decode( insert.getSrsName().toString() );
+//				            		 ( (ReprojectingFeatureCollection) collection ).setDefaultSource( defaultSource );
+				            	 }
+				            	 
+				                 // Need to use the namespace here for the lookup, due to our weird
+				                 // prefixed internal typenames.  see 
+				                 //   http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-143
+				                 
+				                 // Once we get our datastores making features with the correct namespaces
+				                 // we can do something like this:
+				                 // FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(schema.getTypeName(), schema.getNamespace());
+				                 // until then (when geos-144 is resolved) we're stuck with:
+				                 //QName qName = (QName) typeNames.get( i );
+				                 //FeatureTypeInfo typeInfo = 
+				                 	//catalog.featureType( qName.getPrefix(), qName.getLocalPart() );
 
-			                 // this is possible with the insert hack above.
-			                 LOGGER.finer("Use featureValidation to check contents of insert" );
-			                 //featureValidation( typeInfo.getDataStore().getId(), schema, collection );
+				                 // this is possible with the insert hack above.
+				                 LOGGER.finer("Use featureValidation to check contents of insert" );
+				                 //featureValidation( typeInfo.getDataStore().getId(), schema, collection );
 
-			                 fids = store.addFeatures( collection );
-			            }
-			            else {
-			            	fids = Collections.EMPTY_SET;
-			            }
-			           
-			            //set the result
-			            InsertedFeatureType insertedFeature =
-			            	WFSFactory.eINSTANCE.createInsertedFeatureType();
-			            insertedFeature.setHandle( insert.getHandle() );
-			            for( Iterator f = fids.iterator(); f.hasNext(); ) {
-			            	String fid = (String) f.next();
-			            	insertedFeature.getFeatureId().add( filterFactory.featureId( fid ) );
-			            }
-			            
-			            if ( result.getInsertResults() == null ) {
+				                 fids.addAll( store.addFeatures( collection ) );
+				            }
+				        
+				            //
+				            // Add to validation check envelope                                
+				            envelope.expandToInclude(collection.getBounds());
+			        		
+			        	}
+			        	
+			        	if ( result.getInsertResults() == null ) {
 			            	result.setInsertResults( WFSFactory.eINSTANCE.createInsertResultsType() );
 			            }
-			            result.getInsertResults().getFeature().add( insertedFeature );
-			          
+			        	
+			            for( Iterator f = fids.iterator(); f.hasNext(); ) {
+			            	//set the result
+				            InsertedFeatureType insertedFeature =
+				            	WFSFactory.eINSTANCE.createInsertedFeatureType();
+				            insertedFeature.setHandle( insert.getHandle() );
+				            
+			            	String fid = (String) f.next();
+			            	insertedFeature.getFeatureId().add( filterFactory.featureId( fid ) );
+			            	
+			            	result.getInsertResults().getFeature().add( insertedFeature );
+			            }
+			            
 			            //update the insert counter
 			            inserted += fids.size();
 			            
-			            //
-			            // Add to validation check envelope                                
-			            envelope.expandToInclude(collection.getBounds());
+			            
 			        } catch (IOException ioException) {
-			        	throw new WFSTransactionException( ioException, insert.getHandle(), handle );
+			        	String msg = "Error perfomring insert";
+			        	throw new WFSTransactionException( msg, ioException, insert.getHandle() );
 			        }
 			    }
-
-			    if (element instanceof UpdateElementType) {
-			        if ((wfs.getServiceLevel() & WFS.SERVICE_UPDATE) == 0) {
-			            // could we catch this during the handler, rather than during execution?
-			            throw new WFSException( "Transaction Update support is not enabled");
-			        }
-			        
-			        LOGGER.finer( "Transaction Update:"+element);
-			        UpdateElementType update = (UpdateElementType) element;
-			        try {
-			            Filter filter = (Filter) update.getFilter();
-
-			            AttributeType[] types = new AttributeType[ update.getProperty().size() ];
-			            Object[] values = new Object[ update.getProperty().size() ];
-			            for ( int j = 0; j < update.getProperty().size(); j++ ) {
-			            	PropertyType property = (PropertyType) update.getProperty().get( i );
-			            	types[ j ] = store.getSchema().getAttributeType( property.getName().getLocalPart() );
-			            	values[ j ] = property.getValue();
-			            }
-			             
-			            DefaultQuery query = 
-			            	new DefaultQuery(update.getTypeName().getLocalPart(), filter);
-
-			            // Pass through data to collect fids and damaged region
-			            // for validation
-			            //
-			            Set fids = new HashSet();
-			            LOGGER.finer("Preprocess to remember modification as a set of fids" );                    
-			            FeatureCollection features = store.getFeatures( filter );
-			            Iterator preprocess = features.iterator();
-			         
-			            try {
-			                while( preprocess.hasNext() ){
-			                    Feature feature = (Feature) preprocess.next();
-			                    fids.add( feature.getID() );
-			                    envelope.expandToInclude( feature.getBounds() );
-			                }
-			            } catch (NoSuchElementException e) {
-			                throw new WFSException( "Could not aquire FeatureIDs", e );
-			            } 
-			            finally {
-			                features.close( preprocess );
-			            }
-			            
-			            try {
-			                if (types.length == 1) {
-			                    store.modifyFeatures(types[0], values[0], filter);
-			                } else {
-			                    store.modifyFeatures(types, values, filter);
-			                }
-			        	}
-			            finally {
-			            	// make sure we unlock
-			            	if (( request.getLockId() != null)
-			                        && store instanceof FeatureLocking
-			                        && ( request.getReleaseAction() == AllSomeType.SOME_LITERAL )) {
-			                    FeatureLocking locking = (FeatureLocking) store;
-			                    locking.unLockFeatures(filter);
-			                }
-			            }
-			            
-			            // Post process - check features for changed boundary and
-			            // pass them off to the ValidationProcessor
-			            //
-			            if( !fids.isEmpty() ) {
-			                LOGGER.finer("Post process update for boundary update and featureValidation");
-			                FidFilter modified = FilterFactoryFinder.createFilterFactory().createFidFilter();
-			                modified.addAllFids( fids );
-			            
-			                FeatureCollection changed = store.getFeatures( modified );
-			                envelope.expandToInclude( changed.getBounds() );
-			            
-			                FeatureTypeInfo typeInfo = //catalog.getFeatureTypeInfo(element.getTypeName());
-			                	catalog.featureType( update.getTypeName().getPrefix(), update.getTypeName().getLocalPart() );
-			                
-			                //featureValidation(typeInfo.getDataStore().getId(),store.getSchema(), changed);                    
-			            }
-			            
-			            //update insert counter
-			            inserted += fids.size();
-			            
-			            
-			        } catch (IOException ioException) {
-			        	//JD: changing from throwing service exception to adding action that failed
-			        	throw new WFSTransactionException( ioException, update.getHandle(), handle );
-			        } 
-			    } //end update
-			}
+		    }
 		} 
         catch (WFSTransactionException e) {
         	LOGGER.log( Level.SEVERE, "Transaction failed", e );
