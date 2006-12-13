@@ -1,3 +1,24 @@
+GeoServer 1.4.0
+-------------------
+
+This is the next in the series of stable releases for GeoServer.
+
+
+The major changes for this release are:
+Spring framework
+Updated embedded Jetty
+More KML styling
+German translation
+Name extensions for WMS .shp and .pds results
+On-the-fly log level changing
+KML reprojection
+
+Many bug fixes and additional services are in this release including: request caching, 
+windows service option, and datastores for ArcSDE, Oracle, DB2, MySQL, GML, WFS, and VPF. 
+
+Based on GeoTools 2.2.2-SNAPSHOT
+
+
 GeoServer 1.4.0-RC5
 -------------------
 

@@ -54,7 +54,22 @@
 			<directory>web/target/geoserver/data</directory>
 			<outputDirectory>geoserver/data_dir</outputDirectory>
 			<includes>
-				<include>**/*</include>
+				<include>demo/**/*</include>
+				<include>mbdemos/**/*</include>
+				<include>plugIns/**/*</include>
+				<include>styles/**/*</include>
+				<include>featureTypes/**/*</include>
+				<include>validation/**/*</include>
+				<include>wfs-t_demo/**/*</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>web/target/geoserver/data</directory>
+			<outputDirectory>geoserver/data_dir/data</outputDirectory>
+			<includes>
+				<include>nyc/**/*</include>
+				<include>shapefiles/**/*</include>
+				<include>taz_shapes/**/*</include>
 			</includes>
 		</fileSet>
 		<fileSet>
