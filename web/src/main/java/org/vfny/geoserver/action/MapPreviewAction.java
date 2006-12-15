@@ -27,8 +27,10 @@ import org.apache.struts.action.DynaActionForm;
 
 import org.geoserver.util.ReaderUtils;
 import org.geotools.feature.FeatureType;
+import org.geotools.geometry.GeneralEnvelope;
 
 import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
@@ -91,7 +93,7 @@ public class MapPreviewAction extends GeoServerAction
 		
 		Data catalog = wms.getData();
 		Collection ftypes = catalog.getFeatureTypeInfos().values();
-		FeatureTypeInfo layer;
+		Collection ctypes = catalog.getCoverageInfos().values();
 		
 		// 2) delete any existing generated files in the generation directory
 		ServletContext sc = request.getSession().getServletContext();
@@ -113,10 +115,10 @@ public class MapPreviewAction extends GeoServerAction
 			e.printStackTrace();
 		}
        
-		// 3) Go through each FeatureType and collect information && write out config files
+		// 3) Go through each *FeatureType* and collect information && write out config files
 		for (Iterator it = ftypes.iterator(); it.hasNext();) 
 		{
-			layer = (FeatureTypeInfo) it.next();
+			FeatureTypeInfo layer = (FeatureTypeInfo) it.next();
 			Envelope bbox = layer.getLatLongBoundingBox();
 			if (layer.isEnabled()) 
 			{
@@ -127,7 +129,34 @@ public class MapPreviewAction extends GeoServerAction
 				// bounding box of the FeatureType
 				bboxList.add(bbox.getMinX()+", "+bbox.getMinY()+", "+bbox.getMaxX()+", "+bbox.getMaxY());
 				//save out the mapbuilder files
-				makeMapBuilderFiles(previewDir, layer, bbox);
+				makeMapBuilderFiles(previewDir, layer.getFeatureType().getTypeName(), layer.getNameSpace().getPrefix(), bbox, layer.getSRS());
+
+			}
+		}
+		// 3.5) Go through each *Coverage* and collect its info
+		for (Iterator it = ctypes.iterator(); it.hasNext();) 
+		{
+			CoverageInfo layer = (CoverageInfo) it.next();
+			// upper right corner? lower left corner? Who knows?! Better naming conventions needed guys.
+			double[] lowerLeft = layer.getEnvelope().getLowerCorner().getCoordinates();
+			double[] upperRight = layer.getEnvelope().getUpperCorner().getCoordinates();
+			Envelope bbox = new Envelope(lowerLeft[0], upperRight[0], lowerLeft[1], upperRight[1]);
+			
+			if (layer.isEnabled()) 
+			{
+				// prepare strings for web output
+				String shortLayerName = layer.getName().split(":")[1];// we don't want the namespace prefix
+				
+				ftList.add(layer.getNameSpace().getPrefix()+"_"+shortLayerName);	// Coverage name
+				ftnsList.add(layer.getNameSpace().getPrefix()+":"+shortLayerName);
+				
+				dsList.add(layer.getFormatInfo().getId());	// DataStore info
+				// bounding box of the Coverage
+				bboxList.add(bbox.getMinX()+", "+bbox.getMinY()+", "+bbox.getMaxX()+", "+bbox.getMaxY());
+				
+				//save out the mapbuilder files
+				String srsValue = layer.getSrsName().split(":")[1]; // it will look like: "EPSG:4326", so we remove the 'EPSG:"
+				makeMapBuilderFiles(previewDir, shortLayerName, layer.getNameSpace().getPrefix(), bbox, srsValue);
 
 			}
 		}
@@ -207,17 +236,17 @@ public class MapPreviewAction extends GeoServerAction
 	 * @throws IOException
 	 */
 	private void makeMapBuilderFiles(File previewDir, 
-									FeatureTypeInfo layer, 
-									Envelope bbox) 
+									String layerName,
+									String namespace, 
+									Envelope bbox,
+									String srsValue) 
 		throws FileNotFoundException, IOException 
 	{
-		FeatureType featureType = layer.getFeatureType();
-		String ft_name = featureType.getTypeName();
-		String ft_namespace = layer.getNameSpace().getPrefix();
-		
-		File html_file = new File(previewDir, ft_namespace + "_"+ ft_name+".html");
-		File config_file = new File(previewDir, ft_namespace + "_"+ ft_name+"Config.xml");
-		File xml_file = new File(previewDir, ft_namespace + "_"+ ft_name+".xml");
+		//layerName = layerName.replaceAll(":", "_");	// Coverage names come with the namespace, remove the colon
+													//  so we can write out the file without error
+		File html_file = new File(previewDir, namespace + "_"+ layerName+".html");
+		File config_file = new File(previewDir, namespace + "_"+ layerName+"Config.xml");
+		File xml_file = new File(previewDir, namespace + "_"+ layerName+".xml");
 		
 		//JD: making the exists check, since they dont have to be generated
 		// every time
@@ -226,7 +255,7 @@ public class MapPreviewAction extends GeoServerAction
 		if ( ! html_file.exists() ) {
 			FileOutputStream html_fos = new FileOutputStream(html_file);
 			PrintStream html_out = new PrintStream(html_fos);
-			createIndexHTML(html_out, ft_name, ft_namespace);
+			createIndexHTML(html_out, layerName, namespace);
 			html_out.close();	
 		}
 		
@@ -234,7 +263,7 @@ public class MapPreviewAction extends GeoServerAction
 			//*Config.xml
 			FileOutputStream config_fos = new FileOutputStream(config_file);
 			PrintStream config_out = new PrintStream(config_fos);
-			createConfigXML(config_out, ft_name, ft_namespace);
+			createConfigXML(config_out, layerName, namespace);
 			config_out.close();	
 		}
 		
@@ -242,7 +271,7 @@ public class MapPreviewAction extends GeoServerAction
 			//*.xml
 			FileOutputStream xml_fos = new FileOutputStream(xml_file);
 			PrintStream xml_out = new PrintStream(xml_fos);
-			createLayersXML(xml_out, ft_name, ft_namespace, bbox);
+			createLayersXML(xml_out, layerName, namespace, bbox, srsValue);
 			xml_out.close();	
 		}
 		
@@ -481,7 +510,8 @@ public class MapPreviewAction extends GeoServerAction
 	private void createLayersXML(PrintStream out, 
 								String ft_name, 
 								String ft_namespace,  
-								Envelope bbox) 
+								Envelope bbox,
+								String srsValue) 
 		throws IOException
 	{
 		
@@ -489,7 +519,7 @@ public class MapPreviewAction extends GeoServerAction
 		out.println("<ViewContext version=\"1.0.0\" id=\"atlas_world\" xmlns=\"http://www.opengis.net/context\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd\">");
 		out.println("  <General>");
 		out.println("    <Window width=\"500\" height=\"285\"/>");
-		out.println("    <BoundingBox SRS=\"EPSG:4326\" minx=\""+bbox.getMinX()+"\" miny=\""+bbox.getMinY()+"\" maxx=\""+bbox.getMaxX()+"\" maxy=\""+bbox.getMaxY()+"\"/>");
+		out.println("    <BoundingBox SRS=\"EPSG:"+srsValue+"\" minx=\""+bbox.getMinX()+"\" miny=\""+bbox.getMinY()+"\" maxx=\""+bbox.getMaxX()+"\" maxy=\""+bbox.getMaxY()+"\"/>");
 		// CHANGE HERE
 		out.println("    <Title>"+ft_namespace+":"+ft_name+" Map</Title>");
 		out.println("    <KeywordList>");
@@ -508,7 +538,7 @@ public class MapPreviewAction extends GeoServerAction
 		out.println("      <Name>"+ft_namespace+":"+ft_name+"</Name>");
 		// CHANGE HERE
 		out.println("      <Title>"+ft_namespace+":"+ft_name+"</Title>");
-		out.println("      <SRS>EPSG:4326</SRS>");
+		out.println("      <SRS>EPSG:"+srsValue+"</SRS>");
 		out.println("      <FormatList><Format current=\"1\">image/png</Format></FormatList>");
 		out.println("    </Layer>");
 		out.println("  </LayerList>");
