@@ -214,10 +214,10 @@ public class GetFeatureInfoResponse implements Response {
         }
 
         if (delegateClass == null) {
-            throw new WmsException(requestFormat +
-                " is not recognized as an output format for this server. " +
-                "Please consult the Capabilities document",
-                "GetMapResponse.getDelegate");
+            // let's default to something sensible.  If the parameter is empty we return a
+            // TextFeatureInfoResponse, so let's do the same thing here.  See the "hack" comment in
+            // GetFeatureInfoKVPReader.java.
+            delegateClass = new TextFeatureInfoResponse().getClass();
         }
 
         try {
