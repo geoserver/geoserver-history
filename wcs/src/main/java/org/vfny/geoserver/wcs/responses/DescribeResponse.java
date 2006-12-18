@@ -199,10 +199,12 @@ public class DescribeResponse implements Response {
 		tempResponse.append(OGC_NAMESPACE);
 		tempResponse.append(GML_NAMESPACE);
 		tempResponse.append(XSI_NAMESPACE);
-		tempResponse.append(" xsi:schemaLocation=\"").append(WCS_URL).append(
+		/*tempResponse.append(" xsi:schemaLocation=\"").append(WCS_URL).append(
 				" ").append(request.getSchemaBaseUrl()).append(
-				"wcs/1.0.0/describeCoverage.xsd\">\n\n");
-
+				"wcs/1.0.0/describeCoverage.xsd\">\n\n");*/
+		tempResponse.append(" xsi:schemaLocation=\"").append(WCS_URL).append(
+		" ").append("http://schemas.opengis.net/wcs/1.0.0/").append("describeCoverage.xsd\">\n\n");
+		
 		tempResponse.append(generateSpecifiedCoverages(requestedTypes,
 				wcsRequest.getWCS()));
 
@@ -266,7 +268,7 @@ public class DescribeResponse implements Response {
 
 		final GeneralEnvelope envelope = cv.getWGS84LonLatEnvelope();
 
-		tempResponse.append("\n  <lonLatEnvelope" + " srsName=\"WGS84(DD)\"")
+		tempResponse.append("\n  <lonLatEnvelope" + " srsName=\"urn:ogc:def:crs:OGC:1.3:CRS84\"") /*WGS84(DD)*/
 				.append(">");
 		tempResponse.append("\n   <gml:pos>").append(
 				envelope.getLowerCorner().getOrdinate(0)).append(" ").append(
@@ -274,8 +276,8 @@ public class DescribeResponse implements Response {
 		tempResponse.append("\n   <gml:pos>").append(
 				envelope.getUpperCorner().getOrdinate(0)).append(" ").append(
 				envelope.getUpperCorner().getOrdinate(1)).append("</gml:pos>");
-		tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
-		tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+		/*tempResponse.append("\n   <gml:timePosition></gml:timePosition>");
+		tempResponse.append("\n   <gml:timePosition></gml:timePosition>");*/
 		tempResponse.append("\n  </lonLatEnvelope>");
 
 		if ((cv.getKeywords() != null) && (cv.getKeywords().size() > 0)) {
@@ -392,6 +394,7 @@ public class DescribeResponse implements Response {
 			int numSampleDimensions = dims.length;
 			tempResponse.append("\n  <rangeSet>");
 			tempResponse.append("\n   <RangeSet>");
+			//tempResponse.append("\n    <!--  WARNING: Mandatory metadata '..._rangeset_name' was missing in this context.  --> ");
 			tempResponse.append("\n    <name>" + cv.getName() + "</name>");
 			tempResponse.append("\n    <label>" + cv.getLabel() + "</label>");			
 			tempResponse.append("\n      <axisDescription>");

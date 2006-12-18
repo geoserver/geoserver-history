@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.config;
 
-import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -18,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.units.Unit;
 
 import org.geotools.coverage.GridSampleDimension;
-import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
