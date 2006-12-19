@@ -70,7 +70,8 @@
 		<repository>
 			<id>mortbay</id>
 			<name>
-				Repository from Mortbay project (useful mirror when main is not available)
+				Repository from Mortbay project (useful mirror when main
+				is not available)
 			</name>
 			<url>http://www.mortbay.org/maven2/release</url>
 			<snapshots>
@@ -448,21 +449,42 @@
 		</testResources>
 
 		<!--extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-webdav</artifactId>
-        <version>1.0-beta-1</version>
-      </extension>
-    </extensions-->
+			<extension>
+			<groupId>org.apache.maven.wagon</groupId>
+			<artifactId>wagon-webdav</artifactId>
+			<version>1.0-beta-1</version>
+			</extension>
+			</extensions-->
 
 		<plugins>
+			<!-- ======================================================= -->
+			<!--     Source reformat                                     -->
+			<!--       (activated only on request, jalopy:format)        -->
+			<!--     See developer's guide for automated activation      -->
+			<!-- ======================================================= -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jalopy-maven-plugin</artifactId>
+				<version>1.0-SNAPSHOT</version>
+				<configuration>
+					<convention>geoserverjalopy.xml</convention>
+					<failOnError>false</failOnError>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.geoserver.maven</groupId>
+						<artifactId>build-configs</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-	        <source>1.4</source>  <!-- The -source argument for the Java compiler.                            -->
-	        <target>1.4</target>  <!-- The -target argument for the Java compiler.                            -->
+					<source>1.4</source><!-- The -source argument for the Java compiler.                            -->
+					<target>1.4</target><!-- The -target argument for the Java compiler.                            -->
 					<includes>
 						<include>**/*Test.java</include>
 					</includes>
@@ -477,8 +499,6 @@
 					</testFailureIgnore>
 				</configuration>
 			</plugin>
-
-
 
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -520,14 +540,14 @@
 				<groupId>org.geoserver.maven</groupId>
 				<artifactId>merger</artifactId>
 				<executions>
-					<execution>
-						<phase>install</phase>
-						<goals>
-							<goal>mergeSurefireReports</goal>
-						</goals>
-					</execution>
+				<execution>
+				<phase>install</phase>
+				<goals>
+				<goal>mergeSurefireReports</goal>
+				</goals>
+				</execution>
 				</executions>
-			</plugin-->
+				</plugin-->
 
 		</plugins>
 	</build>
@@ -691,15 +711,19 @@
 
 	<distributionManagement>
 		<repository>
-      <id>codehaus.org</id>
-      <name>GeoServer Central Repository</name>
-      <url>dav:https://dav.codehaus.org/repository/geoserver/</url>
-    </repository>
-    <snapshotRepository>
-      <id>codehaus.org</id>
-      <name>GeoServer Central Development Repository</name>
-      <url>dav:https://dav.codehaus.org/snapshots.repository/geoserver/</url>
-    </snapshotRepository>
+			<id>codehaus.org</id>
+			<name>GeoServer Central Repository</name>
+			<url>
+				dav:https://dav.codehaus.org/repository/geoserver/
+			</url>
+		</repository>
+		<snapshotRepository>
+			<id>codehaus.org</id>
+			<name>GeoServer Central Development Repository</name>
+			<url>
+				dav:https://dav.codehaus.org/snapshots.repository/geoserver/
+			</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 	<modules>
@@ -755,33 +779,45 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<configuration>
-							<doclet>gr.spinellis.umlgraph.doclet.UmlGraphDoc</doclet>
+							<doclet>
+								gr.spinellis.umlgraph.doclet.UmlGraphDoc
+							</doclet>
 							<docletArtifact>
 								<groupId>gr.spinellis</groupId>
 								<artifactId>UmlGraph</artifactId>
 								<version>4.4</version>
 							</docletArtifact>
 							<additionalparam>
-								-inferrel -inferdep -quiet -hide java.* -collpackages java.util.* -qualify
+								-inferrel -inferdep -quiet -hide java.*
+								-collpackages java.util.* -qualify
 								-postfixpackage -nodefontsize 9
-								-nodefontpackagesize 7
-								-link http://java.sun.com/j2se/1.5/docs/api
-								-link http://java.sun.com/j2ee/1.4/docs/api
-								-link http://java.sun.com/products/java-media/jai/forDevelopers/jai-apidocs
-								-link http://java.sun.com/products/java-media/3D/forDevelopers/j3dapi
-								-link http://jsr-108.sourceforge.net/javadoc
-								-link http://geoapi.sourceforge.net/snapshot/javadoc
-								-link http://geoapi.sourceforge.net/pending/javadoc
-								-link http://geoapi.sourceforge.net/legacy/javadoc
-								-link http://www.jump-project.org/docs/jts/1.7/api
-								-link http://www.geotools.fr/javadoc/2.2/
-								-link http://xmlgraphics.apache.org/batik/javadoc
+								-nodefontpackagesize 7 -link
+								http://java.sun.com/j2se/1.5/docs/api
+								-link
+								http://java.sun.com/j2ee/1.4/docs/api
+								-link
+								http://java.sun.com/products/java-media/jai/forDevelopers/jai-apidocs
+								-link
+								http://java.sun.com/products/java-media/3D/forDevelopers/j3dapi
+								-link
+								http://jsr-108.sourceforge.net/javadoc
+								-link
+								http://geoapi.sourceforge.net/snapshot/javadoc
+								-link
+								http://geoapi.sourceforge.net/pending/javadoc
+								-link
+								http://geoapi.sourceforge.net/legacy/javadoc
+								-link
+								http://www.jump-project.org/docs/jts/1.7/api
+								-link
+								http://www.geotools.fr/javadoc/2.2/
+								-link
+								http://xmlgraphics.apache.org/batik/javadoc
 								-link http://itextdocs.lowagie.com/docs
-								-tag todo:tfmc:TODO:
-								-tag task:tfmc:TODO:
-								-tag revisit:tfmc:TODO:
-								-tag source:Xt:Source:
-								-tag tutorial:Xt:Tutorial:
+								-tag todo:tfmc:TODO: -tag
+								task:tfmc:TODO: -tag revisit:tfmc:TODO:
+								-tag source:Xt:Source: -tag
+								tutorial:Xt:Tutorial:
 							</additionalparam>
 						</configuration>
 					</plugin>
