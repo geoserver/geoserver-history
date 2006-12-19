@@ -76,10 +76,22 @@
 			</includes>
 		</fileSet>
 		<fileSet>
+			<!-- we gather the .sh files in a separate task below -->
 			<directory>release/bin</directory>
+			<lineEnding>keep</lineEnding>
 			<outputDirectory>geoserver/bin</outputDirectory>
 			<includes>
-				<include>*</include>
+				<include>*.bat</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>release/bin</directory>
+			<lineEnding>unix</lineEnding>
+			<outputDirectory>geoserver/bin</outputDirectory>
+			<fileMode>0755</fileMode>
+			<directoryMode>0755</directoryMode>
+			<includes>
+				<include>*.sh</include>
 			</includes>
 		</fileSet>
 		<fileSet>
