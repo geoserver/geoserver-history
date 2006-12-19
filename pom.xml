@@ -467,7 +467,7 @@
 				<artifactId>jalopy-maven-plugin</artifactId>
 				<version>1.0-SNAPSHOT</version>
 				<configuration>
-					<convention>geoserverjalopy.xml</convention>
+					<convention>geoserver/geoserverjalopy.xml</convention>
 					<failOnError>false</failOnError>
 				</configuration>
 				<dependencies>
