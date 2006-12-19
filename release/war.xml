@@ -8,9 +8,17 @@
     <fileSet>
 			<directory>web/target</directory>
 			<outputDirectory></outputDirectory>
-      <includes>
+			<includes>
 				<include>geoserver.war</include>
 			</includes>
+    </fileSet>
+	<fileSet>
+		<directory>release</directory>
+		<outputDirectory></outputDirectory>
+		<includes>
+			<include>LICENSE.txt</include>
+			<include>GPL.txt</include>
+		</includes>
     </fileSet>
   </fileSets>
 	<moduleSets>
