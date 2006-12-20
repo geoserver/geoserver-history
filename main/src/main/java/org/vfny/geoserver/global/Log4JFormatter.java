@@ -155,6 +155,9 @@ public class Log4JFormatter extends Formatter {
              * message body.
              */
             writer.setLineSeparator(bodyLineSeparator);
+            if (record.getMessage() == null) {
+                record.setMessage("null");
+            }
             writer.write(formatMessage(record));
             writer.setLineSeparator(lineSeparator);
             writer.write('\n');
