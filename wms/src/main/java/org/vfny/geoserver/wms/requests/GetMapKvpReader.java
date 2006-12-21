@@ -796,7 +796,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
 		// parse each filter, eventually throwing an exception if there is any
 		// encoding problem
-		List filterSpecs = readFlat(rawFilter, OUTER_DELIMETER);
+		List filterSpecs = readFlat(rawFilter, INNER_DELIMETER);
 		List filters = new ArrayList(filterSpecs.size());
 		try {
 			for (Iterator it = filterSpecs.iterator(); it.hasNext();) {
@@ -818,7 +818,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 			if(filters.size() == 1) {
 				Filter f = (Filter) filters.get(0);
 				filters = new ArrayList(numLayers);
-				for (int i = 0; i < filters.size(); i++) {
+				for (int i = 0; i < numLayers; i++) {
 					filters.add(f);
 				}
 			} else {
