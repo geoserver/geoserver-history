@@ -3,11 +3,13 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.LockType;
 import net.opengis.wfs.WFSFactory;
 
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.opengis.filter.Filter;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:LockType.
@@ -85,7 +87,7 @@ public class LockTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return LockType.class;
 	}
 	
 	/**
@@ -97,8 +99,22 @@ public class LockTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		LockType lock = wfsfactory.createLockType();
+		
+		//&lt;xsd:element maxOccurs="1" minOccurs="0" ref="ogc:Filter"/&gt;
+		if ( node.hasChild( Filter.class ) ) {
+			lock.setFilter( (Filter) node.getChildValue( Filter.class ) );
+		}
+		
+		//&lt;xsd:attribute name="handle" type="xsd:string" use="optional"&gt;
+		if ( node.hasAttribute( "handle" ) ) {
+			lock.setHandle( (String) node.getAttributeValue( "handle" ) );
+		}
+		
+		//&lt;xsd:attribute name="typeName" type="xsd:QName" use="required"&gt;
+		lock.setTypeName( (QName) node.getAttributeValue( "typeName" ) );
+		
+		return lock;
 	}
 
 }

@@ -11,8 +11,11 @@ import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.wfs.xml.FeatureTypeSchema;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
+import org.geoserver.wfs.xml.filter.v1_1.FilterTypeBinding;
 import org.geoserver.wfs.xml.filter.v1_1.PropertyNameTypeBinding;
+import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
 import org.geoserver.wfs.xml.gml3.CircleTypeBinding;
+import org.geoserver.wfs.xml.xs.DateBinding;
 import org.geoserver.xml.ows.v1_0_0.OWSConfiguration;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.v1_1.OGC;
@@ -23,6 +26,7 @@ import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.BindingConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
+import org.geotools.xs.bindings.XS;
 import org.picocontainer.MutablePicoContainer;
 
 public class WFSConfiguration extends Configuration {
@@ -37,6 +41,11 @@ public class WFSConfiguration extends Configuration {
 		addDependency( new OGCConfiguration() );
 		addDependency( new GMLConfiguration() );
 		addDependency( new OWSConfiguration() );
+	}
+	
+	public void addDependency(Configuration dependency) {
+		//override to make public
+		super.addDependency( dependency );
 	}
 	
 	public String getNamespaceURI() {
@@ -62,6 +71,7 @@ public class WFSConfiguration extends Configuration {
 		
 		context.registerComponentInstance( WFSFactory.eINSTANCE );
 		context.registerComponentInstance( new WFSHandlerFactory( catalog, FeatureTypeSchema.GML3.class ) );
+		context.registerComponentInstance( catalog );
 		
 		//seed the cache with entries from the catalog
 		FeatureTypeCache featureTypeCache = 
@@ -81,8 +91,11 @@ public class WFSConfiguration extends Configuration {
 
 	protected void configureBindings(MutablePicoContainer container) {
 		//register our custom bindings
-		//container.registerComponentImplementation( OGC.PROPERTYNAMETYPE, PropertyNameTypeBinding.class );
+		container.registerComponentImplementation( XS.DATE, DateBinding.class );
+		container.registerComponentImplementation( OGC.FILTER, FilterTypeBinding.class );
+		container.registerComponentImplementation( OGC.PROPERTYNAMETYPE, PropertyNameTypeBinding.class );
 		container.registerComponentImplementation( GML.CircleType, CircleTypeBinding.class );
+		container.registerComponentImplementation( GML.AbstractGeometryType, AbstractGeometryTypeBinding.class );
 	}
 	
 }
