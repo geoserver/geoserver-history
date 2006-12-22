@@ -169,8 +169,8 @@ public class TransactionTypeBinding extends AbstractComplexBinding {
 		}
 
 		//&lt;xsd:attribute name="releaseAction" type="wfs:AllSomeType" use="optional"&gt;
-		if ( node.hasChild( AllSomeType.class ) ) {
-			transaction.setReleaseAction( (AllSomeType) node.getChildValue( AllSomeType.class ) );
+		if ( node.hasAttribute( AllSomeType.class ) ) {
+			transaction.setReleaseAction( (AllSomeType) node.getAttributeValue( AllSomeType.class ) );
 		}
 		 
 		return transaction;

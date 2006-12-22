@@ -1,8 +1,14 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 
+import java.math.BigInteger;
+
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.GetFeatureWithLockType;
+import net.opengis.wfs.QueryType;
+import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfs.WFSFactory;
 
 import org.geotools.xml.AbstractComplexBinding;
@@ -115,7 +121,7 @@ public class GetFeatureWithLockTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return GetFeatureWithLockType.class;
 	}
 	
 	/**
@@ -127,8 +133,44 @@ public class GetFeatureWithLockTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		GetFeatureWithLockType getFeatureWithLock = wfsfactory.createGetFeatureWithLockType();
+		
+		//&lt;xsd:element maxOccurs="unbounded" ref="wfs:Query"/&gt;
+		getFeatureWithLock.getQuery().addAll( node.getChildValues( QueryType.class ) );
+		
+		//&lt;xsd:attribute default="5" name="expiry" type="xsd:positiveInteger" use="optional"&gt;
+		if ( node.hasAttribute( "expiry" ) ) {
+			getFeatureWithLock.setExpiry( (BigInteger ) node.getChildValue( "expiry" ) );
+		}
+		
+		//&lt;xsd:attribute default="results" name="resultType" type="wfs:ResultTypeType" use="optional"&gt;
+		if ( node.hasAttribute( "resultType" ) ) {
+			getFeatureWithLock.setResultType( (ResultTypeType) node.getAttributeValue( "resultType" ) );
+		}
+		
+		//&lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
+		//		name="outputFormat" type="xsd:string" use="optional"&gt;
+		if ( node.hasAttribute( "outputFormat" ) ) {
+			getFeatureWithLock.setOutputFormat( (String) node.getAttributeValue( "outputFormat" ) );
+		}
+	
+		//&lt;xsd:attribute name="maxFeatures" type="xsd:positiveInteger" use="optional"&gt;
+		if ( node.hasAttribute( "maxFeatures" ) ) {
+			getFeatureWithLock.setMaxFeatures( (BigInteger) node.getAttributeValue( "maxFeatures") );
+		}
+		
+		//&lt;xsd:attribute name="traverseXlinkDepth" type="xsd:string" use="optional"&gt;
+		if ( node.hasAttribute( "traverseXlinkDepth" ) ) {
+			getFeatureWithLock.setTraverseXlinkDepth( (String) node.getAttributeValue( "traverseXlinkDepth") );
+		}
+		
+		//&lt;xsd:attribute name="traverseXlinkExpiry"
+		//		type="xsd:positiveInteger" use="optional"&gt;
+		if ( node.hasAttribute( "traverseXlinkExpiry" ) ) {
+			getFeatureWithLock.setTraverseXlinkExpiry( (BigInteger) node.getAttributeValue( "traverseXlinkExpiry") );
+		}
+		
+		return getFeatureWithLock;
 	}
 
 }
