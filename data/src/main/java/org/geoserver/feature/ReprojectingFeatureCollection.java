@@ -344,34 +344,33 @@ public class ReprojectingFeatureCollection implements FeatureCollection {
 				
 				if ( crs != null ) {
 					//if equal, nothing to do
-					if ( crs.equals( target ) )
-						continue;
+					if ( !crs.equals( target ) ) {
+						GeometryCoordinateSequenceTransformer transformer = 
+							(GeometryCoordinateSequenceTransformer) transformers.get( crs );
 					
-					GeometryCoordinateSequenceTransformer transformer = 
-						(GeometryCoordinateSequenceTransformer) transformers.get( crs );
-				
-					if ( transformer == null ) {
-						transformer = new GeometryCoordinateSequenceTransformer();
-						MathTransform2D tx;
-						try {
-							tx = (MathTransform2D) FactoryFinder.getCoordinateOperationFactory(hints)
-									.createOperation(crs,target).getMathTransform();
-						} catch ( Exception e ) {
-							String msg = "Could not transform for crs: " + crs;
-							throw (IOException) new IOException( msg ).initCause( e );
+						if ( transformer == null ) {
+							transformer = new GeometryCoordinateSequenceTransformer();
+							MathTransform2D tx;
+							try {
+								tx = (MathTransform2D) FactoryFinder.getCoordinateOperationFactory(hints)
+										.createOperation(crs,target).getMathTransform();
+							} catch ( Exception e ) {
+								String msg = "Could not transform for crs: " + crs;
+								throw (IOException) new IOException( msg ).initCause( e );
+							}
+							
+			        		transformer.setMathTransform( tx );
+			        		transformers.put( crs, transformer );
 						}
 						
-		        		transformer.setMathTransform( tx );
-		        		transformers.put( crs, transformer );
-					}
-					
-					//do the transformation
-					try {
-						object = transformer.transform( geometry );
-					} 
-					catch (TransformException e) {
-						String msg = "Error occured transforming " + geometry.toString();
-						throw (IOException) new IOException( msg ).initCause( e );
+						//do the transformation
+						try {
+							object = transformer.transform( geometry );
+						} 
+						catch (TransformException e) {
+							String msg = "Error occured transforming " + geometry.toString();
+							throw (IOException) new IOException( msg ).initCause( e );
+						}
 					}
 				}
 			}
