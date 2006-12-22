@@ -1,21 +1,14 @@
 package org.geoserver.wfs.xml.filter.v1_1;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
-import org.geotools.filter.expression.Value;
+import org.geoserver.data.GeoServerCatalog;
+import org.geoserver.wfs.WFSException;
 import org.geotools.filter.v1_0.OGCPropertyNameTypeBinding;
+import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.filter.FilterFactory;
-import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.PropertyName;
-
-import com.vividsolutions.jts.geom.Geometry;
+import org.xml.sax.helpers.NamespaceSupport;
 
 /**
  * A binding for ogc:PropertyName which does a special case check for an empty 
@@ -26,65 +19,36 @@ import com.vividsolutions.jts.geom.Geometry;
  */
 public class PropertyNameTypeBinding extends OGCPropertyNameTypeBinding {
 
-	public PropertyNameTypeBinding(FilterFactory filterFactory) {
+	/** the geoserver catalog */
+	GeoServerCatalog catalog;
+	/** parser namespace mappings */
+	NamespaceSupport namespaceSupport;
+	
+	public PropertyNameTypeBinding(
+		FilterFactory filterFactory, NamespaceSupport namespaceSupport, GeoServerCatalog catalog ) {
 		super(filterFactory);
+		this.namespaceSupport = namespaceSupport;
+		this.catalog = catalog;
 	}
 	
 	public Object parse(ElementInstance instance, Node node, Object value) throws Exception {
 		PropertyName propertyName = (PropertyName) super.parse( instance, node, value );	
-		if ( propertyName.getPropertyName() == null || "".equals( propertyName.getPropertyName().trim() ) ) {
-			//we override here to create a property that evaluates to the union of all geometries
-			return new GeometryUnionPropertyName( propertyName );
+
+		//JD: temporary hack, this should be carried out at evaluation time
+		String name = propertyName.getPropertyName();
+		if ( name.matches( "\\w+:\\w+" ) ) {
+			//namespace qualified name, ensure the prefix is valid
+			String prefix = name.substring( 0, name.indexOf( ':' ) );
+			String namespaceURI = namespaceSupport.getURI( prefix );
+			
+			//only accept if its an application schema namespace, or gml
+			
+			if (!GML.NAMESPACE.equals( namespaceURI ) 
+					&& catalog.getNamespaceSupport().getPrefix( namespaceURI) == null ) {
+				throw new WFSException( "Illegal attribute namespace: " + namespaceURI );
+			}
 		}
 		
 		return propertyName;
-	}
-	
-	private static class GeometryUnionPropertyName implements PropertyName {
-		
-		PropertyName delegate;
-		
-		public GeometryUnionPropertyName( PropertyName delegate ) {
-			this.delegate = delegate;
-		}
-		
-		public String getPropertyName() {
-			return delegate.getPropertyName();
-		}
-		
-		public Object evaluate(Object object) {
-			if ( object instanceof Feature ) {
-				Feature feature = (Feature) object;
-				Geometry geometry = null;
-				for ( int i = 0; i < feature.getNumberOfAttributes(); i++ ) {
-					Object attribute = feature.getAttribute( i );
-					if ( attribute instanceof Geometry ) {
-						if ( geometry == null ) {
-							geometry = (Geometry) attribute;
-						}
-						else {
-							geometry = geometry.union( (Geometry) attribute );
-						}
-					}
-				}
-				
-				return geometry;
-			}
-			
-			//non feature, just delegate
-			return delegate.evaluate( object );
-		}
-
-		public Object evaluate(Object object, Class target) {
-			return new Value( evaluate( object ) ).value( target );
-		}
-		
-		public void setPropertyName(String propertyName) {
-			delegate.setPropertyName( propertyName );
-		}
-
-		public Object accept(ExpressionVisitor visitor, Object extraData ) {
-			return delegate.accept( visitor, extraData );
-		}
 	}
 }
