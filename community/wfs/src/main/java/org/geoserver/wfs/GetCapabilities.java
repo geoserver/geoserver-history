@@ -49,8 +49,12 @@ public class GetCapabilities {
 	}
 	
 	public CapabilitiesTransformer run( GetCapabilitiesType request ) throws WFSException {
+		//TODO: cite check, make configurable
+		if ( request.getUpdateSequence() != null ) {
+			throw new WFSException( "Invalid update sequence", "InvalidUpdateSequence" );
+		}
 		
-		//TODO: this entire routine should be done by the dispatcher
+		//TODO: the rest of this routine should be done by the dispatcher
 		
 		//make sure service is set, cite conformance thing
 		if ( !request.isSetService() ) {
