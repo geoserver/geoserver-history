@@ -254,6 +254,7 @@ public class GeoServerHttpTestSupport extends TestCase {
 		request.setupGetRequestURI( 
 			ResponseUtils.stripQueryString( ResponseUtils.appendPath( "/geoserver/", path ) ) 
 		);
+		request.setupQueryString( ResponseUtils.stripQueryString( path ));
 		request.setupGetRemoteAddr( "127.0.0.1" );
 		request.setupGetServletPath( path );
 		request.setupGetParameterMap( kvp( path ) );
