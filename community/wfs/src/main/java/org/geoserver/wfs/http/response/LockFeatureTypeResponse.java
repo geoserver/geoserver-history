@@ -9,20 +9,26 @@ import java.util.List;
 
 import net.opengis.wfs.LockFeatureResponseType;
 
+import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.Operation;
 import org.geoserver.ows.ServiceException;
 import org.geoserver.ows.http.Response;
 import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
+import org.geotools.xml.Encoder;
 import org.opengis.filter.identity.FeatureId;
+import org.xml.sax.SAXException;
 
 public class LockFeatureTypeResponse extends Response {
 
 	WFS wfs;
+	GeoServerCatalog catalog;
 	
-	public LockFeatureTypeResponse( WFS wfs ) {
+	public LockFeatureTypeResponse( WFS wfs, GeoServerCatalog catalog ) {
 		super( LockFeatureResponseType.class );
 		this.wfs = wfs;
+		this.catalog = catalog;
 	}
 	
 	public String getMimeType(Operation operation) throws ServiceException {
@@ -33,6 +39,11 @@ public class LockFeatureTypeResponse extends Response {
 			throws IOException, ServiceException {
 		
 		LockFeatureResponseType lockResponse = (LockFeatureResponseType) value;
+		
+		if ( "1.1.0".equals( operation.getService().getVersion() ) ) {
+			write1_1( lockResponse, output, operation );
+			return;
+		}
 		
 		String indent = wfs.isVerbose() ? "   " : "";
 		BufferedWriter writer = new BufferedWriter( 
@@ -85,6 +96,22 @@ public class LockFeatureTypeResponse extends Response {
         
        writer.write( "</WFS_LockFeatureResponse>");
        writer.flush();
+	}
+
+	void write1_1(LockFeatureResponseType lockResponse, OutputStream output, Operation operation) 
+		throws IOException {
+	
+		WFSConfiguration configuration = new WFSConfiguration( catalog );
+		
+		Encoder encoder = new Encoder( configuration, configuration.schema() );
+		try {
+			encoder.write( lockResponse, org.geoserver.wfs.xml.v1_1_0.WFS.LOCKFEATURERESPONSE, output );
+		} 
+		catch (SAXException e) {
+			throw (IOException) new IOException().initCause( e );
+		}
+		
+		output.flush();
 	}
 
 }
