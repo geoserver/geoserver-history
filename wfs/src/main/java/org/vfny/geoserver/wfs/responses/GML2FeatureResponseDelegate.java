@@ -15,7 +15,7 @@ import java.util.zip.GZIPOutputStream;
 import javax.xml.transform.TransformerException;
 
 import org.geotools.data.FeatureLock;
-import org.geotools.data.FeatureResults;
+
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
@@ -221,8 +221,8 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         //
         // execute should also fail if all of the locks could not be aquired
         List resultsList = results.getFeatures();
-        FeatureResults[] featureResults = (FeatureResults[]) resultsList
-            .toArray(new FeatureResults[resultsList.size()]);
+        FeatureCollection[] featureResults = (FeatureCollection[]) resultsList
+            .toArray(new FeatureCollection[resultsList.size()]);
 
         try {
             transformer.transform(featureResults, output);

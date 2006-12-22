@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.AbstractFilter;

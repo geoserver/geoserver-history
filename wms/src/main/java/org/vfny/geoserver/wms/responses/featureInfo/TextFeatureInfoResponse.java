@@ -10,11 +10,12 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 
@@ -68,63 +69,57 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         int featuresPrinted = 0;  // how many features we've actually printed so far!
         int maxfeatures = getRequest().getFeatureCount(); // will default to 1 if not specified in the request
         
-        FeatureReader reader = null;
-        try {
-            for (int i = 0; i < results.size(); i++)  //for each layer queried
-            {
-                FeatureResults fr = (FeatureResults) results.get(i);
-
-                reader = fr.reader();
-                
-                if ( reader.hasNext() && (featuresPrinted<maxfeatures) ) // if this layer has a hit and we're going to print it
-                {	
-                	writer.println("Results for FeatureType '"+ reader.getFeatureType().getTypeName() + "':");
-                }
-
-                while (reader.hasNext()) 
-                {
-                    Feature f = reader.next();
-
-                    FeatureType schema = f.getFeatureType();
-                    AttributeType[] types = schema.getAttributeTypes();
-
-                    if (featuresPrinted<maxfeatures)
-					{
-                    	writer.println("--------------------------------------------");
-	                    for (int j = 0; j < types.length; j++) //for each column in the featuretype
-	                    {     	
-	                        if (Geometry.class.isAssignableFrom(types[j].getType())) 
-	                        {
-	                            //writer.println(types[j].getName() + " = [GEOMETRY]"); 
-	                        	
-	                        	//DJB: changed this to print out WKT - its very nice for users
-	                        	//Geometry g = (Geometry) f.getAttribute(types[j].getName());
-	                            //writer.println(types[j].getName() + " = [GEOMETRY] = "+g.toText() ); 
-	                        	
-	                        	//DJB: decided that all the geometry info was too much - they should use GML version if they want those details
-	                        	Geometry g = (Geometry) f.getAttribute(types[j].getName());
-	                        	writer.println(types[j].getName() + " = [GEOMETRY ("+g.getGeometryType()+") with "+g.getNumPoints()+" points]"); 
-	                        	
-	                        } else {
-	                            writer.println(types[j].getName() + " = "
-	                                + f.getAttribute(types[j].getName()));
-	                        }                                         
-	                    }
-	                    writer.println("--------------------------------------------");
-	                    featuresPrinted++;
-					}
-                }
-            }
-        } 
-        catch (IllegalAttributeException ife) {
-            writer.println("Unable to generate information " + ife);
-        }
-        finally
-		{
-        	if (reader != null)
-        		reader.close();
-		}
+        Iterator reader = null;
         
+        for (int i = 0; i < results.size(); i++)  //for each layer queried
+        {
+        	FeatureCollection fr = (FeatureCollection) results.get(i);
+        	
+            reader = fr.iterator();
+            
+            if ( reader.hasNext() && (featuresPrinted<maxfeatures) ) // if this layer has a hit and we're going to print it
+            {	
+            	
+            	writer.println("Results for FeatureType '"+ fr.getFeatureType().getTypeName() + "':");
+            }
+
+            while (reader.hasNext()) 
+            {
+                Feature f = (Feature) reader.next();
+
+                FeatureType schema = f.getFeatureType();
+                AttributeType[] types = schema.getAttributeTypes();
+
+                if (featuresPrinted<maxfeatures)
+				{
+                	writer.println("--------------------------------------------");
+                    for (int j = 0; j < types.length; j++) //for each column in the featuretype
+                    {     	
+                        if (Geometry.class.isAssignableFrom(types[j].getType())) 
+                        {
+                            //writer.println(types[j].getName() + " = [GEOMETRY]"); 
+                        	
+                        	//DJB: changed this to print out WKT - its very nice for users
+                        	//Geometry g = (Geometry) f.getAttribute(types[j].getName());
+                            //writer.println(types[j].getName() + " = [GEOMETRY] = "+g.toText() ); 
+                        	
+                        	//DJB: decided that all the geometry info was too much - they should use GML version if they want those details
+                        	Geometry g = (Geometry) f.getAttribute(types[j].getName());
+                        	writer.println(types[j].getName() + " = [GEOMETRY ("+g.getGeometryType()+") with "+g.getNumPoints()+" points]"); 
+                        	
+                        } else {
+                            writer.println(types[j].getName() + " = "
+                                + f.getAttribute(types[j].getName()));
+                        }                                         
+                    }
+                    writer.println("--------------------------------------------");
+                    featuresPrinted++;
+				}
+            }
+            
+            fr.close( reader );
+        }
+            
         if (featuresPrinted ==0)
         {
         	writer.println("no features were found");

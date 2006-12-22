@@ -12,13 +12,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
 
 import com.vividsolutions.jts.geom.Geometry;
 
