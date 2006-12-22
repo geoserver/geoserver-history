@@ -27,7 +27,7 @@ import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLockFactory;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
+
 import org.geotools.data.FeatureSource;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Query;
@@ -115,8 +115,8 @@ public class LockFeature {
             // prepare the response object
             LockFeatureResponseType response = WFSFactory.eINSTANCE.createLockFeatureResponseType();
             response.setLockId(fLock.getAuthorization());
-            response.setFeaturesLocked(WFSFactory.eINSTANCE.createFeaturesLockedType());
-            response.setFeaturesNotLocked(WFSFactory.eINSTANCE.createFeaturesNotLockedType());
+            response.setFeaturesLocked( WFSFactory.eINSTANCE.createFeaturesLockedType() );
+            response.setFeaturesNotLocked( WFSFactory.eINSTANCE.createFeaturesNotLockedType() );
 
             // go thru each lock request, and try to perform locks on a feature
             // by feature basis
@@ -164,6 +164,7 @@ public class LockFeature {
                         if (!(source instanceof FeatureLocking)) {
                             LOGGER.fine("Lock " + fid + " not supported by data store (authID:"
                                     + fLock.getAuthorization() + ")");
+                            
                             response.getFeaturesNotLocked().getFeatureId().add(fid);
                             // lockFailedFids.add(fid);
                         } else {
@@ -239,6 +240,14 @@ public class LockFeature {
                         + response.getFeaturesNotLocked());
             }
 
+            //remove empty parts of the response object
+            if ( response.getFeaturesLocked().getFeatureId().isEmpty() ) {
+            	response.setFeaturesLocked( null );
+            }
+            if ( response.getFeaturesNotLocked().getFeatureId().isEmpty() ) {
+            	response.setFeaturesNotLocked( null );
+            }
+            
             return response;
         } catch (WFSException e) {
 
