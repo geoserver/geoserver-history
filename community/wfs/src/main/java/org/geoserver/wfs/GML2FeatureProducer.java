@@ -23,7 +23,7 @@ import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.http.util.ResponseUtils;
 import org.geoserver.ows.ServiceException;
-import org.geotools.data.FeatureResults;
+
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTransformer;
