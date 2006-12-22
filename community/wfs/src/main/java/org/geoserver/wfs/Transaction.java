@@ -324,6 +324,7 @@ public class Transaction {
         result.setTransactionResults( WFSFactory.eINSTANCE.createTransactionResultsType() );
         result.getTransactionResults().setHandle( request.getHandle() );
         result.setTransactionSummary( WFSFactory.eINSTANCE.createTransactionSummaryType() );
+        result.setInsertResults( WFSFactory.eINSTANCE.createInsertResultsType() );
         
         //operatinos counters
         long deleted = 0;
@@ -636,10 +637,6 @@ public class Transaction {
 			        		
 			        	}
 			        	
-			        	if ( result.getInsertResults() == null ) {
-			            	result.setInsertResults( WFSFactory.eINSTANCE.createInsertResultsType() );
-			            }
-			        	
 			            for( Iterator f = fids.iterator(); f.hasNext(); ) {
 			            	//set the result
 				            InsertedFeatureType insertedFeature =
@@ -741,7 +738,15 @@ public class Transaction {
 //        }
         
        
-       
+       //JD: this is an issue with the spec, InsertResults must be present, even if no insert 
+        // occured, howwever insert results needs to have at least one "FeatureId" eliement, sp 
+        // we create an FeatureId with an empty fid
+        if ( result.getInsertResults().getFeature().isEmpty() ) {
+        	InsertedFeatureType insertedFeature = WFSFactory.eINSTANCE.createInsertedFeatureType();
+        	insertedFeature.getFeatureId().add( filterFactory.featureId( "none" ) );
+        	
+        	result.getInsertResults().getFeature().add( insertedFeature );
+        }
         
         return result;
         
