@@ -66,22 +66,33 @@ public class LockFeatureTypeResponse extends Response {
 	        
         writer.write( indent + "<LockId>" + lockResponse.getLockId() + "</LockId>" + "\n" );
 
-        List featuresLocked = lockResponse.getFeaturesLocked().getFeatureId();
-        List featuresNotLocked = lockResponse.getFeaturesNotLocked().getFeatureId();
-        if ( !featuresNotLocked.isEmpty() ) {
-        	if ( !featuresLocked.isEmpty() ) {
-
-                for (Iterator i = featuresLocked.iterator(); i.hasNext();) {
-                    writer.write( indent + indent);
-                   
-                    FeatureId featureId = (FeatureId) i.next();
-                    writer.write( "<ogc:FeatureId fid=\"" + featureId + "\"/>" + "\n");
-                }
-
-                writer.write( indent + "</FeaturesLocked>" + "\n");
-        	}
+        List featuresLocked = null;
+        if ( lockResponse.getFeaturesLocked() != null ) {
+        	featuresLocked = lockResponse.getFeaturesLocked().getFeatureId();
+        }
+        
+        List featuresNotLocked = null;
+        if ( lockResponse.getFeaturesNotLocked() != null ) {
+        	featuresNotLocked = lockResponse.getFeaturesNotLocked().getFeatureId();
+        }
+        
+        if ( featuresLocked != null && !featuresLocked.isEmpty() ) {
         	
+        	writer.write( indent + "<FeaturesLocked>" + "\n");
+        	
+            for (Iterator i = featuresLocked.iterator(); i.hasNext();) {
+                writer.write( indent + indent);
+               
+                FeatureId featureId = (FeatureId) i.next();
+                writer.write( "<ogc:FeatureId fid=\"" + featureId + "\"/>" + "\n");
+            }
 
+            writer.write( indent + "</FeaturesLocked>" + "\n");
+    	}
+    	
+        
+        if ( featuresNotLocked != null && !featuresNotLocked.isEmpty() ) {
+        	
         	writer.write( "<FeaturesNotLocked>" + "\n");
 
             for (Iterator i = featuresNotLocked.iterator(); i.hasNext();) {
