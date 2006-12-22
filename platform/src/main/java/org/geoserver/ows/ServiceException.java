@@ -1,5 +1,8 @@
 package org.geoserver.ows;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *  A standard OGC service exception.
  *  
@@ -16,6 +19,10 @@ public class ServiceException extends Exception {
 	 * Application specific locator
 	 */
 	String locator;
+	/**
+	 * List of text recording information about the exception
+	 */
+	List exceptionText = new ArrayList();
 	
 	public ServiceException( String message ) {
 		super( message );
@@ -89,5 +96,12 @@ public class ServiceException extends Exception {
 	 */
 	public void setLocator(String locator) {
 		this.locator = locator;
+	}
+	
+	/**
+	 * @return A list of String recording information about the exception.
+	 */
+	public List getExceptionText() {
+		return exceptionText;
 	}
 }
