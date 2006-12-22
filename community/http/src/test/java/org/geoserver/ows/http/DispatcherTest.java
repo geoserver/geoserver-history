@@ -85,6 +85,8 @@ public class DispatcherTest extends TestCase {
 		params.put( "message", "Hello world!");
 		
 		request.setupGetParameterMap( params );
+		request.setupQueryString( "service=hello&request=hello&message=Hello World!" );
+		
 		Map kvp = dispatcher.parseKVP( request );
 		
 		Message message = (Message) dispatcher.parseRequestKVP( Message.class, kvp );
@@ -142,6 +144,7 @@ public class DispatcherTest extends TestCase {
 		request.setupGetRequestURI( 
 			"http://localhost/geoserver/ows?service=hello&request=hello&message=HelloWorld" 
 		);
+		request.setupQueryString( "service=hello&request=hello&message=HelloWorld" );
 		dispatcher.handleRequest( request, response );
 		assertEquals( params.get( "message" ), response.getOutputStreamContents() );
 	}

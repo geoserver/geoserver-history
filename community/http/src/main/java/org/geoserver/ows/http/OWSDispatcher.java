@@ -41,11 +41,20 @@ public class OWSDispatcher extends AbstractController {
 	protected ModelAndView handleRequestInternal(
 		HttpServletRequest httpRequest, HttpServletResponse httpResponse
 	) throws Exception {
-	
-		Request request = init( httpRequest, httpResponse );
+
+		//create a new request instnace
+		Request request = new Request();
+		
+		//set request / response
+		request.httpRequest = httpRequest;
+		request.httpResponse = httpResponse;
+		
 		try {
 			Service service = null;
 			try {
+				//initialize the request
+				init( request );
+				
 				//find the service
 				try {
 					service = service( request );
@@ -71,15 +80,10 @@ public class OWSDispatcher extends AbstractController {
 		return null;
 	}
 	
-	Request init( HttpServletRequest httpRequest, HttpServletResponse httpResponse ) 
+	Request init( Request request ) 
 		throws ServiceException, IOException {
 		
-		//create a new request instance
-		Request request = new Request();
-		
-		//set request / response
-		request.httpRequest = httpRequest;
-		request.httpResponse = httpResponse;
+		HttpServletRequest httpRequest = request.httpRequest;
 		
 		//figure out method
 		request.get = "GET".equalsIgnoreCase( httpRequest.getMethod() ) || 
@@ -93,6 +97,7 @@ public class OWSDispatcher extends AbstractController {
 			//cache the input
 			request.input = cacheInputStream( httpRequest );
 		}
+		
 		return request;
 	}
 	
@@ -654,6 +659,42 @@ public class OWSDispatcher extends AbstractController {
 	Map parseKVP( HttpServletRequest request ) throws ServiceException {
 		//unparsed kvp set
 		Map kvp = request.getParameterMap();
+		
+		//TODO: cite check, make configurable
+		if ( request.getQueryString() != null && !"".equals( request.getQueryString().trim() ) ) {
+			//any keys
+			if ( kvp == null || kvp.isEmpty() ) {
+				throw new ServiceException( "Invalid query string: " + request.getQueryString() );
+			}
+			
+			//empty values?, catches case of ?key ( no equals )
+			boolean empty = true;
+			for ( Iterator e = kvp.entrySet().	iterator(); e.hasNext(); ) {
+				Map.Entry entry = (Map.Entry) e.next();
+				
+				Object value = entry.getValue();
+				if ( value == null ) 
+					continue;
+				
+				if ( value instanceof String ) {
+					if ( !"".equals( value.toString().trim() ) ) {
+						empty = false;
+					}
+				}
+				if ( value instanceof String[] ) {
+					String[] values = (String[]) value;
+					for ( int i = 0; i < values.length; i++ ) {
+						if ( values[ i ] != null && !"".equals( values[ i ].trim() ) ) {
+							empty = false;
+						}
+					}
+				}
+			}
+			
+			if ( empty ) {
+				throw new ServiceException( "Invalid query string: " + request.getQueryString() );
+			}
+		}
 		
 		if ( kvp == null )
 			return Collections.EMPTY_MAP;
