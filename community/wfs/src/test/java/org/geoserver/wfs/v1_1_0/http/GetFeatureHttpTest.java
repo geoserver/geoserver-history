@@ -128,12 +128,10 @@ public class GetFeatureHttpTest extends WfsHttpTestSupport {
 			 "<wfs:GetFeature xmlns:cdf=\"http://www.opengis.net/cite/data\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" version=\"1.1.0\" service=\"WFS\">" + 
        "<wfs:Query  typeName=\"cdf:Other\" srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\">" + 
          "<ogc:Filter>" + 
-         "  <ogc:PropertyIsEqualTo xmlns:p=\"http://www.opengis.net/ASDF\">" + 
+         "  <ogc:PropertyIsEqualTo>" + 
           "   <ogc:PropertyName>description</ogc:PropertyName>" + 
           "   <ogc:Literal>" + 
-          "       <p:literal version=\"1.0\">" + 
-          "         <p:value>ASDF</p:value>" + 
-          "       </p:literal>" + 
+          "       <wfs:Native vendorId=\"foo\" safeToIgnore=\"true\"/>" + 
           "   </ogc:Literal>" + 
         "   </ogc:PropertyIsEqualTo>" + 
         " </ogc:Filter>" + 

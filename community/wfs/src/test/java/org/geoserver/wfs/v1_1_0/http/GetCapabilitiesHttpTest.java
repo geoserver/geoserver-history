@@ -5,6 +5,10 @@ import org.w3c.dom.Document;
 
 public class GetCapabilitiesHttpTest extends WfsHttpTestSupport {
 
+	protected boolean isLogging() {
+		return true;
+	}
+	
 	public void testGet() throws Exception {
 		Document doc = getAsDOM( "wfs?service=WFS&request=getCapabilities&version=1.1.0" );
 		
@@ -14,7 +18,7 @@ public class GetCapabilitiesHttpTest extends WfsHttpTestSupport {
 	
 	public void testPost() throws Exception {
 		
-		String xml = "<GetCapabilities service=\"WFS\" version=\"1.1.0\"" + 
+		String xml = "<GetCapabilities service=\"WFS\" " + 
 				 " xmlns=\"http://www.opengis.net/wfs\" " + 
 				 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " + 
 				 " xsi:schemaLocation=\"http://www.opengis.net/wfs " +
@@ -26,7 +30,7 @@ public class GetCapabilitiesHttpTest extends WfsHttpTestSupport {
 	}
 	
 	public void testPostNoSchemaLocation() throws Exception {
-		String xml = "<GetCapabilities service=\"WFS\" version=\"1.1.0\"" + 
+		String xml = "<GetCapabilities service=\"WFS\" " + 
 				 " xmlns=\"http://www.opengis.net/wfs\" " + 
 				 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />";
 	    

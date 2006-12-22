@@ -65,7 +65,7 @@ public class LockFeatureTest extends WFSTestSupport {
         request.getLock().add(lock);
 
         LockFeatureResponseType results = webFeatureService.lockFeature(request);
-        assertEquals(0, results.getFeaturesNotLocked().getFeatureId().size());
+        assertNull( results.getFeaturesNotLocked() );
         assertEquals(3, results.getFeaturesLocked().getFeatureId().size());
         results.getFeaturesLocked().getFeatureId().contains("BasicPolygons.1107531493630");
         results.getFeaturesLocked().getFeatureId().contains("BasicPolygons.1107531493643");
@@ -84,7 +84,7 @@ public class LockFeatureTest extends WFSTestSupport {
         request.getLock().add(lock2);
 
         LockFeatureResponseType results = webFeatureService.lockFeature(request);
-        assertEquals(0, results.getFeaturesNotLocked().getFeatureId().size());
+        assertNull( results.getFeaturesNotLocked() );
         assertEquals(4, results.getFeaturesLocked().getFeatureId().size());
         results.getFeaturesLocked().getFeatureId().contains("BasicPolygons.1107531493630");
         results.getFeaturesLocked().getFeatureId().contains("BasicPolygons.1107531493643");
@@ -102,7 +102,7 @@ public class LockFeatureTest extends WFSTestSupport {
         request.getLock().add(lock);
 
         LockFeatureResponseType results = webFeatureService.lockFeature(request);
-        assertEquals(0, results.getFeaturesNotLocked().getFeatureId().size());
+        assertNull( results.getFeaturesNotLocked() );
         assertEquals(1, results.getFeaturesLocked().getFeatureId().size());
         results.getFeaturesLocked().getFeatureId().contains("BasicPolygons.1107531493630");
     }
