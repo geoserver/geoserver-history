@@ -92,6 +92,7 @@
 	<bean id="lockFeatureResponse"
 		class="org.geoserver.wfs.http.response.LockFeatureTypeResponse" singleton="false">
 		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
 	</bean>
 	<bean id="transactionResponse-1.0.0"
 		class="org.geoserver.wfs.http.response.TransactionResponse" singleton="false">
@@ -201,6 +202,9 @@
 	</bean>
 	<bean id="getFeatureTypeXmlReader-1.1.0" parent="xmlReader-1.1.0">
 		<constructor-arg value="GetFeature"/>
+	</bean>
+	<bean id="getFeatureWithLockXmlReader-1.1.0" parent="xmlReader-1.1.0">
+		<constructor-arg value="GetFeatureWithLock"/>
 	</bean>
 	<bean id="lockFeatureXmlReader-1-1.0" parent="xmlReader-1.1.0">
 		<constructor-arg value="LockFeature"/>
