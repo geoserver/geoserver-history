@@ -110,10 +110,6 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 					int pos = fid.indexOf(".");
 	                if ( pos != -1 ) {
                 		String typeName = fid.substring( 0, fid.lastIndexOf( "." ) );
-                		fid = fid.substring( fid.lastIndexOf( "." ) + 1 );
-                		
-                		//update the fid in hte list ( for later when we parse the fid into a filter )
-                		featureId.set( i, fid );
                 		
                 		//add to a list to set on the query
                 		List l = new ArrayList();
