@@ -515,7 +515,7 @@ public abstract class AbstractService extends HttpServlet
         		String id = (String) entry.getKey();
         		Service service = (Service) entry.getValue();
         		
-        		if (id.equalsIgnoreCase(serviceRequest.getService())) {
+        		if (id.toLowerCase().startsWith(serviceRequest.getService().toLowerCase().trim())) {
         			s = service;
         			break;
         		}

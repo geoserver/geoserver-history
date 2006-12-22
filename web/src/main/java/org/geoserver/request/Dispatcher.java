@@ -89,14 +89,14 @@ public class Dispatcher extends AbstractController {
 			
 			//we allow for a null service
 			if (service == null) {
-				if (bean.getRequest().equalsIgnoreCase(request)) {
+				if (bean.getRequest().toLowerCase().startsWith(request.toLowerCase().trim())) {
 					//we have a winner
 					matches.add(bean);
 				}
 			}
 			else {
-				if (bean.getService().equalsIgnoreCase(service) && 
-					bean.getRequest().equalsIgnoreCase(request)) {
+				if (bean.getService().toLowerCase().startsWith(service.toLowerCase().trim()) && 
+					bean.getRequest().equalsIgnoreCase(request.trim())) {
 					
 					//we have a winner
 					matches.add(bean);
