@@ -15,6 +15,7 @@ public class GetCapabilitiesKvpRequestReader extends WFSKvpRequestReader {
 	public Object read(Object request, Map kvp) throws Exception {
 		request = super.read( request, kvp );
 		
+		//TODO: this is a cite thing, make configurable
 		//TODO: remove this class
 //		//version
 //		if ( kvp.c7ontainsKey( "version") ) {
