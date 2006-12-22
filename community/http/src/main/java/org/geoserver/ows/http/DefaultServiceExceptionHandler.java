@@ -63,6 +63,7 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
 		
 		//add the message
 		e.getExceptionText().add( exception.getMessage() );
+		e.getExceptionText().addAll( exception.getExceptionText() );
 		
 		//add the entire stack trace
 		//exception.
