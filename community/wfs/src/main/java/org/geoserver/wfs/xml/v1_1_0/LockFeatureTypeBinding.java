@@ -1,8 +1,13 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 
+import java.math.BigInteger;
+
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.AllSomeType;
+import net.opengis.wfs.LockFeatureType;
+import net.opengis.wfs.LockType;
 import net.opengis.wfs.WFSFactory;
 
 import org.geotools.xml.AbstractComplexBinding;
@@ -105,7 +110,7 @@ public class LockFeatureTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return LockFeatureType.class;
 	}
 	
 	/**
@@ -117,8 +122,28 @@ public class LockFeatureTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		LockFeatureType lockFeature = wfsfactory.createLockFeatureType();
+		
+		//&lt;xsd:element maxOccurs="unbounded" name="Lock" type="wfs:LockType"&gt;
+		lockFeature.getLock().addAll( node.getChildValues( LockType.class ) );
+		
+		//&lt;xsd:attribute default="5" name="expiry"  type="xsd:positiveInteger" use="optional"&gt;
+		if ( node.hasAttribute( "expiry" ) ) {
+			lockFeature.setExpiry( (BigInteger) node.getAttributeValue( "expiry" ) );
+		}
+		else {
+			lockFeature.setExpiry( BigInteger.valueOf( 5 ) );
+		}
+		
+		//&lt;xsd:attribute default="ALL" name="lockAction"
+		if ( node.hasAttribute( "lockAction") ) {
+			lockFeature.setLockAction( (AllSomeType) node.getAttributeValue( "lockAction" ) );
+		}
+		else {
+			lockFeature.setLockAction( AllSomeType.ALL_LITERAL );
+		}
+		
+		return lockFeature;
 	}
 
 }

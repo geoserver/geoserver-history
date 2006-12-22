@@ -87,6 +87,10 @@ public class LockFeatureTypeBinding extends AbstractComplexBinding {
 		return WFS.LOCKFEATURETYPE;
 	}
 	
+	public int getExecutionMode() {
+		return BEFORE;
+	}
+	
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
