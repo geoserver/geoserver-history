@@ -83,6 +83,30 @@ public class DefaultGeoServerCatalog extends AdaptingCatalog implements
 		return active;
 	}
 	
+	public List featureTypes( String namespaceURI ) throws IOException {
+		if ( namespaceURI == null ) {
+			//assume the default namespace defined
+			namespaceURI = getNamespaceSupport().getURI( "" );
+		}
+		
+		List all = resources( FeatureTypeInfo.class );
+		List active = new ArrayList();
+
+		for ( Iterator i = all.iterator(); i.hasNext(); ) {
+			GeoResource resource = (GeoResource) i.next();
+			FeatureTypeInfo info = 
+				(FeatureTypeInfo) resource.resolve( FeatureTypeInfo.class, null );
+			
+			String uri = getNamespaceSupport().getURI( info.namespacePrefix() );
+			if ( namespaceURI.equals( uri ) ) {
+				active.add( info );	
+			}
+			
+		}
+		
+		return active;
+	}
+	
 	public FeatureTypeInfo featureType(String identifier) throws IOException {
 		if ( identifier == null ) 
 			return null;

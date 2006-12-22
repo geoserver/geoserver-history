@@ -86,6 +86,21 @@ public interface GeoServerCatalog extends Catalog {
 	List featureTypes() throws IOException;
 	
 	/**
+	 * Returns a list of feature types meta data objects representing active
+	 * features in the catalog that belong to a particular namespace.
+	 * <p>
+	 * If <param>namespaceURI</param> is <code>null</code>, the default 
+	 * namespace defined in the catalog is used.
+	 * </p>
+	 * @param namspaceURI The namespace uri's of the returned feautre types.
+	 
+	 * @return A list of {@link org.geoserver.data.feature.FeatureTypeInfo}.
+	 * 
+	 * @throws IOException
+	 */
+	List featureTypes( String namspaceURI ) throws IOException;
+	
+	/**
 	 * Returns a single feature type meta data object based on a single identifier.
 	 * <p>
 	 * The feature type identifier is namespace prefix qualified as in <code>cfg:Points</code>.
