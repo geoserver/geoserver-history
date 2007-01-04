@@ -207,9 +207,7 @@ public class GeoServerHttpTestSupport extends TestCase {
 	
 	/**
 	 * Executes an ows request using the GET method.
-	 * <p>
-	 * 
-	 * </p>
+	 *
 	 * @param path The porition of the request after hte context, 
 	 * 	example: 'wms?request=GetMap&version=1.1.1&..."
 	 * 
@@ -223,6 +221,41 @@ public class GeoServerHttpTestSupport extends TestCase {
 		
 		MockHttpServletResponse response = dispatch( request );
         return new ByteArrayInputStream( response.getOutputStreamContents().getBytes() );
+	}
+	
+	/**
+	 * Executes an ows request using the POST method with key value pairs 
+	 * form encoded. 
+	 *
+	 * @param path The porition of the request after hte context, 
+	 * 	example: 'wms?request=GetMap&version=1.1.1&..."
+	 * 
+	 * @return An input stream which is the result of the request.
+	 * 
+	 * @throws Exception
+	 */
+	protected InputStream post( String path ) throws Exception {
+		MockHttpServletRequest request = request( path ); 
+		request.setupGetMethod( "POST" );
+		request.setupGetContentType( "application/x-www-form-urlencoded" );
+		
+		MockHttpServletResponse response = dispatch( request );
+        return new ByteArrayInputStream( response.getOutputStreamContents().getBytes() );
+	}
+	
+	/**
+	 * Executes an ows request using the POST method with key value pairs 
+	 * form encoded, returning the result as a dom.
+	 *
+	 * @param path The porition of the request after hte context, 
+	 * 	example: 'wms?request=GetMap&version=1.1.1&..."
+	 * 
+	 * @return An input stream which is the result of the request.
+	 * 
+	 * @throws Exception
+	 */
+	protected Document postAsDOM( String path ) throws Exception {
+		return dom( post( path ) );
 	}
 	
 	protected MockHttpServletRequest request( String path ) {
