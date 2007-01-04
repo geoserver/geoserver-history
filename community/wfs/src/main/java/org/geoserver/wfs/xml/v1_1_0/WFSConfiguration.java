@@ -26,6 +26,7 @@ import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.BindingConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
+import org.geotools.xml.Schemas;
 import org.geotools.xs.bindings.XS;
 import org.picocontainer.MutablePicoContainer;
 
@@ -96,6 +97,11 @@ public class WFSConfiguration extends Configuration {
 		container.registerComponentImplementation( OGC.PROPERTYNAMETYPE, PropertyNameTypeBinding.class );
 		container.registerComponentImplementation( GML.CircleType, CircleTypeBinding.class );
 		container.registerComponentImplementation( GML.AbstractGeometryType, AbstractGeometryTypeBinding.class );
+		
+		//remove bindings for MultiPolygon and MultiLineString
+		//TODO: make this cite configurable
+		Schemas.unregisterComponent( container, GML.MultiPolygonType );
+		
 	}
 	
 }
