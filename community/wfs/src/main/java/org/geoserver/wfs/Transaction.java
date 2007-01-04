@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -547,7 +548,7 @@ public class Transaction {
 				            
 				        } catch (IOException ioException) {
 				        	//JD: changing from throwing service exception to adding action that failed
-				        	throw new WFSTransactionException( ioException, update.getHandle(), handle );
+				        	throw new WFSTransactionException( ioException, null, handle );
 				        } 
 				    } //end update
 			    }
@@ -579,8 +580,9 @@ public class Transaction {
 			        	
 			        	//JD: change from set fo list because if inserting features into 
 			        	// differnt feature stores, they could very well get given the same id
-			        	//Set fids = new HashSet();
-			        	List fids = new ArrayList();
+			        	//JD: change from list to map so that the map can later be processed and 
+			        	// we can report the fids back in the same order as they were supplied
+			        	HashMap schema2fids = new HashMap();
 			        	for ( Iterator c = schema2features.values().iterator(); c.hasNext(); ) {
 			        		FeatureCollection collection = (FeatureCollection) c.next();
 			        		FeatureType schema = collection.getSchema();
@@ -628,6 +630,12 @@ public class Transaction {
 				                 LOGGER.finer("Use featureValidation to check contents of insert" );
 				                 //featureValidation( typeInfo.getDataStore().getId(), schema, collection );
 
+				                 List fids = (List) schema2fids.get( schema.getTypeName() );
+				                 if ( fids == null ) {
+				                	 fids = new LinkedList();
+				                	 schema2fids.put( schema.getTypeName() , fids );
+				                 }
+				                 
 				                 fids.addAll( store.addFeatures( collection ) );
 				            }
 				        
@@ -637,20 +645,27 @@ public class Transaction {
 			        		
 			        	}
 			        	
-			            for( Iterator f = fids.iterator(); f.hasNext(); ) {
-			            	//set the result
+			        	//report back fids, we need to keep the same order the fids were reported 
+			        	// in the original feature collection
+			            for( Iterator f = insert.getFeature().iterator(); f.hasNext(); ) {
+			            	Feature feature = (Feature) f.next();
+			        		FeatureType schema = feature.getFeatureType();
+			        		
+			        		//get the next fid
+			        		LinkedList fids = (LinkedList) schema2fids.get( schema.getTypeName() );
+			        		String fid = (String) fids.removeFirst();
+			        		
 				            InsertedFeatureType insertedFeature =
 				            	WFSFactory.eINSTANCE.createInsertedFeatureType();
 				            insertedFeature.setHandle( insert.getHandle() );
 				            
-			            	String fid = (String) f.next();
 			            	insertedFeature.getFeatureId().add( filterFactory.featureId( fid ) );
 			            	
 			            	result.getInsertResults().getFeature().add( insertedFeature );
 			            }
 			            
 			            //update the insert counter
-			            inserted += fids.size();
+			            inserted += insert.getFeature().size();
 			            
 			            
 			        } catch (IOException ioException) {
