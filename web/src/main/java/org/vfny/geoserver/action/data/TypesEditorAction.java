@@ -21,20 +21,18 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.DynaActionForm;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
-import org.geotools.geometry.JTS;
+import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.MathTransformFactory;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
@@ -199,7 +197,7 @@ public class TypesEditorAction extends ConfigAction {
         	CoordinateReferenceSystem crsLatLong   = CRS.decode("EPSG:4326");  // latlong
         	
         	MathTransform xform = CRS.findMathTransform(crsTheirData,crsLatLong,true);
-        	Envelope xformed_envelope = JTS.transform(envelope,xform,10); //convert data bbox to lat/long
+        	Envelope xformed_envelope = JTS.transform(envelope,xform); //convert data bbox to lat/long
         	
             typeForm.setMinX(Double.toString(xformed_envelope.getMinX()));
             typeForm.setMaxX(Double.toString(xformed_envelope.getMaxX()));
