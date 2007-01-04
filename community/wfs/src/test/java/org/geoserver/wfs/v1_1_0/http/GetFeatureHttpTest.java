@@ -8,6 +8,7 @@ import org.w3c.dom.NodeList;
 
 public class GetFeatureHttpTest extends WfsHttpTestSupport {
 
+	
 	public void testGet() throws Exception {
 		Document doc = getAsDOM( "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0&service=wfs" );
 		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
@@ -46,6 +47,17 @@ public class GetFeatureHttpTest extends WfsHttpTestSupport {
 			assertTrue( feature.hasAttribute( "gml:id" ) );
 		}
 	
+	}
+	
+	public void testPostFormEncoded() throws Exception {
+		String request = 
+			"wfs?service=WFS&version=1.1.0&request=GetFeature&typename=sf:PrimitiveGeoFeature" +
+			"&namespace=xmlns(sf=http://cite.opengeospatial.org/gmlsf)";
+		
+		Document doc = postAsDOM( request );
+		assertEquals( "wfs:FeatureCollection", doc.getDocumentElement().getNodeName() );
+		
+		assertEquals( 5, doc.getElementsByTagName( "sf:PrimitiveGeoFeature" ).getLength() );
 	}
 	
 	public void testPostWithFilter() throws Exception {
