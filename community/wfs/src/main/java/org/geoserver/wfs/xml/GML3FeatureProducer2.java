@@ -120,8 +120,6 @@ public class GML3FeatureProducer2 implements FeatureProducer {
 		);
 		
 		//declare application schema namespaces
-		HashMap ns2types = new HashMap();
-		
 		for ( Iterator i = ns2metas.entrySet().iterator(); i.hasNext(); ) {
 			Map.Entry entry = (Map.Entry) i.next();
 			
@@ -146,7 +144,7 @@ public class GML3FeatureProducer2 implements FeatureProducer {
 		}
 		
 		try {
-			encoder.write( results, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output );
+			encoder.encode( results, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output );
 		} 
 		catch (SAXException e) {
 			String msg = "Error occurred encoding features";
