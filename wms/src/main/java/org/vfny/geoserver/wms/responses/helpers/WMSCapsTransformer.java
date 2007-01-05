@@ -574,7 +574,7 @@ public class WMSCapsTransformer extends TransformerBase {
 						// note, if commonSRS is "", this will not match
 						currentSRS = it.next().toString();
 						if (!currentSRS.equals(commonSRS)) {
-							element("SRS", currentSRS);
+							element("SRS", EPSG+":"+currentSRS);
 						}
 					}
 				} catch (Exception e) {
