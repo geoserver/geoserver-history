@@ -225,7 +225,7 @@ public class GetMapResponse implements Response {
 					// /////////////////////////////////////////////////////////
 					try {
 						source = layers[i].getFeature().getFeatureSource();
-                        // NOTE for the feature. Here there was some code that sounded like: 
+                        // NOTE for the future. Here there was some code that sounded like: 
                         // * get the bounding box from feature source
                         // * eventually reproject it to the actual CRS used for map
                         // * if no intersection, don't bother adding the feature source to the map
