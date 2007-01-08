@@ -77,6 +77,16 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+                <repository>
+			<id>geo-solutions</id>
+			<name>
+				Repository from Geo-Solutions nightly build (tracks GeoTools 2.3).
+			</name>
+			<url>http://www.geo-solutions.it/gt2_nightly/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
