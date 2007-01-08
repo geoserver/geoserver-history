@@ -225,25 +225,14 @@ public class GetMapResponse implements Response {
 					// /////////////////////////////////////////////////////////
 					try {
 						source = layers[i].getFeature().getFeatureSource();
-						// ///
-						//
-						// Do we have something to load?
-						// We just need to check the bbox of the layer.
-						//
-						// //
-						if (layers[i].getBoundingBox() instanceof ReferencedEnvelope) {
-							final ReferencedEnvelope bbox = (ReferencedEnvelope) layers[i].getBoundingBox();
-							if(CRS.equalsIgnoreMetadata(bbox.getCoordinateReferenceSystem(), mapcrs)) {
-								if (!layers[i].getBoundingBox().intersects(env)) {
-									continue;
-								}
-							} else {
-								ReferencedEnvelope prjEnv = new ReferencedEnvelope(env, mapcrs).transform(bbox.getCoordinateReferenceSystem(), true);
-								if (!layers[i].getBoundingBox().intersects(prjEnv)) {
-									continue;
-								}
-							}						
-						}
+                        // NOTE for the feature. Here there was some code that sounded like: 
+                        // * get the bounding box from feature source
+                        // * eventually reproject it to the actual CRS used for map
+                        // * if no intersection, don't bother adding the feature source to the map
+                        // This is not an optimization, on the contrary, computing the bbox may be
+                        // very expensive depending on the data size. Using sigma.openplans.org data
+                        // and a tiled client like OpenLayers, it dragged the server to his knees
+                        // and the client simply timed out
 					} catch (IOException exp) {
 						if (LOGGER.isLoggable(Level.SEVERE)) {
 							LOGGER.log(Level.SEVERE, new StringBuffer(
@@ -253,16 +242,7 @@ public class GetMapResponse implements Response {
 						throw new WmsException(null, new StringBuffer(
 								"Internal error : ").append(exp.getMessage())
 								.toString());
-					} catch (FactoryException exp) {
-						if (LOGGER.isLoggable(Level.SEVERE)) {
-							LOGGER.log(Level.SEVERE, new StringBuffer(
-									"Getting feature source: ").append(
-									exp.getMessage()).toString(), exp);
-						}
-						throw new WmsException(null, new StringBuffer(
-								"Internal error : ").append(exp.getMessage())
-								.toString());
-					}
+                    }
 
 					layer = new DefaultMapLayer(source, style);
 					layer.setTitle(layers[i].getName());
