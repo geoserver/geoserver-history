@@ -5,10 +5,12 @@
 package org.vfny.geoserver.wms.responses;
 
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -257,6 +259,7 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 		// if we set it to true then it does it all twice...
 		Map rendererParams = new HashMap();
 		rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
+        rendererParams.put("renderingBuffer", new Integer(map.getBuffer()));
 		renderer.setRendererHints(rendererParams);
 
 		final ReferencedEnvelope dataArea = map.getAreaOfInterest();

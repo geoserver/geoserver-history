@@ -141,6 +141,10 @@ public class GetMapRequest extends WMSRequest {
     public boolean isTransparent() {
         return this.optionalParams.transparent;
     }
+    
+    public int getBuffer() {
+        return this.optionalParams.buffer;
+    }
 
     /**
      * DOCUMENT ME!
@@ -254,6 +258,10 @@ public class GetMapRequest extends WMSRequest {
     public void setTransparent(boolean transparent) {
         this.optionalParams.transparent = transparent;
     }
+    
+    public void setBuffer(int buffer) {
+        this.optionalParams.buffer = buffer;
+    }
 
     /**
      * DOCUMENT ME!
@@ -344,11 +352,16 @@ public class GetMapRequest extends WMSRequest {
         /** DOCUMENT ME!  */
         boolean transparent = false;
         
+        /** the rendering buffer, in pixels **/
+        int buffer;
+        
         /** score value for KML/KMZ */
         int KMScore = 40;
         
         /** KML full/none attribution on returned placemark <description>. */
         boolean KMattr = true;
     }
+
+    
 
 }

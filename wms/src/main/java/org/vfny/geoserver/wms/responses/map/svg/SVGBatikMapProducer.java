@@ -7,6 +7,8 @@ import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -70,6 +72,12 @@ public class SVGBatikMapProducer implements GetMapProducer {
         throws WmsException {
     	
     	renderer = new StreamingRenderer();
+
+        // optimized data loading was not here, but yet it seems sensible to have it...
+        Map rendererParams = new HashMap();
+        rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
+        rendererParams.put("renderingBuffer", new Integer(map.getBuffer()));
+        renderer.setRendererHints(rendererParams);
     	renderer.setContext(map);
     }
 
