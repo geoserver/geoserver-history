@@ -867,12 +867,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
 		// parse each filter, eventually throwing an exception if there is any
 		// encoding problem
-		List filterSpecs = readFlat(rawFilter, OUTER_DELIMETER);
+		List filterSpecs = readFlat(rawFilter, INNER_DELIMETER);
 		List filters = new ArrayList(filterSpecs.size());
 		try {
 			for (Iterator it = filterSpecs.iterator(); it.hasNext();) {
 				String filterSpec = (String) it.next();
-				if (filterSpec != null && !filterSpec.equals("")) {
+				if (filterSpec != null && !filterSpec.trim().equals("")) {
 					Reader filterReader = new StringReader(filterSpec);
 					filters.add(WfsXmlRequestReader.readFilter(filterReader));
 				} else {
