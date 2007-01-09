@@ -227,7 +227,7 @@ class PDFMapProducer implements GetMapProducer {
             //if we set it to true then it does it all twice...
             Map rendererParams = new HashMap();
             rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
-
+            rendererParams.put("renderingBuffer", new Integer(map.getBuffer()));
             renderer.setRendererHints(rendererParams);
 
             Envelope dataArea = map.getAreaOfInterest();

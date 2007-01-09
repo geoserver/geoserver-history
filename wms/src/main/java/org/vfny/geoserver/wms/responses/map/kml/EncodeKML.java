@@ -469,7 +469,7 @@ public class EncodeKML {
     		// if we set it to true then it does it all twice...
     		Map rendererParams = new HashMap();
     		rendererParams.put("optimizedDataLoadingEnabled", Boolean.TRUE);
-
+            rendererParams.put("renderingBuffer", new Integer(mapContext.getBuffer()));
     		renderer.setRendererHints(rendererParams);
 
     		Envelope dataArea = map.getAreaOfInterest();

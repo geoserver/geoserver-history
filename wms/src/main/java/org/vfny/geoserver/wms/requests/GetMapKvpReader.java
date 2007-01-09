@@ -277,7 +277,6 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         request.setTransparent(transparent);
 
         String bgcolor = getValue("BGCOLOR");
-
         if (bgcolor != null) {
             try {
                 request.setBgColor(Color.decode(bgcolor));
@@ -289,6 +288,19 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         
         // filter parsing
         parseFilterParam(request);
+        
+        // buffer
+        String bufferValue = getValue("BUFFER");
+        int buffer = 0;
+        if(bufferValue != null) {
+            try {
+                buffer = Integer.parseInt(bufferValue);
+            } catch(NumberFormatException nfe) {
+                throw new WmsException("BUFFER " + bufferValue
+                        + " incorrectly specified (expected an integer)");
+            }
+        }
+        request.setBuffer(buffer);
         
         /** KML/KMZ score value */
         String KMScore = getValue("KMSCORE");
@@ -840,10 +852,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	protected void parseFilterParam(GetMapRequest request) throws WmsException {
 		String rawFilter = getValue("FILTER");
                 
-                // in case of a mixed request, get with sld in post body, layers
-                // are not parsed, so we can't parse filters neither...
-                if(request.getLayers() == null)
-                    return;
+        // in case of a mixed request, get with sld in post body, layers
+        // are not parsed, so we can't parse filters neither...
+        if(request.getLayers() == null)
+            return;
 		
 		int numLayers = request.getLayers().length;
 		if(numLayers == 0)

@@ -50,6 +50,10 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
 
     /** true if background transparency is requested */
     private boolean transparent;
+    
+    /** the rendering buffer used to avoid issues with tiled rendering and big strokes 
+     *  that may cross tile boundaries */
+    private int buffer;
 
     private GetMapRequest request; // hold onto it so we can grab info from it (request URL etc...)
     
@@ -153,4 +157,12 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
 	public void setRequest(GetMapRequest request) {
 		this.request = request;
 	}
+
+    public int getBuffer() {
+        return buffer;
+    }
+
+    public void setBuffer(int buffer) {
+        this.buffer = buffer;
+    }
 }
