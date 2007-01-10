@@ -26,7 +26,7 @@
 		<xs:sequence>
 			<xs:element ref="sld:StyledLayerDescriptor" />
 			<xs:element name="BoundingBox" type="gml:BoxType"/>
-				<xs:element name="Output">
+			<xs:element name="Output">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="Format" type="ogc:FormatType"/>
@@ -40,9 +40,10 @@
 								</xs:sequence>
 							</xs:complexType>
 						</xs:element><!--Size-->
+						<xs:element name="Buffer" type="xs:int" minOccurs="0"/>
 					</xs:sequence>
 				</xs:complexType>
-				</xs:element><!--Output-->
+			</xs:element><!--Output-->
 			<xs:element name="Exceptions" type="ogc:ExceptionsType" minOccurs="0"/>
 			<xs:element name="Vendor" type="ogc:VendorType" minOccurs="0"/>
 		</xs:sequence>
