@@ -402,6 +402,7 @@ public class GetMapXmlReader extends XmlRequestReader {
 	 * 		<xs:element name="Height" type="xs:positiveInteger"/>
 	 * 	</xs:sequence>
 	 * 	</xs:complexType>
+     *  <xs:element name="Buffer" type="xs:integer" minOccurs="0"/>
 	 * </xs:element><!--Size-->
 	 *
 	 * @param nodeGetMap
@@ -427,7 +428,7 @@ public class GetMapXmlReader extends XmlRequestReader {
 
         getMapRequest.setFormat(format);
 
-        //Transparent
+        // Transparent
         String trans = getNodeValue(outputNode, "Transparent");
 
         if (trans != null) {
@@ -436,6 +437,12 @@ public class GetMapXmlReader extends XmlRequestReader {
             } else {
                 getMapRequest.setTransparent(true);
             }
+        }
+        
+        // Buffer
+        String bufferValue = getNodeValue(outputNode, "Buffer");
+        if (bufferValue != null) {
+            getMapRequest.setBuffer(Integer.parseInt(bufferValue));
         }
 
         //BGColor
