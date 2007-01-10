@@ -131,8 +131,7 @@ public class MockGeoServerDataDirectory {
 	
 	public static QName PRIMITIVE_GEO_FEATURE = new QName( SF_URI, "PrimitiveGeoFeature", SF_PREFIX );
 	public static QName AGGREGATE_GEO_FEATURE = new QName( SF_URI, "AggregateGeoFeature", SF_PREFIX );
-	public static QName ENTITÉ_GÉNÉRIQUE = new QName( SF_URI, "EntitéGénérique", SF_PREFIX );
-
+	
 	/**
 	 * List of all cite types names
 	 */
@@ -144,7 +143,7 @@ public class MockGeoServerDataDirectory {
 		DELETES, FIFTEEN, INSERTS, LOCKS, NULLS, OTHER, SEVEN, UPDATES, LINES, MLINES, 
 	    MPOINTS, MPOLYGONS, POINTS, POLYGONS,
 	    //WFS 1.1
-	    PRIMITIVE_GEO_FEATURE, AGGREGATE_GEO_FEATURE, ENTITÉ_GÉNÉRIQUE
+	    PRIMITIVE_GEO_FEATURE, AGGREGATE_GEO_FEATURE
 	};
 	
 	/**
@@ -172,7 +171,7 @@ public class MockGeoServerDataDirectory {
 	};
 	
 	public static QName[] wfs1_1CiteTypeNames = new QName[] {
-		PRIMITIVE_GEO_FEATURE, AGGREGATE_GEO_FEATURE, ENTITÉ_GÉNÉRIQUE
+		PRIMITIVE_GEO_FEATURE, AGGREGATE_GEO_FEATURE
 	};
 	
 	/** the base of the data directory */
@@ -247,7 +246,6 @@ public class MockGeoServerDataDirectory {
 		
 		setup(PRIMITIVE_GEO_FEATURE);
 		setup(AGGREGATE_GEO_FEATURE);
-		setup(ENTITÉ_GÉNÉRIQUE);
 		
 		//create the catalog.xml
 		CatalogWriter writer = new CatalogWriter();
