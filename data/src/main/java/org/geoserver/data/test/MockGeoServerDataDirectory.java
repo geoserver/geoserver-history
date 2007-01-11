@@ -129,8 +129,9 @@ public class MockGeoServerDataDirectory {
 	public static String SF_PREFIX = "sf";
 	public static String SF_URI = "http://cite.opengeospatial.org/gmlsf";
 	
-	public static QName PRIMITIVE_GEO_FEATURE = new QName( SF_URI, "PrimitiveGeoFeature", SF_PREFIX );
-	public static QName AGGREGATE_GEO_FEATURE = new QName( SF_URI, "AggregateGeoFeature", SF_PREFIX );
+	public static QName PRIMITIVEGEOFEATURE = new QName( SF_URI, "PrimitiveGeoFeature", SF_PREFIX );
+	public static QName AGGREGATEGEOFEATURE = new QName( SF_URI, "AggregateGeoFeature", SF_PREFIX );
+	public static QName ENTIT\u00C9G\u00C9N\u00C9RIQUE = new QName( SF_URI, "Entit\u00E9G\u00E9n\u00E9rique" );
 	
 	/**
 	 * List of all cite types names
@@ -143,7 +144,7 @@ public class MockGeoServerDataDirectory {
 		DELETES, FIFTEEN, INSERTS, LOCKS, NULLS, OTHER, SEVEN, UPDATES, LINES, MLINES, 
 	    MPOINTS, MPOLYGONS, POINTS, POLYGONS,
 	    //WFS 1.1
-	    PRIMITIVE_GEO_FEATURE, AGGREGATE_GEO_FEATURE
+	    PRIMITIVEGEOFEATURE, AGGREGATEGEOFEATURE, ENTIT\u00C9G\u00C9N\u00C9RIQUE
 	};
 	
 	/**
@@ -171,7 +172,7 @@ public class MockGeoServerDataDirectory {
 	};
 	
 	public static QName[] wfs1_1CiteTypeNames = new QName[] {
-		PRIMITIVE_GEO_FEATURE, AGGREGATE_GEO_FEATURE
+		PRIMITIVEGEOFEATURE, AGGREGATEGEOFEATURE, ENTIT\u00C9G\u00C9N\u00C9RIQUE
 	};
 	
 	/** the base of the data directory */
@@ -244,8 +245,9 @@ public class MockGeoServerDataDirectory {
 		setup(POINTS);
 		setup(POLYGONS);
 		
-		setup(PRIMITIVE_GEO_FEATURE);
-		setup(AGGREGATE_GEO_FEATURE);
+		setup(PRIMITIVEGEOFEATURE);
+		setup(AGGREGATEGEOFEATURE);
+		setup(ENTIT\u00C9G\u00C9N\u00C9RIQUE);
 		
 		//create the catalog.xml
 		CatalogWriter writer = new CatalogWriter();
@@ -380,6 +382,10 @@ public class MockGeoServerDataDirectory {
 		delete(styles);
 		delete(featureTypes);
 		delete(data);
+		
+		styles = null;
+		featureTypes = null;
+		data = null;
 	}
 
 	void delete(File dir) throws IOException {
