@@ -47,7 +47,7 @@ public class GeoServerHttpTestSupport extends TestCase {
 	/**
 	 * Mock GeoServer instance
 	 */
-	 MockGeoServer geoServer;
+	MockGeoServer geoServer;
 	
 	/**
 	 * Internal flag to initialize application context.
@@ -89,14 +89,17 @@ public class GeoServerHttpTestSupport extends TestCase {
 	protected void setUpInternal() throws Exception {
 	}
 	
-	protected void tearDown() throws Exception {
+	protected final void tearDown() throws Exception {
 		
 		data.tearDown();
+		geoServer.destroy();
 		
 		initialize = false;
 
 		tearDownInternal();
 		
+		data = null;
+		geoServer = null;
 	}
 	
 	/**

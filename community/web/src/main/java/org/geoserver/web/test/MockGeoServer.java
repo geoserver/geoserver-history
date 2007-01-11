@@ -41,4 +41,11 @@ public class MockGeoServer {
 		reader.loadBeanDefinitions( new InputSource( beanDefinitions ) );
 	}
 	
+	/**
+	 * Cleans up resources allocated by the mock geoserver instance.
+	 */
+	public void destroy() {
+		applicationContext.destroy();
+		applicationContext = null;
+	}
 }
