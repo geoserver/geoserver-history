@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.xerces.impl.dtd.models.CMLeaf;
 import org.eclipse.xsd.XSDComplexTypeDefinition;
 import org.eclipse.xsd.XSDCompositor;
 import org.eclipse.xsd.XSDDerivationMethod;
@@ -65,7 +66,6 @@ public abstract class FeatureTypeSchemaBuilder {
 	/**
 	 * gml schema stuff 
 	 */
-	protected XSDSchemaLocator gmlSchemaLocator;
 	protected String gmlNamespace;
 	protected String gmlSchemaLocation;
 	protected Configuration xmlConfiguration;
@@ -106,7 +106,7 @@ public abstract class FeatureTypeSchemaBuilder {
 			imprt.setSchemaLocation( 
 				ResponseUtils.appendPath( wfs.getSchemaBaseURL(), gmlSchemaLocation )
 			);
-			XSDSchema gmlSchema = gmlSchemaLocator.locateSchema( null, gmlNamespace, null, null );
+			XSDSchema gmlSchema = gmlSchema(); 
 			imprt.setResolvedSchema( gmlSchema );
 			
 			schema.getContents().add( imprt );
@@ -284,33 +284,62 @@ public abstract class FeatureTypeSchemaBuilder {
 		return null;
 	}
 	
+	
+	protected abstract XSDSchema gmlSchema();
+	
 	public static final class GML2 extends FeatureTypeSchemaBuilder {
+		
+		/**
+		 * Cached gml2 schema
+		 */
+		private static XSDSchema gml2Schema;
 		
 		public GML2( WFS wfs, GeoServerCatalog catalog, GeoServerResourceLoader resourceLoader ) {
 			super(wfs, catalog, resourceLoader);
 			
 			profiles.add( new GML2Profile() );
-			gmlSchemaLocator = new org.geotools.gml2.bindings.GMLSchemaLocator();
 			gmlNamespace = org.geotools.gml2.bindings.GML.NAMESPACE;
 			gmlSchemaLocation = "gml/2.1.2/feature.xsd";
 			xmlConfiguration = new GMLConfiguration();
 		}
 		
+		protected XSDSchema gmlSchema() {
+			if ( gml2Schema == null ) {
+				gml2Schema = xmlConfiguration.schema();
+			}
+			
+			return gml2Schema;
+		}
+		
+		
 	}
 	
 	public static final class GML3 extends FeatureTypeSchemaBuilder {
+		
+		/**
+		 * Cached gml3 schema
+		 */
+		private static XSDSchema gml3Schema;
 		
 		public GML3( WFS wfs, GeoServerCatalog catalog, GeoServerResourceLoader resourceLoader  ) {
 			super( wfs, catalog, resourceLoader );
 			
 			profiles.add( new GML3Profile() );
 			
-			gmlSchemaLocator = new org.geotools.gml3.bindings.GMLSchemaLocator();
 			gmlNamespace = org.geotools.gml3.bindings.GML.NAMESPACE;
 			gmlSchemaLocation = "gml/3.1.1/base/feature.xsd";
 			xmlConfiguration = new org.geotools.gml3.GMLConfiguration();
 			
 		}
+		
+		protected XSDSchema gmlSchema() {
+			if ( gml3Schema == null ) {
+				gml3Schema = xmlConfiguration.schema();
+			}
+			
+			return gml3Schema;
+		}
+		
 	}
 	
 	

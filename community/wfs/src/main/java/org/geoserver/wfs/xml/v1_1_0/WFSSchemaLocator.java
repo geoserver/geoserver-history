@@ -1,41 +1,58 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
-import java.io.IOException;
+import java.util.Iterator;
 
 import org.eclipse.xsd.XSDSchema;
-import org.eclipse.xsd.util.XSDSchemaLocationResolver;
-import org.eclipse.xsd.util.XSDSchemaLocator;
-import org.geoserver.wfs.xml.v1_0_0.WFS;
-import org.geoserver.wfs.xml.v1_0_0.WFSSchemaLocationResolver;
-import org.geoserver.xml.ows.v1_0_0.OWSSchemaLocationResolver;
-import org.geotools.filter.v1_1.OGCSchemaLocationResolver;
-import org.geotools.gml3.bindings.GMLSchemaLocationResolver;
-import org.geotools.gml3.bindings.smil.SMIL20SchemaLocationResolver;
-import org.geotools.xlink.bindings.XLINKSchemaLocationResolver;
-import org.geotools.xml.Schemas;
-public class WFSSchemaLocator implements XSDSchemaLocator {
+import org.geoserver.data.GeoServerCatalog;
+import org.geoserver.data.feature.FeatureTypeInfo;
+import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
+import org.geotools.xml.Configuration;
+import org.geotools.xml.SchemaLocator;
 
-	public XSDSchema locateSchema( 
-		XSDSchema schema, String namespaceURI,  String rawSchemaLocationURI, String resolvedSchemaLocationURI
-	) {
+/**
+ * Schema locator which adds types defined in applications schemas to the wfs schema proper.
+ * 
+ * @author Justin Deoliveira, The Open Planning Project
+ *
+ */
+public class WFSSchemaLocator extends SchemaLocator {
+
+	/** catalog used to look up application schema types */
+	GeoServerCatalog catalog;
+	/** schema type builder */
+	FeatureTypeSchemaBuilder schemaBuilder;
 	
-		if ( WFS.NAMESPACE.equals( namespaceURI ) ) {
-			String location = getClass().getResource( "wfs.xsd" ).toString();
+	public WFSSchemaLocator(Configuration configuration, GeoServerCatalog catalog, FeatureTypeSchemaBuilder schemaBuilder ) {
+		super( configuration );
+		this.catalog = catalog;
+		this.schemaBuilder = schemaBuilder;
+	}
+
+	protected XSDSchema createSchema() throws Exception {
+		XSDSchema wfsSchema = super.createSchema();
+		
+		//incorporate application schemas into the wfs schema
+		for ( Iterator i = catalog.featureTypes().iterator(); i.hasNext(); ) {
+			FeatureTypeInfo meta = (FeatureTypeInfo) i.next();
 			
-			XSDSchemaLocationResolver[] locators = new XSDSchemaLocationResolver[] {
-				new XLINKSchemaLocationResolver(), new OGCSchemaLocationResolver(), 
-				new SMIL20SchemaLocationResolver(), new GMLSchemaLocationResolver(), 
-				new OWSSchemaLocationResolver(), new WFSSchemaLocationResolver()
-			};
-			try {
-				return Schemas.parse( location, null, locators );
-			} 
-			catch (IOException e) {
-				//TODO:  log this
+			//build the schema for the types in the single namespace
+			XSDSchema schema = 
+				schemaBuilder.build( new FeatureTypeInfo[ ] { meta } );
+			
+			//declare the namespace
+			String prefix = meta.namespacePrefix();
+			String namespaceURI = catalog.getNamespaceSupport().getURI( prefix );
+			wfsSchema.getQNamePrefixToNamespaceMap().put( prefix, namespaceURI );
+			
+			//add the types + elements to the wfs schema
+			for ( Iterator t = schema.getTypeDefinitions().iterator(); t.hasNext(); ) {
+				wfsSchema.getTypeDefinitions().add( t.next() );
+			}
+			for ( Iterator e = schema.getElementDeclarations().iterator(); e.hasNext(); ) {
+				wfsSchema.getElementDeclarations().add( e.next() );
 			}
 		}
 		
-		return null;
+		return wfsSchema;
 	}
-
 }

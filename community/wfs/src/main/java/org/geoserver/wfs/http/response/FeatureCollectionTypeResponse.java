@@ -48,10 +48,16 @@ public class FeatureCollectionTypeResponse extends Response
 	 */
 	GeoServerCatalog catalog;
 	
-	public FeatureCollectionTypeResponse( WFS wfs, GeoServerCatalog catalog ) {
+	/**
+	 * Xml configuration
+	 */
+	WFSConfiguration configuration;
+	
+	public FeatureCollectionTypeResponse( WFS wfs, GeoServerCatalog catalog, WFSConfiguration configuration ) {
 		super( FeatureCollectionType.class );
 		this.wfs = wfs;
 		this.catalog = catalog;
+		this.configuration = configuration;
 	}
 
 	public void setApplicationContext( ApplicationContext context ) throws BeansException {
@@ -94,7 +100,6 @@ public class FeatureCollectionTypeResponse extends Response
 			hits.setNumberOfFeatures( result.getNumberOfFeatures() );
 			hits.setTimeStamp( result.getTimeStamp() );
 			
-			WFSConfiguration configuration = new WFSConfiguration( catalog );
 			Encoder encoder = new Encoder( configuration, configuration.schema() );
 			encoder.setSchemaLocation(
 				org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, 

@@ -7,9 +7,11 @@ import java.util.List;
 import net.opengis.wfs.WFSFactory;
 
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
+import org.eclipse.xsd.util.XSDSchemaLocator;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.wfs.xml.FeatureTypeSchema;
+import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
 import org.geoserver.wfs.xml.filter.v1_1.FilterTypeBinding;
 import org.geoserver.wfs.xml.filter.v1_1.PropertyNameTypeBinding;
@@ -25,19 +27,26 @@ import org.geotools.gml3.GMLConfiguration;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.BindingConfiguration;
 import org.geotools.xml.Configuration;
-import org.geotools.xml.Parser;
 import org.geotools.xml.Schemas;
 import org.geotools.xs.bindings.XS;
 import org.picocontainer.MutablePicoContainer;
 
 public class WFSConfiguration extends Configuration {
 
+	/** 
+	 * catalog
+	 */
 	GeoServerCatalog catalog;
+	/**
+	 * Schema builder
+	 */
+	FeatureTypeSchemaBuilder schemaBuilder;
 	
-	public WFSConfiguration( GeoServerCatalog catalog ) {
+	public WFSConfiguration( GeoServerCatalog catalog, FeatureTypeSchemaBuilder schemaBuilder ) {
 		super();
 		
 		this.catalog = catalog;
+		this.schemaBuilder = schemaBuilder;
 		
 		addDependency( new OGCConfiguration() );
 		addDependency( new GMLConfiguration() );
@@ -66,7 +75,11 @@ public class WFSConfiguration extends Configuration {
 	public XSDSchemaLocationResolver getSchemaLocationResolver() {
 		return new WFSSchemaLocationResolver();
 	}
-
+	
+	protected XSDSchemaLocator createSchemaLocator() {
+		return new WFSSchemaLocator(this, catalog, schemaBuilder);
+	}
+	
 	public void configureContext(MutablePicoContainer context) {
 		super.configureContext( context );
 		

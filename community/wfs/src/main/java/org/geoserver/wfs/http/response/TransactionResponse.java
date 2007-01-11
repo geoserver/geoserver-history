@@ -34,11 +34,13 @@ public class TransactionResponse extends Response {
     
     WFS wfs;
     GeoServerCatalog catalog;
+    WFSConfiguration configuration;
     
-	public TransactionResponse( WFS wfs, GeoServerCatalog catalog ) {
+	public TransactionResponse( WFS wfs, GeoServerCatalog catalog, WFSConfiguration configuration ) {
 		super( TransactionResponseType.class );
 		this.wfs = wfs;
 		this.catalog = catalog;
+		this.configuration = configuration;
 	}
 
 	public String getMimeType(Operation operation) throws ServiceException {
@@ -171,7 +173,6 @@ public class TransactionResponse extends Response {
 			throw new WFSException ( action.getMessage(), action.getCode(), action.getLocator() );
 		}
 		
-		WFSConfiguration configuration = new WFSConfiguration( catalog );
 		Encoder encoder = new Encoder( configuration, configuration.schema() );
 		
 		encoder.setSchemaLocation( 
@@ -180,7 +181,7 @@ public class TransactionResponse extends Response {
 		);
 		
 		try {
-			encoder.write( response, org.geoserver.wfs.xml.v1_1_0.WFS.TRANSACTIONRESPONSE, output );
+			encoder.encode( response, org.geoserver.wfs.xml.v1_1_0.WFS.TRANSACTIONRESPONSE, output );
 		} 
 		catch (SAXException e) {
 			throw (IOException) new IOException().initCause( e );

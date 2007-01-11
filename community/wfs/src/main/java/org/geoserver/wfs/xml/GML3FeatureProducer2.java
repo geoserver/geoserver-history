@@ -12,8 +12,6 @@ import java.util.Set;
 
 import net.opengis.wfs.FeatureCollectionType;
 
-import org.eclipse.xsd.XSDSchema;
-import org.geoserver.GeoServerResourceLoader;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.http.util.ResponseUtils;
@@ -30,12 +28,12 @@ public class GML3FeatureProducer2 implements FeatureProducer {
 
 	WFS wfs;
 	GeoServerCatalog catalog;
-	GeoServerResourceLoader resourceLoader;
+	WFSConfiguration configuration;
 	
-	public GML3FeatureProducer2( WFS wfs, GeoServerCatalog catalog, GeoServerResourceLoader resourceLoader ) {
+	public GML3FeatureProducer2( WFS wfs, GeoServerCatalog catalog, WFSConfiguration configuration ) {
 		this.wfs = wfs;
 		this.catalog = catalog;
-		this.resourceLoader = resourceLoader;
+		this.configuration = configuration;
 	}
 	
 	public Set getOutputFormats() {
@@ -80,38 +78,7 @@ public class GML3FeatureProducer2 implements FeatureProducer {
 			
 		}
 		
-		//get the wfs schema
-		WFSConfiguration configuration = new WFSConfiguration( catalog );
-		XSDSchema wfsSchema = configuration.getSchemaLocator().locateSchema( 
-			null, org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, null, null
-		);
-		
-		//incorporate application schemas into the wfs schema
-		for ( Iterator i = ns2metas.entrySet().iterator(); i.hasNext(); ) {
-			Map.Entry entry = (Map.Entry) i.next();
-			String namespaceURI = (String) entry.getKey();
-			Set metas = (Set) entry.getValue();
-			
-			//build the schema for the types in the single namespace
-			XSDSchema schema = 
-				new FeatureTypeSchemaBuilder.GML3( wfs, catalog, resourceLoader ).build( 
-					(FeatureTypeInfo[]) metas.toArray( new FeatureTypeInfo[ metas.size() ] ) 
-				);
-			
-			//declare the namespace
-			String prefix = catalog.getNamespaceSupport().getPrefix ( namespaceURI );
-			wfsSchema.getQNamePrefixToNamespaceMap().put( prefix, namespaceURI );
-			
-			//add the types + elements to the wfs schema
-			for ( Iterator t = schema.getTypeDefinitions().iterator(); t.hasNext(); ) {
-				wfsSchema.getTypeDefinitions().add( t.next() );
-			}
-			for ( Iterator e = schema.getElementDeclarations().iterator(); e.hasNext(); ) {
-				wfsSchema.getElementDeclarations().add( e.next() );
-			}
-		}
-		
-		Encoder encoder = new Encoder( configuration, wfsSchema );
+		Encoder encoder = new Encoder( configuration, configuration.schema() );
 		
 		//declare wfs schema location
 		encoder.setSchemaLocation( 

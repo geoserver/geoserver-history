@@ -76,6 +76,18 @@
 		<constructor-arg ref="resourceLoader"/>
 	</bean>
 	
+	<!-- gml3 schema builder -->
+	<bean id="gml3SchemaBuilder" class="org.geoserver.wfs.xml.FeatureTypeSchemaBuilder$GML3">
+		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="resourceLoader"/>
+	</bean>
+	
+	<!-- xml configuration -->
+	<bean id="xmlConfiguration-1.1" class="org.geoserver.wfs.xml.v1_1_0.WFSConfiguration">
+		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="gml3SchemaBuilder"/>
+	</bean>
 	
 	<!-- responses -->
 	<bean id="getCapabilitiesResponse"
@@ -86,16 +98,19 @@
 		class="org.geoserver.wfs.http.response.FeatureCollectionTypeResponse" singleton="false">
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
 	<bean id="lockFeatureResponse"
 		class="org.geoserver.wfs.http.response.LockFeatureTypeResponse" singleton="false">
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
 	<bean id="transactionResponse-1.0.0"
 		class="org.geoserver.wfs.http.response.TransactionResponse" singleton="false">
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
 		
 	<!-- http url mapping -->
@@ -190,6 +205,7 @@
 	<bean id="xmlReader-1.1.0" class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader" abstract="true">
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
 	<bean id="getCapabilitiesXmlReader-1.1.0" parent="xmlReader-1.1.0">
 		<constructor-arg type="java.lang.String" value="GetCapabilities"/>
@@ -230,7 +246,7 @@
 	</bean>
 	<bean id="gml3FeatureProducer" class="org.geoserver.wfs.xml.GML3FeatureProducer2" 
 		parent="gml2FeatureProducer">
-		<constructor-arg ref="resourceLoader"/>
+		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
 		
 

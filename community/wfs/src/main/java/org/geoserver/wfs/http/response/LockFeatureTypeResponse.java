@@ -24,11 +24,13 @@ public class LockFeatureTypeResponse extends Response {
 
 	WFS wfs;
 	GeoServerCatalog catalog;
+	WFSConfiguration configuration;
 	
-	public LockFeatureTypeResponse( WFS wfs, GeoServerCatalog catalog ) {
+	public LockFeatureTypeResponse( WFS wfs, GeoServerCatalog catalog, WFSConfiguration configuration ) {
 		super( LockFeatureResponseType.class );
 		this.wfs = wfs;
 		this.catalog = catalog;
+		this.configuration = configuration;
 	}
 	
 	public String getMimeType(Operation operation) throws ServiceException {
@@ -112,8 +114,6 @@ public class LockFeatureTypeResponse extends Response {
 	void write1_1(LockFeatureResponseType lockResponse, OutputStream output, Operation operation) 
 		throws IOException {
 	
-		WFSConfiguration configuration = new WFSConfiguration( catalog );
-		
 		Encoder encoder = new Encoder( configuration, configuration.schema() );
 		try {
 			encoder.write( lockResponse, org.geoserver.wfs.xml.v1_1_0.WFS.LOCKFEATURERESPONSE, output );

@@ -46,6 +46,11 @@ public class SchemaAdapterFactoryTest extends WFSTestSupport {
 			
 			assertEquals( element.getType(), type );
 		}
+		
+		
+		System.out.println( Runtime.getRuntime().totalMemory() );
+		System.out.println( Runtime.getRuntime().freeMemory() );
+		
 	}
 	
 	

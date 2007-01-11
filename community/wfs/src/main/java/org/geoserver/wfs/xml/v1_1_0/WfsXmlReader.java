@@ -27,39 +27,19 @@ public class WfsXmlReader extends XmlRequestReader  {
 	 */
 	GeoServerCatalog catalog;
 	
-	public WfsXmlReader( String element, WFS wfs, GeoServerCatalog catalog ) {
+	/**
+	 * Xml Configuration
+	 */
+	WFSConfiguration configuration;
+	
+	public WfsXmlReader( String element, WFS wfs, GeoServerCatalog catalog, WFSConfiguration configuration ) {
 		super( org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, element, "1.1.0" );
 		this.wfs = wfs;
 		this.catalog = catalog;
+		this.configuration = configuration;
 	}
 
 	public Object read(InputStream input) throws Exception {
-		WFSConfiguration configuration = new WFSConfiguration( catalog ); 
-		
-		//add dependencies on applicatoin schemas
-//		for ( Enumeration p = catalog.getNamespaceSupport().getPrefixes(); p.hasMoreElements(); ) {
-//			String prefix = (String) p.nextElement();
-//			String uri = catalog.getNamespaceSupport().getURI( prefix );
-//			
-//			//load all the feature types for this namespace
-//			List featureTypes = catalog.featureTypes( uri );
-//			StringBuffer sb = new StringBuffer();
-//			for ( Iterator m = featureTypes.iterator(); m.hasNext(); ) {
-//				FeatureTypeInfo meta = (FeatureTypeInfo) m.next();
-//				sb.append( meta.name() );
-//				if ( m.hasNext() ) {
-//					sb.append( "," ); 
-//				}
-//			}
-//			
-//			String schemaLocation = ResponseUtils.appendQueryString( 
-//				wfs.getOnlineResource().toString(), 
-//				"request=DescribeFeatureType&service=WFS&version=1.1.0&typeName=" + sb.toString()
-//			);
-//			
-//			configuration.addDependency( new ApplicationSchemaConfiguration( uri, schemaLocation ) );
-//		
-//		}
 		
 		//TODO: make this configurable?
 		configuration.getProperties().add( Parser.Properties.PARSE_UNKNOWN_ELEMENTS);
