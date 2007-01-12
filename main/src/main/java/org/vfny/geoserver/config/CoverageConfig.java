@@ -16,6 +16,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.units.Unit;
 
+import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
@@ -307,7 +308,7 @@ public class CoverageConfig {
 		while (true) {
 			key = new StringBuffer(gc.getName().toString());
 			if (count > 0)
-				key.append("[").append(count).append("]");
+				key.append("_").append(count)/*.append("]")*/;
 
 			coverages = config.getCoverages();
 			cvKeySet = coverages.keySet();
@@ -428,7 +429,20 @@ public class CoverageConfig {
 			label.append("]".intern());
 			dims[i].setDescription(label.toString());
 			dims[i].setRange(sampleDimensions[i].getRange());
-			double[] nTemp = sampleDimensions[i].getNoDataValues();
+			final List categories = sampleDimensions[i].getCategories();
+			
+			Category cat = null;
+			for (Iterator c_iT = categories.iterator(); c_iT.hasNext(); ) {
+				cat = (Category) c_iT.next();
+				if(cat != null && cat.getName().toString().equalsIgnoreCase("no data")) {
+					double min = cat.getRange().getMinimum();
+					double max = cat.getRange().getMaximum();
+					
+					dims[i].setNullValues( (min==max? new Double[]{Double.valueOf(min)} : 
+						new Double[] {Double.valueOf(min), Double.valueOf(max)}) );
+				}
+			}
+			/*double[] nTemp = sampleDimensions[i].getNoDataValues();
 			if (nTemp != null) {
 				final int ntLength = nTemp.length;
 				Double[] nulls = new Double[ntLength];
@@ -436,7 +450,7 @@ public class CoverageConfig {
 					nulls[nd] = new Double(nTemp[nd]);
 				}
 				dims[i].setNullValues(nulls);
-			}
+			}*/
 		}
 
 		return dims;
