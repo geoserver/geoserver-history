@@ -131,7 +131,7 @@ public class MockGeoServerDataDirectory {
 	
 	public static QName PRIMITIVEGEOFEATURE = new QName( SF_URI, "PrimitiveGeoFeature", SF_PREFIX );
 	public static QName AGGREGATEGEOFEATURE = new QName( SF_URI, "AggregateGeoFeature", SF_PREFIX );
-	public static QName ENTIT\u00C9G\u00C9N\u00C9RIQUE = new QName( SF_URI, "Entit\u00E9G\u00E9n\u00E9rique" );
+	public static QName ENTIT\u00C9G\u00C9N\u00C9RIQUE = new QName( SF_URI, "Entit\u00E9G\u00E9n\u00E9rique", SF_PREFIX );
 	
 	/**
 	 * List of all cite types names
@@ -174,7 +174,7 @@ public class MockGeoServerDataDirectory {
 	public static QName[] wfs1_1CiteTypeNames = new QName[] {
 		PRIMITIVEGEOFEATURE, AGGREGATEGEOFEATURE, ENTIT\u00C9G\u00C9N\u00C9RIQUE
 	};
-	
+		
 	/** the base of the data directory */
 	File data;
 	/** the 'featureTypes' directory, under 'data' */
