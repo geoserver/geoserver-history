@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PushbackInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -72,9 +73,9 @@ public class OWSDispatcher extends AbstractController {
 			}
 		} 
 		finally {
-			if ( request.input  != null) {
-				request.input.delete();	
-			}
+//			if ( request.input != null) {
+//				request.input.delete();	
+//			}
 		}
 		
 		return null;
@@ -94,8 +95,12 @@ public class OWSDispatcher extends AbstractController {
 			request.kvp = parseKVP( httpRequest );
 		}
 		else {
-			//cache the input
-			request.input = cacheInputStream( httpRequest );
+			//wrap the input stream in a buffer input stream
+			request.input = new BufferedInputStream( httpRequest.getInputStream() );
+			
+			//mark the input stream, support up to 2KB, TODO: make this configuratable
+			request.input.mark( 2048 );
+			//request.input = cacheInputStream( httpRequest );
 		}
 		
 		return request;
@@ -111,17 +116,17 @@ public class OWSDispatcher extends AbstractController {
 		}
 		else {
 			//check the body
-			InputStream input = input( req.input );
-			if ( input != null ) {
-				try {
-					Map xml = readOpPost( input );
+			//InputStream input = input( req.input );
+			if ( req.input != null ) {
+				//try {
+					Map xml = readOpPost( req.input );
 					req.service = normalize( (String) xml.get( "service" ) );
 					req.version = normalize( (String) xml.get( "version" ) );
 					req.request = normalize( (String) xml.get( "request" ) );
-				}
-				finally {
-					input.close();
-				}	
+				//}
+				//finally {
+					//input.close();
+				//}	
 			}
 		}
 		
@@ -756,12 +761,15 @@ public class OWSDispatcher extends AbstractController {
 		
 		return  null;
 	}
-	Object parseRequestXML( File cache ) throws Exception {
-		InputStream input = input( cache );
+	
+//	Object parseRequestXML( File cache ) throws Exception {
+//		InputStream input = input( cache );
+	
+	Object parseRequestXML( BufferedInputStream input ) throws Exception {
 		
 		//check for an empty input stream
 		if ( input.available() == 0 ) {
-			input.close();
+			//input.close();
 			return null;
 		}
 		
@@ -789,9 +797,11 @@ public class OWSDispatcher extends AbstractController {
 		
 		parser.setInput( null );
 		
-		//reset input stream
-		input.close();
-		input = input( cache );
+		//reset input stream, figure out many bytes were read
+		input.reset();
+		
+		//input.close();
+		//input = input( cache );
 		
 		XmlRequestReader xmlReader = findXmlReader( namespace, element, version );
 		return xmlReader.read( input );
@@ -827,7 +837,7 @@ public class OWSDispatcher extends AbstractController {
 		return map;
 	}
 	
-	Map readOpPost( InputStream input ) throws Exception {
+	Map readOpPost( BufferedInputStream input ) throws Exception {
 	
 		//create stream parser
 		XmlPullParserFactory factory = 
@@ -853,7 +863,9 @@ public class OWSDispatcher extends AbstractController {
 		
 		//close parser + release resources
 		parser.setInput(null);
-		input.close();
+		
+		//reset the input stream
+		input.reset();
 		
 		return map;
 	}
@@ -967,7 +979,8 @@ public class OWSDispatcher extends AbstractController {
 		/**
 		 * Cached input stream, only non-null if get = false
 		 */
-		File input;
+		//File input;
+		BufferedInputStream input;
 		
 		/**
 		 * The ows service,request,version
