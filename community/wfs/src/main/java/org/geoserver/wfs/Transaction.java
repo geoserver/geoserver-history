@@ -31,12 +31,18 @@ import net.opengis.wfs.WFSFactory;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.xsd.XSDElementDeclaration;
+import org.eclipse.xsd.XSDParticle;
+import org.eclipse.xsd.XSDSchema;
+import org.eclipse.xsd.XSDTypeDefinition;
+import org.geoserver.GeoServerResourceLoader;
 import org.geoserver.data.GeoServerCatalog;
 import org.geoserver.data.feature.FeatureTypeInfo;
 import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geoserver.feature.ReprojectingFeatureReader;
 import org.geoserver.ows.EMFUtils;
 import org.geoserver.ows.ServiceException;
+import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.DefaultTransaction;
@@ -57,6 +63,7 @@ import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.referencing.CRS;
+import org.geotools.xml.Schemas;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -82,6 +89,7 @@ public class Transaction {
 	 * The catalog 
 	 */
 	GeoServerCatalog catalog;
+	
 	/**
 	 * Filter factory
 	 */
@@ -90,7 +98,7 @@ public class Transaction {
 	/** Geotools2 transaction used for this opperations */
     protected org.geotools.data.Transaction transaction;
     
-	public Transaction( WFS wfs, GeoServerCatalog catalog ) {
+	public Transaction( WFS wfs, GeoServerCatalog catalog) {
 		this.wfs = wfs;
 		this.catalog = catalog;
 	}
@@ -196,7 +204,14 @@ public class Transaction {
             List metas = new ArrayList(); 
             
             if ( element instanceof NativeType ) {
-            	throw new WFSException( "Native transactions unsupported" );
+            	NativeType nativ = (NativeType) element;
+            	if ( !nativ.isSafeToIgnore() ) {
+            		throw new WFSException( 
+        				"Native element:" + nativ.getVendorId() + " unsupported but marked as" +
+    						" unsafe to ignore", "InvalidParameterValue" 
+    				);	
+            	}
+            	
             }
             
             if ( element instanceof InsertElementType ) {
@@ -241,7 +256,7 @@ public class Transaction {
             }
             else {
                 // Option 2: either update or delete, only one type
-                QName elementName = (QName) EMFUtils.get( element, "typeName" );
+            	QName elementName = (QName) EMFUtils.get( element, "typeName" );
                 FeatureTypeInfo meta = 
                 	catalog.featureType( elementName.getPrefix(), elementName.getLocalPart() );
                 if ( meta == null ) {
@@ -251,6 +266,32 @@ public class Transaction {
                 }
                 
                 metas.add( meta );
+                
+                if ( element instanceof DeleteElementType ) {
+            		//check that a filter was specified
+            		DeleteElementType delete = (DeleteElementType) element;
+            		if ( delete.getFilter() == null ) {
+            			throw new WFSException( "Must specify filter for delete", "MissingParameterValue" );
+            		}
+            	}
+            	
+            	if ( element instanceof UpdateElementType ) {
+            		//check for case of updating an element with null value
+            		UpdateElementType update = (UpdateElementType) element;
+            		FeatureType featureType = meta.featureType();
+            		for ( Iterator prop = update.getProperty().iterator(); prop.hasNext(); ) {
+    					PropertyType property = (PropertyType) prop.next();
+    					if ( property.getValue() == null ) {
+    						AttributeType attributeType = 
+    							featureType.getAttributeType( property.getName().getLocalPart()  );
+    						if ( attributeType != null && attributeType.getMinOccurs() > 0 ) {
+    							String msg = "Property '" + attributeType.getName() + "' is mandatory " +
+    							"but no value specified.";
+    							throw new WFSException( msg, "MissingParameterValue" );
+    						}
+    					}
+    				}
+            	}
             }
             
             //go through all meta data objects, and load feature stores
@@ -307,7 +348,7 @@ public class Transaction {
             if ( !lockExists( authorizationID ) ) {
             	String mesg = "Attempting to use a lockID that does not exist"
                     + ", it has either expired or was entered wrong.";
-                throw new WFSException( mesg );
+                throw new WFSException( mesg , "InvalidParameterValue" );
             }
             
             try {
@@ -680,7 +721,12 @@ public class Transaction {
         	
         	//transaction failed, rollback
         	ActionType action = WFSFactory.eINSTANCE.createActionType();
-        	action.setCode( e.getCode() );
+        	if ( e.getCode() != null ) {
+        		action.setCode( e.getCode() );	
+        	}
+        	else {
+        		action.setCode( "InvalidParameterValue" );
+        	}
         	action.setLocator( e.getLocator() );
         	action.setMessage( e.getMessage() );
         	result.getTransactionResults().getAction().add( action );
