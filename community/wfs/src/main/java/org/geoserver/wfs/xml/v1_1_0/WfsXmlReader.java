@@ -45,6 +45,9 @@ public class WfsXmlReader extends XmlRequestReader  {
 		configuration.getProperties().add( Parser.Properties.PARSE_UNKNOWN_ELEMENTS);
 		Parser parser = new Parser( configuration );
 		
+		//validate, make this configurable
+		parser.setValidating( true );
+		
 		//set the input source with the correct encoding
 		InputSource source = new InputSource( input );
 		source.setEncoding( wfs.getCharSet().name() );
@@ -52,8 +55,7 @@ public class WfsXmlReader extends XmlRequestReader  {
 		Object parsed = parser.parse( source );
 		
 		//valid request? this should definitley be a configuration option
-		
-		//TODO: HACK, disabling for transaction
+		//TODO: HACK, disabling validation for transaction
 		if ( !"Transaction".equalsIgnoreCase( getElement() ) ) {
 			if ( !parser.getValidationErrors().isEmpty() ) {
 				WFSException exception = new WFSException( "Invalid request" );
