@@ -1,6 +1,8 @@
 package org.geoserver.ows.http;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -60,7 +62,10 @@ public class DispatcherTest extends TestCase {
 		request.setupGetInputStream( input );
 		
 		OWSDispatcher dispatcher = new OWSDispatcher();
-		Map map = dispatcher.readOpPost( input );
+		
+		BufferedInputStream buffered = new BufferedInputStream( input );
+		buffered.mark( 2048 );
+		Map map = dispatcher.readOpPost( buffered );
 		
 		assertNotNull( map );
 		assertEquals( "Hello", map.get( "request" ) );
@@ -104,15 +109,16 @@ public class DispatcherTest extends TestCase {
 		
 		String body = "<Hello service=\"hello\" message=\"Hello world!\"/>";
 		File file = File.createTempFile("geoserver","req");
+		file.deleteOnExit();
+		
 		FileOutputStream output = new FileOutputStream( file );
 		output.write( body.getBytes() );
 		output.flush();
 		output.close();
 		
-		MockServletInputStream input = new MockServletInputStream();
-		input.setupRead( body.getBytes() );
-		
-		Object object = dispatcher.parseRequestXML( file );
+		BufferedInputStream input = new BufferedInputStream( new FileInputStream( file ) );
+		input.mark( 8192 );
+		Object object = dispatcher.parseRequestXML( input );
 		assertEquals( new Message( "Hello world!" ), object );
 	}
 	
