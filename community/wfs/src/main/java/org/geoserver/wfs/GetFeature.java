@@ -216,7 +216,9 @@ public class GetFeature {
                     		// case of multiple geometries being returned
                     		if ( name.evaluate( featureType ) == null ) {
                     			//we want to throw wfs exception, but cant
-                    			throw new RuntimeException( "Illegal property name: " + name.getPropertyName() );
+                    			throw new WFSException( 
+                					"Illegal property name: " + name.getPropertyName(), "InvalidParameterValue"
+            					);
                     		}
                     		
                     		return name;
