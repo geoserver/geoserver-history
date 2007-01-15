@@ -58,7 +58,7 @@ public class WfsXmlReader extends XmlRequestReader  {
 		//TODO: HACK, disabling validation for transaction
 		if ( !"Transaction".equalsIgnoreCase( getElement() ) ) {
 			if ( !parser.getValidationErrors().isEmpty() ) {
-				WFSException exception = new WFSException( "Invalid request" );
+				WFSException exception = new WFSException( "Invalid request", "InvalidParameterValue" );
 				for ( Iterator e = parser.getValidationErrors().iterator(); e.hasNext(); ) {
 					Exception error = (Exception) e.next();
 					exception.getExceptionText().add( error.getLocalizedMessage() );
