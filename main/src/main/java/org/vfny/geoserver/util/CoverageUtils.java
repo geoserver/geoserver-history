@@ -183,7 +183,10 @@ public class CoverageUtils {
 					// /////////////////////////////////////////////////////////
 					Object value = CoverageUtils.getCvParamValue(_key, val, values);
 
-					parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null, value).createValue());
+					if (value == null && _key.equalsIgnoreCase("InputTransparentColor"))
+						parameters.add(new DefaultParameterDescriptor(_key, Color.class, null, value).createValue());
+					else
+						parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null, value).createValue());
 				}
 			}
 			return !parameters.isEmpty() ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]) : null;
@@ -399,6 +402,14 @@ public class CoverageUtils {
 				} else if (params.get(key) != null
 						&& params.get(key) instanceof GeneralGridGeometry) {
 					value = params.get(key);
+				}
+			} else if (key.equalsIgnoreCase("InputTransparentColor")) {
+				if (params.get(key) != null) {
+					value = Color.decode((String) params.get(key));
+				} else {
+					Class[] clArray = { Color.class };
+					Object[] inArray = { params.get(key) };
+					value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
 				}
 			} else {
 				Class[] clArray = { String.class };
