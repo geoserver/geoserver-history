@@ -3,6 +3,7 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.NativeType;
 import net.opengis.wfs.WFSFactory;
 
 import org.geotools.xml.AbstractComplexBinding;
@@ -68,7 +69,7 @@ public class NativeTypeBinding extends AbstractComplexBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return NativeType.class;
 	}
 	
 	/**
@@ -80,8 +81,15 @@ public class NativeTypeBinding extends AbstractComplexBinding {
 	public Object parse(ElementInstance instance, Node node, Object value) 
 		throws Exception {
 		
-		//TODO: implement
-		return null;
+		NativeType nativ = wfsfactory.createNativeType();
+		
+		 //&lt;xsd:attribute name="vendorId" type="xsd:string" use="required"&gt;
+		nativ.setVendorId( (String) node.getAttributeValue("vendorId" ) );
+		
+		 //&lt;xsd:attribute name="safeToIgnore" type="xsd:boolean" use="required"&gt;
+		nativ.setSafeToIgnore( ((Boolean) node.getAttributeValue( "safeToIgnore")).booleanValue() );
+	
+		return nativ;
 	}
 
 }
