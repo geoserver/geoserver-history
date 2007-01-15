@@ -22,6 +22,7 @@ public class WFSXmlTest extends WFSTestSupport {
 	
 	public void testInvalid() throws Exception {
 		Parser parser = new Parser( configuration() );
+		parser.setValidating( true );
 		parser.parse( getClass().getResourceAsStream( "GetFeature-invalid.xml" ) );
 		
 		assertTrue( parser.getValidationErrors().size() > 0 );
