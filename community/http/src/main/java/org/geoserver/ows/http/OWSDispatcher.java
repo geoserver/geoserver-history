@@ -1,14 +1,11 @@
 package org.geoserver.ows.http;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PushbackInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -50,33 +47,28 @@ public class OWSDispatcher extends AbstractController {
 		request.httpRequest = httpRequest;
 		request.httpResponse = httpResponse;
 		
+		Service service = null;
 		try {
-			Service service = null;
+			//initialize the request
+			init( request );
+			
+			//find the service
 			try {
-				//initialize the request
-				init( request );
-				
-				//find the service
-				try {
-					service = service( request );
-				} catch ( Throwable t ) {
-					exception( t, null, request );
-					return null;
-				}
+				service = service( request );
+			} catch ( Throwable t ) {
+				exception( t, null, request );
+				return null;
+			}
 
-				//dispatch the operation
-				Operation operation = dispatch( request , service );
-				execute( request, operation );
-			}
-			catch( Throwable t ) {
-				exception( t, service, request );
-			}
-		} 
-		finally {
-//			if ( request.input != null) {
-//				request.input.delete();	
-//			}
+			//dispatch the operation
+			Operation operation = dispatch( request , service );
+			execute( request, operation );
 		}
+		catch( Throwable t ) {
+			exception( t, service, request );
+		}
+	
+		
 		
 		return null;
 	}
@@ -100,7 +92,6 @@ public class OWSDispatcher extends AbstractController {
 			
 			//mark the input stream, support up to 2KB, TODO: make this configuratable
 			request.input.mark( 2048 );
-			//request.input = cacheInputStream( httpRequest );
 		}
 		
 		return request;
@@ -116,33 +107,13 @@ public class OWSDispatcher extends AbstractController {
 		}
 		else {
 			//check the body
-			//InputStream input = input( req.input );
 			if ( req.input != null ) {
-				//try {
-					Map xml = readOpPost( req.input );
-					req.service = normalize( (String) xml.get( "service" ) );
-					req.version = normalize( (String) xml.get( "version" ) );
-					req.request = normalize( (String) xml.get( "request" ) );
-				//}
-				//finally {
-					//input.close();
-				//}	
+				Map xml = readOpPost( req.input );
+				req.service = normalize( (String) xml.get( "service" ) );
+				req.version = normalize( (String) xml.get( "version" ) );
+				req.request = normalize( (String) xml.get( "request" ) );
 			}
 		}
-		
-//		if ( req.service == null ) {
-//			//one last check from the uri
-//			Map map = readOpContext( req.httpRequest );
-//			if ( req.service == null ) {
-//				req.service = normalize( (String) map.get( "service" ) );
-//			}
-//			if ( req.request == null ) {
-//				req.request = normalize( (String) map.get( "request" ) );
-//			}
-//			if ( req.version == null ) {
-//				req.version = normalize( (String) map.get( "version" ) );
-//			}
-//		}
 		
 		if ( req.service == null ) {
 			//try to infer from context, but dont set on request object because we need to know 
@@ -629,33 +600,6 @@ public class OWSDispatcher extends AbstractController {
 		return xmlReader;
 	}
 	
-	File cacheInputStream( HttpServletRequest request ) throws IOException  {
-		InputStream input = request.getInputStream();
-		if ( input == null )
-			return null;
-		
-		File cache = File.createTempFile("geoserver","req");
-		BufferedOutputStream output = 
-			new BufferedOutputStream( new FileOutputStream( cache ) );
-		
-		byte[] buffer = new byte[1024];
-		int n = 0;
-		int nread = 0;
-		
-		while (( n = input.read( buffer ) ) > 0) {
-			output.write( buffer, 0, n );
-			nread += n;
-		}
-		
-		output.flush();
-		output.close();
-		
-		if ( nread == 0 )
-			return null;
-		
-		return cache;
-	}
-	
 	BufferedInputStream input( File cache ) throws IOException {
 		return cache == null ? null :
 			new BufferedInputStream( new FileInputStream( cache ) );
@@ -664,42 +608,6 @@ public class OWSDispatcher extends AbstractController {
 	Map parseKVP( HttpServletRequest request ) throws ServiceException {
 		//unparsed kvp set
 		Map kvp = request.getParameterMap();
-		
-		//TODO: cite check, make configurable
-		if ( request.getQueryString() != null && !"".equals( request.getQueryString().trim() ) ) {
-			//any keys
-			if ( kvp == null || kvp.isEmpty() ) {
-				throw new ServiceException( "Invalid query string: " + request.getQueryString() );
-			}
-			
-			//empty values?, catches case of ?key ( no equals )
-			boolean empty = true;
-			for ( Iterator e = kvp.entrySet().	iterator(); e.hasNext(); ) {
-				Map.Entry entry = (Map.Entry) e.next();
-				
-				Object value = entry.getValue();
-				if ( value == null ) 
-					continue;
-				
-				if ( value instanceof String ) {
-					if ( !"".equals( value.toString().trim() ) ) {
-						empty = false;
-					}
-				}
-				if ( value instanceof String[] ) {
-					String[] values = (String[]) value;
-					for ( int i = 0; i < values.length; i++ ) {
-						if ( values[ i ] != null && !"".equals( values[ i ].trim() ) ) {
-							empty = false;
-						}
-					}
-				}
-			}
-			
-			if ( empty ) {
-				throw new ServiceException( "Invalid query string: " + request.getQueryString() );
-			}
-		}
 		
 		if ( kvp == null )
 			return Collections.EMPTY_MAP;
@@ -719,7 +627,6 @@ public class OWSDispatcher extends AbstractController {
 				//TODO: perhaps handle multiple values for a key
 				value = (String) ( (String[]) entry.getValue() )[0];
 			}
-			
 			
 			//find the parser for this key value pair
 			Object parsed = null;
@@ -762,9 +669,6 @@ public class OWSDispatcher extends AbstractController {
 		return  null;
 	}
 	
-//	Object parseRequestXML( File cache ) throws Exception {
-//		InputStream input = input( cache );
-	
 	Object parseRequestXML( BufferedInputStream input ) throws Exception {
 		
 		//check for an empty input stream
@@ -797,11 +701,8 @@ public class OWSDispatcher extends AbstractController {
 		
 		parser.setInput( null );
 		
-		//reset input stream, figure out many bytes were read
+		//reset input stream
 		input.reset();
-		
-		//input.close();
-		//input = input( cache );
 		
 		XmlRequestReader xmlReader = findXmlReader( namespace, element, version );
 		return xmlReader.read( input );
