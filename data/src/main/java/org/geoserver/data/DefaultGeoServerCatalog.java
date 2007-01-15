@@ -26,7 +26,19 @@ import org.xml.sax.helpers.NamespaceSupport;
 public class DefaultGeoServerCatalog extends AdaptingCatalog implements 
 	GeoServerCatalog {
 	
+	/**
+	 * Namespace mappings
+	 */
 	NamespaceSupport namespaceSupport;
+	
+	/**
+	 * Cached dataStores
+	 */
+	List dataStores;
+	/**
+	 * Cached featureTypes
+	 */
+	List featureTypes;
 	
 	public DefaultGeoServerCatalog( ResolveAdapterFactoryFinder adapterFinder ) {
 		super( new DefaultCatalog(), adapterFinder );
@@ -38,19 +50,28 @@ public class DefaultGeoServerCatalog extends AdaptingCatalog implements
 	}
 	
 	public List dataStores() throws IOException {
-		List all = services( DataStoreInfo.class );
-		List active = new ArrayList();
+		if ( dataStores == null ) {
+			synchronized ( this ) {
+				if ( dataStores == null ) {
+					List all = services( DataStoreInfo.class );
+					List active = new ArrayList();
 
-		for ( Iterator i = all.iterator(); i.hasNext(); ) {
-			Service service = (Service) i.next();
-			DataStoreInfo info = 
-				(DataStoreInfo) service.resolve( DataStoreInfo.class, null );
-			
-			if ( info.isEnabled() ) 
-				active.add( info );
+					for ( Iterator i = all.iterator(); i.hasNext(); ) {
+						Service service = (Service) i.next();
+						DataStoreInfo info = 
+							(DataStoreInfo) service.resolve( DataStoreInfo.class, null );
+						
+						if ( info.isEnabled() ) 
+							active.add( info );
+					}
+					
+					dataStores = active;
+				}
+			}
 		}
 		
-		return active;
+		return dataStores;
+		
 	}
 	
 	public DataStoreInfo dataStore(String id) throws IOException {
@@ -68,19 +89,26 @@ public class DefaultGeoServerCatalog extends AdaptingCatalog implements
 	}
 	
 	public List featureTypes() throws IOException {
-		List all = resources( FeatureTypeInfo.class );
-		List active = new ArrayList();
+		if ( featureTypes == null ) {
+			synchronized ( this ) {
+				if ( featureTypes == null ) {
+					List all = resources( FeatureTypeInfo.class );
+					List active = new ArrayList();
 
-		for ( Iterator i = all.iterator(); i.hasNext(); ) {
-			GeoResource resource = (GeoResource) i.next();
-			FeatureTypeInfo info = 
-				(FeatureTypeInfo) resource.resolve( FeatureTypeInfo.class, null );
-			
-//			if ( info.isEnabled() ) 
-			active.add( info );
+					for ( Iterator i = all.iterator(); i.hasNext(); ) {
+						GeoResource resource = (GeoResource) i.next();
+						FeatureTypeInfo info = 
+							(FeatureTypeInfo) resource.resolve( FeatureTypeInfo.class, null );
+						
+						active.add( info );
+					}
+					
+					featureTypes = active;
+				}
+			}
 		}
 		
-		return active;
+		return featureTypes;
 	}
 	
 	public List featureTypes( String namespaceURI ) throws IOException {
