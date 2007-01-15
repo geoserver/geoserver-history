@@ -9,7 +9,7 @@ import java.util.List;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class ServiceException extends Exception {
+public class ServiceException extends RuntimeException {
 
 	/**
 	 * Application specfic code.
