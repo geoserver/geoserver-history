@@ -181,22 +181,23 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
                     if (path.startsWith("file:")) {
                         path = path.substring(5); // remove 'file:' prefix
 
-                        File file = new File(baseDir, path);
+                        File file = new File(path);
                         if(!file.exists())
-                            file = new File(baseDir, path.substring(5));
+                            file = new File(baseDir, path);
                         entry.setValue(file.toURL().toExternalForm());
                     }
-		    //Not sure about this
                 } else if (value instanceof URL
                         && ((URL) value).getProtocol().equals("file")) {
 		    LOGGER.finer("in URL url");
                     URL url = (URL) value;
                     String path = url.getPath();
 		    LOGGER.finer("path is " + path);
-		    //if (path.startsWith("data/")){
-			File file = new File(baseDir, path);
+            // try to understand wheter this is a path relative to the data directory
+            // of if it's an absolute path
+            File file = new File(path);
+            if(!file.exists())
+                file = new File(baseDir, path);
 			entry.setValue(file.toURL());
-		    //}
                 } /*else if ("dbtype".equals(key) && value instanceof String) {
                     String val = (String) value;
 
