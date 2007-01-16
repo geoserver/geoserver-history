@@ -10,6 +10,13 @@
 	<version>1.5.0-beta1</version>
 	<name>GeoServer</name>
 
+  <scm>
+    <connection>
+      scm:svn:http://svn.codehaus.org/geoserver/trunk/
+    </connection>
+    <url>http://svn.codehaus.org/geoserver/trunk/</url>
+  </scm>
+
 	<organization>
 		<name>The Open Planning Project</name>
 		<url>http://www.openplans.org</url>
