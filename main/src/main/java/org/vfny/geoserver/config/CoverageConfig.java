@@ -438,8 +438,8 @@ public class CoverageConfig {
 					double min = cat.getRange().getMinimum();
 					double max = cat.getRange().getMaximum();
 					
-					dims[i].setNullValues( (min==max? new Double[]{Double.valueOf(min)} : 
-						new Double[] {Double.valueOf(min), Double.valueOf(max)}) );
+					dims[i].setNullValues( (min==max? new Double[]{new Double( min )} : 
+						new Double[] {new Double(min), new Double(max)}) );
 				}
 			}
 			/*double[] nTemp = sampleDimensions[i].getNoDataValues();
@@ -465,10 +465,10 @@ public class CoverageConfig {
 	private void parseUom(StringBuffer label2, Unit uom) {
 
 		String uomString = uom.toString();
-		uomString = uomString.replaceAll("²", "^2");
-		uomString = uomString.replaceAll("³", "^3");
-		uomString = uomString.replaceAll("Å", "A");
-		uomString = uomString.replaceAll("°", "");
+		uomString = uomString.replaceAll("ï¿½", "^2");
+		uomString = uomString.replaceAll("ï¿½", "^3");
+		uomString = uomString.replaceAll("ï¿½", "A");
+		uomString = uomString.replaceAll("ï¿½", "");
 		label2.append(uomString);
 
 	}
