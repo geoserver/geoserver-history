@@ -24,6 +24,7 @@ import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.LogicFilter;
 import org.opengis.filter.Filter;
+import org.opengis.filter.sort.SortBy;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -138,9 +139,12 @@ public class GeoServerFeatureSource implements FeatureSource {
             String[] propNames = extractAllowedAttributes(query);
             Filter filter = query.getFilter();
             filter = makeDefinitionFilter(filter);
-
-            return new DefaultQuery(typeName, filter, maxFeatures, propNames,
+            
+            DefaultQuery defQuery = new DefaultQuery(typeName, filter, maxFeatures, propNames,
                 handle);
+            defQuery.setSortBy( query.getSortBy() );
+            return defQuery;
+            
         } catch (Exception ex) {
             throw new DataSourceException(
                 "Could not restrict the query to the definition criteria: "
