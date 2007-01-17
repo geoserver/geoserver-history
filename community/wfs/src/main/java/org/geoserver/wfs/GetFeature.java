@@ -365,7 +365,8 @@ public class GetFeature {
         
         //handle sorting
         if ( query.getSortBy() != null ) {
-        	dataQuery.setSortBy( new SortBy[] { query.getSortBy() } );
+        	List sortBy = query.getSortBy();
+        	dataQuery.setSortBy( (SortBy[])sortBy.toArray( new SortBy[ sortBy.size() ] ) );
         }
         
         return dataQuery;
