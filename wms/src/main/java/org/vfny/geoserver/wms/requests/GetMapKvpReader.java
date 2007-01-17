@@ -1405,20 +1405,28 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     	String styleList = "";
     	
     	String currentLayers = getValue("LAYERS");
-    	String[] titles = (String[]) layers.keySet().toArray(new String[0]);
+    	String currentStyles = getValue("STYLES");
+    	String[] baseLayers = (String[]) layers.keySet().toArray(new String[0]);
+    	String[] baseStyles = (String[]) styles.keySet().toArray(new String[0]);
     	
     	boolean replacedOne = false;
     	
-    	for (int i=0; i<titles.length; i++)
+    	for (int i=0; i<baseLayers.length; i++)
     	{
-	    	if (currentLayers.indexOf(titles[i]) > -1)
+    		int index = currentLayers.indexOf(baseLayers[i]);
+	    	if (index > -1)
 	    	{
 	    		replacedOne = true;
-	    		LOGGER.info("Using BASEMAP layer: "+titles[i]);
-	    		layerList = layerList + "," + layers.get(titles[i]); // append layers of index: titles[i]
+	    		LOGGER.info("Using BASEMAP layer: "+baseLayers[i]);
+	    		
+	    		// remove the 'basemap layer' from the currentLayers list
+	    		String newLayers = currentLayers.replaceFirst(baseLayers[i], (String)layers.get(baseLayers[i]));
+	    		currentLayers = newLayers;
+	    		
 	    		if (styles != null && !styles.equals(""))
 	    		{	// if the user specified styles, lets use them
-	    			styleList = styleList + "," + styles.get(titles[i]);	// append styles of index: titles[i]
+	    			String newStyles = currentStyles.replaceFirst(baseStyles[i], (String)styles.get(baseStyles[i]));
+	    			currentStyles = newStyles;
 	    		}
 	    	}
     	}
@@ -1426,13 +1434,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     	if (replacedOne)
     	{
     		// remove first comma
-    		layerList = layerList.substring(1);
-    		styleList = styleList.substring(1);
+    		//layerList = layerList.substring(1);
+    		//styleList = styleList.substring(1);
     		
     		kvpPairs.remove("LAYERS");
-    		kvpPairs.put("LAYERS", layerList);
+    		kvpPairs.put("LAYERS", currentLayers);
     		kvpPairs.remove("STYLES");
-			kvpPairs.put("STYLES", styleList);
+			kvpPairs.put("STYLES", currentStyles);
     	}
     }
 }
