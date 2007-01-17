@@ -209,8 +209,9 @@ public class QueryTypeBinding extends AbstractComplexBinding {
 		}
 		
 		//&lt;xsd:element maxOccurs="1" minOccurs="0" ref="ogc:SortBy"&gt;
-		if ( node.hasChild( SortBy.class ) ) {
-			query.setSortBy( (SortBy) node.getChildValue( SortBy.class ) );
+		if ( node.hasChild( SortBy[].class ) ) {
+			SortBy[] sortBy = (SortBy[]) node.getChildValue( SortBy[].class );
+			for ( int i = 0; i < sortBy.length; i++ ) query.getSortBy().add( sortBy[ i ] );
 		}
 		
 		//&lt;xsd:attribute name="handle" type="xsd:string" use="optional"&gt;
