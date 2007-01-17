@@ -438,8 +438,8 @@ public class CoverageConfig {
 					double min = cat.getRange().getMinimum();
 					double max = cat.getRange().getMaximum();
 					
-					dims[i].setNullValues( (min==max? new Double[]{Double.valueOf(min)} : 
-						new Double[] {Double.valueOf(min), Double.valueOf(max)}) );
+					dims[i].setNullValues( (min==max? new Double[]{new Double(min)} : 
+						new Double[] {new Double(min), new Double(max)}) );
 				}
 			}
 			/*double[] nTemp = sampleDimensions[i].getNoDataValues();
