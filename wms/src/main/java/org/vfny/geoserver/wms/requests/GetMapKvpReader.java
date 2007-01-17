@@ -1401,9 +1401,6 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      */
     public void filterBaseMap(Map layers, Map styles)
     {
-    	String layerList = "";
-    	String styleList = "";
-    	
     	String currentLayers = getValue("LAYERS");
     	String currentStyles = getValue("STYLES");
     	String[] baseLayers = (String[]) layers.keySet().toArray(new String[0]);
@@ -1433,10 +1430,6 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     	
     	if (replacedOne)
     	{
-    		// remove first comma
-    		//layerList = layerList.substring(1);
-    		//styleList = styleList.substring(1);
-    		
     		kvpPairs.remove("LAYERS");
     		kvpPairs.put("LAYERS", currentLayers);
     		kvpPairs.remove("STYLES");
