@@ -1823,7 +1823,7 @@ public interface WFSPackage extends EPackage{
 	int QUERY_TYPE__FILTER = 4;
 
 	/**
-	 * The feature id for the '<em><b>Sort By</b></em>' attribute.
+	 * The feature id for the '<em><b>Sort By</b></em>' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -4034,10 +4034,10 @@ public interface WFSPackage extends EPackage{
 	EAttribute getQueryType_Filter();
 
 	/**
-	 * Returns the meta object for the attribute '{@link net.opengis.wfs.QueryType#getSortBy <em>Sort By</em>}'.
+	 * Returns the meta object for the attribute list '{@link net.opengis.wfs.QueryType#getSortBy <em>Sort By</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Sort By</em>'.
+	 * @return the meta object for the attribute list '<em>Sort By</em>'.
 	 * @see net.opengis.wfs.QueryType#getSortBy()
 	 * @see #getQueryType()
 	 * @generated

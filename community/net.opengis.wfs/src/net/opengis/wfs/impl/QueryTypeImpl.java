@@ -111,24 +111,14 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	protected Filter filter = FILTER_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getSortBy() <em>Sort By</em>}' attribute.
+	 * The cached value of the '{@link #getSortBy() <em>Sort By</em>}' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getSortBy()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final SortBy SORT_BY_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getSortBy() <em>Sort By</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getSortBy()
-	 * @generated
-	 * @ordered
-	 */
-	protected SortBy sortBy = SORT_BY_EDEFAULT;
+	protected EList sortBy = null;
 
 	/**
 	 * The default value of the '{@link #getFeatureVersion() <em>Feature Version</em>}' attribute.
@@ -299,20 +289,11 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SortBy getSortBy() {
+	public EList getSortBy() {
+		if (sortBy == null) {
+			sortBy = new EDataTypeUniqueEList(SortBy.class, this, WFSPackage.QUERY_TYPE__SORT_BY);
+		}
 		return sortBy;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setSortBy(SortBy newSortBy) {
-		SortBy oldSortBy = sortBy;
-		sortBy = newSortBy;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.QUERY_TYPE__SORT_BY, oldSortBy, sortBy));
 	}
 
 	/**
@@ -476,7 +457,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				setFilter((Filter)newValue);
 				return;
 			case WFSPackage.QUERY_TYPE__SORT_BY:
-				setSortBy((SortBy)newValue);
+				getSortBy().clear();
+				getSortBy().addAll((Collection)newValue);
 				return;
 			case WFSPackage.QUERY_TYPE__FEATURE_VERSION:
 				setFeatureVersion((String)newValue);
@@ -517,7 +499,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 				setFilter(FILTER_EDEFAULT);
 				return;
 			case WFSPackage.QUERY_TYPE__SORT_BY:
-				setSortBy(SORT_BY_EDEFAULT);
+				getSortBy().clear();
 				return;
 			case WFSPackage.QUERY_TYPE__FEATURE_VERSION:
 				setFeatureVersion(FEATURE_VERSION_EDEFAULT);
@@ -553,7 +535,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 			case WFSPackage.QUERY_TYPE__FILTER:
 				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
 			case WFSPackage.QUERY_TYPE__SORT_BY:
-				return SORT_BY_EDEFAULT == null ? sortBy != null : !SORT_BY_EDEFAULT.equals(sortBy);
+				return sortBy != null && !sortBy.isEmpty();
 			case WFSPackage.QUERY_TYPE__FEATURE_VERSION:
 				return FEATURE_VERSION_EDEFAULT == null ? featureVersion != null : !FEATURE_VERSION_EDEFAULT.equals(featureVersion);
 			case WFSPackage.QUERY_TYPE__HANDLE:

@@ -178,19 +178,9 @@ public interface QueryType extends EObject{
 	 * @return the value of the '<em>Sort By</em>' attribute.
 	 * @see #setSortBy(Object)
 	 * @see net.opengis.wfs.WFSPackage#getQueryType_SortBy()
-	 * @model 
+	 * @model type="org.opengis.filter.sort.SortBy"
 	 */
-	SortBy getSortBy();
-
-	/**
-	 * Sets the value of the '{@link net.opengis.wfs.QueryType#getSortBy <em>Sort By</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Sort By</em>' attribute.
-	 * @see #getSortBy()
-	 * @generated
-	 */
-	void setSortBy(SortBy value);
+	EList getSortBy();
 
 	/**
 	 * Returns the value of the '<em><b>Feature Version</b></em>' attribute.

@@ -31,6 +31,7 @@ import org.eclipse.emf.ecore.xml.type.util.XMLTypeValidator;
 
 import org.geotools.feature.FeatureCollection;
 
+import org.opengis.filter.FeatureId;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.Filter;
 
