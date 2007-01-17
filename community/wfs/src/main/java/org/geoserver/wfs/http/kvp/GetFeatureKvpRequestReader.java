@@ -178,6 +178,11 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 			querySet( eObject, "propertyName", (List) kvp.get( "propertyName" ) );
 		}
 		
+		//sortBy
+		if ( kvp.containsKey( "sortBy") ) {
+			querySet( eObject, "sortBy", (List) kvp.get( "sortBy" ) );
+		}
+		
 		return request;
 	}
 	
