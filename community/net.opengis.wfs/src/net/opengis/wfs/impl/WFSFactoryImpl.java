@@ -30,7 +30,6 @@ import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 import org.geotools.feature.FeatureCollection;
 
 
-import org.opengis.filter.FeatureId;
 import org.opengis.filter.Filter;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.expression.Function;
