@@ -44,7 +44,7 @@
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>web/target/geoserver/data/data</directory>
+			<directory>web/target/geoserver/data</directory>
 			<outputDirectory>geoserver/webapps/geoserver/conf/data</outputDirectory>
 			<includes>
 				<include>nyc/**/*</include>
@@ -57,6 +57,23 @@
 			<outputDirectory>geoserver/data_dir</outputDirectory>
 			<includes>
 				<include>**/*</include>
+			</includes>
+			<excludes>
+				<exclude>nyc</exclude>
+				<exclude>nyc/**/*</exclude>
+				<exclude>taz_shapes</exclude>
+				<exclude>taz_shapes/**/*</exclude>
+				<exclude>shapefiles</exclude>
+				<exclude>shapefiles/**/*</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>web/target/geoserver/data</directory>
+			<outputDirectory>geoserver/data_dir/data</outputDirectory>
+			<includes>
+				<include>nyc/**/*</include>
+				<include>shapefiles/**/*</include>
+				<include>taz_shapes/**/*</include>
 			</includes>
 		</fileSet>
 		<fileSet>
@@ -74,6 +91,11 @@
 			<includes>
 				<include>*.jar</include>
 			</includes>
+			<excludes>
+				<exclude>gt2*.jar</exclude>
+				<exclude>mysql*.jar</exclude>
+				<exclude>ojdbc*.jar</exclude>
+			</excludes>
 		</fileSet>
 		<fileSet>
 			<!-- we gather the .sh files in a separate task below -->
