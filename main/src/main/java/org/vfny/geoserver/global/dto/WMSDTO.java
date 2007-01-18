@@ -35,12 +35,14 @@ public final class WMSDTO implements DataTransferObject {
 
     /** The current svg renderer **/
     private String svgRenderer;
+    
     /** The antialisaing hint for the svg renderer **/
     private boolean svgAntiAlias;
 
-    /** The interpolation rendering hint **/
     private Map baseMapLayers;
     private Map baseMapStyles;
+    
+    /** The interpolation rendering hint **/
     private String allowInterpolation;
     
     /**
