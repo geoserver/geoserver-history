@@ -95,7 +95,7 @@
 <!------------------------------------------------------------------------>
 
 
-<table border=1 width=95%>
+<table border=1 cellspacing="0" cellpadding="2" width=95%>
 
   <tr><th>EPSG #</th><th><bean:message key="srsList.tableTitle"/></th></tr>
   
@@ -106,11 +106,11 @@
   -->
  <logic:iterate id="it_value" indexId="idx" name="srsInfoForm" property="srsIDList">
 	<tr>
-	     <td>
+	     <td valign="top" align="right">
 	          <bean:write property="<%= "srsIDList[" + idx + "]" %>" name="srsInfoForm"/>
 	     </td>
 	     <td class="greyedOut2">
-	          <bean:write property="<%= "srsDefinitionList[" + idx + "]" %>" name="srsInfoForm"/>
+	     	<pre><bean:write property="<%= "srsDefinitionList[" + idx + "]" %>" name="srsInfoForm"/></pre>
 	     </td>
 	</tr>
 </logic:iterate>
