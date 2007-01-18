@@ -38,6 +38,7 @@ import org.vfny.geoserver.form.data.DataCoveragesNewForm;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageStoreInfo;
 import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageUtils;
 
@@ -93,11 +94,7 @@ public class DataCoveragesNewAction extends ConfigAction {
 		final Format format = cvStoreInfo.getFormat(); 
 		AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
 		if (reader == null)
-			try {
-				reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(CoverageUtils.getResourceAsFile(cvStoreInfo.getUrl(), getServletContext(), null/*catalog.getBaseDir()*/));
-			} catch (MalformedURLException ex) {
-				throw new ConfigurationException(ex);
-			}
+			reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()));
 
 		if (reader == null)
 			throw new ConfigurationException("Could not obtain a reader for the CoverageDataSet. Please check the CoverageDataSet configuration!");

@@ -40,6 +40,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.form.data.CoveragesEditorForm;
 import org.vfny.geoserver.global.CoverageStoreInfo;
 import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageUtils;
@@ -158,11 +159,7 @@ public final class CoveragesEditorAction extends ConfigAction {
 		final Format format = cvStoreInfo.getFormat();
 		AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
 		if (reader == null)
-			try {
-				reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(CoverageUtils.getResourceAsFile(cvStoreInfo.getUrl(), getServletContext(), null/*catalog.getBaseDir()*/));
-			} catch (MalformedURLException ex) {
-				throw new ServletException(ex);
-			}
+			reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()));
 
 		try {
 			final CoordinateReferenceSystem sourceCRS = reader.getCrs();

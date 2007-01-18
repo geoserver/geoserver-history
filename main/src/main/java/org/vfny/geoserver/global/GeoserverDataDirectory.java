@@ -7,6 +7,7 @@ package org.vfny.geoserver.global;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -90,6 +91,39 @@ public class GeoserverDataDirectory {
 		}
 		return configDir;
 	}
+    
+    /**
+     * Given a url, tries to interpret it as a file into the data directory, or as an absolute
+     * location, and returns the actual absolute location of the File
+     * @param path
+     * @return
+     */
+    public static File findDataFile(URL url) {
+        return findDataFile(url.getFile());
+    }
+    
+    /**
+     * Given a path, tries to interpret it as a file into the data directory, or as an absolute
+     * location, and returns the actual absolute location of the File
+     * @param path
+     * @return
+     */
+    public static File findDataFile(String path) {
+        File baseDir = GeoserverDataDirectory.getGeoserverDataDirectory();
+
+        // do we ever have something that is not a file system reference?
+        if (path.startsWith("file:")) {
+            path = path.substring(5); // remove 'file:' prefix
+            File f = new File(path);
+            if(f.exists())
+                return f;
+            else
+                return new File(baseDir, path);
+
+        } else {
+            return new File(path);
+        }
+    }
 
 	/**
 	 * Utility method fofinding a config file under the data directory.

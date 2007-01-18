@@ -70,17 +70,17 @@ public final class CoverageStoreUtils {
 		}
 	}
 
-	public static Map getParams(Map m, ServletContext sc) {
-		String baseDir = sc.getRealPath("/");
-		return Collections.synchronizedMap(getParams(m, baseDir));
-	}
-
-	/**
-	 * Get Connect params.
-	 */
-	public static Map getParams(Map m, String baseDir) {
-		return Collections.synchronizedMap(CoverageStoreInfo.getParams(m, baseDir));
-	}
+//	public static Map getParams(Map m, ServletContext sc) {
+//		String baseDir = sc.getRealPath("/");
+//		return Collections.synchronizedMap(getParams(m, baseDir));
+//	}
+//
+//	/**
+//	 * Get Connect params.
+//	 */
+//	public static Map getParams(Map m, String baseDir) {
+//		return Collections.synchronizedMap(CoverageStoreInfo.getParams(m, baseDir));
+//	}
 
 	/**
 	 * Utility method for finding Params
