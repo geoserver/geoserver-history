@@ -7,7 +7,7 @@
 	<groupId>org.geoserver</groupId>
 	<artifactId>geoserver</artifactId>
 	<packaging>pom</packaging>
-	<version>1.5.0-beta1</version>
+	<version>1.5.0-beta2</version>
 	<name>GeoServer</name>
 
 	<organization>
@@ -553,8 +553,15 @@
 						<descriptor>release/javadoc.xml</descriptor>
 						<descriptor>release/bin.xml</descriptor>
 						<descriptor>release/doc.xml</descriptor>
+						<descriptor>release/ext-db2.xml</descriptor>
+						<descriptor>release/ext-gml.xml</descriptor>
+						<descriptor>release/ext-mysql.xml</descriptor>
+						<descriptor>release/ext-oracle.xml</descriptor>
+						<descriptor>release/ext-vpf.xml</descriptor>
+						<descriptor>release/ext-wfs.xml</descriptor>
+						<descriptor>release/ext-arcsde.xml</descriptor>
 					</descriptors>
-					<finalName>geoserver-1.5.0-beta1</finalName>
+					<finalName>geoserver-1.5.0-beta2</finalName>
 					<outputDirectory>
 						${project.build.directory}/release
 					</outputDirectory>
@@ -774,7 +781,7 @@
 	</modules>
 
 	<properties>
-		<gs.version>1.5.0-beta1</gs.version>
+		<gs.version>1.5.0-beta2</gs.version>
 		<gt.version>2.3.1-SNAPSHOT</gt.version>
 	</properties>
 
