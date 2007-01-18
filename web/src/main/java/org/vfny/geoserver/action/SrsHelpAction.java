@@ -81,7 +81,7 @@ public class SrsHelpAction extends Action {
     	       	   }
     	       	   catch(Exception e)
 				   {
-    	       		   LOGGER.log(Level.WARNING,e.getLocalizedMessage(),e);
+    	       		   LOGGER.log(Level.FINE,e.getLocalizedMessage(),e);
     	       	   	  
 				   }
     	       	   
