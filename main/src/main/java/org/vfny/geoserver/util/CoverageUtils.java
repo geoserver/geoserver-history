@@ -351,7 +351,7 @@ public class CoverageUtils {
 						&& params.get(key) instanceof GeneralGridGeometry) {
 					value = params.get(key);
 				}
-			} else if (key.equalsIgnoreCase("InputTransparentColor")) {
+			} else if (key.equalsIgnoreCase("InputTransparentColor") || key.equalsIgnoreCase("OutputTransparentColor")) {
 				if (params.get(key) != null) {
 					value = Color.decode((String) params.get(key));
 				} else {

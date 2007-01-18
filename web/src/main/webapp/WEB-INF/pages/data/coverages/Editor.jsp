@@ -542,15 +542,26 @@ function generateColorPicker(colorFieldName, fieldValue)
 			 	<logic:notEqual name="coveragesEditorForm"
 		    	        property='<%= "paramKey[" + ctr + "]"%>'
 				        value="ReadGridGeometry2D">
+
                   <logic:equal name="coveragesEditorForm"
 	                property='<%= "paramKey[" + ctr + "]"%>'
 	                value="InputTransparentColor">
 	                	<script>document.write(generateColorPicker('<%= "paramValue[" + ctr + "]"%>','<bean:write name="coveragesEditorForm" property='<%= "paramValue[" + ctr + "]"%>'/>'))</script>
       			  </logic:equal>
+				  <logic:equal name="coveragesEditorForm"
+		                property='<%= "paramKey[" + ctr + "]"%>'
+		                value="OutputTransparentColor">
+		                	<script>document.write(generateColorPicker('<%= "paramValue[" + ctr + "]"%>','<bean:write name="coveragesEditorForm" property='<%= "paramValue[" + ctr + "]"%>'/>'))</script>
+	      		  </logic:equal>
+                  
                   <logic:notEqual name="coveragesEditorForm"
 	                property='<%= "paramKey[" + ctr + "]"%>'
-	                value="InputTransparentColor">
-		                <html:text property='<%= "paramValue[" + ctr + "]"%>' size="60"/>
+	                value="InputTransparentColor">  
+	                  <logic:notEqual name="coveragesEditorForm"
+		                property='<%= "paramKey[" + ctr + "]"%>'
+		                value="OutputTransparentColor">
+			                <html:text property='<%= "paramValue[" + ctr + "]"%>' size="60"/>
+	      			  </logic:notEqual>
       			  </logic:notEqual>
 				</logic:notEqual>
 	    	  </td>
