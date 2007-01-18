@@ -179,35 +179,14 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
                     String path = (String) value;
                     LOGGER.finer("in string url");
                     if (path.startsWith("file:")) {
-                        path = path.substring(5); // remove 'file:' prefix
-
-                        File file = new File(path);
-                        if(!file.exists())
-                            file = new File(baseDir, path);
-                        entry.setValue(file.toURL().toExternalForm());
+                        File fixedPath = GeoserverDataDirectory.findDataFile(path);
+                        entry.setValue(fixedPath.toURL().toExternalForm());
                     }
                 } else if (value instanceof URL
                         && ((URL) value).getProtocol().equals("file")) {
-		    LOGGER.finer("in URL url");
-                    URL url = (URL) value;
-                    String path = url.getPath();
-		    LOGGER.finer("path is " + path);
-            // try to understand wheter this is a path relative to the data directory
-            // of if it's an absolute path
-            File file = new File(path);
-            if(!file.exists())
-                file = new File(baseDir, path);
-			entry.setValue(file.toURL());
-                } /*else if ("dbtype".equals(key) && value instanceof String) {
-                    String val = (String) value;
-
-                    if ((val != null) && val.equals("postgis")) {
-                        if (!params.containsKey("charset")) {
-                            params.put("charset",
-                                data.getGeoServer().getCharSet().toString());
-                        }
-                    }
-		    } */
+                    File fixedPath = GeoserverDataDirectory.findDataFile((URL) value);
+                    entry.setValue(fixedPath.toURL());
+                }
             } catch (MalformedURLException ignore) {
                 // ignore attempt to fix relative paths
             }

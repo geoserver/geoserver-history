@@ -88,16 +88,6 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 	private Map meta;
 
 	/**
-	 * Directory associated with this Format.
-	 * 
-	 * <p>
-	 * This directory may be used for File based relative paths.
-	 * </p>
-	 */
-	private File baseDir;
-	private File dataDir;
-
-	/**
 	 * CoverageStoreInfo constructor.
 	 * 
 	 * <p>
@@ -120,9 +110,6 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 		title = config.getTitle();
 		_abstract = config.getAbstract();
 		format = lookupFormat();
-		baseDir = data.getBaseDir();
-		dataDir = data.getDataDirectory();
-
 	}
 
 	private Format lookupFormat() {
@@ -174,56 +161,56 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 		return id;
 	}
 
-	/**
-	 * Get Connect params.
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-
-	public static Map getParams(Map m, String baseDir) {
-		Map params = Collections.synchronizedMap(new HashMap(m));
-
-		for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Map.Entry) i.next();
-			String key = (String) entry.getKey();
-			Object value = entry.getValue();
-
-			try {
-				if ("url".equals(key) && value instanceof String) {
-					String path = (String) value;
-					if (LOGGER.isLoggable(Level.INFO)) {
-						LOGGER.info("in string url");
-					}
-					if (path.startsWith("file:data/")) {
-						path = path.substring(5); // remove 'file:' prefix
-
-						File file = new File(baseDir, path);
-						entry.setValue(file.toURL().toExternalForm());
-					}
-					// Not sure about this
-				} else if (value instanceof URL
-						&& ((URL) value).getProtocol().equals("file")) {
-					if (LOGGER.isLoggable(Level.INFO)) {
-						LOGGER.info("in URL url");
-					}
-					URL url = (URL) value;
-					String path = url.getPath();
-					if (LOGGER.isLoggable(Level.INFO)) {
-						LOGGER.info(new StringBuffer("path is ").append(path)
-								.toString());
-					}
-					if (path.startsWith("data/")) {
-						File file = new File(baseDir, path);
-						entry.setValue(file.toURL());
-					}
-				}
-			} catch (MalformedURLException ignore) {
-				// ignore attempt to fix relative paths
-			}
-		}
-
-		return params;
-	}
+//	/**
+//	 * Get Connect params.
+//	 * 
+//	 * @return DOCUMENT ME!
+//	 */
+//
+//	public static Map getParams(Map m, String baseDir) {
+//		Map params = Collections.synchronizedMap(new HashMap(m));
+//
+//		for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
+//			Map.Entry entry = (Map.Entry) i.next();
+//			String key = (String) entry.getKey();
+//			Object value = entry.getValue();
+//
+//			try {
+//				if ("url".equals(key) && value instanceof String) {
+//					String path = (String) value;
+//					if (LOGGER.isLoggable(Level.INFO)) {
+//						LOGGER.info("in string url");
+//					}
+//					if (path.startsWith("file:data/")) {
+//						path = path.substring(5); // remove 'file:' prefix
+//
+//						File file = new File(baseDir, path);
+//						entry.setValue(file.toURL().toExternalForm());
+//					}
+//					// Not sure about this
+//				} else if (value instanceof URL
+//						&& ((URL) value).getProtocol().equals("file")) {
+//					if (LOGGER.isLoggable(Level.INFO)) {
+//						LOGGER.info("in URL url");
+//					}
+//					URL url = (URL) value;
+//					String path = url.getPath();
+//					if (LOGGER.isLoggable(Level.INFO)) {
+//						LOGGER.info(new StringBuffer("path is ").append(path)
+//								.toString());
+//					}
+//					if (path.startsWith("data/")) {
+//						File file = new File(baseDir, path);
+//						entry.setValue(file.toURL());
+//					}
+//				}
+//			} catch (MalformedURLException ignore) {
+//				// ignore attempt to fix relative paths
+//			}
+//		}
+//
+//		return params;
+//	}
 
 	/**
 	 * DOCUMENT ME !
@@ -374,14 +361,6 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 		return nameSpaceId;
 	}
 
-	public File getBaseDir() {
-		return baseDir;
-	}
-
-	public File getDataDir() {
-		return dataDir;
-	}
-
 	public synchronized GridCoverageReader getReader() {
 		if(reader!=null)
 			return reader;
@@ -401,7 +380,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 			// Getting coverage reader using the format and the real path.
 			//
 			// /////////////////////////////////////////////////////////
-			final File obj=CoverageUtils.getResourceAsFile(gcInfo.getUrl(), null, gcInfo.getDataDir());
+			final File obj= GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
 
 			// XXX CACHING READERS HERE
 			reader = ((AbstractGridFormat) gcInfo.getFormat()).getReader(obj);
@@ -410,8 +389,6 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 		} catch (InvalidParameterValueException e) {
 			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
 		} catch (ParameterNotFoundException e) {
-			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
-		} catch (MalformedURLException e) {
 			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
 		} catch (IllegalArgumentException e) {
 			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
@@ -442,7 +419,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 			// Getting coverage reader using the format and the real path.
 			//
 			// /////////////////////////////////////////////////////////
-			final File obj=CoverageUtils.getResourceAsFile(gcInfo.getUrl(), null, gcInfo.getDataDir());
+			final File obj= GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
 
 			// XXX CACHING READERS HERE
 			hintReader = ((AbstractGridFormat) gcInfo.getFormat()).getReader(obj, hints);
@@ -450,8 +427,6 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 		} catch (InvalidParameterValueException e) {
 			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
 		} catch (ParameterNotFoundException e) {
-			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
-		} catch (MalformedURLException e) {
 			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
 		} catch (IllegalArgumentException e) {
 			LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);

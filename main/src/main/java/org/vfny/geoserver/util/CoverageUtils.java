@@ -5,9 +5,6 @@
 package org.vfny.geoserver.util;
 
 import java.awt.Color;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,8 +13,6 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.servlet.ServletContext;
 
 import org.geotools.coverage.grid.GeneralGridGeometry;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
@@ -35,7 +30,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.CoordinateOperation;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.OperationNotFoundException;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * DOCUMENT ME!
@@ -56,43 +50,6 @@ public class CoverageUtils {
 	public static final int TRANSPARENT = 0;
 
 	public static final int OPAQUE = 1;
-
-	public static URL getResource(String path, String baseDir)
-			throws MalformedURLException {
-		URL url = null;
-		if (path.startsWith("file:data/")) {
-			path = path.substring(5); // remove 'file:' prefix
-
-			File file = new File(baseDir, path);
-			url = file.toURL();
-		} else {
-			url = new URL(path);
-		}
-
-		return url;
-	}
-
-	public static File getResourceAsFile(String path, ServletContext sc, File dataDir)
-			throws MalformedURLException {
-
-    	//DJB: changed this for geoserver_data_dir   	
-    	//String baseDir = sc.getRealPath("/");
-    	File baseDir = null;
-    	if (dataDir != null)
-    		baseDir = dataDir;
-    	else
-    		baseDir = GeoserverDataDirectory.getGeoserverDataDirectory();
-
-		if (path.startsWith("file:")) {
-			path = path.substring(5); // remove 'file:' prefix
-
-			return new File(baseDir, path);
-
-		} else {
-			return new File(path);
-		}
-
-	}
 
 	public static GeneralParameterValue[] getParameters(ParameterValueGroup params) {
 		final List parameters = new ArrayList();
@@ -124,15 +81,6 @@ public class CoverageUtils {
 						continue;
 					}
 					Object value = val.getValue();
-//					String text = "";
-//
-//					if (value == null) {
-//						text = null;
-//					} else if (value instanceof String) {
-//						text = (String) value;
-//					} else {
-//						text = value.toString();
-//					}
 
 					parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null, value).createValue());
 				}
@@ -183,7 +131,10 @@ public class CoverageUtils {
 					// /////////////////////////////////////////////////////////
 					Object value = CoverageUtils.getCvParamValue(_key, val, values);
 
-					parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null, value).createValue());
+					if (value == null && (_key.equalsIgnoreCase("InputTransparentColor") || _key.equalsIgnoreCase("OutputTransparentColor") ))
+						parameters.add(new DefaultParameterDescriptor(_key, Color.class, null, value).createValue());
+					else
+						parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null, value).createValue());
 				}
 			}
 			return !parameters.isEmpty() ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]) : null;
