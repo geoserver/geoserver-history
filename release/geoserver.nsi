@@ -28,15 +28,15 @@
 ;General
 
   ;Name and file
-  Name "GeoServer 1.5.0-beta1"
-  OutFile "geoserver-1.5.0-beta1.exe"
+  Name "GeoServer 1.5.0-beta2"
+  OutFile "geoserver-1.5.0-beta2.exe"
 
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\GeoServer 1.5.0-beta1"
+  InstallDir "$PROGRAMFILES\GeoServer 1.5.0-beta2"
   
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\GeoServer-1.5.0-beta1" ""
+  InstallDirRegKey HKCU "Software\GeoServer-1.5.0-beta2" ""
 
 ;--------------------------------
 ;Variables
@@ -54,7 +54,7 @@
   
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
-      installation of GeoServer 1.5.0-beta1 \r\n \
+      installation of GeoServer 1.5.0-beta2 \r\n \
 			Please report any problems or suggestions for improvement to \
       geoserver-devel@lists.sourceforge.net. \r\n \r\n \
       Click Next to continue."
@@ -103,6 +103,7 @@ Section "GeoServer Section" SecGeoServer
   ;ADD YOUR OWN FILES HERE...
   File /r bin
   File /r etc
+  File /r data_dir
   File /a README.txt
   File /r lib
   File /r logs
@@ -139,7 +140,7 @@ Section "GeoServer Section" SecGeoServer
                    "http://127.0.0.1:8080/geoserver/"
 
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Start GeoServer.lnk" \
-                   "$2\bin\java.exe" '-DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -Xmx512m -Dorg.geotools.referencing.forceXY=true -jar start.jar'\
+                   "$2\bin\java.exe" '-DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -Xmx300m -jar start.jar'\
                    "$INSTDIR\webapps\geoserver\WEB-INF\images\gs.ico" 0 SW_SHOWNORMAL
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Stop GeoServer.lnk" \
                    "$2\bin\java.exe" '-jar start.jar --stop'\
@@ -211,8 +212,8 @@ Function dataDirPage
   ;MessageBox MB_OK "existing env string: $1"
 
   StrCmp $1 "" 0 copy_str
-  ## if it doesn't exist, use: "$INSTDIR\webapps\geoserver\conf"
-    StrCpy $1 "$INSTDIR\webapps\geoserver\conf"
+  ## if it doesn't exist, use: "$INSTDIR\data_dir"
+    StrCpy $1 "$INSTDIR\data_dir"
 
   ## if it exists, use it for temp value until user chooses new one
   copy_str:
@@ -461,7 +462,7 @@ Section "Uninstall"
   
   IfFileExists "$INSTDIR" 0 Removed
      MessageBox MB_YESNO|MB_ICONQUESTION \
-          "Remove all files in your GeoServer 1.5.0-beta1 directory? (If you have anything you created that you want to keep, click No)" IDNO Removed
+          "Remove all files in your GeoServer 1.5.0-beta2 directory? (If you have anything you created that you want to keep, click No)" IDNO Removed
      Delete "$INSTDIR\*.*" ;
      RMDIR /r "$INSTDIR"
      Sleep 500
