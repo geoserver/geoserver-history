@@ -1,3 +1,23 @@
+GeoServer 1.5.0-beta2
+---------------------
+
+This is the second beta release for the 1.5 sereies of GeoServer.
+Major features / improvements of this release include:
+
+- Many bug fixes
+- The ability to locate raster files outside of the data_dir
+
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12973
+
+Based on GeoTools 2.3.1-SNAPSHOT
+
+NOTES:
+1.In order to get more performances, you should have a complete JAI/ImageIO install (with native interfaces too) into your JRE.
+Moreover, we suggest to use the latest daily distributions of JAI 1.1.4 and ImageIO 1.2.
+2.Very few CITE Tests are still failing. This distribution passes most of the WMS,WFS and WCS CITE Tests.
+
 GeoServer 1.5.0-beta1
 ---------------------
 
