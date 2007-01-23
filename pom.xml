@@ -770,7 +770,7 @@
 	</modules>
 
 	<properties>
-		<gt.version>2.4-SNAPSHOT</gt.version>
+		<gt.version>2.4-ows4</gt.version>
 	</properties>
 
 	<profiles>
