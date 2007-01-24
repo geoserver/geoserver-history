@@ -11,29 +11,27 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
-
 import org.geoserver.util.ReaderUtils;
 import org.geotools.feature.FeatureType;
 
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.WMS;
-
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.servlets.Capabilities;
 
@@ -90,8 +88,8 @@ public class MapPreviewAction extends GeoServerAction
 		capRequest.setHttpServletRequest(request);
 		
 		Data catalog = wms.getData();
-		Collection ftypes = catalog.getFeatureTypeInfos().values();
-		FeatureTypeInfo layer;
+		List ftypes = new ArrayList(catalog.getFeatureTypeInfos().values());
+        Collections.sort(ftypes, new FeatureTypeInfoNameComparator());
 		
 		// 2) delete any existing generated files in the generation directory
 		ServletContext sc = request.getSession().getServletContext();
@@ -111,8 +109,10 @@ public class MapPreviewAction extends GeoServerAction
 		// 3) Go through each FeatureType and collect information && write out config files
 		for (Iterator it = ftypes.iterator(); it.hasNext();) 
 		{
-			layer = (FeatureTypeInfo) it.next();
-			Envelope bbox = layer.getLatLongBoundingBox();
+            FeatureTypeInfo layer = (FeatureTypeInfo) it.next();
+			Envelope bbox = layer.getBoundingBox();
+            if(bbox.getWidth() == 0 || bbox.getHeight() == 0)
+                bbox.expandBy(0.1);
 			if (layer.isEnabled()) 
 			{
 				// prepare strings for web output
@@ -480,10 +480,20 @@ public class MapPreviewAction extends GeoServerAction
 		throws IOException
 	{
 		
+        int width, height;
+        double ratio = bbox.getHeight() / bbox.getWidth();
+        if(ratio < 1)  {
+            width = 500;
+            height = (int) Math.round(500 * ratio);
+        } else {
+            width = (int) Math.round(500 / ratio);
+            height = 500;
+        }
+        
 		out.println("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>");
 		out.println("<ViewContext version=\"1.0.0\" id=\"atlas_world\" xmlns=\"http://www.opengis.net/context\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd\">");
 		out.println("  <General>");
-		out.println("    <Window width=\"500\" height=\"285\"/>");
+		out.println("    <Window width=\"" + width + "\" height=\"" + height +  "\"/>");
 		out.println("    <BoundingBox SRS=\"EPSG:4326\" minx=\""+bbox.getMinX()+"\" miny=\""+bbox.getMinY()+"\" maxx=\""+bbox.getMaxX()+"\" maxy=\""+bbox.getMaxY()+"\"/>");
 		// CHANGE HERE
 		out.println("    <Title>"+ft_namespace+":"+ft_name+" Map</Title>");
@@ -510,4 +520,16 @@ public class MapPreviewAction extends GeoServerAction
 		out.println("</ViewContext>");
 		
 	}
+    
+    private static class FeatureTypeInfoNameComparator implements Comparator {
+
+        public int compare(Object o1, Object o2) {
+            FeatureTypeInfo ft1 = (FeatureTypeInfo) o1;
+            FeatureTypeInfo ft2 = (FeatureTypeInfo) o2;
+            String ft1Name = ft1.getNameSpace().getPrefix() + ft1.getName();
+            String ft2Name = ft2.getNameSpace().getPrefix() + ft2.getName();
+            return ft1Name.compareTo(ft2Name);
+        }
+        
+    }
 }
