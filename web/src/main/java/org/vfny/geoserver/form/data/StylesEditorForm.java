@@ -10,6 +10,11 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +30,7 @@ import org.apache.struts.upload.MultipartRequestHandler;
 import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
 import org.xml.sax.SAXException;
@@ -182,6 +188,7 @@ public class StylesEditorForm extends ActionForm {
     
     
     
+    
     public boolean getFullyValidateChecked() {
         return fullyValidateChecked;
     }
@@ -263,4 +270,32 @@ public class StylesEditorForm extends ActionForm {
     {
     	validationReport = exs;
     }
+
+    public String getSldContents() {
+        if(filename == null)
+            return "-";
+        
+        BufferedReader br = null;
+        try {
+            File styleDir = new File(GeoserverDataDirectory.getGeoserverDataDirectory(), "data/styles");
+            File styleFile = new File(styleDir, filename);
+            br = new BufferedReader(new FileReader(styleFile));
+            StringBuffer sb = new StringBuffer(); 
+            String s;
+            while((s = br.readLine()) != null)
+                sb.append(s.replaceAll("\t", "  ")).append("\n");
+            br.close();
+            return sb.toString();
+        } catch(Throwable t) {
+            // could not read the file contents
+            if(br != null)
+                try {
+                    br.close();
+                } catch (IOException e) {
+                }
+            return "-";
+        }
+    }
+
+   
 }

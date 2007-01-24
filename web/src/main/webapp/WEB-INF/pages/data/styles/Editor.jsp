@@ -26,6 +26,16 @@
       <html:reset><bean:message key="label.reset"/></html:reset>
     </td>
   </tr>
+    <tr>
+    <td class="label">&nbsp;</td>
+    <td class="datum">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="label"><bean:message key="label.sldContents"/>:</td>
+    <td class="datum">
+      <pre><bean:write property="sldContents" name="dataStylesEditorForm"  /></pre>
+    </td>
+  </tr>
  
 </table>
 
