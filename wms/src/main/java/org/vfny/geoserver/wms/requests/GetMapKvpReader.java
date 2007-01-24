@@ -1277,7 +1277,18 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      */
     public void filterBaseMap(Map layers, Map styles)
     {
-    	String currentLayers = getValue("LAYERS");
+    	String currentLayers = null;
+        
+    	try {
+    		currentLayers = getValue("LAYERS");
+    	} catch (NullPointerException e) {
+    		// No layers defined. This is either wrong or they are listing the layers 
+    		// in an SLD document specified with the SLD= parameter
+    		LOGGER.fine("No layers defined. This is either wrong or they are listing the layers"+
+    				" in an SLD document specified with the SLD= parameter");
+    		return; // just continue ignoring the basemap option
+    	}
+    	
     	String currentStyles = getValue("STYLES");
     	String[] baseLayers = (String[]) layers.keySet().toArray(new String[0]);
     	String[] baseStyles = (String[]) styles.keySet().toArray(new String[0]);
