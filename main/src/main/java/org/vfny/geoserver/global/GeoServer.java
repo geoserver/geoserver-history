@@ -449,7 +449,9 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
          adminPassword = dto.getAdminPassword();
          verboseExceptions = dto.isVerboseExceptions();
          
-         
+         // if the server admin did not set it up otherwise, force X/Y axis ordering
+         if(System.getProperty("org.geotools.referencing.forceXY") != null)
+             System.setProperty("org.geotools.referencing.forceXY", "true");
      } else {
          throw new ConfigurationException(
              "load(GeoServerDTO) expected a non-null value");

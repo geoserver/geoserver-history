@@ -59,5 +59,6 @@
 	<a href="../../../wfs?service=WFS&request=GetCapabilities">WFS Capabilities</a>
 	<br>
 	<a href="../../../wms?service=WMS&request=GetCapabilities">WMS Capabilities</a>
-
+	<br><br>
+	<a href="../../../srsHelp.do"><bean:message key="label.SRSList"/></a>
 <br>
