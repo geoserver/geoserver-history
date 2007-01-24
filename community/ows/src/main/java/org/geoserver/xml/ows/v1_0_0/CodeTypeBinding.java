@@ -1,11 +1,13 @@
 package org.geoserver.xml.ows.v1_0_0;
 
 
-import org.geotools.xml.*;
-
-import net.opengis.ows.v1_0_0.OWSFactory;		
-
 import javax.xml.namespace.QName;
+
+import net.opengis.ows.v1_0_0.OWSFactory;
+
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 /**
  * Binding object for the type http://www.opengis.net/ows:CodeType.

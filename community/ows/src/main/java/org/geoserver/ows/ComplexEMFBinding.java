@@ -2,7 +2,6 @@ package org.geoserver.ows;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.geotools.xml.AbstractComplexBinding;
 

@@ -1,14 +1,12 @@
 package org.geoserver.xml.ows.v1_0_0;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.ows.v1_0_0.ExceptionReportType;
 
 import org.geoserver.ows.ComplexEMFBinding;
-import org.geotools.xml.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-
-import javax.xml.namespace.QName;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 /**
  * Binding object for the element http://www.opengis.net/ows:ExceptionReport.

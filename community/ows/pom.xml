@@ -30,5 +30,30 @@
 			<scope>test</scope>
 		</dependency>
   </dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+        <groupId>org.geotools.maven</groupId>
+        <artifactId>gt2-xmlcodegen</artifactId>
+        <configuration>
+          <schemaLocation>owsAll.xsd</schemaLocation>
+          <schemaSourceDirectory>/home/jdeolive/devel/geoserver/ows4/community/ows/src/main/java/org/geoserver/xml/ows/v1_0_0</schemaSourceDirectory>
+					<schemaLookupDirectories>
+            <schemaLookupDirectory>/home/jdeolive/devel/geotools/trunk/modules/unsupported/xml-xsd/src/main/resources/org/geotools/xlink/bindings/</schemaLookupDirectory>
+          </schemaLookupDirectories>
+          <generateConfiguration>false</generateConfiguration>
+          <generateBindingConfiguration>false</generateBindingConfiguration>
+          <generateBindingInterface>false</generateBindingInterface>
+          <generateSchemaLocationResolver>false</generateSchemaLocationResolver>
+					<generateElements>true</generateElements>
+					<includes>
+            <include>ExceptionReport</include>
+            <include>ExceptionType</include>
+					</includes>
+				</configuration>
+		  </plugin>
+		</plugins>
+	</build>
 
 </project>

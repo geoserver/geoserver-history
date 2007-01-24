@@ -1,11 +1,12 @@
 package org.geoserver.xml.ows.v1_0_0;
 
 
-import org.geotools.xml.*;
-
-import net.opengis.ows.v1_0_0.OWSFactory;		
-
 import javax.xml.namespace.QName;
+
+import net.opengis.ows.v1_0_0.OWSFactory;
+
+import org.geotools.xml.AbstractSimpleBinding;
+import org.geotools.xml.InstanceComponent;
 
 /**
  * Binding object for the type http://www.opengis.net/ows:PositionType.
