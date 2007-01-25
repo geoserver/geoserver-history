@@ -39,6 +39,204 @@ function prepareFormData(){
 		document.coveragesEditorForm.otherSelectedStyles.options[i].selected = true;
 	}
 }
+
+function generateColorPicker(colorFieldName, fieldValue)
+{
+	result = '<input name="'+colorFieldName+'" id="'+colorFieldName+'" size="10" value="'+fieldValue+'" ';
+	result += 'onChange="relateColor(\''+colorFieldName+'\', fieldValue);"> ';
+	result += '<a href="javascript:pickColor(\''+colorFieldName+'\');" id="pick'+colorFieldName+'" name="pick'+colorFieldName+'" style="border: 1px solid #000000; font-family:Verdana; font-size:10px; background=#FFFF33; ';
+	result += 'text-decoration: none; " ><img src="colorpicker.jpg" width=12 height=12 border="none"></a>';
+	result += '<script language="javascript">relateColor(\'pick'+colorFieldName+'\', getObj(\''+colorFieldName+'\').value);</script> ';
+
+	return result;
+}
+
+// Flooble Color Picker
+// Color Picker Script from Flooble.com
+// For more information, visit 
+//	http://www.flooble.com/scripts/colorpicker.php
+// Copyright 2003 Animus Pactum Consulting inc.
+// You may use and distribute this code freely, as long as
+// you keep this copyright notice and the link to flooble.com
+// if you chose to remove them, you must link to the page
+// listed above from every web page where you use the color
+// picker code.
+//---------------------------------------------------------
+     var perline = 15;
+     var divSet = false;
+     var curId;
+     var colorLevels = Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
+     var colorArray = Array();
+     var ie = false;
+     var nocolor = 'none';
+	 if (document.all) { ie = true; nocolor = ''; }
+	 function getObj(id) {
+		if (ie) { return document.all[id]; } 
+		else {	return document.getElementById(id);	}
+	 }
+
+     function addColor(r, g, b) {
+     	var red = colorLevels[r];
+     	var green = colorLevels[g];
+     	var blue = colorLevels[b];
+     	addColorValue(red, green, blue);
+     }
+
+     function addColorValue(r, g, b) {
+     	colorArray[colorArray.length] = '#' + r + r + g + g + b + b;
+     }
+     
+     function setColor(color) {
+     	var link = getObj('pick'+curId);
+     	var field = getObj(curId);// + 'field'
+     	var picker = getObj('colorpicker');
+     	field.value = color;
+     	if (color == '') {
+			link.innerHTML="&nbsp;&nbsp;&nbsp;";
+	     	link.style.background = nocolor;
+	     	link.style.color = nocolor;
+	     	color = nocolor;
+     	} else {
+			link.innerHTML="&nbsp;&nbsp;&nbsp;";
+	     	link.style.background = color;
+	     	link.style.color = color;
+	    }
+     	picker.style.display = 'none';
+	    eval(getObj(curId).title);// + 'field'
+     }
+        
+     function setDiv() {     
+     	if (!document.createElement) { return; }
+        var elemDiv = document.createElement('div');
+        if (typeof(elemDiv.innerHTML) != 'string') { return; }
+        genColors();
+        elemDiv.id = 'colorpicker';
+	    elemDiv.style.position = 'absolute';
+        elemDiv.style.display = 'none';
+        elemDiv.style.border = '#000000 1px solid';
+        elemDiv.style.background = '#FFFFFF';
+        elemDiv.innerHTML = '<span style="font-family:Verdana; font-size:11px;">Pick a color: ' 
+          	+ '(<a href="javascript:setColor(\'\');">No color</a>)<br>' 
+        	+ getColorTable() 
+        	+ '<center><a href="http://www.flooble.com/scripts/colorpicker.php"'
+        	+ ' target="_blank">color picker</a> by <a href="http://www.flooble.com" target="_blank"><b>flooble</b></a></center></span>';
+
+        document.body.appendChild(elemDiv);
+        divSet = true;
+     }
+     
+     function pickColor(id) {
+     	if (!divSet) { setDiv(); }
+     	var picker = getObj('colorpicker');     	
+		if (id == curId && picker.style.display == 'block') {
+			picker.style.display = 'none';
+			return;
+		}
+     	curId = id;
+     	var thelink = getObj(id);
+     	picker.style.top = getAbsoluteOffsetTop(thelink) + 20;
+     	picker.style.left = getAbsoluteOffsetLeft(thelink);     
+	picker.style.display = 'block';
+     }
+     
+     function genColors() {
+        addColorValue('0','0','0');
+		//addColorValue('1','1','1');
+		addColorValue('2','2','2');
+        addColorValue('3','3','3');
+		addColorValue('4','4','4');
+		addColorValue('5','5','5');
+        addColorValue('6','6','6');
+		addColorValue('7','7','7');
+        addColorValue('8','8','8');
+        addColorValue('9','9','9');
+        addColorValue('A','A','A');
+		addColorValue('B','B','B');
+        addColorValue('C','C','C');
+		addColorValue('D','D','D');
+        addColorValue('E','E','E');
+        addColorValue('F','F','F');
+			
+        for (a = 1; a < colorLevels.length; a++)
+			addColor(0,0,a);
+        for (a = 1; a < colorLevels.length - 1; a++)
+			addColor(a,a,5);
+
+        for (a = 1; a < colorLevels.length; a++)
+			addColor(0,a,0);
+        for (a = 1; a < colorLevels.length - 1; a++)
+			addColor(a,5,a);
+			
+        for (a = 1; a < colorLevels.length; a++)
+			addColor(a,0,0);
+        for (a = 1; a < colorLevels.length - 1; a++)
+			addColor(5,a,a);
+			
+			
+        for (a = 1; a < colorLevels.length; a++)
+			addColor(a,a,0);
+        for (a = 1; a < colorLevels.length - 1; a++)
+			addColor(5,5,a);
+			
+        for (a = 1; a < colorLevels.length; a++)
+			addColor(0,a,a);
+        for (a = 1; a < colorLevels.length - 1; a++)
+			addColor(a,5,5);
+
+        for (a = 1; a < colorLevels.length; a++)
+			addColor(a,0,a);			
+        for (a = 1; a < colorLevels.length - 1; a++)
+			addColor(5,a,5);
+			
+       	return colorArray;
+     }
+     function getColorTable() {
+         var colors = colorArray;
+      	 var tableCode = '';
+         tableCode += '<table border="0" cellspacing="1" cellpadding="1">';
+         for (i = 0; i < colors.length; i++) {
+              if (i % perline == 0) { tableCode += '<tr>'; }
+              tableCode += '<td bgcolor="#000000"><a style="outline: 1px solid #000000; color: ' 
+              	  + colors[i] + '; background: ' + colors[i] + ';font-size: 10px;" title="' 
+              	  + colors[i] + '" href="javascript:setColor(\'' + colors[i] + '\');">&nbsp;&nbsp;&nbsp;</a></td>';
+              if (i % perline == perline - 1) { tableCode += '</tr>'; }
+         }
+         if (i % perline != 0) { tableCode += '</tr>'; }
+         tableCode += '</table>';
+      	 return tableCode;
+     }
+     function relateColor(id, color) {
+     	var link = getObj(id);
+     	if (color == '') {
+	     	link.style.background = nocolor;
+	     	link.style.color = nocolor;
+	     	color = nocolor;
+     	} else {
+	     	link.style.background = color;
+	     	link.style.color = color;
+	    }
+	    //eval(getObj(id + 'field').title);
+     }
+     function getAbsoluteOffsetTop(obj) {
+     	var top = obj.offsetTop;
+     	var parent = obj.offsetParent;
+     	while (parent != document.body) {
+     		top += parent.offsetTop;
+     		parent = parent.offsetParent;
+     	}
+     	return top;
+     }
+     
+     function getAbsoluteOffsetLeft(obj) {
+     	var left = obj.offsetLeft;
+     	var parent = obj.offsetParent;
+     	while (parent != document.body) {
+     		left += parent.offsetLeft;
+     		parent = parent.offsetParent;
+     	}
+     	return left;
+     }
+
 //-->
 </script>
 
@@ -150,6 +348,13 @@ function prepareFormData(){
 	  <td class="datum">
 		<html:text property="nativeCRS" size="60"/>
 	  </td>
+	</tr>
+	<tr>
+	  <td>
+	  </td>
+	  <td class="greyedOut2">
+      	* <bean:message key="help.coverage.nativeCRS"/>
+      </td>
 	</tr>
   </logic:equal>
   <!-------------------------->
@@ -324,31 +529,51 @@ function prepareFormData(){
                    indexId="ctr"
                    name="coveragesEditorForm"
                    property="paramKeys">
-    <logic:notEqual name="coveragesEditorForm"
-                    property='<%= "paramKey[" + ctr + "]"%>'
-                    value="dbtype">
-        <tr>
-    	  <td class="label">
-		 	<logic:notEqual name="coveragesEditorForm"
-	    	        property='<%= "paramKey[" + ctr + "]"%>'
-			        value="ReadGridGeometry2D">
-	            <span class="help"
-	    		      title="<bean:write name="coveragesEditorForm"
-	    		      property='<%= "paramHelp[" + ctr + "]" %>'/>">
-	              <bean:write name="coveragesEditorForm"
-	                          property='<%= "paramKey[" + ctr + "]"%>'/>:
-	    		</span>
-			</logic:notEqual>
-          </td>
-    	  <td class="datum">
-		 	<logic:notEqual name="coveragesEditorForm"
-	    	        property='<%= "paramKey[" + ctr + "]"%>'
-			        value="ReadGridGeometry2D">
-              <html:text property='<%= "paramValue[" + ctr + "]"%>' size="60"/>
-			</logic:notEqual>
-    	  </td>
-    	</tr>
-    </logic:notEqual>
+	    <logic:notEqual name="coveragesEditorForm"
+	                    property='<%= "paramKey[" + ctr + "]"%>'
+	                    value="dbtype">
+	        <tr>
+	    	  <td class="label">
+			 	<logic:notEqual name="coveragesEditorForm"
+		    	        property='<%= "paramKey[" + ctr + "]"%>'
+				        value="ReadGridGeometry2D">
+		            <span class="help"
+		    		      title="<bean:write name="coveragesEditorForm"
+		    		      property='<%= "paramHelp[" + ctr + "]" %>'/>">
+		              <bean:write name="coveragesEditorForm"
+		                          property='<%= "paramKey[" + ctr + "]"%>'/>:
+		    		</span>
+				</logic:notEqual>
+	          </td>
+	    	  <td class="datum">
+			 	<logic:notEqual name="coveragesEditorForm"
+		    	        property='<%= "paramKey[" + ctr + "]"%>'
+				        value="ReadGridGeometry2D">
+
+                  <logic:equal name="coveragesEditorForm"
+	                property='<%= "paramKey[" + ctr + "]"%>'
+	                value="InputTransparentColor">
+	                	<script>document.write(generateColorPicker('<%= "paramValue[" + ctr + "]"%>','<bean:write name="coveragesEditorForm" property='<%= "paramValue[" + ctr + "]"%>'/>'))</script>
+      			  </logic:equal>
+				  <logic:equal name="coveragesEditorForm"
+		                property='<%= "paramKey[" + ctr + "]"%>'
+		                value="OutputTransparentColor">
+		                	<script>document.write(generateColorPicker('<%= "paramValue[" + ctr + "]"%>','<bean:write name="coveragesEditorForm" property='<%= "paramValue[" + ctr + "]"%>'/>'))</script>
+	      		  </logic:equal>
+                  
+                  <logic:notEqual name="coveragesEditorForm"
+	                property='<%= "paramKey[" + ctr + "]"%>'
+	                value="InputTransparentColor">  
+	                  <logic:notEqual name="coveragesEditorForm"
+		                property='<%= "paramKey[" + ctr + "]"%>'
+		                value="OutputTransparentColor">
+			                <html:text property='<%= "paramValue[" + ctr + "]"%>' size="60"/>
+	      			  </logic:notEqual>
+      			  </logic:notEqual>
+				</logic:notEqual>
+	    	  </td>
+	    	</tr>
+	    </logic:notEqual>
     </logic:iterate>
     </logic:notEmpty>
 

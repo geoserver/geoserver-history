@@ -5,7 +5,6 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,13 +26,15 @@ import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.FactoryRegistryException;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.grid.Format;
-import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.cs.CoordinateSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
@@ -45,7 +46,6 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.util.CoverageUtils;
 
 /**
  * These Action handles all the buttons for the Coverage Editor.
@@ -152,28 +152,39 @@ public final class CoveragesEditorAction extends ConfigAction {
 	private ActionForward executeEnvelope(ActionMapping mapping,
 			CoveragesEditorForm coverageForm, UserContainer user,
 			HttpServletRequest request) throws IOException, ServletException {
-		final String formatID = coverageForm.getFormatId(); 
+		final String formatID = coverageForm.getFormatId();
 		final Data catalog = getData();
 		CoverageStoreInfo cvStoreInfo = catalog.getFormatInfo(formatID);
-		if(cvStoreInfo == null) {
-			cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(), catalog);
+		if (cvStoreInfo == null) {
+			cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(
+					formatID).toDTO(), catalog);
 		}
 		final Format format = cvStoreInfo.getFormat();
-		AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
+		AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo
+				.getReader();
 		if (reader == null)
-			reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()));
+			reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format)
+					.getReader(GeoserverDataDirectory.findDataFile(cvStoreInfo
+							.getUrl()));
 
 		try {
 			final CoordinateReferenceSystem sourceCRS = reader.getCrs();
 			final GeneralEnvelope gEnvelope = reader.getOriginalEnvelope();
 			final GeneralEnvelope targetEnvelope = gEnvelope;
-			final GeneralEnvelope envelope =  targetEnvelope;
+			GeneralEnvelope envelope = targetEnvelope;
 
 			if (!sourceCRS.getIdentifiers().isEmpty()) {
 				coverageForm.setSrsName(sourceCRS.getIdentifiers().toArray()[0]
 						.toString());
 			} else {
 				coverageForm.setSrsName("UNKNOWN");
+				String nativeCRS = coverageForm.getNativeCRS();
+				if (nativeCRS != null
+						&& nativeCRS.toUpperCase().startsWith("EPSG:")) {
+					MathTransform transform = CRS.findMathTransform(sourceCRS,
+							CRS.decode(nativeCRS), true);
+					envelope = CRSUtilities.transform(transform, envelope);
+				}
 			}
 			coverageForm.setWKTString(sourceCRS.toWKT());
 			coverageForm.setMinX(Double.toString(envelope.getLowerCorner()
@@ -190,7 +201,13 @@ public final class CoveragesEditorAction extends ConfigAction {
 			throw new ServletException(e);
 		} catch (IndexOutOfBoundsException e) {
 			throw new ServletException(e);
-		} 
+		} catch (NoSuchAuthorityCodeException e) {
+			throw new ServletException(e);
+		} catch (FactoryException e) {
+			throw new ServletException(e);
+		} catch (TransformException e) {
+			throw new ServletException(e);
+		}
 
 		return mapping.findForward("config.data.coverage.editor");
 	}
@@ -218,18 +235,22 @@ public final class CoveragesEditorAction extends ConfigAction {
 		config.setSrsName(form.getSrsName());
 		config.setSrsWKT(form.getWKTString());
 		config.setNativeCRS(form.getNativeCRS());
-		config
-				.setEnvelope(getEnvelope(form, CRS
-						.parseWKT(form.getWKTString())));
+
+		if (config.getSrsName().equals("UNKNOWN")
+				&& config.getNativeCRS() != null
+				&& config.getNativeCRS().startsWith("EPSG:"))
+			config.setCrs(CRS.decode(config.getNativeCRS()));
+
+		config.setEnvelope(getEnvelope(form, config.getCrs()));
 		config.setSupportedFormats(supportedFormats(form));
 		config.setDefaultStyle(form.getStyleId());
 		if (form.getOtherSelectedStyles() != null) {
-    		config.getStyles().clear();
-    		for (int i=0;i<form.getOtherSelectedStyles().length;i++) {
-    			config.addStyle(form.getOtherSelectedStyles()[i]);
-    		}
-    	}
-		
+			config.getStyles().clear();
+			for (int i = 0; i < form.getOtherSelectedStyles().length; i++) {
+				config.addStyle(form.getOtherSelectedStyles()[i]);
+			}
+		}
+
 		config.setName(form.getName());
 		config.setWmsPath(form.getWmsPath());
 		final StringBuffer temp = new StringBuffer(config.getFormatId());
