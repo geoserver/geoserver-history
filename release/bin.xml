@@ -44,7 +44,7 @@
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>web/target/geoserver/data</directory>
+			<directory>web/target/geoserver/data/data</directory>
 			<outputDirectory>geoserver/webapps/geoserver/conf/data</outputDirectory>
 			<includes>
 				<include>nyc/**/*</include>
