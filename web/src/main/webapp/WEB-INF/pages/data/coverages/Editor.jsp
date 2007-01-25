@@ -349,6 +349,13 @@ function generateColorPicker(colorFieldName, fieldValue)
 		<html:text property="nativeCRS" size="60"/>
 	  </td>
 	</tr>
+	<tr>
+	  <td>
+	  </td>
+	  <td class="greyedOut2">
+      	* <bean:message key="help.coverage.nativeCRS"/>
+      </td>
+	</tr>
   </logic:equal>
   <!-------------------------->
 
