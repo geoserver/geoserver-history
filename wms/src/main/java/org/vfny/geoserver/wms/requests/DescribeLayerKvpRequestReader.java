@@ -99,6 +99,7 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
 				FeatureTypeInfo ftype = catalog.getFeatureTypeInfo(layerName);
 				layer = new MapLayerInfo();
 				layer.setFeature(ftype);
+                req.addLayer(layer);
 			} catch (NoSuchElementException fex) {
 				try {
 					if (LOGGER.isLoggable(Level.FINE)) {

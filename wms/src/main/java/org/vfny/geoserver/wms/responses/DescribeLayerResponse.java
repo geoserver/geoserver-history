@@ -78,6 +78,7 @@ public class DescribeLayerResponse implements Response {
 
         this.transformer = new DescribeLayerTransformer(this.request
                 .getSchemaBaseUrl());
+        this.transformer.setIndentation(2);
         this.transformer.setNamespaceDeclarationEnabled(false);
         this.transformer.setEncoding(this.request.getGeoServer().getCharSet());
 
