@@ -242,7 +242,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 
 	private final Map loadFormats(DataDTO dto) {
 		if ((dto == null) || (dto.getFormats() == null)) {
-			throw new NullPointerException("Non null list of Formats required");
+			return Collections.EMPTY_MAP; // we *are* allowed no datasets
 		}
 
 		Map map = new HashMap();
@@ -298,8 +298,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 */
 	private final Map loadDataStores(DataDTO dto) {
 		if ((dto == null) || (dto.getDataStores() == null)) {
-			throw new NullPointerException(
-					"Non null list of DataStores required");
+			return Collections.EMPTY_MAP; // we *are* allowed no datasets
 		}
 
 		Map map = new HashMap( dto.getDataStores().size());
@@ -353,8 +352,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 */
 	private final Map loadNamespaces(DataDTO dto) {
 		if ((dto == null) || (dto.getNameSpaces() == null)) {
-			throw new NullPointerException(
-					"Non null list of NameSpaces required");
+			return Collections.EMPTY_MAP; // we *are* allowed no datasets
 		}
 
 		Map map = new HashMap(dto.getNameSpaces().size());
@@ -373,8 +371,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 
 	private final Map loadCoverages(DataDTO dto) {
 		if ((dto == null) || (dto.getCoverages() == null)) {
-			throw new NullPointerException(
-					"Non null list of Coverages required");
+			return Collections.EMPTY_MAP; // we *are* allowed no datasets
 		}
 
 		Map map = new HashMap(dto.getCoverages().size());
@@ -440,8 +437,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 
 		if ((dto == null) || (dto.getFeaturesTypes() == null)) {
 			errors = null;
-			throw new NullPointerException(
-					"Non null list of FeatureTypes required");
+			return Collections.EMPTY_MAP; // we *are* allowed no datasets
 		}
 
 		Map map = new HashMap(dto.getFeaturesTypes().size());
@@ -805,7 +801,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 		stFiles = new HashMap();
 
 		if ((dto == null) || (dto.getStyles() == null)) {
-			throw new NullPointerException("List of styles is required");
+			return Collections.EMPTY_MAP; // we *are* allowed no datasets
 		}
 
 		for (Iterator i = dto.getStyles().values().iterator(); i.hasNext();) {

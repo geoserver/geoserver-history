@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -69,7 +70,11 @@ import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import org.vfny.geoserver.util.CoverageStoreUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -264,6 +269,8 @@ public class XMLConfigReader {
 		loadGlobal(elem);
 		
 		NodeList configuredServices = configElem.getElementsByTagName("service");
+		boolean foundWCS = false; // record if we have found them or not
+
 		int nServices = configuredServices.getLength();
 		
 		for (int i = 0; i < nServices; i++) {
@@ -272,6 +279,7 @@ public class XMLConfigReader {
 			String serviceType = elem.getAttribute("type");
 			
 			if ("WCS".equalsIgnoreCase(serviceType)) {
+				foundWCS = true;
 				loadWCS(elem);
 			} else if ("WFS".equalsIgnoreCase(serviceType)) {
 				loadWFS(elem);
@@ -284,6 +292,42 @@ public class XMLConfigReader {
 						+ serviceType);
 			}
 		}
+		
+		if (!foundWCS) {
+			wcs = defaultWcsDto();
+		}
+	}
+	
+	
+	/**
+	 * 
+	 * This is a very poor, but effective tempory method of setting a 
+	 * default service value for WCS, until we get a new config system.
+	 * @return
+	 */
+	private WCSDTO defaultWcsDto() {
+		WCSDTO dto = new WCSDTO();
+		ServiceDTO service = new ServiceDTO();
+		service.setName("My GeoServer WCS");
+		service.setTitle("My GeoServer WCS");
+		service.setEnabled(true);
+		service.setKeywords(new String[] {"WCS", "WMS", "GEOSERVER"});
+		MetaDataLink mdl = new MetaDataLink();
+		mdl.setAbout("http://geoserver.org");
+		mdl.setType("undef");
+		mdl.setMetadataType("other");
+		mdl.setContent("NONE");
+		service.setMetadataLink(mdl);
+		service.setFees("NONE");
+		service.setAccessConstraints("NONE");
+		service.setMaintainer("http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311");
+		try {
+			service.setOnlineResource(new URL("http://geoserver.org"));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		dto.setService(service);
+		return dto;
 	}
 	
 	/**
@@ -319,12 +363,29 @@ public class XMLConfigReader {
 			throw new ConfigurationException(e);
 		}
 		
+		try { // try <formats> first to be backwards compatible to 1.4
+			Element formatElement = ReaderUtils.getChildElement(catalogElem,
+					"formats", true);
+			data.setFormats(loadFormats(formatElement));
+		} catch (Exception e) {
+			// It doesn't exist. This is ok, they are using 1.4
+			// We will just create the element for them and continue
+			
+			/*try { // sorry for the nested try/catch blocks
+				FileWriter fw = new FileWriter(catalogFile);
+				
+			} catch (IOException e1) {
+				e1.printStackTrace(); // file not found
+			}*/
+		}
+		
 		try {
 			data.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(
 					catalogElem, "namespaces", true)));
 			setDefaultNS();
-			data.setFormats(loadFormats(ReaderUtils.getChildElement(catalogElem,
-					"formats", true)));
+			//Element formatElement = ReaderUtils.getChildElement(catalogElem,
+			//		"formats", false);
+			//data.setFormats(loadFormats(formatElement));
 			data.setDataStores(loadDataStores(ReaderUtils.getChildElement(
 					catalogElem, "datastores", true)));
 			
@@ -1048,6 +1109,9 @@ public class XMLConfigReader {
 	protected Map loadFormats(Element fmRoot) throws ConfigurationException {
 		Map formats = new HashMap();
 		
+		if (fmRoot == null) // if there are no formats (they are using v.1.4)
+			return formats; // just return the empty list
+		
 		NodeList fmElements = fmRoot.getElementsByTagName("format");
 		int fmCnt = fmElements.getLength();
 		CoverageStoreInfoDTO fmConfig;
@@ -1583,6 +1647,9 @@ public class XMLConfigReader {
 					coverageRoot.isDirectory()).toString());
 		}
 		
+		if (coverageRoot == null) // no coverages have been specified by the user (that is ok)
+			return Collections.EMPTY_MAP;
+			
 		if (!coverageRoot.isDirectory()) {
 			throw new IllegalArgumentException(
 			"coverageRoot must be a directoy");
