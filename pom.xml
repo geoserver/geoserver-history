@@ -7,7 +7,7 @@
 	<groupId>org.geoserver</groupId>
 	<artifactId>geoserver</artifactId>
 	<packaging>pom</packaging>
-	<version>1.5.0-beta1</version>
+	<version>1.6-SNAPSHOT</version>
 	<name>GeoServer</name>
 
   <scm>
@@ -112,6 +112,11 @@
 
 	<dependencyManagement>
 		<dependencies>
+      <dependency>
+        <groupId>org.opengis</groupId>
+        <artifactId>geoapi-nogenerics</artifactId>
+        <version>2.1-SNAPSHOT</version>
+      </dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt2</artifactId>
@@ -190,6 +195,21 @@
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
+				<artifactId>gt2-xml-xsd</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-xml-gml3</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt2-xml-filter</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
 				<artifactId>gt2-shapefile</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
@@ -223,6 +243,11 @@
 				<artifactId>xml-apis</artifactId>
 				<version>1.0.b2</version>
 			</dependency>
+      <dependency>
+       <groupId>xml-apis</groupId>
+       <artifactId>xml-apis-xerces</artifactId>
+       <version>2.7.1</version>
+      </dependency>
 			<dependency>
 				<groupId>xml-apis</groupId>
 				<artifactId>xmlParserAPIs</artifactId>
@@ -447,6 +472,16 @@
 				<artifactId>jai_imageio</artifactId>
 				<version>1.1</version>
 			</dependency>
+    <dependency>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>common</artifactId>
+        <version>2.1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>ecore</artifactId>
+        <version>2.1.0</version>
+      </dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -583,7 +618,7 @@
 						<descriptor>release/ext-wfs.xml</descriptor>
 						<descriptor>release/ext-arcsde.xml</descriptor>
 					</descriptors>
-					<finalName>geoserver-1.5.0-beta1</finalName>
+					<finalName>geoserver-1.6-SNAPSHOT</finalName>
 					<outputDirectory>
 						${project.build.directory}/release
 					</outputDirectory>
@@ -792,19 +827,22 @@
 		<module>platform</module>
 		<module>data</module>
 		<module>main</module>
-		<module>wcs</module>
+		<!--module>wcs</module-->
 		<module>wfs</module>
-		<module>wms</module>
+		<!--module>wms</module-->
 		<module>validation</module>
-		<module>web</module>
+		<!--module>web</module-->
 		<!--module>release</module-->
 		<module>maven</module>
-		<module>test</module>
+		<!--module>test</module-->
+		<module>ows</module>
+		<module>net.opengis.ows-1.0.0</module>
+		<module>net.opengis.wfs</module>
 	</modules>
 
 	<properties>
-		<gs.version>1.5.0-beta1</gs.version>
-		<gt.version>2.3.1-SNAPSHOT</gt.version>
+		<gs.version>1.6-SNAPSHOT</gs.version>
+		<gt.version>2.4-SNAPSHOT</gt.version>
 	</properties>
 
 	<profiles>
