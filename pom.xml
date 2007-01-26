@@ -836,7 +836,7 @@
 		<module>maven</module>
 		<!--module>test</module-->
 		<module>ows</module>
-		<module>net.opengis.ows-1.0.0</module>
+		<module>net.opengis.ows</module>
 		<module>net.opengis.wfs</module>
 	</modules>
 
