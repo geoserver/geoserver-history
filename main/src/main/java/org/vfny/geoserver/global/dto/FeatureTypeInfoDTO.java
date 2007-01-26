@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.geotools.filter.Filter;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.config.DataConfig;
 
 import com.vividsolutions.jts.geom.Envelope;
