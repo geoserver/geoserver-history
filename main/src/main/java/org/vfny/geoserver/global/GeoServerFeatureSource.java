@@ -17,13 +17,12 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
-import org.geotools.filter.Filter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
-import org.geotools.filter.LogicFilter;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -65,7 +64,7 @@ public class GeoServerFeatureSource implements FeatureSource {
     private FeatureType schema;
 
     /** Used to constrain the Feature made available to GeoServer. */
-    private Filter definitionQuery = Filter.NONE;
+    private Filter definitionQuery = Filter.INCLUDE;
 
     /**
      * Creates a new GeoServerFeatureSource object.
@@ -81,7 +80,7 @@ public class GeoServerFeatureSource implements FeatureSource {
         this.definitionQuery = definitionQuery;
 
         if (this.definitionQuery == null) {
-            this.definitionQuery = Filter.NONE;
+            this.definitionQuery = Filter.INCLUDE;
         }
     }
 
@@ -212,11 +211,9 @@ public class GeoServerFeatureSource implements FeatureSource {
         Filter newFilter = filter;
 
         try {
-            if (definitionQuery != Filter.NONE) {
-                FilterFactory ff = FilterFactoryFinder.createFilterFactory();
-                newFilter = ff.createLogicFilter(AbstractFilter.LOGIC_AND);
-                ((LogicFilter) newFilter).addFilter(definitionQuery);
-                ((LogicFilter) newFilter).addFilter(filter);
+            if (definitionQuery != Filter.INCLUDE) {
+                FilterFactory ff = CommonFactoryFinder.getFilterFactory( null );
+                newFilter = ff.and(definitionQuery,filter);
             }
         } catch (Exception ex) {
             throw new DataSourceException("Can't create the definition filter",
@@ -344,7 +341,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @see org.geotools.data.FeatureSource#getFeatures()
      */
     public FeatureCollection getFeatures() throws IOException {
-        if (definitionQuery == Filter.NONE) {
+        if (definitionQuery == Filter.INCLUDE) {
             return source.getFeatures();
         } else {
             return source.getFeatures(definitionQuery);
@@ -379,7 +376,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @throws IOException If bounds of definitionQuery
      */
     public Envelope getBounds() throws IOException {
-        if (definitionQuery == Filter.NONE) {
+        if (definitionQuery == Filter.INCLUDE) {
             return source.getBounds();
         } else {
             Query query = new DefaultQuery(getSchema().getTypeName(),

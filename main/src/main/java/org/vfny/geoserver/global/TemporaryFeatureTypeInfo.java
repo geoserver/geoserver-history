@@ -18,8 +18,8 @@ import java.util.List;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
 import org.geotools.styling.Style;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.w3c.dom.Element;
 
@@ -51,7 +51,7 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo
     	/**
     	 * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     	 */
-    	return Filter.ALL;
+    	return Filter.EXCLUDE;
     }
     
     

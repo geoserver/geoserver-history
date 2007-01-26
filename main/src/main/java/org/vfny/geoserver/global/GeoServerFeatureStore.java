@@ -8,13 +8,12 @@ import java.io.IOException;
 import java.util.Set;
 
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
+import org.opengis.filter.Filter;
 
 
 /**
@@ -66,25 +65,7 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource
      */
     public Set addFeatures(FeatureCollection fc) throws IOException 
 	{
-        return store().addFeatures(fc.reader());
-    }
-    
-
-    /**
-     * addFeatures purpose.
-     * 
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param reader Reader over Feature to be added
-     *
-     * @return Set of FIDs added
-     *
-     * @throws IOException If contents of reader could not be added
-     */
-    public Set addFeatures(FeatureReader reader) throws IOException {
-        return store().addFeatures(reader);
+        return store().addFeatures(fc);
     }
     
     /**

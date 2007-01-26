@@ -13,8 +13,7 @@ import org.geotools.data.Query;
 import org.geotools.data.postgis.PostgisFeatureLocking;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
-
+import org.opengis.filter.Filter;
 
 /**
  * GeoServer wrapper for backend Geotools2 DataStore.
@@ -31,7 +30,7 @@ import org.geotools.filter.Filter;
  * so? It would need to support writing and locking though.
  * </p>
  *
- * @author Gabriel Roldán
+ * @author Gabriel Roldï¿½n
  * @version $Id: GeoServerFeatureLocking.java,v 1.5 2004/02/09 23:29:42 dmzwiers Exp $
  */
 public class GeoServerFeatureLocking extends GeoServerFeatureStore

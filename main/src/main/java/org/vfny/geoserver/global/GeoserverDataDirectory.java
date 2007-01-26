@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
-import org.geoserver.GeoServerResourceLoader;
+import org.geoserver.platform.GeoServerResourceLoader;
 
 /**
  * This class allows for abstracting the location of the Geoserver Data directory. Some people call this "GEOSERVER_HOME".
