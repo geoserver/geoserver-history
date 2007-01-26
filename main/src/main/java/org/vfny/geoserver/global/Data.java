@@ -17,7 +17,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
 
-import org.geoserver.data.GeoServerCatalog;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
@@ -164,11 +163,6 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 	 */
 	private Map errors;
 
-	/**
-	 * The catalog
-	 */
-	private GeoServerCatalog catalog;
-
 	public Data(DataDTO config, File dir, GeoServer g)
 			throws ConfigurationException {
 		baseDir = dir;
@@ -181,18 +175,12 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 		gs = g;
 	}
 
-	public Data(Config config, GeoServer g, GeoServerCatalog catalog)
-			throws ConfigurationException {
+	public Data(Config config, GeoServer g) throws ConfigurationException {
 		this(config.getXMLReader().getData(), config.dataDirectory(), g);
-		this.catalog = catalog;
 	}
 
 	GeoServer getGeoServer() {
 		return gs;
-	}
-
-	GeoServerCatalog getCatalog() {
-		return catalog;
 	}
 
 	public void setDataDirectory(File dataDirectory) {
@@ -755,8 +743,6 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 				}
 				map.put(key2, featureTypeInfo);
 
-				// set catalog hierarchy
-				dataStoreInfo.addMember(featureTypeInfo);
 				if (LOGGER.isLoggable(Level.FINEST)) {
 					LOGGER.finest(new StringBuffer("FeatureTypeInfo '").append(
 							key2).append("' is registered:").append(
@@ -1096,7 +1082,30 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 
 		return retNS;
 	}
-
+	
+	/**
+	 * Returns the NamespaceINfo object corresponding to a particular 
+	 * namespace uri.
+	 * <p>
+	 * If a namespace info object could not be found with mathces <param>uri</param>
+	 * then <code>null</code> is returned.
+	 * </p>
+	 * 
+	 * @param uri A namespace uri, non-null
+	 * 
+	 * @return NameSpaceInfo resulting from the specified uri.
+	 */
+	public synchronized NameSpaceInfo getNameSpaceFromURI(String uri) {
+		for ( Iterator i = nameSpaces.values().iterator(); i.hasNext(); ) {
+			NameSpaceInfo nsInfo = (NameSpaceInfo) i.next();
+			if ( nsInfo.getURI().equals( uri ) ) {
+				return nsInfo;
+			}
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * getDefaultNameSpace purpose.
 	 * 
