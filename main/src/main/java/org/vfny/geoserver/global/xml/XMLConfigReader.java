@@ -363,7 +363,7 @@ public class XMLConfigReader {
 			throw new ConfigurationException(e);
 		}
 		
-		try { // try <formats> first to be backwards compatible to 1.4
+		/*try { // try <formats> first to be backwards compatible to 1.4
 			Element formatElement = ReaderUtils.getChildElement(catalogElem,
 					"formats", true);
 			data.setFormats(loadFormats(formatElement));
@@ -371,21 +371,23 @@ public class XMLConfigReader {
 			// It doesn't exist. This is ok, they are using 1.4
 			// We will just create the element for them and continue
 			
-			/*try { // sorry for the nested try/catch blocks
-				FileWriter fw = new FileWriter(catalogFile);
-				
-			} catch (IOException e1) {
-				e1.printStackTrace(); // file not found
-			}*/
-		}
+	
+		}*/
 		
 		try {
 			data.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(
 					catalogElem, "namespaces", true)));
 			setDefaultNS();
-			//Element formatElement = ReaderUtils.getChildElement(catalogElem,
-			//		"formats", false);
-			//data.setFormats(loadFormats(formatElement));
+			
+			try { // try <formats> to be backwards compatible to 1.4
+				Element formatElement = ReaderUtils.getChildElement(catalogElem,
+						"formats", true);
+				data.setFormats(loadFormats(formatElement));
+			} catch (Exception e) {
+				// gobble
+				LOGGER.warning("Your catalog.xml file is not up to date and is probably from an older "+
+						"version of GeoServer. This problem is now being fixed automatically.");
+			}
 			data.setDataStores(loadDataStores(ReaderUtils.getChildElement(
 					catalogElem, "datastores", true)));
 			
