@@ -6,6 +6,7 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.Arrays;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
@@ -103,6 +104,12 @@ public class DataNamespacesSelectForm extends ActionForm {
      * @return Returns the namespaces.
      */
     public TreeSet getNamespaces() {
-        return namespaces;
+    	Object[] keys = namespaces.toArray();
+    	Arrays.sort(keys);
+        TreeSet sorted = new TreeSet();
+        for (int i=0; i<keys.length; i++)
+        	sorted.add(keys[i]);
+        
+        return sorted;
     }
 }

@@ -10,6 +10,9 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
 
@@ -121,6 +124,12 @@ public class StylesSelectForm extends ActionForm {
      * @return Returns the styles.
      */
     public TreeSet getStyles() {
-        return styles;
+    	Object[] keys = styles.toArray();
+    	Arrays.sort(keys);
+        TreeSet sorted = new TreeSet();
+        for (int i=0; i<keys.length; i++)
+        	sorted.add(keys[i]);
+        
+        return sorted;
     }
 }

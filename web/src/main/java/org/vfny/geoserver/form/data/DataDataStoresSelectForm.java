@@ -5,6 +5,8 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -96,7 +98,10 @@ public class DataDataStoresSelectForm extends ActionForm {
      * @return DOCUMENT ME!
      */
     public List getDataStoreIds() {
-        return dataStoreIds;
+    	ArrayList ret = new ArrayList(dataStoreIds);
+        Object[] sortable = ret.toArray();
+        Arrays.sort(sortable);
+        return Arrays.asList(sortable);
     }
 
     /**

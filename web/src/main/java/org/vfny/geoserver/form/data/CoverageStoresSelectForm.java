@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -60,10 +61,13 @@ public final class CoverageStoresSelectForm extends ActionForm {
 	public void reset(ActionMapping mapping, HttpServletRequest request) {
 		super.reset(mapping, request);
 
-		// Pass data from congif layer to screen
+		// Pass data from config layer to screen
 		// REVIST: Bad Design JSP should lookup data itself!
-		dataFormatIds = ConfigRequests.getDataConfig(request)
-				.listDataFormatIds();
+		dataFormatIds = ConfigRequests.getDataConfig(request).listDataFormatIds();
+		Object[] sortable = dataFormatIds.toArray();
+        Arrays.sort(sortable);
+        dataFormatIds = Arrays.asList(sortable);
+		
 
 		// Usual reset stuff
 		selectedDataFormatId = null; // nothing selected yet
@@ -110,7 +114,9 @@ public final class CoverageStoresSelectForm extends ActionForm {
 	 * @return DOCUMENT ME!
 	 */
 	public List getDataFormatIds() {
-		return dataFormatIds;
+		Object[] sortable = dataFormatIds.toArray();
+        Arrays.sort(sortable);
+        return Arrays.asList(sortable);
 	}
 
 	/**
