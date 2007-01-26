@@ -15,13 +15,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.geotools.catalog.GeoResource;
-import org.geotools.catalog.GeoResourceInfo;
-import org.geotools.catalog.Resolve;
-import org.geotools.catalog.ResolveChangeEvent;
-import org.geotools.catalog.ResolveChangeListener;
-import org.geotools.catalog.Service;
-import org.geotools.catalog.defaults.DefaultGeoResourceInfo;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.FactoryConfigurationError;
@@ -30,10 +23,11 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.type.GeometricAttributeType;
-import org.geotools.filter.Filter;
+
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.geotools.util.ProgressListener;
+import org.opengis.filter.Filter;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -61,7 +55,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * 
  * @version $Id: FeatureTypeInfo.java,v 1.41 2004/06/26 19:51:24 jive Exp $
  */
-public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource {
+public class FeatureTypeInfo extends GlobalLayerSupertype {
 	
 	/** hash table that takes a epsg# to its definition**/
 	private static Hashtable SRSLookup = new Hashtable();
@@ -1184,80 +1178,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
 	 */
 	public void setCachingEnabled(boolean cachingEnabled) {
 		this.cachingEnabled = cachingEnabled;
-	}
-
-	//catalog methods
-	public boolean canResolve(Class adaptee) {
-		return FeatureType.class.isAssignableFrom( adaptee ) || 
-			Service.class.isAssignableFrom( adaptee ) || 
-			GeoResourceInfo.class.isAssignableFrom( adaptee );
-	}
-
-	public Object resolve(Class adaptee, ProgressListener monitor) throws IOException {
-		if ( FeatureType.class.isAssignableFrom( adaptee ) ) {
-			return getFeatureType();
-		}
-		
-		if ( Service.class.isAssignableFrom( adaptee ) ) {
-			return getDataStoreInfo();
-		}
-		
-		if ( GeoResourceInfo.class.isAssignableFrom( adaptee ) ) {
-			return getInfo( monitor );
-		}
-		
-		return null;
-	}
-
-	public GeoResourceInfo getInfo(ProgressListener monitor) throws IOException {
-		return new DefaultGeoResourceInfo(
-			getTitle(), getTypeName(), null, 
-			getSchemaFile() != null ? getSchemaFile().toURI() : null,
-			getBoundingBox(), getSRS(SRS), null, null
-		);
-	}
-
-	public Resolve parent(ProgressListener monitor) throws IOException {
-		return getDataStoreInfo();
-	}
-
-	public List members(ProgressListener monitor) throws IOException {
-		// no members
-		return null;
-	}
-
-	public Status getStatus() {
-		if ( isEnabled() ) {
-			return Status.CONNECTED;
-		}
-		
-		return Status.NOTCONNECTED;
-	}
-
-	public Throwable getMessage() {
-		return null;
-	}
-
-	public URI getIdentifier() {
-		URI uri = getDataStoreInfo().getIdentifier();
-		try {
-			return new URI( uri.getScheme(), uri.getHost(), uri.getPath(), getTypeName() );
-		} 
-		catch (URISyntaxException e) {
-			return null;
-		}
-	}
-
-	public void addListener(ResolveChangeListener listener) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
-	}
-
-	public void removeListener(ResolveChangeListener listener) {
-		// events not supported
-	}
-
-	public void fire(ResolveChangeEvent event) {
-		// events not supported
 	}
 }
  
