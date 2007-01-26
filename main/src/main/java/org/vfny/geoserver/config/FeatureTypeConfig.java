@@ -13,7 +13,7 @@ import java.util.Set;
 
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 
