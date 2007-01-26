@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
-import org.geotools.filter.Filter;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.wfs.WfsException;
 
 

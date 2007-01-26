@@ -18,15 +18,18 @@ import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
+
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.IllegalAttributeException;
-import org.geotools.filter.Filter;
+
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -183,15 +186,15 @@ public class LockResponse implements Response {
             FeatureTypeInfo meta = catalog.getFeatureTypeInfo(curTypeName);
             NameSpaceInfo namespace = meta.getDataStoreInfo().getNameSpace();
             FeatureSource source = meta.getFeatureSource();
-            FeatureResults features = source.getFeatures(curFilter);
+            FeatureCollection features = source.getFeatures(curFilter);
 
             if( source instanceof FeatureLocking){
                 ((FeatureLocking)source).setFeatureLock(fLock);
             }
-            FeatureReader reader = null;
+            FeatureIterator reader = null;
 
             try {
-                for (reader = features.reader(); reader.hasNext();) {
+                for (reader = features.features(); reader.hasNext();) {
                     Feature feature = reader.next();
                     String fid = feature.getID();
                     if( !(source instanceof FeatureLocking)){
@@ -229,7 +232,7 @@ public class LockResponse implements Response {
                         }
                     }
                 }
-            } catch (IllegalAttributeException e) {
+            } catch (Exception e) {
                 // TODO: JG - I really dont like this
                 // reader says it will throw this if the attribtues do not match
                 // the FeatureTypeInfo

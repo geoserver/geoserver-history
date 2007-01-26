@@ -16,9 +16,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
+
 import org.geotools.data.FeatureStore;
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
@@ -206,14 +208,13 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
                 
                 try  {
 		List resultsList = results.getFeatures();
-		FeatureResults[] featureResults = (FeatureResults[]) resultsList
-				.toArray(new FeatureResults[resultsList.size()]);
+		FeatureCollection[] featureResults = (FeatureCollection[]) resultsList
+				.toArray(new FeatureCollection[resultsList.size()]);
 		for(int i = 0; i < featureResults.length; i++) {
-                        FeatureReader reader = featureResults[i].reader();
-        		String name = featureResults[i].getSchema().getTypeName();
+                String name = featureResults[i].getSchema().getTypeName();
         
         		try {
-        			writeOut(name, tempDir, featureResults[i].getSchema(), reader);
+        			writeOut(name, tempDir, featureResults[i].getSchema(), featureResults[i]);
         		} catch (IOException e) {
         			throw e;
         		}
@@ -328,7 +329,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
 	 * @throws ServiceException 
 	 */
 	private void writeOut(String name, File tempDir,
-			FeatureType schema, FeatureReader reader)
+			FeatureType schema, FeatureCollection features)
 			throws IOException, ServiceException {
 		// File file = new File(System.getProperty("java.io.tmpdir"),
 		// name+".zip");
@@ -345,7 +346,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
 		}
 
 		FeatureStore store = (FeatureStore) sfds.getFeatureSource(name);
-		store.addFeatures(reader);
+		store.addFeatures(features);
 	}
 
         public String getContentDisposition(String featureTypeName) {

@@ -34,16 +34,17 @@ import org.geotools.data.Transaction;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.FidFilter;
-import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -328,7 +329,7 @@ public class TransactionResponse implements Response {
                 
                 //do a check for Filter.NONE, the spec specifically does not
                 // allow this
-                if (delete.getFilter() == Filter.NONE) {
+                if (delete.getFilter() == Filter.INCLUDE) {
                 	throw new ServiceException(
             			"Filter must be supplied for Transaction Delete"
                 	);
@@ -421,8 +422,7 @@ public class TransactionResponse implements Response {
                 try {
                     InsertRequest insert = (InsertRequest) element;
                     FeatureCollection collection = insert.getFeatures();
-
-                    FeatureReader reader = DataUtilities.reader(collection);
+                    
                     FeatureType schema = store.getSchema();
 
                     // Need to use the namespace here for the lookup, due to our weird
@@ -439,7 +439,7 @@ public class TransactionResponse implements Response {
                     LOGGER.finer("Use featureValidation to check contents of insert" );
                     featureValidation( typeInfo.getDataStoreInfo().getId(), schema, collection );
 
-                    Set fids = store.addFeatures(reader);
+                    Set fids = store.addFeatures(collection);
                     build.addInsertResult(element.getHandle(), fids);
 
                     //
@@ -473,7 +473,7 @@ public class TransactionResponse implements Response {
                     //
                     Set fids = new HashSet();
                     LOGGER.finer("Preprocess to remember modification as a set of fids" );                    
-                    FeatureReader preprocess = store.getFeatures( filter ).reader();
+                    FeatureIterator preprocess = store.getFeatures( filter ).features();
                     try {
                         while( preprocess.hasNext() ){
                             Feature feature = preprocess.next();
@@ -482,7 +482,7 @@ public class TransactionResponse implements Response {
                         }
                     } catch (NoSuchElementException e) {
                         throw new ServiceException( "Could not aquire FeatureIDs", e );
-                    } catch (IllegalAttributeException e) {
+                    } catch (Exception e) {
                         throw new ServiceException( "Could not aquire FeatureIDs", e );
                     }
                     finally {
@@ -521,7 +521,7 @@ public class TransactionResponse implements Response {
                         FidFilter modified = FilterFactoryFinder.createFilterFactory().createFidFilter();
                         modified.addAllFids( fids );
                     
-                        FeatureCollection changed = store.getFeatures( modified ).collection();
+                        FeatureCollection changed = store.getFeatures( modified );
                         envelope.expandToInclude( changed.getBounds() );
                     
                         FeatureTypeInfo typeInfo = catalog.getFeatureTypeInfo(element.getTypeName());
@@ -594,8 +594,7 @@ public class TransactionResponse implements Response {
 
         try {
 			// HACK: turned the collection into a feature reader for the validation processor
-			FeatureReader fr = DataUtilities.reader(collection);
-            validation.runFeatureTests(dsid, type, fr, results);
+			validation.runFeatureTests(dsid, collection, results);
         } catch (Exception badIdea) {
             // ValidationResults should of handled stuff will redesign :-)
             throw new DataSourceException("Validation Failed", badIdea);

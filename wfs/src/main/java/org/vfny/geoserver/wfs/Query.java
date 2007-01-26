@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.geotools.data.DefaultQuery;
-import org.geotools.filter.Filter;
+import org.opengis.filter.Filter;
 
 
 /**
@@ -255,7 +255,7 @@ public class Query {
         }
 
         if (filter == null) {
-            filter = Filter.NONE;
+            filter = Filter.INCLUDE;
         }
 
         DefaultQuery query = new DefaultQuery(getName(), this.filter,

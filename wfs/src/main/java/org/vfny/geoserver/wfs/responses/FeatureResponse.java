@@ -18,13 +18,13 @@ import java.util.logging.Logger;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
-import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Transaction;
 import org.geotools.factory.FactoryFinder;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFactory;
@@ -328,14 +328,14 @@ public class FeatureResponse implements Response {
 
                 //DJB: note if maxFeatures gets to 0 the while loop above takes care of this! (this is a subtle situation)
                 
-                FeatureResults features = source.getFeatures(query.toDataQuery(
+                FeatureCollection features = source.getFeatures(query.toDataQuery(
                             maxFeatures));
                 if (it.hasNext()) { //DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
-                        int count = features.getCount();
+                        int count = features.size();
                         // sometimes a service may return -1 if the count is deemed
                         // to be too expensive, in this case we do a brute force counte
                         // by reading features one by one (and counting)
-                        if(count < 0) count = bruteForceCount(features.reader());
+                        if(count < 0) count = bruteForceCount(features.features());
                 	maxFeatures -= count;
                 }
 
@@ -343,17 +343,17 @@ public class FeatureResponse implements Response {
                 //encoding if it was a lock request. may be after ensuring the lock
                 //succeed?
                 results.addFeatures(meta, features);
-
+                
                 if (featureLock != null) {
                     // geotools2 locking code
                     if (source instanceof FeatureLocking) {
                         ((FeatureLocking) source).setFeatureLock(featureLock);
                     }
 
-                    FeatureReader reader = null;
+                    FeatureIterator reader = null;
 
                     try {
-                        for (reader = features.reader(); reader.hasNext();) {
+                        for (reader = features.features(); reader.hasNext();) {
                             feature = reader.next();
                             fid = feature.getID();
 
@@ -438,7 +438,7 @@ public class FeatureResponse implements Response {
      * @throws IOException 
      * @throws NoSuchElementException 
      */
-    private int bruteForceCount(FeatureReader reader) throws NoSuchElementException, IOException, IllegalAttributeException {
+    private int bruteForceCount(FeatureIterator reader) throws NoSuchElementException, IOException, IllegalAttributeException {
         int count = 0;
         while(reader.hasNext()) {
             reader.next();
@@ -476,7 +476,7 @@ public class FeatureResponse implements Response {
      *
      * @throws WfsException For any problems with the DataSource.
      */
-    private static FeatureResults getFeatures(Query query,
+    private static FeatureCollection getFeatures(Query query,
         FeatureTypeInfo meta, int maxFeatures) throws WfsException {
         LOGGER.finest("about to get query: " + query);
 
@@ -486,7 +486,7 @@ public class FeatureResponse implements Response {
             propertyNames = query.getPropertyNames();
         }
 
-        FeatureResults features = null;
+        FeatureCollection features = null;
 
         try {
             FeatureSource data = meta.getFeatureSource();

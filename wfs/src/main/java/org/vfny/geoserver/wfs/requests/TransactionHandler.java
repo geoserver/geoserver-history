@@ -11,9 +11,10 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.feature.Feature;
-import org.geotools.filter.Filter;
+
 import org.geotools.filter.FilterHandler;
 import org.geotools.gml.GMLHandlerFeature;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.responses.WfsTransactionException;
 import org.vfny.geoserver.wfs.servlets.WFService;
