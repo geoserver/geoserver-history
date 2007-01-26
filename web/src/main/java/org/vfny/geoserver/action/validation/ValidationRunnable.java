@@ -18,6 +18,7 @@ import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Repository;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
 import org.geotools.validation.Validator;
@@ -121,13 +122,9 @@ public class ValidationRunnable implements Runnable {
 			String dataStoreId = typeRef.split(":")[0];
 			try {
 				LOGGER.finer(dataStoreId + ": feature validation, "+featureSource );
-				FeatureReader reader = featureSource.getFeatures().reader();
-				try {
-					validator.featureValidation( dataStoreId, reader , results);
-				}
-				finally {
-					reader.close();
-				}				
+				FeatureCollection features = featureSource.getFeatures();
+				validator.featureValidation( dataStoreId, features , results);
+						
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
