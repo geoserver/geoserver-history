@@ -24,13 +24,13 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.xml.sax.SAXException;
 
-public class GML3FeatureProducer2 extends WFSGetFeatureOutputFormat {
+public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 
 	WFS wfs;
 	Data catalog;
 	WFSConfiguration configuration;
 	
-	public GML3FeatureProducer2( WFS wfs, Data catalog, WFSConfiguration configuration ) {
+	public GML3OutputFormat( WFS wfs, Data catalog, WFSConfiguration configuration ) {
 		super( "text/xml; subtype=gml/3.1.1" );
 		
 		this.wfs = wfs;

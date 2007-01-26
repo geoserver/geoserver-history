@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wfs;
+package org.geoserver.wfs.xml;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -19,15 +19,18 @@ import javax.xml.transform.TransformerException;
 
 import net.opengis.wfs.FeatureCollectionType;
 
-import org.geoserver.data.GeoServerCatalog;
-import org.geoserver.data.feature.FeatureTypeInfo;
-import org.geoserver.http.util.ResponseUtils;
-import org.geoserver.ows.ServiceException;
+import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.platform.Operation;
+import org.geoserver.platform.ServiceException;
+import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 
 /**
  * Encodes features in Geographic Markup Language (GML) version 2.
@@ -41,7 +44,7 @@ import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
  * @author Gabriel Rold?n
  * @version $Id$
  */
-public class GML2FeatureProducer implements FeatureProducer {
+public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
     private static final int NO_FORMATTING = -1;
     private static final int INDENT_SIZE = 2;
 
@@ -75,17 +78,20 @@ public class GML2FeatureProducer implements FeatureProducer {
     /**
      * The catalog
      */
-    private GeoServerCatalog catalog;
+    private Data catalog;
     
     /**
      * Creates the producer with a reference to the GetFeature operation 
      * using it.
      */
-    public GML2FeatureProducer( WFS wfs, GeoServerCatalog catalog ) {
-    		this.wfs = wfs;
-    		this.catalog = catalog;
+    public GML2OutputFormat( WFS wfs, Data catalog ) {
+    	super( "GML2" );
+    	
+		this.wfs = wfs;
+		this.catalog = catalog;
     }
 
+    
      /**
      * prepares for encoding into GML2 format, optionally compressing its
      * output in gzip, if outputFormat is equal to GML2-GZIP
@@ -112,25 +118,25 @@ public class GML2FeatureProducer implements FeatureProducer {
             FeatureCollection features = (FeatureCollection) f.next();
             FeatureType featureType = features.getSchema();
             
-            FeatureTypeInfo meta = catalog.featureType( 
-        		featureType.getNamespace().toString(), featureType.getTypeName()
+            FeatureTypeInfo meta = catalog.getFeatureTypeInfo( 
+        		featureType.getTypeName(), featureType.getNamespace().toString()
             );
             
-        	String prefix = meta.namespacePrefix();
-            String uri = catalog.getNamespaceSupport().getURI( prefix );
+        	String prefix = meta.getNameSpace().getPrefix();
+            String uri = meta.getNameSpace().getURI();
             
             ftNames.declareNamespace(features.getSchema(), prefix, uri);
 
             if (ftNamespaces.containsKey(uri)) {
                 String location = (String) ftNamespaces.get(uri);
-                ftNamespaces.put(uri, location + "," + meta.name());
+                ftNamespaces.put(uri, location + "," + meta.getName());
             } 
             else {
             	String location = typeSchemaLocation( wfs, meta );
         		ftNamespaces.put( uri, location );
             }
             
-            srs = meta.getSRS();
+            srs = Integer.parseInt( meta.getSRS() );
         }
 
         System.setProperty("javax.xml.transform.TransformerFactory",
@@ -236,11 +242,9 @@ public class GML2FeatureProducer implements FeatureProducer {
         }
     }
     
-    public void produce(String outputFormat, FeatureCollectionType results, OutputStream output) 
-    	throws ServiceException, IOException {
-    	
-    		prepare( outputFormat, results );
-    		encode( output, results  );
+    protected void write(FeatureCollectionType featureCollection, OutputStream output, Operation getFeature) throws IOException, ServiceException {
+		prepare( "GML2", featureCollection );
+		encode( output, featureCollection  );	
     }
     
     protected FeatureTransformer createTransformer() {
@@ -253,7 +257,7 @@ public class GML2FeatureProducer implements FeatureProducer {
     
     protected String typeSchemaLocation( WFS wfs, FeatureTypeInfo meta ) {
     	return ResponseUtils.appendQueryString( 
-			wfs.getOnlineResource().toString(), "version=1.0.0&request=DescribeFeatureType&typeName=" + meta.name()
+			wfs.getOnlineResource().toString(), "version=1.0.0&request=DescribeFeatureType&typeName=" + meta.getName()
 		);
     }
 }

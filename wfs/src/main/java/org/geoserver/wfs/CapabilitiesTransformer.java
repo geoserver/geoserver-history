@@ -9,7 +9,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +20,7 @@ import java.util.logging.Logger;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.ows.xml.v1_0.OWS;
 import org.geoserver.platform.GeoServerExtensions;
-
-import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.FactoryRegistry;
-import org.geotools.filter.FunctionExpression;
 import org.geotools.filter.v1_0.OGC;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.xlink.bindings.XLINK;
@@ -36,7 +32,6 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import org.xml.sax.helpers.NamespaceSupport;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -355,17 +350,12 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 else {
                 	//FULL MONTY
                 	Collection featureProducers = 
-                		GeoServerExtensions.extensions( FeatureProducer.class );
+                		GeoServerExtensions.extensions( WFSGetFeatureOutputFormat.class );
                 	
                 	for ( Iterator i = featureProducers.iterator(); i.hasNext(); ) {
-                		FeatureProducer producer = (FeatureProducer) i.next();
-                		if ( producer.getOutputFormats() != null ) {
-                			for ( Iterator f = producer.getOutputFormats().iterator(); f.hasNext(); ) {
-                				String format = (String) f.next(); 
-                				element ( format, null );
-                			}
-                		}
-                		
+                		WFSGetFeatureOutputFormat format 
+                			= (WFSGetFeatureOutputFormat) i.next();
+                		element ( format.getOutputFormat(), null );
                 	}
                 }
 
