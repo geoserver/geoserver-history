@@ -75,7 +75,7 @@ import org.vfny.geoserver.util.ResponseUtils;
  *       Would probably not be that hard to get the request included, and
  *       would lead to better  error reporting...
  */
-public class ServiceException extends org.geoserver.ows.ServiceException {
+public class ServiceException extends org.geoserver.platform.ServiceException {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses");
@@ -90,7 +90,7 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
      * Empty constructor.
      */
     public ServiceException() {
-        super( null );
+        super( (String) null );
     }
 
     /**
@@ -99,7 +99,7 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
      * @param message The message for the .
      */
     public ServiceException(String message) {
-        super( message, null );
+        super( message, (String) null );
 
         LOGGER.fine(this.getMessage());
     }
