@@ -1,7 +1,9 @@
-package org.geoserver;
+package org.geoserver.platform;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -12,19 +14,24 @@ import org.springframework.core.io.Resource;
 /**
  * Manages resources in GeoServer.
  * <p>
- * GeoServer has the notion of a "data directory", where it keeps all the data 
- * used to configure the server. This maps to the {@link #baseDirectory} 
- * property of the resource loader. The loader also maintains a search path in 
- * which it will also use to look up resources. The baseDirectory is implicitly
- * added to the search path.
+ * The loader maintains a search path in which it will use to look up resources. 
+ * The {@link #baseDirectory} is a member of this path.
  * </p>
  * <p>
+ * Files and directories created by the resource loader are made relative to 
+ * {@link #baseDirectory}.
+ * </p>
+ * <p>
+ * <pre>
+ * 	<code>
  * File dataDirectory = ...
  * GeoServerResourceLoader loader = new GeoServerResourceLoader( dataDirectory );
  * loader.addSearchLocation( new File( "/WEB-INF/" ) );
  * loader.addSearchLocation( new File( "/data" ) );
  * ...
  * File catalog = loader.find( "catalog.xml" );
+ * 	</code>
+ * </pre>
  * </p>
  * 
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
@@ -61,7 +68,7 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
 	public GeoServerResourceLoader( File baseDirectory ) {
 		this();
 		this.baseDirectory = baseDirectory;
-		searchLocations.add( baseDirectory );
+		setSearchLocations( Collections.EMPTY_SET );
 	}
 	
 	/**
@@ -74,11 +81,37 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
 	}
 	
 	/**
+	 * Sets the search locations used for resource lookups.
+	 * 
+	 * @param searchLocations A set of {@link File}.
+	 */
+	public void setSearchLocations(Set searchLocations) {
+		this.searchLocations = new HashSet( searchLocations );
+		
+		//always add the base directory
+		if ( baseDirectory != null ) {
+			this.searchLocations.add( baseDirectory );	
+		}
+		
+	}
+	
+	/**
 	 * @return The base directory.
 	 */
 	public File getBaseDirectory() {
 		return baseDirectory;
 	}
+	
+	/**
+	 * Sets the base directory.
+	 * 
+	 * @param baseDirectory
+	 */
+	public void setBaseDirectory(File baseDirectory) {
+		this.baseDirectory = baseDirectory;
+		
+		searchLocations.add( baseDirectory );
+	} 
 	
 	/**
 	 * Performs a resource lookup. 
@@ -121,15 +154,18 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
 	/**
 	 * Creates a new directory.
 	 * <p>
-	 * Relative paths are created relative to {@link #baseDirectory}.
+	 * Relative paths are created relative to {@link #baseDirectory}. 
+	 * If {@link #baseDirectory} is not set, an IOException is thrown.
 	 * </p>
-	 * .
+	 * <p>
+	 * If <code>location</code> already exists as a file, an IOException is thrown.
+	 * </p>
 	 * @param location Location of directory to create, either absolute or 
 	 * relative.
 	 * 
 	 * @return The file handle of the created directory.
 	 * 
-	 * @throws IOException In the event of an I/O error.
+	 * @throws IOException
 	 */
 	public File createDirectory ( String location ) throws IOException {
 		File file = find( location );
@@ -149,8 +185,8 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
 		
 		//no base directory set, cannot create a relative path
 		if ( baseDirectory == null ) {
-			//TODO: log or throw exception
-			return null;
+			String msg = "No base location set, could not create directory: " + location;
+			throw new IOException( msg );
 		}
 		
 		file = new File( baseDirectory, location );
@@ -163,7 +199,11 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
 	 * <p>
 	 * Relative paths are created relative to {@link #baseDirectory}.
 	 * </p>
-	 * .
+	 * If {@link #baseDirectory} is not set, an IOException is thrown.
+	 * </p>
+	 * <p>
+	 * If <code>location</code> already exists as a directory, an IOException is thrown.
+	 * </p>
 	 * @param location Location of file to create, either absolute or relative.
 	 * 
 	 * @return The file handle of the created file.
@@ -172,8 +212,15 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
 	 */
 	public File createFile( String location ) throws IOException {
 		File file = find( location );
-		if ( file != null ) 
+		if ( file != null ) {
+			if ( file.isDirectory() ) {
+				String msg = location + " already exists and is a directory";
+				throw new IOException( msg );
+			}
+			
 			return file;
+		}
+			
 		
 		file = new File( location );
 		if ( file.isAbsolute() ) {
@@ -183,8 +230,8 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
 		
 		//no base directory set, cannot create a relative path
 		if ( baseDirectory == null ) {
-			//TODO: log or throw exception
-			return null;
+			String msg = "No base location set, could not create file: " + location;
+			throw new IOException( msg );
 		}
 		
 		file = new File( baseDirectory, location );
