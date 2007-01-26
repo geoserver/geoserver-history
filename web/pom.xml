@@ -297,6 +297,6 @@
 	</build>
 
 	<properties>
-		<configId>basic</configId>
+		<configId>minimal</configId>
 	</properties>
 </project>
