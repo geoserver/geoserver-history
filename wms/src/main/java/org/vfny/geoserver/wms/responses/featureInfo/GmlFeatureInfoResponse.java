@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.geotools.data.FeatureResults;
+import org.geotools.feature.FeatureCollection;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Service;
@@ -92,11 +92,11 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
         GetFeatureResults getFeatureResults = new GetFeatureResults(freq);
         FeatureTypeInfo finfo;
-        FeatureResults fresults;
+        FeatureCollection fresults;
         int i = 0;
 
         for (Iterator it = results.iterator(); it.hasNext(); i++) {
-            fresults = (FeatureResults) it.next();
+            fresults = (FeatureCollection) it.next();
             finfo = (FeatureTypeInfo) metas.get(i);
             getFeatureResults.addFeatures(finfo, fresults);
             // TODO: Do we want to reproject the geometries here? Or leave them

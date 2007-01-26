@@ -326,8 +326,8 @@ public class CoverageResponse implements Response {
 		final CoordinateReferenceSystem sourceCRS = CRS.decode(requestCRS);
 		// This is the CRS of the Coverage Envelope
 		final CoordinateReferenceSystem cvCRS = ((GeneralEnvelope) coverageReader.getOriginalEnvelope()).getCoordinateReferenceSystem();
-		final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS.transform(cvCRS, sourceCRS, true);
-		final MathTransform GCCRSTodeviceCRSTransform = CRS.transform(cvCRS, targetCRS, true);
+		final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS.findMathTransform(cvCRS, sourceCRS, true);
+		final MathTransform GCCRSTodeviceCRSTransform = CRS.findMathTransform(cvCRS, targetCRS, true);
 		final MathTransform deviceCRSToGCCRSTransform = GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform.inverse();
 
 		com.vividsolutions.jts.geom.Envelope envelope = request.getEnvelope();

@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
@@ -222,7 +222,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 // reproject the bounding box
                 if (requestedCRS != null && !CRS.equalsIgnoreMetadata(dataCRS, requestedCRS)) {
             		try {
-            			MathTransform transform = CRS.transform(requestedCRS, dataCRS, true);
+            			MathTransform transform = CRS.findMathTransform(requestedCRS, dataCRS, true);
             			pixelRect = (Polygon) JTS.transform(pixelRect, transform); // reprojected
         			} catch (MismatchedDimensionException e) {
         	            LOGGER.severe( e.getLocalizedMessage() );
@@ -242,7 +242,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 }
                 
                 Query q = new DefaultQuery( finfo.getTypeName(), null, getFInfoFilter,request.getFeatureCount(), Query.ALL_NAMES, null ); 
-                FeatureResults match = finfo.getFeatureSource().getFeatures(q);
+                FeatureCollection match = finfo.getFeatureSource().getFeatures(q);
 
                 //this was crashing Gml2FeatureResponseDelegate due to not setting
                 //the featureresults, thus not being able of querying the SRS

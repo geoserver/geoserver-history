@@ -12,9 +12,10 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 
@@ -77,23 +78,23 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
                                                             // if not specified
                                                             // in the request
 
-        FeatureReader reader = null;
+        FeatureIterator reader = null;
         try {
             final int size = results.size();
-            FeatureResults fr;
+            FeatureCollection fr;
             Feature f;
 
             FeatureType schema;
             AttributeType[] types;
             for (int i = 0; i < size; i++) // for each layer queried
             {
-                fr = (FeatureResults) results.get(i);
-                reader = fr.reader();
+                fr = (FeatureCollection) results.get(i);
+                reader = fr.features();
                 if (reader.hasNext() && (featuresPrinted < maxfeatures))
                 // if this layer has a hit and we're going to print it
                 {
                     writer.println("Results for FeatureType '"
-                            + reader.getFeatureType().getTypeName() + "':");
+                            + fr.getFeatureType().getTypeName() + "':");
                 }
 
                 while (reader.hasNext()) {
@@ -136,7 +137,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
                     }
                 }
             }
-        } catch (IllegalAttributeException ife) {
+        } catch (Exception ife) {
             writer.println("Unable to generate information " + ife);
         } finally {
             if (reader != null)

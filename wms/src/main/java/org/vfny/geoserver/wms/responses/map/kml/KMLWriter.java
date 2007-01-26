@@ -34,7 +34,6 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.IllegalAttributeException;
-import org.geotools.filter.Filter;
 import org.geotools.filter.Expression;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.gml.producer.GeometryTransformer;
@@ -57,6 +56,7 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
+import org.opengis.filter.Filter;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -1329,7 +1329,7 @@ public class KMLWriter extends OutputStreamWriter {
     	//CoordinateReferenceSystem sourceCRS = f.getFeatureType().getDefaultGeometry().getCoordinateSystem();
     	if (!CRS.equalsIgnoreMetadata(sourceCrs, this.mapContext.getCoordinateReferenceSystem())) {
     		try {
-    			MathTransform transform = CRS.transform(sourceCrs, this.mapContext.getCoordinateReferenceSystem(), true);
+    			MathTransform transform = CRS.findMathTransform(sourceCrs, this.mapContext.getCoordinateReferenceSystem(), true);
 				geom = JTS.transform(geom, transform);
 			} catch (MismatchedDimensionException e) {
 	            LOGGER.severe( e.getLocalizedMessage() );

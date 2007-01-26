@@ -12,6 +12,7 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.Expression;
@@ -189,7 +190,7 @@ public class EncodeSVG {
 
         for (int i = 0; i < nLayers; i++) {
             MapLayer layer = layers[i];
-            FeatureReader featureReader = null;
+            FeatureIterator featureReader = null;
             FeatureSource fSource = layer.getFeatureSource();
             FeatureType schema = fSource.getSchema();
 
@@ -206,7 +207,7 @@ public class EncodeSVG {
 
                 LOGGER.fine("obtaining FeatureReader for "
                     + schema.getTypeName());
-                featureReader = fSource.getFeatures(bboxQuery).reader();
+                featureReader = fSource.getFeatures(bboxQuery).features();
                 LOGGER.fine("got FeatureReader, now writing");
 
                 String groupId = null;
@@ -226,7 +227,7 @@ public class EncodeSVG {
 
                 writeDefs(schema);
 
-                writer.writeFeatures(featureReader, styleName);
+                writer.writeFeatures( fSource.getSchema(), featureReader, styleName);
                 writer.write("</g>\n");
             } catch (IOException ex) {
                 throw ex;

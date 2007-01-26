@@ -23,13 +23,13 @@ import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
-import org.geotools.filter.Filter;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
+import org.opengis.filter.Filter;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -279,6 +279,7 @@ public class GetMapResponse implements Response {
 						//
 						// /////////////////////////////////////////////////////////
 						final ParameterValueGroup params = reader.getFormat().getReadParameters();
+						
 						
 						layer = new DefaultMapLayer(DataUtilities.wrapGcReader(reader, CoverageUtils.getParameters(params, layers[i].getCoverage().getParameters())), style); 
 						layer.setTitle(layers[i].getName());

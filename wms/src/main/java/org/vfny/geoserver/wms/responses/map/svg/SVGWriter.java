@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureReader;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -307,13 +308,12 @@ public class SVGWriter extends OutputStreamWriter {
         super.write('\n');
     }
 
-    public void writeFeatures(FeatureReader reader, String style)
+    public void writeFeatures(FeatureType featureType, FeatureIterator reader, String style)
         throws IOException, AbortedException {
         Feature ft;
 
         try {
-            FeatureType featureType = reader.getFeatureType();
-            Class gtype = featureType.getDefaultGeometry().getType();
+        	Class gtype = featureType.getDefaultGeometry().getType();
 
             boolean doCollect = false;
             /*
@@ -353,7 +353,7 @@ public class SVGWriter extends OutputStreamWriter {
             LOGGER.fine("encoded " + featureType.getTypeName());
         } catch (NoSuchElementException ex) {
             throw new DataSourceException(ex.getMessage(), ex);
-        } catch (IllegalAttributeException ex) {
+        } catch (Exception ex) {
             throw new DataSourceException(ex.getMessage(), ex);
         }
     }
