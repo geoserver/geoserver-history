@@ -1,7 +1,6 @@
 package org.geoserver.wfs.xml.gml3;
 
 import org.geoserver.wfs.WFSException;
-import org.geotools.factory.FactoryNotFoundException;
 import org.geotools.referencing.CRS;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;

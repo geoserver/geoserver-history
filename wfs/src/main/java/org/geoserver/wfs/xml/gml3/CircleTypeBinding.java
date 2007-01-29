@@ -1,11 +1,12 @@
 package org.geoserver.wfs.xml.gml3;
 
+import javax.xml.namespace.QName;
+
 import org.geoserver.wfs.WFSException;
 import org.geotools.gml3.bindings.GML;
-import org.geotools.xml.*;
-
-
-import javax.xml.namespace.QName;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 /**
  * Binding object for the type http://www.opengis.net/gml:CircleType.

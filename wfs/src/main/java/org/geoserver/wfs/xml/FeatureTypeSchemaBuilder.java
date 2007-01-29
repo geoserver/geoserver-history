@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.xerces.impl.dtd.models.CMLeaf;
 import org.eclipse.xsd.XSDComplexTypeDefinition;
 import org.eclipse.xsd.XSDCompositor;
 import org.eclipse.xsd.XSDDerivationMethod;
@@ -23,8 +22,6 @@ import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.XSDSchemaContent;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.eclipse.xsd.util.XSDConstants;
-import org.eclipse.xsd.util.XSDSchemaLocator;
-
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.wfs.WFS;
