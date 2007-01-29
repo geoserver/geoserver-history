@@ -84,7 +84,7 @@ public abstract class Response {
 	 * 
 	 * @return The mime type of the response, must not be <code>null</code>
 	 */
-	public abstract String getMimeType() throws ServiceException;
+	public abstract String getMimeType( Operation operation ) throws ServiceException;
 	
 	/**
 	 * Determines if the response can handle the operation being performed.

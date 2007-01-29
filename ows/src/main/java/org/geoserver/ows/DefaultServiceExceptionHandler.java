@@ -13,17 +13,16 @@ import net.opengis.ows.v1_0_0.ExceptionType;
 import net.opengis.ows.v1_0_0.OWSFactory;
 
 import org.apache.xml.serialize.OutputFormat;
-
 import org.geoserver.ows.xml.v1_0.OWSConfiguration;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
 import org.geotools.xml.Encoder;
 
 /**
- * A default service exception handler.
+ * A default implementation of {@link ServiceExceptionHandler}.
  * <p>
- * This exception handler will return an "ows:ExceptionReport" document defined
- * by the schema: {@linkplain http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd}.
+ * This service exception handler will generate an OWS exception report, 
+ * see {@linkplain http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd}.
  * </p>
  * 
  * @author Justin Deoliveira, The Open Planning Project
@@ -33,6 +32,7 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
 
 	/**
 	 * Constructor to be called if the exception is not for a particular service.
+	 *
 	 */
 	public DefaultServiceExceptionHandler() {
 		super( Collections.EMPTY_LIST );
@@ -47,6 +47,9 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
 		super( services );
 	}
 	
+	/**
+	 * Writes out an OWS ExceptionReport document.
+	 */
 	public void handleServiceException(ServiceException exception,
 			Service service, HttpServletResponse response) {
 		
@@ -91,10 +94,7 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
 		encoder.setOutputFormat( format );
 		
 		//TODO: dont hardcode schema location
-		encoder.setSchemaLocation(
-			org.geoserver.ows.xml.v1_0.OWS.NAMESPACE, 
-			"http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd" 
-		);
+		encoder.setSchemaLocation( org.geoserver.ows.xml.v1_0.OWS.NAMESPACE, "http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd" );
 		try {
 			encoder.encode( report, org.geoserver.ows.xml.v1_0.OWS.EXCEPTIONREPORT, response.getOutputStream() );
 		} 

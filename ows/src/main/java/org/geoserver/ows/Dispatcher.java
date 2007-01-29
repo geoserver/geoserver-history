@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
 import org.eclipse.emf.ecore.EObject;
+import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Operation;
@@ -254,7 +255,7 @@ public class Dispatcher extends AbstractController {
 		
 		// lookup the operation, initial lookup based on (service,request)
 		Object serviceBean = serviceDescriptor.getService();
-		Method operation = OWSUtils.method( serviceBean.getClass(), req.request );
+		Method operation = OwsUtils.method( serviceBean.getClass(), req.request );
 		if ( operation == null ) {
 			String msg = "No such operation";
 			throw new ServiceException( msg, "OperationNotSupported", req.request ); 
@@ -368,7 +369,7 @@ public class Dispatcher extends AbstractController {
 		else {
 			//straight reflection
 			String version = 
-				(String) OWSUtils.property( requestBean, property , String.class );
+				(String) OwsUtils.property( requestBean, property , String.class );
 			if ( version != null ) {
 				return normalize( version );
 			}	
@@ -460,7 +461,7 @@ public class Dispatcher extends AbstractController {
 			Response response = (Response) responses.get( 0 );
 			
 			//set the mime type
-			req.httpResponse.setContentType( response.getMimeType() );
+			req.httpResponse.setContentType( response.getMimeType( opDescriptor ) );
 			
 			//TODO: initialize any header params (gzip,deflate,etc...)
 			

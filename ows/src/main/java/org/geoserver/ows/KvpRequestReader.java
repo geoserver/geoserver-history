@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.geoserver.ows.util.OwsUtils;
+
 /**
  * Creates a request bean from a kvp set.
  * <p>
@@ -109,7 +111,7 @@ public class KvpRequestReader {
 			if ( value == null ) 
 				continue;
 			
-			Method setter = OWSUtils.setter( request.getClass(), property, value.getClass() );
+			Method setter = OwsUtils.setter( request.getClass(), property, value.getClass() );
 			if ( setter != null ) {
 				setter.invoke( request, new Object[] { value } );
 			}

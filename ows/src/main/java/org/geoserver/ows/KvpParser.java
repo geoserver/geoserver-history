@@ -48,11 +48,17 @@ public abstract class KvpParser {
 		this.binding = binding;
 	}
 	
+	/**
+	 * @return The name of the key the parser binds to.
+	 */
 	public String getKey() {
 		return key;
 	}
 	
-	public Class getBinding() {
+	/**
+	 * @return The type of parsed objects.
+	 */
+	protected Class getBinding() {
 		return binding;
 	}
 	
