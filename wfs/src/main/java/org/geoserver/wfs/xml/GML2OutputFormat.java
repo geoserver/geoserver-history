@@ -24,7 +24,6 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
-
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTransformer;
@@ -173,18 +172,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
     	);
     }
     
-    /**
-     * DOCUMENT ME!
-     *
-     * @param gs DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getMimeType() {
-		return "text/xml";
-    }
-
-    /**
+   /**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!

@@ -38,8 +38,8 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 		this.configuration = configuration;
 	}
 	
-	public String getMimeType() {
-		return "text/xml";
+	public String getMimeType( Operation operation ) {
+		return "text/xml; subtype=gml/3.1.1" ;
 	}
 
 	protected void write(FeatureCollectionType results,

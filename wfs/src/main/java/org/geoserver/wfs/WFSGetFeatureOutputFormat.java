@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.ResultTypeType;
 
 import org.geoserver.ows.Response;
+import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 
@@ -36,18 +39,54 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
 	}
 	
 	/**
-	 * Ensures that the operation being executed is a GetFeature operation.
+	 * Returns the mime type <code>text/xml</code>.
 	 * <p>
-	 * This method may be extended to add additional checks, it should not be 
-	 * overriden.
+	 * Subclasses should override this method to provide a diffent output 
+	 * format.
 	 * </p>
 	 */
-	public boolean canHandle(Operation operation) {
-		if ( "GetFeature".equalsIgnoreCase( operation.getId() ) ) {
-			return true;
+	public String getMimeType( Operation operation ) throws ServiceException {
+		return "text/xml";
+	}
+	
+	/**
+	 * Ensures that the operation being executed is a GetFeature operation.
+	 * <p>
+	 * Subclasses may implement 
+	 * </p>
+	 */
+	public final boolean canHandle(Operation operation) {
+		//GetFeature operation?
+		if (  "GetFeature".equalsIgnoreCase( operation.getId() ) || 
+				"GetFeatureWithLock".equalsIgnoreCase( operation.getId() ) ) {
+			
+			//also check that the resultType is "results"
+			GetFeatureType request = 
+				(GetFeatureType) OwsUtils.parameter( operation.getParameters(), GetFeatureType.class );
+			
+			if ( request.getResultType() == ResultTypeType.RESULTS_LITERAL ) {
+				
+				//call subclass hook
+				return canHandleInternal( operation );
+			}
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Hook for subclasses to add addtional checks to {@link #canHandle(Operation)}.
+	 * <p>
+	 * Subclasses may override this method if need be, the default impelementation
+	 * returns <code>true</code>
+	 * </p>
+	 * @param operation The operation being performed. 
+	 * 
+	 * @return <code>true</code> if the output format can handle the operation, 
+	 * 	otherwise <code>false</code>
+	 */
+	protected boolean canHandleInternal( Operation operation ) {
+		return true;
 	}
 	
 	/**
