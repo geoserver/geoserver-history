@@ -5,6 +5,6 @@ Bundle-SymbolicName: net.opengis.wfs; singleton := true
 Bundle-Version: 1.0.0
 Bundle-Vendor: Opengis.net
 Bundle-Localization: plugin
-Require-Bundle: net.opengis.ows_1.0.0,
+Require-Bundle: net.opengis.ows,
  org.eclipse.emf.ecore,
  org.eclipse.emf
