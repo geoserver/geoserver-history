@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.IOException;
-
 import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
@@ -14,17 +12,18 @@ import org.geotools.data.postgis.PostgisFeatureLocking;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
+import java.io.IOException;
 
 
 /**
  * GeoServer wrapper for backend Geotools2 DataStore.
- * 
+ *
  * <p>
  * Support FeatureSource decorator for FeatureTypeInfo that takes care of
  * mapping the FeatureTypeInfo's FeatureSource with the schema and definition
  * query configured for it.
  * </p>
- * 
+ *
  * <p>
  * Because GeoServer requires that attributes always be returned in the same
  * order we need a way to smoothly inforce this. Could we use this class to do
@@ -34,8 +33,7 @@ import org.geotools.filter.Filter;
  * @author Gabriel Roldán
  * @version $Id: GeoServerFeatureLocking.java,v 1.5 2004/02/09 23:29:42 dmzwiers Exp $
  */
-public class GeoServerFeatureLocking extends GeoServerFeatureStore
-    implements FeatureLocking {
+public class GeoServerFeatureLocking extends GeoServerFeatureStore implements FeatureLocking {
     /**
      * Creates a new DEFQueryFeatureLocking object.
      *
@@ -43,8 +41,7 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore
      * @param schema DOCUMENT ME!
      * @param definitionQuery DOCUMENT ME!
      */
-    GeoServerFeatureLocking(FeatureLocking locking, FeatureType schema,
-        Filter definitionQuery) {
+    GeoServerFeatureLocking(FeatureLocking locking, FeatureType schema, Filter definitionQuery) {
         super(locking, schema, definitionQuery);
     }
 
@@ -67,8 +64,7 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore
         if (source instanceof FeatureLocking) {
             ((FeatureLocking) source).setFeatureLock(lock);
         } else {
-            throw new UnsupportedOperationException(
-                "FeatureTypeConfig does not supports locking");
+            throw new UnsupportedOperationException("FeatureTypeConfig does not supports locking");
         }
     }
 
@@ -86,8 +82,7 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore
         if (source instanceof FeatureLocking) {
             return ((FeatureLocking) source).lockFeatures(query);
         } else {
-            throw new DataSourceException(
-                "FeatureTypeConfig does not supports locking");
+            throw new DataSourceException("FeatureTypeConfig does not supports locking");
         }
     }
 
@@ -105,8 +100,7 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore
             return ((PostgisFeatureLocking) source).lockFeature(feature);
         }
 
-        throw new IOException(
-            "FeatureTypeConfig does not support single FeatureLock");
+        throw new IOException("FeatureTypeConfig does not support single FeatureLock");
     }
 
     /**

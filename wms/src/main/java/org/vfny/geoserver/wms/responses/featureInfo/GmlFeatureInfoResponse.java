@@ -4,13 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import org.geotools.data.FeatureResults;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -24,11 +17,18 @@ import org.vfny.geoserver.wfs.responses.GetFeatureResults;
 import org.vfny.geoserver.wfs.servlets.WFService;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.servlets.WMService;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 
 /**
  * A GetFeatureInfo response handler specialized in producing GML data for a
  * GetFeatureInfo request.
- * 
+ *
  * <p>
  * This class does not deals directly with GML encoding. Instead, it works by
  * taking the FeatureResults produced in <code>execute()</code> and constructs
@@ -36,7 +36,7 @@ import org.vfny.geoserver.wms.servlets.WMService;
  * <code>GML2FeatureResponseDelegate</code>, as if it where the result of a
  * GetFeature WFS request.
  * </p>
- * 
+ *
  * @author Gabriel Roldan, Axios Engineering
  */
 public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
@@ -56,11 +56,11 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
     /**
      * Returns any extra headers that this service might want to set in the HTTP
      * response object.
-     * 
+     *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-    	return new HashMap();
+        return new HashMap();
     }
 
     /**
@@ -68,10 +68,10 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * <code>execute</code> method in the superclass and constructs a
      * <code>GetFeaturesResult</code> wich is passed to a
      * <code>GML2FeatureResponseDelegate</code>.
-     * 
+     *
      * @param out
      *            DOCUMENT ME!
-     * 
+     *
      * @throws ServiceException
      *             DOCUMENT ME!
      * @throws IOException
@@ -80,7 +80,8 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         GetFeatureInfoRequest fInfoReq = (GetFeatureInfoRequest) getRequest();
         WMS wms = (WMS) fInfoReq.getServiceRef().getServiceRef();
-        FeatureRequest freq = new FeatureRequest(new MockWFService(fInfoReq.getRequest(), wms.getWFS()));
+        FeatureRequest freq = new FeatureRequest(new MockWFService(fInfoReq.getRequest(),
+                    wms.getWFS()));
         freq.setHttpServletRequest(fInfoReq.getHttpServletRequest());
 
         freq.setRequest("GETFEATURE");
@@ -99,6 +100,7 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
             fresults = (FeatureResults) it.next();
             finfo = (FeatureTypeInfo) metas.get(i);
             getFeatureResults.addFeatures(finfo, fresults);
+
             // TODO: Do we want to reproject the geometries here? Or leave them
             // in their native projection?
         }
@@ -118,15 +120,13 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * anyways. In fact FeatureRequest does not use anything specific from
      * WFService and it's happy with whatever service has been provided to it...
      * but that's a knowledge you can get only inspecting its code...
-     * 
+     *
      * @author aaime
-     * 
+     *
      */
     private static class MockWFService extends WFService {
-
         public MockWFService(String request, WFS wfs) {
             super(request, wfs);
         }
-
     }
 }

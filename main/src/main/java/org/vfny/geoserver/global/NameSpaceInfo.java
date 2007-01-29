@@ -2,29 +2,29 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.global;
 
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
-
 
 /**
  * NameSpaceInfo purpose.
- * 
+ *
  * <p>
  * A representation of a namespace for the Geoserver application.
  * </p>
- * 
+ *
  * <p></p>
- * 
+ *
  * <p>
  * NameSpaceInfo ns = new NameSpaceInfo(dto); System.out.println(ns.getPrefix()
  * + ns.getUri());
@@ -34,10 +34,9 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
  * @version $Id: NameSpaceInfo.java,v 1.11 2004/06/26 19:51:24 jive Exp $
  */
 public class NameSpaceInfo extends GlobalLayerSupertype {
-	
-	private String prefix;
-	private String uri;
-	private boolean _default;
+    private String prefix;
+    private String uri;
+    private boolean _default;
 
     /** ref to parent set of datastores. */
     private Data data;
@@ -47,7 +46,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
 
     /**
      * NameSpaceConfig constructor.
-     * 
+     *
      * <p>
      * Creates a NameSpaceConfig based on the data provided. All the data
      * structures are cloned.
@@ -68,7 +67,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
         }
 
         this.data = data;
-        
+
         prefix = ns.getPrefix();
         uri = ns.getUri();
         _default = ns.isDefault();
@@ -76,7 +75,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
 
     /**
      * NameSpaceConfig constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the NameSpaceConfig provided. All the data structures
      * are cloned.
@@ -98,7 +97,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
 
     /**
      * Implement toDTO.
-     * 
+     *
      * <p>
      * Package method used by GeoServer. This method may return references, and
      * does not clone, so extreme caution sould be used when traversing the
@@ -112,16 +111,17 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @see NameSpaceInfoDTO
      */
     Object toDTO() {
-    	NameSpaceInfoDTO dto = new NameSpaceInfoDTO();
-    	dto.setDefault(isDefault());
-    	dto.setPrefix(getPrefix());
-    	dto.setUri(getUri());
+        NameSpaceInfoDTO dto = new NameSpaceInfoDTO();
+        dto.setDefault(isDefault());
+        dto.setPrefix(getPrefix());
+        dto.setUri(getUri());
+
         return dto;
     }
 
     /**
      * Implement clone.
-     * 
+     *
      * <p>
      * creates a clone of this object
      * </p>
@@ -136,7 +136,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
 
     /**
      * Implement equals.
-     * 
+     *
      * <p>
      * recursively tests to determine if the object passed in is a copy of this
      * object.
@@ -152,13 +152,12 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
         NameSpaceInfo ns = (NameSpaceInfo) obj;
 
         return ((getPrefix() == ns.getPrefix())
-        && ((getUri() == ns.getUri())
-        && (isDefault() == ns.isDefault())));
+        && ((getUri() == ns.getUri()) && (isDefault() == ns.isDefault())));
     }
 
     /**
      * isDefault purpose.
-     * 
+     *
      * <p>
      * Whether this is the default namespace.
      * </p>
@@ -171,7 +170,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
 
     /**
      * getPrefix purpose.
-     * 
+     *
      * <p>
      * returns the namespace's prefix.
      * </p>
@@ -184,7 +183,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
 
     /**
      * getUri purpose.
-     * 
+     *
      * <p>
      * returns the namespace's uri.
      * </p>
@@ -194,21 +193,21 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     public String getUri() {
         return uri;
     }
-    
+
     /**
      * Implementation of getURI.
-     * 
+     *
      * @see org.geotools.data.NamespaceMetaData#getURI()
-     * 
+     *
      * @return
      */
     public String getURI() {
-    	return uri;
+        return uri;
     }
 
     /**
      * setDdefault purpose.
-     * 
+     *
      * <p>
      * sets the default namespace.
      * </p>
@@ -221,7 +220,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
 
     /**
      * setPrefix purpose.
-     * 
+     *
      * <p>
      * stores the namespace's prefix.
      * </p>
@@ -229,12 +228,12 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @param string the namespace's prefix.
      */
     public void setPrefix(String string) {
-        prefix=string;
+        prefix = string;
     }
 
     /**
      * setUri purpose.
-     * 
+     *
      * <p>
      * Stores the namespace's uri.
      * </p>
@@ -242,7 +241,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @param string the namespace's uri.
      */
     public void setUri(String string) {
-        uri=string;
+        uri = string;
     }
 
     /**
@@ -286,7 +285,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
 
     /**
      * This should be a list of available typeNames for the namespace.
-     * 
+     *
      * <p>
      * Makes use of data to get the list of all FeatureTypes, returns the names
      * that match this prefix. This is just the typeName and not the full
@@ -300,8 +299,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     public Set getTypeNames() {
         Set set = new HashSet();
 
-        for (Iterator i = data.getFeatureTypeInfos().values().iterator();
-                i.hasNext();) {
+        for (Iterator i = data.getFeatureTypeInfos().values().iterator(); i.hasNext();) {
             FeatureTypeInfo type = (FeatureTypeInfo) i.next();
 
             if (type.getNameSpace() == this) {
@@ -314,7 +312,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
 
     /**
      * Search for FeatureTypeInfo based on prefix:typeName
-     * 
+     *
      * <p>
      * Convience method for data.getFeatureTypeInfo( typeName, uri );
      * </p>
@@ -326,7 +324,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @see org.geotools.data.NamespaceMetaData#getFeatureTypeMetaData(java.lang.String)
      */
     public FeatureTypeInfo getFeatureTypeInfo(String typeName) {
-        return data.getFeatureTypeInfo(typeName, uri );
+        return data.getFeatureTypeInfo(typeName, uri);
     }
 
     public String toString() {

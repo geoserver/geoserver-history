@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
 import org.vfny.geoserver.wfs.Query;
@@ -16,12 +12,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
  * Uses SAX to extact a GetFeature query from and incoming GetFeature request
  * XML stream.
- * 
+ *
  * <p>
  * Note that this Handler extension ignores Filters completely and must be
  * chained as a parent to the PredicateFilter method in order to recognize
@@ -32,15 +30,13 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * @author Rob Hranac, TOPP
  * @version $Id: FeatureHandler.java,v 1.7 2004/02/13 19:30:39 dmzwiers Exp $
  */
-public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
-    FilterHandler {
+public class FeatureHandler extends XMLFilterImpl implements ContentHandler, FilterHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.wfs");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wfs");
 
     /** Service handling the request */
     private WFService service;
-    
+
     /** Internal get feature request for construction. */
     private FeatureRequest request = null;
 
@@ -53,7 +49,7 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
     /** Tracks current query */
     private Query currentQuery = new Query();
 
-    /** Collects string chunks in {@link #characters(char[], int, int)} 
+    /** Collects string chunks in {@link #characters(char[], int, int)}
      * callback to be handled at the beggining of {@link #endElement(String, String, String)}
      */
     private StringBuffer characters = new StringBuffer();
@@ -67,14 +63,14 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
         request = new FeatureRequest(service);
     }
 
-    
     /**
      * Returns the GetFeature request.
      *
      * @return The request read by this handler.
      */
     public FeatureRequest getRequest(HttpServletRequest req) {
-    		request.setHttpServletRequest(req);
+        request.setHttpServletRequest(req);
+
         return request;
     }
 
@@ -88,11 +84,11 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
      *
      * @throws SAXException When the XML is not well formed.
      */
-    public void startElement(String namespaceURI, String localName,
-        String rawName, Attributes atts) throws SAXException {
+    public void startElement(String namespaceURI, String localName, String rawName, Attributes atts)
+        throws SAXException {
         LOGGER.finest("at start element: " + localName);
         characters.setLength(0);
-        
+
         // at start of element, set inside flag to whatever tag we are inside
         insideTag = localName;
 
@@ -129,15 +125,13 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
                 } else if (curAtt.equals("outputFormat")) {
                     LOGGER.finest("found outputFormat: " + atts.getValue(i));
                     request.setOutputFormat(atts.getValue(i));
-                } else if (curAtt.equals("expiry")
-                        && request instanceof FeatureWithLockRequest) {
+                } else if (curAtt.equals("expiry") && request instanceof FeatureWithLockRequest) {
                     int expiry = -1;
 
                     try {
                         expiry = Integer.parseInt(atts.getValue(i));
                     } catch (NumberFormatException e) {
-                        throw new SAXException("expiry should parse to an "
-                            + "integer", e);
+                        throw new SAXException("expiry should parse to an " + "integer", e);
                     }
 
                     ((FeatureWithLockRequest) request).setExpiry(expiry);
@@ -159,7 +153,7 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
         throws SAXException {
         LOGGER.finer("at end element: " + localName);
         handleCharacters();
-        
+
         // as we leave query, set insideTag to "NULL" (otherwise the stupid
         //  characters method picks up external chars)
         insideTag = "NULL";
@@ -185,7 +179,7 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
      */
     public void characters(char[] ch, int start, int length)
         throws SAXException {
-    	characters.append(ch, start, length);
+        characters.append(ch, start, length);
     }
 
     /**
@@ -214,20 +208,21 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler,
             }
         }
     }
-    
+
     /**
      * Handles the string chunks collected in {@link #characters}.
      */
-    private void handleCharacters(){
-    	if(characters.length() == 0){
-    		return;
-    	}
+    private void handleCharacters() {
+        if (characters.length() == 0) {
+            return;
+        }
+
         // if inside a property element, add the element
         if (insideTag.equals("PropertyName")) {
             String name = characters.toString().trim();
             characters.setLength(0);
             LOGGER.finest("found property name: " + name);
-			currentQuery.addPropertyName(name);
+            currentQuery.addPropertyName(name);
         }
-    }    
+    }
 }

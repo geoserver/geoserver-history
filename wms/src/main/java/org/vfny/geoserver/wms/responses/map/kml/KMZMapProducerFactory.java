@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -31,30 +30,30 @@ public class KMZMapProducerFactory implements GetMapProducerFactorySpi {
      * character at server side.
      */
     private static final String PRODUCE_TYPE = "kmz";
-    
-    /** 
+
+    /**
      * Official KMZ mime type
      */
     static final String MIME_TYPE = "application/vnd.google-earth.kmz";
-    
+
     /** Set of supported mime types for the producers made by this Factory
      */
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
-    
+
     /**
      * Creates a new KMZMapProducerFactory object.
      */
     public KMZMapProducerFactory() {
         super();
     }
-    
+
     /**
      * Human readable description of output format.
      */
     public String getName() {
         return "Keyhole markup language compressed producer";
     }
-    
+
     /**
      * Discover what output formats are supported by the producers made by this factory.
      *
@@ -63,7 +62,7 @@ public class KMZMapProducerFactory implements GetMapProducerFactorySpi {
     public Set getSupportedFormats() {
         return SUPPORTED_FORMATS;
     }
-    
+
     /**
      * Reports on the availability of this factory.  As no external libraries are
      * required for KMZ this should always be true.
@@ -73,7 +72,7 @@ public class KMZMapProducerFactory implements GetMapProducerFactorySpi {
     public boolean isAvailable() {
         return true;
     }
-    
+
     /**
      * evaluates if this Map producer can generate the map format specified by
      * <code>mapFormat</code>
@@ -83,10 +82,11 @@ public class KMZMapProducerFactory implements GetMapProducerFactorySpi {
      * @return true if class can produce a map in the passed format.
      */
     public boolean canProduce(String mapFormat) {
-        return (mapFormat != null) && (mapFormat.startsWith(PRODUCE_TYPE) // "KMZ"
-                                    || mapFormat.startsWith("application/vnd.google-earth.kmz"));
+        return (mapFormat != null)
+        && (mapFormat.startsWith(PRODUCE_TYPE) // "KMZ"
+        || mapFormat.startsWith("application/vnd.google-earth.kmz"));
     }
-    
+
     /**
      * Create an actual instance of a KMZMapProducer.
      *
@@ -97,11 +97,11 @@ public class KMZMapProducerFactory implements GetMapProducerFactorySpi {
      *
      * @throws IllegalArgumentException DOCUMENT ME!
      */
-    public GetMapProducer createMapProducer(String mapFormat, WMS wms )
-    throws IllegalArgumentException {
+    public GetMapProducer createMapProducer(String mapFormat, WMS wms)
+        throws IllegalArgumentException {
         return new KMZMapProducer();
     }
-    
+
     /* (non-Javadoc)
      * @see org.geotools.factory.Factory#getImplementationHints()
      * This just returns java.util.Collections.EMPTY_MAP
@@ -109,5 +109,4 @@ public class KMZMapProducerFactory implements GetMapProducerFactorySpi {
     public Map getImplementationHints() {
         return java.util.Collections.EMPTY_MAP;
     }
-    
 }

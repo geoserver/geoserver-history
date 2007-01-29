@@ -4,16 +4,16 @@
  */
 package org.vfny.geoserver.wcs.servlets;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.wcs.WcsExceptionHandler;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * Base servlet for all Web Coverage Server requests.
- * 
+ *
  * <p>
  * Subclasses should supply the handler, request and response mapping for the
  * service they implement.
@@ -25,30 +25,30 @@ import org.vfny.geoserver.wcs.WcsExceptionHandler;
  */
 abstract public class WCService extends AbstractService {
     /**
-	 * Constructor for WCS service.
-	 * 
-	 * @param request The service request being made (GetCaps,GetCoverage,...)
-	 * @param wcs The WCS service reference.
-	 */
+         * Constructor for WCS service.
+         *
+         * @param request The service request being made (GetCaps,GetCoverage,...)
+         * @param wcs The WCS service reference.
+         */
     public WCService(String request, WCS wcs) {
-    		super("WCS",request,wcs);
+        super("WCS", request, wcs);
     }
-    
+
     /**
      * @return The wcs service ref.
      */
     public WCS getWCS() {
-    		return (WCS) getServiceRef();
+        return (WCS) getServiceRef();
     }
-    
+
     /**
      * Sets the wcs service ref.
      * @param wcs
      */
     public void setWCS(WCS wcs) {
-    		setServiceRef(wcs);
+        setServiceRef(wcs);
     }
-    
+
     /**
      * a Web Coverage ServiceConfig exception handler
      *
@@ -57,8 +57,8 @@ abstract public class WCService extends AbstractService {
     protected ExceptionHandler getExceptionHandler() {
         return WcsExceptionHandler.getInstance();
     }
-    
-    protected boolean isServiceEnabled(HttpServletRequest req){
-    	return getWCS().isEnabled();
+
+    protected boolean isServiceEnabled(HttpServletRequest req) {
+        return getWCS().isEnabled();
     }
 }

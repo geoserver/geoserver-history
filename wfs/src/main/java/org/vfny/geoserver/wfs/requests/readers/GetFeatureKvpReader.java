@@ -4,12 +4,6 @@
  */
 package org.vfny.geoserver.wfs.requests.readers;
 
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
@@ -19,6 +13,11 @@ import org.vfny.geoserver.wfs.requests.FeatureRequest;
 import org.vfny.geoserver.wfs.requests.FeatureWithLockRequest;
 import org.vfny.geoserver.wfs.requests.WfsKvpRequestReader;
 import org.vfny.geoserver.wfs.servlets.WFService;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * This utility reads in a GetFeature KVP request and turns it into a
@@ -37,10 +36,8 @@ import org.vfny.geoserver.wfs.servlets.WFService;
  */
 public class GetFeatureKvpReader extends WfsKvpRequestReader {
     /** Class logger */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.readers");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
-   
     /**
      * Constructor with raw request string.  Calls parent.
      *
@@ -50,8 +47,9 @@ public class GetFeatureKvpReader extends WfsKvpRequestReader {
     public GetFeatureKvpReader(Map kvPairs, WFService service) {
         super(kvPairs, service);
     }
-    
-    public Request getRequest(HttpServletRequest request) throws ServiceException {
+
+    public Request getRequest(HttpServletRequest request)
+        throws ServiceException {
         return getRequest(false, request);
     }
 
@@ -67,19 +65,17 @@ public class GetFeatureKvpReader extends WfsKvpRequestReader {
      */
     public FeatureRequest getRequest(boolean withLock, HttpServletRequest srequest)
         throws WfsException {
-        FeatureRequest currentRequest = new FeatureRequest((WFService)service);
+        FeatureRequest currentRequest = new FeatureRequest((WFService) service);
         currentRequest.setHttpServletRequest(srequest);
 
         boolean useLock = false;
 
         if (withLock || keyExists("REQUEST")) {
             String request = getValue("REQUEST");
-            useLock = withLock
-                || request.equalsIgnoreCase("GETFEATUREWITHLOCK");
+            useLock = withLock || request.equalsIgnoreCase("GETFEATUREWITHLOCK");
 
             if (useLock) {
-                currentRequest = 
-                		new FeatureWithLockRequest((WFService)getServiceRef());
+                currentRequest = new FeatureWithLockRequest((WFService) getServiceRef());
             }
 
             currentRequest.setRequest(request);
@@ -109,8 +105,7 @@ public class GetFeatureKvpReader extends WfsKvpRequestReader {
         }
 
         if (useLock && keyExists("EXPIRY")) {
-            ((FeatureWithLockRequest) currentRequest).setExpiry(Integer
-                .parseInt(getValue("EXPIRY")));
+            ((FeatureWithLockRequest) currentRequest).setExpiry(Integer.parseInt(getValue("EXPIRY")));
         }
 
         // declare tokenizers for repeating elements
@@ -119,8 +114,7 @@ public class GetFeatureKvpReader extends WfsKvpRequestReader {
         List typeList = readFlat(getValue("TYPENAME"), INNER_DELIMETER);
         List propertyList = readNested(getValue("PROPERTYNAME"));
         String fidKvps = getValue("FEATUREID");
-        List filterList = readFilters(fidKvps, getValue("FILTER"),
-                getValue("BBOX"));
+        List filterList = readFilters(fidKvps, getValue("FILTER"), getValue("BBOX"));
 
         int propertySize = propertyList.size();
         int filterSize = filterList.size();
@@ -140,9 +134,8 @@ public class GetFeatureKvpReader extends WfsKvpRequestReader {
         if (((propertySize != featureSize) && (propertySize > 1))
                 || ((filterSize != featureSize) && (filterSize > 1))) {
             throw new WfsException("Properties or filter sizes do not match"
-                + " feature types.  Property size: " + propertySize
-                + " Filter size: " + filterSize + " Feature size: "
-                + featureSize);
+                + " feature types.  Property size: " + propertySize + " Filter size: " + filterSize
+                + " Feature size: " + featureSize);
         } else {
             // loops through feature types, and creates queries based on them
             LOGGER.finest("setting query request parameters");
@@ -177,8 +170,7 @@ public class GetFeatureKvpReader extends WfsKvpRequestReader {
                 LOGGER.finest("query filter: " + filter);
 
                 // add query
-                currentRequest.addQuery(makeQuery(featureType, properties,
-                        filter));
+                currentRequest.addQuery(makeQuery(featureType, properties, filter));
             }
 
             return currentRequest;
@@ -194,8 +186,7 @@ public class GetFeatureKvpReader extends WfsKvpRequestReader {
      *
      * @return List of requested queries
      */
-    private static Query makeQuery(String featureType, List propertyNames,
-        Filter filter) {
+    private static Query makeQuery(String featureType, List propertyNames, Filter filter) {
         Query currentQuery = new Query();
 
         currentQuery.setTypeName(featureType);

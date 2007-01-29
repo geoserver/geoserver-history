@@ -4,9 +4,10 @@
  */
 package org.vfny.geoserver.requests;
 
-import java.util.Map;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
@@ -24,11 +25,8 @@ import org.vfny.geoserver.wfs.requests.FeatureRequest;
 import org.vfny.geoserver.wfs.requests.readers.GetFeatureKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.GetFeatureXmlReader;
 import org.vfny.geoserver.wfs.servlets.Feature;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -46,11 +44,9 @@ public class FeatureSuiteTest extends RequestTestCase {
     //}
 
     /** Class logger */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
-
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
     Feature service;
-    
+
     /**
      * Constructor with super.
      *
@@ -61,18 +57,16 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     protected void setUp() throws Exception {
-    		WFS wfs = new WFS(MockUtils.newWfsDto());
-    		service = new Feature(wfs);
+        WFS wfs = new WFS(MockUtils.newWfsDto());
+        service = new Feature(wfs);
     }
-    
-    
+
     protected XmlRequestReader getXmlReader() {
-    		
         return new GetFeatureXmlReader(service);
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {
-        return new GetFeatureKvpReader(kvps,service);
+        return new GetFeatureKvpReader(kvps, service);
     }
 
     /* ***********************************************************************
@@ -170,17 +164,17 @@ public class FeatureSuiteTest extends RequestTestCase {
 
         LinearRing outerRing = new LinearRing(coord, new PrecisionModel(), 0);
         LinearRing[] innerRing = new LinearRing[0];
-        Polygon tempPoly = new Polygon(outerRing, innerRing,
-                new PrecisionModel(), 0);
-        //djb -- trying to get this to work with new FeatureType
-        AttributeExpression tempLeftExp = factory.createAttributeExpression((FeatureType)null,"location");
-        //tempLeftExp.setAttributePath("location");
+        Polygon tempPoly = new Polygon(outerRing, innerRing, new PrecisionModel(), 0);
 
+        //djb -- trying to get this to work with new FeatureType
+        AttributeExpression tempLeftExp = factory.createAttributeExpression((FeatureType) null,
+                "location");
+
+        //tempLeftExp.setAttributePath("location");
         LiteralExpression tempRightExp = factory.createLiteralExpression(Expression.LITERAL_GEOMETRY);
         tempRightExp.setLiteral(tempPoly);
 
-        org.geotools.filter.GeometryFilter tempFilter = factory
-            .createGeometryFilter(AbstractFilter.GEOMETRY_DISJOINT);
+        org.geotools.filter.GeometryFilter tempFilter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_DISJOINT);
         tempFilter.addLeftGeometry(tempLeftExp);
         tempFilter.addRightGeometry(tempRightExp);
 
@@ -209,16 +203,15 @@ public class FeatureSuiteTest extends RequestTestCase {
 
         LinearRing outerRing = new LinearRing(coord, new PrecisionModel(), 0);
         LinearRing[] innerRing = new LinearRing[0];
-        Polygon tempPoly = new Polygon(outerRing, innerRing,
-                new PrecisionModel(), 0);
-        AttributeExpression tempLeftExp = factory.createAttributeExpression((FeatureType)null,"location");
-        //tempLeftExp.setAttributePath("location");
+        Polygon tempPoly = new Polygon(outerRing, innerRing, new PrecisionModel(), 0);
+        AttributeExpression tempLeftExp = factory.createAttributeExpression((FeatureType) null,
+                "location");
 
+        //tempLeftExp.setAttributePath("location");
         LiteralExpression tempRightExp = factory.createLiteralExpression(Expression.LITERAL_GEOMETRY);
         tempRightExp.setLiteral(tempPoly);
 
-        org.geotools.filter.GeometryFilter tempFilter = factory
-            .createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
+        org.geotools.filter.GeometryFilter tempFilter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
         tempFilter.addLeftGeometry(tempLeftExp);
         tempFilter.addRightGeometry(tempRightExp);
 
@@ -252,16 +245,15 @@ public class FeatureSuiteTest extends RequestTestCase {
 
         LinearRing outerRing = new LinearRing(coord, new PrecisionModel(), 0);
         LinearRing[] innerRing = new LinearRing[0];
-        Polygon tempPoly = new Polygon(outerRing, innerRing,
-                new PrecisionModel(), 0);
-        AttributeExpression tempLeftExp = factory.createAttributeExpression((FeatureType)null,"location");
-       // tempLeftExp.setAttributePath("location");
+        Polygon tempPoly = new Polygon(outerRing, innerRing, new PrecisionModel(), 0);
+        AttributeExpression tempLeftExp = factory.createAttributeExpression((FeatureType) null,
+                "location");
 
+        // tempLeftExp.setAttributePath("location");
         LiteralExpression tempRightExp = factory.createLiteralExpression(Expression.LITERAL_GEOMETRY);
         tempRightExp.setLiteral(tempPoly);
 
-        org.geotools.filter.GeometryFilter tempFilter = factory
-            .createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
+        org.geotools.filter.GeometryFilter tempFilter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
         tempFilter.addLeftGeometry(tempLeftExp);
         tempFilter.addRightGeometry(tempRightExp);
 
@@ -296,19 +288,19 @@ public class FeatureSuiteTest extends RequestTestCase {
         LiteralExpression tempExp1 = factory.createLiteralExpression(Expression.LITERAL_STRING);
         tempExp1.setLiteral("Main St.");
 
-        AttributeExpression tempExp2 = factory.createAttributeExpression((FeatureType)null,"Person/Address/StreetName");
-        //tempExp2.setAttributePath("Person/Address/StreetName");
+        AttributeExpression tempExp2 = factory.createAttributeExpression((FeatureType) null,
+                "Person/Address/StreetName");
 
+        //tempExp2.setAttributePath("Person/Address/StreetName");
         CompareFilter tempFilter = factory.createCompareFilter(AbstractFilter.COMPARE_EQUALS);
         tempFilter.addRightValue(tempExp1);
         tempFilter.addLeftValue(tempExp2);
 
-        Filter logicFilter = factory.createLogicFilter(tempFilter,
-                AbstractFilter.LOGIC_AND);
+        Filter logicFilter = factory.createLogicFilter(tempFilter, AbstractFilter.LOGIC_AND);
         LOGGER.fine("filter: " + logicFilter);
         tempFilter = factory.createCompareFilter(AbstractFilter.COMPARE_EQUALS);
         tempExp1 = factory.createLiteralExpression(Expression.LITERAL_STRING);
-        tempExp2 = factory.createAttributeExpression((FeatureType)null,"Person/Address/City");
+        tempExp2 = factory.createAttributeExpression((FeatureType) null, "Person/Address/City");
         tempExp1.setLiteral("Main St.");
         tempExp1.setLiteral("SomeTown");
         //tempExp2.setAttributePath("Person/Address/City");   // done at creations time
@@ -318,28 +310,28 @@ public class FeatureSuiteTest extends RequestTestCase {
         LOGGER.fine("filter: " + logicFilter);
         tempFilter = factory.createCompareFilter(AbstractFilter.COMPARE_EQUALS);
         tempExp1 = factory.createLiteralExpression(Expression.LITERAL_STRING);
-        tempExp2 = factory.createAttributeExpression((FeatureType)null,"Person/Sex");
+        tempExp2 = factory.createAttributeExpression((FeatureType) null, "Person/Sex");
         tempExp1.setLiteral("Female");
-       // tempExp2.setAttributePath("Person/Sex");
+        // tempExp2.setAttributePath("Person/Sex");
         tempFilter.addRightValue(tempExp1);
         tempFilter.addLeftValue(tempExp2);
         logicFilter = logicFilter.and(tempFilter);
         LOGGER.fine("filter: " + logicFilter);
         tempFilter = factory.createCompareFilter(AbstractFilter.COMPARE_GREATER_THAN);
         tempExp1 = factory.createLiteralExpression(Expression.LITERAL_INTEGER);
-        tempExp2 = factory.createAttributeExpression((FeatureType)null,"Person/Salary");
+        tempExp2 = factory.createAttributeExpression((FeatureType) null, "Person/Salary");
         tempExp1.setLiteral("35000");
-       // tempExp2.setAttributePath("Person/Salary");
+        // tempExp2.setAttributePath("Person/Salary");
         tempFilter.addLeftValue(tempExp2);
         tempFilter.addRightValue(tempExp1);
         logicFilter = logicFilter.and(tempFilter);
 
-        Filter finalFilter = factory.createLogicFilter(logicFilter,
-                AbstractFilter.LOGIC_AND);
+        Filter finalFilter = factory.createLogicFilter(logicFilter, AbstractFilter.LOGIC_AND);
         LOGGER.fine("filter: " + finalFilter);
         tempFilter = factory.createCompareFilter(AbstractFilter.COMPARE_GREATER_THAN_EQUAL);
         tempExp1 = factory.createLiteralExpression(Expression.LITERAL_INTEGER);
-        tempExp2 = factory.createAttributeExpression((FeatureType)null,"Person/Address/StreetNumber");
+        tempExp2 = factory.createAttributeExpression((FeatureType) null,
+                "Person/Address/StreetNumber");
         tempExp1.setLiteral("10000");
         //tempExp2.setAttributePath("Person/Address/StreetNumber");
         tempFilter.addLeftValue(tempExp2);
@@ -348,7 +340,8 @@ public class FeatureSuiteTest extends RequestTestCase {
         LOGGER.fine("filter: " + finalFilter);
         tempFilter = factory.createCompareFilter(AbstractFilter.COMPARE_LESS_THAN_EQUAL);
         tempExp1 = factory.createLiteralExpression(Expression.LITERAL_INTEGER);
-        tempExp2 = factory.createAttributeExpression((FeatureType)null,"Person/Address/StreetNumber");
+        tempExp2 = factory.createAttributeExpression((FeatureType) null,
+                "Person/Address/StreetNumber");
         tempExp1.setLiteral("10999");
         //tempExp2.setAttributePath("Person/Address/StreetNumber");
         tempFilter.addLeftValue(tempExp2);
@@ -377,8 +370,8 @@ public class FeatureSuiteTest extends RequestTestCase {
      * themselves are quite generic, so documentation is minimal.            *
      * ***********************************************************************/
     public void test9() throws Exception {
-        String testRequest = "VERSION=0.0.14&" + "REQUEST=GETFEATURE&"
-            + "SERVICE=WFS&" + "TYPENAME=rail";
+        String testRequest = "VERSION=0.0.14&" + "REQUEST=GETFEATURE&" + "SERVICE=WFS&"
+            + "TYPENAME=rail";
 
         // make base comparison objects        
         Query query = new Query();
@@ -393,8 +386,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test10() throws Exception {
-        String testRequest = "VERSION=0.0.14&" + "REQUEST=GETFEATURE&"
-            + "SERVICE=WFS&" + "PROPERTYNAME=location,id&" + "TYPENAME=rail";
+        String testRequest = "VERSION=0.0.14&" + "REQUEST=GETFEATURE&" + "SERVICE=WFS&"
+            + "PROPERTYNAME=location,id&" + "TYPENAME=rail";
 
         // make base comparison objects        
         Query query = new Query();
@@ -411,8 +404,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test11() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-            + "REQUEST=GETFEATURE&" + "TYPENAME=rail&" + "FEATUREID=123";
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
+            + "TYPENAME=rail&" + "FEATUREID=123";
 
         // make base comparison objects        
         Query query = new Query();
@@ -428,9 +421,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test12() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-            + "REQUEST=GETFEATURE&" + 
-            //           "TYPENAME=rail&" +
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
+            + //           "TYPENAME=rail&" +
             "FEATUREID=rail.123,rail.456,rail.789";
 
         // make base comparison objects        
@@ -458,10 +450,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test13() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-            + "REQUEST=GETFEATURE&"
-            + 
-            //"TYPENAME=rail1,rail2,rail3&" +
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
+            + //"TYPENAME=rail1,rail2,rail3&" +
             "PROPERTYNAME=(loc1,id1)(loc2,id2)(loc3,id3)&"
             + "FEATUREID=rail1.123,rail2.456,rail3.789";
 
@@ -496,14 +486,15 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test14() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-            + "REQUEST=GETFEATURE&" + "TYPENAME=rail&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
+            + "TYPENAME=rail&"
             + "FILTER=<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>";
 
         // make base comparison objects
-        org.geotools.filter.GeometryFilter filter = factory
-            .createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
-        AttributeExpression leftExpression = factory.createAttributeExpression((FeatureType)null,"location");
+        org.geotools.filter.GeometryFilter filter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
+        AttributeExpression leftExpression = factory.createAttributeExpression((FeatureType) null,
+                "location");
+
         //leftExpression.setAttributePath("location");
 
         // Creates coordinates for the linestring
@@ -534,8 +525,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test15() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-            + "REQUEST=GETFEATURE&" + "TYPENAME=rail,roads";
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
+            + "TYPENAME=rail,roads";
 
         // make base comparison objects        
         FeatureRequest baseRequest = new FeatureRequest(service);
@@ -554,9 +545,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test16() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-            + "REQUEST=GETFEATURE&" + "PROPERTYNAME=(loc1,id1)(*)&"
-            + "TYPENAME=rail,roads";
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
+            + "PROPERTYNAME=(loc1,id1)(*)&" + "TYPENAME=rail,roads";
 
         // make base comparison objects        
         FeatureRequest baseRequest = new FeatureRequest(service);
@@ -577,9 +567,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test17() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-            + "REQUEST=GETFEATURE&" + 
-            //"TYPENAME=rail&" +
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
+            + //"TYPENAME=rail&" +
             "FEATUREID=rail.123,rail.456";
 
         // make base comparison objects        
@@ -602,9 +591,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test18() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-            + "REQUEST=GETFEATURE&" + 
-            //     "TYPENAME=rail1,rail2&" +
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
+            + //     "TYPENAME=rail1,rail2&" +
             "PROPERTYNAME=(loc1,id1)(loc2)&" + "FEATUREID=rail1.123,rail2.456";
 
         // make base comparison objects        
@@ -631,17 +619,18 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test19() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-            + "REQUEST=GETFEATURE&" + "TYPENAME=rail,roads&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
+            + "TYPENAME=rail,roads&"
             + "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";
 
         FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.setVersion("1.0.0");
 
         // make base comparison objects
-        org.geotools.filter.GeometryFilter filter = factory
-            .createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
-        AttributeExpression leftExpression = factory.createAttributeExpression((FeatureType)null,"location");
+        org.geotools.filter.GeometryFilter filter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
+        AttributeExpression leftExpression = factory.createAttributeExpression((FeatureType) null,
+                "location");
+
         //leftExpression.setAttributePath("location");
 
         // Creates coordinates for the linear ring
@@ -673,19 +662,19 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test20() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-            + "REQUEST=GETFEATURE&" + "TYPENAME=rail,roads&"
-            + "PROPERTYNAME=(loc1,id1,cat1)(loc2)&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
+            + "TYPENAME=rail,roads&" + "PROPERTYNAME=(loc1,id1,cat1)(loc2)&"
             + "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";
 
         FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.setVersion("1.0.0");
 
         // make base comparison objects
-        org.geotools.filter.GeometryFilter filter = factory
-            .createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
-        AttributeExpression leftExpression = factory.createAttributeExpression((FeatureType)null,"location");
-       // leftExpression.setAttributePath("location");
+        org.geotools.filter.GeometryFilter filter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
+        AttributeExpression leftExpression = factory.createAttributeExpression((FeatureType) null,
+                "location");
+
+        // leftExpression.setAttributePath("location");
 
         // Creates coordinates for the linear ring
         Coordinate[] coords = new Coordinate[5];
@@ -720,15 +709,14 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test21() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-            + "REQUEST=GETFEATURE&" + "TYPENAME=rail&" + "BBOX=10,10,20,20";
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
+            + "TYPENAME=rail&" + "BBOX=10,10,20,20";
 
         FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.setVersion("1.0.0");
 
         // make base comparison objects
-        org.geotools.filter.GeometryFilter filter = factory
-            .createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
+        org.geotools.filter.GeometryFilter filter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
 
         //AttributeExpression leftExpression = 
         //    factory.createAttributeExpression(null); 

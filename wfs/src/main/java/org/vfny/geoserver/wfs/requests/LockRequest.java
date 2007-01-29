@@ -4,16 +4,15 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
+import org.geotools.data.FeatureLock;
+import org.geotools.data.FeatureLockFactory;
+import org.geotools.filter.Filter;
+import org.vfny.geoserver.wfs.servlets.WFService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
-
-import org.geotools.data.FeatureLock;
-import org.geotools.data.FeatureLockFactory;
-import org.geotools.filter.Filter;
-import org.vfny.geoserver.wfs.servlets.WFService;
 
 
 /**
@@ -25,8 +24,7 @@ import org.vfny.geoserver.wfs.servlets.WFService;
  */
 public class LockRequest extends WFSRequest {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.wfs");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wfs");
     private String handle;
 
     /** Specifies a lock expiration. */
@@ -38,27 +36,27 @@ public class LockRequest extends WFSRequest {
 
     /**
      * Creates a LockFeature request.
-     * 
+     *
      * @param service The wfs service handling the request.
      */
     public LockRequest(WFService service) {
-    		super("LockFeature", service);
+        super("LockFeature", service);
     }
 
     /**
      * Turn this request into a FeatureLock.
-     * 
+     *
      * <p>
      * You will return FeatureLock.getAuthorization() to your user so they can
      * refer to this lock again.
      * </p>
-     * 
+     *
      * <p>
      * The getAuthorization() value is based on getHandle(), with a default of
      * "GeoServer" if the user has not provided a handle.
      * </p>
      * The FeatureLock produced is based on expiry:
-     * 
+     *
      * <ul>
      * <li>
      * negative expiry: reports if lock is available
@@ -70,13 +68,12 @@ public class LockRequest extends WFSRequest {
      * postive expiry: lock expires in a number of minuets
      * </li>
      * </ul>
-     * 
+     *
      *
      * @return
      */
     public FeatureLock toFeatureLock() {
         //String handle = getHandle();
-
         if ((handle == null) || (handle.length() == 0)) {
             handle = "GeoServer";
         }
@@ -403,8 +400,8 @@ public class LockRequest extends WFSRequest {
          * Overrides of toString and equals methods.                         *
          * *******************************************************************/
         public String toString() {
-            return ("\n Lock\n   typeName: " + featureType + "\n   handle: "
-            + handle + "\n   filter: " + filter);
+            return ("\n Lock\n   typeName: " + featureType + "\n   handle: " + handle
+            + "\n   filter: " + filter);
         }
 
         public boolean equals(Object obj) {

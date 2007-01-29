@@ -4,12 +4,11 @@
  */
 package org.vfny.geoserver.util.requests;
 
-import java.util.logging.Logger;
-
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.XMLFilterImpl;
+import java.util.logging.Logger;
 
 
 /**
@@ -18,11 +17,9 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * @author Rob Hranac, TOPP
  * @version $Id: FilterHandlerImpl.java,v 1.7 2004/02/09 23:29:44 dmzwiers Exp $
  */
-public class FilterHandlerImpl extends XMLFilterImpl implements ContentHandler,
-    FilterHandler {
+public class FilterHandlerImpl extends XMLFilterImpl implements ContentHandler, FilterHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /** Tracks current filter */
     private Filter currentFilter = null;

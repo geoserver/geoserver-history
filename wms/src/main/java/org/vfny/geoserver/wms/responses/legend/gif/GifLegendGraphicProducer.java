@@ -4,18 +4,17 @@
  */
 package org.vfny.geoserver.wms.responses.legend.gif;
 
+import com.sun.media.imageioimpl.plugins.gif.GIFImageWriter;
+import com.sun.media.imageioimpl.plugins.gif.GIFImageWriterSpi;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import javax.imageio.IIOImage;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 
-import com.sun.media.imageioimpl.plugins.gif.GIFImageWriter;
-import com.sun.media.imageioimpl.plugins.gif.GIFImageWriterSpi;
 
 /**
  * Producer of legend graphics in image/gif format.
@@ -42,15 +41,11 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
      */
     public void writeTo(OutputStream out) throws IOException, ServiceException {
-		final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(
-				out);
-		final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(super
-				.getLegendGraphic());
-		final ImageWriter gifWriter = new GIFImageWriter(
-				new GIFImageWriterSpi());
-		gifWriter.setOutput(memOutStream);
-		gifWriter.write(null, new IIOImage(encodedImage, null, null), null);
-
+        final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(out);
+        final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(super.getLegendGraphic());
+        final ImageWriter gifWriter = new GIFImageWriter(new GIFImageWriterSpi());
+        gifWriter.setOutput(memOutStream);
+        gifWriter.write(null, new IIOImage(encodedImage, null, null), null);
     }
 
     /**
@@ -65,8 +60,10 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#getContentType()
      */
     public String getContentType() throws IllegalStateException {
-    	if(super.getLegendGraphic() == null)
-    		throw new IllegalStateException("the image was not still produced");
+        if (super.getLegendGraphic() == null) {
+            throw new IllegalStateException("the image was not still produced");
+        }
+
         return MIME_TYPE;
     }
 }

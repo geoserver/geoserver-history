@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /*
  * Created on Feb 3, 2004
  *
@@ -9,9 +10,6 @@
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
 package org.vfny.geoserver.action;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
@@ -25,11 +23,13 @@ import org.springframework.context.ApplicationContextAware;
 import org.vfny.geoserver.form.LoginForm;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
  * LoginAction purpose.
- * 
+ *
  * <p>
  * Processes the login of a user to gain access to the GeoServer Configuration.
  * Currently the defaults are "admin" for username, "geoserver" for password,
@@ -45,9 +45,8 @@ import org.vfny.geoserver.global.UserContainer;
  * @task TODO: add a page to change the username and password from the ui.
  */
 public class LoginAction extends GeoServerAction implements ApplicationContextAware {
-	
-	ApplicationContext context;
-	
+    ApplicationContext context;
+
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         HttpServletRequest request, HttpServletResponse response) {
         LoginForm loginForm = (LoginForm) form;
@@ -74,16 +73,15 @@ public class LoginAction extends GeoServerAction implements ApplicationContextAw
         }
 
         ActionErrors errors = new ActionErrors();
-        errors.add(ActionErrors.GLOBAL_ERROR,
-            new ActionError("error.login.invalidCombo"));
-        errors.add(ActionErrors.GLOBAL_ERROR,
-            new ActionError("message.login.hint"));
+        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.login.invalidCombo"));
+        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("message.login.hint"));
         request.setAttribute(Globals.ERROR_KEY, errors);
 
         return mapping.findForward("login");
     }
-    
-    public void setApplicationContext(ApplicationContext arg0) throws BeansException {
-    	this.context = arg0;
+
+    public void setApplicationContext(ApplicationContext arg0)
+        throws BeansException {
+        this.context = arg0;
     }
 }

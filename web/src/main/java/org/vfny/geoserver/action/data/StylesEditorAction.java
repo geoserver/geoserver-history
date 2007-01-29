@@ -19,14 +19,11 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.form.data.StylesEditorForm;
+import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.util.SLDValidator;
 import org.xml.sax.SAXParseException;
-
-
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -35,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -59,9 +55,9 @@ import javax.servlet.http.HttpServletResponse;
  *       file in the style directory.
  */
 public class StylesEditorAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException {
         DataConfig config = (DataConfig) getDataConfig();
         StylesEditorForm stylesForm = (StylesEditorForm) form;
         FormFile file = stylesForm.getSldFile();
@@ -69,22 +65,21 @@ public class StylesEditorAction extends ConfigAction {
         final String styleID = stylesForm.getStyleID();
 
         StyleConfig style = user.getStyle();
-        
 
-        
         boolean doFullValidation = stylesForm.getFullyValidate();
+
         if (stylesForm.getFullyValidateChecked() == false) {
-        	doFullValidation = false;
+            doFullValidation = false;
         }
-        
-        if (doFullValidation)
-        {
-        	List l = getSchemaExceptions(file,request);
-        	if (l.size() !=0)
-        	{
-        		handleValidationErrors(l,file,stylesForm);        		
-        		return mapping.findForward("schemaErrors");
-        	}
+
+        if (doFullValidation) {
+            List l = getSchemaExceptions(file, request);
+
+            if (l.size() != 0) {
+                handleValidationErrors(l, file, stylesForm);
+
+                return mapping.findForward("schemaErrors");
+            }
         }
 
         if (style == null) {
@@ -92,20 +87,22 @@ public class StylesEditorAction extends ConfigAction {
             return mapping.findForward("config.data.style");
         }
 
-	
-	ServletContext sc = getServlet().getServletContext();
+        ServletContext sc = getServlet().getServletContext();
+
         //DJB: changed for geoserver_data_dir
         //File rootDir = new File(getServlet().getServletContext().getRealPath("/"));
         File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
-	
-	File styleDir;
-	try {
-	    styleDir = GeoserverDataDirectory.findConfigDir(rootDir, "styles");
-	} catch (ConfigurationException cfe) {
+
+        File styleDir;
+
+        try {
+            styleDir = GeoserverDataDirectory.findConfigDir(rootDir, "styles");
+        } catch (ConfigurationException cfe) {
             LOGGER.warning("no style dir found, creating new one");
             //if for some bizarre reason we don't fine the dir, make a new one.
             styleDir = new File(rootDir, "styles");
-	}
+        }
+
         // send content of FormFile to /styles :
         // there nothing to keep the styles in memory for XMLConfigWriter.store() 
         InputStreamReader isr = new InputStreamReader(file.getInputStream());
@@ -113,8 +110,7 @@ public class StylesEditorAction extends ConfigAction {
 
         //here we do a check to see if the file we are trying to upload is
         //overwriting another style file. 
-        LOGGER.fine("new sld file is: " + newSldFile + ", exists: "
-            + newSldFile.exists());
+        LOGGER.fine("new sld file is: " + newSldFile + ", exists: " + newSldFile.exists());
 
         if (newSldFile.exists()) {
             StyleConfig styleForID = config.getStyle(styleID);
@@ -177,8 +173,7 @@ public class StylesEditorAction extends ConfigAction {
                 //sld matches the schema before we try to pass it to our
                 //crappy parser.
                 String message = "The xml was valid, but couldn't get a Style"
-                    + " from it.  Make sure your style validates against "
-                    + " the SLD schema";
+                    + " from it.  Make sure your style validates against " + " the SLD schema";
                 doStyleParseError(message, newSldFile, request);
 
                 return mapping.findForward("config.data.style.editor");
@@ -190,8 +185,7 @@ public class StylesEditorAction extends ConfigAction {
             e.printStackTrace();
 
             String message = (e.getCause() == null) ? e.getLocalizedMessage()
-                                                    : e.getCause()
-                                                       .getLocalizedMessage();
+                                                    : e.getCause().getLocalizedMessage();
             doStyleParseError(message, newSldFile, request);
 
             return mapping.findForward("config.data.style.editor");
@@ -214,130 +208,123 @@ public class StylesEditorAction extends ConfigAction {
      *   make the validation report for the bean
      *   its a listing of the original file (prefixed by line #)
      *   and any validation errors
-     * 
-	 * @param l
-	 * @param file
-	 * @param stylesForm
-	 */
-	private void handleValidationErrors(List errors, FormFile file, StylesEditorForm stylesForm) 
-	{
-		ArrayList lines = new ArrayList();
-		BufferedReader reader = null;
-		try{
-			reader = new BufferedReader(new InputStreamReader(file.getInputStream() ));
-			String line = reader.readLine();
-			int linenumber = 1;
-			int exceptionNum = 0;
-			
-				 //check for lineNumber -1 errors  --> invalid XML
-			
-			if  (  errors.size()>0  )
-			{
-				SAXParseException sax = (SAXParseException) errors.get(0);
-				if (sax.getLineNumber()<0)
-				{
-					lines.add("   INVALID XML: "+sax.getLocalizedMessage());
-					lines.add(" ");
-					exceptionNum = 1;// skip ahead (you only ever get one error in this case)
-				}
-			}
-			
-			while (line !=null)
-			{
-				line.replace('\n',' ');
-				line.replace('\r',' ');
-				String header = linenumber +": ";
-				lines.add(header+line); // record the current line
-				
-				boolean keep_going = true;
-				while (keep_going)
-				{
-					if  ( (exceptionNum< errors.size() )  )
-					{
-						SAXParseException sax = (SAXParseException) errors.get(exceptionNum);
-						if (sax.getLineNumber() <= linenumber)
-						{
-							String head = "---------------------".substring(0,header.length()-1);
-							String body = "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
-							int colNum = sax.getColumnNumber();  //protect against col 0 problems
-							if (colNum <1)
-								colNum = 1;
-							lines.add(head+body.substring(0,sax.getColumnNumber()-1)+"^");
-							lines.add("       "+sax.getLocalizedMessage());
-							exceptionNum++;
-						}
-						else
-							keep_going = false; //report later (sax.getLineNumber() > linenumber)
-					}
-					else
-						keep_going = false; // no more errors to report
-				}
-				
-				line = reader.readLine();  //will be null at eof
-				linenumber++;				
-			}
-			for (int t=exceptionNum;t<errors.size();t++)
-			{
-				SAXParseException sax = (SAXParseException) errors.get(t);
-				lines.add("       "+sax.getLocalizedMessage());
-			}
-			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			try{
-				if ( reader != null)
-					reader.close();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
-		
-		stylesForm.setValidationReport( (String[]) lines.toArray( new String[1] ));
-	}
+     *
+         * @param l
+         * @param file
+         * @param stylesForm
+         */
+    private void handleValidationErrors(List errors, FormFile file, StylesEditorForm stylesForm) {
+        ArrayList lines = new ArrayList();
+        BufferedReader reader = null;
 
-	/**
-     *   Check the .sld file and check to see if it passes the validation test! 
-     * 
-	 * @param file
-	 * @return
-	 */
-	private List getSchemaExceptions(FormFile file, HttpServletRequest request) 
-	{
-		SLDValidator validator = new SLDValidator();
-		
-		ServletContext sc = request.getSession().getServletContext();
-		try{
-			List l = validator.validateSLD(file.getInputStream(),sc );
-			return l;
-		}
-		catch (Exception e)
-		{
-			ArrayList al = new ArrayList();
-			al.add( new SAXParseException(e.getLocalizedMessage(),null) );
-			return al;
-		}	
-	}
+        try {
+            reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
 
-	/*
-     * Called when there is trouble parsing the file.  Note that we
-     * also delete the file here, so it doesn't stick on the system.
-     * Would be a bit better to write to a temp file before putting
-     * it in the style directory, but so it goes.
+            String line = reader.readLine();
+            int linenumber = 1;
+            int exceptionNum = 0;
+
+            //check for lineNumber -1 errors  --> invalid XML
+            if (errors.size() > 0) {
+                SAXParseException sax = (SAXParseException) errors.get(0);
+
+                if (sax.getLineNumber() < 0) {
+                    lines.add("   INVALID XML: " + sax.getLocalizedMessage());
+                    lines.add(" ");
+                    exceptionNum = 1; // skip ahead (you only ever get one error in this case)
+                }
+            }
+
+            while (line != null) {
+                line.replace('\n', ' ');
+                line.replace('\r', ' ');
+
+                String header = linenumber + ": ";
+                lines.add(header + line); // record the current line
+
+                boolean keep_going = true;
+
+                while (keep_going) {
+                    if ((exceptionNum < errors.size())) {
+                        SAXParseException sax = (SAXParseException) errors.get(exceptionNum);
+
+                        if (sax.getLineNumber() <= linenumber) {
+                            String head = "---------------------".substring(0, header.length() - 1);
+                            String body = "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
+                            int colNum = sax.getColumnNumber(); //protect against col 0 problems
+
+                            if (colNum < 1) {
+                                colNum = 1;
+                            }
+
+                            lines.add(head + body.substring(0, sax.getColumnNumber() - 1) + "^");
+                            lines.add("       " + sax.getLocalizedMessage());
+                            exceptionNum++;
+                        } else {
+                            keep_going = false; //report later (sax.getLineNumber() > linenumber)
+                        }
+                    } else {
+                        keep_going = false; // no more errors to report
+                    }
+                }
+
+                line = reader.readLine(); //will be null at eof
+                linenumber++;
+            }
+
+            for (int t = exceptionNum; t < errors.size(); t++) {
+                SAXParseException sax = (SAXParseException) errors.get(t);
+                lines.add("       " + sax.getLocalizedMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        stylesForm.setValidationReport((String[]) lines.toArray(new String[1]));
+    }
+
+    /**
+    *   Check the .sld file and check to see if it passes the validation test!
+    *
+     * @param file
+     * @return
      */
-    private void doStyleParseError(String message, File newSldFile,
-        HttpServletRequest request) {
+    private List getSchemaExceptions(FormFile file, HttpServletRequest request) {
+        SLDValidator validator = new SLDValidator();
+
+        ServletContext sc = request.getSession().getServletContext();
+
+        try {
+            List l = validator.validateSLD(file.getInputStream(), sc);
+
+            return l;
+        } catch (Exception e) {
+            ArrayList al = new ArrayList();
+            al.add(new SAXParseException(e.getLocalizedMessage(), null));
+
+            return al;
+        }
+    }
+
+    /*
+    * Called when there is trouble parsing the file.  Note that we
+    * also delete the file here, so it doesn't stick on the system.
+    * Would be a bit better to write to a temp file before putting
+    * it in the style directory, but so it goes.
+    */
+    private void doStyleParseError(String message, File newSldFile, HttpServletRequest request) {
         LOGGER.fine("parse error message is: " + message);
 
         ActionErrors errors = new ActionErrors();
-        errors.add(ActionErrors.GLOBAL_ERROR,
-            new ActionError("error.style.noParse", message));
+        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.style.noParse", message));
         saveErrors(request, errors);
         newSldFile.delete();
     }

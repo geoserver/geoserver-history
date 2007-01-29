@@ -6,9 +6,6 @@
  */
 package org.vfny.geoserver.action;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -17,9 +14,12 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.UserContainer;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
- * Free Locks held by each and every DataStore. 
+ * Free Locks held by each and every DataStore.
  * <p>
  * This represents an action that interacts with the running GeoServer
  * application (it is not really a config action, it is just that I want the
@@ -37,23 +37,23 @@ public class FreeLocksAction extends ConfigAction {
     /* (non-Javadoc)
      * @see org.vfny.geoserver.action.ConfigAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, org.vfny.geoserver.global.UserContainer, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            UserContainer user, HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
-        
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
+        throws Exception {
         // WFS is only used to aquire the GeoServer
         Data data = getWFS(request).getData();
-        
+
         int count = data.lockReleaseAll();
-        
+
         // Provide status message
         //
         ActionErrors errors = new ActionErrors();
-        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("message.freeLocks",new Integer(count)));        
+        errors.add(ActionErrors.GLOBAL_ERROR,
+            new ActionError("message.freeLocks", new Integer(count)));
         request.setAttribute(Globals.ERROR_KEY, errors);
-        
-    	// return back to the admin screen
-    	//
+
+        // return back to the admin screen
+        //
         return mapping.findForward("admin");
     }
 }

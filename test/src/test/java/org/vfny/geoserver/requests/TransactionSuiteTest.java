@@ -4,13 +4,12 @@
  */
 package org.vfny.geoserver.requests;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.Feature;
@@ -29,11 +28,9 @@ import org.vfny.geoserver.wfs.requests.TransactionRequest;
 import org.vfny.geoserver.wfs.requests.readers.DeleteKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.TransactionXmlReader;
 import org.vfny.geoserver.wfs.servlets.Transaction;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -53,17 +50,15 @@ public class TransactionSuiteTest extends RequestTestCase {
     //}
 
     /** Class logger */
-    protected static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /** Holds mappings between HTTP and ASCII encodings */
     protected static FilterFactory factory = FilterFactoryFinder.createFilterFactory();
     protected FeatureType schema;
     protected Feature testFeature;
     protected GeoServer config;
-
     Transaction service;
-    
+
     /**
      * Constructor with super.
      *
@@ -94,10 +89,10 @@ public class TransactionSuiteTest extends RequestTestCase {
         //config.setTypeDir(TYPE_DIR);
         //repo = TypeRepository.getInstance();
         AttributeType[] atts = {
-            AttributeTypeFactory.newAttributeType("fid", Integer.class),
-            AttributeTypeFactory.newAttributeType("geom", Polygon.class),
-            AttributeTypeFactory.newAttributeType("name", String.class)
-        };
+                AttributeTypeFactory.newAttributeType("fid", Integer.class),
+                AttributeTypeFactory.newAttributeType("geom", Polygon.class),
+                AttributeTypeFactory.newAttributeType("name", String.class)
+            };
 
         try {
             schema = FeatureTypeFactory.newFeatureType(atts, "rail");
@@ -106,10 +101,9 @@ public class TransactionSuiteTest extends RequestTestCase {
         }
 
         Coordinate[] points = {
-            new Coordinate(15, 15), new Coordinate(15, 25),
-            new Coordinate(25, 25), new Coordinate(25, 15),
-            new Coordinate(15, 15)
-        };
+                new Coordinate(15, 15), new Coordinate(15, 25), new Coordinate(25, 25),
+                new Coordinate(25, 15), new Coordinate(15, 15)
+            };
         PrecisionModel precModel = new PrecisionModel();
         int srid = 2035;
         LinearRing shell = new LinearRing(points, precModel, srid);
@@ -124,7 +118,7 @@ public class TransactionSuiteTest extends RequestTestCase {
         } catch (IllegalAttributeException ife) {
             LOGGER.warning("problem in setup " + ife);
         }
-        
+
         WFS wfs = new WFS(MockUtils.newWfsDto());
         service = new Transaction(wfs);
     }
@@ -134,7 +128,7 @@ public class TransactionSuiteTest extends RequestTestCase {
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {
-        return new DeleteKvpReader(kvps,service);
+        return new DeleteKvpReader(kvps, service);
     }
 
     /**

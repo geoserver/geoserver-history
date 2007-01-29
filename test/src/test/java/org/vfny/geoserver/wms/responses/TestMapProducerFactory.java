@@ -4,12 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
@@ -17,6 +11,11 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -99,7 +98,6 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
      * @version $Id$
      */
     private class TestingMapProducer implements GetMapProducer {
-    	
         /**
          * DOCUMENT ME!
          *
@@ -118,8 +116,7 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
          * @throws ServiceException DOCUMENT ME!
          * @throws IOException DOCUMENT ME!
          */
-        public void writeTo(OutputStream out)
-            throws ServiceException, IOException {
+        public void writeTo(OutputStream out) throws ServiceException, IOException {
         }
 
         /**
@@ -139,17 +136,17 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
         public void abort() {
         }
 
-		public String getContentDisposition() {
-			// can be null
-			return null;
-		}
+        public String getContentDisposition() {
+            // can be null
+            return null;
+        }
     }
 
-	/* (non-Javadoc)
-	 * @see org.geotools.factory.Factory#getImplementationHints()
-	 * This just returns java.util.Collections.EMPTY_MAP
-	 */
-	public Map getImplementationHints() {
-		return java.util.Collections.EMPTY_MAP;
-	}
+    /* (non-Javadoc)
+     * @see org.geotools.factory.Factory#getImplementationHints()
+     * This just returns java.util.Collections.EMPTY_MAP
+     */
+    public Map getImplementationHints() {
+        return java.util.Collections.EMPTY_MAP;
+    }
 }

@@ -4,15 +4,14 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
-import java.net.URI;
-import java.util.Iterator;
-import java.util.logging.Logger;
-
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.wfs.WfsException;
+import java.net.URI;
+import java.util.Iterator;
+import java.util.logging.Logger;
 
 
 /**
@@ -27,8 +26,7 @@ import org.vfny.geoserver.wfs.WfsException;
  */
 public class InsertRequest extends SubTransactionRequest {
     /** Class logger */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.wfs");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wfs");
 
     /** The list of features to be inserted. */
     private FeatureCollection features;
@@ -76,9 +74,10 @@ public class InsertRequest extends SubTransactionRequest {
     public void addFeature(Feature feature) throws WfsException {
         if (typeName == null) {
             features.add(feature);
+
             String name = feature.getFeatureType().getTypeName();
-            URI uri = feature.getFeatureType().getNamespace();  //DJB:: type changed to uri due to api change
-            LOGGER.info("got type " + name +"," + uri);
+            URI uri = feature.getFeatureType().getNamespace(); //DJB:: type changed to uri due to api change
+            LOGGER.info("got type " + name + "," + uri);
             setTypeName(feature.getFeatureType().getTypeName());
         } else {
             String addTypeName = feature.getFeatureType().getTypeName();
@@ -86,8 +85,7 @@ public class InsertRequest extends SubTransactionRequest {
             if (typeName.equals(addTypeName)) {
                 features.add(feature);
             } else {
-                throw new WfsException(
-                    "features do not match- added typeName: " + addTypeName
+                throw new WfsException("features do not match- added typeName: " + addTypeName
                     + ", set typeName: " + typeName, handle);
             }
         }
@@ -123,8 +121,8 @@ public class InsertRequest extends SubTransactionRequest {
      *
      * @param typeName the name of the schema of the added features.
      * @task REVISIT: This is hacked, so that the typename can be set to
-     * use the proper prefix when it can be found out (currently in 
-     * TransactionResponse).  The getTypeName is a bit funky for insert 
+     * use the proper prefix when it can be found out (currently in
+     * TransactionResponse).  The getTypeName is a bit funky for insert
      * requests though, in many ways it should just not be used, for example
      * when there are different featureTypes in an insert request.  The
      * stores to use should really be determined by each Feature.  Also,
@@ -136,12 +134,12 @@ public class InsertRequest extends SubTransactionRequest {
      * accoring to the spec that is illegal, but it's nice to be able to do).
      * But if we actually use the uris then that can make this method less
      * hacky. ch
-     * Another option to this problem would be a getType(Data) method to 
-     * replace String getTypeName(), as then the insert request could do 
+     * Another option to this problem would be a getType(Data) method to
+     * replace String getTypeName(), as then the insert request could do
      * the right lookup with its uri.
      */
     public void setTypeName(String typeName) {
-            this.typeName = typeName;
+        this.typeName = typeName;
     }
 
     /**
@@ -162,8 +160,8 @@ public class InsertRequest extends SubTransactionRequest {
      * @throws WfsException if called at all.
      */
     public void setFilter(Filter filter) throws WfsException {
-        throw new WfsException("Attempted to add filter (" + filter
-            + ") to update request: " + handle);
+        throw new WfsException("Attempted to add filter (" + filter + ") to update request: "
+            + handle);
     }
 
     /**

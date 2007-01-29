@@ -4,20 +4,19 @@
  */
 package org.vfny.geoserver.config;
 
-import java.net.URL;
-
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.ServiceDTO;
+import java.net.URL;
 
 
 /**
  * ServiceConfig purpose.
- * 
+ *
  * <p>
  * ServiceConfig is intended to be extended to provide some basic data storage
  * facilities.  This class represents the basic properties of a web service.
  * </p>
- * 
+ *
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
@@ -64,11 +63,11 @@ public class ServiceConfig {
      * contact  information such as webmaster&amp;geoserver.org .
      */
     private String maintainer;
-	private MetaDataLink metadataLink;
+    private MetaDataLink metadataLink;
 
     /**
      * ServiceConfig constructor.
-     * 
+     *
      * <p>
      * Creates an empty ServiceConfig representation with default values.
      * </p>
@@ -89,7 +88,7 @@ public class ServiceConfig {
 
     /**
      * ServiceConfig constructor.
-     * 
+     *
      * <p>
      * This is equivalent to calling the load method. When a null value is
      * passed in,  the default values are used. All non-primary datatypes are
@@ -112,7 +111,7 @@ public class ServiceConfig {
 
     /**
      * Implement loadDTO.
-     * 
+     *
      * <p>
      * Takes a ServiceDTO and loads it into this ServiceConfig Object
      * </p>
@@ -125,8 +124,7 @@ public class ServiceConfig {
      */
     public void update(ServiceDTO dto) {
         if (dto == null) {
-            throw new NullPointerException(
-                "Service Data Transfer Object required");
+            throw new NullPointerException("Service Data Transfer Object required");
         }
 
         ServiceDTO s = (ServiceDTO) dto;
@@ -154,7 +152,7 @@ public class ServiceConfig {
 
     /**
      * Implement toDTO.
-     * 
+     *
      * <p>
      * Returns a copy of the data in a ServiceDTO object
      * </p>
@@ -348,20 +346,20 @@ public class ServiceConfig {
     public void setMaintainer(String string) {
         maintainer = string;
     }
-	/**
-	 * @return Returns the metadataLink.
-	 * 
-	 */
-	public MetaDataLink getMetadataLink() {
-		return metadataLink;
-	}
 
-	/**
-	 * @param metadataLink The metadataLink to set.
-	 * 
-	 */
-	public void setMetadataLink(MetaDataLink metadataLink) {
-		this.metadataLink = metadataLink;
-	}
+    /**
+     * @return Returns the metadataLink.
+     *
+     */
+    public MetaDataLink getMetadataLink() {
+        return metadataLink;
+    }
 
+    /**
+     * @param metadataLink The metadataLink to set.
+     *
+     */
+    public void setMetadataLink(MetaDataLink metadataLink) {
+        this.metadataLink = metadataLink;
+    }
 }

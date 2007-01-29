@@ -4,17 +4,15 @@
  */
 package org.vfny.geoserver.requests;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import org.geotools.feature.Feature;
-import org.vfny.geoserver.wfs.requests.InsertRequest;
-import org.vfny.geoserver.wfs.requests.TransactionRequest;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import org.geotools.feature.Feature;
+import org.vfny.geoserver.wfs.requests.InsertRequest;
+import org.vfny.geoserver.wfs.requests.TransactionRequest;
 
 
 /**
@@ -75,9 +73,9 @@ public class InsertSuiteTest extends TransactionSuiteTest {
         baseRequest.addSubRequest(insert);
 
         Coordinate[] points = {
-            new Coordinate(5, 5), new Coordinate(5, 15), new Coordinate(15, 15),
-            new Coordinate(15, 5), new Coordinate(5, 5)
-        };
+                new Coordinate(5, 5), new Coordinate(5, 15), new Coordinate(15, 15),
+                new Coordinate(15, 5), new Coordinate(5, 5)
+            };
         PrecisionModel precModel = new PrecisionModel();
         int srid = 2035;
         LinearRing shell = new LinearRing(points, precModel, srid);

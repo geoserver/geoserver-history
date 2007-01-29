@@ -8,13 +8,14 @@ import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WCSDTO;
 
+
 /**
  * WCS purpose.
- * 
+ *
  * <p>
  * Description of WCS  Used to store WCS data.
  * </p>
- * 
+ *
  * <p></p>
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
@@ -23,13 +24,11 @@ import org.vfny.geoserver.global.dto.WCSDTO;
  */
 public class WCSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WCS";
+    private boolean gmlPrefixing;
 
-	private boolean gmlPrefixing;
-
-    
     /**
      * WCS constructor.
-     * 
+     *
      * <p>
      * Creates a WCS to represent an instance with default data.
      * </p>
@@ -42,7 +41,7 @@ public class WCSConfig extends ServiceConfig {
 
     /**
      * WCS constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the WCS provided. If the WCS provided  is null then
      * default values are used. All the data structures are cloned.
@@ -57,17 +56,17 @@ public class WCSConfig extends ServiceConfig {
 
     /**
      * Creates the WCSConfig.
-     * 
+     *
      * @param wcs The wcs module.
-     * 
-     */ 
-    public WCSConfig( WCS wcs ) {
-    		this( (WCSDTO) wcs.toDTO() );
+     *
+     */
+    public WCSConfig(WCS wcs) {
+        this((WCSDTO) wcs.toDTO());
     }
-    
+
     /**
      * Implement loadDTO.
-     * 
+     *
      * <p>
      * Takes a WMSDTO and loads it into this WMSConfig Object
      * </p>
@@ -89,7 +88,7 @@ public class WCSConfig extends ServiceConfig {
 
     /**
      * Implement toDTO.
-     * 
+     *
      * <p>
      * Returns a copy of the data in a ServiceDTO object
      * </p>
@@ -102,12 +101,13 @@ public class WCSConfig extends ServiceConfig {
         WCSDTO WCSDto = new WCSDTO();
         WCSDto.setService((ServiceDTO) super.toServDTO());
         WCSDto.setGmlPrefixing(gmlPrefixing);
+
         return WCSDto;
     }
 
     /**
      * isGmlPrefixing purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -118,17 +118,16 @@ public class WCSConfig extends ServiceConfig {
         return gmlPrefixing;
     }
 
-	/**
-	 * setGmlPrefixing purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param b
-	 */
-	public void setGmlPrefixing(boolean b) {
-		gmlPrefixing = b;
-	}
-
+    /**
+     * setGmlPrefixing purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param b
+     */
+    public void setGmlPrefixing(boolean b) {
+        gmlPrefixing = b;
+    }
 }

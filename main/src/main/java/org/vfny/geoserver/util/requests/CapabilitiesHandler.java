@@ -4,15 +4,13 @@
  */
 package org.vfny.geoserver.util.requests;
 
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.vfny.geoserver.servlets.AbstractService;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -23,36 +21,35 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * @version $Id: CapabilitiesHandler.java,v 1.9 2004/02/13 19:30:39 dmzwiers Exp $
  */
 public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler {
-	
-	/** Service **/
-	private AbstractService service;
-	/** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    /** Service **/
+    private AbstractService service;
+
+    /** Class logger */
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /** Internal Capabilities request for construction. */
     private CapabilitiesRequest request = null;
-    
-    
+
     /**
      * Creates a new CapabilitiesHandler
      * @param service this is the AbstractService Handling the Request
      */
     public CapabilitiesHandler(AbstractService service) {
-		this.service = service;
-		request = new CapabilitiesRequest("WFS", service);
-	}
-   
-	/**
-     * Returns the GetCapabilities request.
-     *
-     * @return GetCapabilities request.
-     */
+        this.service = service;
+        request = new CapabilitiesRequest("WFS", service);
+    }
+
+    /**
+    * Returns the GetCapabilities request.
+    *
+    * @return GetCapabilities request.
+    */
     public CapabilitiesRequest getRequest(HttpServletRequest req) {
-    		request.setHttpServletRequest(req);
+        request.setHttpServletRequest(req);
+
         return request;
     }
-    
+
     /* ***********************************************************************
      *  Standard SAX content handler methods                                 *
      * ***********************************************************************/
@@ -68,8 +65,8 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
      *
      * @throws SAXException For any standard SAX errors.
      */
-    public void startElement(String namespaceURI, String localName,
-        String rawName, Attributes atts) throws SAXException {
+    public void startElement(String namespaceURI, String localName, String rawName, Attributes atts)
+        throws SAXException {
         if (localName.equals("GetCapabilities")) {
             LOGGER.finer("found capabilities start.");
 

@@ -4,17 +4,6 @@
  */
 package org.vfny.geoserver.form.data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -33,16 +22,26 @@ import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.Requests;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * Represents the information required for editing a DataFormat.
- * 
+ *
  * <p>
  * The parameters required by a DataFormat are dynamically generated from the
  * DataFormatFactorySPI. Most use of DataFormatFactorySPI has been hidden behind
  * the DataStoreUtil class.
  * </p>
- * 
+ *
  * @author Richard Gould, Refractions Research
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
  *         modification)
@@ -50,499 +49,508 @@ import org.vfny.geoserver.util.Requests;
  *         modification)
  */
 public final class CoverageStoresEditorForm extends ActionForm {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 8469919940722502675L;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8469919940722502675L;
+    /**
+     * Help text for Params if available
+     */
+    private ArrayList paramHelp;
 
-	/**
-	 * Help text for Params if available
-	 */
-	private ArrayList paramHelp;
+    /**
+     * Used to identify the Format being edited. Maybe we should grab this from
+     * session?
+     */
+    private String dataFormatId;
 
-	/**
-	 * Used to identify the Format being edited. Maybe we should grab this from
-	 * session?
-	 */
-	private String dataFormatId;
+    /**
+     * Enabled status of Format
+     */
+    private boolean enabled;
 
-	/**
-	 * Enabled status of Format
-	 */
-	private boolean enabled;
+    /**
+     *
+     */
 
-	/**
-	 * 
-	 */
-	/* NamespaceID used for DataStore content */
-	private String namespaceId;
+    /* NamespaceID used for DataStore content */
+    private String namespaceId;
 
-	/**
-	 * 
-	 */
-	private String type;
+    /**
+     *
+     */
+    private String type;
 
-	/**
-	 * 
-	 */
-	private String url;
+    /**
+     *
+     */
+    private String url;
 
-	/**
-	 * 
-	 */
-	private FormFile urlFile = null;
+    /**
+     *
+     */
+    private FormFile urlFile = null;
 
-	/**
-	 * 
-	 */
-	/* Description of Format (abstract?) */
-	private String description;
+    /**
+     *
+     */
 
-	// These are not stored in a single map so we can access them
-	// easily from JSP page
-	//
+    /* Description of Format (abstract?) */
+    private String description;
 
-	/**
-	 * String representation of connection parameter keys
-	 */
-	private List paramKeys;
+    // These are not stored in a single map so we can access them
+    // easily from JSP page
+    //
 
-	/**
-	 * String representation of connection parameter values
-	 */
-	private List paramValues;
+    /**
+     * String representation of connection parameter keys
+     */
+    private List paramKeys;
 
-	/** Available NamespaceIds */
-	private SortedSet namespaces;
+    /**
+     * String representation of connection parameter values
+     */
+    private List paramValues;
 
-	/**
-	 * Because of the way that STRUTS works, if the user does not check the
-	 * enabled box, or unchecks it, setEnabled() is never called, thus we must
-	 * monitor setEnabled() to see if it doesn't get called. This must be
-	 * accessible, as ActionForms need to know about it -- there is no way we
-	 * can tell whether we are about to be passed to an ActionForm or not.
-	 * Probably a better way to do this, but I can't think of one. -rgould
-	 */
-	private boolean enabledChecked = false;
+    /** Available NamespaceIds */
+    private SortedSet namespaces;
 
-	public void reset(ActionMapping mapping, HttpServletRequest request) {
-		super.reset(mapping, request);
+    /**
+     * Because of the way that STRUTS works, if the user does not check the
+     * enabled box, or unchecks it, setEnabled() is never called, thus we must
+     * monitor setEnabled() to see if it doesn't get called. This must be
+     * accessible, as ActionForms need to know about it -- there is no way we
+     * can tell whether we are about to be passed to an ActionForm or not.
+     * Probably a better way to do this, but I can't think of one. -rgould
+     */
+    private boolean enabledChecked = false;
 
-		// //
-		//
-		//
-		//
-		// //
-		enabledChecked = false;
-		ServletContext context = getServlet().getServletContext();
-		DataConfig config = (DataConfig) context
-				.getAttribute(DataConfig.CONFIG_KEY);
+    public void reset(ActionMapping mapping, HttpServletRequest request) {
+        super.reset(mapping, request);
 
-		namespaces = new TreeSet(config.getNameSpaces().keySet());
+        // //
+        //
+        //
+        //
+        // //
+        enabledChecked = false;
 
-		// //
-		//
-		//
-		//
-		// //
-		CoverageStoreConfig dfConfig = Requests.getUserContainer(request)
-				.getDataFormatConfig();
-		if (dfConfig == null) {
-			// something is horribly wrong no FormatID selected!
-			// The JSP needs to not include us if there is no
-			// selected Format
-			//
-			throw new RuntimeException(
-					"selectedDataFormatId required in Session");
-		}
+        ServletContext context = getServlet().getServletContext();
+        DataConfig config = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 
-		// //
-		//
-		//
-		//
-		// //
-		dataFormatId = dfConfig.getId();
-		description = dfConfig.getAbstract();
-		enabled = dfConfig.isEnabled();
-		namespaceId = dfConfig.getNameSpaceId();
-		if (namespaceId.equals("") && config.getDefaultNameSpace() != null) {
-			namespaceId = config.getDefaultNameSpace().getPrefix();
-		}
-		url = dfConfig.getUrl();
+        namespaces = new TreeSet(config.getNameSpaces().keySet());
 
-		// //
-		//
-		//
-		//
-		// //
-		Format factory = dfConfig.getFactory();
-		type = (dfConfig.getType() != null && dfConfig.getType().length() > 0 ? dfConfig
-				.getType()
-				: factory.getName());
-	}
+        // //
+        //
+        //
+        //
+        // //
+        CoverageStoreConfig dfConfig = Requests.getUserContainer(request).getDataFormatConfig();
 
-	public ActionErrors validate(ActionMapping mapping,
-			HttpServletRequest request) {
-		ActionErrors errors = new ActionErrors();
+        if (dfConfig == null) {
+            // something is horribly wrong no FormatID selected!
+            // The JSP needs to not include us if there is no
+            // selected Format
+            //
+            throw new RuntimeException("selectedDataFormatId required in Session");
+        }
 
-		// Selected CoverageStoreConfig is in session
-		//
-		UserContainer user = Requests.getUserContainer(request);
-		CoverageStoreConfig dfConfig = user.getDataFormatConfig();
-		//
-		// dsConfig is the only way to get a factory
-		Format factory = dfConfig.getFactory();
-		ParameterValueGroup info = factory.getReadParameters();
+        // //
+        //
+        //
+        //
+        // //
+        dataFormatId = dfConfig.getId();
+        description = dfConfig.getAbstract();
+        enabled = dfConfig.isEnabled();
+        namespaceId = dfConfig.getNameSpaceId();
 
-		Map connectionParams = new HashMap();
+        if (namespaceId.equals("") && (config.getDefaultNameSpace() != null)) {
+            namespaceId = config.getDefaultNameSpace().getPrefix();
+        }
 
-		// Convert Params into the kind of Map we actually need
-		//
-		if (paramKeys != null) {
-			final int length = paramKeys.size();
-			String key;
-			ParameterValue param;
-			Boolean maxSize;
-			String size;
-			ControllerConfig cc;
-			Object value;
-			final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D
-					.getName().toString();
-			for (int i = 0; i < length; i++) {
-				key = (String) getParamKey(i);
-				// //
-				//
-				// Ignore the parameters used for decimation at run time
-				//
-				// //
-				if (key.equalsIgnoreCase(readGeometryKey))
-					continue;
-				param = CoverageStoreUtils.find(info, key);
+        url = dfConfig.getUrl();
 
-				if (param == null) {
-					errors.add("paramValue[" + i + "]", new ActionError(
-							"error.dataFormatEditor.param.missing", key,
-							factory.getDescription()));
+        // //
+        //
+        //
+        //
+        // //
+        Format factory = dfConfig.getFactory();
+        type = (((dfConfig.getType() != null) && (dfConfig.getType().length() > 0))
+            ? dfConfig.getType() : factory.getName());
+    }
 
-					continue;
-				}
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+        ActionErrors errors = new ActionErrors();
 
-				maxSize = (Boolean) request
-						.getAttribute(MultipartRequestHandler.ATTRIBUTE_MAX_LENGTH_EXCEEDED);
-				if ((maxSize != null) && (maxSize.booleanValue())) {
-					size = null;
-					cc = mapping.getModuleConfig().getControllerConfig();
-					if (cc == null) {
-						size = Long
-								.toString(CommonsMultipartRequestHandler.DEFAULT_SIZE_MAX);
-					} else {
-						size = cc.getMaxFileSize();// struts-config :
-						// <controller
-						// maxFileSize="nK" />
-					}
-					errors.add("styleID", new ActionError(
-							"error.file.maxLengthExceeded", size));
-					return errors;
-				}
+        // Selected CoverageStoreConfig is in session
+        //
+        UserContainer user = Requests.getUserContainer(request);
+        CoverageStoreConfig dfConfig = user.getDataFormatConfig();
 
-				value = CoverageUtils.getCvParamValue(key, param, paramValues,
-						i);
+        //
+        // dsConfig is the only way to get a factory
+        Format factory = dfConfig.getFactory();
+        ParameterValueGroup info = factory.getReadParameters();
 
-				if (value != null) {
-					connectionParams.put(key, value);
-				}
-			}
-		}
+        Map connectionParams = new HashMap();
 
-		dump("form", connectionParams);
+        // Convert Params into the kind of Map we actually need
+        //
+        if (paramKeys != null) {
+            final int length = paramKeys.size();
+            String key;
+            ParameterValue param;
+            Boolean maxSize;
+            String size;
+            ControllerConfig cc;
+            Object value;
+            final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName()
+                                                                                 .toString();
 
-		return errors;
-	}
+            for (int i = 0; i < length; i++) {
+                key = (String) getParamKey(i);
 
-	/** Used to debug connection parameters */
-	public void dump(String msg, Map params) {
-		if (msg != null) {
-			System.out.print(msg + " ");
-		}
-		System.out.print(" connection params { ");
-		for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Map.Entry) i.next();
-			System.out.print(entry.getKey());
-			System.out.print("=");
-			if (entry.getValue() == null) {
-				System.out.print("null");
-			} else if (entry.getValue() instanceof String) {
-				System.out.print("\"");
-				System.out.print(entry.getValue());
-				System.out.print("\"");
-			} else {
-				System.out.print(entry.getValue());
-			}
-			if (i.hasNext()) {
-				System.out.print(", ");
-			}
-		}
-		System.out.println("}");
-	}
+                // //
+                //
+                // Ignore the parameters used for decimation at run time
+                //
+                // //
+                if (key.equalsIgnoreCase(readGeometryKey)) {
+                    continue;
+                }
 
-	public Map getParams() {
-		Map map = new HashMap();
+                param = CoverageStoreUtils.find(info, key);
 
-		if (paramKeys != null) {
-			final int size = paramKeys.size();
-			for (int i = 0; i < size; i++) {
-				map.put(paramKeys.get(i), paramValues.get(i));
+                if (param == null) {
+                    errors.add("paramValue[" + i + "]",
+                        new ActionError("error.dataFormatEditor.param.missing", key,
+                            factory.getDescription()));
 
-			}
-		}
+                    continue;
+                }
 
-		return map;
-	}
+                maxSize = (Boolean) request.getAttribute(MultipartRequestHandler.ATTRIBUTE_MAX_LENGTH_EXCEEDED);
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return
-	 */
-	public List getParamKeys() {
-		return paramKeys;
-	}
+                if ((maxSize != null) && (maxSize.booleanValue())) {
+                    size = null;
+                    cc = mapping.getModuleConfig().getControllerConfig();
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param index
-	 *            DOCUMENT ME!
-	 * 
-	 * @return
-	 */
-	public String getParamKey(int index) {
-		return (String) paramKeys.get(index);
-	}
+                    if (cc == null) {
+                        size = Long.toString(CommonsMultipartRequestHandler.DEFAULT_SIZE_MAX);
+                    } else {
+                        size = cc.getMaxFileSize(); // struts-config :
+                                                    // <controller
+                                                    // maxFileSize="nK" />
+                    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param index
-	 *            DOCUMENT ME!
-	 * 
-	 * @return
-	 */
-	public String getParamValue(int index) {
-		return (String) paramValues.get(index);
-	}
+                    errors.add("styleID", new ActionError("error.file.maxLengthExceeded", size));
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param index
-	 * @param value
-	 *            DOCUMENT ME!
-	 */
-	public void setParamValues(int index, String value) {
-		paramValues.set(index, value);
-	}
+                    return errors;
+                }
 
-	/**
-	 * getDataStoreId purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 */
-	public String getDataFormatId() {
-		return dataFormatId;
-	}
+                value = CoverageUtils.getCvParamValue(key, param, paramValues, i);
 
-	/**
-	 * getDescription purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 */
-	public String getDescription() {
-		return description;
-	}
+                if (value != null) {
+                    connectionParams.put(key, value);
+                }
+            }
+        }
 
-	/**
-	 * isEnabled purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 */
-	public boolean isEnabled() {
-		return enabled;
-	}
+        dump("form", connectionParams);
 
-	/**
-	 * getParamValues purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 */
-	public List getParamValues() {
-		return paramValues;
-	}
+        return errors;
+    }
 
-	/**
-	 * setDescription purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param string
-	 */
-	public void setDescription(String string) {
-		description = string;
-	}
+    /** Used to debug connection parameters */
+    public void dump(String msg, Map params) {
+        if (msg != null) {
+            System.out.print(msg + " ");
+        }
 
-	/**
-	 * setEnabled purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param b
-	 */
-	public void setEnabled(boolean b) {
-		setEnabledChecked(true);
-		enabled = b;
-	}
+        System.out.print(" connection params { ");
 
-	/**
-	 * setParamKeys purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param list
-	 */
-	public void setParamKeys(List list) {
-		paramKeys = list;
-	}
+        for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            System.out.print(entry.getKey());
+            System.out.print("=");
 
-	/**
-	 * setParamValues purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param list
-	 */
-	public void setParamValues(List list) {
-		paramValues = list;
-	}
+            if (entry.getValue() == null) {
+                System.out.print("null");
+            } else if (entry.getValue() instanceof String) {
+                System.out.print("\"");
+                System.out.print(entry.getValue());
+                System.out.print("\"");
+            } else {
+                System.out.print(entry.getValue());
+            }
 
-	/**
-	 * enabledChecked property
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public boolean isEnabledChecked() {
-		return enabledChecked;
-	}
+            if (i.hasNext()) {
+                System.out.print(", ");
+            }
+        }
 
-	/**
-	 * enabledChecked property
-	 * 
-	 * @param b
-	 *            DOCUMENT ME!
-	 */
-	public void setEnabledChecked(boolean b) {
-		enabledChecked = b;
-	}
+        System.out.println("}");
+    }
 
-	/**
-	 * Index property paramHelp
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public String[] getParamHelp() {
-		return (String[]) paramHelp.toArray(new String[paramHelp.size()]);
-	}
+    public Map getParams() {
+        Map map = new HashMap();
 
-	/**
-	 * Index property paramHelp
-	 * 
-	 * @param index
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public String getParamHelp(int index) {
-		return (String) paramHelp.get(index);
-	}
+        if (paramKeys != null) {
+            final int size = paramKeys.size();
 
-	/**
-	 * @return Returns the type.
-	 */
-	public String getType() {
-		return type;
-	}
+            for (int i = 0; i < size; i++) {
+                map.put(paramKeys.get(i), paramValues.get(i));
+            }
+        }
 
-	/**
-	 * @param type
-	 *            The type to set.
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+        return map;
+    }
 
-	/**
-	 * @return Returns the url.
-	 */
-	public String getUrl() {
-		return url;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public List getParamKeys() {
+        return paramKeys;
+    }
 
-	/**
-	 * @param url
-	 *            The url to set.
-	 */
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param index
+     *            DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getParamKey(int index) {
+        return (String) paramKeys.get(index);
+    }
 
-	/**
-	 * 
-	 */
-	public FormFile getUrlFile() {
-		return this.urlFile;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param index
+     *            DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getParamValue(int index) {
+        return (String) paramValues.get(index);
+    }
 
-	/**
-	 * 
-	 */
-	public void setUrlFile(FormFile filename) {
-		this.urlFile = filename;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param index
+     * @param value
+     *            DOCUMENT ME!
+     */
+    public void setParamValues(int index, String value) {
+        paramValues.set(index, value);
+    }
 
-	public String getNamespaceId() {
-		return namespaceId;
-	}
+    /**
+     * getDataStoreId purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public String getDataFormatId() {
+        return dataFormatId;
+    }
 
-	public void setNamespaceId(String namespaceId) {
-		this.namespaceId = namespaceId;
-	}
+    /**
+     * getDescription purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public String getDescription() {
+        return description;
+    }
 
-	public SortedSet getNamespaces() {
-		return namespaces;
-	}
+    /**
+     * isEnabled purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
 
+    /**
+     * getParamValues purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     */
+    public List getParamValues() {
+        return paramValues;
+    }
+
+    /**
+     * setDescription purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param string
+     */
+    public void setDescription(String string) {
+        description = string;
+    }
+
+    /**
+     * setEnabled purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param b
+     */
+    public void setEnabled(boolean b) {
+        setEnabledChecked(true);
+        enabled = b;
+    }
+
+    /**
+     * setParamKeys purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param list
+     */
+    public void setParamKeys(List list) {
+        paramKeys = list;
+    }
+
+    /**
+     * setParamValues purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param list
+     */
+    public void setParamValues(List list) {
+        paramValues = list;
+    }
+
+    /**
+     * enabledChecked property
+     *
+     * @return DOCUMENT ME!
+     */
+    public boolean isEnabledChecked() {
+        return enabledChecked;
+    }
+
+    /**
+     * enabledChecked property
+     *
+     * @param b
+     *            DOCUMENT ME!
+     */
+    public void setEnabledChecked(boolean b) {
+        enabledChecked = b;
+    }
+
+    /**
+     * Index property paramHelp
+     *
+     * @return DOCUMENT ME!
+     */
+    public String[] getParamHelp() {
+        return (String[]) paramHelp.toArray(new String[paramHelp.size()]);
+    }
+
+    /**
+     * Index property paramHelp
+     *
+     * @param index
+     *            DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public String getParamHelp(int index) {
+        return (String) paramHelp.get(index);
+    }
+
+    /**
+     * @return Returns the type.
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type
+     *            The type to set.
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * @return Returns the url.
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * @param url
+     *            The url to set.
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    /**
+     *
+     */
+    public FormFile getUrlFile() {
+        return this.urlFile;
+    }
+
+    /**
+     *
+     */
+    public void setUrlFile(FormFile filename) {
+        this.urlFile = filename;
+    }
+
+    public String getNamespaceId() {
+        return namespaceId;
+    }
+
+    public void setNamespaceId(String namespaceId) {
+        this.namespaceId = namespaceId;
+    }
+
+    public SortedSet getNamespaces() {
+        return namespaces;
+    }
 }

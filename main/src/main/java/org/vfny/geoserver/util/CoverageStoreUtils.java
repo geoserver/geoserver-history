@@ -4,17 +4,6 @@
  */
 package org.vfny.geoserver.util;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletContext;
-
 import org.geotools.data.coverage.grid.GridFormatFactorySpi;
 import org.geotools.data.coverage.grid.GridFormatFinder;
 import org.geotools.geometry.GeneralEnvelope;
@@ -30,10 +19,20 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.CoverageStoreInfo;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+import javax.servlet.ServletContext;
+
 
 /**
  * A collection of utilties for dealing with GeotTools Format.
- * 
+ *
  * @author Richard Gould, Refractions Research, Inc.
  * @author cholmesny
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
@@ -44,325 +43,337 @@ import org.vfny.geoserver.global.CoverageStoreInfo;
  *          Exp $
  */
 public final class CoverageStoreUtils {
-	private final static Logger LOGGER = Logger
-			.getLogger(CoverageStoreUtils.class.toString());
-	public final static Format[] formats = GridFormatFinder.getFormatArray();
+    private final static Logger LOGGER = Logger.getLogger(CoverageStoreUtils.class.toString());
+    public final static Format[] formats = GridFormatFinder.getFormatArray();
 
-	private CoverageStoreUtils() {
-	}
+    private CoverageStoreUtils() {
+    }
 
-	public static Format acquireFormat(String type, ServletContext sc)
-			throws IOException {
-		Format[] formats = GridFormatFinder.getFormatArray();
-		Format format = null;
-		final int length = formats.length;
-		for (int i = 0; i < length; i++) {
-			if (formats[i].getName().equals(type)) {
-				format = formats[i];
-				break;
-			}
-		}
+    public static Format acquireFormat(String type, ServletContext sc)
+        throws IOException {
+        Format[] formats = GridFormatFinder.getFormatArray();
+        Format format = null;
+        final int length = formats.length;
 
-		if (format == null) {
-			throw new IOException("Cannot handle format: " + type);
-		} else {
-			return format;
-		}
-	}
+        for (int i = 0; i < length; i++) {
+            if (formats[i].getName().equals(type)) {
+                format = formats[i];
 
-//	public static Map getParams(Map m, ServletContext sc) {
-//		String baseDir = sc.getRealPath("/");
-//		return Collections.synchronizedMap(getParams(m, baseDir));
-//	}
-//
-//	/**
-//	 * Get Connect params.
-//	 */
-//	public static Map getParams(Map m, String baseDir) {
-//		return Collections.synchronizedMap(CoverageStoreInfo.getParams(m, baseDir));
-//	}
+                break;
+            }
+        }
 
-	/**
-	 * Utility method for finding Params
-	 * 
-	 * @param factory
-	 *            DOCUMENT ME!
-	 * @param key
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public static ParameterValue find(Format format, String key) {
-		return find(format.getReadParameters(), key);
-	}
+        if (format == null) {
+            throw new IOException("Cannot handle format: " + type);
+        } else {
+            return format;
+        }
+    }
 
-	/**
-	 * Utility methods for find param by key
-	 * 
-	 * @param params
-	 *            DOCUMENT ME!
-	 * @param key
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public static ParameterValue find(ParameterValueGroup params, String key) {
-		List list = params.values();
-		Iterator it = list.iterator();
-		ParameterDescriptor descr;
-		ParameterValue val;
-		while (it.hasNext()) {
-			val = (ParameterValue) it.next();
-			descr = (ParameterDescriptor) val.getDescriptor();
-			if (key.equalsIgnoreCase(descr.getName().toString())) {
-				return val;
-			}
-		}
+    //	public static Map getParams(Map m, ServletContext sc) {
+    //		String baseDir = sc.getRealPath("/");
+    //		return Collections.synchronizedMap(getParams(m, baseDir));
+    //	}
+    //
+    //	/**
+    //	 * Get Connect params.
+    //	 */
+    //	public static Map getParams(Map m, String baseDir) {
+    //		return Collections.synchronizedMap(CoverageStoreInfo.getParams(m, baseDir));
+    //	}
 
-		return null;
-	}
+    /**
+     * Utility method for finding Params
+     *
+     * @param factory
+     *            DOCUMENT ME!
+     * @param key
+     *            DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public static ParameterValue find(Format format, String key) {
+        return find(format.getReadParameters(), key);
+    }
 
-	/**
-	 * When loading from DTO use the params to locate factory.
-	 * 
-	 * <p>
-	 * bleck
-	 * </p>
-	 * 
-	 * @return
-	 */
-	public static Format aquireFactoryByType(String type) {
-		final Format[] formats = GridFormatFinder.getFormatArray();
-		Format format = null;
-		final int length = formats.length;
-		for (int i = 0; i < length; i++) {
-			format = formats[i];
-			if (format.getName().equals(type))
-				return format;
-		}
+    /**
+     * Utility methods for find param by key
+     *
+     * @param params
+     *            DOCUMENT ME!
+     * @param key
+     *            DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public static ParameterValue find(ParameterValueGroup params, String key) {
+        List list = params.values();
+        Iterator it = list.iterator();
+        ParameterDescriptor descr;
+        ParameterValue val;
 
-		return null;
-	}
+        while (it.hasNext()) {
+            val = (ParameterValue) it.next();
+            descr = (ParameterDescriptor) val.getDescriptor();
 
-	/**
-	 * After user has selected Description can aquire Format based on
-	 * description.
-	 * 
-	 * @param description
-	 * 
-	 * @return
-	 */
-	public static Format aquireFactory(String description) {
-		Format[] formats = GridFormatFinder.getFormatArray();
-		Format format = null;
-		final int length = formats.length;
-		for (int i = 0; i < length; i++) {
-			format = formats[i];
-			if (format.getDescription().equals(description))
-				return format;
-		}
+            if (key.equalsIgnoreCase(descr.getName().toString())) {
+                return val;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Returns the descriptions for the available DataFormats.
-	 * 
-	 * <p>
-	 * Arrrg! Put these in the select box.
-	 * </p>
-	 * 
-	 * @return Descriptions for user to choose from
-	 */
-	public static List listDataFormatsDescriptions() {
-		List list = new ArrayList();
-		Format[] formats = GridFormatFinder.getFormatArray();
-		final int length = formats.length;
-		for (int i = 0; i < length; i++) {
-			if (!list.contains(formats[i].getDescription())) {
-				list.add(formats[i].getDescription());
-			}
-		}
+    /**
+     * When loading from DTO use the params to locate factory.
+     *
+     * <p>
+     * bleck
+     * </p>
+     *
+     * @return
+     */
+    public static Format aquireFactoryByType(String type) {
+        final Format[] formats = GridFormatFinder.getFormatArray();
+        Format format = null;
+        final int length = formats.length;
 
-		return Collections.synchronizedList(list);
-	}
+        for (int i = 0; i < length; i++) {
+            format = formats[i];
 
-	public static List listDataFormats() {
-		List list = new ArrayList();
-		Format[] formats = GridFormatFinder.getFormatArray();
-		final int length = formats.length;
-		for (int i = 0; i < length; i++) {
-			if (!list.contains(formats[i])) {
-				list.add(formats[i]);
-			}
-		}
+            if (format.getName().equals(type)) {
+                return format;
+            }
+        }
 
-		return Collections.synchronizedList(list);
-	}
+        return null;
+    }
 
-	public static Map defaultParams(String description) {
-		return Collections
-				.synchronizedMap(defaultParams(aquireFactory(description)));
-	}
+    /**
+     * After user has selected Description can aquire Format based on
+     * description.
+     *
+     * @param description
+     *
+     * @return
+     */
+    public static Format aquireFactory(String description) {
+        Format[] formats = GridFormatFinder.getFormatArray();
+        Format format = null;
+        final int length = formats.length;
 
-	public static Map defaultParams(Format factory) {
-		Map defaults = new HashMap();
-		ParameterValueGroup params = factory.getReadParameters();
+        for (int i = 0; i < length; i++) {
+            format = formats[i];
 
-		if (params != null) {
-			List list = params.values();
-			Iterator it = list.iterator();
-			ParameterDescriptor descr = null;
-			ParameterValue val = null;
-			String key;
-			Object value;
-			while (it.hasNext()) {
-				val = (ParameterValue) it.next();
-				descr = (ParameterDescriptor) val.getDescriptor();
+            if (format.getDescription().equals(description)) {
+                return format;
+            }
+        }
 
-				key = descr.getName().toString();
-				value = null;
+        return null;
+    }
 
-				if (val.getValue() != null) {
-					// Required params may have nice sample values
-					//
-					if ("values_palette".equalsIgnoreCase(key))
-						value = val.getValue();
-					else
-						value = val.getValue().toString();
-				}
-				if (value == null) {
-					// or not
-					value = "";
-				}
-				if (value != null) {
-					defaults.put(key, value);
-				}
-			}
-		}
+    /**
+     * Returns the descriptions for the available DataFormats.
+     *
+     * <p>
+     * Arrrg! Put these in the select box.
+     * </p>
+     *
+     * @return Descriptions for user to choose from
+     */
+    public static List listDataFormatsDescriptions() {
+        List list = new ArrayList();
+        Format[] formats = GridFormatFinder.getFormatArray();
+        final int length = formats.length;
 
-		return Collections.synchronizedMap(defaults);
-	}
+        for (int i = 0; i < length; i++) {
+            if (!list.contains(formats[i].getDescription())) {
+                list.add(formats[i].getDescription());
+            }
+        }
 
-	/**
-	 * Convert map to real values based on factory Params.
-	 * 
-	 * @param factory
-	 * @param params
-	 * 
-	 * @return Map with real values that may be acceptable to GDSFactory
-	 * 
-	 * @throws IOException
-	 *             DOCUMENT ME!
-	 */
-	public static Map toParams(GridFormatFactorySpi factory, Map params)
-			throws IOException {
-		final Map map = new HashMap(params.size());
+        return Collections.synchronizedList(list);
+    }
 
-		final ParameterValueGroup info = factory.createFormat()
-				.getReadParameters();
-		String key;
-		Object value;
+    public static List listDataFormats() {
+        List list = new ArrayList();
+        Format[] formats = GridFormatFinder.getFormatArray();
+        final int length = formats.length;
 
-		// Convert Params into the kind of Map we actually need
-		for (Iterator i = params.keySet().iterator(); i.hasNext();) {
-			key = (String) i.next();
-			value = find(info, key).getValue();
+        for (int i = 0; i < length; i++) {
+            if (!list.contains(formats[i])) {
+                list.add(formats[i]);
+            }
+        }
 
-			if (value != null) {
-				map.put(key, value);
-			}
-		}
+        return Collections.synchronizedList(list);
+    }
 
-		return Collections.synchronizedMap(map);
-	}
+    public static Map defaultParams(String description) {
+        return Collections.synchronizedMap(defaultParams(aquireFactory(description)));
+    }
 
-	/**
-	 * Retrieve a WGS84 lon,lat envelope from the provided one.
-	 * 
-	 * @param sourceCRS
-	 * @param targetEnvelope
-	 * @return
-	 * @throws IndexOutOfBoundsException
-	 * @throws FactoryException
-	 * @throws TransformException
-	 */
-	public static GeneralEnvelope getWGS84LonLatEnvelope(
-			GeneralEnvelope envelope) throws IndexOutOfBoundsException,
-			FactoryException, TransformException {
+    public static Map defaultParams(Format factory) {
+        Map defaults = new HashMap();
+        ParameterValueGroup params = factory.getReadParameters();
 
-		final CoordinateReferenceSystem sourceCRS = envelope
-		.getCoordinateReferenceSystem();
-		////
-		//
-		// Do we need to transform?
-		//
-		////
-		if(CRSUtilities.equalsIgnoreMetadata(sourceCRS,DefaultGeographicCRS.WGS84))
-			return new GeneralEnvelope(envelope);
-		
-		
-		////
-		//
-		//transform
-		//
-		////
-		final CoordinateReferenceSystem targetCRS = DefaultGeographicCRS.WGS84;
-		final MathTransform mathTransform = CRS.transform(sourceCRS, targetCRS, true);
-		final GeneralEnvelope targetEnvelope;
-		if (!mathTransform.isIdentity())
-			targetEnvelope = CRSUtilities.transform(mathTransform, envelope);
-		else
-			targetEnvelope = new GeneralEnvelope(envelope);
-		targetEnvelope.setCoordinateReferenceSystem(targetCRS);
+        if (params != null) {
+            List list = params.values();
+            Iterator it = list.iterator();
+            ParameterDescriptor descr = null;
+            ParameterValue val = null;
+            String key;
+            Object value;
 
-		return targetEnvelope;
-	}
+            while (it.hasNext()) {
+                val = (ParameterValue) it.next();
+                descr = (ParameterDescriptor) val.getDescriptor();
 
-	
+                key = descr.getName().toString();
+                value = null;
 
-//	/**
-//	 * Get a generic envelope and retrieve a lon,lat envelope.
-//	 * 
-//	 * @param sourceCRS
-//	 * @param envelope
-//	 * @return
-//	 * @throws IndexOutOfBoundsException
-//	 * @throws MismatchedDimensionException
-//	 * @throws NoSuchAuthorityCodeException
-//	 */
-//	public static GeneralEnvelope adjustEnvelopeLongitudeFirst(
-//			final CoordinateReferenceSystem sourceCRS, GeneralEnvelope envelope)
-//			throws IndexOutOfBoundsException, MismatchedDimensionException,
-//			NoSuchAuthorityCodeException {
-//
-//		// /////////////////////////////////////////////////////////////////////
-//		//
-//		// Is Lon first?
-//		//
-//		// /////////////////////////////////////////////////////////////////////
-//		final CoordinateReferenceSystem crs2D;
-//		try {
-//			crs2D = CRSUtilities.getCRS2D(sourceCRS);
-//		} catch (TransformException e) {
-//			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-//			return null;
-//		}
-//		final CoordinateSystem sourceCS = crs2D.getCoordinateSystem();
-//		final boolean lonFirst = !GridGeometry2D.swapXY(sourceCS);
-//
-//		// /////////////////////////////////////////////////////////////////////
-//		//
-//		// Creating a new envelope lon,lat
-//		//
-//		// /////////////////////////////////////////////////////////////////////
-//		final GeneralEnvelope lonLatEnvelope = lonFirst ? new GeneralEnvelope(
-//				envelope) : new GeneralEnvelope(new double[] {
-//				envelope.getLowerCorner().getOrdinate(1),
-//				envelope.getLowerCorner().getOrdinate(0) }, new double[] {
-//				envelope.getUpperCorner().getOrdinate(1),
-//				envelope.getUpperCorner().getOrdinate(0) });
-//		lonLatEnvelope.setCoordinateReferenceSystem(crs2D);
-//		return lonLatEnvelope;
-//	}
+                if (val.getValue() != null) {
+                    // Required params may have nice sample values
+                    //
+                    if ("values_palette".equalsIgnoreCase(key)) {
+                        value = val.getValue();
+                    } else {
+                        value = val.getValue().toString();
+                    }
+                }
+
+                if (value == null) {
+                    // or not
+                    value = "";
+                }
+
+                if (value != null) {
+                    defaults.put(key, value);
+                }
+            }
+        }
+
+        return Collections.synchronizedMap(defaults);
+    }
+
+    /**
+     * Convert map to real values based on factory Params.
+     *
+     * @param factory
+     * @param params
+     *
+     * @return Map with real values that may be acceptable to GDSFactory
+     *
+     * @throws IOException
+     *             DOCUMENT ME!
+     */
+    public static Map toParams(GridFormatFactorySpi factory, Map params)
+        throws IOException {
+        final Map map = new HashMap(params.size());
+
+        final ParameterValueGroup info = factory.createFormat().getReadParameters();
+        String key;
+        Object value;
+
+        // Convert Params into the kind of Map we actually need
+        for (Iterator i = params.keySet().iterator(); i.hasNext();) {
+            key = (String) i.next();
+            value = find(info, key).getValue();
+
+            if (value != null) {
+                map.put(key, value);
+            }
+        }
+
+        return Collections.synchronizedMap(map);
+    }
+
+    /**
+     * Retrieve a WGS84 lon,lat envelope from the provided one.
+     *
+     * @param sourceCRS
+     * @param targetEnvelope
+     * @return
+     * @throws IndexOutOfBoundsException
+     * @throws FactoryException
+     * @throws TransformException
+     */
+    public static GeneralEnvelope getWGS84LonLatEnvelope(GeneralEnvelope envelope)
+        throws IndexOutOfBoundsException, FactoryException, TransformException {
+        final CoordinateReferenceSystem sourceCRS = envelope.getCoordinateReferenceSystem();
+
+        ////
+        //
+        // Do we need to transform?
+        //
+        ////
+        if (CRSUtilities.equalsIgnoreMetadata(sourceCRS, DefaultGeographicCRS.WGS84)) {
+            return new GeneralEnvelope(envelope);
+        }
+
+        ////
+        //
+        //transform
+        //
+        ////
+        final CoordinateReferenceSystem targetCRS = DefaultGeographicCRS.WGS84;
+        final MathTransform mathTransform = CRS.transform(sourceCRS, targetCRS, true);
+        final GeneralEnvelope targetEnvelope;
+
+        if (!mathTransform.isIdentity()) {
+            targetEnvelope = CRSUtilities.transform(mathTransform, envelope);
+        } else {
+            targetEnvelope = new GeneralEnvelope(envelope);
+        }
+
+        targetEnvelope.setCoordinateReferenceSystem(targetCRS);
+
+        return targetEnvelope;
+    }
+
+    //	/**
+    //	 * Get a generic envelope and retrieve a lon,lat envelope.
+    //	 * 
+    //	 * @param sourceCRS
+    //	 * @param envelope
+    //	 * @return
+    //	 * @throws IndexOutOfBoundsException
+    //	 * @throws MismatchedDimensionException
+    //	 * @throws NoSuchAuthorityCodeException
+    //	 */
+    //	public static GeneralEnvelope adjustEnvelopeLongitudeFirst(
+    //			final CoordinateReferenceSystem sourceCRS, GeneralEnvelope envelope)
+    //			throws IndexOutOfBoundsException, MismatchedDimensionException,
+    //			NoSuchAuthorityCodeException {
+    //
+    //		// /////////////////////////////////////////////////////////////////////
+    //		//
+    //		// Is Lon first?
+    //		//
+    //		// /////////////////////////////////////////////////////////////////////
+    //		final CoordinateReferenceSystem crs2D;
+    //		try {
+    //			crs2D = CRSUtilities.getCRS2D(sourceCRS);
+    //		} catch (TransformException e) {
+    //			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+    //			return null;
+    //		}
+    //		final CoordinateSystem sourceCS = crs2D.getCoordinateSystem();
+    //		final boolean lonFirst = !GridGeometry2D.swapXY(sourceCS);
+    //
+    //		// /////////////////////////////////////////////////////////////////////
+    //		//
+    //		// Creating a new envelope lon,lat
+    //		//
+    //		// /////////////////////////////////////////////////////////////////////
+    //		final GeneralEnvelope lonLatEnvelope = lonFirst ? new GeneralEnvelope(
+    //				envelope) : new GeneralEnvelope(new double[] {
+    //				envelope.getLowerCorner().getOrdinate(1),
+    //				envelope.getLowerCorner().getOrdinate(0) }, new double[] {
+    //				envelope.getUpperCorner().getOrdinate(1),
+    //				envelope.getUpperCorner().getOrdinate(0) });
+    //		lonLatEnvelope.setCoordinateReferenceSystem(crs2D);
+    //		return lonLatEnvelope;
+    //	}
 }

@@ -4,18 +4,16 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
-import java.util.Iterator;
-
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
+import java.util.Iterator;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 
 
 /**
@@ -66,15 +64,14 @@ public class DescribeLayerTransformer extends TransformerBase {
      * The DTD is set at the fixed location given by the <code>schemaBaseUrl</code>
      * passed to the constructor <code>+ "wms/1.1.1/WMS_DescribeLayerResponse.dtd</code>.
      * </p>
-     * 
-     * @return a Transformer propoerly configured to produce DescribeLayer responses. 
+     *
+     * @return a Transformer propoerly configured to produce DescribeLayer responses.
      *
      * @throws TransformerException if it is thrown by <code>super.createTransformer()</code>
      */
     public Transformer createTransformer() throws TransformerException {
         Transformer transformer = super.createTransformer();
-        String dtdUrl = this.schemaBaseUrl
-            + "wms/1.1.1/WMS_DescribeLayerResponse.dtd";
+        String dtdUrl = this.schemaBaseUrl + "wms/1.1.1/WMS_DescribeLayerResponse.dtd";
         transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
 
         return transformer;
@@ -87,7 +84,6 @@ public class DescribeLayerTransformer extends TransformerBase {
      * @version $Id$
      */
     private static class DescribeLayerTranslator extends TranslatorSupport {
-    	
         /**
          * Creates a new DescribeLayerTranslator object.
          *
@@ -145,8 +141,7 @@ public class DescribeLayerTransformer extends TransformerBase {
                 layerAtts.setAttribute(0, "", "name", "name", "", layer.getName());
                 start("LayerDescription", layerAtts);
 
-                queryAtts.setAttribute(0, "", "typeName", "typeName", "",
-                    layer.getName());
+                queryAtts.setAttribute(0, "", "typeName", "typeName", "", layer.getName());
                 element("Query", null, queryAtts);
 
                 end("LayerDescription");

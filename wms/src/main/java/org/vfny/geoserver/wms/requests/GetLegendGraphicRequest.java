@@ -12,7 +12,7 @@ import org.vfny.geoserver.wms.servlets.WMService;
 
 /**
  * Holds the parsed parameters for a GetLegendGraphic WMS request.
- * 
+ *
  * <p>
  * The GET parameters of the GetLegendGraphic operation are defined as follows
  * (from SLD 1.0 spec, ch.12):<br>
@@ -22,12 +22,12 @@ import org.vfny.geoserver.wms.servlets.WMService;
  *  <tr><td>VERSION </td><td>Required </td><td>Version as required by OGC interfaces.</td></tr>
  *  <tr><td>REQUEST </td><td>Required </td><td>Value must be  GetLegendRequest . </td></tr>
  *  <tr><td>LAYER </td><td>Required </td><td>Layer for which to produce legend graphic. </td></tr>
- *  <tr><td>STYLE </td><td>Optional </td><td>Style of layer for which to produce legend graphic. If not present, the default style is selected. The style may be any valid style available for a layer, including non-SLD internally-defined styles.</td></tr> 
+ *  <tr><td>STYLE </td><td>Optional </td><td>Style of layer for which to produce legend graphic. If not present, the default style is selected. The style may be any valid style available for a layer, including non-SLD internally-defined styles.</td></tr>
  *  <tr><td>FEATURETYPE </td><td>Optional </td><td>Feature type for which to produce the legend graphic. This is not needed if the layer has only a single feature type. </td></tr>
- *  <tr><td>RULE </td><td>Optional </td><td>Rule of style to produce legend graphic for, if applicable. In the case that a style has multiple rules but no specific rule is selected, then the map server is obligated to produce a graphic that is representative of all of the rules of the style.</td></tr> 
- *  <tr><td>SCALE </td><td>Optional </td><td>In the case that a RULE is not specified for a style, this parameter may assist the server in selecting a more appropriate representative graphic by eliminating internal rules that are outof- scope. This value is a standardized scale denominator, defined in Section 10.2</td></tr> 
+ *  <tr><td>RULE </td><td>Optional </td><td>Rule of style to produce legend graphic for, if applicable. In the case that a style has multiple rules but no specific rule is selected, then the map server is obligated to produce a graphic that is representative of all of the rules of the style.</td></tr>
+ *  <tr><td>SCALE </td><td>Optional </td><td>In the case that a RULE is not specified for a style, this parameter may assist the server in selecting a more appropriate representative graphic by eliminating internal rules that are outof- scope. This value is a standardized scale denominator, defined in Section 10.2</td></tr>
  *  <tr><td>SLD </td><td>Optional </td><td>This parameter specifies a reference to an external SLD document. It works in the same way as the SLD= parameter of the WMS GetMap operation. </td></tr>
- *  <tr><td>SLD_BODY </td><td>Optional </td><td>This parameter allows an SLD document to be included directly in an HTTP-GET request. It works in the same way as the SLD_BODY= parameter of the WMS GetMap operation.</td></tr> 
+ *  <tr><td>SLD_BODY </td><td>Optional </td><td>This parameter allows an SLD document to be included directly in an HTTP-GET request. It works in the same way as the SLD_BODY= parameter of the WMS GetMap operation.</td></tr>
  *  <tr><td>FORMAT </td><td>Required </td><td>This gives the MIME type of the file format in which to return the legend graphic. Allowed values are the same as for the FORMAT= parameter of the WMS GetMap request. </td></tr>
  *  <tr><td>WIDTH </td><td>Optional </td><td>This gives a hint for the width of the returned graphic in pixels. Vector-graphics can use this value as a hint for the level of detail to include. </td></tr>
  *  <tr><td>HEIGHT </td><td>Optional </td><td>This gives a hint for the height of the returned graphic in pixels. </td></tr>
@@ -35,7 +35,7 @@ import org.vfny.geoserver.wms.servlets.WMService;
  *  </table>
  *  </pre>
  * </p>
- * 
+ *
  * <p>
  * The GetLegendGraphic operation itself is optional for an SLD-enabled WMS. It
  * provides a general mechanism for acquiring legend symbols, beyond the
@@ -122,15 +122,14 @@ public class GetLegendGraphicRequest extends WMSRequest {
     /** mime type of the format in which to return exceptions information. */
     private String exceptionsFormat = GetMapRequest.SE_XML;
 
-    
     /**
      * Creates a new GetLegendGraphicRequest object.
      * @param service The service that will handle the request
      */
-    public GetLegendGraphicRequest(WMService service){
-    	super("GetLegendGraphic", service);
-    	
+    public GetLegendGraphicRequest(WMService service) {
+        super("GetLegendGraphic", service);
     }
+
     /**
      * DOCUMENT ME!
      *

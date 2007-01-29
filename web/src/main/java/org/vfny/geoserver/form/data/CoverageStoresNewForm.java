@@ -4,22 +4,21 @@
  */
 package org.vfny.geoserver.form.data;
 
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.util.CoverageStoreUtils;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * Used to accept information from user for a New DataFormat Action.
- * 
+ *
  * @author User, Refractions Research, Inc.
  * @author jive
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
@@ -28,103 +27,98 @@ import org.vfny.geoserver.util.CoverageStoreUtils;
  *         modification)
  */
 public final class CoverageStoresNewForm extends ActionForm {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7723738069176272163L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -7723738069176272163L;
 
+    /**
+     * Description provided by selected Dataformat GDSFactory
+     */
+    private String selectedDescription;
 
+    /**
+     * User provided dataFormatID
+     */
+    private String dataFormatID;
+    private List formatDescriptions;
 
-	/**
-	 * Description provided by selected Dataformat GDSFactory
-	 */
-	private String selectedDescription;
+    /**
+     * Default state of New form
+     *
+     * @param mapping
+     *            DOCUMENT ME!
+     * @param request
+     *            DOCUMENT ME!
+     */
+    public void reset(ActionMapping mapping, HttpServletRequest request) {
+        super.reset(mapping, request);
+        selectedDescription = "";
+        dataFormatID = "";
+        formatDescriptions = CoverageStoreUtils.listDataFormatsDescriptions();
+    }
 
-	/**
-	 * User provided dataFormatID
-	 */
-	private String dataFormatID;
+    /**
+     * Check NewForm for correct use
+     *
+     * @param mapping
+     *            DOCUMENT ME!
+     * @param request
+     *            DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+        ActionErrors errors = new ActionErrors();
 
-	private List formatDescriptions;
+        if (!getDataFormatDescriptions().contains(getSelectedDescription())) {
+            errors.add("selectedDescription",
+                new ActionError("error.dataFormatFactory.invalid", getSelectedDescription()));
+        }
 
-	/**
-	 * Default state of New form
-	 * 
-	 * @param mapping
-	 *            DOCUMENT ME!
-	 * @param request
-	 *            DOCUMENT ME!
-	 */
-	public void reset(ActionMapping mapping, HttpServletRequest request) {
-		super.reset(mapping, request);
-		selectedDescription = "";
-		dataFormatID = "";
-		formatDescriptions = CoverageStoreUtils.listDataFormatsDescriptions();
-	}
+        if ((getDataFormatID() == null) || getDataFormatID().equals("")) {
+            errors.add("dataFormatID",
+                new ActionError("error.dataFormatId.required", getDataFormatID()));
+        } else if (!Pattern.matches("^[a-zA-Z](\\w|\\.)*$", getDataFormatID())) {
+            errors.add("dataFormatID",
+                new ActionError("error.dataFormatId.invalid", getDataFormatID()));
+        }
 
-	/**
-	 * Check NewForm for correct use
-	 * 
-	 * @param mapping
-	 *            DOCUMENT ME!
-	 * @param request
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public ActionErrors validate(ActionMapping mapping,
-			HttpServletRequest request) {
-		ActionErrors errors = new ActionErrors();
+        return errors;
+    }
 
-		if (!getDataFormatDescriptions().contains(getSelectedDescription())) {
-			errors.add("selectedDescription",
-					new ActionError("error.dataFormatFactory.invalid",
-							getSelectedDescription()));
-		}
+    /**
+     *
+     */
+    public String getDataFormatID() {
+        return dataFormatID;
+    }
 
-		if ((getDataFormatID() == null) || getDataFormatID().equals("")) {
-			errors.add("dataFormatID", new ActionError(
-					"error.dataFormatId.required", getDataFormatID()));
-		} else if (!Pattern.matches("^[a-zA-Z](\\w|\\.)*$", getDataFormatID())) {
-			errors.add("dataFormatID", new ActionError(
-					"error.dataFormatId.invalid", getDataFormatID()));
-		}
+    /**
+     *
+     */
+    public String getSelectedDescription() {
+        return selectedDescription;
+    }
 
-		return errors;
-	}
+    /**
+     *
+     */
+    public void setDataFormatID(String string) {
+        dataFormatID = string;
+    }
 
-	/**
-	 * 
-	 */
-	public String getDataFormatID() {
-		return dataFormatID;
-	}
+    /**
+     *
+     */
+    public void setSelectedDescription(String string) {
+        selectedDescription = string;
+    }
 
-	/**
-	 * 
-	 */
-	public String getSelectedDescription() {
-		return selectedDescription;
-	}
-
-	/**
-	 * 
-	 */
-	public void setDataFormatID(String string) {
-		dataFormatID = string;
-	}
-
-	/**
-	 * 
-	 */
-	public void setSelectedDescription(String string) {
-		selectedDescription = string;
-	}
-
-	/*
-	 * Allows the JSP page to easily access the list of dataFormat Descriptions
-	 */
-	public SortedSet getDataFormatDescriptions() {
-		return new TreeSet(formatDescriptions);
-	}
+    /*
+     * Allows the JSP page to easily access the list of dataFormat Descriptions
+     */
+    public SortedSet getDataFormatDescriptions() {
+        return new TreeSet(formatDescriptions);
+    }
 }

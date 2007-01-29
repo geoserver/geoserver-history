@@ -2,18 +2,15 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-
 package org.vfny.geoserver.form.data;
-
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.DataConfig;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -28,11 +25,11 @@ public class DataFeatureTypesNewForm extends ActionForm {
     HttpServletRequest request;
 
     public SortedSet getNewFeatureTypes() {
-        DataConfig dataConfig = (DataConfig) request.getSession()
-                                                    .getServletContext()
+        DataConfig dataConfig = (DataConfig) request.getSession().getServletContext()
                                                     .getAttribute(DataConfig.CONFIG_KEY);
 
-        TreeSet out = new TreeSet(dataConfig.getFeatureTypeIdentifiers(getServlet().getServletContext()));
+        TreeSet out = new TreeSet(dataConfig.getFeatureTypeIdentifiers(
+                    getServlet().getServletContext()));
         out.removeAll(dataConfig.getFeaturesTypes().keySet());
 
         return out;
@@ -45,8 +42,7 @@ public class DataFeatureTypesNewForm extends ActionForm {
         selectedNewFeatureType = "";
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         return errors;

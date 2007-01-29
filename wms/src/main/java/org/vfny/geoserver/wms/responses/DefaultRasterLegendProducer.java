@@ -4,22 +4,11 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
@@ -41,12 +30,20 @@ import org.geotools.util.NumberRange;
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 
 /**
@@ -56,14 +53,14 @@ import com.vividsolutions.jts.geom.Polygon;
  * http://svn.geotools.org/geotools/trunk/gt/module/main/src/org/geotools/renderer/lite/StyledShapePainter.java
  * StyledShapePainter} that produces a BufferedImage with the appropiate
  * legend graphic for a given GetLegendGraphic WMS request.
- * 
+ *
  * <p>
  * It should be enough for a subclass to implement {@linkPlain
  * org.vfny.geoserver.responses.wms.GetLegendGraphicProducer#writeTo(OutputStream)}
  * and <code>getContentType()</code> in order to encode the BufferedImage
  * produced by this class to the appropiate output format.
  * </p>
- * 
+ *
  * <p>
  * This class takes literally the fact that the arguments <code>WIDTH</code>
  * and <code>HEIGHT</code> are just <i>hints</i> about the desired dimensions
@@ -79,8 +76,7 @@ import com.vividsolutions.jts.geom.Polygon;
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
-public abstract class DefaultRasterLegendProducer
-    implements GetLegendGraphicProducer {
+public abstract class DefaultRasterLegendProducer implements GetLegendGraphicProducer {
     /** shared package's logger */
     private static final Logger LOGGER = Logger.getLogger(DefaultRasterLegendProducer.class.getPackage()
                                                                                            .getName());
@@ -187,8 +183,7 @@ public abstract class DefaultRasterLegendProducer
             applicableRules = getApplicableRules(ftStyles, scaleDenominator);
         }
 
-        final NumberRange scaleRange = new NumberRange(scaleDenominator,
-                scaleDenominator);
+        final NumberRange scaleRange = new NumberRange(scaleDenominator, scaleDenominator);
 
         final int ruleCount = applicableRules.length;
 
@@ -205,80 +200,81 @@ public abstract class DefaultRasterLegendProducer
         for (int i = 0; i < ruleCount; i++) {
             Symbolizer[] symbolizers = applicableRules[i].getSymbolizers();
 
-            BufferedImage image = new BufferedImage(w, h,
-                    BufferedImage.TYPE_INT_ARGB);
+            BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
             Graphics2D graphics = image.createGraphics();
             graphics.setColor(BG_COLOR);
             graphics.fillRect(0, 0, w, h);
 
             for (int sIdx = 0; sIdx < symbolizers.length; sIdx++) {
                 Symbolizer symbolizer = symbolizers[sIdx];
-                if ( symbolizer instanceof RasterSymbolizer ) {
-            		BufferedImage imgShape = new BufferedImage(w, h,
-                            BufferedImage.TYPE_INT_ARGB);
-                	try {
-                		imgShape = ImageIO.read(new URL(request.getHttpServletRequest().getRequestURL() + "/../data/images/rasterLegend.png"));
-					} catch (MalformedURLException e) {
-						LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
-						throw new WmsException(e);
-					} catch (IOException e) {
-						LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
-						throw new WmsException(e);
-					}
-					
-					graphics.drawImage(imgShape,0 , 0, w, h, null);
-                } else {
-                    Style2D style2d = styleFactory.createStyle(sampleFeature,
-                            symbolizer, scaleRange);
-                LiteShape2 shape = getSampleShape(symbolizer, w, h);
 
-                if (style2d != null)
-					shapePainter.paint(graphics, shape, style2d, scaleDenominator);
+                if (symbolizer instanceof RasterSymbolizer) {
+                    BufferedImage imgShape = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+
+                    try {
+                        imgShape = ImageIO.read(new URL(request.getHttpServletRequest()
+                                                               .getRequestURL()
+                                    + "/../data/images/rasterLegend.png"));
+                    } catch (MalformedURLException e) {
+                        LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+                        throw new WmsException(e);
+                    } catch (IOException e) {
+                        LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+                        throw new WmsException(e);
+                    }
+
+                    graphics.drawImage(imgShape, 0, 0, w, h, null);
+                } else {
+                    Style2D style2d = styleFactory.createStyle(sampleFeature, symbolizer, scaleRange);
+                    LiteShape2 shape = getSampleShape(symbolizer, w, h);
+
+                    if (style2d != null) {
+                        shapePainter.paint(graphics, shape, style2d, scaleDenominator);
+                    }
                 }
             }
 
             legendsStack.add(image);
         }
 
-        this.legendGraphic = scaleImage(mergeLegends(legendsStack),request);
+        this.legendGraphic = scaleImage(mergeLegends(legendsStack), request);
     }
 
     /**
      *   Scales the image so that its the size specified in the request.
      *   @hack -- there should be a much better way to do this.  See handleLegendURL() in WMSCapsTransformer.
-	 * @param image
-	 * @return
-	 */
-	private BufferedImage scaleImage(BufferedImage image,GetLegendGraphicRequest request) 
-	{
+         * @param image
+         * @return
+         */
+    private BufferedImage scaleImage(BufferedImage image, GetLegendGraphicRequest request) {
         final int w = request.getWidth();
         final int h = request.getHeight();
-        
+
         BufferedImage scaledImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = scaledImage.createGraphics();
         graphics.setColor(BG_COLOR);
         graphics.fillRect(0, 0, w, h);
-        
-        AffineTransform xform = new AffineTransform();
-        xform.setToScale( ((double)w)/image.getWidth(), ((double)h)/image.getHeight()  );
-        
-        graphics.drawImage(image,xform,null   );
-        
-        return scaledImage;        
-	}
 
-	/**
-     * Recieves a list of <code>BufferedImages</code> and produces a new one
-     * which holds all  the images in <code>imageStack</code> one above the
-     * other.
-     *
-     * @param imageStack the list of BufferedImages, one for each applicable
-     *        Rule
-     *
-     * @return the stack image with all the images on the argument list.
-     *
-     * @throws IllegalArgumentException if the list is empty
-     */
+        AffineTransform xform = new AffineTransform();
+        xform.setToScale(((double) w) / image.getWidth(), ((double) h) / image.getHeight());
+
+        graphics.drawImage(image, xform, null);
+
+        return scaledImage;
+    }
+
+    /**
+    * Recieves a list of <code>BufferedImages</code> and produces a new one
+    * which holds all  the images in <code>imageStack</code> one above the
+    * other.
+    *
+    * @param imageStack the list of BufferedImages, one for each applicable
+    *        Rule
+    *
+    * @return the stack image with all the images on the argument list.
+    *
+    * @throws IllegalArgumentException if the list is empty
+    */
     private static BufferedImage mergeLegends(List imageStack) {
         if (imageStack.size() == 0) {
             throw new IllegalArgumentException("No legend graphics passed");
@@ -301,8 +297,7 @@ public abstract class DefaultRasterLegendProducer
                     w = img.getWidth();
                     h = img.getHeight();
 
-                    finalLegend = new BufferedImage(w, imgCount * h,
-                            BufferedImage.TYPE_INT_ARGB);
+                    finalLegend = new BufferedImage(w, imgCount * h, BufferedImage.TYPE_INT_ARGB);
                     finalGraphics = finalLegend.createGraphics();
                 }
 
@@ -331,8 +326,7 @@ public abstract class DefaultRasterLegendProducer
      * @throws IllegalArgumentException if an unknown symbolizer impl was
      *         passed in.
      */
-    private LiteShape2 getSampleShape(Symbolizer symbolizer, int legendWidth,
-        int legendHeight) {
+    private LiteShape2 getSampleShape(Symbolizer symbolizer, int legendWidth, int legendHeight) {
         LiteShape2 sampleShape;
         final float hpad = (legendWidth * hpaddingFactor);
         final float vpad = (legendHeight * vpaddingFactor);
@@ -344,61 +338,51 @@ public abstract class DefaultRasterLegendProducer
                         new Coordinate(legendWidth - hpad, vpad)
                     };
                 LineString geom = geomFac.createLineString(coords);
-                
-                try{
-                	this.sampleLine = new LiteShape2(geom, null,null, false);
+
+                try {
+                    this.sampleLine = new LiteShape2(geom, null, null, false);
+                } catch (Exception e) {
+                    this.sampleLine = null;
                 }
-                catch(Exception e)
-				{
-                	this.sampleLine = null;
-				}
             }
 
             sampleShape = this.sampleLine;
-        } else if ( (symbolizer instanceof PolygonSymbolizer) || (symbolizer instanceof RasterSymbolizer) ) {
+        } else if ((symbolizer instanceof PolygonSymbolizer)
+                || (symbolizer instanceof RasterSymbolizer)) {
             if (this.sampleRect == null) {
                 final float w = legendWidth - (2 * hpad);
                 final float h = legendHeight - (2 * vpad);
 
                 Coordinate[] coords = {
-                        new Coordinate(hpad, vpad),
-                        new Coordinate(hpad, vpad + h),
-                        new Coordinate(hpad + w, vpad + h),
-                        new Coordinate(hpad + w, vpad),
+                        new Coordinate(hpad, vpad), new Coordinate(hpad, vpad + h),
+                        new Coordinate(hpad + w, vpad + h), new Coordinate(hpad + w, vpad),
                         new Coordinate(hpad, vpad)
                     };
                 LinearRing shell = geomFac.createLinearRing(coords);
                 Polygon geom = geomFac.createPolygon(shell, null);
-                try{
-                	this.sampleRect = new LiteShape2(geom, null, null,false);
+
+                try {
+                    this.sampleRect = new LiteShape2(geom, null, null, false);
+                } catch (Exception e) {
+                    this.sampleRect = null;
                 }
-                catch(Exception e)
-				{
-                	this.sampleRect = null;
-				}
             }
 
             sampleShape = this.sampleRect;
-        } else if (symbolizer instanceof PointSymbolizer
-                || symbolizer instanceof TextSymbolizer) {
+        } else if (symbolizer instanceof PointSymbolizer || symbolizer instanceof TextSymbolizer) {
             if (this.samplePoint == null) {
-                Coordinate coord = new Coordinate(legendWidth / 2,
-                        legendHeight / 2);
-                try{
-                	this.samplePoint = new LiteShape2(geomFac.createPoint(coord), null, null,false);
+                Coordinate coord = new Coordinate(legendWidth / 2, legendHeight / 2);
+
+                try {
+                    this.samplePoint = new LiteShape2(geomFac.createPoint(coord), null, null, false);
+                } catch (Exception e) {
+                    this.samplePoint = null;
                 }
-                catch(Exception e)
-				{
-                	this.samplePoint = null;
-				}
-                
-                
             }
 
             sampleShape = this.samplePoint;
         } else {
-            throw new IllegalArgumentException("Unknown symbolizer: "
-                + symbolizer);
+            throw new IllegalArgumentException("Unknown symbolizer: " + symbolizer);
         }
 
         return sampleShape;
@@ -442,8 +426,7 @@ public abstract class DefaultRasterLegendProducer
      *
      * @return
      */
-    private Rule[] getApplicableRules(FeatureTypeStyle[] ftStyles,
-        double scaleDenominator) {
+    private Rule[] getApplicableRules(FeatureTypeStyle[] ftStyles, double scaleDenominator) {
         /**
          * Holds both the rules that apply and the ElseRule's if any, in the
          * order they appear

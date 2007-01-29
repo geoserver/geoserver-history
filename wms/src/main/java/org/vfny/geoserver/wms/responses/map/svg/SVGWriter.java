@@ -4,6 +4,22 @@
  */
 package org.vfny.geoserver.wms.responses.map.svg;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+import org.geotools.data.DataSourceException;
+import org.geotools.data.FeatureReader;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
+import org.vfny.geoserver.wms.WMSMapContext;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -16,24 +32,6 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
-import org.geotools.data.DataSourceException;
-import org.geotools.data.FeatureReader;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
-import org.vfny.geoserver.wms.WMSMapContext;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-
 
 /**
  * DOCUMENT ME!
@@ -42,8 +40,7 @@ import com.vividsolutions.jts.geom.Polygon;
  * @version $Id: SVGWriter.java,v 1.5 2004/09/05 17:16:53 cholmesny Exp $
  */
 public class SVGWriter extends OutputStreamWriter {
-    private static final Logger LOGGER = Logger.getLogger(SVGWriter.class.getPackage()
-                                                                         .getName());
+    private static final Logger LOGGER = Logger.getLogger(SVGWriter.class.getPackage().getName());
 
     /**
      * a number formatter setted up to write SVG legible numbers ('.' as
@@ -51,11 +48,11 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private static DecimalFormat formatter;
 
-    /** 
+    /**
      * map of geometry class to writer
      */
     private HashMap writers;
-    
+
     static {
         Locale locale = new Locale("en", "US");
         DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(locale);
@@ -120,21 +117,21 @@ public class SVGWriter extends OutputStreamWriter {
         Envelope space = mapContext.getAreaOfInterest();
         this.minY = space.getMinY();
         this.maxY = space.getMaxY();
-        
+
         initWriters();
     }
 
     private void initWriters() {
-    	writers = new HashMap();
-    	writers.put(Point.class,new PointWriter());
-    	writers.put(LineString.class, new LineStringWriter());
-    	writers.put(LinearRing.class, new LineStringWriter());
-    	writers.put(Polygon.class, new PolygonWriter());
-    	writers.put(MultiPoint.class, new MultiPointWriter());
-    	writers.put(MultiLineString.class, new MultiLineStringWriter());
-    	writers.put(MultiPolygon.class, new MultiPolygonWriter());
+        writers = new HashMap();
+        writers.put(Point.class, new PointWriter());
+        writers.put(LineString.class, new LineStringWriter());
+        writers.put(LinearRing.class, new LineStringWriter());
+        writers.put(Polygon.class, new PolygonWriter());
+        writers.put(MultiPoint.class, new MultiPointWriter());
+        writers.put(MultiLineString.class, new MultiLineStringWriter());
+        writers.put(MultiPolygon.class, new MultiPolygonWriter());
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -161,35 +158,33 @@ public class SVGWriter extends OutputStreamWriter {
      * @throws IllegalArgumentException DOCUMENT ME!
      */
     public void setGeometryType(Class gtype) {
-    	
-    	featureWriter = (SVGFeatureWriter) writers.get(gtype);
-    	if (featureWriter == null) {
-    		//check for abstract Geometry type
-    		if (gtype == Geometry.class) {
-    			featureWriter = new GeometryWriter(); 
-    		}
-    		else {
-    			throw new IllegalArgumentException(
-	                "No SVG Feature writer defined for " + gtype
-                );
-    		}
-    	}
-//        if (gtype == Point.class) {
-//            featureWriter = new PointWriter();
-//        } else if (gtype == MultiPoint.class) {
-//            featureWriter = new MultiPointWriter();
-//        } else if (gtype == LineString.class) {
-//            featureWriter = new LineStringWriter();
-//        } else if (gtype == MultiLineString.class) {
-//            featureWriter = new MultiLineStringWriter();
-//        } else if (gtype == Polygon.class) {
-//            featureWriter = new PolygonWriter();
-//        } else if (gtype == MultiPolygon.class) {
-//            featureWriter = new MultiPolygonWriter();
-//        } else {
-//            throw new IllegalArgumentException(
-//                "No SVG Feature writer defined for " + gtype);
-//        }
+        featureWriter = (SVGFeatureWriter) writers.get(gtype);
+
+        if (featureWriter == null) {
+            //check for abstract Geometry type
+            if (gtype == Geometry.class) {
+                featureWriter = new GeometryWriter();
+            } else {
+                throw new IllegalArgumentException("No SVG Feature writer defined for " + gtype);
+            }
+        }
+
+        //        if (gtype == Point.class) {
+        //            featureWriter = new PointWriter();
+        //        } else if (gtype == MultiPoint.class) {
+        //            featureWriter = new MultiPointWriter();
+        //        } else if (gtype == LineString.class) {
+        //            featureWriter = new LineStringWriter();
+        //        } else if (gtype == MultiLineString.class) {
+        //            featureWriter = new MultiLineStringWriter();
+        //        } else if (gtype == Polygon.class) {
+        //            featureWriter = new PolygonWriter();
+        //        } else if (gtype == MultiPolygon.class) {
+        //            featureWriter = new MultiPolygonWriter();
+        //        } else {
+        //            throw new IllegalArgumentException(
+        //                "No SVG Feature writer defined for " + gtype);
+        //        }
 
         /*
            if (config.isCollectGeometries()) {
@@ -324,8 +319,7 @@ public class SVGWriter extends OutputStreamWriter {
 
             setPointsAsCircles("#circle".equals(style));
 
-            if ((style != null) && !"#circle".equals(style)
-                    && style.startsWith("#")) {
+            if ((style != null) && !"#circle".equals(style) && style.startsWith("#")) {
                 style = style.substring(1);
             } else {
                 style = null;
@@ -367,12 +361,13 @@ public class SVGWriter extends OutputStreamWriter {
             this.writerHandler = new SVGFeatureWriterHandler();
 
             String typeName = featureType.getTypeName();
+
             /*
-             * REVISIT: get rid of all this attribute stuff, since if attributes are 
+             * REVISIT: get rid of all this attribute stuff, since if attributes are
              * needed it fits better to have SVG with gml attributes as another output
              * format for WFS's getFeature.
              */
-            List atts = new ArrayList(0);// config.getAttributes(typeName);
+            List atts = new ArrayList(0); // config.getAttributes(typeName);
 
             if (atts.contains("#FID")) {
                 this.writerHandler = new FIDSVGHandler(this.writerHandler);
@@ -718,7 +713,8 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        protected abstract void startElement(Feature feature) throws IOException;
+        protected abstract void startElement(Feature feature)
+            throws IOException;
 
         /**
          * DOCUMENT ME!
@@ -726,7 +722,8 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        protected abstract void startGeometry(Geometry geom) throws IOException;
+        protected abstract void startGeometry(Geometry geom)
+            throws IOException;
 
         /**
          * DOCUMENT ME!
@@ -761,7 +758,7 @@ public class SVGWriter extends OutputStreamWriter {
         /**
          * Writes the content of the <b>d</b> attribute in a <i>path</i> SVG
          * element
-         * 
+         *
          * <p>
          * While iterating over the coordinate array passed as parameter, this
          * method performs a kind of very basic path generalization, verifying
@@ -846,6 +843,7 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
+
         /**
          * protected void writeAttributes(Feature ft) throws IOException { if
          * (!pointsAsCircles) { write(" xlink:href=\"#"); if (attributeStyle
@@ -855,6 +853,7 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
+
         /**
          * DOCUMENT ME!
          *
@@ -895,8 +894,9 @@ public class SVGWriter extends OutputStreamWriter {
                 write(getX(p.getX()));
                 write("\" y=\"");
                 write(getY(p.getY()));
-		//Issue GEOS-193, from John Steining.
+                //Issue GEOS-193, from John Steining.
                 write("\" xlink:href=\"#point");
+
                 //putting this in to fix the issue, but I am not sure about
                 //the broader implications - I don't think we need it for
                 //pointsAsCircles.  And it looks like the quote gets closed
@@ -962,43 +962,40 @@ public class SVGWriter extends OutputStreamWriter {
     }
 
     /**
-     * Writer to handle feature types which contain a Geometry attribute that 
+     * Writer to handle feature types which contain a Geometry attribute that
      * is actually of the class Geometry. This can occur in heterogeneous data
      * sets.
-     * 
+     *
      * @author Justin Deoliveira, jdeolive@openplans.org
      *
      */
     private class GeometryWriter extends SVGFeatureWriter {
+        SVGFeatureWriter delegate;
 
-    	SVGFeatureWriter delegate;
-    	
-    	protected void startElement(Feature feature) throws IOException {
-    		
-    		Geometry g = feature.getDefaultGeometry();
-    		delegate = null;
-    		if (g != null) {
-    			delegate = (SVGFeatureWriter) writers.get(g.getClass());	
-    		}
-			
-    		if (delegate == null) {
-    			throw new IllegalArgumentException(
-	                "No SVG Feature writer defined for " + g
-                ); 
-    		}
-    		delegate.startElement(feature);
-		}
+        protected void startElement(Feature feature) throws IOException {
+            Geometry g = feature.getDefaultGeometry();
+            delegate = null;
 
-		protected void startGeometry(Geometry geom) throws IOException {
-			delegate.startGeometry(geom);
-		}
+            if (g != null) {
+                delegate = (SVGFeatureWriter) writers.get(g.getClass());
+            }
 
-		protected void writeGeometry(Geometry geom) throws IOException {
-			delegate.writeGeometry(geom);
-		}
-    	
+            if (delegate == null) {
+                throw new IllegalArgumentException("No SVG Feature writer defined for " + g);
+            }
+
+            delegate.startElement(feature);
+        }
+
+        protected void startGeometry(Geometry geom) throws IOException {
+            delegate.startGeometry(geom);
+        }
+
+        protected void writeGeometry(Geometry geom) throws IOException {
+            delegate.writeGeometry(geom);
+        }
     }
-    
+
     /**
      *
      */

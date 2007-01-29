@@ -4,12 +4,6 @@
  */
 package org.vfny.geoserver.wfs.requests.readers;
 
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.wfs.WfsException;
@@ -17,6 +11,11 @@ import org.vfny.geoserver.wfs.requests.DeleteRequest;
 import org.vfny.geoserver.wfs.requests.TransactionRequest;
 import org.vfny.geoserver.wfs.requests.WfsKvpRequestReader;
 import org.vfny.geoserver.wfs.servlets.WFService;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * This utility reads in a Delete KVP request and turns it into an appropriate
@@ -29,10 +28,7 @@ import org.vfny.geoserver.wfs.servlets.WFService;
  */
 public class DeleteKvpReader extends WfsKvpRequestReader {
     /** Class logger */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.readers");
-
-    
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
     /**
      * Constructor with raw request string, and servlet handling request.
@@ -42,9 +38,9 @@ public class DeleteKvpReader extends WfsKvpRequestReader {
      * @param service The servlet/service handling the request.
      */
     public DeleteKvpReader(Map kvpPairs, WFService service) {
-    		super(kvpPairs,service);
+        super(kvpPairs, service);
     }
-    
+
     /**
      * Returns Delete request object.
      *
@@ -56,9 +52,11 @@ public class DeleteKvpReader extends WfsKvpRequestReader {
      *         feature length, or if no filter is found.  We don't want  users
      *         to accidentally delete their whole db.
      */
-    public Request getRequest(HttpServletRequest request) throws WfsException {
-        TransactionRequest parentRequest = new TransactionRequest((WFService)service);
+    public Request getRequest(HttpServletRequest request)
+        throws WfsException {
+        TransactionRequest parentRequest = new TransactionRequest((WFService) service);
         parentRequest.setHttpServletRequest(request);
+
         boolean releaseAll = true;
 
         // set global request parameters
@@ -85,8 +83,7 @@ public class DeleteKvpReader extends WfsKvpRequestReader {
         LOGGER.finest("type list size: " + typeList.size());
 
         List filterList = null;
-        filterList = readFilters(getValue("FEATUREID"), getValue("FILTER"),
-                getValue("BBOX"));
+        filterList = readFilters(getValue("FEATUREID"), getValue("FILTER"), getValue("BBOX"));
 
         if (typeList.size() == 0) {
             typeList = getTypesFromFids(getValue("FEATUREID"));
@@ -109,9 +106,8 @@ public class DeleteKvpReader extends WfsKvpRequestReader {
         // check for errors in the request
         if (((filterSize != featureSize) && (filterSize > 0))
                 || ((filterSize > 0) && (featureSize == 0))) {
-            throw new WfsException("Filter size does not match"
-                + " feature types.  Filter size: " + filterSize
-                + " Feature size: " + featureSize);
+            throw new WfsException("Filter size does not match" + " feature types.  Filter size: "
+                + filterSize + " Feature size: " + featureSize);
         } else if (filterSize == featureSize) {
             for (int i = 0, n = featureSize; i < n; i++) {
                 DeleteRequest childRequest = new DeleteRequest();

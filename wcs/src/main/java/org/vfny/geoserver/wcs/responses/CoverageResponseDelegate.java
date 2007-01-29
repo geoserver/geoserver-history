@@ -4,14 +4,19 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
+import java.io.IOException;
+import java.io.OutputStream;
 
-/** * DOCUMENT ME! *  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification) * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification) */
+
+/**
+ * DOCUMENT ME!
+ *
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ */
 public interface CoverageResponseDelegate {
     boolean canProduce(String outputFormat);
 
@@ -20,17 +25,17 @@ public interface CoverageResponseDelegate {
 
     String getContentType(GeoServer gs);
 
-	/**
-	 * 
-	 * @uml.property name="contentEncoding" multiplicity="(0 1)"
-	 */
-	String getContentEncoding();
+    /**
+     *
+     * @uml.property name="contentEncoding" multiplicity="(0 1)"
+     */
+    String getContentEncoding();
 
-	/**
-	 * 
-	 * @uml.property name="contentDisposition" multiplicity="(0 1)"
-	 */
-	String getContentDisposition();
+    /**
+     *
+     * @uml.property name="contentDisposition" multiplicity="(0 1)"
+     */
+    String getContentDisposition();
 
     void encode(OutputStream output) throws ServiceException, IOException;
 }

@@ -4,13 +4,12 @@
  */
 package org.vfny.geoserver.util;
 
+import org.vfny.geoserver.wfs.WfsException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import org.vfny.geoserver.wfs.WfsException;
 
 
 /**
@@ -50,12 +49,10 @@ public class XmlOutputStream extends ByteArrayOutputStream {
      */
     public void writeToClean(OutputStream xmlOut) throws WfsException {
         try {
-            xmlOut.write(this.toByteArray(), ENCODING_LENGTH,
-                this.size() - ENCODING_LENGTH);
+            xmlOut.write(this.toByteArray(), ENCODING_LENGTH, this.size() - ENCODING_LENGTH);
             this.reset();
         } catch (IOException e) {
-            throw new WfsException(e, "IO problem",
-                XmlOutputStream.class.getName());
+            throw new WfsException(e, "IO problem", XmlOutputStream.class.getName());
         }
     }
 
@@ -71,8 +68,7 @@ public class XmlOutputStream extends ByteArrayOutputStream {
             xmlOut.write(this.toByteArray(), 0, this.size());
             this.reset();
         } catch (IOException e) {
-            throw new WfsException(e, "IO problem",
-                XmlOutputStream.class.getName());
+            throw new WfsException(e, "IO problem", XmlOutputStream.class.getName());
         }
     }
 
@@ -96,8 +92,7 @@ public class XmlOutputStream extends ByteArrayOutputStream {
 
             inputStream.close();
         } catch (IOException e) {
-            throw new WfsException(e,
-                "Problems writing [ " + inputFileName + " ] file to XML",
+            throw new WfsException(e, "Problems writing [ " + inputFileName + " ] file to XML",
                 XmlOutputStream.class.getName());
         }
     }

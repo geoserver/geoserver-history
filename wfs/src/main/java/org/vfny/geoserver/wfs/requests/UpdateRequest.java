@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -25,8 +24,7 @@ import org.geotools.filter.Filter;
  */
 public class UpdateRequest extends SubTransactionRequest {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.wfs");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wfs");
 
     /** The properties to be changed */
     private List properties;
@@ -184,8 +182,8 @@ public class UpdateRequest extends SubTransactionRequest {
             curType = schema.getAttributeType(curName);
 
             if (curType == null) {
-                String message = "Could not find property named: " + curName
-                    + " in schema: " + schema.getTypeName();
+                String message = "Could not find property named: " + curName + " in schema: "
+                    + schema.getTypeName();
                 throw new SchemaException(message);
             }
 
@@ -232,8 +230,7 @@ public class UpdateRequest extends SubTransactionRequest {
 
             if (this.properties.size() == testUpdate.properties.size()) {
                 for (int i = 0; i < testUpdate.properties.size(); i++) {
-                    isEqual = isEqual
-                        && this.properties.contains(testUpdate.properties.get(i));
+                    isEqual = isEqual && this.properties.contains(testUpdate.properties.get(i));
                 }
             } else {
                 isEqual = false;

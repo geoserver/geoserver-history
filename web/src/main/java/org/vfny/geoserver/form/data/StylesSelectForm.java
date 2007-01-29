@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /*
  * Created on Jan 8, 2004
  *
@@ -9,15 +10,6 @@
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 package org.vfny.geoserver.form.data;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.TreeSet;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -28,6 +20,14 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.TreeSet;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * Holds the current selection, and set of styles.
@@ -37,63 +37,66 @@ import org.vfny.geoserver.util.Requests;
  * @author jgarnett, Refractions Research
  */
 public class StylesSelectForm extends ActionForm {
-    
     /** Selected style ID */
     private String selectedStyle;
-    
+
     /** Action requested on selectedStyle */
     private String action;
-    
+
     /** Sorted set of styles IDs */
     private TreeSet styles;
-    
+
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
+
         ServletContext context = getServlet().getServletContext();
         DataConfig config = ConfigRequests.getDataConfig(request);
 
         styles = new TreeSet();
+
         Iterator i = config.getStyles().values().iterator();
         boolean defaultSet = false;
-        while(i.hasNext()){
-        	StyleConfig sc = (StyleConfig)i.next();
-        	if(sc.isDefault()){
-        		styles.add(sc.getId()+"*");
+
+        while (i.hasNext()) {
+            StyleConfig sc = (StyleConfig) i.next();
+
+            if (sc.isDefault()) {
+                styles.add(sc.getId() + "*");
                 defaultSet = true;
-        	} else {
-        		styles.add(sc.getId());
-        	}
-        }                
+            } else {
+                styles.add(sc.getId());
+            }
+        }
+
         StyleConfig sConfig;
 
-        UserContainer user = Requests.getUserContainer(request);        
-        selectedStyle = "";        
+        UserContainer user = Requests.getUserContainer(request);
+        selectedStyle = "";
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
-        
+
         if ((selectedStyle == null) || selectedStyle.equals("")) {
-            errors.add("selectedStyle",
-            new ActionError("error.style.required", selectedStyle));
+            errors.add("selectedStyle", new ActionError("error.style.required", selectedStyle));
         }
-        if (!styles.contains( selectedStyle )) {
-            errors.add("selectedStyle",
-            new ActionError("error.style.invalid", selectedStyle));
-        }        
+
+        if (!styles.contains(selectedStyle)) {
+            errors.add("selectedStyle", new ActionError("error.style.invalid", selectedStyle));
+        }
+
         return errors;
     }
 
-
     /**
      * Access selectedStyle property.
-     * 
+     *
      * @return Returns the selectedStyle.
      */
     public String getSelectedStyle() {
         return selectedStyle;
     }
+
     /**
      * Set selectedStyle to selectedStyle.
      *
@@ -102,14 +105,16 @@ public class StylesSelectForm extends ActionForm {
     public void setSelectedStyle(String selectedStyle) {
         this.selectedStyle = selectedStyle;
     }
+
     /**
      * Access action property.
-     * 
+     *
      * @return Returns the action.
      */
     public String getAction() {
         return action;
     }
+
     /**
      * Set action to action.
      *
@@ -118,18 +123,21 @@ public class StylesSelectForm extends ActionForm {
     public void setAction(String action) {
         this.action = action;
     }
+
     /**
      * Access styles property.
-     * 
+     *
      * @return Returns the styles.
      */
     public TreeSet getStyles() {
-    	Object[] keys = styles.toArray();
-    	Arrays.sort(keys);
+        Object[] keys = styles.toArray();
+        Arrays.sort(keys);
+
         TreeSet sorted = new TreeSet();
-        for (int i=0; i<keys.length; i++)
-        	sorted.add(keys[i]);
-        
+
+        for (int i = 0; i < keys.length; i++)
+            sorted.add(keys[i]);
+
         return sorted;
     }
 }

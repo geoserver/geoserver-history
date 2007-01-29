@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /*
  * Created on Jan 6, 2004
  *
@@ -10,18 +11,16 @@
  */
 package org.vfny.geoserver.form.wfs;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.global.dto.WFSDTO;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -178,20 +177,16 @@ public class WFSContentForm extends ActionForm {
         }
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if ((serviceLevel != WFSDTO.BASIC)
-                && (serviceLevel != WFSDTO.TRANSACTIONAL)
+        if ((serviceLevel != WFSDTO.BASIC) && (serviceLevel != WFSDTO.TRANSACTIONAL)
                 && (serviceLevel != WFSDTO.COMPLETE)) {
-            errors.add("serviceLevel",
-                new ActionError("error.serviceLevel.invalid"));
+            errors.add("serviceLevel", new ActionError("error.serviceLevel.invalid"));
         }
 
         if ((onlineResource == null) || onlineResource.equals("")) {
-            errors.add("onlineResource",
-                new ActionError("error.wfs.onlineResource.required"));
+            errors.add("onlineResource", new ActionError("error.wfs.onlineResource.required"));
         } else {
             try {
                 URL url = new URL(onlineResource);

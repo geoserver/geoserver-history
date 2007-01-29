@@ -4,13 +4,12 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
-import java.util.Iterator;
-import java.util.logging.Logger;
-
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLockFactory;
 import org.vfny.geoserver.wfs.Query;
 import org.vfny.geoserver.wfs.servlets.WFService;
+import java.util.Iterator;
+import java.util.logging.Logger;
 
 
 /**
@@ -26,36 +25,35 @@ import org.vfny.geoserver.wfs.servlets.WFService;
  */
 public class FeatureWithLockRequest extends FeatureRequest {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /** The time to hold the lock for */
     protected int expiry = 0;
 
     /**
      * Creates a new FeatureWithLock request.
-     * 
+     *
      * @param service The service handling the request.
      */
     public FeatureWithLockRequest(WFService service) {
-    		super(service);
-    		setRequest("GetFeatureWithLock");
+        super(service);
+        setRequest("GetFeatureWithLock");
     }
 
     /**
      * Turn this request into a FeatureLock.
-     * 
+     *
      * <p>
      * You will return FeatureLock.getAuthorization() to your user so they can
      * refer to this lock again.
      * </p>
-     * 
+     *
      * <p>
      * The getAuthorization() value is based on getHandle(), with a default of
      * "GeoServer" if the user has not provided a handle.
      * </p>
      * The FeatureLock produced is based on expiry:
-     * 
+     *
      * <ul>
      * <li>
      * negative expiry: reports if lock is available
@@ -67,13 +65,12 @@ public class FeatureWithLockRequest extends FeatureRequest {
      * postive expiry: lock expires in a number of minuets
      * </li>
      * </ul>
-     * 
+     *
      *
      * @return
      */
     public FeatureLock toFeatureLock() {
         //String handle = getHandle();
-
         if ((handle == null) || (handle.length() == 0)) {
             handle = "GeoServer";
         }
@@ -102,14 +99,12 @@ public class FeatureWithLockRequest extends FeatureRequest {
      *       a lot faster, even if it's not as pretty.
      */
     public LockRequest asLockRequest() {
-        LockRequest lockRequest = 
-        		new LockRequest((WFService) getServiceRef());
+        LockRequest lockRequest = new LockRequest((WFService) getServiceRef());
         lockRequest.setExpiry(expiry);
 
         for (Iterator i = queries.iterator(); i.hasNext();) {
             Query curQuery = (Query) i.next();
-            lockRequest.addLock(curQuery.getTypeName(), curQuery.getFilter(),
-                curQuery.getHandle());
+            lockRequest.addLock(curQuery.getTypeName(), curQuery.getFilter(), curQuery.getHandle());
         }
 
         LOGGER.finest("returning: " + super.toString() + " as " + lockRequest);

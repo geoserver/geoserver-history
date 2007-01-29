@@ -3,17 +3,18 @@
  */
 package org.vfny.geoserver.global.dto;
 
+
 /**
  * Data Transfer Object for legend information.
- * 
+ *
  * <p>
  * Defines the legend icon to be associated with a FeatureType.
  * </p>
- * 
+ *
  * <p>
  * <pre>
  * Example:<code>
- * LegendDTO legend = new LegendDTO(); 
+ * LegendDTO legend = new LegendDTO();
  * legend.setOnlineResource("http://www.myserver.org/legends/legend1.png");
  * legend.setWidth(72);
  * legend.setHeight(72);
@@ -41,7 +42,7 @@ public final class LegendURLDTO implements DataTransferObject {
 
     /**
      * LegendConfig constructor.
-     * 
+     *
      * <p>
      * does nothing
      * </p>
@@ -51,7 +52,7 @@ public final class LegendURLDTO implements DataTransferObject {
 
     /**
      * LegendConfig constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the LegendConfig provided. If the LegendConfig
      * provided is null then default values are used. All the data structures
@@ -75,7 +76,7 @@ public final class LegendURLDTO implements DataTransferObject {
 
     /**
      * Implement clone.
-     * 
+     *
      * <p>
      * creates a clone of this object
      * </p>
@@ -90,7 +91,7 @@ public final class LegendURLDTO implements DataTransferObject {
 
     /**
      * Implement equals.
-     * 
+     *
      * <p>
      * recursively tests to determine if the object passed in is a copy of this
      * object.
@@ -144,8 +145,8 @@ public final class LegendURLDTO implements DataTransferObject {
     }
 
     public String toString() {
-        return "LegendURL [" + width + ", " + height + "] - Type : " + format
-        + " -  Location : " + onlineResource + "\n";
+        return "LegendURL [" + width + ", " + height + "] - Type : " + format + " -  Location : "
+        + onlineResource + "\n";
     }
 
     /**

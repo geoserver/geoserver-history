@@ -4,14 +4,6 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.logging.Logger;
-
-import javax.xml.transform.TransformerException;
-
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -19,6 +11,12 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wfs.WfsException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.logging.Logger;
+import javax.xml.transform.TransformerException;
 
 
 /**
@@ -43,9 +41,9 @@ public class WFSCapabilitiesResponse implements Response {
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-    	return null;
+        return null;
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -61,7 +59,7 @@ public class WFSCapabilitiesResponse implements Response {
         }
 
         WFSCapsTransformer transformer = new WFSCapsTransformer();
-            
+
         transformer.setIndentation(2);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -87,8 +85,7 @@ public class WFSCapabilitiesResponse implements Response {
      */
     public String getContentType(GeoServer gs) throws IllegalStateException {
         if (rawResponse == null) {
-            throw new IllegalStateException(
-                "execute() not called or not succeed.");
+            throw new IllegalStateException("execute() not called or not succeed.");
         }
 
         return gs.getMimeType();
@@ -133,8 +130,8 @@ public class WFSCapabilitiesResponse implements Response {
     public void abort(Service gs) {
     }
 
-	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public String getContentDisposition() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

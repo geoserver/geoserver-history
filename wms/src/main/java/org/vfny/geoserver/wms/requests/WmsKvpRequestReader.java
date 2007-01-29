@@ -4,12 +4,11 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import java.util.Map;
-
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wfs.servlets.WFService;
 import org.vfny.geoserver.wms.servlets.WMService;
+import java.util.Map;
 
 
 /**
@@ -31,21 +30,21 @@ public abstract class WmsKvpRequestReader extends KvpRequestReader {
 
     //protected static final GeoServer config = GeoServer.getInstance();
 
-    
-	/**
-	 * Creates a new kvp reader for a WMS request.
-	 * 
-	 * @param kvpPairs The raw key value pairs.
-	 * @param service The servlet handling the request.
-	 */
-	public WmsKvpRequestReader(Map kvpPairs, WMService service) {
-		super(kvpPairs,service);
-	}
-	/**
-     * DOCUMENT ME!
+    /**
+     * Creates a new kvp reader for a WMS request.
      *
-     * @return DOCUMENT ME!
+     * @param kvpPairs The raw key value pairs.
+     * @param service The servlet handling the request.
      */
+    public WmsKvpRequestReader(Map kvpPairs, WMService service) {
+        super(kvpPairs, service);
+    }
+
+    /**
+    * DOCUMENT ME!
+    *
+    * @return DOCUMENT ME!
+    */
     protected String getRequestVersion() {
         String version = getValue("VERSION");
 

@@ -27,12 +27,11 @@ import java.util.logging.Logger;
  */
 abstract class GlobalLayerSupertype {
     /** for debugging */
-    protected static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.global");
+    protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
     /**
      * getDTO purpose.
-     * 
+     *
      * <p>
      * A hook to get the DTO object of all subclasses.  This method is
      * dangerous as it return the original.  It is not intended to be public,
@@ -58,7 +57,7 @@ abstract class GlobalLayerSupertype {
 
     /**
      * get purpose.
-     * 
+     *
      * <p>
      * Gets a String from a map of Strings
      * </p>
@@ -80,7 +79,7 @@ abstract class GlobalLayerSupertype {
 
     /**
      * get purpose.
-     * 
+     *
      * <p>
      * Gets a File from a map given the specified key. If the file is not found
      * the default file is returned.
@@ -102,7 +101,7 @@ abstract class GlobalLayerSupertype {
 
     /**
      * get purpose.
-     * 
+     *
      * <p>
      * Gets a String from a map of Strings, and returns the default if the
      * string does not exist.
@@ -126,7 +125,7 @@ abstract class GlobalLayerSupertype {
 
     /**
      * get purpose.
-     * 
+     *
      * <p>
      * Gets a List from a map given the specified key. If the list is not found
      * the default list is returned.
@@ -148,7 +147,7 @@ abstract class GlobalLayerSupertype {
 
     /**
      * get purpose.
-     * 
+     *
      * <p>
      * Gets a Map from a map given the specified key. If the map is not found
      * the default map is returned.
@@ -170,7 +169,7 @@ abstract class GlobalLayerSupertype {
 
     /**
      * get purpose.
-     * 
+     *
      * <p>
      * Gets a int from a map given the specified key. If the int is not found
      * the default int is returned.
@@ -192,7 +191,7 @@ abstract class GlobalLayerSupertype {
 
     /**
      * get purpose.
-     * 
+     *
      * <p>
      * Gets a boolean from a map given the specified key. If the boolean is not
      * found the default boolean is returned.
@@ -214,7 +213,7 @@ abstract class GlobalLayerSupertype {
 
     /**
      * get purpose.
-     * 
+     *
      * <p>
      * Gets a Charset from a map given the specified key. If the Charset is not
      * found the default Charset is returned.
@@ -236,7 +235,7 @@ abstract class GlobalLayerSupertype {
 
     /**
      * get purpose.
-     * 
+     *
      * <p>
      * Gets a Level from a map given the specified key. If the Level is not
      * found the default Level is returned.
@@ -258,7 +257,7 @@ abstract class GlobalLayerSupertype {
 
     /**
      * get purpose.
-     * 
+     *
      * <p>
      * Gets a URL from a map given the specified key. If the URL is not found
      * the default URL is returned.
@@ -280,7 +279,7 @@ abstract class GlobalLayerSupertype {
 
     /**
      * get purpose.
-     * 
+     *
      * <p>
      * Gets a Class from a map given the specified key. If the Class is not
      * found the default Class is returned.

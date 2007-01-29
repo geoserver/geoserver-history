@@ -6,12 +6,12 @@
  */
 package org.vfny.geoserver.action;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * Remove UserContainter from session (and reset session) and return to welcome.
@@ -23,19 +23,16 @@ import org.apache.struts.action.ActionMapping;
  * @version $Id: LogoutAction.java,v 1.4 2004/02/09 23:29:40 dmzwiers Exp $
  */
 public class LogoutAction extends GeoServerAction {
-    public ActionForward execute(ActionMapping mapping,
-    		                     ActionForm form,
-								 HttpServletRequest request,
-								 HttpServletResponse response) {
-    	// remove UserContainer from Session
-    	logOut( request );
-        
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        HttpServletRequest request, HttpServletResponse response) {
+        // remove UserContainer from Session
+        logOut(request);
+
         //if we don't invalidate their session, we can save other variables, such as locale
-    	
-    	// return back to the welcome screen
-    	// (this is actually (for once) the correct place to go
-    	//
+
+        // return back to the welcome screen
+        // (this is actually (for once) the correct place to go
+        //
         return mapping.findForward("welcome");
-        
     }
 }

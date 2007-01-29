@@ -4,14 +4,6 @@
  */
 package org.vfny.geoserver.wfs.requests.readers;
 
-import java.io.IOException;
-import java.io.Reader;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
 import org.vfny.geoserver.Request;
@@ -25,6 +17,12 @@ import org.vfny.geoserver.wfs.servlets.WFService;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
+import java.io.IOException;
+import java.io.Reader;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 
 /**
@@ -35,16 +33,15 @@ import org.xml.sax.helpers.ParserAdapter;
  * @version $Id: TransactionXmlReader.java,v 1.8 2004/02/13 19:30:39 dmzwiers Exp $
  */
 public class TransactionXmlReader extends XmlRequestReader {
-	
-	/**
-	 * Creates a new reader.
-	 * 
-	 * @param service The WFS service handling the request.
-	 */
-	public TransactionXmlReader( WFService service ) {
-		super( service );
-	}
-	
+    /**
+     * Creates a new reader.
+     *
+     * @param service The WFS service handling the request.
+     */
+    public TransactionXmlReader(WFService service) {
+        super(service);
+    }
+
     /**
      * Reads the Transaction XML request into a TransactionRequest object.
      *
@@ -54,18 +51,17 @@ public class TransactionXmlReader extends XmlRequestReader {
      *
      * @throws WfsTransactionException For any problems reading the request.
      */
-    public Request read(Reader reader, HttpServletRequest req) throws WfsTransactionException {
+    public Request read(Reader reader, HttpServletRequest req)
+        throws WfsTransactionException {
         // translate string into a proper SAX input source
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        TransactionHandler contentHandler = 
-        		new TransactionHandler((WFService) getServiceRef());
-        TransactionFilterHandler filterParser = new TransactionFilterHandler(contentHandler,
-                null);
+        TransactionHandler contentHandler = new TransactionHandler((WFService) getServiceRef());
+        TransactionFilterHandler filterParser = new TransactionFilterHandler(contentHandler, null);
         Data catalog = getServiceRef().getCatalog();
-        TransactionFeatureHandler featureParser = 
-        		new TransactionFeatureHandler(filterParser, req, catalog);
+        TransactionFeatureHandler featureParser = new TransactionFeatureHandler(filterParser, req,
+                catalog);
         GMLFilterGeometry geometryFilter = new GMLFilterGeometry(featureParser);
         GMLFilterDocument documentFilter = new GMLFilterDocument(geometryFilter);
 
@@ -82,17 +78,18 @@ public class TransactionXmlReader extends XmlRequestReader {
         } catch (SAXException e) {
             //e.getCause().printStackTrace(System.out);
             //e.printStackTrace(System.out);
-            throw new WfsTransactionException(e,
-                "XML transaction request SAX parsing error",
+            throw new WfsTransactionException(e, "XML transaction request SAX parsing error",
                 getClass().getName());
         } catch (IOException e) {
-            throw new WfsTransactionException(e,
-                "XML transaction request input error", getClass().getName());
+            throw new WfsTransactionException(e, "XML transaction request input error",
+                getClass().getName());
         } catch (ParserConfigurationException e) {
-            throw new WfsTransactionException(e,
-                "Some sort of issue creating parser", getClass().getName());
+            throw new WfsTransactionException(e, "Some sort of issue creating parser",
+                getClass().getName());
         }
+
         Request r = contentHandler.getRequest(req);
+
         return r;
     }
 }

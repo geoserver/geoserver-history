@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms;
 import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.ServiceException;
 
+
 /**
  * ServiceConfig exception handler for WMS services
  *
@@ -73,8 +74,7 @@ public class WmsExceptionHandler implements ExceptionHandler {
      *
      * @return DOCUMENT ME!
      */
-    public ServiceException newServiceException(Throwable e, String preMessage,
-        String locator) {
+    public ServiceException newServiceException(Throwable e, String preMessage, String locator) {
         return new WmsException(e, preMessage, locator);
     }
 }

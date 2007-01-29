@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.wfs.servlets;
 
-import java.util.Map;
-
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
@@ -13,6 +11,7 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.readers.DescribeKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.DescribeXmlReader;
 import org.vfny.geoserver.wfs.responses.DescribeResponse;
+import java.util.Map;
 
 
 /**
@@ -26,16 +25,15 @@ import org.vfny.geoserver.wfs.responses.DescribeResponse;
  * @version $Id: Describe.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class Describe extends WFService {
-    
-	public Describe(WFS wfs) {
-		super("DescribeFeatureType",wfs);
-	}
+    public Describe(WFS wfs) {
+        super("DescribeFeatureType", wfs);
+    }
 
-	/**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
+    /**
+    * DOCUMENT ME!
+    *
+    * @return DOCUMENT ME!
+    */
     protected Response getResponseHandler() {
         return new DescribeResponse();
     }

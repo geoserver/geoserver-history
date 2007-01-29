@@ -4,19 +4,18 @@
  */
 package org.vfny.geoserver.config;
 
-import java.nio.charset.Charset;
-import java.util.logging.Level;
-
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
+import java.nio.charset.Charset;
+import java.util.logging.Level;
 
 
 /**
  * Global GeoServer Configuration model.
- * 
+ *
  * <p>
  * GlobalConfig represents the configuration model needed to set up GeoServer
  * for use.
@@ -33,11 +32,11 @@ public class GlobalConfig {
 
     /**
      * XML Verbosity.
-     * 
+     *
      * <p>
      * Whether newlines and indents should be returned in XML responses.
      * </p>
-     * 
+     *
      * <p>
      * This should be called something other than verbose. Verbose should
      * control things like printing out "magic" comments that tell people how
@@ -49,7 +48,7 @@ public class GlobalConfig {
 
     /**
      * Number of decimal places returned in a GetFeature response.
-     * 
+     *
      * <p>
      * Sets the max number of decimal places past the zero returned in a
      * GetFeature response.  Default is 4.
@@ -61,7 +60,7 @@ public class GlobalConfig {
 
     /**
      * Sets the global character set.
-     * 
+     *
      * <p>
      * This could use some more testing from international users. What it does
      * is sets the encoding globally for all postgis database connections (the
@@ -70,11 +69,11 @@ public class GlobalConfig {
      * <code>org.vfny.geoserver.config.org.vfny.geoserver.global.xml</code>
      * header and mime type.
      * </p>
-     * 
+     *
      * <p>
      * The default is UTF-8
      * </p>
-     * 
+     *
      * <p>
      * Also be warned that GeoServer does not check if the CharSet is valid
      * before attempting to use it, so it will fail miserably if a bad charset
@@ -85,17 +84,17 @@ public class GlobalConfig {
 
     /**
      * The base URL where this servlet will run.
-     * 
+     *
      * <p>
      * If running locally then <code>http://localhost:8080</code> (or whatever
      * port you're running on) should work.
      * </p>
-     * 
+     *
      * <p>
      * If you are serving to the world then this must be the location where the
      * geoserver servlets appear
      * </p>
-     * 
+     *
      * <p>
      * JG - can we figure this out at runtime?
      * </p>
@@ -104,12 +103,12 @@ public class GlobalConfig {
 
     /**
      * Define a base url for the location of the wfs schemas.
-     * 
+     *
      * <p>
      * By default GeoServer  loads and references its own at
      * <code>/data/capabilities</code>.
      * </p>
-     * 
+     *
      * <p>
      * The standalone Tomcat server needs SchemaBaseUrl defined for validation.
      * </p>
@@ -118,12 +117,12 @@ public class GlobalConfig {
 
     /**
      * Defines the Application logging level.
-     * 
+     *
      * <p>
      * Common options are SEVERE, WARNING, INFO, CONFIG,  FINER, FINEST, in
      * order of Increasing statements logged.
      * </p>
-     * 
+     *
      * <p>
      * There may be more then one point of control - the web containers often
      * controls logging, the jakarta commons logging system is used by struts,
@@ -134,18 +133,18 @@ public class GlobalConfig {
     private Level loggingLevel = null;
     private String adminUserName;
     private String adminPassword;
-	/** Whether the exceptions returned to the client should contain full stack traces */
+
+    /** Whether the exceptions returned to the client should contain full stack traces */
     private boolean verboseExceptions;
 
     /** The Server contact person and their contact information. */
     private ContactConfig contact = null;
-    
+
     /** to log to disk or not to log to disk **/
     private boolean loggingToFile = false;
+
     /** location on disk to log to **/
     private String logLocation = null;
-
-    
     private long jaiMemoryCapacity;
     private double jaiMemoryThreshold;
     private int jaiTileThreads;
@@ -154,10 +153,10 @@ public class GlobalConfig {
     private boolean imageIOCache;
     private boolean jaiJPEGNative;
     private boolean jaiPNGNative;
-    
+
     /**
      * GlobalConfig constructor.
-     * 
+     *
      * <p>
      * Creates an instance of GlobalConfig and initializes to default settings.
      * </p>
@@ -178,17 +177,16 @@ public class GlobalConfig {
 
     /**
      * Instantiates the global config from the geoServer module.
-     * 
+     *
      * @param geoserver The geoServer module.
      */
-    public GlobalConfig ( GeoServer geoserver ) {
-    		this ( (GeoServerDTO) geoserver.toDTO() );
+    public GlobalConfig(GeoServer geoserver) {
+        this((GeoServerDTO) geoserver.toDTO());
     }
- 
 
     /**
      * GlobalConfig constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the GeoServerDTO object provided.  Charset is not
      * cloned, everything else is.
@@ -213,10 +211,10 @@ public class GlobalConfig {
         adminUserName = g.getAdminUserName();
         adminPassword = g.getAdminPassword();
         verboseExceptions = g.isVerboseExceptions();
-        
+
         loggingToFile = g.getLoggingToFile();
         logLocation = g.getLogLocation();
-        
+
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
         jaiMemoryThreshold = g.getJaiMemoryThreshold();
         jaiTileThreads = g.getJaiTileThreads();
@@ -225,7 +223,7 @@ public class GlobalConfig {
         imageIOCache = g.getImageIOCache().booleanValue();
         jaiJPEGNative = g.getJaiJPEGNative().booleanValue();
         jaiPNGNative = g.getJaiPNGNative().booleanValue();
-        
+
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
         } else {
@@ -235,7 +233,7 @@ public class GlobalConfig {
 
     /**
      * Implement updateDTO.
-     * 
+     *
      * <p>
      * Populates this instance with the GeoServerDTO object provided.
      * </p>
@@ -248,8 +246,7 @@ public class GlobalConfig {
      */
     public void update(GeoServerDTO g) {
         if (g == null) {
-            throw new NullPointerException(
-                "GeoServer Data Transfer Object required");
+            throw new NullPointerException("GeoServer Data Transfer Object required");
         }
 
         maxFeatures = g.getMaxFeatures();
@@ -258,13 +255,13 @@ public class GlobalConfig {
         charSet = g.getCharSet();
         schemaBaseUrl = g.getSchemaBaseUrl();
         proxyBaseUrl = g.getProxyBaseUrl();
-        
+
         loggingLevel = g.getLoggingLevel();
-		verboseExceptions = g.isVerboseExceptions();
-        
-		loggingToFile = g.getLoggingToFile();
-		logLocation = g.getLogLocation();
-        
+        verboseExceptions = g.isVerboseExceptions();
+
+        loggingToFile = g.getLoggingToFile();
+        logLocation = g.getLogLocation();
+
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
         jaiMemoryThreshold = g.getJaiMemoryThreshold();
         jaiTileThreads = g.getJaiTileThreads();
@@ -273,7 +270,7 @@ public class GlobalConfig {
         imageIOCache = g.getImageIOCache().booleanValue();
         jaiJPEGNative = g.getJaiJPEGNative().booleanValue();
         jaiPNGNative = g.getJaiPNGNative().booleanValue();
-        
+
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
         } else {
@@ -283,7 +280,7 @@ public class GlobalConfig {
 
     /**
      * Implement toDTO.
-     * 
+     *
      * <p>
      * Creates a copy of the data in a GeoServerDTO representation
      * </p>
@@ -302,7 +299,7 @@ public class GlobalConfig {
         g.setLoggingLevel(loggingLevel);
         g.setCharSet(charSet);
         g.setSchemaBaseUrl(schemaBaseUrl);
-		g.setVerboseExceptions(verboseExceptions);
+        g.setVerboseExceptions(verboseExceptions);
         g.setContact((ContactDTO) contact.toDTO());
         g.setLoggingToFile(loggingToFile);
         g.setLogLocation(logLocation);
@@ -321,7 +318,7 @@ public class GlobalConfig {
 
     /**
      * getBaseUrl purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -334,7 +331,7 @@ public class GlobalConfig {
 
     /**
      * getCharSet purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -347,7 +344,7 @@ public class GlobalConfig {
 
     /**
      * getContact purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -360,7 +357,7 @@ public class GlobalConfig {
 
     /**
      * getMaxFeatures purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -373,7 +370,7 @@ public class GlobalConfig {
 
     /**
      * getNumDecimals purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -386,7 +383,7 @@ public class GlobalConfig {
 
     /**
      * getSchemaBaseUrl purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -399,7 +396,7 @@ public class GlobalConfig {
 
     /**
      * isVerbose purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -412,7 +409,7 @@ public class GlobalConfig {
 
     /**
      * setBaseUrl purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -425,7 +422,7 @@ public class GlobalConfig {
 
     /**
      * setCharSet purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -442,7 +439,7 @@ public class GlobalConfig {
 
     /**
      * setContact purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -459,7 +456,7 @@ public class GlobalConfig {
 
     /**
      * setMaxFeatures purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -472,7 +469,7 @@ public class GlobalConfig {
 
     /**
      * setNumDecimals purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -485,7 +482,7 @@ public class GlobalConfig {
 
     /**
      * setSchemaBaseUrl purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -498,7 +495,7 @@ public class GlobalConfig {
 
     /**
      * setVerbose purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -511,7 +508,7 @@ public class GlobalConfig {
 
     /**
      * getLoggingLevel purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -524,7 +521,7 @@ public class GlobalConfig {
 
     /**
      * setLoggingLevel purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -571,72 +568,72 @@ public class GlobalConfig {
     public void setAdminPassword(String password) {
         this.adminPassword = password;
     }
-    
-	/**
-	 * Should we display stackTraces or not? (And give them a nice little
-	 * message instead?)
-	 *
-	 * @return Returns the showStackTraces.
-	 */
-	public boolean isVerboseExceptions() {
-		return verboseExceptions;
-	}
 
-	/**
-	 * If set to true, response exceptions will throw their stack trace back to
-	 * the end user.
-	 *
-	 * @param showStackTraces The showStackTraces to set.
-	 */
-	public void setVerboseExceptions(boolean showStackTraces) {
-		this.verboseExceptions = showStackTraces;
-	}
-	
-	/**
-	 * @return The string representation of the path on disk in which the 
-	 * server logs to.
-	 */
-	public String getLogLocation() {
-		return logLocation;
-	}
-	
-	/**
-	 * @param logLocation The string representation of the path on disk in which 
-	 * the server logs to.
-	 */
-	public void setLogLocation(String logLocation) {
-		this.logLocation = logLocation;
-	}
-	
-	/**
-	 * @return True if the server is logging to file, otherwise false.
-	 */
-	public boolean getLoggingToFile() {
-		return loggingToFile;
-	}
-	
-	/**
-	 * Toggles server logging to file.
-	 */
-	public void setLoggingToFile(boolean loggingToFile) {
-		this.loggingToFile = loggingToFile;
-	}
+    /**
+     * Should we display stackTraces or not? (And give them a nice little
+     * message instead?)
+     *
+     * @return Returns the showStackTraces.
+     */
+    public boolean isVerboseExceptions() {
+        return verboseExceptions;
+    }
 
-	public long getJaiMemoryCapacity() {
-		return jaiMemoryCapacity;
-	}
+    /**
+     * If set to true, response exceptions will throw their stack trace back to
+     * the end user.
+     *
+     * @param showStackTraces The showStackTraces to set.
+     */
+    public void setVerboseExceptions(boolean showStackTraces) {
+        this.verboseExceptions = showStackTraces;
+    }
 
-	public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
-		this.jaiMemoryCapacity = jaiMemoryCapacity;
-	}
+    /**
+     * @return The string representation of the path on disk in which the
+     * server logs to.
+     */
+    public String getLogLocation() {
+        return logLocation;
+    }
 
-	public boolean isJaiRecycling() {
-		return jaiRecycling;
-	}
+    /**
+     * @param logLocation The string representation of the path on disk in which
+     * the server logs to.
+     */
+    public void setLogLocation(String logLocation) {
+        this.logLocation = logLocation;
+    }
 
-	public void setJaiRecycling(boolean jaiRecycling) {
-		this.jaiRecycling = jaiRecycling;
-	}
+    /**
+     * @return True if the server is logging to file, otherwise false.
+     */
+    public boolean getLoggingToFile() {
+        return loggingToFile;
+    }
+
+    /**
+     * Toggles server logging to file.
+     */
+    public void setLoggingToFile(boolean loggingToFile) {
+        this.loggingToFile = loggingToFile;
+    }
+
+    public long getJaiMemoryCapacity() {
+        return jaiMemoryCapacity;
+    }
+
+    public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
+        this.jaiMemoryCapacity = jaiMemoryCapacity;
+    }
+
+    public boolean isJaiRecycling() {
+        return jaiRecycling;
+    }
+
+    public void setJaiRecycling(boolean jaiRecycling) {
+        this.jaiRecycling = jaiRecycling;
+    }
 
     public boolean isImageIOCache() {
         return imageIOCache;
@@ -646,42 +643,43 @@ public class GlobalConfig {
         this.imageIOCache = imageIOCache;
     }
 
-	public boolean isJaiJPEGNative() {
-		return jaiJPEGNative;
-	}
+    public boolean isJaiJPEGNative() {
+        return jaiJPEGNative;
+    }
 
-	public void setJaiJPEGNative(boolean jaiJPEGNative) {
-		this.jaiJPEGNative = jaiJPEGNative;
-	}
+    public void setJaiJPEGNative(boolean jaiJPEGNative) {
+        this.jaiJPEGNative = jaiJPEGNative;
+    }
 
-	public boolean isJaiPNGNative() {
-		return jaiPNGNative;
-	}
+    public boolean isJaiPNGNative() {
+        return jaiPNGNative;
+    }
 
-	public void setJaiPNGNative(boolean jaiPNGNative) {
-		this.jaiPNGNative = jaiPNGNative;
-	}
+    public void setJaiPNGNative(boolean jaiPNGNative) {
+        this.jaiPNGNative = jaiPNGNative;
+    }
 
     public double getJaiMemoryThreshold() {
-		return jaiMemoryThreshold;
-	}
-	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
-		this.jaiMemoryThreshold = jaiMemoryThreshold;
-	}
+        return jaiMemoryThreshold;
+    }
 
-	public int getJaiTilePriority() {
-		return jaiTilePriority;
-	}
+    public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
+        this.jaiMemoryThreshold = jaiMemoryThreshold;
+    }
 
-	public void setJaiTilePriority(int jaiTilePriority) {
-		this.jaiTilePriority = jaiTilePriority;
-	}
+    public int getJaiTilePriority() {
+        return jaiTilePriority;
+    }
 
-	public int getJaiTileThreads() {
-		return jaiTileThreads;
-	}
+    public void setJaiTilePriority(int jaiTilePriority) {
+        this.jaiTilePriority = jaiTilePriority;
+    }
 
-	public void setJaiTileThreads(int jaiTileThreads) {
-		this.jaiTileThreads = jaiTileThreads;
-	}
+    public int getJaiTileThreads() {
+        return jaiTileThreads;
+    }
+
+    public void setJaiTileThreads(int jaiTileThreads) {
+        this.jaiTileThreads = jaiTileThreads;
+    }
 }

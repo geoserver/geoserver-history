@@ -6,7 +6,6 @@ package org.vfny.geoserver.requests;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.geotools.filter.FidFilter;
 import org.vfny.geoserver.wfs.requests.TransactionRequest;
 import org.vfny.geoserver.wfs.requests.UpdateRequest;
@@ -88,5 +87,4 @@ public class UpdateSuiteTest extends TransactionSuiteTest {
         // run test       
         assertTrue(runXmlTest(baseRequest, "update5", true));
     }
-
 }

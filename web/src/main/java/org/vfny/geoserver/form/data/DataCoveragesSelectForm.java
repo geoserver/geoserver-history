@@ -2,18 +2,15 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-
 package org.vfny.geoserver.form.data;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.DataConfig;
-
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,82 +22,80 @@ import javax.servlet.http.HttpServletRequest;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class DataCoveragesSelectForm extends ActionForm {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1300704188707189533L;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1300704188707189533L;
+    /**
+     *
+     */
+    private String selectedCoverageName;
 
-	/**
-	 * 
-	 */
-	private String selectedCoverageName;
-
-	/**
-	 * 
-	 */
-	private String buttonAction;
-
+    /**
+     *
+     */
+    private String buttonAction;
 
     public void reset(ActionMapping arg0, HttpServletRequest arg1) {
         super.reset(arg0, arg1);
         selectedCoverageName = "";
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
+
         return errors;
     }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return Returns the selectedCoverageName.
-	 */
-	public String getSelectedCoverageName() {
-		return selectedCoverageName;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return Returns the selectedCoverageName.
+     */
+    public String getSelectedCoverageName() {
+        return selectedCoverageName;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param selectedCoverageName The selectedCoverageName to set.
-	 */
-	public void setSelectedCoverageName(String selectedCoverageName) {
-		this.selectedCoverageName = selectedCoverageName;
-	}
-
+    /**
+     * DOCUMENT ME!
+     *
+     * @param selectedCoverageName The selectedCoverageName to set.
+     */
+    public void setSelectedCoverageName(String selectedCoverageName) {
+        this.selectedCoverageName = selectedCoverageName;
+    }
 
     public Set getCoverageNames() {
         ServletContext context = getServlet().getServletContext();
         DataConfig config = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 
         Object[] keys = config.getCoverages().keySet().toArray();
-    	Arrays.sort(keys);
+        Arrays.sort(keys);
+
         TreeSet sorted = new TreeSet();
-        for (int i=0; i<keys.length; i++)
-        	sorted.add(keys[i]);
-        
-        return sorted;//config.getCoverages().keySet();
+
+        for (int i = 0; i < keys.length; i++)
+            sorted.add(keys[i]);
+
+        return sorted; //config.getCoverages().keySet();
     }
 
-	/**
-	 * Access buttonAction property.
-	 * 
-	 * @return Returns the buttonAction.
-	 */
-	public String getButtonAction() {
-		return buttonAction;
-	}
+    /**
+     * Access buttonAction property.
+     *
+     * @return Returns the buttonAction.
+     */
+    public String getButtonAction() {
+        return buttonAction;
+    }
 
-	/**
-	 * Set buttonAction to buttonAction.
-	 * 
-	 * @param buttonAction The buttonAction to set.
-	 */
-	public void setButtonAction(String buttonAction) {
-		this.buttonAction = buttonAction;
-	}
-
+    /**
+     * Set buttonAction to buttonAction.
+     *
+     * @param buttonAction The buttonAction to set.
+     */
+    public void setButtonAction(String buttonAction) {
+        this.buttonAction = buttonAction;
+    }
 }

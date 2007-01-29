@@ -9,12 +9,12 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 
 /**
  * NameSpaceConfig purpose.
- * 
+ *
  * <p>
  * Represents the portion of a namespace required for the configuration of
  * geoserver. Defines namespaces to be used by the datastores.
  * </p>
- * 
+ *
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
@@ -34,7 +34,7 @@ public class NameSpaceConfig {
 
     /**
      * NameSpaceConfig constructor.
-     * 
+     *
      * <p>
      * Creates a NameSpaceConfig to represent an instance with default data.
      * </p>
@@ -49,7 +49,7 @@ public class NameSpaceConfig {
 
     /**
      * NameSpaceConfig constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig
      * provided  is null then default values are used. All the data structures
@@ -72,7 +72,7 @@ public class NameSpaceConfig {
 
     /**
      * Implement loadDTO.
-     * 
+     *
      * <p>
      * Imports the data contained in the NameSpaceInfoDTO object provided.
      * </p>
@@ -85,8 +85,7 @@ public class NameSpaceConfig {
      */
     public void update(NameSpaceInfoDTO dto) {
         if (dto == null) {
-            throw new NullPointerException(
-                "NameSpace Data Transfer Object required");
+            throw new NullPointerException("NameSpace Data Transfer Object required");
         }
 
         NameSpaceInfoDTO ns = (NameSpaceInfoDTO) dto;
@@ -97,7 +96,7 @@ public class NameSpaceConfig {
 
     /**
      * Implement toDTO.
-     * 
+     *
      * <p>
      * Creates a DTO representation of this Object as a NameSpaceInfoDTO
      * </p>
@@ -117,7 +116,7 @@ public class NameSpaceConfig {
 
     /**
      * isDefault purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -130,7 +129,7 @@ public class NameSpaceConfig {
 
     /**
      * getPrefix purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -143,7 +142,7 @@ public class NameSpaceConfig {
 
     /**
      * getUri purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -156,7 +155,7 @@ public class NameSpaceConfig {
 
     /**
      * setDdefault purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -169,7 +168,7 @@ public class NameSpaceConfig {
 
     /**
      * setPrefix purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -182,7 +181,7 @@ public class NameSpaceConfig {
 
     /**
      * setUri purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>

@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses.map.svg;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -63,7 +62,7 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
     /**
      * By now SVG map producer does not have external dependencied (such as
      * Batik), so just returns <code>true</code>.
-     * 
+     *
      * <p>
      * It is most probable that this situation change in the future, like when
      * adding Styling support.
@@ -78,7 +77,7 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
     /**
      * evaluates if this Map producer can generate the map format specified by
      * <code>mapFormat</code>
-     * 
+     *
      * <p>
      * In this case, true if <code>mapFormat</code> starts with "image/svg", as
      * both <code>"image/svg"</code> and <code>"image/svg+xml"</code> are
@@ -104,25 +103,25 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
      */
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
-        
-    	if (wms != null) {
-    		
-    		if (WMSConfig.SVG_SIMPLE.equals(wms.getSvgRenderer()))
-				return new SVGMapProducer();
-    		if (WMSConfig.SVG_BATIK.equals(wms.getSvgRenderer()))
-    			return new SVGBatikMapProducer(wms);
-    	}
-    
-    	//do the default
-    	return new SVGMapProducer();
+        if (wms != null) {
+            if (WMSConfig.SVG_SIMPLE.equals(wms.getSvgRenderer())) {
+                return new SVGMapProducer();
+            }
+
+            if (WMSConfig.SVG_BATIK.equals(wms.getSvgRenderer())) {
+                return new SVGBatikMapProducer(wms);
+            }
+        }
+
+        //do the default
+        return new SVGMapProducer();
     }
-    
+
     /* (non-Javadoc)
-	 * @see org.geotools.factory.Factory#getImplementationHints()
-	 * This just returns java.util.Collections.EMPTY_MAP
-	 */
-	public Map getImplementationHints() {
-		return java.util.Collections.EMPTY_MAP;
-	}
-	
+         * @see org.geotools.factory.Factory#getImplementationHints()
+         * This just returns java.util.Collections.EMPTY_MAP
+         */
+    public Map getImplementationHints() {
+        return java.util.Collections.EMPTY_MAP;
+    }
 }

@@ -4,24 +4,23 @@
  */
 package org.vfny.geoserver.wms;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
+import java.io.IOException;
+import java.io.OutputStream;
 
 
 /**
  * Provides the skeleton for producers of a legend image, as required by the
  * GetLegendGraphic WMS request.
- * 
+ *
  * <p>
  * To incorporate a new producer specialized in one or many output formats,
  * there must be a {@linkPlain
  * org.vfny.geoserver.responses.wms.GetLegendGraphicProducerSpi} registered
  * that can provide instances of that concrete implementation.
  * </p>
- * 
+ *
  * <p>
  * The methods defined in this interface respects the general parse
  * request/produce response/get mime type/write content workflow, so they

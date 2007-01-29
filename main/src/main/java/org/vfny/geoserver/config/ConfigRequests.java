@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -15,12 +16,12 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Utility methods for locatating Config classes in the Servlet context.
- * 
+ *
  * <p>
  * Called by ActionForms to lookup things in the WebContainer for the JSP page.
  * Similar to the Requests utility classes.
  * </p>
- * 
+ *
  * <p>
  * These methods need to be kept in lockstep with the ConfigAction convience
  * methods.
@@ -33,7 +34,7 @@ import javax.servlet.http.HttpSession;
 public class ConfigRequests {
     /**
      * Access Web Map Server Configuration Model from the WebContainer.
-     * 
+     *
      * <p>
      * Note that this represents the Configuration and not the state of the Web
      * Feature Server.
@@ -43,17 +44,18 @@ public class ConfigRequests {
      *
      * @return Configuration information for the Web Map Server
      */
-	//JD: kill this
-//    public static WMSConfig getWMSConfig(HttpServletRequest request) {
-//        HttpSession session = request.getSession();
-//        ServletContext context = session.getServletContext();
-//
-//        return (WMSConfig) context.getAttribute(WMSConfig.CONFIG_KEY);
-//    }
+
+    //JD: kill this
+    //    public static WMSConfig getWMSConfig(HttpServletRequest request) {
+    //        HttpSession session = request.getSession();
+    //        ServletContext context = session.getServletContext();
+    //
+    //        return (WMSConfig) context.getAttribute(WMSConfig.CONFIG_KEY);
+    //    }
 
     /**
      * Access Web Feature Server Configuration Model from the WebContainer.
-     * 
+     *
      * <p>
      * Note that this represents the Configuration and not the state of the Web
      * Feature Server.
@@ -63,13 +65,14 @@ public class ConfigRequests {
      *
      * @return Configuration information for Web Feature Server
      */
-//	JD: kill this
-//    public static WFSConfig getWFSConfig(HttpServletRequest request) {
-//        HttpSession session = request.getSession();
-//        ServletContext context = session.getServletContext();
-//
-//        return (WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
-//    }
+
+    //	JD: kill this
+    //    public static WFSConfig getWFSConfig(HttpServletRequest request) {
+    //        HttpSession session = request.getSession();
+    //        ServletContext context = session.getServletContext();
+    //
+    //        return (WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
+    //    }
 
     /**
      * Access Web Map Server Configuration Model from the WebContainer.

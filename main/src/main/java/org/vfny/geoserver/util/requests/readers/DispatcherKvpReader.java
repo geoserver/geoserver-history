@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.util.requests.readers;
 
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.servlets.Dispatcher;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -15,11 +17,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.servlet.http.HttpServletRequest;
-
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.servlets.Dispatcher;
 
 
 /**
@@ -31,13 +29,10 @@ import org.vfny.geoserver.servlets.Dispatcher;
  */
 public class DispatcherKvpReader {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.readers");
-
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
     private String queryString;
-    
     private Map requestParams;
-    
+
     /**
      * Constructor with raw request string.  Calls parent.
      *
@@ -45,23 +40,23 @@ public class DispatcherKvpReader {
      * @param req The actual request made.
      *
      * @throws ServiceException DOCUMENT ME!
-     * @throws IOException 
+     * @throws IOException
      */
     public void read(BufferedReader requestReader, HttpServletRequest req)
         throws ServiceException, IOException {
-    	final StringBuffer output = new StringBuffer();
+        final StringBuffer output = new StringBuffer();
         int c;
 
         while (-1 != (c = requestReader.read())) {
-        	output.append((char)c);
+            output.append((char) c);
         }
+
         requestReader.close();
         this.queryString = output.toString();
 
         this.requestParams = KvpRequestReader.parseKvpSet(this.queryString);
-        
     }
-    
+
     /**
      * Returns the request type for a given KVP set.
      *
@@ -76,8 +71,7 @@ public class DispatcherKvpReader {
         if (responseType != null) {
             responseType = responseType.toUpperCase();
 
-            if (responseType.equals("GETCAPABILITIES") 
-                || responseType.equals("CAPABILITIES")) {
+            if (responseType.equals("GETCAPABILITIES") || responseType.equals("CAPABILITIES")) {
                 return Dispatcher.GET_CAPABILITIES_REQUEST;
             } else if (responseType.equals("DESCRIBEFEATURETYPE")) {
                 return Dispatcher.DESCRIBE_FEATURE_TYPE_REQUEST;
@@ -89,17 +83,15 @@ public class DispatcherKvpReader {
                 return Dispatcher.GET_FEATURE_LOCK_REQUEST;
             } else if (responseType.equals("LOCKFEATURE")) {
                 return Dispatcher.LOCK_REQUEST;
-            } else if (responseType.equals("GETMAP") ||
-                       responseType.equals("MAP")) {
+            } else if (responseType.equals("GETMAP") || responseType.equals("MAP")) {
                 return Dispatcher.GET_MAP_REQUEST;
             } else if (responseType.equals("GETFEATUREINFO")) {
                 return Dispatcher.GET_FEATURE_INFO_REQUEST;
-            }else if (responseType.equals("DESCRIBELAYER")) {
+            } else if (responseType.equals("DESCRIBELAYER")) {
                 return Dispatcher.DESCRIBE_LAYER_REQUEST;
-            }else if (responseType.equals("GETLEGENDGRAPHIC")) {
+            } else if (responseType.equals("GETLEGENDGRAPHIC")) {
                 return Dispatcher.GET_LEGEND_GRAPHIC_REQUEST;
-            }
-            else {
+            } else {
                 return Dispatcher.UNKNOWN;
             }
         } else {
@@ -131,30 +123,30 @@ public class DispatcherKvpReader {
             return Dispatcher.UNKNOWN;
         }
     }
-    
+
     /**
      * @return The service, WFS,WMS,WCS,etc...
      */
     public String getService() {
-    	if (requestParams.containsKey("SERVICE")) {
-    		return (String) requestParams.get("SERVICE");
-    	} else {
-    		return null;
-    	}
+        if (requestParams.containsKey("SERVICE")) {
+            return (String) requestParams.get("SERVICE");
+        } else {
+            return null;
+        }
     }
-    
+
     /**
      * @return The request, GetCapabilities,GetMap,etc...
      */
     public String getRequest() {
-    	if (requestParams.containsKey("REQUEST")) {
-    		return (String) requestParams.get("REQUEST");
-    	} else {
-    		return null;
-    	}
+        if (requestParams.containsKey("REQUEST")) {
+            return (String) requestParams.get("REQUEST");
+        } else {
+            return null;
+        }
     }
 
-	public String getQueryString() {
-		return queryString;
-	}
+    public String getQueryString() {
+        return queryString;
+    }
 }

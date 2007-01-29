@@ -2,18 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-
 package org.vfny.geoserver.action.data;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -29,6 +18,14 @@ import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.form.data.DataDataStoresEditorForm;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -38,8 +35,8 @@ import org.vfny.geoserver.util.DataStoreUtils;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class DataDataStoresEditorAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         DataDataStoresEditorForm dataStoresForm = (DataDataStoresEditorForm) form;
 
@@ -52,12 +49,12 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
         config = (DataStoreConfig) dataConfig.getDataStore(dataStoreID);
 
-        if( config == null ) {
-        	// we are creating a new one.
+        if (config == null) {
+            // we are creating a new one.
             dataConfig.addDataStore(getUserContainer(request).getDataStoreConfig());
-            config = (DataStoreConfig) dataConfig.getDataStore(dataStoreID);            
+            config = (DataStoreConfig) dataConfig.getDataStore(dataStoreID);
         }
-        
+
         // After extracting params into a map
         Map connectionParams = new HashMap(); // values used for connection
         Map paramTexts = new HashMap(); // values as stored
@@ -75,7 +72,6 @@ public class DataDataStoresEditorAction extends ConfigAction {
             Param param = DataStoreUtils.find(info, key);
 
             if (param == null) {
-
                 ActionErrors errors = new ActionErrors();
                 errors.add(ActionErrors.GLOBAL_ERROR,
                     new ActionError("error.cannotProcessConnectionParams"));
@@ -89,7 +85,6 @@ public class DataDataStoresEditorAction extends ConfigAction {
             try {
                 value = param.lookUp(params);
             } catch (IOException erp) {
-
                 ActionErrors errors = new ActionErrors();
                 errors.add(ActionErrors.GLOBAL_ERROR,
                     new ActionError("error.cannotProcessConnectionParams"));
@@ -98,7 +93,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
                 return mapping.findForward("config.data.store.editor");
             }
 
-            if (value != null && !"".equals(value)) {
+            if ((value != null) && !"".equals(value)) {
                 connectionParams.put(key, value);
 
                 String text = param.text(value);
@@ -108,10 +103,10 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
         // put magic namespace into the mix
         // not sure if we want to do this, as we want the full namespace, not
-	    //the id.  But getParams in DataStore may override this - ch
+        //the id.  But getParams in DataStore may override this - ch
         connectionParams.put("namespace", dataStoresForm.getNamespaceId());
         paramTexts.put("namespace", dataStoresForm.getNamespaceId());
-        
+
         //dump("editor", connectionParams );
         //dump("texts ",paramTexts );        
         if (!factory.canProcess(connectionParams)) {
@@ -126,14 +121,13 @@ public class DataDataStoresEditorAction extends ConfigAction {
         }
 
         try {
-	    ServletContext sc = request.getSession().getServletContext();
-	    Map niceParams = DataStoreUtils.getParams(connectionParams, sc);
+            ServletContext sc = request.getSession().getServletContext();
+            Map niceParams = DataStoreUtils.getParams(connectionParams, sc);
             DataStore victim = factory.createDataStore(niceParams);
 
             if (victim == null) {
                 // We *really* could not use these params!
                 //
-    
                 ActionErrors errors = new ActionErrors();
                 errors.add(ActionErrors.GLOBAL_ERROR,
                     new ActionError("error.invalidConnectionParams"));
@@ -141,8 +135,9 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
                 return mapping.findForward("config.data.store.editor");
             }
-            String typeNames[] = victim.getTypeNames();
-            dump( "typeNames", typeNames );
+
+            String[] typeNames = victim.getTypeNames();
+            dump("typeNames", typeNames);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
 
@@ -173,53 +168,64 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
         return mapping.findForward("config.data.store");
     }
+
     /** Used to debug connection parameters */
-    public void dump( String msg, Map params ){
-    	if( msg != null ){
-    		System.out.print( msg + " ");
-    	}
-    	System.out.print( ": { " );
-    	for( Iterator i=params.entrySet().iterator(); i.hasNext();){
-    		Map.Entry entry = (Map.Entry) i.next();
-    		System.out.print( entry.getKey() );
-    		System.out.print("=");
-    		dump( entry.getValue() );
-    		if( i.hasNext() ){
-    			System.out.print( ", " );
-    		}	
-    	}
-    	System.out.println( "}" );
+    public void dump(String msg, Map params) {
+        if (msg != null) {
+            System.out.print(msg + " ");
+        }
+
+        System.out.print(": { ");
+
+        for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            System.out.print(entry.getKey());
+            System.out.print("=");
+            dump(entry.getValue());
+
+            if (i.hasNext()) {
+                System.out.print(", ");
+            }
+        }
+
+        System.out.println("}");
     }
-    public void dump( Object obj ){
-    	if( obj==null){
-			System.out.print("null");
-		}
-		else if ( obj instanceof String){
-			System.out.print("\"");
-			System.out.print( obj );
-			System.out.print("\"");
-		}
-		else {
-			System.out.print( obj );
-		}
-		
+
+    public void dump(Object obj) {
+        if (obj == null) {
+            System.out.print("null");
+        } else if (obj instanceof String) {
+            System.out.print("\"");
+            System.out.print(obj);
+            System.out.print("\"");
+        } else {
+            System.out.print(obj);
+        }
     }
-    public void dump( String msg, Object array[] ){
-    	if( msg != null ){
-    		System.out.print( msg + " ");
-    	}
-    	System.out.print( ": " );
-    	if( array == null){
-    		System.out.print( "null" );
-    		return;
-    	}
-    	System.out.print( "(" );
-    	for( int i=0; i<array.length; i++){
-    		dump( array[i] );    	
-    		if( i<array.length-1 ){
-    			System.out.print( ", " );
-    		}
-		}	
-    	System.out.println( ")" );
+
+    public void dump(String msg, Object[] array) {
+        if (msg != null) {
+            System.out.print(msg + " ");
+        }
+
+        System.out.print(": ");
+
+        if (array == null) {
+            System.out.print("null");
+
+            return;
+        }
+
+        System.out.print("(");
+
+        for (int i = 0; i < array.length; i++) {
+            dump(array[i]);
+
+            if (i < (array.length - 1)) {
+                System.out.print(", ");
+            }
+        }
+
+        System.out.println(")");
     }
 }

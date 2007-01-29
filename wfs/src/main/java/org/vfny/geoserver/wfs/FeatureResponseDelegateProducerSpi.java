@@ -4,21 +4,19 @@
  */
 package org.vfny.geoserver.wfs;
 
-import java.util.Set;
-
 import org.geotools.factory.Factory;
 import org.vfny.geoserver.wfs.responses.FeatureResponseDelegate;
+import java.util.Set;
 
 
-public interface FeatureResponseDelegateProducerSpi extends Factory
-{
+public interface FeatureResponseDelegateProducerSpi extends Factory {
     /**
      * Returns a descriptive name for the factory instance.
      *
      * @return a descriptive name for the factory instance
      */
     String getName();
-    
+
     /**
      * Returns a <code>java.util.Set&lt;String&gt;</code> of the MIME types the
      * map producers this factory can create are able to handle.
@@ -26,7 +24,7 @@ public interface FeatureResponseDelegateProducerSpi extends Factory
      * @return the Set of supported output image mime types.
      */
     Set getSupportedFormats();
-    
+
     /**
      * Checks if the FeatureResponseDelegate instances this factory serves will be able
      * of working properly (e.g., external dependencies are in place). This
@@ -36,7 +34,7 @@ public interface FeatureResponseDelegateProducerSpi extends Factory
      * @return wether this factory is able to produce producer instances.
      */
     boolean isAvailable();
-    
+
     /**
      * Returns wether the FeatureResponseDelegate created by this factory can create
      * output in the specified output format.
@@ -48,7 +46,7 @@ public interface FeatureResponseDelegateProducerSpi extends Factory
      *         supported by the producers this factory serves.
      */
     boolean canProduce(String format);
-    
+
     /**
      * Creates and instance of a FeatureDelegateProducer suitable to create output
      * in the specified  format.
@@ -63,8 +61,4 @@ public interface FeatureResponseDelegateProducerSpi extends Factory
      */
     FeatureResponseDelegate createFeatureDelegateProducer(String format)
         throws IllegalArgumentException;
-    
-    
-    
-    
 }

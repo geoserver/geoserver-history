@@ -1,28 +1,25 @@
-
 /* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.form.data;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.util.DataStoreUtils;
+import java.util.Collections;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
  * Used to accept information from user for a New DataStore Action.
- * 
+ *
  * <p>
  * This form contains a convience property getDataStoreDescrptions() which is
  * simply to make writing the JSP easier.
@@ -55,7 +52,7 @@ public class DataDataStoresNewForm extends ActionForm {
 
     /**
      * List of available DataStoreDescriptions.
-     * 
+     *
      * <p>
      * Convience method for DataStureUtils.listDataStoresDescriptions().
      * </p>
@@ -80,24 +77,20 @@ public class DataDataStoresNewForm extends ActionForm {
      *
      * @return DOCUMENT ME!
      */
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if (!getDescriptions().contains(getSelectedDescription())) {
             errors.add("selectedDescription",
-                new ActionError("error.dataStoreFactory.invalid",
-                    getSelectedDescription()));
+                new ActionError("error.dataStoreFactory.invalid", getSelectedDescription()));
         }
 
         if ((getDataStoreID() == null) || getDataStoreID().equals("")) {
             errors.add("dataStoreID",
                 new ActionError("error.dataStoreId.required", getDataStoreID()));
         } else if (!Pattern.matches("^[a-zA-Z](\\w|\\.)*$", getDataStoreID())) {
-            errors.add("dataStoreID",
-                    new ActionError("error.dataStoreId.invalid", getDataStoreID()));
+            errors.add("dataStoreID", new ActionError("error.dataStoreId.invalid", getDataStoreID()));
         }
-        
 
         return errors;
     }

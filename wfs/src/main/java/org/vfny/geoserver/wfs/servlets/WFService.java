@@ -4,18 +4,17 @@
  */
 package org.vfny.geoserver.wfs.servlets;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wfs.WfsExceptionHandler;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
  * Base servlet for all Web Feature Server requests.
- * 
+ *
  * <p>
  * Subclasses should supply the handler, request and response mapping for the
  * service they implement.
@@ -25,33 +24,31 @@ import org.vfny.geoserver.wfs.WfsExceptionHandler;
  * @version $Id: WFService.java,v 1.6 2004/02/17 22:42:32 dmzwiers Exp $
  */
 abstract public class WFService extends AbstractService {
-	
-	
     /**
-	 * Constructor for WFS service.
-	 * 
-	 * @param request The service request being made (GetCaps,GetFeature,...)
-	 * @param wfs The WFS service reference.
-	 */
+         * Constructor for WFS service.
+         *
+         * @param request The service request being made (GetCaps,GetFeature,...)
+         * @param wfs The WFS service reference.
+         */
     public WFService(String request, WFS wfs) {
-    		super("WFS",request,wfs);
+        super("WFS", request, wfs);
     }
-    
+
     /**
      * @return The wfs service ref.
      */
     public WFS getWFS() {
-    		return (WFS) getServiceRef();
+        return (WFS) getServiceRef();
     }
-    
+
     /**
      * Sets the wfs service ref.
      * @param wfs
      */
     public void setWFS(WFS wfs) {
-    		setServiceRef(wfs);
+        setServiceRef(wfs);
     }
-    
+
     /**
      * a Web Feature ServiceConfig exception handler
      *
@@ -60,8 +57,8 @@ abstract public class WFService extends AbstractService {
     protected ExceptionHandler getExceptionHandler() {
         return WfsExceptionHandler.getInstance();
     }
-    
-    protected boolean isServiceEnabled(HttpServletRequest req){
-    		return getWFS().isEnabled();
-    	}
+
+    protected boolean isServiceEnabled(HttpServletRequest req) {
+        return getWFS().isEnabled();
+    }
 }

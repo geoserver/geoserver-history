@@ -4,9 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureType;
@@ -25,20 +23,20 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * Base class for GetFeatureInfo delegates responsible of creating
  * GetFeatureInfo responses in different formats.
- * 
+ *
  * <p>
  * Subclasses should implement one or more output formats, wich will be
  * returned in a list of mime type strings in
  * <code>getSupportedFormats</code>. For example, a subclass can be created to
  * write one of the following output formats:
- * 
+ *
  * <ul>
  * <li>
  * text/plain
@@ -48,7 +46,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </li>
  * </ul>
  * </p>
- * 
+ *
  * <p>
  * This abstract class takes care of executing the request in the sense of
  * taking the GetFeatureInfo request parameters such as query_layers, bbox, x,
@@ -58,11 +56,11 @@ import com.vividsolutions.jts.geom.Envelope;
  * FeatureResults[])</code> method, that a subclass should implement as a
  * matter of setting up any resource/state it needs to later encoding.
  * </p>
- * 
+ *
  * <p>
  * So, it should be enough to a subclass to implement the following methods in
  * order to produce the requested output format:
- * 
+ *
  * <ul>
  * <li>
  * execute(FeatureTypeInfo[], FeatureResults[], int, int)
@@ -152,12 +150,12 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @throws WmsException For any problems executing.
      */
-    protected abstract void execute(FeatureTypeInfo[] requestedLayers,
-        Query[] queries, int x, int y) throws WmsException;
+    protected abstract void execute(FeatureTypeInfo[] requestedLayers, Query[] queries, int x, int y)
+        throws WmsException;
 
     /**
      * Creates the array of queries to be executed for the request.
-     * 
+     *
      * <p>
      * Each query is setted up to retrieve the features that matches the BBOX
      * specified in the GetMap request
@@ -187,13 +185,11 @@ public abstract class GetFeatureInfoDelegate implements Response {
                 finalLayerFilter = buildFilter(requestExtent, ffactory, schema);
 
                 String[] props = guessProperties(layers[i], finalLayerFilter);
-                layerQuery = new DefaultQuery(schema.getTypeName(),
-                        finalLayerFilter, props);
+                layerQuery = new DefaultQuery(schema.getTypeName(), finalLayerFilter, props);
                 queries[i] = layerQuery;
             }
         } catch (IllegalFilterException ex) {
-            throw new WmsException(ex,
-                "Can't build layer queries: " + ex.getMessage(),
+            throw new WmsException(ex, "Can't build layer queries: " + ex.getMessage(),
                 getClass().getName() + "::parseFilters");
         } catch (java.io.IOException e) {
             throw new WmsException(e);
@@ -214,8 +210,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @throws IllegalFilterException For problems making the filter.
      */
-    private Filter buildFilter(Envelope requestExtent, FilterFactory ffactory,
-        FeatureType schema) throws IllegalFilterException {
+    private Filter buildFilter(Envelope requestExtent, FilterFactory ffactory, FeatureType schema)
+        throws IllegalFilterException {
         GeometryFilter bboxFilter;
         bboxFilter = ffactory.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
 
@@ -233,14 +229,14 @@ public abstract class GetFeatureInfoDelegate implements Response {
      * given FeatureTypeInfo and the Filter that will be applied to it. By
      * this way, only the needed propertied will be queried to the underlying
      * FeatureSource in the hope that it will speed up the query
-     * 
+     *
      * <p>
      * Note that just the attributes exposed by the FeatureTypeInfo will be
      * taken in count. a FeatureTypeInfo exposes all it's attributes except if
      * the subset of desiref exposed attributes are specified in the catalog
      * configuration.
      * </p>
-     * 
+     *
      * <p>
      * This method guarantiees that at lest the default geometry attribute of
      * <code>layer</code> will be returned.

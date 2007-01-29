@@ -4,13 +4,14 @@
  */
 package org.vfny.geoserver.global.dto;
 
+
 /**
  * Data Transfer Object for communication GeoServer Web Coverage Server information.
- * 
+ *
  * <p>
  * Information required for GeoServer to set up a Web Coverage Service.
  * </p>
- * 
+ *
  * <p>
  * Data Transfer object are used to communicate between the GeoServer
  * application and its configuration and persistent layers. As such the class
@@ -22,22 +23,20 @@ package org.vfny.geoserver.global.dto;
  * @version $Id: WCSDTO.java,v 0.1 Feb 15, 2005 2:57:52 PM $
  */
 public class WCSDTO implements DataTransferObject {
+    /**
+     * For the writer!
+     *
+     * @uml.property name="gmlPrefixing" multiplicity="(0 1)"
+     */
+    private boolean gmlPrefixing;
 
-	/**
-	 * For the writer!
-	 * 
-	 * @uml.property name="gmlPrefixing" multiplicity="(0 1)"
-	 */
-	private boolean gmlPrefixing;
-
-	/**
-	 * The service parameters for this instance.
-	 * 
-	 * @uml.property name="service"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private ServiceDTO service;
-
+    /**
+     * The service parameters for this instance.
+     *
+     * @uml.property name="service"
+     * @uml.associationEnd multiplicity="(0 1)"
+     */
+    private ServiceDTO service;
 
     /**
      * WCS constructor.  does nothing
@@ -47,7 +46,7 @@ public class WCSDTO implements DataTransferObject {
 
     /**
      * WCS constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the WCS provided. If the WCS provided  is null then
      * default values are used. All the data structures are cloned.
@@ -79,7 +78,7 @@ public class WCSDTO implements DataTransferObject {
 
     /**
      * Implement equals.
-     * 
+     *
      * <p>
      * recursively tests to determine if the object passed in is a copy of this
      * object.
@@ -98,8 +97,9 @@ public class WCSDTO implements DataTransferObject {
 
         WCSDTO dto = (WCSDTO) other;
 
-        return ((gmlPrefixing == dto.gmlPrefixing) && (service == null))
-        ? (dto.getService() == null) : service.equals(dto.getService());
+        return ((gmlPrefixing == dto.gmlPrefixing) && (service == null)) ? (dto.getService() == null)
+                                                                         : service.equals(dto
+            .getService());
     }
 
     /**
@@ -110,50 +110,48 @@ public class WCSDTO implements DataTransferObject {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return (gmlPrefixing ? 1 : 0)
-        | ((service == null) ? 0 : service.hashCode());
+        return (gmlPrefixing ? 1 : 0) | ((service == null) ? 0 : service.hashCode());
     }
 
-	/**
-	 * getService purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 * 
-	 * @uml.property name="service"
-	 */
-	public ServiceDTO getService() {
-		return service;
-	}
+    /**
+     * getService purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     *
+     * @uml.property name="service"
+     */
+    public ServiceDTO getService() {
+        return service;
+    }
 
-	/**
-	 * setService purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param service
-	 * 
-	 * @throws NullPointerException DOCUMENT ME!
-	 * 
-	 * @uml.property name="service"
-	 */
-	public void setService(ServiceDTO service) {
-		if (service == null) {
-			throw new NullPointerException("ServiceDTO required");
-		}
+    /**
+     * setService purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param service
+     *
+     * @throws NullPointerException DOCUMENT ME!
+     *
+     * @uml.property name="service"
+     */
+    public void setService(ServiceDTO service) {
+        if (service == null) {
+            throw new NullPointerException("ServiceDTO required");
+        }
 
-		this.service = service;
-	}
-
+        this.service = service;
+    }
 
     /**
      * isGmlPrefixing purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -164,19 +162,18 @@ public class WCSDTO implements DataTransferObject {
         return gmlPrefixing;
     }
 
-	/**
-	 * setGmlPrefixing purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param b
-	 * 
-	 * @uml.property name="gmlPrefixing"
-	 */
-	public void setGmlPrefixing(boolean b) {
-		gmlPrefixing = b;
-	}
-
+    /**
+     * setGmlPrefixing purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param b
+     *
+     * @uml.property name="gmlPrefixing"
+     */
+    public void setGmlPrefixing(boolean b) {
+        gmlPrefixing = b;
+    }
 }

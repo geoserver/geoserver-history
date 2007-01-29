@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.form.wcs;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WCSConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -22,174 +21,173 @@ import org.vfny.geoserver.config.WCSConfig;
  */
 public final class WCSDescriptionForm extends ActionForm {
     /**
-	 * Comment for <code>serialVersionUID</code>
-	 */
-	private static final long serialVersionUID = 3258692117605068857L;
+         * Comment for <code>serialVersionUID</code>
+         */
+    private static final long serialVersionUID = 3258692117605068857L;
 
-	/**
-	 * 
-	 */
-	private String name;
+    /**
+     *
+     */
+    private String name;
 
-	/**
-	 * 
-	 */
-	private String title;
+    /**
+     *
+     */
+    private String title;
 
-	/**
-	 * 
-	 */
-	private String accessConstraints;
+    /**
+     *
+     */
+    private String accessConstraints;
 
-	/**
-	 * 
-	 */
-	private String fees;
+    /**
+     *
+     */
+    private String fees;
 
-	/**
-	 * 
-	 */
-	private String maintainer;
+    /**
+     *
+     */
+    private String maintainer;
 
-	/**
-	 * 
-	 */
-	private String keywords;
+    /**
+     *
+     */
+    private String keywords;
 
-	/**
-	 * 
-	 */
-	private String _abstract;
-
+    /**
+     *
+     */
+    private String _abstract;
 
     public WCSDescriptionForm() {
     }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return
-	 */
-	public String getTitle() {
-		return title;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getTitle() {
+        return title;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param string
-	 */
-	public void setName(String string) {
-		name = string;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setName(String string) {
+        name = string;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param string
-	 */
-	public void setTitle(String string) {
-		title = string;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setTitle(String string) {
+        title = string;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return
-	 */
-	public String get_abstract() {
-		return _abstract;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String get_abstract() {
+        return _abstract;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return
-	 */
-	public String getAccessConstraints() {
-		return accessConstraints;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getAccessConstraints() {
+        return accessConstraints;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return
-	 */
-	public String getFees() {
-		return fees;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getFees() {
+        return fees;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return
-	 */
-	public String getKeywords() {
-		return keywords;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getKeywords() {
+        return keywords;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return
-	 */
-	public String getMaintainer() {
-		return maintainer;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getMaintainer() {
+        return maintainer;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param string
-	 */
-	public void set_abstract(String string) {
-		_abstract = string;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void set_abstract(String string) {
+        _abstract = string;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param string
-	 */
-	public void setAccessConstraints(String string) {
-		accessConstraints = string;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setAccessConstraints(String string) {
+        accessConstraints = string;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param string
-	 */
-	public void setFees(String string) {
-		fees = string;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setFees(String string) {
+        fees = string;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param string
-	 */
-	public void setKeywords(String string) {
-		keywords = string;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setKeywords(String string) {
+        keywords = string;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param string
-	 */
-	public void setMaintainer(String string) {
-		maintainer = string;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setMaintainer(String string) {
+        maintainer = string;
+    }
 
     /* (non-Javadoc)
      * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
@@ -214,11 +212,9 @@ public final class WCSDescriptionForm extends ActionForm {
         }
 
         this.keywords = out;
-
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if ((name == null) || (name.length() == 0)) {
@@ -234,13 +230,11 @@ public final class WCSDescriptionForm extends ActionForm {
         }
 
         if ((accessConstraints == null) || (accessConstraints.length() == 0)) {
-            errors.add("accessConstraints",
-                new ActionError("error.accessConstraints.required"));
+            errors.add("accessConstraints", new ActionError("error.accessConstraints.required"));
         }
 
         if ((maintainer == null) || (maintainer.length() == 0)) {
-            errors.add("maintainer",
-                new ActionError("error.maintainer.required"));
+            errors.add("maintainer", new ActionError("error.maintainer.required"));
         }
 
         if ((_abstract == null) || (_abstract.length() == 0)) {

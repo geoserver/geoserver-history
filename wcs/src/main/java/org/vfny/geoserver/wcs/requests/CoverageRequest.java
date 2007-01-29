@@ -4,424 +4,412 @@
  */
 package org.vfny.geoserver.wcs.requests;
 
+import com.vividsolutions.jts.geom.Envelope;
+import org.vfny.geoserver.wcs.servlets.WCService;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.wcs.servlets.WCService;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * DOCUMENT ME!
- * 
+ *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
  */
 public class CoverageRequest extends WCSRequest {
-	/** Standard logging instance for class */
-	private static final Logger LOGGER = Logger
-			.getLogger("org.vfny.geoserver.requests");
+    /** Standard logging instance for class */
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
-	/**
-	 * 
-	 * @uml.property name="coverage" multiplicity="(0 1)"
-	 */
-	protected String coverage = null;
+    /**
+     *
+     * @uml.property name="coverage" multiplicity="(0 1)"
+     */
+    protected String coverage = null;
 
-	/**
-	 * 
-	 * @uml.property name="outputFormat" multiplicity="(0 1)"
-	 */
-	protected String outputFormat = null;
+    /**
+     *
+     * @uml.property name="outputFormat" multiplicity="(0 1)"
+     */
+    protected String outputFormat = null;
+    protected String CRS = null;
+    protected String ResponseCRS = null;
 
-	protected String CRS = null;
+    /**
+     *
+     * @uml.property name="envelope"
+     * @uml.associationEnd multiplicity="(0 1)"
+     */
+    protected Envelope envelope = null;
 
-	protected String ResponseCRS = null;
+    /**
+     *
+     * @uml.property name="interpolation" multiplicity="(0 1)"
+     */
+    protected String interpolation = null;
 
-	/**
-	 * 
-	 * @uml.property name="envelope"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	protected Envelope envelope = null;
+    /**
+     *
+     * @uml.property name="handle" multiplicity="(0 1)"
+     */
+    protected String handle = null;
+    protected String coverageVersion = null;
 
-	/**
-	 * 
-	 * @uml.property name="interpolation" multiplicity="(0 1)"
-	 */
-	protected String interpolation = null;
+    /**
+     *
+     * @uml.property name="gridDimension" multiplicity="(0 1)"
+     */
+    private int gridDimension;
 
-	/**
-	 * 
-	 * @uml.property name="handle" multiplicity="(0 1)"
-	 */
-	protected String handle = null;
+    /**
+     *
+     * @uml.property name="gridLow" multiplicity="(0 1)"
+     */
+    private Double[] gridLow;
 
-	protected String coverageVersion = null;
+    /**
+     *
+     * @uml.property name="gridHigh" multiplicity="(0 1)"
+     */
+    private Double[] gridHigh;
 
-	/**
-	 * 
-	 * @uml.property name="gridDimension" multiplicity="(0 1)"
-	 */
-	private int gridDimension;
+    /**
+     *
+     * @uml.property name="gridOrigin" multiplicity="(0 1)"
+     */
+    private Double[] gridOrigin;
+    private Map parameters;
 
-	/**
-	 * 
-	 * @uml.property name="gridLow" multiplicity="(0 1)"
-	 */
-	private Double[] gridLow;
+    public CoverageRequest(WCService service) {
+        super("GetCoverage", service);
+    }
 
-	/**
-	 * 
-	 * @uml.property name="gridHigh" multiplicity="(0 1)"
-	 */
-	private Double[] gridHigh;
+    /**
+     *
+     * @uml.property name="outputFormat"
+     */
+    public void setOutputFormat(String outputFormat) {
+        this.outputFormat = outputFormat;
+    }
 
-	/**
-	 * 
-	 * @uml.property name="gridOrigin" multiplicity="(0 1)"
-	 */
-	private Double[] gridOrigin;
+    /**
+     *
+     * @uml.property name="outputFormat"
+     */
+    public String getOutputFormat() {
+        return this.outputFormat;
+    }
 
-	private Map parameters;
+    /**
+     *
+     * @uml.property name="handle"
+     */
+    public void setHandle(String handle) {
+        this.handle = handle;
+    }
 
-	public CoverageRequest(WCService service) {
-		super("GetCoverage", service);
-	}
+    /**
+     *
+     * @uml.property name="handle"
+     */
+    public String getHandle() {
+        return this.handle;
+    }
 
-	/**
-	 * 
-	 * @uml.property name="outputFormat"
-	 */
-	public void setOutputFormat(String outputFormat) {
-		this.outputFormat = outputFormat;
-	}
+    public void setCoverageVersion(String version) {
+        this.version = version;
+    }
 
-	/**
-	 * 
-	 * @uml.property name="outputFormat"
-	 */
-	public String getOutputFormat() {
-		return this.outputFormat;
-	}
+    public String getCoverageVersion() {
+        return this.version;
+    }
 
-	/**
-	 * 
-	 * @uml.property name="handle"
-	 */
-	public void setHandle(String handle) {
-		this.handle = handle;
-	}
+    public String toString() {
+        StringBuffer returnString = new StringBuffer("\nRequest");
+        returnString.append(": ").append(handle);
+        returnString.append("\n coverage:").append(coverage);
+        returnString.append("\n output format:").append(outputFormat);
+        returnString.append("\n version:").append(version);
+        returnString.append("\n envelope:").append(envelope);
+        returnString.append("\n interpolation:").append(interpolation);
 
-	/**
-	 * 
-	 * @uml.property name="handle"
-	 */
-	public String getHandle() {
-		return this.handle;
-	}
+        return returnString.toString();
+    }
 
-	public void setCoverageVersion(String version) {
-		this.version = version;
-	}
+    public boolean equals(Object obj) {
+        super.equals(obj);
 
-	public String getCoverageVersion() {
-		return this.version;
-	}
+        if (!(obj instanceof CoverageRequest)) {
+            return false;
+        }
 
-	public String toString() {
-		StringBuffer returnString = new StringBuffer("\nRequest");
-		returnString.append(": ").append(handle);
-		returnString.append("\n coverage:").append(coverage);
-		returnString.append("\n output format:").append(outputFormat);
-		returnString.append("\n version:").append(version);
-		returnString.append("\n envelope:").append(envelope);
-		returnString.append("\n interpolation:").append(interpolation);
+        CoverageRequest request = (CoverageRequest) obj;
+        boolean isEqual = true;
 
-		return returnString.toString();
-	}
+        if ((this.coverage == null) && (request.getCoverage() == null)) {
+            isEqual = isEqual && true;
+        } else if ((this.coverage == null) || (request.getCoverage() == null)) {
+            isEqual = false;
+        } else if (request.getCoverage().equals(coverage)) {
+            isEqual = isEqual && true;
+        } else {
+            isEqual = false;
+        }
 
-	public boolean equals(Object obj) {
-		super.equals(obj);
+        if ((this.version == null) && (request.getVersion() == null)) {
+            isEqual = isEqual && true;
+        } else if ((this.version == null) || (request.getVersion() == null)) {
+            isEqual = false;
+        } else if (request.getVersion().equals(version)) {
+            isEqual = isEqual && true;
+        } else {
+            isEqual = false;
+        }
 
-		if (!(obj instanceof CoverageRequest)) {
-			return false;
-		}
+        if ((this.handle == null) && (request.getHandle() == null)) {
+            isEqual = isEqual && true;
+        } else if ((this.handle == null) || (request.getHandle() == null)) {
+            isEqual = false;
+        } else if (request.getHandle().equals(handle)) {
+            isEqual = isEqual && true;
+        } else {
+            isEqual = false;
+        }
 
-		CoverageRequest request = (CoverageRequest) obj;
-		boolean isEqual = true;
+        if ((this.outputFormat == null) && (request.getOutputFormat() == null)) {
+            isEqual = isEqual && true;
+        } else if ((this.outputFormat == null) || (request.getOutputFormat() == null)) {
+            isEqual = false;
+        } else if (request.getOutputFormat().equals(outputFormat)) {
+            isEqual = isEqual && true;
+        } else {
+            isEqual = false;
+        }
 
-		if ((this.coverage == null) && (request.getCoverage() == null)) {
-			isEqual = isEqual && true;
-		} else if ((this.coverage == null) || (request.getCoverage() == null)) {
-			isEqual = false;
-		} else if (request.getCoverage().equals(coverage)) {
-			isEqual = isEqual && true;
-		} else {
-			isEqual = false;
-		}
+        if ((this.envelope == null) && (request.getEnvelope() == null)) {
+            isEqual = isEqual && true;
+        } else if ((this.envelope == null) || (request.getEnvelope() == null)) {
+            isEqual = false;
+        } else if (request.getEnvelope().equals(envelope)) {
+            isEqual = isEqual && true;
+        } else {
+            isEqual = false;
+        }
 
-		if ((this.version == null) && (request.getVersion() == null)) {
-			isEqual = isEqual && true;
-		} else if ((this.version == null) || (request.getVersion() == null)) {
-			isEqual = false;
-		} else if (request.getVersion().equals(version)) {
-			isEqual = isEqual && true;
-		} else {
-			isEqual = false;
-		}
+        if ((this.interpolation == null) && (request.getInterpolation() == null)) {
+            isEqual = isEqual && true;
+        } else if ((this.interpolation == null) || (request.getInterpolation() == null)) {
+            isEqual = false;
+        } else if (request.getInterpolation().equals(interpolation)) {
+            isEqual = isEqual && true;
+        } else {
+            isEqual = false;
+        }
 
-		if ((this.handle == null) && (request.getHandle() == null)) {
-			isEqual = isEqual && true;
-		} else if ((this.handle == null) || (request.getHandle() == null)) {
-			isEqual = false;
-		} else if (request.getHandle().equals(handle)) {
-			isEqual = isEqual && true;
-		} else {
-			isEqual = false;
-		}
+        return isEqual;
+    }
 
-		if ((this.outputFormat == null) && (request.getOutputFormat() == null)) {
-			isEqual = isEqual && true;
-		} else if ((this.outputFormat == null)
-				|| (request.getOutputFormat() == null)) {
-			isEqual = false;
-		} else if (request.getOutputFormat().equals(outputFormat)) {
-			isEqual = isEqual && true;
-		} else {
-			isEqual = false;
-		}
+    public int hashCode() {
+        int result = super.hashCode();
+        result = (23 * result) + ((handle == null) ? 0 : handle.hashCode());
+        result = (23 * result) + ((coverage == null) ? 0 : coverage.hashCode());
 
-		if ((this.envelope == null) && (request.getEnvelope() == null)) {
-			isEqual = isEqual && true;
-		} else if ((this.envelope == null) || (request.getEnvelope() == null)) {
-			isEqual = false;
-		} else if (request.getEnvelope().equals(envelope)) {
-			isEqual = isEqual && true;
-		} else {
-			isEqual = false;
-		}
+        return result;
+    }
 
-		if ((this.interpolation == null)
-				&& (request.getInterpolation() == null)) {
-			isEqual = isEqual && true;
-		} else if ((this.interpolation == null)
-				|| (request.getInterpolation() == null)) {
-			isEqual = false;
-		} else if (request.getInterpolation().equals(interpolation)) {
-			isEqual = isEqual && true;
-		} else {
-			isEqual = false;
-		}
+    /**
+     * @return Returns the envelope.
+     *
+     * @uml.property name="envelope"
+     */
+    public Envelope getEnvelope() {
+        return envelope;
+    }
 
-		return isEqual;
-	}
+    /**
+     * @param envelope
+     *            The envelope to set.
+     *
+     * @uml.property name="envelope"
+     */
+    public void setEnvelope(Envelope envelope) {
+        this.envelope = envelope;
+    }
 
-	public int hashCode() {
-		int result = super.hashCode();
-		result = (23 * result) + ((handle == null) ? 0 : handle.hashCode());
-		result = (23 * result) + ((coverage == null) ? 0 : coverage.hashCode());
+    public void setEnvelope(String envelope) {
+        String[] coords = envelope.split(",");
 
-		return result;
-	}
+        try {
+            double arg0 = Double.parseDouble(coords[0]);
+            double arg1 = Double.parseDouble(coords[1]);
+            double arg2 = Double.parseDouble(coords[2]);
+            double arg3 = Double.parseDouble(coords[3]);
 
-	/**
-	 * @return Returns the envelope.
-	 * 
-	 * @uml.property name="envelope"
-	 */
-	public Envelope getEnvelope() {
-		return envelope;
-	}
+            this.envelope = new Envelope(arg0, arg2, arg1, arg3);
+        } catch (NumberFormatException e) {
+            this.envelope = null;
+        }
+    }
 
-	/**
-	 * @param envelope
-	 *            The envelope to set.
-	 * 
-	 * @uml.property name="envelope"
-	 */
-	public void setEnvelope(Envelope envelope) {
-		this.envelope = envelope;
-	}
+    /**
+     * @return Returns the interpolation.
+     *
+     * @uml.property name="interpolation"
+     */
+    public String getInterpolation() {
+        return interpolation;
+    }
 
-	public void setEnvelope(String envelope) {
-		String[] coords = envelope.split(",");
-		try {
-			double arg0 = Double.parseDouble(coords[0]);
-			double arg1 = Double.parseDouble(coords[1]);
-			double arg2 = Double.parseDouble(coords[2]);
-			double arg3 = Double.parseDouble(coords[3]);
+    /**
+     * @param interpolation
+     *            The interpolation to set.
+     *
+     * @uml.property name="interpolation"
+     */
+    public void setInterpolation(String interpolation) {
+        this.interpolation = interpolation;
+    }
 
-			this.envelope = new Envelope(arg0, arg2, arg1, arg3);
-		} catch (NumberFormatException e) {
-			this.envelope = null;
-		}
-	}
+    /**
+     * @return Returns the coverage.
+     *
+     * @uml.property name="coverage"
+     */
+    public String getCoverage() {
+        return coverage;
+    }
 
-	/**
-	 * @return Returns the interpolation.
-	 * 
-	 * @uml.property name="interpolation"
-	 */
-	public String getInterpolation() {
-		return interpolation;
-	}
+    /**
+     * @param coverage
+     *            The coverage to set.
+     *
+     * @uml.property name="coverage"
+     */
+    public void setCoverage(String coverage) {
+        this.coverage = coverage;
+    }
 
-	/**
-	 * @param interpolation
-	 *            The interpolation to set.
-	 * 
-	 * @uml.property name="interpolation"
-	 */
-	public void setInterpolation(String interpolation) {
-		this.interpolation = interpolation;
-	}
+    /**
+     * @return Returns the gridDimension.
+     *
+     * @uml.property name="gridDimension"
+     */
+    public int getGridDimension() {
+        return gridDimension;
+    }
 
-	/**
-	 * @return Returns the coverage.
-	 * 
-	 * @uml.property name="coverage"
-	 */
-	public String getCoverage() {
-		return coverage;
-	}
+    /**
+     * @param gridDimension
+     *            The gridDimension to set.
+     *
+     * @uml.property name="gridDimension"
+     */
+    public void setGridDimension(int gridDimension) {
+        this.gridDimension = gridDimension;
+    }
 
-	/**
-	 * @param coverage
-	 *            The coverage to set.
-	 * 
-	 * @uml.property name="coverage"
-	 */
-	public void setCoverage(String coverage) {
-		this.coverage = coverage;
-	}
+    /**
+     * @param value
+     *            The gridDimension to set.
+     */
+    public void setGridDimension(String value) {
+        this.gridDimension = Integer.parseInt(value);
+    }
 
-	/**
-	 * @return Returns the gridDimension.
-	 * 
-	 * @uml.property name="gridDimension"
-	 */
-	public int getGridDimension() {
-		return gridDimension;
-	}
+    /**
+     * @param offsetVector
+     */
+    public void setOffsetVector(Double[] offsetVector) {
+        if (this.envelope != null) {
+            final double envWidth = Math.abs(envelope.getMaxX() - envelope.getMinX());
+            final double envHeight = Math.abs(envelope.getMaxY() - envelope.getMinY());
+            final double width = envWidth / Math.abs(offsetVector[0].doubleValue());
+            final double height = envHeight / Math.abs(offsetVector[1].doubleValue());
+            setGridOrigin(new Double[] { new Double(0.0), new Double(0.0) });
+            setGridLow(new Double[] { new Double(0.0), new Double(0.0) });
+            setGridHigh(new Double[] { new Double(width), new Double(height) });
+        }
+    }
 
-	/**
-	 * @param gridDimension
-	 *            The gridDimension to set.
-	 * 
-	 * @uml.property name="gridDimension"
-	 */
-	public void setGridDimension(int gridDimension) {
-		this.gridDimension = gridDimension;
-	}
+    /**
+     * @param origin
+     *
+     * @uml.property name="gridOrigin"
+     */
+    public void setGridOrigin(Double[] origin) {
+        this.gridOrigin = origin;
+    }
 
-	/**
-	 * @param value
-	 *            The gridDimension to set.
-	 */
-	public void setGridDimension(String value) {
-		this.gridDimension = Integer.parseInt(value);
-	}
+    /**
+     * @param highers
+     *
+     * @uml.property name="gridHigh"
+     */
+    public void setGridHigh(Double[] highers) {
+        this.gridHigh = highers;
+    }
 
-	/**
-	 * @param offsetVector
-	 */
-	public void setOffsetVector(Double[] offsetVector) {
-		if (this.envelope != null) {
-			final double envWidth = Math.abs(envelope.getMaxX()
-					- envelope.getMinX());
-			final double envHeight = Math.abs(envelope.getMaxY()
-					- envelope.getMinY());
-			final double width = envWidth
-					/ Math.abs(offsetVector[0].doubleValue());
-			final double height = envHeight
-					/ Math.abs(offsetVector[1].doubleValue());
-			setGridOrigin(new Double[] { new Double(0.0), new Double(0.0) });
-			setGridLow(new Double[] { new Double(0.0), new Double(0.0) });
-			setGridHigh(new Double[] { new Double(width), new Double(height) });
-		}
-	}
+    /**
+     * @param lowers
+     *
+     * @uml.property name="gridLow"
+     */
+    public void setGridLow(Double[] lowers) {
+        this.gridLow = lowers;
+    }
 
-	/**
-	 * @param origin
-	 * 
-	 * @uml.property name="gridOrigin"
-	 */
-	public void setGridOrigin(Double[] origin) {
-		this.gridOrigin = origin;
-	}
+    /**
+     * @return Returns the gridHigh.
+     *
+     * @uml.property name="gridHigh"
+     */
+    public Double[] getGridHigh() {
+        return gridHigh;
+    }
 
-	/**
-	 * @param highers
-	 * 
-	 * @uml.property name="gridHigh"
-	 */
-	public void setGridHigh(Double[] highers) {
-		this.gridHigh = highers;
-	}
+    /**
+     * @return Returns the gridLow.
+     *
+     * @uml.property name="gridLow"
+     */
+    public Double[] getGridLow() {
+        return gridLow;
+    }
 
-	/**
-	 * @param lowers
-	 * 
-	 * @uml.property name="gridLow"
-	 */
-	public void setGridLow(Double[] lowers) {
-		this.gridLow = lowers;
-	}
+    /**
+     * @return Returns the gridOrigin.
+     *
+     * @uml.property name="gridOrigin"
+     */
+    public Double[] getGridOrigin() {
+        return gridOrigin;
+    }
 
-	/**
-	 * @return Returns the gridHigh.
-	 * 
-	 * @uml.property name="gridHigh"
-	 */
-	public Double[] getGridHigh() {
-		return gridHigh;
-	}
+    public String getCRS() {
+        return CRS;
+    }
 
-	/**
-	 * @return Returns the gridLow.
-	 * 
-	 * @uml.property name="gridLow"
-	 */
-	public Double[] getGridLow() {
-		return gridLow;
-	}
+    public void setCRS(String crs) {
+        CRS = crs;
+    }
 
-	/**
-	 * @return Returns the gridOrigin.
-	 * 
-	 * @uml.property name="gridOrigin"
-	 */
-	public Double[] getGridOrigin() {
-		return gridOrigin;
-	}
+    public String getResponseCRS() {
+        return ResponseCRS;
+    }
 
-	public String getCRS() {
-		return CRS;
-	}
+    public void setResponseCRS(String responseCRS) {
+        ResponseCRS = responseCRS;
+    }
 
-	public void setCRS(String crs) {
-		CRS = crs;
-	}
+    /**
+     * @param kvpPairs
+     */
+    public void setParameters(Map kvpPairs) {
+        this.parameters = kvpPairs;
+    }
 
-	public String getResponseCRS() {
-		return ResponseCRS;
-	}
-
-	public void setResponseCRS(String responseCRS) {
-		ResponseCRS = responseCRS;
-	}
-
-	/**
-	 * @param kvpPairs
-	 */
-	public void setParameters(Map kvpPairs) {
-		this.parameters = kvpPairs;
-	}
-
-	public Map getParameters() {
-		return parameters;
-	}
+    public Map getParameters() {
+        return parameters;
+    }
 }

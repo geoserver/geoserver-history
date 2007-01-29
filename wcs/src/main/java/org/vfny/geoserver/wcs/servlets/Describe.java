@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.wcs.servlets;
 
-import java.util.Map;
-
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
@@ -13,6 +11,7 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wcs.requests.readers.DescribeKvpReader;
 import org.vfny.geoserver.wcs.requests.readers.DescribeXmlReader;
 import org.vfny.geoserver.wcs.responses.DescribeResponse;
+import java.util.Map;
 
 
 /**
@@ -28,21 +27,20 @@ import org.vfny.geoserver.wcs.responses.DescribeResponse;
  * @version $Id: Describe.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class Describe extends WCService {
+    public Describe(WCS wcs) {
+        super("DescribeCoverage", wcs);
+    }
 
-	public Describe(WCS wcs) {
-		super("DescribeCoverage", wcs);
-	}
-
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
-	private static final long serialVersionUID = 3257003241991714611L;
-
-	/**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+    /**
+     * Comment for <code>serialVersionUID</code>
      */
+    private static final long serialVersionUID = 3257003241991714611L;
+
+    /**
+    * DOCUMENT ME!
+    *
+    * @return DOCUMENT ME!
+    */
     protected Response getResponseHandler() {
         return new DescribeResponse();
     }

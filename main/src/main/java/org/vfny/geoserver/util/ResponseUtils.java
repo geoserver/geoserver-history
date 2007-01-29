@@ -11,26 +11,24 @@ import java.util.logging.Logger;
 
 public final class ResponseUtils {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
 
+    //J-
+    /**
+     * Parses the passed string, and encodes the special characters (used in
+     * xml for special purposes) with the appropriate codes. e.g. '<' is
+     * changed to '&lt;'
+     *
+     * @param inData The string to encode into xml.
+     *
+     * @return the encoded string. Returns null, if null is passed as argument
+     *
+     * @task REVISIT: Once we write directly to out, as we should, this  method
+     *       should be simpler, as we can just write strings with escapes
+     *       directly to out, replacing as we iterate of chars to write them.
+     */
 
-
- //J-
-  /**
-   * Parses the passed string, and encodes the special characters (used in
-   * xml for special purposes) with the appropriate codes. e.g. '<' is
-   * changed to '&lt;'
-   *
-   * @param inData The string to encode into xml.
-   *
-   * @return the encoded string. Returns null, if null is passed as argument
-   *
-   * @task REVISIT: Once we write directly to out, as we should, this  method
-   *       should be simpler, as we can just write strings with escapes
-   *       directly to out, replacing as we iterate of chars to write them.
-   */
-  //J+
+    //J+
     public static String encodeXML(String inData) {
         //return null, if null is passed as argument
         if (inData == null) {
@@ -81,26 +79,28 @@ public final class ResponseUtils {
         return buffer.toString();
     }
 
-     /**
-     * Writes <CODE>string</CODE> into writer, escaping &, ', ", <, and >
-     * with the XML excape strings.
-     */
+    /**
+    * Writes <CODE>string</CODE> into writer, escaping &, ', ", <, and >
+    * with the XML excape strings.
+    */
     public static void writeEscapedString(Writer writer, String string)
         throws IOException {
-        for(int i = 0; i < string.length(); i++) {
+        for (int i = 0; i < string.length(); i++) {
             char c = string.charAt(i);
-            if(c == '<')
+
+            if (c == '<') {
                 writer.write("&lt;");
-            else if(c == '>')
+            } else if (c == '>') {
                 writer.write("&gt;");
-            else if(c == '&')
+            } else if (c == '&') {
                 writer.write("&amp;");
-            else if(c == '\'')
+            } else if (c == '\'') {
                 writer.write("&apos;");
-            else if(c == '"')
+            } else if (c == '"') {
                 writer.write("&quot;");
-            else
-		writer.write(c);
+            } else {
+                writer.write(c);
+            }
         }
     }
 }

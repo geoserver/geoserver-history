@@ -4,11 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
@@ -24,19 +20,21 @@ import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.LogicFilter;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
  * GeoServer wrapper for backend Geotools2 DataStore.
- * 
+ *
  * <p>
  * Support FeatureSource decorator for FeatureTypeInfo that takes care of
  * mapping the FeatureTypeInfo's FeatureSource with the schema and definition
  * query configured for it.
  * </p>
- * 
+ *
  * <p>
  * Because GeoServer requires that attributes always be returned in the same
  * order we need a way to smoothly inforce this. Could we use this class to do
@@ -48,15 +46,14 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class GeoServerFeatureSource implements FeatureSource {
     /** Shared package logger */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.global");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
     /** FeatureSource being served up */
     protected FeatureSource source;
 
     /**
      * GeoTools2 Schema information
-     * 
+     *
      * <p>
      * Is this the same as source.getSchema() or is it used supply the order
      * that GeoServer requires attributes to be returned in?
@@ -74,8 +71,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @param schema FeatureType returned by this FeatureSource
      * @param definitionQuery Filter used to limit results
      */
-    GeoServerFeatureSource(FeatureSource source, FeatureType schema,
-        Filter definitionQuery) {
+    GeoServerFeatureSource(FeatureSource source, FeatureType schema, Filter definitionQuery) {
         this.source = source;
         this.schema = schema;
         this.definitionQuery = definitionQuery;
@@ -87,7 +83,7 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Factory that make the correct decorator for the provided featureSource.
-     * 
+     *
      * <p>
      * This factory method is public and will be used to create all required
      * subclasses. By comparison the constructors for this class have package
@@ -100,14 +96,13 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @return
      */
-    public static GeoServerFeatureSource create(FeatureSource featureSource,
-        FeatureType schema, Filter definitionQuery) {
+    public static GeoServerFeatureSource create(FeatureSource featureSource, FeatureType schema,
+        Filter definitionQuery) {
         if (featureSource instanceof FeatureLocking) {
-            return new GeoServerFeatureLocking((FeatureLocking) featureSource,
-                schema, definitionQuery);
+            return new GeoServerFeatureLocking((FeatureLocking) featureSource, schema,
+                definitionQuery);
         } else if (featureSource instanceof FeatureStore) {
-            return new GeoServerFeatureStore((FeatureStore) featureSource,
-                schema, definitionQuery);
+            return new GeoServerFeatureStore((FeatureStore) featureSource, schema, definitionQuery);
         }
 
         return new GeoServerFeatureSource(featureSource, schema, definitionQuery);
@@ -138,24 +133,22 @@ public class GeoServerFeatureSource implements FeatureSource {
             Filter filter = query.getFilter();
             filter = makeDefinitionFilter(filter);
 
-            return new DefaultQuery(typeName, filter, maxFeatures, propNames,
-                handle);
+            return new DefaultQuery(typeName, filter, maxFeatures, propNames, handle);
         } catch (Exception ex) {
             throw new DataSourceException(
-                "Could not restrict the query to the definition criteria: "
-                + ex.getMessage(), ex);
+                "Could not restrict the query to the definition criteria: " + ex.getMessage(), ex);
         }
     }
 
     /**
      * List of allowed attributes.
-     * 
+     *
      * <p>
      * Creates a list of FeatureTypeInfo's attribute names based on the
      * attributes requested by <code>query</code> and making sure they not
      * contain any non exposed attribute.
      * </p>
-     * 
+     *
      * <p>
      * Exposed attributes are those configured in the "attributes" element of
      * the FeatureTypeInfo's configuration
@@ -183,13 +176,12 @@ public class GeoServerFeatureSource implements FeatureSource {
                 if (schema.getAttributeType(queriedAtts[i]) != null) {
                     allowedAtts.add(queriedAtts[i]);
                 } else {
-                    LOGGER.info("queried a not allowed property: "
-                        + queriedAtts[i] + ". Ommitting it from query");
+                    LOGGER.info("queried a not allowed property: " + queriedAtts[i]
+                        + ". Ommitting it from query");
                 }
             }
 
-            propNames = (String[]) allowedAtts.toArray(new String[allowedAtts
-                    .size()]);
+            propNames = (String[]) allowedAtts.toArray(new String[allowedAtts.size()]);
         }
 
         return propNames;
@@ -219,8 +211,7 @@ public class GeoServerFeatureSource implements FeatureSource {
                 ((LogicFilter) newFilter).addFilter(filter);
             }
         } catch (Exception ex) {
-            throw new DataSourceException("Can't create the definition filter",
-                ex);
+            throw new DataSourceException("Can't create the definition filter", ex);
         }
 
         return newFilter;
@@ -228,7 +219,7 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Implement getDataStore.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -243,7 +234,7 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Implement addFeatureListener.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -258,7 +249,7 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Implement removeFeatureListener.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -273,7 +264,7 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Implement getFeatures.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -288,22 +279,24 @@ public class GeoServerFeatureSource implements FeatureSource {
      */
     public FeatureCollection getFeatures(Query query) throws IOException {
         Query newQuery = makeDefinitionQuery(query);
-        
+
         // see if the CRS got xfered over
-           // a. old had a CRS, new doesnt
-        boolean requireXferCRS = (newQuery.getCoordinateSystem() == null) && (query.getCoordinateSystem() != null);
-        if ((newQuery.getCoordinateSystem() != null) && (query.getCoordinateSystem() != null))
-        {
-        	 //b. both have CRS, but they're different
-        	requireXferCRS = !(newQuery.getCoordinateSystem().equals(query.getCoordinateSystem()));
+        // a. old had a CRS, new doesnt
+        boolean requireXferCRS = (newQuery.getCoordinateSystem() == null)
+            && (query.getCoordinateSystem() != null);
+
+        if ((newQuery.getCoordinateSystem() != null) && (query.getCoordinateSystem() != null)) {
+            //b. both have CRS, but they're different
+            requireXferCRS = !(newQuery.getCoordinateSystem().equals(query.getCoordinateSystem()));
         }
-        	
-        if ( requireXferCRS )
-        {
-        	//carry along the CRS
-        	if (!(newQuery instanceof DefaultQuery))
-        		newQuery = new DefaultQuery(newQuery);
-        	((DefaultQuery)newQuery).setCoordinateSystem( query.getCoordinateSystem());
+
+        if (requireXferCRS) {
+            //carry along the CRS
+            if (!(newQuery instanceof DefaultQuery)) {
+                newQuery = new DefaultQuery(newQuery);
+            }
+
+            ((DefaultQuery) newQuery).setCoordinateSystem(query.getCoordinateSystem());
         }
 
         return source.getFeatures(newQuery);
@@ -311,7 +304,7 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Implement getFeatures.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -324,7 +317,8 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.filter.Filter)
      */
-    public FeatureCollection getFeatures(Filter filter) throws IOException {
+    public FeatureCollection getFeatures(Filter filter)
+        throws IOException {
         filter = makeDefinitionFilter(filter);
 
         return source.getFeatures(filter);
@@ -332,7 +326,7 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Implement getFeatures.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -353,7 +347,7 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Implement getSchema.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -368,7 +362,7 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Retrieves the total extent of this FeatureSource.
-     * 
+     *
      * <p>
      * Please note this extent will reflect the provided definitionQuery.
      * </p>
@@ -382,8 +376,7 @@ public class GeoServerFeatureSource implements FeatureSource {
         if (definitionQuery == Filter.NONE) {
             return source.getBounds();
         } else {
-            Query query = new DefaultQuery(getSchema().getTypeName(),
-                    definitionQuery);
+            Query query = new DefaultQuery(getSchema().getTypeName(), definitionQuery);
 
             return source.getBounds(query);
         }
@@ -391,12 +384,12 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Retrive the extent of the Query.
-     * 
+     *
      * <p>
      * This method provides access to an optimized getBounds opperation. If no
      * optimized opperation is available <code>null</code> will be returned.
      * </p>
-     * 
+     *
      * <p>
      * You may still make use of getFeatures( Query ).getCount() which will
      * return the correct answer (even if it has to itterate through all the
@@ -422,12 +415,12 @@ public class GeoServerFeatureSource implements FeatureSource {
 
     /**
      * Adjust query and forward to source.
-     * 
+     *
      * <p>
      * This method provides access to an optimized getCount opperation. If no
      * optimized opperation is available <code>-1</code> will be returned.
      * </p>
-     * 
+     *
      * <p>
      * You may still make use of getFeatures( Query ).getCount() which will
      * return the correct answer (even if it has to itterate through all the
@@ -445,8 +438,11 @@ public class GeoServerFeatureSource implements FeatureSource {
         } catch (IOException ex) {
             return -1;
         }
-        try{
-        	return source.getCount(query);
-        }catch(IOException e){return 0;}
+
+        try {
+            return source.getCount(query);
+        } catch (IOException e) {
+            return 0;
+        }
     }
 }

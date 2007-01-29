@@ -4,15 +4,13 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.FilterFilter;
 import org.geotools.filter.FilterHandler;
 import org.geotools.gml.GMLHandlerFeature;
-
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.logging.Logger;
 
 
 /**
@@ -25,11 +23,9 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author Chris Holmes, TOPP
  * @version $Id: TransactionFilterHandler.java,v 1.6 2004/02/09 23:29:40 dmzwiers Exp $
  */
-public class TransactionFilterHandler extends FilterFilter
-    implements GMLHandlerFeature {
+public class TransactionFilterHandler extends FilterFilter implements GMLHandlerFeature {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.wfs");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wfs");
     private TransactionHandler parent;
 
     /**
@@ -38,8 +34,7 @@ public class TransactionFilterHandler extends FilterFilter
      * @param parent The handler to pass filters and features to.
      * @param schema The schema (not used, this needs to be redone in geotools)
      */
-    public TransactionFilterHandler(TransactionHandler parent,
-        FeatureType schema) {
+    public TransactionFilterHandler(TransactionHandler parent, FeatureType schema) {
         super((FilterHandler) parent, schema);
         this.parent = parent;
     }

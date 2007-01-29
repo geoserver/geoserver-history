@@ -1,4 +1,9 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.util.requests;
+
 
 /**
  * Xerces' <code>getEncodingName()</code> method of
@@ -10,13 +15,13 @@ package org.vfny.geoserver.util.requests;
  * Beside that, using class makes related code more clear.
  */
 public class EncodingInfo {
-
     /**
      * This is a name of autodetected <em>encoding scheme</em> (not necessarily
      * <em>charset</em>) which should be used to read XML declaration in order
      * to determine actual data <em>charset</em>.
      */
-    private String  fEncoding    = null;
+    private String fEncoding = null;
+
     /**
      * Contains info about detected byte order (or endian-ness) of the
      * incoming data. <code>true</code> if order is big-endian,
@@ -26,13 +31,13 @@ public class EncodingInfo {
      * so it can't be just plain <code>boolean</code> type.
      */
     private Boolean fIsBigEndian = null;
+
     /**
      * This is technically not a part of encoding metadata, but more
      * like characteristic of the input XML document. Tells whether
      * Byte Order Mark (BOM) was found while detecting encoding scheme.
      */
     private boolean fHasBOM;
-
 
     /**
      * Non-arg constructor to use in a few cases when you need a blank
@@ -52,7 +57,6 @@ public class EncodingInfo {
     public EncodingInfo() {
     }
 
-
     /**
      * Constructor that takes name of the encoding scheme and endianness
      * - results of autodetection in <code>getEncodingName</code>.
@@ -68,11 +72,10 @@ public class EncodingInfo {
      *         this encoding scheme.
      */
     public EncodingInfo(String encoding, Boolean isBigEndian) {
-        fEncoding    = encoding;
+        fEncoding = encoding;
         fIsBigEndian = isBigEndian;
-        fHasBOM      = false;
+        fHasBOM = false;
     }
-
 
     /**
      * Constructor that takes name of the encoding scheme and endianness
@@ -92,9 +95,9 @@ public class EncodingInfo {
      *                 <code>false</code> otherwise.
      */
     public EncodingInfo(String encoding, Boolean isBigEndian, boolean hasBOM) {
-        fEncoding    = encoding;
+        fEncoding = encoding;
         fIsBigEndian = isBigEndian;
-        fHasBOM      = hasBOM;
+        fHasBOM = hasBOM;
     }
 
     /**
@@ -125,7 +128,6 @@ public class EncodingInfo {
         return fHasBOM;
     }
 
-
     /**
      * Copies property values from another <code>EncodingInfo</code> instance.
      * Strange enough, but sometimes such behavior is preferred to simple
@@ -137,11 +139,10 @@ public class EncodingInfo {
      *                instance
      */
     public void copyFrom(EncodingInfo encInfo) {
-        fEncoding    = encInfo.getEncoding();
+        fEncoding = encInfo.getEncoding();
         fIsBigEndian = encInfo.isBigEndian();
-        fHasBOM      = encInfo.hasBOM();
+        fHasBOM = encInfo.hasBOM();
     }
-
 
     /**
      * Returns current state of this instance in human-readable form.
@@ -149,13 +150,15 @@ public class EncodingInfo {
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append((null == fEncoding) ? "[NULL]" : fEncoding);
+
         if (null != fIsBigEndian) {
             sb.append((fIsBigEndian.booleanValue()) ? " BIG ENDIAN" : " LITTLE ENDIAN");
         }
+
         if (fHasBOM) {
             sb.append(" with BOM");
         }
+
         return sb.toString();
     }
-
 } // END class EncodingInfo

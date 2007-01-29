@@ -6,6 +6,7 @@ package org.vfny.geoserver.global;
 
 import org.geotools.util.NumberRange;
 
+
 /**
  * Represents a CoverageDimension Attribute.
  *
@@ -14,82 +15,79 @@ import org.geotools.util.NumberRange;
  * @version $Id: CoverageDimension.java,v 0.1 Feb 16, 2005 1:32:39 PM $
  */
 public class CoverageDimension extends GlobalLayerSupertype {
+    /**
+     *
+     */
+    private String name;
 
-	/**
-	 * 
-	 */
-	private String name;
+    /**
+     *
+     */
+    private String description;
 
-	/**
-	 * 
-	 */
-	private String description;
+    /**
+     *
+     */
+    private Double[] nullValues;
+    private NumberRange range;
 
-	/**
-	 * 
-	 */
-	private Double[] nullValues;
+    /* (non-Javadoc)
+     * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
+     */
+    Object toDTO() {
+        return null;
+    }
 
-	private NumberRange range;
+    /**
+     * @return Returns the description.
+     */
+    public String getDescription() {
+        return description;
+    }
 
-	
-	/* (non-Javadoc)
-	 * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
-	 */
-	Object toDTO() {
-		return null;
-	}
+    /**
+     * @param description The description to set.
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	/**
-	 * @return Returns the description.
-	 */
-	public String getDescription() {
-		return description;
-	}
+    /**
+     * @return Returns the name.
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @param description The description to set.
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    /**
+     * @param name The name to set.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @return Returns the name.
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * @return Returns the nullValues.
+     */
+    public Double[] getNullValues() {
+        return nullValues;
+    }
 
-	/**
-	 * @param name The name to set.
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @param nullValues The nullValues to set.
+     */
+    public void setNullValues(Double[] nullValues) {
+        this.nullValues = nullValues;
+    }
 
-	/**
-	 * @return Returns the nullValues.
-	 */
-	public Double[] getNullValues() {
-		return nullValues;
-	}
+    /**
+     * @param range
+     */
+    public void setRange(NumberRange range) {
+        this.range = range;
+    }
 
-	/**
-	 * @param nullValues The nullValues to set.
-	 */
-	public void setNullValues(Double[] nullValues) {
-		this.nullValues = nullValues;
-	}
-
-	/**
-	 * @param range
-	 */
-	public void setRange(NumberRange range) {
-		this.range = range;
-	}
-
-	public NumberRange getRange() {
-		return range;
-	}
+    public NumberRange getRange() {
+        return range;
+    }
 }
