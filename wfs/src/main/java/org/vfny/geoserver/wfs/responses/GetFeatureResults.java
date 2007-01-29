@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.geotools.data.FeatureLock;
 import org.geotools.feature.FeatureCollection;
-
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
 

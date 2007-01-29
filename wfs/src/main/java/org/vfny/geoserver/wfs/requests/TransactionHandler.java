@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.feature.Feature;
-
 import org.geotools.filter.FilterHandler;
 import org.geotools.gml.GMLHandlerFeature;
 import org.opengis.filter.Filter;

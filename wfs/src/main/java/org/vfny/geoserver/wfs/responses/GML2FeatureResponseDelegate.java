@@ -15,7 +15,6 @@ import java.util.zip.GZIPOutputStream;
 import javax.xml.transform.TransformerException;
 
 import org.geotools.data.FeatureLock;
-
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;

@@ -6,10 +6,7 @@ package org.vfny.geoserver.wfs.servlets;
 
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;

@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.Request;
 import org.vfny.geoserver.util.ResponseUtils;
 import org.vfny.geoserver.wfs.requests.WFSRequest;
 import org.w3c.dom.Document;
