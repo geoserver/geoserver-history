@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Open Web Service Model 1.0.0
-Bundle-SymbolicName: net.opengis.ows_1.0.0; singleton := true
+Bundle-Name: Open Web Service Model
+Bundle-SymbolicName: net.opengis.ows;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: Opengis.net
 Bundle-Localization: plugin
