@@ -17,6 +17,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
 
+import javax.xml.namespace.QName;
+
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
@@ -1204,6 +1206,17 @@ public class Data extends GlobalLayerSupertype /* implements Repository */{
 				+ name + "'");
 	}
 
+	/**
+	 * Gets a FeatureTypeINfo from a qualified name.
+	 * <p>
+	 * This method calls through to {@link #getFeatureTypeInfo(String, String)}.
+	 * </p>
+	 * @param name The qualified name of the feature type.
+	 */
+	public FeatureTypeInfo getFeatureTypeInfo( QName name ) {
+		return getFeatureTypeInfo( name.getLocalPart(), name.getNamespaceURI() );
+	}
+	
 	/**
 	 * Gets a FeatureTypeInfo from a local type name (ie unprefixed), and a uri.
 	 * 
