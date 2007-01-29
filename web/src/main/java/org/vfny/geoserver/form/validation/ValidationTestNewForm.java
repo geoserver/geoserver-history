@@ -6,22 +6,21 @@
  */
 package org.vfny.geoserver.form.validation;
 
-import java.util.Collection;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.validation.ValidationConfig;
+import java.util.Collection;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * ValidationTestNewForm purpose.
  * <p>
  * Description of ValidationTestNewForm ...
  * </p>
- * 
+ *
  * <p>
  * Capabilities:
  * </p>
@@ -36,79 +35,77 @@ import org.vfny.geoserver.config.validation.ValidationConfig;
  * <pre><code>
  * ValidationTestNewForm x = new ValidationTestNewForm(...);
  * </code></pre>
- * 
+ *
  * @author User, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
  * @version $Id: ValidationTestNewForm.java,v 1.3 2004/04/19 22:36:57 emperorkefka Exp $
  */
 public class ValidationTestNewForm extends ActionForm {
-    
     private String newName;
     private String selectedPlugIn;
-    
+
     //Key is the PlugIn name, Value is the description
     private Collection plugInConfigs;
     private Set plugInNames;
-    
+
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
-        
-        ValidationConfig validationConfig = (ValidationConfig) this.getServlet().getServletContext().getAttribute(ValidationConfig.CONFIG_KEY);
+
+        ValidationConfig validationConfig = (ValidationConfig) this.getServlet().getServletContext()
+                                                                   .getAttribute(ValidationConfig.CONFIG_KEY);
         plugInConfigs = validationConfig.getPlugIns().values();
         plugInNames = validationConfig.getPlugInNames();
-        
-        newName ="";
+
+        newName = "";
     }
-    
-    public ActionErrors validate(ActionMapping mapping,
-            HttpServletRequest request) {
+
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         return errors;
-    }    
-    
-    public Collection getPlugInConfigs(){
+    }
+
+    public Collection getPlugInConfigs() {
         return plugInConfigs;
     }
-    
+
     public Set getPlugIns() {
-    	return plugInNames;
+        return plugInNames;
     }
-    
-	/**
-	 * Access newName property.
-	 * 
-	 * @return Returns the newName.
-	 */
-	public String getNewName() {
-		return newName;
-	}
 
-	/**
-	 * Set newName to newName.
-	 *
-	 * @param newName The newName to set.
-	 */
-	public void setNewName(String newName) {
-		this.newName = newName;
-	}
+    /**
+     * Access newName property.
+     *
+     * @return Returns the newName.
+     */
+    public String getNewName() {
+        return newName;
+    }
 
-	/**
-	 * Access selectedPlugIn property.
-	 * 
-	 * @return Returns the selectedPlugIn.
-	 */
-	public String getSelectedPlugIn() {
-		return selectedPlugIn;
-	}
+    /**
+     * Set newName to newName.
+     *
+     * @param newName The newName to set.
+     */
+    public void setNewName(String newName) {
+        this.newName = newName;
+    }
 
-	/**
-	 * Set selectedPlugIn to selectedPlugIn.
-	 *
-	 * @param selectedPlugIn The selectedPlugIn to set.
-	 */
-	public void setSelectedPlugIn(String selectedPlugIn) {
-		this.selectedPlugIn = selectedPlugIn;
-	}
+    /**
+     * Access selectedPlugIn property.
+     *
+     * @return Returns the selectedPlugIn.
+     */
+    public String getSelectedPlugIn() {
+        return selectedPlugIn;
+    }
 
+    /**
+     * Set selectedPlugIn to selectedPlugIn.
+     *
+     * @param selectedPlugIn The selectedPlugIn to set.
+     */
+    public void setSelectedPlugIn(String selectedPlugIn) {
+        this.selectedPlugIn = selectedPlugIn;
+    }
 }

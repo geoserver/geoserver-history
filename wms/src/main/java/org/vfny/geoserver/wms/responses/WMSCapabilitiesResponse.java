@@ -4,15 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.logging.Logger;
-
-import javax.xml.transform.TransformerException;
-
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -22,6 +13,13 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.helpers.WMSCapsTransformer;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.logging.Logger;
+import javax.xml.transform.TransformerException;
 
 
 /**
@@ -48,23 +46,22 @@ public class WMSCapabilitiesResponse implements Response {
     /**
      * List of formats accessible via a GetMap request.
      */
-	private Set formats;
-	
-	private ApplicationContext applicationContext;
+    private Set formats;
+    private ApplicationContext applicationContext;
 
     public WMSCapabilitiesResponse(Set wmsGetMapFormats, ApplicationContext applicationContext) {
-		this.formats = wmsGetMapFormats;
-		this.applicationContext = applicationContext;
-	}
-
-	/**
-     * Returns any extra headers that this service might want to set in the HTTP response object.
-     * @see org.vfny.geoserver.Response#getResponseHeaders()
-     */
-    public HashMap getResponseHeaders() {
-    		return null;
+        this.formats = wmsGetMapFormats;
+        this.applicationContext = applicationContext;
     }
-    
+
+    /**
+    * Returns any extra headers that this service might want to set in the HTTP response object.
+    * @see org.vfny.geoserver.Response#getResponseHeaders()
+    */
+    public HashMap getResponseHeaders() {
+        return null;
+    }
+
     /**
      * DOCUMENT ME!
      *
@@ -79,13 +76,13 @@ public class WMSCapabilitiesResponse implements Response {
             throw new IllegalArgumentException("Not a GetCapabilities Request");
         }
 
-        WMSCapsTransformer transformer = new WMSCapsTransformer(request
-                .getSchemaBaseUrl(), formats, applicationContext);
+        WMSCapsTransformer transformer = new WMSCapsTransformer(request.getSchemaBaseUrl(),
+                formats, applicationContext);
 
-       // if (request.getWFS().getGeoServer().isVerbose()) {
-            transformer.setIndentation(2);
-       // }
+        // if (request.getWFS().getGeoServer().isVerbose()) {
+        transformer.setIndentation(2);
 
+        // }
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try {
@@ -109,8 +106,7 @@ public class WMSCapabilitiesResponse implements Response {
      */
     public String getContentType(GeoServer gs) throws IllegalStateException {
         if (rawResponse == null) {
-            throw new IllegalStateException(
-                "execute() not called or not succeed.");
+            throw new IllegalStateException("execute() not called or not succeed.");
         }
 
         return WMSCapsTransformer.WMS_CAPS_MIME;
@@ -140,7 +136,7 @@ public class WMSCapabilitiesResponse implements Response {
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         if (rawResponse == null) {
-			throw new IllegalStateException("No raw response presents!");
+            throw new IllegalStateException("No raw response presents!");
         }
 
         out.write(rawResponse);
@@ -155,12 +151,12 @@ public class WMSCapabilitiesResponse implements Response {
     public void abort(Service gs) {
     }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.vfny.geoserver.Response#getContentDisposition()
-	 */
-	public String getContentDisposition() {
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.vfny.geoserver.Response#getContentDisposition()
+     */
+    public String getContentDisposition() {
+        return null;
+    }
 }

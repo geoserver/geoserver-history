@@ -4,27 +4,22 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
+import org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi;
-
-
-
 
 /**
- * 
+ *
  */
-public class GML2FeatureResponseDelegateFactory implements FeatureResponseDelegateProducerSpi 
-{
-	
-	static HashSet supportedFormats = new HashSet();
-	
-	static{
-		supportedFormats.add(GML2FeatureResponseDelegate.formatName);	// eg. GML2
-		supportedFormats.add(GML2FeatureResponseDelegate.formatNameCompressed);	// eg. GML2-GZIP
-	}
+public class GML2FeatureResponseDelegateFactory implements FeatureResponseDelegateProducerSpi {
+    static HashSet supportedFormats = new HashSet();
+
+    static {
+        supportedFormats.add(GML2FeatureResponseDelegate.formatName); // eg. GML2
+        supportedFormats.add(GML2FeatureResponseDelegate.formatNameCompressed); // eg. GML2-GZIP
+    }
 
     /**
      * Creates a new GifMapProducerFactory object.
@@ -43,11 +38,10 @@ public class GML2FeatureResponseDelegateFactory implements FeatureResponseDelega
     /**
      * Returns the Set of output format this producer supports
      *
-     * @return 
+     * @return
      */
-    public Set getSupportedFormats() 
-    {
-    	 return supportedFormats;
+    public Set getSupportedFormats() {
+        return supportedFormats;
     }
 
     /**
@@ -72,24 +66,23 @@ public class GML2FeatureResponseDelegateFactory implements FeatureResponseDelega
         || GML2FeatureResponseDelegate.formatNameCompressed.equalsIgnoreCase(outputFormat);
     }
 
-    
-    
     /* (non-Javadoc)
-	 * @see org.geotools.factory.Factory#getImplementationHints()
-	 * This just returns java.util.Collections.EMPTY_MAP
-	 */
-	public Map getImplementationHints() {
-		return java.util.Collections.EMPTY_MAP;
-	}
+         * @see org.geotools.factory.Factory#getImplementationHints()
+         * This just returns java.util.Collections.EMPTY_MAP
+         */
+    public Map getImplementationHints() {
+        return java.util.Collections.EMPTY_MAP;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi#createFeatureDelegateProducer(java.lang.String)
-	 */
-	public FeatureResponseDelegate createFeatureDelegateProducer(String format) throws IllegalArgumentException 
-	{
-		if (canProduce(format))
-			return new GML2FeatureResponseDelegate();
-		throw new IllegalArgumentException("cannot produce "+format);
-	}
-	
+    /* (non-Javadoc)
+     * @see org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi#createFeatureDelegateProducer(java.lang.String)
+     */
+    public FeatureResponseDelegate createFeatureDelegateProducer(String format)
+        throws IllegalArgumentException {
+        if (canProduce(format)) {
+            return new GML2FeatureResponseDelegate();
+        }
+
+        throw new IllegalArgumentException("cannot produce " + format);
+    }
 }

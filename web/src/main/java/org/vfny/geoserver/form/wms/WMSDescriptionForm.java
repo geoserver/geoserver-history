@@ -2,17 +2,15 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-
 package org.vfny.geoserver.form.wms;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WMSConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -46,15 +44,13 @@ public final class WMSDescriptionForm extends ActionForm {
         String out = "";
 
         for (int i = 0; i < config.getKeywords().length; i++) {
-            out = out + config.getKeywords()[i]
-                + System.getProperty("line.separator");
+            out = out + config.getKeywords()[i] + System.getProperty("line.separator");
         }
 
         this.keywords = out;
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if ((name == null) || (name.length() == 0)) {
@@ -70,13 +66,11 @@ public final class WMSDescriptionForm extends ActionForm {
         }
 
         if ((accessConstraints == null) || (accessConstraints.length() == 0)) {
-            errors.add("accessConstraints",
-                new ActionError("error.accessConstraints.required"));
+            errors.add("accessConstraints", new ActionError("error.accessConstraints.required"));
         }
 
         if ((maintainer == null) || (maintainer.length() == 0)) {
-            errors.add("maintainer",
-                new ActionError("error.maintainer.required"));
+            errors.add("maintainer", new ActionError("error.maintainer.required"));
         }
 
         if ((_abstract == null) || (_abstract.length() == 0)) {

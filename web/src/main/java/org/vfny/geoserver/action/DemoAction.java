@@ -9,7 +9,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.form.DemoForm;
 import org.vfny.geoserver.util.Requests;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -21,17 +20,17 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * This Action handles all the buttons for the Demo.jsp page.
- * 
+ *
  * <p>
  * This one is more complicated then usual since not all the actions require
  * the form bean to be validated! I am going to have to hack a little bit to
  * make that happen, I may end up making the form bean validation differ
  * depending on the selected action.
  * </p>
- * 
+ *
  * <p>
  * Buttons that make this action go:
- * 
+ *
  * <ul>
  * <li>
  * Submit: submit the request specified by url and post fields (Should be done
@@ -41,7 +40,7 @@ import javax.servlet.http.HttpServletResponse;
  * Change: select between the precanned demos
  * </li>
  * </ul>
- * 
+ *
  * As usual we will have to uninternationlize the action name provided to us.
  * </p>
  *
@@ -66,14 +65,13 @@ public class DemoAction extends GeoServerAction {
         }
 
         String url = Requests.getBaseUrl(request, getGeoServer())
-            + (demo.indexOf("Coverage") > 0 ? "wcs" : "wfs");
+            + ((demo.indexOf("Coverage") > 0) ? "wcs" : "wfs");
 
         File file = new File(dir, demo);
         BufferedReader reader = new BufferedReader(new FileReader(file));
         StringBuffer buf = new StringBuffer();
 
-        for (String line = reader.readLine(); line != null;
-                line = reader.readLine()) {
+        for (String line = reader.readLine(); line != null; line = reader.readLine()) {
             buf.append(line);
             buf.append("\n");
         }

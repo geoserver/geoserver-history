@@ -1,20 +1,22 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_1_0;
 
-
-import javax.xml.namespace.QName;
-
 import net.opengis.wfs.WFSFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:FeatureTypeType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;xsd:complexType name="FeatureTypeType"&gt;
  *      &lt;xsd:annotation&gt;
  *          &lt;xsd:documentation&gt;
@@ -68,13 +70,13 @@ import org.geotools.xml.Node;
  *                      name="OtherSRS" type="xsd:anyURI"&gt;
  *                      &lt;xsd:annotation&gt;
  *                          &lt;xsd:documentation&gt;
- *                          The OtherSRS element is used to indicate other 
- *                          supported SRSs within query and transaction 
- *                          operations.  A supported SRS means that the 
+ *                          The OtherSRS element is used to indicate other
+ *                          supported SRSs within query and transaction
+ *                          operations.  A supported SRS means that the
  *                          WFS supports the transformation of spatial
  *                          properties between the OtherSRS and the internal
- *                          storage SRS.  The effects of such transformations 
- *                          must be considered when determining and declaring 
+ *                          storage SRS.  The effects of such transformations
+ *                          must be considered when determining and declaring
  *                          the guaranteed data accuracy.
  *                       &lt;/xsd:documentation&gt;
  *                      &lt;/xsd:annotation&gt;
@@ -90,49 +92,47 @@ import org.geotools.xml.Node;
  *          &lt;xsd:element maxOccurs="unbounded" minOccurs="0"
  *              name="MetadataURL" type="wfs:MetadataURLType"/&gt;
  *      &lt;/xsd:sequence&gt;
- *  &lt;/xsd:complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/xsd:complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class FeatureTypeTypeBinding extends AbstractComplexBinding {
+    WFSFactory wfsfactory;
 
-	WFSFactory wfsfactory;		
-	public FeatureTypeTypeBinding( WFSFactory wfsfactory ) {
-		this.wfsfactory = wfsfactory;
-	}
+    public FeatureTypeTypeBinding(WFSFactory wfsfactory) {
+        this.wfsfactory = wfsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return WFS.FEATURETYPETYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return null;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		//TODO: implement
-		return null;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return WFS.FEATURETYPETYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return null;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        //TODO: implement
+        return null;
+    }
 }

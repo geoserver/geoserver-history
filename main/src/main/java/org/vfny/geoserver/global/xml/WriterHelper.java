@@ -4,22 +4,21 @@
  */
 package org.vfny.geoserver.global.xml;
 
+import org.vfny.geoserver.global.ConfigurationException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.global.ConfigurationException;
-
 
 /**
  * WriterUtils purpose.
- * 
+ *
  * <p>
  * Used to provide assitance writing xml to a Writer.
  * </p>
- * 
+ *
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
@@ -27,15 +26,14 @@ import org.vfny.geoserver.global.ConfigurationException;
  */
 public class WriterHelper {
     /** Used internally to create log information to detect errors. */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.global");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
     /** The output writer. */
     protected Writer writer;
 
     /**
      * WriterUtils constructor.
-     * 
+     *
      * <p>
      * Should never be called.
      * </p>
@@ -45,7 +43,7 @@ public class WriterHelper {
 
     /**
      * WriterUtils constructor.
-     * 
+     *
      * <p>
      * Stores the specified writer to use for output.
      * </p>
@@ -58,7 +56,7 @@ public class WriterHelper {
 
     /**
      * write purpose.
-     * 
+     *
      * <p>
      * Writes the String specified to the stored output writer.
      * </p>
@@ -78,7 +76,7 @@ public class WriterHelper {
 
     /**
      * writeln purpose.
-     * 
+     *
      * <p>
      * Writes the String specified to the stored output writer.
      * </p>
@@ -98,7 +96,7 @@ public class WriterHelper {
 
     /**
      * openTag purpose.
-     * 
+     *
      * <p>
      * Writes an open xml tag with the name specified to the stored output
      * writer.
@@ -114,7 +112,7 @@ public class WriterHelper {
 
     /**
      * openTag purpose.
-     * 
+     *
      * <p>
      * Writes an open xml tag with the name and attributes specified to the
      * stored output writer.
@@ -144,7 +142,7 @@ public class WriterHelper {
 
     /**
      * closeTag purpose.
-     * 
+     *
      * <p>
      * Writes an close xml tag with the name specified to the stored output
      * writer.
@@ -160,7 +158,7 @@ public class WriterHelper {
 
     /**
      * textTag purpose.
-     * 
+     *
      * <p>
      * Writes a text xml tag with the name and text specified to the stored
      * output writer.
@@ -171,14 +169,13 @@ public class WriterHelper {
      *
      * @throws ConfigurationException When an IO exception occurs.
      */
-    public void textTag(String tagName, String data)
-        throws ConfigurationException {
+    public void textTag(String tagName, String data) throws ConfigurationException {
         writeln("<" + tagName + ">" + data + "</" + tagName + ">");
     }
 
     /**
      * valueTag purpose.
-     * 
+     *
      * <p>
      * Writes an xml tag with the name and value specified to the stored output
      * writer.
@@ -196,7 +193,7 @@ public class WriterHelper {
 
     /**
      * attrTag purpose.
-     * 
+     *
      * <p>
      * Writes an xml tag with the name and attributes specified to the stored
      * output writer.
@@ -226,7 +223,7 @@ public class WriterHelper {
 
     /**
      * textTag purpose.
-     * 
+     *
      * <p>
      * Writes an xml tag with the name, text and attributes specified to the
      * stored output writer.
@@ -257,7 +254,7 @@ public class WriterHelper {
 
     /**
      * comment purpose.
-     * 
+     *
      * <p>
      * Writes an xml comment with the text specified to the stored output
      * writer.

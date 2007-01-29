@@ -1,24 +1,25 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_0_0;
-
-
-import java.math.BigInteger;
-
-import javax.xml.namespace.QName;
 
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WFSFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import java.math.BigInteger;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:GetFeatureType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;xsd:complexType name="GetFeatureType"&gt;       &lt;xsd:annotation&gt;
  *              &lt;xsd:documentation&gt;             A GetFeature element
  *              contains one or more Query elements             that
@@ -59,72 +60,73 @@ import org.geotools.xml.Node;
  *                  number of features that a GetFeature operation should
  *                  generate (regardless of the actual number of query
  *                  hits).             &lt;/xsd:documentation&gt;
- *          &lt;/xsd:annotation&gt;       &lt;/xsd:attribute&gt;    &lt;/xsd:complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *          &lt;/xsd:annotation&gt;       &lt;/xsd:attribute&gt;    &lt;/xsd:complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class GetFeatureTypeBinding extends AbstractComplexBinding {
+    WFSFactory wfsfactory;
 
-	WFSFactory wfsfactory;		
-	public GetFeatureTypeBinding( WFSFactory wfsfactory ) {
-		this.wfsfactory = wfsfactory;
-	}
+    public GetFeatureTypeBinding(WFSFactory wfsfactory) {
+        this.wfsfactory = wfsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return WFS.GETFEATURETYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return GetFeatureType.class;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		GetFeatureType getFeature = wfsfactory.createGetFeatureType();
-		
-		WFSBindingUtils.service( getFeature, node );
-		WFSBindingUtils.version( getFeature, node );
-		WFSBindingUtils.outputFormat( getFeature, node, "GML2" );
-		
-		if ( node.getAttributeValue( "handle" ) != null )
-			getFeature.setHandle( (String) node.getAttributeValue( "handle" ) );
-		
-		//get the max features
-		BigInteger maxFeatures = null;
-		Number number = (Number) node.getAttributeValue( "maxFeatures" );
-		if ( number != null ) {
-			if ( number instanceof BigInteger ) {
-				maxFeatures = (BigInteger) number;
-			}
-			else {
-				maxFeatures = BigInteger.valueOf( number.longValue() );
-			}
-			getFeature.setMaxFeatures( maxFeatures );
-		}
-		
-		//queries
-		getFeature.getQuery().addAll( node.getChildValues( QueryType.class ) );
-		return getFeature;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return WFS.GETFEATURETYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return GetFeatureType.class;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        GetFeatureType getFeature = wfsfactory.createGetFeatureType();
+
+        WFSBindingUtils.service(getFeature, node);
+        WFSBindingUtils.version(getFeature, node);
+        WFSBindingUtils.outputFormat(getFeature, node, "GML2");
+
+        if (node.getAttributeValue("handle") != null) {
+            getFeature.setHandle((String) node.getAttributeValue("handle"));
+        }
+
+        //get the max features
+        BigInteger maxFeatures = null;
+        Number number = (Number) node.getAttributeValue("maxFeatures");
+
+        if (number != null) {
+            if (number instanceof BigInteger) {
+                maxFeatures = (BigInteger) number;
+            } else {
+                maxFeatures = BigInteger.valueOf(number.longValue());
+            }
+
+            getFeature.setMaxFeatures(maxFeatures);
+        }
+
+        //queries
+        getFeature.getQuery().addAll(node.getChildValues(QueryType.class));
+
+        return getFeature;
+    }
 }

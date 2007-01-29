@@ -4,6 +4,14 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
+import com.vividsolutions.jts.geom.Geometry;
+import org.geotools.data.FeatureReader;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -11,23 +19,12 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 
-import org.geotools.data.FeatureReader;
-
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
-
-import com.vividsolutions.jts.geom.Geometry;
-
 
 /**
  * Produces a FeatureInfo response in HTML.  Relies on abstractfeatureinfo and
  * the feature delegate to do most of the work, just implements an html based
  * writeTo method.
- * 
+ *
  * <p>
  * In the future James suggested that we allow some sort of template system, so
  * that one can control the formatting of the html output, since now we just
@@ -52,9 +49,9 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-    	return new HashMap();
+        return new HashMap();
     }
-    
+
     /**
      * Writes the image to the client.
      *
@@ -71,29 +68,32 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         writer.println("<html><body>");
 
         FeatureIterator reader = null;
+
         try {
-        	final int size=results.size();
-        	FeatureCollection fr;
-        	FeatureType schema;
-        	Feature f ;
-        	AttributeType[] types;
-        	int attCount;
+            final int size = results.size();
+            FeatureCollection fr;
+            FeatureType schema;
+            Feature f;
+            AttributeType[] types;
+            int attCount;
+
             for (int i = 0; i < size; i++) {
                 fr = (FeatureCollection) results.get(i);
                 schema = fr.getSchema();
 
                 writer.println("<table border='1'>");
-                writer.println("<tr><th colspan="); 
-                writer.println( schema.getAttributeCount());
-                writer.println(" scope='col'>" );
-                writer.println( schema.getTypeName());
+                writer.println("<tr><th colspan=");
+                writer.println(schema.getAttributeCount());
+                writer.println(" scope='col'>");
+                writer.println(schema.getTypeName());
                 writer.println(" </th></tr>");
                 writer.println("<tr>");
 
-                attCount=schema.getAttributeCount();
+                attCount = schema.getAttributeCount();
+
                 for (int j = 0; j < attCount; j++) {
                     writer.println("<td>");
-                    writer.println( schema.getAttributeType(j).getName());
+                    writer.println(schema.getAttributeType(j).getName());
                     writer.println("</td>");
                 }
 
@@ -101,6 +101,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
                 //writer.println("Found " + fr.getCount() + " in " + schema.getTypeName());
                 reader = fr.features();
+
                 while (reader.hasNext()) {
                     f = reader.next();
                     types = schema.getAttributeTypes();
@@ -127,17 +128,16 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
             }
         } catch (Exception ife) {
             writer.println("Unable to generate information " + ife);
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
         }
-        finally
-		{
-        	if (reader != null)
-        		reader.close();
-		}
-        
+
         writer.flush();
     }
 
-	public String getContentDisposition() {
-		return null;
-	}
+    public String getContentDisposition() {
+        return null;
+    }
 }

@@ -4,6 +4,10 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
+import org.vfny.geoserver.util.ResponseUtils;
+import org.vfny.geoserver.wfs.requests.WFSRequest;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -12,11 +16,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
-
-import org.vfny.geoserver.util.ResponseUtils;
-import org.vfny.geoserver.wfs.requests.WFSRequest;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 
 /**
@@ -30,8 +29,7 @@ import org.w3c.dom.Element;
  */
 public class WfsTransResponse {
     /** Standard logging instance for class */
-    private static final Logger LOG = Logger.getLogger(
-            "org.vfny.geoserver.responses");
+    private static final Logger LOG = Logger.getLogger("org.vfny.geoserver.responses");
 
     /** Status if the transaction was successful */
     public static final short SUCCESS = 0;
@@ -174,14 +172,11 @@ public class WfsTransResponse {
      */
     public void writeXmlResponse(Writer writer, WFSRequest request)
         throws IOException {
-    	
-    		//boolean verbose = ConfigInfo.getInstance().formatOutput();
+        //boolean verbose = ConfigInfo.getInstance().formatOutput();
         //String indent = ((verbose) ? "\n" + OFFSET : " ");
         String encoding = (request == null) ? "UTF-8"
-                                            : request.getWFS().getGeoServer()
-                                                     .getCharSet().name();
-        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + encoding
-            + "\"?>";
+                                            : request.getWFS().getGeoServer().getCharSet().name();
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>";
 
         if (verbose) {
             writer.write("\n");
@@ -195,16 +190,18 @@ public class WfsTransResponse {
         writer.write(indent + "xmlns:ogc=\"http://www.opengis.net/ogc\"");
 
         //}
-        writer.write(indent
-            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+        writer.write(indent + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         writer.write(indent);
         writer.write("xsi:schemaLocation=\"http://www.opengis.net/wfs ");
+
         String baseUrl;
+
         if (request == null) {
-        	baseUrl = "http://schemas.opengis.net/";
+            baseUrl = "http://schemas.opengis.net/";
         } else {
-        	baseUrl = request.getSchemaBaseUrl();
+            baseUrl = request.getSchemaBaseUrl();
         }
+
         writer.write(baseUrl);
         writer.write("wfs/1.0.0/WFS-transaction.xsd\">");
 

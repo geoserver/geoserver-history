@@ -7,17 +7,17 @@ package org.vfny.geoserver.util;
 import java.io.IOException;
 import java.io.Writer;
 
+
 /**
  * @deprecated use {@link org.geoserver.ows.util.ResponseUtils}.
  *
  */
 public final class ResponseUtils {
-  
     /**
      * @deprecated moved to {@link org.geoserver.ows.util.ResponseUtils#encodeXML(String)}.
      */
     public static String encodeXML(String inData) {
-    	return org.geoserver.ows.util.ResponseUtils.encodeXML( inData );
+        return org.geoserver.ows.util.ResponseUtils.encodeXML(inData);
     }
 
     /**
@@ -25,7 +25,6 @@ public final class ResponseUtils {
      */
     public static void writeEscapedString(Writer writer, String string)
         throws IOException {
-    	
         org.geoserver.ows.util.ResponseUtils.writeEscapedString(writer, string);
     }
 }

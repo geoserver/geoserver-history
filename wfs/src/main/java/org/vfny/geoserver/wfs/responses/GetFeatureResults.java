@@ -4,15 +4,14 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.geotools.data.FeatureLock;
 import org.geotools.feature.FeatureCollection;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -77,9 +76,8 @@ public class GetFeatureResults {
         return featureLock;
     }
 
-    public void setFeatureLock(FeatureLock featureLock)
-    {
-      this.featureLock = featureLock;
+    public void setFeatureLock(FeatureLock featureLock) {
+        this.featureLock = featureLock;
     }
 
     /**
@@ -103,8 +101,7 @@ public class GetFeatureResults {
      * @throws ArrayIndexOutOfBoundsException if index is not in the range from
      * 0(zero) to FeatureResults' count -1
      */
-    public FeatureCollection getFeatures(int index)
-        throws ArrayIndexOutOfBoundsException {
+    public FeatureCollection getFeatures(int index) throws ArrayIndexOutOfBoundsException {
         return (FeatureCollection) features.get(index);
     }
 
@@ -120,8 +117,7 @@ public class GetFeatureResults {
      * @throws ArrayIndexOutOfBoundsException if index is not in the range from
      * 0(zero) to FeatureTypeInfo's count -1
      */
-    public FeatureTypeInfo getTypeInfo(int index)
-        throws ArrayIndexOutOfBoundsException {
+    public FeatureTypeInfo getTypeInfo(int index) throws ArrayIndexOutOfBoundsException {
         return (FeatureTypeInfo) typeInfo.get(index);
     }
 
@@ -166,10 +162,8 @@ public class GetFeatureResults {
                 "Both the metadata and results of querying a featuretype must be passed");
         }
 
-        if (!features.getSchema().getTypeName().equals(meta.getFeatureType()
-                                                               .getTypeName())) {
-            throw new IllegalArgumentException(
-                "The passed type info and results"
+        if (!features.getSchema().getTypeName().equals(meta.getFeatureType().getTypeName())) {
+            throw new IllegalArgumentException("The passed type info and results"
                 + " do not seems to belong to the same type");
         }
 

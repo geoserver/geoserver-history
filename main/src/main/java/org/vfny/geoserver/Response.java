@@ -4,12 +4,11 @@
  */
 package org.vfny.geoserver;
 
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.Service;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
 
 
 /**
@@ -174,20 +173,20 @@ public interface Response {
      */
     public String getContentEncoding();
 
-	/**
-	 * Returns any special content disposition this response will encode its
-	 * contents to, such as "filename" and "attachement"
-	 * 
-	 * @return the content disposition writeTo will encode with, or null if none
-	 * 
-	 * @uml.property name="contentDisposition" multiplicity="(0 1)"
-	 */
-	public String getContentDisposition();
+    /**
+     * Returns any special content disposition this response will encode its
+     * contents to, such as "filename" and "attachement"
+     *
+     * @return the content disposition writeTo will encode with, or null if none
+     *
+     * @uml.property name="contentDisposition" multiplicity="(0 1)"
+     */
+    public String getContentDisposition();
 
     /**
      * Returns any extra headers that this Response might wish to have set in the
      * HTTP response object.
-     * 
+     *
      * In particular, a WMS might wish to have some external caching information added
      * to the HTTP response, so that caches can hang onto this map for a while and ligten
      * the load on geoserver.

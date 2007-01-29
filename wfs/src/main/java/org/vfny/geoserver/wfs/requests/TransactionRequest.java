@@ -4,11 +4,10 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.vfny.geoserver.wfs.responses.WfsTransactionException;
 import org.vfny.geoserver.wfs.servlets.WFService;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -21,16 +20,15 @@ import org.vfny.geoserver.wfs.servlets.WFService;
  */
 public class TransactionRequest extends WFSRequest {
     public static final String TRANSACTION_REQUEST_TYPE = "Transaction";
-        
+
     /** Assume this is a list of SubTransactionRequest */
     protected List subRequests = new ArrayList();
-    
+
     /** Assume null value means no lockID specified */
     protected String lockId = null;
-    
-    /** Replaced with releaseAction */ 
-    //protected boolean releaseAll = true;
 
+    /** Replaced with releaseAction */
+    //protected boolean releaseAll = true;
 
     /**
      * Release lockID when the transaction completes.
@@ -45,7 +43,7 @@ public class TransactionRequest extends WFSRequest {
      * </p>
      */
     public static final ReleaseAction ALL = new ReleaseAction("ALL");
-    
+
     /**
      * Release lockID when the transaction completes.
      * <p>
@@ -62,14 +60,14 @@ public class TransactionRequest extends WFSRequest {
      * each transaction unless all feature instances in the locked set have
      * been operated upon. </i>
      * </p>
-     */    
+     */
     public final static ReleaseAction SOME = new ReleaseAction("SOME");
-    
+
     /**
      * Control how locked features are treated when a transaction is completed.
      */
     protected ReleaseAction releaseAction = ALL;
-    
+
     /**
      * Specifices the user-defined name for the entire transaction request.
      * <p>
@@ -82,13 +80,13 @@ public class TransactionRequest extends WFSRequest {
 
     /**
      * Creates a WFS transaction request.
-     * 
+     *
      * @param service The wfs service handling the request.
      */
     public TransactionRequest(WFService service) {
-    		super(TRANSACTION_REQUEST_TYPE, service);
+        super(TRANSACTION_REQUEST_TYPE, service);
     }
-    
+
     /**
      * Adds a delete, insert, or update request to this transaction.
      * <p>
@@ -100,8 +98,10 @@ public class TransactionRequest extends WFSRequest {
      */
     public void addSubRequest(SubTransactionRequest subRequest) {
         subRequests.add(subRequest);
-        if( subRequest.getHandle() == null ){
-            subRequest.setHandle( getHandle()+" "+subRequest.getTypeName()+" "+subRequests.size() );
+
+        if (subRequest.getHandle() == null) {
+            subRequest.setHandle(getHandle() + " " + subRequest.getTypeName() + " "
+                + subRequests.size());
         }
     }
 
@@ -145,19 +145,16 @@ public class TransactionRequest extends WFSRequest {
 
     public void setReleaseAction(String releaseAction)
         throws WfsTransactionException {
-            
         if (releaseAction != null) {
             if (releaseAction.toUpperCase().equals("ALL")) {
                 this.releaseAction = ALL;
             } else if (releaseAction.toUpperCase().equals("SOME")) {
-                this.releaseAction= SOME;
+                this.releaseAction = SOME;
             } else {
-                throw new WfsTransactionException("Illegal releaseAction: "
-                    + releaseAction + ", only " + "SOME or ALL allowed",
-                    handle, handle);
+                throw new WfsTransactionException("Illegal releaseAction: " + releaseAction
+                    + ", only " + "SOME or ALL allowed", handle, handle);
             }
-        }
-        else {
+        } else {
             // TODO: Review this please - should we restore the default here?
             this.releaseAction = ALL;
         }
@@ -174,17 +171,16 @@ public class TransactionRequest extends WFSRequest {
      * <p>
      * No matter what value you pick the features you modify in this transaction
      * that are held by lockID will be released.
-     * </p>     
+     * </p>
      * @param releaseAll <tt>true</tt> if all features held by the lock should
      *        be released after this operation.
      */
-    public void setReleaseAction(boolean releaseAll ) {
-        if( releaseAll ){
+    public void setReleaseAction(boolean releaseAll) {
+        if (releaseAll) {
             releaseAction = ALL;
-        }
-        else {
+        } else {
             releaseAction = SOME;
-        }        
+        }
     }
 
     /**
@@ -251,14 +247,12 @@ public class TransactionRequest extends WFSRequest {
 
             if (this.releaseAction == testTrans.releaseAction) {
                 isEqual = testField(this.lockId, testTrans.getLockId());
-                isEqual = testField(this.handle, testTrans.getHandle())
-                    && isEqual;
+                isEqual = testField(this.handle, testTrans.getHandle()) && isEqual;
 
                 //isEqual = testField(this.version, testTrans.version) && isEqual;
                 if (this.subRequests.size() == testTrans.subRequests.size()) {
                     for (int i = 0; i < subRequests.size(); i++) {
-                        isEqual = isEqual
-                            && subRequests.contains(testTrans.getSubRequest(i));
+                        isEqual = isEqual && subRequests.contains(testTrans.getSubRequest(i));
                     }
                 } else {
                     isEqual = false;
@@ -273,6 +267,7 @@ public class TransactionRequest extends WFSRequest {
         }
     }
 }
+
 
 /**
  * Class used for releaseAction values SOME and ALL.
@@ -291,12 +286,13 @@ public class TransactionRequest extends WFSRequest {
  * </p>
  */
 class ReleaseAction {
-private String text;
-ReleaseAction( String str ){
-    text = str;
-}
-public String toString(){
-    return text;
-}    
+    private String text;
 
+    ReleaseAction(String str) {
+        text = str;
+    }
+
+    public String toString() {
+        return text;
+    }
 }

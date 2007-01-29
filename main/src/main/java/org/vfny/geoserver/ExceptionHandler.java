@@ -4,10 +4,11 @@
  */
 package org.vfny.geoserver;
 
+
 /**
  * DOCUMENT ME!
  *
- * @author Gabriel Roldán
+ * @author Gabriel Roldï¿½n
  * @version $revision$
  */
 public interface ExceptionHandler {
@@ -48,8 +49,7 @@ public interface ExceptionHandler {
      *
      * @return DOCUMENT ME!
      */
-    public ServiceException newServiceException(Throwable e, String preMessage,
-        String locator);
+    public ServiceException newServiceException(Throwable e, String preMessage, String locator);
 
     /*# ServiceException lnkServiceException; */
 }

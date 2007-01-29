@@ -1,27 +1,29 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_0_0;
 
-
-import javax.xml.namespace.QName;
-
 import net.opengis.wfs.WFSFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:WFS_TransactionResponseType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;xsd:complexType name="WFS_TransactionResponseType"&gt;
  *      &lt;xsd:annotation&gt;
  *          &lt;xsd:documentation&gt;
  *              The WFS_TransactionResponseType defines the format of
- *              the XML document that a Web Feature Service generates 
- *              in response to a Transaction request.  The response 
- *              includes the completion status of the transaction 
+ *              the XML document that a Web Feature Service generates
+ *              in response to a Transaction request.  The response
+ *              includes the completion status of the transaction
  *              and the feature identifiers of any newly created
  *              feature instances.
  *           &lt;/xsd:documentation&gt;
@@ -49,49 +51,47 @@ import org.geotools.xml.Node;
  *          &lt;/xsd:element&gt;
  *      &lt;/xsd:sequence&gt;
  *      &lt;xsd:attribute fixed="1.0.0" name="version" type="xsd:string" use="required"/&gt;
- *  &lt;/xsd:complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/xsd:complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class WFS_TransactionResponseTypeBinding extends AbstractComplexBinding {
+    WFSFactory wfsfactory;
 
-	WFSFactory wfsfactory;		
-	public WFS_TransactionResponseTypeBinding( WFSFactory wfsfactory ) {
-		this.wfsfactory = wfsfactory;
-	}
+    public WFS_TransactionResponseTypeBinding(WFSFactory wfsfactory) {
+        this.wfsfactory = wfsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return WFS.WFS_TRANSACTIONRESPONSETYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return null;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		//TODO: implement
-		return null;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return WFS.WFS_TRANSACTIONRESPONSETYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return null;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        //TODO: implement
+        return null;
+    }
 }

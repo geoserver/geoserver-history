@@ -1,25 +1,26 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_1_0;
-
-
-import java.math.BigInteger;
-
-import javax.xml.namespace.QName;
 
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfs.WFSFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import java.math.BigInteger;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:GetFeatureType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;xsd:complexType name="GetFeatureType"&gt;
  *      &lt;xsd:annotation&gt;
  *          &lt;xsd:documentation&gt;
@@ -47,7 +48,7 @@ import org.geotools.xml.Node;
  *                       a GetFeature request is processed.
  *                       Possible values are:
  *                          results - meaning that the full response set
- *                                    (i.e. all the feature instances) 
+ *                                    (i.e. all the feature instances)
  *                                    should be returned.
  *                          hits    - meaning that an empty response set
  *                                    should be returned (i.e. no feature
@@ -74,7 +75,7 @@ import org.geotools.xml.Node;
  *                       interest, other acceptable output format values may be
  *                       used to specify other formats as long as those values
  *                       are advertised in the capabilities document.
- *                       For example, the value WKB may be used to indicate that a 
+ *                       For example, the value WKB may be used to indicate that a
  *                       Well Known Binary format be used to encode the output.
  *                    &lt;/xsd:documentation&gt;
  *                  &lt;/xsd:annotation&gt;
@@ -103,7 +104,7 @@ import org.geotools.xml.Node;
  *                       (href) XLinks will be traversed and the referenced elements
  *                       returned if possible.  The range of valid values for this
  *                       attribute consists of positive integers plus "*".
- *                       If this attribute is not specified then no xlinks shall be 
+ *                       If this attribute is not specified then no xlinks shall be
  *                       resolved and the value of traverseXlinkExpiry attribute (if
  *                       it specified) may be ignored.
  *                    &lt;/xsd:documentation&gt;
@@ -116,96 +117,95 @@ import org.geotools.xml.Node;
  *                       The traverseXlinkExpiry attribute value is specified in
  *                       minutes.  It indicates how long a Web Feature Service
  *                       should wait to receive a response to a nested GetGmlObject
- *                       request.	
- *                       This attribute is only relevant if a value is specified 
+ *                       request.
+ *                       This attribute is only relevant if a value is specified
  *                       for the traverseXlinkDepth attribute.
  *                    &lt;/xsd:documentation&gt;
  *                  &lt;/xsd:annotation&gt;
  *              &lt;/xsd:attribute&gt;
  *          &lt;/xsd:extension&gt;
  *      &lt;/xsd:complexContent&gt;
- *  &lt;/xsd:complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/xsd:complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class GetFeatureTypeBinding extends AbstractComplexBinding {
+    WFSFactory wfsfactory;
 
-	WFSFactory wfsfactory;		
-	public GetFeatureTypeBinding( WFSFactory wfsfactory ) {
-		this.wfsfactory = wfsfactory;
-	}
+    public GetFeatureTypeBinding(WFSFactory wfsfactory) {
+        this.wfsfactory = wfsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return WFS.GETFEATURETYPE;
-	}
-	
-	/**
-	 * Sets execution mode to be before
-	 */
-	public int getExecutionMode() {
-		return BEFORE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return GetFeatureType.class;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		GetFeatureType getFeature = wfsfactory.createGetFeatureType();
-		
-		//lt;xsd:element maxOccurs="unbounded" ref="wfs:Query"/&gt;
-		getFeature.getQuery().addAll( node.getChildValues( QueryType.class ) );
-		
-		//&lt;xsd:attribute default="results" name="resultType"
-		//      type="wfs:ResultTypeType" use="optional"&gt;
-		if ( node.hasAttribute( "resultType" ) ) {
-			getFeature.setResultType( (ResultTypeType) node.getAttributeValue( "resultType" ) );
-		}
-		
-		//&lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
-		//		name="outputFormat" type="xsd:string" use="optional"&gt;
-		if ( node.hasAttribute( "outputFormat" ) ) {
-			getFeature.setOutputFormat( (String) node.getAttributeValue( "outputFormat" ) );
-		}
-	
-		//&lt;xsd:attribute name="maxFeatures" type="xsd:positiveInteger" use="optional"&gt;
-		if ( node.hasAttribute( "maxFeatures" ) ) {
-			getFeature.setMaxFeatures( (BigInteger) node.getAttributeValue( "maxFeatures") );
-		}
-		
-		//&lt;xsd:attribute name="traverseXlinkDepth" type="xsd:string" use="optional"&gt;
-		if ( node.hasAttribute( "traverseXlinkDepth" ) ) {
-			getFeature.setTraverseXlinkDepth( (String) node.getAttributeValue( "traverseXlinkDepth") );
-		}
-		
-		//&lt;xsd:attribute name="traverseXlinkExpiry"
-		//		type="xsd:positiveInteger" use="optional"&gt;
-		if ( node.hasAttribute( "traverseXlinkExpiry" ) ) {
-			getFeature.setTraverseXlinkExpiry( (BigInteger) node.getAttributeValue( "traverseXlinkExpiry") );
-		}
-		
-		return getFeature;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return WFS.GETFEATURETYPE;
+    }
 
+    /**
+     * Sets execution mode to be before
+     */
+    public int getExecutionMode() {
+        return BEFORE;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return GetFeatureType.class;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        GetFeatureType getFeature = wfsfactory.createGetFeatureType();
+
+        //lt;xsd:element maxOccurs="unbounded" ref="wfs:Query"/&gt;
+        getFeature.getQuery().addAll(node.getChildValues(QueryType.class));
+
+        //&lt;xsd:attribute default="results" name="resultType"
+        //      type="wfs:ResultTypeType" use="optional"&gt;
+        if (node.hasAttribute("resultType")) {
+            getFeature.setResultType((ResultTypeType) node.getAttributeValue("resultType"));
+        }
+
+        //&lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
+        //		name="outputFormat" type="xsd:string" use="optional"&gt;
+        if (node.hasAttribute("outputFormat")) {
+            getFeature.setOutputFormat((String) node.getAttributeValue("outputFormat"));
+        }
+
+        //&lt;xsd:attribute name="maxFeatures" type="xsd:positiveInteger" use="optional"&gt;
+        if (node.hasAttribute("maxFeatures")) {
+            getFeature.setMaxFeatures((BigInteger) node.getAttributeValue("maxFeatures"));
+        }
+
+        //&lt;xsd:attribute name="traverseXlinkDepth" type="xsd:string" use="optional"&gt;
+        if (node.hasAttribute("traverseXlinkDepth")) {
+            getFeature.setTraverseXlinkDepth((String) node.getAttributeValue("traverseXlinkDepth"));
+        }
+
+        //&lt;xsd:attribute name="traverseXlinkExpiry"
+        //		type="xsd:positiveInteger" use="optional"&gt;
+        if (node.hasAttribute("traverseXlinkExpiry")) {
+            getFeature.setTraverseXlinkExpiry((BigInteger) node.getAttributeValue(
+                    "traverseXlinkExpiry"));
+        }
+
+        return getFeature;
+    }
 }

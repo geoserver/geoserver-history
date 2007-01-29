@@ -6,25 +6,25 @@ package org.geoserver.ows.util;
 
 import javax.servlet.http.HttpServletRequest;
 
+
 /**
  * Utility class performing operations related to http requests.
- * 
+ *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
 public class RequestUtils {
+    /**
+     * Pulls out the base url ( from the client point of view ), from the
+     * given request object.
+     *
+     * @return A String of the form "<scheme>://<server>:<port>/<context>/"
+     *
+     */
+    public static String baseURL(HttpServletRequest req) {
+        String url = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()
+            + req.getContextPath() + "/";
 
-	/**
-	 * Pulls out the base url ( from the client point of view ), from the 
-	 * given request object.
-	 * 
-	 * @return A String of the form "<scheme>://<server>:<port>/<context>/"
-	 * 
-	 */
-	public static String baseURL( HttpServletRequest req ) {
-		String url = req.getScheme() + "://" + req.getServerName() + ":"
-        + req.getServerPort() + req.getContextPath() +"/";
-		
-		return url;
-	}
+        return url;
+    }
 }

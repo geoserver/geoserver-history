@@ -1,80 +1,79 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_0_0;
-
-
-import javax.xml.namespace.QName;
 
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.WFSFactory;
-
 import org.geotools.feature.Feature;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:InsertElementType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;xsd:complexType name="InsertElementType"&gt;
  *      &lt;xsd:sequence&gt;
  *          &lt;xsd:element maxOccurs="unbounded" ref="gml:_Feature"/&gt;
  *      &lt;/xsd:sequence&gt;
  *      &lt;xsd:attribute name="handle" type="xsd:string" use="optional"/&gt;
- *  &lt;/xsd:complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/xsd:complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class InsertElementTypeBinding extends AbstractComplexBinding {
+    WFSFactory wfsfactory;
 
-	WFSFactory wfsfactory;		
-	
-	public InsertElementTypeBinding( WFSFactory wfsfactory) {
-		this.wfsfactory = wfsfactory;
-	}
+    public InsertElementTypeBinding(WFSFactory wfsfactory) {
+        this.wfsfactory = wfsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return WFS.INSERTELEMENTTYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return InsertElementTypeBinding.class;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		InsertElementType insertElement = wfsfactory.createInsertElementType();
-		
-		//features
-		insertElement.getFeature().addAll( node.getChildValues( Feature.class ) );
-		
-		//handle
-		if ( node.hasAttribute( "handle") )
-			insertElement.setHandle( (String) node.getAttributeValue( "handle" ) );
-		
-		return insertElement;
-		
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return WFS.INSERTELEMENTTYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return InsertElementTypeBinding.class;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        InsertElementType insertElement = wfsfactory.createInsertElementType();
+
+        //features
+        insertElement.getFeature().addAll(node.getChildValues(Feature.class));
+
+        //handle
+        if (node.hasAttribute("handle")) {
+            insertElement.setHandle((String) node.getAttributeValue("handle"));
+        }
+
+        return insertElement;
+    }
 }

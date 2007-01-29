@@ -1,21 +1,23 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.ows.xml.v1_0;
-
-
-import javax.xml.namespace.QName;
 
 import net.opengis.ows.v1_0_0.AcceptVersionsType;
 import net.opengis.ows.v1_0_0.OWSFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/ows:AcceptVersionsType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;complexType name="AcceptVersionsType"&gt;
  *      &lt;annotation&gt;
  *          &lt;documentation&gt;Prioritized sequence of one or more specification versions accepted by client, with preferred versions listed first. See Version negotiation subclause for more information. &lt;/documentation&gt;
@@ -23,51 +25,49 @@ import org.geotools.xml.Node;
  *      &lt;sequence&gt;
  *          &lt;element maxOccurs="unbounded" name="Version" type="ows:VersionType"/&gt;
  *      &lt;/sequence&gt;
- *  &lt;/complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class AcceptVersionsTypeBinding extends AbstractComplexBinding {
+    OWSFactory owsfactory;
 
-	OWSFactory owsfactory;		
-	public AcceptVersionsTypeBinding( OWSFactory owsfactory ) {
-		this.owsfactory = owsfactory;
-	}
+    public AcceptVersionsTypeBinding(OWSFactory owsfactory) {
+        this.owsfactory = owsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return OWS.ACCEPTVERSIONSTYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return AcceptVersionsType.class;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		AcceptVersionsType acceptVersions = owsfactory.createAcceptVersionsType();
-		acceptVersions.getVersion().addAll( node.getChildValues( "Version") );
-		
-		return acceptVersions;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return OWS.ACCEPTVERSIONSTYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return AcceptVersionsType.class;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        AcceptVersionsType acceptVersions = owsfactory.createAcceptVersionsType();
+        acceptVersions.getVersion().addAll(node.getChildValues("Version"));
+
+        return acceptVersions;
+    }
 }

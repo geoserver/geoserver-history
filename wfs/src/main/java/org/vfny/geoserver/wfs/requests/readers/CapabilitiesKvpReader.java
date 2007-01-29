@@ -4,15 +4,14 @@
  */
 package org.vfny.geoserver.wfs.requests.readers;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wfs.servlets.WFService;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * This utility reads in a GetCapabilities KVP request and turns it into an
@@ -23,17 +22,16 @@ import org.vfny.geoserver.wfs.servlets.WFService;
  * @version $Id: CapabilitiesKvpReader.java,v 1.7 2004/02/09 23:29:40 dmzwiers Exp $
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
-   
     /**
      * Creates a new reader from kvp pairs and service.
-     * 
+     *
      * @param kvpPairs The raw string of a capabilities kvp request.
-     * @param service The 
+     * @param service The
      */
     public CapabilitiesKvpReader(Map kvpPairs, WFService service) {
-    		super(kvpPairs, service);
+        super(kvpPairs, service);
     }
-    
+
     /**
      * Get Capabilities request.
      *
@@ -43,8 +41,9 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
      *
      * @throws ServiceException DOCUMENT ME!
      */
-    public Request getRequest(HttpServletRequest request) throws ServiceException {
-        CapabilitiesRequest currentRequest = new CapabilitiesRequest("WFS",service);
+    public Request getRequest(HttpServletRequest request)
+        throws ServiceException {
+        CapabilitiesRequest currentRequest = new CapabilitiesRequest("WFS", service);
         currentRequest.setHttpServletRequest(request);
         currentRequest.setVersion(getValue("VERSION"));
 

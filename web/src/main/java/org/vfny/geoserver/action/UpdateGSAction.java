@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /*
  * Created on Jan 6, 2004
  *
@@ -9,15 +10,6 @@
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 package org.vfny.geoserver.action;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -30,11 +22,18 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
  * Update GeoServer with the current configuration.
- * 
+ *
  * <p>
  * This is a real ConfigAction - you need to be logged in to use it.
  * </p>
@@ -43,25 +42,24 @@ import org.vfny.geoserver.global.dto.WMSDTO;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class UpdateGSAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException {
         ActionForward r1 = updateGeoserver(mapping, form, request, response);
         ActionForward r2 = updateValidation(mapping, form, request, response);
 
         return mapping.findForward("config");
     }
 
-    public ActionForward updateGeoserver(ActionMapping mapping,
-        ActionForm form, 
-    // UserContainer user,
+    public ActionForward updateGeoserver(ActionMapping mapping, ActionForm form,
+        // UserContainer user,
     HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         GeoServer gs;
         ServletContext sc = request.getSession().getServletContext();
 
         try {
-        	WCSDTO wcsDTO = getWCSConfig().toDTO();
+            WCSDTO wcsDTO = getWCSConfig().toDTO();
             WMSDTO wmsDTO = getWMSConfig().toDTO();
             WFSDTO wfsDTO = getWFSConfig().toDTO();
             GeoServerDTO geoserverDTO = getGlobalConfig().toDTO();
@@ -87,9 +85,8 @@ public class UpdateGSAction extends ConfigAction {
         return mapping.findForward("config");
     }
 
-    public ActionForward updateValidation(ActionMapping mapping,
-        ActionForm form, 
-    // UserContainer user,
+    public ActionForward updateValidation(ActionMapping mapping, ActionForm form,
+        // UserContainer user,
     HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         GeoServer gs;

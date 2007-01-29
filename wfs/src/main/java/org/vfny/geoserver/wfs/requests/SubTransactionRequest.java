@@ -10,7 +10,7 @@ import org.vfny.geoserver.wfs.WfsException;
 
 /**
  * Parent class for Update, Insert, and Delete.
- * 
+ *
  * <p>
  * Represents an Element of a Transaction Request.
  * </p>
@@ -44,7 +44,7 @@ public abstract class SubTransactionRequest {
 
     /**
      * Provide typeName for this sub element.
-     * 
+     *
      * <p>
      * We may consider supplying this in the constructor? Why would this need
      * to change?

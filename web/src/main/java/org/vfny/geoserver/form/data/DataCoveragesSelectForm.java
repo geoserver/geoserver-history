@@ -2,7 +2,6 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-
 package org.vfny.geoserver.form.data;
 
 import org.apache.struts.action.ActionErrors;
@@ -21,52 +20,49 @@ import javax.servlet.http.HttpServletRequest;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class DataCoveragesSelectForm extends ActionForm {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1300704188707189533L;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1300704188707189533L;
+    /**
+     *
+     */
+    private String selectedCoverageName;
 
-	/**
-	 * 
-	 */
-	private String selectedCoverageName;
-
-	/**
-	 * 
-	 */
-	private String buttonAction;
-
+    /**
+     *
+     */
+    private String buttonAction;
 
     public void reset(ActionMapping arg0, HttpServletRequest arg1) {
         super.reset(arg0, arg1);
         selectedCoverageName = "";
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
+
         return errors;
     }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return Returns the selectedCoverageName.
-	 */
-	public String getSelectedCoverageName() {
-		return selectedCoverageName;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return Returns the selectedCoverageName.
+     */
+    public String getSelectedCoverageName() {
+        return selectedCoverageName;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param selectedCoverageName The selectedCoverageName to set.
-	 */
-	public void setSelectedCoverageName(String selectedCoverageName) {
-		this.selectedCoverageName = selectedCoverageName;
-	}
-
+    /**
+     * DOCUMENT ME!
+     *
+     * @param selectedCoverageName The selectedCoverageName to set.
+     */
+    public void setSelectedCoverageName(String selectedCoverageName) {
+        this.selectedCoverageName = selectedCoverageName;
+    }
 
     public Set getCoverageNames() {
         ServletContext context = getServlet().getServletContext();
@@ -75,22 +71,21 @@ public class DataCoveragesSelectForm extends ActionForm {
         return config.getCoverages().keySet();
     }
 
-	/**
-	 * Access buttonAction property.
-	 * 
-	 * @return Returns the buttonAction.
-	 */
-	public String getButtonAction() {
-		return buttonAction;
-	}
+    /**
+     * Access buttonAction property.
+     *
+     * @return Returns the buttonAction.
+     */
+    public String getButtonAction() {
+        return buttonAction;
+    }
 
-	/**
-	 * Set buttonAction to buttonAction.
-	 * 
-	 * @param buttonAction The buttonAction to set.
-	 */
-	public void setButtonAction(String buttonAction) {
-		this.buttonAction = buttonAction;
-	}
-
+    /**
+     * Set buttonAction to buttonAction.
+     *
+     * @param buttonAction The buttonAction to set.
+     */
+    public void setButtonAction(String buttonAction) {
+        this.buttonAction = buttonAction;
+    }
 }

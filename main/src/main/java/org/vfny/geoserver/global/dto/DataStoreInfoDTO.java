@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -14,12 +15,12 @@ import java.util.Map;
 
 /**
  * Data Transfer Object for GeoServer DataStore information.
- * 
+ *
  * <p>
  * Used to describe a datastore, typically one specified in the catalog.xml
  * config file.
  * </p>
- * 
+ *
  * <p>
  * Data Transfer object are used to communicate between the GeoServer
  * application and its configuration and persistent layers. As such the class
@@ -51,16 +52,16 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * Connection parameters to create the DataStoreInfo
-     * 
+     *
      * <p>
      * Limitied to Strings for both Keys and Values.
      * </p>
      */
     private Map connectionParams;
-    
+
     /**
      * DataStoreInfo constructor.
-     * 
+     *
      * <p>
      * does nothing
      * </p>
@@ -70,7 +71,7 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * DataStoreInfo constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the DataStoreInfo provided. If the DataStoreInfo
      * provided  is null then default values are used. All the datastructures
@@ -104,7 +105,7 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * Implement clone.
-     * 
+     *
      * <p>
      * creates a clone of this object
      * </p>
@@ -119,7 +120,7 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * Implement equals.
-     * 
+     *
      * <p>
      * recursively tests to determine if the object passed in is a copy of this
      * object.
@@ -188,7 +189,7 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * Map of param:value both of which are represented as text.
-     * 
+     *
      * <p>
      * The map is based on String Keys, and String values.
      * </p>
@@ -210,7 +211,7 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * Unique identifier representing this DataStore.
-     * 
+     *
      * <p>
      * This value is used to refer to this DataStore by FeatureTypeInfoDTO.
      * </p>
@@ -250,7 +251,7 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * Provide DataStore connectin parameters.
-     * 
+     *
      * <p>
      * Map is limited to text based keys and values
      * </p>
@@ -265,7 +266,7 @@ public final class DataStoreInfoDTO implements DataTransferObject {
 
     /**
      * setEnabled purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>

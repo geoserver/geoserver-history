@@ -7,25 +7,25 @@ package org.geoserver.ows.util;
 import java.io.IOException;
 import java.io.Writer;
 
+
 /**
  * Utility class performing operations related to http respones.
- * 
+ *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
 public class ResponseUtils {
-  
-  /**
-   * Parses the passed string, and encodes the special characters (used in
-   * xml for special purposes) with the appropriate codes. e.g. '<' is
-   * changed to '&lt;'
-   *
-   * @param inData The string to encode into xml.
-   *
-   * @return the encoded string. Returns null, if null is passed as argument
-   *
-   */
-   public static String encodeXML( String inData)  {
+    /**
+     * Parses the passed string, and encodes the special characters (used in
+     * xml for special purposes) with the appropriate codes. e.g. '<' is
+     * changed to '&lt;'
+     *
+     * @param inData The string to encode into xml.
+     *
+     * @return the encoded string. Returns null, if null is passed as argument
+     *
+     */
+    public static String encodeXML(String inData) {
         //return null, if null is passed as argument
         if (inData == null) {
             return null;
@@ -81,77 +81,82 @@ public class ResponseUtils {
      */
     public static void writeEscapedString(Writer writer, String string)
         throws IOException {
-        for(int i = 0; i < string.length(); i++) {
+        for (int i = 0; i < string.length(); i++) {
             char c = string.charAt(i);
-            if(c == '<')
+
+            if (c == '<') {
                 writer.write("&lt;");
-            else if(c == '>')
+            } else if (c == '>') {
                 writer.write("&gt;");
-            else if(c == '&')
+            } else if (c == '&') {
                 writer.write("&amp;");
-            else if(c == '\'')
+            } else if (c == '\'') {
                 writer.write("&apos;");
-            else if(c == '"')
+            } else if (c == '"') {
                 writer.write("&quot;");
-            else
-		writer.write(c);
+            } else {
+                writer.write(c);
+            }
         }
     }
-    
+
     /**
      * Appends a query string to a url.
      * <p>
-     * This method checks <code>url</code> to see if the appended query string requires a '?' or 
+     * This method checks <code>url</code> to see if the appended query string requires a '?' or
      * '&' to be prepended.
      * </p>
-     * 
+     *
      * @param url The base url.
      * @param queryString The query string to be appended, should not contain the '?' character.
-     * 
+     *
      * @return A full url with the query string appended.
      */
-    public static String appendQueryString( String url, String queryString ) {
-    		if ( url.endsWith( "?" ) || url.endsWith( "&" ) )
-    			return url + queryString;
- 
-    		if ( url.indexOf( '?' ) != -1 ) {
-    			return url + "&" + queryString;
-    		}
-    		
-    		return url + "?" + queryString; 
+    public static String appendQueryString(String url, String queryString) {
+        if (url.endsWith("?") || url.endsWith("&")) {
+            return url + queryString;
+        }
+
+        if (url.indexOf('?') != -1) {
+            return url + "&" + queryString;
+        }
+
+        return url + "?" + queryString;
     }
-    
+
     /**
      * Strips the query string off a request url.
-     * 
+     *
      * @param url The url.
-     * 
+     *
      * @return The original minus the query string.
      */
-    public static String stripQueryString( String url ) {
-    	int index = url.indexOf( '?' );
-    	if ( index == -1 )
-    		return url;
-    	
-    	return url.substring( 0, index );
+    public static String stripQueryString(String url) {
+        int index = url.indexOf('?');
+
+        if (index == -1) {
+            return url;
+        }
+
+        return url.substring(0, index);
     }
-    
+
     /**
      * Appends a path tpo a url.
      * <p>
-     * This method checks <code>url</code> to see if the appended path requires a '/' to be 
+     * This method checks <code>url</code> to see if the appended path requires a '/' to be
      * prepended.
      * </p>
      * @param url The base url.
      * @param path The path to be appended to the url.
-     * 
+     *
      * @return The full url with the path appended.
      */
-    public static String appendPath( String url, String path ) {
-    		if ( path.startsWith( "/" ) ) 
-    			path = path.substring( 1 );
-    		
-    		return url.endsWith( "/" ) ? url + path : url + "/" + path;
+    public static String appendPath(String url, String path) {
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+
+        return url.endsWith("/") ? (url + path) : (url + "/" + path);
     }
 }
-

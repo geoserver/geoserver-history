@@ -9,12 +9,12 @@ import org.vfny.geoserver.global.dto.ContactDTO;
 
 /**
  * Represents a Contact (or Party).
- * 
+ *
  * <p>
  * This is used by GeoServer to represent a contact person or organization
  * associated with the Service.
  * </p>
- * 
+ *
  * <p>
  * The configuration file represents Contact information using the following
  * XML fragment (at the time of writing):
@@ -38,7 +38,7 @@ import org.vfny.geoserver.global.dto.ContactDTO;
  *   {ContactFacsimileTelephone}+1 301 283-1569{/ContactFacsimileTelephone}
  * {/ContactInformation}
  * </code></pre>
- * 
+ *
  * <p>
  * To communicate with the running GeoServer application, represented by the
  * classes in global, the Contact information will need to be placed into the
@@ -85,14 +85,15 @@ public class ContactConfig {
     /** The contact email address. */
     private String contactEmail;
 
-	/**
-	 * The contact online resource.
-	 * 
-	 */
-	private String onlineResource;
+    /**
+     * The contact online resource.
+     *
+     */
+    private String onlineResource;
+
     /**
      * Default ContactConfig constructor.
-     * 
+     *
      * <p>
      * Creates an empty ContactConfig object which must be setup prior to use.
      * </p>
@@ -102,7 +103,7 @@ public class ContactConfig {
 
     /**
      * ContactConfig constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the ContactConfig specified, or returns a default
      * ContactConfig when null is provided. None of the data is cloned, as
@@ -117,7 +118,7 @@ public class ContactConfig {
 
     /**
      * Update the configuration to reflect the provided Data Transfer Object.
-     * 
+     *
      * <p>
      * This may be used as a course grained set method, this is the entry point
      * for the live GeoServer application to update the configuration system
@@ -130,8 +131,7 @@ public class ContactConfig {
      */
     public void update(ContactDTO dto) {
         if (dto == null) {
-            throw new NullPointerException(
-                "Contact Data Transfer Object required");
+            throw new NullPointerException("Contact Data Transfer Object required");
         }
 
         contactPerson = dto.getContactPerson();
@@ -170,7 +170,7 @@ public class ContactConfig {
 
     /**
      * getAddress purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -183,7 +183,7 @@ public class ContactConfig {
 
     /**
      * getAddressCity purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -196,7 +196,7 @@ public class ContactConfig {
 
     /**
      * getAddressCountry purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -209,7 +209,7 @@ public class ContactConfig {
 
     /**
      * getAddressPostalCode purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -222,7 +222,7 @@ public class ContactConfig {
 
     /**
      * getAddressState purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -235,7 +235,7 @@ public class ContactConfig {
 
     /**
      * getAddressType purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -248,7 +248,7 @@ public class ContactConfig {
 
     /**
      * getContactEmail purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -261,7 +261,7 @@ public class ContactConfig {
 
     /**
      * getContactFacsimile purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -274,7 +274,7 @@ public class ContactConfig {
 
     /**
      * getContactOrganization purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -287,7 +287,7 @@ public class ContactConfig {
 
     /**
      * getContactPerson purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -300,7 +300,7 @@ public class ContactConfig {
 
     /**
      * getContactPosition purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -313,7 +313,7 @@ public class ContactConfig {
 
     /**
      * getContactVoice purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -326,7 +326,7 @@ public class ContactConfig {
 
     /**
      * setAddress purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -341,7 +341,7 @@ public class ContactConfig {
 
     /**
      * setAddressCity purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -356,7 +356,7 @@ public class ContactConfig {
 
     /**
      * setAddressCountry purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -371,7 +371,7 @@ public class ContactConfig {
 
     /**
      * setAddressPostalCode purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -386,7 +386,7 @@ public class ContactConfig {
 
     /**
      * setAddressState purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -401,7 +401,7 @@ public class ContactConfig {
 
     /**
      * setAddressType purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -416,7 +416,7 @@ public class ContactConfig {
 
     /**
      * setContactEmail purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -431,7 +431,7 @@ public class ContactConfig {
 
     /**
      * setContactFacsimile purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -446,7 +446,7 @@ public class ContactConfig {
 
     /**
      * setContactOrganization purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -461,7 +461,7 @@ public class ContactConfig {
 
     /**
      * setContactPerson purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -476,7 +476,7 @@ public class ContactConfig {
 
     /**
      * setContactPosition purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -491,7 +491,7 @@ public class ContactConfig {
 
     /**
      * setContactVoice purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -504,24 +504,23 @@ public class ContactConfig {
         }
     }
 
-	/**
-	 * @return Returns the onlineResource.
-	 * 
-	 * @uml.property name="onlineResource"
-	 */
-	public String getOnlineResource() {
-		return onlineResource;
-	}
+    /**
+     * @return Returns the onlineResource.
+     *
+     * @uml.property name="onlineResource"
+     */
+    public String getOnlineResource() {
+        return onlineResource;
+    }
 
-	/**
-	 * @param onlineResource The onlineResource to set.
-	 * 
-	 * @uml.property name="onlineResource"
-	 */
-	public void setOnlineResource(String onlineResource) {
-		if (onlineResource != null) {
-			this.onlineResource = onlineResource;
-		}
-	}
-
+    /**
+     * @param onlineResource The onlineResource to set.
+     *
+     * @uml.property name="onlineResource"
+     */
+    public void setOnlineResource(String onlineResource) {
+        if (onlineResource != null) {
+            this.onlineResource = onlineResource;
+        }
+    }
 }

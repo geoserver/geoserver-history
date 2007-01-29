@@ -6,18 +6,18 @@ package org.geoserver.wfs;
 
 import org.geoserver.ows.OWS;
 
+
 /**
  * Web Feature Service configuration.
- * 
+ *
  * @author Gabriel Rold???n
  * @author Chris Holmes
  * @author Justin Deoliveira
- * 
+ *
  * @version $Id: WFS.java,v 1.8 2004/09/09 16:54:19 cholmesny Exp $
  */
 public class WFS extends OWS {
-  
-	/** ServiceLevel bit used to indicate Basic support */
+    /** ServiceLevel bit used to indicate Basic support */
     public static final int SERVICE_BASIC = 1;
 
     /** ServiceLevel bit used to indicate Transaction Insert support */
@@ -36,27 +36,26 @@ public class WFS extends OWS {
     public static final int BASIC = 1;
 
     /** ServiceLevel mask for transactional WFS conformance. */
-    public static final int TRANSACTIONAL = SERVICE_BASIC | SERVICE_INSERT
-        | SERVICE_UPDATE | SERVICE_DELETE;
+    public static final int TRANSACTIONAL = SERVICE_BASIC | SERVICE_INSERT | SERVICE_UPDATE
+        | SERVICE_DELETE;
 
     /** ServiceLevel mask equivilent to complete WFS conformance */
     public static final int COMPLETE = TRANSACTIONAL | SERVICE_LOCKING;
-    
-	private int serviceLevel = COMPLETE;
+    private int serviceLevel = COMPLETE;
     private boolean srsXmlStyle;
     private boolean citeConformanceHacks;
     private boolean featureBounding;
 
     public WFS() {
-    	super( "wfs" );
+        super("wfs");
     }
-    
-   /**
-     * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
-     *
-     * @return <tt>true</tt> if the srs is reported with the xml style
-     */
+
+    /**
+      * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+      * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+      *
+      * @return <tt>true</tt> if the srs is reported with the xml style
+      */
     public boolean isSrsXmlStyle() {
         return srsXmlStyle;
     }
@@ -97,13 +96,13 @@ public class WFS extends OWS {
 
     /**
      * Sets the service level.
-     * 
-     * @param serviceLevel 
+     *
+     * @param serviceLevel
      */
     public void setServiceLevel(int serviceLevel) {
-		this.serviceLevel = serviceLevel;
-	}
-    
+        this.serviceLevel = serviceLevel;
+    }
+
     /**
      * turn on/off the citeConformanceHacks option.
      *

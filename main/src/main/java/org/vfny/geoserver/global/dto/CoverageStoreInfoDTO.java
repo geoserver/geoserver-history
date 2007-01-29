@@ -10,12 +10,12 @@ import java.util.Map;
 
 /**
  * Data Transfer Object for GeoServer Format information.
- * 
+ *
  * <p>
  * Used to describe a Format, typically one specified in the catalog.xml
  * config file.
  * </p>
- * 
+ *
  * <p>
  * Data Transfer object are used to communicate between the GeoServer
  * application and its configuration and persistent layers. As such the class
@@ -32,54 +32,52 @@ import java.util.Map;
  * @version $Id: CoverageStoreInfoDTO.java,v 1.5 2004/02/02 08:56:45 jive Exp $
  */
 public final class CoverageStoreInfoDTO implements DataTransferObject {
+    /**
+     * unique Format identifier
+     *
+     * @uml.property name="id" multiplicity="(0 1)"
+     */
+    private String id;
 
-	/**
-	 * unique Format identifier
-	 * 
-	 * @uml.property name="id" multiplicity="(0 1)"
-	 */
-	private String id;
-	
-	/**
-	 * unique namespace to refer to this format
-	 * 
-	 * @uml.property name="nameSpaceId" multiplicity="(0 1)"
-	 */
-	private String nameSpaceId;
+    /**
+     * unique namespace to refer to this format
+     *
+     * @uml.property name="nameSpaceId" multiplicity="(0 1)"
+     */
+    private String nameSpaceId;
 
-	/**
-	 * 
-	 * @uml.property name="type" multiplicity="(0 1)"
-	 */
-	private String type;
+    /**
+     *
+     * @uml.property name="type" multiplicity="(0 1)"
+     */
+    private String type;
 
-	/**
-	 * 
-	 * @uml.property name="url" multiplicity="(0 1)"
-	 */
-	private String url;
+    /**
+     *
+     * @uml.property name="url" multiplicity="(0 1)"
+     */
+    private String url;
 
-	/**
-	 * true if this Format is enabled
-	 * 
-	 * @uml.property name="enabled" multiplicity="(0 1)"
-	 */
-	private boolean enabled;
+    /**
+     * true if this Format is enabled
+     *
+     * @uml.property name="enabled" multiplicity="(0 1)"
+     */
+    private boolean enabled;
 
-	/**
-	 * The title of this Format
-	 * 
-	 * @uml.property name="title" multiplicity="(0 1)"
-	 */
-	private String title;
-
+    /**
+     * The title of this Format
+     *
+     * @uml.property name="title" multiplicity="(0 1)"
+     */
+    private String title;
 
     /** a short description about this Format */
     private String _abstract;
 
     /**
      * CoverageStoreInfo constructor.
-     * 
+     *
      * <p>
      * does nothing
      * </p>
@@ -89,7 +87,7 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
 
     /**
      * CoverageStoreInfo constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the CoverageStoreInfo provided. If the CoverageStoreInfo
      * provided  is null then default values are used. All the datastructures
@@ -115,7 +113,7 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
 
     /**
      * Implement clone.
-     * 
+     *
      * <p>
      * creates a clone of this object
      * </p>
@@ -130,7 +128,7 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
 
     /**
      * Implement equals.
-     * 
+     *
      * <p>
      * recursively tests to determine if the object passed in is a copy of this
      * object.
@@ -180,11 +178,11 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
         if (type != null) {
             r *= type.hashCode();
         }
-        
+
         if (url != null) {
             r *= url.hashCode();
         }
-        
+
         if (_abstract != null) {
             r *= _abstract.hashCode();
         }
@@ -210,32 +208,31 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
         return enabled;
     }
 
-	/**
-	 * Unique identifier representing this Format.
-	 * 
-	 * <p>
-	 * This value is used to refer to this Format by CoverageInfoDTO.
-	 * </p>
-	 * 
-	 * @return an identifier, non null
-	 * 
-	 * @uml.property name="id"
-	 */
-	public String getId() {
-		return id;
-	}
+    /**
+     * Unique identifier representing this Format.
+     *
+     * <p>
+     * This value is used to refer to this Format by CoverageInfoDTO.
+     * </p>
+     *
+     * @return an identifier, non null
+     *
+     * @uml.property name="id"
+     */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * Title for Format, used in error messages & configuration.
-	 * 
-	 * @return Title dor the Format
-	 * 
-	 * @uml.property name="title"
-	 */
-	public String getTitle() {
-		return title;
-	}
-
+    /**
+     * Title for Format, used in error messages & configuration.
+     *
+     * @return Title dor the Format
+     *
+     * @uml.property name="title"
+     */
+    public String getTitle() {
+        return title;
+    }
 
     /**
      * Updates the Format abstract.
@@ -246,85 +243,84 @@ public final class CoverageStoreInfoDTO implements DataTransferObject {
         _abstract = description;
     }
 
-	/**
-	 * setEnabled purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param b
-	 * 
-	 * @uml.property name="enabled"
-	 */
-	public void setEnabled(boolean b) {
-		enabled = b;
-	}
+    /**
+     * setEnabled purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param b
+     *
+     * @uml.property name="enabled"
+     */
+    public void setEnabled(boolean b) {
+        enabled = b;
+    }
 
-	/**
-	 * Sets the unique identifier for this CoverageStoreInfoDTO.
-	 * 
-	 * @param identifier non<code>null</code> identifier for Format
-	 * 
-	 * @uml.property name="id"
-	 */
-	public void setId(String identifier) {
-		id = identifier;
-	}
+    /**
+     * Sets the unique identifier for this CoverageStoreInfoDTO.
+     *
+     * @param identifier non<code>null</code> identifier for Format
+     *
+     * @uml.property name="id"
+     */
+    public void setId(String identifier) {
+        id = identifier;
+    }
 
-	/**
-	 * Set title used to identify this Format to the user.
-	 * 
-	 * @param formatTitle Title used to identify Format to user
-	 * 
-	 * @uml.property name="title"
-	 */
-	public void setTitle(String formatTitle) {
-		title = formatTitle;
-	}
+    /**
+     * Set title used to identify this Format to the user.
+     *
+     * @param formatTitle Title used to identify Format to user
+     *
+     * @uml.property name="title"
+     */
+    public void setTitle(String formatTitle) {
+        title = formatTitle;
+    }
 
-	/**
-	 * @return Returns the type.
-	 * 
-	 * @uml.property name="type"
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * @return Returns the type.
+     *
+     * @uml.property name="type"
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * @param type The type to set.
-	 * 
-	 * @uml.property name="type"
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+    /**
+     * @param type The type to set.
+     *
+     * @uml.property name="type"
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	/**
-	 * @return Returns the url.
-	 * 
-	 * @uml.property name="url"
-	 */
-	public String getUrl() {
-		return url;
-	}
+    /**
+     * @return Returns the url.
+     *
+     * @uml.property name="url"
+     */
+    public String getUrl() {
+        return url;
+    }
 
-	/**
-	 * @param url The url to set.
-	 * 
-	 * @uml.property name="url"
-	 */
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    /**
+     * @param url The url to set.
+     *
+     * @uml.property name="url"
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public String getNameSpaceId() {
-		return nameSpaceId;
-	}
+    public String getNameSpaceId() {
+        return nameSpaceId;
+    }
 
-	public void setNameSpaceId(String nameSpaceId) {
-		this.nameSpaceId = nameSpaceId;
-	}
-
+    public void setNameSpaceId(String nameSpaceId) {
+        this.nameSpaceId = nameSpaceId;
+    }
 }

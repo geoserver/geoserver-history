@@ -4,45 +4,42 @@
  */
 package org.vfny.geoserver.form.data;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.opengis.coverage.grid.Format;
 import org.vfny.geoserver.util.CoverageStoreUtils;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
  * DOCUMENT ME!
- * 
+ *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class DataCoveragePluginsForm extends ActionForm {
     private static final Pattern idPattern = Pattern.compile("^\\a$");
 
-	/**
-	 * 
-	 */
-	private List formats;
+    /**
+     *
+     */
+    private List formats;
 
-	/**
-	 * 
-	 */
-	private List formatDescriptions;
+    /**
+     *
+     */
+    private List formatDescriptions;
 
-	/**
-	 * 
-	 */
-	private List formatIDs;
+    /**
+     *
+     */
+    private List formatIDs;
 
-    
     /**
      * Default state of New form
      *
@@ -54,14 +51,15 @@ public class DataCoveragePluginsForm extends ActionForm {
         formats = CoverageStoreUtils.listDataFormats();
         formatDescriptions = new ArrayList();
         formatIDs = new ArrayList();
+
         Format fTmp;
-        for(Iterator i = formats.iterator(); i.hasNext();) {
-        	fTmp = (Format) i.next();
-        	formatDescriptions.add(fTmp.getDescription());
-        	formatIDs.add(fTmp.getName());
+
+        for (Iterator i = formats.iterator(); i.hasNext();) {
+            fTmp = (Format) i.next();
+            formatDescriptions.add(fTmp.getDescription());
+            formatIDs.add(fTmp.getName());
         }
     }
-
 
     /**
      * Check NewForm for correct use
@@ -71,32 +69,30 @@ public class DataCoveragePluginsForm extends ActionForm {
      *
      * @return DOCUMENT ME!
      */
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         return errors;
     }
 
-	/*
-	 * Allows the JSP page to easily access the list of dataFormat Descriptions
-	 */
-	public List getFormatDescriptions() {
-		return formatDescriptions;
-	}
+    /*
+     * Allows the JSP page to easily access the list of dataFormat Descriptions
+     */
+    public List getFormatDescriptions() {
+        return formatDescriptions;
+    }
 
-	/**
-	 * 
-	 */
-	public List getFormatIDs() {
-		return formatIDs;
-	}
+    /**
+     *
+     */
+    public List getFormatIDs() {
+        return formatIDs;
+    }
 
-	/**
-	 * 
-	 */
-	public List getFormats() {
-		return formats;
-	}
-
+    /**
+     *
+     */
+    public List getFormats() {
+        return formats;
+    }
 }

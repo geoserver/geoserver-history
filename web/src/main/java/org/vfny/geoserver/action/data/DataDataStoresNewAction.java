@@ -1,15 +1,8 @@
-
 /* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.action.data;
-
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -18,11 +11,15 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.form.data.DataDataStoresNewForm;
 import org.vfny.geoserver.global.UserContainer;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
  * Create a new DataStoreConfig based on user's input.
- * 
+ *
  * <p>
  * Will need to update the current DataStoreId as stored in session context.
  * </p>
@@ -32,10 +29,9 @@ import org.vfny.geoserver.global.UserContainer;
  * @version $Id: DataDataStoresNewAction.java,v 1.12 2004/02/25 21:51:11 dmzwiers Exp $
  */
 public class DataDataStoresNewAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
-
         DataDataStoresNewForm newForm = (DataDataStoresNewForm) form;
         DataStoreConfig newDataStoreConfig;
 

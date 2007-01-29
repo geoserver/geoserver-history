@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.wfs.servlets;
 
-import java.util.Map;
-
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
@@ -13,6 +11,7 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.readers.GetFeatureKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.GetFeatureXmlReader;
 import org.vfny.geoserver.wfs.responses.FeatureResponse;
+import java.util.Map;
 
 
 /**
@@ -24,16 +23,15 @@ import org.vfny.geoserver.wfs.responses.FeatureResponse;
  * @version $Id: FeatureWithLock.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class FeatureWithLock extends WFService {
-	
     public FeatureWithLock(WFS wfs) {
-		super("GetFeatureWithLock",wfs);
-	}
+        super("GetFeatureWithLock", wfs);
+    }
 
-	/**
-     * Gets the response handler.  FeatureResponse handles GetFeatureWithLock.
-     *
-     * @return A new FeatureResponse object.
-     */
+    /**
+    * Gets the response handler.  FeatureResponse handles GetFeatureWithLock.
+    *
+    * @return A new FeatureResponse object.
+    */
     protected Response getResponseHandler() {
         return new FeatureResponse();
     }
@@ -50,7 +48,7 @@ public class FeatureWithLock extends WFService {
         //add it on if the client forgot it.
         params.put("REQUEST", "GETFEATUREWITHLOCK");
 
-        return new GetFeatureKvpReader(params,this);
+        return new GetFeatureKvpReader(params, this);
     }
 
     /**

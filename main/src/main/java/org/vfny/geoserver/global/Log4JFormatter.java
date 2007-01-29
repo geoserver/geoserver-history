@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.io.LineWriter;
+import org.geotools.resources.Utilities;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -17,9 +19,6 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 import java.util.prefs.Preferences;
-
-import org.geotools.io.LineWriter;
-import org.geotools.resources.Utilities;
 
 
 /**
@@ -61,8 +60,7 @@ public class Log4JFormatter extends Formatter {
      * The line separator. This is the value of the "line.separator" property
      * at the time the <code>Log4JFormatter</code> was created.
      */
-    private final String lineSeparator = System.getProperty("line.separator",
-            "\n");
+    private final String lineSeparator = System.getProperty("line.separator", "\n");
 
     /**
      * The line separator for the message body. This line always begin with
@@ -144,8 +142,11 @@ public class Log4JFormatter extends Formatter {
             writer.write(PREFIX);
             writer.write(recordLevel);
             writer.write(SUFFIX);
-            if(record.getSourceClassName() != null)
+
+            if (record.getSourceClassName() != null) {
                 writer.write(record.getSourceClassName());
+            }
+
             writer.write(" - ");
 
             /*
@@ -155,19 +156,23 @@ public class Log4JFormatter extends Formatter {
              * message body.
              */
             writer.setLineSeparator(bodyLineSeparator);
+
             if (record.getMessage() == null) {
                 record.setMessage("null");
             }
+
             writer.write(formatMessage(record));
             writer.setLineSeparator(lineSeparator);
             writer.write('\n');
-            if(record.getThrown() != null) {
+
+            if (record.getThrown() != null) {
                 try {
                     writer.write(getStackTrace(record.getThrown()));
-                } catch(Exception e) {
+                } catch (Exception e) {
                     // do not write the exception...
                 }
             }
+
             writer.flush();
         } catch (IOException exception) {
             // Should never happen, since we are writting into a StringBuffer.
@@ -187,6 +192,7 @@ public class Log4JFormatter extends Formatter {
         PrintWriter pw = new PrintWriter(sw);
         t.printStackTrace(pw);
         pw.close();
+
         return sw.toString();
     }
 
@@ -216,14 +222,13 @@ public class Log4JFormatter extends Formatter {
             logger.setLevel(filterLevel);
 
             if (logger.getHandlers().length > 0) {
-            	Handler handler = logger.getHandlers()[0];
+                Handler handler = logger.getHandlers()[0];
 
                 //this should be the right handler, if set with geoserver.
                 if (handler != null) {
                     handler.setLevel(filterLevel);
                 }
             }
-            
         }
 
         for (Logger parent = logger; parent.getUseParentHandlers();) {
@@ -277,18 +282,16 @@ public class Log4JFormatter extends Formatter {
 
         //Artie Konin suggested fix (see GEOS-366)
         if (0 == logger.getHandlers().length) // seems that getHandlers() cannot return null
-        { 
+         {
+            log4j = new Log4JFormatter(base);
 
-        	log4j = new Log4JFormatter(base);
+            Handler handler = new Stdout();
+            handler.setFormatter(log4j);
+            handler.setLevel(filterLevel);
 
-        	Handler handler = new Stdout();
-        	            handler.setFormatter(log4j);
-        	            handler.setLevel(filterLevel);
-
-        	logger.addHandler(handler);
+            logger.addHandler(handler);
         }
-        
-        
+
         logger.setUseParentHandlers(false);
     }
 
@@ -298,8 +301,7 @@ public class Log4JFormatter extends Formatter {
      * @param e the error that occured.
      */
     private static void unexpectedException(final Exception e) {
-        Utilities.unexpectedException("org.geotools.resources",
-            "GeotoolsHandler", "init", e);
+        Utilities.unexpectedException("org.geotools.resources", "GeotoolsHandler", "init", e);
     }
 
     /**
@@ -310,8 +312,7 @@ public class Log4JFormatter extends Formatter {
      * @return The header width.
      */
     private static int getHeaderWidth() {
-        return Preferences.userNodeForPackage(Log4JFormatter.class).getInt("logging.header",
-            15);
+        return Preferences.userNodeForPackage(Log4JFormatter.class).getInt("logging.header", 15);
     }
 
     /**
@@ -321,8 +322,7 @@ public class Log4JFormatter extends Formatter {
      * @param margin the size of the margin to set.
      */
     static void setHeaderWidth(final int margin) {
-        Preferences.userNodeForPackage(Log4JFormatter.class).putInt("logging.header",
-            margin);
+        Preferences.userNodeForPackage(Log4JFormatter.class).putInt("logging.header", margin);
     }
 
     /**
@@ -337,12 +337,10 @@ public class Log4JFormatter extends Formatter {
      *       overriden.
      */
     private static final class Stdout extends StreamHandler {
-    	
-    	 public Stdout() {
+        public Stdout() {
             super();
         }
 
-    	 
         /**
          * Construct a handler.
          *

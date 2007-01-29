@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.wcs.servlets;
 
-import java.util.Map;
-
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
@@ -13,6 +11,8 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wcs.requests.readers.CapabilitiesKvpReader;
 import org.vfny.geoserver.wcs.requests.readers.CapabilitiesXmlReader;
 import org.vfny.geoserver.wcs.responses.WCSCapabilitiesResponse;
+import java.util.Map;
+
 
 /**
  * Implements the WCS GetCapabilities interface, which tells clients what the
@@ -23,23 +23,22 @@ import org.vfny.geoserver.wcs.responses.WCSCapabilitiesResponse;
  * @version $Id: Capabilities.java,v 0.1 Feb 15, 2005 12:15:13 PM $
  */
 public class Capabilities extends WCService {
+    public Capabilities(WCS wcs) {
+        super("GetCapabilities", wcs);
+    }
 
-	public Capabilities(WCS wcs) {
-		super("GetCapabilities",wcs);
-	}
-
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
-	private static final long serialVersionUID = 3258129176207636277L;
-
-	/**
-     * DOCUMENT ME!
-     *
-     * @param params DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+    /**
+     * Comment for <code>serialVersionUID</code>
      */
+    private static final long serialVersionUID = 3258129176207636277L;
+
+    /**
+    * DOCUMENT ME!
+    *
+    * @param params DOCUMENT ME!
+    *
+    * @return DOCUMENT ME!
+    */
     protected KvpRequestReader getKvpReader(Map params) {
         return new CapabilitiesKvpReader(params, this);
     }

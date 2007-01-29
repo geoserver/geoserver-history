@@ -1,22 +1,24 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_1_0;
-
-
-import javax.xml.namespace.QName;
 
 import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.WFSFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.filter.Filter;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:DeleteElementType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;xsd:complexType name="DeleteElementType"&gt;
  *      &lt;xsd:sequence&gt;
  *          &lt;xsd:element maxOccurs="1" minOccurs="1" ref="ogc:Filter"&gt;
@@ -54,7 +56,7 @@ import org.opengis.filter.Filter;
  *      &lt;xsd:attribute name="typeName" type="xsd:QName" use="required"&gt;
  *          &lt;xsd:annotation&gt;
  *              &lt;xsd:documentation&gt;
- *                The value of the typeName attribute is the name 
+ *                The value of the typeName attribute is the name
  *                of the feature type to be updated. The name
  *                specified must be a valid type that belongs to
  *                the feature content as defined by the GML
@@ -62,59 +64,59 @@ import org.opengis.filter.Filter;
  *             &lt;/xsd:documentation&gt;
  *          &lt;/xsd:annotation&gt;
  *      &lt;/xsd:attribute&gt;
- *  &lt;/xsd:complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/xsd:complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class DeleteElementTypeBinding extends AbstractComplexBinding {
+    WFSFactory wfsfactory;
 
-	WFSFactory wfsfactory;		
-	public DeleteElementTypeBinding( WFSFactory wfsfactory ) {
-		this.wfsfactory = wfsfactory;
-	}
+    public DeleteElementTypeBinding(WFSFactory wfsfactory) {
+        this.wfsfactory = wfsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return WFS.DELETEELEMENTTYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return null;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		DeleteElementType deleteElement = wfsfactory.createDeleteElementType();
-		
-		//&lt;xsd:element maxOccurs="1" minOccurs="1" ref="ogc:Filter"&gt;
-		deleteElement.setFilter( (Filter) node.getChildValue( Filter.class ) );
-		
-		//&lt;xsd:attribute name="handle" type="xsd:string" use="optional"/&gt;
-		if ( node.hasAttribute( "handle" ) ) 
-			deleteElement.setHandle( (String) node.getAttributeValue( "handle" ) );
-		
-		//&lt;xsd:attribute name="typeName" type="xsd:QName" use="required"/&gt;
-		deleteElement.setTypeName( (QName) node.getAttributeValue( QName.class ) );
-		return deleteElement;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return WFS.DELETEELEMENTTYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return null;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        DeleteElementType deleteElement = wfsfactory.createDeleteElementType();
+
+        //&lt;xsd:element maxOccurs="1" minOccurs="1" ref="ogc:Filter"&gt;
+        deleteElement.setFilter((Filter) node.getChildValue(Filter.class));
+
+        //&lt;xsd:attribute name="handle" type="xsd:string" use="optional"/&gt;
+        if (node.hasAttribute("handle")) {
+            deleteElement.setHandle((String) node.getAttributeValue("handle"));
+        }
+
+        //&lt;xsd:attribute name="typeName" type="xsd:QName" use="required"/&gt;
+        deleteElement.setTypeName((QName) node.getAttributeValue(QName.class));
+
+        return deleteElement;
+    }
 }

@@ -4,15 +4,14 @@
  */
 package org.vfny.geoserver.wfs.requests.readers;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wfs.requests.DescribeRequest;
 import org.vfny.geoserver.wfs.servlets.WFService;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * This utility reads in a DescribeFeatureType KVP request and turns it into an
@@ -23,8 +22,6 @@ import org.vfny.geoserver.wfs.servlets.WFService;
  * @version $Id: DescribeKvpReader.java,v 1.6 2004/02/09 23:29:40 dmzwiers Exp $
  */
 public class DescribeKvpReader extends KvpRequestReader {
-    
-
     /**
      * Constructor with raw request string and servlet handling
      * request. Calls parent.
@@ -33,9 +30,9 @@ public class DescribeKvpReader extends KvpRequestReader {
      * @param service the servlet / service handling the request.
      */
     public DescribeKvpReader(Map kvPairs, AbstractService service) {
-    		super(kvPairs,service);
+        super(kvPairs, service);
     }
-    
+
     /**
      * Returns a list of requested feature types..
      *
@@ -49,8 +46,7 @@ public class DescribeKvpReader extends KvpRequestReader {
         currentRequest.setVersion(getValue("VERSION"));
         currentRequest.setRequest(getValue("REQUEST"));
         currentRequest.setOutputFormat(getValue("OUTPUTFORMAT"));
-        currentRequest.setFeatureTypes(readFlat(getValue("TYPENAME"),
-                INNER_DELIMETER));
+        currentRequest.setFeatureTypes(readFlat(getValue("TYPENAME"), INNER_DELIMETER));
 
         return currentRequest;
     }

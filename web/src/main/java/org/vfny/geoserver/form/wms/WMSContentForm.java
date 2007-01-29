@@ -2,20 +2,17 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-
 package org.vfny.geoserver.form.wms;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WMSConfig;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -60,35 +57,29 @@ public class WMSContentForm extends ActionForm {
     public String getOnlineResource() {
         return onlineResource;
     }
-    
-    public void setBaseMapTitle(String title)
-    {
-    	baseMapTitle = title;
+
+    public void setBaseMapTitle(String title) {
+        baseMapTitle = title;
     }
-    
-    public String getBaseMapTitle()
-    {
-    	return baseMapTitle;
+
+    public String getBaseMapTitle() {
+        return baseMapTitle;
     }
-    
-    public String getBaseMapLayers()
-    {
-    	return baseMapLayers;
+
+    public String getBaseMapLayers() {
+        return baseMapLayers;
     }
-    
-    public void setBaseMapLayers(String layers)
-    {
-    	baseMapLayers = layers;
+
+    public void setBaseMapLayers(String layers) {
+        baseMapLayers = layers;
     }
-    
-    public String getBaseMapStyles()
-    {
-    	return baseMapStyles;
+
+    public String getBaseMapStyles() {
+        return baseMapStyles;
     }
-    
-    public void setBaseMapStyles(String styles)
-    {
-    	baseMapStyles = styles;
+
+    public void setBaseMapStyles(String styles) {
+        baseMapStyles = styles;
     }
 
     /**
@@ -127,30 +118,32 @@ public class WMSContentForm extends ActionForm {
         } else {
             this.onlineResource = "";
         }
+
         if (config.getBaseMapLayers() != null) {
-        	String[] baseMapTitleArray = (String[]) config.getBaseMapLayers().keySet().toArray(new String[0]);
-	        String[] baseMapLayersArray = (String[]) config.getBaseMapLayers().values().toArray(new String[0]);
-	        String[] baseMapStylesArray = (String[]) config.getBaseMapStyles().values().toArray(new String[0]);
-	        baseMapTitle = baseMapTitleArray.length > 0 ? baseMapTitleArray[0]: "";
-	        baseMapLayers = baseMapLayersArray.length > 0 ? baseMapLayersArray[0]: "";
-	        baseMapStyles = baseMapStylesArray.length > 0 ? baseMapStylesArray[0]: "";
+            String[] baseMapTitleArray = (String[]) config.getBaseMapLayers().keySet()
+                                                          .toArray(new String[0]);
+            String[] baseMapLayersArray = (String[]) config.getBaseMapLayers().values()
+                                                           .toArray(new String[0]);
+            String[] baseMapStylesArray = (String[]) config.getBaseMapStyles().values()
+                                                           .toArray(new String[0]);
+            baseMapTitle = (baseMapTitleArray.length > 0) ? baseMapTitleArray[0] : "";
+            baseMapLayers = (baseMapLayersArray.length > 0) ? baseMapLayersArray[0] : "";
+            baseMapStyles = (baseMapStylesArray.length > 0) ? baseMapStylesArray[0] : "";
         }
-        
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if (onlineResource == null || onlineResource.equals("")) {
-        	errors.add("onlineResource", 
-                    new ActionError("error.wms.onlineResource.required", onlineResource));
+        if ((onlineResource == null) || onlineResource.equals("")) {
+            errors.add("onlineResource",
+                new ActionError("error.wms.onlineResource.required", onlineResource));
         } else {
             try {
-             URL url = new URL(onlineResource);   
+                URL url = new URL(onlineResource);
             } catch (MalformedURLException badURL) {
-             errors.add("onlineResource", 
-                    new ActionError("error.wms.onlineResource.malformed", badURL));   
+                errors.add("onlineResource",
+                    new ActionError("error.wms.onlineResource.malformed", badURL));
             }
         }
 

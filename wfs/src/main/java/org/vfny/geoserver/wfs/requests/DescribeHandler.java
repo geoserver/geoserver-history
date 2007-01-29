@@ -4,20 +4,18 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
  * Uses SAX to extact a DescribeFeatureType query from and incoming GetFeature
  * request XML stream.
- * 
+ *
  * <p>
  * Note that this Handler extension ignores Filters completely and must be
  * chained as a parent to the PredicateFilter method in order to recognize
@@ -30,36 +28,36 @@ import org.xml.sax.helpers.XMLFilterImpl;
  */
 public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.wfs");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wfs");
 
     /** Internal GetCapabilities request for construction. */
     private DescribeRequest request = null;
 
     /** Local variable to track current tag */
     private String currentTag = "";
-    
-    /** Collects string chunks in {@link #characters(char[], int, int)} 
+
+    /** Collects string chunks in {@link #characters(char[], int, int)}
      * callback to be handled at the beggining of {@link #endElement(String, String, String)}
      */
     private StringBuffer characters = new StringBuffer();
 
     /**
      * Creates a new describe request handler.
-     * 
+     *
      * @param request The describe request.
      */
     public DescribeHandler(DescribeRequest request) {
-    		this.request = request;
+        this.request = request;
     }
-    
+
     /**
      * Returns the GetCapabilities request.
      *
      * @return GetCapabilities request.
      */
     public DescribeRequest getRequest(HttpServletRequest req) {
-    		request.setHttpServletRequest(req);
+        request.setHttpServletRequest(req);
+
         return request;
     }
 
@@ -77,8 +75,8 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
      *
      * @throws SAXException For standard SAX errors.
      */
-    public void startElement(String namespaceURI, String localName,
-        String rawName, Attributes atts) throws SAXException {
+    public void startElement(String namespaceURI, String localName, String rawName, Attributes atts)
+        throws SAXException {
         LOGGER.finest("found start element: " + localName);
         characters.setLength(0);
         currentTag = localName;
@@ -120,20 +118,21 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
      */
     public void characters(char[] ch, int start, int length)
         throws SAXException {
-    	characters.append(ch, start, length);
+        characters.append(ch, start, length);
     }
-    
+
     /**
      * Handles the string chunks collected in {@link #characters}.
      */
-    private void handleCharacters(){
-    	if(characters.length() == 0){
-    		return;
-    	}
+    private void handleCharacters() {
+        if (characters.length() == 0) {
+            return;
+        }
+
         if (currentTag.equals("TypeName")) {
             request.addFeatureType(characters.toString());
             LOGGER.finest("added type name: " + characters);
             characters.setLength(0);
-        }	
+        }
     }
 }

@@ -7,6 +7,7 @@ package org.vfny.geoserver.wfs;
 import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.ServiceException;
 
+
 /**
  * ServiceConfig exception handler for WFS services GR: should we rename it?
  * ExceptionHandler don't seems appropiate.
@@ -74,8 +75,7 @@ public class WfsExceptionHandler implements ExceptionHandler {
      *
      * @return DOCUMENT ME!
      */
-    public ServiceException newServiceException(Throwable e, String preMessage,
-        String locator) {
+    public ServiceException newServiceException(Throwable e, String preMessage, String locator) {
         return new WfsException(e, preMessage, locator);
     }
 }

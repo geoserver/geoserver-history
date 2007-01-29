@@ -4,13 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.HashMap;
-
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.data.FeatureReader;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
@@ -18,22 +12,27 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.HashMap;
 
-import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Generates a FeatureInfoResponse of type text. This simply reports the
  * attributes of the feature requested as a text string. This class just
  * performs the writeTo, the GetFeatureInfoDelegate and abstract feature info
  * class handle the rest.
- * 
+ *
  * @author James Macgill, PSU
  * @version $Id: TextFeatureInfoResponse.java,v 1.3 2004/07/19 22:31:40 jmacgill
  *          Exp $
  */
 public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
     /**
-     * 
+     *
      */
     public TextFeatureInfoResponse() {
         format = "text/plain";
@@ -43,7 +42,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
     /**
      * Returns any extra headers that this service might want to set in the HTTP
      * response object.
-     * 
+     *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
@@ -52,17 +51,17 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
     /**
      * Writes the feature information to the client in text/plain format.
-     * 
+     *
      * @param out
      *            The output stream to write to.
-     * 
+     *
      * @throws org.vfny.geoserver.ServiceException
      *             DOCUMENT ME!
      * @throws java.io.IOException
      *             DOCUMENT ME!
      */
-    public void writeTo(OutputStream out) throws org.vfny.geoserver.ServiceException,
-            java.io.IOException {
+    public void writeTo(OutputStream out)
+        throws org.vfny.geoserver.ServiceException, java.io.IOException {
         Charset charSet = getRequest().getGeoServer().getCharSet();
         OutputStreamWriter osw = new OutputStreamWriter(out, charSet);
 
@@ -71,14 +70,15 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
         // DJB: this is to limit the number of features read - as per the spec
         // 7.3.3.7 FEATURE_COUNT
-
         int featuresPrinted = 0; // how many features we've actually printed
-                                    // so far!
+                                 // so far!
+
         int maxfeatures = getRequest().getFeatureCount(); // will default to 1
-                                                            // if not specified
-                                                            // in the request
+                                                          // if not specified
+                                                          // in the request
 
         FeatureIterator reader = null;
+
         try {
             final int size = results.size();
             FeatureCollection fr;
@@ -86,15 +86,16 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
             FeatureType schema;
             AttributeType[] types;
+
             for (int i = 0; i < size; i++) // for each layer queried
-            {
+             {
                 fr = (FeatureCollection) results.get(i);
                 reader = fr.features();
-                if (reader.hasNext() && (featuresPrinted < maxfeatures))
-                // if this layer has a hit and we're going to print it
-                {
-                    writer.println("Results for FeatureType '"
-                            + fr.getFeatureType().getTypeName() + "':");
+
+                if (reader.hasNext() && (featuresPrinted < maxfeatures)) // if this layer has a hit and we're going to print it
+                 {
+                    writer.println("Results for FeatureType '" + fr.getFeatureType().getTypeName()
+                        + "':");
                 }
 
                 while (reader.hasNext()) {
@@ -104,10 +105,11 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
                     if (featuresPrinted < maxfeatures) {
                         writer.println("--------------------------------------------");
+
                         for (int j = 0; j < types.length; j++) // for each
-                                                                // column in the
-                                                                // featuretype
-                        {
+                                                               // column in the
+                                                               // featuretype
+                         {
                             if (Geometry.class.isAssignableFrom(types[j].getType())) {
                                 // writer.println(types[j].getName() + " =
                                 // [GEOMETRY]");
@@ -124,14 +126,14 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
                                 // they want those details
                                 Geometry g = (Geometry) f.getAttribute(types[j].getName());
                                 writer.println(types[j].getName() + " = [GEOMETRY ("
-                                        + g.getGeometryType() + ") with " + g.getNumPoints()
-                                        + " points]");
-
+                                    + g.getGeometryType() + ") with " + g.getNumPoints()
+                                    + " points]");
                             } else {
                                 writer.println(types[j].getName() + " = "
-                                        + f.getAttribute(types[j].getName()));
+                                    + f.getAttribute(types[j].getName()));
                             }
                         }
+
                         writer.println("--------------------------------------------");
                         featuresPrinted++;
                     }
@@ -140,13 +142,15 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         } catch (Exception ife) {
             writer.println("Unable to generate information " + ife);
         } finally {
-            if (reader != null)
+            if (reader != null) {
                 reader.close();
+            }
         }
 
         if (featuresPrinted == 0) {
             writer.println("no features were found");
         }
+
         writer.flush();
     }
 

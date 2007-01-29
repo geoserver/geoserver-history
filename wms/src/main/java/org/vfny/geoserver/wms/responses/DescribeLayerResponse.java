@@ -4,15 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.xml.transform.TransformerException;
-
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -21,15 +12,22 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.vfny.geoserver.wms.responses.helpers.DescribeLayerTransformer;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.transform.TransformerException;
 
 
 /**
  * Executes a <code>DescribeLayer</code> WMS request.
- * 
+ *
  * <p>
  * Recieves a <code>DescribeLayerRequest</code> object holding the references to
  * the requested layers and utilizes a transformer based on the org.geotools.xml.transform
- * framework to encode the response. 
+ * framework to encode the response.
  * </p>
  *
  * @author Gabriel Roldan, Axios Engineering
@@ -39,9 +37,8 @@ public class DescribeLayerResponse implements Response {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(DescribeLayerResponse.class.getPackage()
                                                                                      .getName());
-
     public static final String DESCLAYER_MIME_TYPE = "application/vnd.ogc.wms_xml";
-    
+
     /** the request holding the required FeatureTypeInfo's */
     private DescribeLayerRequest request;
 
@@ -58,9 +55,9 @@ public class DescribeLayerResponse implements Response {
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-    	return null;
+        return null;
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -73,11 +70,10 @@ public class DescribeLayerResponse implements Response {
         this.request = (DescribeLayerRequest) request;
 
         if (LOGGER.isLoggable(Level.FINE)) {
-        	LOGGER.fine(new StringBuffer("executing request ").append(request).toString());
+            LOGGER.fine(new StringBuffer("executing request ").append(request).toString());
         }
 
-        this.transformer = new DescribeLayerTransformer(this.request
-                .getSchemaBaseUrl());
+        this.transformer = new DescribeLayerTransformer(this.request.getSchemaBaseUrl());
         this.transformer.setNamespaceDeclarationEnabled(false);
         this.transformer.setEncoding(this.request.getGeoServer().getCharSet());
 
@@ -106,8 +102,7 @@ public class DescribeLayerResponse implements Response {
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         if (this.content == null) {
-            throw new IllegalStateException(
-                "execute() has not been called or does not succeed.");
+            throw new IllegalStateException("execute() has not been called or does not succeed.");
         }
 
         out.write(this.content);
@@ -148,11 +143,11 @@ public class DescribeLayerResponse implements Response {
         return null;
     }
 
-	/* (non-Javadoc)
-	 * @see org.vfny.geoserver.Response#getContentDisposition()
-	 */
-	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.vfny.geoserver.Response#getContentDisposition()
+     */
+    public String getContentDisposition() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

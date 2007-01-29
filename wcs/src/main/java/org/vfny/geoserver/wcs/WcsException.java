@@ -4,19 +4,18 @@
  */
 package org.vfny.geoserver.wcs;
 
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.util.Requests;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * This defines an exception that can be turned into a valid xml service
  * exception that wcs clients will expect. All errors should be wrapped in this
  * before returning to clients.
- * 
+ *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
@@ -25,14 +24,13 @@ import org.vfny.geoserver.util.Requests;
  */
 public class WcsException extends ServiceException {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.wcs");
-	
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.wcs");
+
     /**
-	 * The fixed MIME type of a WCS exception.
-	 */
-	private static final String SE_XML = "application/vnd.ogc.se_xml";
-	
+         * The fixed MIME type of a WCS exception.
+         */
+    private static final String SE_XML = "application/vnd.ogc.se_xml";
+
     /**
      * Empty constructor.
      */
@@ -82,7 +80,7 @@ public class WcsException extends ServiceException {
     public WcsException(Throwable e, String preMessage, String locator) {
         super(e, preMessage, locator);
     }
-    
+
     /**
      * Return request type.
      *
@@ -96,8 +94,8 @@ public class WcsException extends ServiceException {
      *       validate right (reference our own schema), and to put the correct
      *       mime type here.
      */
-    public String getXmlResponse(boolean printStackTrace,
-        HttpServletRequest request, GeoServer geoserver) {
+    public String getXmlResponse(boolean printStackTrace, HttpServletRequest request,
+        GeoServer geoserver) {
         //Perhaps not the best place to do this, but it's by far the best place to ensure
         //that all logged errors get recorded in the same way, as there all must return
         //xml responses.
@@ -113,8 +111,7 @@ public class WcsException extends ServiceException {
 
         returnXml.append(indent + "xmlns=\"http://www.opengis.net/ogc\"\n");
 
-        returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/"
-            + "XMLSchema-instance\"\n");
+        returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/" + "XMLSchema-instance\"\n");
 
         returnXml.append(indent);
 
@@ -145,18 +142,18 @@ public class WcsException extends ServiceException {
 
         return returnXml.toString();
     }
-    
+
     /**
      * Returns the mime type that should be exposed to the client
      * when sending the exception message.
-     * 
+     *
      * <p>
      * Defaults to <code>geoserver.getMimeType()</code>
      * </p>
-     * 
+     *
      * @return
      */
-    public String getMimeType(GeoServer geoserver){
-    	return SE_XML+"; charset=" + geoserver.getCharSet().name();
+    public String getMimeType(GeoServer geoserver) {
+        return SE_XML + "; charset=" + geoserver.getCharSet().name();
     }
 }

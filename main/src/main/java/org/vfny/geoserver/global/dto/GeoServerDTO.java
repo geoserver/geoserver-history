@@ -4,17 +4,15 @@
  */
 package org.vfny.geoserver.global.dto;
 
+import org.vfny.geoserver.global.GeoServer;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
-
 import javax.servlet.ServletContext;
-
-import org.vfny.geoserver.global.GeoServer;
 
 
 /**
  * Data Transfer Object for Global GeoServer Configuration information.
- * 
+ *
  * <p>
  * Data Transfer object are used to communicate between the GeoServer
  * application and its configuration and persistent layers. As such the class
@@ -25,78 +23,68 @@ import org.vfny.geoserver.global.GeoServer;
  * @version $Id: GeoServerDTO.java,v 1.12 2004/09/09 16:51:58 cholmesny Exp $
  */
 public final class GeoServerDTO implements DataTransferObject {
-	
-	public static class Defaults {
-		/**
-		 * The default MaxFeatures is 10000
-		 *
-		 * @see #getMaxFeatures(int)
-		 */
-		public static final int MaxFeatures = 10000;
+    public static class Defaults {
+        /**
+         * The default MaxFeatures is 10000
+         *
+         * @see #getMaxFeatures(int)
+         */
+        public static final int MaxFeatures = 10000;
 
-		/**
-		 * The default encoding for GeoServer it UTF-8.
-		 *
-		 * @see #getCharSet()
-		 */
-		public static final Charset Encoding = Charset.forName("UTF-8");
+        /**
+         * The default encoding for GeoServer it UTF-8.
+         *
+         * @see #getCharSet()
+         */
+        public static final Charset Encoding = Charset.forName("UTF-8");
 
-		/** The default verbosity is true, human readable. */
-		public static final boolean Verbose = true;
+        /** The default verbosity is true, human readable. */
+        public static final boolean Verbose = true;
 
-		/** Default is four decimal places. */
-		public static final int NumDecimals = 4;
+        /** Default is four decimal places. */
+        public static final int NumDecimals = 4;
 
-		/** The default logging level is info. */
-		public static final Level LoggingLevel = Level.INFO;
+        /** The default logging level is info. */
+        public static final Level LoggingLevel = Level.INFO;
 
-		/** The default Administrator's user name (admin) */
-		public static final String AdminUserName = "admin";
+        /** The default Administrator's user name (admin) */
+        public static final String AdminUserName = "admin";
 
-		/** The default Administrator's password (geoserver) */
-		public static final String AdminPassword = "geoserver";
+        /** The default Administrator's password (geoserver) */
+        public static final String AdminPassword = "geoserver";
 
-		/**
-		 * The default verboseExceptions is false, so that by default the
-		 * service exceptions don't look like someone 'kacked'.
-		 */
-		public static final boolean VerboseExceptions = false;
-		
-		/** Default of wether to log to disk **/
-		public static final boolean LoggingToFile = false;
-		/** Default logging location on disk **/
-		public static final String LogLocation = null;
-		
-		public static final long JaiMemoryCapacity = 200 * 1024 * 1024;
-		
-		public static final double JaiMemoryThreshold = 0.75;
-		
-		public static final int JaiTileThreads = 7;
-		
-		public static final int JaiTilePriority = Thread.NORM_PRIORITY;
-		
-		public static final Boolean JaiRecycling = Boolean.TRUE;
-        
+        /**
+         * The default verboseExceptions is false, so that by default the
+         * service exceptions don't look like someone 'kacked'.
+         */
+        public static final boolean VerboseExceptions = false;
+
+        /** Default of wether to log to disk **/
+        public static final boolean LoggingToFile = false;
+
+        /** Default logging location on disk **/
+        public static final String LogLocation = null;
+        public static final long JaiMemoryCapacity = 200 * 1024 * 1024;
+        public static final double JaiMemoryThreshold = 0.75;
+        public static final int JaiTileThreads = 7;
+        public static final int JaiTilePriority = Thread.NORM_PRIORITY;
+        public static final Boolean JaiRecycling = Boolean.TRUE;
         public static final Boolean ImageIOCache = Boolean.FALSE;
-
-		public static final Boolean JaiJPEGNative = Boolean.TRUE;
-
-		public static final Boolean JaiPNGNative = Boolean.TRUE;
-
+        public static final Boolean JaiJPEGNative = Boolean.TRUE;
+        public static final Boolean JaiPNGNative = Boolean.TRUE;
         public static final String BaseURL = null;
-		
-	}
-	
+    }
+
     /** Sets the max number of Features returned by GetFeature */
     private int maxFeatures = Defaults.MaxFeatures;
 
     /**
      * XML Verbosity.
-     * 
+     *
      * <p>
      * Whether newlines and indents should be returned in XML responses.
      * </p>
-     * 
+     *
      * <p>
      * This should be called something other than verbose. Verbose should
      * control things like printing out "magic" comments that tell people how
@@ -108,7 +96,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * Number of decimal places returned in a GetFeature response.
-     * 
+     *
      * <p>
      * Sets the max number of decimal places past the zero returned in a
      * GetFeature response.  Default is 4.
@@ -120,7 +108,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * Sets the global character set.
-     * 
+     *
      * <p>
      * This could use some more testing from international users. What it does
      * is sets the encoding globally for all postgis database connections (the
@@ -129,11 +117,11 @@ public final class GeoServerDTO implements DataTransferObject {
      * <code>org.vfny.geoserver.config.org.vfny.geoserver.global.xml</code>
      * header and mime type.
      * </p>
-     * 
+     *
      * <p>
      * The default is UTF-8
      * </p>
-     * 
+     *
      * <p>
      * Also be warned that GeoServer does not check if the CharSet is valid
      * before attempting to use it, so it will fail miserably if a bad charset
@@ -141,21 +129,21 @@ public final class GeoServerDTO implements DataTransferObject {
      * </p>
      */
     private Charset charSet = Defaults.Encoding;
-    
+
     /**
      * The public network URL base, to be used when Geoserver is behind a reverse proxy
      * so that getCapabilities return the proper URLs.
      */
     private String proxyBaseUrl;
-    
+
     /**
      * Define a base url for the location of the wfs schemas.
-     * 
+     *
      * <p>
      * By default GeoServer  loads and references its own at
      * <code>/data/capabilities</code>.
      * </p>
-     * 
+     *
      * <p>
      * The standalone Tomcat server needs SchemaBaseUrl defined for validation.
      * </p>
@@ -164,12 +152,12 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * Defines the Application logging level.
-     * 
+     *
      * <p>
      * Common options are SEVERE, WARNING, INFO, CONFIG,  FINER, FINEST, in
      * order of Increasing statements logged.
      * </p>
-     * 
+     *
      * <p>
      * There may be more then one point of control - the web containers often
      * controls logging, the jakarta commons logging system is used by struts,
@@ -187,34 +175,27 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /** The password for the administrator log-in to perform configuration */
     private String adminPassword = Defaults.AdminPassword;
-    
+
     /** Whether the exceptions returned to the client should contain full stack traces */
     private boolean verboseExceptions = Defaults.VerboseExceptions;
-    
+
     /** to log to disk or not to log to disk **/
     private boolean loggingToFile = Defaults.LoggingToFile;
+
     /** Where on disk the server should log to **/
     private String logLocation = Defaults.LogLocation;
-    
     private long jaiMemoryCapacity = Defaults.JaiMemoryCapacity;
-    
     private double jaiMemoryThreshold = Defaults.JaiMemoryThreshold;
-    
     private int jaiTileThreads = Defaults.JaiTileThreads;
-    
     private int jaiTilePriority = Defaults.JaiTilePriority;
-    
     private Boolean jaiRecycling = Defaults.JaiRecycling;
-    
     private Boolean imageIOCache = Defaults.ImageIOCache;
-
     private Boolean jaiJPEGNative = Defaults.JaiJPEGNative;
-
     private Boolean jaiPNGNative = Defaults.JaiPNGNative;
 
     /**
      * GlobalConfig constructor.
-     * 
+     *
      * <p>
      * does nothing
      * </p>
@@ -224,7 +205,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * GlobalConfig constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the GlobalConfig object provided, or sets the values
      * to default if one is not provided.  Charset is not cloned, everything
@@ -248,10 +229,10 @@ public final class GeoServerDTO implements DataTransferObject {
         proxyBaseUrl = g.getProxyBaseUrl();
         loggingLevel = g.getLoggingLevel();
         verboseExceptions = g.isVerboseExceptions();
-        
+
         loggingToFile = g.getLoggingToFile();
         logLocation = g.getLogLocation();
-        
+
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
         jaiMemoryThreshold = g.getJaiMemoryThreshold();
         jaiTileThreads = g.getJaiTileThreads();
@@ -260,7 +241,7 @@ public final class GeoServerDTO implements DataTransferObject {
         imageIOCache = g.getImageIOCache();
         jaiJPEGNative = g.getJaiJPEGNative();
         jaiPNGNative = g.getJaiPNGNative();
-        
+
         if (g.getContact() != null) {
             contact = (ContactDTO) (g.getContact().clone());
         } else {
@@ -270,7 +251,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * Implement clone.
-     * 
+     *
      * <p>
      * Charset is not cloned, everything else is. Strings are reference  copied
      * because of the Hashtable implementation in memory.
@@ -286,7 +267,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * Implement equals.
-     * 
+     *
      * <p>
      * Compares the equality of the two objects.
      * </p>
@@ -307,7 +288,7 @@ public final class GeoServerDTO implements DataTransferObject {
         r = r && (maxFeatures == g.getMaxFeatures());
         r = r && (verbose == g.isVerbose());
         r = r && (numDecimals == g.getNumDecimals());
-        
+
         if (charSet != null) {
             r = r && charSet.equals(g.getCharSet());
         } else if (g.getCharSet() != null) {
@@ -315,7 +296,7 @@ public final class GeoServerDTO implements DataTransferObject {
         }
 
         r = r && (schemaBaseUrl == g.getSchemaBaseUrl());
-        
+
         r = r && (proxyBaseUrl == g.getProxyBaseUrl());
 
         if (contact != null) {
@@ -325,21 +306,22 @@ public final class GeoServerDTO implements DataTransferObject {
         }
 
         r = r && (loggingToFile == g.getLoggingToFile());
+
         if (logLocation != null) {
-        	r = r && logLocation.equals(g.getLogLocation());
+            r = r && logLocation.equals(g.getLogLocation());
+        } else if (g.getLogLocation() != null) {
+            return false;
         }
-        else if (g.getLogLocation() != null)
-        	return false;
-        
-        r = r && (jaiMemoryCapacity == g.getJaiMemoryCapacity()) ;
-        r = r && (jaiMemoryThreshold == g.getJaiMemoryThreshold()) ;
-        r = r && (jaiTileThreads == g.getJaiTileThreads()) ;
-        r = r && (jaiTilePriority == g.getJaiTilePriority()) ;       
-        r = r && (jaiRecycling == g.getJaiRecycling());        
+
+        r = r && (jaiMemoryCapacity == g.getJaiMemoryCapacity());
+        r = r && (jaiMemoryThreshold == g.getJaiMemoryThreshold());
+        r = r && (jaiTileThreads == g.getJaiTileThreads());
+        r = r && (jaiTilePriority == g.getJaiTilePriority());
+        r = r && (jaiRecycling == g.getJaiRecycling());
         r = r && (imageIOCache == g.getImageIOCache());
         r = r && (jaiJPEGNative == g.getJaiJPEGNative());
         r = r && (jaiPNGNative == g.getJaiPNGNative());
-        
+
         return r;
     }
 
@@ -363,7 +345,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * getCharSet purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -376,7 +358,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * getContact purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -389,7 +371,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * getLoggingLevel purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -403,7 +385,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * getMaxFeatures purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -416,7 +398,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * getNumDecimals purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -426,7 +408,7 @@ public final class GeoServerDTO implements DataTransferObject {
     public int getNumDecimals() {
         return numDecimals;
     }
-    
+
     /**
      * Getter for the {@link #proxyBaseUrl} property
      * @return
@@ -437,7 +419,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * getSchemaBaseUrl purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -450,7 +432,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * isVerbose purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -463,7 +445,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * setCharSet purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -480,7 +462,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * setContact purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -497,7 +479,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * setMaxFeatures purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -510,7 +492,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * setNumDecimals purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -523,7 +505,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * setSchemaBaseUrl purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -544,7 +526,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * setVerbose purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -557,7 +539,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * getLoggingLevel purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -570,7 +552,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * setLoggingLevel purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -640,39 +622,39 @@ public final class GeoServerDTO implements DataTransferObject {
         this.verboseExceptions = showStackTraces;
     }
 
-   /**
-	 * Returns the location of where the server ouputs logs. Note that this may 
-	 * not reference an actual physical location on disk. 
-	 * Call {@link GeoServer#getLogLocation(String, ServletContext)} to map this
-	 * string to a file on disk.
-	 * 
-	 */
-	public String getLogLocation() {
-		return logLocation;
-	}
-	
-	/**
-	 * @param logLocation The string representation of the path on disk in which 
-	 * the server logs to.
-	 */
-	public void setLogLocation(String logLocation) {
-		this.logLocation = logLocation;
-	}
-	
-	/**
-	 * @return True if the server is logging to file, otherwise false.
-	 */
-	public boolean getLoggingToFile() {
-		return loggingToFile;
-	}
-	
-	/**
-	 * Toggles server logging to file.
-	 */
-	public void setLoggingToFile(boolean loggingToFile) {
-		this.loggingToFile = loggingToFile;
-	}
-	
+    /**
+          * Returns the location of where the server ouputs logs. Note that this may
+          * not reference an actual physical location on disk.
+          * Call {@link GeoServer#getLogLocation(String, ServletContext)} to map this
+          * string to a file on disk.
+          *
+          */
+    public String getLogLocation() {
+        return logLocation;
+    }
+
+    /**
+     * @param logLocation The string representation of the path on disk in which
+     * the server logs to.
+     */
+    public void setLogLocation(String logLocation) {
+        this.logLocation = logLocation;
+    }
+
+    /**
+     * @return True if the server is logging to file, otherwise false.
+     */
+    public boolean getLoggingToFile() {
+        return loggingToFile;
+    }
+
+    /**
+     * Toggles server logging to file.
+     */
+    public void setLoggingToFile(boolean loggingToFile) {
+        this.loggingToFile = loggingToFile;
+    }
+
     public String toString() {
         StringBuffer dto = new StringBuffer("[GeoServerDTO: \n");
         dto.append("   maxFeatures - " + maxFeatures);
@@ -687,44 +669,45 @@ public final class GeoServerDTO implements DataTransferObject {
         return dto.toString();
     }
 
-	public long getJaiMemoryCapacity() {
-		return jaiMemoryCapacity;
-	}
+    public long getJaiMemoryCapacity() {
+        return jaiMemoryCapacity;
+    }
 
-	public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
-		this.jaiMemoryCapacity = jaiMemoryCapacity;
-	}
+    public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
+        this.jaiMemoryCapacity = jaiMemoryCapacity;
+    }
 
-	public Boolean getJaiRecycling() {
-		return jaiRecycling;
-	}
+    public Boolean getJaiRecycling() {
+        return jaiRecycling;
+    }
 
-	public void setJaiRecycling(Boolean jaiRecycling) {
-		this.jaiRecycling = jaiRecycling;
-	}
+    public void setJaiRecycling(Boolean jaiRecycling) {
+        this.jaiRecycling = jaiRecycling;
+    }
 
-	public Boolean getJaiJPEGNative() {
-		return jaiJPEGNative;
-	}
+    public Boolean getJaiJPEGNative() {
+        return jaiJPEGNative;
+    }
 
-	public void setJaiJPEGNative(Boolean jaiJPEGNative) {
-		this.jaiJPEGNative = jaiJPEGNative;
-	}
+    public void setJaiJPEGNative(Boolean jaiJPEGNative) {
+        this.jaiJPEGNative = jaiJPEGNative;
+    }
 
-	public Boolean getJaiPNGNative() {
-		return jaiPNGNative;
-	}
+    public Boolean getJaiPNGNative() {
+        return jaiPNGNative;
+    }
 
-	public void setJaiPNGNative(Boolean jaiPNGNative) {
-		this.jaiPNGNative = jaiPNGNative;
-	}
+    public void setJaiPNGNative(Boolean jaiPNGNative) {
+        this.jaiPNGNative = jaiPNGNative;
+    }
 
-	public double getJaiMemoryThreshold() {
-		return jaiMemoryThreshold;
-	}
-	public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
-		this.jaiMemoryThreshold = jaiMemoryThreshold;
-	}
+    public double getJaiMemoryThreshold() {
+        return jaiMemoryThreshold;
+    }
+
+    public void setJaiMemoryThreshold(double jaiMemoryThreshold) {
+        this.jaiMemoryThreshold = jaiMemoryThreshold;
+    }
 
     /**
      * @return Returns the imageIOCache.
@@ -740,19 +723,19 @@ public final class GeoServerDTO implements DataTransferObject {
         this.imageIOCache = imageIOCache;
     }
 
-	public int getJaiTilePriority() {
-		return jaiTilePriority;
-	}
+    public int getJaiTilePriority() {
+        return jaiTilePriority;
+    }
 
-	public void setJaiTilePriority(int jaiTilePriority) {
-		this.jaiTilePriority = jaiTilePriority;
-	}
+    public void setJaiTilePriority(int jaiTilePriority) {
+        this.jaiTilePriority = jaiTilePriority;
+    }
 
-	public int getJaiTileThreads() {
-		return jaiTileThreads;
-	}
+    public int getJaiTileThreads() {
+        return jaiTileThreads;
+    }
 
-	public void setJaiTileThreads(int jaiTileThreads) {
-		this.jaiTileThreads = jaiTileThreads;
-	}
+    public void setJaiTileThreads(int jaiTileThreads) {
+        this.jaiTileThreads = jaiTileThreads;
+    }
 }

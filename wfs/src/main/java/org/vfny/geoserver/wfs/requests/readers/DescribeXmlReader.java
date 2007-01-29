@@ -4,14 +4,6 @@
  */
 package org.vfny.geoserver.wfs.requests.readers;
 
-import java.io.IOException;
-import java.io.Reader;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
@@ -21,6 +13,12 @@ import org.vfny.geoserver.wfs.servlets.WFService;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
+import java.io.IOException;
+import java.io.Reader;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 
 /**
@@ -33,13 +31,13 @@ import org.xml.sax.helpers.ParserAdapter;
 public class DescribeXmlReader extends XmlRequestReader {
     /**
      * Creates a new DescribeXmlReader object.
-     * 
+     *
      * @param service The service handling the request.
      */
     public DescribeXmlReader(WFService service) {
-    		super(service);
+        super(service);
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -49,13 +47,14 @@ public class DescribeXmlReader extends XmlRequestReader {
      *
      * @throws WfsException DOCUMENT ME!
      */
-    public Request read(Reader reader, HttpServletRequest req) throws WfsException {
+    public Request read(Reader reader, HttpServletRequest req)
+        throws WfsException {
         /** create a describe feature type request class to return */
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        DescribeRequest request = new DescribeRequest( (WFService) getServiceRef() );
-        DescribeHandler contentHandler = new DescribeHandler( request );
+        DescribeRequest request = new DescribeRequest((WFService) getServiceRef());
+        DescribeHandler contentHandler = new DescribeHandler(request);
 
         // read in XML file and parse to content handler
         try {
@@ -67,20 +66,18 @@ public class DescribeXmlReader extends XmlRequestReader {
             adapter.parse(requestSource);
             LOGGER.finer("just parsed: " + requestSource);
         } catch (SAXException e) {
-            throw new WfsException(e, "XML describe request parsing error",
-                getClass().getName());
+            throw new WfsException(e, "XML describe request parsing error", getClass().getName());
         } catch (IOException e) {
-            throw new WfsException(e, "XML describe request input error",
-                getClass().getName());
+            throw new WfsException(e, "XML describe request input error", getClass().getName());
         } catch (ParserConfigurationException e) {
-            throw new WfsException(e, "Some sort of issue creating parser",
-                getClass().getName());
+            throw new WfsException(e, "Some sort of issue creating parser", getClass().getName());
         }
 
         LOGGER.finer("about to return ");
         LOGGER.finer("returning " + contentHandler.getRequest(req));
 
         Request r = contentHandler.getRequest(req);
+
         return r;
     }
 }

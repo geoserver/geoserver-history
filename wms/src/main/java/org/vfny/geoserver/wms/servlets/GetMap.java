@@ -4,14 +4,6 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -21,6 +13,12 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetMapKvpReader;
 import org.vfny.geoserver.wms.requests.GetMapXmlReader;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Map;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -35,38 +33,39 @@ public class GetMap extends WMService {
      * Part of HTTP content type header.
      */
     public static final String URLENCODED = "application/x-www-form-urlencoded";
-	
+
     /**
      * Creates a new GetMap object.
-     *  
+     *
      */
     public GetMap(WMS wms) {
-    		super("GetMap",wms);
+        super("GetMap", wms);
     }
-    
+
     protected GetMap(String id, WMS wms) {
         super(id, wms);
     }
-       
+
     // TODO: check is this override adds any value compared to the superclass one,
     // remove otherwise
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-    	
         //If the post is of mime-type application/x-www-form-urlencoded
         //Then the get system can handle it. For all other requests the
         //post code must handle it.
         if (isURLEncoded(request)) {
             doGet(request, response);
+
             return;
         }
 
-
         //DJB: added post support
         Request serviceRequest = null;
-//        this.curRequest = request;
+
+        //        this.curRequest = request;
         if (!isServiceEnabled(request)) {
             sendDisabledServiceError(response);
+
             return;
         }
 
@@ -78,9 +77,11 @@ public class GetMap extends WMService {
             serviceRequest = xmlPostReader.read(xml, request);
         } catch (ServiceException se) {
             sendError(request, response, se);
+
             return;
         } catch (Throwable e) {
             sendError(request, response, e);
+
             return;
         }
 
@@ -93,9 +94,9 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected Response getResponseHandler() {
-       return new GetMapResponse(getWMS(), getApplicationContext());
+        return new GetMapResponse(getWMS(), getApplicationContext());
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -115,17 +116,17 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected KvpRequestReader getKvpReader(Map params) {
-    	
-    	Map layers = this.getWMS().getBaseMapLayers();
-    	Map styles = this.getWMS().getBaseMapStyles();
-    	
-    	GetMapKvpReader kvp = new GetMapKvpReader(params, this);
-    	
-    	// filter layers and styles if the user specified "layers=basemap"
-    	// This must happen after the kvp reader has been initially called
-    	if (layers != null && !layers.equals(""))
-    		kvp.filterBaseMap(layers, styles);
-    	
+        Map layers = this.getWMS().getBaseMapLayers();
+        Map styles = this.getWMS().getBaseMapStyles();
+
+        GetMapKvpReader kvp = new GetMapKvpReader(params, this);
+
+        // filter layers and styles if the user specified "layers=basemap"
+        // This must happen after the kvp reader has been initially called
+        if ((layers != null) && !layers.equals("")) {
+            kvp.filterBaseMap(layers, styles);
+        }
+
         return kvp;
     }
 

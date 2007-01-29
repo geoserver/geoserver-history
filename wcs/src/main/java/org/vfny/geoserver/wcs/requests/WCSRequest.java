@@ -9,9 +9,10 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.wcs.servlets.WCService;
 
+
 /**
  * DOCUMENT ME!
- * 
+ *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
@@ -25,33 +26,33 @@ public class WCSRequest extends Request {
         super(WCS_SERVICE_TYPE, requestType, service);
     }
 
-
     /**
-     * Sets the wcs service object. 
+     * Sets the wcs service object.
      */
     public void setWCService(WCService wcs) {
-    		setServiceRef(wcs);
+        setServiceRef(wcs);
     }
-    
+
     /**
      * Returns the wcs service object..
      */
     public WCService getWCService() {
-    		return (WCService) getServiceRef();
+        return (WCService) getServiceRef();
     }
-    
+
     /**
      * Convenience method for obtaining the global wcs service instance.
      */
     public WCS getWCS() {
-    		return getWCService().getWCS();
+        return getWCService().getWCS();
     }
 
     /**
      * Convenience method for obtaining the global geoserver instance.
      */
-    public GeoServer getGeoServer(){
-    	GeoServer gs = getWCS().getGeoServer();
-    	return gs;
+    public GeoServer getGeoServer() {
+        GeoServer gs = getWCS().getGeoServer();
+
+        return gs;
     }
 }

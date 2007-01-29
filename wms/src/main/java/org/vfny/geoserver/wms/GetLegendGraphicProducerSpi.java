@@ -4,59 +4,58 @@
  */
 package org.vfny.geoserver.wms;
 
-import java.util.Set;
-
 import org.geotools.factory.Factory;
+import java.util.Set;
 
 
 /**
  * Constructs a live GetLegendGraphicProducer.
- * 
+ *
  * <p>
  * An instance of this interface should exist for all legend producers which
  * want to take advantage of the dynamic plugin system. In addition to
  * implementing this interface GetLegendGraphic producers should have a
  * services file:
  * </p>
- * 
+ *
  * <p>
  * <code>org.vfny.geoserver.responses.wms.GetLegendGraphicProducerSpi</code>
  * </p>
- * 
+ *
  * <p>
  * The file should contain a single line which gives the full name of the
  * implementing class.
  * </p>
- * 
+ *
  * <p>
  * example:<br/><code>e.g.
  * org.vfny.geoserver.responses.wms.GIFLegendGraphicProducerSpi</code>
  * </p>
- * 
+ *
  * <p>
  * The factories are never called directly by client code, instead the
  * GeoTools' FactoryFinder class is used.
  * </p>
- * 
+ *
  * <p>
  * The following example shows how a user might obtain GetLegendGraphicProducer
  * capable of generating a legend graphic image in GIF format and send the
  * generated legend to a file:
  * </p>
- * 
+ *
  * <p>
  * <pre><code>
  *  GetLegendGraphicProducerSpi glf = null;
  *  Iterator it = FactoryFinder.factories(GetLegendGraphicProducerSpi.class);
  *  while (it.hasNext()) {
- *  	GetLegendGraphicProducerSpi tmpGlf = (GetLegendGraphicProducerSpi) it.next();
- *  	if (tmpGlf.canProduce("image/gif")) {
- *  		glf = tmpGlf;
- *  		break;
- *  	}
- *  } 
+ *          GetLegendGraphicProducerSpi tmpGlf = (GetLegendGraphicProducerSpi) it.next();
+ *          if (tmpGlf.canProduce("image/gif")) {
+ *                  glf = tmpGlf;
+ *                  break;
+ *          }
+ *  }
  *  GetLegendGraphicProducer producer = glf.createLegendProducer("image/gif");
- * 	GetLegendGraphicRequest request = ...
+ *         GetLegendGraphicRequest request = ...
  *  producer.produceLegendGraphic(request);
  *  OutputStream out = new FileOutputStream("/legend.gif");
  *  producer.writeTo(out);

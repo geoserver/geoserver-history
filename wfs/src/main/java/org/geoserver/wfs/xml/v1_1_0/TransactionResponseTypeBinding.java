@@ -1,21 +1,23 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_1_0;
-
-
-import javax.xml.namespace.QName;
 
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.WFSFactory;
-
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:TransactionResponseType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;xsd:complexType name="TransactionResponseType"&gt;
  *      &lt;xsd:annotation&gt;
  *          &lt;xsd:documentation xml:lang="en"&gt;
@@ -29,7 +31,7 @@ import org.geotools.xml.Node;
  *              &lt;xsd:annotation&gt;
  *                  &lt;xsd:documentation xml:lang="en"&gt;
  *                    The TransactionSummary element is used to summarize
- *                    the number of feature instances affected by the 
+ *                    the number of feature instances affected by the
  *                    transaction.
  *                 &lt;/xsd:documentation&gt;
  *              &lt;/xsd:annotation&gt;
@@ -65,49 +67,47 @@ import org.geotools.xml.Node;
  *              &lt;/xsd:documentation&gt;
  *          &lt;/xsd:annotation&gt;
  *      &lt;/xsd:attribute&gt;
- *  &lt;/xsd:complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/xsd:complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class TransactionResponseTypeBinding extends AbstractComplexEMFBinding {
+    WFSFactory wfsfactory;
 
-	WFSFactory wfsfactory;		
-	public TransactionResponseTypeBinding( WFSFactory wfsfactory ) {
-		this.wfsfactory = wfsfactory;
-	}
+    public TransactionResponseTypeBinding(WFSFactory wfsfactory) {
+        this.wfsfactory = wfsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return WFS.TRANSACTIONRESPONSETYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return TransactionResponseType.class;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		//TODO: implement
-		return null;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return WFS.TRANSACTIONRESPONSETYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return TransactionResponseType.class;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        //TODO: implement
+        return null;
+    }
 }

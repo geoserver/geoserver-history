@@ -6,6 +6,7 @@ package org.vfny.geoserver.global;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 /**
  * Represents a MetadataLink Attribute.
  *
@@ -14,129 +15,124 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * @version $Id: MetadataLink.java,v 0.1 Feb 16, 2005 1:32:39 PM $
  */
 public class MetaDataLink extends GlobalLayerSupertype {
+    /**
+     *
+     * @uml.property name="type" multiplicity="(0 1)"
+     */
+    private String type;
 
-	/**
-	 * 
-	 * @uml.property name="type" multiplicity="(0 1)"
-	 */
-	private String type;
+    /**
+     *
+     * @uml.property name="about" multiplicity="(0 1)"
+     */
+    private String about;
 
-	/**
-	 * 
-	 * @uml.property name="about" multiplicity="(0 1)"
-	 */
-	private String about;
+    /**
+     *
+     * @uml.property name="metadataType" multiplicity="(0 1)"
+     */
+    private String metadataType;
 
-	/**
-	 * 
-	 * @uml.property name="metadataType" multiplicity="(0 1)"
-	 */
-	private String metadataType;
+    /**
+     *
+     * @uml.property name="content" multiplicity="(0 1)"
+     */
+    private String content;
 
-	/**
-	 * 
-	 * @uml.property name="content" multiplicity="(0 1)"
-	 */
-	private String content;
-        
-        
-        /**
-         * Builds an empty metadata link
-         */
-        public MetaDataLink() {
-            
-        }
-        
-        public MetaDataLink(MetaDataLink other) {
-            this.type = other.type;
-            this.about = other.about;
-            this.metadataType = other.metadataType;
-            this.content = other.content;
-        }
+    /**
+     * Builds an empty metadata link
+     */
+    public MetaDataLink() {
+    }
 
-	
-	/* (non-Javadoc)
-	 * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
-	 */
-	Object toDTO() {
-		return null;
-	}
+    public MetaDataLink(MetaDataLink other) {
+        this.type = other.type;
+        this.about = other.about;
+        this.metadataType = other.metadataType;
+        this.content = other.content;
+    }
 
-	/**
-	 * @return Returns the about.
-	 * 
-	 * @uml.property name="about"
-	 */
-	public String getAbout() {
-		return about;
-	}
+    /* (non-Javadoc)
+     * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
+     */
+    Object toDTO() {
+        return null;
+    }
 
-	/**
-	 * @param about The about to set.
-	 * 
-	 * @uml.property name="about"
-	 */
-	public void setAbout(String about) {
-		this.about = about;
-	}
+    /**
+     * @return Returns the about.
+     *
+     * @uml.property name="about"
+     */
+    public String getAbout() {
+        return about;
+    }
 
-	/**
-	 * @return Returns the metadataType.
-	 * 
-	 * @uml.property name="metadataType"
-	 */
-	public String getMetadataType() {
-		return metadataType;
-	}
+    /**
+     * @param about The about to set.
+     *
+     * @uml.property name="about"
+     */
+    public void setAbout(String about) {
+        this.about = about;
+    }
 
-	/**
-	 * @param metadataType The metadataType to set.
-	 * 
-	 * @uml.property name="metadataType"
-	 */
-	public void setMetadataType(String metadataType) {
-		this.metadataType = metadataType;
-	}
+    /**
+     * @return Returns the metadataType.
+     *
+     * @uml.property name="metadataType"
+     */
+    public String getMetadataType() {
+        return metadataType;
+    }
 
-	/**
-	 * @return Returns the type.
-	 * 
-	 * @uml.property name="type"
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * @param metadataType The metadataType to set.
+     *
+     * @uml.property name="metadataType"
+     */
+    public void setMetadataType(String metadataType) {
+        this.metadataType = metadataType;
+    }
 
-	/**
-	 * @param type The type to set.
-	 * 
-	 * @uml.property name="type"
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+    /**
+     * @return Returns the type.
+     *
+     * @uml.property name="type"
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * @return Returns the content.
-	 * 
-	 * @uml.property name="content"
-	 */
-	public String getContent() {
-		return content;
-	}
+    /**
+     * @param type The type to set.
+     *
+     * @uml.property name="type"
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	/**
-	 * @param content The content to set.
-	 * 
-	 * @uml.property name="content"
-	 */
-	public void setContent(String content) {
-		this.content = content;
-	}
-        
-	public String toString() {
-	    return new ToStringBuilder(this).append(content).append(type).append(
-                    metadataType).append(about).toString();
-        }
+    /**
+     * @return Returns the content.
+     *
+     * @uml.property name="content"
+     */
+    public String getContent() {
+        return content;
+    }
 
+    /**
+     * @param content The content to set.
+     *
+     * @uml.property name="content"
+     */
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).append(content).append(type).append(metadataType)
+                                        .append(about).toString();
+    }
 }

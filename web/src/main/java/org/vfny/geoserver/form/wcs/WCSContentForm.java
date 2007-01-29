@@ -4,18 +4,15 @@
  */
 package org.vfny.geoserver.form.wcs;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WCSConfig;
-
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -26,30 +23,29 @@ import org.vfny.geoserver.config.WCSConfig;
  */
 public class WCSContentForm extends ActionForm {
     /**
-	 * Comment for <code>serialVersionUID</code>
-	 */
-	private static final long serialVersionUID = 3977860674510534961L;
+         * Comment for <code>serialVersionUID</code>
+         */
+    private static final long serialVersionUID = 3977860674510534961L;
 
-	/**
-	 * 
-	 */
-	private boolean enabled;
+    /**
+     *
+     */
+    private boolean enabled;
 
-	/**
-	 * 
-	 */
-	private String onlineResource;
+    /**
+     *
+     */
+    private String onlineResource;
 
-	/**
-	 * 
-	 */
-	private String describeURL;
+    /**
+     *
+     */
+    private String describeURL;
 
-	/**
-	 * 
-	 */
-	private boolean enabledChecked = false;
-
+    /**
+     *
+     */
+    private boolean enabledChecked = false;
 
     /**
      * DOCUMENT ME!
@@ -57,49 +53,46 @@ public class WCSContentForm extends ActionForm {
      * @return
      */
     public boolean isEnabled() {
-
         return enabled;
     }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return
-	 */
-	public String getOnlineResource() {
-		return onlineResource;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getOnlineResource() {
+        return onlineResource;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param string
-	 */
-	public void setDescribeURL(String string) {
-		describeURL = string;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setDescribeURL(String string) {
+        describeURL = string;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param b
-	 */
-	public void setEnabled(boolean b) {
-		enabledChecked = true;
-		//System.out.println("setEnabled: enabledCheck/Enabled now " + b);
-		enabled = b;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param b
+     */
+    public void setEnabled(boolean b) {
+        enabledChecked = true;
+        //System.out.println("setEnabled: enabledCheck/Enabled now " + b);
+        enabled = b;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param string
-	 */
-	public void setOnlineResource(String string) {
-		onlineResource = string;
-	}
-
-
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string
+     */
+    public void setOnlineResource(String string) {
+        onlineResource = string;
+    }
 
     public void reset(ActionMapping arg0, HttpServletRequest arg1) {
         super.reset(arg0, arg1);
@@ -108,7 +101,7 @@ public class WCSContentForm extends ActionForm {
 
         ServletContext context = getServlet().getServletContext();
         WCSConfig config = (WCSConfig) context.getAttribute(WCSConfig.CONFIG_KEY);
-        
+
         this.enabled = config.isEnabled();
 
         URL url = config.getOnlineResource();
@@ -120,21 +113,20 @@ public class WCSContentForm extends ActionForm {
         }
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        
-        if (onlineResource == null || onlineResource.equals("")) {
-        	errors.add("onlineResource", new ActionError("error.wcs.onlineResource.required"));
+        if ((onlineResource == null) || onlineResource.equals("")) {
+            errors.add("onlineResource", new ActionError("error.wcs.onlineResource.required"));
         } else {
-        	try {
+            try {
                 URL url = new URL(onlineResource);
             } catch (MalformedURLException badURL) {
-                errors.add("onlineResource", new ActionError("error.wcs.onlineResource.malformed", badURL));
+                errors.add("onlineResource",
+                    new ActionError("error.wcs.onlineResource.malformed", badURL));
             }
         }
-        
+
         return errors;
     }
 
@@ -147,12 +139,12 @@ public class WCSContentForm extends ActionForm {
         return enabledChecked;
     }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param b
-	 */
-	public void setEnabledChecked(boolean b) {
-		enabledChecked = b;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param b
+     */
+    public void setEnabledChecked(boolean b) {
+        enabledChecked = b;
+    }
 }

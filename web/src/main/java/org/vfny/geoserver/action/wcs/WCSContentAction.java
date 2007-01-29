@@ -2,15 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-
 package org.vfny.geoserver.action.wcs;
-
-import java.io.IOException;
-import java.net.URL;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -19,6 +11,11 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.WCSConfig;
 import org.vfny.geoserver.form.wcs.WCSContentForm;
 import org.vfny.geoserver.global.UserContainer;
+import java.io.IOException;
+import java.net.URL;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -28,8 +25,8 @@ import org.vfny.geoserver.global.UserContainer;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public final class WCSContentAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         WCSContentForm contentForm = (WCSContentForm) form;
 
@@ -38,7 +35,7 @@ public final class WCSContentAction extends ConfigAction {
         if (contentForm.isEnabledChecked() == false) {
             enabled = false;
         }
-        
+
         String onlineResource = contentForm.getOnlineResource();
 
         WCSConfig config = getWCSConfig();

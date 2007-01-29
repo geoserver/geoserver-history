@@ -28,7 +28,7 @@ public class LegendURL extends GlobalLayerSupertype {
 
     /**
      * Legend constructor.
-     * 
+     *
      * <p>
      * Stores the new LegendURLDTO data for this LegendURL.
      * </p>
@@ -50,7 +50,7 @@ public class LegendURL extends GlobalLayerSupertype {
 
     /**
      * load purpose.
-     * 
+     *
      * <p>
      * loads a new copy of data into this object.
      * </p>

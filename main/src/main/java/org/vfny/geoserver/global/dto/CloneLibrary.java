@@ -4,28 +4,27 @@
  */
 package org.vfny.geoserver.global.dto;
 
+import com.vividsolutions.jts.geom.Envelope;
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.vividsolutions.jts.geom.Envelope;
-
 
 /**
  * CloneLibrary purpose is used to try and Set up a Deep Copy for DTO objets.
- * 
+ *
  * <p>
  * Static Library class for cloning complex structures independant of their
  * contents.
  * </p>
- * 
+ *
  * <p>
  * Jody here - this is much more accessable when presented to the user as new
  * Type( Type ) idiom. Java clone is messed up, I have seen several projects
  * move to a copy() method or the above idom.
  * </p>
- * 
+ *
  * <p>
  * For the here and now we can use the above Idom. This will even work with all
  * of our lists and Maps since we are only ever using Strings (imutable) in
@@ -38,7 +37,7 @@ import com.vividsolutions.jts.geom.Envelope;
 public final class CloneLibrary {
     /**
      * clone purpose.
-     * 
+     *
      * <p>
      * Clones a List so that it matches the requirements that the returned
      * object  would be equal to the source.
@@ -80,7 +79,7 @@ public final class CloneLibrary {
 
     /**
      * clone purpose.
-     * 
+     *
      * <p>
      * Clones a Map so that it matches the requirements that the returned
      * object  would be equal to the source.
@@ -124,7 +123,7 @@ public final class CloneLibrary {
 
     /**
      * clone purpose.
-     * 
+     *
      * <p>
      * Clones a Envelope so that it matches the requirements that the returned
      * object  would be equal to the source.
@@ -145,7 +144,7 @@ public final class CloneLibrary {
 
     /**
      * clone purpose.
-     * 
+     *
      * <p>
      * used to check class type and clone it.
      * </p>
@@ -174,7 +173,7 @@ public final class CloneLibrary {
 
     /**
      * clone purpose.
-     * 
+     *
      * <p>
      * to make the compiler happy, should never be here.
      * </p>

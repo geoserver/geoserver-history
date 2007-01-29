@@ -30,9 +30,9 @@ public class PDFMapProducerFactory implements GetMapProducerFactorySpi {
      */
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
-/**
-     * Creates a new PdfMapProducerFactory object.
-     */
+    /**
+         * Creates a new PdfMapProducerFactory object.
+         */
     public PDFMapProducerFactory() {
         super();
     }
@@ -107,8 +107,7 @@ public class PDFMapProducerFactory implements GetMapProducerFactorySpi {
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
         if (!canProduce(mapFormat)) {
-            throw new IllegalArgumentException(mapFormat
-                + " not supported by this map producer");
+            throw new IllegalArgumentException(mapFormat + " not supported by this map producer");
         }
 
         return new PDFMapProducer();

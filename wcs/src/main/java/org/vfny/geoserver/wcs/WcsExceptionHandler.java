@@ -7,6 +7,7 @@ package org.vfny.geoserver.wcs;
 import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.ServiceException;
 
+
 /**
  * ServiceConfig exception handler for WCS services GR: should we rename it?
  * ExceptionHandler don't seems appropiate.
@@ -19,12 +20,12 @@ public class WcsExceptionHandler implements ExceptionHandler {
     /** DOCUMENT ME! */
     private static final WcsExceptionHandler instance = new WcsExceptionHandler();
 
-	/**
-	 * 
-	 * @uml.property name="lnkWcsException"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-	private WcsException lnkWcsException;
+    /**
+     *
+     * @uml.property name="lnkWcsException"
+     * @uml.associationEnd multiplicity="(0 1)"
+     */
+    private WcsException lnkWcsException;
 
     private WcsExceptionHandler() {
     }
@@ -81,8 +82,7 @@ public class WcsExceptionHandler implements ExceptionHandler {
      *
      * @return DOCUMENT ME!
      */
-    public ServiceException newServiceException(Throwable e, String preMessage,
-        String locator) {
+    public ServiceException newServiceException(Throwable e, String preMessage, String locator) {
         return new WcsException(e, preMessage, locator);
     }
 }

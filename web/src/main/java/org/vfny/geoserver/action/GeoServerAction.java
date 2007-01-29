@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.action;
 
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.Action;
 import org.springframework.web.struts.ActionSupport;
 import org.vfny.geoserver.global.ApplicationState;
@@ -17,16 +13,19 @@ import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.Requests;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * GeoServerAction is a common super class used by STRUTS Actions.
- * 
+ *
  * <p>
  * GeoServerAction is used to store shared services, such as looking up the
  * GeoServer Application.
  * </p>
  * Capabilities:
- * 
+ *
  * <ul>
  * <li>
  * LoggedIn: Convience routines for checking if User has been Authenticated.
@@ -38,19 +37,19 @@ import org.vfny.geoserver.util.Requests;
  * access to the GeoServer Application from the Web Container.
  * </li>
  * </ul>
- * 
+ *
  * Example Use:
  * <pre><code>
  * class MyAction extends GeoServerAction {
  *   ...
  * }
  * </code></pre>
- * 
+ *
  * <p>
  * Please remember that Actions (like servlets) should never make use of
  * instance variables in order to remain thread-safe.
  * </p>
- * 
+ *
  * <p>
  * The Services provided by this class are convience methods for the Services
  * provided by the Requests utiltiy class.
@@ -61,11 +60,9 @@ import org.vfny.geoserver.util.Requests;
  * @version $Id: GeoServerAction.java,v 1.7 2004/04/16 16:33:31 cholmesny Exp $
  */
 public class GeoServerAction extends ActionSupport {
-    
-	/** Class logger */
-	protected static Logger LOGGER = Logger.getLogger(
-			"org.vfny.geoserver.action");
-    
+    /** Class logger */
+    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.action");
+
     /**
      * Logs the user out from the current Session.
      *
@@ -88,7 +85,7 @@ public class GeoServerAction extends ActionSupport {
 
     /**
      * Aquire type safe session information in a UserContainer.
-     * 
+     *
      * <p>
      * Please note that the UserContainer may be lazyly created.
      * </p>
@@ -103,7 +100,7 @@ public class GeoServerAction extends ActionSupport {
 
     /**
      * Aquire WMS from Web Container.
-     * 
+     *
      * <p>
      * The WMS instance is create by a STRUTS plug-in and is available
      * through the Web container. (Test cases may seed the request object with
@@ -115,12 +112,12 @@ public class GeoServerAction extends ActionSupport {
      * @return WMS instance for this Web Application
      */
     public WMS getWMS(HttpServletRequest request) {
-    		return (WMS) getWebApplicationContext().getBean("wms");
+        return (WMS) getWebApplicationContext().getBean("wms");
     }
 
     /**
      * Aquire WCS from Web Container.
-     * 
+     *
      * <p>
      * The WCS instance is create by a STRUTS plug-in and is available
      * through the Web container. (Test cases may seed the request object with
@@ -132,12 +129,12 @@ public class GeoServerAction extends ActionSupport {
      * @return WCS instance for this Web Application
      */
     public WCS getWCS(HttpServletRequest request) {
-    		return (WCS) getWebApplicationContext().getBean("wcs");
+        return (WCS) getWebApplicationContext().getBean("wcs");
     }
 
     /**
      * Aquire WFS from Web Container.
-     * 
+     *
      * <p>
      * The WFS instance is create by a STRUTS plug-in and is available
      * through the Web container. (Test cases may seed the request object with
@@ -149,16 +146,16 @@ public class GeoServerAction extends ActionSupport {
      * @return WFS instance for this Web Application
      */
     public WFS getWFS(HttpServletRequest request) {
-    		 return (WFS) getWebApplicationContext().getBean("wfs");
+        return (WFS) getWebApplicationContext().getBean("wfs");
     }
-    
+
     /**
      * Aquire global configuration from the Spring context.
 
      * @return Global configuration of this web app
      */
     public GeoServer getGeoServer() {
-             return (GeoServer) getWebApplicationContext().getBean("geoServer");
+        return (GeoServer) getWebApplicationContext().getBean("geoServer");
     }
 
     /**

@@ -7,11 +7,10 @@ package org.vfny.geoserver.wms.responses;
 import junit.framework.TestCase;
 
 
-
 /**
  * DOCUMENT ME!
  *
- * @author gabriel 
+ * @author gabriel
  */
 public class GetMapResponseTest extends TestCase {
     /** DOCUMENT ME!  */

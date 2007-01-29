@@ -1,20 +1,22 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_0_0;
 
-
-import javax.xml.namespace.QName;
-
 import net.opengis.wfs.WFSFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:FeatureCollectionType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;xsd:complexType name="FeatureCollectionType"&gt;       &lt;xsd:annotation&gt;
  *              &lt;xsd:documentation&gt;             This type defines a
  *              container for the response to a              GetFeature or
@@ -35,49 +37,47 @@ import org.geotools.xml.Node;
  *                          of locked features.
  *                      &lt;/xsd:documentation&gt;             &lt;/xsd:annotation&gt;
  *              &lt;/xsd:attribute&gt;        &lt;/xsd:extension&gt;
- *      &lt;/xsd:complexContent&gt;    &lt;/xsd:complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *      &lt;/xsd:complexContent&gt;    &lt;/xsd:complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class FeatureCollectionTypeBinding extends AbstractComplexBinding {
+    WFSFactory wfsfactory;
 
-	WFSFactory wfsfactory;		
-	public FeatureCollectionTypeBinding( WFSFactory wfsfactory ) {
-		this.wfsfactory = wfsfactory;
-	}
+    public FeatureCollectionTypeBinding(WFSFactory wfsfactory) {
+        this.wfsfactory = wfsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return WFS.FEATURECOLLECTIONTYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return null;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		//TODO: implement
-		return null;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return WFS.FEATURECOLLECTIONTYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return null;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        //TODO: implement
+        return null;
+    }
 }

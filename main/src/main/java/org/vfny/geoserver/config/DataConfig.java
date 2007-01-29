@@ -4,6 +4,17 @@
  */
 package org.vfny.geoserver.config;
 
+import org.geotools.data.DataStore;
+import org.geotools.data.DefaultRepository;
+import org.geotools.data.Repository;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.dto.CoverageInfoDTO;
+import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
+import org.vfny.geoserver.global.dto.StyleDTO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,30 +26,17 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
 import javax.servlet.ServletContext;
-
-import org.geotools.data.DataStore;
-import org.geotools.data.DefaultRepository;
-import org.geotools.data.Repository;
-import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
-import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
-import org.vfny.geoserver.global.dto.StyleDTO;
 
 
 /**
  * Data purpose.
- * 
+ *
  * <p>
  * Represents an instance of the catalog.xml file in the configuration of the
  * server, along with associated configuration files for the feature types.
  * </p>
- * 
+ *
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
@@ -57,84 +55,83 @@ public class DataConfig {
     public static final String SELECTED_ATTRIBUTE_TYPE = "selectedAttributeType";
     public static final String SELECTED_COVERAGE = "selectedCoverage";
 
-	/**
-	 * A set of dataFormatConfig by dataFormatId.
-	 * 
-	 * @see org.vfny.geoserver.config.data.CoverageStoreInfo
-	 * 
-	 * @uml.property name="dataFormats"
-	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.CoverageStoreConfig"
-	 * multiplicity="(0 1)"
-	 */
-	private Map dataFormats;
+    /**
+     * A set of dataFormatConfig by dataFormatId.
+     *
+     * @see org.vfny.geoserver.config.data.CoverageStoreInfo
+     *
+     * @uml.property name="dataFormats"
+     * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.CoverageStoreConfig"
+     * multiplicity="(0 1)"
+     */
+    private Map dataFormats;
 
-	/**
-	 * A set of dataStoreConfig by dataStoreId.
-	 * 
-	 * @see org.vfny.geoserver.config.data.DataStoreInfo
-	 * 
-	 * @uml.property name="dataStores"
-	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.DataStoreConfig"
-	 * multiplicity="(0 1)"
-	 */
-	private Map dataStores;
+    /**
+     * A set of dataStoreConfig by dataStoreId.
+     *
+     * @see org.vfny.geoserver.config.data.DataStoreInfo
+     *
+     * @uml.property name="dataStores"
+     * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.DataStoreConfig"
+     * multiplicity="(0 1)"
+     */
+    private Map dataStores;
 
-	/**
-	 * A set of namespaces and their names.
-	 * 
-	 * @see org.vfny.geoserver.config.data.NameSpaceConfig
-	 * 
-	 * @uml.property name="nameSpaces"
-	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.NameSpaceConfig"
-	 * multiplicity="(0 1)"
-	 */
-	private Map nameSpaces;
+    /**
+     * A set of namespaces and their names.
+     *
+     * @see org.vfny.geoserver.config.data.NameSpaceConfig
+     *
+     * @uml.property name="nameSpaces"
+     * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.NameSpaceConfig"
+     * multiplicity="(0 1)"
+     */
+    private Map nameSpaces;
 
-	/**
-	 * FeatureTypesInfoConfig referenced by key "<code>dataStoreID + SEPARATOR
-	 * + typeName</code>"
-	 * 
-	 * @see org.vfny.geoserver.global.dto.FeatureTypeInfoConfig
-	 * 
-	 * @uml.property name="featuresTypes"
-	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.FeatureTypeConfig"
-	 * multiplicity="(0 1)"
-	 */
-	private Map featuresTypes;
+    /**
+     * FeatureTypesInfoConfig referenced by key "<code>dataStoreID + SEPARATOR
+     * + typeName</code>"
+     *
+     * @see org.vfny.geoserver.global.dto.FeatureTypeInfoConfig
+     *
+     * @uml.property name="featuresTypes"
+     * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.FeatureTypeConfig"
+     * multiplicity="(0 1)"
+     */
+    private Map featuresTypes;
 
-	/**
-	 * 
-	 * @uml.property name="coverages"
-	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.CoverageConfig"
-	 * multiplicity="(0 1)"
-	 */
-	private Map coverages;
+    /**
+     *
+     * @uml.property name="coverages"
+     * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.CoverageConfig"
+     * multiplicity="(0 1)"
+     */
+    private Map coverages;
 
-	/**
-	 * A set of styles and their names.
-	 * 
-	 * @see org.vfny.geoserver.config.data.StyleConfig
-	 * 
-	 * @uml.property name="styles"
-	 * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.StyleConfig"
-	 * multiplicity="(0 1)"
-	 */
-	private Map styles;
+    /**
+     * A set of styles and their names.
+     *
+     * @see org.vfny.geoserver.config.data.StyleConfig
+     *
+     * @uml.property name="styles"
+     * @uml.associationEnd qualifier="key:java.lang.String org.vfny.geoserver.config.StyleConfig"
+     * multiplicity="(0 1)"
+     */
+    private Map styles;
 
-	/**
-	 * the default namespace for the server instance.
-	 * 
-	 * @see org.vfny.geoserver.config.data.NameSpaceConfig
-	 * 
-	 * @uml.property name="defaultNameSpace"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
-	private NameSpaceConfig defaultNameSpace;
-
+    /**
+     * the default namespace for the server instance.
+     *
+     * @see org.vfny.geoserver.config.data.NameSpaceConfig
+     *
+     * @uml.property name="defaultNameSpace"
+     * @uml.associationEnd multiplicity="(1 1)"
+     */
+    private NameSpaceConfig defaultNameSpace;
 
     /**
      * Data constructor.
-     * 
+     *
      * <p>
      * Creates a Data to represent an instance with default data.
      * </p>
@@ -153,7 +150,7 @@ public class DataConfig {
 
     /**
      * Data constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the DataDTO provided. If the Data provided  is null
      * then default values are used. All the datastructures are cloned.
@@ -162,67 +159,67 @@ public class DataConfig {
      * @param data The catalog to copy.
      */
     public DataConfig(DataDTO data) {
-//        Iterator i = null;
-//
-//        i = data.getDataStores().keySet().iterator();
-//        dataStores = new HashMap();
-//
-//        while (i.hasNext()) {
-//            Object key = i.next();
-//            dataStores.put(key,
-//                new DataStoreConfig(
-//                    (DataStoreInfoDTO) data.getDataStores().get(key)));
-//        }
-//
-//        i = data.getNameSpaces().keySet().iterator();
-//        nameSpaces = new HashMap();
-//
-//        while (i.hasNext()) {
-//            Object key = i.next();
-//            nameSpaces.put(key,
-//                new NameSpaceConfig(
-//                    (NameSpaceInfoDTO) data.getNameSpaces().get(key)));
-//
-//            if (((NameSpaceConfig) nameSpaces.get(key)).isDefault()) {
-//                defaultNameSpace = (NameSpaceConfig) nameSpaces.get(key);
-//            }
-//        }
-//
-//        i = data.getFeaturesTypes().keySet().iterator();
-//        featuresTypes = new HashMap();
-//
-//        while (i.hasNext()) {
-//            Object key = i.next();
-//
-//            featuresTypes.put(key,
-//                new FeatureTypeConfig(
-//                    (FeatureTypeInfoDTO) data.getFeaturesTypes().get(key)));
-//        }
-//
-//        i = data.getStyles().keySet().iterator();
-//        styles = new HashMap();
-//
-//        while (i.hasNext()) {
-//            Object key = i.next();
-//            styles.put(key,
-//                new StyleConfig((StyleDTO) data.getStyles().get(key)));
-//        }
+        //        Iterator i = null;
+        //
+        //        i = data.getDataStores().keySet().iterator();
+        //        dataStores = new HashMap();
+        //
+        //        while (i.hasNext()) {
+        //            Object key = i.next();
+        //            dataStores.put(key,
+        //                new DataStoreConfig(
+        //                    (DataStoreInfoDTO) data.getDataStores().get(key)));
+        //        }
+        //
+        //        i = data.getNameSpaces().keySet().iterator();
+        //        nameSpaces = new HashMap();
+        //
+        //        while (i.hasNext()) {
+        //            Object key = i.next();
+        //            nameSpaces.put(key,
+        //                new NameSpaceConfig(
+        //                    (NameSpaceInfoDTO) data.getNameSpaces().get(key)));
+        //
+        //            if (((NameSpaceConfig) nameSpaces.get(key)).isDefault()) {
+        //                defaultNameSpace = (NameSpaceConfig) nameSpaces.get(key);
+        //            }
+        //        }
+        //
+        //        i = data.getFeaturesTypes().keySet().iterator();
+        //        featuresTypes = new HashMap();
+        //
+        //        while (i.hasNext()) {
+        //            Object key = i.next();
+        //
+        //            featuresTypes.put(key,
+        //                new FeatureTypeConfig(
+        //                    (FeatureTypeInfoDTO) data.getFeaturesTypes().get(key)));
+        //        }
+        //
+        //        i = data.getStyles().keySet().iterator();
+        //        styles = new HashMap();
+        //
+        //        while (i.hasNext()) {
+        //            Object key = i.next();
+        //            styles.put(key,
+        //                new StyleConfig((StyleDTO) data.getStyles().get(key)));
+        //        }
         this();
-	update(data);
+        update(data);
     }
-    
+
     /**
      * Instantiates the data config from the data module.
-     * 
+     *
      * @param data The data module.
      */
-    public DataConfig ( Data data ) {
-    		this ( (DataDTO) data.toDTO() );
+    public DataConfig(Data data) {
+        this((DataDTO) data.toDTO());
     }
- 
+
     /**
      * Implement loadDTO.
-     * 
+     *
      * <p>
      * Populates the object with the param passed.
      * </p>
@@ -240,7 +237,7 @@ public class DataConfig {
 
         Iterator i;
         Object key;
-        
+
         ////
         //
         //
@@ -248,11 +245,11 @@ public class DataConfig {
         ////
         i = data.getFormats().keySet().iterator();
         dataFormats = new HashMap();
+
         while (i.hasNext()) {
             key = i.next();
             dataFormats.put(key,
-                new CoverageStoreConfig(
-                    (CoverageStoreInfoDTO) data.getFormats().get(key)));
+                new CoverageStoreConfig((CoverageStoreInfoDTO) data.getFormats().get(key)));
         }
 
         ////
@@ -266,8 +263,7 @@ public class DataConfig {
         while (i.hasNext()) {
             key = i.next();
             dataStores.put(key,
-                new DataStoreConfig(
-                    (DataStoreInfoDTO) data.getDataStores().get(key)));
+                new DataStoreConfig((DataStoreInfoDTO) data.getDataStores().get(key)));
         }
 
         ////
@@ -281,8 +277,7 @@ public class DataConfig {
         while (i.hasNext()) {
             key = i.next();
             nameSpaces.put(key,
-                new NameSpaceConfig(
-                    (NameSpaceInfoDTO) data.getNameSpaces().get(key)));
+                new NameSpaceConfig((NameSpaceInfoDTO) data.getNameSpaces().get(key)));
 
             if (((NameSpaceConfig) nameSpaces.get(key)).isDefault()) {
                 defaultNameSpace = (NameSpaceConfig) nameSpaces.get(key);
@@ -296,14 +291,14 @@ public class DataConfig {
         ////
         i = data.getFeaturesTypes().keySet().iterator();
         featuresTypes = new HashMap();
-        FeatureTypeInfoDTO f ;
+
+        FeatureTypeInfoDTO f;
+
         while (i.hasNext()) {
             key = i.next();
 
-             f = (FeatureTypeInfoDTO) data.getFeaturesTypes()
-                                                            .get(key);
-            featuresTypes.put(f.getDataStoreId() +":"+ f.getName(),
-                new FeatureTypeConfig(f));
+            f = (FeatureTypeInfoDTO) data.getFeaturesTypes().get(key);
+            featuresTypes.put(f.getDataStoreId() + ":" + f.getName(), new FeatureTypeConfig(f));
         }
 
         ////
@@ -313,13 +308,13 @@ public class DataConfig {
         ////
         i = data.getCoverages().keySet().iterator();
         coverages = new HashMap();
+
         CoverageInfoDTO c;
+
         while (i.hasNext()) {
             key = i.next();
-            c = (CoverageInfoDTO) data.getCoverages()
-                                                            .get(key);
-            coverages.put(c.getFormatId() +":"+ c.getName(),
-                new CoverageConfig(c));
+            c = (CoverageInfoDTO) data.getCoverages().get(key);
+            coverages.put(c.getFormatId() + ":" + c.getName(), new CoverageConfig(c));
         }
 
         ////
@@ -329,10 +324,10 @@ public class DataConfig {
         ////
         i = data.getStyles().keySet().iterator();
         styles = new HashMap();
+
         while (i.hasNext()) {
             key = i.next();
-            styles.put(key,
-                new StyleConfig((StyleDTO) data.getStyles().get(key)));
+            styles.put(key, new StyleConfig((StyleDTO) data.getStyles().get(key)));
         }
     }
 
@@ -395,8 +390,7 @@ public class DataConfig {
             tmp.put(key, ((NameSpaceConfig) nameSpaces.get(key)).toDTO());
 
             if (((NameSpaceInfoDTO) tmp.get(key)).isDefault()) {
-                dt.setDefaultNameSpacePrefix(((NameSpaceInfoDTO) tmp.get(key))
-                    .getPrefix());
+                dt.setDefaultNameSpacePrefix(((NameSpaceInfoDTO) tmp.get(key)).getPrefix());
             }
         }
 
@@ -420,25 +414,24 @@ public class DataConfig {
         if (featuresTypes.containsKey(key)) {
             return (FeatureTypeConfig) featuresTypes.get(key);
         } else {
-            throw new NoSuchElementException(
-                "Could not find FeatureTypeConfig '" + key + "'.");
+            throw new NoSuchElementException("Could not find FeatureTypeConfig '" + key + "'.");
         }
     }
 
-	/**
-	 * getDataFormats purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 * 
-	 * @uml.property name="dataFormats"
-	 */
-	public Map getDataFormats() {
-		return dataFormats;
-	}
+    /**
+     * getDataFormats purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     *
+     * @uml.property name="dataFormats"
+     */
+    public Map getDataFormats() {
+        return dataFormats;
+    }
 
     /**
      * List of DataFormatIds
@@ -455,7 +448,7 @@ public class DataConfig {
 
     /**
      * getDataFormats purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -468,21 +461,20 @@ public class DataConfig {
         return (CoverageStoreConfig) dataFormats.get(key);
     }
 
-	/**
-	 * getDataStores purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 * 
-	 * @uml.property name="dataStores"
-	 */
-	public Map getDataStores() {
-		return dataStores;
-	}
-
+    /**
+     * getDataStores purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     *
+     * @uml.property name="dataStores"
+     */
+    public Map getDataStores() {
+        return dataStores;
+    }
 
     /**
      * List of DataStoreIds
@@ -499,7 +491,7 @@ public class DataConfig {
 
     /**
      * getDataStores purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -512,40 +504,39 @@ public class DataConfig {
         return (DataStoreConfig) dataStores.get(key);
     }
 
-	/**
-	 * getDefaultNameSpace purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 * 
-	 * @uml.property name="defaultNameSpace"
-	 */
-	public NameSpaceConfig getDefaultNameSpace() {
-		return defaultNameSpace;
-	}
-
-	/**
-	 * getFeatures purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 * 
-	 * @uml.property name="featuresTypes"
-	 */
-	public Map getFeaturesTypes() {
-		return featuresTypes;
-	}
-
+    /**
+     * getDefaultNameSpace purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     *
+     * @uml.property name="defaultNameSpace"
+     */
+    public NameSpaceConfig getDefaultNameSpace() {
+        return defaultNameSpace;
+    }
 
     /**
      * getFeatures purpose.
-     * 
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     *
+     * @uml.property name="featuresTypes"
+     */
+    public Map getFeaturesTypes() {
+        return featuresTypes;
+    }
+
+    /**
+     * getFeatures purpose.
+     *
      * <p>
      * Description ...
      * </p>
@@ -562,25 +553,24 @@ public class DataConfig {
         return (CoverageConfig) coverages.get(key);
     }
 
-	/**
-	 * getNameSpaces purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 * 
-	 * @uml.property name="nameSpaces"
-	 */
-	public Map getNameSpaces() {
-		return nameSpaces;
-	}
-
+    /**
+     * getNameSpaces purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     *
+     * @uml.property name="nameSpaces"
+     */
+    public Map getNameSpaces() {
+        return nameSpaces;
+    }
 
     /**
      * getNameSpaces purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -593,25 +583,24 @@ public class DataConfig {
         return (NameSpaceConfig) nameSpaces.get(key);
     }
 
-	/**
-	 * getStyles purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @return
-	 * 
-	 * @uml.property name="styles"
-	 */
-	public Map getStyles() {
-		return styles;
-	}
-
+    /**
+     * getStyles purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @return
+     *
+     * @uml.property name="styles"
+     */
+    public Map getStyles() {
+        return styles;
+    }
 
     /**
      * getStyles purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -626,7 +615,7 @@ public class DataConfig {
 
     /**
      * setFormats purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -641,7 +630,7 @@ public class DataConfig {
 
     /**
      * Add a new CoverageStoreConfig for the user to edit
-     * 
+     *
      * <p>
      * The DataFormatCondig will be added under its id name
      * </p>
@@ -658,7 +647,7 @@ public class DataConfig {
 
     /**
      * setDataFormats purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -675,27 +664,26 @@ public class DataConfig {
         return (CoverageStoreConfig) dataFormats.remove(key);
     }
 
-	/**
-	 * setDataStores purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param map
-	 * 
-	 * @uml.property name="dataStores"
-	 */
-	public void setDataStores(Map map) {
-		if (map != null) {
-			dataStores = map;
-		}
-	}
-
+    /**
+     * setDataStores purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param map
+     *
+     * @uml.property name="dataStores"
+     */
+    public void setDataStores(Map map) {
+        if (map != null) {
+            dataStores = map;
+        }
+    }
 
     /**
      * Add a new DataStoreConfig for the user to edit
-     * 
+     *
      * <p>
      * The DataStoreCondig will be added under its id name
      * </p>
@@ -712,7 +700,7 @@ public class DataConfig {
 
     /**
      * setDataStores purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -729,53 +717,53 @@ public class DataConfig {
         return (DataStoreConfig) dataStores.remove(key);
     }
 
-	/**
-	 * setDefaultNameSpace purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param support
-	 * 
-	 * @uml.property name="defaultNameSpace"
-	 */
+    /**
+     * setDefaultNameSpace purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param support
+     *
+     * @uml.property name="defaultNameSpace"
+     */
     public void setDefaultNameSpace(NameSpaceConfig support) {
         if (support != null) {
-        	//first unset the old as default
-        	if (defaultNameSpace != null) {
-        		defaultNameSpace.setDefault(false);
-        	}
+            //first unset the old as default
+            if (defaultNameSpace != null) {
+                defaultNameSpace.setDefault(false);
+            }
+
             defaultNameSpace = support;
-            
+
             //set the new as default
             if (defaultNameSpace != null) {
-            	defaultNameSpace.setDefault(true);
+                defaultNameSpace.setDefault(true);
             }
         }
     }
 
-	/**
-	 * setFeatures purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param map
-	 * 
-	 * @uml.property name="featuresTypes"
-	 */
-	public void setFeaturesTypes(Map map) {
-		if (map != null) {
-			featuresTypes = map;
-		}
-	}
-
+    /**
+     * setFeatures purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param map
+     *
+     * @uml.property name="featuresTypes"
+     */
+    public void setFeaturesTypes(Map map) {
+        if (map != null) {
+            featuresTypes = map;
+        }
+    }
 
     /**
      * setFeatures purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -805,7 +793,7 @@ public class DataConfig {
 
     /**
      * setFeatures purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -830,27 +818,26 @@ public class DataConfig {
         return (CoverageConfig) coverages.remove(key);
     }
 
-	/**
-	 * setNameSpaces purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param map
-	 * 
-	 * @uml.property name="nameSpaces"
-	 */
-	public void setNameSpaces(Map map) {
-		if (map != null) {
-			nameSpaces = map;
-		}
-	}
-
+    /**
+     * setNameSpaces purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param map
+     *
+     * @uml.property name="nameSpaces"
+     */
+    public void setNameSpaces(Map map) {
+        if (map != null) {
+            nameSpaces = map;
+        }
+    }
 
     /**
      * setNameSpaces purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -870,7 +857,7 @@ public class DataConfig {
 
     /**
      * setNameSpaces purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -887,27 +874,26 @@ public class DataConfig {
         return (NameSpaceConfig) nameSpaces.remove(key);
     }
 
-	/**
-	 * setStyles purpose.
-	 * 
-	 * <p>
-	 * Description ...
-	 * </p>
-	 * 
-	 * @param map
-	 * 
-	 * @uml.property name="styles"
-	 */
-	public void setStyles(Map map) {
-		if (map != null) {
-			styles = map;
-		}
-	}
-
+    /**
+     * setStyles purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
+     *
+     * @param map
+     *
+     * @uml.property name="styles"
+     */
+    public void setStyles(Map map) {
+        if (map != null) {
+            styles = map;
+        }
+    }
 
     /**
      * setStyles purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -927,7 +913,7 @@ public class DataConfig {
 
     /**
      * setStyles purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -957,20 +943,21 @@ public class DataConfig {
 
             try {
                 DataStore dataStore = dataStoreConfig.findDataStore(sc);
-                
+
                 String[] typeNames = dataStore.getTypeNames();
 
                 for (int i = 0; i < typeNames.length; i++) {
-                    typeNames[i] = dataStoreConfig.getId() + SEPARATOR
-                        + typeNames[i];
+                    typeNames[i] = dataStoreConfig.getId() + SEPARATOR + typeNames[i];
                 }
 
                 List typeNamesList = Arrays.asList(typeNames);
 
                 set.addAll(typeNamesList);
             } catch (Throwable ignore) {
-            	System.out.println("Could not use "+dataStoreConfig.getId() + " datastore was unavailable!" );
-            	ignore.printStackTrace();
+                System.out.println("Could not use " + dataStoreConfig.getId()
+                    + " datastore was unavailable!");
+                ignore.printStackTrace();
+
                 continue;
             }
         }
@@ -994,44 +981,46 @@ public class DataConfig {
      * To DataRepository for ValidationProcessor.
      * <p>
      * This repository is limited to the FeatureTypes currently defined.
-     * @throws IOException 
+     * @throws IOException
      */
-    public Repository toRepository(ServletContext context ) throws IOException {
-    	DefaultRepository repository = new DefaultRepository();
-    	for( Iterator i=dataStores.entrySet().iterator(); i.hasNext(); ){
-    		Map.Entry entry = (Map.Entry) i.next();
-    		String dataStoreId = (String) entry.getKey();
-    		DataStoreConfig dataStoreConfig = (DataStoreConfig) entry.getValue();    		
-    		repository.register( dataStoreId, dataStoreConfig.findDataStore( context ) );	
-    	}    	
-    	return repository;
+    public Repository toRepository(ServletContext context)
+        throws IOException {
+        DefaultRepository repository = new DefaultRepository();
+
+        for (Iterator i = dataStores.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            String dataStoreId = (String) entry.getKey();
+            DataStoreConfig dataStoreConfig = (DataStoreConfig) entry.getValue();
+            repository.register(dataStoreId, dataStoreConfig.findDataStore(context));
+        }
+
+        return repository;
     }
 
-	/**
-	 * @return Returns the coverages.
-	 * 
-	 * @uml.property name="coverages"
-	 */
-	public Map getCoverages() {
-		return coverages;
-	}
+    /**
+     * @return Returns the coverages.
+     *
+     * @uml.property name="coverages"
+     */
+    public Map getCoverages() {
+        return coverages;
+    }
 
-	/**
-	 * @param coverages The coverages to set.
-	 * 
-	 * @uml.property name="coverages"
-	 */
-	public void setCoverages(Map coverages) {
-		this.coverages = coverages;
-	}
+    /**
+     * @param coverages The coverages to set.
+     *
+     * @uml.property name="coverages"
+     */
+    public void setCoverages(Map coverages) {
+        this.coverages = coverages;
+    }
 
-	/**
-	 * @param dataFormats The dataFormats to set.
-	 * 
-	 * @uml.property name="dataFormats"
-	 */
-	public void setDataFormats(Map dataFormats) {
-		this.dataFormats = dataFormats;
-	}
-
+    /**
+     * @param dataFormats The dataFormats to set.
+     *
+     * @uml.property name="dataFormats"
+     */
+    public void setDataFormats(Map dataFormats) {
+        this.dataFormats = dataFormats;
+    }
 }

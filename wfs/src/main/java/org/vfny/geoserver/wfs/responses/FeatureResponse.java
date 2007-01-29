@@ -4,17 +4,6 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.logging.Logger;
-
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
@@ -43,8 +32,19 @@ import org.vfny.geoserver.wfs.Query;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
 import org.vfny.geoserver.wfs.requests.FeatureWithLockRequest;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.logging.Logger;
 
-/** 
+
+/**
  * Handles a Get Feature request and creates a Get Feature response GML string.
  *
  * @author Chris Holmes, TOPP
@@ -53,19 +53,18 @@ import org.vfny.geoserver.wfs.requests.FeatureWithLockRequest;
  */
 public class FeatureResponse implements Response {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
     FeatureResponseDelegate delegate;
     String featureTypeName;
 
     /**
      * This is the request provided to the execute( Request ) method.
-     * 
+     *
      * <p>
      * We save it so we can access the handle provided by the user for error
      * reporting during the writeTo( OutputStream ) opperation.
      * </p>
-     * 
+     *
      * <p>
      * This value will be <code>null</code> until execute is called.
      * </p>
@@ -74,7 +73,7 @@ public class FeatureResponse implements Response {
 
     /**
      * This is the FeatureLock provided by execute( Request ) method.
-     * 
+     *
      * <p>
      * This will only be non null if RequestFeatureWithLock.
      * </p>
@@ -94,9 +93,9 @@ public class FeatureResponse implements Response {
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-    	return null;
+        return null;
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -114,12 +113,12 @@ public class FeatureResponse implements Response {
 
     /**
      * Jody here with one pass replacement for writeTo.
-     * 
+     *
      * <p>
      * This code is a discussion point, when everyone has had there input we
      * will try and set things up properly.
      * </p>
-     * 
+     *
      * <p>
      * I am providing a mirror of the existing desing: - execute gathers the
      * resultList - sets up the header
@@ -133,8 +132,7 @@ public class FeatureResponse implements Response {
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         if ((request == null) || (delegate == null)) {
-            throw new IllegalStateException(
-                "execute has not been called prior to writeTo");
+            throw new IllegalStateException("execute has not been called prior to writeTo");
         }
 
         delegate.encode(out);
@@ -142,7 +140,7 @@ public class FeatureResponse implements Response {
 
     /**
      * Executes FeatureRequest.
-     * 
+     *
      * <p>
      * Willing to execute a FetureRequest, or FeatureRequestWith Lock.
      * </p>
@@ -154,35 +152,33 @@ public class FeatureResponse implements Response {
     public void execute(Request req) throws ServiceException {
         execute((FeatureRequest) req);
     }
-    
-    
-    /** 
+
+    /**
      * use the SPI mechanism to get a FeatureResponseDelegate for the
      * specified output format.
-     * 
+     *
      * @param outputFormat
      * @return
      */
-    public static FeatureResponseDelegate getDelegate(String outputFormat) 
-               throws NoSuchElementException
-	{
-    	FeatureResponseDelegateProducerSpi spi;
-         Iterator spi_it = FactoryFinder.factories(FeatureResponseDelegateProducerSpi.class);
+    public static FeatureResponseDelegate getDelegate(String outputFormat)
+        throws NoSuchElementException {
+        FeatureResponseDelegateProducerSpi spi;
+        Iterator spi_it = FactoryFinder.factories(FeatureResponseDelegateProducerSpi.class);
 
-         while (spi_it.hasNext()) 
-         {
-             spi = (FeatureResponseDelegateProducerSpi) spi_it.next();
-             if (spi.canProduce(outputFormat))
-             {
-             	return spi.createFeatureDelegateProducer(outputFormat);
-             }             		
-         }
-         throw new NoSuchElementException();
-	}
+        while (spi_it.hasNext()) {
+            spi = (FeatureResponseDelegateProducerSpi) spi_it.next();
+
+            if (spi.canProduce(outputFormat)) {
+                return spi.createFeatureDelegateProducer(outputFormat);
+            }
+        }
+
+        throw new NoSuchElementException();
+    }
 
     /**
      * Performs a getFeatures, or getFeaturesWithLock (using gt2 locking ).
-     * 
+     *
      * <p>
      * The idea is to grab the FeatureResulsts during execute, and use them
      * during writeTo.
@@ -202,8 +198,7 @@ public class FeatureResponse implements Response {
      *       AllSameType function as  Describe does.
      */
     public void execute(FeatureRequest request) throws ServiceException {
-        LOGGER.finest("execute FeatureRequest response. Called request is: "
-            + request);
+        LOGGER.finest("execute FeatureRequest response. Called request is: " + request);
         this.request = request;
         this.featureTypeName = null;
 
@@ -266,16 +261,15 @@ public class FeatureResponse implements Response {
         int numberLocked;
 
         try {
-            for (Iterator it = request.getQueries().iterator();
-                    it.hasNext() && (maxFeatures > 0);) {
+            for (Iterator it = request.getQueries().iterator(); it.hasNext() && (maxFeatures > 0);) {
                 query = (Query) it.next();
-                
+
                 // the feature type name used in the content disposition response will match
                 // the first feature type
-                if(featureTypeName == null) {
+                if (featureTypeName == null) {
                     featureTypeName = query.getTypeName();
                 }
-                
+
                 meta = catalog.getFeatureTypeInfo(query.getTypeName());
                 namespace = meta.getDataStoreInfo().getNameSpace();
                 source = meta.getFeatureSource();
@@ -289,11 +283,9 @@ public class FeatureResponse implements Response {
                     String propName = (String) iter.next();
 
                     if (!attributeNames.contains(propName)) {
-                        String mesg = "Requested property: " + propName
-                            + " is " + "not available for "
-                            + query.getTypeName() + ".  "
-                            + "The possible propertyName values are: "
-                            + attributeNames;
+                        String mesg = "Requested property: " + propName + " is "
+                            + "not available for " + query.getTypeName() + ".  "
+                            + "The possible propertyName values are: " + attributeNames;
                         throw new WfsException(mesg);
                     }
                 }
@@ -306,11 +298,9 @@ public class FeatureResponse implements Response {
                         AttributeTypeInfo ati = (AttributeTypeInfo) ii.next();
 
                         //String attName = (String) ii.next();
-                        LOGGER.finer("checking to see if " + propNames
-                            + " contains" + ati);
+                        LOGGER.finer("checking to see if " + propNames + " contains" + ati);
 
-                        if (((ati.getMinOccurs() > 0)
-                                && (ati.getMaxOccurs() != 0))
+                        if (((ati.getMinOccurs() > 0) && (ati.getMaxOccurs() != 0))
                                 || propNames.contains(ati.getName())) {
                             tmp.add(ati.getName());
                         }
@@ -323,27 +313,30 @@ public class FeatureResponse implements Response {
                 // Run through features and record FeatureIDs
                 // Lock FeatureIDs as required
                 //}
-                LOGGER.fine("Query is " + query + "\n To gt2: "
-                    + query.toDataQuery(maxFeatures));
+                LOGGER.fine("Query is " + query + "\n To gt2: " + query.toDataQuery(maxFeatures));
 
                 //DJB: note if maxFeatures gets to 0 the while loop above takes care of this! (this is a subtle situation)
-                
-                FeatureCollection features = source.getFeatures(query.toDataQuery(
-                            maxFeatures));
+                FeatureCollection features = source.getFeatures(query.toDataQuery(maxFeatures));
+
                 if (it.hasNext()) { //DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
-                        int count = features.size();
-                        // sometimes a service may return -1 if the count is deemed
-                        // to be too expensive, in this case we do a brute force counte
-                        // by reading features one by one (and counting)
-                        if(count < 0) count = bruteForceCount(features.features());
-                	maxFeatures -= count;
+
+                    int count = features.size();
+
+                    // sometimes a service may return -1 if the count is deemed
+                    // to be too expensive, in this case we do a brute force counte
+                    // by reading features one by one (and counting)
+                    if (count < 0) {
+                        count = bruteForceCount(features.features());
+                    }
+
+                    maxFeatures -= count;
                 }
 
                 //GR: I don't know if the featuresults should be added here for later
                 //encoding if it was a lock request. may be after ensuring the lock
                 //succeed?
                 results.addFeatures(meta, features);
-                
+
                 if (featureLock != null) {
                     // geotools2 locking code
                     if (source instanceof FeatureLocking) {
@@ -366,21 +359,18 @@ public class FeatureResponse implements Response {
                                 continue; // locking is not supported!
                             } else {
                                 fidFilter = filterFactory.createFidFilter(fid);
-                                numberLocked = ((FeatureLocking) source)
-                                    .lockFeatures(fidFilter);
+                                numberLocked = ((FeatureLocking) source).lockFeatures(fidFilter);
 
                                 if (numberLocked == 1) {
                                     LOGGER.finest("Lock " + fid + " (authID:"
                                         + featureLock.getAuthorization() + ")");
                                     lockedFids.add(fid);
                                 } else if (numberLocked == 0) {
-                                    LOGGER.finest("Lock " + fid
-                                        + " conflict (authID:"
+                                    LOGGER.finest("Lock " + fid + " conflict (authID:"
                                         + featureLock.getAuthorization() + ")");
                                     lockFailedFids.add(fid);
                                 } else {
-                                    LOGGER.warning("Lock " + numberLocked + " "
-                                        + fid + " (authID:"
+                                    LOGGER.warning("Lock " + numberLocked + " " + fid + " (authID:"
                                         + featureLock.getAuthorization()
                                         + ") duplicated FeatureID!");
                                     lockedFids.add(fid);
@@ -398,8 +388,8 @@ public class FeatureResponse implements Response {
 
                         try {
                             t.addAuthorization(featureLock.getAuthorization());
-                            source.getDataStore().getLockingManager().refresh(featureLock
-                                .getAuthorization(), t);
+                            source.getDataStore().getLockingManager()
+                                  .refresh(featureLock.getAuthorization(), t);
                         } finally {
                             t.commit();
                         }
@@ -415,18 +405,14 @@ public class FeatureResponse implements Response {
                 // I think we need to release and fail when lockAll fails
                 //
                 // abort will take care of releasing the locks
-                throw new WfsException("Could not aquire locks for:"
-                    + lockFailedFids);
+                throw new WfsException("Could not aquire locks for:" + lockFailedFids);
             }
         } catch (IOException e) {
-            throw new ServiceException(e, "problem with FeatureResults",
-                request.getHandle());
+            throw new ServiceException(e, "problem with FeatureResults", request.getHandle());
         } catch (NoSuchElementException e) {
-            throw new ServiceException(e, "problem with FeatureResults",
-                request.getHandle());
+            throw new ServiceException(e, "problem with FeatureResults", request.getHandle());
         } catch (IllegalAttributeException e) {
-            throw new ServiceException(e, "problem with FeatureResults",
-                request.getHandle());
+            throw new ServiceException(e, "problem with FeatureResults", request.getHandle());
         }
     }
 
@@ -434,16 +420,19 @@ public class FeatureResponse implements Response {
      * Counts features by scrolling thru the feature reader
      * @param reader
      * @return
-     * @throws IllegalAttributeException 
-     * @throws IOException 
-     * @throws NoSuchElementException 
+     * @throws IllegalAttributeException
+     * @throws IOException
+     * @throws NoSuchElementException
      */
-    private int bruteForceCount(FeatureIterator reader) throws NoSuchElementException, IOException, IllegalAttributeException {
+    private int bruteForceCount(FeatureIterator reader)
+        throws NoSuchElementException, IOException, IllegalAttributeException {
         int count = 0;
-        while(reader.hasNext()) {
+
+        while (reader.hasNext()) {
             reader.next();
             count++;
         }
+
         return count;
     }
 
@@ -476,8 +465,8 @@ public class FeatureResponse implements Response {
      *
      * @throws WfsException For any problems with the DataSource.
      */
-    private static FeatureCollection getFeatures(Query query,
-        FeatureTypeInfo meta, int maxFeatures) throws WfsException {
+    private static FeatureCollection getFeatures(Query query, FeatureTypeInfo meta, int maxFeatures)
+        throws WfsException {
         LOGGER.finest("about to get query: " + query);
 
         List propertyNames = null;
@@ -494,8 +483,7 @@ public class FeatureResponse implements Response {
 
             if (!query.allRequested()) {
                 // was getSchema()
-                AttributeType[] mandatoryProps = meta.getFeatureType()
-                                                     .getAttributeTypes();
+                AttributeType[] mandatoryProps = meta.getFeatureType().getAttributeTypes();
 
                 for (int i = 0; i < mandatoryProps.length; i++) {
                     query.addPropertyName(mandatoryProps[i].getName());
@@ -506,8 +494,7 @@ public class FeatureResponse implements Response {
 
             features = data.getFeatures(dsQuery);
         } catch (IOException e) {
-            throw new WfsException(e, "While getting features from datasource",
-                getLocator(query));
+            throw new WfsException(e, "While getting features from datasource", getLocator(query));
         }
 
         LOGGER.finest("successfully retrieved collection");
@@ -536,9 +523,11 @@ public class FeatureResponse implements Response {
         catalog.lockRelease(featureLock.getAuthorization());
     }
 
-	public String getContentDisposition() {
-            if(featureTypeName != null && featureTypeName.indexOf(':') != -1)
-                featureTypeName = featureTypeName.substring(featureTypeName.indexOf(':') + 1);
-	    return delegate.getContentDisposition(featureTypeName);
-	}
+    public String getContentDisposition() {
+        if ((featureTypeName != null) && (featureTypeName.indexOf(':') != -1)) {
+            featureTypeName = featureTypeName.substring(featureTypeName.indexOf(':') + 1);
+        }
+
+        return delegate.getContentDisposition(featureTypeName);
+    }
 }

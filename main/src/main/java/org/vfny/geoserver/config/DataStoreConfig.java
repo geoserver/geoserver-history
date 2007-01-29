@@ -4,26 +4,24 @@
  */
 package org.vfny.geoserver.config;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.util.DataStoreUtils;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.ServletContext;
 
 
 /**
  * DataStoreInfo purpose.
- * 
+ *
  * <p>
  * Used to describe a datastore, typically one specified in the catalog.xml
  * config file.
  * </p>
- * 
+ *
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
@@ -53,7 +51,7 @@ public class DataStoreConfig {
 
     /**
      * Create a new DataStoreConfig from a dataStoreId and factoryDescription
-     * 
+     *
      * <p>
      * Creates a DataStoreInfo to represent an instance with default data.
      * </p>
@@ -80,7 +78,7 @@ public class DataStoreConfig {
 
     /**
      * DataStoreInfo constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the DataStoreInfoDTO provided. All the datastructures
      * are cloned.
@@ -115,7 +113,7 @@ public class DataStoreConfig {
 
     /**
      * Implement loadDTO.
-     * 
+     *
      * <p>
      * Populates the data fields with the DataStoreInfoDTO provided.
      * </p>
@@ -128,8 +126,7 @@ public class DataStoreConfig {
      */
     public void update(DataStoreInfoDTO ds) {
         if (ds == null) {
-            throw new NullPointerException(
-                "DataStoreInfo Data Transfer Object required");
+            throw new NullPointerException("DataStoreInfo Data Transfer Object required");
         }
 
         id = ds.getId();
@@ -146,7 +143,7 @@ public class DataStoreConfig {
 
     /**
      * Implement toDTO.
-     * 
+     *
      * <p>
      * Create a DataStoreInfoDTO from the current config object.
      * </p>
@@ -173,7 +170,7 @@ public class DataStoreConfig {
 
     /**
      * getAbstract purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -186,7 +183,7 @@ public class DataStoreConfig {
 
     /**
      * getConnectionParams purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -199,7 +196,7 @@ public class DataStoreConfig {
 
     /**
      * isEnabled purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -212,9 +209,9 @@ public class DataStoreConfig {
 
     /**
      * This is the DataStore ID
-     * 
+     *
      * <p>
-     * 
+     *
      * </p>
      *
      * @return
@@ -225,7 +222,7 @@ public class DataStoreConfig {
 
     /**
      * getNameSpace purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -238,7 +235,7 @@ public class DataStoreConfig {
 
     /**
      * getTitle purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -251,7 +248,7 @@ public class DataStoreConfig {
 
     /**
      * setAbstract purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -266,7 +263,7 @@ public class DataStoreConfig {
 
     /**
      * setConnectionParams purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -279,7 +276,7 @@ public class DataStoreConfig {
 
     /**
      * setEnabled purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -292,7 +289,7 @@ public class DataStoreConfig {
 
     /**
      * setNameSpace purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -307,7 +304,7 @@ public class DataStoreConfig {
 
     /**
      * setTitle purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -330,7 +327,7 @@ public class DataStoreConfig {
      * @throws IOException If DataStore could not be aquired
      */
     public DataStore findDataStore(ServletContext sc) throws IOException {
-        return DataStoreUtils.acquireDataStore(connectionParams,sc);
+        return DataStoreUtils.acquireDataStore(connectionParams, sc);
     }
 
     /**

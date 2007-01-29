@@ -1,37 +1,38 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_0_0;
-
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.QName;
 
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WFSFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.filter.Filter;
 import org.opengis.filter.expression.PropertyName;
 import org.xml.sax.helpers.NamespaceSupport;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:QueryType.
  *
  * <p>
- *	<pre>
- *	 <code>
- *  &lt;xsd:complexType name="QueryType"&gt;       
- *  		&lt;xsd:annotation&gt;
- *              &lt;xsd:documentation&gt;           
+ *        <pre>
+ *         <code>
+ *  &lt;xsd:complexType name="QueryType"&gt;
+ *                  &lt;xsd:annotation&gt;
+ *              &lt;xsd:documentation&gt;
  *              The Query element is of type
- *              QueryType.          
+ *              QueryType.
  *              &lt;/xsd:documentation&gt;
- *      &lt;/xsd:annotation&gt;      
- *      &lt;xsd:sequence&gt;        
- *      		&lt;xsd:element
+ *      &lt;/xsd:annotation&gt;
+ *      &lt;xsd:sequence&gt;
+ *                      &lt;xsd:element
  *              maxOccurs="unbounded" minOccurs="0" ref="ogc:PropertyName"&gt;
  *                  &lt;xsd:annotation&gt;              &lt;xsd:documentation&gt;
  *                      The PropertyName element is used to specify one or
@@ -82,87 +83,86 @@ import org.xml.sax.helpers.NamespaceSupport;
  *                  &apos;i&apos;, means that the ith version should be
  *                  retrieve if it               exists or the most recent
  *                  version otherwise.            &lt;/xsd:documentation&gt;
- *          &lt;/xsd:annotation&gt;      &lt;/xsd:attribute&gt;    &lt;/xsd:complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *          &lt;/xsd:annotation&gt;      &lt;/xsd:attribute&gt;    &lt;/xsd:complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class QueryTypeBinding extends AbstractComplexBinding {
+    /**
+     * Wfs Factory
+     */
+    WFSFactory wfsfactory;
 
-	/**
-	 * Wfs Factory
-	 */
-	WFSFactory wfsfactory;
-	/**
-	 * namespace mappings
-	 */
-	NamespaceSupport namespaceSupport;
-	
-	public QueryTypeBinding( WFSFactory wfsfactory, NamespaceSupport namespaceSupport ) {
-		this.wfsfactory = wfsfactory;
-		this.namespaceSupport = namespaceSupport;
-	}
+    /**
+     * namespace mappings
+     */
+    NamespaceSupport namespaceSupport;
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return WFS.QUERYTYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return QueryType.class;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		QueryType queryType = wfsfactory.createQueryType();
-		
-		//<xsd:element maxOccurs="unbounded" minOccurs="0" ref="ogc:PropertyName">
-		//JD:difference in spec here, moved from ogc:PropertyName to string
-		List propertyNames = node.getChildValues( PropertyName.class );
-		for ( Iterator p = propertyNames.iterator(); p.hasNext(); ) {
-			PropertyName propertyName = (PropertyName) p.next();
-			queryType.getPropertyName().add( propertyName.getPropertyName() );
-		}
-		
-		//<xsd:element maxOccurs="1" minOccurs="0" ref="ogc:Filter">
-		Filter filter = (Filter) node.getChildValue( Filter.class );
-		if ( filter == null ) {
-			filter = (Filter) org.geotools.filter.Filter.NONE;
-		}
-		queryType.setFilter( filter );
-		
-		//<xsd:attribute name="handle" type="xsd:string" use="optional"/>
-		queryType.setHandle( (String) node.getAttributeValue( "handle" ) );
-		
-		//<xsd:attribute name="typeName" type="xsd:QName" use="required"/>
-		List typeNameList = new ArrayList();
-		typeNameList.add( node.getAttributeValue( "typeName" ) );
-        queryType.setTypeName( typeNameList );
-		
-		//<xsd:attribute name="featureVersion" type="xsd:string" use="optional">  
-		queryType.setFeatureVersion( 
-			(String) node.getAttributeValue( "featureVersion" )
-		);
-		
-		return queryType;
-	}
+    public QueryTypeBinding(WFSFactory wfsfactory, NamespaceSupport namespaceSupport) {
+        this.wfsfactory = wfsfactory;
+        this.namespaceSupport = namespaceSupport;
+    }
 
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return WFS.QUERYTYPE;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return QueryType.class;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        QueryType queryType = wfsfactory.createQueryType();
+
+        //<xsd:element maxOccurs="unbounded" minOccurs="0" ref="ogc:PropertyName">
+        //JD:difference in spec here, moved from ogc:PropertyName to string
+        List propertyNames = node.getChildValues(PropertyName.class);
+
+        for (Iterator p = propertyNames.iterator(); p.hasNext();) {
+            PropertyName propertyName = (PropertyName) p.next();
+            queryType.getPropertyName().add(propertyName.getPropertyName());
+        }
+
+        //<xsd:element maxOccurs="1" minOccurs="0" ref="ogc:Filter">
+        Filter filter = (Filter) node.getChildValue(Filter.class);
+
+        if (filter == null) {
+            filter = (Filter) org.geotools.filter.Filter.NONE;
+        }
+
+        queryType.setFilter(filter);
+
+        //<xsd:attribute name="handle" type="xsd:string" use="optional"/>
+        queryType.setHandle((String) node.getAttributeValue("handle"));
+
+        //<xsd:attribute name="typeName" type="xsd:QName" use="required"/>
+        List typeNameList = new ArrayList();
+        typeNameList.add(node.getAttributeValue("typeName"));
+        queryType.setTypeName(typeNameList);
+
+        //<xsd:attribute name="featureVersion" type="xsd:string" use="optional">  
+        queryType.setFeatureVersion((String) node.getAttributeValue("featureVersion"));
+
+        return queryType;
+    }
 }

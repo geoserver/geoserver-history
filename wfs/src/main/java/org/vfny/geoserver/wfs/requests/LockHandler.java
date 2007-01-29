@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.geotools.filter.FilterHandler;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.wfs.servlets.WFService;
@@ -15,11 +11,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
  * Uses SAX to extract a LockRequest from an incoming LockFeature
- * 
+ *
  * <p>
  * Note that this Handler extension ignores Filters completely and must be
  * chained as a parent to the PredicateFilter method in order to recognize
@@ -30,11 +28,9 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * @author Chris Holmes, TOPP
  * @version $Id: LockHandler.java,v 1.7 2004/02/13 19:30:39 dmzwiers Exp $
  */
-public class LockHandler extends XMLFilterImpl implements ContentHandler,
-    FilterHandler {
+public class LockHandler extends XMLFilterImpl implements ContentHandler, FilterHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /** Internal lock request for construction. */
     private LockRequest request = null;
@@ -72,7 +68,8 @@ public class LockHandler extends XMLFilterImpl implements ContentHandler,
      * @return The lock request found by this handler.
      */
     public LockRequest getRequest(HttpServletRequest req) {
-    	request.setHttpServletRequest(req);
+        request.setHttpServletRequest(req);
+
         return request;
     }
 
@@ -90,8 +87,8 @@ public class LockHandler extends XMLFilterImpl implements ContentHandler,
      *
      * @throws SAXException When the XML is not well formed.
      */
-    public void startElement(String namespaceURI, String localName,
-        String rawName, Attributes atts) throws SAXException {
+    public void startElement(String namespaceURI, String localName, String rawName, Attributes atts)
+        throws SAXException {
         LOGGER.finest("at start element: " + localName);
 
         // at start of element, set inside flag to whatever tag we are inside
@@ -124,8 +121,7 @@ public class LockHandler extends XMLFilterImpl implements ContentHandler,
                     try {
                         expiry = Integer.parseInt(atts.getValue(i));
                     } catch (NumberFormatException e) {
-                        throw new SAXException("expiry should parse to an "
-                            + "integer", e);
+                        throw new SAXException("expiry should parse to an " + "integer", e);
                     }
 
                     request.setExpiry(expiry);
@@ -161,8 +157,7 @@ public class LockHandler extends XMLFilterImpl implements ContentHandler,
         // set insideLock flag as we leave the query and add the query to the
         //  return list
         if (localName.equals("Lock")) {
-            LOGGER.finest("adding lock: " + curTypeName + ", " + curHandle
-                + ", " + curFilter);
+            LOGGER.finest("adding lock: " + curTypeName + ", " + curHandle + ", " + curFilter);
             insideLock = false;
             request.addLock(curTypeName, curFilter, curHandle);
             curTypeName = null;

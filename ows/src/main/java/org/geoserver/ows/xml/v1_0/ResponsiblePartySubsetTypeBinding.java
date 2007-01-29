@@ -1,20 +1,22 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.ows.xml.v1_0;
 
-
-import javax.xml.namespace.QName;
-
 import net.opengis.ows.v1_0_0.OWSFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/ows:ResponsiblePartySubsetType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;complexType name="ResponsiblePartySubsetType"&gt;
  *      &lt;annotation&gt;
  *          &lt;documentation&gt;Identification of, and means of communication with, person responsible for the server. &lt;/documentation&gt;
@@ -26,49 +28,47 @@ import org.geotools.xml.Node;
  *          &lt;element minOccurs="0" ref="ows:ContactInfo"/&gt;
  *          &lt;element minOccurs="0" ref="ows:Role"/&gt;
  *      &lt;/sequence&gt;
- *  &lt;/complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class ResponsiblePartySubsetTypeBinding extends AbstractComplexBinding {
+    OWSFactory owsfactory;
 
-	OWSFactory owsfactory;		
-	public ResponsiblePartySubsetTypeBinding( OWSFactory owsfactory ) {
-		this.owsfactory = owsfactory;
-	}
+    public ResponsiblePartySubsetTypeBinding(OWSFactory owsfactory) {
+        this.owsfactory = owsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return OWS.RESPONSIBLEPARTYSUBSETTYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return null;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		//TODO: implement
-		return null;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return OWS.RESPONSIBLEPARTYSUBSETTYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return null;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        //TODO: implement
+        return null;
+    }
 }

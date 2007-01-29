@@ -1,19 +1,21 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.ows.xml.v1_0;
 
-
-import javax.xml.namespace.QName;
-
 import net.opengis.ows.v1_0_0.OWSFactory;
-
 import org.geotools.xml.AbstractSimpleBinding;
 import org.geotools.xml.InstanceComponent;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/ows:PositionType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;simpleType name="PositionType"&gt;
  *      &lt;annotation&gt;
  *          &lt;documentation&gt;Position instances hold the coordinates of a position in a coordinate reference system (CRS) referenced by the related "crs" attribute or elsewhere. For an angular coordinate axis that is physically continuous for multiple revolutions, but whose recorded values can be discontinuous, special conditions apply when the bounding box is continuous across the value discontinuity:
@@ -22,49 +24,47 @@ import org.geotools.xml.InstanceComponent;
  *          &lt;documentation&gt;This type is adapted from DirectPositionType and doubleList of GML 3.1. The adaptations include omission of all the attributes, since the needed information is included in the BoundingBoxType. &lt;/documentation&gt;
  *      &lt;/annotation&gt;
  *      &lt;list itemType="double"/&gt;
- *  &lt;/simpleType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/simpleType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class PositionTypeBinding extends AbstractSimpleBinding {
+    OWSFactory owsfactory;
 
-	OWSFactory owsfactory;		
-	public PositionTypeBinding( OWSFactory owsfactory ) {
-		this.owsfactory = owsfactory;
-	}
+    public PositionTypeBinding(OWSFactory owsfactory) {
+        this.owsfactory = owsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return OWS.POSITIONTYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return null;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(InstanceComponent instance, Object value) 
-		throws Exception {
-		
-		//TODO: implement
-		return null;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return OWS.POSITIONTYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return null;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(InstanceComponent instance, Object value)
+        throws Exception {
+        //TODO: implement
+        return null;
+    }
 }

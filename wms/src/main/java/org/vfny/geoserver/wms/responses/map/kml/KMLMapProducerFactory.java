@@ -4,13 +4,12 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -28,30 +27,30 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
      * character at server side.
      */
     private static final String PRODUCE_TYPE = "kml";
-    
+
     /** Official KML mime type
      * @TODO add KMZ support
      */
     public static final String MIME_TYPE = "application/vnd.google-earth.kml+xml";
-    
+
     /** Set of supported mime types for the producers made by this Factory
      */
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
-    
+
     /**
      * Creates a new KMLMapProducerFactory object.
      */
     public KMLMapProducerFactory() {
         super();
     }
-    
+
     /**
      * Human readable description of output format.
      */
     public String getName() {
         return "Keyhole markup language producer";
     }
-    
+
     /**
      * Discover what output formats are supported by the producers made by this factory.
      *
@@ -60,7 +59,7 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
     public Set getSupportedFormats() {
         return SUPPORTED_FORMATS;
     }
-    
+
     /**
      * Reports on the availability of this factory.  As no external libraries are
      * required for KML this should always be true.
@@ -70,7 +69,7 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
     public boolean isAvailable() {
         return true;
     }
-    
+
     /**
      * evaluates if this Map producer can generate the map format specified by
      * <code>mapFormat</code>
@@ -79,7 +78,7 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
      * In this case, true if <code>mapFormat</code> starts with "kml", as
      * both <code>"kml"</code> and <code>"kml+xml"</code> are
      * commonly passed.  Also true if <code>application/vnd.google-earth.kml</code>
-     * is passed, since that is as close as we can get to the value advertised in the 
+     * is passed, since that is as close as we can get to the value advertised in the
      * capabilities document taking into account the common mistake of not escaping '+'.
      * We must do this as the most way to request an output format is to use the name
      * in the caps document.
@@ -93,10 +92,11 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
     public boolean canProduce(String mapFormat) {
         //MIME TYPE is spec compliant, as its what we advertise in the caps
         //document.  Keeping the startsWith kml, so shortcuts can be used. -ch
-        return (mapFormat != null) && (mapFormat.startsWith(PRODUCE_TYPE)
-                                    || mapFormat.startsWith("application/vnd.google-earth.kml"));
+        return (mapFormat != null)
+        && (mapFormat.startsWith(PRODUCE_TYPE)
+        || mapFormat.startsWith("application/vnd.google-earth.kml"));
     }
-    
+
     /**
      * Create an actual instance of a KMLMapProducer.
      *
@@ -107,11 +107,11 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
      *
      * @throws IllegalArgumentException DOCUMENT ME!
      */
-    public GetMapProducer createMapProducer(String mapFormat, WMS wms )
-    throws IllegalArgumentException {
+    public GetMapProducer createMapProducer(String mapFormat, WMS wms)
+        throws IllegalArgumentException {
         return new KMLMapProducer();
     }
-    
+
     /* (non-Javadoc)
      * @see org.geotools.factory.Factory#getImplementationHints()
      * This just returns java.util.Collections.EMPTY_MAP
@@ -119,5 +119,4 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
     public Map getImplementationHints() {
         return java.util.Collections.EMPTY_MAP;
     }
-    
 }

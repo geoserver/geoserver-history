@@ -4,6 +4,12 @@
  */
 package org.vfny.geoserver.global.dto;
 
+import com.vividsolutions.jts.geom.Envelope;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
+import org.vfny.geoserver.global.xml.NameSpaceElement;
+import org.vfny.geoserver.global.xml.NameSpaceTranslator;
+import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,24 +19,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
-import org.vfny.geoserver.global.xml.NameSpaceElement;
-import org.vfny.geoserver.global.xml.NameSpaceTranslator;
-import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
-
-import com.vividsolutions.jts.geom.Envelope;
-
 
 /**
  * Generate Data Transfer Objects from "real" objects in the system.
- * 
+ *
  * <p>
  * This class is used to isolate the DTO from the details of generating them.
  * This allows DTO objects to be safely used as a wire protocol with out
  * unrequired dependencies on such things as AttributeType and FeatureType.
  * </p>
- * 
+ *
  * <p>
  * This class may choose to opperate as a facade on the services of global.xml?
  * </p>
@@ -42,7 +40,7 @@ import com.vividsolutions.jts.geom.Envelope;
 public class DataTransferObjectFactory {
     /**
      * Construct DTO based on provided AttributeType.
-     * 
+     *
      * <p>
      * GMLUtils is used to provide the mapping from
      * attributeType.getName/attributeType.getType() to an XML type/fragement.
@@ -52,27 +50,36 @@ public class DataTransferObjectFactory {
      *
      * @return Data Transfer Object for provided attributeType
      */
-    public static AttributeTypeInfoDTO create(String schemaBase, AttributeType attributeType) {            
+    public static AttributeTypeInfoDTO create(String schemaBase, AttributeType attributeType) {
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
-        dto.setName( attributeType.getName() );
-        dto.setMinOccurs( isManditory(schemaBase, attributeType.getName() ) ? 1: 0 );
-        dto.setMaxOccurs( 1 );
-        dto.setNillable( attributeType.isNillable() );
-        NameSpaceTranslator xs = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");        
-        NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
+        dto.setName(attributeType.getName());
+        dto.setMinOccurs(isManditory(schemaBase, attributeType.getName()) ? 1 : 0);
+        dto.setMaxOccurs(1);
+        dto.setNillable(attributeType.isNillable());
+
+        NameSpaceTranslator xs = NameSpaceTranslatorFactory.getInstance()
+                                                           .getNameSpaceTranslator("xs");
+        NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance()
+                                                            .getNameSpaceTranslator("gml");
         NameSpaceElement element;
-        
-        element = xs.getElement( attributeType.getType(), attributeType.getName() );                
-        if(element == null) element = gml.getElement( attributeType.getType(), attributeType.getName() );
-        if(element == null) element = xs.getElement( "string" );
-        
-//		element = xs.getElement( attributeType.getName() );                
-//		if(element == null) element = gml.getElement( attributeType.getName() );
-//		if(element == null) element = xs.getElement( "string" );
-                
+
+        element = xs.getElement(attributeType.getType(), attributeType.getName());
+
+        if (element == null) {
+            element = gml.getElement(attributeType.getType(), attributeType.getName());
+        }
+
+        if (element == null) {
+            element = xs.getElement("string");
+        }
+
+        //		element = xs.getElement( attributeType.getName() );                
+        //		if(element == null) element = gml.getElement( attributeType.getName() );
+        //		if(element == null) element = xs.getElement( "string" );
         dto.setComplex(false);
-        dto.setType( element.getTypeRefName() );
-        return dto; 
+        dto.setType(element.getTypeRefName());
+
+        return dto;
     }
 
     /**
@@ -87,30 +94,40 @@ public class DataTransferObjectFactory {
      * </p>
      * @param schemaBase used to determine manditory attributes
      * @param attributeName Name of attribute being described
-     * @return DataTransferObject encapsulating attribute information. 
+     * @return DataTransferObject encapsulating attribute information.
      */
-    public static AttributeTypeInfoDTO create( String schemaBase, String attributeName ){
+    public static AttributeTypeInfoDTO create(String schemaBase, String attributeName) {
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
-        dto.setName( attributeName );
-        dto.setMinOccurs( isManditory(schemaBase, attributeName ) ? 1: 0 );
-        dto.setMaxOccurs( 1 );
-        dto.setNillable( true ); // nillable by default?
-        
-        NameSpaceTranslator xs = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");        
-        NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
+        dto.setName(attributeName);
+        dto.setMinOccurs(isManditory(schemaBase, attributeName) ? 1 : 0);
+        dto.setMaxOccurs(1);
+        dto.setNillable(true); // nillable by default?
+
+        NameSpaceTranslator xs = NameSpaceTranslatorFactory.getInstance()
+                                                           .getNameSpaceTranslator("xs");
+        NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance()
+                                                            .getNameSpaceTranslator("gml");
         NameSpaceElement element;
-        
-        element = xs.getElement( attributeName );                
-        if(element == null) element = gml.getElement( attributeName );
-        if(element == null) element = xs.getElement( "string" );
-                
+
+        element = xs.getElement(attributeName);
+
+        if (element == null) {
+            element = gml.getElement(attributeName);
+        }
+
+        if (element == null) {
+            element = xs.getElement("string");
+        }
+
         dto.setComplex(false);
-        dto.setType( element.getTypeRefName() );
-        return dto;        
+        dto.setType(element.getTypeRefName());
+
+        return dto;
     }
+
     /**
      * Construct DTO based on provided schema.
-     * 
+     *
      * <p>
      * GMLUtils is used to provide the mapping   to an XML type/fragement for
      * each attribute
@@ -121,8 +138,7 @@ public class DataTransferObjectFactory {
      *
      * @return Data Transfer Object for provided schema
      */
-    public static FeatureTypeInfoDTO create(String dataStoreId,
-        FeatureType schema) {               
+    public static FeatureTypeInfoDTO create(String dataStoreId, FeatureType schema) {
         FeatureTypeInfoDTO dto = new FeatureTypeInfoDTO();
         dto.setAbstract(null);
         dto.setDataStoreId(dataStoreId);
@@ -135,20 +151,22 @@ public class DataTransferObjectFactory {
         dto.setNumDecimals(8);
         dto.setSchemaAttributes(generateAttributes(schema));
 
-        NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
-        String schemaBase = gml.getElement("AbstractFeatureType").getQualifiedTypeDefName();                
-        dto.setSchemaBase( schemaBase );
-        
-        dto.setSchemaName( dataStoreId.toUpperCase() + "_"
-            + schema.getTypeName().toUpperCase() + "_TYPE");
+        NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance()
+                                                            .getNameSpaceTranslator("gml");
+        String schemaBase = gml.getElement("AbstractFeatureType").getQualifiedTypeDefName();
+        dto.setSchemaBase(schemaBase);
+
+        dto.setSchemaName(dataStoreId.toUpperCase() + "_" + schema.getTypeName().toUpperCase()
+            + "_TYPE");
         dto.setSRS(schema.getDefaultGeometry().getGeometryFactory().getSRID());
         dto.setTitle(schema.getNamespace() + " " + schema.getTypeName());
+
         return dto;
     }
 
     /**
      * List of attributes DTO information gernated from schema.
-     * 
+     *
      * @param schema
      * @return
      */
@@ -157,10 +175,12 @@ public class DataTransferObjectFactory {
         List list = new ArrayList(attributes.length);
 
         for (int i = 0; i < attributes.length; i++) {
-            list.add(create("AbstractFeatureType",attributes[i]));
+            list.add(create("AbstractFeatureType", attributes[i]));
         }
+
         return list;
     }
+
     /**
      * List of attribtue DTO information generated from schemaBase.
      * <p>
@@ -178,29 +198,35 @@ public class DataTransferObjectFactory {
      * @return List of AttributeTypeInfoDTO representative of schemaBase required
      *         Attributes
      */
-    public static List generateRequiredAttributes( String schemaBase ){
-        String attributeNames[] = getRequiredBaseAttributes( schemaBase );
-        
+    public static List generateRequiredAttributes(String schemaBase) {
+        String[] attributeNames = getRequiredBaseAttributes(schemaBase);
+
         List list = new ArrayList(attributeNames.length);
+
         for (int i = 0; i < attributeNames.length; i++) {
-            list.add(create(schemaBase,attributeNames[i]));
+            list.add(create(schemaBase, attributeNames[i]));
         }
-        return list;    	
+
+        return list;
     }
+
     /**
      * Test is attribute is a required attribtue of schemaBase.
-     * 
+     *
      * @return <code>True</code> if attribute is required for schemaBase
-     */ 
-    public static boolean isManditory( String schemaBase, String attribute ){
-        String required[] = getRequiredBaseAttributes( schemaBase );
-        for( int i=0; i<required.length; i++){
-            if( attribute.equals( required[i]) ){
+     */
+    public static boolean isManditory(String schemaBase, String attribute) {
+        String[] required = getRequiredBaseAttributes(schemaBase);
+
+        for (int i = 0; i < required.length; i++) {
+            if (attribute.equals(required[i])) {
                 return true;
             }
         }
+
         return false;
     }
+
     /**
      * Required Attributes for schemaBase.
      * <p>
@@ -210,17 +236,19 @@ public class DataTransferObjectFactory {
      * @param schemaBase
      * @return
      */
-    public static String[] getRequiredBaseAttributes(String schemaBase){
-        if( schemaBaseMap.containsKey( schemaBase ) ){
-            return (String[]) schemaBaseMap.get( schemaBase );
+    public static String[] getRequiredBaseAttributes(String schemaBase) {
+        if (schemaBaseMap.containsKey(schemaBase)) {
+            return (String[]) schemaBaseMap.get(schemaBase);
         }
-        return new String[] {};
+
+        return new String[] {  };
     }
+
     public static Map schemaBaseMap = new HashMap();
+
     static {
-        schemaBaseMap.put("gml:AbstractFeatureType",
-			  new String[] {});//"description","name","boundedBy"} );
-        /*schemaBaseMap.put("AbstractFeatureCollectionBaseType",
+        schemaBaseMap.put("gml:AbstractFeatureType", new String[] {  }); //"description","name","boundedBy"} );
+                                                                         /*schemaBaseMap.put("AbstractFeatureCollectionBaseType",
             new String[] {"description","name","boundedBy"} );
         schemaBaseMap.put("GeometryPropertyType",
             new String[] {"geometry"} );
@@ -242,10 +270,9 @@ public class DataTransferObjectFactory {
             new String[] {"multiPolygonString"} );
         schemaBaseMap.put("MultiGeometryPropertyType",
             new String[] {"multiGeometry"} );
-	    schemaBaseMap.put("NullType", new String[] {} );*/
+            schemaBaseMap.put("NullType", new String[] {} );*/
     }
 
-    
     /**
      * Mappings for name and type, or null if not found.
      * <p>
@@ -289,73 +316,89 @@ public class DataTransferObjectFactory {
      * @param type attribtue type
      * @return List of NameSpaceElements is returned in the order of most specific to least specific.
      */
-    public static List getElements(String name, Class type){
-    	NameSpaceTranslator xs = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("xs");        
-    	NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance().getNameSpaceTranslator("gml");
-    	List result = new LinkedList();
-    	
-    	if(name==null || name == "")
-    		throw new NullPointerException("Element name must be defined.");
-    	if(type==null)
-    		throw new NullPointerException("Element type must be defined.");
-    	
-    	Set s = xs.getAssociatedTypes(type);
-    	s.addAll(xs.getAssociatedTypes(name)); 
-    	s.addAll(gml.getAssociatedTypes(type));
-    	s.addAll(gml.getAssociatedTypes(name));
-    	Iterator i = s.iterator();
-    	while(i.hasNext()){
-        	NameSpaceElement element = (NameSpaceElement)i.next();
-        	if(name.equals(element.getTypeDefName()))
-        		if(!result.contains(element)){
-        			result.add(element);
-        		}
-        	else
-            if(name.equals(element.getTypeRefName()))
-        		if(!result.contains(element)){
-        			result.add(element);
-        		}
-        	else
-            if(name.equals(element.getQualifiedTypeDefName()))
-        		if(!result.contains(element)){
-        			result.add(element);
-        		}
-        	else
-            if(name.equals(element.getQualifiedTypeRefName()))
-        		if(!result.contains(element)){
-        			result.add(element);
-        		}
-    	}
-    	
-    	if(!Object.class.equals(type)){
-    		Class cls = type;
-    		while(!Object.class.equals(cls)){
-    			i = s.iterator();
-    			while(i.hasNext()){
-    				NameSpaceElement element = (NameSpaceElement)i.next();
-    				// 	add the rest afterwards
-    				if(element.getJavaClass().equals(cls) && !result.contains(element)){
-    					result.add(element);
-    				}
-    			}
-    			cls = cls.getSuperclass();
-    		}
-    	}
-    	
-		i = s.iterator();
-		while(i.hasNext()){
-			NameSpaceElement element = (NameSpaceElement)i.next();
-			// 	add the rest afterwards
-			if(!result.contains(element)){
-				result.add(element);
-			}
-		}
-    	
-    	NameSpaceElement element = xs.getElement("string");
-    	if(!result.contains(element)) result.add(element);
-    	
+    public static List getElements(String name, Class type) {
+        NameSpaceTranslator xs = NameSpaceTranslatorFactory.getInstance()
+                                                           .getNameSpaceTranslator("xs");
+        NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance()
+                                                            .getNameSpaceTranslator("gml");
+        List result = new LinkedList();
+
+        if ((name == null) || (name == "")) {
+            throw new NullPointerException("Element name must be defined.");
+        }
+
+        if (type == null) {
+            throw new NullPointerException("Element type must be defined.");
+        }
+
+        Set s = xs.getAssociatedTypes(type);
+        s.addAll(xs.getAssociatedTypes(name));
+        s.addAll(gml.getAssociatedTypes(type));
+        s.addAll(gml.getAssociatedTypes(name));
+
+        Iterator i = s.iterator();
+
+        while (i.hasNext()) {
+            NameSpaceElement element = (NameSpaceElement) i.next();
+
+            if (name.equals(element.getTypeDefName())) {
+                if (!result.contains(element)) {
+                    result.add(element);
+                } else if (name.equals(element.getTypeRefName())) {
+                    if (!result.contains(element)) {
+                        result.add(element);
+                    } else if (name.equals(element.getQualifiedTypeDefName())) {
+                        if (!result.contains(element)) {
+                            result.add(element);
+                        } else if (name.equals(element.getQualifiedTypeRefName())) {
+                            if (!result.contains(element)) {
+                                result.add(element);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!Object.class.equals(type)) {
+            Class cls = type;
+
+            while (!Object.class.equals(cls)) {
+                i = s.iterator();
+
+                while (i.hasNext()) {
+                    NameSpaceElement element = (NameSpaceElement) i.next();
+
+                    // 	add the rest afterwards
+                    if (element.getJavaClass().equals(cls) && !result.contains(element)) {
+                        result.add(element);
+                    }
+                }
+
+                cls = cls.getSuperclass();
+            }
+        }
+
+        i = s.iterator();
+
+        while (i.hasNext()) {
+            NameSpaceElement element = (NameSpaceElement) i.next();
+
+            // 	add the rest afterwards
+            if (!result.contains(element)) {
+                result.add(element);
+            }
+        }
+
+        NameSpaceElement element = xs.getElement("string");
+
+        if (!result.contains(element)) {
+            result.add(element);
+        }
+
         return result;
     }
+
     /**
      * Retrive best NameSpaceElement match for provided attribtue name and type.
      * <p>
@@ -365,7 +408,7 @@ public class DataTransferObjectFactory {
      * @param type
      * @return Closest NameSapceElement
      */
-    private static final NameSpaceElement getBestMatch( String name, Class type ){
-        return (NameSpaceElement) getElements( name, type ).get(0);
+    private static final NameSpaceElement getBestMatch(String name, Class type) {
+        return (NameSpaceElement) getElements(name, type).get(0);
     }
 }

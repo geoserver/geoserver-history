@@ -1,20 +1,22 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_1_0;
-
-
-import javax.xml.namespace.QName;
 
 import net.opengis.wfs.IdentifierGenerationOptionType;
 import net.opengis.wfs.WFSFactory;
-
 import org.geotools.xml.AbstractSimpleBinding;
 import org.geotools.xml.InstanceComponent;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:IdentifierGenerationOptionType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;xsd:simpleType name="IdentifierGenerationOptionType"&gt;
  *      &lt;xsd:restriction base="xsd:string"&gt;
  *          &lt;xsd:enumeration value="UseExisting"&gt;
@@ -23,7 +25,7 @@ import org.geotools.xml.InstanceComponent;
  *                    The UseExsiting value indicates that WFS should not
  *                    generate a new feature identifier for the feature
  *                    being inserted into the repositry.  Instead, the WFS
- *                    should use the identifier encoded if the feature.  
+ *                    should use the identifier encoded if the feature.
  *                    If a duplicate exists then the WFS should raise an
  *                    exception.
  *                 &lt;/xsd:documentation&gt;
@@ -35,7 +37,7 @@ import org.geotools.xml.InstanceComponent;
  *                    The ReplaceDuplicate value indicates that WFS should
  *                    not generate a new feature identifier for the feature
  *                    being inserted into the repositry.  Instead, the WFS
- *                    should use the identifier encoded if the feature.  
+ *                    should use the identifier encoded if the feature.
  *                    If a duplicate exists then the WFS should replace the
  *                    existing feature instance with the one encoded in the
  *                    Insert action.
@@ -52,60 +54,58 @@ import org.geotools.xml.InstanceComponent;
  *              &lt;/xsd:annotation&gt;
  *          &lt;/xsd:enumeration&gt;
  *      &lt;/xsd:restriction&gt;
- *  &lt;/xsd:simpleType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/xsd:simpleType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class IdentifierGenerationOptionTypeBinding extends AbstractSimpleBinding {
+    WFSFactory wfsfactory;
 
-	WFSFactory wfsfactory;		
-	public IdentifierGenerationOptionTypeBinding( WFSFactory wfsfactory ) {
-		this.wfsfactory = wfsfactory;
-	}
+    public IdentifierGenerationOptionTypeBinding(WFSFactory wfsfactory) {
+        this.wfsfactory = wfsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return WFS.IDENTIFIERGENERATIONOPTIONTYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return IdentifierGenerationOptionType.class;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(InstanceComponent instance, Object value) 
-		throws Exception {
-		
-		if ( "UseExisting".equals( value ) ) {
-			return IdentifierGenerationOptionType.USE_EXISTING_LITERAL;
-		}
-		
-		if ( "ReplaceDuplicate".equals( value ) ) {
-			return IdentifierGenerationOptionType.REPLACE_DUPLICATE_LITERAL;
-		}
-		
-		if ( "GenerateNew".equals( value ) ) {
-			return IdentifierGenerationOptionType.GENERATE_NEW_LITERAL;
-		}
-		
-		return null;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return WFS.IDENTIFIERGENERATIONOPTIONTYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return IdentifierGenerationOptionType.class;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(InstanceComponent instance, Object value)
+        throws Exception {
+        if ("UseExisting".equals(value)) {
+            return IdentifierGenerationOptionType.USE_EXISTING_LITERAL;
+        }
+
+        if ("ReplaceDuplicate".equals(value)) {
+            return IdentifierGenerationOptionType.REPLACE_DUPLICATE_LITERAL;
+        }
+
+        if ("GenerateNew".equals(value)) {
+            return IdentifierGenerationOptionType.GENERATE_NEW_LITERAL;
+        }
+
+        return null;
+    }
 }

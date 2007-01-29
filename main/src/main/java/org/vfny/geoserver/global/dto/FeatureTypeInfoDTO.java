@@ -4,24 +4,23 @@
  */
 package org.vfny.geoserver.global.dto;
 
+import com.vividsolutions.jts.geom.Envelope;
+import org.opengis.filter.Filter;
+import org.vfny.geoserver.config.DataConfig;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.opengis.filter.Filter;
-import org.vfny.geoserver.config.DataConfig;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Data Transfer Object used for GeoServer FeatureTypeInfo information.
- * 
+ *
  * <p>
  * FeatureTypeInfo is used because FeatureType is already used to represent
  * schema information in GeoTools2.
  * </p>
- * 
+ *
  * <p>
  * Data Transfer object are used to communicate between the GeoServer
  * application and its configuration and persistent layers. As such the class
@@ -56,7 +55,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * The schemaBase name.
-     * 
+     *
      * <p>
      * Example NullType, or PointPropertyType.
      * </p>
@@ -65,15 +64,13 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * The featuretype name.
-     * 
+     *
      * <p>
      * Often related to the title - like bc_roads_Type
      * </p>
      */
     private String name;
-
-
-	private String wmsPath;
+    private String wmsPath;
 
     /**
      * The featuretype directory name. This is used to write to, and is  stored
@@ -90,7 +87,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /** A list of keywords to associate with this featuretype. */
     private List keywords;
-    
+
     /** A list of metadataURLs to associate with this featuretype. */
     private List metadataLinks;
 
@@ -109,7 +106,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /** Other Style Names. */
     private ArrayList styles = new ArrayList();
-    
+
     // Modif C. Kolbowicz - 06/10/2004 
 
     /** The legend icon description. */
@@ -122,7 +119,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * FeatureTypeInfo constructor.
-     * 
+     *
      * <p>
      * does nothing
      * </p>
@@ -136,15 +133,15 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      *  The specific header added is "Cache-Control: max-age="
      */
     private String cacheMaxAge;
-    
+
     /**
      * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
      */
     private boolean cachingEnabled;
-    
+
     /**
      * FeatureTypeInfo constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the FeatureTypeInfo provided. If the FeatureTypeInfo
      * provided  is null then default values are used. All the data structures
@@ -157,8 +154,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      */
     public FeatureTypeInfoDTO(FeatureTypeInfoDTO dto) {
         if (dto == null) {
-            throw new NullPointerException(
-                "Non null FeatureTypeInfoDTO required");
+            throw new NullPointerException("Non null FeatureTypeInfoDTO required");
         }
 
         dataStoreId = dto.getDataStoreId();
@@ -181,7 +177,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         } catch (Exception e) {
             keywords = new LinkedList();
         }
-        
+
         try {
             metadataLinks = CloneLibrary.clone(dto.getMetadataLinks()); //clone?
         } catch (Exception e) {
@@ -194,7 +190,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
         schemaBase = dto.getSchemaBase();
-        
+
         cachingEnabled = dto.isCachingEnabled();
         cacheMaxAge = dto.getCacheMaxAge();
     }
@@ -212,7 +208,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * Implement equals.
-     * 
+     *
      * <p>
      * recursively tests to determine if the object passed in is a copy of this
      * object.
@@ -274,7 +270,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         } else if (f.getKeywords() != null) {
             return false;
         }
-        
+
         if (metadataLinks != null) {
             r = r && EqualsLibrary.equals(metadataLinks, f.getMetadataLinks());
         } else if (f.getMetadataLinks() != null) {
@@ -286,8 +282,8 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         r = r && (schemaBase == f.getSchemaBase());
 
         r = r && (isCachingEnabled() == f.isCachingEnabled());
-        r = r && (getCacheMaxAge() != null && getCacheMaxAge().equals(f.getCacheMaxAge()));
-        
+        r = r && ((getCacheMaxAge() != null) && getCacheMaxAge().equals(f.getCacheMaxAge()));
+
         return r;
     }
 
@@ -324,12 +320,13 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         }
 
         if (cacheMaxAge != null) {
-        	r *= cacheMaxAge.hashCode();
+            r *= cacheMaxAge.hashCode();
         }
-                
-        if (cachingEnabled)
-        	r += 1;
-        	
+
+        if (cachingEnabled) {
+            r += 1;
+        }
+
         return r;
     }
 
@@ -359,7 +356,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     public List getKeywords() {
         return keywords;
     }
-    
+
     /**
      * List of metadataURLs (limited to text).
      *
@@ -371,7 +368,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * Convience method for dataStoreId.typeName.
-     * 
+     *
      * <p>
      * This key may be used to store this FeatureType in a Map for later.
      * </p>
@@ -384,7 +381,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * The extent of this FeatureType.
-     * 
+     *
      * <p>
      * Extent is measured against the tranditional LatLong coordinate system.
      * </p>
@@ -406,7 +403,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * Spatial Reference System for FeatureType.
-     * 
+     *
      * <p>
      * Makes use of the standard EPSG codes?
      * </p>
@@ -428,7 +425,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setAbstract purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -441,7 +438,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setDataStore purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -454,7 +451,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setKeywords purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -464,7 +461,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     public void setKeywords(List list) {
         keywords = list;
     }
-    
+
     /**
      * Sets the MetadataURL list for this feature type
      *
@@ -476,7 +473,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setKeywords purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -495,7 +492,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setKeywords purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -510,7 +507,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setLatLongBBox purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -523,7 +520,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setName purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -536,7 +533,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setSRS purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -549,7 +546,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setTitle purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -562,7 +559,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * getNumDecimals purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -575,7 +572,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setNumDecimals purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -588,7 +585,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * getDefinitionQuery purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -601,7 +598,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setDefinitionQuery purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -614,7 +611,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * getDefaultStyle purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -639,7 +636,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setDefaultStyle purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -652,7 +649,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * getSchema purpose.
-     * 
+     *
      * <p>
      * Returns An ordered list of AttributeTypeInfoDTOs
      * </p>
@@ -665,7 +662,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setSchema purpose.
-     * 
+     *
      * <p>
      * Stores a list of AttributeTypeInfoDTOs.
      * </p>
@@ -678,7 +675,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * getDirName purpose.
-     * 
+     *
      * <p>
      * Returns the featuretype directory name.
      * </p>
@@ -691,7 +688,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setDirName purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -704,7 +701,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * getSchemaName purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -717,7 +714,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setSchemaName purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -730,7 +727,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * getSchemaBase purpose.
-     * 
+     *
      * <p>
      * Usually generated as: getName + "_Type"
      * </p>
@@ -743,7 +740,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /**
      * setSchemaBase purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -786,7 +783,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * file would be located, but the file will return false for exists().
      */
     public File getSchemaFile() {
-	return this.schemaFile;
+        return this.schemaFile;
     }
 
     /**
@@ -799,46 +796,48 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     //-- Modif C. Kolbowicz - 06/10/2004
     public String toString() {
-        return "[FeatureTypeInfoDTO: " + name + ", datastoreId: " + dataStoreId
-        + ", latLongBBOX: " + latLongBBox + "\n  SRS: " + SRS + ", schema:"
-        + schema + ", schemaName: " + schemaName + ", dirName: " + dirName
-        + ", title: " + title + "\n  definitionQuery: " + definitionQuery
-        + ", defaultStyle: " + defaultStyle + ", legend icon: " + legendURL
-        + ", caching?: " + cachingEnabled + ", max-age: " + cacheMaxAge;
+        return "[FeatureTypeInfoDTO: " + name + ", datastoreId: " + dataStoreId + ", latLongBBOX: "
+        + latLongBBox + "\n  SRS: " + SRS + ", schema:" + schema + ", schemaName: " + schemaName
+        + ", dirName: " + dirName + ", title: " + title + "\n  definitionQuery: " + definitionQuery
+        + ", defaultStyle: " + defaultStyle + ", legend icon: " + legendURL + ", caching?: "
+        + cachingEnabled + ", max-age: " + cacheMaxAge;
     }
-    
-	public String getWmsPath() {
-		return wmsPath;
-	}
-	public void setWmsPath(String wmsPath) {
-		this.wmsPath = wmsPath;
-	}
+
+    public String getWmsPath() {
+        return wmsPath;
+    }
+
+    public void setWmsPath(String wmsPath) {
+        this.wmsPath = wmsPath;
+    }
+
     public boolean isCachingEnabled() {
-		return cachingEnabled;
-	}
+        return cachingEnabled;
+    }
 
-	public void setCachingEnabled(boolean cachingEnabled) {
-		this.cachingEnabled = cachingEnabled;
-	}
+    public void setCachingEnabled(boolean cachingEnabled) {
+        this.cachingEnabled = cachingEnabled;
+    }
 
-	public String getCacheMaxAge() {
-		return cacheMaxAge;
-	}
+    public String getCacheMaxAge() {
+        return cacheMaxAge;
+    }
 
-	public void setCacheMaxAge(String cacheMaxAge) {
-		this.cacheMaxAge = cacheMaxAge;
-	}
+    public void setCacheMaxAge(String cacheMaxAge) {
+        this.cacheMaxAge = cacheMaxAge;
+    }
 
-	public ArrayList getStyles() {
-		return styles;
-	}
+    public ArrayList getStyles() {
+        return styles;
+    }
 
-	public void addStyle(String styleName) {
-		if (!styles.contains(styleName))
-			styles.add(styleName);
-	}
-	
-	public void setStyles(ArrayList styles) {
-		this.styles = styles;
-	}
+    public void addStyle(String styleName) {
+        if (!styles.contains(styleName)) {
+            styles.add(styleName);
+        }
+    }
+
+    public void setStyles(ArrayList styles) {
+        this.styles = styles;
+    }
 }

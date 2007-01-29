@@ -1,16 +1,8 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_0_0;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.logging.Logger;
-
-import javax.xml.transform.TransformerException;
 
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -21,12 +13,21 @@ import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTypeTransformer;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.logging.Logger;
+import javax.xml.transform.TransformerException;
+
 
 public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
-
-	  /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses");
+    /** Standard logging instance for class */
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
 
     // Initialize some generic GML information
     // ABSTRACT OUTSIDE CLASS, IF POSSIBLE
@@ -41,73 +42,69 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
 
     /** Fixed return footer information */
     private static final String FOOTER = "\n</xs:schema>";
-    
-	WFS wfs;
-	Data catalog;
-	
-	public XmlSchemaEncoder( WFS wfs, Data catalog ) {
-		super( "XMLSCHEMA" );
-		this.wfs = wfs;
-		this.catalog = catalog;
-	}
-	
-	public String getMimeType( Operation operation ) throws ServiceException {
-		return "text/xml";
-	}
-	
-	protected void write(FeatureTypeInfo[] featureTypeInfos, OutputStream output, Operation describeFeatureType ) 
-		throws IOException {
-		
-		//generates response, using general function
-		String xmlResponse = generateTypes( featureTypeInfos );
- 	    if ( !wfs.isVerbose() ) {
-	         //strip out the formatting.  This is pretty much the only way we
-	         //can do this, as the user files are going to have newline
-	         //characters and whatnot, unless we can get rid of formatting
-	         //when we read the file, which could be worth looking into if
-	         //this slows things down.
-	     	xmlResponse = xmlResponse.replaceAll(">\n[ \\t\\n]*", ">");
-	        xmlResponse = xmlResponse.replaceAll("\n[ \\t\\n]*", " ");
-	     }	
-	     
-	     byte[] content = xmlResponse.getBytes();
-	     output.write(content);
-    
-		
-	}
+    WFS wfs;
+    Data catalog;
 
-	 /**
-     * Internal method to generate the XML response object, using feature
-     * types.
-     *
-     * @param wfsRequest The request object.
-     *
-     * @return The XMLSchema describing the features requested.
-     *
-     * @throws WFSException For any problems.
-     */
-    private final String generateTypes( FeatureTypeInfo[] infos ) throws IOException {
-        
+    public XmlSchemaEncoder(WFS wfs, Data catalog) {
+        super("XMLSCHEMA");
+        this.wfs = wfs;
+        this.catalog = catalog;
+    }
+
+    public String getMimeType(Operation operation) throws ServiceException {
+        return "text/xml";
+    }
+
+    protected void write(FeatureTypeInfo[] featureTypeInfos, OutputStream output,
+        Operation describeFeatureType) throws IOException {
+        //generates response, using general function
+        String xmlResponse = generateTypes(featureTypeInfos);
+
+        if (!wfs.isVerbose()) {
+            //strip out the formatting.  This is pretty much the only way we
+            //can do this, as the user files are going to have newline
+            //characters and whatnot, unless we can get rid of formatting
+            //when we read the file, which could be worth looking into if
+            //this slows things down.
+            xmlResponse = xmlResponse.replaceAll(">\n[ \\t\\n]*", ">");
+            xmlResponse = xmlResponse.replaceAll("\n[ \\t\\n]*", " ");
+        }
+
+        byte[] content = xmlResponse.getBytes();
+        output.write(content);
+    }
+
+    /**
+    * Internal method to generate the XML response object, using feature
+    * types.
+    *
+    * @param wfsRequest The request object.
+    *
+    * @return The XMLSchema describing the features requested.
+    *
+    * @throws WFSException For any problems.
+    */
+    private final String generateTypes(FeatureTypeInfo[] infos)
+        throws IOException {
         // Initialize return information and intermediate return objects
         StringBuffer tempResponse = new StringBuffer();
 
-        tempResponse.append("<?xml version=\"1.0\" encoding=\""
-            + wfs.getCharSet().displayName() + "\"?>"
-            + "\n<xs:schema ");
+        tempResponse.append("<?xml version=\"1.0\" encoding=\"" + wfs.getCharSet().displayName()
+            + "\"?>" + "\n<xs:schema ");
 
         //allSameType will throw WFSException if there are types that are not found.
-        if ( allSameType( infos ) ) {
+        if (allSameType(infos)) {
             //all the requested have the same namespace prefix, so return their
             //schemas.
-    		FeatureTypeInfo ftInfo = infos[0];
-    		String targetNs = ftInfo.getNameSpace().getURI();
-        			
+            FeatureTypeInfo ftInfo = infos[0];
+            String targetNs = ftInfo.getNameSpace().getURI();
+
             //String targetNs = nsInfoType.getXmlns();
             tempResponse.append(TARGETNS_PREFIX + targetNs + TARGETNS_SUFFIX);
 
             //namespace
-            tempResponse.append("\n  " + "xmlns:" + ftInfo.getNameSpace().getPrefix()
-                + "=\"" + targetNs + "\"");
+            tempResponse.append("\n  " + "xmlns:" + ftInfo.getNameSpace().getPrefix() + "=\""
+                + targetNs + "\"");
 
             //xmlns:" + nsPrefix + "=\"" + targetNs
             //+ "\"");
@@ -117,29 +114,28 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
 
             //request.getBaseUrl should actually be GeoServer.getSchemaBaseUrl()
             //but that method is broken right now.  See the note there.
-            
+
             //JD: need a good way to publish resources under a web url, at the 
             // same time abstracting away the httpness of the service, for 
             // now replacing the schemas.opengis.net
-            
-//            tempResponse.append("\n\n<xs:import namespace=" + GML_URL
-//                + " schemaLocation=\"" + request.getSchemaBaseUrl()
-//                + "gml/2.1.2/feature.xsd\"/>\n\n");
-            tempResponse.append("\n\n<xs:import namespace=" + GML_URL
-                    + " schemaLocation=\"" + wfs.getSchemaBaseURL() 
-                    + "gml/2.1.2/feature.xsd\"/>\n\n");
-            tempResponse.append( generateSpecifiedTypes( infos ) );
+
+            //            tempResponse.append("\n\n<xs:import namespace=" + GML_URL
+            //                + " schemaLocation=\"" + request.getSchemaBaseUrl()
+            //                + "gml/2.1.2/feature.xsd\"/>\n\n");
+            tempResponse.append("\n\n<xs:import namespace=" + GML_URL + " schemaLocation=\""
+                + wfs.getSchemaBaseURL() + "gml/2.1.2/feature.xsd\"/>\n\n");
+            tempResponse.append(generateSpecifiedTypes(infos));
         } else {
             //the featureTypes do not have all the same prefixes.
             tempResponse.append(XS_NAMESPACE);
             tempResponse.append(ELEMENT_FORM_DEFAULT + ATTR_FORM_DEFAULT);
 
             Set prefixes = new HashSet();
-            
+
             //iterate through the types, and make a set of their prefixes.
-            for ( int i = 0; i < infos.length; i++ ) {
-            		FeatureTypeInfo ftInfo = infos[ i ];
-                prefixes.add( ftInfo.getNameSpace().getPrefix() );
+            for (int i = 0; i < infos.length; i++) {
+                FeatureTypeInfo ftInfo = infos[i];
+                prefixes.add(ftInfo.getNameSpace().getPrefix());
             }
 
             Iterator prefixIter = prefixes.iterator();
@@ -147,7 +143,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
             while (prefixIter.hasNext()) {
                 //iterate through prefixes, and add the types that have that prefix.
                 String prefix = prefixIter.next().toString();
-                tempResponse.append( getNSImport( prefix, infos ) );
+                tempResponse.append(getNSImport(prefix, infos));
             }
         }
 
@@ -170,32 +166,31 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
      *
      * @return The namespace element.
      */
-    private StringBuffer getNSImport(
-		String prefix, FeatureTypeInfo[] infos ) {
+    private StringBuffer getNSImport(String prefix, FeatureTypeInfo[] infos) {
         LOGGER.finer("prefix is " + prefix);
 
         StringBuffer retBuffer = new StringBuffer("\n  <xs:import namespace=\"");
-        String namespace = catalog.getNameSpace( prefix ).getURI();
+        String namespace = catalog.getNameSpace(prefix).getURI();
         retBuffer.append(namespace + "\"");
         retBuffer.append("\n        schemaLocation=\"" + wfs.getOnlineResource().toString()
             + "?request=DescribeFeatureType&amp;typeName=");
 
-        for ( int i = 0; i < infos.length; i++ ) {
-        		FeatureTypeInfo info = infos[ i ]; 
+        for (int i = 0; i < infos.length; i++) {
+            FeatureTypeInfo info = infos[i];
             String typeName = info.getName();
 
-            if ( typeName.startsWith( prefix + ":" ) ) {
-            		retBuffer.append( typeName + ",");
+            if (typeName.startsWith(prefix + ":")) {
+                retBuffer.append(typeName + ",");
             }
-           
+
             //JD: some of this logic should be fixed by poplulating the 
             // info objects properly, double check
-//            if (typeName.startsWith(prefix)
-//                    || ((typeName.indexOf(':') == -1)
-//                    && prefix.equals(r.getWFS().getData().getDefaultNameSpace()
-//                                          .getPrefix()))) {
-//                retBuffer.append(typeName + ",");
-//            }
+            //            if (typeName.startsWith(prefix)
+            //                    || ((typeName.indexOf(':') == -1)
+            //                    && prefix.equals(r.getWFS().getData().getDefaultNameSpace()
+            //                                          .getPrefix()))) {
+            //                retBuffer.append(typeName + ",");
+            //            }
         }
 
         retBuffer.deleteCharAt(retBuffer.length() - 1);
@@ -204,7 +199,6 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         return retBuffer;
     }
 
-    
     /**
      * Internal method to print just the requested types.  They should all be
      * in the same namespace, that handling should be done before.  This will
@@ -229,37 +223,36 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
      *       file appropriately, and put the correct substitution group in
      *       this function.
      */
-    private String generateSpecifiedTypes( FeatureTypeInfo[] infos ) {
+    private String generateSpecifiedTypes(FeatureTypeInfo[] infos) {
         //TypeRepository repository = TypeRepository.getInstance();
         String tempResponse = new String();
-        
+
         String generatedType = new String();
         Set validTypes = new HashSet();
 
         // Loop through requested tables to add element types
         for (int i = 0; i < infos.length; i++) {
-        		FeatureTypeInfo ftInfo = (FeatureTypeInfo) infos[ i ];
-			
-        		if (!validTypes.contains( ftInfo )) {
+            FeatureTypeInfo ftInfo = (FeatureTypeInfo) infos[i];
 
+            if (!validTypes.contains(ftInfo)) {
                 File schemaFile = ftInfo.getSchemaFile();
-               try {
-                   //Hack here, schemaFile should not be null, but it is
-                   //when a fType is first created, since we only add the 
-                   //schemaFile param to dto on a load.  This should be
-                   //fixed, maybe even have the schema file persist, or at
-                   //the very least be present right after creation.
-                   if (schemaFile != null &&
-                        schemaFile.exists() && schemaFile.canRead()) {
-                       generatedType = writeFile(schemaFile);
-                   } else {
-                       FeatureType ft2 = ftInfo.getFeatureType();
-                       String gType2 = generateFromSchema(ft2);
+
+                try {
+                    //Hack here, schemaFile should not be null, but it is
+                    //when a fType is first created, since we only add the 
+                    //schemaFile param to dto on a load.  This should be
+                    //fixed, maybe even have the schema file persist, or at
+                    //the very least be present right after creation.
+                    if ((schemaFile != null) && schemaFile.exists() && schemaFile.canRead()) {
+                        generatedType = writeFile(schemaFile);
+                    } else {
+                        FeatureType ft2 = ftInfo.getFeatureType();
+                        String gType2 = generateFromSchema(ft2);
 
                         if ((gType2 != null) && (gType2 != "")) {
                             generatedType = gType2;
                         }
-                   }
+                    }
                 } catch (IOException e) {
                     generatedType = "";
                 }
@@ -276,8 +269,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         //  STORE IN HASH?
         for (Iterator i = validTypes.iterator(); i.hasNext();) {
             // Print element representation of table
-            tempResponse = tempResponse
-                + printElement((FeatureTypeInfo) i.next());
+            tempResponse = tempResponse + printElement((FeatureTypeInfo) i.next());
         }
 
         tempResponse = tempResponse + "\n\n";
@@ -295,7 +287,8 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
      *  @task REVISIT: when this class changes to writing directly to out this
      *       can just take a writer and write directly to it.
      */
-    private String generateFromSchema(FeatureType schema) throws IOException{
+    private String generateFromSchema(FeatureType schema)
+        throws IOException {
         try {
             StringWriter writer = new StringWriter();
             FeatureTypeTransformer t = new FeatureTypeTransformer();
@@ -304,10 +297,9 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
             t.transform(schema, writer);
 
             return writer.getBuffer().toString();
-        } 
-        catch (TransformerException te) {
-            LOGGER.warning( te.toString() );
-            throw (IOException) new IOException("problem transforming type").initCause( te );
+        } catch (TransformerException te) {
+            LOGGER.warning(te.toString());
+            throw (IOException) new IOException("problem transforming type").initCause(te);
         }
     }
 
@@ -319,9 +311,9 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
      * @return The element part of the response.
      */
     private static String printElement(FeatureTypeInfo type) {
-    		return "\n  <xs:element name='" + type.getTypeName() + "' type='"
-    			+ type.getNameSpace().getPrefix()+":"+type.getSchemaName() + 
-    			"' substitutionGroup='gml:_Feature'/>";
+        return "\n  <xs:element name='" + type.getTypeName() + "' type='"
+        + type.getNameSpace().getPrefix() + ":" + type.getSchemaName()
+        + "' substitutionGroup='gml:_Feature'/>";
     }
 
     /**
@@ -339,7 +331,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         String finalOutput = new String();
 
         try {
-	    // File inputFile = new File(inputFileName);
+            // File inputFile = new File(inputFileName);
             FileInputStream inputStream = new FileInputStream(inputFile);
             byte[] fileBuffer = new byte[inputStream.available()];
             int bytesRead;
@@ -353,7 +345,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
             //don't have schemas in the right place?  Because as it is now
             //a describe all will choke if there is one ft with no schema.xml
             throw (IOException) new IOException("problem writing featureType information "
-                + " from " + inputFile).initCause( e );
+                + " from " + inputFile).initCause(e);
         }
 
         return finalOutput;
@@ -369,23 +361,23 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
      * @return true if all the types in the collection have the same prefix.
      *
      */
-    public boolean allSameType( FeatureTypeInfo[] infos ) {
+    public boolean allSameType(FeatureTypeInfo[] infos) {
         boolean sameType = true;
 
-        if ( infos.length == 0 ) {
+        if (infos.length == 0) {
             return false;
         }
 
-        FeatureTypeInfo first = infos[ 0 ];
-		for ( int i = 0; i < infos.length; i++ ) {
-			FeatureTypeInfo ftInfo = infos[ i ];
-			if ( !first.getNameSpace().equals( ftInfo.getNameSpace() ) ) {
-				return false;
-			}
-		}
-		
+        FeatureTypeInfo first = infos[0];
+
+        for (int i = 0; i < infos.length; i++) {
+            FeatureTypeInfo ftInfo = infos[i];
+
+            if (!first.getNameSpace().equals(ftInfo.getNameSpace())) {
+                return false;
+            }
+        }
 
         return sameType;
     }
-
 }

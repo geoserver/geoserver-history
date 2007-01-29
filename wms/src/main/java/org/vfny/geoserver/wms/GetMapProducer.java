@@ -4,22 +4,21 @@
  */
 package org.vfny.geoserver.wms;
 
+import org.vfny.geoserver.ServiceException;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import org.vfny.geoserver.ServiceException;
 
 
 /**
  * Provides the skeleton for producers of map image, as required by the
  * GetMap WMS request.
- * 
+ *
  * <p>
  * To incorporate a new producer specialized in one or many output formats,
  * there must be a {@linkplain org.vfny.geoserver.wms.responses.GetMapProducerFactorySpi} registered
  * that can provide instances of that concrete implementation.
  * </p>
- * 
+ *
  * <p>
  * The methods defined in this interface respects the general parse
  * request/produce response/get mime type/write content workflow, so they
@@ -75,11 +74,11 @@ public interface GetMapProducer {
      * You need the "inline;" prefix and the filename can be whatever you want.
      * An example would be:
      * "inline; filename=states.pdf"
-     * 
+     *
      * @return Header information for setting the file name
      */
     String getContentDisposition();
-    
+
     /**
      * asks the legend graphic producer to stop processing since it will be no
      * longer needed (for example, because the request was interrupted by the

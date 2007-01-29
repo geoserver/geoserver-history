@@ -4,13 +4,7 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
@@ -19,8 +13,11 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -38,8 +35,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
 
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /** Stores current feature attributes. */
     private Object[] attributes;
@@ -52,18 +48,19 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     private boolean insideFeature = false;
     private boolean insideInsert = false;
 
-    /** 
+    /**
      * Stores current feature attributes.
      * Its value is parsed from the string representation built on
      * <code>processingAttributeValue</code>, once we get the end
      * of the element's content (aka, at endElement())
      */
     private Object tempValue = null;
-	/** actual attribute value is built here since multiple calls to
-	 * {@linkplain #characters(char[], int, int)} may occur until the
-	 * whole attribute value gets completely parsed. 
-	 */
-	private StringBuffer processingAttributeValue;
+
+    /** actual attribute value is built here since multiple calls to
+     * {@linkplain #characters(char[], int, int)} may occur until the
+     * whole attribute value gets completely parsed.
+     */
+    private StringBuffer processingAttributeValue;
     private String attName = "";
 
     //private FeatureSchema metadata = new FeatureSchema();
@@ -75,7 +72,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     private FeatureType curFeatureType;
     private AttributeType curAttributeType;
 
-    /** Collects string chunks in {@link #characters(char[], int, int)} 
+    /** Collects string chunks in {@link #characters(char[], int, int)}
      * callback to be handled at the beggining of {@link #endElement(String, String, String)}
      */
     private StringBuffer characters = new StringBuffer();
@@ -86,9 +83,8 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      * @param parent The parent of this filter.
      * @param r DOCUMENT ME!
      */
-    public TransactionFeatureHandler(
-    		TransactionFilterHandler parent, HttpServletRequest r, Data catalog
-	) {
+    public TransactionFeatureHandler(TransactionFilterHandler parent, HttpServletRequest r,
+        Data catalog) {
         super(parent);
         this.parent = parent;
         this.catalog = catalog;
@@ -98,9 +94,9 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      * Sets the catalog reference.
      */
     public void setCatalog(Data catalog) {
-    		this.catalog = catalog;
+        this.catalog = catalog;
     }
-    
+
     /**
      * Checks for GML element start and - if not a coordinates element - sends
      * it directly on down the chain to the appropriate parent handler.  If it
@@ -115,15 +111,16 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      * @throws SAXException Some parsing error occured while reading
      *         coordinates.
      */
-    public void startElement(String namespaceURI, String localName,
-        String qName, Attributes atts) throws SAXException {
+    public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
+        throws SAXException {
         characters.setLength(0);
-    	if (localName.equals("Insert")) {
+
+        if (localName.equals("Insert")) {
             insideInsert = true;
         }
 
         LOGGER.finest("checking out " + namespaceURI + ", " + localName);
-		processingAttributeValue = new StringBuffer();
+        processingAttributeValue = new StringBuffer();
 
         // if it ends with Member we'll assume it's a feature for the time being
         if (insideInsert && !(localName.equals("Insert"))) {
@@ -131,8 +128,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             //featureTypes?  Like add a 
             //!namespaceURI.equals("http://www.opengis.net/gml"); 
             //(not sure if that'd work, but something to that effect
-            FeatureTypeInfo fType = catalog.getFeatureTypeInfo(localName,
-                    namespaceURI);
+            FeatureTypeInfo fType = catalog.getFeatureTypeInfo(localName, namespaceURI);
             String internalTypeName = null;
 
             if (fType != null) {
@@ -141,8 +137,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
 
             if (!insideFeature) {
                 if ((internalTypeName == null) || (fType == null)) {
-                    throw new SAXException(
-                        "Could not find featureType with name " + localName
+                    throw new SAXException("Could not find featureType with name " + localName
                         + ", and uri: " + namespaceURI);
                 }
 
@@ -168,8 +163,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             //HACK: the local name stuff should be handled in geotools.
             if (insideFeature
                     && !((localName.equals("lineStringMember"))
-                    || (localName.equals("polygonMember"))
-                    || (localName.equals("pointMember")))) {
+                    || (localName.equals("polygonMember")) || (localName.equals("pointMember")))) {
                 LOGGER.fine("inside feature " + internalTypeName);
 
                 //This is for feature attributes as xml attributes.  Is this
@@ -201,8 +195,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
                     curAttributeType = curFeatureType.getAttributeType(attName);
 
                     if (curAttributeType == null) {
-                        throw new SAXException(
-                            "Could not find attributeType named " + attName
+                        throw new SAXException("Could not find attributeType named " + attName
                             + "in featureType " + curFeatureType);
                     }
 
@@ -234,7 +227,7 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      */
     public void characters(char[] ch, int start, int length)
         throws SAXException {
-    	characters.append(ch, start, length);
+        characters.append(ch, start, length);
     }
 
     /**
@@ -252,13 +245,13 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      */
     public void endElement(String namespaceURI, String localName, String qName)
         throws SAXException {
-    	handleCharacters();
+        handleCharacters();
+
         if (localName.equals("Insert")) {
             insideInsert = false;
         }
 
-        FeatureTypeInfo fType = catalog.getFeatureTypeInfo(localName,
-                namespaceURI);
+        FeatureTypeInfo fType = catalog.getFeatureTypeInfo(localName, namespaceURI);
         String internalTypeName = null;
 
         if (fType != null) {
@@ -279,22 +272,23 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
                 //should create it with Postgis and Oracle, but it doesn't seem to be
                 //working.  This should be good enough, it'd just be nice to be cleaner.
                 //FeatureTypeFactory ftFactory = FeatureTypeFactory
-		//   .createTemplate(curFeatureType);
+                //   .createTemplate(curFeatureType);
                 //ftFactory.setNamespace(namespaceURI);
 
                 //FeatureType schema = ftFactory.getFeatureType();
-                
-		//removing hack, as this wasn't compiling, and we should not
-		//be using this hack.
-		Feature feature = curFeatureType.create(attributes);
+
+                //removing hack, as this wasn't compiling, and we should not
+                //be using this hack.
+                Feature feature = curFeatureType.create(attributes);
 
                 //currentFeature.setAttributes((Object []) attributes.toArray());
                 parent.feature(feature);
                 LOGGER.finest("resetting attName at end of feature");
                 attName = "";
                 LOGGER.finer("created feature: " + feature);
-		//} catch (org.geotools.feature.SchemaException sve) {
-	    //throw new RuntimeException("problem creating schema", sve);
+
+                //} catch (org.geotools.feature.SchemaException sve) {
+                //throw new RuntimeException("problem creating schema", sve);
             } catch (org.geotools.feature.IllegalAttributeException ife) {
                 throw new RuntimeException("problem creating feature", ife);
             }
@@ -303,26 +297,25 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
 
             //HACK: the local name stuff should be handled in geotools.
         } else if (insideAttribute
-                && !(localName.equals("lineStringMember")
-                || localName.equals("polygonMember")
+                && !(localName.equals("lineStringMember") || localName.equals("polygonMember")
                 || localName.equals("pointMember"))) {
-			
-			if(LOGGER.isLoggable(Level.FINEST))
-				LOGGER.finest("end - inside attribute [" + processingAttributeValue + "]");
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.finest("end - inside attribute [" + processingAttributeValue + "]");
+            }
 
             //if ((tempValue != null) && !tempValue.toString().trim().equals("")) {
-			if(processingAttributeValue != null && processingAttributeValue.length() > 0){
-				tempValue = curAttributeType.parse(processingAttributeValue.toString());
+            if ((processingAttributeValue != null) && (processingAttributeValue.length() > 0)) {
+                tempValue = curAttributeType.parse(processingAttributeValue.toString());
+
                 int insertPosition = curFeatureType.find(curAttributeType);
                 Object curAtt = attributes[insertPosition];
 
                 //REVISIT: If we ever support complex attributes then this can
                 //just create a list and add to it.
                 if (curAtt != null) {
-                    throw new SAXException("Attempted to set attribute "
-                        + attName + " twice, first with " + curAtt
-                        + ", and then with " + tempValue + ".\n  Future "
-                        + "versions of GeoServer may support complex attributes");
+                    throw new SAXException("Attempted to set attribute " + attName
+                        + " twice, first with " + curAtt + ", and then with " + tempValue
+                        + ".\n  Future " + "versions of GeoServer may support complex attributes");
                 }
 
                 attributes[insertPosition] = tempValue;
@@ -342,13 +335,14 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             LOGGER.finer("attName now equals " + attName);
             insideAttribute = false;
         } else {
-        	attName = "";
+            attName = "";
             parent.endElement(namespaceURI, localName, qName);
             LOGGER.finest("end - inside feature");
 
             //insideFeature = false;
         }
-		processingAttributeValue = null;
+
+        processingAttributeValue = null;
     }
 
     /**
@@ -362,9 +356,9 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
      */
     public void geometry(Geometry geometry) {
         if (insideFeature) {
-	    LOGGER.fine("geometry recieved is " + geometry);
-            //curAttributeType = curFeatureType.getDefaultGeometry();
+            LOGGER.fine("geometry recieved is " + geometry);
 
+            //curAttributeType = curFeatureType.getDefaultGeometry();
             if (attName.equals("")) {
                 attributeNames.add("geometry");
             } else {
@@ -390,38 +384,38 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
             parent.geometry(geometry);
         }
     }
-    
+
     /**
      * Handles the string chunks collected in {@link #characters}.
      */
-    private void handleCharacters() throws SAXException{
-    	if(characters.length() == 0){
-    		return;
-    	}
-    	if(LOGGER.isLoggable(Level.FINE)){
-	        LOGGER.fine("we are inside attribute: " + insideAttribute
-	            + ", curAttType is " + curAttributeType + " curFeatureT: "
-	            + curFeatureType + " attName " + attName);
-		}
+    private void handleCharacters() throws SAXException {
+        if (characters.length() == 0) {
+            return;
+        }
 
-        if (insideAttribute && characters.length() > 0) {
-			//GR: parsing tempValue here wrong, att value parsing should be
-			//done in endElement, since we don't have the full string 
-			//representation until then
-            
-			//tempValue = curAttributeType.parse(rawAttribute);
-			
-			//processingAttributeValue is null when we're outside
-			//an xml element, so junk spaces need not to be treated
-			if(processingAttributeValue != null){
-				//so we incrementally build the value on this StringBuffer and parse
-				//on endElement
-				processingAttributeValue.append(characters);
-			}
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("we are inside attribute: " + insideAttribute + ", curAttType is "
+                + curAttributeType + " curFeatureT: " + curFeatureType + " attName " + attName);
+        }
+
+        if (insideAttribute && (characters.length() > 0)) {
+            //GR: parsing tempValue here wrong, att value parsing should be
+            //done in endElement, since we don't have the full string 
+            //representation until then
+
+            //tempValue = curAttributeType.parse(rawAttribute);
+
+            //processingAttributeValue is null when we're outside
+            //an xml element, so junk spaces need not to be treated
+            if (processingAttributeValue != null) {
+                //so we incrementally build the value on this StringBuffer and parse
+                //on endElement
+                processingAttributeValue.append(characters);
+            }
         } else {
             parent.characters(characters.toString().toCharArray(), 0, characters.length());
         }
+
         characters.setLength(0);
-    }    
-    
+    }
 }

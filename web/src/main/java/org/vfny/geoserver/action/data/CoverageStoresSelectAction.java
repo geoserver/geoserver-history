@@ -4,27 +4,26 @@
  */
 package org.vfny.geoserver.action.data;
 
-import java.io.IOException;
-import java.util.Locale;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
-import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.CoverageStoreConfig;
+import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.form.data.CoverageStoresSelectForm;
 import org.vfny.geoserver.global.UserContainer;
+import java.io.IOException;
+import java.util.Locale;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * Select a Format for editing.
- * 
+ *
  * @author User, Refractions Research, Inc.
  * @author dmzwiers
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
@@ -35,42 +34,39 @@ import org.vfny.geoserver.global.UserContainer;
  *          dmzwiers Exp $
  */
 public final class CoverageStoresSelectAction extends ConfigAction {
-	public ActionForward execute(ActionMapping mapping,
-			ActionForm incomingForm, UserContainer user,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
+        UserContainer user, HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException {
+        CoverageStoresSelectForm form = (CoverageStoresSelectForm) incomingForm;
+        String buttonAction = form.getButtonAction();
 
-		CoverageStoresSelectForm form = (CoverageStoresSelectForm) incomingForm;
-		String buttonAction = form.getButtonAction();
+        DataConfig dataConfig = (DataConfig) getDataConfig();
+        CoverageStoreConfig dfConfig = null;
+        Locale locale = (Locale) request.getLocale();
+        MessageResources messages = getResources(request);
 
-		DataConfig dataConfig = (DataConfig) getDataConfig();
-		CoverageStoreConfig dfConfig = null;
-		Locale locale = (Locale) request.getLocale();
-		MessageResources messages = getResources(request);
+        String editLabel = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
+        String deleteLabel = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
 
-		String editLabel = HTMLEncoder.decode(messages.getMessage(locale,
-				"label.edit"));
-		String deleteLabel = HTMLEncoder.decode(messages.getMessage(locale,
-				"label.delete"));
+        if (editLabel.equals(buttonAction)) {
+            dfConfig = (CoverageStoreConfig) dataConfig.getDataFormat(form.getSelectedDataFormatId());
 
-		if (editLabel.equals(buttonAction)) {
-			dfConfig = (CoverageStoreConfig) dataConfig.getDataFormat(form
-					.getSelectedDataFormatId());
+            getUserContainer(request).setDataFormatConfig(dfConfig);
 
-			getUserContainer(request).setDataFormatConfig(dfConfig);
+            return mapping.findForward("config.data.format.editor");
+        } else if (deleteLabel.equals(buttonAction)) {
+            dataConfig.removeDataFormat(form.getSelectedDataFormatId());
+            getUserContainer(request).setDataFormatConfig(null);
 
-			return mapping.findForward("config.data.format.editor");
-		} else if (deleteLabel.equals(buttonAction)) {
-			dataConfig.removeDataFormat(form.getSelectedDataFormatId());
-			getUserContainer(request).setDataFormatConfig(null);
+            form.reset(mapping, request);
 
-			form.reset(mapping, request);
+            return mapping.findForward("config.data.format");
+        }
 
-			return mapping.findForward("config.data.format");
-		}
-
-		throw new ServletException(new StringBuffer("Action '").append(
-				buttonAction).append("'must be '").append(editLabel).append(
-				"' or '").append(deleteLabel).append("'").toString());
-	}
+        throw new ServletException(new StringBuffer("Action '").append(buttonAction)
+                                                               .append("'must be '")
+                                                               .append(editLabel).append("' or '")
+                                                               .append(deleteLabel).append("'")
+                                                               .toString());
+    }
 }

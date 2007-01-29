@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /* Copyright (c) 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -17,21 +18,21 @@ import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
 
 /**
  * Allows editing of AttributeTypeInfo.
- * 
+ *
  * <p>
  * Represents most of a xs:element for an XMLSchema.
  * </p>
- * 
+ *
  * <p>
  * we have three types of information to store, Schema defined types,
  * references and extentions on types. If the type represented is either  a
  * reference or a Schema defined type  then isRef should be true.
  * </p>
- * 
+ *
  * <p>
  * Non-complex types are of the form:
  * </p>
- * 
+ *
  * <ul>
  * <li>
  * <code>{element name='test' type='xs:string'/}</code>
@@ -40,11 +41,11 @@ import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
  * <code>{element name='test' type='gml:PointType'/}</code>
  * </li>
  * </ul>
- * 
+ *
  * <p>
  * These cases have their type name stored in this.type
  * </p>
- * 
+ *
  * <p>
  * For complex types such as:<pre><code>
  * {element name='test'
@@ -64,7 +65,7 @@ import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
  * The type will be equals to "(xml fragment)" and
  * fragment contains a similar to above.
  * </p>
- * 
+ *
  * <p>
  * minOccurs, maxOccurs and nillable are all attributes for all cases. There is
  * more stuff in the XMLSchema spec but we don't care to parse it out right now.
@@ -79,11 +80,11 @@ public class AttributeTypeInfoConfig {
 
     /**
      * XML Fragment used to define stuff.
-     * 
+     *
      * <p>
      * This property is only used with getType() is equals to "(xml fragment)".
      * </p>
-     * 
+     *
      * <p>
      * baseGMLTypes can only be used in your XML fragment.
      * </p>
@@ -92,18 +93,18 @@ public class AttributeTypeInfoConfig {
 
     /**
      * Maxmium number of occurances of this attribute in a feature.
-     * 
+     *
      * <p>
      * For Features based on the Simple Feature Specification this should be a
      * value of 1. If the attribute is optional it should still be 1, although
      * often optional is represented by allowing the Attribute to be
      * <code>nillable</code>.
      * </p>
-     * 
+     *
      * <p>
      * Common Min..Max Occurs values:
      * </p>
-     * 
+     *
      * <ul>
      * <li>
      * 0..<b>1</b>: attribute is optional
@@ -115,7 +116,7 @@ public class AttributeTypeInfoConfig {
      * 0..<b>N</b>: attribute forms a list that may be empty
      * </li>
      * </ul>
-     * 
+     *
      *
      * @see AttributeTypeInfoDTO.isNillable
      */
@@ -129,7 +130,7 @@ public class AttributeTypeInfoConfig {
 
     /**
      * Indicate if the attribute is allowed to be <code>null</code>.
-     * 
+     *
      * <p>
      * Nillable is often used to indicate that an attribute is optional. The
      * use of minOccurs and maxOccurs may be a more correct way to indicate
@@ -143,12 +144,12 @@ public class AttributeTypeInfoConfig {
 
     /**
      * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
-     * 
+     *
      * <p>
      * If getType is equals to TYPE_FRAGMENT please consult getFragment() to
      * examin the actual user's definition.
      * </p>
-     * 
+     *
      * <p>
      * Other than that getType should be one of the constants defined by
      * GMLUtils.
@@ -158,7 +159,7 @@ public class AttributeTypeInfoConfig {
 
     /**
      * Set up AttributeTypeInfo based on attributeType.
-     * 
+     *
      * <p>
      * Set up is determined by the AttributeTypeInfoDTO( AttributeType )
      * constructor. This allows all Schema generation to be acomplished in the
@@ -172,25 +173,28 @@ public class AttributeTypeInfoConfig {
         minOccurs = 1;
         maxOccurs = 1;
 
-	NameSpaceTranslatorFactory nsFactory = NameSpaceTranslatorFactory.getInstance();
+        NameSpaceTranslatorFactory nsFactory = NameSpaceTranslatorFactory.getInstance();
         NameSpaceTranslator nst = nsFactory.getNameSpaceTranslator("xs");
         NameSpaceElement nse = nst.getElement(name);
-	if (nse == null) {
-	    nse = nst.getDefaultElement(attributeType.getType());
-	}
+
         if (nse == null) {
-	    nst = nsFactory.getNameSpaceTranslator("gml");
-	    nse = nst.getElement(name);
-	    if (nse == null) {
-		nse = nst.getDefaultElement(attributeType.getType());
-	    }
-	}
-	    
-	//System.out.println("creating new atypininfig for: " + attributeType + 
-	//		   ", nse = " + nse);
-	//if (nse != null) System.out.println(", nse type = " + nse.getTypeDefName());
-	fragment = "<!-- definition for " + attributeType.getType()
-	    + " -->";
+            nse = nst.getDefaultElement(attributeType.getType());
+        }
+
+        if (nse == null) {
+            nst = nsFactory.getNameSpaceTranslator("gml");
+            nse = nst.getElement(name);
+
+            if (nse == null) {
+                nse = nst.getDefaultElement(attributeType.getType());
+            }
+        }
+
+        //System.out.println("creating new atypininfig for: " + attributeType + 
+        //		   ", nse = " + nse);
+        //if (nse != null) System.out.println(", nse type = " + nse.getTypeDefName());
+        fragment = "<!-- definition for " + attributeType.getType() + " -->";
+
         if (nse == null) {
             type = TYPE_FRAGMENT;
         } else {
@@ -222,11 +226,11 @@ public class AttributeTypeInfoConfig {
 
     /**
      * XML Fragment used to define stuff.
-     * 
+     *
      * <p>
      * This property is only used with getType() is equals to "(xml fragment)".
      * </p>
-     * 
+     *
      * <p>
      * baseGMLTypes can only be used in your XML fragment.
      * </p>
@@ -239,7 +243,7 @@ public class AttributeTypeInfoConfig {
 
     /**
      * getMaxOccurs purpose.
-     * 
+     *
      * <p>
      * The max number of occurences for this element.
      * </p>
@@ -252,7 +256,7 @@ public class AttributeTypeInfoConfig {
 
     /**
      * getMinOccurs purpose.
-     * 
+     *
      * <p>
      * the min number of occurences for this element
      * </p>
@@ -265,7 +269,7 @@ public class AttributeTypeInfoConfig {
 
     /**
      * getName purpose.
-     * 
+     *
      * <p>
      * returns the element name
      * </p>
@@ -278,12 +282,12 @@ public class AttributeTypeInfoConfig {
 
     /**
      * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
-     * 
+     *
      * <p>
      * If getType is equals to <code>TYPE_FRAGMENT</code> please consult
      * getFragment() to examine the actual user's definition.
      * </p>
-     * 
+     *
      * <p>
      * Other than that getType should be one of the constants defined by
      * GMLUtils.
@@ -297,7 +301,7 @@ public class AttributeTypeInfoConfig {
 
     /**
      * Indicate if the attribute is allowed to be <code>null</code>.
-     * 
+     *
      * <p>
      * Nillable is often used to indicate that an attribute is optional. The
      * use of minOccurs and maxOccurs may be a more correct way to indicate
@@ -316,11 +320,11 @@ public class AttributeTypeInfoConfig {
 
     /**
      * XML Fragment used to define stuff.
-     * 
+     *
      * <p>
      * This property is only used with getType() is equals to "(xml fragment)".
      * </p>
-     * 
+     *
      * <p>
      * baseGMLTypes can only be used in your XML fragment.
      * </p>
@@ -333,18 +337,18 @@ public class AttributeTypeInfoConfig {
 
     /**
      * Maxmium number of occurances of this attribute in a feature.
-     * 
+     *
      * <p>
      * For Features based on the Simple Feature Specification this should be a
      * value of 1. If the attribute is optional it should still be 1, although
      * often optional is represented by allowing the Attribute to be
      * <code>nillable</code>.
      * </p>
-     * 
+     *
      * <p>
      * Common Min..Max Occurs values:
      * </p>
-     * 
+     *
      * <ul>
      * <li>
      * 0..<b>1</b>: attribute is optional
@@ -356,7 +360,7 @@ public class AttributeTypeInfoConfig {
      * 0..<b>N</b>: attribute forms a list that may be empty
      * </li>
      * </ul>
-     * 
+     *
      *
      * @param max The maximum number of occurances
      *
@@ -368,14 +372,14 @@ public class AttributeTypeInfoConfig {
 
     /**
      * Minimum number of occrances of this attribute in a feature.
-     * 
+     *
      * <p>
      * For Features based on the Simple Feture Specification this should be a
      * value of 1. If the attribute is optional is should be 0, although often
      * optional is represented by allowing the attribute to be nillable.
      * </p>
      * Common Min..Max Occurs values:
-     * 
+     *
      * <ul>
      * <li>
      * <b>0</b>..1: attribute is optional
@@ -387,7 +391,7 @@ public class AttributeTypeInfoConfig {
      * <b>0</b>..N: attribute forms a list that may be empty
      * </li>
      * </ul>
-     * 
+     *
      *
      * @param min The minimum number of occurances
      *
@@ -399,7 +403,7 @@ public class AttributeTypeInfoConfig {
 
     /**
      * Indicate if the attribute is allowed to be <code>null</code>.
-     * 
+     *
      * <p>
      * Nillable is often used to indicate that an attribute is optional. The
      * use of minOccurs and maxOccurs may be a more correct way to indicate
@@ -418,7 +422,7 @@ public class AttributeTypeInfoConfig {
 
     /**
      * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
-     * 
+     *
      * <p>
      * If getType is equals to <code>TYPE_FRAGMENT</code> please consult
      * getFragment() to examin the actual user's definition. <br>
@@ -431,20 +435,22 @@ public class AttributeTypeInfoConfig {
     public void setType(String type) {
         this.type = type;
     }
-    
-    public AttributeTypeInfoDTO toDTO(){
-    	AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
-    	dto.setNillable(nillable);
-    	dto.setName(name);
-    	dto.setMaxOccurs(maxOccurs);
-    	dto.setMinOccurs(minOccurs);
-    	if(type!=TYPE_FRAGMENT){
-    		dto.setComplex(false);
-    		dto.setType(type);
-    	}else{
-    		dto.setComplex(true);
-    		dto.setType(fragment);
-    	}
-    	return dto;
+
+    public AttributeTypeInfoDTO toDTO() {
+        AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
+        dto.setNillable(nillable);
+        dto.setName(name);
+        dto.setMaxOccurs(maxOccurs);
+        dto.setMinOccurs(minOccurs);
+
+        if (type != TYPE_FRAGMENT) {
+            dto.setComplex(false);
+            dto.setType(type);
+        } else {
+            dto.setComplex(true);
+            dto.setType(fragment);
+        }
+
+        return dto;
     }
 }

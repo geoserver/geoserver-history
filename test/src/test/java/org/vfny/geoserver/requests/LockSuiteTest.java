@@ -4,9 +4,10 @@
  */
 package org.vfny.geoserver.requests;
 
-import java.util.Map;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.AttributeExpression;
@@ -21,11 +22,8 @@ import org.vfny.geoserver.wfs.requests.LockRequest;
 import org.vfny.geoserver.wfs.requests.readers.LockKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.LockXmlReader;
 import org.vfny.geoserver.wfs.servlets.Lock;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -43,11 +41,9 @@ public class LockSuiteTest extends RequestTestCase {
     //}
 
     /** Class logger */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
-
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
     Lock service;
-    
+
     /**
      * Constructor with super.
      *
@@ -58,18 +54,16 @@ public class LockSuiteTest extends RequestTestCase {
     }
 
     protected void setUp() throws Exception {
-    		WFS wfs = new WFS(MockUtils.newWfsDto());
-    		service = new Lock(wfs); 
+        WFS wfs = new WFS(MockUtils.newWfsDto());
+        service = new Lock(wfs);
     }
-    
-    
-    
+
     protected XmlRequestReader getXmlReader() {
         return new LockXmlReader(service);
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {
-        return new LockKvpReader(kvps,service);
+        return new LockKvpReader(kvps, service);
     }
 
     public void testXml1() throws Exception {
@@ -112,10 +106,10 @@ public class LockSuiteTest extends RequestTestCase {
         org.geotools.filter.GeometryFilter gf = factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
         int srid = 0;
         Coordinate[] points = {
-            new Coordinate(-95.7, 38.1), new Coordinate(-97.8, 38.2),
-            new Coordinate(-97.8, 42.9), new Coordinate(-95.7, 42.9),
-            new Coordinate(-95.7, 38.1)
-        };
+                new Coordinate(-95.7, 38.1), new Coordinate(-97.8, 38.2),
+                new Coordinate(-97.8, 42.9), new Coordinate(-95.7, 42.9),
+                new Coordinate(-95.7, 38.1)
+            };
         PrecisionModel precModel = new PrecisionModel();
         LinearRing shell = new LinearRing(points, precModel, srid);
         Polygon testPoly = new Polygon(shell, precModel, srid);
@@ -139,8 +133,8 @@ public class LockSuiteTest extends RequestTestCase {
      * Example 1 from the WFS 1.0 specification.
      */
     public void testKVP1() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
-            + "SERVICE=WFS&" + "TYPENAME=rail";
+        String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&" + "SERVICE=WFS&"
+            + "TYPENAME=rail";
 
         // make base comparison objects
         LockRequest baseRequest = new LockRequest(service);
@@ -154,8 +148,8 @@ public class LockSuiteTest extends RequestTestCase {
      * Example 2 from the WFS 1.0 specification.
      */
     public void testKVP2() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
-            + "SERVICE=WFS&" + "TYPENAME=rail&" + "featureID=123";
+        String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&" + "SERVICE=WFS&"
+            + "TYPENAME=rail&" + "featureID=123";
 
         // make base comparison objects
         LockRequest baseRequest = new LockRequest(service);
@@ -174,8 +168,8 @@ public class LockSuiteTest extends RequestTestCase {
      * Example 3 from the WFS 1.0 specification.
      */
     public void testKVP3() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&"
-            + "SERVICE=WFS&" + "TYPENAME=rail,roads";
+        String testRequest = "VERSION=1.0.0&" + "REQUEST=lockFEATURE&" + "SERVICE=WFS&"
+            + "TYPENAME=rail,roads";
 
         // make base comparison objects
         LockRequest baseRequest = new LockRequest(service);
@@ -190,9 +184,8 @@ public class LockSuiteTest extends RequestTestCase {
      * Example 13 from the WFS 1.0 specification.
      */
     public void testKVP4() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-            + "REQUEST=LockFEATURE&" + "LOCKACTION=all&"
-            + "TYPENAME=rail,roads&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=LockFEATURE&"
+            + "LOCKACTION=all&" + "TYPENAME=rail,roads&"
             + "FILTER=(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)(<Filter xmlns:gml='http://www.opengis.net/gml'><Within><PropertyName>location</PropertyName><gml:Box><gml:coordinates>10,10 20,20</gml:coordinates></gml:Box></Within></Filter>)";
         LockRequest baseRequest = new LockRequest(service);
         baseRequest.setVersion("1.0.0");
@@ -200,8 +193,11 @@ public class LockSuiteTest extends RequestTestCase {
 
         // make base comparison objects
         GeometryFilter filter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_WITHIN);
+
         //DJB changed this so it conforms to new FeatureType method
-        AttributeExpression leftExpression = factory.createAttributeExpression((FeatureType)null,"location");
+        AttributeExpression leftExpression = factory.createAttributeExpression((FeatureType) null,
+                "location");
+
         //leftExpression.setAttributePath("location");
 
         // Creates coordinates for the linear ring

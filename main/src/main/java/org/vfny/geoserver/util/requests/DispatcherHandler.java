@@ -4,19 +4,18 @@
  */
 package org.vfny.geoserver.util.requests;
 
-import java.util.logging.Logger;
-
 import org.vfny.geoserver.servlets.Dispatcher;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
+import java.util.logging.Logger;
 
 
 /**
  * Uses SAX to extact a GetFeature query from and incoming GetFeature request
  * XML stream.
- * 
+ *
  * <p>
  * Note that this Handler extension ignores Filters completely and must be
  * chained as a parent to the PredicateFilter method in order to recognize
@@ -29,8 +28,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  */
 public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /** Stores internal request type */
     private int requestType = Dispatcher.UNKNOWN;
@@ -40,46 +38,48 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
 
     /** Stores the internal request type as string */
     private String request = null;
-    
+
     /** Stores hte internal service type as string */
     private String service = null;
-     
+
     /** Flags whether or not type has been set */
     private boolean gotType = false;
 
     /**
-     * @return the service type. 
+     * @return the service type.
      */
     public String getService() {
-		return service;
-	}
-    
+        return service;
+    }
+
     /**
      * @return The request type.
      */
     public String getRequest() {
-		return request;
-	}
-    
+        return request;
+    }
+
     //JD: kill these methods
     /**
      * Gets the request type.  See Dispatcher for the available types.
      *
      * @return an int of the request type.
-     * 
+     *
      */
-//    public int getRequestType() {
-//        return requestType;
-//    }
+
+    //    public int getRequestType() {
+    //        return requestType;
+    //    }
 
     /**
      * Gets the service type, for now either WMS or WFS types of Dispatcher.
      *
      * @return an int of the service type.
      */
-//    public int getServiceType() {
-//        return serviceType;
-//    }
+
+    //    public int getServiceType() {
+    //        return serviceType;
+    //    }
 
     /**
      * Notes the start of the element and checks for request type.
@@ -91,46 +91,46 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
      *
      * @throws SAXException DOCUMENT ME!
      */
-    public void startElement(String namespaceURI, String localName,
-        String rawName, Attributes atts) throws SAXException {
-    		if (gotType)
-    			return;
-    		
-    		this.request = localName;
-            
-            //JD: kill this
-//            if (localName.equals("GetCapabilities")) {
-//                this.requestType = Dispatcher.GET_CAPABILITIES_REQUEST;
-//            } else if (localName.equals("DescribeFeatureType")) {
-//                this.requestType = Dispatcher.DESCRIBE_FEATURE_TYPE_REQUEST;
-//            } else if (localName.equals("GetFeature")) {
-//                this.requestType = Dispatcher.GET_FEATURE_REQUEST;
-//            } else if (localName.equals("Transaction")) {
-//                this.requestType = Dispatcher.TRANSACTION_REQUEST;
-//            } else if (localName.equals("GetFeatureWithLock")) {
-//                this.requestType = Dispatcher.GET_FEATURE_LOCK_REQUEST;
-//            } else if (localName.equals("LockFeature")) {
-//                this.requestType = Dispatcher.LOCK_REQUEST;
-//            } else if (localName.equals("GetMap")) {
-//                this.requestType = Dispatcher.GET_MAP_REQUEST;
-//            } else if (localName.equals("GetFeatureInfo")) {
-//                this.requestType = Dispatcher.GET_FEATURE_INFO_REQUEST;
-//            } else {
-//                this.requestType = Dispatcher.UNKNOWN;
-//            }
-        
+    public void startElement(String namespaceURI, String localName, String rawName, Attributes atts)
+        throws SAXException {
+        if (gotType) {
+            return;
+        }
 
+        this.request = localName;
+
+        //JD: kill this
+        //            if (localName.equals("GetCapabilities")) {
+        //                this.requestType = Dispatcher.GET_CAPABILITIES_REQUEST;
+        //            } else if (localName.equals("DescribeFeatureType")) {
+        //                this.requestType = Dispatcher.DESCRIBE_FEATURE_TYPE_REQUEST;
+        //            } else if (localName.equals("GetFeature")) {
+        //                this.requestType = Dispatcher.GET_FEATURE_REQUEST;
+        //            } else if (localName.equals("Transaction")) {
+        //                this.requestType = Dispatcher.TRANSACTION_REQUEST;
+        //            } else if (localName.equals("GetFeatureWithLock")) {
+        //                this.requestType = Dispatcher.GET_FEATURE_LOCK_REQUEST;
+        //            } else if (localName.equals("LockFeature")) {
+        //                this.requestType = Dispatcher.LOCK_REQUEST;
+        //            } else if (localName.equals("GetMap")) {
+        //                this.requestType = Dispatcher.GET_MAP_REQUEST;
+        //            } else if (localName.equals("GetFeatureInfo")) {
+        //                this.requestType = Dispatcher.GET_FEATURE_INFO_REQUEST;
+        //            } else {
+        //                this.requestType = Dispatcher.UNKNOWN;
+        //            }
         for (int i = 0, n = atts.getLength(); i < n; i++) {
             if (atts.getLocalName(i).equals("service")) {
                 this.service = atts.getValue(i);
-//JD: kill this
-//                if (service.equals("WFS")) {
-//                    this.serviceType = Dispatcher.WFS_SERVICE;
-//                } else if (service.equals("WMS")) {
-//                    this.serviceType = Dispatcher.WMS_SERVICE;
-//                }
-//            } else {
-//                this.serviceType = Dispatcher.UNKNOWN;
+
+                //JD: kill this
+                //                if (service.equals("WFS")) {
+                //                    this.serviceType = Dispatcher.WFS_SERVICE;
+                //                } else if (service.equals("WMS")) {
+                //                    this.serviceType = Dispatcher.WMS_SERVICE;
+                //                }
+                //            } else {
+                //                this.serviceType = Dispatcher.UNKNOWN;
             }
         }
 

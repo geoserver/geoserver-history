@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
-import java.util.Map;
-
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.DescribeLayerKvpRequestReader;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
+import java.util.Map;
 
 
 /**
@@ -22,11 +21,10 @@ import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
  * @version $Id$
  */
 public class DescribeLayer extends WMService {
-	
-	public DescribeLayer(WMS wms) {
-		super("DescribeLayer",wms);
-	}
-	
+    public DescribeLayer(WMS wms) {
+        super("DescribeLayer", wms);
+    }
+
     /**
      * Creates and returns a response handler to encode
      * the list of requested layers into a DescribeLayer
@@ -59,7 +57,7 @@ public class DescribeLayer extends WMService {
      * there are no standard XML encoding for DescribeLayer requests.
      */
     protected XmlRequestReader getXmlRequestReader() {
-    	throw new UnsupportedOperationException(
-    			"There are no standard XML encoding for DescribeLayer requests");
+        throw new UnsupportedOperationException(
+            "There are no standard XML encoding for DescribeLayer requests");
     }
 }

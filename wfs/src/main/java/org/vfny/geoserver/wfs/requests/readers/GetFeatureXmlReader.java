@@ -4,14 +4,6 @@
  */
 package org.vfny.geoserver.wfs.requests.readers;
 
-import java.io.IOException;
-import java.io.Reader;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.geotools.filter.FilterFilter;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
@@ -23,6 +15,12 @@ import org.vfny.geoserver.wfs.servlets.WFService;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
+import java.io.IOException;
+import java.io.Reader;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 
 /**
@@ -35,11 +33,11 @@ import org.xml.sax.helpers.ParserAdapter;
 public class GetFeatureXmlReader extends XmlRequestReader {
     /**
      * Creates a new GetFeatureXmlReader object.
-     * 
+     *
      * @param The WFS Service handling the request.
      */
     public GetFeatureXmlReader(WFService service) {
-    		super( service );
+        super(service);
     }
 
     /**
@@ -51,13 +49,13 @@ public class GetFeatureXmlReader extends XmlRequestReader {
      *
      * @throws WfsException For any problems reading the request.
      */
-    public Request read(Reader reader, HttpServletRequest req) throws WfsException {
+    public Request read(Reader reader, HttpServletRequest req)
+        throws WfsException {
         // translate string into a proper SAX input source
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        FeatureHandler contentHandler = 
-        		new FeatureHandler((WFService) getServiceRef());
+        FeatureHandler contentHandler = new FeatureHandler((WFService) getServiceRef());
         FilterFilter filterParser = new FilterFilter(contentHandler, null);
         GMLFilterGeometry geometryFilter = new GMLFilterGeometry(filterParser);
         GMLFilterDocument documentFilter = new GMLFilterDocument(geometryFilter);
@@ -78,8 +76,7 @@ public class GetFeatureXmlReader extends XmlRequestReader {
             LOGGER.fine("just parsed: " + requestSource);
         } catch (SAXException e) {
             e.printStackTrace(System.out);
-            throw new WfsException(e,
-                "XML getFeature request SAX parsing error",
+            throw new WfsException(e, "XML getFeature request SAX parsing error",
                 XmlRequestReader.class.getName());
         } catch (IOException e) {
             throw new WfsException(e, "XML get feature request input error",
@@ -90,6 +87,7 @@ public class GetFeatureXmlReader extends XmlRequestReader {
         }
 
         Request r = contentHandler.getRequest(req);
+
         return r;
     }
 }

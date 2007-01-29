@@ -1,31 +1,32 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_1_0;
-
-
-import java.net.URI;
-
-import javax.xml.namespace.QName;
 
 import net.opengis.wfs.IdentifierGenerationOptionType;
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.WFSFactory;
-
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import java.net.URI;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:InsertElementType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;xsd:complexType name="InsertElementType"&gt;
  *      &lt;xsd:annotation&gt;
  *          &lt;xsd:documentation&gt;
- *              An Insert element may contain a feature collection or one 
- *              or more feature instances to be inserted into the 
+ *              An Insert element may contain a feature collection or one
+ *              or more feature instances to be inserted into the
  *              repository.
  *           &lt;/xsd:documentation&gt;
  *      &lt;/xsd:annotation&gt;
@@ -66,14 +67,14 @@ import org.geotools.xml.Node;
  *          name="inputFormat" type="xsd:string" use="optional"&gt;
  *          &lt;xsd:annotation&gt;
  *              &lt;xsd:documentation&gt;
- *                 This inputFormat attribute is used to indicate 
+ *                 This inputFormat attribute is used to indicate
  *                 the format used to encode a feature instance in
  *                 an Insert element.  The default value of
  *                 'text/xml; subtype=gml/3.1.1' is used to indicate
  *                 that feature encoding is GML3.  Another example
  *                 might be 'text/xml; subtype=gml/2.1.2' indicating
  *                 that the feature us encoded in GML2.  A WFS must
- *                 declare in the capabilities document, using a 
+ *                 declare in the capabilities document, using a
  *                 Parameter element, which version of GML it supports.
  *              &lt;/xsd:documentation&gt;
  *          &lt;/xsd:annotation&gt;
@@ -103,86 +104,83 @@ import org.geotools.xml.Node;
  *             &lt;/xsd:documentation&gt;
  *          &lt;/xsd:annotation&gt;
  *      &lt;/xsd:attribute&gt;
- *  &lt;/xsd:complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/xsd:complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class InsertElementTypeBinding extends AbstractComplexBinding {
+    WFSFactory wfsfactory;
 
-	WFSFactory wfsfactory;		
-	public InsertElementTypeBinding( WFSFactory wfsfactory ) {
-		this.wfsfactory = wfsfactory;
-	}
+    public InsertElementTypeBinding(WFSFactory wfsfactory) {
+        this.wfsfactory = wfsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return WFS.INSERTELEMENTTYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return InsertElementType.class;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		InsertElementType insertElement = wfsfactory.createInsertElementType();
-		
-		//&lt;xsd:choice&gt;
-		//   &lt;xsd:element ref="gml:_FeatureCollection"/&gt;
-		//   &lt;xsd:sequence&gt;
-		//       &lt;xsd:element maxOccurs="unbounded" ref="gml:_Feature"/&gt;
-		//   &lt;/xsd:sequence&gt;
-		//&lt;/xsd:choice&gt;
-		if ( node.hasChild( FeatureCollection.class ) ) {
-			FeatureCollection fc = (FeatureCollection) node.getChildValue( FeatureCollection.class );
-			insertElement.getFeature().addAll( fc );
-		}
-		else if ( node.hasChild( Feature.class ) ) {
-			insertElement.getFeature().addAll( node.getChildValues( Feature.class ) );
-		}
-		
-		//&lt;xsd:attribute default="GenerateNew" name="idgen"
-		//		type="wfs:IdentifierGenerationOptionType" use="optional"&gt;
-		if ( node.hasAttribute( "idgen" ) ) {
-			insertElement.setIdgen( (IdentifierGenerationOptionType) node.getAttributeValue( "idgen") );
-		}
-		
-		//&lt;xsd:attribute name="handle" type="xsd:string" use="optional"&gt;
-		if ( node.hasAttribute( "handle" ) ) {
-			insertElement.setHandle( (String) node.getAttributeValue( "handle") );
-		}
-		
-		//&lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
-		//		 name="inputFormat" type="xsd:string" use="optional"&gt;
-		if ( node.hasAttribute( "inputFormat" ) ) {
-			insertElement.setInputFormat( (String) node.getAttributeValue( "inputFormat") );
-		}
-		
-		//&lt;xsd:attribute name="srsName" type="xsd:anyURI" use="optional"&gt;
-		if ( node.hasAttribute( "srsName" ) ) {
-			insertElement.setSrsName( (URI) node.getAttributeValue( "srsName") );
-		}
-		
-		return insertElement;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return WFS.INSERTELEMENTTYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return InsertElementType.class;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        InsertElementType insertElement = wfsfactory.createInsertElementType();
+
+        //&lt;xsd:choice&gt;
+        //   &lt;xsd:element ref="gml:_FeatureCollection"/&gt;
+        //   &lt;xsd:sequence&gt;
+        //       &lt;xsd:element maxOccurs="unbounded" ref="gml:_Feature"/&gt;
+        //   &lt;/xsd:sequence&gt;
+        //&lt;/xsd:choice&gt;
+        if (node.hasChild(FeatureCollection.class)) {
+            FeatureCollection fc = (FeatureCollection) node.getChildValue(FeatureCollection.class);
+            insertElement.getFeature().addAll(fc);
+        } else if (node.hasChild(Feature.class)) {
+            insertElement.getFeature().addAll(node.getChildValues(Feature.class));
+        }
+
+        //&lt;xsd:attribute default="GenerateNew" name="idgen"
+        //		type="wfs:IdentifierGenerationOptionType" use="optional"&gt;
+        if (node.hasAttribute("idgen")) {
+            insertElement.setIdgen((IdentifierGenerationOptionType) node.getAttributeValue("idgen"));
+        }
+
+        //&lt;xsd:attribute name="handle" type="xsd:string" use="optional"&gt;
+        if (node.hasAttribute("handle")) {
+            insertElement.setHandle((String) node.getAttributeValue("handle"));
+        }
+
+        //&lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
+        //		 name="inputFormat" type="xsd:string" use="optional"&gt;
+        if (node.hasAttribute("inputFormat")) {
+            insertElement.setInputFormat((String) node.getAttributeValue("inputFormat"));
+        }
+
+        //&lt;xsd:attribute name="srsName" type="xsd:anyURI" use="optional"&gt;
+        if (node.hasAttribute("srsName")) {
+            insertElement.setSrsName((URI) node.getAttributeValue("srsName"));
+        }
+
+        return insertElement;
+    }
 }

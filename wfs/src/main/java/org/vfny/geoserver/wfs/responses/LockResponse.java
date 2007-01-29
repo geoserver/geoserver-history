@@ -4,15 +4,6 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
-
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
@@ -38,6 +29,15 @@ import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.LockRequest;
 import org.vfny.geoserver.wfs.requests.WFSRequest;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
+
 
 /**
  * Handles a Lock request and creates a LockResponse string.
@@ -51,8 +51,7 @@ import org.vfny.geoserver.wfs.requests.WFSRequest;
  */
 public class LockResponse implements Response {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
 
     /** indicates whether the output should be formatted. */
     private static boolean verbose = false;
@@ -76,26 +75,27 @@ public class LockResponse implements Response {
         verbose = gs.isVerbose();
         nl = verbose ? "\n" : "";
     }
-    
+
     /**
      * Returns any extra headers that this service might want to set in the HTTP response object.
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-    	return null;
+        return null;
     }
 
     public void execute(Request r) throws WfsException {
-    		WFSRequest req = (WFSRequest) r;
-    		
+        WFSRequest req = (WFSRequest) r;
+
         if (!(req instanceof LockRequest)) {
-            throw new WfsException("bad request, expected LockRequest, got "
-                + req);
+            throw new WfsException("bad request, expected LockRequest, got " + req);
         }
-		if( (req.getWFS().getServiceLevel() & WFSDTO.SERVICE_LOCKING ) == 0 ){
-			 // could we catch this during the handler, rather than during execution?
-			 throw new WfsException("Locking support is not enabled");
-		}
+
+        if ((req.getWFS().getServiceLevel() & WFSDTO.SERVICE_LOCKING) == 0) {
+            // could we catch this during the handler, rather than during execution?
+            throw new WfsException("Locking support is not enabled");
+        }
+
         request = (LockRequest) req;
         xmlResponse = getXmlResponse(request);
     }
@@ -104,7 +104,7 @@ public class LockResponse implements Response {
         return gs.getMimeType();
     }
 
-    public String getContentEncoding(){
+    public String getContentEncoding() {
         return null;
     }
 
@@ -184,46 +184,43 @@ public class LockResponse implements Response {
             FeatureSource source = meta.getFeatureSource();
             FeatureCollection features = source.getFeatures(curFilter);
 
-            if( source instanceof FeatureLocking){
-                ((FeatureLocking)source).setFeatureLock(fLock);
+            if (source instanceof FeatureLocking) {
+                ((FeatureLocking) source).setFeatureLock(fLock);
             }
+
             FeatureIterator reader = null;
 
             try {
                 for (reader = features.features(); reader.hasNext();) {
                     Feature feature = reader.next();
                     String fid = feature.getID();
-                    if( !(source instanceof FeatureLocking)){
-                        LOGGER.fine("Lock " + fid +
-                                " not supported by data store (authID:"
-                                + fLock.getAuthorization() + ")");
+
+                    if (!(source instanceof FeatureLocking)) {
+                        LOGGER.fine("Lock " + fid + " not supported by data store (authID:"
+                            + fLock.getAuthorization() + ")");
                         lockFailedFids.add(fid);
-                    }
-                    else {
+                    } else {
                         Filter fidFilter = filterFactory.createFidFilter(fid);
 
                         //DEFQuery is just some indirection, should be in the locking interface.
                         //int numberLocked = ((DEFQueryFeatureLocking)source).lockFeature(feature);
                         //HACK: Query.NO_NAMES isn't working in postgis right now,
                         //so we'll just use all.
-                        Query query = new DefaultQuery(
-                                meta.getTypeName(), fidFilter,
-                                Query.DEFAULT_MAX, Query.ALL_NAMES,
-                                curLock.getHandle());
-                        int numberLocked = ((FeatureLocking)source).lockFeatures( query );
+                        Query query = new DefaultQuery(meta.getTypeName(), fidFilter,
+                                Query.DEFAULT_MAX, Query.ALL_NAMES, curLock.getHandle());
+                        int numberLocked = ((FeatureLocking) source).lockFeatures(query);
 
                         if (numberLocked == 1) {
-                            LOGGER.fine("Lock " + fid + " (authID:"
-                                + fLock.getAuthorization() + ")");
+                            LOGGER.fine("Lock " + fid + " (authID:" + fLock.getAuthorization()
+                                + ")");
                             lockedFids.add(fid);
                         } else if (numberLocked == 0) {
                             LOGGER.fine("Lock " + fid + " conflict (authID:"
                                 + fLock.getAuthorization() + ")");
                             lockFailedFids.add(fid);
                         } else {
-                            LOGGER.warning("Lock " + numberLocked + " " + fid
-                                + " (authID:" + fLock.getAuthorization()
-                                + ") duplicated FeatureID!");
+                            LOGGER.warning("Lock " + numberLocked + " " + fid + " (authID:"
+                                + fLock.getAuthorization() + ") duplicated FeatureID!");
                             lockedFids.add(fid);
                         }
                     }
@@ -236,8 +233,8 @@ public class LockResponse implements Response {
                 // the DataStoreInfo needs some quality control
                 //
                 // should rollback the lock as well :-(
-                throw new WfsException("Lock request " + curFilter
-                    + " did not match " + curTypeName);
+                throw new WfsException("Lock request " + curFilter + " did not match "
+                    + curTypeName);
             } finally {
                 if (reader != null) {
                     reader.close();
@@ -249,13 +246,12 @@ public class LockResponse implements Response {
             // I think we need to release and fail when lockAll fails
             //
             // abort will release the locks
-            throw new WfsException("Could not aquire locks for:"
-                + lockFailedFids);
+            throw new WfsException("Could not aquire locks for:" + lockFailedFids);
         }
 
         if (getXml) {
-            return generateXml(fLock.getAuthorization(), lockAll,
-                lockedFids, lockFailedFids, request);
+            return generateXml(fLock.getAuthorization(), lockAll, lockedFids, lockFailedFids,
+                request);
         } else {
             return fLock.getAuthorization();
         }
@@ -278,8 +274,7 @@ public class LockResponse implements Response {
         } catch (IOException ioException) {
             ioException.printStackTrace(System.out);
 
-            WfsException wfsException = new WfsException(
-                    "Problem aquiring lock");
+            WfsException wfsException = new WfsException("Problem aquiring lock");
             wfsException.initCause(ioException);
             throw wfsException;
         }
@@ -300,8 +295,8 @@ public class LockResponse implements Response {
      *
      * @return The xml response of this lock.
      */
-    private static String generateXml(String lockId, boolean lockAll,
-        Set lockedFeatures, Set notLockedFeatures, WFSRequest request) {
+    private static String generateXml(String lockId, boolean lockAll, Set lockedFeatures,
+        Set notLockedFeatures, WFSRequest request) {
         String indent = verbose ? "   " : "";
         String xmlHeader = "<?xml version=\"1.0\" encoding=\""
             + request.getWFS().getGeoServer().getCharSet().name() + "\"?>";
@@ -314,12 +309,11 @@ public class LockResponse implements Response {
         //these namespace imports, as everyone is using them, and changes should
         //go through to all the operations.
         if (!lockAll) {
-            returnXml.append(indent
-                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " + nl);
+            returnXml.append(indent + "xmlns:ogc=\"http://www.opengis.net/ogc\" " + nl);
         }
 
-        returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/"
-            + "XMLSchema-instance\" " + nl);
+        returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/" + "XMLSchema-instance\" "
+            + nl);
         returnXml.append(indent + "xsi:schemaLocation=\"http://www.opengis");
         returnXml.append(".net/wfs ");
         returnXml.append(request.getSchemaBaseUrl());
@@ -333,8 +327,7 @@ public class LockResponse implements Response {
 
                 for (Iterator i = lockedFeatures.iterator(); i.hasNext();) {
                     returnXml.append(indent + indent);
-                    returnXml.append("<ogc:FeatureId fid=\"" + i.next()
-                        + "\"/>" + nl);
+                    returnXml.append("<ogc:FeatureId fid=\"" + i.next() + "\"/>" + nl);
                 }
 
                 returnXml.append(indent + "</FeaturesLocked>" + nl);
@@ -345,8 +338,7 @@ public class LockResponse implements Response {
 
                 for (Iterator i = notLockedFeatures.iterator(); i.hasNext();) {
                     returnXml.append(indent + indent);
-                    returnXml.append("<ogc:FeatureId fid=\"" + i.next()
-                        + "\"/>" + nl);
+                    returnXml.append("<ogc:FeatureId fid=\"" + i.next() + "\"/>" + nl);
                 }
 
                 returnXml.append("</FeaturesNotLocked>" + nl);
@@ -391,8 +383,8 @@ public class LockResponse implements Response {
 
                 try {
                     t.addAuthorization(featureLock.getAuthorization());
-                    source.getDataStore().getLockingManager().release(featureLock
-                        .getAuthorization(), t);
+                    source.getDataStore().getLockingManager()
+                          .release(featureLock.getAuthorization(), t);
                 } finally {
                     t.close();
                 }
@@ -402,8 +394,8 @@ public class LockResponse implements Response {
         }
     }
 
-	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public String getContentDisposition() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

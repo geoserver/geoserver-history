@@ -1,20 +1,22 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.ows.xml.v1_0;
 
-
-import javax.xml.namespace.QName;
-
 import net.opengis.ows.v1_0_0.OWSFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/ows:DomainType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;complexType name="DomainType"&gt;
  *      &lt;annotation&gt;
  *          &lt;documentation&gt;Valid domain (or set of values) of one parameter or other quantity used by this server. A non-parameter quantity may not be explicitly represented in the server software. (Informative: An example is the outputFormat parameter of a WFS. Each WFS server should provide a Parameter element for the outputFormat parameter that lists the supported output formats, such as GML2, GML3, etc. as the allowed "Value" elements.) &lt;/documentation&gt;
@@ -36,49 +38,47 @@ import org.geotools.xml.Node;
  *              &lt;documentation&gt;Name or identifier of this parameter or other quantity. &lt;/documentation&gt;
  *          &lt;/annotation&gt;
  *      &lt;/attribute&gt;
- *  &lt;/complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class DomainTypeBinding extends AbstractComplexBinding {
+    OWSFactory owsfactory;
 
-	OWSFactory owsfactory;		
-	public DomainTypeBinding( OWSFactory owsfactory ) {
-		this.owsfactory = owsfactory;
-	}
+    public DomainTypeBinding(OWSFactory owsfactory) {
+        this.owsfactory = owsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return OWS.DOMAINTYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return null;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		//TODO: implement
-		return null;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return OWS.DOMAINTYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return null;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        //TODO: implement
+        return null;
+    }
 }

@@ -1,20 +1,22 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_0_0;
 
-
-import javax.xml.namespace.QName;
-
 import net.opengis.wfs.WFSFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:TransactionResultType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;xsd:complexType name="TransactionResultType"&gt;
  *      &lt;xsd:sequence&gt;
  *          &lt;xsd:element name="Status" type="wfs:StatusType"&gt;
@@ -23,7 +25,7 @@ import org.geotools.xml.Node;
  *                    The Status element contains an element indicating the
  *                    completion status of a transaction.  The SUCCESS element
  *                    is used to indicate successful completion.  The FAILED
- *                    element is used to indicate that an exception was 
+ *                    element is used to indicate that an exception was
  *                    encountered.
  *                 &lt;/xsd:documentation&gt;
  *              &lt;/xsd:annotation&gt;
@@ -31,7 +33,7 @@ import org.geotools.xml.Node;
  *          &lt;xsd:element minOccurs="0" name="Locator" type="xsd:string"&gt;
  *              &lt;xsd:annotation&gt;
  *                  &lt;xsd:documentation&gt;
- *                    In the event that an exception was encountered while 
+ *                    In the event that an exception was encountered while
  *                    processing a transaction, a Web Feature Service may
  *                    use the Locator element to try and identify the part
  *                    of the transaction that failed.  If the element(s)
@@ -52,49 +54,47 @@ import org.geotools.xml.Node;
  *          &lt;/xsd:element&gt;
  *      &lt;/xsd:sequence&gt;
  *      &lt;xsd:attribute name="handle" type="xsd:string" use="optional"/&gt;
- *  &lt;/xsd:complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/xsd:complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class TransactionResultTypeBinding extends AbstractComplexBinding {
+    WFSFactory wfsfactory;
 
-	WFSFactory wfsfactory;		
-	public TransactionResultTypeBinding( WFSFactory wfsfactory ) {
-		this.wfsfactory = wfsfactory;
-	}
+    public TransactionResultTypeBinding(WFSFactory wfsfactory) {
+        this.wfsfactory = wfsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return WFS.TRANSACTIONRESULTTYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return null;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		//TODO: implement
-		return null;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return WFS.TRANSACTIONRESULTTYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return null;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        //TODO: implement
+        return null;
+    }
 }

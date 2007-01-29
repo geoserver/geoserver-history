@@ -1,23 +1,25 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml.v1_0_0;
-
-
-import javax.xml.namespace.QName;
 
 import net.opengis.wfs.DescribeFeatureTypeType;
 import net.opengis.wfs.WFSFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:DescribeFeatureTypeType.
  *
  * <p>
- *	<pre>
- *	 <code>
- *  &lt;xsd:complexType name="DescribeFeatureTypeType"&gt;       
- *  		&lt;xsd:annotation&gt;
+ *        <pre>
+ *         <code>
+ *  &lt;xsd:complexType name="DescribeFeatureTypeType"&gt;
+ *                  &lt;xsd:annotation&gt;
  *              &lt;xsd:documentation&gt;             The DescribeFeatureType
  *              operation allows a client application             to request
  *              that a Web Feature Service describe one or more
@@ -54,58 +56,55 @@ import org.geotools.xml.Node;
  *                  be used to validate the GML2 output of a GetFeature
  *                  request                or feature instances specified in
  *                  Transaction operations.             &lt;/xsd:documentation&gt;
- *          &lt;/xsd:annotation&gt;       &lt;/xsd:attribute&gt;    &lt;/xsd:complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *          &lt;/xsd:annotation&gt;       &lt;/xsd:attribute&gt;    &lt;/xsd:complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class DescribeFeatureTypeTypeBinding extends AbstractComplexBinding {
+    WFSFactory wfsfactory;
 
-	WFSFactory wfsfactory;		
-	
-	public DescribeFeatureTypeTypeBinding( WFSFactory wfsfactory ) {
-		this.wfsfactory = wfsfactory;
-	}
+    public DescribeFeatureTypeTypeBinding(WFSFactory wfsfactory) {
+        this.wfsfactory = wfsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return WFS.DESCRIBEFEATURETYPETYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return DescribeFeatureTypeType.class;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		DescribeFeatureTypeType describeFeatureType 
-			= wfsfactory.createDescribeFeatureTypeType();
-		
-		WFSBindingUtils.service( describeFeatureType, node );
-		WFSBindingUtils.version( describeFeatureType, node );
-		WFSBindingUtils.outputFormat( describeFeatureType, node, "XMLSCHEMA" );
-		
-		describeFeatureType.getTypeName().addAll( node.getChildValues( QName.class ) );
-		
-		return describeFeatureType;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return WFS.DESCRIBEFEATURETYPETYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return DescribeFeatureTypeType.class;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        DescribeFeatureTypeType describeFeatureType = wfsfactory
+            .createDescribeFeatureTypeType();
+
+        WFSBindingUtils.service(describeFeatureType, node);
+        WFSBindingUtils.version(describeFeatureType, node);
+        WFSBindingUtils.outputFormat(describeFeatureType, node, "XMLSCHEMA");
+
+        describeFeatureType.getTypeName().addAll(node.getChildValues(QName.class));
+
+        return describeFeatureType;
+    }
 }

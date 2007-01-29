@@ -4,30 +4,28 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
+import org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi;
 
 /**
  * ShapefileFeatureResponseDelegateFactory
  * Sep 6, 2005
- * 
+ *
  * Purpose:
- * 
- * 
+ *
+ *
  * @author Brent Owens, TOPP
- * @version 
+ * @version
  */
-public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseDelegateProducerSpi 
-{
-	
-	static HashSet supportedFormats = new HashSet();
-	
-	static{
-		supportedFormats.add(ShapeFeatureResponseDelegate.formatName);	// eg. SHAPE-ZIP
-	}
+public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseDelegateProducerSpi {
+    static HashSet supportedFormats = new HashSet();
+
+    static {
+        supportedFormats.add(ShapeFeatureResponseDelegate.formatName); // eg. SHAPE-ZIP
+    }
 
     /**
      * Creates a new GifMapProducerFactory object.
@@ -36,7 +34,6 @@ public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseD
         super();
     }
 
-    
     /* (non-Javadoc)
      * @see org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi#getName()
      */
@@ -47,11 +44,10 @@ public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseD
     /**
      * Returns the Set of output format this producer supports
      *
-     * @return 
+     * @return
      */
-    public Set getSupportedFormats() 
-    {
-    	 return supportedFormats;
+    public Set getSupportedFormats() {
+        return supportedFormats;
     }
 
     /**
@@ -75,24 +71,23 @@ public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseD
         return ShapeFeatureResponseDelegate.formatName.equalsIgnoreCase(outputFormat);
     }
 
-    
-    
     /* (non-Javadoc)
-	 * @see org.geotools.factory.Factory#getImplementationHints()
-	 * This just returns java.util.Collections.EMPTY_MAP
-	 */
-	public Map getImplementationHints() {
-		return java.util.Collections.EMPTY_MAP;
-	}
+         * @see org.geotools.factory.Factory#getImplementationHints()
+         * This just returns java.util.Collections.EMPTY_MAP
+         */
+    public Map getImplementationHints() {
+        return java.util.Collections.EMPTY_MAP;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi#createFeatureDelegateProducer(java.lang.String)
-	 */
-	public FeatureResponseDelegate createFeatureDelegateProducer(String format) throws IllegalArgumentException 
-	{
-		if (canProduce(format))
-			return new ShapeFeatureResponseDelegate();
-		throw new IllegalArgumentException("cannot produce "+format);
-	}
-	
+    /* (non-Javadoc)
+     * @see org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi#createFeatureDelegateProducer(java.lang.String)
+     */
+    public FeatureResponseDelegate createFeatureDelegateProducer(String format)
+        throws IllegalArgumentException {
+        if (canProduce(format)) {
+            return new ShapeFeatureResponseDelegate();
+        }
+
+        throw new IllegalArgumentException("cannot produce " + format);
+    }
 }

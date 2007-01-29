@@ -11,7 +11,6 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.form.data.CoverageStoresNewForm;
 import org.vfny.geoserver.global.UserContainer;
-
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Create a new CoverageStoreConfig based on user's input.
- * 
+ *
  * <p>
  * Will need to update the current DataFormatId as stored in session context.
  * </p>
@@ -32,15 +31,15 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id: CoverageStoresNewAction.java,v 1.12 2004/02/25 21:51:11 dmzwiers Exp $
  */
 public final class CoverageStoresNewAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
-
         final CoverageStoresNewForm newForm = (CoverageStoresNewForm) form;
         final CoverageStoreConfig newFormatConfig;
         newFormatConfig = new CoverageStoreConfig(newForm.getDataFormatID(),
                 newForm.getSelectedDescription());
         getUserContainer(request).setDataFormatConfig(newFormatConfig);
+
         return mapping.findForward("config.data.format.editor");
     }
 }

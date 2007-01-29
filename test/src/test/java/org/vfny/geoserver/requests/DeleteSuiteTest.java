@@ -4,17 +4,15 @@
  */
 package org.vfny.geoserver.requests;
 
-import java.util.Map;
-import java.util.logging.Logger;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.geotools.filter.FidFilter;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wfs.requests.DeleteRequest;
 import org.vfny.geoserver.wfs.requests.TransactionRequest;
 import org.vfny.geoserver.wfs.requests.readers.DeleteKvpReader;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -31,8 +29,7 @@ public class DeleteSuiteTest extends TransactionSuiteTest {
     //}
 
     /** Class logger */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /**
      * Constructor with super.
@@ -43,7 +40,6 @@ public class DeleteSuiteTest extends TransactionSuiteTest {
         super(testName);
     }
 
-    
     public static Test suite() {
         TestSuite suite = new TestSuite("Delete tests");
         suite.addTestSuite(DeleteSuiteTest.class);
@@ -76,7 +72,7 @@ public class DeleteSuiteTest extends TransactionSuiteTest {
        }
        }*/
     protected KvpRequestReader getKvpReader(Map kvps) {
-        return new DeleteKvpReader(kvps,service);
+        return new DeleteKvpReader(kvps, service);
     }
 
     /* ********************************************************************
@@ -93,9 +89,8 @@ public class DeleteSuiteTest extends TransactionSuiteTest {
      * @throws Exception DOCUMENT ME!
      */
     public void testKVP1() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&"
-            + "REQUEST=TRANSACTION&" + "OPERATION=delete&" + "TYPENAME=rail&"
-            + "featureID=123";
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=TRANSACTION&"
+            + "OPERATION=delete&" + "TYPENAME=rail&" + "featureID=123";
 
         // make base comparison objects        
         TransactionRequest baseRequest = new TransactionRequest(service);
@@ -110,7 +105,7 @@ public class DeleteSuiteTest extends TransactionSuiteTest {
         assertTrue(runKvpTest(baseRequest, testRequest, true));
     }
 
-   public void testXml1() throws Exception {
+    public void testXml1() throws Exception {
         // make base comparison objects        
         DeleteRequest delete = new DeleteRequest();
         delete.setFilter(factory.createFidFilter("123"));

@@ -4,17 +4,6 @@
  */
 package org.vfny.geoserver.action;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -31,19 +20,28 @@ import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.vfny.geoserver.global.xml.XMLConfigWriter.WriterUtils;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
  * Save GeoServer state to XML.
- * 
+ *
  * <p>
  * This is a propert ConfigAction - you need to be logged in for this to work.
  * </p>
  */
 public class SaveXMLAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException {
         ActionForward r1 = saveGeoserver(mapping, form, request, response);
         ActionForward r2 = saveValidation(mapping, form, request, response);
 
@@ -53,19 +51,17 @@ public class SaveXMLAction extends ConfigAction {
     }
 
     private ActionForward saveGeoserver(ActionMapping mapping, ActionForm form,
-        
-    //UserContainer user,
+        //UserContainer user,
     HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         ServletContext sc = request.getSession().getServletContext();
-       
+
         //File rootDir = new File(sc.getRealPath("/"));
         File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
+
         try {
-            XMLConfigWriter.store(
-            	(WCSDTO) getWCS(request).toDTO(),
-            	(WMSDTO) getWMS(request).toDTO(),
-                (WFSDTO) getWFS(request).toDTO(),
+            XMLConfigWriter.store((WCSDTO) getWCS(request).toDTO(),
+                (WMSDTO) getWMS(request).toDTO(), (WFSDTO) getWFS(request).toDTO(),
                 (GeoServerDTO) getWFS(request).getGeoServer().toDTO(),
                 (DataDTO) getWFS(request).getData().toDTO(), rootDir);
         } catch (ConfigurationException e) {
@@ -79,29 +75,33 @@ public class SaveXMLAction extends ConfigAction {
         return mapping.findForward("config");
     }
 
-    private ActionForward saveValidation(ActionMapping mapping,
-        ActionForm form, 
-    //UserContainer user,
+    private ActionForward saveValidation(ActionMapping mapping, ActionForm form,
+        //UserContainer user,
     HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         ServletContext sc = request.getSession().getServletContext();
+
         //CH: changed for geoserver_data_dir, forgotten first round.
         File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
-	File dataDir;
-	if (GeoserverDataDirectory.isTrueDataDir()){
-	    dataDir = rootDir;
-	} else {
-	    dataDir = new File(rootDir, "data/");
-	}
-	File plugInDir;
-	File validationDir;
-	try {
-	    plugInDir = WriterUtils.initWriteFile(new File(dataDir, "plugIns"), true);
-	    validationDir = WriterUtils.initWriteFile(new File(dataDir, "validation"), true);
-	} catch (ConfigurationException confE) {
-	    throw new ServletException(confE);
-	}
+        File dataDir;
+
+        if (GeoserverDataDirectory.isTrueDataDir()) {
+            dataDir = rootDir;
+        } else {
+            dataDir = new File(rootDir, "data/");
+        }
+
+        File plugInDir;
+        File validationDir;
+
+        try {
+            plugInDir = WriterUtils.initWriteFile(new File(dataDir, "plugIns"), true);
+            validationDir = WriterUtils.initWriteFile(new File(dataDir, "validation"), true);
+        } catch (ConfigurationException confE) {
+            throw new ServletException(confE);
+        }
+
         Map plugIns = (Map) getWFS(request).getValidation().toPlugInDTO();
         Map testSuites = (Map) getWFS(request).getValidation().toTestSuiteDTO();
 
@@ -117,6 +117,7 @@ public class SaveXMLAction extends ConfigAction {
                 try {
                     key = i.next();
                     dto = (PlugInDTO) plugIns.get(key);
+
                     String fName = dto.getName().replaceAll(" ", "") + ".xml";
                     File pFile = WriterUtils.initWriteFile(new File(plugInDir, fName), false);
                     FileWriter fw = new FileWriter(pFile);
@@ -148,10 +149,12 @@ public class SaveXMLAction extends ConfigAction {
 
                 try {
                     dto = (TestSuiteDTO) testSuites.get(i.next());
+
                     String fName = dto.getName().replaceAll(" ", "") + ".xml";
                     File pFile = WriterUtils.initWriteFile(new File(validationDir, fName), false);
-                    FileWriter fw = new FileWriter(pFile);//new File(validationDir,
-                    //dto.getName().replaceAll(" ", "") + ".xml"));
+                    FileWriter fw = new FileWriter(pFile); //new File(validationDir,
+                                                           //dto.getName().replaceAll(" ", "") + ".xml"));
+
                     XMLWriter.writeTestSuite(dto, fw);
                     fw.close();
                 } catch (Exception e) {
@@ -167,10 +170,12 @@ public class SaveXMLAction extends ConfigAction {
 
         if (testsFL != null) {
             for (int j = 0; j < testsFL.length; j++) {
-				boolean found = false;
-				i = testSuites.keySet().iterator();
-				while(!found && i.hasNext())
-					found = (((TestSuiteDTO) testSuites.get(i.next())).getName().replaceAll(" ", "") + ".xml").equals(testsFL[j].getName());
+                boolean found = false;
+                i = testSuites.keySet().iterator();
+
+                while (!found && i.hasNext())
+                    found = (((TestSuiteDTO) testSuites.get(i.next())).getName().replaceAll(" ", "")
+                        + ".xml").equals(testsFL[j].getName());
 
                 if (!found) {
                     testsFL[j].delete();

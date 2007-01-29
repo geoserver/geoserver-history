@@ -4,13 +4,12 @@
  */
 package org.vfny.geoserver.wfs;
 
+import org.geotools.data.DefaultQuery;
+import org.opengis.filter.Filter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
-
-import org.geotools.data.DefaultQuery;
-import org.opengis.filter.Filter;
 
 
 /**
@@ -27,8 +26,7 @@ public class Query {
     //back this by geotools query?  Have a get datasource query?
 
     /** Standard logging instance for the class */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /** The user-specified name for the query. */
     protected String handle = new String();
@@ -68,9 +66,9 @@ public class Query {
     public List getPropertyNames() {
         return propertyNames;
     }
-    
-    public void setPropertyNames(List l){
-    	propertyNames = l;
+
+    public void setPropertyNames(List l) {
+        propertyNames = l;
     }
 
     /**
@@ -220,20 +218,20 @@ public class Query {
             props = (String[]) propertyNames.toArray(new String[0]);
         }
 
-        DefaultQuery query = new DefaultQuery(getName(), this.filter,
-                maxFeatures, props, this.handle);
+        DefaultQuery query = new DefaultQuery(getName(), this.filter, maxFeatures, props,
+                this.handle);
 
         return query;
     }
 
     /**
      * Get this query as a geotools Query.
-     * 
+     *
      * <p>
      * if maxFeatures is a not positive value DefaultQuery.DEFAULT_MAX will be
      * used.
      * </p>
-     * 
+     *
      * <p>
      * The method name is changed to toDataStoreQuery since this is a one way
      * conversion.
@@ -258,8 +256,8 @@ public class Query {
             filter = Filter.INCLUDE;
         }
 
-        DefaultQuery query = new DefaultQuery(getName(), this.filter,
-                maxFeatures, props, this.handle);
+        DefaultQuery query = new DefaultQuery(getName(), this.filter, maxFeatures, props,
+                this.handle);
 
         return query;
     }
@@ -318,8 +316,8 @@ public class Query {
         isEqual = query.getHandle().equals(handle) ? (true && isEqual) : false;
         LOGGER.finest("checked handle: " + isEqual);
         isEqual = query.getTypeName().equals(typeName) ? (true && isEqual) : false;
-        LOGGER.finest("checked feature type: " + isEqual + "; internal: "
-            + query.getTypeName() + "; external: " + typeName);
+        LOGGER.finest("checked feature type: " + isEqual + "; internal: " + query.getTypeName()
+            + "; external: " + typeName);
         isEqual = query.getVersion().equals(version) ? (true && isEqual) : false;
         LOGGER.finest("checked version: " + isEqual);
 
@@ -334,8 +332,8 @@ public class Query {
 
         // check property names for equality, handling case where property
         //  lists are of different lengths
-        LOGGER.finest("checking properties, internal: " + propertyNames.size()
-            + "; external: " + query.getPropertyNames().size());
+        LOGGER.finest("checking properties, internal: " + propertyNames.size() + "; external: "
+            + query.getPropertyNames().size());
 
         if (propertyNames.size() == query.getPropertyNames().size()) {
             Iterator i = propertyNames.listIterator();
@@ -359,8 +357,7 @@ public class Query {
     public int hashCode() {
         int result = 17;
         result = (23 * result) + ((typeName == null) ? 0 : typeName.hashCode());
-        result = (23 * result)
-            + ((propertyNames == null) ? 0 : propertyNames.hashCode());
+        result = (23 * result) + ((propertyNames == null) ? 0 : propertyNames.hashCode());
 
         //Filter in geotools doesn't have hashCode implemented.
         return result;

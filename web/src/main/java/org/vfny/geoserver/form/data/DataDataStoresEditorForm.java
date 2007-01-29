@@ -4,21 +4,6 @@
  */
 package org.vfny.geoserver.form.data;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -30,11 +15,24 @@ import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
 import org.vfny.geoserver.util.Requests;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
  * Represents the information required for editing a DataStore.
- * 
+ *
  * <p>
  * The parameters required by a DataStore are dynamically generated from the
  * DataStoreFactorySPI. Most use of DataStoreFactorySPI has been hidden behind
@@ -74,9 +72,10 @@ public class DataDataStoresEditorForm extends ActionForm {
 
     /** String representation of connection paramter types */
     private List paramTypes;
-    
+
     /** String representation of paramters which are required */
     private List paramRequired;
+
     //
     // More hacky attempts to transfer information into the JSP smoothly
     //
@@ -111,16 +110,16 @@ public class DataDataStoresEditorForm extends ActionForm {
             // The JSP needs to not include us if there is no
             // selected DataStore
             //
-            throw new RuntimeException(
-                "selectedDataStoreId required in Session");
+            throw new RuntimeException("selectedDataStoreId required in Session");
         }
 
         dataStoreId = dsConfig.getId();
         description = dsConfig.getAbstract();
         enabled = dsConfig.isEnabled();
         namespaceId = dsConfig.getNameSpaceId();
+
         if (namespaceId.equals("")) {
-        	namespaceId = config.getDefaultNameSpace().getPrefix();
+            namespaceId = config.getDefaultNameSpace().getPrefix();
         }
 
         //Retrieve connection params
@@ -158,20 +157,19 @@ public class DataDataStoresEditorForm extends ActionForm {
             paramKeys.add(key);
             paramValues.add((text != null) ? text : "");
             paramTypes.add(param.type.getName());
-            paramHelp.add(param.description
-                + (param.required ? "" : " (optional)"));
+            paramHelp.add(param.description + (param.required ? "" : " (optional)"));
             paramRequired.add(Boolean.valueOf(param.required).toString());
         }
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
-        
+
         // Selected DataStoreConfig is in session
         //
-        UserContainer user = Requests.getUserContainer( request );
+        UserContainer user = Requests.getUserContainer(request);
         DataStoreConfig dsConfig = user.getDataStoreConfig();
+
         //
         // dsConfig is the only way to get a factory
         DataStoreFactorySpi factory = dsConfig.getFactory();
@@ -196,47 +194,46 @@ public class DataDataStoresEditorForm extends ActionForm {
 
             //special case check for url
             if (URL.class.equals(param.type)) {
-            	String value = getParamValue(i);
-            	if (value != null && !"".equals(value)) {
-            		URL url = null;
-            		try {
-            			// if this does not throw an exception then cool
-            			url = new URL(value);
-            		}
-            		catch(MalformedURLException e) {
-            			//check for special case of file
-            			try {
-							if (new File(value).exists())  {
-								new URL("file://" + value);
-								setParamValues(i,"file://" + value);
-							}
-						} 
-            			catch (MalformedURLException e1) {
-            				//let this paramter die later
-						}
-            		}
-            		
-            	}
+                String value = getParamValue(i);
+
+                if ((value != null) && !"".equals(value)) {
+                    URL url = null;
+
+                    try {
+                        // if this does not throw an exception then cool
+                        url = new URL(value);
+                    } catch (MalformedURLException e) {
+                        //check for special case of file
+                        try {
+                            if (new File(value).exists()) {
+                                new URL("file://" + value);
+                                setParamValues(i, "file://" + value);
+                            }
+                        } catch (MalformedURLException e1) {
+                            //let this paramter die later
+                        }
+                    }
+                }
             }
-            
+
             Object value;
 
             try {
                 value = param.lookUp(getParams());
-                if(value instanceof String)
-                	value = param.parse((String)value);
+
+                if (value instanceof String) {
+                    value = param.parse((String) value);
+                }
             } catch (IOException erp) {
                 errors.add("paramValue[" + i + "]",
-                    new ActionError("error.dataStoreEditor.param.parse", key,
-                        param.type, erp));
+                    new ActionError("error.dataStoreEditor.param.parse", key, param.type, erp));
 
                 continue;
-            }catch(Throwable t){//thrown by param.parse()
+            } catch (Throwable t) { //thrown by param.parse()
                 errors.add("paramValue[" + i + "]",
-                        new ActionError("error.dataStoreEditor.param.parse", key,
-                            param.type, t));
+                    new ActionError("error.dataStoreEditor.param.parse", key, param.type, t));
 
-                    continue;
+                continue;
             }
 
             if ((value == null) && param.required) {
@@ -254,50 +251,53 @@ public class DataDataStoresEditorForm extends ActionForm {
         // put magic namespace into the mix
         //
         //connectionParams.put("namespace", getNamespaceId());
+        dump("form", connectionParams);
 
-        dump("form", connectionParams );
         // Factory will provide even more stringent checking
         //
-        if (!factory.canProcess( connectionParams )) {
-            errors.add("paramValue",
-                new ActionError("error.datastoreEditor.validation"));
+        if (!factory.canProcess(connectionParams)) {
+            errors.add("paramValue", new ActionError("error.datastoreEditor.validation"));
         }
 
         return errors;
     }
+
     /** Used to debug connection parameters */
-    public void dump( String msg, Map params ){
-    	if( msg != null ){
-    		System.out.print( msg + " ");
-    	}
-    	System.out.print( " connection params { " );
-    	for( Iterator i=params.entrySet().iterator(); i.hasNext();){
-    		Map.Entry entry = (Map.Entry) i.next();
-    		System.out.print( entry.getKey() );
-    		System.out.print("=");
-    		if( entry.getValue()==null){
-    			System.out.print("null");
-    		}
-    		else if ( entry.getValue() instanceof String){
-    			System.out.print("\"");
-    			System.out.print( entry.getValue() );
-    			System.out.print("\"");
-    		}
-    		else {
-    			System.out.print( entry.getValue() );
-    		}
-    		if( i.hasNext() ){
-    			System.out.print( ", " );
-    		}
-    	}
-    	System.out.println( "}" );
+    public void dump(String msg, Map params) {
+        if (msg != null) {
+            System.out.print(msg + " ");
+        }
+
+        System.out.print(" connection params { ");
+
+        for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            System.out.print(entry.getKey());
+            System.out.print("=");
+
+            if (entry.getValue() == null) {
+                System.out.print("null");
+            } else if (entry.getValue() instanceof String) {
+                System.out.print("\"");
+                System.out.print(entry.getValue());
+                System.out.print("\"");
+            } else {
+                System.out.print(entry.getValue());
+            }
+
+            if (i.hasNext()) {
+                System.out.print(", ");
+            }
+        }
+
+        System.out.println("}");
     }
+
     public Map getParams() {
         Map map = new HashMap();
 
         for (int i = 0; i < paramKeys.size(); i++) {
             map.put(paramKeys.get(i), paramValues.get(i));
-            
         }
 
         return map;
@@ -346,7 +346,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 
     /**
      * getDataStoreId purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -359,7 +359,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 
     /**
      * getDescription purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -372,7 +372,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 
     /**
      * isEnabled purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -385,7 +385,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 
     /**
      * getNamespaces purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -398,7 +398,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 
     /**
      * getParamValues purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -411,7 +411,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 
     /**
      * setDescription purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -424,7 +424,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 
     /**
      * setEnabled purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -438,7 +438,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 
     /**
      * setParamKeys purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -451,7 +451,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 
     /**
      * setParamValues purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -464,7 +464,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 
     /**
      * getNamespaceId purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -477,7 +477,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 
     /**
      * setNamespaceId purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -525,37 +525,37 @@ public class DataDataStoresEditorForm extends ActionForm {
     public String getParamHelp(int index) {
         return (String) paramHelp.get(index);
     }
-    
+
     /**
      * @return list containing the name of the class of each paramter.
      */
     public List getParamTypes() {
-    	return paramTypes;
+        return paramTypes;
     }
-    
+
     /**
      * @param index paramter index.
-     * 
-     * @return The string represention of the class of the paramter at the 
+     *
+     * @return The string represention of the class of the paramter at the
      * specified index.
      */
     public String getParamType(int index) {
-    	return (String)paramTypes.get(index);
+        return (String) paramTypes.get(index);
     }
-    
+
     /**
-     * @return list containing java.lang.Boolean values representing which 
+     * @return list containing java.lang.Boolean values representing which
      * paramters are required.
      */
     public List getParamRequired() {
-    	return paramRequired;
+        return paramRequired;
     }
-    
+
     /**
      * @param index paramter index.
      * @return True if the paramter is required, otherwise false.
      */
     public String getParamRequired(int index) {
-    	return (String)paramRequired.get(index);
+        return (String) paramRequired.get(index);
     }
 }

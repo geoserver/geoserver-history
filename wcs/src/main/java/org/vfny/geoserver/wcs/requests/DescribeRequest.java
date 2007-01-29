@@ -4,215 +4,217 @@
  */
 package org.vfny.geoserver.wcs.requests;
 
+import org.vfny.geoserver.wcs.servlets.WCService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.wcs.servlets.WCService;
 
 /**
  * DOCUMENT ME!
- * 
+ *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
  */
 public class DescribeRequest extends WCSRequest {
-	/** Class logger */
-	private static Logger LOGGER = Logger
-			.getLogger("org.vfny.geoserver.requests.wcs");
+    /** Class logger */
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wcs");
 
-	/** Flags whether or not all coverages were requested */
-	protected boolean allRequested = true;
+    /** Flags whether or not all coverages were requested */
+    protected boolean allRequested = true;
 
-	/**
-	 * Stores all coverages
-	 * 
-	 * @uml.property name="coverages"
-	 * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
-	 */
-	protected List coverages = new ArrayList();
+    /**
+     * Stores all coverages
+     *
+     * @uml.property name="coverages"
+     * @uml.associationEnd elementType="java.lang.String" multiplicity="(0 -1)"
+     */
+    protected List coverages = new ArrayList();
 
-	/**
-	 * 
-	 * @uml.property name="outputFormat" multiplicity="(0 1)"
-	 */
-	protected String outputFormat = "XMLSCHEMA";
+    /**
+     *
+     * @uml.property name="outputFormat" multiplicity="(0 1)"
+     */
+    protected String outputFormat = "XMLSCHEMA";
 
-	/**
-	 * Empty constructor.
-	 */
-	public DescribeRequest(WCService service) {
-		super("DescribeCoverage", service);
-	}
+    /**
+     * Empty constructor.
+     */
+    public DescribeRequest(WCService service) {
+        super("DescribeCoverage", service);
+    }
 
-	/**
-	 * Return request type.
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public String getRequest() {
-		return "DESCRIBECOVERAGE";
-	}
+    /**
+     * Return request type.
+     *
+     * @return DOCUMENT ME!
+     */
+    public String getRequest() {
+        return "DESCRIBECOVERAGE";
+    }
 
-	/**
-	 * Return boolean for all requested coverages.
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public boolean allRequested() {
-		return this.allRequested;
-	}
+    /**
+     * Return boolean for all requested coverages.
+     *
+     * @return DOCUMENT ME!
+     */
+    public boolean allRequested() {
+        return this.allRequested;
+    }
 
-	/**
-	 * Set requested coverages.
-	 * 
-	 * @param coverages
-	 *            DOCUMENT ME!
-	 * 
-	 * @uml.property name="coverages"
-	 */
-	public void setCoverages(List coverages) {
-		this.coverages.clear();
-		this.coverages.addAll(coverages);
-		this.allRequested = false;
-	}
+    /**
+     * Set requested coverages.
+     *
+     * @param coverages
+     *            DOCUMENT ME!
+     *
+     * @uml.property name="coverages"
+     */
+    public void setCoverages(List coverages) {
+        this.coverages.clear();
+        this.coverages.addAll(coverages);
+        this.allRequested = false;
+    }
 
-	/**
-	 * Adds a requested coverages to the list.
-	 * 
-	 * @param coverages
-	 *            DOCUMENT ME!
-	 */
-	public void addCoverage(String coverages) {
-		this.coverages.add(coverages);
-		this.allRequested = false;
-	}
+    /**
+     * Adds a requested coverages to the list.
+     *
+     * @param coverages
+     *            DOCUMENT ME!
+     */
+    public void addCoverage(String coverages) {
+        this.coverages.add(coverages);
+        this.allRequested = false;
+    }
 
-	/**
-	 * Return requested coverages.
-	 * 
-	 * @return DOCUMENT ME!
-	 * 
-	 * @uml.property name="coverages"
-	 */
-	public List getCoverages() {
-		return this.coverages;
-	}
+    /**
+     * Return requested coverages.
+     *
+     * @return DOCUMENT ME!
+     *
+     * @uml.property name="coverages"
+     */
+    public List getCoverages() {
+        return this.coverages;
+    }
 
-	/**
-	 * Sets the outputFormat. Right now XMLSCHEMA is the only allowed format.
-	 * 
-	 * @param outputFormat
-	 *            the new outputFormat
-	 * 
-	 * @uml.property name="outputFormat"
-	 */
-	public void setOutputFormat(String outputFormat) {
-		if (!((outputFormat == null) || outputFormat.equals(""))) {
-			this.outputFormat = outputFormat;
-		}
-	}
+    /**
+     * Sets the outputFormat. Right now XMLSCHEMA is the only allowed format.
+     *
+     * @param outputFormat
+     *            the new outputFormat
+     *
+     * @uml.property name="outputFormat"
+     */
+    public void setOutputFormat(String outputFormat) {
+        if (!((outputFormat == null) || outputFormat.equals(""))) {
+            this.outputFormat = outputFormat;
+        }
+    }
 
-	/**
-	 * Returns the format for printing the coverage.
-	 * 
-	 * @return DOCUMENT ME!
-	 * 
-	 * @uml.property name="outputFormat"
-	 */
-	public String getOutputFormat() {
-		return outputFormat;
-	}
+    /**
+     * Returns the format for printing the coverage.
+     *
+     * @return DOCUMENT ME!
+     *
+     * @uml.property name="outputFormat"
+     */
+    public String getOutputFormat() {
+        return outputFormat;
+    }
 
-	/***************************************************************************
-	 * OVERRIDES OF toString AND equals METHODS. *
-	 **************************************************************************/
+    /***************************************************************************
+     * OVERRIDES OF toString AND equals METHODS. *
+     **************************************************************************/
 
-	/**
-	 * Returns a string representation of the describe request.
-	 * 
-	 * @return A string of this request.
-	 */
-	public String toString() {
-		String returnString = "DescribeCoverage Request [outputFormat: ";
-		returnString = returnString + outputFormat + " [coverages: ";
-		if (LOGGER.isLoggable(Level.FINEST))
-			LOGGER.finest("all req: " + allRequested());
+    /**
+     * Returns a string representation of the describe request.
+     *
+     * @return A string of this request.
+     */
+    public String toString() {
+        String returnString = "DescribeCoverage Request [outputFormat: ";
+        returnString = returnString + outputFormat + " [coverages: ";
 
-		if (this.allRequested()) {
-			return returnString + " ALL ]";
-		} else {
-			Iterator i = coverages.listIterator();
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest("all req: " + allRequested());
+        }
 
-			while (i.hasNext()) {
-				returnString = returnString + i.next();
+        if (this.allRequested()) {
+            return returnString + " ALL ]";
+        } else {
+            Iterator i = coverages.listIterator();
 
-				if (i.hasNext()) {
-					returnString = returnString + ", ";
-				}
-			}
+            while (i.hasNext()) {
+                returnString = returnString + i.next();
 
-			return returnString + "]";
-		}
-	}
+                if (i.hasNext()) {
+                    returnString = returnString + ", ";
+                }
+            }
 
-	/**
-	 * Standard over-ride of equals.
-	 * 
-	 * @param o
-	 *            DOCUMENT ME!
-	 * 
-	 * @return <tt>true</tt> if the object is equal to this.
-	 */
-	public boolean equals(Object o) {
-		super.equals(o);
+            return returnString + "]";
+        }
+    }
 
-		if (!(o instanceof DescribeRequest)) {
-			return false;
-		}
+    /**
+     * Standard over-ride of equals.
+     *
+     * @param o
+     *            DOCUMENT ME!
+     *
+     * @return <tt>true</tt> if the object is equal to this.
+     */
+    public boolean equals(Object o) {
+        super.equals(o);
 
-		DescribeRequest request = (DescribeRequest) o;
-		boolean isEqual = true;
-		Iterator internal = coverages.listIterator();
-		Iterator compare = request.getCoverages().listIterator();
+        if (!(o instanceof DescribeRequest)) {
+            return false;
+        }
 
-		if (request.allRequested()) {
-			isEqual = this.allRequested() && isEqual;
+        DescribeRequest request = (DescribeRequest) o;
+        boolean isEqual = true;
+        Iterator internal = coverages.listIterator();
+        Iterator compare = request.getCoverages().listIterator();
 
-			return isEqual;
-		} else {
-			while (internal.hasNext()) {
-				if (compare.hasNext()) {
-					isEqual = internal.next().equals(compare.next()) && isEqual;
-				} else {
-					internal.next();
-					isEqual = false;
-				}
-			}
+        if (request.allRequested()) {
+            isEqual = this.allRequested() && isEqual;
 
-			if (compare.hasNext()) {
-				return false;
-			} else {
-				return isEqual;
-			}
-		}
-	}
+            return isEqual;
+        } else {
+            while (internal.hasNext()) {
+                if (compare.hasNext()) {
+                    isEqual = internal.next().equals(compare.next()) && isEqual;
+                } else {
+                    internal.next();
+                    isEqual = false;
+                }
+            }
 
-	public int hashCode() {
-		int result = super.hashCode();
-		result = (23 * result);
-		
-		if (coverages != null) {
-			Iterator internal = coverages.listIterator();
-			while (internal.hasNext()) {
-				result *= internal.next().hashCode();
-			}
-		}
+            if (compare.hasNext()) {
+                return false;
+            } else {
+                return isEqual;
+            }
+        }
+    }
 
-		return result;
-	}
+    public int hashCode() {
+        int result = super.hashCode();
+        result = (23 * result);
+
+        if (coverages != null) {
+            Iterator internal = coverages.listIterator();
+
+            while (internal.hasNext()) {
+                result *= internal.next().hashCode();
+            }
+        }
+
+        return result;
+    }
 }

@@ -4,15 +4,14 @@
  */
 package org.vfny.geoserver.wcs.requests.readers;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wcs.servlets.WCService;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * This utility reads in a GetCapabilities KVP request and turns it into an
@@ -41,7 +40,8 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
      *
      * @throws ServiceException DOCUMENT ME!
      */
-    public Request getRequest(HttpServletRequest request) throws ServiceException {
+    public Request getRequest(HttpServletRequest request)
+        throws ServiceException {
         CapabilitiesRequest currentRequest = new CapabilitiesRequest("WCS", service);
         currentRequest.setHttpServletRequest(request);
         currentRequest.setVersion(getValue("VERSION"));

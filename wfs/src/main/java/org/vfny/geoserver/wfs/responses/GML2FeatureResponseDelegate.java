@@ -4,16 +4,6 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.GZIPOutputStream;
-
-import javax.xml.transform.TransformerException;
-
 import org.geotools.data.FeatureLock;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml.producer.FeatureTransformer;
@@ -23,12 +13,20 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
+import javax.xml.transform.TransformerException;
 
 
 /**
  * handles the encoding the results of a GetFeature or GetFeatureWithLock
  * request's results to GML2 and GML2-GZIP formats.
- * 
+ *
  * <p>
  * GML2-GZIP format is just GML2 with gzip compression. If GML2-GZIP format was
  * requested, <code>getContentEncoding()</code> will retutn
@@ -41,21 +39,20 @@ import org.vfny.geoserver.wfs.requests.FeatureRequest;
 public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private static final int NO_FORMATTING = -1;
     private static final int INDENT_SIZE = 2;
-
     public static final String formatName = "GML2";
     public static final String formatNameCompressed = "GML2-GZIP";
-    
+
     /**
      * This is a "magic" class provided by Geotools that writes out GML for an
      * array of FeatureResults.
-     * 
+     *
      * <p>
      * This class seems to do all the work, if you have a problem with GML you
      * will need to hunt it down. We supply all of the header information in
      * the execute method, and work through the featureList in the writeTo
      * method.
      * </p>
-     * 
+     *
      * <p>
      * This value will be <code>null</code> until execute is called.
      * </p>
@@ -128,30 +125,27 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
             namespace = meta.getDataStoreInfo().getNameSpace();
 
             String uri = namespace.getUri();
-            ftNames.declareNamespace(features.getSchema(),
-                namespace.getPrefix(), uri);
+            ftNames.declareNamespace(features.getSchema(), namespace.getPrefix(), uri);
 
             if (ftNamespaces.containsKey(uri)) {
                 String location = (String) ftNamespaces.get(uri);
                 ftNamespaces.put(uri, location + "," + meta.getName());
             } else {
                 ftNamespaces.put(uri,
-                    request.getBaseUrl() + "wfs/"
-                    + "DescribeFeatureType?typeName=" + meta.getName());
+                    request.getBaseUrl() + "wfs/" + "DescribeFeatureType?typeName="
+                    + meta.getName());
             }
         }
 
         System.setProperty("javax.xml.transform.TransformerFactory",
             "org.apache.xalan.processor.TransformerFactoryImpl");
 
-        transformer.setIndentation(config.isVerbose() ? INDENT_SIZE
-                                                      : (NO_FORMATTING));
+        transformer.setIndentation(config.isVerbose() ? INDENT_SIZE : (NO_FORMATTING));
         transformer.setNumDecimals(config.getNumDecimals());
         transformer.setFeatureBounding(request.getWFS().isFeatureBounding());
         transformer.setEncoding(request.getWFS().getGeoServer().getCharSet());
 
-        String wfsSchemaLoc = request.getSchemaBaseUrl()
-            + "wfs/1.0.0/WFS-basic.xsd";
+        String wfsSchemaLoc = request.getSchemaBaseUrl() + "wfs/1.0.0/WFS-basic.xsd";
 
         transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaLoc);
 
@@ -179,7 +173,7 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
      * @return DOCUMENT ME!
      */
     public String getContentType(GeoServer gs) {
-        return compressOutput ? "application/gzip": gs.getMimeType();
+        return compressOutput ? "application/gzip" : gs.getMimeType();
     }
 
     /**
@@ -188,7 +182,7 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
      * @return DOCUMENT ME!
      */
     public String getContentEncoding() {
-//        return compressOutput ? "gzip" : null;
+        //        return compressOutput ? "gzip" : null;
         return null;
     }
 
@@ -201,11 +195,9 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
      * @throws IOException DOCUMENT ME!
      * @throws IllegalStateException DOCUMENT ME!
      */
-    public void encode(OutputStream output)
-        throws ServiceException, IOException {
+    public void encode(OutputStream output) throws ServiceException, IOException {
         if (results == null) {
-            throw new IllegalStateException(
-                "It seems prepare() has not been called"
+            throw new IllegalStateException("It seems prepare() has not been called"
                 + " or has not succeed");
         }
 
@@ -221,8 +213,8 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         //
         // execute should also fail if all of the locks could not be aquired
         List resultsList = results.getFeatures();
-        FeatureCollection[] featureResults = (FeatureCollection[]) resultsList
-            .toArray(new FeatureCollection[resultsList.size()]);
+        FeatureCollection[] featureResults = (FeatureCollection[]) resultsList.toArray(new FeatureCollection[resultsList
+                .size()]);
 
         try {
             transformer.transform(featureResults, output);
@@ -234,8 +226,7 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
                 gzipOut.flush();
             }
         } catch (TransformerException gmlException) {
-            ServiceException serviceException = new ServiceException(results.getRequest()
-                                                                            .getHandle()
+            ServiceException serviceException = new ServiceException(results.getRequest().getHandle()
                     + " error:" + gmlException.getMessage());
             serviceException.initCause(gmlException);
             throw serviceException;
@@ -243,9 +234,10 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     }
 
     public String getContentDisposition(String featureTypeName) {
-        if(compressOutput)
+        if (compressOutput) {
             return "attachment; filename=" + featureTypeName + ".gml.gz";
-        else
+        } else {
             return "inline; filename=" + featureTypeName + ".gml";
+        }
     }
 }

@@ -1,13 +1,14 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.wfs.requests;
 
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.GeometryFilter;
@@ -17,44 +18,43 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.WfsXmlRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.servlets.WFService;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.logging.Logger;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
 
 public abstract class WfsKvpRequestReader extends KvpRequestReader {
+    /** Class logger */
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
-	/** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-    "org.vfny.geoserver.requests.readers");
-    
-   
-	/**
-	 * Creates a new kvp reader for a WFS request.
-	 * 
-	 * @param kvpPairs The raw key value pairs.
-	 * @param service The servlet handling the request.
-	 */
-	public WfsKvpRequestReader(Map kvpPairs, WFService service) {
-		super(kvpPairs,service);
-	}
-
-	/**
-     * Reads in three strings, representing some sort of feature constraints,
-     * and translates them into filters.  If no filters exist, it returns an
-     * empty list.
+    /**
+     * Creates a new kvp reader for a WFS request.
      *
-     * @param fid A group of feature IDs, as a String.
-     * @param filter A group of filters, as a String.
-     * @param bbox A group of boxes, as a String.
-     *
-     * @return A list filters.
-     *
+     * @param kvpPairs The raw key value pairs.
+     * @param service The servlet handling the request.
      */
-    protected static List readFilters(String fid, String filter, String bbox) 
-    	throws WfsException {
+    public WfsKvpRequestReader(Map kvpPairs, WFService service) {
+        super(kvpPairs, service);
+    }
+
+    /**
+    * Reads in three strings, representing some sort of feature constraints,
+    * and translates them into filters.  If no filters exist, it returns an
+    * empty list.
+    *
+    * @param fid A group of feature IDs, as a String.
+    * @param filter A group of filters, as a String.
+    * @param bbox A group of boxes, as a String.
+    *
+    * @return A list filters.
+    *
+    */
+    protected static List readFilters(String fid, String filter, String bbox)
+        throws WfsException {
         List unparsed = new ArrayList();
         List filters = new ArrayList();
         ListIterator i;
@@ -103,8 +103,7 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
             // check to make sure that the bounding box has 4 coordinates
             if (unparsed.size() != 4) {
                 throw new IllegalArgumentException("Requested bounding box contains wrong"
-                    + "number of coordinates (should have " + "4): "
-                    + unparsed.size());
+                    + "number of coordinates (should have " + "4): " + unparsed.size());
 
                 // if it does, store them in an array of doubles
             } else {
@@ -147,22 +146,17 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
                 coords[3] = new Coordinate(rawCoords[2], rawCoords[1]);
                 coords[4] = new Coordinate(rawCoords[0], rawCoords[1]);
 
-                LinearRing outerShell = new LinearRing(coords,
-                        new PrecisionModel(), 0);
-                Geometry polygon = new Polygon(outerShell,
-                        new PrecisionModel(), 0);
-                LiteralExpression rightExpression = factory
-                    .createLiteralExpression(polygon);
+                LinearRing outerShell = new LinearRing(coords, new PrecisionModel(), 0);
+                Geometry polygon = new Polygon(outerShell, new PrecisionModel(), 0);
+                LiteralExpression rightExpression = factory.createLiteralExpression(polygon);
 
                 //finalFilter.addLeftGeometry(leftExpression);
                 finalFilter.addRightGeometry(rightExpression);
                 filters.add(finalFilter);
 
                 return filters;
-                
             } catch (IllegalFilterException e) {
-                new WfsException("Filter creation problem: " + filter)
-                	.initCause(e);
+                new WfsException("Filter creation problem: " + filter).initCause(e);
             }
 
             // handles unconstrained case
@@ -172,10 +166,9 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
             // handles error when more than one filter specified
         } else {
             throw new WfsException("GetFeature KVP request contained "
-                + "conflicting filters.  Filter: " + filter + ", fid: " + fid
-                + ", bbox:" + bbox);
+                + "conflicting filters.  Filter: " + filter + ", fid: " + fid + ", bbox:" + bbox);
         }
-        
+
         return null;
     }
 }

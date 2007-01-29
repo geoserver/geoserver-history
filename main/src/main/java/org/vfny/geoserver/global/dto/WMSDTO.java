@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -10,13 +11,14 @@ package org.vfny.geoserver.global.dto;
 
 import java.util.Map;
 
+
 /**
  * Data Transfer Object for communication GeoServer Web Map Server information.
- * 
+ *
  * <p>
  * Information required for GeoServer to set up a Web Map Service.
  * </p>
- * 
+ *
  * <p>
  * Data Transfer object are used to communicate between the GeoServer
  * application and its configuration and persistent layers. As such the class
@@ -35,6 +37,7 @@ public final class WMSDTO implements DataTransferObject {
 
     /** The current svg renderer **/
     private String svgRenderer;
+
     /** The antialisaing hint for the svg renderer **/
     private boolean svgAntiAlias;
 
@@ -42,7 +45,7 @@ public final class WMSDTO implements DataTransferObject {
     private Map baseMapLayers;
     private Map baseMapStyles;
     private String allowInterpolation;
-    
+
     /**
      * WMS constructor.  does nothing
      */
@@ -51,7 +54,7 @@ public final class WMSDTO implements DataTransferObject {
 
     /**
      * WMS constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the WMS provided. If the WMS provided  is null then
      * default values are used. All the data structures are cloned.
@@ -88,7 +91,7 @@ public final class WMSDTO implements DataTransferObject {
 
     /**
      * Implement equals.
-     * 
+     *
      * <p>
      * recursively tests to determine if the object passed in is a copy of this
      * object.
@@ -106,35 +109,41 @@ public final class WMSDTO implements DataTransferObject {
         }
 
         WMSDTO dto = (WMSDTO) other;
-        
-        boolean equals = gmlPrefixing == dto.gmlPrefixing && 
-        	svgAntiAlias == dto.svgAntiAlias &&
-        	allowInterpolation == dto.allowInterpolation;
+
+        boolean equals = (gmlPrefixing == dto.gmlPrefixing) && (svgAntiAlias == dto.svgAntiAlias)
+            && (allowInterpolation == dto.allowInterpolation);
+
         if (equals) {
-        	if (service == null) {
-        		equals = dto.getService() == null;
-        	}
-        	else equals = service.equals(dto.getService());
+            if (service == null) {
+                equals = dto.getService() == null;
+            } else {
+                equals = service.equals(dto.getService());
+            }
         }
+
         if (equals) {
-        	if (svgRenderer == null) {
-        		equals = dto.getSvgRenderer() == null;
-        	}
-        	else equals = svgRenderer.equals(dto.getSvgRenderer());
+            if (svgRenderer == null) {
+                equals = dto.getSvgRenderer() == null;
+            } else {
+                equals = svgRenderer.equals(dto.getSvgRenderer());
+            }
         }
+
         if (equals) {
-        	if (baseMapLayers == null) {
-        		equals = dto.getBaseMapLayers() == null;
-        	}
-        	else equals = baseMapLayers.equals(dto.getBaseMapLayers());
+            if (baseMapLayers == null) {
+                equals = dto.getBaseMapLayers() == null;
+            } else {
+                equals = baseMapLayers.equals(dto.getBaseMapLayers());
+            }
         }
+
         if (equals) {
-        	if (baseMapStyles == null) {
-        		equals = dto.getBaseMapStyles() == null;
-        	}
-        	else equals = baseMapStyles.equals(dto.getBaseMapStyles());
+            if (baseMapStyles == null) {
+                equals = dto.getBaseMapStyles() == null;
+            } else {
+                equals = baseMapStyles.equals(dto.getBaseMapStyles());
+            }
         }
-        
 
         return equals;
     }
@@ -147,10 +156,9 @@ public final class WMSDTO implements DataTransferObject {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return (gmlPrefixing ? 1 : 0) 
-        | (svgAntiAlias ? 1 : 0)
+        return (gmlPrefixing ? 1 : 0) | (svgAntiAlias ? 1 : 0)
         | ((allowInterpolation != null) ? 0 : allowInterpolation.hashCode())
-        | ((service == null) ? 0 : service.hashCode()) 
+        | ((service == null) ? 0 : service.hashCode())
         | ((svgRenderer == null) ? 0 : svgRenderer.hashCode())
         | ((baseMapLayers == null) ? 0 : baseMapLayers.hashCode())
         | ((baseMapStyles == null) ? 0 : baseMapStyles.hashCode());
@@ -158,7 +166,7 @@ public final class WMSDTO implements DataTransferObject {
 
     /**
      * getService purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -171,7 +179,7 @@ public final class WMSDTO implements DataTransferObject {
 
     /**
      * setService purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -190,7 +198,7 @@ public final class WMSDTO implements DataTransferObject {
 
     /**
      * isGmlPrefixing purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -203,7 +211,7 @@ public final class WMSDTO implements DataTransferObject {
 
     /**
      * setGmlPrefixing purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -213,66 +221,66 @@ public final class WMSDTO implements DataTransferObject {
     public void setGmlPrefixing(boolean b) {
         gmlPrefixing = b;
     }
-    
+
     /**
      * @return The constant identifying the current svg renderer.
      * @see org.vfny.geoserver.config.WMSConfig#SVG_SIMPLE
      * @see org.vfny.geoserver.config.WMSConfig#SVG_BATIK
      */
     public String getSvgRenderer() {
-    	return svgRenderer;
+        return svgRenderer;
     }
-    
+
     /**
      * @param The constant identifying the current svg renderer.
      * @see org.vfny.geoserver.config.WMSConfig#SVG_SIMPLE
      * @see org.vfny.geoserver.config.WMSConfig#SVG_BATIK
      */
     public void setSvgRenderer(String svgRenderer) {
-    	this.svgRenderer = svgRenderer;
+        this.svgRenderer = svgRenderer;
     }
-    
+
     /**
      * @param svgAntiAlias anti alias hint.
      */
     public void setSvgAntiAlias(boolean svgAntiAlias) {
-    	this.svgAntiAlias = svgAntiAlias;
+        this.svgAntiAlias = svgAntiAlias;
     }
-    
+
     /**
      * @return The value of the anti aliasing rendering hint.
      */
     public boolean getSvgAntiAlias() {
-    	return svgAntiAlias;
+        return svgAntiAlias;
     }
-    
+
     public void setBaseMapLayers(Map layers) {
-    	baseMapLayers = layers;
+        baseMapLayers = layers;
     }
-    
+
     public Map getBaseMapLayers() {
-    	return baseMapLayers;
+        return baseMapLayers;
     }
-    
+
     public void setBaseMapStyles(Map styles) {
-    	baseMapStyles = styles;
+        baseMapStyles = styles;
     }
-    
+
     public Map getBaseMapStyles() {
-    	return baseMapStyles;
+        return baseMapStyles;
     }
+
     /**
      * @param allowInterpolation interpolation hint.
      */
     public void setAllowInterpolation(String allowInterpolation) {
-    	this.allowInterpolation = allowInterpolation;
+        this.allowInterpolation = allowInterpolation;
     }
-    
+
     /**
      * @return The value of the interpolation rendering hint.
      */
     public String getAllowInterpolation() {
-    	return allowInterpolation;
+        return allowInterpolation;
     }
-
 }

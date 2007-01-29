@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.wfs.servlets;
 
-import java.util.Map;
-
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
@@ -13,6 +11,7 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.readers.CapabilitiesKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.CapabilitiesXmlReader;
 import org.vfny.geoserver.wfs.responses.WFSCapabilitiesResponse;
+import java.util.Map;
 
 
 /**
@@ -24,18 +23,17 @@ import org.vfny.geoserver.wfs.responses.WFSCapabilitiesResponse;
  * @version $Id: Capabilities.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class Capabilities extends WFService {
-    
-	public Capabilities(WFS wfs) {
-		super("GetCapabilities",wfs);
-	}
+    public Capabilities(WFS wfs) {
+        super("GetCapabilities", wfs);
+    }
 
-	/**
-     * DOCUMENT ME!
-     *
-     * @param params DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
+    /**
+    * DOCUMENT ME!
+    *
+    * @param params DOCUMENT ME!
+    *
+    * @return DOCUMENT ME!
+    */
     protected KvpRequestReader getKvpReader(Map params) {
         return new CapabilitiesKvpReader(params, this);
     }

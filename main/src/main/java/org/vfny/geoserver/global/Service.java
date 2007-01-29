@@ -4,17 +4,16 @@
  */
 package org.vfny.geoserver.global;
 
+import org.vfny.geoserver.global.dto.ServiceDTO;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.vfny.geoserver.global.dto.ServiceDTO;
 
 
 /**
  * Default configuration for services. This class represents all the
  * commonalities to the WFS and WMS services.
- * 
+ *
  * <p>
  * WFS wfs = new WFS(dto); Service serv = (Service)WFS;
  * System.out.println(serv.getName());
@@ -28,26 +27,24 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  * @see WFS
  */
 public abstract class Service extends GlobalLayerSupertype {
-
-	private boolean enabled;
-	private URL onlineResource;
-	private String name;
-	private String title;
-	private String serverAbstract;
-	private String[] keywords = new String[0];
-	private String fees;
-	private String accessConstraints;
-	private String maintainer;
-	private String strategy;
-	private MetaDataLink metadataLink;
-	private int partialBufferSize;
-	
-	private GeoServer gs;
-	private Data dt;
+    private boolean enabled;
+    private URL onlineResource;
+    private String name;
+    private String title;
+    private String serverAbstract;
+    private String[] keywords = new String[0];
+    private String fees;
+    private String accessConstraints;
+    private String maintainer;
+    private String strategy;
+    private MetaDataLink metadataLink;
+    private int partialBufferSize;
+    private GeoServer gs;
+    private Data dt;
 
     /**
      * Service constructor.
-     * 
+     *
      * <p>
      * Stores the new ServiceDTO data for this service.
      * </p>
@@ -74,7 +71,7 @@ public abstract class Service extends GlobalLayerSupertype {
         strategy = dto.getStrategy();
         partialBufferSize = dto.getPartialBufferSize();
     }
-    
+
     /**
      * load purpose.
      * <p>
@@ -83,28 +80,27 @@ public abstract class Service extends GlobalLayerSupertype {
      * @param dto
      */
     public void load(ServiceDTO dto) {
-    	if (dto == null) {
-    		throw new NullPointerException();
-    	}
+        if (dto == null) {
+            throw new NullPointerException();
+        }
 
-    	enabled = dto.isEnabled();
-    	name = dto.getName();
-    	title = dto.getTitle();
-    	serverAbstract = dto.getAbstract();
-    	keywords = dto.getKeywords();
-    	fees = dto.getFees();
-    	accessConstraints = dto.getAccessConstraints();
-    	maintainer = dto.getMaintainer();
-    	onlineResource = dto.getOnlineResource();
-    	metadataLink = dto.getMetadataLink();
-    	strategy = dto.getStrategy();
-    	partialBufferSize = dto.getPartialBufferSize();
-    	
+        enabled = dto.isEnabled();
+        name = dto.getName();
+        title = dto.getTitle();
+        serverAbstract = dto.getAbstract();
+        keywords = dto.getKeywords();
+        fees = dto.getFees();
+        accessConstraints = dto.getAccessConstraints();
+        maintainer = dto.getMaintainer();
+        onlineResource = dto.getOnlineResource();
+        metadataLink = dto.getMetadataLink();
+        strategy = dto.getStrategy();
+        partialBufferSize = dto.getPartialBufferSize();
     }
 
     /**
      * isEnabled purpose.
-     * 
+     *
      * <p>
      * Returns whether is service is enabled.
      * </p>
@@ -117,7 +113,7 @@ public abstract class Service extends GlobalLayerSupertype {
 
     /**
      * getOnlineResource purpose.
-     * 
+     *
      * <p>
      * Returns the Online Resource for this Service.
      * </p>
@@ -130,7 +126,7 @@ public abstract class Service extends GlobalLayerSupertype {
 
     /**
      * getAbstract purpose.
-     * 
+     *
      * <p>
      * A description of this service.
      * </p>
@@ -143,7 +139,7 @@ public abstract class Service extends GlobalLayerSupertype {
 
     /**
      * getAccessConstraints purpose.
-     * 
+     *
      * <p>
      * A description of this service's access constraints.
      * </p>
@@ -156,7 +152,7 @@ public abstract class Service extends GlobalLayerSupertype {
 
     /**
      * getFees purpose.
-     * 
+     *
      * <p>
      * A description of the fees for this service.
      * </p>
@@ -169,7 +165,7 @@ public abstract class Service extends GlobalLayerSupertype {
 
     /**
      * getKeywords purpose.
-     * 
+     *
      * <p>
      * A list of the keywords for this service.
      * </p>
@@ -188,7 +184,7 @@ public abstract class Service extends GlobalLayerSupertype {
 
     /**
      * getMaintainer purpose.
-     * 
+     *
      * <p>
      * The name of the maintainer for this service.
      * </p>
@@ -201,7 +197,7 @@ public abstract class Service extends GlobalLayerSupertype {
 
     /**
      * getName purpose.
-     * 
+     *
      * <p>
      * The name for this service.
      * </p>
@@ -214,7 +210,7 @@ public abstract class Service extends GlobalLayerSupertype {
 
     /**
      * getTitle purpose.
-     * 
+     *
      * <p>
      * The title for this service.
      * </p>
@@ -224,96 +220,97 @@ public abstract class Service extends GlobalLayerSupertype {
     public String getTitle() {
         return title;
     }
-    
+
     /**
      * Sets the strategy used by the service when performing a response.
-     * 
+     *
      */
     public void setStrategy(String strategy) {
-    		this.strategy = strategy;
+        this.strategy = strategy;
     }
-    
+
     /**
      * @return The strategy used by the service when performing a response.
      */
     public String getStrategy() {
-    		return strategy;
+        return strategy;
     }
-   
+
     /**
      * @return The size of the buffer used by the PARTIAL-BUFFER strategy.
      * TODO: this should be factored out when config is splittable among modules.
      */
     public int getPartialBufferSize() {
-    		return partialBufferSize;
+        return partialBufferSize;
     }
-    
+
     /**
      * Sets the size of the buffer used by the PARTIAL-BUFFER strategy.
      * TODO: this should be factored out when config is splittable among modules.
      */
     public void setPartialBufferSize(int partialBufferSize) {
-    		this.partialBufferSize = partialBufferSize;
+        this.partialBufferSize = partialBufferSize;
     }
-    
-    Object toDTO(){
-	    	ServiceDTO dto = new ServiceDTO();
-	    	dto.setAccessConstraints(accessConstraints);
-	    	dto.setEnabled(enabled);
-	    	dto.setFees(fees);
-	    	dto.setKeywords(keywords);
-	    	dto.setMaintainer(maintainer);
-	    	dto.setName(name);
-	    	dto.setOnlineResource(onlineResource);
-	    	dto.setAbstract(serverAbstract);
-	    	dto.setTitle(title);
-    	dto.setMetadataLink(metadataLink);
-	    	dto.setStrategy(strategy);
-	    	dto.setPartialBufferSize(partialBufferSize);
-	    	return dto;
+
+    Object toDTO() {
+        ServiceDTO dto = new ServiceDTO();
+        dto.setAccessConstraints(accessConstraints);
+        dto.setEnabled(enabled);
+        dto.setFees(fees);
+        dto.setKeywords(keywords);
+        dto.setMaintainer(maintainer);
+        dto.setName(name);
+        dto.setOnlineResource(onlineResource);
+        dto.setAbstract(serverAbstract);
+        dto.setTitle(title);
+        dto.setMetadataLink(metadataLink);
+        dto.setStrategy(strategy);
+        dto.setPartialBufferSize(partialBufferSize);
+
+        return dto;
     }
-	/**
-	 * Access dt property.
-	 * 
-	 * @return Returns the dt.
-	 */
-	public Data getData() {
-		return dt;
-	}
 
-	/**
-	 * Set dt to dt.
-	 *
-	 * @param dt The dt to set.
-	 */
-	public void setData(Data dt) {
-		this.dt = dt;
-	}
+    /**
+     * Access dt property.
+     *
+     * @return Returns the dt.
+     */
+    public Data getData() {
+        return dt;
+    }
 
-	/**
-	 * Access gs property.
-	 * 
-	 * @return Returns the gs.
-	 */
-	public GeoServer getGeoServer() {
-		return gs;
-	}
+    /**
+     * Set dt to dt.
+     *
+     * @param dt The dt to set.
+     */
+    public void setData(Data dt) {
+        this.dt = dt;
+    }
 
-	/**
-	 * Set gs to gs.
-	 *
-	 * @param gs The gs to set.
-	 */
-	void setGeoServer(GeoServer gs) {
-		this.gs = gs;
-	}
+    /**
+     * Access gs property.
+     *
+     * @return Returns the gs.
+     */
+    public GeoServer getGeoServer() {
+        return gs;
+    }
 
-	/**
-	 * @return Returns the metadataLink.
-	 * 
-	 */
-	public MetaDataLink getMetadataLink() {
-		return metadataLink;
-	}
+    /**
+     * Set gs to gs.
+     *
+     * @param gs The gs to set.
+     */
+    void setGeoServer(GeoServer gs) {
+        this.gs = gs;
+    }
 
+    /**
+     * @return Returns the metadataLink.
+     *
+     */
+    public MetaDataLink getMetadataLink() {
+        return metadataLink;
+    }
 }

@@ -1,20 +1,22 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.ows.xml.v1_0;
 
-
-import javax.xml.namespace.QName;
-
 import net.opengis.ows.v1_0_0.OWSFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/ows:IdentificationType.
  *
  * <p>
- *	<pre>
- *	 <code>
+ *        <pre>
+ *         <code>
  *  &lt;complexType name="IdentificationType"&gt;
  *      &lt;annotation&gt;
  *          &lt;documentation&gt;General metadata identifying and describing a set of data. This type shall be extended if needed for each specific OWS to include additional metadata for each type of dataset. If needed, this type should first be restricted for each specific OWS to change the multiplicity (or optionality) of some elements. &lt;/documentation&gt;
@@ -50,49 +52,47 @@ import org.geotools.xml.Node;
  *              &lt;/sequence&gt;
  *          &lt;/extension&gt;
  *      &lt;/complexContent&gt;
- *  &lt;/complexType&gt; 
- *		
- *	  </code>
- *	 </pre>
+ *  &lt;/complexType&gt;
+ *
+ *          </code>
+ *         </pre>
  * </p>
  *
  * @generated
  */
 public class IdentificationTypeBinding extends AbstractComplexBinding {
+    OWSFactory owsfactory;
 
-	OWSFactory owsfactory;		
-	public IdentificationTypeBinding( OWSFactory owsfactory ) {
-		this.owsfactory = owsfactory;
-	}
+    public IdentificationTypeBinding(OWSFactory owsfactory) {
+        this.owsfactory = owsfactory;
+    }
 
-	/**
-	 * @generated
-	 */
-	public QName getTarget() {
-		return OWS.IDENTIFICATIONTYPE;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Class getType() {
-		return null;
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 *	
-	 * @generated modifiable
-	 */	
-	public Object parse(ElementInstance instance, Node node, Object value) 
-		throws Exception {
-		
-		//TODO: implement
-		return null;
-	}
+    /**
+     * @generated
+     */
+    public QName getTarget() {
+        return OWS.IDENTIFICATIONTYPE;
+    }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return null;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Object parse(ElementInstance instance, Node node, Object value)
+        throws Exception {
+        //TODO: implement
+        return null;
+    }
 }

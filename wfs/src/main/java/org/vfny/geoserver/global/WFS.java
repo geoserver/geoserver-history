@@ -10,7 +10,7 @@ import org.vfny.geoserver.global.dto.WFSDTO;
 
 /**
  * WFS
- * 
+ *
  * <p>
  * Represents the GeoServer information required to configure an  instance of
  * the WFS Server. This class holds the currently used  configuration and is
@@ -18,7 +18,7 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  * modified by the Configuration Interface  during runtime. Such modifications
  * come from the GeoServer Object  in the SessionContext.
  * </p>
- * 
+ *
  * <p>
  * WFS wfs = new WFS(dto); System.out.println(wfs.getName());
  * System.out.println(wfs.getAbstract());
@@ -30,7 +30,6 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  */
 public class WFS extends Service {
     public static final String WEB_CONTAINER_KEY = "WFS";
-    
     private GeoValidator gv;
     private int serviceLevel;
     private boolean srsXmlStyle;
@@ -39,7 +38,7 @@ public class WFS extends Service {
 
     /**
      * WFS constructor.
-     * 
+     *
      * <p>
      * Stores the data specified in the WFSDTO object in this WFS Object for
      * GeoServer to use.
@@ -56,21 +55,22 @@ public class WFS extends Service {
     }
 
     /**
-     * Creates the WFS service by getting the WFSDTO object from the 
+     * Creates the WFS service by getting the WFSDTO object from the
      * config and calling {@link #WFS(WFSDTO)}.
-     *  
+     *
      * @throws ConfigurationException
      */
-    public WFS ( Config config, Data data, GeoServer geoServer, GeoValidator validator) throws ConfigurationException {
-    		this( config.getXMLReader().getWfs() );
-    		setData(data);
-    		setGeoServer(geoServer);
-    		setValidation(validator);
-    	}
-    
+    public WFS(Config config, Data data, GeoServer geoServer, GeoValidator validator)
+        throws ConfigurationException {
+        this(config.getXMLReader().getWfs());
+        setData(data);
+        setGeoServer(geoServer);
+        setValidation(validator);
+    }
+
     /**
      * WFS constructor.
-     * 
+     *
      * <p>
      * Package constructor intended for default use by GeoServer
      * </p>
@@ -83,7 +83,7 @@ public class WFS extends Service {
 
     /**
      * load purpose.
-     * 
+     *
      * <p>
      * Loads a new data set into this object.
      * </p>
@@ -100,7 +100,7 @@ public class WFS extends Service {
 
     /**
      * Implement toDTO.
-     * 
+     *
      * <p>
      * Package method used by GeoServer. This method may return references, and
      * does not clone, so extreme caution sould be used when traversing the
@@ -116,7 +116,7 @@ public class WFS extends Service {
     public Object toDTO() {
         WFSDTO dto = new WFSDTO();
         dto.setService((ServiceDTO) super.toDTO());
-        
+
         dto.setServiceLevel(serviceLevel);
         dto.setSrsXmlStyle(srsXmlStyle);
         dto.setCiteConformanceHacks(citeConformanceHacks);
@@ -125,12 +125,12 @@ public class WFS extends Service {
         return dto;
     }
 
-       /**
-     * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
-     *
-     * @return <tt>true</tt> if the srs is reported with the xml style
-     */
+    /**
+    * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+    * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+    *
+    * @return <tt>true</tt> if the srs is reported with the xml style
+    */
     public boolean isSrsXmlStyle() {
         return srsXmlStyle;
     }

@@ -4,20 +4,18 @@
  */
 package org.vfny.geoserver.requests;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
-import java.util.Map;
-import java.util.logging.Logger;
-
 import junit.framework.TestCase;
-
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -37,21 +35,17 @@ public abstract class RequestTestCase extends TestCase {
     //}
 
     /** Class logger */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /** Unit test data directory */
-    private static final String DATA_DIRECTORY = 
-    	//System.getProperty("user.dir") + "/test/test-data/requests/";
-    	AbstractCiteDataTest.class.getResource("test-data/requests").getFile();
-    		
+    private static final String DATA_DIRECTORY = //System.getProperty("user.dir") + "/test/test-data/requests/";
+        AbstractCiteDataTest.class.getResource("test-data/requests").getFile();
 
     /** Holds mappings between HTTP and ASCII encodings */
     protected static FilterFactory factory = FilterFactoryFinder.createFilterFactory();
 
     /** Unit test data directory */
-    private static final String CONFIG_DIR = System.getProperty("user.dir")
-        + "/misc/unit/config/";
+    private static final String CONFIG_DIR = System.getProperty("user.dir") + "/misc/unit/config/";
 
     /**
      * Constructor with super.
@@ -73,26 +67,28 @@ public abstract class RequestTestCase extends TestCase {
      *
      * @throws Exception If there is any problem running the test.
      */
-    protected boolean runXmlTest(Request baseRequest, String fileName,
-        boolean match) throws Exception {
+    protected boolean runXmlTest(Request baseRequest, String fileName, boolean match)
+        throws Exception {
         // Read the file and parse it
         File inputFile = new File(DATA_DIRECTORY + "/" + fileName + ".xml");
         Reader inputStream = new FileReader(inputFile);
         XmlRequestReader reader = getXmlReader();
         //Request request = reader.read(new BufferedReader(inputStream));
         LOGGER.finer("base request: " + baseRequest);
-       // LOGGER.finer("read request: " + request);
-       // LOGGER.fine("XML " + fileName + " test passed: "
-      //      + baseRequest.equals(request));
+
+        // LOGGER.finer("read request: " + request);
+        // LOGGER.fine("XML " + fileName + " test passed: "
+        //      + baseRequest.equals(request));
 
         // Compare parsed request to base request
         if (match) {
-       //     assertEquals(baseRequest, request);
+            //     assertEquals(baseRequest, request);
 
-        //    return baseRequest.equals(request);
+            //    return baseRequest.equals(request);
         } else {
-        //    return !baseRequest.equals(request);
+            //    return !baseRequest.equals(request);
         }
+
         return true;
     }
 
@@ -115,12 +111,12 @@ public abstract class RequestTestCase extends TestCase {
      *
      * @throws Exception If there is any problem running the test.
      */
-    protected boolean runKvpTest(Request baseRequest, String requestString,
-        boolean match) throws Exception {
+    protected boolean runKvpTest(Request baseRequest, String requestString, boolean match)
+        throws Exception {
         // Read the file and parse it
         Map kvps = KvpRequestReader.parseKvpSet(requestString);
         KvpRequestReader reader = getKvpReader(kvps);
-        Request request = reader.getRequest( baseRequest.getHttpServletRequest());
+        Request request = reader.getRequest(baseRequest.getHttpServletRequest());
 
         LOGGER.finer("base request: " + baseRequest);
         LOGGER.finer("read request: " + request);

@@ -4,28 +4,25 @@
  */
 package org.vfny.geoserver.wms.responses.map.svg;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.logging.Logger;
-
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Logger;
 
 
 /**
- * Handles a GetMap request that spects a map in SVG format. 
+ * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Rold?n
  * @version $Id: SVGMapProducer.java 4804 2006-08-03 11:10:49Z afabiani $
  */
 public class SVGMapProducer implements GetMapProducer {
-	
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wms.map");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
 
     /** DOCUMENT ME! */
     private EncodeSVG svgEncoder;
@@ -59,7 +56,6 @@ public class SVGMapProducer implements GetMapProducer {
         return null;
     }
 
-
     /**
      * aborts the encoding.
      */
@@ -80,8 +76,7 @@ public class SVGMapProducer implements GetMapProducer {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    public void produceMap(WMSMapContext map)
-        throws WmsException {
+    public void produceMap(WMSMapContext map) throws WmsException {
         this.svgEncoder = new EncodeSVG(map);
     }
 
@@ -97,8 +92,8 @@ public class SVGMapProducer implements GetMapProducer {
         this.svgEncoder.encode(out);
     }
 
-	public String getContentDisposition() {
-		// can be null
-		return null;
-	}
+    public String getContentDisposition() {
+        // can be null
+        return null;
+    }
 }

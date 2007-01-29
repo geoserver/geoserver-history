@@ -1,15 +1,18 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.servlets;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import javax.servlet.http.HttpServletResponse;
 
 
 /**
  * A safe Service strategy that buffers output until writeTo completes.
- * 
+ *
  * <p>
  * This strategy wastes memory, for saftey. It represents a middle ground
  * between SpeedStrategy and FileStrategy
@@ -18,11 +21,10 @@ import javax.servlet.http.HttpServletResponse;
  * @author jgarnett
  */
 public class BufferStrategy implements ServiceStrategy {
-	
-	public String getId() {
-		return "BUFFER";
-	}
-	
+    public String getId() {
+        return "BUFFER";
+    }
+
     /** DOCUMENT ME!  */
     ByteArrayOutputStream buffer = null;
 
@@ -58,7 +60,7 @@ public class BufferStrategy implements ServiceStrategy {
 
         OutputStream out = response.getOutputStream();
         buffer.writeTo(out);
-        
+
         buffer = null;
     }
 
@@ -70,8 +72,8 @@ public class BufferStrategy implements ServiceStrategy {
     public void abort() {
         buffer = null;
     }
-    
+
     public Object clone() throws CloneNotSupportedException {
-		return new BufferStrategy();
+        return new BufferStrategy();
     }
 }

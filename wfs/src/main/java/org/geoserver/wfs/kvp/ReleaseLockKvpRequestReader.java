@@ -1,21 +1,23 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.kvp;
 
+import org.geoserver.ows.KvpRequestReader;
 import java.util.Map;
 
-import org.geoserver.ows.KvpRequestReader;
 
 public class ReleaseLockKvpRequestReader extends KvpRequestReader {
+    public ReleaseLockKvpRequestReader() {
+        super(String.class);
+    }
 
-	public ReleaseLockKvpRequestReader( ) {
-		super( String.class );
-	}
-	
-	public Object createRequest() throws Exception {
-		return new String();
-	}
-	
-	public Object read(Object request, Map kvp) throws Exception {
-		return kvp.get( "lockId" );
-	}
+    public Object createRequest() throws Exception {
+        return new String();
+    }
 
+    public Object read(Object request, Map kvp) throws Exception {
+        return kvp.get("lockId");
+    }
 }

@@ -9,6 +9,7 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.servlets.WMService;
 
+
 /**
  * DOCUMENT ME!
  *
@@ -17,46 +18,45 @@ import org.vfny.geoserver.wms.servlets.WMService;
  */
 public class WMSRequest extends Request {
     public static final String WMS_SERVICE_TYPE = "WMS";
-    
+
     /**
-     * Creates the new request, supplying the request name and the sevlet 
+     * Creates the new request, supplying the request name and the sevlet
      * handling the request.
-     * 
+     *
      * @param requestType name of hte request, (Example, GetCapabiliites)
      * @param service The servlet handling the WMS request.
      */
     public WMSRequest(String requestType, WMService service) {
-    		super(WMS_SERVICE_TYPE,requestType,service);
+        super(WMS_SERVICE_TYPE, requestType, service);
     }
-    
+
     /**
-     * Sets the wms service object. 
+     * Sets the wms service object.
      */
     public void setWMService(WMService wms) {
-    		setServiceRef(wms);
+        setServiceRef(wms);
     }
-    
+
     /**
      * Returns the wms service object..
      */
     public WMService getWMService() {
-    		return (WMService) getServiceRef();
+        return (WMService) getServiceRef();
     }
-    
+
     /**
      * Convenience method for obtaining the global wms service instance.
      */
     public WMS getWMS() {
-    		return getWMService().getWMS();
+        return getWMService().getWMS();
     }
-    
+
     /**
      * Convenience method for obtaining the global geoserver instance.
      */
-    public GeoServer getGeoServer(){
-    	GeoServer gs = getWMS().getGeoServer();
-    	return gs;
+    public GeoServer getGeoServer() {
+        GeoServer gs = getWMS().getGeoServer();
+
+        return gs;
     }
-    
-    
 }

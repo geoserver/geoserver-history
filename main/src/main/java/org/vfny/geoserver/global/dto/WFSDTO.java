@@ -4,9 +4,10 @@
  */
 package org.vfny.geoserver.global.dto;
 
+
 /**
  * Data Transfer Object for communication with GeoServer's Web Feature Service.
- * 
+ *
  * <p>
  * Data Transfer object are used to communicate between the GeoServer
  * application and its configuration and persistent layers. As such the class
@@ -36,8 +37,8 @@ public final class WFSDTO implements DataTransferObject {
     public static final int BASIC = 1;
 
     /** ServiceLevel mask for transactional WFS conformance. */
-    public static final int TRANSACTIONAL = SERVICE_BASIC | SERVICE_INSERT
-        | SERVICE_UPDATE | SERVICE_DELETE;
+    public static final int TRANSACTIONAL = SERVICE_BASIC | SERVICE_INSERT | SERVICE_UPDATE
+        | SERVICE_DELETE;
 
     /** ServiceLevel mask equivilent to complete WFS conformance */
     public static final int COMPLETE = TRANSACTIONAL | SERVICE_LOCKING;
@@ -50,7 +51,7 @@ public final class WFSDTO implements DataTransferObject {
 
     /**
      * ie. citeConformanceHacks value equals true
-     * 
+     *
      * <p>
      * Currently there are certain legal things in the Geoserver WFS
      * GetCapabilities response that the CITE tests throw error if it finds.
@@ -72,7 +73,7 @@ public final class WFSDTO implements DataTransferObject {
 
     /**
      * WFS constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the WFS provided. If the WFS provided  is null then
      * default values are used. All the data structures are cloned.
@@ -145,7 +146,7 @@ public final class WFSDTO implements DataTransferObject {
 
     /**
      * Provides access to the Service DTO object.
-     * 
+     *
      * <p>
      * Note well that this is the internal ServiceDTO object used by the WFSDTO
      * - any changes made to the result of this method will change the state
@@ -160,7 +161,7 @@ public final class WFSDTO implements DataTransferObject {
 
     /**
      * Set this WFS Data Tranfer Object to use the provided Service DTO.
-     * 
+     *
      * <p>
      * A copy of the provided dto is made.
      * </p>
