@@ -4,19 +4,27 @@
  */
 package org.vfny.geoserver.config;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
-import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.GeometryAttributeType;
+import org.geotools.filter.Filter;
+import org.geotools.referencing.CRS;
+import org.geotools.referencing.NamedIdentifier;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.GeometryFactory;
 
 
 /**
@@ -26,6 +34,8 @@ import java.util.Set;
  * @version $Id: FeatureTypeConfig.java,v 1.20 2004/03/09 10:59:56 jive Exp $
  */
 public class FeatureTypeConfig {
+    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.config");
+    
     /** The Id of the datastore which should be used to get this featuretype. */
     private String dataStoreId;
 
@@ -177,21 +187,7 @@ public class FeatureTypeConfig {
 
         this.dataStoreId = dataStoreId;
         latLongBBox = new Envelope();
-
-        if (schema.getDefaultGeometry() == null) {
-            // pardon? Does this not make you a table?
-            SRS = -1;
-        } else {
-            GeometryFactory geometryFactory = schema.getDefaultGeometry().getGeometryFactory();
-
-            if (geometryFactory == null) {
-                // Assume Cartisian Coordiantes
-                SRS = 0;
-            } else {
-                // Assume SRID number is good enough                
-                SRS = geometryFactory.getSRID();
-            }
-        }
+        SRS = lookupSRS(schema.getDefaultGeometry());
 
         if (generate) {
             this.schemaAttributes = new ArrayList();
@@ -222,6 +218,78 @@ public class FeatureTypeConfig {
 
         cachingEnabled = false;
         cacheMaxAge = null;
+    }
+
+    private int lookupSRS(GeometryAttributeType defaultGeometry) {
+        // NPE avoidance
+        if(defaultGeometry == null)
+            return -1;
+        
+        // try the (deprecated) geometry factory, we don't want to break data stores that
+        // do correctly set it
+        GeometryFactory geometryFactory = defaultGeometry.getGeometryFactory();
+        if (geometryFactory != null && geometryFactory.getSRID() != 0) {
+            return geometryFactory.getSRID();
+        }
+        
+        // try to reverse engineer the SRID from the coordinate system
+        CoordinateReferenceSystem ref = defaultGeometry.getCoordinateSystem();
+            
+        // if no CRS set, we have no luck...
+        if(ref == null)
+            return 0;
+                
+        // ... first check if one of the identifiers can be used to spot directly
+        // a CRS (and check it's actually equal to one in the db)
+        for(Iterator it = ref.getIdentifiers().iterator(); it.hasNext(); ) {
+            NamedIdentifier id = (NamedIdentifier) it.next();
+            try {
+                CoordinateReferenceSystem crs = CRS.decode(id.toString());
+                return getSRSFromCRS(crs);
+            } catch(Exception e) {
+                // the identifier was not recognized, no problem, let's go on
+            }
+        }
+        
+        // ... a direct lookup did not work, let's try a full scan of known CRS then
+        // TODO: implement a smarter method in the actual EPSG authorities, which may
+        // well be this same loop if they do have no other search capabilities
+        Set codes = CRS.getSupportedCodes("EPSG");
+        for (Iterator it = codes.iterator(); it.hasNext();) {
+            String code = (String) it.next();
+            try {
+                CoordinateReferenceSystem crs = CRS.decode("EPSG:" + code,true);
+                if(CRS.equalsIgnoreMetadata(crs, ref)) {
+                    return getSRSFromCRS(crs);
+                }
+            } catch (Exception e) {
+                // some CRS cannot be decoded properly
+            }
+        }
+        
+        // Nothing worked, return a default 0 value
+        return 0;
+    }
+
+    /** 
+     * Scans the identifiers list looking for an EPSG id
+     * @param crs
+     * @return
+     */
+    private int getSRSFromCRS(CoordinateReferenceSystem crs) {
+        for (Iterator it = crs.getIdentifiers().iterator(); it.hasNext();) {
+            NamedIdentifier id = (NamedIdentifier) it.next();
+            if(id.toString().startsWith("EPSG"))
+                try {
+                    return Integer.parseInt(id.getCode());
+                } catch(NumberFormatException e) {
+                    if(LOGGER.isLoggable(Level.FINE))
+                        LOGGER.fine("Could not parse the EPSG code " + id);
+                }
+        }
+        LOGGER.warning("Funny, got a CRS from the referencing system, yet could not " +
+                "get an identifier in the form EPSG:xxxx out of it: " + crs);
+        return 0;
     }
 
     /**

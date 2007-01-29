@@ -681,12 +681,7 @@ public class TypesEditorForm extends ActionForm {
                 newSrs = "EPSG:" + srs;
             }
 
-            //CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
-            CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG",
-                    new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-            CoordinateReferenceSystem crsTheirData = (CoordinateReferenceSystem) crsFactory
-                .createCoordinateReferenceSystem(newSrs);
-
+            CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
             SRSWKT = crsTheirData.toWKT();
         } catch (FactoryException e) // couldnt decode their code
          {
