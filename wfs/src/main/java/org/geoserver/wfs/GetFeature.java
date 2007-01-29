@@ -26,25 +26,17 @@ import net.opengis.wfs.WFSFactory;
 
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
-import org.geotools.data.crs.ReprojectFeatureResults;
-import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-
 import org.geotools.filter.expression.AbstractExpressionVisitor;
-import org.geotools.filter.expression.SimpleFeaturePropertyAccessorFactory;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
 import org.geotools.referencing.CRS;
 import org.geotools.xml.EMFUtils;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
-import org.opengis.filter.FilterVisitor;
 import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.AttributeTypeInfo;
 import org.vfny.geoserver.global.Data;
@@ -319,7 +311,7 @@ public class GetFeature {
 
     	Filter filter = (Filter) query.getFilter();
         if ( filter == null ) {
-        	filter = org.geotools.filter.Filter.NONE;
+        	filter = Filter.INCLUDE;
         }
         	
         //only handle non-joins for now

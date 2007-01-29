@@ -5,14 +5,12 @@
 package org.geoserver.wfs;
 
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Set;
 import java.util.TreeSet;
+
+import net.opengis.wfs.GetCapabilitiesType;
 
 import org.geotools.util.Version;
 import org.vfny.geoserver.global.Data;
-
-import net.opengis.wfs.GetCapabilitiesType;
 
 /**
  * Web Feature Service GetCapabilities operation.

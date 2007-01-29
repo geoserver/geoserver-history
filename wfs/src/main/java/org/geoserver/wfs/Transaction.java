@@ -515,10 +515,7 @@ public class Transaction {
 				            	values[ j ] = property.getValue();
 				            }
 				             
-				            DefaultQuery query = 
-				            	new DefaultQuery(update.getTypeName().getLocalPart(), filter);
-
-				            // Pass through data to collect fids and damaged region
+  				            // Pass through data to collect fids and damaged region
 				            // for validation
 				            //
 				            Set fids = new HashSet();
@@ -640,14 +637,7 @@ public class Transaction {
 				            	 
 				            	 collection = new ReprojectingFeatureCollection( collection, target );
 				            	 
-				            	 if ( insert.getSrsName() != null ) {
-				            		 //supplied in request
-				            		 CoordinateReferenceSystem defaultSource
-				            		 	= CRS.decode( insert.getSrsName().toString() );
-//				            		 ( (ReprojectingFeatureCollection) collection ).setDefaultSource( defaultSource );
-				            	 }
-				            	 
-				                 // Need to use the namespace here for the lookup, due to our weird
+				            	 // Need to use the namespace here for the lookup, due to our weird
 				                 // prefixed internal typenames.  see 
 				                 //   http://jira.codehaus.org/secure/ViewIssue.jspa?key=GEOS-143
 				                 
