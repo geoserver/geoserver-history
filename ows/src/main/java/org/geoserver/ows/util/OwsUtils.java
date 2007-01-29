@@ -1,4 +1,4 @@
-package org.geoserver.ows;
+package org.geoserver.ows.util;
 
 import java.lang.reflect.Method;
 
@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class OWSUtils {
+public class OwsUtils {
 
 	/**
 	 * Returns a setter method for a property of java bean.
