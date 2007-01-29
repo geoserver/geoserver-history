@@ -4,7 +4,6 @@ import net.opengis.ows.v1_0_0.OWSFactory;
 import net.opengis.wfs.WFSFactory;
 
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
-import org.geoserver.wfs.xml.FeatureTypeSchema;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
 import org.geotools.filter.v1_0.OGCConfiguration;

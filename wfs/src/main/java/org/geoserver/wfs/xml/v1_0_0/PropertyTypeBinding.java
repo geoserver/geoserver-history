@@ -13,7 +13,6 @@ import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.geotools.xs.bindings.XSQNameBinding;
-import org.xml.sax.helpers.NamespaceSupport;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:PropertyType.

@@ -12,7 +12,6 @@ import net.opengis.wfs.WFSFactory;
 import org.geotools.xml.AbstractSimpleBinding;
 import org.geotools.xml.InstanceComponent;
 import org.geotools.xs.bindings.XSQNameBinding;
-import org.xml.sax.helpers.NamespaceSupport;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:TypeNameListType.

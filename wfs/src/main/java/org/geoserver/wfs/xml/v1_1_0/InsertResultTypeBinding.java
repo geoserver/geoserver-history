@@ -6,7 +6,6 @@ import javax.xml.namespace.QName;
 import net.opengis.wfs.InsertResultsType;
 import net.opengis.wfs.WFSFactory;
 
-import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;

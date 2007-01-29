@@ -3,15 +3,12 @@ package org.geoserver.wfs.xml.v1_1_0;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import net.opengis.wfs.WFSFactory;
 
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.eclipse.xsd.util.XSDSchemaLocator;
-
 import org.geoserver.ows.xml.v1_0.OWSConfiguration;
-import org.geoserver.wfs.xml.FeatureTypeSchema;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
 import org.geoserver.wfs.xml.filter.v1_1.FilterTypeBinding;
@@ -19,7 +16,6 @@ import org.geoserver.wfs.xml.filter.v1_1.PropertyNameTypeBinding;
 import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
 import org.geoserver.wfs.xml.gml3.CircleTypeBinding;
 import org.geoserver.wfs.xml.xs.DateBinding;
-
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.v1_1.OGC;
 import org.geotools.filter.v1_1.OGCConfiguration;

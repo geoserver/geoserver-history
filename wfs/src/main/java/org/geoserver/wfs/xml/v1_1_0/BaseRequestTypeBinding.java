@@ -7,7 +7,6 @@ import net.opengis.wfs.BaseRequestType;
 import net.opengis.wfs.WFSFactory;
 
 import org.eclipse.emf.ecore.EObject;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.EMFUtils;
 import org.geotools.xml.ElementInstance;

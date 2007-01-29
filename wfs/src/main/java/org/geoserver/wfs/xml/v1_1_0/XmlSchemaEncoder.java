@@ -5,13 +5,11 @@ import java.io.OutputStream;
 
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDResourceImpl;
-
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSDescribeFeatureTypeOutputFormat;
-
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -32,7 +30,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
 		this.resourceLoader = resourceLoader;
 	}
 	
-	public String getMimeType() throws ServiceException {
+	public String getMimeType( Operation operation ) throws ServiceException {
 		return "text/xml; subtype=gml/3.1.1";
 	}
 	

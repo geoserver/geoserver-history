@@ -1,16 +1,13 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 import java.io.InputStream;
-import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.xml.namespace.QName;
 
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
-import org.geotools.gml3.ApplicationSchemaConfiguration;
 import org.geotools.util.Version;
 import org.geotools.xml.Parser;
 import org.vfny.geoserver.global.Data;

@@ -5,7 +5,6 @@ import java.math.BigInteger;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.GetFeatureWithLockType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.ResultTypeType;
