@@ -103,8 +103,7 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
             this.sourceCoverage.dispose();
             this.sourceCoverage = null;
         } catch (Exception e) {
-            throw new WcsException(new StringBuffer("Problems Rendering Image").append(
-                    e.getMessage()).toString(), e);
+            throw new WcsException("Problems Generating Image. " + e.getMessage(), e);
         }
     }
 }
