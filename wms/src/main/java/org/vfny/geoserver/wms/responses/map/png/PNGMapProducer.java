@@ -73,8 +73,11 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
         // Reformatting this image for png
         //
         // /////////////////////////////////////////////////////////////////
+        /*
         new ImageWorker(image).writePNG(outStream, "FILTERED", 0.75f, PNGNativeAcc.booleanValue(),
             false);
+        */
+        ImageIO.write(image, "PNG", outStream);
     }
 
     protected BufferedImage prepareImage(int width, int height) {
