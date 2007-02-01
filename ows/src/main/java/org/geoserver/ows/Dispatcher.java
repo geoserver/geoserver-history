@@ -195,7 +195,7 @@ public class Dispatcher extends AbstractController {
             req.service = normalize((String) req.kvp.get("service"));
             req.version = normalize((String) req.kvp.get("version"));
             req.request = normalize((String) req.kvp.get("request"));
-            req.request = normalize((String) req.kvp.get("outputFormat"));
+            req.outputFormat = normalize((String) req.kvp.get("outputFormat"));
         } else {
             //check the body
             if (req.input != null) {
@@ -203,7 +203,7 @@ public class Dispatcher extends AbstractController {
                 req.service = normalize((String) xml.get("service"));
                 req.version = normalize((String) xml.get("version"));
                 req.request = normalize((String) xml.get("request"));
-                req.request = normalize((String) xml.get("outputFormat"));
+                req.outputFormat = normalize((String) xml.get("outputFormat"));
             }
         }
 
@@ -276,7 +276,7 @@ public class Dispatcher extends AbstractController {
 
                 if (req.get) {
                     //use the kvp reader mechanism
-                    requestBean = parseRequestKVP(parameterType, req.kvp);
+                    requestBean = parseRequestKVP(parameterType, req);
                 } else {
                     //use the xml reader mechanism
                     requestBean = parseRequestXML(req.input);
@@ -447,7 +447,7 @@ public class Dispatcher extends AbstractController {
             Response response = (Response) responses.get(0);
 
             //set the mime type
-            req.httpResponse.setContentType(response.getMimeType(opDescriptor));
+            req.httpResponse.setContentType(response.getMimeType(null, opDescriptor));
 
             //TODO: initialize any header params (gzip,deflate,etc...)
             OutputStream output = req.httpResponse.getOutputStream();
@@ -514,14 +514,24 @@ public class Dispatcher extends AbstractController {
                 if (vmatches.isEmpty()) {
                     //no matching version found, drop out and next step 
                     // will sort to return highest version
-                    vmatches = new ArrayList(matches);
+                	vmatches = new ArrayList(matches);
                 }
             }
 
             //multiple services found, sort by version
             if (vmatches.size() > 1) {
                 //use highest version
-                Collections.sort(vmatches);
+            	Comparator comparator = new Comparator() {
+
+					public int compare(Object o1, Object o2) {
+						Service s1 = (Service) o1;
+						Service s2 = (Service) o2;
+						
+						return s1.getVersion().compareTo( s2.getVersion() );
+					}
+            		
+            	};
+                Collections.sort(vmatches,comparator);
             }
 
             sBean = (Service) vmatches.get(vmatches.size() - 1);
@@ -712,14 +722,20 @@ public class Dispatcher extends AbstractController {
         return parsedKvp;
     }
 
-    Object parseRequestKVP(Class type, Map kvp) throws Exception {
-        KvpRequestReader kvpReader = findKvpRequestReader(type);
-
+    Object parseRequestKVP(Class type, Request request ) throws Exception {
+    	KvpRequestReader kvpReader = findKvpRequestReader(type);
+    	Map kvp = request.kvp;
+    	
         if (kvpReader != null) {
-            Object requestBean = kvpReader.createRequest();
+        	//check for http request awareness
+        	if ( kvpReader instanceof HttpServletRequestAware ) {
+        		((HttpServletRequestAware) kvpReader ).setHttpRequest( request.httpRequest );
+        	}
+        	
+        	Object requestBean = kvpReader.createRequest();
 
             if (requestBean != null) {
-                requestBean = kvpReader.read(requestBean, kvp);
+            	requestBean = kvpReader.read(requestBean, kvp);
             }
 
             return requestBean;
