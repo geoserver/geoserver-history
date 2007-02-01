@@ -23,19 +23,13 @@ public class WfsXmlReader extends XmlRequestReader {
     WFS wfs;
 
     /**
-     * Catalog
-     */
-    Data catalog;
-
-    /**
      * Xml Configuration
      */
     WFSConfiguration configuration;
 
-    public WfsXmlReader(String element, WFS wfs, Data catalog, WFSConfiguration configuration) {
+    public WfsXmlReader(String element, WFS wfs, WFSConfiguration configuration) {
         super(new QName(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, element), new Version("1.1.0"));
         this.wfs = wfs;
-        this.catalog = catalog;
         this.configuration = configuration;
     }
 
