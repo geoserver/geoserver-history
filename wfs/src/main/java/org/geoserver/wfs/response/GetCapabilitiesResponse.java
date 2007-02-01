@@ -21,7 +21,7 @@ public class GetCapabilitiesResponse extends Response {
         super(TransformerBase.class);
     }
 
-    public String getMimeType(Operation operation) {
+    public String getMimeType(Object value, Operation operation) {
         GetCapabilitiesType request = (GetCapabilitiesType) OwsUtils.parameter(operation
                 .getParameters(), GetCapabilitiesType.class);
 

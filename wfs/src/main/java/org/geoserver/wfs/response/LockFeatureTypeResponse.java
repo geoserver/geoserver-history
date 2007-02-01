@@ -35,7 +35,7 @@ public class LockFeatureTypeResponse extends Response {
         this.configuration = configuration;
     }
 
-    public String getMimeType(Operation operation) throws ServiceException {
+    public String getMimeType(Object value, Operation operation) throws ServiceException {
         return "text/xml";
     }
 
