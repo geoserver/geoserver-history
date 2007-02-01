@@ -51,7 +51,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         this.catalog = catalog;
     }
 
-    public String getMimeType(Operation operation) throws ServiceException {
+    public String getMimeType(Object value, Operation operation) throws ServiceException {
         return "text/xml";
     }
 

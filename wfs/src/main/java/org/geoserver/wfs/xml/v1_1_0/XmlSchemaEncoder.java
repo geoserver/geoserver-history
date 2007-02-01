@@ -35,7 +35,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         this.resourceLoader = resourceLoader;
     }
 
-    public String getMimeType(Operation operation) throws ServiceException {
+    public String getMimeType(Object value, Operation operation) throws ServiceException {
         return "text/xml; subtype=gml/3.1.1";
     }
 
