@@ -46,21 +46,21 @@
 			<artifactId>main</artifactId>
 			<version>1.6-SNAPSHOT</version>
 		</dependency>
-		<!--dependency>
+		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wcs</artifactId>
 			<version>1.6-SNAPSHOT</version>
-		</dependency-->
+		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wfs</artifactId>
 			<version>1.6-SNAPSHOT</version>
 		</dependency>
-		<!--dependency>
+		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wms</artifactId>
 			<version>1.6-SNAPSHOT</version>
-		</dependency-->
+		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>validation</artifactId>
@@ -110,6 +110,10 @@
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>oro</groupId>
