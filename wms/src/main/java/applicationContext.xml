@@ -33,6 +33,15 @@
  		<constructor-arg ref="wmsConfig"/>
  	</bean>
  	
+ 	<!-- wms service + descriptor -->
+ 	<bean id="wmsService2" class="org.geoserver.wms.DefaultWebMapService">
+		<constructor-arg ref="wms"/>
+ 	</bean>
+ 	<bean id="wmsServiceDescriptor" class="org.geoserver.platform.Service">
+		<constructor-arg index="0" value="wms"/>
+		<constructor-arg index="1" ref="wmsService2"/>
+		<constructor-arg index="2" value="1.1.1"/>
+ 	</bean>
 	<!-- 
 		servlets for handling incoming requests 
 	-->
