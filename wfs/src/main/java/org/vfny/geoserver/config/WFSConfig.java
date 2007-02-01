@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.WFS;
+import org.geoserver.wfs.WFS;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 
