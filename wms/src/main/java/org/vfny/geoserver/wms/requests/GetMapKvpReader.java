@@ -28,9 +28,9 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.util.SLDValidator;
-import org.vfny.geoserver.util.requests.readers.WfsXmlRequestReader;
-import org.vfny.geoserver.wfs.WfsException;
+
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.readers.WmsXmlRequestReader;
 import org.vfny.geoserver.wms.servlets.WMService;
 import org.xml.sax.InputSource;
 import java.awt.Color;
@@ -880,12 +880,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
                 if ((filterSpec != null) && !filterSpec.equals("")) {
                     Reader filterReader = new StringReader(filterSpec);
-                    filters.add(WfsXmlRequestReader.readFilter(filterReader));
+                    filters.add(WmsXmlRequestReader.readFilter(filterReader));
                 } else {
                     filters.add(null);
                 }
             }
-        } catch (WfsException e) {
+        } catch (Exception e) {
             throw new WmsException(e);
         }
 
