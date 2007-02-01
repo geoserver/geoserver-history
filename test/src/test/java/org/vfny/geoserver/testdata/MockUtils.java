@@ -7,6 +7,8 @@ package org.vfny.geoserver.testdata;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletContext;
+
+import org.geoserver.wfs.WFS;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
@@ -17,7 +19,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -175,7 +177,7 @@ public class MockUtils {
         service.setAccessConstraints("NONE");
         service.setEnabled(true);
         service.setFees("NONE");
-        service.setKeywords(new String[] { "test", "mock", "service", "config" });
+        service.setKeywords(Arrays.asList( new String[] { "test", "mock", "service", "config" }) );
         service.setMaintainer("Gabriel Roldan");
         service.setName("WMS");
 
@@ -208,7 +210,7 @@ public class MockUtils {
         service.setAccessConstraints("NONE");
         service.setEnabled(true);
         service.setFees("NONE");
-        service.setKeywords(new String[] { "test", "mock", "service", "config" });
+        service.setKeywords(Arrays.asList( new String[] { "test", "mock", "service", "config" }) );
         service.setMaintainer("Gabriel Roldan");
         service.setName("WMS");
 
