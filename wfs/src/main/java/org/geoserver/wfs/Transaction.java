@@ -41,8 +41,7 @@ import org.opengis.filter.Id;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.wfs.WfsException;
-import org.vfny.geoserver.wfs.responses.WfsTransactionException;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
