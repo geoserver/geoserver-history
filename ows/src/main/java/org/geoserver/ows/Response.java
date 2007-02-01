@@ -81,16 +81,6 @@ public abstract class Response {
     }
 
     /**
-     * Returns the mime type to be uses when writing the response.
-     *
-     * @param operation The operation being performed.
-     *
-     * @return The mime type of the response, must not be <code>null</code>
-     */
-    public abstract String getMimeType(Operation operation)
-        throws ServiceException;
-
-    /**
      * Determines if the response can handle the operation being performed.
      * <p>
      * This method is called before {@link #write(Object, OutputStream, Operation)}.
@@ -108,6 +98,19 @@ public abstract class Response {
     public boolean canHandle(Operation operation) {
         return true;
     }
+
+    /**
+     * Returns the mime type to be uses when writing the response.
+     * 
+     * @param value The value to serialize
+     * @param operation The operation being performed.
+     *
+     * 
+     * @return The mime type of the response, must not be <code>null</code>
+     */
+    public abstract String getMimeType(Object value, Operation operation)
+        throws ServiceException;
+
 
     /**
      * Serializes <code>value</code> to <code>output</code>.
