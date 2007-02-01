@@ -3,9 +3,7 @@
 
 <beans>
   <!-- controller for handling all incoming requests -->
-  <bean id="requestDispatcher"
-    class="org.geoserver.request.Dispatcher">
-    <constructor-arg ref="geoServer"/>
+  <bean id="requestDispatcher" class="org.geoserver.ows.Dispatcher">
   </bean>
 
   <!-- url mappings -->
