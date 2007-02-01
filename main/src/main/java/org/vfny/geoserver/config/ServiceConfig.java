@@ -7,6 +7,8 @@ package org.vfny.geoserver.config;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -44,7 +46,7 @@ public class ServiceConfig {
     private String _abstract;
 
     /** A list of keywords associated with the service. */
-    private String[] keywords;
+    private List keywords;
 
     /**
      * The fees associated with the service. When there are not any fees, the
@@ -79,7 +81,7 @@ public class ServiceConfig {
         name = "";
         title = "";
         _abstract = "";
-        keywords = new String[0];
+        keywords = new ArrayList();
         fees = "";
         accessConstraints = "NONE";
         maintainer = "";
@@ -133,16 +135,7 @@ public class ServiceConfig {
         title = s.getTitle();
         _abstract = s.getAbstract();
 
-        try {
-            keywords = new String[s.getKeywords().length];
-
-            for (int i = 0; i < keywords.length; i++)
-                keywords[i] = s.getKeywords()[i];
-        } catch (Exception e) {
-            // should only happen for null
-            keywords = new String[0];
-        }
-
+        keywords = new ArrayList( s.getKeywords() );
         fees = s.getFees();
         accessConstraints = s.getAccessConstraints();
         maintainer = s.getMaintainer();
@@ -169,13 +162,7 @@ public class ServiceConfig {
         sDto.setAccessConstraints(accessConstraints);
         sDto.setEnabled(enabled);
         sDto.setFees(fees);
-
-        String[] s = new String[keywords.length];
-
-        for (int i = 0; i < keywords.length; i++)
-            s[i] = keywords[i];
-
-        sDto.setKeywords(s);
+        sDto.setKeywords(new ArrayList( keywords ) );
         sDto.setMaintainer(maintainer);
         sDto.setName(name);
         sDto.setOnlineResource(onlineResource);
@@ -280,7 +267,7 @@ public class ServiceConfig {
      *
      * @return
      */
-    public String[] getKeywords() {
+    public List getKeywords() {
         return keywords;
     }
 
@@ -334,7 +321,7 @@ public class ServiceConfig {
      *
      * @param list
      */
-    public void setKeywords(String[] list) {
+    public void setKeywords(List list) {
         keywords = list;
     }
 

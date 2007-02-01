@@ -4,9 +4,11 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import org.vfny.geoserver.global.MetaDataLink;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.vfny.geoserver.global.MetaDataLink;
 
 
 /**
@@ -97,7 +99,7 @@ public final class ServiceDTO implements DataTransferObject {
      * Example: <code>new String[]{"WFS","New York"}</code>
      * </p>
      */
-    private String[] keywords = new String[0];
+    private List keywords = new ArrayList();
 
     /**
      * The fees associated with the service.
@@ -185,7 +187,7 @@ public final class ServiceDTO implements DataTransferObject {
         name = dto.getName();
         title = dto.getTitle();
         serverAbstract = dto.getAbstract();
-        keywords = CloneLibrary.clone(dto.getKeywords());
+        keywords = new ArrayList(dto.getKeywords());
         fees = dto.getFees();
         accessConstraints = dto.getAccessConstraints();
         maintainer = dto.getMaintainer();
@@ -239,7 +241,7 @@ public final class ServiceDTO implements DataTransferObject {
             return false;
         }
 
-        if (!Arrays.equals(keywords, dto.keywords)) {
+        if (!keywords.equals( dto.keywords) ) {
             return false;
         }
 
@@ -417,7 +419,7 @@ public final class ServiceDTO implements DataTransferObject {
      *
      * @return DOCUMENT ME!
      */
-    public String[] getKeywords() {
+    public List getKeywords() {
         return keywords;
     }
 
@@ -506,7 +508,7 @@ public final class ServiceDTO implements DataTransferObject {
      *
      * @param array DOCUMENT ME!
      */
-    public void setKeywords(String[] array) {
+    public void setKeywords(List array) {
         keywords = array;
     }
 
