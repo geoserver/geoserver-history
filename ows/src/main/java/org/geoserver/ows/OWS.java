@@ -6,6 +6,7 @@ package org.geoserver.ows;
 
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Map;
 
 
@@ -77,7 +78,7 @@ public class OWS {
     /**
      * List of keywords associated with the service.
      */
-    private String[] keywords;
+    private List keywords;
 
     /**
      * Client properties
@@ -108,6 +109,13 @@ public class OWS {
         this.id = id;
     }
 
+    /**
+     * Protected constructor for subclass use.
+     */
+    protected OWS() {
+    	
+    }
+    
     /**
      * @return The identifier of the service
      */
@@ -197,11 +205,11 @@ public class OWS {
      *
      * @return List keywords for this service
      */
-    public String[] getKeywords() {
+    public List getKeywords() {
         return keywords;
     }
 
-    public void setKeywords(String[] keywords) {
+    public void setKeywords(List keywords) {
         this.keywords = keywords;
     }
 
