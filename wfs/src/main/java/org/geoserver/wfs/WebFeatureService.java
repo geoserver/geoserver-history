@@ -18,7 +18,12 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 
 
 /**
- * Web Feature Service.
+ * Web Feature Service implementation, versions 1.0, and 1.1.
+ * <p>
+ * Each of the methods on this class corresponds to an operation as defined
+ * by the Web Feature Specification. See {@link http://www.opengeospatial.org/standards/wfs}
+ * for more details.
+ * </p>
  *
  * @author Justin Deoliveira, The Open Planning Project
  *
@@ -34,7 +39,7 @@ public interface WebFeatureService {
      *
      * @throws WFSException Any service exceptions.
      */
-    public TransformerBase getCapabilities(GetCapabilitiesType request)
+    TransformerBase getCapabilities(GetCapabilitiesType request)
         throws WFSException;
 
     /**
@@ -46,7 +51,7 @@ public interface WebFeatureService {
      *
      * @throws WFSException Any service exceptions.
      */
-    public FeatureTypeInfo[] describeFeatureType(DescribeFeatureTypeType request)
+    FeatureTypeInfo[] describeFeatureType(DescribeFeatureTypeType request)
         throws WFSException;
 
     /**
@@ -58,7 +63,7 @@ public interface WebFeatureService {
      *
      * @throws WFSException Any service exceptions.
      */
-    public FeatureCollectionType getFeature(GetFeatureType request)
+    FeatureCollectionType getFeature(GetFeatureType request)
         throws WFSException;
 
     /**
@@ -70,7 +75,7 @@ public interface WebFeatureService {
      *
      * @throws WFSException Any service exceptions.
      */
-    public FeatureCollectionType getFeatureWithLock(GetFeatureWithLockType request)
+    FeatureCollectionType getFeatureWithLock(GetFeatureWithLockType request)
         throws WFSException;
 
     /**
@@ -82,7 +87,7 @@ public interface WebFeatureService {
      *
      * @throws WFSException An service exceptions.
      */
-    public LockFeatureResponseType lockFeature(LockFeatureType request)
+    LockFeatureResponseType lockFeature(LockFeatureType request)
         throws WFSException;
 
     /**
@@ -94,6 +99,6 @@ public interface WebFeatureService {
      *
      * @throws WFSException Any service exceptions.
      */
-    public TransactionResponseType transaction(TransactionType request)
+    TransactionResponseType transaction(TransactionType request)
         throws WFSException;
 }
