@@ -1,0 +1,90 @@
+package org.geoserver.ows.adapters;
+
+import java.lang.reflect.Constructor;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.geoserver.ows.HttpServletRequestAware;
+import org.geotools.catalog.AbstractService;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+
+/**
+ * Wraps an old style {@link KvpRequestReader} in a new 
+ * {@link org.geoserver.ows.KvpRequestReader}.
+ * <p>
+ * This class needs to be defined in a spring context like:
+ * <pre>
+ * <code>
+ *   &lt;bean id="getMapKvpReader" class="org.geoserver.ows.adapters.KvpRequestReaderAdapter"&gt;
+ *      &lt;!-- first argument is the request class --&gt;
+ *      &lt;constructor-arg value="org.vfny.geoserver.wms.requests.GetMapRequest" /&gt;
+ *      
+ *      &lt;!-- second argument is the old style kvp reader class --&gt;
+ *      &lt;constructor-arg value="org.vfny.geoserver.wms.requests.GetMapKvpReader" /&gt;
+ *      
+ *      &lt;!-- third argument is the old style service --&gt;
+ *      &lt;constructor-arg ref="wmsService" /&gt;
+ *   &lt;bean&gt;
+ * </code>
+ * </pre>
+ * </p>
+ * 
+ * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ *
+ */
+public class KvpRequestReaderAdapter extends org.geoserver.ows.KvpRequestReader
+	implements HttpServletRequestAware {
+
+	Class delegateClass;
+	AbstractService service;
+	
+	HttpServletRequest request;
+	
+	public KvpRequestReaderAdapter( Class requestBean, Class delegateClass, AbstractService service  ) {
+		super( requestBean );
+		this.delegateClass = delegateClass;
+		this.service = service;
+	}
+	
+	public void setHttpRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+	
+	public Object createRequest() throws Exception {
+		//simulate the old kvp processin
+		 Map kvp = new HashMap();
+         String qString = request.getQueryString();
+         
+         if ( qString != null ) {
+             kvp = KvpRequestReader.parseKvpSet(qString);
+         } else {
+             String paramName;
+             String paramValue;
+
+             for (Enumeration pnames = request.getParameterNames(); pnames.hasMoreElements();) {
+                 paramName = (String) pnames.nextElement();
+                 paramValue = request.getParameter(paramName);
+                 kvp.put(paramName.toUpperCase(), paramValue);
+             }
+         }
+
+         
+		//create an instance of the delegate
+		Constructor c = delegateClass.getConstructor( 
+			new Class[] { Map.class, AbstractService.class } 
+		);
+		KvpRequestReader delegate = 
+			(KvpRequestReader) c.newInstance( new Object[]{  kvp , service } );
+		
+		//create the request object
+		return delegate.getRequest( request );
+	}
+	
+	public Object read(Object request, Map kvp) throws Exception {
+		//request object already initialized, just send it back
+		return request;
+	}
+}
