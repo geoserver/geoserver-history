@@ -40,16 +40,6 @@ public final class Service {
     /**
      * Creates a new service descriptor.
      *
-     * @param id A string identifing the service, must not be <code>null</code>
-     * @param service The object implementing the service.
-     */
-    public Service(String id, Object service) {
-        this(id, service, null);
-    }
-
-    /**
-     * Creates a new service descriptor.
-     *
      * @param id A string identifing the service.
      * @param service The object implementing the service.
      * @param version The version of the service.
