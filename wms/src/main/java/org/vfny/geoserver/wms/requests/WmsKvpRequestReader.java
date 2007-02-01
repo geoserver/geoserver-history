@@ -6,7 +6,6 @@ package org.vfny.geoserver.wms.requests;
 
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.wfs.servlets.WFService;
 import org.vfny.geoserver.wms.servlets.WMService;
 import java.util.Map;
 

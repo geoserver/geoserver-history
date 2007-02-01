@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geoserver.wfs.WFS;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import java.util.Map;
