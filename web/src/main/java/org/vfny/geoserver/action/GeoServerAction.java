@@ -5,12 +5,12 @@
 package org.vfny.geoserver.action;
 
 import org.apache.struts.action.Action;
+import org.geoserver.wfs.WFS;
 import org.springframework.web.struts.ActionSupport;
 import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.WCS;
-import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.Requests;
 import java.util.logging.Logger;
