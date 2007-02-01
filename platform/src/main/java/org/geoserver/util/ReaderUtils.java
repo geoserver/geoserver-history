@@ -518,7 +518,7 @@ public class ReaderUtils {
      *
      * @return The list of keywords that were found.
      */
-    public static String[] getKeyWords(Element keywordsElem) {
+    public static List getKeyWords(Element keywordsElem) {
         NodeList klist = keywordsElem.getElementsByTagName("keyword");
         int kCount = klist.getLength();
         List keywords = new ArrayList(kCount);
@@ -537,13 +537,13 @@ public class ReaderUtils {
         Object[] s = (Object[]) keywords.toArray();
 
         if (s == null) {
-            return new String[0];
+            return new ArrayList();
         }
 
-        String[] ss = new String[s.length];
+        ArrayList ss = new ArrayList(s.length);
 
-        for (int i = 0; i < ss.length; i++)
-            ss[i] = s[i].toString();
+        for (int i = 0; i < s.length; i++)
+            ss.add( s[ i ] );
 
         return ss;
     }
