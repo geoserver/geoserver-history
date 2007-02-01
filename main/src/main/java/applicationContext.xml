@@ -3,6 +3,17 @@
 
 <beans>
 
+	<!--  
+		resources
+	 -->
+	<bean id="resourceLoader" class="org.geoserver.platform.GeoServerResourceLoader"/>
+	
+	<!-- extensions -->
+	<bean id="extensions" class="org.geoserver.platform.GeoServerExtensions"/>
+	
+	<!--  dispatcher -->
+	<bean id="dispatcher" class="org.geoserver.ows.Dispatcher"/>
+	
 	<!-- 
 		core modules
 	 -->
@@ -26,8 +37,9 @@
 		class="org.vfny.geoserver.global.Data">
 		<constructor-arg ref="config"/>
 		<constructor-arg ref="geoServer"/>
-		<constructor-arg ref="catalog"/>
 	</bean>
+	<alias name="data" alias="catalog"/>
+	
 	<bean id="dataConfig"
 		class="org.vfny.geoserver.config.DataConfig">
 		<constructor-arg ref="data"/>
@@ -77,5 +89,19 @@
 		
 	<bean id="partialBufferServiceStrategy"
 		class="org.vfny.geoserver.servlets.PartialBufferStrategy"/>
+		
+	<!-- 
+		custom property editors
+	 -->
+	<bean id="customEditorConfigurer" 
+   	 class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+	  	<property name="customEditors">
+	      <map>
+	      	  <entry key="org.geotools.util.Version">
+	        	<bean class="org.geoserver.platform.util.VersionPropertyEditor"/>
+	         </entry>
+	      </map>
+	    </property>
+    </bean>
 		
 </beans>
