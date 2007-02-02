@@ -1,6 +1,8 @@
 package org.geoserver.wms;
 
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse;
 
 /**
@@ -15,5 +17,13 @@ import org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse;
  */
 public interface WebMapService {
 
+	/**
+	 * GetCapabilities operation.
+	 */
 	WMSCapabilitiesResponse getCapabilities( CapabilitiesRequest request );
+	
+	/**
+	 * GetMap operation.
+	 */
+	GetMapResponse getMap( GetMapRequest request );
 }
