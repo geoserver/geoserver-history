@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>org.geoserver</groupId>
+		<artifactId>geoserver</artifactId>
+		<version>1.6-SNAPSHOT</version>
+	</parent>
+	
+	<groupId>org.geoserver</groupId>
+	<artifactId>wms</artifactId>
+	<packaging>jar</packaging>
+	<name>Web Map Service Module</name>
+	
+	<dependencies>
+		<!--dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>streams</artifactId>
+		</dependency-->
+
+		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>main</artifactId>
+			<version>1.6-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>wfs</artifactId>
+			<version>1.6-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>wcs</artifactId>
+			<version>1.6-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-render</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-epsg-hsql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-geotiff</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-svggen</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-awt-util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>itext</groupId>
+			<artifactId>itext</artifactId>
+		</dependency>
+	</dependencies>
+	
+</project>

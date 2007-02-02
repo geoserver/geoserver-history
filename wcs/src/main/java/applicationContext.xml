@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- the wcs service. -->
+	<bean id="wcs"
+		class="org.vfny.geoserver.global.WCS">
+		<constructor-arg ref="config"/>
+		<constructor-arg ref="data"/>
+		<constructor-arg ref="geoServer"/>
+	</bean>
+	
+	<!-- the wcs service config -->
+	<bean id="wcsConfig"
+		class="org.vfny.geoserver.config.WCSConfig">
+		<constructor-arg ref="wcs"/>
+	</bean>
+	
+	<!-- this registers the above beans with the servlet context
+	 it is around to keep the struts app happy as we move away from 
+	 servlets  -->
+	<bean id="wcsRegisterar"
+		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
+		
+		<constructor-arg type="java.lang.String" value="WCS"/>
+ 		<constructor-arg ref="wcs"/>
+ 	</bean>
+ 	
+ 	<bean id="wcsConfigRegisterar"
+		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
+		
+		<constructor-arg type="java.lang.String" value="Config.WCS"/>
+ 		<constructor-arg ref="wcsConfig"/>
+ 	</bean>
+ 	
+		
+	<!-- 
+		servlets for handling incoming requests 
+	-->
+	
+	<!-- the abstract base bean -->
+	<bean id="wcsAbstractService" abstract="true"
+		class="org.vfny.geoserver.servlets.AbstractService">
+		<!--  reference to geoserver bean defined in the 'main' context -->
+		<property name="geoServer" ref="geoServer"/>
+		<property name="catalog" ref="data"/>
+	</bean>
+
+	<!-- the abstract wcs specific bean  -->
+	<bean id="wcsService" abstract="true"
+		class="org.vfny.geoserver.wcs.servlets.WCService"
+		parent="wcsAbstractService">	
+		<!-- reference to wcs bean in this context -->
+		<constructor-arg ref="wcs"/>
+	</bean>
+		
+	<bean id="wcsGetCapabilities" 
+		class="org.vfny.geoserver.wcs.servlets.Capabilities"
+		parent="wcsService">
+	</bean>
+
+	<bean id="wcsDescribeCoverage"
+		class="org.vfny.geoserver.wcs.servlets.Describe"
+		parent="wcsService">
+	</bean>
+		
+	<bean id="wcsGetCoverage"
+		class="org.vfny.geoserver.wcs.servlets.Coverage"
+		parent="wcsService">
+	</bean>
+	
+</beans>
