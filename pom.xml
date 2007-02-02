@@ -537,6 +537,7 @@
 					<include>**/*.utf</include>
 					<include>**/*.properties</include>
 					<include>**/*.serialized</include>
+					<include>**/*.xsd</include>
 					<include>META-INF/*.jai</include>
 					<include>META-INF/services/**</include>
 					<include>applicationContext.xml</include>
