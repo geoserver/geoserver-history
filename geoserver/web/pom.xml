@@ -235,6 +235,7 @@
           <execution>
 						<id>configPackage</id>
 						<configuration>
+              <configDirectory>${configDirectory}</configDirectory>
 							<configId>${configId}</configId>
 						</configuration>
             <phase>package</phase>

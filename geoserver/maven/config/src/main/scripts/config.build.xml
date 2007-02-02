@@ -1,7 +1,13 @@
 <project>
 	<target name="config">
-		<available file="${basedir}/${configId}.zip" property="configIsAvailable"/>
-		<fail message="Unable to obtain configuration file: ${basedir}/${configId}.zip" unless="configIsAvailable"/>
+    <!-- check if config is available, if not fail -->
+		<available file="${configDirectory}/${configId}" property="configIsAvailable"/>
+		<fail message="Unable to locate configuration: ${configDirectory}/${configId}" unless="configIsAvailable"/>
+
+    <!-- copy the files from the config dir to the webapp dir -->
+    <copy todir="${webappSourceDirectory}">
+      <fileset dir="${configDirectory}/${configId}" includes="**/*.*"/>
+    </copy>
 		<unzip src="${basedir}/${configId}.zip" dest="${webappSourceDirectory}"/>
 	</target>
 
