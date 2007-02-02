@@ -17,10 +17,22 @@
           <required>true</required>
           <type>java.lang.String</type>
           <description>
-					The id of the configuration, used to locate the archive.
+					The id of the configuration, used to locate the archive under the 
+directory specified by ${configDirectory}.
           </description>
         </parameter>
 
+        <parameter>
+          <name>configDirectory</name>
+          <property>configDirectory</property>
+          <required>false</required>
+          <type>java.io.File</type>
+          <defaultValue>${basedir}</defaultValue>
+          <description>
+					The directory which contains configurations. 
+          </description>
+        </parameter>
+       
         <parameter>
           <name>webappSourceDirectory</name>
           <property>webappSourceDirectory</property>
