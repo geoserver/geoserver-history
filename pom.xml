@@ -174,7 +174,7 @@
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.geotools</groupId>
+				<groupId>org.geotools.demo</groupId>
 				<artifactId>gt2-demo-property</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
