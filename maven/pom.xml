@@ -53,7 +53,6 @@
 	<modules>
 		<module>build-configs</module>
 		<module>config</module>
-		<module>merger</module>
 	</modules>
 
 </project>
