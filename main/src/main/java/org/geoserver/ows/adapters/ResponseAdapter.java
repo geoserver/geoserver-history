@@ -30,7 +30,19 @@ public class ResponseAdapter extends org.geoserver.ows.Response {
 	}
 	
 	public String getMimeType(Object value, Operation operation) throws ServiceException {
+		
+		//get the delegate
 		Response delegate = (Response) value;
+		
+		//get the requst object from the operation
+		Request request = 
+			(Request) OwsUtils.parameter( operation.getParameters(), Request.class );
+		
+		//the old contract specifies that execute must be called before 
+		// get content type
+		delegate.execute( request );
+		
+		//return the content type
 		return delegate.getContentType( gs );
 	}
 
@@ -40,12 +52,8 @@ public class ResponseAdapter extends org.geoserver.ows.Response {
 		//get the delegate
 		Response delegate = (Response) value;
 		
-		//get the requst object from the operation
-		Request request = 
-			(Request) OwsUtils.parameter( operation.getParameters(), Request.class );
-		
-		//execute it up
-		delegate.execute( request );
+		//write the response
+		delegate.writeTo( output );
 	}
 
 }
