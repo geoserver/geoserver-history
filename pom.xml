@@ -12,9 +12,9 @@
 
   <scm>
     <connection>
-      scm:svn:http://svn.codehaus.org/geoserver/trunk/
+      scm:svn:http://svn.codehaus.org/geoserver/trunk/geoserver
     </connection>
-    <url>http://svn.codehaus.org/geoserver/trunk/</url>
+    <url>http://svn.codehaus.org/geoserver/trunk/geoserver</url>
   </scm>
 
 	<organization>
