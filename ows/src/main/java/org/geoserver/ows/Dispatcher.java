@@ -315,11 +315,11 @@ public class Dispatcher extends AbstractController {
 
                 //make sure the versoin actually exists
                 boolean found = false;
-
+                Version version = new Version( req.version );
                 for (Iterator s = loadServices().iterator(); s.hasNext();) {
                     Service service = (Service) s.next();
 
-                    if (req.version.equals(service.getVersion())) {
+                    if (version.equals(service.getVersion())) {
                         found = true;
 
                         break;
@@ -447,7 +447,7 @@ public class Dispatcher extends AbstractController {
             Response response = (Response) responses.get(0);
 
             //set the mime type
-            req.httpResponse.setContentType(response.getMimeType(null, opDescriptor));
+            req.httpResponse.setContentType(response.getMimeType( result, opDescriptor));
 
             //TODO: initialize any header params (gzip,deflate,etc...)
             OutputStream output = req.httpResponse.getOutputStream();
