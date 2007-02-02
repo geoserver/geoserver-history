@@ -2,20 +2,6 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-  <!-- controller for handling all incoming requests -->
-  <bean id="requestDispatcher" class="org.geoserver.ows.Dispatcher">
-  </bean>
-
-  <!-- url mappings -->
-  <bean id="urlMapping"
-    class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-    <property name="mappings">
-      <props>
-        <prop key="*">requestDispatcher</prop>
-      </props>
-    </property>
-  </bean>
-
- 
+  
 </beans>
  

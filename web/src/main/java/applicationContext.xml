@@ -18,4 +18,20 @@
  		<constructor-arg ref="applicationState"/>
  	</bean>
  	
+   <!--  dispatching -->
+   <bean id="dispatcher" class="org.geoserver.ows.Dispatcher"/>
+  
+   <bean id="owsDispatcherMapping" 
+    class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+
+	 <property name="mappings">
+      <props>
+        <prop key="/ows">dispatcher</prop>
+        <prop key="/ows/*">dispatcher</prop>
+        <!-- prop key="/schemas/**/*.xsd">schemaPublisher</prop-->
+      </props>
+    </property>
+
+  </bean>
+ 	
 </beans>
