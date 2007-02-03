@@ -59,7 +59,7 @@
 		parent="wmsService">
 	</bean>
 
-	<bean id="wmsDescribeFeatureType"
+	<bean id="wmsDescribeLayer"
 		class="org.vfny.geoserver.wms.servlets.DescribeLayer"
 		parent="wmsService">
 	</bean>
@@ -104,23 +104,48 @@
  	</bean>
  	
  	<!-- kvp request readers -->
- 	<bean id="getCapabilitiesKvpReader" 
+ 	<bean id="wmsGetCapabilitiesKvpReader" 
  		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.util.requests.CapabilitiesRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.CapabilitiesKvpReader" />
       	<constructor-arg index="2" ref="wmsGetCapabilities" />
 	</bean>
+
+	<bean id="describeLayerKvpReader"
+		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.DescribeLayerRequest" />
+      	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.DescribeLayerKvpRequestReader" />
+      	<constructor-arg index="2" ref="wmsDescribeLayer" />
+	</bean>
+	
 	<bean id="getMapKvpReader"
 		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetMapRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetMapKvpReader" />
       	<constructor-arg index="2" ref="wmsGetMap" />
 	</bean>
-	
+	<bean id="getFeatureInfoKvpReader"
+			class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetFeatureInfoRequest" />
+      	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetFeatureInfoKvpReader" />
+      	<constructor-arg index="2" ref="wmsGetFeatureInfo" />
+	</bean>
+	<bean id="getLegendGraphicKvpReader"
+			class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetLegendGraphicRequest" />
+      	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetLegendGraphicKvpReader" />
+      	<constructor-arg index="2" ref="wmsGetLegendGraphic" />
+	</bean>
+		
 	<!--  responses -->
-	<bean id="getCapabilitiesResponse"
+	<bean id="wmwGetCapabilitiesResponse"
 		class="org.geoserver.ows.adapters.ResponseAdapter">
 		<constructor-arg value="org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse"/>
+		<constructor-arg ref="geoServer"/>
+	</bean>
+	<bean id="describeLayerResponse"
+		class="org.geoserver.ows.adapters.ResponseAdapter">
+		<constructor-arg value="org.vfny.geoserver.wms.responses.DescribeLayerResponse"/>
 		<constructor-arg ref="geoServer"/>
 	</bean>
 	<bean id="getMapResponse"
@@ -128,7 +153,27 @@
 		<constructor-arg value="org.vfny.geoserver.wms.responses.GetMapResponse"/>
 		<constructor-arg ref="geoServer"/>
 	</bean>
+	<bean id="getFeatureInfoResponse"
+		class="org.geoserver.ows.adapters.ResponseAdapter">
+		<constructor-arg value="org.vfny.geoserver.wms.responses.GetFeatureInfoResponse"/>
+		<constructor-arg ref="geoServer"/>
+	</bean>
+	<bean id="getLegendGraphicResponse"
+		class="org.geoserver.ows.adapters.ResponseAdapter">
+		<constructor-arg value="org.vfny.geoserver.wms.responses.GetLegendGraphicResponse"/>
+		<constructor-arg ref="geoServer"/>
+	</bean>
 	
+	<!-- http url mapping -->
+	<bean id="wmsURLMapping" 
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/wms">dispatcher</prop>
+				<prop key="/wms/*">dispatcher</prop>
+			</props>
+		</property>
+	</bean>
 	<!--  
 		Legend producer factories
 	 -->
