@@ -102,6 +102,7 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
                 FeatureTypeInfo ftype = catalog.getFeatureTypeInfo(layerName);
                 layer = new MapLayerInfo();
                 layer.setFeature(ftype);
+                req.addLayer(layer);
             } catch (NoSuchElementException fex) {
                 try {
                     if (LOGGER.isLoggable(Level.FINE)) {
@@ -120,8 +121,6 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
                     throw new WmsException(cex, layerName + ": no such layer on this server",
                         "LayerNotDefined");
                 }
-
-                req.addLayer(layer);
 
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.fine(new StringBuffer(layerName).append(" found").toString());
