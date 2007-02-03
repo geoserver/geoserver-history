@@ -170,7 +170,7 @@
 	<bean id="acceptFormatsKvpParser" class="org.geoserver.wfs.kvp.AcceptFormatsKvpParser"/>
 
 	<!-- kvp request readers -->
-	<bean id="getCapabilitiesKvpReader"  
+	<bean id="wfsGetCapabilitiesKvpReader"  
 		class="org.geoserver.wfs.kvp.GetCapabilitiesKvpRequestReader"/>
 
 	<bean id="describeFeatureTypeKvpReader" 
@@ -198,7 +198,7 @@
 	<bean id="xmlReader-1.0.0" class="org.geoserver.wfs.xml.v1_0_0.WfsXmlReader" abstract="true">
 		<constructor-arg ref="xmlConfiguration-1.0"/>
 	</bean>
-	<bean id="getCapabilitiesXmlReader"
+	<bean id="wfsGetCapabilitiesXmlReader"
 		class="org.geoserver.wfs.xml.v1_0_0.WfsXmlReader" parent="xmlReader-1.0.0">
 		<constructor-arg value="GetCapabilities"/>
 	</bean>
@@ -228,7 +228,7 @@
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
-	<bean id="getCapabilitiesXmlReader-1.1.0" parent="xmlReader-1.1.0">
+	<bean id="wfsGetCapabilitiesXmlReader-1.1.0" parent="xmlReader-1.1.0">
 		<constructor-arg type="java.lang.String" value="GetCapabilities"/>
 	</bean>
 	<bean id="describeFeatureTypeXmlReader-1.1.0" parent="xmlReader-1.1.0">
