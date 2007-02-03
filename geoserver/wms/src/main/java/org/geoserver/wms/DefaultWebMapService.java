@@ -5,10 +5,19 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
+import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
+import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
+import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
+import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
+import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse;
 import org.vfny.geoserver.wms.servlets.Capabilities;
+import org.vfny.geoserver.wms.servlets.DescribeLayer;
+import org.vfny.geoserver.wms.servlets.GetFeatureInfo;
+import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 import org.vfny.geoserver.wms.servlets.GetMap;
 
 public class DefaultWebMapService implements WebMapService, ApplicationContextAware {
@@ -36,10 +45,30 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
 		return (WMSCapabilitiesResponse) capabilities.getResponse();
 	}
 	
+	public DescribeLayerResponse describeLayer(DescribeLayerRequest request) {
+		DescribeLayer describeLayer = 
+			(DescribeLayer) context.getBeansOfType( DescribeLayer.class ).values().iterator().next();
+		return (DescribeLayerResponse) describeLayer.getResponse();
+	}
+	
+	
 	public GetMapResponse getMap(GetMapRequest request) {
 		GetMap getMap = 
 			(GetMap) context.getBeansOfType( GetMap.class ).values().iterator().next();
 		return (GetMapResponse) getMap.getResponse();
 	}
+	
+	public GetFeatureInfoResponse getFeatureInfo(GetFeatureInfoRequest request) {
+		GetFeatureInfo getFeatureInfo = 
+			(GetFeatureInfo) context.getBeansOfType( GetFeatureInfo.class ).values().iterator().next();
+		return (GetFeatureInfoResponse) getFeatureInfo.getResponse();
+	}
 
+	public GetLegendGraphicResponse getLegendGraphic(GetLegendGraphicRequest request) {
+		GetLegendGraphic getLegendGraphic = 
+			(GetLegendGraphic) context.getBeansOfType( GetLegendGraphic.class ).values().iterator().next();
+		return (GetLegendGraphicResponse) getLegendGraphic.getResponse();
+	}
+	
+	
 }
