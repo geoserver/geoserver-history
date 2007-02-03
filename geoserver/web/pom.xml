@@ -149,10 +149,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-indexed-shapefile</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
 			<artifactId>gt2-postgis</artifactId>
 		</dependency>
 		<dependency>
