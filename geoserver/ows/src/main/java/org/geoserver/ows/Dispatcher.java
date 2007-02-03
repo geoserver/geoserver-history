@@ -295,6 +295,10 @@ public class Dispatcher extends AbstractController {
                     if (req.version == null) {
                         req.version = lookupRequestBeanProperty(requestBean, "version");
                     }
+                    
+                    if (req.outputFormat == null) {
+                    	req.outputFormat = lookupRequestBeanProperty( requestBean, "outputFormat" );
+                    }
 
                     parameters[i] = requestBean;
                 }
@@ -349,7 +353,7 @@ public class Dispatcher extends AbstractController {
             EObject eObject = (EObject) requestBean;
 
             if (EMFUtils.isSet(eObject, property)) {
-                return normalize((String) EMFUtils.get(eObject, "version"));
+                return normalize((String) EMFUtils.get(eObject, property));
             }
         } else {
             //straight reflection
@@ -394,6 +398,7 @@ public class Dispatcher extends AbstractController {
                 if (!binding.isAssignableFrom(result.getClass())
                         || !response.canHandle(opDescriptor)) {
                     itr.remove();
+                    continue;
                 }
 
                 //filter by output format
