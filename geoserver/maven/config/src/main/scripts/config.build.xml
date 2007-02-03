@@ -8,7 +8,6 @@
     <copy todir="${webappSourceDirectory}">
       <fileset dir="${configDirectory}/${configId}" includes="**/*.*"/>
     </copy>
-		<unzip src="${basedir}/${configId}.zip" dest="${webappSourceDirectory}"/>
 	</target>
 
 	<target name="clean">
