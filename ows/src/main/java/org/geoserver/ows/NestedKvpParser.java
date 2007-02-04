@@ -64,7 +64,7 @@ public class NestedKvpParser extends KvpParser {
                 parsed.add(parseToken(token));
             }
 
-            tokens.set(i, parse(parsed));
+            tokenSets.set(i, parse(parsed));
         }
 
         return tokenSets;
