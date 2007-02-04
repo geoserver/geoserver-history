@@ -543,7 +543,7 @@ public class ReaderUtils {
         ArrayList ss = new ArrayList(s.length);
 
         for (int i = 0; i < s.length; i++)
-            ss.add( s[ i ] );
+            ss.add(s[i]);
 
         return ss;
     }

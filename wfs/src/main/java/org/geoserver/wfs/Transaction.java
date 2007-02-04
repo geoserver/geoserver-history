@@ -41,7 +41,6 @@ import org.opengis.filter.Id;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -681,6 +680,7 @@ public class Transaction {
                         //report back fids, we need to keep the same order the fids were reported 
                         // in the original feature collection
                         FeatureType last = null;
+
                         for (Iterator f = insert.getFeature().iterator(); f.hasNext();) {
                             Feature feature = (Feature) f.next();
                             FeatureType schema = feature.getFeatureType();
@@ -691,17 +691,20 @@ public class Transaction {
 
                             //is teh schema reported, the same as the last
                             InsertedFeatureType insertedFeature = null;
-                            if ( last != null && last.getTypeName().equals( schema.getTypeName() ) ) {
-                            	insertedFeature = (InsertedFeatureType) result.getInsertResults().getFeature()
-                            		.get( result.getInsertResults().getFeature().size() - 1);
+
+                            if ((last != null) && last.getTypeName().equals(schema.getTypeName())) {
+                                insertedFeature = (InsertedFeatureType) result.getInsertResults()
+                                                                              .getFeature()
+                                                                              .get(result.getInsertResults()
+                                                                                         .getFeature()
+                                                                                         .size()
+                                        - 1);
+                            } else {
+                                insertedFeature = WFSFactory.eINSTANCE.createInsertedFeatureType();
+                                insertedFeature.setHandle(insert.getHandle());
+                                result.getInsertResults().getFeature().add(insertedFeature);
                             }
-                            else {
-                            	insertedFeature = WFSFactory.eINSTANCE
-                                .createInsertedFeatureType();	
-                            	insertedFeature.setHandle(insert.getHandle());
-                            	result.getInsertResults().getFeature().add(insertedFeature);
-                            }
-                            
+
                             insertedFeature.getFeatureId().add(filterFactory.featureId(fid));
                             last = schema;
                         }

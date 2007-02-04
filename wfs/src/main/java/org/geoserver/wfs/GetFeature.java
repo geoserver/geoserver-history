@@ -182,19 +182,22 @@ public class GetFeature {
                         AttributeTypeInfo ati = (AttributeTypeInfo) ii.next();
                         LOGGER.finer("checking to see if " + propNames + " contains" + ati);
 
-                        if (((ati.getMinOccurs() > 0) && (ati.getMaxOccurs() != 0)) ) {
+                        if (((ati.getMinOccurs() > 0) && (ati.getMaxOccurs() != 0))) {
                             //mandatory, add it
-                        	tmp.add(ati.getName());
-                        	continue;
+                            tmp.add(ati.getName());
+
+                            continue;
                         }
-                        
+
                         //check if it was requested
-                        for ( Iterator p = propNames.iterator(); p.hasNext(); ) {
-                        	String propName = (String) p.next();
-                        	if ( propName.matches( "(\\w+:)?" + ati.getName() ) ) {
-                        		tmp.add( ati.getName() );
-                        		break;
-                        	}
+                        for (Iterator p = propNames.iterator(); p.hasNext();) {
+                            String propName = (String) p.next();
+
+                            if (propName.matches("(\\w+:)?" + ati.getName())) {
+                                tmp.add(ati.getName());
+
+                                break;
+                            }
                         }
                     }
 

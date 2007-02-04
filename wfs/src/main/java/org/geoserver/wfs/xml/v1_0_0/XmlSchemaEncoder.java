@@ -52,7 +52,8 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         this.catalog = catalog;
     }
 
-    public String getMimeType(Object value, Operation operation) throws ServiceException {
+    public String getMimeType(Object value, Operation operation)
+        throws ServiceException {
         return "text/xml";
     }
 
@@ -124,7 +125,8 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
             //                + " schemaLocation=\"" + request.getSchemaBaseUrl()
             //                + "gml/2.1.2/feature.xsd\"/>\n\n");
             tempResponse.append("\n\n<xs:import namespace=" + GML_URL + " schemaLocation=\""
-                + ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "gml/2.1.2/feature.xsd" ) +  "\"/>\n\n");
+                + ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "gml/2.1.2/feature.xsd")
+                + "\"/>\n\n");
             tempResponse.append(generateSpecifiedTypes(infos));
         } else {
             //the featureTypes do not have all the same prefixes.

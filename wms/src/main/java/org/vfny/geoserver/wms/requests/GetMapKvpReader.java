@@ -28,7 +28,6 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.util.SLDValidator;
-
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.readers.WmsXmlRequestReader;
 import org.vfny.geoserver.wms.servlets.WMService;

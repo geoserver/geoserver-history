@@ -1,12 +1,8 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.wms.requests.readers;
-
-import java.io.IOException;
-import java.io.Reader;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.geotools.filter.FilterFilter;
 import org.geotools.gml.GMLFilterDocument;
@@ -20,14 +16,20 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
+import java.io.IOException;
+import java.io.Reader;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 
 public abstract class WmsXmlRequestReader extends XmlRequestReader {
-
-	 /**
-     * Constructs the new wfs xml reader.
-     *
-     * @param service Reference to the service handing a reuqest.
-     */
+    /**
+    * Constructs the new wfs xml reader.
+    *
+    * @param service Reference to the service handing a reuqest.
+    */
     public WmsXmlRequestReader(AbstractService service) {
         super(service);
     }
@@ -41,7 +43,8 @@ public abstract class WmsXmlRequestReader extends XmlRequestReader {
     *
     * @throws WfsException For any problems reading the request.
     */
-    public static Filter readFilter(Reader rawRequest) throws Exception {
+    public static Filter readFilter(Reader rawRequest)
+        throws Exception {
         // translate string into a proper SAX input source
         InputSource requestSource = new InputSource(rawRequest);
 
@@ -63,5 +66,4 @@ public abstract class WmsXmlRequestReader extends XmlRequestReader {
 
         return contentHandler.getFilter();
     }
-
 }

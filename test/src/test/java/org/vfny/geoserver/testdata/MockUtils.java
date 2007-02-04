@@ -7,7 +7,6 @@ package org.vfny.geoserver.testdata;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletContext;
-
 import org.geoserver.wfs.WFS;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
@@ -177,7 +176,7 @@ public class MockUtils {
         service.setAccessConstraints("NONE");
         service.setEnabled(true);
         service.setFees("NONE");
-        service.setKeywords(Arrays.asList( new String[] { "test", "mock", "service", "config" }) );
+        service.setKeywords(Arrays.asList(new String[] { "test", "mock", "service", "config" }));
         service.setMaintainer("Gabriel Roldan");
         service.setName("WMS");
 
@@ -210,7 +209,7 @@ public class MockUtils {
         service.setAccessConstraints("NONE");
         service.setEnabled(true);
         service.setFees("NONE");
-        service.setKeywords(Arrays.asList( new String[] { "test", "mock", "service", "config" }) );
+        service.setKeywords(Arrays.asList(new String[] { "test", "mock", "service", "config" }));
         service.setMaintainer("Gabriel Roldan");
         service.setName("WMS");
 

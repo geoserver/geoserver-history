@@ -9,7 +9,6 @@ import net.opengis.wfs.InsertResultsType;
 import net.opengis.wfs.InsertedFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionResultsType;
-
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
@@ -45,7 +44,8 @@ public class TransactionResponse extends Response {
         this.configuration = configuration;
     }
 
-    public String getMimeType(Object value, Operation operation) throws ServiceException {
+    public String getMimeType(Object value, Operation operation)
+        throws ServiceException {
         return "text/xml";
     }
 
@@ -53,7 +53,7 @@ public class TransactionResponse extends Response {
         throws IOException, ServiceException {
         TransactionResponseType response = (TransactionResponseType) value;
 
-        if (new Version( "1.0.0" ).equals(operation.getService().getVersion())) {
+        if (new Version("1.0.0").equals(operation.getService().getVersion())) {
             v_1_0(response, output);
         } else {
             v_1_1(response, output);

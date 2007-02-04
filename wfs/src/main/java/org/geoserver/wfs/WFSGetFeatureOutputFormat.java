@@ -47,7 +47,8 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
      * format.
      * </p>
      */
-    public String getMimeType(Object value, Operation operation) throws ServiceException {
+    public String getMimeType(Object value, Operation operation)
+        throws ServiceException {
         return "text/xml";
     }
 

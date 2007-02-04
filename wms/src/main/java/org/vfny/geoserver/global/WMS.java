@@ -68,7 +68,7 @@ public class WMS extends Service {
      */
     public WMS(WMSDTO config) {
         super(config.getService());
-        setId( "wms" );
+        setId("wms");
         svgRenderer = config.getSvgRenderer();
         svgAntiAlias = config.getSvgAntiAlias();
         allowInterpolation = config.getAllowInterpolation();
@@ -129,7 +129,7 @@ public class WMS extends Service {
      */
     WMS() {
         super(new ServiceDTO());
-        setId( "wms" );
+        setId("wms");
     }
 
     /**

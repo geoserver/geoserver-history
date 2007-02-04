@@ -19,17 +19,15 @@ public class GetCapabilitiesKvpRequestReader extends WFSKvpRequestReader {
         request = super.read(request, kvp);
 
         //set the version attribute on the request
-        if ( kvp.containsKey( "version") ) {
-				
-			AcceptVersionsType acceptVersions = 
-				OWSFactory.eINSTANCE.createAcceptVersionsType();
-			acceptVersions.getVersion().add( kvp.get( "version") );
-			
-			GetCapabilitiesType getCapabilities = (GetCapabilitiesType) request;
-			getCapabilities.setAcceptVersions( acceptVersions );
-			
-		}
-     
+        if (kvp.containsKey("version")) {
+            AcceptVersionsType acceptVersions = OWSFactory.eINSTANCE
+                .createAcceptVersionsType();
+            acceptVersions.getVersion().add(kvp.get("version"));
+
+            GetCapabilitiesType getCapabilities = (GetCapabilitiesType) request;
+            getCapabilities.setAcceptVersions(acceptVersions);
+        }
+
         return request;
     }
 }
