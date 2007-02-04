@@ -102,6 +102,11 @@
 		<constructor-arg index="1" ref="wmsService2"/>
 		<constructor-arg index="2" value="1.1.1"/>
  	</bean>
+ 	<!-- service exception handler -->
+	<bean id="wmsExceptionHandler" class="org.geoserver.wms.WMSExceptionHandler">
+		<constructor-arg ref="wmsServiceDescriptor"/>
+		<constructor-arg ref="wms"/>
+	</bean>
  	
  	<!-- kvp request readers -->
  	<bean id="wmsGetCapabilitiesKvpReader" 
