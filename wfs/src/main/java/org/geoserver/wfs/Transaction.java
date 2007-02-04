@@ -241,8 +241,7 @@ public class Transaction {
             } else {
                 // Option 2: either update or delete, only one type
                 QName elementName = (QName) EMFUtils.get(element, "typeName");
-                FeatureTypeInfo meta = catalog.getFeatureTypeInfo(elementName.getNamespaceURI(),
-                        elementName.getLocalPart());
+                FeatureTypeInfo meta = catalog.getFeatureTypeInfo(elementName);
 
                 if (meta == null) {
                     String msg = elementName + " is not available: ";
@@ -681,6 +680,7 @@ public class Transaction {
 
                         //report back fids, we need to keep the same order the fids were reported 
                         // in the original feature collection
+                        FeatureType last = null;
                         for (Iterator f = insert.getFeature().iterator(); f.hasNext();) {
                             Feature feature = (Feature) f.next();
                             FeatureType schema = feature.getFeatureType();
@@ -689,13 +689,21 @@ public class Transaction {
                             LinkedList fids = (LinkedList) schema2fids.get(schema.getTypeName());
                             String fid = (String) fids.removeFirst();
 
-                            InsertedFeatureType insertedFeature = WFSFactory.eINSTANCE
-                                .createInsertedFeatureType();
-                            insertedFeature.setHandle(insert.getHandle());
-
+                            //is teh schema reported, the same as the last
+                            InsertedFeatureType insertedFeature = null;
+                            if ( last != null && last.getTypeName().equals( schema.getTypeName() ) ) {
+                            	insertedFeature = (InsertedFeatureType) result.getInsertResults().getFeature()
+                            		.get( result.getInsertResults().getFeature().size() - 1);
+                            }
+                            else {
+                            	insertedFeature = WFSFactory.eINSTANCE
+                                .createInsertedFeatureType();	
+                            	insertedFeature.setHandle(insert.getHandle());
+                            	result.getInsertResults().getFeature().add(insertedFeature);
+                            }
+                            
                             insertedFeature.getFeatureId().add(filterFactory.featureId(fid));
-
-                            result.getInsertResults().getFeature().add(insertedFeature);
+                            last = schema;
                         }
 
                         //update the insert counter
