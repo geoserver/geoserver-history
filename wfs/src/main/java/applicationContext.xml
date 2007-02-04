@@ -31,7 +31,10 @@
 
 	<!-- wfs configuration bean -->
 	<bean id="wfs" class="org.geoserver.wfs.WFS">
-		<property name="citeConformanceHacks" value="true" />
+		<constructor-arg ref="config"/>
+		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="geoServer"/>
+		<constructor-arg ref="validation"/>
 	</bean>
 
 	<!-- wfs service -->
