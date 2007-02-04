@@ -4,6 +4,7 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
@@ -123,7 +124,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
             //                + " schemaLocation=\"" + request.getSchemaBaseUrl()
             //                + "gml/2.1.2/feature.xsd\"/>\n\n");
             tempResponse.append("\n\n<xs:import namespace=" + GML_URL + " schemaLocation=\""
-                + wfs.getSchemaBaseURL() + "gml/2.1.2/feature.xsd\"/>\n\n");
+                + ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "gml/2.1.2/feature.xsd" ) +  "\"/>\n\n");
             tempResponse.append(generateSpecifiedTypes(infos));
         } else {
             //the featureTypes do not have all the same prefixes.
