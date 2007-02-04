@@ -73,7 +73,7 @@ public class Dispatcher extends AbstractController {
     AbstractService find(String service, String request)
         throws ServiceException {
         //map request parameters to a Request bean to handle it 
-        Map requests = //getApplicationContext().getBeansOfType(AbstractService.class);
+        Map requests =  //getApplicationContext().getBeansOfType(AbstractService.class);
             getApplicationContext().getParent().getBeansOfType(AbstractService.class);
 
         List matches = new ArrayList();
