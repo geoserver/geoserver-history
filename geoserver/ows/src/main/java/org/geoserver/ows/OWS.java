@@ -113,9 +113,8 @@ public class OWS {
      * Protected constructor for subclass use.
      */
     protected OWS() {
-    	
     }
-    
+
     /**
      * @return The identifier of the service
      */
@@ -126,10 +125,10 @@ public class OWS {
     /**
      * id setter for subclasses.
      */
-    protected void setId( String id ) {
-    	this.id = id;
+    protected void setId(String id) {
+        this.id = id;
     }
-    
+
     /**
     * <p>
     * Returns whether is service is enabled.
