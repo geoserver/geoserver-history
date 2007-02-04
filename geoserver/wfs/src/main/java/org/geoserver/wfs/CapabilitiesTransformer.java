@@ -9,6 +9,7 @@ import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.ows.xml.v1_0.OWS;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.factory.FactoryRegistry;
+import org.geotools.filter.FunctionExpression;
 import org.geotools.filter.v1_0.OGC;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.xlink.bindings.XLINK;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -130,7 +132,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     XSI_URI);
 
                 String locationAtt = XSI_PREFIX + ":schemaLocation";
-                String locationDef = ResponseUtils.appendPath(wfs.getSchemaBaseURL(),
+                String locationDef = WFS_URI + " " + ResponseUtils.appendPath(wfs.getSchemaBaseURL(),
                         "wfs/1.0.0/WFS-capabilities.xsd");
                 attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
 
@@ -345,7 +347,12 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                     for (Iterator i = featureProducers.iterator(); i.hasNext();) {
                         WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i.next();
-                        element(format.getOutputFormat(), null);
+                        
+                        //wfs 1.1 form is not a valid xml element, do a check
+                        if ( format.getOutputFormat().matches( "(\\w)+" ) ) {
+                        	element(format.getOutputFormat(), null);	
+                        }
+                        
                     }
                 }
 
@@ -445,9 +452,10 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 }
 
                 if (HTTP_GET.equals(httpMethod)) {
-                    url += ("?request=" + capabilityName + "&");
+                    url += ("?request=" + capabilityName );
                 } else if (HTTP_POST.equals(httpMethod)) {
-                    url += ("/" + capabilityName + "?");
+                	url += "?";
+                    //url += ("/" + capabilityName + "?");
                 }
 
                 start("DCPType");
@@ -662,7 +670,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 start(prefix + "Functions");
                 start(prefix + "Function_Names");
 
-                Iterator it = FactoryRegistry.lookupProviders(Function.class);
+                Iterator it = FactoryRegistry.lookupProviders( Function.class );
+                
 
                 //Sort them up for easier visual inspection
                 SortedSet sortedFunctions = new TreeSet(new Comparator() {
@@ -684,13 +693,21 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 while (it.hasNext()) {
                     Function fe = (Function) it.next();
-                    String funName = fe.getName();
-                    int funNArgs = fe.getParameters().size();
+                    
+                    //TODO: as of now the geoapi Function interface 
+                    // does not allow use to report back properly the number of 
+                    // parameters, so we check for instances of FunctionExpression 
+                    // for now
+                    if ( fe instanceof FunctionExpression ) {
+                    	String funName = fe.getName();
+                        int funNArgs = ((FunctionExpression)fe).getArgCount();
+                        
+                        AttributesImpl atts = new AttributesImpl();
+                        atts.addAttribute("", "nArgs", "nArgs", "", funNArgs + "");
 
-                    AttributesImpl atts = new AttributesImpl();
-                    atts.addAttribute("", "nArgs", "nArgs", "", funNArgs + "");
-
-                    element(prefix + "Function_Name", funName, atts);
+                        element(prefix + "Function_Name", funName, atts);
+                    }
+                    
                 }
 
                 end(prefix + "Function_Names");
