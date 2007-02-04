@@ -411,7 +411,12 @@ public class Dispatcher extends AbstractController {
             }
 
             if (responses.isEmpty()) {
-                String msg = "No response: (" + result.getClass() + ")";
+                String msg = "No response: ( object = " + result.getClass();
+                if ( req.outputFormat != null ) {
+                	msg += ", outputFormat = " + req.outputFormat;
+                }
+                msg += " )";
+                
                 throw new RuntimeException(msg);
             }
 
@@ -659,7 +664,32 @@ public class Dispatcher extends AbstractController {
             //multiple readers found, sort by version
             if (vmatches.size() > 1) {
                 //use highest version
-                Collections.sort(vmatches);
+            	Comparator comparator = new Comparator() {
+
+					public int compare(Object o1, Object o2) {
+						XmlRequestReader r1 = (XmlRequestReader) o1;
+						XmlRequestReader r2 = (XmlRequestReader) o2;
+						
+						Version v1 = r1.getVersion();
+						Version v2 = r2.getVersion();
+						
+						if ( v1 == null && v2 == null ) {
+							return 0;
+						}
+						
+						if ( v1 != null && v2 == null ) {
+							return 1;
+						}
+						
+						if ( v1 == null && v2 != null ) {
+							return -1;
+						}
+						
+						return v1.compareTo( v2 );
+					}
+            		
+            	};
+                Collections.sort(vmatches,comparator);
             }
 
             xmlReader = (XmlRequestReader) vmatches.get(vmatches.size() - 1);
@@ -855,6 +885,8 @@ public class Dispatcher extends AbstractController {
     }
 
     void exception(Throwable t, Service service, Request request) {
+    	t.printStackTrace();
+    	
         //wrap in service exception if necessary
         ServiceException se = null;
 
