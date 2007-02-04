@@ -58,6 +58,7 @@ public final class WCS extends Service {
      */
     public WCS(WCSDTO config) {
         super(config.getService());
+        setId( "wcs" );
         gmlPrefixing = config.isGmlPrefixing();
     }
 
@@ -85,6 +86,7 @@ public final class WCS extends Service {
      */
     WCS() {
         super(new ServiceDTO());
+        setId( "wcs" );
     }
 
     /**
