@@ -6,7 +6,6 @@ package org.geoserver.ows;
 
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
@@ -61,13 +60,13 @@ public abstract class ServiceExceptionHandler {
     /**
      * Constructs the handler for a single {@link Service} that it handles
      * exceptions for.
-     * 
+     *
      * @param service The service to handle exceptions for.
      */
     public ServiceExceptionHandler(Service service) {
-    	this.services = Collections.singletonList( service );
+        this.services = Collections.singletonList(service);
     }
-    
+
     /**
      * @return The services this handler handles exceptions for.
      */

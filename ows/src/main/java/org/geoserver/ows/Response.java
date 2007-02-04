@@ -101,16 +101,15 @@ public abstract class Response {
 
     /**
      * Returns the mime type to be uses when writing the response.
-     * 
+     *
      * @param value The value to serialize
      * @param operation The operation being performed.
      *
-     * 
+     *
      * @return The mime type of the response, must not be <code>null</code>
      */
     public abstract String getMimeType(Object value, Operation operation)
         throws ServiceException;
-
 
     /**
      * Serializes <code>value</code> to <code>output</code>.

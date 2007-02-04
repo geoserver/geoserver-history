@@ -295,9 +295,9 @@ public class Dispatcher extends AbstractController {
                     if (req.version == null) {
                         req.version = lookupRequestBeanProperty(requestBean, "version");
                     }
-                    
+
                     if (req.outputFormat == null) {
-                    	req.outputFormat = lookupRequestBeanProperty( requestBean, "outputFormat" );
+                        req.outputFormat = lookupRequestBeanProperty(requestBean, "outputFormat");
                     }
 
                     parameters[i] = requestBean;
@@ -319,7 +319,8 @@ public class Dispatcher extends AbstractController {
 
                 //make sure the versoin actually exists
                 boolean found = false;
-                Version version = new Version( req.version );
+                Version version = new Version(req.version);
+
                 for (Iterator s = loadServices().iterator(); s.hasNext();) {
                     Service service = (Service) s.next();
 
@@ -398,6 +399,7 @@ public class Dispatcher extends AbstractController {
                 if (!binding.isAssignableFrom(result.getClass())
                         || !response.canHandle(opDescriptor)) {
                     itr.remove();
+
                     continue;
                 }
 
@@ -412,11 +414,13 @@ public class Dispatcher extends AbstractController {
 
             if (responses.isEmpty()) {
                 String msg = "No response: ( object = " + result.getClass();
-                if ( req.outputFormat != null ) {
-                	msg += ", outputFormat = " + req.outputFormat;
+
+                if (req.outputFormat != null) {
+                    msg += (", outputFormat = " + req.outputFormat);
                 }
+
                 msg += " )";
-                
+
                 throw new RuntimeException(msg);
             }
 
@@ -457,7 +461,7 @@ public class Dispatcher extends AbstractController {
             Response response = (Response) responses.get(0);
 
             //set the mime type
-            req.httpResponse.setContentType(response.getMimeType( result, opDescriptor));
+            req.httpResponse.setContentType(response.getMimeType(result, opDescriptor));
 
             //TODO: initialize any header params (gzip,deflate,etc...)
             OutputStream output = req.httpResponse.getOutputStream();
@@ -524,24 +528,23 @@ public class Dispatcher extends AbstractController {
                 if (vmatches.isEmpty()) {
                     //no matching version found, drop out and next step 
                     // will sort to return highest version
-                	vmatches = new ArrayList(matches);
+                    vmatches = new ArrayList(matches);
                 }
             }
 
             //multiple services found, sort by version
             if (vmatches.size() > 1) {
                 //use highest version
-            	Comparator comparator = new Comparator() {
+                Comparator comparator = new Comparator() {
+                        public int compare(Object o1, Object o2) {
+                            Service s1 = (Service) o1;
+                            Service s2 = (Service) o2;
 
-					public int compare(Object o1, Object o2) {
-						Service s1 = (Service) o1;
-						Service s2 = (Service) o2;
-						
-						return s1.getVersion().compareTo( s2.getVersion() );
-					}
-            		
-            	};
-                Collections.sort(vmatches,comparator);
+                            return s1.getVersion().compareTo(s2.getVersion());
+                        }
+                    };
+
+                Collections.sort(vmatches, comparator);
             }
 
             sBean = (Service) vmatches.get(vmatches.size() - 1);
@@ -664,32 +667,31 @@ public class Dispatcher extends AbstractController {
             //multiple readers found, sort by version
             if (vmatches.size() > 1) {
                 //use highest version
-            	Comparator comparator = new Comparator() {
+                Comparator comparator = new Comparator() {
+                        public int compare(Object o1, Object o2) {
+                            XmlRequestReader r1 = (XmlRequestReader) o1;
+                            XmlRequestReader r2 = (XmlRequestReader) o2;
 
-					public int compare(Object o1, Object o2) {
-						XmlRequestReader r1 = (XmlRequestReader) o1;
-						XmlRequestReader r2 = (XmlRequestReader) o2;
-						
-						Version v1 = r1.getVersion();
-						Version v2 = r2.getVersion();
-						
-						if ( v1 == null && v2 == null ) {
-							return 0;
-						}
-						
-						if ( v1 != null && v2 == null ) {
-							return 1;
-						}
-						
-						if ( v1 == null && v2 != null ) {
-							return -1;
-						}
-						
-						return v1.compareTo( v2 );
-					}
-            		
-            	};
-                Collections.sort(vmatches,comparator);
+                            Version v1 = r1.getVersion();
+                            Version v2 = r2.getVersion();
+
+                            if ((v1 == null) && (v2 == null)) {
+                                return 0;
+                            }
+
+                            if ((v1 != null) && (v2 == null)) {
+                                return 1;
+                            }
+
+                            if ((v1 == null) && (v2 != null)) {
+                                return -1;
+                            }
+
+                            return v1.compareTo(v2);
+                        }
+                    };
+
+                Collections.sort(vmatches, comparator);
             }
 
             xmlReader = (XmlRequestReader) vmatches.get(vmatches.size() - 1);
@@ -757,20 +759,21 @@ public class Dispatcher extends AbstractController {
         return parsedKvp;
     }
 
-    Object parseRequestKVP(Class type, Request request ) throws Exception {
-    	KvpRequestReader kvpReader = findKvpRequestReader(type);
-    	Map kvp = request.kvp;
-    	
+    Object parseRequestKVP(Class type, Request request)
+        throws Exception {
+        KvpRequestReader kvpReader = findKvpRequestReader(type);
+        Map kvp = request.kvp;
+
         if (kvpReader != null) {
-        	//check for http request awareness
-        	if ( kvpReader instanceof HttpServletRequestAware ) {
-        		((HttpServletRequestAware) kvpReader ).setHttpRequest( request.httpRequest );
-        	}
-        	
-        	Object requestBean = kvpReader.createRequest();
+            //check for http request awareness
+            if (kvpReader instanceof HttpServletRequestAware) {
+                ((HttpServletRequestAware) kvpReader).setHttpRequest(request.httpRequest);
+            }
+
+            Object requestBean = kvpReader.createRequest();
 
             if (requestBean != null) {
-            	requestBean = kvpReader.read(requestBean, kvp);
+                requestBean = kvpReader.read(requestBean, kvp);
             }
 
             return requestBean;
@@ -885,8 +888,8 @@ public class Dispatcher extends AbstractController {
     }
 
     void exception(Throwable t, Service service, Request request) {
-    	t.printStackTrace();
-    	
+        t.printStackTrace();
+
         //wrap in service exception if necessary
         ServiceException se = null;
 
