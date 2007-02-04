@@ -82,6 +82,7 @@ public class WFS extends org.vfny.geoserver.global.Service {
      */
     public WFS(WFSDTO config) {
         super(config.getService());
+        setId( "wfs" );
         srsXmlStyle = config.isSrsXmlStyle();
         serviceLevel = config.getServiceLevel();
         citeConformanceHacks = config.getCiteConformanceHacks();
@@ -113,6 +114,7 @@ public class WFS extends org.vfny.geoserver.global.Service {
      */
     WFS() {
         super(new ServiceDTO());
+        setId( "wfs" );
     }
 
     /**
