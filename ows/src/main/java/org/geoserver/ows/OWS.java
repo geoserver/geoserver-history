@@ -124,6 +124,13 @@ public class OWS {
     }
 
     /**
+     * id setter for subclasses.
+     */
+    protected void setId( String id ) {
+    	this.id = id;
+    }
+    
+    /**
     * <p>
     * Returns whether is service is enabled.
     * </p>
