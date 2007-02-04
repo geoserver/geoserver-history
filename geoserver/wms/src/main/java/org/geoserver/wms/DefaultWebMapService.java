@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wms;
 
 import org.springframework.beans.BeansException;
@@ -20,55 +24,58 @@ import org.vfny.geoserver.wms.servlets.GetFeatureInfo;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 import org.vfny.geoserver.wms.servlets.GetMap;
 
+
 public class DefaultWebMapService implements WebMapService, ApplicationContextAware {
+    /**
+     * WMS Configuration
+     */
+    WMS wms;
 
-	/**
-	 * WMS Configuration
-	 */
-	WMS wms;
-	/**
-	 * Application context
-	 */
-	ApplicationContext context;
-	
-	public DefaultWebMapService( WMS wms ) {
-		this.wms = wms;
-	}
-	
-	public void setApplicationContext(ApplicationContext context) throws BeansException {
-		this.context = context;
-	}
-	
-	public WMSCapabilitiesResponse getCapabilities(CapabilitiesRequest request) {
-		Capabilities capabilities = 
-			(Capabilities) context.getBeansOfType( Capabilities.class ).values().iterator().next();
-		return (WMSCapabilitiesResponse) capabilities.getResponse();
-	}
-	
-	public DescribeLayerResponse describeLayer(DescribeLayerRequest request) {
-		DescribeLayer describeLayer = 
-			(DescribeLayer) context.getBeansOfType( DescribeLayer.class ).values().iterator().next();
-		return (DescribeLayerResponse) describeLayer.getResponse();
-	}
-	
-	
-	public GetMapResponse getMap(GetMapRequest request) {
-		GetMap getMap = 
-			(GetMap) context.getBeansOfType( GetMap.class ).values().iterator().next();
-		return (GetMapResponse) getMap.getResponse();
-	}
-	
-	public GetFeatureInfoResponse getFeatureInfo(GetFeatureInfoRequest request) {
-		GetFeatureInfo getFeatureInfo = 
-			(GetFeatureInfo) context.getBeansOfType( GetFeatureInfo.class ).values().iterator().next();
-		return (GetFeatureInfoResponse) getFeatureInfo.getResponse();
-	}
+    /**
+     * Application context
+     */
+    ApplicationContext context;
 
-	public GetLegendGraphicResponse getLegendGraphic(GetLegendGraphicRequest request) {
-		GetLegendGraphic getLegendGraphic = 
-			(GetLegendGraphic) context.getBeansOfType( GetLegendGraphic.class ).values().iterator().next();
-		return (GetLegendGraphicResponse) getLegendGraphic.getResponse();
-	}
-	
-	
+    public DefaultWebMapService(WMS wms) {
+        this.wms = wms;
+    }
+
+    public void setApplicationContext(ApplicationContext context)
+        throws BeansException {
+        this.context = context;
+    }
+
+    public WMSCapabilitiesResponse getCapabilities(CapabilitiesRequest request) {
+        Capabilities capabilities = (Capabilities) context.getBeansOfType(Capabilities.class)
+                                                          .values().iterator().next();
+
+        return (WMSCapabilitiesResponse) capabilities.getResponse();
+    }
+
+    public DescribeLayerResponse describeLayer(DescribeLayerRequest request) {
+        DescribeLayer describeLayer = (DescribeLayer) context.getBeansOfType(DescribeLayer.class)
+                                                             .values().iterator().next();
+
+        return (DescribeLayerResponse) describeLayer.getResponse();
+    }
+
+    public GetMapResponse getMap(GetMapRequest request) {
+        GetMap getMap = (GetMap) context.getBeansOfType(GetMap.class).values().iterator().next();
+
+        return (GetMapResponse) getMap.getResponse();
+    }
+
+    public GetFeatureInfoResponse getFeatureInfo(GetFeatureInfoRequest request) {
+        GetFeatureInfo getFeatureInfo = (GetFeatureInfo) context.getBeansOfType(GetFeatureInfo.class)
+                                                                .values().iterator().next();
+
+        return (GetFeatureInfoResponse) getFeatureInfo.getResponse();
+    }
+
+    public GetLegendGraphicResponse getLegendGraphic(GetLegendGraphicRequest request) {
+        GetLegendGraphic getLegendGraphic = (GetLegendGraphic) context.getBeansOfType(GetLegendGraphic.class)
+                                                                      .values().iterator().next();
+
+        return (GetLegendGraphicResponse) getLegendGraphic.getResponse();
+    }
 }

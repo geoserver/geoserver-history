@@ -4,11 +4,10 @@
  */
 package org.vfny.geoserver.global.dto;
 
+import org.vfny.geoserver.global.MetaDataLink;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.vfny.geoserver.global.MetaDataLink;
 
 
 /**
@@ -241,7 +240,7 @@ public final class ServiceDTO implements DataTransferObject {
             return false;
         }
 
-        if (!keywords.equals( dto.keywords) ) {
+        if (!keywords.equals(dto.keywords)) {
             return false;
         }
 

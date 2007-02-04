@@ -132,7 +132,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     XSI_URI);
 
                 String locationAtt = XSI_PREFIX + ":schemaLocation";
-                String locationDef = WFS_URI + " " + ResponseUtils.appendPath(wfs.getSchemaBaseURL(),
+                String locationDef = WFS_URI + " "
+                    + ResponseUtils.appendPath(wfs.getSchemaBaseURL(),
                         "wfs/1.0.0/WFS-capabilities.xsd");
                 attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
 
@@ -347,12 +348,11 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                     for (Iterator i = featureProducers.iterator(); i.hasNext();) {
                         WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i.next();
-                        
+
                         //wfs 1.1 form is not a valid xml element, do a check
-                        if ( format.getOutputFormat().matches( "(\\w)+" ) ) {
-                        	element(format.getOutputFormat(), null);	
+                        if (format.getOutputFormat().matches("(\\w)+")) {
+                            element(format.getOutputFormat(), null);
                         }
-                        
                     }
                 }
 
@@ -452,9 +452,10 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 }
 
                 if (HTTP_GET.equals(httpMethod)) {
-                    url += ("?request=" + capabilityName );
+                    url += ("?request=" + capabilityName);
                 } else if (HTTP_POST.equals(httpMethod)) {
-                	url += "?";
+                    url += "?";
+
                     //url += ("/" + capabilityName + "?");
                 }
 
@@ -670,8 +671,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 start(prefix + "Functions");
                 start(prefix + "Function_Names");
 
-                Iterator it = FactoryRegistry.lookupProviders( Function.class );
-                
+                Iterator it = FactoryRegistry.lookupProviders(Function.class);
 
                 //Sort them up for easier visual inspection
                 SortedSet sortedFunctions = new TreeSet(new Comparator() {
@@ -693,21 +693,20 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 while (it.hasNext()) {
                     Function fe = (Function) it.next();
-                    
+
                     //TODO: as of now the geoapi Function interface 
                     // does not allow use to report back properly the number of 
                     // parameters, so we check for instances of FunctionExpression 
                     // for now
-                    if ( fe instanceof FunctionExpression ) {
-                    	String funName = fe.getName();
-                        int funNArgs = ((FunctionExpression)fe).getArgCount();
-                        
+                    if (fe instanceof FunctionExpression) {
+                        String funName = fe.getName();
+                        int funNArgs = ((FunctionExpression) fe).getArgCount();
+
                         AttributesImpl atts = new AttributesImpl();
                         atts.addAttribute("", "nArgs", "nArgs", "", funNArgs + "");
 
                         element(prefix + "Function_Name", funName, atts);
                     }
-                    
                 }
 
                 end(prefix + "Function_Names");
@@ -742,7 +741,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                             WFS_URI, "xmlns:ows", OWS.NAMESPACE, "xmlns:gml", GML.NAMESPACE,
                             "xmlns:ogc", OGC.NAMESPACE, "xmlns:xlink", XLINK.NAMESPACE,
                             "xsi:schemaLocation",
-                            org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE + " "
+                            
+                        org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE + " "
                             + ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.1.0/wfs.xsd")
                         });
 

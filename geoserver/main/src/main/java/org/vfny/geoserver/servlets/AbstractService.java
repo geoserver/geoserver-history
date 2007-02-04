@@ -672,16 +672,16 @@ public abstract class AbstractService extends HttpServlet implements Application
     protected Response getResponseHandler() {
         return null;
     }
-    
+
     /**
      * This method was added in order to adapt the old style servlet services
-     * to the new ows dispatching interface, without having to modify the 
+     * to the new ows dispatching interface, without having to modify the
      * services themselves.
-     * 
+     *
      * @return A call to {@link #getResponseHandler()}.
      */
     public final Response getResponse() {
-    	return getResponseHandler();
+        return getResponseHandler();
     }
 
     /**

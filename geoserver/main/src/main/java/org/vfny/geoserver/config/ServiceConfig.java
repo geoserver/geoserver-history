@@ -135,7 +135,7 @@ public class ServiceConfig {
         title = s.getTitle();
         _abstract = s.getAbstract();
 
-        keywords = new ArrayList( s.getKeywords() );
+        keywords = new ArrayList(s.getKeywords());
         fees = s.getFees();
         accessConstraints = s.getAccessConstraints();
         maintainer = s.getMaintainer();
@@ -162,7 +162,7 @@ public class ServiceConfig {
         sDto.setAccessConstraints(accessConstraints);
         sDto.setEnabled(enabled);
         sDto.setFees(fees);
-        sDto.setKeywords(new ArrayList( keywords ) );
+        sDto.setKeywords(new ArrayList(keywords));
         sDto.setMaintainer(maintainer);
         sDto.setName(name);
         sDto.setOnlineResource(onlineResource);

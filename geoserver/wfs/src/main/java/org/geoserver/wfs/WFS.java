@@ -32,14 +32,13 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  * @author Gabriel Rold???n
  * @author Chris Holmes
  * @author Justin Deoliveira
- * 
+ *
  * @version $Id: WFS.java,v 1.8 2004/09/09 16:54:19 cholmesny Exp $
  */
 public class WFS extends org.vfny.geoserver.global.Service {
-	
-	/** web container key */
+    /** web container key */
     public static final String WEB_CONTAINER_KEY = "WFS";
-    
+
     /** ServiceLevel bit used to indicate Basic support */
     public static final int SERVICE_BASIC = WFSDTO.SERVICE_BASIC;
 
@@ -60,10 +59,9 @@ public class WFS extends org.vfny.geoserver.global.Service {
 
     /** ServiceLevel mask for transactional WFS conformance. */
     public static final int TRANSACTIONAL = WFSDTO.TRANSACTIONAL;
-    
+
     /** ServiceLevel mask equivilent to complete WFS conformance */
     public static final int COMPLETE = WFSDTO.COMPLETE;
-    
     private GeoValidator gv;
     private int serviceLevel;
     private boolean srsXmlStyle;
@@ -82,7 +80,7 @@ public class WFS extends org.vfny.geoserver.global.Service {
      */
     public WFS(WFSDTO config) {
         super(config.getService());
-        setId( "wfs" );
+        setId("wfs");
         srsXmlStyle = config.isSrsXmlStyle();
         serviceLevel = config.getServiceLevel();
         citeConformanceHacks = config.getCiteConformanceHacks();
@@ -114,7 +112,7 @@ public class WFS extends org.vfny.geoserver.global.Service {
      */
     WFS() {
         super(new ServiceDTO());
-        setId( "wfs" );
+        setId("wfs");
     }
 
     /**

@@ -8,7 +8,6 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WFSFactory;
-
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WebFeatureService;
 import org.geoserver.wfs.xml.GML2OutputFormat;
@@ -19,7 +18,6 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
-
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.servlets.WMService;
 import java.io.IOException;
@@ -57,7 +55,7 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * Default constructor, sets up the supported output format string.
      */
     public GmlFeatureInfoResponse() {
-    	super.supportedFormats = Collections.singletonList(FORMAT);
+        super.supportedFormats = Collections.singletonList(FORMAT);
     }
 
     /**
@@ -88,21 +86,20 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
         GetFeatureInfoRequest fInfoReq = (GetFeatureInfoRequest) getRequest();
         WMS wms = (WMS) fInfoReq.getServiceRef().getServiceRef();
         WFS wfs = wms.getWFS();
-    	Data catalog =  fInfoReq.getServiceRef().getCatalog();
-    	
-        FeatureCollectionType features =
-        	WFSFactory.eINSTANCE.createFeatureCollectionType();
-        for ( Iterator i = results.iterator(); i.hasNext(); ) {
-        	features.getFeature().add( i.next() );
+        Data catalog = fInfoReq.getServiceRef().getCatalog();
+
+        FeatureCollectionType features = WFSFactory.eINSTANCE.createFeatureCollectionType();
+
+        for (Iterator i = results.iterator(); i.hasNext();) {
+            features.getFeature().add(i.next());
         }
-        
-        GML2OutputFormat format = new GML2OutputFormat( wfs, catalog );
-        format.write( features, out, null );
+
+        GML2OutputFormat format = new GML2OutputFormat(wfs, catalog);
+        format.write(features, out, null);
     }
 
     public String getContentDisposition() {
         // TODO Auto-generated method stub
         return null;
     }
-
 }

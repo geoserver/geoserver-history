@@ -30,15 +30,15 @@ import java.util.Map;
  * @see WFS
  */
 public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
-//    private boolean enabled;
-//    private URL onlineResource;
-//    private String name;
-//    private String title;
-//    private String serverAbstract;
-//    private String[] keywords = new String[0];
-//    private String fees;
-//    private String accessConstraints;
-//    private String maintainer;
+    //    private boolean enabled;
+    //    private URL onlineResource;
+    //    private String name;
+    //    private String title;
+    //    private String serverAbstract;
+    //    private String[] keywords = new String[0];
+    //    private String fees;
+    //    private String accessConstraints;
+    //    private String maintainer;
     private String strategy;
     private MetaDataLink metadataLink;
     private int partialBufferSize;
@@ -57,19 +57,19 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
      * @throws NullPointerException when the param is null
      */
     public Service(ServiceDTO dto) {
-	   if (dto == null) {
-           throw new NullPointerException();
-       }
+        if (dto == null) {
+            throw new NullPointerException();
+        }
 
-        setEnabled( dto.isEnabled() );
-        setName( dto.getName() );
-        setTitle( dto.getTitle() );
-        setAbtract( dto.getAbstract() );
-        setKeywords( dto.getKeywords() );
-        setFees( dto.getFees() );
-        setAccessConstraints( dto.getAccessConstraints() );
-        setMaintainer( dto.getMaintainer() );
-        setOnlineResource( dto.getOnlineResource() );
+        setEnabled(dto.isEnabled());
+        setName(dto.getName());
+        setTitle(dto.getTitle());
+        setAbtract(dto.getAbstract());
+        setKeywords(dto.getKeywords());
+        setFees(dto.getFees());
+        setAccessConstraints(dto.getAccessConstraints());
+        setMaintainer(dto.getMaintainer());
+        setOnlineResource(dto.getOnlineResource());
         metadataLink = dto.getMetadataLink();
         strategy = dto.getStrategy();
         partialBufferSize = dto.getPartialBufferSize();
@@ -87,15 +87,15 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
             throw new NullPointerException();
         }
 
-        setEnabled( dto.isEnabled() );
-        setName( dto.getName() );
-        setTitle( dto.getTitle() );
-        setAbtract( dto.getAbstract() );
-        setKeywords( dto.getKeywords() );
-        setFees( dto.getFees() );
-        setAccessConstraints( dto.getAccessConstraints() );
-        setMaintainer( dto.getMaintainer() );
-        setOnlineResource( dto.getOnlineResource() );
+        setEnabled(dto.isEnabled());
+        setName(dto.getName());
+        setTitle(dto.getTitle());
+        setAbtract(dto.getAbstract());
+        setKeywords(dto.getKeywords());
+        setFees(dto.getFees());
+        setAccessConstraints(dto.getAccessConstraints());
+        setMaintainer(dto.getMaintainer());
+        setOnlineResource(dto.getOnlineResource());
         metadataLink = dto.getMetadataLink();
         strategy = dto.getStrategy();
         partialBufferSize = dto.getPartialBufferSize();

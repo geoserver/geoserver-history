@@ -1,18 +1,21 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.ows.adapters;
-
-import java.lang.reflect.Constructor;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.ows.HttpServletRequestAware;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+import java.lang.reflect.Constructor;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
- * Wraps an old style {@link KvpRequestReader} in a new 
+ * Wraps an old style {@link KvpRequestReader} in a new
  * {@link org.geoserver.ows.KvpRequestReader}.
  * <p>
  * This class needs to be defined in a spring context like:
@@ -21,86 +24,83 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
  *   &lt;bean id="getMapKvpReader" class="org.geoserver.ows.adapters.KvpRequestReaderAdapter"&gt;
  *      &lt;!-- first argument is the request class --&gt;
  *      &lt;constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetMapRequest" /&gt;
- *      
+ *
  *      &lt;!-- second argument is the old style kvp reader class --&gt;
  *      &lt;constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetMapKvpReader" /&gt;
- *      
+ *
  *      &lt;!-- third argument is the old style service --&gt;
  *      &lt;constructor-arg index="2" ref="wmsService" /&gt;
  *   &lt;bean&gt;
  * </code>
  * </pre>
  * </p>
- * 
+ *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
 public class KvpRequestReaderAdapter extends org.geoserver.ows.KvpRequestReader
-	implements HttpServletRequestAware {
+    implements HttpServletRequestAware {
+    Class delegateClass;
+    AbstractService service;
+    HttpServletRequest request;
 
-	Class delegateClass;
-	AbstractService service;
-	
-	HttpServletRequest request;
-	
-	public KvpRequestReaderAdapter( Class requestBean, Class delegateClass, AbstractService service  ) {
-		super( requestBean );
-		this.delegateClass = delegateClass;
-		this.service = service;
-	}
-	
-	public void setHttpRequest(HttpServletRequest request) {
-		this.request = request;
-	}
-	
-	public Object createRequest() throws Exception {
-		//simulate the old kvp processin
-		 Map kvp = new HashMap();
-         String qString = request.getQueryString();
-         
-         if ( qString != null ) {
-             kvp = KvpRequestReader.parseKvpSet(qString);
-         } else {
-             String paramName;
-             String paramValue;
+    public KvpRequestReaderAdapter(Class requestBean, Class delegateClass, AbstractService service) {
+        super(requestBean);
+        this.delegateClass = delegateClass;
+        this.service = service;
+    }
 
-             for (Enumeration pnames = request.getParameterNames(); pnames.hasMoreElements();) {
-                 paramName = (String) pnames.nextElement();
-                 paramValue = request.getParameter(paramName);
-                 kvp.put(paramName.toUpperCase(), paramValue);
-             }
-         }
+    public void setHttpRequest(HttpServletRequest request) {
+        this.request = request;
+    }
 
-         //look for a constructor, may have to walk up teh class hierachy
-         Class clazz = service.getClass();
-         Constructor constructor = null;
-         while( clazz != null ) {
-        	try {
-				constructor =  delegateClass.getConstructor( 
-					new Class[] { Map.class, clazz } 
-				);
-				break;
-			} 
-        	catch( NoSuchMethodException e ) {
-        		clazz = clazz.getSuperclass();
-        	}
-         }
-         
-         if ( constructor == null ) {
-        	 throw new IllegalStateException( "No appropriate constructor" );
-         }
-         
-        
-    	//create an instance of the delegate	
-    	KvpRequestReader delegate = 
- 			(KvpRequestReader) constructor.newInstance( new Object[]{  kvp , service } );
-        
+    public Object createRequest() throws Exception {
+        //simulate the old kvp processin
+        Map kvp = new HashMap();
+        String qString = request.getQueryString();
+
+        if (qString != null) {
+            kvp = KvpRequestReader.parseKvpSet(qString);
+        } else {
+            String paramName;
+            String paramValue;
+
+            for (Enumeration pnames = request.getParameterNames(); pnames.hasMoreElements();) {
+                paramName = (String) pnames.nextElement();
+                paramValue = request.getParameter(paramName);
+                kvp.put(paramName.toUpperCase(), paramValue);
+            }
+        }
+
+        //look for a constructor, may have to walk up teh class hierachy
+        Class clazz = service.getClass();
+        Constructor constructor = null;
+
+        while (clazz != null) {
+            try {
+                constructor = delegateClass.getConstructor(new Class[] { Map.class, clazz });
+
+                break;
+            } catch (NoSuchMethodException e) {
+                clazz = clazz.getSuperclass();
+            }
+        }
+
+        if (constructor == null) {
+            throw new IllegalStateException("No appropriate constructor");
+        }
+
+        //create an instance of the delegate	
+        KvpRequestReader delegate = (KvpRequestReader) constructor.newInstance(new Object[] {
+                    kvp, service
+                });
+
         //create the request object
-		return delegate.getRequest( request );
-	}
-	
-	public Object read(Object request, Map kvp) throws Exception {
-		//request object already initialized, just send it back
-		return request;
-	}
+        return delegate.getRequest(request);
+    }
+
+    public Object read(Object request, Map kvp) throws Exception {
+        //request object already initialized, just send it back
+        return request;
+    }
 }
