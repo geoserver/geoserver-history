@@ -9,6 +9,7 @@ import net.opengis.wfs.InsertResultsType;
 import net.opengis.wfs.InsertedFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionResultsType;
+
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
@@ -16,6 +17,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
+import org.geotools.util.Version;
 import org.geotools.xml.Encoder;
 import org.opengis.filter.identity.FeatureId;
 import org.vfny.geoserver.global.Data;
@@ -51,7 +53,7 @@ public class TransactionResponse extends Response {
         throws IOException, ServiceException {
         TransactionResponseType response = (TransactionResponseType) value;
 
-        if ("1.0.0".equals(operation.getService().getVersion())) {
+        if (new Version( "1.0.0" ).equals(operation.getService().getVersion())) {
             v_1_0(response, output);
         } else {
             v_1_1(response, output);
