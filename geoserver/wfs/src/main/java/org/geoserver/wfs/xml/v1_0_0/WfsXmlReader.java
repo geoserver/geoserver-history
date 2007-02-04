@@ -21,6 +21,7 @@ public class WfsXmlReader extends XmlRequestReader {
     
     public WfsXmlReader(String element, WFSConfiguration configuration) {
         super(new QName(WFS.NAMESPACE, element), new Version("1.0.0"));
+        this.configuration = configuration;
     }
 
     public Object read(InputStream input) throws Exception {
