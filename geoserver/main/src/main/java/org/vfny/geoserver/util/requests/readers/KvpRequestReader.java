@@ -353,6 +353,9 @@ abstract public class KvpRequestReader {
                         LOGGER.finest("putting kvp pair: " + key + ": " + value);
                         kvps.put(key, value);
                     }
+                    else {
+                    	kvps.put( key, "" );
+                    }
                 }
             }
         }
