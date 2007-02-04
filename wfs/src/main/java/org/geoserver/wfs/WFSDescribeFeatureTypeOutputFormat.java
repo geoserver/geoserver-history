@@ -56,7 +56,7 @@ public abstract class WFSDescribeFeatureTypeOutputFormat extends Response {
      */
     public final void write(Object value, OutputStream output, Operation operation)
         throws IOException, ServiceException {
-        write((FeatureCollectionType) value, output, operation);
+        write((FeatureTypeInfo[]) value, output, operation);
     }
 
     /**
