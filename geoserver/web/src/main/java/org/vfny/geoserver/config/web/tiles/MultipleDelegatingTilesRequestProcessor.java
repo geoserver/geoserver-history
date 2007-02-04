@@ -78,7 +78,8 @@ public class MultipleDelegatingTilesRequestProcessor extends DelegatingTilesRequ
         }
 
         // Try to process the definition.
-        if (processTilesDefinition(forward.getPath(), /*forward.getContextRelative()*/ false, request, response)) {
+        if (processTilesDefinition(forward.getPath(), /*forward.getContextRelative()*/
+                    false, request, response)) {
             if (log.isDebugEnabled()) {
                 log.debug("  '" + forward.getPath() + "' - processed as definition");
             }

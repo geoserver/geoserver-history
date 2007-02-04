@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,8 +48,8 @@ public final class WFSDescriptionAction extends ConfigAction {
         config.setMaintainer(maintainer);
         config.setAbstract(_abstract);
 
-        List array = (keywords != null) ? Arrays.asList( keywords.split(System.getProperty("line.separator")) )
-                                            : new ArrayList();
+        List array = (keywords != null)
+            ? Arrays.asList(keywords.split(System.getProperty("line.separator"))) : new ArrayList();
 
         config.setKeywords(array);
         getApplicationState().notifyConfigChanged();
