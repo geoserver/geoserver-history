@@ -145,7 +145,7 @@ public class GlobalConfig {
 
     /** location on disk to log to **/
     private String logLocation = null;
-    private long jaiMemoryCapacity;
+    private double jaiMemoryCapacity;
     private double jaiMemoryThreshold;
     private int jaiTileThreads;
     private int jaiTilePriority;
@@ -619,11 +619,11 @@ public class GlobalConfig {
         this.loggingToFile = loggingToFile;
     }
 
-    public long getJaiMemoryCapacity() {
+    public double getJaiMemoryCapacity() {
         return jaiMemoryCapacity;
     }
 
-    public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
+    public void setJaiMemoryCapacity(double jaiMemoryCapacity) {
         this.jaiMemoryCapacity = jaiMemoryCapacity;
     }
 

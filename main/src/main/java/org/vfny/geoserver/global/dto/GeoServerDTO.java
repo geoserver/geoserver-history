@@ -184,7 +184,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /** Where on disk the server should log to **/
     private String logLocation = Defaults.LogLocation;
-    private long jaiMemoryCapacity = Defaults.JaiMemoryCapacity;
+    private double jaiMemoryCapacity = Defaults.JaiMemoryCapacity;
     private double jaiMemoryThreshold = Defaults.JaiMemoryThreshold;
     private int jaiTileThreads = Defaults.JaiTileThreads;
     private int jaiTilePriority = Defaults.JaiTilePriority;
@@ -669,11 +669,11 @@ public final class GeoServerDTO implements DataTransferObject {
         return dto.toString();
     }
 
-    public long getJaiMemoryCapacity() {
+    public double getJaiMemoryCapacity() {
         return jaiMemoryCapacity;
     }
 
-    public void setJaiMemoryCapacity(long jaiMemoryCapacity) {
+    public void setJaiMemoryCapacity(double jaiMemoryCapacity) {
         this.jaiMemoryCapacity = jaiMemoryCapacity;
     }
 
