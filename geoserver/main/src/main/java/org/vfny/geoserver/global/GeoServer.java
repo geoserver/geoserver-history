@@ -67,7 +67,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
     private String contactFacsimile;
     private String contactEmail;
     private String onlineResource;
-    private long memoryCapacity;
+    private double memoryCapacity;
     private double memoryThreshold;
     private int tileThreads;
     private int tilePriority;
@@ -558,7 +558,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
         }
     }
 
-    public void initJAI(final long memCapacity, final double memoryThreshold,
+    public void initJAI(final double memCapacity, final double memoryThreshold,
         final Boolean recycling, final Boolean ImageIOCache) {
         // setting JAI wide hints
         jaiDef.setRenderingHint(JAI.KEY_CACHED_TILE_RECYCLING_ENABLED, recycling);
@@ -570,7 +570,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
         // Setting up Cache Capacity
         jaiCache = (SunTileCache) jaiDef.getTileCache();
-        jaiCache.setMemoryCapacity(memCapacity);
+        long jaiMemory = (long) (memCapacity * Runtime.getRuntime().maxMemory());
+        jaiCache.setMemoryCapacity(jaiMemory);
 
         // Setting up Cahce Threshold
         jaiCache.setMemoryThreshold((float) memoryThreshold);
@@ -765,7 +766,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
         return jaiCache;
     }
 
-    public long getMemoryCapacity() {
+    public double getMemoryCapacity() {
         return memoryCapacity;
     }
 
