@@ -516,11 +516,11 @@ public class XMLConfigReader {
                 }
             }
 
-            long jaiMemoryCapacity = 0;
+            double jaiMemoryCapacity = 0;
             elem = ReaderUtils.getChildElement(globalElem, "JaiMemoryCapacity", false);
 
             if (elem != null) {
-                jaiMemoryCapacity = (long) ReaderUtils.getDoubleAttribute(elem, "value", false);
+                jaiMemoryCapacity = ReaderUtils.getDoubleAttribute(elem, "value", false);
             }
 
             double jaiMemoryThreshold = 0.0;

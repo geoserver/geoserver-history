@@ -125,7 +125,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
             }
         }
 
-        long jaiMemoryCapacity = form.getJaiMemoryCapacity();
+        double jaiMemoryCapacity = form.getJaiMemoryCapacity();
         double jaiMemoryThreshold = form.getJaiMemoryThreshold();
         int jaiTileThreads = form.getJaiTileThreads();
         int jaiTilePriority = form.getJaiTilePriority();
