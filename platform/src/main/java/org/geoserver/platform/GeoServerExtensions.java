@@ -33,6 +33,18 @@ public class GeoServerExtensions implements ApplicationContextAware {
      */
     static ApplicationContext context;
 
+    /**
+     * Sets the web application context to be used for looking up extensions.
+     * <p>
+     * This method is called by the spring container, and should never be called
+     * by client code. If client needs to supply a particular context, methods 
+     * which take a context are available.
+     * </p>
+     * <p>
+     * This is the context that is used for methods which dont supply their 
+     * own context.
+     * </p>
+     */
     public void setApplicationContext(ApplicationContext context)
         throws BeansException {
         GeoServerExtensions.context = context;
@@ -42,10 +54,25 @@ public class GeoServerExtensions implements ApplicationContextAware {
      * Loads all extensions implementing or extending <code>extensionPoint</code>.
      *
      * @param extensionPoint The class or interface of the extensions.
+     * @param context The context in which to perform the lookup.
+     *
+     * @return A collection of the extensions, or an empty collection.
+     */
+    public static final List extensions( Class extensionPoint, ApplicationContext context ) {
+    	return new ArrayList(context.getBeansOfType(extensionPoint).values());
+    }
+    
+    /**
+     * Loads all extensions implementing or extending <code>extensionPoint</code>.
+     * <p>
+     * This method uses the "default" application context to perform the lookup.
+     * See {@link #setApplicationContext(ApplicationContext)}.
+     * </p>
+     * @param extensionPoint The class or interface of the extensions.
      *
      * @return A collection of the extensions, or an empty collection.
      */
     public static final List extensions(Class extensionPoint) {
-        return new ArrayList(context.getBeansOfType(extensionPoint).values());
+        return extensions( extensionPoint, context );
     }
 }
