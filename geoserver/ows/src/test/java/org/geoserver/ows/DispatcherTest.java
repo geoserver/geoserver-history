@@ -133,7 +133,26 @@ public class DispatcherTest extends TestCase {
 		Dispatcher dispatcher = 
 			(Dispatcher) context.getBean( "dispatcher" );
 		
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		MockHttpServletRequest request = new MockHttpServletRequest() {
+			
+			String encoding;
+			
+			public int getServerPort() {
+				return 8080;
+			}
+			
+			public String getCharacterEncoding() {
+				return encoding;
+			}
+			
+			public void setCharacterEncoding(String encoding) {
+				this.encoding = encoding;
+			}
+		};
+		
+		request.setupScheme( "http" );
+		request.setupServerName( "localhost" );
+				
 		
 		request.setupGetContextPath("/geoserver");
 		request.setupGetMethod("GET");
@@ -166,7 +185,24 @@ public class DispatcherTest extends TestCase {
 		Dispatcher dispatcher = 
 			(Dispatcher) context.getBean( "dispatcher" );
 		
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		MockHttpServletRequest request = new MockHttpServletRequest() {
+			String encoding;
+			
+			public int getServerPort() {
+				return 8080;
+			}
+			
+			public String getCharacterEncoding() {
+				return encoding;
+			}
+			
+			public void setCharacterEncoding(String encoding) {
+				this.encoding = encoding;
+			}
+		};
+		
+		request.setupScheme( "http" );
+		request.setupServerName( "localhost" );
 		request.setupGetContextPath("/geoserver");
 		request.setupGetMethod("POST");
 		request.setupGetRequestURI( "http://localhost/geoserver/ows" );

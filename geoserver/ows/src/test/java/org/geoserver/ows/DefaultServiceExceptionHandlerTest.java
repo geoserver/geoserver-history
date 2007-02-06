@@ -29,7 +29,13 @@ public class DefaultServiceExceptionHandlerTest extends TestCase {
 		Service service = 
 			new Service( "hello", helloWorld, new Version( "1.0.0" )  );
 		
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		MockHttpServletRequest request = new MockHttpServletRequest() {
+			
+			public int getServerPort() {
+				return 8080;
+			}
+		};
+		
 		request.setupScheme( "http" );
 		request.setupServerName( "localhost" );
 		
