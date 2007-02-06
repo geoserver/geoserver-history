@@ -24,8 +24,13 @@ public class XmlRequestReaderAdapter extends org.geoserver.ows.XmlRequestReader
 
     public XmlRequestReaderAdapter(QName element, AbstractService service) {
         super(element);
+        this.service = service;
     }
 
+    public XmlRequestReaderAdapter(String namespace, String local, AbstractService service) {
+        this( new QName( namespace, local ), service );
+    }
+    
     public void setHttpRequest(HttpServletRequest request) {
         this.request = request;
     }
