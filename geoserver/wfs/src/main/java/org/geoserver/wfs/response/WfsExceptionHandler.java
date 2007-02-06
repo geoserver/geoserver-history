@@ -14,6 +14,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
@@ -41,13 +43,13 @@ public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
      * Encodes a ogc:ServiceExceptionReport to output.
      */
     public void handleServiceException(ServiceException e, Service service,
-        HttpServletResponse response) {
+        HttpServletRequest request, HttpServletResponse response) {
         Version version = service.getVersion();
 
         if (new Version("1.0.0").equals(version)) {
             handle1_0(e, response);
         } else {
-            super.handleServiceException(e, service, response);
+            super.handleServiceException(e, service, request, response);
         }
     }
 
