@@ -4,11 +4,11 @@
  */
 package org.geoserver.wms;
 
-import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
@@ -30,7 +30,7 @@ public interface WebMapService {
     /**
      * GetCapabilities operation.
      */
-    WMSCapabilitiesResponse getCapabilities(CapabilitiesRequest request);
+    WMSCapabilitiesResponse getCapabilities(WMSCapabilitiesRequest request);
 
     /**
      * GetMap operation.

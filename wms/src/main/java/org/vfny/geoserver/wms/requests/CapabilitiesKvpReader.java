@@ -43,7 +43,7 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
      */
     public Request getRequest(HttpServletRequest request)
         throws ServiceException {
-        CapabilitiesRequest currentRequest = new CapabilitiesRequest("WMS", service);
+        CapabilitiesRequest currentRequest = new WMSCapabilitiesRequest(service);
         currentRequest.setHttpServletRequest(request);
 
         String reqVersion = WMS.getVersion();
