@@ -5,6 +5,8 @@
 package org.vfny.geoserver.global;
 
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
@@ -148,8 +150,10 @@ public class GeoserverDataDirectory {
      * Initializes the data directory lookup service.
      * @param servContext
      */
-    public static void init(ServletContext servContext) {
-        // This was once in the GetGeoserverDataDirectory method, I've moved
+    public static void init(WebApplicationContext context) {
+    	ServletContext servContext = context.getServletContext();
+    	
+	    // This was once in the GetGeoserverDataDirectory method, I've moved
         // here so that servlet
         // context is not needed as a parameter anymore.
         // caching this, so we're not looking up everytime, and more
@@ -160,7 +164,11 @@ public class GeoserverDataDirectory {
         // If this assumption can't be made, then we can't allow data_dir
         // _and_ webapp options with relative data/ links -ch
         if (loader == null) {
-            File dataDir = null;
+        	
+        	//get the loader from the context
+        	loader = (GeoServerResourceLoader) context.getBean( "resourceLoader" );
+        	
+        	File dataDir = null;
 
             // see if there's a system property
             try {
@@ -206,9 +214,12 @@ public class GeoserverDataDirectory {
             String rootDir = servContext.getRealPath("/");
             dataDir = new File(rootDir);
 
-            // create loader, and add some locations to the serach path
-            loader = new GeoServerResourceLoader(dataDir);
-            loader.addSearchLocation(new File(dataDir, "data"));
+            //set the base directory of hte loader
+            loader.setBaseDirectory( dataDir );
+            
+            //add some locations to the serach path to support old style 
+            // data directories
+        	loader.addSearchLocation(new File(dataDir, "data"));
             System.out.println("----------------------------------");
             System.out.println("- GEOSERVER_DATA_DIR: " + dataDir.getAbsolutePath());
             System.out.println("----------------------------------");

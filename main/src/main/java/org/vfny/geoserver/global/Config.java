@@ -41,7 +41,7 @@ public class Config implements ApplicationContextAware {
         ServletContext sc = this.context.getServletContext();
 
         try {
-            GeoserverDataDirectory.init(sc);
+            GeoserverDataDirectory.init( this.context );
             reader = new XMLConfigReader(dataDirectory(), sc);
         } catch (ConfigurationException e) {
             String msg = "Error creating xml config reader";
