@@ -14,6 +14,25 @@ import javax.servlet.http.HttpServletRequest;
  *
  */
 public class RequestUtils {
+	
+	/**
+	 * Returns the url which is hte base of schemas stored / served by 
+	 * geoserver.
+	 * <p>
+	 * 	This method returns:
+	 * 	<pre>
+	 *	<code>
+	 *    baseURL( req ) + "schemas/"
+	 *  </code> 
+	 *  </pre>
+	 * </p>
+	 * 
+	 * @return A String of the form "<scheme>://<server>:<port>/<context>/schemas/"
+	 */
+	public static String schemaBaseURL( HttpServletRequest req ) {
+		return  baseURL( req ) + "schemas/";
+	}
+	
     /**
      * Pulls out the base url ( from the client point of view ), from the
      * given request object.
