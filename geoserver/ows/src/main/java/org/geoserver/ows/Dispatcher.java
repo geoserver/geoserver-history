@@ -584,17 +584,17 @@ public class Dispatcher extends AbstractController {
         if (matches.size() > 1) {
             //sort by class hierarchy
             Comparator comparator = new Comparator() {
-                    public int compare(Object o1, Object o2) {
-                        KvpRequestReader kvp1 = (KvpRequestReader) o1;
-                        KvpRequestReader kvp2 = (KvpRequestReader) o2;
+                public int compare(Object o1, Object o2) {
+                    KvpRequestReader kvp1 = (KvpRequestReader) o1;
+                    KvpRequestReader kvp2 = (KvpRequestReader) o2;
 
-                        if (kvp2.getRequestBean().isAssignableFrom(kvp1.getRequestBean())) {
-                            return -1;
-                        }
-
-                        return 1;
+                    if (kvp2.getRequestBean().isAssignableFrom(kvp1.getRequestBean())) {
+                        return -1;
                     }
-                };
+
+                    return 1;
+                }
+            };
 
             Collections.sort(matches, comparator);
         }
@@ -941,7 +941,7 @@ public class Dispatcher extends AbstractController {
             handler = new DefaultServiceExceptionHandler();
         }
 
-        handler.handleServiceException(se, service, request.httpResponse);
+        handler.handleServiceException(se, service, null, request.httpResponse);
     }
 
     /**

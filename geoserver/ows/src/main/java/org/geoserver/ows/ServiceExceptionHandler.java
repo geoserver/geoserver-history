@@ -9,6 +9,8 @@ import org.geoserver.platform.ServiceException;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
@@ -79,8 +81,9 @@ public abstract class ServiceExceptionHandler {
      *
      * @param exception The service exception.
      * @param service The service that generated the exception
+     * @param request The original request to which the service generated the exception.
      * @param response The response to report the exception to.
      */
     public abstract void handleServiceException(ServiceException exception, Service service,
-        HttpServletResponse response);
+        HttpServletRequest request, HttpServletResponse response);
 }
