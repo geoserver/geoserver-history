@@ -11,9 +11,6 @@
 	<!-- extensions -->
 	<bean id="extensions" class="org.geoserver.platform.GeoServerExtensions"/>
 	
-	<!--  dispatcher -->
-	<bean id="dispatcher" class="org.geoserver.ows.Dispatcher"/>
-	
 	<!-- 
 		core modules
 	 -->
