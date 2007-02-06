@@ -26,11 +26,6 @@ import java.beans.PropertyEditorSupport;
  *
  */
 public class VersionPropertyEditor extends PropertyEditorSupport {
-    static {
-        //register with property editor manager
-        PropertyEditorManager.registerEditor(Version.class, VersionPropertyEditor.class);
-    }
-
     public void setAsText(String text) throws IllegalArgumentException {
         setValue(new Version(text));
     }
