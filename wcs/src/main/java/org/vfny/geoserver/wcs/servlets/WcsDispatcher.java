@@ -4,12 +4,12 @@
  */
 package org.vfny.geoserver.wcs.servlets;
 
+import org.geoserver.ows.util.EncodingInfo;
+import org.geoserver.ows.util.XmlCharsetDetector;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.servlets.Dispatcher;
-import org.vfny.geoserver.util.requests.EncodingInfo;
-import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.util.requests.readers.DispatcherXmlReader;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;

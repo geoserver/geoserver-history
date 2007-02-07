@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.sld.servlets;
 
+import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
@@ -24,7 +25,6 @@ import org.vfny.geoserver.sld.requests.PutStylesKvpReader;
 import org.vfny.geoserver.sld.requests.PutStylesRequest;
 import org.vfny.geoserver.sld.responses.PutStylesResponse;
 import org.vfny.geoserver.util.SLDValidator;
-import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.WmsException;

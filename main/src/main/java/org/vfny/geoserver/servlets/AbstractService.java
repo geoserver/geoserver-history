@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.geoserver.ows.util.XmlCharsetDetector;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -16,7 +17,6 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.PartialBufferedOutputStream;
-import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import java.io.BufferedOutputStream;

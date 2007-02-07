@@ -5,8 +5,10 @@
 package org.geoserver.ows;
 
 import org.eclipse.emf.ecore.EObject;
+import org.geoserver.ows.util.EncodingInfo;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -192,7 +195,31 @@ public class Dispatcher extends AbstractController {
     }
 
     BufferedReader reader( HttpServletRequest httpRequest ) throws IOException {
-    	return new BufferedReader( new InputStreamReader( httpRequest.getInputStream() ) );
+    	
+    	//create a buffer so we can reset the input stream
+    	BufferedInputStream input = new BufferedInputStream( httpRequest.getInputStream() );
+    	input.mark( 2048 );
+    	
+    	//create object to hold encoding info
+    	EncodingInfo encoding = new EncodingInfo();
+    	
+    	//call this method to set the encoding info
+    	XmlCharsetDetector.getCharsetAwareReader( input, encoding );
+    	
+    	//call this method to create the reader
+    	Reader reader = 
+    		XmlCharsetDetector.createReader( input, encoding );
+
+    	//rest the input
+    	input.reset();
+    	
+    	//ensure the reader is a buffered reader
+    	if ( reader instanceof BufferedReader ) {
+    		return (BufferedReader) reader;
+    	}
+    	
+    	return new BufferedReader( reader );
+    	
     }
     
     Service service(Request req) throws Exception {
