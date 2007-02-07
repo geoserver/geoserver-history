@@ -680,7 +680,7 @@ public class ApplicationState implements PlugIn, InitializingBean {
             //We're just checking if it's actually a data_dir, not trying to
             //to do backwards compatibility.  So if an old data_dir is made in
             //the old way, on save it'll come to the new way. -ch
-            File serviceDir = inDataDir ? dataDir : new File(dataDir, "WEB-INF/");
+            File serviceDir = dataDir;
             File serviceFile;
 
             try {

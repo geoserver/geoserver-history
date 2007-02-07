@@ -86,11 +86,11 @@ public class SaveXMLAction extends ConfigAction {
 
         File dataDir;
 
-        if (GeoserverDataDirectory.isTrueDataDir()) {
+//        if (GeoserverDataDirectory.isTrueDataDir()) {
             dataDir = rootDir;
-        } else {
-            dataDir = new File(rootDir, "data/");
-        }
+//        } else {
+//            dataDir = new File(rootDir, "data/");
+//        }
 
         File plugInDir;
         File validationDir;
