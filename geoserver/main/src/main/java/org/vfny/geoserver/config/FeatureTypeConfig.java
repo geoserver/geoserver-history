@@ -220,6 +220,12 @@ public class FeatureTypeConfig {
         cacheMaxAge = null;
     }
 
+    /**
+     * TODO: this method is duplicated with CoveragesEditorAction and should be replaced by
+     * an equivalent method in CRS class. Once the methods is added, forward to the CRS class.
+     * @param defaultGeometry
+     * @return
+     */
     private int lookupSRS(GeometryAttributeType defaultGeometry) {
         // NPE avoidance
         if(defaultGeometry == null)

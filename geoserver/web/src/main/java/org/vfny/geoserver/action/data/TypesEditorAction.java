@@ -193,11 +193,6 @@ public class TypesEditorAction extends ConfigAction {
             return mapping.findForward("config.data.type.editor");
         }
 
-        typeForm.setDataMinX(Double.toString(envelope.getMinX()));
-        typeForm.setDataMaxX(Double.toString(envelope.getMaxX()));
-        typeForm.setDataMinY(Double.toString(envelope.getMinY()));
-        typeForm.setDataMaxY(Double.toString(envelope.getMaxY()));
-
         // do a translation from the data's coordinate system to lat/long
 
         //TODO: DJB: NOTE: 1/2 of the config stuff has the srs as an int, 1/2 as string!!  We should be more consistent!
@@ -208,10 +203,31 @@ public class TypesEditorAction extends ConfigAction {
         }
 
         try {
-            CoordinateReferenceSystem crsTheirData = CRS.decode(srs);
+            CoordinateReferenceSystem crsDeclared = CRS.decode(srs);
+            CoordinateReferenceSystem original = null;
+            if(featureType.getDefaultGeometry() != null)
+                original = featureType.getDefaultGeometry().getCoordinateSystem();
+            if(original == null)
+                original = crsDeclared;
             CoordinateReferenceSystem crsLatLong   = CRS.decode("EPSG:4326");  // latlong
+            
+            // let's show coordinates in the declared crs, not in the native one, to
+            // avoid confusion (since on screen we do have the declared one, the native is
+            // not visible)
+            Envelope declaredEnvelope = envelope;
+            System.out.println("Original envelope: " + envelope);
+            if(!CRS.equalsIgnoreMetadata(original,crsDeclared)) {
+                MathTransform xform = CRS.transform(original, crsDeclared, true);
+                declaredEnvelope = JTS.transform(envelope, xform, 10); //convert data bbox to lat/long
+            }
+            System.out.println("Declared envelope: " + declaredEnvelope);
+            typeForm.setDataMinX(Double.toString(declaredEnvelope.getMinX()));
+            typeForm.setDataMaxX(Double.toString(declaredEnvelope.getMaxX()));
+            typeForm.setDataMinY(Double.toString(declaredEnvelope.getMinY()));
+            typeForm.setDataMaxY(Double.toString(declaredEnvelope.getMaxY()));
+            
 
-            MathTransform xform = CRS.transform(crsTheirData, crsLatLong, true);
+            MathTransform xform = CRS.transform(original, crsLatLong, true);
             Envelope xformed_envelope = JTS.transform(envelope, xform, 10); //convert data bbox to lat/long
 
             typeForm.setMinX(Double.toString(xformed_envelope.getMinX()));

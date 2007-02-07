@@ -4,6 +4,20 @@
  */
 package org.vfny.geoserver.action.data;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -13,6 +27,7 @@ import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.factory.FactoryRegistryException;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.NamedIdentifier;
 import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.grid.Format;
 import org.opengis.referencing.FactoryException;
@@ -33,17 +48,6 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.logging.Level;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -174,7 +178,7 @@ public final class CoveragesEditorAction extends ConfigAction {
             GeneralEnvelope envelope = targetEnvelope;
 
             if (!sourceCRS.getIdentifiers().isEmpty()) {
-                coverageForm.setSrsName(sourceCRS.getIdentifiers().toArray()[0].toString());
+                coverageForm.setSrsName("EPSG:" + lookupEPSGIdentifier(sourceCRS));
             } else {
                 coverageForm.setSrsName("UNKNOWN");
 
@@ -207,6 +211,65 @@ public final class CoveragesEditorAction extends ConfigAction {
         }
 
         return mapping.findForward("config.data.coverage.editor");
+    }
+
+    /** 
+     * TODO: this method is duplicated with FeatureTypeConfig and should be replaced by
+     * an equivalent method in CRS class. Once the methods is added, forward to the CRS class.
+     * @param ref
+     * @return
+     */
+    private int lookupEPSGIdentifier(CoordinateReferenceSystem ref) {
+        // ... first check if one of the identifiers can be used to spot
+        // directly a CRS (and check it's actually equal to one in the db)
+        for (Iterator it = ref.getIdentifiers().iterator(); it.hasNext();) {
+            NamedIdentifier id = (NamedIdentifier) it.next();
+            try {
+                CoordinateReferenceSystem crs = CRS.decode(id.toString());
+                return getSRSFromCRS(crs);
+            } catch (Exception e) {
+                // the identifier was not recognized, no problem, let's go on
+            }
+        }
+
+        // ... a direct lookup did not work, let's try a full scan of known CRS then
+        // TODO: implement a smarter method in the actual EPSG authorities,
+        // which may well be this same loop if they do have no other search capabilities
+        Set codes = CRS.getSupportedCodes("EPSG");
+        for (Iterator it = codes.iterator(); it.hasNext();) {
+            String code = (String) it.next();
+            try {
+                CoordinateReferenceSystem crs = CRS
+                        .decode("EPSG:" + code, true);
+                if (CRS.equalsIgnoreMetadata(crs, ref)) {
+                    return getSRSFromCRS(crs);
+                }
+            } catch (Exception e) {
+                // some CRS cannot be decoded properly
+            }
+        }
+        return 0;
+    }
+    
+    /** 
+     * Scans the identifiers list looking for an EPSG id
+     * @param crs
+     * @return
+     */
+    private int getSRSFromCRS(CoordinateReferenceSystem crs) {
+        for (Iterator it = crs.getIdentifiers().iterator(); it.hasNext();) {
+            NamedIdentifier id = (NamedIdentifier) it.next();
+            if(id.toString().startsWith("EPSG"))
+                try {
+                    return Integer.parseInt(id.getCode());
+                } catch(NumberFormatException e) {
+                    if(LOGGER.isLoggable(Level.FINE))
+                        LOGGER.fine("Could not parse the EPSG code " + id);
+                }
+        }
+        LOGGER.warning("Funny, got a CRS from the referencing system, yet could not " +
+                "get an identifier in the form EPSG:xxxx out of it: " + crs);
+        return 0;
     }
 
     /**

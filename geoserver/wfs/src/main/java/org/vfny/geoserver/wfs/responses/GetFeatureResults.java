@@ -4,14 +4,21 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
+import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureResults;
+import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
+import org.geotools.data.crs.ReprojectFeatureResults;
+import org.geotools.feature.SchemaException;
+import org.geotools.referencing.CRS;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -26,6 +33,8 @@ import java.util.List;
  * @version $Id: GetFeatureResults.java,v 1.1 2004/03/10 23:39:06 groldan Exp $
  */
 public class GetFeatureResults {
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    
     /**
      * the GetFeature or GetFeatureWithLock request who's processing has
      * originated this results
@@ -165,6 +174,17 @@ public class GetFeatureResults {
         if (!features.getSchema().getTypeName().equals(meta.getFeatureType().getTypeName())) {
             throw new IllegalArgumentException("The passed type info and results"
                 + " do not seems to belong to the same type");
+        }
+        
+        if(meta.getNativeCRS() != null && 
+                !CRS.equalsIgnoreMetadata(meta.getNativeCRS(), meta.getDeclaredCRS())) {
+            try {
+                    features = new ReprojectFeatureResults(features, meta.getDeclaredCRS());
+            } catch(Exception e) {
+                LOGGER.severe("Could not map original CRS to external CRS, " +
+                        "serving data in original CRS: " + e.getMessage());
+                LOGGER.log(Level.FINE, "Detailed mapping error: ", e);
+            }
         }
 
         this.typeInfo.add(meta);

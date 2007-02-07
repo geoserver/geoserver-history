@@ -19,15 +19,19 @@ import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
+import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.filter.Filter;
+import org.geotools.geometry.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.geotools.util.ProgressListener;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
@@ -516,10 +520,27 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      * @throws IOException when an error occurs
      */
     public Envelope getBoundingBox() throws IOException {
+        // compute original bounding box
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
         FeatureSource realSource = dataStore.getFeatureSource(typeName);
-
-        return DataStoreUtils.getBoundingBoxEnvelope(realSource);
+        Envelope bbox = DataStoreUtils.getBoundingBoxEnvelope(realSource);
+        
+        // check if the original CRS is not the declared one
+        GeometryAttributeType defaultGeometry = realSource.getSchema().getDefaultGeometry();
+        CoordinateReferenceSystem declaredCRS = getSRS(SRS);
+        CoordinateReferenceSystem originalCRS = defaultGeometry.getCoordinateSystem();
+        try {
+            if(!forcedCRS && defaultGeometry != null && 
+                    !CRS.equalsIgnoreMetadata(originalCRS, declaredCRS)) {
+                MathTransform xform = CRS.transform(originalCRS, declaredCRS, true);
+                bbox = JTS.transform(bbox, xform, 10); 
+            }
+        } catch(Exception e) {
+            LOGGER.severe("Could not turn the original envelope in one into the declared CRS for type " + typeName);
+            LOGGER.severe("Original CRS is " + originalCRS);
+            LOGGER.severe("Declared CRS is " + declaredCRS);
+        }
+        return bbox;
     }
 
     /**
@@ -565,6 +586,28 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      */
     public String getSRS() {
         return SRS + "";
+    }
+    
+    /**
+     * Returns the declared CRS, that is, the CRS specified in the feature type
+     * editor form
+     */
+    public CoordinateReferenceSystem getDeclaredCRS() {
+        return getSRS(SRS);
+    }
+    
+    public CoordinateReferenceSystem getNativeCRS() throws IOException {
+        if (getDataStoreInfo().getDataStore() == null) {
+            throw new IOException("featureType: " + getName()
+                + " does not have a properly configured " + "datastore");
+        }
+        
+        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
+        FeatureSource realSource = dataStore.getFeatureSource(typeName);
+        GeometryAttributeType dg = realSource.getSchema().getDefaultGeometry();
+        if(dg == null)
+            throw new IOException("Feature type: " + getName() + " does not have a default geometry");
+        return dg.getCoordinateSystem();
     }
 
     /**
