@@ -81,12 +81,12 @@ public class XMLConfigWriter {
 
         WriterUtils.initFile(root, true);
 
-        boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
+//        boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
 
         //We're just checking if it's actually a data_dir, not trying to
         //to do backwards compatibility.  So if an old data_dir is made in
         //the old way, on save it'll come to the new way.
-        File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
+        File fileDir = root; // ? root : new File(root, "WEB-INF/");
         File configDir = WriterUtils.initFile(fileDir, true);
 
         File catalogFile = WriterUtils.initWriteFile(new File(configDir, "catalog.xml"), false);
@@ -101,11 +101,11 @@ public class XMLConfigWriter {
 
         File dataDir;
 
-        if (!inDataDir) {
-            dataDir = WriterUtils.initFile(new File(root, "data/"), true);
-        } else {
+//        if (!inDataDir) {
+//            dataDir = WriterUtils.initFile(new File(root, "data/"), true);
+//        } else {
             dataDir = root;
-        }
+//        }
 
         File featureTypeDir = WriterUtils.initFile(new File(dataDir, "featureTypes/"), true);
         storeFeatures(featureTypeDir, data);
@@ -127,12 +127,12 @@ public class XMLConfigWriter {
 
         WriterUtils.initFile(root, true);
 
-        boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
+//        boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
 
         //We're just checking if it's actually a data_dir, not trying to
         //to do backwards compatibility.  So if an old data_dir is made in
         //the old way, on save it'll come to the new way.
-        File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
+        File fileDir = root ; //inDataDir ? root : new File(root, "WEB-INF/");
         File configDir = WriterUtils.initFile(fileDir, true);
         File configFile = WriterUtils.initWriteFile(new File(configDir, "services.xml"), false);
 

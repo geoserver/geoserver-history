@@ -211,18 +211,16 @@ public class GeoserverDataDirectory {
             // return default
             isTrueDataDir = false;
 
-            String rootDir = servContext.getRealPath("/");
+            String rootDir = servContext.getRealPath("/data");
             dataDir = new File(rootDir);
 
             //set the base directory of hte loader
             loader.setBaseDirectory( dataDir );
-            
-            //add some locations to the serach path to support old style 
-            // data directories
-        	loader.addSearchLocation(new File(dataDir, "data"));
+            loader.addSearchLocation(new File(dataDir, "data"));
             System.out.println("----------------------------------");
             System.out.println("- GEOSERVER_DATA_DIR: " + dataDir.getAbsolutePath());
             System.out.println("----------------------------------");
+            // support old in-war data dirs as well
             loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
             loader.addSearchLocation(new File(servContext.getRealPath("data")));
         }
