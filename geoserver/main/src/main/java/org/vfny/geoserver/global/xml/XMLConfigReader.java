@@ -872,7 +872,11 @@ public class XMLConfigReader {
 
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
         wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(wmsElement, "svgAntiAlias")));
-        wms.setAllowInterpolation(ReaderUtils.getChildText(wmsElement, "allowInterpolation"));
+        try {
+			wms.setAllowInterpolation(ReaderUtils.getChildText(wmsElement, "allowInterpolation", true));
+		} catch (Exception e) {
+			wms.setAllowInterpolation("Nearest");
+		}
         loadBaseMapLayers(wmsElement);
     }
 
