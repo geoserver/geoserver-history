@@ -27,6 +27,20 @@
   </license>
  </licenses>
 
+ <ciManagement>
+    <system>continuum</system>
+    <notifiers>
+      <notifier>
+        <type>mail</type>
+        <configuration>
+           <address>geotools-devel@lists.sourceforge.net</address>
+        </configuration>
+        <sendOnError>true</sendOnError>
+        <sendOnFailure>true</sendOnFailure>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+
  <repositories>
   <repository>
    <id>ibiblio</id>
@@ -637,7 +651,7 @@
    <plugin>
     <artifactId>maven-eclipse-plugin</artifactId>
     <configuration>
-     <downloadSources>true</downloadSources>
+     <!--downloadSources>true</downloadSources-->
      <additionalProjectnatures>
       <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
      </additionalProjectnatures>
