@@ -33,7 +33,7 @@
       <notifier>
         <type>mail</type>
         <configuration>
-           <address>geotools-devel@lists.sourceforge.net</address>
+           <address>geoserver-devel@lists.sourceforge.net</address>
         </configuration>
         <sendOnError>true</sendOnError>
         <sendOnFailure>true</sendOnFailure>
