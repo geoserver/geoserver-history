@@ -1,9 +1,11 @@
 package org.geoserver.ows;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +65,7 @@ public class DispatcherTest extends TestCase {
 		
 		Dispatcher dispatcher = new Dispatcher();
 		
-		BufferedInputStream buffered = new BufferedInputStream( input );
+		BufferedReader buffered = new BufferedReader( new InputStreamReader( input ) );
 		buffered.mark( 2048 );
 		Map map = dispatcher.readOpPost( buffered );
 		
@@ -118,7 +120,9 @@ public class DispatcherTest extends TestCase {
 		output.flush();
 		output.close();
 		
-		BufferedInputStream input = new BufferedInputStream( new FileInputStream( file ) );
+		BufferedReader input = 
+			new BufferedReader( new InputStreamReader( new FileInputStream( file ) ) );
+		
 		input.mark( 8192 );
 		Object object = dispatcher.parseRequestXML( input );
 		assertEquals( new Message( "Hello world!" ), object );

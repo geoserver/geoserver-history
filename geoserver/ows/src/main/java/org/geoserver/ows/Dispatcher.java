@@ -18,10 +18,12 @@ import org.springframework.web.servlet.mvc.AbstractController;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -180,7 +182,7 @@ public class Dispatcher extends AbstractController {
             request.kvp = parseKVP(httpRequest);
         } else {
             //wrap the input stream in a buffer input stream
-            request.input = new BufferedInputStream(httpRequest.getInputStream());
+            request.input = reader( httpRequest );
 
             //mark the input stream, support up to 2KB, TODO: make this configuratable
             request.input.mark(2048);
@@ -189,6 +191,10 @@ public class Dispatcher extends AbstractController {
         return request;
     }
 
+    BufferedReader reader( HttpServletRequest httpRequest ) throws IOException {
+    	return new BufferedReader( new InputStreamReader( httpRequest.getInputStream() ) );
+    }
+    
     Service service(Request req) throws Exception {
         if (req.get) {
             //check kvp
@@ -782,11 +788,11 @@ public class Dispatcher extends AbstractController {
         return null;
     }
 
-    Object parseRequestXML(BufferedInputStream input) throws Exception {
+    Object parseRequestXML(BufferedReader input) throws Exception {
         //check for an empty input stream
-        if (input.available() == 0) {
-            //input.close();
-            return null;
+    	//if (input.available() == 0) {
+        if ( !input.ready() ) {
+        	return null;
         }
 
         //create stream parser
@@ -796,7 +802,8 @@ public class Dispatcher extends AbstractController {
 
         //parse root element
         XmlPullParser parser = factory.newPullParser();
-        parser.setInput(input, "UTF-8");
+        //parser.setInput(input, "UTF-8");
+        parser.setInput( input );
         parser.nextTag();
 
         String namespace = (parser.getNamespace() != null) ? parser.getNamespace() : "";
@@ -848,7 +855,7 @@ public class Dispatcher extends AbstractController {
         return map;
     }
 
-    Map readOpPost(BufferedInputStream input) throws Exception {
+    Map readOpPost(BufferedReader input) throws Exception {
         //create stream parser
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -856,7 +863,7 @@ public class Dispatcher extends AbstractController {
 
         //parse root element
         XmlPullParser parser = factory.newPullParser();
-        parser.setInput(input, "UTF-8");
+        parser.setInput(input);
         parser.nextTag();
 
         Map map = new HashMap();
@@ -1000,7 +1007,8 @@ public class Dispatcher extends AbstractController {
          */
 
         //File input;
-        BufferedInputStream input;
+        //BufferedInputStream input;
+        BufferedReader input;
 
         /**
          * The ows service,request,version

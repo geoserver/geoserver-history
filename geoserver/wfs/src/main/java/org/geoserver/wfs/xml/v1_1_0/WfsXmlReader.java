@@ -11,7 +11,8 @@ import org.geotools.util.Version;
 import org.geotools.xml.Parser;
 import org.vfny.geoserver.global.Data;
 import org.xml.sax.InputSource;
-import java.io.InputStream;
+
+import java.io.Reader;
 import java.util.Iterator;
 import javax.xml.namespace.QName;
 
@@ -33,7 +34,7 @@ public class WfsXmlReader extends XmlRequestReader {
         this.configuration = configuration;
     }
 
-    public Object read(InputStream input) throws Exception {
+    public Object read(Reader reader) throws Exception {
         //TODO: make this configurable?
         configuration.getProperties().add(Parser.Properties.PARSE_UNKNOWN_ELEMENTS);
 
@@ -43,7 +44,7 @@ public class WfsXmlReader extends XmlRequestReader {
         parser.setValidating(true);
 
         //set the input source with the correct encoding
-        InputSource source = new InputSource(input);
+        InputSource source = new InputSource(reader);
         source.setEncoding(wfs.getCharSet().name());
 
         Object parsed = parser.parse(source);
