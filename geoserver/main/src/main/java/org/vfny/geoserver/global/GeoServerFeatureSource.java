@@ -4,7 +4,11 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
@@ -13,17 +17,18 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
+import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.SchemaException;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.LogicFilter;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -64,17 +69,22 @@ public class GeoServerFeatureSource implements FeatureSource {
     /** Used to constrain the Feature made available to GeoServer. */
     private Filter definitionQuery = Filter.NONE;
 
+    /** Geometries will be forced to this CRS (or null, if no forcing is needed) */
+    private CoordinateReferenceSystem forcedCRS;
+
     /**
      * Creates a new GeoServerFeatureSource object.
      *
      * @param source GeoTools2 FeatureSource
      * @param schema FeatureType returned by this FeatureSource
      * @param definitionQuery Filter used to limit results
+     * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
      */
-    GeoServerFeatureSource(FeatureSource source, FeatureType schema, Filter definitionQuery) {
+    GeoServerFeatureSource(FeatureSource source, FeatureType schema, Filter definitionQuery, CoordinateReferenceSystem forcedCRS) {
         this.source = source;
         this.schema = schema;
         this.definitionQuery = definitionQuery;
+        this.forcedCRS = forcedCRS;
 
         if (this.definitionQuery == null) {
             this.definitionQuery = Filter.NONE;
@@ -93,19 +103,20 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @param featureSource
      * @param schema DOCUMENT ME!
      * @param definitionQuery DOCUMENT ME!
+     * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
      *
      * @return
      */
     public static GeoServerFeatureSource create(FeatureSource featureSource, FeatureType schema,
-        Filter definitionQuery) {
+        Filter definitionQuery, CoordinateReferenceSystem forcedCRS) {
         if (featureSource instanceof FeatureLocking) {
             return new GeoServerFeatureLocking((FeatureLocking) featureSource, schema,
-                definitionQuery);
+                definitionQuery, forcedCRS);
         } else if (featureSource instanceof FeatureStore) {
-            return new GeoServerFeatureStore((FeatureStore) featureSource, schema, definitionQuery);
+            return new GeoServerFeatureStore((FeatureStore) featureSource, schema, definitionQuery, forcedCRS);
         }
 
-        return new GeoServerFeatureSource(featureSource, schema, definitionQuery);
+        return new GeoServerFeatureSource(featureSource, schema, definitionQuery, forcedCRS);
     }
 
     /**
@@ -299,50 +310,26 @@ public class GeoServerFeatureSource implements FeatureSource {
             ((DefaultQuery) newQuery).setCoordinateSystem(query.getCoordinateSystem());
         }
 
-        return source.getFeatures(newQuery);
+        try {
+            FeatureCollection fc = source.getFeatures(newQuery);
+            if(forcedCRS != null)
+                return new ForceCoordinateSystemFeatureResults(fc, forcedCRS);
+            else
+                return fc;
+        } catch(SchemaException e) {
+            throw new DataSourceException(e);
+        }
     }
 
-    /**
-     * Implement getFeatures.
-     *
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @param filter
-     *
-     * @return
-     *
-     * @throws IOException
-     *
-     * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.filter.Filter)
-     */
+    
     public FeatureCollection getFeatures(Filter filter)
         throws IOException {
-        filter = makeDefinitionFilter(filter);
-
-        return source.getFeatures(filter);
+        return getFeatures(new DefaultQuery(schema.getTypeName(), filter));
     }
 
-    /**
-     * Implement getFeatures.
-     *
-     * <p>
-     * Description ...
-     * </p>
-     *
-     * @return
-     *
-     * @throws IOException
-     *
-     * @see org.geotools.data.FeatureSource#getFeatures()
-     */
+    
     public FeatureCollection getFeatures() throws IOException {
-        if (definitionQuery == Filter.NONE) {
-            return source.getFeatures();
-        } else {
-            return source.getFeatures(definitionQuery);
-        }
+        return getFeatures(Query.ALL);
     }
 
     /**
@@ -373,6 +360,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @throws IOException If bounds of definitionQuery
      */
     public Envelope getBounds() throws IOException {
+        // since CRS is at most forced, we don't need to change this code
         if (definitionQuery == Filter.NONE) {
             return source.getBounds();
         } else {
@@ -404,6 +392,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @throws IOException If a problem is encountered with source
      */
     public Envelope getBounds(Query query) throws IOException {
+        // since CRS is at most forced, we don't need to change this code
         try {
             query = makeDefinitionQuery(query);
         } catch (IOException ex) {
