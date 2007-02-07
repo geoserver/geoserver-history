@@ -478,11 +478,11 @@ public class CoverageResponse implements Response {
 		final GeneralGridRange newGridrange = new GeneralGridRange(
 				destinationSize);
 
-		if (!newGridrange.equals(croppedGridCoverage.getGridGeometry()
-				.getGridRange())) {
+		/*if (!newGridrange.equals(croppedGridCoverage.getGridGeometry()
+				.getGridRange())) {*/
 			subCoverage = WCSUtils.scale(croppedGridCoverage, newGridrange,
 					croppedGridCoverage, cvCRS, destinationEnvelopeInSourceCRS);
-		}
+		//}
 
 		/**
 		 * Reproject
