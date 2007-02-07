@@ -5,7 +5,9 @@
 package org.geoserver.ows;
 
 import org.geotools.util.Version;
-import java.io.InputStream;
+
+import java.io.Reader;
+
 import javax.xml.namespace.QName;
 
 
@@ -101,11 +103,11 @@ public abstract class XmlRequestReader {
     /**
      * Reads the xml and produces the request object.
      *
-     * @param input The xml input stream.
+     * @param reader The xml input stream.
      *
      * @return The request object.
      */
-    public abstract Object read(InputStream input) throws Exception;
+    public abstract Object read(Reader reader) throws Exception;
 
     /**
      * Two XmlReaders considered equal if namespace,element, and version properties

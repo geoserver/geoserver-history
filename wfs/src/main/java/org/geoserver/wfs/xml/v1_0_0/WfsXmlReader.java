@@ -7,7 +7,9 @@ package org.geoserver.wfs.xml.v1_0_0;
 import org.geoserver.ows.XmlRequestReader;
 import org.geotools.util.Version;
 import org.geotools.xml.Parser;
-import java.io.InputStream;
+
+import java.io.Reader;
+
 import javax.xml.namespace.QName;
 
 
@@ -22,9 +24,9 @@ public class WfsXmlReader extends XmlRequestReader {
         this.configuration = configuration;
     }
 
-    public Object read(InputStream input) throws Exception {
+    public Object read(Reader reader) throws Exception {
         Parser parser = new Parser(configuration);
 
-        return parser.parse(input);
+        return parser.parse(reader);
     }
 }

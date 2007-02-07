@@ -1,6 +1,6 @@
 package org.geoserver.ows;
 
-import java.io.InputStream;
+import java.io.Reader;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.geotools.util.Version;
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 public class MessageXmlParser extends XmlRequestReader {
 
@@ -15,11 +16,11 @@ public class MessageXmlParser extends XmlRequestReader {
 		super(new QName( null, "Hello"), new Version( "1.0.0" ) );
 	}
 
-	public Object read(InputStream input) throws Exception {
+	public Object read(Reader reader) throws Exception {
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance()
 			.newDocumentBuilder();
 		
-		Document doc = builder.parse( input );
+		Document doc = builder.parse( new InputSource( reader ) );
 		String message = doc.getDocumentElement().getAttribute( "message" );
 			
 		
