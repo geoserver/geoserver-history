@@ -4,6 +4,18 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import java.awt.Rectangle;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.media.jai.Interpolation;
+
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
@@ -33,16 +45,6 @@ import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
-import java.awt.Rectangle;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.media.jai.Interpolation;
 
 
 /**
@@ -327,9 +329,9 @@ public class CoverageResponse implements Response {
         // This is the CRS of the Coverage Envelope
         final CoordinateReferenceSystem cvCRS = ((GeneralEnvelope) coverageReader
             .getOriginalEnvelope()).getCoordinateReferenceSystem();
-        final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS
-            .findMathTransform(cvCRS, sourceCRS, true);
-        final MathTransform GCCRSTodeviceCRSTransform = CRS.findMathTransform(cvCRS, targetCRS, true);
+        final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS.transform(cvCRS,
+                sourceCRS, true);
+        final MathTransform GCCRSTodeviceCRSTransform = CRS.transform(cvCRS, targetCRS, true);
         final MathTransform deviceCRSToGCCRSTransform = GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform
             .inverse();
 
@@ -441,7 +443,7 @@ public class CoverageResponse implements Response {
          */
         final GeneralGridRange newGridrange = new GeneralGridRange(destinationSize);
         GridCoverage2D subCoverage = WCSUtils.scale(croppedGridCoverage, newGridrange,
-                croppedGridCoverage, cvCRS);
+                croppedGridCoverage, cvCRS, destinationEnvelopeInSourceCRS);
 
         /**
          * Reproject
