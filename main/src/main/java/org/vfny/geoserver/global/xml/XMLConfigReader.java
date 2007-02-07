@@ -178,7 +178,7 @@ public class XMLConfigReader {
 //            configDir = ReaderUtils.checkFile(new File(root, "WEB-INF/"), true);
 //        } catch (ConfigurationException confE) {
 //            //no WEB-INF, so we're in a data_dir, use as root.
-//            configDir = root;
+//            configDir = root;s
 //        }
 //        File configFile = ReaderUtils.checkFile(new File(configDir,
 //                    "services.xml"), false);
@@ -243,11 +243,8 @@ public class XMLConfigReader {
                 loadWFS(elem);
             } else if ("WMS".equalsIgnoreCase(serviceType)) {
                 loadWMS(elem);
-            } else if ("Z39.50".equalsIgnoreCase(serviceType)) {
-                //...
             } else {
-                throw new ConfigurationException("Unknown service type: "
-                    + serviceType);
+                LOGGER.warning("Ignoring unknown service type: " + serviceType); 
             }
         }
     }
@@ -681,7 +678,7 @@ public class XMLConfigReader {
         
     	Element groupBase = ReaderUtils.getChildElement(wmsElement, "BaseMapGroups");
     	if (groupBase == null) {
-    		LOGGER.info("No baseMap groups defined yet");
+    		LOGGER.config("No baseMap groups defined yet");
     		return;
     	}
     	
@@ -722,7 +719,8 @@ public class XMLConfigReader {
         ServiceDTO s = new ServiceDTO();
 
         try {
-			s.setName(ReaderUtils.getChildText(serviceRoot, "name", true));
+            String name = ReaderUtils.getChildText(serviceRoot, "name", true);
+            s.setName(name);
 			s.setTitle(ReaderUtils.getChildText(serviceRoot, "title", false));
 			s.setAbstract(ReaderUtils.getChildText(serviceRoot, "abstract"));
 			s.setKeywords(ReaderUtils.getKeyWords(ReaderUtils.getChildElement(
@@ -738,12 +736,14 @@ public class XMLConfigReader {
 			s.setStrategy(ReaderUtils.getChildText(serviceRoot,"serviceStrategy"));
 			s.setPartialBufferSize(ReaderUtils.getIntAttribute(serviceRoot,"partialBufferSize",false,0));
 			
-			try {
-			    s.setOnlineResource(new URL(ReaderUtils.getChildText(serviceRoot,
-			                "onlineResource", true)));
-			} catch (MalformedURLException e) {
-			    throw new ConfigurationException(e);
-			}
+            String url = ReaderUtils.getChildText(serviceRoot, "onlineResource", true);
+            try {
+                s.setOnlineResource(new URL(url));
+            } catch (MalformedURLException e) {
+                LOGGER.severe("Invalid online resource URL for service "
+                        + name + ": " + url + ". Defaulting to geoserver home.");
+                s.setOnlineResource(new URL("http://www.geoserver.org"));
+            }
 		} 
         catch (Exception e) {
         		throw new ConfigurationException ( e );
@@ -828,24 +828,24 @@ public class XMLConfigReader {
         int styleCount = stylesList.getLength();
         Element styleElem;
 
-        try {
-			for (int i = 0; i < styleCount; i++) {
-			    styleElem = (Element) stylesList.item(i);
-
-			    StyleDTO s = new StyleDTO();
-			    s.setId(ReaderUtils.getAttribute(styleElem, "id", true));
-			    s.setFilename(new File(baseDir,
-			            ReaderUtils.getAttribute(styleElem, "filename", true)));
-			    s.setDefault(ReaderUtils.getBooleanAttribute(styleElem, "default",
-			            false, false));
-			    styles.put(s.getId(), s);
-			    
-			    LOGGER.config("Loaded style " + s.getId());
-			}
+        
+		for (int i = 0; i < styleCount; i++) {
+            try {
+    		    styleElem = (Element) stylesList.item(i);
+    
+    		    StyleDTO s = new StyleDTO();
+    		    s.setId(ReaderUtils.getAttribute(styleElem, "id", true));
+    		    s.setFilename(new File(baseDir,
+    		            ReaderUtils.getAttribute(styleElem, "filename", true)));
+    		    s.setDefault(ReaderUtils.getBooleanAttribute(styleElem, "default",
+    		            false, false));
+    		    styles.put(s.getId(), s);
+    		    
+    		    LOGGER.config("Loaded style " + s.getId());
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Ignored misconfigured style", e);
+            }
 		} 
-        catch (Exception e) {
-        		throw new ConfigurationException( e );
-		}
 
         return styles;
     }
@@ -873,14 +873,18 @@ public class XMLConfigReader {
 
         for (int i = 0; i < dsCnt; i++) {
             dsElem = (Element) dsElements.item(i);
-            dsConfig = loadDataStore(dsElem);
-
-            if (dataStores.containsKey(dsConfig.getId())) {
-                throw new ConfigurationException("duplicated datastore id: "
-                    + data.getNameSpaces().get(dsConfig.getNameSpaceId()));
+            try {
+                dsConfig = loadDataStore(dsElem);
+    
+                if (dataStores.containsKey(dsConfig.getId())) {
+                    LOGGER.warning("Ignored duplicated datastore with id " + dsConfig.getId());
+                } else {
+                    dataStores.put(dsConfig.getId(), dsConfig);
+                }
+                dataStores.put(dsConfig.getId(), dsConfig);
+            } catch(ConfigurationException e) {
+                LOGGER.log(Level.WARNING, "Ignored a misconfigured datastore.", e);
             }
-
-            dataStores.put(dsConfig.getId(), dsConfig);
         }
 
         return dataStores;
@@ -914,9 +918,8 @@ public class XMLConfigReader {
 			if (data.getNameSpaces().containsKey(namespacePrefix)) {
 			    ds.setNameSpaceId(namespacePrefix);
 			} else {
-			    String msg = "there is no namespace defined for datatasore '"
-			        + namespacePrefix + "'";
-			    throw new ConfigurationException(msg);
+                LOGGER.warning("Could not find namespace " + namespacePrefix + " defaulting to " + data.getDefaultNameSpacePrefix());
+                ds.setNameSpaceId(data.getDefaultNameSpacePrefix());
 			}
 
 			ds.setEnabled(ReaderUtils.getBooleanAttribute(dsElem, "enabled", false,
@@ -1047,7 +1050,7 @@ public class XMLConfigReader {
                 String ftName = null;
                 try {	// Decode the URL of the FT. This is to catch colons used in filenames
 					ftName = URLDecoder.decode(dto.getKey(), "UTF-8");
-					LOGGER.info("Decoding file name: "+ftName);
+					LOGGER.config ("Decoding file name: " + ftName);
 				} catch (UnsupportedEncodingException e) {
 					throw new ConfigurationException(e);
 				}
