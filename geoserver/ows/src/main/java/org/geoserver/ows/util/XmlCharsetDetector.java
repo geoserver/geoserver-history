@@ -2,9 +2,8 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.util.requests;
+package org.geoserver.ows.util;
 
-import org.vfny.geoserver.util.requests.readers.UCSReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

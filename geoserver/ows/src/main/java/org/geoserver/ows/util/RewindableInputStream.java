@@ -29,7 +29,7 @@
 // @author Neil Graham, IBM
 // @author Glenn Marcy, IBM
 //
-package org.vfny.geoserver.util.requests;
+package org.geoserver.ows.util;
 
 import java.io.IOException;
 import java.io.InputStream;

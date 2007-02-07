@@ -56,7 +56,7 @@
  */
 
 //package org.apache.xerces.impl.io;
-package org.vfny.geoserver.util.requests.readers;
+package org.geoserver.ows.util;
 
 import java.io.IOException;
 import java.io.InputStream;
