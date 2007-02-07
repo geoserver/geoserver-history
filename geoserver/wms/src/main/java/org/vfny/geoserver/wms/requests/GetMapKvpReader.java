@@ -1347,9 +1347,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         try {
             ftype = catalog.getFeatureTypeInfo(layerName);
         } catch (NoSuchElementException ex) {
-            throw new WmsException(ex,
-                new StringBuffer(layerName).append(": no such layer on this server").toString(),
-                "LayerNotDefined");
+        		throw new WmsException(ex,
+    				new StringBuffer(layerName).append(": no such layer on this server").toString(),
+                "LayerNotDefined", "LayerNotDefined");
         }
 
         return ftype;
@@ -1365,7 +1365,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         } catch (NoSuchElementException ex) {
             throw new WmsException(ex,
                 new StringBuffer(layerName).append(": no such layer on this server").toString(),
-                "LayerNotDefined");
+                "LayerNotDefined", "LayerNotDefined");
         }
 
         return cv;
