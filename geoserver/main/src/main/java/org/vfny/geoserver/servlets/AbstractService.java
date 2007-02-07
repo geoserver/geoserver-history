@@ -902,11 +902,14 @@ public abstract class AbstractService extends HttpServlet implements Application
      */
     protected void sendError(HttpServletRequest request, HttpServletResponse response,
         ServiceException se) {
+        // first log the exception
+        LOGGER.log(Level.SEVERE, "Service exception occurred", se);
+        
         String mimeType = se.getMimeType(geoServer);
 
         send(response, se.getXmlResponse(geoServer.isVerboseExceptions(), request, geoServer),
             mimeType);
-        se.printStackTrace();
+        
     }
 
     /**
