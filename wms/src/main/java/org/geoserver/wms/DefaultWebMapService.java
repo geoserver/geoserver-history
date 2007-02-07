@@ -41,6 +41,10 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
 
         return (WMSCapabilitiesResponse) capabilities.getResponse();
     }
+    
+    public WMSCapabilitiesResponse capabilities(WMSCapabilitiesRequest request) {
+    	return getCapabilities( request );
+    }
 
     public DescribeLayerResponse describeLayer(DescribeLayerRequest request) {
         DescribeLayer describeLayer = (DescribeLayer) context.getBeansOfType(DescribeLayer.class)

@@ -31,6 +31,7 @@ public interface WebMapService {
      * GetCapabilities operation.
      */
     WMSCapabilitiesResponse getCapabilities(WMSCapabilitiesRequest request);
+    WMSCapabilitiesResponse capabilities(WMSCapabilitiesRequest request);
 
     /**
      * GetMap operation.
