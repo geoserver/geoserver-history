@@ -329,9 +329,9 @@ public class CoverageResponse implements Response {
         // This is the CRS of the Coverage Envelope
         final CoordinateReferenceSystem cvCRS = ((GeneralEnvelope) coverageReader
             .getOriginalEnvelope()).getCoordinateReferenceSystem();
-        final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS.transform(cvCRS,
+        final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS.findMathTransform(cvCRS,
                 sourceCRS, true);
-        final MathTransform GCCRSTodeviceCRSTransform = CRS.transform(cvCRS, targetCRS, true);
+        final MathTransform GCCRSTodeviceCRSTransform = CRS.findMathTransform(cvCRS, targetCRS, true);
         final MathTransform deviceCRSToGCCRSTransform = GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform
             .inverse();
 
