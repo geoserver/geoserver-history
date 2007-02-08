@@ -3,16 +3,18 @@ package org.vfny.geoserver.wfs.requests;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.GeometryFilter;
-import org.geotools.filter.IllegalFilterException;
 import org.geotools.filter.LiteralExpression;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.WfsXmlRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
@@ -41,20 +43,20 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
 		super(kvpPairs,service);
 	}
 
-	/**
-     * Reads in three strings, representing some sort of feature constraints,
-     * and translates them into filters.  If no filters exist, it returns an
-     * empty list.
-     *
-     * @param fid A group of feature IDs, as a String.
-     * @param filter A group of filters, as a String.
-     * @param bbox A group of boxes, as a String.
-     *
-     * @return A list filters.
-     *
-     */
-    protected static List readFilters(String fid, String filter, String bbox) 
-    	throws WfsException {
+    /**
+    * Reads in three strings, representing some sort of feature constraints,
+    * and translates them into filters.  If no filters exist, it returns an
+    * empty list.
+    *
+    * @param fid A group of feature IDs, as a String.
+    * @param filter A group of filters, as a String.
+    * @param bbox A group of boxes, as a String.
+    *
+    * @return A list filters.
+    *
+    */
+    protected List readFilters(List typeNames, String fid, String filter, String bbox)
+        throws WfsException {
         List unparsed = new ArrayList();
         List filters = new ArrayList();
         ListIterator i;
@@ -133,8 +135,6 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
             //  parse it and keep a record of a 'primary geometry' in the
             //  server.
             try {
-                GeometryFilter finalFilter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
-
                 //leave as null and postgisDatSource will use default geom.
                 //AttributeExpression leftExpression =
                 //    factory.createAttributeExpression(null);
@@ -154,13 +154,20 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
                 LiteralExpression rightExpression = factory
                     .createLiteralExpression(polygon);
 
-                //finalFilter.addLeftGeometry(leftExpression);
-                finalFilter.addRightGeometry(rightExpression);
-                filters.add(finalFilter);
+                // create a filter for each feature type, querying against the 
+                // default geometry
+                for (Iterator it = typeNames.iterator(); it.hasNext();) {
+                    FeatureTypeInfo info = service.getCatalog().getFeatureTypeInfo((String) it.next());
+                    GeometryAttributeType geomAtt = info.getFeatureType().getDefaultGeometry();
+                    
+                    GeometryFilter finalFilter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
+                    finalFilter.addLeftGeometry(factory.createAttributeExpression(geomAtt.getName()));
+                    finalFilter.addRightGeometry(rightExpression);
+                    filters.add(finalFilter);
+                }
 
                 return filters;
-                
-            } catch (IllegalFilterException e) {
+            } catch (Exception e) {
                 new WfsException("Filter creation problem: ").initCause(e);
             }
 
