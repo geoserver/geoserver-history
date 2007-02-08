@@ -218,6 +218,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     private boolean cachingEnabled;
 
+    private boolean forcedCRS;
+
     /**
      * FeatureTypeInfo constructor.
      *
@@ -467,7 +469,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             return realSource;
         } else {
             return GeoServerFeatureLocking.create(realSource, getFeatureType(realSource),
-                getDefinitionQuery());
+                getDefinitionQuery(), forcedCRS ? getSRS(SRS) : null);
         }
     }
 
@@ -857,7 +859,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     /**
-     *
+     * Fixes the data store feature type so that it has the right CRS (only in case they are missing)
+     * and the requiered base attributes
      */
     private FeatureType getFeatureType(FeatureSource fs)
         throws IOException {
@@ -899,12 +902,15 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     String attName = ati.getName();
                     attributes[count] = ft.getAttributeType(attName);
 
-                    //DJB: added this to set SRS
+                    // force the user specified CRS if the data has no CRS 
                     if (Geometry.class.isAssignableFrom(attributes[count].getType())) {
                         GeometricAttributeType old = (GeometricAttributeType) attributes[count];
 
                         try {
-                            attributes[count] = new GeometricAttributeType(old, getSRS(SRS));
+                            if(old.getCoordinateSystem() == null) {
+                                attributes[count] = new GeometricAttributeType(old, getSRS(SRS));
+                                forcedCRS = true;
+                            }
                         } catch (Exception e) {
                             e.printStackTrace(); //DJB: this is okay to ignore since (a) it should never happen (b) we'll use the default one (crs=null)
                         }
