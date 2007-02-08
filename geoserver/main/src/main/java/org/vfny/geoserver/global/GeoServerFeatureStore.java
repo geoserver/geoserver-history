@@ -11,6 +11,8 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.opengis.filter.Filter;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 import java.io.IOException;
 import java.util.Set;
 
@@ -40,9 +42,10 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      * @param store GeoTools2 FeatureSource
      * @param schema FeatureType served by source
      * @param definitionQuery Filter that constrains source
+     * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
      */
-    GeoServerFeatureStore(FeatureStore store, FeatureType schema, Filter definitionQuery) {
-        super(store, schema, definitionQuery);
+    GeoServerFeatureStore(FeatureStore store, FeatureType schema, Filter definitionQuery, CoordinateReferenceSystem forcedCRS) {
+        super(store, schema, definitionQuery, forcedCRS);
     }
 
     /**
