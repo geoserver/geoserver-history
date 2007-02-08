@@ -2,23 +2,17 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.servlets;
+package org.geoserver.ows;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-
 /**
- * Interface used for ServiceMode strategy objects.
- *
+ * Strategy interface for writing output to an output stream.
  * <p>
- * This interface is used to plug-in the implementation for our doService request in
- * the mannerof the strategy pattern.
- * </p>
- * <p>
- * Service Strategies are created using the 'prototype' pattern. Upon each
- * service invocation a new instsance is created by cloning the intial prototype.
+ * This interface is used to provide different modes of output, an example would
+ * be response buffering.
  * </p>
  *
  * @author Jody Garnett, Refractions Research
@@ -26,37 +20,38 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface ServiceStrategy extends Cloneable {
     /**
-     * @return A string used to identify the strategy.
+     * @return A string used to identify the output strategy.
      */
     public String getId();
 
     /**
      * Get a OutputStream we can use to add content.
-     *
      * <p>
-     * JG - Can we replace this with a Writer?
+     * This output stream may be a wrapper around <code>response.getOutpuStream()</code>
+     * or may not be.
      * </p>
+     * 
+     * @param response The servlet response.
      *
-     * @param response
+     * @return An output stream to write to.
      *
-     * @return
-     *
-     * @throws IOException
+     * @throws IOException Any I/O errors that occur.
      */
     public OutputStream getDestination(HttpServletResponse response)
         throws IOException;
 
     /**
-     * Complete opperation in the positive.
-     *
+     * Flushes the output, causing the response to be written to the actual
+     * resposne output stream: <code>response.getOutputStrema()</code>
      * <p>
-     * Gives service a chance to finish with destination, and clean up any
-     * resources.
+     * Any resources that the strategy holds on to should also be released at 
+     * this point.
      * </p>
+     * @param response TODO
      *
-     * @throws IOException DOCUMENT ME!
+     * @throws IOException Any I/O errors that occur.
      */
-    public void flush() throws IOException;
+    public void flush(HttpServletResponse response) throws IOException;
 
     /**
      * Complete opperation in the negative.

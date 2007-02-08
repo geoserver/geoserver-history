@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.ows.ServiceStrategy;
+
 
 /** Fast and Dangeroud service strategy.
  *
@@ -58,7 +60,7 @@ public class SpeedStrategy implements ServiceStrategy {
      *
      * @throws IOException If Response.getOutputStream not available.
      */
-    public void flush() throws IOException {
+    public void flush(HttpServletResponse response) throws IOException {
         if (out != null) {
             out.flush();
         }

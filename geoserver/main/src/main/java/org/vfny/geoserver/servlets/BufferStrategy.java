@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.ows.ServiceStrategy;
+
 
 /**
  * A safe Service strategy that buffers output until writeTo completes.
@@ -28,9 +30,6 @@ public class BufferStrategy implements ServiceStrategy {
     /** DOCUMENT ME!  */
     ByteArrayOutputStream buffer = null;
 
-    /** DOCUMENT ME!  */
-    private HttpServletResponse response;
-
     /**
      * Provides a ByteArrayOutputStream for writeTo.
      *
@@ -42,9 +41,8 @@ public class BufferStrategy implements ServiceStrategy {
      */
     public OutputStream getDestination(HttpServletResponse response)
         throws IOException {
-        this.response = response;
-        buffer = new ByteArrayOutputStream(1024 * 1024);
-
+        
+    	buffer = new ByteArrayOutputStream(1024 * 1024);
         return buffer;
     }
 
@@ -53,7 +51,7 @@ public class BufferStrategy implements ServiceStrategy {
      *
      * @throws IOException If the response outputt stream is unavailable.
      */
-    public void flush() throws IOException {
+    public void flush(HttpServletResponse response) throws IOException {
         if ((buffer == null) || (response == null)) {
             return; // should we throw an Exception here
         }
@@ -67,7 +65,7 @@ public class BufferStrategy implements ServiceStrategy {
     /**
      * Clears the buffer with out writing anything out to response.
      *
-     * @see org.vfny.geoserver.servlets.ServiceStrategy#abort()
+     * @see org.geoserver.ows.ServiceStrategy#abort()
      */
     public void abort() {
         buffer = null;
