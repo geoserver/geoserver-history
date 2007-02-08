@@ -112,9 +112,10 @@ public class GetFeatureKvpReader extends WfsKvpRequestReader {
         LOGGER.finest("setting query request parameters");
 
         List typeList = readFlat(getValue("TYPENAME"), INNER_DELIMETER);
+        
         List propertyList = readNested(getValue("PROPERTYNAME"));
         String fidKvps = getValue("FEATUREID");
-        List filterList = readFilters(fidKvps, getValue("FILTER"), getValue("BBOX"));
+        List filterList = readFilters(typeList, fidKvps, getValue("FILTER"), getValue("BBOX"));
 
         int propertySize = propertyList.size();
         int filterSize = filterList.size();

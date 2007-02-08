@@ -83,7 +83,7 @@ public class DeleteKvpReader extends WfsKvpRequestReader {
         LOGGER.finest("type list size: " + typeList.size());
 
         List filterList = null;
-        filterList = readFilters(getValue("FEATUREID"), getValue("FILTER"), getValue("BBOX"));
+        filterList = readFilters(typeList, getValue("FEATUREID"), getValue("FILTER"), getValue("BBOX"));
 
         if (typeList.size() == 0) {
             typeList = getTypesFromFids(getValue("FEATUREID"));
