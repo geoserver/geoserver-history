@@ -15,6 +15,8 @@ import java.io.OutputStream;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.ows.ServiceStrategy;
+
 
 /**
  * A safe ServiceConfig strategy that uses a temporary file until writeTo
@@ -36,9 +38,6 @@ public class FileStrategy implements ServiceStrategy {
 
     /** Class logger */
     protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
-
-    /** Response being targeted */
-    private HttpServletResponse response;
 
     /** OutputStream provided to writeTo method */
     private OutputStream safe;
@@ -65,7 +64,6 @@ public class FileStrategy implements ServiceStrategy {
         // (In case we are running two GeoServers at once)
         // - Could we use response.getHandle() in the filename?
         // - ProcessID is traditional, I don't know how to find that in Java
-        this.response = response;
         sequence++;
 
         // lets check for file permissions first so we can throw a clear error
@@ -95,7 +93,7 @@ public class FileStrategy implements ServiceStrategy {
      * @throws IOException If temporay file or response is unavailable
      * @throws IllegalStateException if flush is called before getDestination
      */
-    public void flush() throws IOException {
+    public void flush(HttpServletResponse response) throws IOException {
         if ((temp == null) || (response == null) || (safe == null) || !temp.exists()) {
             LOGGER.fine("temp is " + temp + ", response is " + response + " safe is " + safe
                 + ", temp exists " + temp.exists());
@@ -153,7 +151,7 @@ public class FileStrategy implements ServiceStrategy {
     /**
      * Clean up after writeTo fails.
      *
-     * @see org.vfny.geoserver.servlets.ServiceStrategy#abort()
+     * @see org.geoserver.ows.ServiceStrategy#abort()
      */
     public void abort() {
         if (safe != null) {
@@ -170,7 +168,6 @@ public class FileStrategy implements ServiceStrategy {
         }
 
         temp = null;
-        response = null;
     }
 
     public Object clone() throws CloneNotSupportedException {

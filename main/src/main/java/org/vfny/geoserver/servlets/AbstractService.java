@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.geoserver.ows.ServiceStrategy;
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -603,7 +604,7 @@ public abstract class AbstractService extends HttpServlet implements Application
             // gather response
             serviceResponse.writeTo(strategyOuput);
             strategyOuput.flush();
-            strategy.flush();
+            strategy.flush(response);
         } catch (java.net.SocketException sockEx) { // user cancel
             serviceResponse.abort(s);
             strategy.abort();

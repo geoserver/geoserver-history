@@ -74,6 +74,10 @@
  	<!-- 
 		service strategies 
 	-->
+	<bean id="serviceStrategyFactory" 
+		class="org.vfny.geoserver.servlets.ServiceStrategyFactory">
+		<constructor-arg ref="geoServer"/>
+	</bean>
 	
 	<bean id="speedServiceStrategy"
 		class="org.vfny.geoserver.servlets.SpeedStrategy"/>

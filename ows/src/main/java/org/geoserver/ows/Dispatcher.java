@@ -165,7 +165,15 @@ public class Dispatcher extends AbstractController {
 
             //dispatch the operation
             Operation operation = dispatch(request, service);
-            execute(request, operation);
+            
+            //execute it
+            Object result = execute(request, operation);
+            
+            //write the response
+            if ( result != null ) {
+            	response( result, request, operation );
+            }
+            
         } catch (Throwable t) {
             exception(t, service, request);
         }
@@ -401,7 +409,7 @@ public class Dispatcher extends AbstractController {
         return null;
     }
 
-    void execute(Request req, Operation opDescriptor) throws Throwable {
+    Object execute(Request req, Operation opDescriptor) throws Throwable {
         Service serviceDescriptor = opDescriptor.getService();
         Object serviceBean = serviceDescriptor.getService();
         Method operation = opDescriptor.getMethod();
@@ -418,6 +426,12 @@ public class Dispatcher extends AbstractController {
             }
         }
 
+        return result;
+    }
+    
+    void response( Object result, Request req, Operation opDescriptor )
+    	throws Throwable {
+    	
         //step 6: write response
         if (result != null) {
             //look up respones
@@ -493,16 +507,26 @@ public class Dispatcher extends AbstractController {
 
             Response response = (Response) responses.get(0);
 
+            //load the output strategy to be used
+            ServiceStrategy outputStrategy = findOutputStrategy( req.httpResponse );
+            if ( outputStrategy == null ) {
+            	outputStrategy = new DefaultOutputStrategy();
+            }
+            
             //set the mime type
             req.httpResponse.setContentType(response.getMimeType(result, opDescriptor));
 
             //TODO: initialize any header params (gzip,deflate,etc...)
-            OutputStream output = req.httpResponse.getOutputStream();
+            OutputStream output = outputStrategy.getDestination( req.httpResponse );
             response.write(result, output, opDescriptor);
 
             try {
-                output.flush();
-            } catch (IOException e) {
+            	outputStrategy.flush( req.httpResponse );
+            	
+            	//flush the underlying out stream for good meaure
+            	req.httpResponse.getOutputStream().flush();
+            } 
+            catch (IOException e) {
                 //TODO: log
             }
         }
@@ -589,15 +613,21 @@ public class Dispatcher extends AbstractController {
         return sBean;
     }
 
+    Collection loadKvpRequestReaders() {
+    	Collection kvpReaders = GeoServerExtensions.extensions(KvpRequestReader.class);
+         
+		if (!(new HashSet(kvpReaders).size() == kvpReaders.size())) {
+			String msg = "Two identical kvp readers found";
+			throw new IllegalStateException(msg);
+		}
+		
+		return kvpReaders;
+    }
+    
     KvpRequestReader findKvpRequestReader(Class type) {
-        Collection kvpReaders = getApplicationContext().getBeansOfType(KvpRequestReader.class)
-                                    .values();
-
-        if (!(new HashSet(kvpReaders).size() == kvpReaders.size())) {
-            String msg = "Two identical kvp readers found";
-            throw new IllegalStateException(msg);
-        }
-
+       
+    	Collection kvpReaders = loadKvpRequestReaders();
+    	
         List matches = new ArrayList();
 
         for (Iterator itr = kvpReaders.iterator(); itr.hasNext();) {
@@ -736,6 +766,27 @@ public class Dispatcher extends AbstractController {
         return xmlReader;
     }
 
+    Collection loadOutputStrategyFactories() {
+    	return GeoServerExtensions.extensions( OutputStrategyFactory.class );
+    }
+    
+    ServiceStrategy findOutputStrategy( HttpServletResponse response ) {
+    	//load all available factories
+    	Collection strategyFactories = loadOutputStrategyFactories();
+    	for ( Iterator i = strategyFactories.iterator(); i.hasNext(); ) {
+    		OutputStrategyFactory factory = (OutputStrategyFactory) i.next();
+    		
+    		//can this factory create a strategy for the response
+    		ServiceStrategy strategy = factory.createOutputStrategy( response );
+    		if ( strategy != null ) {
+    			//yes it can, return it
+    			return strategy;
+    		}
+    	}
+    	
+    	return null;
+    }
+    
     BufferedInputStream input(File cache) throws IOException {
         return (cache == null) ? null : new BufferedInputStream(new FileInputStream(cache));
     }
@@ -975,7 +1026,7 @@ public class Dispatcher extends AbstractController {
             handler = new DefaultServiceExceptionHandler();
         }
 
-        handler.handleServiceException(se, service, null, request.httpResponse);
+        handler.handleServiceException(se, service, request.httpRequest, request.httpResponse);
     }
 
     /**
@@ -1030,11 +1081,8 @@ public class Dispatcher extends AbstractController {
         Map kvp;
 
         /**
-         * Cached input stream, only non-null if get = false
+         * buffered input stream, only non-null if get = false
          */
-
-        //File input;
-        //BufferedInputStream input;
         BufferedReader input;
 
         /**
