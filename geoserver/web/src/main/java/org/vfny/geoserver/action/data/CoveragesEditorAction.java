@@ -5,6 +5,7 @@
 package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -178,7 +179,10 @@ public final class CoveragesEditorAction extends ConfigAction {
             GeneralEnvelope envelope = targetEnvelope;
 
             if (!sourceCRS.getIdentifiers().isEmpty()) {
-                coverageForm.setSrsName("EPSG:" + lookupEPSGIdentifier(sourceCRS));
+                String identifier = CRS.lookupIdentifier(sourceCRS, Collections.singleton("EPSG"), false);
+                if(!identifier.startsWith("EPSG:"))
+                    identifier = "EPSG:" + identifier;
+                coverageForm.setSrsName(identifier);
             } else {
                 coverageForm.setSrsName("UNKNOWN");
 
@@ -211,65 +215,6 @@ public final class CoveragesEditorAction extends ConfigAction {
         }
 
         return mapping.findForward("config.data.coverage.editor");
-    }
-
-    /** 
-     * TODO: this method is duplicated with FeatureTypeConfig and should be replaced by
-     * an equivalent method in CRS class. Once the methods is added, forward to the CRS class.
-     * @param ref
-     * @return
-     */
-    private int lookupEPSGIdentifier(CoordinateReferenceSystem ref) {
-        // ... first check if one of the identifiers can be used to spot
-        // directly a CRS (and check it's actually equal to one in the db)
-        for (Iterator it = ref.getIdentifiers().iterator(); it.hasNext();) {
-            NamedIdentifier id = (NamedIdentifier) it.next();
-            try {
-                CoordinateReferenceSystem crs = CRS.decode(id.toString());
-                return getSRSFromCRS(crs);
-            } catch (Exception e) {
-                // the identifier was not recognized, no problem, let's go on
-            }
-        }
-
-        // ... a direct lookup did not work, let's try a full scan of known CRS then
-        // TODO: implement a smarter method in the actual EPSG authorities,
-        // which may well be this same loop if they do have no other search capabilities
-        Set codes = CRS.getSupportedCodes("EPSG");
-        for (Iterator it = codes.iterator(); it.hasNext();) {
-            String code = (String) it.next();
-            try {
-                CoordinateReferenceSystem crs = CRS
-                        .decode("EPSG:" + code, true);
-                if (CRS.equalsIgnoreMetadata(crs, ref)) {
-                    return getSRSFromCRS(crs);
-                }
-            } catch (Exception e) {
-                // some CRS cannot be decoded properly
-            }
-        }
-        return 0;
-    }
-    
-    /** 
-     * Scans the identifiers list looking for an EPSG id
-     * @param crs
-     * @return
-     */
-    private int getSRSFromCRS(CoordinateReferenceSystem crs) {
-        for (Iterator it = crs.getIdentifiers().iterator(); it.hasNext();) {
-            NamedIdentifier id = (NamedIdentifier) it.next();
-            if(id.toString().startsWith("EPSG"))
-                try {
-                    return Integer.parseInt(id.getCode());
-                } catch(NumberFormatException e) {
-                    if(LOGGER.isLoggable(Level.FINE))
-                        LOGGER.fine("Could not parse the EPSG code " + id);
-                }
-        }
-        LOGGER.warning("Funny, got a CRS from the referencing system, yet could not " +
-                "get an identifier in the form EPSG:xxxx out of it: " + crs);
-        return 0;
     }
 
     /**

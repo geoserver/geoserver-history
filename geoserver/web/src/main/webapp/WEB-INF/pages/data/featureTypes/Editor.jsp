@@ -111,6 +111,11 @@ function prepareFormData(){
 		<html:text property="SRS" size="32"/>
 		</td>
 		<td>
+        <html:submit property="action">
+          <bean:message key="config.data.lookupSRS.label"/>
+        </html:submit>
+        </td>
+		<td>
 		      <a href="<bean:message key="label.SRSHelp.URL"/>">
               <bean:message key="label.SRSHelp"/>
             </a>
@@ -121,6 +126,7 @@ function prepareFormData(){
               <bean:message key="label.SRSList"/>
             </a>
         </td>
+       
         </tr>
         </table>
 	</td></tr>

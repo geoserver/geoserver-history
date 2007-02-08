@@ -4,7 +4,20 @@
  */
 package org.vfny.geoserver.action.data;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -14,15 +27,12 @@ import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
-import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.geometry.JTS;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.FactoryFinder;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
@@ -38,17 +48,8 @@ import org.vfny.geoserver.form.data.TypesEditorForm;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -103,6 +104,8 @@ public class TypesEditorAction extends ConfigAction {
         final String ADD = HTMLEncoder.decode(messages.getMessage(locale, "label.add"));
         final String BBOX = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
+        final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(locale,
+            "config.data.lookupSRS.label"));
 
         if (LOGGER.isLoggable(Level.FINER)) {
             LOGGER.finer(new StringBuffer("BBOX: ").append(BBOX).toString());
@@ -117,6 +120,10 @@ public class TypesEditorAction extends ConfigAction {
 
         if (action.equals(BBOX)) {
             return executeBBox(mapping, typeForm, user, request);
+        }
+        
+        if (action.equals(LOOKUP_SRS)) {
+            return executeLookupSRS(mapping, typeForm, user, request);
         }
 
         if (action.equals(NEWSLD)) { // if the SLDWizard button was hit
@@ -145,6 +152,28 @@ public class TypesEditorAction extends ConfigAction {
         sync(typeForm, user.getFeatureTypeConfig(), request);
         form.reset(mapping, request);
 
+        return mapping.findForward("config.data.type.editor");
+    }
+
+    private ActionForward executeLookupSRS(ActionMapping mapping, TypesEditorForm typeForm, UserContainer user, HttpServletRequest request) throws IOException, ServletException {
+        DataConfig dataConfig = getDataConfig();
+        DataStoreConfig dsConfig = dataConfig.getDataStore(typeForm.getDataStoreId());
+        DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
+        FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
+        FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
+        
+        try {
+            CoordinateReferenceSystem crs = fs.getSchema().getDefaultGeometry().getCoordinateSystem();
+            String s = CRS.lookupIdentifier(crs, Collections.singleton("EPSG"), true);
+            if(s == null)
+                typeForm.setSRS("UNKNOWN");
+            else  if(s.indexOf(':') != -1)
+                typeForm.setSRS(s.substring(s.indexOf(':') + 1));
+            else 
+                typeForm.setSRS(s);
+        } catch(Exception e) {
+            typeForm.setSRS("UNKNOWN");
+        }
         return mapping.findForward("config.data.type.editor");
     }
 

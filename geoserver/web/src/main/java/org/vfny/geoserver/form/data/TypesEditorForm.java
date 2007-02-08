@@ -465,11 +465,13 @@ public class TypesEditorForm extends ActionForm {
                     "config.data.calculateBoundingBox.label"));
         final String SLDWIZARD = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.sldWizard.label"));
+        final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(locale,
+            "config.data.lookupSRS.label"));
 
         // Pass Attribute Management Actions through without
         // much validation.
         if (action.startsWith("Up") || action.startsWith("Down") || action.startsWith("Remove")
-                || action.equals(BBOX) || action.equals(SLDWIZARD)) {
+                || action.equals(BBOX) || action.equals(SLDWIZARD) || action.equals(LOOKUP_SRS)) {
             return errors;
         }
 
