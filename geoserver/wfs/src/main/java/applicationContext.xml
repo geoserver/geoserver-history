@@ -124,9 +124,20 @@
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
 		
+	<!-- cite compliance hack -->
+	<bean id="citeComplianceHack" class="org.geoserver.wfs.CiteComplianceHack">
+		<constructor-arg ref="wfs"/>
+	</bean>
+	
 	<!-- http url mapping -->
 	<bean id="wfsURLMapping" 
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="citeComplianceHack"/>
+			</list>
+		</property>
+	
 		<property name="mappings">
 			<props>
 				<prop key="/wfs">dispatcher</prop>
