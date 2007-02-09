@@ -100,8 +100,34 @@ import javax.xml.namespace.QName;
  *
  */
 public class Dispatcher extends AbstractController {
-    static Logger logger = Logger.getLogger("org.geoserver");
 
+	/**
+	 * Logging instance
+	 */
+	static Logger logger = Logger.getLogger("org.geoserver.ows");
+	
+	/** flag to control wether the dispatcher is cite compliant */
+	boolean citeCompliant = false;
+	
+	/**
+	 * Sets the flag to control wether the dispatcher is cite compliante.
+	 * <p>
+	 * If set to <code>true</code>, the dispatcher with throw exceptions when 
+	 * it encounters something that is not 100% compliant with CITE standards.
+	 * An example would be a request which specifies the servce in the context
+	 * path: '.../geoserver/wfs?request=...' and not with the kvp '&service=wfs'.
+	 * </p>
+	 * 
+	 * @param citeCompliant <code>true</code> to set compliance, 
+	 * 	<code>false</code> to unset it.
+	 */
+	public void setCiteCompliant(boolean citeCompliant) {
+		this.citeCompliant = citeCompliant;
+	}
+	public boolean isCiteCompliant() {
+		return citeCompliant;
+	}
+	
     protected void preprocessRequest(HttpServletRequest request)
         throws Exception {
         //initialize all OWS instances
@@ -248,22 +274,33 @@ public class Dispatcher extends AbstractController {
             }
         }
 
-        if (req.service == null) {
-            //try to infer from context, but dont set on request object because we need to know 
-            // if the service was actually specified later
+        //try to infer from context
+        //JD: for cite compliance, a service *must* be specified explicitley by 
+        // either a kvp, or an xml attribute, however in reality the context 
+        // is often a good way to infer the service or request 
+        String service = req.service;
+        if ( service == null || req.request == null ) {
             Map map = readOpContext(req.httpRequest);
-
-            if (map.get("service") != null) {
-                return findService(normalize((String) map.get("service")), req.version);
+            
+            if ( service == null ) {
+            	service = normalize((String) map.get("service") );	
+            	if ( service != null && !citeCompliant ) {
+            		req.service = service;
+            	}
             }
-
-            //give up 
+            if ( req.request == null ) {
+            	req.request = normalize((String) map.get("request") );
+            }
+        }
+        
+        if ( service == null ) {
+        	//give up 
             throw new ServiceException("Could not determine service", "MissingParameterValue",
                 "service");
         }
-
+        
         //load from teh context
-        return findService(req.service, req.version);
+        return findService(service, req.version);
     }
 
     String normalize(String value) {
