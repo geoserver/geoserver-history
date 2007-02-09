@@ -30,13 +30,6 @@
 	  <groupId>org.geotools</groupId>
 	  <artifactId>gt2-main</artifactId>
 	</dependency>
-	<!-- this dependency should be test but isn't because maven does
-     add tests classes to downstream classpath, so needed for
-     DataTestSupport -->
-	<dependency>
-	  <groupId>org.geotools.demo</groupId>
-	  <artifactId>gt2-demo-property</artifactId>
-	</dependency>
 	<dependency>
 	  <groupId>junit</groupId>
 	  <artifactId>junit</artifactId>
