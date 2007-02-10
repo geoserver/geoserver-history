@@ -160,7 +160,7 @@ public class TransactionResponse extends Response {
 
         writer.write("</wfs:WFS_TransactionResponse>");
         writer.flush();
-        writer.close();
+        
     }
 
     public void v_1_1(TransactionResponseType response, OutputStream output)
