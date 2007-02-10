@@ -557,15 +557,10 @@ public class Dispatcher extends AbstractController {
             OutputStream output = outputStrategy.getDestination( req.httpResponse );
             response.write(result, output, opDescriptor);
 
-            try {
-            	outputStrategy.flush( req.httpResponse );
+        	outputStrategy.flush( req.httpResponse );
             	
-            	//flush the underlying out stream for good meaure
-            	req.httpResponse.getOutputStream().flush();
-            } 
-            catch (IOException e) {
-                //TODO: log
-            }
+        	//flush the underlying out stream for good meaure
+        	req.httpResponse.getOutputStream().flush();
         }
     }
 
