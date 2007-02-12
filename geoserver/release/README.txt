@@ -1,3 +1,22 @@
+GeoServer 1.5.0-RC1
+---------------------
+
+This is the first release candidate for the 1.5 sereies of GeoServer.
+Major features / improvements of this release include:
+
+- Many bug fixes
+- Reduced download size
+- Reorginization of some UI components
+- More hand testing and tutorials
+- Performance optimization
+
+
+The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=13178
+
+Based on GeoTools 2.3.1-SNAPSHOT
+
+
 GeoServer 1.5.0-beta2
 ---------------------
 
