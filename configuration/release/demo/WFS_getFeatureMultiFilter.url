@@ -1,0 +1,1 @@
+wfs?request=GetFeature&typeName=topp:states,tiger:tiger_roads&outputFormat=GML2&FILTER=(<Filter><FeatureId fid="states.3"/></Filter>)(<Filter><FeatureId fid="tiger_roads.3"/></Filter>)
