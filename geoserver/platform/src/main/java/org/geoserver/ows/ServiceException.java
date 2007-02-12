@@ -17,8 +17,8 @@ public class ServiceException extends Exception {
      */
     String code;
 
-    public ServiceException(String code) {
-        super();
+    public ServiceException(String message) {
+        super(message);
     }
 
     public ServiceException(String message, Throwable cause, String code) {
