@@ -172,6 +172,7 @@ public class GeoserverDataDirectory {
                     dataDir = new File(prop);
                     loader = new GeoServerResourceLoader(dataDir);
                     loader.addSearchLocation(new File(dataDir, "data"));
+                    loader.addSearchLocation(new File(dataDir, "WEB-INF"));
                     System.out.println("----------------------------------");
                     System.out.println("- GEOSERVER_DATA_DIR: " + dataDir.getAbsolutePath());
                     System.out.println("----------------------------------");
@@ -193,6 +194,7 @@ public class GeoserverDataDirectory {
                 dataDir = new File(loc);
                 loader = new GeoServerResourceLoader(dataDir);
                 loader.addSearchLocation(new File(dataDir, "data"));
+                loader.addSearchLocation(new File(dataDir, "WEB-INF"));
                 System.out.println("----------------------------------");
                 System.out.println("- GEOSERVER_DATA_DIR: " + dataDir.getAbsolutePath());
                 System.out.println("----------------------------------");
@@ -208,12 +210,13 @@ public class GeoserverDataDirectory {
 
             // create loader, and add some locations to the serach path
             loader = new GeoServerResourceLoader(dataDir);
-//            loader.addSearchLocation(new File(dataDir, "data"));
+            loader.addSearchLocation(new File(dataDir, "data"));
+            loader.addSearchLocation(new File(dataDir, "WEB-INF"));
             System.out.println("----------------------------------");
             System.out.println("- GEOSERVER_DATA_DIR: " + dataDir.getAbsolutePath());
             System.out.println("----------------------------------");
-//            loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
-//            loader.addSearchLocation(new File(servContext.getRealPath("data")));
+            loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
+            loader.addSearchLocation(new File(servContext.getRealPath("data")));
         }
     }
 }
