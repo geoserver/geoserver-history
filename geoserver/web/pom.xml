@@ -235,8 +235,7 @@
           <execution>
 						<id>configPackage</id>
 						<configuration>
-              <configDirectory>D:\Java\Geoserver\gs1.5\configuration</configDirectory>
-			  <!--configDirectory>${configDirectory}</configDirectory-->
+			                <configDirectory>${configDirectory}</configDirectory>
 							<configId>${configId}</configId>
 						</configuration>
             <phase>package</phase>
