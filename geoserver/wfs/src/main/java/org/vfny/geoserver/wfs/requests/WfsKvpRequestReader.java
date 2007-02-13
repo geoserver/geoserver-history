@@ -54,34 +54,38 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
     * empty list.
     *
     * @param fid A group of feature IDs, as a String.
-    * @param filter A group of filters, as a String.
+    * @param ogcFilter A group of filters, as a String.
     * @param bbox A group of boxes, as a String.
     *
     * @return A list filters.
     *
     */
-    protected List readFilters(List typeNames, String fid, String filter, String bbox)
+    protected List readFilters(List typeNames, String fid, String ogcFilter, String cqlFilter, String bbox)
         throws WfsException {
         // handles feature id(es) case
-        if ((fid != null) && (filter == null) && (bbox == null)) {
+        if ((fid != null) && (ogcFilter == null) && (bbox == null) & (cqlFilter == null)) {
             return readFidFilters(fid);
 
             // handles filter(s) case
-        } else if ((filter != null) && (fid == null) && (bbox == null)) {
-            return readOGCFilter(filter);
+        } else if ((ogcFilter != null) && (fid == null) && (bbox == null) & (cqlFilter == null)) {
+            return readOGCFilter(ogcFilter);
+            
+            // handles cql filter(s) case
+        } else if ((cqlFilter != null) && (fid == null) && (ogcFilter == null) & (bbox == null)) {
+            return readCQLFilter(cqlFilter);
 
             // handles bounding box(s) case
-        } else if ((bbox != null) && (fid == null) && (filter == null)) {
-            return parseBBoxFilter(typeNames, filter, bbox);
+        } else if ((bbox != null) && (fid == null) && (ogcFilter == null) & (cqlFilter == null)) {
+            return parseBBoxFilter(typeNames, ogcFilter, bbox);
 
             // handles unconstrained case
-        } else if ((bbox == null) && (fid == null) && (filter == null)) {
+        } else if ((bbox == null) && (fid == null) && (ogcFilter == null)& (cqlFilter == null)) {
             return new ArrayList();
 
             // handles error when more than one filter specified
         } else {
             throw new WfsException("GetFeature KVP request contained "
-                + "conflicting filters.  Filter: " + filter + ", fid: " + fid + ", bbox:" + bbox);
+                + "conflicting filters.  Filter: " + ogcFilter + ", fid: " + fid + ", bbox:" + bbox);
         }
     }
 
@@ -119,6 +123,15 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
         // remap exception to the proper type for this service
         try {
             return super.readOGCFilter(filter);
+        } catch(ServiceException e) {
+            throw new WfsException(e);
+        }
+    }
+    
+    protected List readCQLFilter(String filter) throws WfsException {
+        // remap exception to the proper type for this service
+        try {
+            return super.readCQLFilter(filter);
         } catch(ServiceException e) {
             throw new WfsException(e);
         }

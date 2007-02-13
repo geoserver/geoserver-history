@@ -30,6 +30,8 @@ import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.FilterFilter;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
+import org.geotools.text.filter.FilterBuilder;
+import org.geotools.text.filter.ParseException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.servlets.AbstractService;
@@ -496,6 +498,36 @@ abstract public class KvpRequestReader {
                 filters.add(Filter.NONE);
             else
                 filters.add(parseXMLFilter(new StringReader(next)));
+        }
+
+        return filters;
+    }
+    
+    /**
+     * Parses a CQL filter
+     * @param filter
+     * @return
+     * @throws ServiceException
+     */
+    protected List readCQLFilter(String filter) throws ServiceException {
+        List filters = new ArrayList();
+        List unparsed;
+        ListIterator i;
+        LOGGER.finest("reading filter: " + filter);
+        unparsed = readFlat(filter, "[]");
+        i = unparsed.listIterator();
+
+        String next = null;
+        try {
+            while (i.hasNext()) {
+                next = (String) i.next();
+                if(next.trim().equals(""))
+                    filters.add(Filter.NONE);
+                else
+                    filters.add(FilterBuilder.parse(next));
+            }
+        } catch(ParseException pe) {
+            throw new ServiceException("Could not parse CQL filter: " + next);
         }
 
         return filters;

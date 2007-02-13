@@ -1,0 +1,2 @@
+wfs?request=GetFeature&typeName=topp:states&outputFormat=GML2&CQL_FILTER=INTERSECT(the_geom, POINT (-74.817265 40.5296504))
+ 

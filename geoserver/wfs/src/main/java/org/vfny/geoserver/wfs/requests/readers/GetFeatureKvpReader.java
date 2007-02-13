@@ -115,7 +115,7 @@ public class GetFeatureKvpReader extends WfsKvpRequestReader {
         
         List propertyList = readNested(getValue("PROPERTYNAME"));
         String fidKvps = getValue("FEATUREID");
-        List filterList = readFilters(typeList, fidKvps, getValue("FILTER"), getValue("BBOX"));
+        List filterList = readFilters(typeList, fidKvps, getValue("FILTER"), getValue("CQL_FILTER"), getValue("BBOX"));
 
         int propertySize = propertyList.size();
         int filterSize = filterList.size();

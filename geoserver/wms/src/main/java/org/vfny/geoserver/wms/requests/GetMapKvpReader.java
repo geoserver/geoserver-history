@@ -817,12 +817,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     protected void parseFilterParam(GetMapRequest request)
         throws WmsException {
         String rawFilter = getValue("FILTER");
+        String rawCqlFilter = getValue("CQL_FILTER");
         String rawIdFilter = getValue("FEATUREID");
         
-        if(rawFilter != null && rawIdFilter != null)
-            throw new WmsException("GetMap KVP request contained "
-                + "conflicting filters.  Filter: " + rawFilter + ", fid: " + rawFilter);
-
         // in case of a mixed request, get with sld in post body, layers
         // are not parsed, so we can't parse filters neither...
         if (request.getLayers() == null) {
@@ -844,12 +841,26 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             } catch(ServiceException e) {
                 throw new WmsException(e);
             }
-        } else if(rawIdFilter != null && !rawIdFilter.equals("")){
-            filters = readFidFilters(rawFilter);
-        } else {
-            return;
         }
-
+        if(rawIdFilter != null && !rawIdFilter.equals("")){
+            if(filters != null)
+                throw new WmsException("GetMap KVP request contained "
+                    + "conflicting filters.  Filter: " + rawFilter + ", fid: " + rawFilter);
+            filters = readFidFilters(rawFilter);
+        }
+        if(rawCqlFilter != null && !rawCqlFilter.equals("")) {
+            if(filters != null)
+                throw new WmsException("GetMap KVP request contained "
+                    + "conflicting filters.  Filter: " + rawFilter + ", fid: " + rawFilter + ", cql: " + rawCqlFilter);
+            try {
+                filters = readCQLFilter(rawCqlFilter);
+            } catch(ServiceException e) {
+                throw new WmsException(e);
+            }  
+        }
+        if(filters == null)
+            return;
+        
         if (numLayers != filters.size()) {
             // as in wfs getFeatures, perform lenient parsing, if just one filter, it gets
             // applied to all layers
