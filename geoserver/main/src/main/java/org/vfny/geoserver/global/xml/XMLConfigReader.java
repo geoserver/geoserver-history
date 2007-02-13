@@ -312,7 +312,19 @@ public class XMLConfigReader {
             data.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(catalogElem,
                         "namespaces", true)));
             setDefaultNS();
-            data.setFormats(loadFormats(ReaderUtils.getChildElement(catalogElem, "formats", true)));
+            
+            try { // try <formats> to be backwards compatible to 1.4
+
+                Element formatElement = ReaderUtils.getChildElement(
+                        catalogElem, "formats", true);
+                data.setFormats(loadFormats(formatElement));
+            } catch (Exception e) {
+                // gobble
+                LOGGER
+                        .warning("Your catalog.xml file is not up to date and is probably from an older "
+                                + "version of GeoServer. This problem is now being fixed automatically.");
+            }
+            
             data.setDataStores(loadDataStores(ReaderUtils.getChildElement(catalogElem,
                         "datastores", true)));
 

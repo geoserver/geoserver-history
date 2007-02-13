@@ -150,6 +150,11 @@ public class ServiceException extends org.geoserver.platform.ServiceException {
 
         this.locator = locator;
     }
+    
+    public ServiceException(ServiceException e) {
+        super(e.getMessage(), e.getCause(), e.getLocator());
+        this.preMessage = e.preMessage;
+    }
 
     /**
      * DOCUMENT ME!
@@ -160,6 +165,10 @@ public class ServiceException extends org.geoserver.platform.ServiceException {
      */
     protected boolean isEmpty(String testString) {
         return (testString == null) || testString.equals("");
+    }
+    
+    public String getLocator() {
+        return locator;
     }
 
     /**

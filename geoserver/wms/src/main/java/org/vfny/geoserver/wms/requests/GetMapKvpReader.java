@@ -4,34 +4,6 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
-import org.geotools.referencing.CRS;
-import org.geotools.styling.FeatureTypeConstraint;
-import org.geotools.styling.NamedLayer;
-import org.geotools.styling.NamedStyle;
-import org.geotools.styling.SLDParser;
-import org.geotools.styling.Style;
-import org.geotools.styling.StyleAttributeExtractor;
-import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyleFactoryFinder;
-import org.geotools.styling.StyledLayer;
-import org.geotools.styling.StyledLayerDescriptor;
-import org.geotools.styling.UserLayer;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.Request;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
-import org.vfny.geoserver.util.SLDValidator;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.readers.WmsXmlRequestReader;
-import org.vfny.geoserver.wms.servlets.WMService;
-import org.xml.sax.InputSource;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +24,37 @@ import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.FeatureType;
+import org.geotools.referencing.CRS;
+import org.geotools.styling.FeatureTypeConstraint;
+import org.geotools.styling.NamedLayer;
+import org.geotools.styling.NamedStyle;
+import org.geotools.styling.SLDParser;
+import org.geotools.styling.Style;
+import org.geotools.styling.StyleAttributeExtractor;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyledLayer;
+import org.geotools.styling.StyledLayerDescriptor;
+import org.geotools.styling.UserLayer;
+import org.opengis.filter.Filter;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.CoverageInfo;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
+import org.vfny.geoserver.util.SLDValidator;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.servlets.WMService;
+import org.xml.sax.InputSource;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -159,7 +161,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers.wms");
 
     /** Used to parse SLD documents from SLD and SLD_BODY parameters */
-    private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
+    private static final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
 
     /**
      * Indicates wether STYLES parameter must be parsed. Defaults to
@@ -395,13 +397,23 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         request.setFormat(format);
 
-        Envelope bbox = parseBbox();
+        Envelope bbox = parseBbox(getValue("BBOX"));
         request.setBbox(bbox);
 
         //let styles and layers parsing for the end to give more trivial parameters 
         //a chance to fail before incurring in retrieving the SLD or SLD_BODY
         if (parseStylesLayers) {
             parseLayersAndStyles(request);
+        }
+    }
+    
+    
+    protected Envelope parseBbox(String bboxParam) throws WmsException {
+        // overridden to throw the right exception for this context
+        try {
+            return super.parseBbox(bboxParam);
+        } catch(ServiceException e) {
+            throw new WmsException(e);
         }
     }
 
@@ -516,51 +528,6 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         }
 
         return byFeatureTypes;
-    }
-
-    /**
-     * parses the BBOX parameter, wich must be a String of the form
-     * <code>minx,miny,maxx,maxy</code> and returns a corresponding
-     * <code>Envelope</code> object
-     *
-     * @return the <code>Envelope</code> represented by the request BBOX
-     *         parameter
-     *
-     * @throws WmsException if the value of the BBOX request parameter can't be
-     *         parsed as four <code>double</code>'s
-     */
-    protected Envelope parseBbox() throws WmsException {
-        Envelope bbox = null;
-        String bboxParam = getValue("BBOX");
-        Object[] bboxValues = readFlat(bboxParam, INNER_DELIMETER).toArray();
-
-        if (bboxValues.length != 4) {
-            throw new WmsException(bboxParam + " is not a valid pair of coordinates",
-                getClass().getName());
-        }
-
-        try {
-            double minx = Double.parseDouble(bboxValues[0].toString());
-            double miny = Double.parseDouble(bboxValues[1].toString());
-            double maxx = Double.parseDouble(bboxValues[2].toString());
-            double maxy = Double.parseDouble(bboxValues[3].toString());
-            bbox = new Envelope(minx, maxx, miny, maxy);
-
-            if (minx > maxx) {
-                throw new WmsException("illegal bbox, minX: " + minx + " is "
-                    + "greater than maxX: " + maxx);
-            }
-
-            if (miny > maxy) {
-                throw new WmsException("illegal bbox, minY: " + miny + " is "
-                    + "greater than maxY: " + maxy);
-            }
-        } catch (NumberFormatException ex) {
-            throw new WmsException(ex, "Illegal value for BBOX parameter: " + bboxParam,
-                getClass().getName() + "::parseBbox()");
-        }
-
-        return bbox;
     }
 
     /**
@@ -849,6 +816,11 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     protected void parseFilterParam(GetMapRequest request)
         throws WmsException {
         String rawFilter = getValue("FILTER");
+        String rawIdFilter = getValue("FEATUREID");
+        
+        if(rawFilter != null && rawIdFilter != null)
+            throw new WmsException("GetMap KVP request contained "
+                + "conflicting filters.  Filter: " + rawFilter + ", fid: " + rawFilter);
 
         // in case of a mixed request, get with sld in post body, layers
         // are not parsed, so we can't parse filters neither...
@@ -863,29 +835,18 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 "parseFilterParam must be called after the layer list has been built!");
         }
 
+        List filters = null;
         // if no filter, no need to proceed
-        if ((rawFilter == null) || rawFilter.equals("")) {
-            return;
-        }
-
-        // parse each filter, eventually throwing an exception if there is any
-        // encoding problem
-        List filterSpecs = readFlat(rawFilter, INNER_DELIMETER);
-        List filters = new ArrayList(filterSpecs.size());
-
-        try {
-            for (Iterator it = filterSpecs.iterator(); it.hasNext();) {
-                String filterSpec = (String) it.next();
-
-                if ((filterSpec != null) && !filterSpec.equals("")) {
-                    Reader filterReader = new StringReader(filterSpec);
-                    filters.add(WmsXmlRequestReader.readFilter(filterReader));
-                } else {
-                    filters.add(null);
-                }
+        if ((rawFilter != null) && !rawFilter.equals("")) {
+            try {
+                filters = readOGCFilter(rawFilter);
+            } catch(ServiceException e) {
+                throw new WmsException(e);
             }
-        } catch (Exception e) {
-            throw new WmsException(e);
+        } else if(rawIdFilter != null && !rawIdFilter.equals("")){
+            filters = readFidFilters(rawFilter);
+        } else {
+            return;
         }
 
         if (numLayers != filters.size()) {

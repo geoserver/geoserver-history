@@ -76,7 +76,7 @@ public class SrsHelpAction extends Action {
             id = (Integer) codeIt.next();
 
             try { //get its definition
-                crs = CRS.decode(new StringBuffer("EPSG:").append(id).toString(), true);
+                crs = CRS.decode(new StringBuffer("EPSG:").append(id).toString());
                 def = crs.toWKT();
                 defs.add(def);
                 ids_string.add(id.toString());

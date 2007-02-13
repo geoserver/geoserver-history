@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.config;
 
+
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import org.geotools.feature.AttributeType;
@@ -12,11 +13,24 @@ import org.opengis.filter.Filter;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
+
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.GeometryAttributeType;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.GeometryFactory;
 
 
 /**
@@ -26,6 +40,8 @@ import java.util.Set;
  * @version $Id: FeatureTypeConfig.java,v 1.20 2004/03/09 10:59:56 jive Exp $
  */
 public class FeatureTypeConfig {
+    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.config");
+    
     /** The Id of the datastore which should be used to get this featuretype. */
     private String dataStoreId;
 
@@ -177,21 +193,7 @@ public class FeatureTypeConfig {
 
         this.dataStoreId = dataStoreId;
         latLongBBox = new Envelope();
-
-        if (schema.getDefaultGeometry() == null) {
-            // pardon? Does this not make you a table?
-            SRS = -1;
-        } else {
-            GeometryFactory geometryFactory = schema.getDefaultGeometry().getGeometryFactory();
-
-            if (geometryFactory == null) {
-                // Assume Cartisian Coordiantes
-                SRS = 0;
-            } else {
-                // Assume SRID number is good enough                
-                SRS = geometryFactory.getSRID();
-            }
-        }
+        SRS = lookupSRS(schema.getDefaultGeometry());
 
         if (generate) {
             this.schemaAttributes = new ArrayList();
@@ -224,6 +226,41 @@ public class FeatureTypeConfig {
         cacheMaxAge = null;
     }
 
+    /**
+     * TODO: this method is duplicated with CoveragesEditorAction and should be replaced by
+     * an equivalent method in CRS class. Once the methods is added, forward to the CRS class.
+     * @param defaultGeometry
+     * @return
+     */
+    private int lookupSRS(GeometryAttributeType defaultGeometry) {
+        // NPE avoidance
+        if(defaultGeometry == null)
+            return -1;
+        
+        // try the (deprecated) geometry factory, we don't want to break data stores that
+        // do correctly set it
+        GeometryFactory geometryFactory = defaultGeometry.getGeometryFactory();
+        if (geometryFactory != null && geometryFactory.getSRID() != 0) {
+            return geometryFactory.getSRID();
+        }
+        return 0;
+        
+//        // try to reverse engineer the SRID from the coordinate system
+//        CoordinateReferenceSystem ref = defaultGeometry.getCoordinateSystem();
+//        String code = CRS.lookupIdentifier(ref, Collections.singleton("EPSG"), true);
+//        if(code == null)
+//            return 0;
+//        if(code.startsWith("EPSG:")) {
+//            code = code.substring(5);
+//        }
+//        try {
+//            return Integer.parseInt(code);
+//        } catch(NumberFormatException e) {
+//            LOGGER.severe("Could not parse EPSG code: " + code);
+//            return 0;
+//        }
+    }
+   
     /**
      * FeatureTypeInfo constructor.
      *

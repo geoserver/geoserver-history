@@ -4,23 +4,33 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeFactory;
+import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.type.GeometricAttributeType;
+import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
-import org.geotools.util.ProgressListener;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
@@ -28,16 +38,9 @@ import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.vfny.geoserver.util.DataStoreUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
@@ -509,10 +512,27 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @throws IOException when an error occurs
      */
     public Envelope getBoundingBox() throws IOException {
+        // compute original bounding box
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
         FeatureSource realSource = dataStore.getFeatureSource(typeName);
-
-        return DataStoreUtils.getBoundingBoxEnvelope(realSource);
+        Envelope bbox = DataStoreUtils.getBoundingBoxEnvelope(realSource);
+        
+        // check if the original CRS is not the declared one
+        GeometryAttributeType defaultGeometry = realSource.getSchema().getDefaultGeometry();
+        CoordinateReferenceSystem declaredCRS = getSRS(SRS);
+        CoordinateReferenceSystem originalCRS = defaultGeometry.getCoordinateSystem();
+        try {
+            if(!forcedCRS && defaultGeometry != null && 
+                    !CRS.equalsIgnoreMetadata(originalCRS, declaredCRS)) {
+                MathTransform xform = CRS.findMathTransform(originalCRS, declaredCRS, true);
+                bbox = JTS.transform(bbox, null, xform, 10); 
+            }
+        } catch(Exception e) {
+            LOGGER.severe("Could not turn the original envelope in one into the declared CRS for type " + typeName);
+            LOGGER.severe("Original CRS is " + originalCRS);
+            LOGGER.severe("Declared CRS is " + declaredCRS);
+        }
+        return bbox;
     }
 
     /**
@@ -558,6 +578,28 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     public String getSRS() {
         return SRS + "";
+    }
+    
+    /**
+     * Returns the declared CRS, that is, the CRS specified in the feature type
+     * editor form
+     */
+    public CoordinateReferenceSystem getDeclaredCRS() {
+        return getSRS(SRS);
+    }
+    
+    public CoordinateReferenceSystem getNativeCRS() throws IOException {
+        if (getDataStoreInfo().getDataStore() == null) {
+            throw new IOException("featureType: " + getName()
+                + " does not have a properly configured " + "datastore");
+        }
+        
+        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
+        FeatureSource realSource = dataStore.getFeatureSource(typeName);
+        GeometryAttributeType dg = realSource.getSchema().getDefaultGeometry();
+        if(dg == null)
+            throw new IOException("Feature type: " + getName() + " does not have a default geometry");
+        return dg.getCoordinateSystem();
     }
 
     /**
