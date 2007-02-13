@@ -304,6 +304,6 @@
 	</build>
 
 	<properties>
-		<configId>release</configId>
+		<configId>minimal</configId>
 	</properties>
 </project>
