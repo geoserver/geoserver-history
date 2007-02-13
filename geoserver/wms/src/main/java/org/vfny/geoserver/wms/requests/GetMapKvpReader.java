@@ -1039,8 +1039,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                         && ((((UserLayer) sl)).getInlineFeatureDatastore() != null)) {
                     // SPECIAL CASE - we make the temporary version
                     ul = ((UserLayer) sl);
-                    currLayer.setFeature(new TemporaryFeatureTypeInfo(
-                            ul.getInlineFeatureDatastore(), ul.getInlineFeatureType()));
+                    currLayer.setFeature(new TemporaryFeatureTypeInfo(ul.getInlineFeatureDatastore()));
                 } else {
                     try {
                         currLayer.setFeature(GetMapKvpReader.findFeatureLayer(request, layerName));

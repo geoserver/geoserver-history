@@ -30,28 +30,26 @@ import java.util.List;
 
 public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
     private DataStore ds;
-    private FeatureType ft;
 
     /**
      *
      * @param ds
      * @param ft
      */
-    public TemporaryFeatureTypeInfo(DataStore ds, FeatureType ft) {
+    public TemporaryFeatureTypeInfo(DataStore ds/*, FeatureType ft*/) {
         super();
         this.ds = ds;
-        this.ft = ft;
     }
 
     public FeatureSource getFeatureSource() throws IOException {
-        return ds.getFeatureSource(ft.getTypeName());
+    	return ds.getFeatureSource(ds.getTypeNames()[0]);
     }
 
     public Filter getDefinitionQuery() {
         /**
              * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
              */
-        return Filter.ALL;
+    	return Filter.NONE;
     }
 
     Object toDTO() {
@@ -101,7 +99,11 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
         /**
              * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
              */
-        return "4326";
+    	try {
+            return ds.getSchema(ds.getTypeNames()[0]).getDefaultGeometry().getCoordinateSystem() + "";
+        } catch (IOException ioe) {
+            return "";
+        }
     }
 
     private synchronized FeatureTypeInfoDTO getGeneratedDTO()
@@ -156,7 +158,7 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
 
     private FeatureType getFeatureType(FeatureSource fs)
         throws IOException {
-        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
+    	return ds.getSchema(ds.getTypeNames()[0]);
     }
 
     public DataStoreInfo getDataStoreMetaData() {
