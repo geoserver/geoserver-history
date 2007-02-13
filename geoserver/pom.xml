@@ -10,6 +10,12 @@
 	<version>1.5.0-RC1</version>
 	<name>GeoServer</name>
 
+ <scm>
+  <connection>scm:svn:http://svn.codehaus.org/geoserver/branches/1.5.x/geoserver</connection>
+  <url>http://svn.codehaus.org/geoserver/branches/1.5.x/geoserver</url>
+ </scm>
+
+
 	<organization>
 		<name>The Open Planning Project</name>
 		<url>http://www.openplans.org</url>
