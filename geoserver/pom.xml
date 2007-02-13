@@ -583,6 +583,14 @@
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>jalopy-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <executions>
+      <execution>
+        <goals>
+          <goal>format</goal>
+        </goals>
+        <phase>install</phase>
+      </execution>
+    </executions>
     <configuration>
      <convention>geoserver/geoserverjalopy.xml</convention>
      <failOnError>false</failOnError>
