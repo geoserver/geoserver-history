@@ -69,7 +69,7 @@ public class GetKMLReflectKvpReader extends GetMapKvpReader {
      */
     public void parseMandatoryParameters(GetMapRequest request, boolean parseStylesLayers)
         throws WmsException {
-        Envelope bbox = parseBbox();
+        Envelope bbox = parseBbox(getValue("BBOX"));
         request.setBbox(bbox);
 
         //let styles and layers parsing for the end to give more trivial parameters 
