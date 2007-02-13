@@ -475,6 +475,14 @@
 					<convention>geoserver/geoserverjalopy.xml</convention>
 					<failOnError>false</failOnError>
 				</configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>format</goal>
+            </goals>
+            <phase>install</phase>
+           </execution>
+         </executions>
 				<dependencies>
 					<dependency>
 						<groupId>org.geoserver.maven</groupId>
