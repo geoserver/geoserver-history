@@ -235,7 +235,7 @@
           <execution>
 						<id>configPackage</id>
 						<configuration>
-			                <configDirectory>${configDirectory}</configDirectory>
+			        <configDirectory>${configDirectory}</configDirectory>
 							<configId>${configId}</configId>
 						</configuration>
             <phase>package</phase>
@@ -304,6 +304,7 @@
 	</build>
 
 	<properties>
+		<configDirectory>${basedir}</configDirectory>
 		<configId>minimal</configId>
 	</properties>
 </project>
