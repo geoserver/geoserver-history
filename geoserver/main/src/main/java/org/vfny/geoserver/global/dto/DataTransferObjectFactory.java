@@ -249,28 +249,28 @@ public class DataTransferObjectFactory {
     static {
         schemaBaseMap.put("gml:AbstractFeatureType", new String[] {  }); //"description","name","boundedBy"} );
                                                                          /*schemaBaseMap.put("AbstractFeatureCollectionBaseType",
-            new String[] {"description","name","boundedBy"} );
+        new String[] {"description","name","boundedBy"} );
         schemaBaseMap.put("GeometryPropertyType",
-            new String[] {"geometry"} );
+        new String[] {"geometry"} );
         schemaBaseMap.put("FeatureAssociationType",
-            new String[] {"feature"} );
+        new String[] {"feature"} );
         schemaBaseMap.put("BoundingShapeType",
-            new String[] {"box"} );
+        new String[] {"box"} );
         schemaBaseMap.put("PointPropertyType",
-            new String[] {"point"} );
+        new String[] {"point"} );
         schemaBaseMap.put("PolygonPropertyType",
-            new String[] {"polygon"} );
+        new String[] {"polygon"} );
         schemaBaseMap.put("LineStringPropertyType",
-            new String[] {"lineString"} );
+        new String[] {"lineString"} );
         schemaBaseMap.put("MultiPointPropertyType",
-            new String[] {"multiPoint"} );
+        new String[] {"multiPoint"} );
         schemaBaseMap.put("MultiLineStringPropertyType",
-            new String[] {"multiLineString"} );
+        new String[] {"multiLineString"} );
         schemaBaseMap.put("MultiPolygonPropertyType",
-            new String[] {"multiPolygonString"} );
+        new String[] {"multiPolygonString"} );
         schemaBaseMap.put("MultiGeometryPropertyType",
-            new String[] {"multiGeometry"} );
-            schemaBaseMap.put("NullType", new String[] {} );*/
+        new String[] {"multiGeometry"} );
+        schemaBaseMap.put("NullType", new String[] {} );*/
     }
 
     /**

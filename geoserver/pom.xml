@@ -183,6 +183,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
+				<artifactId>gt2-epsg-wkt</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
 				<artifactId>gt2-coverage</artifactId>
 				<version>${gt.version}</version>
 			</dependency>

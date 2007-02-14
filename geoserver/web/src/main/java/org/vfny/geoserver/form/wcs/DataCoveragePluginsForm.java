@@ -81,7 +81,7 @@ public class DataCoveragePluginsForm extends ActionForm {
     public List getFormatDescriptions() {
         return formatDescriptions;
     }
-    
+
     public void setFormatDescriptions(List desc) {
         formatDescriptions = desc;
     }
@@ -92,7 +92,7 @@ public class DataCoveragePluginsForm extends ActionForm {
     public List getFormatIDs() {
         return formatIDs;
     }
-    
+
     public void setFormatIDs(List ids) {
         formatIDs = ids;
     }
@@ -103,7 +103,7 @@ public class DataCoveragePluginsForm extends ActionForm {
     public List getFormats() {
         return formats;
     }
-    
+
     public void setFormats(List f) {
         formats = f;
     }

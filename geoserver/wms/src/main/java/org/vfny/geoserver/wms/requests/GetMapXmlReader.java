@@ -5,7 +5,6 @@
 package org.vfny.geoserver.wms.requests;
 
 import com.vividsolutions.jts.geom.Coordinate;
-
 import org.geotools.data.DefaultFeatureResults;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
@@ -19,9 +18,8 @@ import org.geotools.feature.FeatureTypeBuilder;
 import org.geotools.feature.FeatureTypeFactory;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.type.GeometricAttributeType;
-import org.geotools.filter.Filter;
-
 import org.geotools.filter.ExpressionDOMParser;
+import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.StyleFactory;
@@ -329,29 +327,37 @@ public class GetMapXmlReader extends XmlRequestReader {
                 //SPECIAL CASE - we make the temporary version
                 UserLayer ul = ((UserLayer) sl);
                 currLayer.setFeature(new TemporaryFeatureTypeInfo(ul.getInlineFeatureDatastore()));
-                
+
                 //what if they didn't put an "srsName" on their geometry in their inlinefeature?
                 //I guess we should assume they mean their geometry to exist in the output SRS of the
                 //request they're making.
                 if (ul.getInlineFeatureType().getDefaultGeometry().getCoordinateSystem() == null) {
-                    LOGGER.warning("No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
+                    LOGGER.warning(
+                        "No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
+
                     FeatureType currFt = ul.getInlineFeatureType();
                     FeatureTypeBuilder build = FeatureTypeFactory.newInstance(currFt.getTypeName());
                     build.setNamespace(currFt.getNamespace());
+
                     int numAttrs = currFt.getAttributeCount();
+
                     for (int j = 0; j < numAttrs; j++) {
                         AttributeType currAtt = currFt.getAttributeType(j);
+
                         if (currAtt instanceof GeometryAttributeType) {
                             LOGGER.fine("fixed CRS on geometry attribute " + currAtt.getName());
-                            build.addType(new GeometricAttributeType((GeometricAttributeType)currAtt, getMapRequest.getCrs()));
-                        } else { 
+                            build.addType(new GeometricAttributeType(
+                                    (GeometricAttributeType) currAtt, getMapRequest.getCrs()));
+                        } else {
                             build.addType(currAtt);
                         }
                     }
-                    
+
                     Query q = new DefaultQuery(build.getName(), Filter.NONE);
-                    FeatureReader ilReader = ul.getInlineFeatureDatastore().getFeatureReader(q, Transaction.AUTO_COMMIT);
-                    MemoryDataStore reTypedDS = new MemoryDataStore(new ReTypeFeatureReader(ilReader,build.getFeatureType()));
+                    FeatureReader ilReader = ul.getInlineFeatureDatastore()
+                                               .getFeatureReader(q, Transaction.AUTO_COMMIT);
+                    MemoryDataStore reTypedDS = new MemoryDataStore(new ReTypeFeatureReader(
+                                ilReader, build.getFeatureType()));
                     currLayer.setFeature(new TemporaryFeatureTypeInfo(reTypedDS));
                 }
             } else {

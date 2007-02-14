@@ -4,15 +4,12 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.BBoxExpression;
@@ -25,13 +22,14 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.servlets.WFService;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 public abstract class WfsKvpRequestReader extends KvpRequestReader {
@@ -60,26 +58,26 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
     * @return A list filters.
     *
     */
-    protected List readFilters(List typeNames, String fid, String ogcFilter, String cqlFilter, String bbox)
-        throws WfsException {
+    protected List readFilters(List typeNames, String fid, String ogcFilter, String cqlFilter,
+        String bbox) throws WfsException {
         // handles feature id(es) case
-        if ((fid != null) && (ogcFilter == null) && (bbox == null) & (cqlFilter == null)) {
+        if ((fid != null) && (ogcFilter == null) && ((bbox == null) & (cqlFilter == null))) {
             return readFidFilters(fid);
 
             // handles filter(s) case
-        } else if ((ogcFilter != null) && (fid == null) && (bbox == null) & (cqlFilter == null)) {
+        } else if ((ogcFilter != null) && (fid == null) && ((bbox == null) & (cqlFilter == null))) {
             return readOGCFilter(ogcFilter);
-            
+
             // handles cql filter(s) case
-        } else if ((cqlFilter != null) && (fid == null) && (ogcFilter == null) & (bbox == null)) {
+        } else if ((cqlFilter != null) && (fid == null) && ((ogcFilter == null) & (bbox == null))) {
             return readCQLFilter(cqlFilter);
 
             // handles bounding box(s) case
-        } else if ((bbox != null) && (fid == null) && (ogcFilter == null) & (cqlFilter == null)) {
+        } else if ((bbox != null) && (fid == null) && ((ogcFilter == null) & (cqlFilter == null))) {
             return parseBBoxFilter(typeNames, ogcFilter, bbox);
 
             // handles unconstrained case
-        } else if ((bbox == null) && (fid == null) && (ogcFilter == null)& (cqlFilter == null)) {
+        } else if ((bbox == null) && (fid == null) && ((ogcFilter == null) & (cqlFilter == null))) {
             return new ArrayList();
 
             // handles error when more than one filter specified
@@ -89,30 +87,34 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
         }
     }
 
-    protected List parseBBoxFilter(List typeNames, String filter, String bbox) throws WfsException {
+    protected List parseBBoxFilter(List typeNames, String filter, String bbox)
+        throws WfsException {
         List filters = new ArrayList();
         Envelope envelope;
         LOGGER.finest("bbox filter: " + bbox);
-        
+
         try {
             envelope = parseBbox(bbox);
+
             BBoxExpression bboxExpression = factory.createBBoxExpression(envelope);
+
             // create a filter for each feature type, querying against the default geometry
             for (Iterator it = typeNames.iterator(); it.hasNext();) {
                 String typeName = (String) it.next();
                 GeometryFilter finalFilter = factory.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
-                if(service.getCatalog() != null) {
+
+                if (service.getCatalog() != null) {
                     FeatureTypeInfo info = service.getCatalog().getFeatureTypeInfo(typeName);
                     GeometryAttributeType geomAtt = info.getFeatureType().getDefaultGeometry();
                     finalFilter.addLeftGeometry(factory.createAttributeExpression(geomAtt.getName()));
                 }
-                
+
                 finalFilter.addRightGeometry(bboxExpression);
                 filters.add(finalFilter);
             }
-    
+
             return filters;
-        } catch(ServiceException e) {
+        } catch (ServiceException e) {
             throw new WfsException(e);
         } catch (Exception e) {
             throw new WfsException("Filter creation problem: " + filter, e);
@@ -123,18 +125,17 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
         // remap exception to the proper type for this service
         try {
             return super.readOGCFilter(filter);
-        } catch(ServiceException e) {
+        } catch (ServiceException e) {
             throw new WfsException(e);
         }
     }
-    
+
     protected List readCQLFilter(String filter) throws WfsException {
         // remap exception to the proper type for this service
         try {
             return super.readCQLFilter(filter);
-        } catch(ServiceException e) {
+        } catch (ServiceException e) {
             throw new WfsException(e);
         }
     }
-    
 }

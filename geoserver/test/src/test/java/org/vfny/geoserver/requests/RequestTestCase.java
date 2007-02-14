@@ -38,7 +38,7 @@ public abstract class RequestTestCase extends TestCase {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /** Unit test data directory */
-    private static final String DATA_DIRECTORY = //System.getProperty("user.dir") + "/test/test-data/requests/";
+    private static final String DATA_DIRECTORY =  //System.getProperty("user.dir") + "/test/test-data/requests/";
         AbstractCiteDataTest.class.getResource("test-data/requests").getFile();
 
     /** Holds mappings between HTTP and ASCII encodings */

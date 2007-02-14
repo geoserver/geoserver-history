@@ -915,8 +915,7 @@ public class KMLWriter extends OutputStreamWriter {
 
         com.vividsolutions.jts.geom.Envelope envelope = this.mapContext.getRequest().getBbox();
         write(new StringBuffer("<GroundOverlay>").append("<name>").append(feature.getID())
-                                                 .append("</name>")./*append("<drawOrder>").append(order).append("</drawOrder>").*/
-        append("<Icon>").toString());
+                                                 .append("</name>").append("<Icon>").toString());
 
         final double[] BBOX = new double[] {
                 envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY()

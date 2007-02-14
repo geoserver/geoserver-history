@@ -91,7 +91,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
                 fr = (FeatureResults) results.get(i);
                 reader = fr.reader();
 
-                if (reader.hasNext() && (featuresPrinted < maxfeatures))// if this layer has a hit and we're going to print it
+                if (reader.hasNext() && (featuresPrinted < maxfeatures)) // if this layer has a hit and we're going to print it
                  {
                     writer.println("Results for FeatureType '"
                         + reader.getFeatureType().getTypeName() + "':");

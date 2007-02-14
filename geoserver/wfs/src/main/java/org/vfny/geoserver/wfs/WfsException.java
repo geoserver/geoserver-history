@@ -35,7 +35,7 @@ public class WfsException extends ServiceException {
     public WfsException(String message) {
         super(message);
     }
-    
+
     public WfsException(ServiceException e) {
         super(e);
     }

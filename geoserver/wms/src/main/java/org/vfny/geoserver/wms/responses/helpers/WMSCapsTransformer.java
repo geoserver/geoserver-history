@@ -826,7 +826,7 @@ public class WMSCapsTransformer extends TransformerBase {
             comment(desc);
 
             String authority = coverage.getSrsName();
-            
+
             /*CoordinateReferenceSystem crs = coverage.getCrs();
             if (crs != null && !crs.getIdentifiers().isEmpty()) {
                     Identifier[] idents = (Identifier[]) crs.getIdentifiers()

@@ -565,6 +565,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
         // Setting up Cache Capacity
         jaiCache = (SunTileCache) jaiDef.getTileCache();
+
         long jaiMemory = (long) (memCapacity * Runtime.getRuntime().maxMemory());
         jaiCache.setMemoryCapacity(jaiMemory);
 

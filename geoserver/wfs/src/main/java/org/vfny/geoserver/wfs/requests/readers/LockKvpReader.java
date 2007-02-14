@@ -86,7 +86,8 @@ public class LockKvpReader extends WfsKvpRequestReader {
         List typeList = readFlat(getValue("TYPENAME"), INNER_DELIMETER);
         LOGGER.finer("type list size: " + typeList.size());
 
-        List filterList = readFilters(typeList, getValue("FEATUREID"), getValue("FILTER"), getValue("CQL_FILTER"), getValue("BBOX"));
+        List filterList = readFilters(typeList, getValue("FEATUREID"), getValue("FILTER"),
+                getValue("CQL_FILTER"), getValue("BBOX"));
 
         if (typeList.size() == 0) {
             typeList = getTypesFromFids(getValue("FEATUREID"));

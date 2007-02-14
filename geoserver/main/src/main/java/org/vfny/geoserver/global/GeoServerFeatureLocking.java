@@ -13,7 +13,6 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
 import java.io.IOException;
 
 
@@ -44,7 +43,8 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
      * @param definitionQuery DOCUMENT ME!
      * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
      */
-    GeoServerFeatureLocking(FeatureLocking locking, FeatureType schema, Filter definitionQuery, CoordinateReferenceSystem forcedCRS) {
+    GeoServerFeatureLocking(FeatureLocking locking, FeatureType schema, Filter definitionQuery,
+        CoordinateReferenceSystem forcedCRS) {
         super(locking, schema, definitionQuery, forcedCRS);
     }
 

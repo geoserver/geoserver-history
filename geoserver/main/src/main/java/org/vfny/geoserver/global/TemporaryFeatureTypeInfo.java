@@ -36,20 +36,20 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
      * @param ds
      * @param ft
      */
-    public TemporaryFeatureTypeInfo(DataStore ds/*, FeatureType ft*/) {
+    public TemporaryFeatureTypeInfo(DataStore ds /*, FeatureType ft*/) {
         super();
         this.ds = ds;
     }
 
     public FeatureSource getFeatureSource() throws IOException {
-    	return ds.getFeatureSource(ds.getTypeNames()[0]);
+        return ds.getFeatureSource(ds.getTypeNames()[0]);
     }
 
     public Filter getDefinitionQuery() {
         /**
              * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
              */
-    	return Filter.NONE;
+        return Filter.NONE;
     }
 
     Object toDTO() {
@@ -99,8 +99,9 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
         /**
              * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
              */
-    	try {
-            return ds.getSchema(ds.getTypeNames()[0]).getDefaultGeometry().getCoordinateSystem() + "";
+        try {
+            return ds.getSchema(ds.getTypeNames()[0]).getDefaultGeometry().getCoordinateSystem()
+            + "";
         } catch (IOException ioe) {
             return "";
         }
@@ -158,7 +159,7 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
 
     private FeatureType getFeatureType(FeatureSource fs)
         throws IOException {
-    	return ds.getSchema(ds.getTypeNames()[0]);
+        return ds.getSchema(ds.getTypeNames()[0]);
     }
 
     public DataStoreInfo getDataStoreMetaData() {

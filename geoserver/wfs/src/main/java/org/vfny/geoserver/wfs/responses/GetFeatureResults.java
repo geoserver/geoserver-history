@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  */
 public class GetFeatureResults {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
-    
+
     /**
      * the GetFeature or GetFeatureWithLock request who's processing has
      * originated this results
@@ -175,14 +175,14 @@ public class GetFeatureResults {
             throw new IllegalArgumentException("The passed type info and results"
                 + " do not seems to belong to the same type");
         }
-        
-        if(meta.getNativeCRS() != null && 
-                !CRS.equalsIgnoreMetadata(meta.getNativeCRS(), meta.getDeclaredCRS())) {
+
+        if ((meta.getNativeCRS() != null)
+                && !CRS.equalsIgnoreMetadata(meta.getNativeCRS(), meta.getDeclaredCRS())) {
             try {
-                    features = new ReprojectFeatureResults(features, meta.getDeclaredCRS());
-            } catch(Exception e) {
-                LOGGER.severe("Could not map original CRS to external CRS, " +
-                        "serving data in original CRS: " + e.getMessage());
+                features = new ReprojectFeatureResults(features, meta.getDeclaredCRS());
+            } catch (Exception e) {
+                LOGGER.severe("Could not map original CRS to external CRS, "
+                    + "serving data in original CRS: " + e.getMessage());
                 LOGGER.log(Level.FINE, "Detailed mapping error: ", e);
             }
         }

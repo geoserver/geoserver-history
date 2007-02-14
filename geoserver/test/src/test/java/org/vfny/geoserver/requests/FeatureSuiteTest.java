@@ -421,9 +421,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test12() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
-            + //           "TYPENAME=rail&" +
-            "FEATUREID=rail.123,rail.456,rail.789";
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&" //           "TYPENAME=rail&" +
+            + "FEATUREID=rail.123,rail.456,rail.789";
 
         // make base comparison objects        
         FidFilter filter1 = factory.createFidFilter("rail.123");
@@ -450,9 +449,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test13() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
-            + //"TYPENAME=rail1,rail2,rail3&" +
-            "PROPERTYNAME=(loc1,id1)(loc2,id2)(loc3,id3)&"
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&" //"TYPENAME=rail1,rail2,rail3&" +
+            + "PROPERTYNAME=(loc1,id1)(loc2,id2)(loc3,id3)&"
             + "FEATUREID=rail1.123,rail2.456,rail3.789";
 
         // make base comparison objects        
@@ -567,9 +565,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test17() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
-            + //"TYPENAME=rail&" +
-            "FEATUREID=rail.123,rail.456";
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&" //"TYPENAME=rail&" +
+            + "FEATUREID=rail.123,rail.456";
 
         // make base comparison objects        
         FeatureRequest baseRequest = new FeatureRequest(service);
@@ -591,9 +588,8 @@ public class FeatureSuiteTest extends RequestTestCase {
     }
 
     public void test18() throws Exception {
-        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&"
-            + //     "TYPENAME=rail1,rail2&" +
-            "PROPERTYNAME=(loc1,id1)(loc2)&" + "FEATUREID=rail1.123,rail2.456";
+        String testRequest = "VERSION=1.0.0&" + "SERVICE=WFS&" + "REQUEST=GETFEATURE&" //     "TYPENAME=rail1,rail2&" +
+            + "PROPERTYNAME=(loc1,id1)(loc2)&" + "FEATUREID=rail1.123,rail2.456";
 
         // make base comparison objects        
         FeatureRequest baseRequest = new FeatureRequest(service);

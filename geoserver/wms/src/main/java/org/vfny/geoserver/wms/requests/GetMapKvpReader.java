@@ -4,29 +4,7 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
@@ -54,8 +32,27 @@ import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
 import org.xml.sax.InputSource;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -407,13 +404,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             parseLayersAndStyles(request);
         }
     }
-    
-    
+
     protected Envelope parseBbox(String bboxParam) throws WmsException {
         // overridden to throw the right exception for this context
         try {
             return super.parseBbox(bboxParam);
-        } catch(ServiceException e) {
+        } catch (ServiceException e) {
             throw new WmsException(e);
         }
     }
@@ -819,7 +815,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         String rawFilter = getValue("FILTER");
         String rawCqlFilter = getValue("CQL_FILTER");
         String rawIdFilter = getValue("FEATUREID");
-        
+
         // in case of a mixed request, get with sld in post body, layers
         // are not parsed, so we can't parse filters neither...
         if (request.getLayers() == null) {
@@ -834,33 +830,43 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         }
 
         List filters = null;
+
         // if no filter, no need to proceed
         if ((rawFilter != null) && !rawFilter.equals("")) {
             try {
                 filters = readOGCFilter(rawFilter);
-            } catch(ServiceException e) {
+            } catch (ServiceException e) {
                 throw new WmsException(e);
             }
         }
-        if(rawIdFilter != null && !rawIdFilter.equals("")){
-            if(filters != null)
+
+        if ((rawIdFilter != null) && !rawIdFilter.equals("")) {
+            if (filters != null) {
                 throw new WmsException("GetMap KVP request contained "
                     + "conflicting filters.  Filter: " + rawFilter + ", fid: " + rawFilter);
+            }
+
             filters = readFidFilters(rawFilter);
         }
-        if(rawCqlFilter != null && !rawCqlFilter.equals("")) {
-            if(filters != null)
+
+        if ((rawCqlFilter != null) && !rawCqlFilter.equals("")) {
+            if (filters != null) {
                 throw new WmsException("GetMap KVP request contained "
-                    + "conflicting filters.  Filter: " + rawFilter + ", fid: " + rawFilter + ", cql: " + rawCqlFilter);
+                    + "conflicting filters.  Filter: " + rawFilter + ", fid: " + rawFilter
+                    + ", cql: " + rawCqlFilter);
+            }
+
             try {
                 filters = readCQLFilter(rawCqlFilter);
-            } catch(ServiceException e) {
+            } catch (ServiceException e) {
                 throw new WmsException(e);
-            }  
+            }
         }
-        if(filters == null)
+
+        if (filters == null) {
             return;
-        
+        }
+
         if (numLayers != filters.size()) {
             // as in wfs getFeatures, perform lenient parsing, if just one filter, it gets
             // applied to all layers
@@ -1050,7 +1056,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                         && ((((UserLayer) sl)).getInlineFeatureDatastore() != null)) {
                     // SPECIAL CASE - we make the temporary version
                     ul = ((UserLayer) sl);
-                    currLayer.setFeature(new TemporaryFeatureTypeInfo(ul.getInlineFeatureDatastore()));
+                    currLayer.setFeature(new TemporaryFeatureTypeInfo(
+                            ul.getInlineFeatureDatastore()));
                 } else {
                     try {
                         currLayer.setFeature(GetMapKvpReader.findFeatureLayer(request, layerName));

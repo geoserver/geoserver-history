@@ -4,11 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
@@ -27,8 +23,10 @@ import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.LogicFilter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -80,7 +78,8 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @param definitionQuery Filter used to limit results
      * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
      */
-    GeoServerFeatureSource(FeatureSource source, FeatureType schema, Filter definitionQuery, CoordinateReferenceSystem forcedCRS) {
+    GeoServerFeatureSource(FeatureSource source, FeatureType schema, Filter definitionQuery,
+        CoordinateReferenceSystem forcedCRS) {
         this.source = source;
         this.schema = schema;
         this.definitionQuery = definitionQuery;
@@ -113,7 +112,8 @@ public class GeoServerFeatureSource implements FeatureSource {
             return new GeoServerFeatureLocking((FeatureLocking) featureSource, schema,
                 definitionQuery, forcedCRS);
         } else if (featureSource instanceof FeatureStore) {
-            return new GeoServerFeatureStore((FeatureStore) featureSource, schema, definitionQuery, forcedCRS);
+            return new GeoServerFeatureStore((FeatureStore) featureSource, schema, definitionQuery,
+                forcedCRS);
         }
 
         return new GeoServerFeatureSource(featureSource, schema, definitionQuery, forcedCRS);
@@ -312,22 +312,22 @@ public class GeoServerFeatureSource implements FeatureSource {
 
         try {
             FeatureCollection fc = source.getFeatures(newQuery);
-            if(forcedCRS != null)
+
+            if (forcedCRS != null) {
                 return new ForceCoordinateSystemFeatureResults(fc, forcedCRS);
-            else
+            } else {
                 return fc;
-        } catch(SchemaException e) {
+            }
+        } catch (SchemaException e) {
             throw new DataSourceException(e);
         }
     }
 
-    
     public FeatureCollection getFeatures(Filter filter)
         throws IOException {
         return getFeatures(new DefaultQuery(schema.getTypeName(), filter));
     }
 
-    
     public FeatureCollection getFeatures() throws IOException {
         return getFeatures(Query.ALL);
     }

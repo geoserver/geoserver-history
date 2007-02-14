@@ -61,7 +61,7 @@ public class WmsException extends ServiceException {
     public WmsException(String message) {
         super(message);
     }
-    
+
     public WmsException(ServiceException e) {
         super(e);
     }

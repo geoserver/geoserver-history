@@ -37,7 +37,7 @@ public class Config implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext context)
         throws BeansException {
         this.context = (WebApplicationContext) context;
-        
+
         // if the server admin did not set it up otherwise, force X/Y axis ordering
         // This one is a good place because we need to initialize this property
         // before any other opeation can trigger the initialization of the CRS subsystem
