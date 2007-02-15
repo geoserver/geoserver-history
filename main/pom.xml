@@ -83,6 +83,14 @@
 			<artifactId>gt2-validation</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-epsg-hsql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-epsg-extension</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.mockrunner</groupId>
 			<artifactId>mockrunner</artifactId>
 			<scope>test</scope>
