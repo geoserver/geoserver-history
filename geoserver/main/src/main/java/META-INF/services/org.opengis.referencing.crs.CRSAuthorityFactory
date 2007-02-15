@@ -1,1 +1,1 @@
-org.vfny.geoserver.crs.CustomCRSAuthorityFactory
+org.vfny.geoserver.crs.FactoryUsingWKT
