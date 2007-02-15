@@ -4,9 +4,6 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.IOException;
-import java.util.Set;
-
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
@@ -15,17 +12,19 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
+import java.io.IOException;
+import java.util.Set;
 
 
 /**
  * GeoServer wrapper for backend Geotools2 DataStore.
- * 
+ *
  * <p>
  * Support FeatureSource decorator for FeatureTypeInfo that takes care of
  * mapping the FeatureTypeInfo's FeatureSource with the schema and definition
  * query configured for it.
  * </p>
- * 
+ *
  * <p>
  * Because GeoServer requires that attributes always be returned in the same
  * order we need a way to smoothly inforce this. Could we use this class to do
@@ -35,8 +34,7 @@ import org.geotools.filter.Filter;
  * @author Gabriel Rold?n
  * @version $Id: GeoServerFeatureStore.java,v 1.5 2004/02/09 23:29:41 dmzwiers Exp $
  */
-public class GeoServerFeatureStore extends GeoServerFeatureSource
-    implements FeatureStore {
+public class GeoServerFeatureStore extends GeoServerFeatureSource implements FeatureStore {
     /**
      * Creates a new DEFQueryFeatureLocking object.
      *
@@ -44,8 +42,7 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource
      * @param schema FeatureType served by source
      * @param definitionQuery Filter that constrains source
      */
-    GeoServerFeatureStore(FeatureStore store, FeatureType schema,
-        Filter definitionQuery) {
+    GeoServerFeatureStore(FeatureStore store, FeatureType schema, Filter definitionQuery) {
         super(store, schema, definitionQuery);
     }
 
@@ -57,22 +54,20 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource
     FeatureStore store() {
         return (FeatureStore) source;
     }
-    
+
     /**
      * see interface for details.
      * @param fc
      * @return
      * @throws IOException
      */
-    public Set addFeatures(FeatureCollection fc) throws IOException 
-	{
+    public Set addFeatures(FeatureCollection fc) throws IOException {
         return store().addFeatures(fc.reader());
     }
-    
 
     /**
      * addFeatures purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -86,7 +81,7 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource
     public Set addFeatures(FeatureReader reader) throws IOException {
         return store().addFeatures(reader);
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -112,8 +107,8 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource
      * @task REVISIT: should we check that non exposed attributes are requiered
      *       in <code>type</code>?
      */
-    public void modifyFeatures(AttributeType[] type, Object[] value,
-        Filter filter) throws IOException {
+    public void modifyFeatures(AttributeType[] type, Object[] value, Filter filter)
+        throws IOException {
         filter = makeDefinitionFilter(filter);
 
         store().modifyFeatures(type, value, filter);

@@ -62,6 +62,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
+
 /**
  * Reader for UCS-2 and UCS-4 encodings.
  * (more precisely ISO-10646-UCS-(2|4) encodings).
@@ -78,7 +79,6 @@ import java.io.Reader;
  * @version $Id$
  */
 public class UCSReader extends Reader {
-
     //
     // Constants
     //
@@ -96,7 +96,6 @@ public class UCSReader extends Reader {
      * operation when working with UCS-4 data (never used for UCS-2).
      */
     public static final int CHAR_BUFFER_INITIAL_SIZE = 1024;
-
     public static final short UCS2LE = 1;
     public static final short UCS2BE = 2;
     public static final short UCS4LE = 4;
@@ -116,7 +115,6 @@ public class UCSReader extends Reader {
      * The maximum value of a Unicode code point.
      */
     public static final int MAX_CODE_POINT = 0x10ffff;
-
 
     //
     // Data
@@ -220,38 +218,45 @@ public class UCSReader extends Reader {
      * @exception  IOException  when I/O error occurs
      */
     public int read() throws IOException {
-
-       // If we got something in the char buffer, let's use it.
+        // If we got something in the char buffer, let's use it.
         if (0 != fCharCount) {
             fCharCount--;
+
             return ((int) fCharBuf[fCharCount]) & 0xFFFF;
         }
 
         int b0 = fInputStream.read() & 0xff; // 1st byte
+
         if (b0 == 0xff) {
             return -1;
         }
 
         int b1 = fInputStream.read() & 0xff; // 2nd byte
+
         if (b1 == 0xff) {
             return -1;
         }
 
-        if (fEncoding >=4) { // UCS-4
+        if (fEncoding >= 4) { // UCS-4
 
             int b2 = fInputStream.read() & 0xff; // 3rd byte
-            if (b2 == 0xff)
+
+            if (b2 == 0xff) {
                 return -1;
+            }
 
             int b3 = fInputStream.read() & 0xff; // 4th byte
-            if (b3 == 0xff)
+
+            if (b3 == 0xff) {
                 return -1;
+            }
 
             int codepoint;
+
             if (UCS4BE == fEncoding) {
-                codepoint = ((b0<<24) + (b1<<16) + (b2<<8) + b3);
+                codepoint = ((b0 << 24) + (b1 << 16) + (b2 << 8) + b3);
             } else {
-                codepoint = ((b3<<24) + (b2<<16) + (b1<<8) + b0);
+                codepoint = ((b3 << 24) + (b2 << 16) + (b1 << 8) + b0);
             }
 
             /*
@@ -262,25 +267,24 @@ public class UCSReader extends Reader {
             if (!isSupplementaryCodePoint(codepoint)) {
                 return codepoint;
             } else {
-
                 int cp1 = (codepoint - 0x10000) & 0xFFFFF;
-                int highSurrogate = 0xD800 + (cp1>>>10); // ">>" should work too
-               // Saving low surrogate for future use
+                int highSurrogate = 0xD800 + (cp1 >>> 10); // ">>" should work too
+                                                           // Saving low surrogate for future use
+
                 fCharBuf[fCharCount] = (char) (0xDC00 + (cp1 & 0x3FF));
-               // low surrogate code unit will be returned during next call
+
+                // low surrogate code unit will be returned during next call
                 return highSurrogate;
             }
-
         } else { // UCS-2
+
             if (fEncoding == UCS2BE) {
-                return (b0<<8) + b1;
+                return (b0 << 8) + b1;
             } else {
-                return (b1<<8) + b0;
+                return (b1 << 8) + b0;
             }
         }
-
     } // read():int
-
 
     /**
      * Read characters into a portion of an array.  This method will block
@@ -306,43 +310,42 @@ public class UCSReader extends Reader {
      *
      * @exception  IOException  If an I/O error occurs
      */
-    public int read(char ch[], int offset, int length) throws IOException {
-
-       /*
-        * The behavior of this method is _intended_ to be like this:
-        *
-        * 1. In case if we are working with UCS-2 data, `readUCS2` method
-        *    handles the stuff.
-        *
-        * 2. For UCS-4 data method first looks if there is some data stored in
-        *    the internal character buffer (fCharBuf). Usually this data is
-        *    left from previous reading operation if there were any
-        *    supplementary Unicode (ISO-10646) characters.
-        *
-        * 3. If buffer holds something, these chars are put directly in passed
-        *    `ch` buffer (maximum `length` of them).
-        *
-        * 4. If char buffer ends and more data can be put into `ch`,
-        *    then they are read from the underlying byte stream.
-        *
-        * 5. Method tries to read maximum possible number of bytes from
-        *    InputStream, as if all read code points were from BMP (Basic
-        *    Multilingual Plane).
-        *
-        * 6. Read UCS-4 characters are encoded to UTF-16 (which is native Java
-        *     encoding) ant put into `ch` array.
-        *
-        * 7. It is possible that we end up with more chars than we can
-        *    currently put into passed buffer due to the fact that
-        *    supplementary Unicode characters are encoded into _two_ Java
-        *    char's each. In this situation excess chars are stored in the
-        *    internal char buffer (in reverse order, i.e. those read last
-        *    are at the beginning of the `fCharBuf`). They are usually picked
-        *    up during next call(s) to one of the `read` methods.
-        */
-
-        if ((0 > offset) || (offset > ch.length) || (0 > length) ||
-            ((offset + length) > ch.length) || (0 > (offset + length))) {
+    public int read(char[] ch, int offset, int length)
+        throws IOException {
+        /*
+         * The behavior of this method is _intended_ to be like this:
+         *
+         * 1. In case if we are working with UCS-2 data, `readUCS2` method
+         *    handles the stuff.
+         *
+         * 2. For UCS-4 data method first looks if there is some data stored in
+         *    the internal character buffer (fCharBuf). Usually this data is
+         *    left from previous reading operation if there were any
+         *    supplementary Unicode (ISO-10646) characters.
+         *
+         * 3. If buffer holds something, these chars are put directly in passed
+         *    `ch` buffer (maximum `length` of them).
+         *
+         * 4. If char buffer ends and more data can be put into `ch`,
+         *    then they are read from the underlying byte stream.
+         *
+         * 5. Method tries to read maximum possible number of bytes from
+         *    InputStream, as if all read code points were from BMP (Basic
+         *    Multilingual Plane).
+         *
+         * 6. Read UCS-4 characters are encoded to UTF-16 (which is native Java
+         *     encoding) ant put into `ch` array.
+         *
+         * 7. It is possible that we end up with more chars than we can
+         *    currently put into passed buffer due to the fact that
+         *    supplementary Unicode characters are encoded into _two_ Java
+         *    char's each. In this situation excess chars are stored in the
+         *    internal char buffer (in reverse order, i.e. those read last
+         *    are at the beginning of the `fCharBuf`). They are usually picked
+         *    up during next call(s) to one of the `read` methods.
+         */
+        if ((0 > offset) || (offset > ch.length) || (0 > length) || ((offset + length) > ch.length)
+                || (0 > (offset + length))) {
             throw new IndexOutOfBoundsException();
         } else if (0 == length) {
             return 0;
@@ -357,20 +360,20 @@ public class UCSReader extends Reader {
             return readUCS2(ch, offset, length);
         }
 
-       // First using chars from internal char buffer (if any)
+        // First using chars from internal char buffer (if any)
         int charsRead = 0;
+
         while (charsRead <= length) {
             if (0 != fCharCount) {
-                ch[offset+charsRead] = fCharBuf[--fCharCount];
+                ch[offset + charsRead] = fCharBuf[--fCharCount];
                 charsRead++;
             } else {
                 break;
             }
         }
 
-       // Reading remaining chars from InputStream.
+        // Reading remaining chars from InputStream.
         if (0 != (length - charsRead)) {
-
             /*
              * Each output char (two for supplementary characters) will require
              * us to read 4 input bytes. But as we cannot predict how many
@@ -378,6 +381,7 @@ public class UCSReader extends Reader {
              * maximum possible number.
              */
             int byteLength = (length - charsRead) << 2;
+
             if (byteLength > fBuffer.length) {
                 byteLength = fBuffer.length;
             }
@@ -385,34 +389,35 @@ public class UCSReader extends Reader {
             int count = fInputStream.read(fBuffer, 0, byteLength);
 
             if (-1 == count) {
-
-                return (0 == charsRead) ? -1 : charsRead;
-
+                return (0 == charsRead) ? (-1) : charsRead;
             } else {
-
                 // try and make count be a multiple of the number of bytes we're
                 // looking for (simply reading 1 to 3 bytes from input stream to
                 // ensure the last code point is complete)
                 // this looks ugly, but it avoids an if at any rate...
-                int numToRead = (4 - (count & 3) & 3);
+                int numToRead = ((4 - (count & 3)) & 3);
 
-                for (int i=0; i<numToRead; i++) {
+                for (int i = 0; i < numToRead; i++) {
                     int charRead = fInputStream.read();
+
                     if (charRead == -1) {
                         // end of input; something likely went wrong! Pad buffer
                         // with zeros.
-                        for (int j = i; j<numToRead; j++)
-                            fBuffer[count+j] = 0;
+                        for (int j = i; j < numToRead; j++)
+                            fBuffer[count + j] = 0;
+
                         break;
                     } else {
-                        fBuffer[count+i] = (byte)charRead;
+                        fBuffer[count + i] = (byte) charRead;
                     }
                 }
+
                 count += numToRead;
 
                 // now count is a multiple of the right number of bytes
                 int numChars = count >> 2;
                 int curPos = 0;
+
                 /*
                  * `i` is index of currently processed char from InputStream.
                  * `charsCount` also counts number of chars that were (possibly)
@@ -420,59 +425,59 @@ public class UCSReader extends Reader {
                  */
                 int charsCount = charsRead;
                 int i;
-                for (i=0; (i < numChars) && (length >= charsCount); i++) {
 
+                for (i = 0; (i < numChars) && (length >= charsCount); i++) {
                     int b0 = fBuffer[curPos++] & 0xff;
                     int b1 = fBuffer[curPos++] & 0xff;
                     int b2 = fBuffer[curPos++] & 0xff;
                     int b3 = fBuffer[curPos++] & 0xff;
 
                     int codepoint;
+
                     if (UCS4BE == fEncoding) {
-                        codepoint = ((b0<<24) + (b1<<16) + (b2<<8) + b3);
+                        codepoint = ((b0 << 24) + (b1 << 16) + (b2 << 8) + b3);
                     } else {
-                        codepoint = ((b3<<24) + (b2<<16) + (b1<<8) + b0);
+                        codepoint = ((b3 << 24) + (b2 << 16) + (b1 << 8) + b0);
                     }
 
-                   // Again, validity of this codepoint is never checked, this
-                   // can yield problems sometimes.
+                    // Again, validity of this codepoint is never checked, this
+                    // can yield problems sometimes.
                     if (!isSupplementaryCodePoint(codepoint)) {
-                        ch[offset+charsCount] = (char) codepoint;
+                        ch[offset + charsCount] = (char) codepoint;
                         charsCount++;
                     } else {
-
-                       // Checking if we can put another 2 chars in buffer.
+                        // Checking if we can put another 2 chars in buffer.
                         if (2 <= (length - charsCount)) {
                             int cp1 = (codepoint - 0x10000) & 0xFFFFF;
-                            ch[offset+charsCount]   = (char) (0xD800 + (cp1>>>10));
-                            ch[offset+charsCount+1] = (char) (0xDC00 + (cp1 & 0x3FF));
+                            ch[offset + charsCount] = (char) (0xD800 + (cp1 >>> 10));
+                            ch[offset + charsCount + 1] = (char) (0xDC00 + (cp1 & 0x3FF));
                             charsCount += 2;
                         } else {
                             break; // END for
                         }
                     }
-
                 } // END for
 
-               // Storing data, that possibly remain in `fBuffer` into internal
-               // char buffer for future use :)
-                curPos = (numChars<<2) - 1;
-                for (int k = numChars; k > i; k--) {
+                // Storing data, that possibly remain in `fBuffer` into internal
+                // char buffer for future use :)
+                curPos = (numChars << 2) - 1;
 
-                   // Reading bytes in reverse order
+                for (int k = numChars; k > i; k--) {
+                    // Reading bytes in reverse order
                     int b3 = fBuffer[curPos--] & 0xff;
                     int b2 = fBuffer[curPos--] & 0xff;
                     int b1 = fBuffer[curPos--] & 0xff;
                     int b0 = fBuffer[curPos--] & 0xff;
 
                     int codepoint;
+
                     if (UCS4BE == fEncoding) {
-                        codepoint = ((b0<<24) + (b1<<16) + (b2<<8) + b3);
+                        codepoint = ((b0 << 24) + (b1 << 16) + (b2 << 8) + b3);
                     } else {
-                        codepoint = ((b3<<24) + (b2<<16) + (b1<<8) + b0);
+                        codepoint = ((b3 << 24) + (b2 << 16) + (b1 << 8) + b0);
                     }
 
-                   // Look if we need to increase buffer size
+                    // Look if we need to increase buffer size
                     if (2 > (fCharBuf.length - k)) {
                         char[] newBuf = new char[fCharBuf.length << 1];
                         System.arraycopy(fCharBuf, 0, newBuf, 0, fCharBuf.length);
@@ -483,24 +488,19 @@ public class UCSReader extends Reader {
                         fCharBuf[fCharCount++] = (char) codepoint;
                     } else {
                         int cp1 = (codepoint - 0x10000) & 0xFFFFF;
-                       // In this case store low surrogate code unit first, so that
-                       // it can be read back after high one.
-                        fCharBuf[fCharCount++] = (char) (0xDC00 + ((char)cp1 & 0x3FF));
-                        fCharBuf[fCharCount++] = (char) (0xD800 + (cp1>>>10));
+                        // In this case store low surrogate code unit first, so that
+                        // it can be read back after high one.
+                        fCharBuf[fCharCount++] = (char) (0xDC00 + ((char) cp1 & 0x3FF));
+                        fCharBuf[fCharCount++] = (char) (0xD800 + (cp1 >>> 10));
                     }
-
                 } // END for
 
                 return charsCount;
-
             } // END if (-1 == count) ELSE
-
         } // END if (0 != (length - charsRead))
 
         return charsRead;
-
     } // read(char[],int,int)
-
 
     /**
      * Read <code>UCS-2</code> characters into a portion of an array.
@@ -521,50 +521,55 @@ public class UCSReader extends Reader {
      *
      * @exception  IOException  If an I/O error occurs
      */
-    protected int readUCS2(char ch[], int offset, int length)
-            throws
-                IOException {
-
+    protected int readUCS2(char[] ch, int offset, int length)
+        throws IOException {
         int byteLength = length << 1;
+
         if (byteLength > fBuffer.length) {
             byteLength = fBuffer.length;
         }
 
         int count = fInputStream.read(fBuffer, 0, byteLength);
-        if (count == -1) return -1;
+
+        if (count == -1) {
+            return -1;
+        }
 
         // try and make count be a multiple of the number of bytes we're
         // looking for (simply reading 1 to 3 bytes from input stream to
         // ensure the last code point is complete)
         int numToRead = count & 1;
+
         if (numToRead != 0) {
             count++;
+
             int charRead = fInputStream.read();
+
             if (charRead == -1) { // end of input; something likely went
                                   // wrong! Pad buffer with nulls.
                 fBuffer[count] = 0;
             } else {
-                fBuffer[count] = (byte)charRead;
+                fBuffer[count] = (byte) charRead;
             }
         }
 
         // now count is a multiple of the right number of bytes
         int numChars = count >> 1;
         int curPos = 0;
+
         for (int i = 0; i < numChars; i++) {
             int b0 = fBuffer[curPos++] & 0xff;
             int b1 = fBuffer[curPos++] & 0xff;
+
             if (fEncoding == UCS2BE) {
-                ch[offset+i] = (char)((b0<<8)+b1);
+                ch[offset + i] = (char) ((b0 << 8) + b1);
             } else {
-                ch[offset+i] = (char)((b1<<8)+b0);
+                ch[offset + i] = (char) ((b1 << 8) + b0);
             }
         }
 
         return numChars;
-
     } // END readUCS2(char[], int, int)
-
 
     /**
      * Skip characters.  This method will block until some characters are
@@ -577,7 +582,6 @@ public class UCSReader extends Reader {
      * @exception  IOException  If an I/O error occurs
      */
     public long skip(long n) throws IOException {
-
         /*
          * charWidth will represent the number of bits to move
          * n leftward to get num of bytes to skip, and then move the result
@@ -587,12 +591,15 @@ public class UCSReader extends Reader {
          * intended to avoid an expensive use of / that might not be optimized
          * away.
          */
-        int charWidth = (fEncoding >=4) ? 2 : 1;
-        long bytesSkipped = fInputStream.skip(n<<charWidth);
-        if((bytesSkipped & (charWidth | 1)) == 0) return bytesSkipped >>> charWidth;
+        int charWidth = (fEncoding >= 4) ? 2 : 1;
+        long bytesSkipped = fInputStream.skip(n << charWidth);
+
+        if ((bytesSkipped & (charWidth | 1)) == 0) {
+            return bytesSkipped >>> charWidth;
+        }
+
         return (bytesSkipped >>> charWidth) + 1;
     } // skip(long):long
-
 
     /**
      * Tell whether this stream is ready to be read.
@@ -607,14 +614,12 @@ public class UCSReader extends Reader {
         return false;
     } // ready()
 
-
     /**
      * Tell whether this stream supports the mark() operation.
      */
     public boolean markSupported() {
         return fInputStream.markSupported();
     } // markSupported()
-
 
     /**
      * Mark the present position in the stream.  Subsequent calls to
@@ -636,7 +641,6 @@ public class UCSReader extends Reader {
         fInputStream.mark(readAheadLimit);
     } // mark(int)
 
-
     /**
      * Reset the stream.  If the stream has been marked, then attempt to
      * reposition it at the mark.  If the stream has not been marked, then
@@ -654,7 +658,6 @@ public class UCSReader extends Reader {
         fInputStream.reset();
     } // reset()
 
-
     /**
      * Close the stream.  Once a stream has been closed, further
      * <code>read</code>, <code>ready</code>, <code>mark</code>,
@@ -663,53 +666,50 @@ public class UCSReader extends Reader {
      *
      * @exception  IOException  If an I/O error occurs
      */
-     public void close() throws IOException {
-         fInputStream.close();
-         fInputStream = null;
-         fCharBuf = null;
-         fBuffer = null;
-     } // close()
+    public void close() throws IOException {
+        fInputStream.close();
+        fInputStream = null;
+        fCharBuf = null;
+        fBuffer = null;
+    } // close()
 
+    /**
+     * Returns the encoding currently in use by this character stream.
+     *
+     * @return Encoding of this stream. Either ISO-10646-UCS-2 or
+     *         ISO-10646-UCS-4. Problem is that this string doesn't indicate
+     *         the byte order of that encoding. What to do, then? Unlike
+     *         UTF-16 byte order cannot be made part of the encoding name
+     *         in this case and still can be critical. Currently you can
+     *         find out the byte order by invoking <code>getByteOrder</code>
+     *         method.
+     */
+    public String getEncoding() {
+        if (4 > fEncoding) {
+            return "ISO-10646-UCS-2";
+        } else {
+            return "ISO-10646-UCS-4";
+        }
+    }
 
-     /**
-      * Returns the encoding currently in use by this character stream.
-      *
-      * @return Encoding of this stream. Either ISO-10646-UCS-2 or
-      *         ISO-10646-UCS-4. Problem is that this string doesn't indicate
-      *         the byte order of that encoding. What to do, then? Unlike
-      *         UTF-16 byte order cannot be made part of the encoding name
-      *         in this case and still can be critical. Currently you can
-      *         find out the byte order by invoking <code>getByteOrder</code>
-      *         method.
-      */
-     public String getEncoding() {
-         if (4 > fEncoding) {
-             return "ISO-10646-UCS-2";
-         } else {
-             return "ISO-10646-UCS-4";
-         }
-     }
-
-
-     /**
-      * Returns byte order ("endianness") of the encoding currently in use by
-      * this character stream. This is a string with two possible values:
-      * <code>LITTLE_ENDIAN</code> and <code>BIG_ENDIAN</code>. Maybe using
-      * a named constant is a better alternative, but I just don't like them.
-      * But feel free to change this behavior if you think that would be
-      * better.
-      *
-      * @return <code>LITTLE_ENDIAN</code> or <code>BIG_ENDIAN</code> depending
-      *         on byte order of current encoding of this stream.
-      */
-     public String getByteOrder() {
-         if ((1 == fEncoding) || (4 == fEncoding)) {
-             return "LITTLE_ENDIAN";
-         } else {
-             return "BIG_ENDIAN";
-         }
-     }
-
+    /**
+     * Returns byte order ("endianness") of the encoding currently in use by
+     * this character stream. This is a string with two possible values:
+     * <code>LITTLE_ENDIAN</code> and <code>BIG_ENDIAN</code>. Maybe using
+     * a named constant is a better alternative, but I just don't like them.
+     * But feel free to change this behavior if you think that would be
+     * better.
+     *
+     * @return <code>LITTLE_ENDIAN</code> or <code>BIG_ENDIAN</code> depending
+     *         on byte order of current encoding of this stream.
+     */
+    public String getByteOrder() {
+        if ((1 == fEncoding) || (4 == fEncoding)) {
+            return "LITTLE_ENDIAN";
+        } else {
+            return "BIG_ENDIAN";
+        }
+    }
 
     /**
      * Determines whether the specified character (Unicode code point)
@@ -727,8 +727,6 @@ public class UCSReader extends Reader {
      *         supplementary character range; <code>false</code> otherwise.
      */
     protected boolean isSupplementaryCodePoint(int codePoint) {
-        return codePoint >= MIN_SUPPLEMENTARY_CODE_POINT
-            && codePoint <= MAX_CODE_POINT;
+        return (codePoint >= MIN_SUPPLEMENTARY_CODE_POINT) && (codePoint <= MAX_CODE_POINT);
     }
-
 } // class UCSReader

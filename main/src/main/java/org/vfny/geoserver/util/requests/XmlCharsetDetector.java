@@ -1,5 +1,10 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.util.requests;
 
+import org.vfny.geoserver.util.requests.readers.UCSReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,7 +18,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.vfny.geoserver.util.requests.readers.UCSReader;
 
 /**
  * Provides a methods that can be used to detect charset of some
@@ -21,25 +25,21 @@ import org.vfny.geoserver.util.requests.readers.UCSReader;
  * this charset and can correctly decode document's data.
  */
 public class XmlCharsetDetector {
-
-    protected static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /**
      * In current context naming this "GT", "GREATER_THAN" or like
      * would be misleading.
      */
     private static final char RIGHT_ANGLE_BRACKET = '\u003E';
-
-    private static final Pattern ENCODING_PATTERN =
-            Pattern.compile("encoding\\s*\\=\\s*\"([^\"]+)\"");
+    private static final Pattern ENCODING_PATTERN = Pattern.compile(
+            "encoding\\s*\\=\\s*\"([^\"]+)\"");
 
     /**
      * Maximum number of characters we are expecting in XML Declaration.
      * There are probably will be less then 100, but just in case...
      */
     private static final int MAX_XMLDECL_SIZE = 100;
-
 
     /**
      * Based on Xerces-J code, this method will try its best to return a
@@ -65,22 +65,20 @@ public class XmlCharsetDetector {
      *             inferred charset of XML document is not supported by
      *             current JVM.
      */
-    public static Reader getCharsetAwareReader(InputStream istream,
-                                               EncodingInfo encInfo)
-            throws
-                IOException,
-                UnsupportedCharsetException {
-
+    public static Reader getCharsetAwareReader(InputStream istream, EncodingInfo encInfo)
+        throws IOException, UnsupportedCharsetException {
         RewindableInputStream stream;
         stream = new RewindableInputStream(istream, false);
 
-       //
-       // Phase 1. Reading first four bytes and determining encoding scheme.
+        //
+        // Phase 1. Reading first four bytes and determining encoding scheme.
         final byte[] b4 = new byte[4];
 
         int count = 0;
+
         for (; count < 4; count++) {
             int b = stream.read();
+
             if (-1 != b) {
                 b4[count] = (byte) b;
             } else {
@@ -89,18 +87,15 @@ public class XmlCharsetDetector {
         }
 
         if (LOGGER.isLoggable(Level.FINE)) {
-           // Such number of concatenating strings makes me sick.
-           // But using StringBuffer will make this uglier, not?
+            // Such number of concatenating strings makes me sick.
+            // But using StringBuffer will make this uglier, not?
             LOGGER.fine("First 4 bytes of XML doc are : "
-                + Integer.toHexString((int) b4[0] & 0xff).toUpperCase()
-                 + " ('" + (char) b4[0] + "') "
-                + Integer.toHexString((int) b4[1] & 0xff).toUpperCase()
-                 + " ('" + (char) b4[1] + "') "
-                + Integer.toHexString((int) b4[2] & 0xff).toUpperCase()
-                 + " ('" + (char) b4[2] + "') "
-                + Integer.toHexString((int) b4[3] & 0xff).toUpperCase()
-                 + " ('" + (char) b4[3] + "')"
-            );
+                + Integer.toHexString((int) b4[0] & 0xff).toUpperCase() + " ('" + (char) b4[0]
+                + "') " + Integer.toHexString((int) b4[1] & 0xff).toUpperCase() + " ('"
+                + (char) b4[1] + "') " + Integer.toHexString((int) b4[2] & 0xff).toUpperCase()
+                + " ('" + (char) b4[2] + "') "
+                + Integer.toHexString((int) b4[3] & 0xff).toUpperCase() + " ('" + (char) b4[3]
+                + "')");
         }
 
         /*
@@ -122,16 +117,15 @@ public class XmlCharsetDetector {
         encInfo.copyFrom(getEncodingName(b4, count));
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("Charset detection phase 1. Inferred encoding: " +
-                        encInfo.toString());
+            LOGGER.fine("Charset detection phase 1. Inferred encoding: " + encInfo.toString());
         }
 
-       // Rewinding to beginning of data
+        // Rewinding to beginning of data
         stream.reset();
 
-        String ENCODING     = encInfo.getEncoding().toUpperCase(Locale.ENGLISH);
+        String ENCODING = encInfo.getEncoding().toUpperCase(Locale.ENGLISH);
         Boolean isBigEndian = encInfo.isBigEndian();
-        boolean hasBOM      = encInfo.hasBOM();
+        boolean hasBOM = encInfo.hasBOM();
 
         /*
          * Special case UTF-8 files with BOM created by Microsoft
@@ -139,7 +133,7 @@ public class XmlCharsetDetector {
          * the reader perform extra checks. -Ac
          */
         if (hasBOM && ENCODING.equals("UTF-8")) {
-           // ignore first three bytes...
+            // ignore first three bytes...
             stream.skip(3);
         }
 
@@ -149,16 +143,15 @@ public class XmlCharsetDetector {
          * InputStreamReader doesn't expect BOM coming with UTF-16LE|BE
          * encoded data. So this BOM should also be removed, if present.
          */
-        if (count > 1 && (ENCODING.equals("UTF-16LE") ||
-                          ENCODING.equals("UTF-16BE"))) {
+        if ((count > 1) && (ENCODING.equals("UTF-16LE") || ENCODING.equals("UTF-16BE"))) {
             int b0 = b4[0] & 0xFF;
             int b1 = b4[1] & 0xFF;
-            if ((b0 == 0xFF && b1 == 0xFE) || (b0 == 0xFE && b1 == 0xFF)) {
-               // ignore first two bytes...
+
+            if (((b0 == 0xFF) && (b1 == 0xFE)) || ((b0 == 0xFE) && (b1 == 0xFF))) {
+                // ignore first two bytes...
                 stream.skip(2);
             }
         }
-
 
         Reader reader = null;
 
@@ -183,33 +176,32 @@ public class XmlCharsetDetector {
          * UnsupportedEncodingException for UCS-4 encoded data.
          */
         if ("ISO-10646-UCS-4".equals(ENCODING)) {
-
             if (null != isBigEndian) {
                 boolean isBE = isBigEndian.booleanValue();
+
                 if (isBE) {
                     reader = new UCSReader(stream, UCSReader.UCS4BE);
                 } else {
                     reader = new UCSReader(stream, UCSReader.UCS4LE);
                 }
             } else {
-               // Fatal error, UCSReader will fail to decode this properly
+                // Fatal error, UCSReader will fail to decode this properly
                 String s = "Unsupported byte order for ISO-10646-UCS-4 encoding.";
                 throw new UnsupportedCharsetException(s);
             }
-
         }
 
         if (null == reader) {
             reader = new InputStreamReader(stream, ENCODING);
         }
 
-       //
-       // Phase 2. Reading XML declaration and extracting charset info from it.
+        //
+        // Phase 2. Reading XML declaration and extracting charset info from it.
         String declEncoding = getXmlEncoding(reader);
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("Charset detection phase 2. Charset in XML declaration "
-                       + "is `" + declEncoding + "`.");
+            LOGGER.fine("Charset detection phase 2. Charset in XML declaration " + "is `"
+                + declEncoding + "`.");
         }
 
         stream.reset();
@@ -225,28 +217,26 @@ public class XmlCharsetDetector {
          * Reusing existing reader if possible, creating new one only if
          * declared charset name differs from guessed one
          */
-        if (null != declEncoding && !declEncoding.equals(ENCODING)) {
-           /*
-            * I believe that for UCS-2 encoding default UTF-16 reader
-            * (which is already created at this time) should suffice
-            * in most cases. Though, we can always construct a new
-            * UCSReader instance, if I am wrong here.
-            */
+        if ((null != declEncoding) && !declEncoding.equals(ENCODING)) {
+            /*
+             * I believe that for UCS-2 encoding default UTF-16 reader
+             * (which is already created at this time) should suffice
+             * in most cases. Though, we can always construct a new
+             * UCSReader instance, if I am wrong here.
+             */
             if (!declEncoding.equals("ISO-10646-UCS-2")) {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.fine("Declared charset differs from inferred one. "
-                               + "Trying to construct InputStreamReader for `"
-                               + declEncoding + "`.");
+                        + "Trying to construct InputStreamReader for `" + declEncoding + "`.");
                 }
+
                 reader = new InputStreamReader(stream, declEncoding);
                 encInfo.setEncoding(declEncoding);
             }
         }
 
         return reader;
-
     } // END getCharsetAwareReader(InputStream) : Reader
-
 
     /**
      * Use this variant when you aren't interested in encoding data, and just
@@ -257,12 +247,9 @@ public class XmlCharsetDetector {
      *
      */
     public static Reader getCharsetAwareReader(InputStream istream)
-            throws
-                IOException,
-                UnsupportedCharsetException {
+        throws IOException, UnsupportedCharsetException {
         return getCharsetAwareReader(istream, new EncodingInfo());
     }
-
 
     /**
      * Creates a new reader on top of the given <code>InputStream</code> using
@@ -284,69 +271,60 @@ public class XmlCharsetDetector {
      *             <code>ISO-10646-UCS-2|4</code> charsets.
      *
      */
-    public static Reader createReader(InputStream istream,
-                                      EncodingInfo encInfo)
-            throws
-                IllegalArgumentException,
-                UnsupportedEncodingException {
-
+    public static Reader createReader(InputStream istream, EncodingInfo encInfo)
+        throws IllegalArgumentException, UnsupportedEncodingException {
         String charset = encInfo.getEncoding();
         Boolean isBigEndian = encInfo.isBigEndian();
 
-       // We MUST know encoding (in fact, charset) name, and as EncodingInfo
-       // have non-arg constructor, its `getEncoding` can return null.
+        // We MUST know encoding (in fact, charset) name, and as EncodingInfo
+        // have non-arg constructor, its `getEncoding` can return null.
         if (null == charset) {
             String s = "Name of the charset must not be NULL!";
             throw new IllegalArgumentException(s);
         }
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("Trying to create reader basing on existing charset "
-                       + "information: `" + encInfo + "`.");
+            LOGGER.fine("Trying to create reader basing on existing charset " + "information: `"
+                + encInfo + "`.");
         }
 
         Reader reader = null;
 
-       // UCS-2|4 charsets are handled with custom reader
+        // UCS-2|4 charsets are handled with custom reader
         if ("ISO-10646-UCS-4".equals(charset)) {
-
             if (null != isBigEndian) {
                 boolean isBE = isBigEndian.booleanValue();
+
                 if (isBE) {
                     reader = new UCSReader(istream, UCSReader.UCS4BE);
                 } else {
                     reader = new UCSReader(istream, UCSReader.UCS4LE);
                 }
-
             } else {
-               // Fatal error, UCSReader will fail to decode this properly
+                // Fatal error, UCSReader will fail to decode this properly
                 String s = "Unsupported byte order for ISO-10646-UCS-4 encoding.";
                 throw new UnsupportedEncodingException(s);
             }
-
         } else if ("ISO-10646-UCS-2".equals(charset)) {
-
             if (null != isBigEndian) {
                 boolean isBE = isBigEndian.booleanValue();
+
                 if (isBE) {
                     reader = new UCSReader(istream, UCSReader.UCS4BE);
                 } else {
                     reader = new UCSReader(istream, UCSReader.UCS4LE);
                 }
             } else {
-               // Cannot construct UCSReader without byte order info
+                // Cannot construct UCSReader without byte order info
                 String s = "Byte order must be specified for ISO-10646-UCS-2.";
                 throw new UnsupportedEncodingException(s);
             }
-
         } else {
             reader = new InputStreamReader(istream, charset);
         }
 
         return reader;
-
     } // END createReader(InputStream, EncodingInfo) : Reader
-
 
     /**
      * Returns the IANA encoding name that is auto-detected from
@@ -362,7 +340,6 @@ public class XmlCharsetDetector {
      * @return Instance of EncodingInfo incapsulating all encoding-related data.
      */
     protected static EncodingInfo getEncodingName(byte[] b4, int count) {
-
         if (count < 2) {
             return new EncodingInfo("UTF-8", null);
         }
@@ -370,11 +347,13 @@ public class XmlCharsetDetector {
         // UTF-16, with BOM
         int b0 = b4[0] & 0xFF;
         int b1 = b4[1] & 0xFF;
-        if (b0 == 0xFE && b1 == 0xFF) {
+
+        if ((b0 == 0xFE) && (b1 == 0xFF)) {
             // UTF-16, big-endian
             return new EncodingInfo("UTF-16BE", Boolean.TRUE, true);
         }
-        if (b0 == 0xFF && b1 == 0xFE) {
+
+        if ((b0 == 0xFF) && (b1 == 0xFE)) {
             // UTF-16, little-endian
             return new EncodingInfo("UTF-16LE", Boolean.FALSE, true);
         }
@@ -387,7 +366,8 @@ public class XmlCharsetDetector {
 
         // UTF-8 with a BOM
         int b2 = b4[2] & 0xFF;
-        if (b0 == 0xEF && b1 == 0xBB && b2 == 0xBF) {
+
+        if ((b0 == 0xEF) && (b1 == 0xBB) && (b2 == 0xBF)) {
             return new EncodingInfo("UTF-8", null, true);
         }
 
@@ -400,37 +380,43 @@ public class XmlCharsetDetector {
         // other encodings
         int b3 = b4[3] & 0xFF;
 
-        if (b0 == 0x00 && b1 == 0x00 && b2 == 0x00 && b3 == 0x3C) {
+        if ((b0 == 0x00) && (b1 == 0x00) && (b2 == 0x00) && (b3 == 0x3C)) {
             // UCS-4, big endian (1234)
             return new EncodingInfo("ISO-10646-UCS-4", new Boolean(true));
         }
-        if (b0 == 0x3C && b1 == 0x00 && b2 == 0x00 && b3 == 0x00) {
+
+        if ((b0 == 0x3C) && (b1 == 0x00) && (b2 == 0x00) && (b3 == 0x00)) {
             // UCS-4, little endian (4321)
             return new EncodingInfo("ISO-10646-UCS-4", new Boolean(false));
         }
-        if (b0 == 0x00 && b1 == 0x00 && b2 == 0x3C && b3 == 0x00) {
+
+        if ((b0 == 0x00) && (b1 == 0x00) && (b2 == 0x3C) && (b3 == 0x00)) {
             // UCS-4, unusual octet order (2143)
             // REVISIT: What should this be? (Currently this would be
             // an exception :)
             return new EncodingInfo("ISO-10646-UCS-4", null);
         }
-        if (b0 == 0x00 && b1 == 0x3C && b2 == 0x00 && b3 == 0x00) {
+
+        if ((b0 == 0x00) && (b1 == 0x3C) && (b2 == 0x00) && (b3 == 0x00)) {
             // UCS-4, unusual octect order (3412)
             // REVISIT: What should this be?
             return new EncodingInfo("ISO-10646-UCS-4", null);
         }
-        if (b0 == 0x00 && b1 == 0x3C && b2 == 0x00 && b3 == 0x3F) {
+
+        if ((b0 == 0x00) && (b1 == 0x3C) && (b2 == 0x00) && (b3 == 0x3F)) {
             // UTF-16, big-endian, no BOM
             // (or could turn out to be UCS-2...
             // REVISIT: What should this be?
             return new EncodingInfo("UTF-16BE", new Boolean(true));
         }
-        if (b0 == 0x3C && b1 == 0x00 && b2 == 0x3F && b3 == 0x00) {
+
+        if ((b0 == 0x3C) && (b1 == 0x00) && (b2 == 0x3F) && (b3 == 0x00)) {
             // UTF-16, little-endian, no BOM
             // (or could turn out to be UCS-2...
             return new EncodingInfo("UTF-16LE", new Boolean(false));
         }
-        if (b0 == 0x4C && b1 == 0x6F && b2 == 0xA7 && b3 == 0x94) {
+
+        if ((b0 == 0x4C) && (b1 == 0x6F) && (b2 == 0xA7) && (b3 == 0x94)) {
             // EBCDIC
             // a la xerces1, return CP037 instead of EBCDIC here
             return new EncodingInfo("CP037", null);
@@ -438,10 +424,7 @@ public class XmlCharsetDetector {
 
         // default encoding
         return new EncodingInfo("UTF-8", null);
-
     } // END getEncodingName(byte[], int) : EncodingInfo
-
-
 
     /**
      * Gets the encoding of the xml request made to the dispatcher.  This
@@ -458,29 +441,28 @@ public class XmlCharsetDetector {
      *         character stream.
      */
     protected static String getXmlEncoding(Reader reader) {
-
         try {
-
             StringWriter sw = new StringWriter(MAX_XMLDECL_SIZE);
 
             int c;
             int count = 0;
+
             for (; (6 > count) && (-1 != (c = reader.read())); count++) {
                 sw.write(c);
             }
 
-           /*
-            * Hmm, checking for the case when there is no XML declaration and
-            * document begins with processing instruction whose target name
-            * starts with "<?xml" ("<?xmlfoo"). Sounds like a nearly impossible
-            * thing, but Xerces guys are checking for that somewhere in the
-            * depths of their code :)
-            */
+            /*
+             * Hmm, checking for the case when there is no XML declaration and
+             * document begins with processing instruction whose target name
+             * starts with "<?xml" ("<?xmlfoo"). Sounds like a nearly impossible
+             * thing, but Xerces guys are checking for that somewhere in the
+             * depths of their code :)
+             */
             if ((6 > count) || (!"<?xml ".equals(sw.toString()))) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning("Invalid(?) XML declaration: "
-                                  + sw.toString() + ".");
+                    LOGGER.warning("Invalid(?) XML declaration: " + sw.toString() + ".");
                 }
+
                 return null;
             }
 
@@ -493,28 +475,28 @@ public class XmlCharsetDetector {
              * malformed (no '>') input potentially forcing us to read
              * megabytes of useless data :)
              */
-            for (; (MAX_XMLDECL_SIZE > count)
-                   && (-1 != (c = reader.read()))
-                   && (RIGHT_ANGLE_BRACKET != (char) c); count++) {
+            for (;
+                    (MAX_XMLDECL_SIZE > count) && (-1 != (c = reader.read()))
+                    && (RIGHT_ANGLE_BRACKET != (char) c); count++) {
                 sw.write(c);
             }
 
             Matcher m = ENCODING_PATTERN.matcher(sw.toString());
+
             if (m.find()) {
                 String result = m.group(1);
+
                 return result;
             } else {
                 return null;
             }
-
         } catch (IOException e) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning("Failed to extract charset info from XML "
-                        + "declaration due to IOException: " + e.getMessage());
+                    + "declaration due to IOException: " + e.getMessage());
             }
+
             return null;
         }
-
     } // END getXmlEncoding(Reader) : String
-
 } // END class XmlCharsetDetector

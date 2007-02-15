@@ -4,12 +4,7 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.feature.Feature;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterHandler;
@@ -21,8 +16,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
-
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -32,8 +29,8 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author Chris Holmes, TOPP
  * @version $Id: TransactionHandler.java,v 1.8 2004/02/13 19:30:39 dmzwiers Exp $
  */
-public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
-    FilterHandler, GMLHandlerFeature {
+public class TransactionHandler extends XMLFilterImpl implements ContentHandler, FilterHandler,
+    GMLHandlerFeature {
     //private static final short UNKNOWN = 0;
     private static final State UNKNOWN = new State("UNKNOWN");
 
@@ -59,8 +56,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     private static final State LOCKID = new State("LockId");
 
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.wfs");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wfs");
 
     /** Internal transaction request for construction. */
     private TransactionRequest request = null;
@@ -83,11 +79,11 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     /** holds the list of features for an insert request. */
     private List curFeatures;
 
-    /** Collects string chunks in {@link #characters(char[], int, int)} 
+    /** Collects string chunks in {@link #characters(char[], int, int)}
      * callback to be handled at the beggining of {@link #endElement(String, String, String)}
      */
     private StringBuffer characters = new StringBuffer();
-    
+
     /**
      * Flag to alert signal we are within a Property element.  The state thing
      * was not giving enough information.
@@ -108,7 +104,8 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
      * @return The request constructed by this handler.
      */
     public TransactionRequest getRequest(HttpServletRequest req) {
-    	request.setHttpServletRequest(req);
+        request.setHttpServletRequest(req);
+
         return request;
     }
 
@@ -161,8 +158,8 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
      *
      * @throws SAXException When the XML is not well formed.
      */
-    public void startElement(String namespaceURI, String localName,
-        String rawName, Attributes atts) throws SAXException {
+    public void startElement(String namespaceURI, String localName, String rawName, Attributes atts)
+        throws SAXException {
         LOGGER.finest("at start element: " + localName);
         characters.setLength(0);
 
@@ -226,7 +223,7 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
      */
     public void endElement(String namespaceURI, String localName, String rawName)
         throws SAXException {
-    	handleCharacters();
+        handleCharacters();
         LOGGER.finer("at end element: " + localName);
 
         // as we leave query, set insideTag to "NULL" (otherwise the stupid
@@ -238,11 +235,10 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
         if ((state == DELETE) || (state == UPDATE) || (state == INSERT)) {
             if (subRequest.getClass().equals(InsertRequest.class)) {
                 try {
-                    ((InsertRequest) subRequest).addFeatures((Feature[]) curFeatures
-                        .toArray(new Feature[0]));
+                    ((InsertRequest) subRequest).addFeatures((Feature[]) curFeatures.toArray(
+                            new Feature[0]));
                 } catch (WfsException we) {
-                    throw new SAXException("Problem adding features: "
-                        + we.getMessage(), we);
+                    throw new SAXException("Problem adding features: " + we.getMessage(), we);
                 }
 
                 curFeatures = new ArrayList();
@@ -253,10 +249,9 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
             LOGGER.finer("ending property");
 
             if (subRequest.getClass().equals(UpdateRequest.class)) {
-                ((UpdateRequest) subRequest).addProperty(curPropertyName,
-                    curPropertyValue);
-                LOGGER.finer("setting update property " + curPropertyName
-                    + " to " + curPropertyValue);
+                ((UpdateRequest) subRequest).addProperty(curPropertyName, curPropertyValue);
+                LOGGER.finer("setting update property " + curPropertyName + " to "
+                    + curPropertyValue);
                 curPropertyName = "";
                 curPropertyValue = null;
                 inProperty = false;
@@ -288,53 +283,54 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
      */
     public void characters(char[] ch, int start, int length)
         throws SAXException {
-    	characters.append(ch, start, length);
+        characters.append(ch, start, length);
     }
 
     /**
      * Handles the string chunks collected in {@link #characters}.
      */
-    private void handleCharacters(){
-    	if(characters.length() == 0){
-    		return;
-    	}
+    private void handleCharacters() {
+        if (characters.length() == 0) {
+            return;
+        }
+
         final String s = characters.toString();
         characters.setLength(0);
+
         // if inside a property element, add the element
         if (state == PROPERTY_NAME) {
             LOGGER.finest("found property name: " + s);
             curPropertyName = s.trim();
 
-		/*
-		 * GR: this was wrong. It prevents String attribute values that have
-		 * \n or \n\r characters from being parsed correctly.
+            /*
+             * GR: this was wrong. It prevents String attribute values that have
+             * \n or \n\r characters from being parsed correctly.
             //if curProperty is not null then there is a geometry there.
-        } else if ((state == VALUE) && (curPropertyValue == null)) {
-        */
-         //if curProperty is not null then there is a geometry there.
-		} else if (state == VALUE) {
-			//GR:also doing s.trim() is wrong. We can't force spaces not to be part of the data
+            } else if ((state == VALUE) && (curPropertyValue == null)) {
+            */
+
+            //if curProperty is not null then there is a geometry there.
+        } else if (state == VALUE) {
+            //GR:also doing s.trim() is wrong. We can't force spaces not to be part of the data
             //JD:appending the string blindly changes the type of non String values
-            if (curPropertyValue != null && !(curPropertyValue instanceof String)) {
-            	//do the trim since random whitespace is usually meaningless to 
-            	// non strings (ie Geometry)
-            	if (!"".equals(s.trim())) {
-            		//something wierd has happened if we get there, just append
-            		// and let fail later
-            		curPropertyValue = curPropertyValue + s;
-            	}
-            	else {
-            		//dont append
-            	}
-            }
-            else {
-            	curPropertyValue = curPropertyValue == null? s : curPropertyValue + s;	
+            if ((curPropertyValue != null) && !(curPropertyValue instanceof String)) {
+                //do the trim since random whitespace is usually meaningless to 
+                // non strings (ie Geometry)
+                if (!"".equals(s.trim())) {
+                    //something wierd has happened if we get there, just append
+                    // and let fail later
+                    curPropertyValue = curPropertyValue + s;
+                } else {
+                    //dont append
+                }
+            } else {
+                curPropertyValue = (curPropertyValue == null) ? s : (curPropertyValue + s);
             }
         } else if (state == LOCKID) {
             curLockId = s.trim();
         }
-    }    
-    
+    }
+
     /**
      * Gets a filter and adds it to the appropriate query (or queries).
      *

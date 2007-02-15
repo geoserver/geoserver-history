@@ -4,20 +4,6 @@
  */
 package org.vfny.geoserver.config;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.servlet.ServletContext;
-
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultRepository;
 import org.geotools.data.Repository;
@@ -29,15 +15,28 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import javax.servlet.ServletContext;
+
 
 /**
  * Data purpose.
- * 
+ *
  * <p>
  * Represents an instance of the catalog.xml file in the configuration of the
  * server, along with associated configuration files for the feature types.
  * </p>
- * 
+ *
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
@@ -55,7 +54,7 @@ public class DataConfig {
 
     /**
      * A set of dataStoreConfig by dataStoreId.
-     * 
+     *
      * @see org.vfny.geoserver.config.data.DataStoreInfo
      */
     private Map dataStores;
@@ -91,7 +90,7 @@ public class DataConfig {
 
     /**
      * Data constructor.
-     * 
+     *
      * <p>
      * Creates a Data to represent an instance with default data.
      * </p>
@@ -108,7 +107,7 @@ public class DataConfig {
 
     /**
      * Data constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the DataDTO provided. If the Data provided  is null
      * then default values are used. All the datastructures are cloned.
@@ -117,67 +116,67 @@ public class DataConfig {
      * @param data The catalog to copy.
      */
     public DataConfig(DataDTO data) {
-//        Iterator i = null;
-//
-//        i = data.getDataStores().keySet().iterator();
-//        dataStores = new HashMap();
-//
-//        while (i.hasNext()) {
-//            Object key = i.next();
-//            dataStores.put(key,
-//                new DataStoreConfig(
-//                    (DataStoreInfoDTO) data.getDataStores().get(key)));
-//        }
-//
-//        i = data.getNameSpaces().keySet().iterator();
-//        nameSpaces = new HashMap();
-//
-//        while (i.hasNext()) {
-//            Object key = i.next();
-//            nameSpaces.put(key,
-//                new NameSpaceConfig(
-//                    (NameSpaceInfoDTO) data.getNameSpaces().get(key)));
-//
-//            if (((NameSpaceConfig) nameSpaces.get(key)).isDefault()) {
-//                defaultNameSpace = (NameSpaceConfig) nameSpaces.get(key);
-//            }
-//        }
-//
-//        i = data.getFeaturesTypes().keySet().iterator();
-//        featuresTypes = new HashMap();
-//
-//        while (i.hasNext()) {
-//            Object key = i.next();
-//
-//            featuresTypes.put(key,
-//                new FeatureTypeConfig(
-//                    (FeatureTypeInfoDTO) data.getFeaturesTypes().get(key)));
-//        }
-//
-//        i = data.getStyles().keySet().iterator();
-//        styles = new HashMap();
-//
-//        while (i.hasNext()) {
-//            Object key = i.next();
-//            styles.put(key,
-//                new StyleConfig((StyleDTO) data.getStyles().get(key)));
-//        }
+        //        Iterator i = null;
+        //
+        //        i = data.getDataStores().keySet().iterator();
+        //        dataStores = new HashMap();
+        //
+        //        while (i.hasNext()) {
+        //            Object key = i.next();
+        //            dataStores.put(key,
+        //                new DataStoreConfig(
+        //                    (DataStoreInfoDTO) data.getDataStores().get(key)));
+        //        }
+        //
+        //        i = data.getNameSpaces().keySet().iterator();
+        //        nameSpaces = new HashMap();
+        //
+        //        while (i.hasNext()) {
+        //            Object key = i.next();
+        //            nameSpaces.put(key,
+        //                new NameSpaceConfig(
+        //                    (NameSpaceInfoDTO) data.getNameSpaces().get(key)));
+        //
+        //            if (((NameSpaceConfig) nameSpaces.get(key)).isDefault()) {
+        //                defaultNameSpace = (NameSpaceConfig) nameSpaces.get(key);
+        //            }
+        //        }
+        //
+        //        i = data.getFeaturesTypes().keySet().iterator();
+        //        featuresTypes = new HashMap();
+        //
+        //        while (i.hasNext()) {
+        //            Object key = i.next();
+        //
+        //            featuresTypes.put(key,
+        //                new FeatureTypeConfig(
+        //                    (FeatureTypeInfoDTO) data.getFeaturesTypes().get(key)));
+        //        }
+        //
+        //        i = data.getStyles().keySet().iterator();
+        //        styles = new HashMap();
+        //
+        //        while (i.hasNext()) {
+        //            Object key = i.next();
+        //            styles.put(key,
+        //                new StyleConfig((StyleDTO) data.getStyles().get(key)));
+        //        }
         this();
-	update(data);
+        update(data);
     }
-    
+
     /**
      * Instantiates the data config from the data module.
-     * 
+     *
      * @param data The data module.
      */
-    public DataConfig ( Data data ) {
-    		this ( (DataDTO) data.toDTO() );
+    public DataConfig(Data data) {
+        this((DataDTO) data.toDTO());
     }
- 
+
     /**
      * Implement loadDTO.
-     * 
+     *
      * <p>
      * Populates the object with the param passed.
      * </p>
@@ -207,8 +206,7 @@ public class DataConfig {
         while (i.hasNext()) {
             key = i.next();
             dataStores.put(key,
-                new DataStoreConfig(
-                    (DataStoreInfoDTO) data.getDataStores().get(key)));
+                new DataStoreConfig((DataStoreInfoDTO) data.getDataStores().get(key)));
         }
 
         ////
@@ -222,8 +220,7 @@ public class DataConfig {
         while (i.hasNext()) {
             key = i.next();
             nameSpaces.put(key,
-                new NameSpaceConfig(
-                    (NameSpaceInfoDTO) data.getNameSpaces().get(key)));
+                new NameSpaceConfig((NameSpaceInfoDTO) data.getNameSpaces().get(key)));
 
             if (((NameSpaceConfig) nameSpaces.get(key)).isDefault()) {
                 defaultNameSpace = (NameSpaceConfig) nameSpaces.get(key);
@@ -237,14 +234,14 @@ public class DataConfig {
         ////
         i = data.getFeaturesTypes().keySet().iterator();
         featuresTypes = new HashMap();
-        FeatureTypeInfoDTO f ;
+
+        FeatureTypeInfoDTO f;
+
         while (i.hasNext()) {
             key = i.next();
 
-             f = (FeatureTypeInfoDTO) data.getFeaturesTypes()
-                                                            .get(key);
-            featuresTypes.put(f.getDataStoreId() +":"+ f.getName(),
-                new FeatureTypeConfig(f));
+            f = (FeatureTypeInfoDTO) data.getFeaturesTypes().get(key);
+            featuresTypes.put(f.getDataStoreId() + ":" + f.getName(), new FeatureTypeConfig(f));
         }
 
         ////
@@ -254,10 +251,10 @@ public class DataConfig {
         ////
         i = data.getStyles().keySet().iterator();
         styles = new HashMap();
+
         while (i.hasNext()) {
             key = i.next();
-            styles.put(key,
-                new StyleConfig((StyleDTO) data.getStyles().get(key)));
+            styles.put(key, new StyleConfig((StyleDTO) data.getStyles().get(key)));
         }
     }
 
@@ -302,8 +299,7 @@ public class DataConfig {
             tmp.put(key, ((NameSpaceConfig) nameSpaces.get(key)).toDTO());
 
             if (((NameSpaceInfoDTO) tmp.get(key)).isDefault()) {
-                dt.setDefaultNameSpacePrefix(((NameSpaceInfoDTO) tmp.get(key))
-                    .getPrefix());
+                dt.setDefaultNameSpacePrefix(((NameSpaceInfoDTO) tmp.get(key)).getPrefix());
             }
         }
 
@@ -327,14 +323,13 @@ public class DataConfig {
         if (featuresTypes.containsKey(key)) {
             return (FeatureTypeConfig) featuresTypes.get(key);
         } else {
-            throw new NoSuchElementException(
-                "Could not find FeatureTypeConfig '" + key + "'.");
+            throw new NoSuchElementException("Could not find FeatureTypeConfig '" + key + "'.");
         }
     }
 
     /**
      * getDataStores purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -360,7 +355,7 @@ public class DataConfig {
 
     /**
      * getDataStores purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -375,7 +370,7 @@ public class DataConfig {
 
     /**
      * getDefaultNameSpace purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -388,7 +383,7 @@ public class DataConfig {
 
     /**
      * getFeatures purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -401,7 +396,7 @@ public class DataConfig {
 
     /**
      * getFeatures purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -416,7 +411,7 @@ public class DataConfig {
 
     /**
      * getNameSpaces purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -429,7 +424,7 @@ public class DataConfig {
 
     /**
      * getNameSpaces purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -444,7 +439,7 @@ public class DataConfig {
 
     /**
      * getStyles purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -457,7 +452,7 @@ public class DataConfig {
 
     /**
      * getStyles purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -472,7 +467,7 @@ public class DataConfig {
 
     /**
      * setDataStores purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -487,7 +482,7 @@ public class DataConfig {
 
     /**
      * Add a new DataStoreConfig for the user to edit
-     * 
+     *
      * <p>
      * The DataStoreCondig will be added under its id name
      * </p>
@@ -504,7 +499,7 @@ public class DataConfig {
 
     /**
      * setDataStores purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -523,7 +518,7 @@ public class DataConfig {
 
     /**
      * setDefaultNameSpace purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -532,22 +527,23 @@ public class DataConfig {
      */
     public void setDefaultNameSpace(NameSpaceConfig support) {
         if (support != null) {
-        	//first unset the old as default
-        	if (defaultNameSpace != null) {
-        		defaultNameSpace.setDefault(false);
-        	}
+            //first unset the old as default
+            if (defaultNameSpace != null) {
+                defaultNameSpace.setDefault(false);
+            }
+
             defaultNameSpace = support;
-            
+
             //set the new as default
             if (defaultNameSpace != null) {
-            	defaultNameSpace.setDefault(true);
+                defaultNameSpace.setDefault(true);
             }
         }
     }
 
     /**
      * setFeatures purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -562,7 +558,7 @@ public class DataConfig {
 
     /**
      * setFeatures purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -582,7 +578,7 @@ public class DataConfig {
 
     /**
      * setFeatures purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -601,7 +597,7 @@ public class DataConfig {
 
     /**
      * setNameSpaces purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -616,7 +612,7 @@ public class DataConfig {
 
     /**
      * setNameSpaces purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -636,7 +632,7 @@ public class DataConfig {
 
     /**
      * setNameSpaces purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -655,7 +651,7 @@ public class DataConfig {
 
     /**
      * setStyles purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -670,7 +666,7 @@ public class DataConfig {
 
     /**
      * setStyles purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -690,7 +686,7 @@ public class DataConfig {
 
     /**
      * setStyles purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -720,41 +716,45 @@ public class DataConfig {
 
             try {
                 DataStore dataStore = dataStoreConfig.findDataStore(sc);
-                
+
                 String[] typeNames = dataStore.getTypeNames();
 
                 for (int i = 0; i < typeNames.length; i++) {
-                    typeNames[i] = dataStoreConfig.getId() + SEPARATOR
-                        + typeNames[i];
+                    typeNames[i] = dataStoreConfig.getId() + SEPARATOR + typeNames[i];
                 }
 
                 List typeNamesList = Arrays.asList(typeNames);
 
                 set.addAll(typeNamesList);
             } catch (Throwable ignore) {
-            	System.out.println("Could not use "+dataStoreConfig.getId() + " datastore was unavailable!" );
-            	ignore.printStackTrace();
+                System.out.println("Could not use " + dataStoreConfig.getId()
+                    + " datastore was unavailable!");
+                ignore.printStackTrace();
+
                 continue;
             }
         }
 
         return Collections.unmodifiableSortedSet(set);
     }
-    
+
     /**
      * To DataRepository for ValidationProcessor.
      * <p>
      * This repository is limited to the FeatureTypes currently defined.
-     * @throws IOException 
+     * @throws IOException
      */
-    public Repository toRepository(ServletContext context ) throws IOException {
-    	DefaultRepository repository = new DefaultRepository();
-    	for( Iterator i=dataStores.entrySet().iterator(); i.hasNext(); ){
-    		Map.Entry entry = (Map.Entry) i.next();
-    		String dataStoreId = (String) entry.getKey();
-    		DataStoreConfig dataStoreConfig = (DataStoreConfig) entry.getValue();    		
-    		repository.register( dataStoreId, dataStoreConfig.findDataStore( context ) );	
-    	}    	
-    	return repository;
-    }    
+    public Repository toRepository(ServletContext context)
+        throws IOException {
+        DefaultRepository repository = new DefaultRepository();
+
+        for (Iterator i = dataStores.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            String dataStoreId = (String) entry.getKey();
+            DataStoreConfig dataStoreConfig = (DataStoreConfig) entry.getValue();
+            repository.register(dataStoreId, dataStoreConfig.findDataStore(context));
+        }
+
+        return repository;
+    }
 }

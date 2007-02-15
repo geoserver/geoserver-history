@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.wfs.servlets;
 
-import java.util.Map;
-
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WFS;
@@ -16,6 +14,7 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.readers.DeleteKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.TransactionXmlReader;
 import org.vfny.geoserver.wfs.responses.TransactionResponse;
+import java.util.Map;
 
 
 /**
@@ -28,41 +27,39 @@ import org.vfny.geoserver.wfs.responses.TransactionResponse;
  * @version $Id: Transaction.java,v 1.11 2004/06/03 19:34:36 cholmesny Exp $
  */
 public class Transaction extends WFService {
-    
-	/**
-	 * The file strategy prototype
-	 */
-	FileStrategy fileStrategy;
-	
-	public Transaction(WFS wfs) {
-		super("Transaction",wfs);
-	}
-
-	/**
-	 * Sets the file strategy prototype to be used in calls to {@link #createServiceStrategy()}
-	 * 
-	 */
-	public void setFileStrategy(FileStrategy fileStrategy) {
-		this.fileStrategy = fileStrategy;
-	}
-	
-	/**
-	 * Returns the file strategy prototype.
-	 * <p>
-	 * This prototype is cloned in {@link #createServiceStrategy()}
-	 * </p>
-	 * 
-	 */
-	public FileStrategy getFileStrategy() {
-		return fileStrategy;
-	}
-	
-	
-	/**
-     * Returns the handler for a transaction.
-     *
-     * @return An instance of the TransactionResponse class.
+    /**
+     * The file strategy prototype
      */
+    FileStrategy fileStrategy;
+
+    public Transaction(WFS wfs) {
+        super("Transaction", wfs);
+    }
+
+    /**
+     * Sets the file strategy prototype to be used in calls to {@link #createServiceStrategy()}
+     *
+     */
+    public void setFileStrategy(FileStrategy fileStrategy) {
+        this.fileStrategy = fileStrategy;
+    }
+
+    /**
+     * Returns the file strategy prototype.
+     * <p>
+     * This prototype is cloned in {@link #createServiceStrategy()}
+     * </p>
+     *
+     */
+    public FileStrategy getFileStrategy() {
+        return fileStrategy;
+    }
+
+    /**
+    * Returns the handler for a transaction.
+    *
+    * @return An instance of the TransactionResponse class.
+    */
     protected Response getResponseHandler() {
         return new TransactionResponse();
     }
@@ -76,7 +73,7 @@ public class Transaction extends WFService {
      * @return The delete kvp reader.
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new DeleteKvpReader(params,this);
+        return new DeleteKvpReader(params, this);
     }
 
     /**
@@ -102,13 +99,11 @@ public class Transaction extends WFService {
      * @throws ServiceException If the fileStrategy is not availble.
      */
     protected ServiceStrategy createServiceStrategy() throws ServiceException {
-	    	try {
-			return (ServiceStrategy) fileStrategy.clone();
-		} 
-	    	catch (CloneNotSupportedException e) {
-	    		String msg = "Unable to clone " + fileStrategy.getClass();
-	    		throw new ServiceException(msg,e);
-		}
+        try {
+            return (ServiceStrategy) fileStrategy.clone();
+        } catch (CloneNotSupportedException e) {
+            String msg = "Unable to clone " + fileStrategy.getClass();
+            throw new ServiceException(msg, e);
+        }
     }
-    
 }

@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.wfs.servlets;
 
-import java.util.Map;
-
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
@@ -13,6 +11,7 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.readers.GetFeatureKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.GetFeatureXmlReader;
 import org.vfny.geoserver.wfs.responses.FeatureResponse;
+import java.util.Map;
 
 
 /**
@@ -26,16 +25,15 @@ import org.vfny.geoserver.wfs.responses.FeatureResponse;
  * @version $Id: Feature.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class Feature extends WFService {
-	
     public Feature(WFS wfs) {
-		super("GetFeature",wfs);
-	}
+        super("GetFeature", wfs);
+    }
 
-	/**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
+    /**
+    * DOCUMENT ME!
+    *
+    * @return DOCUMENT ME!
+    */
     protected Response getResponseHandler() {
         return new FeatureResponse();
     }
@@ -48,7 +46,7 @@ public class Feature extends WFService {
      * @return DOCUMENT ME!
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new GetFeatureKvpReader(params,this);
+        return new GetFeatureKvpReader(params, this);
     }
 
     /**

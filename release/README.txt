@@ -1,3 +1,22 @@
+GeoServer 1.4.1
+-------------------
+
+This minor point release of GeoServer 1.4 contains the following fixes along with 
+improved performance and stability:
+
+Misconfigured datastore no longer prevent geoserver startup
+GetMap requests specifying SLD=url in place of LAYERS= and STYLES= now work.
+BasicFidMapper generated keys are now valid FIDs
+Geoserver can now handle files outside the data dir anymore
+GeoServerDataDirectory can support prehistoric external data dir
+Map preview now works with projected data
+Scale computation now conform to OGC standard
+GetStyles and PutStyles are now included in the capabilities document
+BaseMap layers no longer overwrite other layers as well 
+
+Based on GeoTools 2.2.3-SNAPSHOT
+
+
 GeoServer 1.4.0
 -------------------
 

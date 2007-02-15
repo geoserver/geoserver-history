@@ -4,16 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses.map;
 
+import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
+import org.vfny.geoserver.wms.responses.DefaultRasterMapProducerTest;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-
 import javax.imageio.ImageIO;
-
-import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
-import org.vfny.geoserver.wms.responses.DefaultRasterMapProducerTest;
-
 
 
 /**
@@ -29,11 +26,10 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
     public GIFMapProducerTest() {
         super();
     }
-    
-    protected DefaultRasterMapProducer getProducerInstance(){
-    	return new GIFMapProducer("image/gif"); //DJB: set content enconding correctly
+
+    protected DefaultRasterMapProducer getProducerInstance() {
+        return new GIFMapProducer("image/gif"); //DJB: set content enconding correctly
     }
-    
 
     /**
      * DOCUMENT ME!
@@ -41,36 +37,35 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
      * @param testName DOCUMENT ME!
      * @param producer DOCUMENT ME!
      */
-    protected void assertNotBlank(String testName,
-        DefaultRasterMapProducer producer){
-    	
+    protected void assertNotBlank(String testName, DefaultRasterMapProducer producer) {
         BufferedImage image = producer.getImage();
-        
+
         BufferedImage product = null;
         File tmpGif = null;
+
         try {
-        		tmpGif = File.createTempFile(testName,".gif");
-                        tmpGif.deleteOnExit();
-		
-			//tmpGif.deleteOnExit();
-			OutputStream out = new FileOutputStream(tmpGif);
-			producer.writeTo(out);
-			out.flush();
-			out.close();
-			
-			product = ImageIO.read(tmpGif);
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-				
-		int w = image.getWidth();
+            tmpGif = File.createTempFile(testName, ".gif");
+            tmpGif.deleteOnExit();
+
+            //tmpGif.deleteOnExit();
+            OutputStream out = new FileOutputStream(tmpGif);
+            producer.writeTo(out);
+            out.flush();
+            out.close();
+
+            product = ImageIO.read(tmpGif);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+
+        int w = image.getWidth();
         int h = image.getHeight();
-        
-		assertNotNull(product);
+
+        assertNotNull(product);
         assertEquals(w, product.getWidth());
         assertEquals(h, product.getHeight());
-        
+
         System.out.println("width=" + w + ", height=" + h);
 
         showImage(testName, product);

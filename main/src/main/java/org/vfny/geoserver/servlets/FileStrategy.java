@@ -1,3 +1,7 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.servlets;
 
 import java.io.BufferedInputStream;
@@ -9,8 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Logger;
-
 import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * A safe ServiceConfig strategy that uses a temporary file until writeTo
@@ -20,11 +24,10 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Revision: 1.23 $
  */
 public class FileStrategy implements ServiceStrategy {
-	
-	public String getId() {
-		return "FILE";
-	}
-	
+    public String getId() {
+        return "FILE";
+    }
+
     /** Buffer size used to copy safe to response.getOutputStream() */
     private static int BUFF_SIZE = 4096;
 
@@ -32,8 +35,7 @@ public class FileStrategy implements ServiceStrategy {
     static int sequence = 0;
 
     /** Class logger */
-    protected static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.servlets");
+    protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
 
     /** Response being targeted */
     private HttpServletResponse response;
@@ -46,7 +48,7 @@ public class FileStrategy implements ServiceStrategy {
 
     /**
      * Provides a outputs stream on a temporary file.
-     * 
+     *
      * <p>
      * I have changed this to use a BufferedWriter to agree with SpeedStrategy.
      * </p>
@@ -65,19 +67,22 @@ public class FileStrategy implements ServiceStrategy {
         // - ProcessID is traditional, I don't know how to find that in Java
         this.response = response;
         sequence++;
+
         // lets check for file permissions first so we can throw a clear error
         try {
-        	temp = File.createTempFile("wfs" + sequence, "tmp");
-        	if (!temp.canRead() || !temp.canWrite())
-        	{
-        		String errorMsg = "Temporary-file permission problem for location: " + temp.getPath();
-            	throw new IOException(errorMsg);
-        	}
+            temp = File.createTempFile("wfs" + sequence, "tmp");
+
+            if (!temp.canRead() || !temp.canWrite()) {
+                String errorMsg = "Temporary-file permission problem for location: "
+                    + temp.getPath();
+                throw new IOException(errorMsg);
+            }
         } catch (IOException e) {
-        	String errorMsg = "Possible file permission problem. Root cause: \n" + e.toString();
-        	IOException newE = new IOException(errorMsg);
-        	throw newE;
+            String errorMsg = "Possible file permission problem. Root cause: \n" + e.toString();
+            IOException newE = new IOException(errorMsg);
+            throw newE;
         }
+
         temp.deleteOnExit();
         safe = new BufferedOutputStream(new FileOutputStream(temp));
 
@@ -91,12 +96,10 @@ public class FileStrategy implements ServiceStrategy {
      * @throws IllegalStateException if flush is called before getDestination
      */
     public void flush() throws IOException {
-        if ((temp == null) || (response == null) || (safe == null)
-                || !temp.exists()) {
-            LOGGER.fine("temp is " + temp + ", response is " + response
-                + " safe is " + safe + (temp != null ? ", temp exists " + temp.exists(): ""));
-            throw new IllegalStateException(
-                "flush should only be called after getDestination");
+        if ((temp == null) || (response == null) || (safe == null) || !temp.exists()) {
+            LOGGER.fine("temp is " + temp + ", response is " + response + " safe is " + safe
+                + ((temp != null) ? (", temp exists " + temp.exists()) : ""));
+            throw new IllegalStateException("flush should only be called after getDestination");
         }
 
         InputStream copy = null;
@@ -169,9 +172,8 @@ public class FileStrategy implements ServiceStrategy {
         temp = null;
         response = null;
     }
-    
+
     public Object clone() throws CloneNotSupportedException {
-    		return new FileStrategy(); 
+        return new FileStrategy();
     }
-    
 }

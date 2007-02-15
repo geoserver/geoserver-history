@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
+import org.vfny.geoserver.wfs.Query;
+import org.vfny.geoserver.wfs.servlets.WFService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
-
-import org.vfny.geoserver.wfs.Query;
-import org.vfny.geoserver.wfs.servlets.WFService;
 
 
 /**
@@ -27,8 +26,7 @@ import org.vfny.geoserver.wfs.servlets.WFService;
  */
 public class FeatureRequest extends WFSRequest {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /**
      * The maximum returned if the user requests no limit of features at all,
@@ -61,14 +59,13 @@ public class FeatureRequest extends WFSRequest {
     /** Creates a full list of queries */
     protected List queries = new ArrayList();
 
-    
     /**
      * Creates a new GetFeature request.
-     * 
+     *
      * @param service The wfs service handling the request.
      */
     public FeatureRequest(WFService service) {
-    		super("GetFeature", service);
+        super("GetFeature", service);
     }
 
     /**
@@ -276,8 +273,7 @@ public class FeatureRequest extends WFSRequest {
 
         if ((this.outputFormat == null) && (frequest.getOutputFormat() == null)) {
             isEqual = isEqual && true;
-        } else if ((this.outputFormat == null)
-                || (frequest.getOutputFormat() == null)) {
+        } else if ((this.outputFormat == null) || (frequest.getOutputFormat() == null)) {
             isEqual = false;
         } else if (frequest.getOutputFormat().equals(outputFormat)) {
             isEqual = isEqual && true;
@@ -303,8 +299,7 @@ public class FeatureRequest extends WFSRequest {
 
                 break;
             } else {
-                if (((Query) internalIterator.next()).equals(
-                            (Query) externalIterator.next())) {
+                if (((Query) internalIterator.next()).equals((Query) externalIterator.next())) {
                     LOGGER.finest("query properties match: " + isEqual);
                 } else {
                     isEqual = false;

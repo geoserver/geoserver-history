@@ -4,12 +4,8 @@
  */
 package org.vfny.geoserver.requests;
 
-import java.util.Map;
-import java.util.logging.Logger;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.testdata.MockUtils;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
@@ -18,6 +14,8 @@ import org.vfny.geoserver.wfs.requests.DescribeRequest;
 import org.vfny.geoserver.wfs.requests.readers.DescribeKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.DescribeXmlReader;
 import org.vfny.geoserver.wfs.servlets.Describe;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -29,11 +27,11 @@ import org.vfny.geoserver.wfs.servlets.Describe;
  */
 public class DescribeSuiteTest extends RequestTestCase {
     /** Standard logging instance */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /** Describe request */
     private Describe service = null;
+
     /** Base request for comparison */
     private DescribeRequest[] baseRequest = new DescribeRequest[10];
 
@@ -53,14 +51,14 @@ public class DescribeSuiteTest extends RequestTestCase {
     }
 
     public void setUp() {
-    		WFS wfs = new WFS(MockUtils.newWfsDto());
-    		
-    		service = new Describe(wfs);
-    		
+        WFS wfs = new WFS(MockUtils.newWfsDto());
+
+        service = new Describe(wfs);
+
         baseRequest[0] = new DescribeRequest(service);
         baseRequest[0].addFeatureType("rail");
         baseRequest[0].setVersion("0.0.15");
-        
+
         baseRequest[1] = new DescribeRequest(service);
         baseRequest[1].addFeatureType("rail");
         baseRequest[1].addFeatureType("roads");
@@ -72,7 +70,7 @@ public class DescribeSuiteTest extends RequestTestCase {
     }
 
     protected KvpRequestReader getKvpReader(Map kvps) {
-        return new DescribeKvpReader(kvps,service);
+        return new DescribeKvpReader(kvps, service);
     }
 
     /**

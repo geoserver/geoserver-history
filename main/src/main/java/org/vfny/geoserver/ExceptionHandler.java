@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver;
 
+
 /**
  * DOCUMENT ME!
  *
@@ -48,8 +49,7 @@ public interface ExceptionHandler {
      *
      * @return DOCUMENT ME!
      */
-    public ServiceException newServiceException(Throwable e, String preMessage,
-        String locator);
+    public ServiceException newServiceException(Throwable e, String preMessage, String locator);
 
     /*# ServiceException lnkServiceException; */
 }

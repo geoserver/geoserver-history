@@ -4,13 +4,11 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
+import org.vfny.geoserver.wfs.servlets.WFService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
-
-import org.vfny.geoserver.wfs.servlets.WFService;
-
 
 
 /**
@@ -22,8 +20,7 @@ import org.vfny.geoserver.wfs.servlets.WFService;
  */
 public class DescribeRequest extends WFSRequest {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.wfs");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wfs");
 
     /** Flags whether or not all feature types were requested */
     protected boolean allRequested = true;
@@ -34,13 +31,13 @@ public class DescribeRequest extends WFSRequest {
 
     /**
      * Creates a new DescribeFeatureType request.
-     * 
+     *
      * @param service The wfs service handling the request.
      */
     public DescribeRequest(WFService service) {
-    		super("DescribeFeatureType", service);
+        super("DescribeFeatureType", service);
     }
-    
+
     /**
      * Return request type.
      *
@@ -182,8 +179,7 @@ public class DescribeRequest extends WFSRequest {
 
     public int hashCode() {
         int result = super.hashCode();
-        result = (23 * result)
-            + ((featureTypes == null) ? 0 : featureTypes.hashCode());
+        result = (23 * result) + ((featureTypes == null) ? 0 : featureTypes.hashCode());
 
         return result;
     }

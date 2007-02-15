@@ -4,19 +4,7 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.xml.transform.TransformerException;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.filter.FilterTransformer;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
@@ -32,18 +20,27 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Logger;
+import javax.xml.transform.TransformerException;
 
 
 /**
  * XMLConfigWriter purpose.
- * 
+ *
  * <p>
  * This class is intended to store a configuration to be written and complete
  * the output to XML.
  * </p>
- * 
+ *
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
@@ -51,12 +48,11 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.global");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
     /**
      * XMLConfigWriter constructor.
-     * 
+     *
      * <p>
      * Should never be called.
      * </p>
@@ -64,8 +60,7 @@ public class XMLConfigWriter {
     private XMLConfigWriter() {
     }
 
-    public static void store(DataDTO data, File root)
-        throws ConfigurationException {
+    public static void store(DataDTO data, File root) throws ConfigurationException {
         LOGGER.fine("In method store DataDTO");
 
         if (data == null) {
@@ -73,15 +68,16 @@ public class XMLConfigWriter {
         }
 
         WriterUtils.initFile(root, true);
-		boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
-		//We're just checking if it's actually a data_dir, not trying to
-		//to do backwards compatibility.  So if an old data_dir is made in
-		//the old way, on save it'll come to the new way.
-		File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
+
+        boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
+
+        //We're just checking if it's actually a data_dir, not trying to
+        //to do backwards compatibility.  So if an old data_dir is made in
+        //the old way, on save it'll come to the new way.
+        File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
         File configDir = WriterUtils.initFile(fileDir, true);
 
-        File catalogFile = WriterUtils.initWriteFile(new File(configDir,
-                    "catalog.xml"), false);
+        File catalogFile = WriterUtils.initWriteFile(new File(configDir, "catalog.xml"), false);
 
         try {
             FileWriter fw = new FileWriter(catalogFile);
@@ -90,19 +86,21 @@ public class XMLConfigWriter {
         } catch (IOException e) {
             throw new ConfigurationException("Store" + root, e);
         }
-		File dataDir;
-		if (!inDataDir) { 
-		    dataDir = WriterUtils.initFile(new File(root, "data/"), true);
-		} else {
-		    dataDir = root;
-		}
-        File featureTypeDir = WriterUtils.initFile(new File(dataDir,
-                    "featureTypes/"), true);
+
+        File dataDir;
+
+        if (!inDataDir) {
+            dataDir = WriterUtils.initFile(new File(root, "data/"), true);
+        } else {
+            dataDir = root;
+        }
+
+        File featureTypeDir = WriterUtils.initFile(new File(dataDir, "featureTypes/"), true);
         storeFeatures(featureTypeDir, data);
     }
 
-    public static void store(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
-        File root) throws ConfigurationException {
+    public static void store(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer, File root)
+        throws ConfigurationException {
         LOGGER.finest("In method store WMSDTO,WFSDTO, GeoServerDTO");
 
         if (geoServer == null) {
@@ -112,14 +110,14 @@ public class XMLConfigWriter {
 
         WriterUtils.initFile(root, true);
 
-	boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
-	//We're just checking if it's actually a data_dir, not trying to
-	//to do backwards compatibility.  So if an old data_dir is made in
-	//the old way, on save it'll come to the new way.
-	File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
+        boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
+
+        //We're just checking if it's actually a data_dir, not trying to
+        //to do backwards compatibility.  So if an old data_dir is made in
+        //the old way, on save it'll come to the new way.
+        File fileDir = inDataDir ? root : new File(root, "WEB-INF/");
         File configDir = WriterUtils.initFile(fileDir, true);
-        File configFile = WriterUtils.initWriteFile(new File(configDir,
-                    "services.xml"), false);
+        File configFile = WriterUtils.initWriteFile(new File(configDir, "services.xml"), false);
 
         try {
             FileWriter fw = new FileWriter(configFile);
@@ -130,15 +128,15 @@ public class XMLConfigWriter {
         }
     }
 
-    public static void store(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
-        DataDTO data, File root) throws ConfigurationException {
+    public static void store(WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer, DataDTO data, File root)
+        throws ConfigurationException {
         store(wms, wfs, geoServer, root);
         store(data, root);
     }
 
     /**
      * storeServices purpose.
-     * 
+     *
      * <p>
      * Writes the services.xml file from the model in memory.
      * </p>
@@ -150,8 +148,8 @@ public class XMLConfigWriter {
      *
      * @throws ConfigurationException When an IO exception occurs.
      */
-    protected static void storeServices(WriterHelper cw, WMSDTO wms,
-        WFSDTO wfs, GeoServerDTO geoServer) throws ConfigurationException {
+    protected static void storeServices(WriterHelper cw, WMSDTO wms, WFSDTO wfs,
+        GeoServerDTO geoServer) throws ConfigurationException {
         LOGGER.finer("In method storeServices");
         cw.writeln("<?config.xml version=\"1.0\" encoding=\"UTF-8\"?>");
         cw.comment("Service level configuration");
@@ -163,14 +161,14 @@ public class XMLConfigWriter {
             cw.openTag("global");
 
             if (g.getLoggingLevel() != null) {
-                cw.comment(
-                    "Defines the logging level.  Common options are SEVERE,\n"
+                cw.comment("Defines the logging level.  Common options are SEVERE,\n"
                     + "WARNING, INFO, CONFIG, FINER, FINEST, in order of\n"
                     + "Increasing statements logged.");
                 cw.textTag("loggingLevel", g.getLoggingLevel().getName());
             }
 
-            cw.valueTag("loggingToFile",g.getLoggingToFile()+"");
+            cw.valueTag("loggingToFile", g.getLoggingToFile() + "");
+
             if (g.getLogLocation() != null) {
                 cw.textTag("logLocation", g.getLogLocation());
             }
@@ -187,18 +185,15 @@ public class XMLConfigWriter {
             cw.comment("Whether newlines and indents should be returned in \n"
                 + "XML responses.  Default is false");
             cw.valueTag("verbose", "" + g.isVerbose());
-            cw.comment(
-                "Whether the Service Exceptions returned to clients should contain\n"
+            cw.comment("Whether the Service Exceptions returned to clients should contain\n"
                 + "full java stack traces (useful for debugging). ");
             cw.valueTag("verboseExceptions", "" + g.isVerboseExceptions());
-            cw.comment(
-                "Sets the max number of decimal places past the zero returned in\n"
+            cw.comment("Sets the max number of decimal places past the zero returned in\n"
                 + "a GetFeature response.  Default is 4");
             cw.valueTag("numDecimals", "" + g.getNumDecimals());
 
             if (g.getCharSet() != null) {
-                cw.comment(
-                    "Sets the global character set.  This could use some more testing\n"
+                cw.comment("Sets the global character set.  This could use some more testing\n"
                     + "from international users, but what it does is sets the encoding\n"
                     + "globally for all postgis database connections (the charset tag\n"
                     + "in FeatureTypeConfig), as well as specifying the encoding in the return\n"
@@ -210,33 +205,28 @@ public class XMLConfigWriter {
             }
 
             if ((g.getSchemaBaseUrl() != null) && (g.getSchemaBaseUrl() != "")) {
-                cw.comment(
-                    "Define a base url for the location of the wfs schemas.\n"
+                cw.comment("Define a base url for the location of the wfs schemas.\n"
                     + "By default GeoServer loads and references its own at\n"
                     + "<URL>/data/capabilities. Uncomment to enable.  The\n"
-                    + "standalone Tomcat server needs SchemaBaseUrl defined\n"
-                    + "for validation.");
+                    + "standalone Tomcat server needs SchemaBaseUrl defined\n" + "for validation.");
                 cw.textTag("SchemaBaseUrl", g.getSchemaBaseUrl());
             }
-            
+
             if ((g.getProxyBaseUrl() != null) && (g.getSchemaBaseUrl() != "")) {
-                cw.comment(
-                    "Define a base url for the geoserver application.\n" +
-                    "By default GeoServer uses the local one, but it may " +
-                            "be wrong if you're using a reverse proxy in front of Geoserver");
+                cw.comment("Define a base url for the geoserver application.\n"
+                    + "By default GeoServer uses the local one, but it may "
+                    + "be wrong if you're using a reverse proxy in front of Geoserver");
                 cw.textTag("ProxyBaseUrl", g.getProxyBaseUrl());
             }
 
             if ((g.getAdminUserName() != null) && (g.getAdminUserName() != "")) {
-                cw.comment(
-                    "Defines the user name of the administrator for log in\n"
+                cw.comment("Defines the user name of the administrator for log in\n"
                     + "to the web based administration tool.");
                 cw.textTag("adminUserName", g.getAdminUserName());
             }
 
             if ((g.getAdminPassword() != null) && (g.getAdminPassword() != "")) {
-                cw.comment(
-                    "Defines the password of the administrator for log in\n"
+                cw.comment("Defines the password of the administrator for log in\n"
                     + "to the web based administration tool.");
                 cw.textTag("adminPassword", g.getAdminPassword());
             }
@@ -268,7 +258,7 @@ public class XMLConfigWriter {
 
     /**
      * storeContact purpose.
-     * 
+     *
      * <p>
      * Writes a contact into the WriterUtils provided from the ContactConfig
      * provided.
@@ -301,14 +291,14 @@ public class XMLConfigWriter {
             cw.textTag("ContactVoiceTelephone", c.getContactVoice());
             cw.textTag("ContactFacsimileTelephone", c.getContactFacsimile());
             cw.textTag("ContactElectronicMailAddress", c.getContactEmail());
-			cw.textTag("ContactOnlineResource", c.getOnlineResource());
+            cw.textTag("ContactOnlineResource", c.getOnlineResource());
             cw.closeTag("ContactInformation");
         }
     }
 
     /**
      * storeService purpose.
-     * 
+     *
      * <p>
      * Writes a service into the WriterUtils provided from the WFS or WMS
      * object provided.
@@ -327,7 +317,7 @@ public class XMLConfigWriter {
         ServiceDTO s = null;
         String u = null;
         String t = "";
-        
+
         boolean fBounds = false;
         boolean srsXmlStyle = false;
         int serviceLevel = 0;
@@ -341,7 +331,7 @@ public class XMLConfigWriter {
             WFSDTO w = (WFSDTO) obj;
             s = w.getService();
             t = "WFS";
-            
+
             fBounds = w.isFeatureBounding();
             srsXmlStyle = w.isSrsXmlStyle();
             serviceLevel = w.getServiceLevel();
@@ -362,8 +352,7 @@ public class XMLConfigWriter {
         atrs.put("type", t);
         atrs.put("enabled", s.isEnabled() + "");
         cw.openTag("service", atrs);
-        cw.comment(
-            "ServiceDTO elements, needed for the capabilities document\n"
+        cw.comment("ServiceDTO elements, needed for the capabilities document\n"
             + "Title and OnlineResource are the two required");
 
         if ((s.getName() != null) && (s.getName() != "")) {
@@ -377,14 +366,16 @@ public class XMLConfigWriter {
         if ((s.getAbstract() != null) && (s.getAbstract() != "")) {
             cw.textTag("abstract", s.getAbstract());
         }
-		if (s.getMetadataLink() != null) {
-			MetaDataLink ml = s.getMetadataLink();
-			Map mlAttr = new HashMap();
-			mlAttr.put("about",ml.getAbout());
-			mlAttr.put("type",ml.getType());
-			mlAttr.put("metadataType",ml.getMetadataType());
-			cw.textTag("metadataLink", mlAttr, ml.getContent());
-		}
+
+        if (s.getMetadataLink() != null) {
+            MetaDataLink ml = s.getMetadataLink();
+            Map mlAttr = new HashMap();
+            mlAttr.put("about", ml.getAbout());
+            mlAttr.put("type", ml.getType());
+            mlAttr.put("metadataType", ml.getMetadataType());
+            cw.textTag("metadataLink", mlAttr, ml.getContent());
+        }
+
         if (s.getKeywords().length != 0) {
             cw.openTag("keywords");
 
@@ -403,8 +394,7 @@ public class XMLConfigWriter {
             cw.textTag("fees", s.getFees());
         }
 
-        if ((s.getAccessConstraints() != null)
-                && (s.getAccessConstraints() != "")) {
+        if ((s.getAccessConstraints() != null) && (s.getAccessConstraints() != "")) {
             cw.textTag("accessConstraints", s.getAccessConstraints());
         }
 
@@ -433,40 +423,42 @@ public class XMLConfigWriter {
             cw.textTag("svgRenderer", svgRenderer);
         }
 
-        if (baseMapLayers != null && baseMapStyles != null) {
-        	cw.openTag("BaseMapGroups");
-        	// for each title/layer combo, write it out
-        	String[] titles = (String[]) baseMapLayers.keySet().toArray(new String[0]);
-        	for (int i=0; i<titles.length; i++)	
-        	{
-        		HashMap titleMap = new HashMap();
-        		titleMap.put("baseMapTitle", titles[i]);
-        		cw.openTag("BaseMapGroup", titleMap);
-        		cw.textTag("baseMapLayers", baseMapLayers.get(titles[i]).toString());
-        		cw.textTag("baseMapStyles", baseMapStyles.get(titles[i]).toString());
-        		cw.closeTag("BaseMapGroup");
-        	}
-        	cw.closeTag("BaseMapGroups");
+        if ((baseMapLayers != null) && (baseMapStyles != null)) {
+            cw.openTag("BaseMapGroups");
+
+            // for each title/layer combo, write it out
+            String[] titles = (String[]) baseMapLayers.keySet().toArray(new String[0]);
+
+            for (int i = 0; i < titles.length; i++) {
+                HashMap titleMap = new HashMap();
+                titleMap.put("baseMapTitle", titles[i]);
+                cw.openTag("BaseMapGroup", titleMap);
+                cw.textTag("baseMapLayers", baseMapLayers.get(titles[i]).toString());
+                cw.textTag("baseMapStyles", baseMapStyles.get(titles[i]).toString());
+                cw.closeTag("BaseMapGroup");
+            }
+
+            cw.closeTag("BaseMapGroups");
         }
-        
+
         if (obj instanceof WMSDTO) {
             cw.textTag("svgAntiAlias", svgAntiAlias + "");
         }
 
         if ((s.getStrategy() != null) && !"".equals(s.getStrategy())) {
-        		cw.textTag("serviceStrategy", s.getStrategy());
+            cw.textTag("serviceStrategy", s.getStrategy());
         }
-        
+
         if (s.getPartialBufferSize() != 0) {
-        		cw.textTag("partialBufferSize", s.getPartialBufferSize() + "");
+            cw.textTag("partialBufferSize", s.getPartialBufferSize() + "");
         }
-        
+
         cw.closeTag("service");
     }
 
     /**
      * storeCatalog purpose.
-     * 
+     *
      * <p>
      * Writes a catalog into the WriterUtils provided from Data provided in
      * memory.
@@ -486,8 +478,7 @@ public class XMLConfigWriter {
         //DJB: this used to not put in a datastores tag if there were none defined.
         //     this caused the loader to blow up.  I changed it so it puts an empty <datastore> here!
         cw.openTag("datastores");
-        cw.comment(
-            "a datastore configuration element serves as a common data source connection\n"
+        cw.comment("a datastore configuration element serves as a common data source connection\n"
             + "parameters repository for all featuretypes it holds.");
 
         Iterator i = data.getDataStores().keySet().iterator();
@@ -522,8 +513,7 @@ public class XMLConfigWriter {
 
         //DJB: since datastore screws up if the tag is missing, I'm fixing it here too
         cw.openTag("styles");
-        cw.comment(
-            "Defines the style ids and file name to be used by the wms.");
+        cw.comment("Defines the style ids and file name to be used by the wms.");
 
         i = data.getStyles().keySet().iterator();
 
@@ -543,7 +533,7 @@ public class XMLConfigWriter {
 
     /**
      * storeDataStore purpose.
-     * 
+     *
      * <p>
      * Writes a DataStoreInfo into the WriterUtils provided.
      * </p>
@@ -600,7 +590,7 @@ public class XMLConfigWriter {
 
     /**
      * storeNameSpace purpose.
-     * 
+     *
      * <p>
      * Writes a NameSpaceInfoDTO into the WriterUtils provided.
      * </p>
@@ -635,7 +625,7 @@ public class XMLConfigWriter {
 
     /**
      * storeStyle purpose.
-     * 
+     *
      * <p>
      * Writes a StyleDTO into the WriterUtils provided.
      * </p>
@@ -672,7 +662,7 @@ public class XMLConfigWriter {
 
     /**
      * storeStyle purpose.
-     * 
+     *
      * <p>
      * Sets up writing FeatureTypes into their Directories.
      * </p>
@@ -693,20 +683,19 @@ public class XMLConfigWriter {
 
         while (i.hasNext()) {
             String s = (String) i.next();
-            FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) data.getFeaturesTypes()
-                                                             .get(s);
+            FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) data.getFeaturesTypes().get(s);
 
             if (ft != null) {
-            	String ftDirName = ft.getDirName();
-            	
-            	try {	// encode the file name (this is to catch colons in FT names)
-            		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
-					LOGGER.info("Writing encoded URL: "+ftDirName);
-				} catch (UnsupportedEncodingException e1) {
-					throw new ConfigurationException(e1);
-				}
-                File dir2 = WriterUtils.initWriteFile(new File(dir,
-                            ftDirName), true);
+                String ftDirName = ft.getDirName();
+
+                try { // encode the file name (this is to catch colons in FT names)
+                    ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
+                    LOGGER.info("Writing encoded URL: " + ftDirName);
+                } catch (UnsupportedEncodingException e1) {
+                    throw new ConfigurationException(e1);
+                }
+
+                File dir2 = WriterUtils.initWriteFile(new File(dir, ftDirName), true);
 
                 storeFeature(ft, dir2);
 
@@ -746,12 +735,14 @@ public class XMLConfigWriter {
             while ((fti == null) && i.hasNext()) {
                 FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) i.next();
                 String ftDirName = ft.getDirName();
-                try {	// encode the file name (this is to catch colons in FT names)
-            		ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
-					LOGGER.info("Decoded URL: "+ftDirName);
-				} catch (UnsupportedEncodingException e1) {
-					throw new ConfigurationException(e1);
-				}
+
+                try { // encode the file name (this is to catch colons in FT names)
+                    ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
+                    LOGGER.info("Decoded URL: " + ftDirName);
+                } catch (UnsupportedEncodingException e1) {
+                    throw new ConfigurationException(e1);
+                }
+
                 if (ftDirName.equals(fa[j].getName())) {
                     fti = ft;
                 }
@@ -783,7 +774,7 @@ public class XMLConfigWriter {
 
     /**
      * storeStyle purpose.
-     * 
+     *
      * <p>
      * Writes a FeatureTypes into it's Directory.
      * </p>
@@ -847,19 +838,19 @@ public class XMLConfigWriter {
 
                 cw.textTag("keywords", s);
             }
-            
+
             if ((ft.getMetadataLinks() != null) && (ft.getMetadataLinks().size() != 0)) {
                 cw.openTag("metadataLinks");
-                
+
                 for (Iterator it = ft.getMetadataLinks().iterator(); it.hasNext();) {
                     MetaDataLink ml = (MetaDataLink) it.next();
                     Map mlAttr = new HashMap();
-                    mlAttr.put("about",ml.getAbout());
-                    mlAttr.put("type",ml.getType());
-                    mlAttr.put("metadataType",ml.getMetadataType());
+                    mlAttr.put("about", ml.getAbout());
+                    mlAttr.put("type", ml.getType());
+                    mlAttr.put("metadataType", ml.getMetadataType());
                     cw.textTag("metadataLink", mlAttr, ml.getContent());
                 }
-                
+
                 cw.closeTag("metadataLinks");
             }
 
@@ -883,23 +874,25 @@ public class XMLConfigWriter {
             }
 
             if ((ft.getDefaultStyle() != null) && (ft.getDefaultStyle() != "")) {
-                cw.comment(
-                    "the default style this FeatureTypeInfoDTO can be represented by.\n"
+                cw.comment("the default style this FeatureTypeInfoDTO can be represented by.\n"
                     + "at least must contain the \"default\" attribute ");
                 m = new HashMap();
                 m.put("default", ft.getDefaultStyle());
                 cw.attrTag("styles", m);
             }
-            
+
             m = new HashMap();
+
             if (ft.getCacheMaxAge() != null) {
-            	m.put("maxage",ft.getCacheMaxAge());
+                m.put("maxage", ft.getCacheMaxAge());
             }
+
             if (ft.isCachingEnabled()) {
-            	m.put("enabled", "true");
+                m.put("enabled", "true");
             } else {
-            	m.put("enabled", "false");
+                m.put("enabled", "false");
             }
+
             cw.attrTag("cacheinfo", m);
 
             if (ft.getDefinitionQuery() != null) {
@@ -908,6 +901,7 @@ public class XMLConfigWriter {
                 /*
                  * @REVISIT: strongly test this works.
                  */
+
                 /*
                    StringWriter sw = new StringWriter();
                    org.geotools.filter.XMLEncoder xe = new org.geotools.filter.XMLEncoder(sw);
@@ -987,17 +981,16 @@ public class XMLConfigWriter {
         cw.openTag("xs:sequence");
 
         for (int i = 0; i < fs.getSchemaAttributes().size(); i++) {
-            AttributeTypeInfoDTO ati = (AttributeTypeInfoDTO) fs.getSchemaAttributes()
-                                                                .get(i);
+            AttributeTypeInfoDTO ati = (AttributeTypeInfoDTO) fs.getSchemaAttributes().get(i);
             m = new HashMap();
             m.put("nillable", "" + ati.isNillable());
             m.put("minOccurs", "" + ati.getMinOccurs());
             m.put("maxOccurs", "" + ati.getMaxOccurs());
 
             NameSpaceTranslator nst_xs = NameSpaceTranslatorFactory.getInstance()
-                                                                 .getNameSpaceTranslator("xs");
+                                                                   .getNameSpaceTranslator("xs");
             NameSpaceTranslator nst_gml = NameSpaceTranslatorFactory.getInstance()
-                                                                 .getNameSpaceTranslator("gml");
+                                                                    .getNameSpaceTranslator("gml");
 
             if (!ati.isComplex()) {
                 if (ati.getName() == ati.getType()) {
@@ -1018,10 +1011,10 @@ public class XMLConfigWriter {
 
                     if (nse == null) {
                         nse = nst_gml.getElement(ati.getType());
-                        r = nse.getQualifiedTypeDefName();	// Def
+                        r = nse.getQualifiedTypeDefName(); // Def
+                    } else {
+                        r = nse.getQualifiedTypeRefName(); // Ref
                     }
-                    else
-                    	r = nse.getQualifiedTypeRefName();	// Ref
 
                     m.put("type", r);
                 }
@@ -1041,118 +1034,113 @@ public class XMLConfigWriter {
         cw.closeTag("xs:complexType");
     }
 
-
-
-/**
- * WriterUtils purpose.
- * 
- * <p>
- * This is a static class which is used by XMLConfigWriter for File IO
- * validation tests.
- * </p>
- * 
- * <p></p>
- *
- * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.32 2004/09/20 20:43:37 cholmesny Exp $
- */
-public static class WriterUtils {
-    /** Used internally to create log information to detect errors. */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.global");
-
     /**
-     * WriterUtils constructor.
-     * 
+     * WriterUtils purpose.
+     *
      * <p>
-     * Static class, should never be used.
-     * </p>
-     */
-    private WriterUtils() {
-    }
-
-    /**
-     * initFile purpose.
-     * 
-     * <p>
-     * Checks to ensure the handle exists. If the handle is a directory and not
-     * created, it is created
+     * This is a static class which is used by XMLConfigWriter for File IO
+     * validation tests.
      * </p>
      *
-     * @param f the File handle
-     * @param isDir true when the handle is intended to be a directory.
+     * <p></p>
      *
-     * @return The file passed in.
-     *
-     * @throws ConfigurationException When an IO error occurs or the handle is
-     *         invalid.
+     * @author dzwiers, Refractions Research, Inc.
+     * @version $Id: XMLConfigWriter.java,v 1.32 2004/09/20 20:43:37 cholmesny Exp $
      */
-    public static File initFile(File f, boolean isDir)
-        throws ConfigurationException {
-        if (!f.exists()) {
-            LOGGER.finer("Creating File: " + f.toString());
+    public static class WriterUtils {
+        /** Used internally to create log information to detect errors. */
+        private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
-            if (isDir) {
-                if (!f.mkdir()) {
-                    throw new ConfigurationException(
-                        "Path specified does not have a valid file.\n" + f
-                        + "\n\n");
-                }
-            } else {
-                try {
-                	LOGGER.severe("Attempting to create file:" + f.getAbsolutePath());
-                    if (!f.createNewFile()) {
+        /**
+         * WriterUtils constructor.
+         *
+         * <p>
+         * Static class, should never be used.
+         * </p>
+         */
+        private WriterUtils() {
+        }
+
+        /**
+         * initFile purpose.
+         *
+         * <p>
+         * Checks to ensure the handle exists. If the handle is a directory and not
+         * created, it is created
+         * </p>
+         *
+         * @param f the File handle
+         * @param isDir true when the handle is intended to be a directory.
+         *
+         * @return The file passed in.
+         *
+         * @throws ConfigurationException When an IO error occurs or the handle is
+         *         invalid.
+         */
+        public static File initFile(File f, boolean isDir)
+            throws ConfigurationException {
+            if (!f.exists()) {
+                LOGGER.finer("Creating File: " + f.toString());
+
+                if (isDir) {
+                    if (!f.mkdir()) {
                         throw new ConfigurationException(
-                            "Path specified does not have a valid file.\n" + f
-                            + "\n\n");
+                            "Path specified does not have a valid file.\n" + f + "\n\n");
                     }
-                } catch (IOException e) {
-                    throw new ConfigurationException(e);
+                } else {
+                    try {
+                        LOGGER.severe("Attempting to create file:" + f.getAbsolutePath());
+
+                        if (!f.createNewFile()) {
+                            throw new ConfigurationException(
+                                "Path specified does not have a valid file.\n" + f + "\n\n");
+                        }
+                    } catch (IOException e) {
+                        throw new ConfigurationException(e);
+                    }
                 }
             }
+
+            if (isDir && !f.isDirectory()) {
+                throw new ConfigurationException("Path specified does not have a valid file.\n" + f
+                    + "\n\n");
+            }
+
+            if (!isDir && !f.isFile()) {
+                throw new ConfigurationException("Path specified does not have a valid file.\n" + f
+                    + "\n\n");
+            }
+
+            LOGGER.finer("File is valid: " + f);
+
+            return f;
         }
 
-        if (isDir && !f.isDirectory()) {
-            throw new ConfigurationException(
-                "Path specified does not have a valid file.\n" + f + "\n\n");
+        /**
+         * initFile purpose.
+         *
+         * <p>
+         * Checks to ensure the handle exists and can be writen to. If the handle
+         * is a directory and not created, it is created
+         * </p>
+         *
+         * @param f the File handle
+         * @param isDir true when the handle is intended to be a directory.
+         *
+         * @return The file passed in.
+         *
+         * @throws ConfigurationException When an IO error occurs or the handle is
+         *         invalid.
+         */
+        public static File initWriteFile(File f, boolean isDir)
+            throws ConfigurationException {
+            initFile(f, isDir);
+
+            if (!f.canWrite()) {
+                throw new ConfigurationException("Cannot Write to file: " + f.toString());
+            }
+
+            return f;
         }
-
-        if (!isDir && !f.isFile()) {
-            throw new ConfigurationException(
-                "Path specified does not have a valid file.\n" + f + "\n\n");
-        }
-
-        LOGGER.finer("File is valid: " + f);
-
-        return f;
     }
-
-    /**
-     * initFile purpose.
-     * 
-     * <p>
-     * Checks to ensure the handle exists and can be writen to. If the handle
-     * is a directory and not created, it is created
-     * </p>
-     *
-     * @param f the File handle
-     * @param isDir true when the handle is intended to be a directory.
-     *
-     * @return The file passed in.
-     *
-     * @throws ConfigurationException When an IO error occurs or the handle is
-     *         invalid.
-     */
-    public static File initWriteFile(File f, boolean isDir)
-        throws ConfigurationException {
-        initFile(f, isDir);
-
-        if (!f.canWrite()) {
-            throw new ConfigurationException("Cannot Write to file: "
-                + f.toString());
-        }
-
-        return f;
-    }
-}
 }

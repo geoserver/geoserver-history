@@ -4,12 +4,11 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import org.vfny.geoserver.wms.GetLegendGraphicProducer;
+import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
-import org.vfny.geoserver.wms.GetLegendGraphicProducer;
-import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
 
 
 /**
@@ -19,8 +18,7 @@ import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
-public class PNGLegendGraphicProducerFactory
-    implements GetLegendGraphicProducerSpi {
+public class PNGLegendGraphicProducerFactory implements GetLegendGraphicProducerSpi {
     /**
      *
      */
@@ -38,10 +36,10 @@ public class PNGLegendGraphicProducerFactory
     /**
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#getSupportedFormats()
      */
-    public Set getSupportedFormats() 
-    {
-    	Set s = new TreeSet();
-    	s.add("image/png");
+    public Set getSupportedFormats() {
+        Set s = new TreeSet();
+        s.add("image/png");
+
         return s;
     }
 
@@ -65,19 +63,17 @@ public class PNGLegendGraphicProducerFactory
     public GetLegendGraphicProducer createLegendProducer(String format)
         throws IllegalArgumentException {
         if (!canProduce(format)) {
-            throw new IllegalArgumentException(format
-                + " not supported by this legend producer");
+            throw new IllegalArgumentException(format + " not supported by this legend producer");
         }
 
         return new PNGLegendGraphicProducer();
     }
-    
+
     /* (non-Javadoc)
-	 * @see org.geotools.factory.Factory#getImplementationHints()
-	 * This just returns java.util.Collections.EMPTY_MAP
-	 */
-	public Map getImplementationHints() {
-		return java.util.Collections.EMPTY_MAP;
-	}
-	
+         * @see org.geotools.factory.Factory#getImplementationHints()
+         * This just returns java.util.Collections.EMPTY_MAP
+         */
+    public Map getImplementationHints() {
+        return java.util.Collections.EMPTY_MAP;
+    }
 }

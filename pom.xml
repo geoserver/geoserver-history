@@ -7,7 +7,7 @@
 	<groupId>org.geoserver</groupId>
 	<artifactId>geoserver</artifactId>
 	<packaging>pom</packaging>
-	<version>1.4.0</version>
+	<version>1.4.1</version>
 	<name>GeoServer</name>
 
 	<organization>
@@ -467,7 +467,7 @@
 			<!--       (activated only on request, jalopy:format)        -->
 			<!--     See developer's guide for automated activation      -->
 			<!-- ======================================================= -->
-			<plugin>
+			<!--plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jalopy-maven-plugin</artifactId>
 				<version>1.0-SNAPSHOT</version>
@@ -490,7 +490,7 @@
 						<version>${project.version}</version>
 					</dependency>
 				</dependencies>
-			</plugin>
+			</plugin-->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -531,7 +531,7 @@
 						<descriptor>release/ext-wfs.xml</descriptor>
 						<descriptor>release/ext-arcsde.xml</descriptor>
 					</descriptors>
-					<finalName>geoserver-1.4.0</finalName>
+					<finalName>geoserver-1.4.1</finalName>
 					<outputDirectory>
 						${project.build.directory}/release
 					</outputDirectory>
@@ -741,6 +741,7 @@
 	</distributionManagement>
 
 	<modules>
+		<module>maven</module>
 		<module>platform</module>
 		<module>data</module>
 		<module>main</module>
@@ -748,13 +749,13 @@
 		<module>wms</module>
 		<module>validation</module>
 		<module>web</module>
-		<module>maven</module>
+		
 		<!--module>release</module-->
 		<module>test</module>
 	</modules>
 
 	<properties>
-		<gs.version>1.4.0</gs.version>
+		<gs.version>1.4.1</gs.version>
 		<gt.version>2.2.3-SNAPSHOT</gt.version>
 	</properties>
 
@@ -768,10 +769,10 @@
 				</property>
 			</activation>
 			<modules>
+				<module>maven</module>
 				<module>platform</module>
 				<module>data</module>
 				<module>main</module>
-				<module>maven</module>
 				<module>wfs</module>
 				<module>wms</module>
 				<module>validation</module>

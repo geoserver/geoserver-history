@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /*
  * Created on Feb 2, 2004
  *
@@ -10,18 +11,19 @@
  */
 package org.vfny.geoserver.action;
 
+
 /**
  * HTMLEncoder purpose.
- * 
+ *
  * <p>
  * This is a class taken from the java.sun.com Developer forums that  can be
  * used to encode/decode a String to/from HTML text.
  * </p>
- * 
+ *
  * <p>
  * Capabilities:
  * </p>
- * 
+ *
  * <ul>
  * <li>
  * encode: Encodes a String into HTML text
@@ -30,7 +32,7 @@ package org.vfny.geoserver.action;
  * decode: Takes an HTML text and decodes it to a normal String
  * </li>
  * </ul>
- * 
+ *
  * <p>
  * Example Use:
  * </p>
@@ -67,17 +69,17 @@ public class HTMLEncoder {
 
                     if ((i + 1) <= val.length()) {
                         res = val.substring(i);
-/*
- * drichard 2005-06-20 : indice should be relative to res :
-                        indice = val.indexOf(';'); // Hasta el ;
- */
+                        /*
+                         * drichard 2005-06-20 : indice should be relative to res :
+                                                indice = val.indexOf(';'); // Hasta el ;
+                         */
                         indice = res.indexOf(';'); // Hasta el ;
 
                         if (indice != -1) {
-/*
- * drichard 2005-06-20 : d should be relative to res :
-                            d = val.charAt(1);
- */
+                            /*
+                             * drichard 2005-06-20 : d should be relative to res :
+                                                        d = val.charAt(1);
+                             */
                             d = res.charAt(1);
 
                             if (d == '#') {
@@ -163,8 +165,8 @@ public class HTMLEncoder {
 
                     break;
 
-                    // This shows up lower in the other numbered cases.
-                    
+                // This shows up lower in the other numbered cases.
+
                 /*case 'á':
                 case 'é':
                 case 'í':
@@ -176,9 +178,8 @@ public class HTMLEncoder {
                 case 'Ó':
                 case 'Ú':
                     buf.append(c + "&acute;");
-
+                
                     break;*/
-
                 case 160:
                 case 161:
                 case 162:

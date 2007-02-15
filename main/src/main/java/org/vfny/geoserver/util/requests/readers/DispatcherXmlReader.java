@@ -2,22 +2,18 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-
 package org.vfny.geoserver.util.requests.readers;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.util.requests.DispatcherHandler;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -30,7 +26,7 @@ import org.xml.sax.XMLReader;
  * from the reader of HttpServletRequest, and its mark should be set and then
  * reset after this reader is done with it.  Nothing else seems to work, for
  * some reason.
- * 
+ *
  * <p>
  * In an ideal, refactored world we would implement our handlers better, and
  * the xml reader could dynamically figure out which handler to pass it to.
@@ -50,8 +46,7 @@ import org.xml.sax.XMLReader;
  */
 public class DispatcherXmlReader {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.readers");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
     /** Handler for request interpretation duties. */
     private DispatcherHandler currentRequest;
@@ -81,12 +76,10 @@ public class DispatcherXmlReader {
             parser.setContentHandler(currentRequest);
             parser.parse(requestSource);
         } catch (SAXException e) {
-            throw new ServiceException(e,
-                "XML request parsing error",
+            throw new ServiceException(e, "XML request parsing error",
                 DispatcherXmlReader.class.getName());
         } catch (IOException e) {
-            throw new ServiceException(e,
-                "XML request input error",
+            throw new ServiceException(e, "XML request input error",
                 DispatcherXmlReader.class.getName());
         }
     }
@@ -95,29 +88,31 @@ public class DispatcherXmlReader {
      * @return The service, WFS,WMS,WCS,etc...
      */
     public String getService() {
-    		return currentRequest.getService();
+        return currentRequest.getService();
     }
-    
+
     /**
      * @return The request, GetCapabilities,GetMap,etc...
      */
     public String getRequest() {
-    		LOGGER.info("getting request type from " + currentRequest);
-    		return currentRequest.getRequest();
+        LOGGER.info("getting request type from " + currentRequest);
+
+        return currentRequest.getRequest();
     }
+
     //JD: kill these
-//    /**
-//     * Returns the guessed request type..
-//     *
-//     * @return Request type.
-//     */
-//    public int getRequestType() {
-//        
-//
-//        return currentRequest.getRequestType();
-//    }
-//
-//    public int getServiceType() {
-//        return currentRequest.getServiceType();
-//    }
+    //    /**
+    //     * Returns the guessed request type..
+    //     *
+    //     * @return Request type.
+    //     */
+    //    public int getRequestType() {
+    //        
+    //
+    //        return currentRequest.getRequestType();
+    //    }
+    //
+    //    public int getServiceType() {
+    //        return currentRequest.getServiceType();
+    //    }
 }

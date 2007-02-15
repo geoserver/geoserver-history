@@ -9,17 +9,17 @@ import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * WMS purpose.
- * 
+ *
  * <p>
  * Description of WMS  Used to store WMS data.
  * </p>
- * 
+ *
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
@@ -34,18 +34,18 @@ public class WMSConfig extends ServiceConfig {
      */
     public static final String SVG_SIMPLE = "Simple";
     public static final String SVG_BATIK = "Batik";
-    
+
     /** current svg renderer **/
     private String svgRenderer;
+
     /** anti aliasing hint for svg renderer **/
     private boolean svgAntiAlias;
-    
     private Map baseMapLayers;
     private Map baseMapStyles;
-    
+
     /**
      * WMS constructor.
-     * 
+     *
      * <p>
      * Creates a WMS to represent an instance with default data.
      * </p>
@@ -62,7 +62,7 @@ public class WMSConfig extends ServiceConfig {
 
     /**
      * WMS constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the WMSDTO provided. All the data structures are
      * cloned.
@@ -80,16 +80,16 @@ public class WMSConfig extends ServiceConfig {
 
     /**
      * Creates the WMSConfig.
-     * 
+     *
      * @param wms The wms module.
      */
-    public WMSConfig( WMS wms )  {
-    		this( (WMSDTO) wms.toDTO() );
+    public WMSConfig(WMS wms) {
+        this((WMSDTO) wms.toDTO());
     }
-    
+
     /**
      * Implement loadDTO.
-     * 
+     *
      * <p>
      * Takes a WMSDTO and loads it into this WMSConfig Object
      * </p>
@@ -114,7 +114,7 @@ public class WMSConfig extends ServiceConfig {
 
     /**
      * Implement toDTO.
-     * 
+     *
      * <p>
      * Returns a copy of the data in a ServiceDTO object
      * </p>
@@ -130,68 +130,65 @@ public class WMSConfig extends ServiceConfig {
         wmsDto.setSvgAntiAlias(svgAntiAlias);
         wmsDto.setBaseMapLayers(baseMapLayers);
         wmsDto.setBaseMapStyles(baseMapStyles);
+
         return wmsDto;
     }
-    
+
     /**
      * @return The constant identifying the current svg renderer.
      * @see org.vfny.geoserver.config.WMSConfig#SVG_SIMPLE
      * @see org.vfny.geoserver.config.WMSConfig#SVG_BATIK
      */
     public String getSvgRenderer() {
-    	return svgRenderer;
+        return svgRenderer;
     }
-    
+
     /**
      * @param The constant identifying the current svg renderer.
      * @see org.vfny.geoserver.config.WMSConfig#SVG_SIMPLE
      * @see org.vfny.geoserver.config.WMSConfig#SVG_BATIK
      */
     public void setSvgRenderer(String svgRenderer) {
-    	this.svgRenderer = svgRenderer;
+        this.svgRenderer = svgRenderer;
     }
-    
+
     /**
      * @param svgAntiAlias anti alias hint.
      */
     public void setSvgAntiAlias(boolean svgAntiAlias) {
-    	this.svgAntiAlias = svgAntiAlias;
+        this.svgAntiAlias = svgAntiAlias;
     }
-    
+
     /**
      * @return The value of the anti aliasing rendering hint.
      */
     public boolean getSvgAntiAlias() {
-    	return svgAntiAlias;
+        return svgAntiAlias;
     }
-    
+
     /**
-     * The comma separated list of feature types that make up the 
+     * The comma separated list of feature types that make up the
      * base-map layer list.
      * @return
      */
-    public Map getBaseMapLayers()
-    {
-    	return baseMapLayers;
+    public Map getBaseMapLayers() {
+        return baseMapLayers;
     }
-    
-    public void setBaseMapLayers(Map layers)
-    {
-    	baseMapLayers = layers;
+
+    public void setBaseMapLayers(Map layers) {
+        baseMapLayers = layers;
     }
-    
+
     /**
-     * The comma separated list of Styles that make up the 
+     * The comma separated list of Styles that make up the
      * base-map style list.
      * @return
      */
-    public Map getBaseMapStyles()
-    {
-    	return baseMapStyles;
+    public Map getBaseMapStyles() {
+        return baseMapStyles;
     }
-    
-    public void setBaseMapStyles(Map styles)
-    {
-    	baseMapStyles = styles;
+
+    public void setBaseMapStyles(Map styles) {
+        baseMapStyles = styles;
     }
 }

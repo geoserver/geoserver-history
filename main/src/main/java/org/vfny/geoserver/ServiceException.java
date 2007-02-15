@@ -4,21 +4,19 @@
  */
 package org.vfny.geoserver;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.util.ResponseUtils;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
  * Represents a standard OGC service exception.  Able to turn itself into the
  * proper xml response.
- * 
+ *
  * <p>
  * JG - here is my guess on what the parameters do:
  * </p>
@@ -34,13 +32,13 @@ import org.vfny.geoserver.util.ResponseUtils;
  *     </i>preMessage<i>:<i>getMessage()</i>
  *     <i>stack trace</i>
  *   [/ServiceException]
- * [/ServiceExceptionReport]     
+ * [/ServiceExceptionReport]
  * </code></pre>
- * 
+ *
  * <p>
  * Where:
  * </p>
- * 
+ *
  * <ul>
  * <li>
  * code: is a diagnostic code
@@ -58,7 +56,7 @@ import org.vfny.geoserver.util.ResponseUtils;
  * stack trace: is the exception strack trace
  * </li>
  * </ul>
- * 
+ *
  * <p>
  * Java Exception have recently developed the ability to contain other
  * exceptions. By calling initCause on your ServiceConfig Exception you can
@@ -77,8 +75,7 @@ import org.vfny.geoserver.util.ResponseUtils;
  */
 public class ServiceException extends org.geoserver.ows.ServiceException {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
 
     /** message inserted by GeoServer as to what it thinks happened */
     protected String preMessage = "";
@@ -90,7 +87,7 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
      * Empty constructor.
      */
     public ServiceException() {
-        super( null );
+        super(null);
     }
 
     /**
@@ -99,7 +96,7 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
      * @param message The message for the .
      */
     public ServiceException(String message) {
-        super( message, null );
+        super(message, null);
 
         LOGGER.fine(this.getMessage());
     }
@@ -111,7 +108,7 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
      * @param cause The origional exception that caused failure
      */
     public ServiceException(String message, Throwable cause) {
-        super(message, cause, null );
+        super(message, cause, null);
     }
 
     /**
@@ -147,14 +144,13 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
      * @param locator The message for the .
      */
     public ServiceException(Throwable e, String preMessage, String locator) {
-        this( e );
+        this(e);
 
         this.preMessage = preMessage;
 
         this.locator = locator;
     }
 
-  
     /**
      * DOCUMENT ME!
      *
@@ -240,13 +236,12 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
      *       validate right (reference our own schema), and to put the correct
      *       mime type here.
      */
-    public String getXmlResponse(boolean printStackTrace,
-        HttpServletRequest request, GeoServer geoserver) {
+    public String getXmlResponse(boolean printStackTrace, HttpServletRequest request,
+        GeoServer geoserver) {
         //Perhaps not the best place to do this, but it's by far the best place to ensure
         //that all logged errors get recorded in the same way, as there all must return
         //xml responses.
-        LOGGER.warning("encountered error: " + getMessage() + "\nStackTrace: "
-            + createStackTrace());
+        LOGGER.warning("encountered error: " + getMessage() + "\nStackTrace: " + createStackTrace());
 
         String indent = "   ";
 
@@ -258,8 +253,7 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
 
         returnXml.append(indent + "xmlns=\"http://www.opengis.net/ogc\"\n");
 
-        returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/"
-            + "XMLSchema-instance\"\n");
+        returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/" + "XMLSchema-instance\"\n");
 
         returnXml.append(indent);
 
@@ -290,18 +284,18 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
 
         return returnXml.toString();
     }
-    
+
     /**
      * Returns the mime type that should be exposed to the client
      * when sending the exception message.
-     * 
+     *
      * <p>
      * Defaults to <code>geoserver.getMimeType()</code>
      * </p>
-     * 
+     *
      * @return
      */
-    public String getMimeType(GeoServer geoserver){
-    	return geoserver.getMimeType();
+    public String getMimeType(GeoServer geoserver) {
+        return geoserver.getMimeType();
     }
 }

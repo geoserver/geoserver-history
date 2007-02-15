@@ -7,20 +7,20 @@
   <parent>
     <groupId>org.geoserver</groupId>		
 	<artifactId>community</artifactId>
-	<version>1.4.0</version>
+	<version>1.4.1</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
   <artifactId>web2</artifactId>
   <packaging>jar</packaging>
-  <version>1.4.0</version>
+  <version>1.4.1</version>
   <name>Web Application Module</name>
 
   <dependencies>
   	<dependency>
   		<groupId>org.geoserver</groupId>
   		<artifactId>wfs2</artifactId>
-		<version>1.4.0</version>
+		<version>1.4.1</version>
   	</dependency>
   </dependencies>
 

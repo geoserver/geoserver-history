@@ -7,15 +7,16 @@ package org.vfny.geoserver.global.dto;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+
 /**
  * Data Transfer Object for Contact information.
- * 
+ *
  * <p>
  * Data Transfer object are used to communicate between the GeoServer
  * application and its configuration and persistent layers. As such the class
  * is final - to allow for its future use as an on-the-wire message.
  * </p>
- * 
+ *
  * <p>
  * Represents a ContactDTO Information element such as:
  * </p>
@@ -79,14 +80,15 @@ public final class ContactDTO implements DataTransferObject {
     /** The contact email address. */
     private String contactEmail;
 
-	/**
-	 * The contact online resource.
-	 * 
-	 */
-	private String onlineResource;
+    /**
+     * The contact online resource.
+     *
+     */
+    private String onlineResource;
+
     /**
      * ContactConfig constructor.
-     * 
+     *
      * <p>
      * does nothing
      * </p>
@@ -96,7 +98,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * Contact Data Transfer Object constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the ContactDTO specified.
      * </p>
@@ -127,7 +129,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * Implement clone.
-     * 
+     *
      * <p>
      * Creates a clone of the object. For exact notes see
      * </p>
@@ -143,7 +145,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * getAddress purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -156,7 +158,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * getAddressCity purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -169,7 +171,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * getAddressCountry purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -182,7 +184,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * getAddressPostalCode purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -195,7 +197,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * getAddressState purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -208,7 +210,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * getAddressType purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -221,7 +223,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * getContactEmail purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -234,7 +236,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * getContactFacsimile purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -247,7 +249,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * getContactOrganization purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -260,7 +262,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * getContactPerson purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -273,7 +275,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * getContactPosition purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -286,7 +288,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * getContactVoice purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -299,7 +301,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * setAddress purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -314,7 +316,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * setAddressCity purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -329,7 +331,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * setAddressCountry purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -344,7 +346,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * setAddressPostalCode purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -359,7 +361,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * setAddressState purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -374,7 +376,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * setAddressType purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -389,7 +391,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * setContactEmail purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -404,7 +406,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * setContactFacsimile purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -419,7 +421,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * setContactOrganization purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -434,7 +436,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * setContactPerson purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -449,7 +451,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * setContactPosition purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -464,7 +466,7 @@ public final class ContactDTO implements DataTransferObject {
 
     /**
      * setContactVoice purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -477,23 +479,23 @@ public final class ContactDTO implements DataTransferObject {
         }
     }
 
-	/**
-	 * @return Returns the onlineResource.
-	 * 
-	 */
-	public String getOnlineResource() {
-		return onlineResource;
-	}
+    /**
+     * @return Returns the onlineResource.
+     *
+     */
+    public String getOnlineResource() {
+        return onlineResource;
+    }
 
-	/**
-	 * @param onlineResource The onlineResource to set.
-	 * 
-	 */
-	public void setOnlineResource(String onlineResource) {
-		if (onlineResource != null) {
-			this.onlineResource = onlineResource;
-		}
-	}
+    /**
+     * @param onlineResource The onlineResource to set.
+     *
+     */
+    public void setOnlineResource(String onlineResource) {
+        if (onlineResource != null) {
+            this.onlineResource = onlineResource;
+        }
+    }
 
     /**
      * @see java.lang.Object#equals(Object)
@@ -502,35 +504,42 @@ public final class ContactDTO implements DataTransferObject {
         if (!(object instanceof ContactDTO)) {
             return false;
         }
+
         ContactDTO rhs = (ContactDTO) object;
-        return new EqualsBuilder().appendSuper(super.equals(object)).append(
-                this.contactPerson, rhs.contactPerson).append(
-                this.contactOrganization, rhs.contactOrganization).append(
-                this.contactPosition, rhs.contactPosition).append(this.address,
-                rhs.address).append(this.contactVoice, rhs.contactVoice)
-                .append(this.addressType, rhs.addressType).append(
-                        this.onlineResource, rhs.onlineResource).append(
-                        this.addressState, rhs.addressState).append(
-                        this.contactEmail, rhs.contactEmail).append(
-                        this.addressPostalCode, rhs.addressPostalCode).append(
-                        this.addressCountry, rhs.addressCountry).append(
-                        this.addressCity, rhs.addressCity).append(
-                        this.contactFacsimile, rhs.contactFacsimile).isEquals();
+
+        return new EqualsBuilder().appendSuper(super.equals(object))
+                                  .append(this.contactPerson, rhs.contactPerson)
+                                  .append(this.contactOrganization, rhs.contactOrganization)
+                                  .append(this.contactPosition, rhs.contactPosition)
+                                  .append(this.address, rhs.address)
+                                  .append(this.contactVoice, rhs.contactVoice)
+                                  .append(this.addressType, rhs.addressType)
+                                  .append(this.onlineResource, rhs.onlineResource)
+                                  .append(this.addressState, rhs.addressState)
+                                  .append(this.contactEmail, rhs.contactEmail)
+                                  .append(this.addressPostalCode, rhs.addressPostalCode)
+                                  .append(this.addressCountry, rhs.addressCountry)
+                                  .append(this.addressCity, rhs.addressCity)
+                                  .append(this.contactFacsimile, rhs.contactFacsimile).isEquals();
     }
 
     /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return new HashCodeBuilder(-289181115, -105580363).appendSuper(
-                super.hashCode()).append(this.contactPerson).append(
-                this.contactOrganization).append(this.contactPosition).append(
-                this.address).append(this.contactVoice)
-                .append(this.addressType).append(this.onlineResource).append(
-                        this.addressState).append(this.contactEmail).append(
-                        this.addressPostalCode).append(this.addressCountry)
-                .append(this.addressCity).append(this.contactFacsimile)
-                .toHashCode();
+        return new HashCodeBuilder(-289181115, -105580363).appendSuper(super.hashCode())
+                                                          .append(this.contactPerson)
+                                                          .append(this.contactOrganization)
+                                                          .append(this.contactPosition)
+                                                          .append(this.address)
+                                                          .append(this.contactVoice)
+                                                          .append(this.addressType)
+                                                          .append(this.onlineResource)
+                                                          .append(this.addressState)
+                                                          .append(this.contactEmail)
+                                                          .append(this.addressPostalCode)
+                                                          .append(this.addressCountry)
+                                                          .append(this.addressCity)
+                                                          .append(this.contactFacsimile).toHashCode();
     }
-
 }

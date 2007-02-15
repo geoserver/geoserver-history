@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
-import java.util.Map;
-
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicKvpReader;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
+import java.util.Map;
 
 
 /**
@@ -22,11 +21,10 @@ import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
  * @version $Id$
  */
 public class GetLegendGraphic extends WMService {
-	
-	public GetLegendGraphic(WMS wms) {
-		super("GetLegendGraphic",wms);
-	}
-	
+    public GetLegendGraphic(WMS wms) {
+        super("GetLegendGraphic", wms);
+    }
+
     /**
      * Returns a response handler to manage a GetLegendGraphic request
      *
@@ -49,7 +47,7 @@ public class GetLegendGraphic extends WMService {
 
     /**
      * Throws an UnsupportedOperationException since GetLegendGraphic does
-     * not defines an xml encoding for HTTP POST method. 
+     * not defines an xml encoding for HTTP POST method.
      *
      * @return never, allways fails since it is an unsupported method for this
      *         request
@@ -57,7 +55,6 @@ public class GetLegendGraphic extends WMService {
      * @throws UnsupportedOperationException
      */
     protected XmlRequestReader getXmlRequestReader() {
-        throw new UnsupportedOperationException(
-            "request does not defines a POST encoding");
+        throw new UnsupportedOperationException("request does not defines a POST encoding");
     }
 }

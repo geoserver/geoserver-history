@@ -4,13 +4,12 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
 import org.vfny.geoserver.wms.responses.helpers.JAISupport;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -19,8 +18,7 @@ import org.vfny.geoserver.wms.responses.helpers.JAISupport;
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
-public class GIFLegendGraphicProducerFactory
-    implements GetLegendGraphicProducerSpi {
+public class GIFLegendGraphicProducerFactory implements GetLegendGraphicProducerSpi {
     /**
      * Empty constructor, as required by the factory strategy.
      */
@@ -81,19 +79,17 @@ public class GIFLegendGraphicProducerFactory
     public GetLegendGraphicProducer createLegendProducer(String format)
         throws IllegalArgumentException {
         if (!canProduce(format)) {
-            throw new IllegalArgumentException(format
-                + " not supported by this legend producer");
+            throw new IllegalArgumentException(format + " not supported by this legend producer");
         }
 
         return new GifLegendGraphicProducer();
     }
-    
+
     /* (non-Javadoc)
-	 * @see org.geotools.factory.Factory#getImplementationHints()
-	 * This just returns java.util.Collections.EMPTY_MAP
-	 */
-	public Map getImplementationHints() {
-		return java.util.Collections.EMPTY_MAP;
-	}
-	
+         * @see org.geotools.factory.Factory#getImplementationHints()
+         * This just returns java.util.Collections.EMPTY_MAP
+         */
+    public Map getImplementationHints() {
+        return java.util.Collections.EMPTY_MAP;
+    }
 }

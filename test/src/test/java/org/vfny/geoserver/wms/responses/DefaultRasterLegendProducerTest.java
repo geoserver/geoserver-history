@@ -4,11 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.logging.Logger;
-
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
@@ -25,6 +20,10 @@ import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.testdata.MockUtils;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Logger;
 
 
 /**
@@ -41,10 +40,8 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
 
     /** DOCUMENT ME! */
     private DefaultRasterLegendProducer legendProducer;
-
     GetLegendGraphic service;
-    
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -63,17 +60,16 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
     public void setUp() throws Exception {
         super.setUp();
         this.legendProducer = new DefaultRasterLegendProducer() {
-            public void writeTo(OutputStream out)
-                throws ServiceException, IOException {
-                throw new UnsupportedOperationException();
-            }
+                    public void writeTo(OutputStream out)
+                        throws ServiceException, IOException {
+                        throw new UnsupportedOperationException();
+                    }
 
-            public String getContentType()
-                throws java.lang.IllegalStateException {
-                throw new UnsupportedOperationException();
-            }
-        };
-        
+                    public String getContentType() throws java.lang.IllegalStateException {
+                        throw new UnsupportedOperationException();
+                    }
+                };
+
         WMS wms = new WMS(MockUtils.newWmsDto());
         service = new GetLegendGraphic(wms);
     }
@@ -116,44 +112,43 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
         BufferedImage legend = this.legendProducer.getLegendGraphic();
 
         //was the legend painted?
-        super.assertNotBlank("testUserSpecifiedRule", legend,
-            DefaultRasterLegendProducer.BG_COLOR);
+        super.assertNotBlank("testUserSpecifiedRule", legend, DefaultRasterLegendProducer.BG_COLOR);
 
         //was created only one rule?
-        String errMsg = "expected just one legend of height " + HEIGHT_HINT
-            + ", for the rule " + rule.getName();
+        String errMsg = "expected just one legend of height " + HEIGHT_HINT + ", for the rule "
+            + rule.getName();
         int resultLegendCount = legend.getHeight() / HEIGHT_HINT;
         assertEquals(errMsg, 1, resultLegendCount);
     }
 
-//    /**
-//     * Tests that scale denominator is respected when passed as part of the
-//     * request parameters
-//     *
-//     * @throws Exception DOCUMENT ME!
-//     */
-//    public void testRespectsScale() throws Exception {
-//        Style style = createSampleStyleWithScale();
-//
-//        GetLegendGraphicRequest req = new GetLegendGraphicRequest();
-//        req.setLayer(getCiteDataStore().getSchema(BUILDINGS_TYPE));
-//        req.setStyle(style);
-//
-//        final int HEIGHT_HINT = 30;
-//        req.setHeight(HEIGHT_HINT);
-//
-//        //use default values for the rest of parameters
-//        this.legendProducer.produceLegendGraphic(req);
-//
-//        BufferedImage legend = this.legendProducer.getLegendGraphic();
-//        assertEquals("Expected two symbols since no scale was set yet",
-//            2 * HEIGHT_HINT, legend.getHeight());
-//
-//        req.setScale(1500);
-//        this.legendProducer.produceLegendGraphic(req);
-//        legend = this.legendProducer.getLegendGraphic();
-//        assertEquals("Expected only one symbol", HEIGHT_HINT, legend.getHeight());
-//    }
+    //    /**
+    //     * Tests that scale denominator is respected when passed as part of the
+    //     * request parameters
+    //     *
+    //     * @throws Exception DOCUMENT ME!
+    //     */
+    //    public void testRespectsScale() throws Exception {
+    //        Style style = createSampleStyleWithScale();
+    //
+    //        GetLegendGraphicRequest req = new GetLegendGraphicRequest();
+    //        req.setLayer(getCiteDataStore().getSchema(BUILDINGS_TYPE));
+    //        req.setStyle(style);
+    //
+    //        final int HEIGHT_HINT = 30;
+    //        req.setHeight(HEIGHT_HINT);
+    //
+    //        //use default values for the rest of parameters
+    //        this.legendProducer.produceLegendGraphic(req);
+    //
+    //        BufferedImage legend = this.legendProducer.getLegendGraphic();
+    //        assertEquals("Expected two symbols since no scale was set yet",
+    //            2 * HEIGHT_HINT, legend.getHeight());
+    //
+    //        req.setScale(1500);
+    //        this.legendProducer.produceLegendGraphic(req);
+    //        legend = this.legendProducer.getLegendGraphic();
+    //        assertEquals("Expected only one symbol", HEIGHT_HINT, legend.getHeight());
+    //    }
 
     /**
      * Creates a Style with two rules: the first with a polygon symbolizer with
@@ -191,7 +186,7 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
     /**
      * Tests the legend production for the default style of the given cite type
      * name, as defined in AbstractCiteDataTest.
-     * 
+     *
      * <p>
      * The number of rules the default style for the given cite type name is
      * expected at the <code>ruleCount</code> value. It is used to assert that
@@ -208,8 +203,8 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
      *         <code>citeTypeName</code>, getting its default test style, or
      *         asking the producer to generate the legend
      */
-    private BufferedImage testProduceLegendGraphic(String citeTypeName,
-        int ruleCount) throws Exception {
+    private BufferedImage testProduceLegendGraphic(String citeTypeName, int ruleCount)
+        throws Exception {
         FeatureType layer = getCiteDataStore().getSchema(citeTypeName);
         GetLegendGraphicRequest req = new GetLegendGraphicRequest(service);
         req.setLayer(layer);

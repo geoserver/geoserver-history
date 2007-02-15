@@ -4,19 +4,7 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.springframework.beans.BeansException;
@@ -32,8 +20,17 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetMapKvpReader;
 import org.vfny.geoserver.wms.requests.GetMapXmlReader;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -48,43 +45,45 @@ public class GetMap extends WMService {
      * Part of HTTP content type header.
      */
     public static final String URLENCODED = "application/x-www-form-urlencoded";
-	
+
     /**
      * Creates a new GetMap object.
-     *  
+     *
      */
     public GetMap(WMS wms) {
-	super("GetMap",wms);
+        super("GetMap", wms);
+
         // force StreamingRenderer initialization
-        BufferedImage image = new BufferedImage(100,100,BufferedImage.TYPE_4BYTE_ABGR);
+        BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_4BYTE_ABGR);
         StreamingRenderer sr = new StreamingRenderer();
         sr.setContext(new DefaultMapContext());
-        sr.paint((Graphics2D) image.getGraphics(), new Rectangle(0,0,1,1), new AffineTransform());
+        sr.paint((Graphics2D) image.getGraphics(), new Rectangle(0, 0, 1, 1), new AffineTransform());
     }
-    
+
     protected GetMap(String id, WMS wms) {
         super(id, wms);
     }
-       
+
     // TODO: check is this override adds any value compared to the superclass one,
     // remove otherwise
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-    	
         //If the post is of mime-type application/x-www-form-urlencoded
         //Then the get system can handle it. For all other requests the
         //post code must handle it.
         if (isURLEncoded(request)) {
             doGet(request, response);
+
             return;
         }
 
-
         //DJB: added post support
         Request serviceRequest = null;
-//        this.curRequest = request;
+
+        //        this.curRequest = request;
         if (!isServiceEnabled(request)) {
             sendDisabledServiceError(response);
+
             return;
         }
 
@@ -96,9 +95,11 @@ public class GetMap extends WMService {
             serviceRequest = xmlPostReader.read(xml, request);
         } catch (ServiceException se) {
             sendError(request, response, se);
+
             return;
         } catch (Throwable e) {
             sendError(request, response, e);
+
             return;
         }
 
@@ -111,9 +112,9 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected Response getResponseHandler() {
-       return new GetMapResponse(getWMS(), getApplicationContext());
+        return new GetMapResponse(getWMS(), getApplicationContext());
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -133,17 +134,17 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected KvpRequestReader getKvpReader(Map params) {
-    	
-    	Map layers = this.getWMS().getBaseMapLayers();
-    	Map styles = this.getWMS().getBaseMapStyles();
-    	
-    	GetMapKvpReader kvp = new GetMapKvpReader(params, this);
-    	
-    	// filter layers and styles if the user specified "layers=basemap"
-    	// This must happen after the kvp reader has been initially called
-    	if (layers != null)
-    		kvp.filterBaseMap(layers, styles);
-    	
+        Map layers = this.getWMS().getBaseMapLayers();
+        Map styles = this.getWMS().getBaseMapStyles();
+
+        GetMapKvpReader kvp = new GetMapKvpReader(params, this);
+
+        // filter layers and styles if the user specified "layers=basemap"
+        // This must happen after the kvp reader has been initially called
+        if (layers != null) {
+            kvp.filterBaseMap(layers, styles);
+        }
+
         return kvp;
     }
 

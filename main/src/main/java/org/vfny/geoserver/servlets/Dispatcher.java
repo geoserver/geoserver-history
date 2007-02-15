@@ -4,18 +4,16 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.vfny.geoserver.util.requests.readers.DispatcherKvpReader;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.vfny.geoserver.util.requests.readers.DispatcherKvpReader;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 
 
 /**
@@ -39,11 +37,11 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
  *       from ServletContext instead of having them hardcoded
  * @task TODO: move the post dispatcher work from WfsDispatcher up here.
  */
+
 //JD: kill this class
 public class Dispatcher extends HttpServlet {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.servlets");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
 
     /** Map metadata request type */
     public static final String META_REQUEST = "GetMeta";
@@ -62,7 +60,7 @@ public class Dispatcher extends HttpServlet {
 
     /** Map get feature with lock request type */
     public static final int GET_FEATURE_LOCK_REQUEST = 5;
-    
+
     /** WMS get feature info request type */
     public static final int GET_FEATURE_INFO_REQUEST = 6;
 
@@ -71,13 +69,12 @@ public class Dispatcher extends HttpServlet {
 
     /** Map get capabilities request type */
     public static final int GET_MAP_REQUEST = 7;
-    
+
     /** WMS DescribeLayer request type */
     public static final int DESCRIBE_LAYER_REQUEST = 8;
-    
+
     /** WMS GetLegendGraphic request type */
     public static final int GET_LEGEND_GRAPHIC_REQUEST = 9;
-
     public static final short WMS_SERVICE = 101;
     public static final short WFS_SERVICE = 102;
 

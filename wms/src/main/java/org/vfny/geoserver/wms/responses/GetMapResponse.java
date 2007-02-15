@@ -4,18 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -39,10 +28,19 @@ import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-
-import com.vividsolutions.jts.geom.Envelope;
-
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * A GetMapResponse object is responsible of generating a map based on a GetMap
@@ -54,39 +52,38 @@ import java.text.SimpleDateFormat;
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage()
-                                                                              .getName());
+    private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage().getName());
 
     /**
      * The map producer that will be used for the production of a map in the
      * requested format.
      */
     private GetMapProducer delegate;
+
     /**
      * The map context
      */
     private WMSMapContext map;
+
     /**
      * WMS module
      */
     private WMS wms;
-    
+
     /**
      * custom response headers
      */
     private HashMap responseHeaders;
-
     String headerContentDisposition;
-    
-	private ApplicationContext applicationContext;
-    
+    private ApplicationContext applicationContext;
+
     /**
      * Creates a new GetMapResponse object.
-     * @param applicationContext 
+     * @param applicationContext
      */
     public GetMapResponse(WMS wms, ApplicationContext applicationContext) {
         this.wms = wms;
-        this.applicationContext=applicationContext;
+        this.applicationContext = applicationContext;
         responseHeaders = new HashMap();
     }
 
@@ -94,9 +91,9 @@ public class GetMapResponse implements Response {
      * Returns any extra headers that this service might want to set in the HTTP response object.
      */
     public HashMap getResponseHeaders() {
-    	return responseHeaders;
+        return responseHeaders;
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -107,38 +104,41 @@ public class GetMapResponse implements Response {
      */
     public void execute(Request req) throws ServiceException {
         GetMapRequest request = (GetMapRequest) req;
-        
+
         final String outputFormat = request.getFormat();
 
         this.delegate = getDelegate(outputFormat, wms);
 
         final FeatureTypeInfo[] layers = request.getLayers();
-        final Style[] styles = (Style[])request.getStyles().toArray(new Style[request.getStyles().size()]);
+        final Style[] styles = (Style[]) request.getStyles()
+                                                .toArray(new Style[request.getStyles().size()]);
 
         //JD:make instance variable in order to release resources later
         //final WMSMapContext map = new WMSMapContext();
         map = new WMSMapContext(request);
-        
+
         //DJB: the WMS spec says that the request must not be 0 area
         //     if it is, throw a service exception!
         Envelope env = request.getBbox();
-        if (env.isNull() || (env.getWidth() <=0)|| (env.getHeight() <=0)){
-        	throw new WmsException("The request bounding box has zero area: " + env);
+
+        if (env.isNull() || (env.getWidth() <= 0) || (env.getHeight() <= 0)) {
+            throw new WmsException("The request bounding box has zero area: " + env);
         }
 
         // DJB DONE: replace by setAreaOfInterest(Envelope,
         // CoordinateReferenceSystem)
         // with the user supplied SRS parameter
-        
+
         //if there's a crs in the request, use that.  If not, assume its 4326
-        
         CoordinateReferenceSystem mapcrs = request.getCrs();
-        
+
         //DJB: added this to be nicer about the "NONE" srs.
-        if (mapcrs !=null)
-        	map.setAreaOfInterest(request.getBbox(),mapcrs);
-        else
-        	map.setAreaOfInterest(request.getBbox());
+        if (mapcrs != null) {
+            map.setAreaOfInterest(request.getBbox(), mapcrs);
+        } else {
+            map.setAreaOfInterest(request.getBbox());
+        }
+
         map.setMapWidth(request.getWidth());
         map.setMapHeight(request.getHeight());
         map.setBgColor(request.getBgColor());
@@ -146,36 +146,37 @@ public class GetMapResponse implements Response {
 
         LOGGER.fine("setting up map");
 
-         
         MapLayer layer;
-        
+
         // track the external caching strategy for any map layers
         boolean cachingPossible = request.getHttpServletRequest().getMethod().equals("GET");
         int maxAge = Integer.MAX_VALUE;
 
         FeatureSource source;
+
         for (int i = 0; i < layers.length; i++) {
-        	if (cachingPossible) {
-        		if (layers[i].isCachingEnabled()) {
-        			int nma = Integer.parseInt(layers[i].getCacheMaxAge());
-        			//suppose the map contains multiple cachable layers...we can only cache the combined map for the
-        			//time specified by the shortest-cached layer.
-        			if (nma < maxAge)
-        				maxAge = nma;
-        		} else {
-        			//if one layer isn't cachable, then we can't cache any of them.  Disable caching.
-        			cachingPossible = false;
-        		}
-        	}
+            if (cachingPossible) {
+                if (layers[i].isCachingEnabled()) {
+                    int nma = Integer.parseInt(layers[i].getCacheMaxAge());
+
+                    //suppose the map contains multiple cachable layers...we can only cache the combined map for the
+                    //time specified by the shortest-cached layer.
+                    if (nma < maxAge) {
+                        maxAge = nma;
+                    }
+                } else {
+                    //if one layer isn't cachable, then we can't cache any of them.  Disable caching.
+                    cachingPossible = false;
+                }
+            }
+
             Style style = styles[i];
 
             try {
                 source = layers[i].getFeatureSource();
             } catch (IOException exp) {
-                LOGGER.log(Level.SEVERE,
-                    "Getting feature source: " + exp.getMessage(), exp);
-                throw new WmsException(null,
-                    "Internal error : " + exp.getMessage());
+                LOGGER.log(Level.SEVERE, "Getting feature source: " + exp.getMessage(), exp);
+                throw new WmsException(null, "Internal error : " + exp.getMessage());
             }
 
             layer = new DefaultMapLayer(source, style);
@@ -183,35 +184,41 @@ public class GetMapResponse implements Response {
             Filter definitionFilter = layers[i].getDefinitionQuery();
 
             if (definitionFilter != null) {
-                Query definitionQuery = new DefaultQuery(source.getSchema()
-                                                               .getTypeName(),
+                Query definitionQuery = new DefaultQuery(source.getSchema().getTypeName(),
                         definitionFilter);
                 layer.setQuery(definitionQuery);
             }
+
             // if a filter has been defined for this layer, set it, eventually mixing it 
             // with the definition query one
             if (request.getFilters() != null) {
-            	Filter f = (Filter) request.getFilters().get(i);
-            	if(f != null) {
-            		Query q = new DefaultQuery(layer.getFeatureSource().getSchema().getTypeName(), f);
-            		if(layer.getQuery() != null) {
-            			q = DataUtilities.mixQueries(layer.getQuery(), q, layer.getQuery().getHandle());
-            		}
-            		layer.setQuery(q);
-            	}
-            }
-            
+                Filter f = (Filter) request.getFilters().get(i);
 
-            map.addLayer(layer);// mapcontext can leak memory -- we make sure we done (see finally block)
+                if (f != null) {
+                    Query q = new DefaultQuery(layer.getFeatureSource().getSchema().getTypeName(), f);
+
+                    if (layer.getQuery() != null) {
+                        q = DataUtilities.mixQueries(layer.getQuery(), q,
+                                layer.getQuery().getHandle());
+                    }
+
+                    layer.setQuery(q);
+                }
+            }
+
+            map.addLayer(layer); // mapcontext can leak memory -- we make sure we done (see finally block)
         }
-        
+
         this.delegate.produceMap(map);
+
         if (cachingPossible) {
-        	responseHeaders.put("Cache-Control", "max-age=" + maxAge);
+            responseHeaders.put("Cache-Control", "max-age=" + maxAge);
         }
+
         String contentDisposition = this.delegate.getContentDisposition();
+
         if (contentDisposition != null) {
-        	this.headerContentDisposition = contentDisposition;
+            this.headerContentDisposition = contentDisposition;
         }
     }
 
@@ -272,27 +279,23 @@ public class GetMapResponse implements Response {
      *         <code>execute(Request)</code> has succeed
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
-    	
         try { // mapcontext can leak memory -- we make sure we done (see finally block)
-			if (this.delegate == null) {
-			    throw new IllegalStateException(
-			        "No GetMapDelegate is setted, make sure you have called execute and it has succeed");
-			}
 
-			LOGGER.finer("asking delegate for write to " + out);
-			this.delegate.writeTo(out);
+            if (this.delegate == null) {
+                throw new IllegalStateException(
+                    "No GetMapDelegate is setted, make sure you have called execute and it has succeed");
+            }
+
+            LOGGER.finer("asking delegate for write to " + out);
+            this.delegate.writeTo(out);
+        } finally {
+            try {
+                map.clearLayerList();
+            } catch (Exception e) // we dont want to propogate a new error
+             {
+                e.printStackTrace();
+            }
         }
-        finally {
-        	try{
-        		map.clearLayerList();
-        	}
-        	catch(Exception e) // we dont want to propogate a new error
-			{
-        		e.printStackTrace();
-			}
-        }
-    	
-        
     }
 
     /**
@@ -311,23 +314,22 @@ public class GetMapResponse implements Response {
      */
     private GetMapProducer getDelegate(String outputFormat, WMS wms)
         throws WmsException {
-		Map beans=applicationContext.getBeansOfType(GetMapProducerFactorySpi.class);
-		Collection producers=beans.values();
-		for (Iterator iter = producers.iterator(); iter.hasNext();) {
-			GetMapProducerFactorySpi factory = 
-				(GetMapProducerFactorySpi) iter.next();
-			if (factory.canProduce( outputFormat ) ) {
-				return factory.createMapProducer( outputFormat, wms );
-			}
-			
-		}
-		
-		WmsException e = new WmsException(
-			"There is no support for creating maps in " + outputFormat + " format" 
-		);
-		e.setCode( "InvalidFormat" );
-		throw e;
-	}
+        Map beans = applicationContext.getBeansOfType(GetMapProducerFactorySpi.class);
+        Collection producers = beans.values();
+
+        for (Iterator iter = producers.iterator(); iter.hasNext();) {
+            GetMapProducerFactorySpi factory = (GetMapProducerFactorySpi) iter.next();
+
+            if (factory.canProduce(outputFormat)) {
+                return factory.createMapProducer(outputFormat, wms);
+            }
+        }
+
+        WmsException e = new WmsException("There is no support for creating maps in "
+                + outputFormat + " format");
+        e.setCode("InvalidFormat");
+        throw e;
+    }
 
     /**
      * Convenient mehtod to inspect the available
@@ -337,30 +339,32 @@ public class GetMapResponse implements Response {
      * @return a Set&lt;String&gt; with the supported mime types.
      */
     public Set getMapFormats() {
-    		Set wmsGetMapFormats=loadImageFormats(applicationContext);
+        Set wmsGetMapFormats = loadImageFormats(applicationContext);
+
         return wmsGetMapFormats;
     }
 
     /**
-     * Convenience method for processing the GetMapProducerFactorySpi 
+     * Convenience method for processing the GetMapProducerFactorySpi
      * extension point and returning the set of available image formats.
-     * 
+     *
      * @param applicationContext The application context.
-     * 
+     *
      */
-	public static Set loadImageFormats(ApplicationContext applicationContext) {
-		Map beans=applicationContext.getBeansOfType(GetMapProducerFactorySpi.class);
-		Collection producers=beans.values();
-		Set formats=new HashSet();
-		for (Iterator iter = producers.iterator(); iter.hasNext();) {
-			GetMapProducerFactorySpi producer = (GetMapProducerFactorySpi) iter.next();
-			formats.addAll(producer.getSupportedFormats());
-		}
-		return formats;
-	}
-	
-	public String getContentDisposition() {
-		return headerContentDisposition;
-	}
-	
+    public static Set loadImageFormats(ApplicationContext applicationContext) {
+        Map beans = applicationContext.getBeansOfType(GetMapProducerFactorySpi.class);
+        Collection producers = beans.values();
+        Set formats = new HashSet();
+
+        for (Iterator iter = producers.iterator(); iter.hasNext();) {
+            GetMapProducerFactorySpi producer = (GetMapProducerFactorySpi) iter.next();
+            formats.addAll(producer.getSupportedFormats());
+        }
+
+        return formats;
+    }
+
+    public String getContentDisposition() {
+        return headerContentDisposition;
+    }
 }

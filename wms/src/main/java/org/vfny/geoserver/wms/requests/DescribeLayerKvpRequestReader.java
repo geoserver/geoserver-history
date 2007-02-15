@@ -4,26 +4,24 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
  * Parses a DescribeLayer request, wich consists only of a list of
  * layer names, given by the <code>"LAYER"</code> parameter.
- * 
+ *
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
@@ -38,13 +36,13 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
      * @param params
      * @param service The service that handles the request
      */
-    public DescribeLayerKvpRequestReader (Map params, WMService service){
-    	super(params, service);
+    public DescribeLayerKvpRequestReader(Map params, WMService service) {
+        super(params, service);
     }
 
     /**
      * Does the request parsing and constructs a <code>DescribeLayerRequest</code>,
-     * wich holds the requiered layers as <code>FeatureTypeInfo</code> references. 
+     * wich holds the requiered layers as <code>FeatureTypeInfo</code> references.
      *
      * @param request the original request.
      *
@@ -57,7 +55,7 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
      */
     public Request getRequest(HttpServletRequest request)
         throws ServiceException {
-        DescribeLayerRequest req = new DescribeLayerRequest( (WMService)service );
+        DescribeLayerRequest req = new DescribeLayerRequest((WMService) service);
         req.setHttpServletRequest(request);
 
         String layersParam = getValue("LAYERS");
@@ -69,8 +67,7 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
         int layerCount = layers.size();
 
         if (layerCount == 0) {
-            throw new WmsException("No LAYERS has been requested",
-                getClass().getName());
+            throw new WmsException("No LAYERS has been requested", getClass().getName());
         }
 
         Data catalog = req.getWMS().getData();
@@ -90,8 +87,8 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
                 LOGGER.fine(layerName + " found");
             }
         } catch (NoSuchElementException ex) {
-            throw new WmsException(ex,
-                layerName + ": no such layer on this server", "LayerNotDefined");
+            throw new WmsException(ex, layerName + ": no such layer on this server",
+                "LayerNotDefined");
         }
 
         if (LOGGER.isLoggable(Level.FINE)) {

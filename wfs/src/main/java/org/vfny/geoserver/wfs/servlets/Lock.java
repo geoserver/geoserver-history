@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.wfs.servlets;
 
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.WFS;
@@ -16,6 +12,8 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wfs.requests.readers.LockKvpReader;
 import org.vfny.geoserver.wfs.requests.readers.LockXmlReader;
 import org.vfny.geoserver.wfs.responses.LockResponse;
+import java.util.Map;
+import javax.servlet.ServletContext;
 
 
 /**
@@ -27,18 +25,17 @@ import org.vfny.geoserver.wfs.responses.LockResponse;
  * @version $Id: Lock.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class Lock extends WFService {
-    
-	public Lock(WFS wfs) {
-		super("LockFeature",wfs);
-	}
+    public Lock(WFS wfs) {
+        super("LockFeature", wfs);
+    }
 
-	/**
-     * DOCUMENT ME!
-     *	
-     * @return DOCUMENT ME!
-     */
+    /**
+    * DOCUMENT ME!
+    *
+    * @return DOCUMENT ME!
+    */
     protected Response getResponseHandler() {
-    		return new LockResponse(getWFS().getGeoServer());
+        return new LockResponse(getWFS().getGeoServer());
     }
 
     /**
@@ -49,7 +46,7 @@ public class Lock extends WFService {
      * @return DOCUMENT ME!
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new LockKvpReader(params,this);
+        return new LockKvpReader(params, this);
     }
 
     /**

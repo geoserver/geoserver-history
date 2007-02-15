@@ -20,7 +20,7 @@ public class ModuleOneConfigurationPage extends GeoserverBasePage {
 	}
 
 	protected List getSubPageLinks() {
-		return Collections.emptyList();
+		return null;//Collections.emptyList();
 	}
 
 }

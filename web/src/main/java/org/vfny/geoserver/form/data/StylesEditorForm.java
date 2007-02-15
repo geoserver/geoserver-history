@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /*
  * Created on Jan 8, 2004
  *
@@ -9,10 +10,6 @@
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 package org.vfny.geoserver.form.data;
-
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -28,6 +25,8 @@ import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
 import org.xml.sax.SAXException;
+import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -37,61 +36,61 @@ import org.xml.sax.SAXException;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class StylesEditorForm extends ActionForm {
-
     private String styleID;
-    private String filename;// kept, but not used
-    private FormFile sldFile= null;
-
+    private String filename; // kept, but not used
+    private FormFile sldFile = null;
     private boolean _default;
     private boolean defaultChecked = false;
     private boolean defaultInitial;
     private String[] validationReport = null; // the SLD file with validation errors for it (saxexceptions)
-    
+
     /**
      *  okay this is a bit weird because of how struts html:checkbox works.
      *   1. if the "thing" is check, then the set method will be called (with "true")
      *   2. if the "thing" is not checked, then nothing happens!
-     *   
+     *
      *  So, struts says to always set the thing to "false" in the reset method.
      *    That way, if there's no event (ie. its unset), its state is false
      *    If there is an event, it'll be set to true.
-     * 
+     *
      *  Unforunately, this doesnt work well when you want a default value (the above give you a default value of false).
      *  To set the default to "true", then we need two variables.
      *   The main one, which you set to the default value.
      *   A secondary one that tells you if the user actually checked it.
-     * 
-     *   In this way, the default value will be sent to the user, but they can uncheck it! 
+     *
+     *   In this way, the default value will be sent to the user, but they can uncheck it!
      */
-    
     private boolean fullyValidate;
     private boolean fullyValidateChecked;
 
-	
     public void reset(ActionMapping arg0, HttpServletRequest request) {
-    	validationReport = null;
+        validationReport = null;
         super.reset(arg0, request);
-        DataConfig config = ConfigRequests.getDataConfig( request );
 
-        UserContainer user = Requests.getUserContainer( request );
+        DataConfig config = ConfigRequests.getDataConfig(request);
+
+        UserContainer user = Requests.getUserContainer(request);
         StyleConfig style = user.getStyle();
         fullyValidate = true; //default value
         fullyValidateChecked = false; //required by html:checkbox
+
         if (style == null) {
             // Should not happen (unless they bookmark)
             styleID = "";
             _default = config.getStyles().isEmpty();
             filename = "";
-            sldFile= null ;
-        }
-        else {
+            sldFile = null;
+        } else {
             styleID = style.getId();
             _default = style.isDefault();
+
             if (style.getFilename() != null) {
                 filename = style.getFilename().getName();
             }
-            sldFile= null ;
+
+            sldFile = null;
         }
+
         defaultChecked = false;
         defaultInitial = _default;
     }
@@ -101,32 +100,42 @@ public class StylesEditorForm extends ActionForm {
 
         if ((styleID == null) || styleID.equals("")) {
             errors.add("styleID", new ActionError("error.styleID.required", styleID));
-            return errors;
-        }
-        if (!Pattern.matches("^[-\\w.:]*$", styleID)) {
-            errors.add("styleID", new ActionError("error.styleID.invalid", styleID));
-            return errors;
-        }
-        Boolean maxSize= (Boolean)request.getAttribute(MultipartRequestHandler.ATTRIBUTE_MAX_LENGTH_EXCEEDED);
-        if ((maxSize!=null) && (maxSize.booleanValue())) {
-            String size= null ;
-            ControllerConfig cc= mapping.getModuleConfig().getControllerConfig() ;
-            if (cc==null) {
-                size= Long.toString(CommonsMultipartRequestHandler.DEFAULT_SIZE_MAX);
-            } else {
-                size= cc.getMaxFileSize() ;// struts-config : <controller maxFileSize="nK" />
-            }
-            errors.add("styleID", new ActionError("error.file.maxLengthExceeded",size)) ;
+
             return errors;
         }
 
-        if (this.getSldFile().getFileSize()==0) {// filename not filed or file does not exist
-            errors.add("styleID", new ActionError("error.file.required")) ;
+        if (!Pattern.matches("^[-\\w.:]*$", styleID)) {
+            errors.add("styleID", new ActionError("error.styleID.invalid", styleID));
+
             return errors;
         }
-        filename= this.getSldFile().getFileName();
+
+        Boolean maxSize = (Boolean) request.getAttribute(MultipartRequestHandler.ATTRIBUTE_MAX_LENGTH_EXCEEDED);
+
+        if ((maxSize != null) && (maxSize.booleanValue())) {
+            String size = null;
+            ControllerConfig cc = mapping.getModuleConfig().getControllerConfig();
+
+            if (cc == null) {
+                size = Long.toString(CommonsMultipartRequestHandler.DEFAULT_SIZE_MAX);
+            } else {
+                size = cc.getMaxFileSize(); // struts-config : <controller maxFileSize="nK" />
+            }
+
+            errors.add("styleID", new ActionError("error.file.maxLengthExceeded", size));
+
+            return errors;
+        }
+
+        if (this.getSldFile().getFileSize() == 0) { // filename not filed or file does not exist
+            errors.add("styleID", new ActionError("error.file.required"));
+
+            return errors;
+        }
+
+        filename = this.getSldFile().getFileName();
+
         //Requests.getApplicationState(request);
-        
         return errors;
     }
 
@@ -138,6 +147,7 @@ public class StylesEditorForm extends ActionForm {
     public boolean isDefault() {
         return _default;
     }
+
     /**
      * Set _default to _default.
      *
@@ -147,6 +157,7 @@ public class StylesEditorForm extends ActionForm {
         defaultChecked = true;
         this._default = _default;
     }
+
     /**
      * Access filename property.
      *
@@ -155,6 +166,7 @@ public class StylesEditorForm extends ActionForm {
     public String getFilename() {
         return filename;
     }
+
     /**
      * Set filename to filename.
      *
@@ -163,6 +175,7 @@ public class StylesEditorForm extends ActionForm {
     public void setFilename(String filename) {
         this.filename = filename;
     }
+
     /**
      * Access formfile property.
      *
@@ -171,29 +184,27 @@ public class StylesEditorForm extends ActionForm {
     public FormFile getSldFile() {
         return this.sldFile;
     }
+
     /**
      * Set formfile to sldFile.
      *
      * @param filename The formfile to set.
      */
     public void setSldFile(FormFile filename) {
-        this.sldFile= filename;
+        this.sldFile = filename;
     }
-    
-    
-    
+
     public boolean getFullyValidateChecked() {
         return fullyValidateChecked;
     }
 
-
     public void setFullyValidateChecked(boolean fullyValidateChecked) {
         this.fullyValidateChecked = fullyValidateChecked;
     }
-    
+
     /**
      * Access fullyValidate property.
-     * 
+     *
      *  true -> validate against the xsd schema
      *
      * @return Returns the fullyValidate.
@@ -201,19 +212,16 @@ public class StylesEditorForm extends ActionForm {
     public boolean getFullyValidate() {
         return fullyValidate;
     }
+
     /**
      * Set fullyValidate to fullyValidate.
      *
      * @param fullyValidate The fullyValidate to set.
      */
     public void setFullyValidate(boolean fullyValidate) {
-    	fullyValidateChecked = true;
+        fullyValidateChecked = true;
         this.fullyValidate = fullyValidate;
     }
-    
-   
-    
-    
 
     /**
      * Access styleID property.
@@ -223,6 +231,7 @@ public class StylesEditorForm extends ActionForm {
     public String getStyleID() {
         return styleID;
     }
+
     /**
      * Set styleID to styleID.
      *
@@ -231,6 +240,7 @@ public class StylesEditorForm extends ActionForm {
     public void setStyleID(String styleID) {
         this.styleID = styleID;
     }
+
     /**
      * Does the magic with _default & defaultChecked.
      * <p>
@@ -242,25 +252,23 @@ public class StylesEditorForm extends ActionForm {
      * </p>
      * @return true if default shoudl be selected
      */
-    public boolean isDefaultValue(){
-        if( defaultChecked ){
+    public boolean isDefaultValue() {
+        if (defaultChecked) {
             return _default;
         }
+
         return defaultInitial;
     }
-    
-    public String getValidationReportIndexed(int i)
-    {
-    	return validationReport[i];
+
+    public String getValidationReportIndexed(int i) {
+        return validationReport[i];
     }
-    
-    public String[] getValidationReport()
-    {
-    	return validationReport;
+
+    public String[] getValidationReport() {
+        return validationReport;
     }
-    
-    public void setValidationReport(String[] exs)
-    {
-    	validationReport = exs;
+
+    public void setValidationReport(String[] exs) {
+        validationReport = exs;
     }
 }

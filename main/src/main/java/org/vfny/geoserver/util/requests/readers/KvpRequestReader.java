@@ -4,6 +4,11 @@
  */
 package org.vfny.geoserver.util.requests.readers;
 
+import org.geotools.filter.FilterFactory;
+import org.geotools.filter.FilterFactoryFinder;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.servlets.AbstractService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,14 +19,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
-import org.vfny.geoserver.Request;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.servlets.AbstractService;
 
 /**
  * Base class for all KVP readers, with some generalized convenience methods.
@@ -46,8 +45,7 @@ import org.vfny.geoserver.servlets.AbstractService;
  */
 abstract public class KvpRequestReader {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.readers");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
     /** Delimeter for KVPs in the raw string */
     private static final String KEYWORD_DELIMITER = "&";
@@ -66,19 +64,19 @@ abstract public class KvpRequestReader {
 
     /** KVP pair listing; stores all data from the KVP request */
     protected Map kvpPairs = new HashMap();
-    
+
     /** Reference to the service using the reader */
     protected AbstractService service;
-    
+
     /**
      * Creates a reader from paramters and a service.
-     * 
+     *
      * @param kvpPairs The key-value pairs.
      * @param service The service using the reader.
      */
     public KvpRequestReader(Map kvpPairs, AbstractService service) {
-    		this.kvpPairs = kvpPairs;
-    		this.service = service;
+        this.kvpPairs = kvpPairs;
+        this.service = service;
     }
 
     /**
@@ -93,7 +91,6 @@ abstract public class KvpRequestReader {
         return (String) kvpPairs.get(key);
     }
 
-    
     /**
      * DOCUMENT ME!
      *
@@ -111,7 +108,8 @@ abstract public class KvpRequestReader {
      *
      * @return DOCUMENT ME!
      */
-    public abstract Request getRequest(HttpServletRequest request) throws ServiceException;
+    public abstract Request getRequest(HttpServletRequest request)
+        throws ServiceException;
 
     /**
      * Attempts to parse out the proper typeNames from the FeatureId filters.
@@ -285,8 +283,7 @@ abstract public class KvpRequestReader {
         Map kvps = new HashMap();
 
         // parses initial request sream into KVPs
-        StringTokenizer requestKeywords = new StringTokenizer(cleanRequest.trim(),
-                KEYWORD_DELIMITER);
+        StringTokenizer requestKeywords = new StringTokenizer(cleanRequest.trim(), KEYWORD_DELIMITER);
 
         // parses KVPs into values and keywords and puts them in a HashTable
         while (requestKeywords.hasMoreTokens()) {
@@ -308,8 +305,7 @@ abstract public class KvpRequestReader {
             } else {
                 // handles all other standard cases by looking for the correct
                 //  delimeter and then sticking the KVPs into the hash table
-                StringTokenizer requestValues = new StringTokenizer(kvpPair,
-                        VALUE_DELIMITER);
+                StringTokenizer requestValues = new StringTokenizer(kvpPair, VALUE_DELIMITER);
 
                 // make sure that there is a key token
                 if (requestValues.hasMoreTokens()) {
@@ -359,17 +355,17 @@ abstract public class KvpRequestReader {
         return clean;
     }
 
-	/**
-	 * Returns the service handling request.
-	 */
-	public AbstractService getServiceRef() {
-		return service;
-	}
-	
-	/**
-	 * sets the service handling request.
-	 */
-	public void setServiceRef(AbstractService service) {
-		this.service = service;
-	}
+    /**
+     * Returns the service handling request.
+     */
+    public AbstractService getServiceRef() {
+        return service;
+    }
+
+    /**
+     * sets the service handling request.
+     */
+    public void setServiceRef(AbstractService service) {
+        this.service = service;
+    }
 }

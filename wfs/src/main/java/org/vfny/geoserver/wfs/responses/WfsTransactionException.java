@@ -2,15 +2,15 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /* Copyright (c) 2001 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.wfs.responses;
 
-import java.util.logging.Logger;
-
 import org.vfny.geoserver.wfs.WfsException;
+import java.util.logging.Logger;
 
 
 /**
@@ -23,8 +23,7 @@ import org.vfny.geoserver.wfs.WfsException;
  */
 public class WfsTransactionException extends WfsException {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
 
     /** the standard exception that was thrown */
     protected Exception standardException = new Exception();
@@ -86,8 +85,7 @@ public class WfsTransactionException extends WfsException {
      * @param preMessage more information about exception.
      * @param locator indicates to the user what went wrong.
      */
-    public WfsTransactionException(Exception e, String preMessage,
-        String locator) {
+    public WfsTransactionException(Exception e, String preMessage, String locator) {
         super(e, preMessage, locator);
     }
 
@@ -104,14 +102,13 @@ public class WfsTransactionException extends WfsException {
      * Returns a WFS_TransactionResponse xml string indicating the failure.
      * Please don't change the method signature, unless you are refactoring all
      * serviceExceptions - I had a lame bug with these not printed correctly
-     * because someone changed the method signature, as it no longer did the 
+     * because someone changed the method signature, as it no longer did the
      * proper override.
      *
      * @return DOCUMENT ME!
      */
     public String getXmlResponse() {
-        WfsTransResponse response = new WfsTransResponse(WfsTransResponse.FAILED,
-                handle, true);
+        WfsTransResponse response = new WfsTransResponse(WfsTransResponse.FAILED, handle, true);
         response.setLocator(locator);
 
         //right now defaults to full stack traces, should change before

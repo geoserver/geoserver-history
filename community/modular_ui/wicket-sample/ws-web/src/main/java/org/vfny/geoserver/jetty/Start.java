@@ -59,7 +59,9 @@ public class Start {
 			wah.setContextPath("/geoserver");
 			wah.setWar("src/main/webapp");
 			jettyServer.setHandler(wah);
-
+System.out.println("------------------------------------------------------");
+System.out.println("started proper jetty");
+System.out.println("------------------------------------------------------");
 			jettyServer.start();
 		} catch (Exception e) {
 			log.fatal("Could not start the Jetty server: " + e);

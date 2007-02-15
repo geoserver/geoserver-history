@@ -4,6 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
+import com.vividsolutions.jts.geom.Geometry;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureResults;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -11,21 +18,12 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 
-import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
-
-import com.vividsolutions.jts.geom.Geometry;
-
 
 /**
  * Produces a FeatureInfo response in HTML.  Relies on abstractfeatureinfo and
  * the feature delegate to do most of the work, just implements an html based
  * writeTo method.
- * 
+ *
  * <p>
  * In the future James suggested that we allow some sort of template system, so
  * that one can control the formatting of the html output, since now we just
@@ -50,9 +48,9 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-    	return null;
+        return null;
     }
-    
+
     /**
      * Writes the image to the client.
      *
@@ -69,19 +67,19 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         writer.println("<html><body>");
 
         FeatureReader reader = null;
+
         try {
             for (int i = 0; i < results.size(); i++) {
                 FeatureResults fr = (FeatureResults) results.get(i);
                 FeatureType schema = fr.getSchema();
 
                 writer.println("<table border='1'>");
-                writer.println("<tr><th colspan=" + schema.getAttributeCount()
-                    + " scope='col'>" + schema.getTypeName() + " </th></tr>");
+                writer.println("<tr><th colspan=" + schema.getAttributeCount() + " scope='col'>"
+                    + schema.getTypeName() + " </th></tr>");
                 writer.println("<tr>");
 
                 for (int j = 0; j < schema.getAttributeCount(); j++) {
-                    writer.println("<td>"
-                        + schema.getAttributeType(j).getName() + "</td>");
+                    writer.println("<td>" + schema.getAttributeType(j).getName() + "</td>");
                 }
 
                 writer.println("</tr>");
@@ -115,18 +113,17 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
             }
         } catch (IllegalAttributeException ife) {
             writer.println("Unable to generate information " + ife);
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
         }
-        finally
-		{
-        	if (reader != null)
-        		reader.close();
-		}
-        
+
         writer.flush();
     }
 
-	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public String getContentDisposition() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

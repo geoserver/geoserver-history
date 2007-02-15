@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.config;
 
-import java.io.File;
-
 import org.vfny.geoserver.global.dto.StyleDTO;
+import java.io.File;
 
 
 /**
  * StyleConfig purpose.
- * 
+ *
  * <p>
  * Defines the style ids to be used by the wms.
  * The files  must be contained in geoserver/misc/wms/styles.
@@ -19,7 +18,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  * but for now  that's where you must put them if you want them
  * on the server.
  * </p>
- * 
+ *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: StyleConfig.java,v 1.7 2004/02/28 07:45:13 jive Exp $
  */
@@ -35,7 +34,7 @@ public class StyleConfig {
 
     /**
      * StyleConfig constructor.
-     * 
+     *
      * <p>
      * Creates a StyleConfig to represent an instance with default data.
      * </p>
@@ -55,17 +54,19 @@ public class StyleConfig {
      * </p>
      * @param style StyleConfig to copy
      */
-    public StyleConfig( StyleConfig style ){
+    public StyleConfig(StyleConfig style) {
         if (style == null) {
             throw new NullPointerException("Non null StyleConfig required");
         }
+
         id = style.getId();
         filename = new File(style.getFilename().toString());
-        _default = style.isDefault();        
+        _default = style.isDefault();
     }
+
     /**
      * StyleConfig constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the StyleDTO provided. All the data structures are
      * cloned.
@@ -87,7 +88,7 @@ public class StyleConfig {
 
     /**
      * Implement loadDTO.
-     * 
+     *
      * <p>
      * Stores the data provided for the specified StyleDTO object
      * </p>
@@ -100,8 +101,7 @@ public class StyleConfig {
      */
     public void update(StyleDTO obj) {
         if (obj == null) {
-            throw new NullPointerException(
-                "Style Data Transfer Object required");
+            throw new NullPointerException("Style Data Transfer Object required");
         }
 
         StyleDTO sDto = (StyleDTO) obj;
@@ -112,7 +112,7 @@ public class StyleConfig {
 
     /**
      * Implement toDTO.
-     * 
+     *
      * <p>
      * Creates a StyleDTO which represents the data in this config object.
      * </p>
@@ -132,7 +132,7 @@ public class StyleConfig {
 
     /**
      * isDefault purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -145,7 +145,7 @@ public class StyleConfig {
 
     /**
      * getFilename purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -158,7 +158,7 @@ public class StyleConfig {
 
     /**
      * getId purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -171,7 +171,7 @@ public class StyleConfig {
 
     /**
      * setDefault purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -184,7 +184,7 @@ public class StyleConfig {
 
     /**
      * setFilename purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -197,7 +197,7 @@ public class StyleConfig {
 
     /**
      * setId purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>

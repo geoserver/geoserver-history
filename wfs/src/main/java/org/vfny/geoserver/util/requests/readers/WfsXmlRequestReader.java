@@ -1,11 +1,8 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.util.requests.readers;
-
-import java.io.IOException;
-import java.io.Reader;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFilter;
@@ -17,28 +14,32 @@ import org.vfny.geoserver.wfs.WfsException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
+import java.io.IOException;
+import java.io.Reader;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 
 public abstract class WfsXmlRequestReader extends XmlRequestReader {
-
-	
-	/**
-	 * Constructs the new wfs xml reader.
-	 * 
-	 * @param service Reference to the service handing a reuqest.
-	 */
-	public WfsXmlRequestReader(AbstractService service) {
-		super(service);
-	}
-
-	/**
-     * Reads the Filter XML request into a geotools Feature object.
+    /**
+     * Constructs the new wfs xml reader.
      *
-     * @param rawRequest The plain POST text from the client.
-     *
-     * @return The geotools filter constructed from rawRequest.
-     *
-     * @throws WfsException For any problems reading the request.
+     * @param service Reference to the service handing a reuqest.
      */
+    public WfsXmlRequestReader(AbstractService service) {
+        super(service);
+    }
+
+    /**
+    * Reads the Filter XML request into a geotools Feature object.
+    *
+    * @param rawRequest The plain POST text from the client.
+    *
+    * @return The geotools filter constructed from rawRequest.
+    *
+    * @throws WfsException For any problems reading the request.
+    */
     public static Filter readFilter(Reader rawRequest)
         throws WfsException {
         // translate string into a proper SAX input source
@@ -60,8 +61,7 @@ public abstract class WfsXmlRequestReader extends XmlRequestReader {
             adapter.parse(requestSource);
             LOGGER.fine("just parsed: " + requestSource);
         } catch (SAXException e) {
-            throw new WfsException(e,
-                "XML getFeature request SAX parsing error",
+            throw new WfsException(e, "XML getFeature request SAX parsing error",
                 XmlRequestReader.class.getName());
         } catch (IOException e) {
             throw new WfsException(e, "XML get feature request input error",
@@ -75,5 +75,4 @@ public abstract class WfsXmlRequestReader extends XmlRequestReader {
 
         return contentHandler.getFilter();
     }
-
 }

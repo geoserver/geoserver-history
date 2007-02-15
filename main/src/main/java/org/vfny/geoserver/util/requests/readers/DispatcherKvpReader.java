@@ -4,10 +4,9 @@
  */
 package org.vfny.geoserver.util.requests.readers;
 
+import org.vfny.geoserver.servlets.Dispatcher;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.vfny.geoserver.servlets.Dispatcher;
 
 
 /**
@@ -19,8 +18,7 @@ import org.vfny.geoserver.servlets.Dispatcher;
  */
 public class DispatcherKvpReader {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.readers");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
     /**
      * Returns the request type for a given KVP set.
@@ -36,8 +34,7 @@ public class DispatcherKvpReader {
         if (responseType != null) {
             responseType = responseType.toUpperCase();
 
-            if (responseType.equals("GETCAPABILITIES") 
-                || responseType.equals("CAPABILITIES")) {
+            if (responseType.equals("GETCAPABILITIES") || responseType.equals("CAPABILITIES")) {
                 return Dispatcher.GET_CAPABILITIES_REQUEST;
             } else if (responseType.equals("DESCRIBEFEATURETYPE")) {
                 return Dispatcher.DESCRIBE_FEATURE_TYPE_REQUEST;
@@ -49,17 +46,15 @@ public class DispatcherKvpReader {
                 return Dispatcher.GET_FEATURE_LOCK_REQUEST;
             } else if (responseType.equals("LOCKFEATURE")) {
                 return Dispatcher.LOCK_REQUEST;
-            } else if (responseType.equals("GETMAP") ||
-                       responseType.equals("MAP")) {
+            } else if (responseType.equals("GETMAP") || responseType.equals("MAP")) {
                 return Dispatcher.GET_MAP_REQUEST;
             } else if (responseType.equals("GETFEATUREINFO")) {
                 return Dispatcher.GET_FEATURE_INFO_REQUEST;
-            }else if (responseType.equals("DESCRIBELAYER")) {
+            } else if (responseType.equals("DESCRIBELAYER")) {
                 return Dispatcher.DESCRIBE_LAYER_REQUEST;
-            }else if (responseType.equals("GETLEGENDGRAPHIC")) {
+            } else if (responseType.equals("GETLEGENDGRAPHIC")) {
                 return Dispatcher.GET_LEGEND_GRAPHIC_REQUEST;
-            }
-            else {
+            } else {
                 return Dispatcher.UNKNOWN;
             }
         } else {

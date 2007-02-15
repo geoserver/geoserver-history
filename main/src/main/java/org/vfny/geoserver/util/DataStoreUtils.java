@@ -4,6 +4,15 @@
  */
 package org.vfny.geoserver.util;
 
+import com.vividsolutions.jts.geom.Envelope;
+import org.geoserver.feature.FeatureSourceUtils;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataStoreFactorySpi.Param;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.FeatureSource;
+import org.vfny.geoserver.global.DataStoreInfo;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,19 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.ServletContext;
-
-import org.geoserver.feature.FeatureSourceUtils;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.DataStoreFactorySpi.Param;
-import org.vfny.geoserver.global.DataStoreInfo;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -36,24 +33,26 @@ import com.vividsolutions.jts.geom.Envelope;
 public abstract class DataStoreUtils {
     public static DataStore acquireDataStore(Map params, ServletContext sc)
         throws IOException {
-    	//DJB: changed this for geoserver_data_dir   	
-    	//String baseDir = sc.getRealPath("/");
-    	File baseDir =GeoserverDataDirectory.getGeoserverDataDirectory();
-    	
-       	DataStore store = DataStoreFinder.getDataStore(getParams(params,baseDir.getAbsolutePath()));
+        //DJB: changed this for geoserver_data_dir   	
+        //String baseDir = sc.getRealPath("/");
+        File baseDir = GeoserverDataDirectory.getGeoserverDataDirectory();
+
+        DataStore store = DataStoreFinder.getDataStore(getParams(params, baseDir.getAbsolutePath()));
+
         if (store == null) {
             //TODO: this should throw an exception, but the classes using
             //this class aren't ready to actually get it...
             return null;
-	} else {
-	    return store;
-	}
+        } else {
+            return store;
+        }
     }
 
     public static Map getParams(Map m, ServletContext sc) {
-    	File data_dir =GeoserverDataDirectory.getGeoserverDataDirectory();
-    	String baseDir = data_dir.getPath();
-    	return getParams(m, baseDir);
+        File data_dir = GeoserverDataDirectory.getGeoserverDataDirectory();
+        String baseDir = data_dir.getPath();
+
+        return getParams(m, baseDir);
     }
 
     /**
@@ -64,13 +63,13 @@ public abstract class DataStoreUtils {
      * sensitve isses dataStores tend to have.
      * </p>
      */
-    protected static Map getParams(Map m, String baseDir){
+    protected static Map getParams(Map m, String baseDir) {
         return DataStoreInfo.getParams(m, baseDir);
     }
 
     /**
      * When loading from DTO use the params to locate factory.
-     * 
+     *
      * <p>
      * bleck
      * </p>
@@ -80,8 +79,7 @@ public abstract class DataStoreUtils {
      * @return
      */
     public static DataStoreFactorySpi aquireFactory(Map params) {
-        for (Iterator i = DataStoreFinder.getAvailableDataStores();
-                i.hasNext();) {
+        for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
 
             if (factory.canProcess(params)) {
@@ -95,11 +93,11 @@ public abstract class DataStoreUtils {
     /**
      * After user has selected Description can aquire Factory based on
      * display name.
-     * 
+     *
      * <p>
      * Use factory for:
      * </p>
-     * 
+     *
      * <ul>
      * <li>
      * List of Params (attrb name, help text)
@@ -108,15 +106,14 @@ public abstract class DataStoreUtils {
      * Checking user's input with factory.canProcess( params )
      * </li>
      * </ul>
-     * 
+     *
      *
      * @param diplayName
      *
      * @return
      */
     public static DataStoreFactorySpi aquireFactory(String displayName) {
-        for (Iterator i = DataStoreFinder.getAvailableDataStores();
-                i.hasNext();) {
+        for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
 
             if (factory.getDisplayName().equals(displayName)) {
@@ -163,7 +160,7 @@ public abstract class DataStoreUtils {
 
     /**
      * Returns the descriptions for the available DataStores.
-     * 
+     *
      * <p>
      * Arrrg! Put these in the select box.
      * </p>
@@ -173,8 +170,7 @@ public abstract class DataStoreUtils {
     public static List listDataStoresDescriptions() {
         List list = new ArrayList();
 
-        for (Iterator i = DataStoreFinder.getAvailableDataStores();
-                i.hasNext();) {
+        for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
             list.add(factory.getDisplayName());
         }
@@ -196,16 +192,18 @@ public abstract class DataStoreUtils {
             String value = null;
 
             //if (param.required ) {
-                if( param.sample != null){
-                    // Required params may have nice sample values
-                    //
-                    value = param.text( param.sample );
-                }
-                if (value == null ) {
-                    // or not
-                    value = "";
-                }
-		//}
+            if (param.sample != null) {
+                // Required params may have nice sample values
+                //
+                value = param.text(param.sample);
+            }
+
+            if (value == null) {
+                // or not
+                value = "";
+            }
+
+            //}
             if (value != null) {
                 defaults.put(key, value);
             }
@@ -216,7 +214,7 @@ public abstract class DataStoreUtils {
 
     /**
      * Convert map to real values based on factory Params.
-     * 
+     *
      * <p>
      * The resulting map should still be checked with factory.acceptsMap( map )
      * </p>
@@ -247,11 +245,12 @@ public abstract class DataStoreUtils {
 
         return map;
     }
- 
+
     /**
      * @deprecated use {@link org.geoserver.feature.FeatureSourceUtils#
      */
-    public static Envelope getBoundingBoxEnvelope(FeatureSource fs) throws IOException {
-    		return FeatureSourceUtils.getBoundingBoxEnvelope( fs );
+    public static Envelope getBoundingBoxEnvelope(FeatureSource fs)
+        throws IOException {
+        return FeatureSourceUtils.getBoundingBoxEnvelope(fs);
     }
 }

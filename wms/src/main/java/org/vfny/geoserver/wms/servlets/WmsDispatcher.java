@@ -4,22 +4,20 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.servlets.Dispatcher;
+import org.vfny.geoserver.util.requests.readers.DispatcherKvpReader;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.wms.WmsException;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.servlets.Dispatcher;
-import org.vfny.geoserver.util.requests.readers.DispatcherKvpReader;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.wms.WmsException;
 
 
 /**
@@ -42,11 +40,11 @@ import org.vfny.geoserver.wms.WmsException;
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
  */
+
 //JD: kill this class
 public class WmsDispatcher extends Dispatcher {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.servlets.wms");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets.wms");
 
     /**
      * Passes the Post method to the Get method, with no modifications.
@@ -75,13 +73,11 @@ public class WmsDispatcher extends Dispatcher {
         //String tempResponse = new String();
         //int targetRequest = 0;
         LOGGER.finer("got to post request");
-       
-        
+
         //DJB: adding parital POST support for SLD-POST.
         //     currently the only type of POST request we support is GetMap
         //     So chris' comments above dont apply - we just assume its GetMap and we dont have to read twice.
         // 
-        
         int targetRequest = Dispatcher.GET_MAP_REQUEST;
         doResponse(true, request, response, targetRequest);
     }
@@ -98,7 +94,6 @@ public class WmsDispatcher extends Dispatcher {
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-    	
         int targetRequest = 0;
 
         // Examine the incoming request and create appropriate server objects
@@ -113,71 +108,71 @@ public class WmsDispatcher extends Dispatcher {
             //throw exception
         }
 
-        doResponse(false, request, response, targetRequest);     
+        doResponse(false, request, response, targetRequest);
     }
 
     protected void doResponse(boolean isPost, HttpServletRequest request,
-        HttpServletResponse response, int req_type)
-        throws ServletException, IOException {
+        HttpServletResponse response, int req_type) throws ServletException, IOException {
         HttpServlet dispatched;
         LOGGER.finer("req_type is " + req_type);
+
         //JD: kill this
-//        switch (req_type) {
-//        case GET_CAPABILITIES_REQUEST:
-//            dispatched = new Capabilities();
-//
-//            break;
-//
-//        case GET_MAP_REQUEST:
-//            dispatched = new GetMap();
-//
-//            break;
-//            
-//        case GET_FEATURE_INFO_REQUEST:
-//            dispatched = new GetFeatureInfo();
-//
-//            break;   
-//
-//        case DESCRIBE_LAYER_REQUEST:
-//            dispatched = new DescribeLayer();
-//
-//            break;   
-//
-//        case GET_LEGEND_GRAPHIC_REQUEST:
-//            dispatched = new GetLegendGraphic();
-//
-//            break;   
-//        default:
-//            dispatched = null;
-//        }
-//
-//        if ((dispatched != null))  //DJB: removed "&& !isPost" because we are partially supportin POST now
-//        {
-//            dispatched.init(servletConfig); //only needed for init hack, see
-//            dispatched.service(request, response);
-//        } else 
-//        {
-//            String message;
-//
-//            if (isPost) {
-//                message = "Post requests are not supported with the dispatcher "
-//                    + "servlet.  Please try the request using the appropriate "
-//                    + "request servlet, such as GetCapabilities or GetFeature";
-//            } else {
-//                message = "No wms kvp request recognized.  The REQUEST parameter"
-//                    + " must be one of GetMap or GetCapabilities";
-//            }
-//            
-//            HttpSession session = request.getSession();
-//            ServletContext context = session.getServletContext();
-//
-//            GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
-//            
-//            WmsException wmse = new WmsException(message);
-//            String tempResponse = wmse.getXmlResponse(geoServer.isVerboseExceptions(), request);
-//
-//            response.setContentType(geoServer.getCharSet().toString());
-//            response.getWriter().write(tempResponse);
-//        }
+        //        switch (req_type) {
+        //        case GET_CAPABILITIES_REQUEST:
+        //            dispatched = new Capabilities();
+        //
+        //            break;
+        //
+        //        case GET_MAP_REQUEST:
+        //            dispatched = new GetMap();
+        //
+        //            break;
+        //            
+        //        case GET_FEATURE_INFO_REQUEST:
+        //            dispatched = new GetFeatureInfo();
+        //
+        //            break;   
+        //
+        //        case DESCRIBE_LAYER_REQUEST:
+        //            dispatched = new DescribeLayer();
+        //
+        //            break;   
+        //
+        //        case GET_LEGEND_GRAPHIC_REQUEST:
+        //            dispatched = new GetLegendGraphic();
+        //
+        //            break;   
+        //        default:
+        //            dispatched = null;
+        //        }
+        //
+        //        if ((dispatched != null))  //DJB: removed "&& !isPost" because we are partially supportin POST now
+        //        {
+        //            dispatched.init(servletConfig); //only needed for init hack, see
+        //            dispatched.service(request, response);
+        //        } else 
+        //        {
+        //            String message;
+        //
+        //            if (isPost) {
+        //                message = "Post requests are not supported with the dispatcher "
+        //                    + "servlet.  Please try the request using the appropriate "
+        //                    + "request servlet, such as GetCapabilities or GetFeature";
+        //            } else {
+        //                message = "No wms kvp request recognized.  The REQUEST parameter"
+        //                    + " must be one of GetMap or GetCapabilities";
+        //            }
+        //            
+        //            HttpSession session = request.getSession();
+        //            ServletContext context = session.getServletContext();
+        //
+        //            GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+        //            
+        //            WmsException wmse = new WmsException(message);
+        //            String tempResponse = wmse.getXmlResponse(geoServer.isVerboseExceptions(), request);
+        //
+        //            response.setContentType(geoServer.getCharSet().toString());
+        //            response.getWriter().write(tempResponse);
+        //        }
     }
 }

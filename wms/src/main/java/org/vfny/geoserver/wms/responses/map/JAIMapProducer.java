@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses.map;
 
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
+import org.vfny.geoserver.wms.responses.helpers.JAISupport;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
-
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
-import org.vfny.geoserver.wms.responses.helpers.JAISupport;
 
 
 /**
@@ -27,8 +26,7 @@ import org.vfny.geoserver.wms.responses.helpers.JAISupport;
  */
 class JAIMapProducer extends DefaultRasterMapProducer {
     /** A logger for this class. */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wms.map");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
 
     /** DOCUMENT ME! */
     private static final String DEFAULT_MAP_FORMAT = "image/png";
@@ -68,8 +66,8 @@ class JAIMapProducer extends DefaultRasterMapProducer {
         JAISupport.encode(format, image, outStream);
     }
 
-	public String getContentDisposition() {
-		// this can be null
-		return null;
-	}
+    public String getContentDisposition() {
+        // this can be null
+        return null;
+    }
 }

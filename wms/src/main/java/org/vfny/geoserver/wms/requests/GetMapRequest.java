@@ -4,16 +4,14 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import java.awt.Color;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wfs.servlets.WFService;
 import org.vfny.geoserver.wms.servlets.WMService;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Color;
+import java.util.List;
 
 
 /**
@@ -28,8 +26,7 @@ public class GetMapRequest extends WMSRequest {
 
     /** DOCUMENT ME! */
     public static final String SE_XML = "SE_XML";
-
-	private static final String TRANSACTION_REQUEST_TYPE = "GetMap";
+    private static final String TRANSACTION_REQUEST_TYPE = "GetMap";
 
     /** set of mandatory request's parameters */
     private MandatoryParameters mandatoryParams = new MandatoryParameters();
@@ -37,16 +34,14 @@ public class GetMapRequest extends WMSRequest {
     /** set of optionals request's parameters */
     private OptionalParameters optionalParams = new OptionalParameters();
 
-    
     /**
      * Creates a GetMapRequest request.
-     * 
+     *
      * @param service The service handling the request.
      */
     public GetMapRequest(WMService service) {
-    	super(TRANSACTION_REQUEST_TYPE, service);
+        super(TRANSACTION_REQUEST_TYPE, service);
     }
-
 
     /**
      * DOCUMENT ME!
@@ -122,9 +117,9 @@ public class GetMapRequest extends WMSRequest {
     public List getStyles() {
         return this.mandatoryParams.styles;
     }
-    
+
     /**
-     * Gets a list of the the filters that will be applied to each layer before rendering 
+     * Gets a list of the the filters that will be applied to each layer before rendering
      *
      * @return -
      */
@@ -149,19 +144,19 @@ public class GetMapRequest extends WMSRequest {
     public int getWidth() {
         return this.mandatoryParams.width;
     }
-    
+
     /**
      * @return the KML/KMZ score value for image vs. vector response
      */
     public int getKMScore() {
-    	return this.optionalParams.KMScore;
+        return this.optionalParams.KMScore;
     }
-    
+
     /**
      * @return true: return full attribution for placemark <description>
      */
     public boolean getKMattr() {
-    	return this.optionalParams.KMattr;
+        return this.optionalParams.KMattr;
     }
 
     /**
@@ -235,7 +230,7 @@ public class GetMapRequest extends WMSRequest {
     public void setStyles(List styles) {
         this.mandatoryParams.styles = styles;
     }
-    
+
     /**
      * Sets a list of filters, one for each layer
      *
@@ -266,17 +261,17 @@ public class GetMapRequest extends WMSRequest {
     /**
      * @param score the KML/KMZ score value for image vs. vector response, from 0 to 100
      */
-    public void setKMScore(int score){
-    	this.optionalParams.KMScore = score;
+    public void setKMScore(int score) {
+        this.optionalParams.KMScore = score;
     }
-    
+
     /**
      * @param on true: full attribution; false: no attribution
      */
     public void setKMattr(boolean on) {
-    	this.optionalParams.KMattr = on;
+        this.optionalParams.KMattr = on;
     }
-    
+
     /**
      * decodes a color of the form <code>#FFFFFF</code> into a
      * <code>java.awt.Color</code> object
@@ -333,7 +328,7 @@ public class GetMapRequest extends WMSRequest {
 
         /** from SRS (1.1) or CRS (1.2) param */
         CoordinateReferenceSystem crs;
-        
+
         /** vendor extensions, allows to filter each layer with a user defined filter */
         List filters;
 
@@ -342,12 +337,11 @@ public class GetMapRequest extends WMSRequest {
 
         /** DOCUMENT ME!  */
         boolean transparent = false;
-        
+
         /** score value for KML/KMZ */
         int KMScore = 40;
-        
+
         /** KML full/none attribution on returned placemark <description>. */
         boolean KMattr = true;
     }
-
 }

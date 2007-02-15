@@ -4,13 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import org.geotools.factory.FactoryFinder;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -20,6 +13,12 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 
 /**
@@ -44,9 +43,9 @@ public class GetLegendGraphicResponse implements Response {
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-    	return null;
+        return null;
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -123,14 +122,12 @@ public class GetLegendGraphicResponse implements Response {
      *
      * @return DOCUMENT ME!
      */
-    private static GetLegendGraphicProducerSpi getProducerFactory(
-        String mimeType) {
+    private static GetLegendGraphicProducerSpi getProducerFactory(String mimeType) {
         Iterator it = FactoryFinder.factories(GetLegendGraphicProducerSpi.class);
         GetLegendGraphicProducerSpi glf = null;
 
         while (it.hasNext()) {
-            GetLegendGraphicProducerSpi tmpGlf = (GetLegendGraphicProducerSpi) it
-                .next();
+            GetLegendGraphicProducerSpi tmpGlf = (GetLegendGraphicProducerSpi) it.next();
 
             if (tmpGlf.canProduce(mimeType)) {
                 glf = tmpGlf;
@@ -167,18 +164,17 @@ public class GetLegendGraphicResponse implements Response {
         Iterator it = FactoryFinder.factories(GetLegendGraphicProducerSpi.class);
 
         while (it.hasNext()) {
-            allFormats.addAll(((GetLegendGraphicProducerSpi) it.next())
-                .getSupportedFormats());
+            allFormats.addAll(((GetLegendGraphicProducerSpi) it.next()).getSupportedFormats());
         }
 
         return allFormats;
     }
 
-	/* (non-Javadoc)
-	 * @see org.vfny.geoserver.Response#getContentDisposition()
-	 */
-	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.vfny.geoserver.Response#getContentDisposition()
+     */
+    public String getContentDisposition() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

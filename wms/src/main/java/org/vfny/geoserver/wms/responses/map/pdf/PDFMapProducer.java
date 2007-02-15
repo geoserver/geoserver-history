@@ -73,16 +73,16 @@ class PDFMapProducer implements GetMapProducer {
      */
     private WMSMapContext mapContext;
 
-/**
-         *
-         */
+    /**
+             *
+             */
     public PDFMapProducer() {
         this(DEFAULT_MAP_FORMAT);
     }
 
-/**
-         *
-         */
+    /**
+             *
+             */
     public PDFMapProducer(String outputFormat) {
         setOutputFormat(outputFormat);
     }
@@ -128,8 +128,7 @@ class PDFMapProducer implements GetMapProducer {
      */
     public String getContentType() throws java.lang.IllegalStateException {
         if (this.format == null) {
-            throw new IllegalStateException(
-                "the output map format was not yet specified");
+            throw new IllegalStateException("the output map format was not yet specified");
         }
 
         return this.format;
@@ -170,8 +169,7 @@ class PDFMapProducer implements GetMapProducer {
             // step 1: creation of a document-object
             // width of document-object is width*72 inches
             // height of document-object is height*72 inches
-            com.lowagie.text.Rectangle pageSize = new com.lowagie.text.Rectangle(width,
-                    height);
+            com.lowagie.text.Rectangle pageSize = new com.lowagie.text.Rectangle(width, height);
 
             Document document = new Document(pageSize);
             document.setMargins(0, 0, 0, 0);
@@ -203,8 +201,7 @@ class PDFMapProducer implements GetMapProducer {
                 int type = AlphaComposite.SRC;
                 graphic.setComposite(AlphaComposite.getInstance(type));
 
-                Color c = new Color(map.getBgColor().getRed(),
-                        map.getBgColor().getGreen(),
+                Color c = new Color(map.getBgColor().getRed(), map.getBgColor().getGreen(),
                         map.getBgColor().getBlue(), 0);
                 graphic.setBackground(map.getBgColor());
                 graphic.setColor(c);
@@ -231,8 +228,7 @@ class PDFMapProducer implements GetMapProducer {
             renderer.setRendererHints(rendererParams);
 
             Envelope dataArea = map.getAreaOfInterest();
-            AffineTransform at = RendererUtilities.worldToScreenTransform(dataArea,
-                    paintArea);
+            AffineTransform at = RendererUtilities.worldToScreenTransform(dataArea, paintArea);
 
             if (this.abortRequested) {
                 graphic.dispose();
@@ -258,8 +254,7 @@ class PDFMapProducer implements GetMapProducer {
         } catch (Throwable t) {
             LOGGER.warning("UNCAUGHT exception: " + t.getMessage());
 
-            WmsException wmse = new WmsException("UNCAUGHT exception: "
-                    + t.getMessage());
+            WmsException wmse = new WmsException("UNCAUGHT exception: " + t.getMessage());
             wmse.setStackTrace(t.getStackTrace());
             throw wmse;
         }
@@ -274,16 +269,19 @@ class PDFMapProducer implements GetMapProducer {
         return this.mapContext;
     }
 
-	public String getContentDisposition() {
-		if (this.mapContext.getLayer(0) != null) {
-			try {
-				String title = this.mapContext.getLayer(0).getFeatureSource().getSchema().getTypeName();
-				if (title != null && !title.equals("")) {
-					return "attachment; filename=" + title + ".pdf";
-				}
-			} catch (NullPointerException e) {
-			}
-		}
-		return "attachment; filename=geoserver.pdf";
-	}
+    public String getContentDisposition() {
+        if (this.mapContext.getLayer(0) != null) {
+            try {
+                String title = this.mapContext.getLayer(0).getFeatureSource().getSchema()
+                                              .getTypeName();
+
+                if ((title != null) && !title.equals("")) {
+                    return "attachment; filename=" + title + ".pdf";
+                }
+            } catch (NullPointerException e) {
+            }
+        }
+
+        return "attachment; filename=geoserver.pdf";
+    }
 }

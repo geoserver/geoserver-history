@@ -4,18 +4,16 @@
  */
 package org.vfny.geoserver.wfs.requests.readers;
 
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.LockRequest;
 import org.vfny.geoserver.wfs.requests.WfsKvpRequestReader;
 import org.vfny.geoserver.wfs.servlets.WFService;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -28,20 +26,18 @@ import org.vfny.geoserver.wfs.servlets.WFService;
  */
 public class LockKvpReader extends WfsKvpRequestReader {
     /** Class logger */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.readers");
-
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
     /**
      * Constructor with raw request string and servlet handling request.
-     * 
+     *
      * @param kvPairs key/value pairs ser to construct a Lock request
      * @param service servlet/service handling request.
      */
     public LockKvpReader(Map kvPairs, WFService service) {
-    		super(kvPairs, service);
+        super(kvPairs, service);
     }
-    
+
     /**
      * Returns Lock feature request object.
      *
@@ -51,8 +47,9 @@ public class LockKvpReader extends WfsKvpRequestReader {
      *         request.
      * @throws WfsException DOCUMENT ME!
      */
-    public Request getRequest(HttpServletRequest request) throws ServiceException {
-        LockRequest currentRequest = new LockRequest((WFService)service);
+    public Request getRequest(HttpServletRequest request)
+        throws ServiceException {
+        LockRequest currentRequest = new LockRequest((WFService) service);
         currentRequest.setHttpServletRequest(request);
         // set global request parameters
         LOGGER.finest("setting global request parameters");
@@ -89,7 +86,9 @@ public class LockKvpReader extends WfsKvpRequestReader {
         List typeList = readFlat(getValue("TYPENAME"), INNER_DELIMETER);
         LOGGER.finer("type list size: " + typeList.size());
 
-        List filterList = readFilters(typeList, getValue("FEATUREID"), getValue("FILTER"), getValue("BBOX"));
+        List filterList = readFilters(typeList, getValue("FEATUREID"), getValue("FILTER"),
+                getValue("BBOX"));
+
         if (typeList.size() == 0) {
             typeList = getTypesFromFids(getValue("FEATUREID"));
 
@@ -105,9 +104,8 @@ public class LockKvpReader extends WfsKvpRequestReader {
         // check for errors in the request
         if (((filterSize != featureSize) && (filterSize > 0))
                 || ((filterSize > 0) && (featureSize == 0))) {
-            throw new WfsException("Filter size does not match"
-                + " feature types.  Filter size: " + filterSize
-                + " Feature size: " + featureSize);
+            throw new WfsException("Filter size does not match" + " feature types.  Filter size: "
+                + filterSize + " Feature size: " + featureSize);
         } else {
             currentRequest.setLocks(typeList, filterList);
 

@@ -4,6 +4,19 @@
  */
 package org.vfny.geoserver.testdata;
 
+import junit.framework.TestCase;
+import org.geotools.data.DataSourceException;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.property.PropertyDataStore;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.SchemaException;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.styling.SLDParser;
+import org.geotools.styling.Style;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryFinder;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -19,21 +32,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-
-import junit.framework.TestCase;
-
-import org.geotools.data.DataSourceException;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.property.PropertyDataStore;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.SchemaException;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.geotools.styling.SLDParser;
-import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyleFactoryFinder;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 
 /**
@@ -101,15 +99,15 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * and deleting files
      */
     public static String[] CITE_TYPE_NAMES = {
-            BASIC_POLYGONS_TYPE, BRIDGES_TYPE, BUILDINGS_TYPE,
-            DIVIDED_ROUTES_TYPE, FORESTS_TYPE, LAKES_TYPE, MAP_NEATLINE_TYPE,
-            NAMED_PLACES_TYPE, PONDS_TYPE, ROAD_SEGMENTS_TYPE, STREAMS_TYPE
+            BASIC_POLYGONS_TYPE, BRIDGES_TYPE, BUILDINGS_TYPE, DIVIDED_ROUTES_TYPE, FORESTS_TYPE,
+            LAKES_TYPE, MAP_NEATLINE_TYPE, NAMED_PLACES_TYPE, PONDS_TYPE, ROAD_SEGMENTS_TYPE,
+            STREAMS_TYPE
         };
 
     /**
      * Since the PropertyDataStore does not provides CRS support, we force
      * feature types to be in WGS84
-     */ 
+     */
     static CoordinateReferenceSystem FORCED_WGS84 = DefaultGeographicCRS.WGS84;
 
     /** User temp dir, where to store .property files containing cite data */
@@ -212,14 +210,12 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * @param timeOut
      * @param image
      */
-    protected void showImage(String frameName, long timeOut,
-        final BufferedImage image) {
+    protected void showImage(String frameName, long timeOut, final BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
 
         if (((System.getProperty("java.awt.headless") == null)
-                || !System.getProperty("java.awt.headless").equals("true"))
-                && INTERACTIVE) {
+                || !System.getProperty("java.awt.headless").equals("true")) && INTERACTIVE) {
             Frame frame = new Frame(frameName);
             frame.addWindowListener(new WindowAdapter() {
                     public void windowClosing(WindowEvent e) {
@@ -227,7 +223,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
                     }
                 });
 
-            Panel p = new Panel(null) {//no layout manager so it respects setSize
+            Panel p = new Panel(null) { //no layout manager so it respects setSize
                     public void paint(Graphics g) {
                         g.drawImage(image, 0, 0, this);
                     }
@@ -258,8 +254,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * @param bgColor the background color for which differing pixels are
      *        looked for
      */
-    protected void assertNotBlank(String testName, BufferedImage image,
-        Color bgColor) {
+    protected void assertNotBlank(String testName, BufferedImage image, Color bgColor) {
         int pixelsDiffer = 0;
 
         for (int y = 0; y < image.getHeight(); y++) {
@@ -270,9 +265,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
             }
         }
 
-        LOGGER.info(testName + ": pixel count="
-            + (image.getWidth() * image.getHeight()) + " non bg pixels: "
-            + pixelsDiffer);
+        LOGGER.info(testName + ": pixel count=" + (image.getWidth() * image.getHeight())
+            + " non bg pixels: " + pixelsDiffer);
         assertTrue(testName + " image is comlpetely blank", 0 < pixelsDiffer);
     }
 
@@ -289,8 +283,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
         List typeNames = Arrays.asList(ds.getTypeNames());
 
         for (int i = 0; i < CITE_TYPE_NAMES.length; i++) {
-            assertTrue(CITE_TYPE_NAMES[i] + " not found",
-                typeNames.contains(CITE_TYPE_NAMES[i]));
+            assertTrue(CITE_TYPE_NAMES[i] + " not found", typeNames.contains(CITE_TYPE_NAMES[i]));
         }
     }
 
@@ -302,14 +295,16 @@ public abstract class AbstractCiteDataTest extends TestCase {
     private void writeTempFiles() throws IOException {
         final File envTmpDir = new File(System.getProperty("java.io.tmpdir"));
 
-		this.tempDir = new File(envTmpDir, "cite_test_datastore");
-		if(this.tempDir.exists())
-			this.tempDir.delete();
-		this.tempDir.mkdir();
-		
+        this.tempDir = new File(envTmpDir, "cite_test_datastore");
+
+        if (this.tempDir.exists()) {
+            this.tempDir.delete();
+        }
+
+        this.tempDir.mkdir();
+
         if (!this.tempDir.exists() || !this.tempDir.isDirectory()) {
-            throw new IOException(this.tempDir.getAbsolutePath()
-                + " is not a writable directory");
+            throw new IOException(this.tempDir.getAbsolutePath() + " is not a writable directory");
         }
 
         for (int i = 0; i < CITE_TYPE_NAMES.length; i++) {
@@ -362,8 +357,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
         InputStream in = AbstractCiteDataTest.class.getResourceAsStream(resourceName);
 
         if (in == null) {
-            throw new NullPointerException(resourceName
-                + " not found in classpath");
+            throw new NullPointerException(resourceName + " not found in classpath");
         }
 
         OutputStream out = new java.io.FileOutputStream(outFile);

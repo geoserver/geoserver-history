@@ -4,11 +4,10 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
+import java.io.IOException;
+import java.io.OutputStream;
 
 
 /**
@@ -16,7 +15,7 @@ import org.vfny.geoserver.global.GeoServer;
  * FeatureResponse will instantiate an implementation of this interface to
  * take care of encoding the resulting set of features in the requested output
  * format.
- * 
+ *
  * <p>
  * An implementation of this interface reports wich output formats can produce
  * through its <code>canProduce()</code> method. So, when FeatureResponse

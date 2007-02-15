@@ -2,15 +2,17 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
 package org.vfny.geoserver.global.dto;
 
+
 /**
  * Marker used to indicate a public "Deep Copy" clone implementation.
- * 
+ *
  * <p>
  * This is intended to be used to provide a known interface for data structures
  * to recursively clone or test equality through data structures such as Maps
@@ -26,7 +28,7 @@ package org.vfny.geoserver.global.dto;
 public interface DataTransferObject extends Cloneable {
     /**
      * Implement clone as a Deep Copy.
-     * 
+     *
      * <p>
      * Create a clone of this object and return it.
      * </p>

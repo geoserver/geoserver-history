@@ -6,24 +6,25 @@ package org.vfny.geoserver.global.dto;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 
+
 /**
  * Data Transfer Object for GeoServer NameSpaceInfo information.
- * 
+ *
  * <p>
  * Represents the portion of a namespace required for the configuration of
  * geoserver. Defines namespaces to be used by the datastores.
  * </p>
- * 
+ *
  * <p>
  * Data Transfer object are used to communicate between the GeoServer
  * application and its configuration and persistent layers. As such the class
  * is final - to allow for its future use as an on-the-wire message.
  * </p>
- * 
+ *
  * <p>
  * Jody here - does this actual defin the namespace used by the GML?
  * </p>
- * 
+ *
  * <p>
  * NameSpaceInfoDTO nsDto = new NameSpaceInfoDTO(); nsDto.setDefault(false);
  * nsDto.setPrefix("me"); nsDto.setUri("dzwiers.refraction.net");
@@ -46,7 +47,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
 
     /**
      * NameSpaceConfig constructor.
-     * 
+     *
      * <p>
      * does nothing
      * </p>
@@ -56,7 +57,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
 
     /**
      * NameSpaceConfig constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig
      * provided  is null then default values are used. All the data structures
@@ -79,7 +80,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
 
     /**
      * Implement clone.
-     * 
+     *
      * <p>
      * creates a clone of this object
      * </p>
@@ -115,7 +116,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
 
     /**
      * isDefault purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -128,7 +129,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
 
     /**
      * getPrefix purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -141,7 +142,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
 
     /**
      * getUri purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -154,7 +155,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
 
     /**
      * setDdefault purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -167,7 +168,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
 
     /**
      * setPrefix purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -180,7 +181,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
 
     /**
      * setUri purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -190,10 +191,10 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     public void setUri(String string) {
         uri = string;
     }
-    
-	public String toString() {
-		 return "xmlns:" + getPrefix() + "=\"" + getUri() + "\", isDefault=" + _default;
-	 }
+
+    public String toString() {
+        return "xmlns:" + getPrefix() + "=\"" + getUri() + "\", isDefault=" + _default;
+    }
 
     /**
      * @see java.lang.Object#equals(Object)
@@ -202,9 +203,11 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
         if (!(object instanceof NameSpaceInfoDTO)) {
             return false;
         }
+
         NameSpaceInfoDTO rhs = (NameSpaceInfoDTO) object;
-        return new EqualsBuilder().appendSuper(super.equals(object)).append(
-                this._default, rhs._default).append(this.uri, rhs.uri).append(
-                this.prefix, rhs.prefix).isEquals();
+
+        return new EqualsBuilder().appendSuper(super.equals(object))
+                                  .append(this._default, rhs._default).append(this.uri, rhs.uri)
+                                  .append(this.prefix, rhs.prefix).isEquals();
     }
 }

@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -15,18 +16,18 @@ import java.util.NoSuchElementException;
 
 /**
  * Data Transfer Object used to represent GeoServer Catalog information.
- * 
+ *
  * <p>
  * Represents an instance of the catalog.xml file in the configuration of the
  * server, along with associated configuration files for the feature types.
  * </p>
- * 
+ *
  * <p>
  * Data Transfer object are used to communicate between the GeoServer
  * application and its configuration and persistent layers. As such the class
  * is final - to allow for its future use as an on-the-wire message.
  * </p>
- * 
+ *
  * <p>
  * Example:
  * </p>
@@ -84,7 +85,7 @@ public final class DataDTO implements DataTransferObject {
 
     /**
      * The default namespace for the server instance.
-     * 
+     *
      * <p>
      * This may be <code>null</code> if a default has not been defined. the
      * config files is supposed to use the "first" Namespace when a default is
@@ -99,7 +100,7 @@ public final class DataDTO implements DataTransferObject {
 
     /**
      * Data constructor.
-     * 
+     *
      * <p>
      * does nothing
      * </p>
@@ -109,7 +110,7 @@ public final class DataDTO implements DataTransferObject {
 
     /**
      * Creates a duplicate of the provided DataDTO using deep copy.
-     * 
+     *
      * <p>
      * Creates a copy of the Data provided. If the Data provided  is null then
      * default values are used. All the datastructures are cloned.
@@ -164,7 +165,7 @@ public final class DataDTO implements DataTransferObject {
 
     /**
      * Implement equals as part of the Object contract.
-     * 
+     *
      * <p>
      * Recursively tests to determine if the object passed in is a copy of this
      * object.
@@ -209,8 +210,7 @@ public final class DataDTO implements DataTransferObject {
         }
 
         if (defaultNameSpacePrefix != null) {
-            r = r
-                && defaultNameSpacePrefix.equals(c.getDefaultNameSpacePrefix());
+            r = r && defaultNameSpacePrefix.equals(c.getDefaultNameSpacePrefix());
         } else if (c.getDefaultNameSpacePrefix() != null) {
             return false;
         }
@@ -258,7 +258,7 @@ public final class DataDTO implements DataTransferObject {
 
     /**
      * Return the getDefaultNameSpace.
-     * 
+     *
      * <p>
      * May consider just returning the "prefix" of the default Namespace here.
      * It is unclear what happens when we are starting out with a Empty
@@ -273,7 +273,7 @@ public final class DataDTO implements DataTransferObject {
 
     /**
      * Retrive Map of FeatureTypeInfoDTO by "dataStoreID.typeName".
-     * 
+     *
      *   DJB: I recommend that you use this.getKey() as the key for this hash
      *
      * @return Map of FeatureTypeInfoDTO by "dataStoreID.typeName"
@@ -322,7 +322,7 @@ public final class DataDTO implements DataTransferObject {
 
     /**
      * Sets the default namespace.
-     * 
+     *
      * <p>
      * Note the provided namespace must be present in the namespace map.
      * </p>
@@ -335,18 +335,17 @@ public final class DataDTO implements DataTransferObject {
         defaultNameSpacePrefix = dnsp;
 
         if (!nameSpaces.containsKey(dnsp)) {
-            throw new NoSuchElementException(
-                "Invalid NameSpace Prefix for Default");
+            throw new NoSuchElementException("Invalid NameSpace Prefix for Default");
         }
     }
 
     /**
      * Set the FeatureTypeInfoDTO map.
-     * 
+     *
      * <p>
      * The dataStoreID used for the map must be in datastores.
      * </p>
-     * 
+     *
      *   DJB: I recommend that you use this.getKey() as the key for this hash
      *
      * @param map of FeatureTypeInfoDTO by "dataStoreID.typeName"
@@ -364,7 +363,7 @@ public final class DataDTO implements DataTransferObject {
 
     /**
      * Sets the NameSpaceInfoDTO map.
-     * 
+     *
      * <p>
      * The default prefix is not changed by this operation.
      * </p>

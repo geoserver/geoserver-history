@@ -4,14 +4,12 @@
  */
 package org.vfny.geoserver.util.requests.readers;
 
-import java.io.Reader;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.servlets.AbstractService;
+import java.io.Reader;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -25,47 +23,42 @@ import org.vfny.geoserver.servlets.AbstractService;
  */
 public abstract class XmlRequestReader {
     /** Class logger */
-    protected static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.readers");
+    protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
-	/** The service handling the request **/
+    /** The service handling the request **/
     private AbstractService service;
-	
-	/**
-     * DOCUMENT ME!
-     *
-     * @param reader DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws ServiceException DOCUMENT ME!
-     */
-    public abstract Request read(Reader reader, HttpServletRequest req) throws ServiceException;
-    
+
+    /**
+    * DOCUMENT ME!
+    *
+    * @param reader DOCUMENT ME!
+    *
+    * @return DOCUMENT ME!
+    *
+    * @throws ServiceException DOCUMENT ME!
+    */
+    public abstract Request read(Reader reader, HttpServletRequest req)
+        throws ServiceException;
+
     /**
      * This will create a new XmlRequestReader
      * @param service The service handling the request
      */
     public XmlRequestReader(AbstractService service) {
-    		this.service = service;
-	}
-    
-	/**
-	 * @return the service handling the request
-	 */
+        this.service = service;
+    }
+
+    /**
+     * @return the service handling the request
+     */
     public AbstractService getServiceRef() {
-		return service;
-	}
+        return service;
+    }
 
-	/**
-	 * sets the service handling the request
-	 */
+    /**
+     * sets the service handling the request
+     */
     public void setServiceRef(AbstractService service) {
-		this.service = service;
-	}
-    
-    
-    
-    
-
+        this.service = service;
+    }
 }

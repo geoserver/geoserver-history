@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -13,14 +14,14 @@ import java.io.File;
 
 /**
  * Data Transfer Object for style information.
- * 
+ *
  * <p>
  * Defines the style ids to be used by the wms.  The files  must be contained
  * in geoserver/misc/wms/styles.  We're  working on finding a better place for
  * them, but for now  that's where you must put them if you want them on the
  * server.
  * </p>
- * 
+ *
  * <p>
  * StyleDTO styleDto = new StyleDTO(); styleDto.setDefault(false);
  * styleDto.setId("My Style"); styleDto.setFilename(new File(myStyle.sld));
@@ -41,7 +42,7 @@ public final class StyleDTO implements DataTransferObject {
 
     /**
      * StyleConfig constructor.
-     * 
+     *
      * <p>
      * does nothing
      * </p>
@@ -51,7 +52,7 @@ public final class StyleDTO implements DataTransferObject {
 
     /**
      * StyleConfig constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the StyleConfig provided. If the StyleConfig provided
      * is null then default values are used. All the data structures are
@@ -74,7 +75,7 @@ public final class StyleDTO implements DataTransferObject {
 
     /**
      * Implement clone.
-     * 
+     *
      * <p>
      * creates a clone of this object
      * </p>
@@ -89,7 +90,7 @@ public final class StyleDTO implements DataTransferObject {
 
     /**
      * Implement equals.
-     * 
+     *
      * <p>
      * recursively tests to determine if the object passed in is a copy of this
      * object.
@@ -142,7 +143,7 @@ public final class StyleDTO implements DataTransferObject {
 
     /**
      * isDefault purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -155,7 +156,7 @@ public final class StyleDTO implements DataTransferObject {
 
     /**
      * getFilename purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -168,7 +169,7 @@ public final class StyleDTO implements DataTransferObject {
 
     /**
      * getId purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -181,7 +182,7 @@ public final class StyleDTO implements DataTransferObject {
 
     /**
      * setDefault purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -194,7 +195,7 @@ public final class StyleDTO implements DataTransferObject {
 
     /**
      * setFilename purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -207,7 +208,7 @@ public final class StyleDTO implements DataTransferObject {
 
     /**
      * setId purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -217,9 +218,8 @@ public final class StyleDTO implements DataTransferObject {
     public void setId(String string) {
         id = string;
     }
-    
+
     public String toString() {
-    	return "Style: " + id + " at " + filename + (_default ? "default" :
-    		"");
+        return "Style: " + id + " at " + filename + (_default ? "default" : "");
     }
 }

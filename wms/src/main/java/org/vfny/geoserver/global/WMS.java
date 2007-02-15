@@ -8,9 +8,10 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import java.util.Map;
 
+
 /**
  * WMS
- * 
+ *
  * <p>
  * Represents the GeoServer information required to configure an  instance of
  * the WMS Server. This class holds the currently used  configuration and is
@@ -18,7 +19,7 @@ import java.util.Map;
  * modified by the Configuration Interface  during runtime. Such modifications
  * come from the GeoServer Object  in the SessionContext.
  * </p>
- * 
+ *
  * <p>
  * WMS wms = new WMS(dto); System.out.println(wms.getName() + wms.WMS_VERSION);
  * System.out.println(wms.getAbstract());
@@ -36,27 +37,24 @@ public class WMS extends Service {
 
     /** list of WMS Exception Formats */
     private static final String[] EXCEPTION_FORMATS = {
-        "application/vnd.ogc.se_xml", 
-		   //DJB: these arent actually supported!!
-		//"application/vnd.ogc.se_inimage",
-        //  "application/vnd.ogc.se_blank"
-    };
-    
+            "application/vnd.ogc.se_xml", //DJB: these arent actually supported!!
+                                          //"application/vnd.ogc.se_inimage",
+                                          //  "application/vnd.ogc.se_blank"
+        };
     public static final String WEB_CONTAINER_KEY = "WMS";
 
     /** svg Renderer to use **/
     private String svgRenderer;
+
     /** svg anitalias or not **/
     private boolean svgAntiAlias;
-    
     private Map baseMapLayers;
     private Map baseMapStyles;
-    
     private WFS wfs;
-    
+
     /**
      * WMS constructor.
-     * 
+     *
      * <p>
      * Stores the data specified in the WMSDTO object in this WMS Object for
      * GeoServer to use.
@@ -71,25 +69,24 @@ public class WMS extends Service {
         baseMapLayers = config.getBaseMapLayers();
         baseMapStyles = config.getBaseMapStyles();
     }
-    
-    
-    
+
     /**
-     * Creates the WMS service by getting the WMSDTO object from the 
+     * Creates the WMS service by getting the WMSDTO object from the
      * config and calling {@link #WMS(WMSDTO)}.
-     *  
+     *
      * @param config
      * @param data
      * @param geoServer
      * @throws ConfigurationException
      */
-    public WMS( Config config, Data data, GeoServer geoServer, WFS wfs)  throws ConfigurationException {
-		this( config.getXMLReader().getWms() );
-		setData(data);
-		setGeoServer(geoServer);
-                this.wfs = wfs;
+    public WMS(Config config, Data data, GeoServer geoServer, WFS wfs)
+        throws ConfigurationException {
+        this(config.getXMLReader().getWms());
+        setData(data);
+        setGeoServer(geoServer);
+        this.wfs = wfs;
     }
-    
+
     /**
      * Quick hack to fix geot-770, need a full class rewrite otherwise and
      * we are too near release to do that
@@ -99,24 +96,24 @@ public class WMS extends Service {
         return wfs;
     }
 
-    	/**
-     * load purpose.
-     * <p>
-     * loads a new instance of data into this object.
-     * </p>
-     * @param config
-     */
+    /**
+    * load purpose.
+    * <p>
+    * loads a new instance of data into this object.
+    * </p>
+    * @param config
+    */
     public void load(WMSDTO config) {
-    	super.load(config.getService());
-    	svgRenderer = config.getSvgRenderer();
-    	svgAntiAlias = config.getSvgAntiAlias();
-    	baseMapLayers = config.getBaseMapLayers();
-    	baseMapStyles = config.getBaseMapStyles();
+        super.load(config.getService());
+        svgRenderer = config.getSvgRenderer();
+        svgAntiAlias = config.getSvgAntiAlias();
+        baseMapLayers = config.getBaseMapLayers();
+        baseMapStyles = config.getBaseMapStyles();
     }
 
     /**
      * WMS constructor.
-     * 
+     *
      * <p>
      * Package constructor intended for default use by GeoServer
      * </p>
@@ -129,7 +126,7 @@ public class WMS extends Service {
 
     /**
      * Implement toDTO.
-     * 
+     *
      * <p>
      * Package method used by GeoServer. This method may return references, and
      * does not clone, so extreme caution sould be used when traversing the
@@ -144,18 +141,18 @@ public class WMS extends Service {
      */
     public Object toDTO() {
         WMSDTO w = new WMSDTO();
-        w.setService((ServiceDTO)super.toDTO());
+        w.setService((ServiceDTO) super.toDTO());
         w.setSvgRenderer(svgRenderer);
         w.setSvgAntiAlias(svgAntiAlias);
         w.setBaseMapLayers(baseMapLayers);
         w.setBaseMapStyles(baseMapStyles);
-        
+
         return w;
     }
 
     /**
      * getExceptionFormats purpose.
-     * 
+     *
      * <p>
      * Returns a static list of Exception Formats in as Strings
      * </p>
@@ -189,7 +186,7 @@ public class WMS extends Service {
      * Informs the user that this WMS supports SLD.  We don't currently
      * handle sld, still needs to be rolled in from geotools, so this now
      * must be false.
-     * 
+     *
      *  //djb: we support it now
      *
      * @return false
@@ -222,51 +219,50 @@ public class WMS extends Service {
      * @return false
      */
     public boolean supportsRemoteWFS() {
-        return false;  //djb: hopefully this will change soon.
+        return false; //djb: hopefully this will change soon.
     }
-    
+
     /**
      * @return the id of the SVG renderer being used by the wms.
      */
     public String getSvgRenderer() {
-	   return svgRenderer;
+        return svgRenderer;
     }
-    
+
     /**
      * Sets the id of the SVG renderer being used by the wms.
      */
     public void setSvgRenderer(String svgRenderer) {
-		this.svgRenderer = svgRenderer;
-	}
-    
+        this.svgRenderer = svgRenderer;
+    }
+
     /**
      * @return Flag indicating wether the svg renderer should anti-alias or not.
      */
     public boolean isSvgAntiAlias() {
-		return svgAntiAlias;
-	}
-    
+        return svgAntiAlias;
+    }
+
     /**
      * Sets the Flag indicating wether the svg renderer should anti-alias or not.
      */
     public void setSvgAntiAlias(boolean svgAntiAlias) {
-		this.svgAntiAlias = svgAntiAlias;
-	}
-    
+        this.svgAntiAlias = svgAntiAlias;
+    }
+
     public Map getBaseMapLayers() {
-    	return baseMapLayers;
+        return baseMapLayers;
     }
-    
+
     public void setBaseMapLayers(Map layers) {
-    	baseMapLayers = layers;
+        baseMapLayers = layers;
     }
-    
+
     public Map getBaseMapStyles() {
-    	return baseMapStyles;
+        return baseMapStyles;
     }
-    
+
     public void setBaseMapStyles(Map styles) {
-    	baseMapStyles = styles;
+        baseMapStyles = styles;
     }
-    
 }

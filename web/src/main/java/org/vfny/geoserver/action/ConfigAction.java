@@ -4,9 +4,6 @@
  */
 package org.vfny.geoserver.action;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -20,17 +17,19 @@ import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.UserContainer;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
  * GeoConfigAction is a common super class used by STRUTS Actions.
- * 
+ *
  * <p>
  * ConfigAction is used to store shared services, such as looking up the
  * Configuration Model.
  * </p>
  * Capabilities:
- * 
+ *
  * <ul>
  * <li>
  * Config (Model) Access: Convience routines have been writen to allow access
@@ -76,44 +75,45 @@ import org.vfny.geoserver.global.UserContainer;
  * @version $Id: ConfigAction.java,v 1.11 2004/03/02 02:36:00 jive Exp $
  */
 public class ConfigAction extends GeoServerAction {
-	/**
-	 * Execute method that redirects user if not loggin in.
-	 * <p>
-	 * The UserContainer is gathered from the session context using the
-	 * GeoServerAction.getUserContainer( request method ).
-	 * </p>
-	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
-	public ActionForward execute(ActionMapping mapping,
-			                     ActionForm form,
-			                     HttpServletRequest request,
-								 HttpServletResponse response) throws Exception {
-		if( !isLoggedIn( request )){
+    /**
+     * Execute method that redirects user if not loggin in.
+     * <p>
+     * The UserContainer is gathered from the session context using the
+     * GeoServerAction.getUserContainer( request method ).
+     * </p>
+     * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        HttpServletRequest request, HttpServletResponse response)
+        throws Exception {
+        if (!isLoggedIn(request)) {
             ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.login.required"));
-            request.setAttribute(Globals.ERROR_KEY, errors);            
+            request.setAttribute(Globals.ERROR_KEY, errors);
             request.setAttribute("forward", mapping.getForward());
-			return mapping.findForward("login");
-		}
-		return execute( mapping, form, getUserContainer( request ), request, response );
-	}
-	/**
-	 * A "safe" execute method, only called after the user has logged in.
-     * <p>
-     * You may still override the normal execute method if you do not require
-     * this service. 
-     * </p>
-	 */
-	public ActionForward execute( ActionMapping mapping,
-			               ActionForm form,
-						   UserContainer user,
-						   HttpServletRequest request,
-						   HttpServletResponse response ) throws Exception {
-		return null;
-	}
+
+            return mapping.findForward("login");
+        }
+
+        return execute(mapping, form, getUserContainer(request), request, response);
+    }
+
+    /**
+     * A "safe" execute method, only called after the user has logged in.
+    * <p>
+    * You may still override the normal execute method if you do not require
+    * this service.
+    * </p>
+     */
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
+        throws Exception {
+        return null;
+    }
+
     /**
      * Access Web Map Server Configuration Model from the WebContainer.
-     * 
+     *
      * <p>
      * Note that this represents the Configuration and not the state of the Web
      * Feature Server.
@@ -127,7 +127,7 @@ public class ConfigAction extends GeoServerAction {
 
     /**
      * Access Web Feature Server Configuration Model from the WebContainer.
-     * 
+     *
      * <p>
      * Note that this represents the Configuration and not the state of the Web
      * Feature Server.
@@ -138,6 +138,7 @@ public class ConfigAction extends GeoServerAction {
     protected WFSConfig getWFSConfig() {
         return (WFSConfig) getServlet().getServletContext().getAttribute(WFSConfig.CONFIG_KEY);
     }
+
     /**
      * Access Web Map Server Configuration Model from the WebContainer.
      *
@@ -162,7 +163,8 @@ public class ConfigAction extends GeoServerAction {
      * @return Configuration model for Catalog information.
      */
     protected ValidationConfig getValidationConfig() {
-    	return (ValidationConfig) getServlet().getServletContext().getAttribute(ValidationConfig.CONFIG_KEY);
+        return (ValidationConfig) getServlet().getServletContext()
+                                      .getAttribute(ValidationConfig.CONFIG_KEY);
     }
 
     /**
@@ -171,6 +173,7 @@ public class ConfigAction extends GeoServerAction {
      * @return Configuration model for Catalog information.
      */
     protected ApplicationState getApplicationState() {
-    	return (ApplicationState) getServlet().getServletContext().getAttribute(ApplicationState.WEB_CONTAINER_KEY);
+        return (ApplicationState) getServlet().getServletContext()
+                                      .getAttribute(ApplicationState.WEB_CONTAINER_KEY);
     }
 }

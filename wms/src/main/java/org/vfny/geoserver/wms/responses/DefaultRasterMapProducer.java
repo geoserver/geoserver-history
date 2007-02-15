@@ -4,6 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import com.vividsolutions.jts.geom.Envelope;
+import org.geotools.renderer.GTRenderer;
+import org.geotools.renderer.lite.RendererUtilities;
+import org.geotools.renderer.lite.StreamingRenderer;
+import org.vfny.geoserver.wms.GetMapProducer;
+import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.WmsException;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -18,27 +25,18 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geotools.renderer.GTRenderer;
-import org.geotools.renderer.lite.RendererUtilities;
-import org.geotools.renderer.lite.StreamingRenderer;
-import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.WmsException;
-
-import com.vividsolutions.jts.geom.Envelope;
-
 
 /**
  * Abstract base class for GetMapProducers that relies in LiteRenderer for
  * creating the raster map and then outputs it in the format they specializes
  * in.
- * 
+ *
  * <p>
  * This class does the job of producing a BufferedImage using geotools
  * LiteRenderer, so it should be enough for a subclass to implement
  * {@linkPlain #formatImageOutputStream(String, BufferedImage, OutputStream)}
  * </p>
- * 
+ *
  * <p>
  * Generates a map using the geotools jai rendering classes.  Uses the Lite
  * renderer, loading the data on the fly, which is quite nice.  Thanks Andrea
@@ -47,7 +45,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * we are a ways off with its maturity to try that yet.  So Lite treats us
  * quite well, as it is stateless and therefor loads up nice and fast.
  * </p>
- * 
+ *
  * <p></p>
  *
  * @author Chris Holmes, TOPP
@@ -55,8 +53,7 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public abstract class DefaultRasterMapProducer implements GetMapProducer {
     /** A logger for this class. */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wms.map");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
 
     /** Which format to encode the image in if one is not supplied */
     private static final String DEFAULT_MAP_FORMAT = "image/png";
@@ -129,8 +126,10 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
      */
     public void abort() {
         this.abortRequested = true;
-        if(this.renderer != null)
-        this.renderer.stopRendering();
+
+        if (this.renderer != null) {
+            this.renderer.stopRendering();
+        }
     }
 
     /**
@@ -145,8 +144,7 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
      */
     public String getContentType() throws java.lang.IllegalStateException {
         if (this.format == null) {
-            throw new IllegalStateException(
-                "the output map format was not yet specified");
+            throw new IllegalStateException("the output map format was not yet specified");
         }
 
         return this.format;
@@ -170,8 +168,7 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
      *
      * @throws WmsException For any problems.
      */
-    public void produceMap(WMSMapContext map) throws WmsException 
-	{     
+    public void produceMap(WMSMapContext map) throws WmsException {
         this.mapContext = map;
 
         final int width = map.getMapWidth();
@@ -181,63 +178,55 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
             LOGGER.fine("setting up " + width + "x" + height + " image");
         }
 
-         BufferedImage curImage = new BufferedImage(width, height,BufferedImage.TYPE_4BYTE_ABGR);
-  
-  
+        BufferedImage curImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 
-         final Graphics2D graphic = curImage.createGraphics();
-        
- 
+        final Graphics2D graphic = curImage.createGraphics();
+
         if (!map.isTransparent()) {
             graphic.setColor(map.getBgColor());
             graphic.fillRect(0, 0, width, height);
         } else {
             LOGGER.fine("setting to transparent");
-            
+
             int type = AlphaComposite.SRC;
             graphic.setComposite(AlphaComposite.getInstance(type));
-            
-            Color c = new Color(map.getBgColor().getRed(),
-            		map.getBgColor().getGreen(),
-					map.getBgColor().getBlue(),
-					0);
+
+            Color c = new Color(map.getBgColor().getRed(), map.getBgColor().getGreen(),
+                    map.getBgColor().getBlue(), 0);
             graphic.setBackground(map.getBgColor());
-            graphic.setColor( c );
+            graphic.setColor(c);
             graphic.fillRect(0, 0, width, height);
-            
+
             type = AlphaComposite.SRC_OVER;
             graphic.setComposite(AlphaComposite.getInstance(type));
-
         }
-        
+
         Rectangle paintArea = new Rectangle(width, height);
 
         renderer = new StreamingRenderer();
         renderer.setContext(map);
-        
-        RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+
+        RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
         renderer.setJava2DHints(hints);
-        
+
         //we already do everything that the optimized data loading does...
         //if we set it to true then it does it all twice...
         Map rendererParams = new HashMap();
         rendererParams.put("optimizedDataLoadingEnabled", Boolean.TRUE);
-        
+
         renderer.setRendererHints(rendererParams);
-       
 
         Envelope dataArea = map.getAreaOfInterest();
-        AffineTransform at = RendererUtilities.worldToScreenTransform(dataArea,   paintArea);
+        AffineTransform at = RendererUtilities.worldToScreenTransform(dataArea, paintArea);
 
         //LOGGER.fine("calling renderer");
-
-        if (this.abortRequested)
-        {
+        if (this.abortRequested) {
             return;
         }
-      
+
         renderer.paint(graphic, paintArea, at);
-        
+
         map = null;
 
         if (!this.abortRequested) {
@@ -258,9 +247,8 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
      * @throws WmsException
      * @throws IOException DOCUMENT ME!
      */
-    protected abstract void formatImageOutputStream(String format,
-        BufferedImage image, OutputStream outStream)
-        throws WmsException, IOException;
+    protected abstract void formatImageOutputStream(String format, BufferedImage image,
+        OutputStream outStream) throws WmsException, IOException;
 
     /**
      * This is a package protected method with the sole purpose of facilitate

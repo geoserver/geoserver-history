@@ -4,15 +4,14 @@
  */
 package org.vfny.geoserver.wms.responses.map;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
-
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.responses.helpers.JAISupport;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Logger;
 
 
 /**
@@ -89,17 +88,18 @@ public class JaiMapProducerFactory implements GetMapProducerFactorySpi {
      */
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
-    	if(!canProduce(mapFormat))
-    		throw new IllegalArgumentException("Can't produce " + mapFormat + " format");
-    	return new JAIMapProducer(mapFormat);
+        if (!canProduce(mapFormat)) {
+            throw new IllegalArgumentException("Can't produce " + mapFormat + " format");
+        }
+
+        return new JAIMapProducer(mapFormat);
     }
-    
+
     /* (non-Javadoc)
-	 * @see org.geotools.factory.Factory#getImplementationHints()
-	 * This just returns java.util.Collections.EMPTY_MAP
-	 */
-	public Map getImplementationHints() {
-		return java.util.Collections.EMPTY_MAP;
-	}
-	
+         * @see org.geotools.factory.Factory#getImplementationHints()
+         * This just returns java.util.Collections.EMPTY_MAP
+         */
+    public Map getImplementationHints() {
+        return java.util.Collections.EMPTY_MAP;
+    }
 }

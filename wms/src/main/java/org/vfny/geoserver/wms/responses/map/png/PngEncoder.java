@@ -13,12 +13,13 @@ import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
+
 /**
  * PngEncoder takes a Java Image object and creates a byte string which can be saved as a PNG file.
  * The Image is presumed to use the DirectColorModel.
  *
  * <p>Thanks to Jay Denny at KeyPoint Software
- *    http://www.keypoint.com/
+ *    http://www.keypoint.com
  * who let me develop this code on company time.</p>
  *
  * <p>You may contact me with (probably very-much-needed) improvements,
@@ -51,15 +52,13 @@ import java.util.zip.DeflaterOutputStream;
  * 19-Sep-2003 : Fix for platforms using EBCDIC (contributed by Paulo Soares);
  * 19-Oct-2003 : Change private fields to protected fields so that
  *               PngEncoderB can inherit them (JDE)
- *				 Fixed bug with calculation of nRows
- * 02-Jun-2006 : Changed license to GPL, as per clause 3 of Terms and 
+ *                                 Fixed bug with calculation of nRows
+ * 02-Jun-2006 : Changed license to GPL, as per clause 3 of Terms and
  *               Conditions of LGPL, made additional copyright to TOPP
  *               (though not exclusive copyright, so we can't change the terms
  *                except to go to GPL)
  */
-
 public class PngEncoder extends Object {
-
     /** Constant specifying that alpha channel should be encoded. */
     public static final boolean ENCODE_ALPHA = true;
 
@@ -77,15 +76,15 @@ public class PngEncoder extends Object {
 
     /** Constants for filter (LAST) */
     public static final int FILTER_LAST = 2;
-    
+
     /** IHDR tag. */
-    protected static final byte IHDR[] = {73, 72, 68, 82};
-    
+    protected static final byte[] IHDR = { 73, 72, 68, 82 };
+
     /** IDAT tag. */
-    protected static final byte IDAT[] = {73, 68, 65, 84};
-    
+    protected static final byte[] IDAT = { 73, 68, 65, 84 };
+
     /** IEND tag. */
-    protected static final byte IEND[] = {73, 69, 78, 68};
+    protected static final byte[] IEND = { 73, 69, 78, 68 };
 
     /** The png bytes. */
     protected byte[] pngBytes;
@@ -100,10 +99,16 @@ public class PngEncoder extends Object {
     protected Image image;
 
     /** The width. */
-    protected int width, height;
+    protected int width;
+
+    /** The width. */
+    protected int height;
 
     /** The byte position. */
-    protected int bytePos, maxPos;
+    protected int bytePos;
+
+    /** The byte position. */
+    protected int maxPos;
 
     /** CRC. */
     protected CRC32 crc = new CRC32();
@@ -163,7 +168,6 @@ public class PngEncoder extends Object {
         this(image, encodeAlpha, whichFilter, 0);
     }
 
-
     /**
      * Class constructor specifying Image source to encode, whether to encode alpha, filter to use,
      * and compression level.
@@ -178,7 +182,8 @@ public class PngEncoder extends Object {
         this.image = image;
         this.encodeAlpha = encodeAlpha;
         setFilter(whichFilter);
-        if (compLevel >= 0 && compLevel <= 9) {
+
+        if ((compLevel >= 0) && (compLevel <= 9)) {
             this.compressionLevel = compLevel;
         }
     }
@@ -203,11 +208,12 @@ public class PngEncoder extends Object {
      * @return an array of bytes, or null if there was a problem
      */
     public byte[] pngEncode(boolean encodeAlpha) {
-        byte[]  pngIdBytes = {-119, 80, 78, 71, 13, 10, 26, 10};
+        byte[] pngIdBytes = { -119, 80, 78, 71, 13, 10, 26, 10 };
 
         if (image == null) {
             return null;
         }
+
         width = image.getWidth(null);
         height = image.getHeight(null);
 
@@ -225,14 +231,15 @@ public class PngEncoder extends Object {
         bytePos = writeBytes(pngIdBytes, 0);
         //hdrPos = bytePos;
         writeHeader();
+
         //dataPos = bytePos;
         if (writeImageData()) {
             writeEnd();
             pngBytes = resizeByteArray(pngBytes, maxPos);
-        }
-        else {
+        } else {
             pngBytes = null;
         }
+
         return pngBytes;
     }
 
@@ -271,6 +278,7 @@ public class PngEncoder extends Object {
      */
     public void setFilter(int whichFilter) {
         this.filter = FILTER_NONE;
+
         if (whichFilter <= FILTER_LAST) {
             this.filter = whichFilter;
         }
@@ -291,7 +299,7 @@ public class PngEncoder extends Object {
      * @param level 0 through 9
      */
     public void setCompressionLevel(int level) {
-        if (level >= 0 && level <= 9) {
+        if ((level >= 0) && (level <= 9)) {
             this.compressionLevel = level;
         }
     }
@@ -314,10 +322,11 @@ public class PngEncoder extends Object {
      *         original, the trailing elements are truncated.
      */
     protected byte[] resizeByteArray(byte[] array, int newLength) {
-        byte[]  newArray = new byte[newLength];
-        int     oldLength = array.length;
+        byte[] newArray = new byte[newLength];
+        int oldLength = array.length;
 
         System.arraycopy(array, 0, newArray, 0, Math.min(oldLength, newLength));
+
         return newArray;
     }
 
@@ -334,10 +343,13 @@ public class PngEncoder extends Object {
      */
     protected int writeBytes(byte[] data, int offset) {
         maxPos = Math.max(maxPos, offset + data.length);
-        if (data.length + offset > pngBytes.length) {
+
+        if ((data.length + offset) > pngBytes.length) {
             pngBytes = resizeByteArray(pngBytes, pngBytes.length + Math.max(1000, data.length));
         }
+
         System.arraycopy(data, 0, pngBytes, offset, data.length);
+
         return offset + data.length;
     }
 
@@ -355,10 +367,13 @@ public class PngEncoder extends Object {
      */
     protected int writeBytes(byte[] data, int nBytes, int offset) {
         maxPos = Math.max(maxPos, offset + nBytes);
-        if (nBytes + offset > pngBytes.length) {
+
+        if ((nBytes + offset) > pngBytes.length) {
             pngBytes = resizeByteArray(pngBytes, pngBytes.length + Math.max(1000, nBytes));
         }
+
         System.arraycopy(data, 0, pngBytes, offset, nBytes);
+
         return offset + nBytes;
     }
 
@@ -370,7 +385,8 @@ public class PngEncoder extends Object {
      * @return The next place to be written to in the pngBytes array.
      */
     protected int writeInt2(int n, int offset) {
-        byte[] temp = {(byte) ((n >> 8) & 0xff), (byte) (n & 0xff)};
+        byte[] temp = { (byte) ((n >> 8) & 0xff), (byte) (n & 0xff) };
+
         return writeBytes(temp, offset);
     }
 
@@ -382,10 +398,11 @@ public class PngEncoder extends Object {
      * @return The next place to be written to in the pngBytes array.
      */
     protected int writeInt4(int n, int offset) {
-        byte[] temp = {(byte) ((n >> 24) & 0xff),
-                       (byte) ((n >> 16) & 0xff),
-                       (byte) ((n >> 8) & 0xff),
-                       (byte) (n & 0xff)};
+        byte[] temp = {
+                (byte) ((n >> 24) & 0xff), (byte) ((n >> 16) & 0xff), (byte) ((n >> 8) & 0xff),
+                (byte) (n & 0xff)
+            };
+
         return writeBytes(temp, offset);
     }
 
@@ -397,7 +414,8 @@ public class PngEncoder extends Object {
      * @return The next place to be written to in the pngBytes array.
      */
     protected int writeByte(int b, int offset) {
-        byte[] temp = {(byte) b};
+        byte[] temp = { (byte) b };
+
         return writeBytes(temp, offset);
     }
 
@@ -442,8 +460,8 @@ public class PngEncoder extends Object {
         int leftInsert = offset;
         int leftExtract = 0;
 
-        for (i = actualStart; i < startPos + nBytes; i++) {
-            leftBytes[leftInsert] =  pixels[i];
+        for (i = actualStart; i < (startPos + nBytes); i++) {
+            leftBytes[leftInsert] = pixels[i];
             pixels[i] = (byte) ((pixels[i] - leftBytes[leftExtract]) % 256);
             leftInsert = (leftInsert + 1) % 0x0f;
             leftExtract = (leftExtract + 1) % 0x0f;
@@ -459,14 +477,15 @@ public class PngEncoder extends Object {
      * @param width Width of a scanline in pixels.
      */
     protected void filterUp(byte[] pixels, int startPos, int width) {
-        int     i, nBytes;
-        byte    currentByte;
+        int i;
+        int nBytes;
+        byte currentByte;
 
         nBytes = width * bytesPerPixel;
 
         for (i = 0; i < nBytes; i++) {
             currentByte = pixels[startPos + i];
-            pixels[startPos + i] = (byte) ((pixels[startPos  + i] - priorRow[i]) % 256);
+            pixels[startPos + i] = (byte) ((pixels[startPos + i] - priorRow[i]) % 256);
             priorRow[i] = currentByte;
         }
     }
@@ -481,19 +500,18 @@ public class PngEncoder extends Object {
      * @return true if no errors; false if error grabbing pixels
      */
     protected boolean writeImageData() {
-        int rowsLeft = height;  // number of rows remaining to write
-        int startRow = 0;       // starting row to process this time through
-        int nRows;              // how many rows to grab at a time
+        int rowsLeft = height; // number of rows remaining to write
+        int startRow = 0; // starting row to process this time through
+        int nRows; // how many rows to grab at a time
 
-        byte[] scanLines;       // the scan lines to be compressed
-        int scanPos;            // where we are in the scan lines
-        int startPos;           // where this line's actual pixels start (used for filtering)
+        byte[] scanLines; // the scan lines to be compressed
+        int scanPos; // where we are in the scan lines
+        int startPos; // where this line's actual pixels start (used for filtering)
 
         byte[] compressedLines; // the resultant compressed lines
-        int nCompressed;        // how big is the compressed area?
+        int nCompressed; // how big is the compressed area?
 
         //int depth;              // color depth ( handle only 8 or 32 )
-
         PixelGrabber pg;
 
         bytesPerPixel = (encodeAlpha) ? 4 : 3;
@@ -502,24 +520,27 @@ public class PngEncoder extends Object {
         ByteArrayOutputStream outBytes = new ByteArrayOutputStream(1024);
 
         DeflaterOutputStream compBytes = new DeflaterOutputStream(outBytes, scrunch);
+
         try {
             while (rowsLeft > 0) {
                 nRows = Math.min(32767 / (width * (bytesPerPixel + 1)), rowsLeft);
-                nRows = Math.max( nRows, 1 );
+                nRows = Math.max(nRows, 1);
 
                 int[] pixels = new int[width * nRows];
 
-                pg = new PixelGrabber(image, 0, startRow,
-                    width, nRows, pixels, 0, width);
+                pg = new PixelGrabber(image, 0, startRow, width, nRows, pixels, 0, width);
+
                 try {
                     pg.grabPixels();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     System.err.println("interrupted waiting for pixels!");
+
                     return false;
                 }
+
                 if ((pg.getStatus() & ImageObserver.ABORT) != 0) {
                     System.err.println("image fetch aborted or errored");
+
                     return false;
                 }
 
@@ -527,32 +548,38 @@ public class PngEncoder extends Object {
                  * Create a data chunk. scanLines adds "nRows" for
                  * the filter bytes.
                  */
-                scanLines = new byte[width * nRows * bytesPerPixel +  nRows];
+                scanLines = new byte[(width * nRows * bytesPerPixel) + nRows];
 
                 if (filter == FILTER_SUB) {
                     leftBytes = new byte[16];
                 }
+
                 if (filter == FILTER_UP) {
                     priorRow = new byte[width * bytesPerPixel];
                 }
 
                 scanPos = 0;
                 startPos = 1;
-                for (int i = 0; i < width * nRows; i++) {
-                    if (i % width == 0) {
+
+                for (int i = 0; i < (width * nRows); i++) {
+                    if ((i % width) == 0) {
                         scanLines[scanPos++] = (byte) filter;
                         startPos = scanPos;
                     }
+
                     scanLines[scanPos++] = (byte) ((pixels[i] >> 16) & 0xff);
-                    scanLines[scanPos++] = (byte) ((pixels[i] >>  8) & 0xff);
+                    scanLines[scanPos++] = (byte) ((pixels[i] >> 8) & 0xff);
                     scanLines[scanPos++] = (byte) ((pixels[i]) & 0xff);
+
                     if (encodeAlpha) {
                         scanLines[scanPos++] = (byte) ((pixels[i] >> 24) & 0xff);
                     }
-                    if ((i % width == width - 1) && (filter != FILTER_NONE)) {
+
+                    if (((i % width) == (width - 1)) && (filter != FILTER_NONE)) {
                         if (filter == FILTER_SUB) {
                             filterSub(scanLines, startPos, width);
                         }
+
                         if (filter == FILTER_UP) {
                             filterUp(scanLines, startPos, width);
                         }
@@ -567,6 +594,7 @@ public class PngEncoder extends Object {
                 startRow += nRows;
                 rowsLeft -= nRows;
             }
+
             compBytes.close();
 
             /*
@@ -585,10 +613,11 @@ public class PngEncoder extends Object {
             crcValue = crc.getValue();
             bytePos = writeInt4((int) crcValue, bytePos);
             scrunch.finish();
+
             return true;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println(e.toString());
+
             return false;
         }
     }
@@ -604,5 +633,4 @@ public class PngEncoder extends Object {
         crcValue = crc.getValue();
         bytePos = writeInt4((int) crcValue, bytePos);
     }
-
 }

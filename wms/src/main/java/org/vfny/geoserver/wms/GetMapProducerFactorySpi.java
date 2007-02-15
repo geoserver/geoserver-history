@@ -4,63 +4,62 @@
  */
 package org.vfny.geoserver.wms;
 
-import java.util.Set;
-
 import org.geotools.factory.Factory;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
+import java.util.Set;
 
 
 /**
  * Constructs a live GetMapProducer.
- * 
+ *
  * <p>
  * An instance of this interface should exist for all map producers which want
  * to take advantage of the dynamic plugin system. In addition to implementing
  * this interface GetMap producers should have a services file:
  * </p>
- * 
+ *
  * <p>
  * <code>org.vfny.geoserver.responses.wms.GetMapProducerFactorySpi</code>
  * </p>
- * 
+ *
  * <p>
  * The file should contain a single line which gives the full name of the
  * implementing class.
  * </p>
- * 
+ *
  * <p>
  * example:<br/><code>e.g.
  * org.vfny.geoserver.wms.GIFLegendGraphicProducerSpi</code>
  * </p>
- * 
+ *
  * <p>
  * The factories are never called directly by client code, instead the
  * GeoTools' FactoryFinder class is used.
  * </p>
- * 
+ *
  * <p>
  * The following example shows how a user might obtain GetMapProducer capable
  * of generating a map image in GIF format and send the generated legend to a
  * file:
  * </p>
- * 
+ *
  * <p>
  * <pre><code>
- * 	WMSConfig config = getServletContext().getAttribute(WMSConfig.CONFIG_KEY);
- * 
+ *         WMSConfig config = getServletContext().getAttribute(WMSConfig.CONFIG_KEY);
+ *
  *  GetMapProducerSpi gmpf = null;
  *  Iterator it = FactoryFinder.factories(GeMapProducerFactorySpi.class);
  *  while (it.hasNext()) {
- *  	GeMapProducerFactorySpi tmpGmpf = (GeMapProducerFactorySpi) it.next();
- *  	if (tmpGmpf.canProduce("image/gif")) {
- *  		gmpf = tmpGmpf;
- *  		break;
- *  	}
- *  } 
+ *          GeMapProducerFactorySpi tmpGmpf = (GeMapProducerFactorySpi) it.next();
+ *          if (tmpGmpf.canProduce("image/gif")) {
+ *                  gmpf = tmpGmpf;
+ *                  break;
+ *          }
+ *  }
  *  ...
  *  GetMapProducer producer = gmpf.createMapProducer("image/gif");
- * 	WMSMapContext ctx = ...
+ *         WMSMapContext ctx = ...
  *  producer.produceMap(ctx);
  *  OutputStream out = new FileOutputStream("/map.gif");
  *  producer.writeTo(out);
@@ -114,7 +113,7 @@ public interface GetMapProducerFactorySpi extends Factory {
      *
      * @param mapFormat the MIME type of the desired image
      * @param wms the WMS module
-     * 
+     *
      * @return a GetMapProducer capable of creating maps in <code>format</code>
      *         image format.
      *

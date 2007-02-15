@@ -4,19 +4,17 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoKvpReader;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
+import java.io.IOException;
+import java.util.Map;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -31,7 +29,7 @@ public class GetFeatureInfo extends WMService {
      * Creates a new GetMap object.
      */
     public GetFeatureInfo(WMS wms) {
-    		super("GetFeatureInfo",wms);
+        super("GetFeatureInfo", wms);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)

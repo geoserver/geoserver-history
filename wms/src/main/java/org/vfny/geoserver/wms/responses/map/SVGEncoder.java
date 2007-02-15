@@ -4,24 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
-import java.util.NoSuchElementException;
-import java.util.logging.Logger;
-
-import org.geotools.data.DataSourceException;
-import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
-import org.geotools.styling.Style;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
@@ -30,6 +12,22 @@ import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
+import org.geotools.data.DataSourceException;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureResults;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
+import org.geotools.styling.Style;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 
 /**
@@ -40,12 +38,10 @@ import com.vividsolutions.jts.geom.Point;
  */
 public class SVGEncoder {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wms.map");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
 
     /** the XML and SVG header */
-    private static final String SVG_HEADER =
-        "<?xml version=\"1.0\" standalone=\"no\"?>\n\t"
+    private static final String SVG_HEADER = "<?xml version=\"1.0\" standalone=\"no\"?>\n\t"
         + "<!DOCTYPE svg \n\tPUBLIC \"-//W3C//DTD SVG 20001102//EN\" \n\t\"http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd\">\n"
         + "<svg \n\tstroke=\"green\" \n\tfill=\"none\" \n\tstroke-width=\"0.001%\" \n\twidth=\"_width_\" \n\theight=\"_height_\" \n\tviewBox=\"_viewBox_\" \n\tpreserveAspectRatio=\"xMidYMid meet\">\n";
 
@@ -155,7 +151,7 @@ public class SVGEncoder {
      * in a single SVG element by FeatureTypeInfo requested. The effect is
      * like a union operation upon the geometries of the whole FeatureResults
      * resulting in a single geometry collection.
-     * 
+     *
      * <p>
      * NOTE: if this field is set, then writting of ids and attributes will be
      * ignored, since a single <code>&lt;path/%gt;</code> svg element will be
@@ -194,27 +190,27 @@ public class SVGEncoder {
     /**
      * sets the "viewBox" of the generated SVG and establishes the encoding
      * blur factor to <code>blurFactor</code>
-     * 
+     *
      * <p>
      * establishing the blur factor means that the greatest dimension between
      * the width and height of the new SVG coordinate space <code>env</code>
      * will be divided by this factor to obtain the minimun distance allowable
      * between two coordinates to actually encode them.
      * </p>
-     * 
+     *
      * <p>
      * This method updates the <code>minCoordDistance</code> field, wich every
      * coordinate -<b>except the first 3</b> of a <i>path</i> element-, will
      * be compared against the most previously written to decide if such
      * distance is enough to encode such coordinate or it can be just skipped
      * </p>
-     * 
+     *
      * <p>
      * In a <i>path</i> element, the first 3 coordinates do not get compared
      * against the minimun coordinate separation distance as the easyest way
      * of keeping polygon shapes consistent
      * </p>
-     * 
+     *
      * <p>
      * NOTE: if you don't want that klind of hacky geometry generalyzation,
      * just pass <code>0</code> (zero) as <code>blurFactor</code>
@@ -259,9 +255,8 @@ public class SVGEncoder {
      *
      * @throws IOException DOCUMENT ME!
      */
-    public void encode(final FeatureTypeInfo[] layers,
-        final FeatureResults[] results, final Style[] styles,
-        final OutputStream out) throws IOException {
+    public void encode(final FeatureTypeInfo[] layers, final FeatureResults[] results,
+        final Style[] styles, final OutputStream out) throws IOException {
         this.writer = new SVGWriter(out);
         abortProcess = false;
         coordsWriteCount = 0;
@@ -283,9 +278,8 @@ public class SVGEncoder {
 
         this.writer.flush();
         t = System.currentTimeMillis() - t;
-        LOGGER.info("SVG generated in " + t + " ms, written "
-            + this.coordsWriteCount + " coordinates, skipped "
-            + this.coordsSkipCount);
+        LOGGER.info("SVG generated in " + t + " ms, written " + this.coordsWriteCount
+            + " coordinates, skipped " + this.coordsSkipCount);
     }
 
     private void writeHeader() throws IOException {
@@ -298,12 +292,10 @@ public class SVGEncoder {
         }
     }
 
-    private void writeLayers(FeatureTypeInfo[] layers,
-        FeatureResults[] results, Style[] styles)
+    private void writeLayers(FeatureTypeInfo[] layers, FeatureResults[] results, Style[] styles)
         throws IOException, AbortedException {
         int nLayers = results.length;
-        int nConfigs = ((layers != null) && (layers.length >= nLayers))
-            ? nLayers : 0;
+        int nConfigs = ((layers != null) && (layers.length >= nLayers)) ? nLayers : 0;
         FeatureTypeInfo layerConfig = null;
         int defMaxDecimals = writer.getMaximunFractionDigits();
 
@@ -318,8 +310,7 @@ public class SVGEncoder {
             FeatureReader featureReader = null;
 
             try {
-                LOGGER.fine("obtaining FeatureReader for "
-                    + layerConfig.getName());
+                LOGGER.fine("obtaining FeatureReader for " + layerConfig.getName());
                 featureReader = results[i].reader();
                 LOGGER.fine("got FeatureReader, now writing");
 
@@ -333,8 +324,7 @@ public class SVGEncoder {
                 //} else {
                 //groupId = (String) styles.get(i);
                 //}
-                writer.write("<g id=\"" + groupId + "\" class=\"" + groupId
-                    + "\">\n");
+                writer.write("<g id=\"" + groupId + "\" class=\"" + groupId + "\">\n");
                 writeFeatures(featureReader);
                 writer.write("</g>\n");
             } catch (IOException ex) {
@@ -345,8 +335,7 @@ public class SVGEncoder {
             } catch (Throwable t) {
                 LOGGER.warning("UNCAUGHT exception: " + t.getMessage());
 
-                IOException ioe = new IOException("UNCAUGHT exception: "
-                        + t.getMessage());
+                IOException ioe = new IOException("UNCAUGHT exception: " + t.getMessage());
                 ioe.setStackTrace(t.getStackTrace());
                 throw ioe;
             } finally {
@@ -359,8 +348,7 @@ public class SVGEncoder {
 
     private void writeDefs(FeatureTypeInfo[] layers) throws IOException {
         if (layers == null) {
-            LOGGER.warning(
-                "Can't write symbol definitions, no FeatureTypes passed");
+            LOGGER.warning("Can't write symbol definitions, no FeatureTypes passed");
 
             return;
         }
@@ -368,11 +356,9 @@ public class SVGEncoder {
         int nLayers = layers.length;
 
         for (int i = 0; i < nLayers; i++) {
-            Class geometryClass = layers[i].getFeatureType().getDefaultGeometry()
-                                           .getType();
+            Class geometryClass = layers[i].getFeatureType().getDefaultGeometry().getType();
 
-            if ((geometryClass == MultiPoint.class)
-                    || (geometryClass == Point.class)) {
+            if ((geometryClass == MultiPoint.class) || (geometryClass == Point.class)) {
                 writePointDefs();
 
                 break;
@@ -382,10 +368,8 @@ public class SVGEncoder {
 
     private String createViewBox() {
         String viewBox = (long) getX(referenceSpace.getMinX()) + " "
-            + (long) (getY(referenceSpace.getMinY())
-            - referenceSpace.getHeight()) + " "
-            + (long) referenceSpace.getWidth() + " "
-            + (long) referenceSpace.getHeight();
+            + (long) (getY(referenceSpace.getMinY()) - referenceSpace.getHeight()) + " "
+            + (long) referenceSpace.getWidth() + " " + (long) referenceSpace.getHeight();
 
         return viewBox;
     }
@@ -400,8 +384,7 @@ public class SVGEncoder {
                 Envelope layerBounds = results[i].getBounds();
 
                 if (layerBounds == null) {
-                    throw new IOException(
-                        "Can't obtain the feature result's bounds");
+                    throw new IOException("Can't obtain the feature result's bounds");
                 }
 
                 bounds.expandToInclude(layerBounds);
@@ -421,8 +404,7 @@ public class SVGEncoder {
      * @throws AbortedException DOCUMENT ME!
      * @throws DataSourceException DOCUMENT ME!
      */
-    private void writeFeatures(FeatureReader reader)
-        throws IOException, AbortedException {
+    private void writeFeatures(FeatureReader reader) throws IOException, AbortedException {
         Feature ft;
 
         try {
@@ -453,8 +435,8 @@ public class SVGEncoder {
                 writer.write("\"/>\n");
             }
 
-            LOGGER.fine("encoded " + featureType.getTypeName() + " skipped "
-                + coordsSkipCount + " coordinates");
+            LOGGER.fine("encoded " + featureType.getTypeName() + " skipped " + coordsSkipCount
+                + " coordinates");
             coordsSkipCount += prevSkipCount;
         } catch (NoSuchElementException ex) {
             throw new DataSourceException(ex.getMessage(), ex);
@@ -492,7 +474,7 @@ public class SVGEncoder {
     /**
      * Writes the content of the <b>d</b> attribute in a <i>path</i> SVG
      * element
-     * 
+     *
      * <p>
      * While iterating over the coordinate array passed as parameter, this
      * method performs a kind of very basic path generalization, verifying
@@ -592,8 +574,7 @@ public class SVGEncoder {
             att = currentFeature.getAttribute(i);
 
             if (!(att instanceof Geometry)) {
-                writer.writeAttribute(featureType.getAttributeType(i).getName(),
-                    att);
+                writer.writeAttribute(featureType.getAttributeType(i).getName(), att);
             }
         }
     }
@@ -791,8 +772,8 @@ public class SVGEncoder {
  * @version $Revision: 1.9 $
  */
 class SVGWriter extends OutputStreamWriter {
-    private static DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(new Locale(
-                "en", "US"));
+    private static DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(new Locale("en",
+                "US"));
 
     static {
         decimalSymbols.setDecimalSeparator('.');

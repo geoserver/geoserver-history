@@ -4,6 +4,17 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.catalog.Catalog;
+import org.geotools.catalog.Resolve;
+import org.geotools.catalog.ResolveChangeEvent;
+import org.geotools.catalog.ResolveChangeListener;
+import org.geotools.catalog.Service;
+import org.geotools.catalog.ServiceInfo;
+import org.geotools.catalog.defaults.DefaultServiceInfo;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.util.ProgressListener;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -18,24 +29,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.geotools.catalog.Catalog;
-import org.geotools.catalog.Resolve;
-import org.geotools.catalog.ResolveChangeEvent;
-import org.geotools.catalog.ResolveChangeListener;
-import org.geotools.catalog.Service;
-import org.geotools.catalog.ServiceInfo;
-import org.geotools.catalog.defaults.DefaultServiceInfo;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.util.ProgressListener;
-import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
-
 
 /**
  * This is the configuration iformation for one DataStore. This class can also
  * generate real datastores.
  * <p>
- * This class implements {@link org.geotools.catalog.Service} interface as a 
+ * This class implements {@link org.geotools.catalog.Service} interface as a
  * link to a catalog.
  * </p>
  * @author Gabriel Rold?n
@@ -44,7 +43,6 @@ import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
  * @version $Id: DataStoreInfo.java,v 1.14 2004/06/26 19:51:24 jive Exp $
  */
 public class DataStoreInfo extends GlobalLayerSupertype implements Service {
-
     /** DataStoreInfo we are representing */
     private DataStore dataStore = null;
 
@@ -59,15 +57,15 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
 
     /** Storage for metadata */
     private Map meta;
-    
+
     /**
      * Catalog
      */
     private Catalog catalog;
-    
+
     /**
      * Directory associated with this DataStore.
-     * 
+     *
      * <p>
      * This directory may be used for File based relative paths.
      * </p>
@@ -76,7 +74,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
 
     /**
      * URL associated with this DataStore.
-     * 
+     *
      * <p>
      * This directory may be used for URL based relative paths.
      * </p>
@@ -85,7 +83,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
 
     /**
      * DataStoreInfo constructor.
-     * 
+     *
      * <p>
      * Stores the specified data for later use.
      * </p>
@@ -103,13 +101,13 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
         nameSpaceId = config.getNameSpaceId();
         title = config.getTitle();
         _abstract = config.getAbstract();
-        
+
         catalog = data.getCatalog();
     }
 
     /**
      * toDTO purpose.
-     * 
+     *
      * <p>
      * This method is package visible only, and returns a reference to the
      * GeoServerDTO. This method is unsafe, and should only be used with
@@ -132,7 +130,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
 
     /**
      * getId purpose.
-     * 
+     *
      * <p>
      * Returns the dataStore's id.
      * </p>
@@ -145,13 +143,14 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
 
     protected Map getParams() {
         Map params = new HashMap(connectionParams);
-	params.put("namespace", getNameSpace().getURI());
-	return getParams(params, data.getBaseDir().toString());
+        params.put("namespace", getNameSpace().getURI());
+
+        return getParams(params, data.getBaseDir().toString());
     }
 
     /**
      * Get Connect params.
-     * 
+     *
      * <p>
      * This is used to smooth any relative path kind of issues for any file
      * URLS. This code should be expanded to deal with any other context
@@ -162,7 +161,6 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
      *
      * @task REVISIT: cache these?
      */
-
     public static Map getParams(Map m, String baseDir) {
         Map params = Collections.synchronizedMap(new HashMap(m));
 
@@ -172,43 +170,50 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
             Object value = entry.getValue();
 
             try {
-            	//TODO: this code is a pretty big hack, using the name to 
-            	// determine if the key is a url, could be named something else
-            	// and still be a url
-                if (key != null && key.matches(".* *url") && value instanceof String) {
+                //TODO: this code is a pretty big hack, using the name to 
+                // determine if the key is a url, could be named something else
+                // and still be a url
+                if ((key != null) && key.matches(".* *url") && value instanceof String) {
                     String path = (String) value;
                     LOGGER.finer("in string url");
+
                     if (path.startsWith("file:")) {
                         path = path.substring(5); // remove 'file:' prefix
 
                         File file = new File(path);
-                        if(!file.exists())
+
+                        if (!file.exists()) {
                             file = new File(baseDir, path);
+                        }
+
                         entry.setValue(file.toURL().toExternalForm());
                     }
-                } else if (value instanceof URL
-                        && ((URL) value).getProtocol().equals("file")) {
-                	LOGGER.finer("in URL url");
+                } else if (value instanceof URL && ((URL) value).getProtocol().equals("file")) {
+                    LOGGER.finer("in URL url");
+
                     URL url = (URL) value;
                     String path = url.getPath();
-				    LOGGER.finer("path is " + path);
+                    LOGGER.finer("path is " + path);
+
                     // try to understand wheter this is a path relative to the data directory
                     // of if it's an absolute path
                     File file = new File(path);
-                    if(!file.exists())
-                        file = new File(baseDir, path);
-        			entry.setValue(file.toURL());
-                } /*else if ("dbtype".equals(key) && value instanceof String) {
-                    String val = (String) value;
 
-                    if ((val != null) && val.equals("postgis")) {
-                        if (!params.containsKey("charset")) {
-                            params.put("charset",
-                                data.getGeoServer().getCharSet().toString());
-                        }
+                    if (!file.exists()) {
+                        file = new File(baseDir, path);
                     }
-		    } */
-            } catch (MalformedURLException ignore) {
+
+                    entry.setValue(file.toURL());
+                } /*else if ("dbtype".equals(key) && value instanceof String) {
+                String val = (String) value;
+                
+                if ((val != null) && val.equals("postgis")) {
+                if (!params.containsKey("charset")) {
+                params.put("charset",
+                  data.getGeoServer().getCharSet().toString());
+                }
+                }
+                } */} catch (MalformedURLException ignore) {
                 // ignore attempt to fix relative paths
             }
         }
@@ -222,7 +227,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
      * future we can see if it is better to cache or pool DataStores for
      * performance, but definitely we shouldn't maintain a single
      * DataStoreInfo as instance variable for synchronizing reassons
-     * 
+     *
      * <p>
      * JG: Umm we actually require a single DataStoreInfo for for locking &
      * transaction support to work. DataStoreInfo is expected to be thread
@@ -249,18 +254,17 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
                 dataStore = DataStoreFinder.getDataStore(m);
                 LOGGER.fine("connection established by " + toString());
             } catch (Throwable ex) {
-                throw new IllegalStateException("can't create the datastore "
-                    + getId() + ": " + ex.getClass().getName() + ": "
-                    + ex.getMessage() + "\n" + ex.toString());
+                throw new IllegalStateException("can't create the datastore " + getId() + ": "
+                    + ex.getClass().getName() + ": " + ex.getMessage() + "\n" + ex.toString());
             }
 
             if (dataStore == null) {
-            	 // If datastore is not present, then disable it
+                // If datastore is not present, then disable it
                 // (although no change in config).
-                enabled=false;
+                enabled = false;
                 LOGGER.fine("failed to establish connection with " + toString());
-                throw new NoSuchElementException(
-                    "No datastore found capable of managing " + toString());
+                throw new NoSuchElementException("No datastore found capable of managing "
+                    + toString());
             }
         }
 
@@ -269,7 +273,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
 
     /**
      * getTitle purpose.
-     * 
+     *
      * <p>
      * Returns the dataStore's title.
      * </p>
@@ -282,7 +286,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
 
     /**
      * getAbstract purpose.
-     * 
+     *
      * <p>
      * Returns the dataStore's abstract.
      * </p>
@@ -295,7 +299,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
 
     /**
      * isEnabled purpose.
-     * 
+     *
      * <p>
      * Returns true when the data store is enabled.
      * </p>
@@ -308,7 +312,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
 
     /**
      * getNameSpace purpose.
-     * 
+     *
      * <p>
      * Returns the namespace for this datastore.
      * </p>
@@ -336,15 +340,13 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return new StringBuffer("DataStoreConfig[namespace=").append(getNameSpace()
-                                                                         .getPrefix())
+        return new StringBuffer("DataStoreConfig[namespace=").append(getNameSpace().getPrefix())
                                                              .append(", enabled=")
                                                              .append(isEnabled())
                                                              .append(", abstract=")
                                                              .append(getAbstract())
                                                              .append(", connection parameters=")
-                                                             .append(getParams())
-                                                             .append("]")
+                                                             .append(getParams()).append("]")
                                                              .toString();
     }
 
@@ -388,108 +390,105 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     //catalog methods
-    
-    List/*<FeatureTypeInfo>*/ members = new ArrayList();
+    List /*<FeatureTypeInfo>*/ members = new ArrayList();
     ServiceInfo info;
-    
-    public void addMember( FeatureTypeInfo ftInfo ) {
-    		members.add( ftInfo );
+
+    public void addMember(FeatureTypeInfo ftInfo) {
+        members.add(ftInfo);
     }
-    
-	public List members(ProgressListener monitor) throws IOException {
-		return members;
-	}
 
-	public boolean canResolve(Class adaptee) {
-		return DataStore.class.isAssignableFrom( adaptee ) || 
-			List.class.isAssignableFrom( adaptee ) || 
-			ServiceInfo.class.isAssignableFrom( adaptee );
-	}
-	
-	public Object resolve(Class adaptee, ProgressListener monitor) throws IOException {
-		if ( DataStore.class.isAssignableFrom( adaptee ) ) {
-			return getDataStore();
-		}
-		if ( List.class.isAssignableFrom( adaptee ) ) {
-			return members( monitor );
-		}
-		if ( ServiceInfo.class.isAssignableFrom( adaptee ) ) {
-			return getInfo( monitor );
-		}
-		
-		return null;
-	}
+    public List members(ProgressListener monitor) throws IOException {
+        return members;
+    }
 
-	public Map getConnectionParams() {
-		return getParams();
-	}
+    public boolean canResolve(Class adaptee) {
+        return DataStore.class.isAssignableFrom(adaptee) || List.class.isAssignableFrom(adaptee)
+        || ServiceInfo.class.isAssignableFrom(adaptee);
+    }
 
-	public ServiceInfo getInfo(ProgressListener monitor) throws IOException {
-		if ( info == null ) {
-			synchronized ( this ) {
-				if ( info == null ) {
-					info = new DefaultServiceInfo(
-						getTitle(), null, getAbstract(), null, null, null, 
-						null, null
-					);
-				}
-			}
-		}
-		
-		return info;
-	}
+    public Object resolve(Class adaptee, ProgressListener monitor)
+        throws IOException {
+        if (DataStore.class.isAssignableFrom(adaptee)) {
+            return getDataStore();
+        }
 
-	public Resolve parent(ProgressListener monitor) throws IOException {
-		return catalog;
-	}
+        if (List.class.isAssignableFrom(adaptee)) {
+            return members(monitor);
+        }
 
-	public Status getStatus() {
-		if ( isEnabled() ) {
-			return Status.CONNECTED;
-		}
-		
-		return Status.NOTCONNECTED;
-	}
+        if (ServiceInfo.class.isAssignableFrom(adaptee)) {
+            return getInfo(monitor);
+        }
 
-	public Throwable getMessage() {
-		return null;
-	}
+        return null;
+    }
 
-	public URI getIdentifier() {
-		
-		try {
-			URI uri = new URI( getNameSpace().getURI() );
-			String path = uri.getPath();
-			if ( path == null ) {
-				path = getId();
-			}
-			else {
-				if ( !path.endsWith( "/") ) {
-					path += "/";
-				}
-				path += getId();
-			}
-			
-			return new URI(
-				uri.getScheme(), uri.getHost(), path
-			);
-			
-		} 
-		catch (URISyntaxException e) {
-			return null;
-		}
-	}
+    public Map getConnectionParams() {
+        return getParams();
+    }
 
-	public void addListener(ResolveChangeListener listener) throws UnsupportedOperationException {
-		//events not supported
-		throw new UnsupportedOperationException();
-	}
+    public ServiceInfo getInfo(ProgressListener monitor)
+        throws IOException {
+        if (info == null) {
+            synchronized (this) {
+                if (info == null) {
+                    info = new DefaultServiceInfo(getTitle(), null, getAbstract(), null, null,
+                            null, null, null);
+                }
+            }
+        }
 
-	public void removeListener(ResolveChangeListener listener) {
-		//events not supported
-	}
+        return info;
+    }
 
-	public void fire(ResolveChangeEvent event) {
-		//events not supported
-	}
+    public Resolve parent(ProgressListener monitor) throws IOException {
+        return catalog;
+    }
+
+    public Status getStatus() {
+        if (isEnabled()) {
+            return Status.CONNECTED;
+        }
+
+        return Status.NOTCONNECTED;
+    }
+
+    public Throwable getMessage() {
+        return null;
+    }
+
+    public URI getIdentifier() {
+        try {
+            URI uri = new URI(getNameSpace().getURI());
+            String path = uri.getPath();
+
+            if (path == null) {
+                path = getId();
+            } else {
+                if (!path.endsWith("/")) {
+                    path += "/";
+                }
+
+                path += getId();
+            }
+
+            return new URI(uri.getScheme(), uri.getHost(), path);
+        } catch (URISyntaxException e) {
+            return null;
+        }
+    }
+
+    public void addListener(ResolveChangeListener listener)
+        throws UnsupportedOperationException {
+        //events not supported
+        throw new UnsupportedOperationException();
+    }
+
+    public void removeListener(ResolveChangeListener listener) {
+        //events not supported
+    }
+
+    public void fire(ResolveChangeEvent event) {
+        //events not supported
+    }
 }

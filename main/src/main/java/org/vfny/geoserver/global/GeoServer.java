@@ -4,6 +4,11 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.data.jdbc.ConnectionPoolManager;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,14 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
-
 import javax.servlet.ServletContext;
-
-import org.geotools.data.jdbc.ConnectionPoolManager;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.vfny.geoserver.global.dto.ContactDTO;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
 
 
 /**
@@ -32,10 +30,9 @@ import org.vfny.geoserver.global.dto.GeoServerDTO;
  * @version $Id: GeoServer.java,v 1.23 2004/09/09 16:54:19 cholmesny Exp $
  */
 public class GeoServer extends GlobalLayerSupertype implements DisposableBean, InitializingBean {
-
     /**
      * For finding the instance of this class to use from the web container
-     * 
+     *
      * <p>
      * ServletContext sc = ... GeoServer gs =
      * (GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
@@ -63,41 +60,39 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
     private String contactVoice;
     private String contactFacsimile;
     private String contactEmail;
-	private String onlineResource;
-    
+    private String onlineResource;
+
     /** Should we throw the stack traces back in responses? */
     private boolean verboseExceptions = false;
 
     /** Default Logging level */
-    private Level loggingLevel = Logger.getLogger("org.vfny.geoserver")
-                                       .getLevel();
-    
+    private Level loggingLevel = Logger.getLogger("org.vfny.geoserver").getLevel();
+
     /** to log or not to log **/
     private boolean logToFile = false;
+
     /** to log to file or not to log to file **/
     private boolean loggingToFile = false;
+
     /** where to log **/
     private String logLocation = null;
-    
 
-    public GeoServer () {
-    	
+    public GeoServer() {
     }
-    
+
     /**
      * Creates a GeoServer instance and loads its configuration.
-     * 
+     *
      * @throws ConfigurationException
      */
-    public GeoServer ( Config config ) throws ConfigurationException {
-    		LOGGER.fine("Creating GeoServer");
-    		load( config.getXMLReader().getGeoServer() );
-    	}
-    
-    
+    public GeoServer(Config config) throws ConfigurationException {
+        LOGGER.fine("Creating GeoServer");
+        load(config.getXMLReader().getGeoServer());
+    }
+
     /**
      * getAddress purpose.
-     * 
+     *
      * <p>
      * Returns the contact Address.
      * </p>
@@ -110,7 +105,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getAddressCity purpose.
-     * 
+     *
      * <p>
      * Returns the contact City.
      * </p>
@@ -123,7 +118,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getAddressCountry purpose.
-     * 
+     *
      * <p>
      * Returns the contact Country.
      * </p>
@@ -136,7 +131,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getAddressPostalCode purpose.
-     * 
+     *
      * <p>
      * Returns the contact PostalCode.
      * </p>
@@ -149,7 +144,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getAddressState purpose.
-     * 
+     *
      * <p>
      * Returns the contact State.
      * </p>
@@ -162,7 +157,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getAddressType purpose.
-     * 
+     *
      * <p>
      * Returns the contact Address Type.
      * </p>
@@ -175,7 +170,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getCharSet purpose.
-     * 
+     *
      * <p>
      * Returns the default charset for this server instance.
      * </p>
@@ -192,7 +187,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getContactEmail purpose.
-     * 
+     *
      * <p>
      * Returns the contact Email.
      * </p>
@@ -205,7 +200,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getContactFacsimile purpose.
-     * 
+     *
      * <p>
      * Returns the contact Facsimile.
      * </p>
@@ -218,7 +213,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getContactOrganization purpose.
-     * 
+     *
      * <p>
      * Returns the contact Organization.
      * </p>
@@ -231,7 +226,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getContactPerson purpose.
-     * 
+     *
      * <p>
      * Returns the contact Person.
      * </p>
@@ -244,7 +239,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getContactPosition purpose.
-     * 
+     *
      * <p>
      * Returns the contact Position.
      * </p>
@@ -257,7 +252,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getContactVoice purpose.
-     * 
+     *
      * <p>
      * Returns the contact Phone.
      * </p>
@@ -268,35 +263,35 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
         return notNull(contactVoice);
     }
 
-	/**
-	 * getOnlineResource purpose.
-	 * 
-	 * <p>
-	 * Returns the online Resource.
-	 * </p>
-	 * 
-	 * @return String the online Resource.
-	 */
-	public String getOnlineResource() {
-		return notNull(onlineResource);
-	}
-	
-	/**
-     * getLoggingLevel purpose.
-     * 
+    /**
+     * getOnlineResource purpose.
+     *
      * <p>
-     * Returns the Logging Level.
+     * Returns the online Resource.
      * </p>
      *
-     * @return String the Logging Level.
+     * @return String the online Resource.
      */
+    public String getOnlineResource() {
+        return notNull(onlineResource);
+    }
+
+    /**
+    * getLoggingLevel purpose.
+    *
+    * <p>
+    * Returns the Logging Level.
+    * </p>
+    *
+    * @return String the Logging Level.
+    */
     public Level getLoggingLevel() {
         return loggingLevel;
     }
 
     /**
      * getMaxFeatures purpose.
-     * 
+     *
      * <p>
      * Returns the max number of features supported.
      * </p>
@@ -309,7 +304,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getMimeType purpose.
-     * 
+     *
      * <p>
      * Returns the server default mimetype.
      * </p>
@@ -322,7 +317,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getNumDecimals purpose.
-     * 
+     *
      * <p>
      * The default number of decimals allowed in the data.
      * </p>
@@ -335,7 +330,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
     /**
      * getSchemaBaseUrl purpose.
-     * 
+     *
      * <p>
      * The Schema Base URL for this instance.  This should generally be a local
      * reference, as GeoServer by default puts up the schemas that it needs
@@ -360,9 +355,9 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
     public String getSchemaBaseUrl() {
         return schemaBaseUrl;
     }
-    
+
     /**
-     * Used when Geoserver is running behind a reverse-proxy so that url 
+     * Used when Geoserver is running behind a reverse-proxy so that url
      * in getCapabilities documents are fine
      * @return
      */
@@ -383,59 +378,55 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
      * <p>
      * Loads the GeoServerDTO into the current instance as a GeoServer object
      * </p>
-     * 
+     *
      * @param dto
      * @throws ConfigurationException
      */
-    public void load ( GeoServerDTO dto ) throws ConfigurationException {
-    	 	if (dto != null) {
-     		address = dto.getContact().getAddress();
-         addressCity = dto.getContact().getAddressCity();
-         addressCountry = dto.getContact().getAddressCountry();
-         addressPostalCode = dto.getContact().getAddressPostalCode();
-         addressState = dto.getContact().getAddressState();
-         addressType = dto.getContact().getAddressType();
-         charSet = dto.getCharSet();
-         contactEmail = dto.getContact().getContactEmail();
-         contactFacsimile = dto.getContact().getContactFacsimile();
-         contactOrganization = dto.getContact().getContactOrganization();
-         contactPerson = dto.getContact().getContactPerson();
-         contactPosition = dto.getContact().getContactPosition();
-         contactVoice = dto.getContact().getContactVoice();
-         loggingLevel = dto.getLoggingLevel();
-         
-         loggingToFile = dto.getLoggingToFile();
-         logLocation = dto.getLogLocation();
-         
-         //TODO: logging needs to be revisited and done a better way
-         try {
-				initLogging(loggingLevel,loggingToFile,logLocation);
-			} 
-         catch (IOException e) {
-         	throw new ConfigurationException(e);
-			}
-         
-         maxFeatures = dto.getMaxFeatures();
-         numDecimals = dto.getNumDecimals();
-			onlineResource = dto.getContact().getOnlineResource();
-         schemaBaseUrl = dto.getSchemaBaseUrl();
-         proxyBaseUrl = dto.getProxyBaseUrl();
-         verbose = dto.isVerbose();
-         adminUserName = dto.getAdminUserName();
-         adminPassword = dto.getAdminPassword();
-         verboseExceptions = dto.isVerboseExceptions();
-         
-         
-     } else {
-         throw new ConfigurationException(
-             "load(GeoServerDTO) expected a non-null value");
-     }
+    public void load(GeoServerDTO dto) throws ConfigurationException {
+        if (dto != null) {
+            address = dto.getContact().getAddress();
+            addressCity = dto.getContact().getAddressCity();
+            addressCountry = dto.getContact().getAddressCountry();
+            addressPostalCode = dto.getContact().getAddressPostalCode();
+            addressState = dto.getContact().getAddressState();
+            addressType = dto.getContact().getAddressType();
+            charSet = dto.getCharSet();
+            contactEmail = dto.getContact().getContactEmail();
+            contactFacsimile = dto.getContact().getContactFacsimile();
+            contactOrganization = dto.getContact().getContactOrganization();
+            contactPerson = dto.getContact().getContactPerson();
+            contactPosition = dto.getContact().getContactPosition();
+            contactVoice = dto.getContact().getContactVoice();
+            loggingLevel = dto.getLoggingLevel();
+
+            loggingToFile = dto.getLoggingToFile();
+            logLocation = dto.getLogLocation();
+
+            //TODO: logging needs to be revisited and done a better way
+            try {
+                initLogging(loggingLevel, loggingToFile, logLocation);
+            } catch (IOException e) {
+                throw new ConfigurationException(e);
+            }
+
+            maxFeatures = dto.getMaxFeatures();
+            numDecimals = dto.getNumDecimals();
+            onlineResource = dto.getContact().getOnlineResource();
+            schemaBaseUrl = dto.getSchemaBaseUrl();
+            proxyBaseUrl = dto.getProxyBaseUrl();
+            verbose = dto.isVerbose();
+            adminUserName = dto.getAdminUserName();
+            adminPassword = dto.getAdminPassword();
+            verboseExceptions = dto.isVerboseExceptions();
+        } else {
+            throw new ConfigurationException("load(GeoServerDTO) expected a non-null value");
+        }
     }
-    
+
     /**
-     * 
+     *
      * load purpose.
-     * 
+     *
      * <p>
      * Loads the GeoServerDTO into the current instance as a GeoServer object.
      * As GeoServer moves to Spring, we want to move away from storing state
@@ -445,96 +436,96 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
      * @param dto GeoServerDTO
      *
      * @throws ConfigurationException If an error occurs
-     * 
+     *
      * @deprecated use {@link #load(GeoServerDTO)}
      */
-    public final void load(GeoServerDTO dto, ServletContext context) throws ConfigurationException {
-       load(dto);
+    public final void load(GeoServerDTO dto, ServletContext context)
+        throws ConfigurationException {
+        load(dto);
     }
 
     /**
-     * Convenience method for determining the actual location on the local file 
-     * system of the log file based an arbirtrary path. Relative paths are 
-     * appended to the geoserver data directory. 
-     * 
-     * @param location The log file path, this can be an absolute or relative 
+     * Convenience method for determining the actual location on the local file
+     * system of the log file based an arbirtrary path. Relative paths are
+     * appended to the geoserver data directory.
+     *
+     * @param location The log file path, this can be an absolute or relative
      * path.
      * @param context The servlet context
-     * 
+     *
      * @return The file containing the absolute path to the log file.
      * @throws IOException
      */
-    public static File getLogLocation(String logLocation) 
-    	throws IOException {
-    	
-    	File f = new File(logLocation);
-		if (f.exists()) {
-			 if (f.isDirectory()) {
-                             f = new File(f, "geoserver.log");
-			 }
-		}
-		else {
-			//could be a relative path
-			if (!f.isAbsolute()) {
-				//append to data dir
-				File data = GeoserverDataDirectory
-					.getGeoserverDataDirectory();
-				f = new File(data,f.getPath());
-			}
-			
-			//make sure parent directory exists
-			if (f.getParentFile() != null && !f.getParentFile().exists())
-				f.getParentFile().mkdirs();
-			
-			f.createNewFile();
-		}
-		
-		return f;
+    public static File getLogLocation(String logLocation)
+        throws IOException {
+        File f = new File(logLocation);
+
+        if (f.exists()) {
+            if (f.isDirectory()) {
+                f = new File(f, "geoserver.log");
+            }
+        } else {
+            //could be a relative path
+            if (!f.isAbsolute()) {
+                //append to data dir
+                File data = GeoserverDataDirectory.getGeoserverDataDirectory();
+                f = new File(data, f.getPath());
+            }
+
+            //make sure parent directory exists
+            if ((f.getParentFile() != null) && !f.getParentFile().exists()) {
+                f.getParentFile().mkdirs();
+            }
+
+            f.createNewFile();
+        }
+
+        return f;
     }
-    
-    /** 
+
+    /**
      * Initializes logging based on configuration paramters.
      *
      */
-    public static void initLogging(Level level,boolean logToFile,String location) 
-    	throws IOException {
-    	
-    	Log4JFormatter.init("org.geotools", level);
+    public static void initLogging(Level level, boolean logToFile, String location)
+        throws IOException {
+        Log4JFormatter.init("org.geotools", level);
         Log4JFormatter.init("org.vfny.geoserver", level);
-        
+
         Logger logger = Logger.getLogger("org.vfny.geoserver");
 
-//        Handler[] handlers = logger.getHandlers();
-//    	Handler old = null;
-//    	for (int i = 0; i < handlers.length; i++) {
-//    		Handler handler = handlers[i];
-//    		if (handler instanceof StreamHandler) {
-//    			old = handler;
-//    			break;
-//    		}
-//    			
-//    	}
-//    	if (old != null) {
-//    		logger.removeHandler(old);
-//    	}
-    	if (logToFile && location != null) {
-        	//map the location to an actual location on disk
-        	File logFile = GeoServer.getLogLocation(location);
-        	
-        	//add the new handler
-        	Handler handler = new StreamHandler(
-        		new BufferedOutputStream(new FileOutputStream(logFile,true)),
-        		new SimpleFormatter()
-        	);
-        	handler.setLevel(level);
-        	logger.addHandler(handler);
-        	if (Logger.getLogger("org.geotools") != null) 
-        		Logger.getLogger("org.geotools").addHandler(handler);
+        //        Handler[] handlers = logger.getHandlers();
+        //    	Handler old = null;
+        //    	for (int i = 0; i < handlers.length; i++) {
+        //    		Handler handler = handlers[i];
+        //    		if (handler instanceof StreamHandler) {
+        //    			old = handler;
+        //    			break;
+        //    		}
+        //    			
+        //    	}
+        //    	if (old != null) {
+        //    		logger.removeHandler(old);
+        //    	}
+        if (logToFile && (location != null)) {
+            //map the location to an actual location on disk
+            File logFile = GeoServer.getLogLocation(location);
+
+            //add the new handler
+            Handler handler = new StreamHandler(new BufferedOutputStream(
+                        new FileOutputStream(logFile, true)), new SimpleFormatter());
+            handler.setLevel(level);
+            logger.addHandler(handler);
+
+            if (Logger.getLogger("org.geotools") != null) {
+                Logger.getLogger("org.geotools").addHandler(handler);
+            }
         }
     }
+
     /**
      * toDTO purpose.
-     * 
+     *
      * <p>
      * This method is package visible only, and returns a reference to the
      * GeoServerDTO. This method is unsafe, and should only be used with
@@ -557,7 +548,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
         dto.setVerboseExceptions(verboseExceptions);
         dto.setLoggingToFile(loggingToFile);
         dto.setLogLocation(logLocation);
-        
+
         ContactDTO cdto = new ContactDTO();
         dto.setContact(cdto);
 
@@ -573,7 +564,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
         cdto.setContactPerson(contactPerson);
         cdto.setContactPosition(contactPosition);
         cdto.setContactVoice(contactVoice);
-		cdto.setOnlineResource(onlineResource);
+        cdto.setOnlineResource(onlineResource);
 
         return dto;
     }
@@ -599,7 +590,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
     /**
      * Property representing the contact party (person, position or
      * organization).
-     * 
+     *
      * <p>
      * This is a derived property.
      * </p>
@@ -612,13 +603,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
             return getContactPerson(); // ie Chris Holmes 
         }
 
-        if ((getContactPosition() != null)
-                && (getContactPosition().length() != 0)) {
+        if ((getContactPosition() != null) && (getContactPosition().length() != 0)) {
             return getContactPosition(); // ie Lead Developer 
         }
 
-        if ((getContactOrganization() != null)
-                && (getContactOrganization().length() != 0)) {
+        if ((getContactOrganization() != null) && (getContactOrganization().length() != 0)) {
             return getContactOrganization(); // ie TOPP 
         }
 
@@ -645,58 +634,59 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
         return geoserver.toString();
     }
-	
-	/**
-	 * Should we display stackTraces or not? (And give them a nice
-     * little message instead?)
-	 * 
-	 * @return Returns the showStackTraces.
-	 */
-	public boolean isVerboseExceptions() {
-		return verboseExceptions;
-	}
-	/**
-	 * If set to true, response exceptions will throw their stack trace
-     * back to the end user.
-	 *
-	 * @param showStackTraces The showStackTraces to set.
-	 */
-	public void setVerboseExceptions(boolean showStackTraces) {
-		this.verboseExceptions = showStackTraces;
-	}
-	
-	/**
-	 * Returns the location of where the server ouputs logs. Note that this may 
-	 * not reference an actual physical location on disk. 
-	 * Call {@link GeoServer#getLogLocation(String, ServletContext)} to map this
-	 * string to a file on disk.
-	 * 
-	 */
-	public String getLogLocation() {
-		return logLocation;
-	}
-	
-	/**
-	 * @param logLocation The string representation of the path on disk in which 
-	 * the server logs to.
-	 */
-	public void setLogLocation(String logLocation) {
-		this.logLocation = logLocation;
-	}
-	
-	/**
-	 * @return True if the server is logging to file, otherwise false.
-	 */
-	public boolean getLoggingToFile() {
-		return loggingToFile;
-	}
-	
-	/**
-	 * Toggles server logging to file.
-	 */
-	public void setLoggingToFile(boolean loggingToFile) {
-		this.loggingToFile = loggingToFile;
-	}
+
+    /**
+     * Should we display stackTraces or not? (And give them a nice
+    * little message instead?)
+     *
+     * @return Returns the showStackTraces.
+     */
+    public boolean isVerboseExceptions() {
+        return verboseExceptions;
+    }
+
+    /**
+     * If set to true, response exceptions will throw their stack trace
+    * back to the end user.
+     *
+     * @param showStackTraces The showStackTraces to set.
+     */
+    public void setVerboseExceptions(boolean showStackTraces) {
+        this.verboseExceptions = showStackTraces;
+    }
+
+    /**
+     * Returns the location of where the server ouputs logs. Note that this may
+     * not reference an actual physical location on disk.
+     * Call {@link GeoServer#getLogLocation(String, ServletContext)} to map this
+     * string to a file on disk.
+     *
+     */
+    public String getLogLocation() {
+        return logLocation;
+    }
+
+    /**
+     * @param logLocation The string representation of the path on disk in which
+     * the server logs to.
+     */
+    public void setLogLocation(String logLocation) {
+        this.logLocation = logLocation;
+    }
+
+    /**
+     * @return True if the server is logging to file, otherwise false.
+     */
+    public boolean getLoggingToFile() {
+        return loggingToFile;
+    }
+
+    /**
+     * Toggles server logging to file.
+     */
+    public void setLoggingToFile(boolean loggingToFile) {
+        this.loggingToFile = loggingToFile;
+    }
 
     public void destroy() throws Exception {
         ConnectionPoolManager.getInstance().closeAll();
@@ -705,21 +695,17 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
            HACK: we must get a standard API way for releasing resources...
          */
         try {
-            Class sdepfClass = Class.forName(
-                    "org.geotools.data.arcsde.ConnectionPoolFactory");
+            Class sdepfClass = Class.forName("org.geotools.data.arcsde.ConnectionPoolFactory");
 
             LOGGER.fine("SDE datasource found, releasing resources");
 
-            java.lang.reflect.Method m = sdepfClass.getMethod("getInstance",
-                    new Class[0]);
+            java.lang.reflect.Method m = sdepfClass.getMethod("getInstance", new Class[0]);
             Object pfInstance = m.invoke(sdepfClass, new Object[0]);
 
-            LOGGER.fine("got sde connection pool factory instance: "
-                + pfInstance);
+            LOGGER.fine("got sde connection pool factory instance: " + pfInstance);
 
             java.lang.reflect.Method closeMethod = pfInstance.getClass()
-                                                             .getMethod("closeAll",
-                    new Class[0]);
+                                                             .getMethod("closeAll", new Class[0]);
 
             closeMethod.invoke(pfInstance, new Object[0]);
             LOGGER.info("just asked SDE datasource to release connections");

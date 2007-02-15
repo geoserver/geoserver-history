@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.wfs.requests;
 
-import java.util.logging.Logger;
-
 import org.geotools.filter.Filter;
+import java.util.logging.Logger;
 
 
 /**
  * Defines a WFS Delete request, an element of TransactionRequest.
- * 
+ *
  * <p>
  * Defines a WFS delete request, which is a type transaction request.  Full
  * transaction requests may contain one or more delete requests.  Note that
@@ -23,7 +22,7 @@ import org.geotools.filter.Filter;
  * design of the  transaction object (which contains one or more sub requests)
  * and its  children requests, which contain only a single operation.
  * </p>
- * 
+ *
  * <p>
  * Each delete request contains a type name, (optionally) a filter, and
  * (optionally) a release all boolean.  Release all defines the action to
@@ -38,8 +37,7 @@ import org.geotools.filter.Filter;
  */
 public class DeleteRequest extends SubTransactionRequest {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.wfs");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wfs");
 
     /** Specifies the features to lock. */
     protected Filter filter = Filter.NONE;
@@ -154,8 +152,7 @@ public class DeleteRequest extends SubTransactionRequest {
                 isEqual = isEqual && (request.getTypeName() == null);
             }
 
-            LOGGER.finest("checking feature type names for equality: "
-                + isEqual);
+            LOGGER.finest("checking feature type names for equality: " + isEqual);
 
             if (this.releaseAll == request.getReleaseAll()) {
                 isEqual = isEqual && true;

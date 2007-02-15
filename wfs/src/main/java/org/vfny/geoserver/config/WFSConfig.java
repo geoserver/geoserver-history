@@ -13,11 +13,11 @@ import org.vfny.geoserver.global.dto.WFSDTO;
 
 /**
  * WFS purpose.
- * 
+ *
  * <p>
  * Description of WFS  Used to store WFS data.
  * </p>
- * 
+ *
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
@@ -32,7 +32,7 @@ public class WFSConfig extends ServiceConfig {
 
     /**
      * WFS constructor.
-     * 
+     *
      * <p>
      * Creates a WFS to represent an instance with default data.
      * </p>
@@ -46,7 +46,7 @@ public class WFSConfig extends ServiceConfig {
 
     /**
      * WFS constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the WFS provided. If the WFS provided  is null then
      * default values are used. All the data structures are cloned.
@@ -64,17 +64,17 @@ public class WFSConfig extends ServiceConfig {
 
     /**
      * Creates the WFSConfig.
-     * 
+     *
      * @param wfs The wfs module.
-     * 
-     */ 
-    public WFSConfig( WFS wfs ) {
-    		this( (WFSDTO) wfs.toDTO() );
+     *
+     */
+    public WFSConfig(WFS wfs) {
+        this((WFSDTO) wfs.toDTO());
     }
-    
+
     /**
      * Implement loadDTO.
-     * 
+     *
      * <p>
      * Takes a WMSDTO and loads it into this WMSConfig Object
      * </p>
@@ -100,7 +100,7 @@ public class WFSConfig extends ServiceConfig {
 
     /**
      * Implement toDTO.
-     * 
+     *
      * <p>
      * Returns a copy of the data in a ServiceDTO object
      * </p>
@@ -121,7 +121,6 @@ public class WFSConfig extends ServiceConfig {
         return wfsDto;
     }
 
-    
     /**
      * Access serviceLevel property.
      *

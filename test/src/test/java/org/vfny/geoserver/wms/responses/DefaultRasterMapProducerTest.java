@@ -4,12 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
@@ -22,8 +17,11 @@ import org.geotools.styling.StyleFactoryFinder;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Logger;
 
 
 /**
@@ -39,8 +37,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
                                                                                             .getName());
 
     /** DOCUMENT ME! */
-    private static final FilterFactory filterFactory = FilterFactoryFinder
-        .createFilterFactory();
+    private static final FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
 
     /** DOCUMENT ME! */
     private static final StyleFactory sFac = StyleFactoryFinder.createStyleFactory();
@@ -99,8 +96,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
         final FeatureSource basicPolygons = ds.getFeatureSource(BASIC_POLYGONS_TYPE);
         final Envelope env = basicPolygons.getBounds();
 
-        LOGGER.info("about to create map ctx for BasicPolygons with bounds "
-            + env);
+        LOGGER.info("about to create map ctx for BasicPolygons with bounds " + env);
 
         final WMSMapContext map = new WMSMapContext();
         map.setAreaOfInterest(env);
@@ -142,14 +138,13 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
      * @throws IllegalFilterException DOCUMENT ME!
      * @throws IOException DOCUMENT ME!
      */
-    public void testBlueLake()
-        throws IOException, IllegalFilterException, Exception {
+    public void testBlueLake() throws IOException, IllegalFilterException, Exception {
         final DataStore ds = getCiteDataStore();
         Envelope env = getBlueLakeBounds();
         double shift = env.getWidth() / 6;
 
-        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift,
-                env.getMinY() - shift, env.getMaxY() + shift);
+        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift,
+                env.getMaxY() + shift);
 
         final WMSMapContext map = new WMSMapContext();
         int w = 400;
@@ -159,28 +154,18 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
         map.setBgColor(BG_COLOR);
         map.setTransparent(true);
 
-        map.addLayer(ds.getFeatureSource(FORESTS_TYPE),
-            getDefaultStyle(FORESTS_TYPE));
-        map.addLayer(ds.getFeatureSource(LAKES_TYPE),
-            getDefaultStyle(LAKES_TYPE));
-        map.addLayer(ds.getFeatureSource(STREAMS_TYPE),
-            getDefaultStyle(STREAMS_TYPE));
-        map.addLayer(ds.getFeatureSource(NAMED_PLACES_TYPE),
-            getDefaultStyle(NAMED_PLACES_TYPE));
-        map.addLayer(ds.getFeatureSource(ROAD_SEGMENTS_TYPE),
-            getDefaultStyle(ROAD_SEGMENTS_TYPE));
-        map.addLayer(ds.getFeatureSource(PONDS_TYPE),
-            getDefaultStyle(PONDS_TYPE));
-        map.addLayer(ds.getFeatureSource(BUILDINGS_TYPE),
-            getDefaultStyle(BUILDINGS_TYPE));
+        map.addLayer(ds.getFeatureSource(FORESTS_TYPE), getDefaultStyle(FORESTS_TYPE));
+        map.addLayer(ds.getFeatureSource(LAKES_TYPE), getDefaultStyle(LAKES_TYPE));
+        map.addLayer(ds.getFeatureSource(STREAMS_TYPE), getDefaultStyle(STREAMS_TYPE));
+        map.addLayer(ds.getFeatureSource(NAMED_PLACES_TYPE), getDefaultStyle(NAMED_PLACES_TYPE));
+        map.addLayer(ds.getFeatureSource(ROAD_SEGMENTS_TYPE), getDefaultStyle(ROAD_SEGMENTS_TYPE));
+        map.addLayer(ds.getFeatureSource(PONDS_TYPE), getDefaultStyle(PONDS_TYPE));
+        map.addLayer(ds.getFeatureSource(BUILDINGS_TYPE), getDefaultStyle(BUILDINGS_TYPE));
 
-        map.addLayer(ds.getFeatureSource(DIVIDED_ROUTES_TYPE),
-            getDefaultStyle(DIVIDED_ROUTES_TYPE));
-        map.addLayer(ds.getFeatureSource(BRIDGES_TYPE),
-            getDefaultStyle(BRIDGES_TYPE));
+        map.addLayer(ds.getFeatureSource(DIVIDED_ROUTES_TYPE), getDefaultStyle(DIVIDED_ROUTES_TYPE));
+        map.addLayer(ds.getFeatureSource(BRIDGES_TYPE), getDefaultStyle(BRIDGES_TYPE));
 
-        map.addLayer(ds.getFeatureSource(MAP_NEATLINE_TYPE),
-            getDefaultStyle(MAP_NEATLINE_TYPE));
+        map.addLayer(ds.getFeatureSource(MAP_NEATLINE_TYPE), getDefaultStyle(MAP_NEATLINE_TYPE));
 
         map.setAreaOfInterest(env);
 
@@ -196,13 +181,11 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
      * @param testName
      * @param producer
      */
-    protected void assertNotBlank(String testName,
-        DefaultRasterMapProducer producer) {
+    protected void assertNotBlank(String testName, DefaultRasterMapProducer producer) {
         BufferedImage image = producer.getImage();
         assertNotBlank(testName, image, BG_COLOR);
         showImage(testName, image);
     }
-
 
     /**
      * DOCUMENT ME!
@@ -233,8 +216,8 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
 
         double shift = env.getWidth() / 6;
 
-        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift,
-                env.getMinY() - shift, env.getMaxY() + shift);
+        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift,
+                env.getMaxY() + shift);
 
         WMSMapContext map = new WMSMapContext();
         map.addLayer(fSource, style);
@@ -285,18 +268,17 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
          * @throws WmsException never.
          * @throws IOException never.
          */
-        protected void formatImageOutputStream(String format,
-            BufferedImage image, OutputStream outStream)
-            throws WmsException, IOException {
+        protected void formatImageOutputStream(String format, BufferedImage image,
+            OutputStream outStream) throws WmsException, IOException {
             /*
              * Intentionally left blank, since this class is used just to ensure the
              * abstract raster producer correctly generates a BufferedImage.
              */
         }
 
-		public String getContentDisposition() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        public String getContentDisposition() {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 }

@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /*
  * Created on Dec 23, 2003
  *
@@ -10,14 +11,13 @@
  */
 package org.vfny.geoserver.form.wfs;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WFSConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -26,6 +26,7 @@ import org.vfny.geoserver.config.WFSConfig;
  * @author User To change the template for this generated type comment go to
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
+
 /**
  * DOCUMENT ME!
  *
@@ -188,16 +189,15 @@ public final class WFSDescriptionForm extends ActionForm {
 
         StringBuffer sb = new StringBuffer();
         String newline = System.getProperty("line.separator");
+
         for (int i = 0; i < config.getKeywords().length; i++) {
             sb.append(config.getKeywords()[i]).append(newline);
         }
 
         this.keywords = sb.toString();
-
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if ((name == null) || (name.length() == 0)) {
@@ -213,13 +213,11 @@ public final class WFSDescriptionForm extends ActionForm {
         }
 
         if ((accessConstraints == null) || (accessConstraints.length() == 0)) {
-            errors.add("accessConstraints",
-                new ActionError("error.accessConstraints.required"));
+            errors.add("accessConstraints", new ActionError("error.accessConstraints.required"));
         }
 
         if ((maintainer == null) || (maintainer.length() == 0)) {
-            errors.add("maintainer",
-                new ActionError("error.maintainer.required"));
+            errors.add("maintainer", new ActionError("error.maintainer.required"));
         }
 
         if ((_abstract == null) || (_abstract.length() == 0)) {

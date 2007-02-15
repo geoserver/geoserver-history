@@ -4,6 +4,13 @@
  */
 package org.vfny.geoserver.config;
 
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.FeatureType;
+import org.geotools.filter.Filter;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,18 +18,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
-import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.GeometryFactory;
 
 /**
  * User interface FeatureType staging area.
- * 
+ *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: FeatureTypeConfig.java,v 1.20 2004/03/09 10:59:56 jive Exp $
  */
@@ -53,17 +52,17 @@ public class FeatureTypeConfig {
     /** Name (must match DataStore typeName). */
     private String name;
 
-	/**
-	 * 
-	 */
-	private String wmsPath;
-
-	/**
-     * The schema name.
-     * <p>
-     * Usually  name + "_Type"                
-     * </p>
+    /**
+     *
      */
+    private String wmsPath;
+
+    /**
+    * The schema name.
+    * <p>
+    * Usually  name + "_Type"
+    * </p>
+    */
     private String schemaName;
 
     /**
@@ -109,7 +108,7 @@ public class FeatureTypeConfig {
      * </p>
      */
     private Set keywords;
-    
+
     /**
      * A list of metadata links to associate with this featuretype.
      * <p>
@@ -143,35 +142,34 @@ public class FeatureTypeConfig {
      * they are to remain valid.  The specific header added is "CacheControl: max-age="
      */
     private String cacheMaxAge;
-    
+
     /**
      * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
      */
     private boolean cachingEnabled;
-    
+
     /**
      * Package visible constructor for test cases
      */
     FeatureTypeConfig() {
     }
-    
+
     /**
      * Creates a FeatureTypeInfo to represent an instance with default data.
-     * 
+     *
      * @param dataStoreId ID for data store in catalog
      * @param schema Geotools2 FeatureType
      * @param generate True to generate entries for all attribtues
      */
     public FeatureTypeConfig(String dataStoreId, FeatureType schema, boolean generate) {
         if ((dataStoreId == null) || (dataStoreId.length() == 0)) {
-            throw new IllegalArgumentException(
-                "dataStoreId is required for FeatureTypeConfig");
+            throw new IllegalArgumentException("dataStoreId is required for FeatureTypeConfig");
         }
 
         if (schema == null) {
-            throw new IllegalArgumentException(
-                "FeatureType is required for FeatureTypeConfig");
+            throw new IllegalArgumentException("FeatureType is required for FeatureTypeConfig");
         }
+
         this.dataStoreId = dataStoreId;
         latLongBBox = new Envelope();
 
@@ -179,30 +177,31 @@ public class FeatureTypeConfig {
             // pardon? Does this not make you a table?
             SRS = -1;
         } else {
-            GeometryFactory geometryFactory = schema.getDefaultGeometry()
-                                                    .getGeometryFactory();
+            GeometryFactory geometryFactory = schema.getDefaultGeometry().getGeometryFactory();
 
             if (geometryFactory == null) {
                 // Assume Cartisian Coordiantes
-                SRS = 0; 
+                SRS = 0;
             } else {
                 // Assume SRID number is good enough                
                 SRS = geometryFactory.getSRID();
             }
         }
-        if( generate ){         
+
+        if (generate) {
             this.schemaAttributes = new ArrayList();
+
             for (int i = 0; i < schema.getAttributeCount(); i++) {
                 AttributeType attrib = schema.getAttributeType(i);
                 this.schemaAttributes.add(new AttributeTypeInfoConfig(attrib));
             }
+        } else {
+            this.schemaAttributes = null;
         }
-        else {
-            this.schemaAttributes = null;        
-        }
+
         defaultStyle = "";
         name = schema.getTypeName();
-		wmsPath = "/";
+        wmsPath = "/";
         title = schema.getTypeName() + "_Type";
         _abstract = "Generated from " + dataStoreId;
         keywords = new HashSet();
@@ -212,16 +211,16 @@ public class FeatureTypeConfig {
         numDecimals = 8;
         definitionQuery = null;
         dirName = dataStoreId + "_" + name;
-        schemaName = name + "_Type";        
+        schemaName = name + "_Type";
         schemaBase = "gml:AbstractFeatureType";
-        
+
         cachingEnabled = false;
         cacheMaxAge = null;
     }
 
     /**
      * FeatureTypeInfo constructor.
-     * 
+     *
      * <p>
      * Creates a copy of the FeatureTypeInfoDTO provided. All the data
      * structures are cloned.
@@ -233,28 +232,27 @@ public class FeatureTypeConfig {
      */
     public FeatureTypeConfig(FeatureTypeInfoDTO dto) {
         if (dto == null) {
-            throw new NullPointerException(
-                "Non null FeatureTypeInfoDTO required");
+            throw new NullPointerException("Non null FeatureTypeInfoDTO required");
         }
 
         dataStoreId = dto.getDataStoreId();
         latLongBBox = new Envelope(dto.getLatLongBBox());
         SRS = dto.getSRS();
-        
-        if(dto.getSchemaAttributes() == null){
+
+        if (dto.getSchemaAttributes() == null) {
             schemaAttributes = null;
-        }
-        else {
+        } else {
             schemaAttributes = new LinkedList();
-            
-        	Iterator i = dto.getSchemaAttributes().iterator();
-        	while (i.hasNext()){
-        		schemaAttributes.add(new AttributeTypeInfoConfig(
-        			(AttributeTypeInfoDTO) i.next()));
+
+            Iterator i = dto.getSchemaAttributes().iterator();
+
+            while (i.hasNext()) {
+                schemaAttributes.add(new AttributeTypeInfoConfig((AttributeTypeInfoDTO) i.next()));
             }
         }
+
         name = dto.getName();
-		wmsPath = dto.getWmsPath();
+        wmsPath = dto.getWmsPath();
         title = dto.getTitle();
         _abstract = dto.getAbstract();
         numDecimals = dto.getNumDecimals();
@@ -265,7 +263,7 @@ public class FeatureTypeConfig {
         } catch (Exception e) {
             keywords = new HashSet();
         }
-        
+
         try {
             metadataLinks = new HashSet(dto.getMetadataLinks());
         } catch (Exception e) {
@@ -276,14 +274,14 @@ public class FeatureTypeConfig {
         dirName = dto.getDirName();
         schemaName = dto.getSchemaName();
         schemaBase = dto.getSchemaBase();
-        
+
         cachingEnabled = dto.isCachingEnabled();
-        cacheMaxAge = dto.getCacheMaxAge();        
+        cacheMaxAge = dto.getCacheMaxAge();
     }
 
     /**
      * Implement toDTO.
-     * 
+     *
      * <p>
      * Creates a represetation of this object as a FeatureTypeInfoDTO
      * </p>
@@ -298,18 +296,20 @@ public class FeatureTypeConfig {
         f.setLatLongBBox(new Envelope(latLongBBox));
         f.setSRS(SRS);
 
-        if( schemaAttributes == null ){
+        if (schemaAttributes == null) {
             // Use generated default attributes
-            f.setSchemaAttributes( null );            
-        }
-        else {
+            f.setSchemaAttributes(null);
+        } else {
             // Use user provided attribtue + schemaBase attribtues
             List s = new ArrayList();
-            for (int i = 0; i < schemaAttributes.size(); i++){
-                s.add(((AttributeTypeInfoConfig)schemaAttributes.get(i)).toDTO());
+
+            for (int i = 0; i < schemaAttributes.size(); i++) {
+                s.add(((AttributeTypeInfoConfig) schemaAttributes.get(i)).toDTO());
             }
-            f.setSchemaAttributes(s);            
-        }        
+
+            f.setSchemaAttributes(s);
+        }
+
         f.setName(name);
         f.setWmsPath(wmsPath);
         f.setTitle(title);
@@ -322,7 +322,7 @@ public class FeatureTypeConfig {
         } catch (Exception e) {
             // do nothing, defaults already exist.
         }
-        
+
         try {
             f.setMetadataLinks(new ArrayList(metadataLinks));
         } catch (Exception e) {
@@ -333,13 +333,12 @@ public class FeatureTypeConfig {
         f.setDirName(dirName);
         f.setSchemaBase(schemaBase);
         f.setSchemaName(schemaName);
-        
+
         f.setCachingEnabled(cachingEnabled);
         f.setCacheMaxAge(cacheMaxAge);
-        
+
         return f;
     }
-
 
     /**
      * Searches through the schema looking for an AttributeTypeInfoConfig that
@@ -350,13 +349,11 @@ public class FeatureTypeConfig {
      *
      * @return AttributeTypeInfoConfig from the schema, if found
      */
-    public AttributeTypeInfoConfig getAttributeFromSchema(
-        String attributeTypeName) {
+    public AttributeTypeInfoConfig getAttributeFromSchema(String attributeTypeName) {
         Iterator iter = schemaAttributes.iterator();
 
         while (iter.hasNext()) {
-            AttributeTypeInfoConfig atiConfig = (AttributeTypeInfoConfig) iter
-                .next();
+            AttributeTypeInfoConfig atiConfig = (AttributeTypeInfoConfig) iter.next();
 
             if (atiConfig.getName().equals(attributeTypeName)) {
                 return atiConfig;
@@ -368,7 +365,7 @@ public class FeatureTypeConfig {
 
     /**
      * Convience method for dataStoreId.typeName.
-     * 
+     *
      * <p>
      * This key may be used to store this FeatureType in a Map for later.
      * </p>
@@ -377,16 +374,17 @@ public class FeatureTypeConfig {
      */
     public String getKey() {
         return getDataStoreId() + DataConfig.SEPARATOR + getName();
-    }    
-    
+    }
+
     /**
      * Access _abstract property.
-     * 
+     *
      * @return Returns the _abstract.
      */
     public String getAbstract() {
         return _abstract;
     }
+
     /**
      * Set _abstract to _abstract.
      *
@@ -395,14 +393,16 @@ public class FeatureTypeConfig {
     public void setAbstract(String _abstract) {
         this._abstract = _abstract;
     }
+
     /**
      * Access dataStoreId property.
-     * 
+     *
      * @return Returns the dataStoreId.
      */
     public String getDataStoreId() {
         return dataStoreId;
     }
+
     /**
      * Set dataStoreId to dataStoreId.
      *
@@ -411,14 +411,16 @@ public class FeatureTypeConfig {
     public void setDataStoreId(String dataStoreId) {
         this.dataStoreId = dataStoreId;
     }
+
     /**
      * Access defaultStyle property.
-     * 
+     *
      * @return Returns the defaultStyle.
      */
     public String getDefaultStyle() {
         return defaultStyle;
     }
+
     /**
      * Set defaultStyle to defaultStyle.
      *
@@ -427,14 +429,16 @@ public class FeatureTypeConfig {
     public void setDefaultStyle(String defaultStyle) {
         this.defaultStyle = defaultStyle;
     }
+
     /**
      * Access definitionQuery property.
-     * 
+     *
      * @return Returns the definitionQuery.
      */
     public Filter getDefinitionQuery() {
         return definitionQuery;
     }
+
     /**
      * Set definitionQuery to definitionQuery.
      *
@@ -443,14 +447,16 @@ public class FeatureTypeConfig {
     public void setDefinitionQuery(Filter definitionQuery) {
         this.definitionQuery = definitionQuery;
     }
+
     /**
      * Access dirName property.
-     * 
+     *
      * @return Returns the dirName.
      */
     public String getDirName() {
         return dirName;
     }
+
     /**
      * Set dirName to dirName.
      *
@@ -459,14 +465,16 @@ public class FeatureTypeConfig {
     public void setDirName(String dirName) {
         this.dirName = dirName;
     }
+
     /**
      * Access keywords property.
-     * 
+     *
      * @return Returns the keywords.
      */
     public Set getKeywords() {
         return keywords;
     }
+
     /**
      * Set keywords to keywords.
      *
@@ -475,14 +483,16 @@ public class FeatureTypeConfig {
     public void setKeywords(Set keywords) {
         this.keywords = keywords;
     }
+
     /**
      * Access metadataURLs property.
-     * 
+     *
      * @return Returns the metadataURLs.
      */
     public Set getMetadataLinks() {
         return metadataLinks;
     }
+
     /**
      * Set metadataURLs to metadataURLs.
      *
@@ -491,14 +501,16 @@ public class FeatureTypeConfig {
     public void setMetadataLinks(Set metadataURLs) {
         this.metadataLinks = metadataURLs;
     }
+
     /**
      * Access latLongBBox property.
-     * 
+     *
      * @return Returns the latLongBBox.
      */
     public Envelope getLatLongBBox() {
         return latLongBBox;
     }
+
     /**
      * Set latLongBBox to latLongBBox.
      *
@@ -507,14 +519,16 @@ public class FeatureTypeConfig {
     public void setLatLongBBox(Envelope latLongBBox) {
         this.latLongBBox = latLongBBox;
     }
+
     /**
      * Access name property.
-     * 
+     *
      * @return Returns the name.
      */
     public String getName() {
         return name;
     }
+
     /**
      * Set name to name.
      *
@@ -523,14 +537,16 @@ public class FeatureTypeConfig {
     public void setName(String name) {
         this.name = name;
     }
+
     /**
      * Access numDecimals property.
-     * 
+     *
      * @return Returns the numDecimals.
      */
     public int getNumDecimals() {
         return numDecimals;
     }
+
     /**
      * Set numDecimals to numDecimals.
      *
@@ -539,31 +555,34 @@ public class FeatureTypeConfig {
     public void setNumDecimals(int numDecimals) {
         this.numDecimals = numDecimals;
     }
-    
+
     /**
      * Access schemaAttributes property.
-     * 
+     *
      * @return Returns the schemaAttributes.
      */
     public List getSchemaAttributes() {
         return schemaAttributes;
     }
+
     /**
      * Set schemaAttributes to schemaAttributes.
      *
      * @param schemaAttributes The schemaAttributes to set.
      */
     public void setSchemaAttributes(List schemaAttributes) {
-        this.schemaAttributes = schemaAttributes;    	
+        this.schemaAttributes = schemaAttributes;
     }
+
     /**
      * Access schemaBase property.
-     * 
+     *
      * @return Returns the schemaBase.
      */
     public String getSchemaBase() {
         return schemaBase;
     }
+
     /**
      * Set schemaBase to schemaBase.
      *
@@ -572,14 +591,16 @@ public class FeatureTypeConfig {
     public void setSchemaBase(String schemaBase) {
         this.schemaBase = schemaBase;
     }
+
     /**
      * Access schemaName property.
-     * 
+     *
      * @return Returns the schemaName.
      */
     public String getSchemaName() {
         return schemaName;
     }
+
     /**
      * Set schemaName to schemaName.
      *
@@ -588,14 +609,16 @@ public class FeatureTypeConfig {
     public void setSchemaName(String schemaName) {
         this.schemaName = schemaName;
     }
+
     /**
      * Access sRS property.
-     * 
+     *
      * @return Returns the sRS.
      */
     public int getSRS() {
         return SRS;
     }
+
     /**
      * Set sRS to srs.
      *
@@ -604,14 +627,16 @@ public class FeatureTypeConfig {
     public void setSRS(int srs) {
         SRS = srs;
     }
+
     /**
      * Access title property.
-     * 
+     *
      * @return Returns the title.
      */
     public String getTitle() {
         return title;
     }
+
     /**
      * Set title to title.
      *
@@ -622,30 +647,31 @@ public class FeatureTypeConfig {
     }
 
     public String toString() {
-	return "FeatureTypeConfig[name: " + name + " schemaName: " + schemaName
-	    + " SRS: " + SRS + " schemaAttributes: " + schemaAttributes + 
-	    " schemaBase " + schemaBase + "]";
+        return "FeatureTypeConfig[name: " + name + " schemaName: " + schemaName + " SRS: " + SRS
+        + " schemaAttributes: " + schemaAttributes + " schemaBase " + schemaBase + "]";
     }
-	public String getWmsPath() {
-		return wmsPath;
-	}
-	public void setWmsPath(String wmsPath) {
-		this.wmsPath = wmsPath;
-	}
+
+    public String getWmsPath() {
+        return wmsPath;
+    }
+
+    public void setWmsPath(String wmsPath) {
+        this.wmsPath = wmsPath;
+    }
 
     public boolean isCachingEnabled() {
-		return cachingEnabled;
-	}
+        return cachingEnabled;
+    }
 
-	public void setCachingEnabled(boolean cachingEnabled) {
-		this.cachingEnabled = cachingEnabled;
-	}
+    public void setCachingEnabled(boolean cachingEnabled) {
+        this.cachingEnabled = cachingEnabled;
+    }
 
-	public String getCacheMaxAge() {
-		return cacheMaxAge;
-	}
+    public String getCacheMaxAge() {
+        return cacheMaxAge;
+    }
 
-	public void setCacheMaxAge(String cacheMaxAge) {
-		this.cacheMaxAge = cacheMaxAge;
-	}
+    public void setCacheMaxAge(String cacheMaxAge) {
+        this.cacheMaxAge = cacheMaxAge;
+    }
 }

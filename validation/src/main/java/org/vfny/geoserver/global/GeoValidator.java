@@ -6,15 +6,6 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.IntegrityValidation;
 import org.geotools.validation.PlugIn;
@@ -26,246 +17,263 @@ import org.geotools.validation.dto.TestDTO;
 import org.geotools.validation.dto.TestSuiteDTO;
 import org.geotools.validation.xml.ValidationException;
 import org.geotools.validation.xml.XMLReader;
+import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * GeoValidator purpose.
  * <p>
  * Description of GeoValidator ...
  * </p>
- * 
+ *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
  * @version $Id: GeoValidator.java,v 1.4 2004/04/21 07:42:35 jive Exp $
  */
 public class GeoValidator extends ValidationProcessor {
-	public static final String WEB_CONTAINER_KEY = "GeoValidator";
+    public static final String WEB_CONTAINER_KEY = "GeoValidator";
 
-	/**
-	 * GeoValidator constructor.
-	 * <p>
-	 * super();
-	 * </p>
-	 * 
-	 */
-	public GeoValidator() {
-		super();
-	}
-	
-	/**
-	 * Creates a new geo validator.
-	 * 
-	 * @param config The configuration module.
-	 */
-	public GeoValidator( Config config ) {
-		loadPlugins( config.dataDirectory() );
-	}
+    /**
+     * GeoValidator constructor.
+     * <p>
+     * super();
+     * </p>
+     *
+     */
+    public GeoValidator() {
+        super();
+    }
 
-	/**
-	 * Loads validations plugins.
-	 * 
-	 * @param dataDir The data directory.
-	 */
-	protected void loadPlugins( File dataDir ) {
-	   Map plugIns = null;
-       Map testSuites = null;
-       
-       try {
-    	   		File plugInDir = GeoserverDataDirectory.findConfigDir(dataDir,"plugIns");
-    	   		File validationDir = GeoserverDataDirectory.findConfigDir(dataDir, "validation");
-           	
-    	   		if(plugInDir.exists()){
-				plugIns = XMLReader.loadPlugIns(plugInDir);
-				if(validationDir.exists()){
-					testSuites = XMLReader.loadValidations(validationDir, plugIns);
-				}
-				testSuites = new HashMap();
-			}
-			else{
-				plugIns = new HashMap();
-			}
-		
-       } 
-	   catch (Exception e) {
-		   Logger.getLogger("org.vfny.geoserver.global").log(
-			   Level.WARNING, "loading plugins", e
-		   );
-		   
-		   testSuites = new HashMap();
-		   plugIns = new HashMap();
-       }
-       
-       load(testSuites,plugIns);
-	}
-	
-	/**
-	 * ValidationProcessor constructor.
-	 * 
-	 * <p>
-	 * Builds a ValidationProcessor with the DTO provided.
-	 * </p>
-	 *
-	 * @see load(Map,Map) 
-	 * @param testSuites Map a map of names -> TestSuiteDTO objects
-	 * @param plugIns Map a map of names -> PlugInDTO objects
-	 */
-	public GeoValidator(Map testSuites, Map plugIns) {
-		super();
-		load(testSuites,plugIns);
-	}
-	
-	private Map testSuites;
-	private Map plugIns;
-	
-	private Map errors;
+    /**
+     * Creates a new geo validator.
+     *
+     * @param config The configuration module.
+     */
+    public GeoValidator(Config config) {
+        loadPlugins(config.dataDirectory());
+    }
+
+    /**
+     * Loads validations plugins.
+     *
+     * @param dataDir The data directory.
+     */
+    protected void loadPlugins(File dataDir) {
+        Map plugIns = null;
+        Map testSuites = null;
+
+        try {
+            File plugInDir = GeoserverDataDirectory.findConfigDir(dataDir, "plugIns");
+            File validationDir = GeoserverDataDirectory.findConfigDir(dataDir, "validation");
+
+            if (plugInDir.exists()) {
+                plugIns = XMLReader.loadPlugIns(plugInDir);
+
+                if (validationDir.exists()) {
+                    testSuites = XMLReader.loadValidations(validationDir, plugIns);
+                }
+
+                testSuites = new HashMap();
+            } else {
+                plugIns = new HashMap();
+            }
+        } catch (Exception e) {
+            Logger.getLogger("org.vfny.geoserver.global").log(Level.WARNING, "loading plugins", e);
+
+            testSuites = new HashMap();
+            plugIns = new HashMap();
+        }
+
+        load(testSuites, plugIns);
+    }
+
+    /**
+     * ValidationProcessor constructor.
+     *
+     * <p>
+     * Builds a ValidationProcessor with the DTO provided.
+     * </p>
+     *
+     * @see load(Map,Map)
+     * @param testSuites Map a map of names -> TestSuiteDTO objects
+     * @param plugIns Map a map of names -> PlugInDTO objects
+     */
+    public GeoValidator(Map testSuites, Map plugIns) {
+        super();
+        load(testSuites, plugIns);
+    }
+
+    private Map testSuites;
+    private Map plugIns;
+    private Map errors;
+
     /**
      * Map of errors encountered during loading process
      * <p>
      * Map of true (loaded), false (never used), or exception (error) keyed
      * by PlugIn and Test DataTransferObjects.
      * </p>
-     * @return Map of status by PlugInDTO and TestDTO 
-     */ 
-	public Map getErrors(){
-		return errors;
-	}
-	
-	/**
-	 * load purpose.
-	 * <p>
-	 * loads this instance data into this instance.
-	 * </p>
-	 * @param testSuites
-	 * @param plugIns
-	 */
-	public void load(Map testSuites, Map plugIns){
-		this.plugIns = plugIns;
-		this.testSuites = testSuites;
-		errors = new HashMap();
-		
-		// step 1 make a list required plug-ins
-		Set plugInNames = new HashSet();
-		Iterator i = testSuites.keySet().iterator();
+     * @return Map of status by PlugInDTO and TestDTO
+     */
+    public Map getErrors() {
+        return errors;
+    }
 
-		while (i.hasNext()) {
-			TestSuiteDTO dto = (TestSuiteDTO) testSuites.get(i.next());
-			Iterator j = dto.getTests().keySet().iterator();
-			while (j.hasNext()) {
-				TestDTO tdto = (TestDTO) dto.getTests().get(j.next());
-				plugInNames.add(tdto.getPlugIn().getName());
-			}
-		}
+    /**
+     * load purpose.
+     * <p>
+     * loads this instance data into this instance.
+     * </p>
+     * @param testSuites
+     * @param plugIns
+     */
+    public void load(Map testSuites, Map plugIns) {
+        this.plugIns = plugIns;
+        this.testSuites = testSuites;
+        errors = new HashMap();
+
+        // step 1 make a list required plug-ins
+        Set plugInNames = new HashSet();
+        Iterator i = testSuites.keySet().iterator();
+
+        while (i.hasNext()) {
+            TestSuiteDTO dto = (TestSuiteDTO) testSuites.get(i.next());
+            Iterator j = dto.getTests().keySet().iterator();
+
+            while (j.hasNext()) {
+                TestDTO tdto = (TestDTO) dto.getTests().get(j.next());
+                plugInNames.add(tdto.getPlugIn().getName());
+            }
+        }
 
         // Mark all plug-ins as not loaded
         //
-		i = plugIns.values().iterator();
-		while(i.hasNext()) {
+        i = plugIns.values().iterator();
+
+        while (i.hasNext()) {
             PlugInDTO dto = (PlugInDTO) i.next();
-            errors.put( dto,Boolean.FALSE );
+            errors.put(dto, Boolean.FALSE);
         }
-		
-		// step 2 configure plug-ins with defaults
-		Map defaultPlugIns = new HashMap(plugInNames.size());
-		i = plugInNames.iterator();
 
-		while (i.hasNext()) {
-			String plugInName = (String) i.next();
-			PlugInDTO dto = (PlugInDTO) plugIns.get(plugInName);
-			Class plugInClass = null;
+        // step 2 configure plug-ins with defaults
+        Map defaultPlugIns = new HashMap(plugInNames.size());
+        i = plugInNames.iterator();
 
-			try {
-				plugInClass = Class.forName(dto.getClassName());
-			} catch (ClassNotFoundException e) {
-				//Error, using default.
-				errors.put(dto,e);
-				e.printStackTrace();
-			}
+        while (i.hasNext()) {
+            String plugInName = (String) i.next();
+            PlugInDTO dto = (PlugInDTO) plugIns.get(plugInName);
+            Class plugInClass = null;
 
-			if (plugInClass == null) {
-				plugInClass = Validation.class;
-			}
+            try {
+                plugInClass = Class.forName(dto.getClassName());
+            } catch (ClassNotFoundException e) {
+                //Error, using default.
+                errors.put(dto, e);
+                e.printStackTrace();
+            }
 
-			Map plugInArgs = dto.getArgs();
+            if (plugInClass == null) {
+                plugInClass = Validation.class;
+            }
 
-			if (plugInArgs == null) {
-				plugInArgs = new HashMap();
-			}
+            Map plugInArgs = dto.getArgs();
 
-			try {
-				PlugIn plugIn = new org.geotools.validation.PlugIn(plugInName,
-						plugInClass, dto.getDescription(), plugInArgs);
-				defaultPlugIns.put(plugInName, plugIn);
-			} catch (ValidationException e) {
+            if (plugInArgs == null) {
+                plugInArgs = new HashMap();
+            }
+
+            try {
+                PlugIn plugIn = new org.geotools.validation.PlugIn(plugInName, plugInClass,
+                        dto.getDescription(), plugInArgs);
+                defaultPlugIns.put(plugInName, plugIn);
+            } catch (ValidationException e) {
                 e.printStackTrace();
                 // Update dto entry w/ an error?
-                errors.put(dto,e);
-				continue;
-			}
+                errors.put(dto, e);
+
+                continue;
+            }
+
             // mark dto entry as a success
-			errors.put(dto,Boolean.TRUE);
-		}
+            errors.put(dto, Boolean.TRUE);
+        }
 
-		// step 3 configure plug-ins with tests + add to processor
-		i = testSuites.keySet().iterator();
+        // step 3 configure plug-ins with tests + add to processor
+        i = testSuites.keySet().iterator();
 
-		while (i.hasNext()) {
-			TestSuiteDTO tdto = (TestSuiteDTO) testSuites.get(i.next());
-			Iterator j = tdto.getTests().keySet().iterator();
+        while (i.hasNext()) {
+            TestSuiteDTO tdto = (TestSuiteDTO) testSuites.get(i.next());
+            Iterator j = tdto.getTests().keySet().iterator();
 
-			while (j.hasNext()) {
-				TestDTO dto = (TestDTO) tdto.getTests().get(j.next());
+            while (j.hasNext()) {
+                TestDTO dto = (TestDTO) tdto.getTests().get(j.next());
 
-				// deal with test
-				Map testArgs = dto.getArgs();
+                // deal with test
+                Map testArgs = dto.getArgs();
 
-				if (testArgs == null) {
-					testArgs = new HashMap();
-				}else{
-					Map m = new HashMap();
-					Iterator k = testArgs.keySet().iterator();
-					while(k.hasNext()){
-						ArgumentDTO adto = (ArgumentDTO)testArgs.get(k.next());
-						m.put(adto.getName(),adto.getValue());
-					}
-					testArgs = m;
-				}
+                if (testArgs == null) {
+                    testArgs = new HashMap();
+                } else {
+                    Map m = new HashMap();
+                    Iterator k = testArgs.keySet().iterator();
 
-				try {
-					PlugIn plugIn = (org.geotools.validation.PlugIn) defaultPlugIns
-					.get(dto.getPlugIn().getName());
-					Validation validation = plugIn.createValidation(dto.getName(),
-							dto.getDescription(), testArgs);
+                    while (k.hasNext()) {
+                        ArgumentDTO adto = (ArgumentDTO) testArgs.get(k.next());
+                        m.put(adto.getName(), adto.getValue());
+                    }
 
-					if (validation instanceof FeatureValidation) {
-						addValidation((FeatureValidation) validation);
-					}
+                    testArgs = m;
+                }
 
-					if (validation instanceof IntegrityValidation) {
-						addValidation((IntegrityValidation) validation);
-					}
-				} catch (ValidationException e) {
-					e.printStackTrace();
+                try {
+                    PlugIn plugIn = (org.geotools.validation.PlugIn) defaultPlugIns.get(dto.getPlugIn()
+                                                                                           .getName());
+                    Validation validation = plugIn.createValidation(dto.getName(),
+                            dto.getDescription(), testArgs);
+
+                    if (validation instanceof FeatureValidation) {
+                        addValidation((FeatureValidation) validation);
+                    }
+
+                    if (validation instanceof IntegrityValidation) {
+                        addValidation((IntegrityValidation) validation);
+                    }
+                } catch (ValidationException e) {
+                    e.printStackTrace();
                     // place test error under the plugIn DTO that spawned it
-                    errors.put(dto,e);
-					//error should log here
-					continue;
-				}
-				errors.put(dto,Boolean.TRUE);
-			}
-			errors.put(tdto,Boolean.TRUE);
-		}
-	}
-	public Object toPlugInDTO(){
-		return plugIns;
-	}
-	public Object toTestSuiteDTO(){
-		return testSuites;
-	}
+                    errors.put(dto, e);
 
-	public Map getPlugIns() {
-		return plugIns;
-	}
+                    //error should log here
+                    continue;
+                }
 
-	public Map getTestSuites() {
-		return testSuites;
-	}
+                errors.put(dto, Boolean.TRUE);
+            }
+
+            errors.put(tdto, Boolean.TRUE);
+        }
+    }
+
+    public Object toPlugInDTO() {
+        return plugIns;
+    }
+
+    public Object toTestSuiteDTO() {
+        return testSuites;
+    }
+
+    public Map getPlugIns() {
+        return plugIns;
+    }
+
+    public Map getTestSuites() {
+        return testSuites;
+    }
 }

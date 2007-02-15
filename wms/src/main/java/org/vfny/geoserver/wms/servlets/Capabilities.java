@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Response;
@@ -18,6 +14,9 @@ import org.vfny.geoserver.wms.requests.CapabilitiesKvpReader;
 import org.vfny.geoserver.wms.requests.CapabilitiesXmlReader;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -27,11 +26,10 @@ import org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse;
  * @version $Id: Capabilities.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
  */
 public class Capabilities extends WMService {
-	
-	public Capabilities(WMS wms) {
-		super("GetCapabilities",wms);
-	}
-	
+    public Capabilities(WMS wms) {
+        super("GetCapabilities", wms);
+    }
+
     /**
      * DOCUMENT ME!
      *
@@ -58,9 +56,8 @@ public class Capabilities extends WMService {
      * @return DOCUMENT ME!
      */
     protected Response getResponseHandler() {
-    	
-    		Set wmsGetMapFormats = 
-    			GetMapResponse.loadImageFormats(getApplicationContext());
+        Set wmsGetMapFormats = GetMapResponse.loadImageFormats(getApplicationContext());
+
         return new WMSCapabilitiesResponse(wmsGetMapFormats);
     }
 }

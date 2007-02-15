@@ -34,8 +34,8 @@ package org.vfny.geoserver.util.requests;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class RewindableInputStream extends InputStream {
 
+public class RewindableInputStream extends InputStream {
     /**
      * Default buffer size before we've finished with the XMLDecl:
      * I think the name should be left unchanged to give a hint for
@@ -49,20 +49,24 @@ public class RewindableInputStream extends InputStream {
      * (<code>true</code>) or not (<code>true</code> is the default)
      */
     protected boolean fMayReadChunks;
+
     /**
      * Source input stream we are wrapping with rewindable one.
      */
     protected InputStream fInputStream;
+
     /**
      * Internal buffer of bytes already read from source input stream.
      * Allows to access the same byte more than once.
      */
     protected byte[] fData;
+
     /**
      * Position in the stream that to which stream pointer can be reset
      * with <code>rewind</code> method invocation.
      */
     protected int fStartOffset;
+
     /**
      * Position where the end of underlying stream was encountered. Potentially
      * in <code>RewindableInputStream</code> instance stream's "end" could be
@@ -70,21 +74,23 @@ public class RewindableInputStream extends InputStream {
      * stream ended to avoid <code>IOExceptions</code>.
      */
     protected int fEndOffset;
+
     /**
      * Offset of the next byte to be read from the stream relative to
      * the beginning of the stream (and <code>fData</code> array as well)
      */
     protected int fOffset;
+
     /**
      * Number of read bytes currently stored in <code>fData</code> buffer.
      * Size of the buffer itself can be greater than this value, obviously.
      */
     protected int fLength;
+
     /**
      * Offset of the "marked" position in the stream relative to its beginning.
      */
     protected int fMark;
-
 
     /**
      * Creates new <code>RewindableInputStream</code> object with internal
@@ -110,7 +116,6 @@ public class RewindableInputStream extends InputStream {
         this(is, chunkedMode, DEFAULT_XMLDECL_BUFFER_SIZE);
     }
 
-
     /**
      * Primary constructor that allows to specify all parameters exlicitly
      * affecting class work (initial size of the internal buffer and
@@ -131,12 +136,11 @@ public class RewindableInputStream extends InputStream {
      *
      * @param  initialSize  Initial size of the internal buffer array.
      */
-    public RewindableInputStream(InputStream is, boolean chunkedMode,
-                                 int initialSize) {
-
+    public RewindableInputStream(InputStream is, boolean chunkedMode, int initialSize) {
         if (0 >= initialSize) {
             initialSize = DEFAULT_XMLDECL_BUFFER_SIZE;
         }
+
         fData = new byte[initialSize];
 
         fInputStream = is;
@@ -148,7 +152,6 @@ public class RewindableInputStream extends InputStream {
         fMark = 0;
     }
 
-
     /**
      * Sets the position somewhere in the stream to which the stream pointer
      * will be reset after <code>rewind</code> invocation. By default this
@@ -159,7 +162,6 @@ public class RewindableInputStream extends InputStream {
     public void setStartOffset(int offset) {
         fStartOffset = offset;
     }
-
 
     /**
      * Allows to change the behavior of the stream regarding chunked reading
@@ -173,7 +175,6 @@ public class RewindableInputStream extends InputStream {
         fMayReadChunks = chunkedMode;
     }
 
-
     /**
      * More conscious alias for <code>setChunkedMode(true)</code>. While last
      * method is a general purpose mutator, code may look a bit more clear if
@@ -182,7 +183,6 @@ public class RewindableInputStream extends InputStream {
     public void enableChunkedMode() {
         fMayReadChunks = true;
     }
-
 
     /**
      * More conscious alias for <code>setChunkedMode(false)</code>. While last
@@ -193,7 +193,6 @@ public class RewindableInputStream extends InputStream {
         fMayReadChunks = false;
     }
 
-
     /**
      * Quickly reset stream pointer to the beginning of the stream or to
      * position which offset was specified during the last
@@ -202,7 +201,6 @@ public class RewindableInputStream extends InputStream {
     public void rewind() {
         fOffset = fStartOffset;
     }
-
 
     /**
      * Reads next byte from this stream. This byte is either being read from
@@ -214,13 +212,13 @@ public class RewindableInputStream extends InputStream {
      * @throws IOException in case of any I/O errors.
      */
     public int read() throws IOException {
-
         int b = 0;
 
-       // Byte to be read is already in out buffer, simply returning it
+        // Byte to be read is already in out buffer, simply returning it
         if (fOffset < fLength) {
             return fData[fOffset++] & 0xff;
         }
+
         /*
          * End of the stream is reached.
          * I also believe that in certain cases fOffset can point to the
@@ -231,6 +229,7 @@ public class RewindableInputStream extends InputStream {
         if (fOffset == fEndOffset) {
             return -1;
         }
+
         /*
          * Ok, we should actually read data from underlying stream, but
          * first it will be good to check if buffer array should be
@@ -241,19 +240,22 @@ public class RewindableInputStream extends InputStream {
             System.arraycopy(fData, 0, newData, 0, fOffset);
             fData = newData;
         }
-       // Reading byte from the underlying stream, storing it in buffer and
-       // then returning it.
+
+        // Reading byte from the underlying stream, storing it in buffer and
+        // then returning it.
         b = fInputStream.read();
+
         if (b == -1) {
             fEndOffset = fOffset;
+
             return -1;
         }
-        fData[fLength++] = (byte)b;
+
+        fData[fLength++] = (byte) b;
         fOffset++;
+
         return b & 0xff;
-
     } // END read()
-
 
     /**
      * Reads up to len bytes of data from the input stream into an array of
@@ -280,13 +282,11 @@ public class RewindableInputStream extends InputStream {
      *                 <code>len</code> and <code>b.length</code> combination
      */
     public int read(byte[] b, int off, int len) throws IOException {
-
         if (null == b) {
             throw new NullPointerException("Destination byte array is null.");
         } else if (0 == len) {
             return 0;
-        } else if ((b.length < off) || (b.length < off + len)
-                   || (0 > off) || (0 > len)) {
+        } else if ((b.length < off) || (b.length < (off + len)) || (0 > off) || (0 > len)) {
             throw new IndexOutOfBoundsException();
         }
 
@@ -299,24 +299,28 @@ public class RewindableInputStream extends InputStream {
          * of `fMayReadChunks` field.
          */
         if (bytesLeft == 0) {
-
             if (fOffset == fEndOffset) {
                 return -1;
             }
+
             // better get some more for the voracious reader...
             if (fMayReadChunks) {
-               // Hmm, this can be buffered in theory. But in many
-               // cases this would be undesirable, so let it be as it is.
+                // Hmm, this can be buffered in theory. But in many
+                // cases this would be undesirable, so let it be as it is.
                 return fInputStream.read(b, off, len);
             }
+
             int returnedVal = read();
+
             if (returnedVal == -1) {
                 fEndOffset = fOffset;
+
                 return -1;
             }
-            b[off] = (byte) returnedVal;
-            return 1;
 
+            b[off] = (byte) returnedVal;
+
+            return 1;
         }
 
         /*
@@ -324,27 +328,24 @@ public class RewindableInputStream extends InputStream {
          * in the buffer.
          */
         if (fMayReadChunks) {
-
-           // Count of bytes to get form buffer
+            // Count of bytes to get form buffer
             int readFromBuffer = (len < bytesLeft) ? len : bytesLeft;
 
             System.arraycopy(fData, fOffset, b, off, readFromBuffer);
 
             int readFromStream = 0;
+
             if (len > bytesLeft) {
-                readFromStream = fInputStream.read(b, off + bytesLeft,
-                                                   len - bytesLeft);
+                readFromStream = fInputStream.read(b, off + bytesLeft, len - bytesLeft);
             }
 
             fOffset += readFromBuffer;
 
             return readFromBuffer + ((-1 == readFromStream) ? 0 : readFromStream);
-
         } else {
-
-           //
-           // This will prevent returning more bytes than the remainder of
-           // the buffer array.
+            //
+            // This will prevent returning more bytes than the remainder of
+            // the buffer array.
             if (len > bytesLeft) {
                 len = bytesLeft;
             }
@@ -355,9 +356,7 @@ public class RewindableInputStream extends InputStream {
 
             return len;
         }
-
     } // END read(byte[], int, int)
-
 
     /**
      * Skips over and discards <code>n</code> bytes of data from this input
@@ -373,7 +372,6 @@ public class RewindableInputStream extends InputStream {
      * @throws IOException if an I/O error occurs.
      */
     public long skip(long n) throws IOException {
-
         int bytesLeft;
 
         if (n <= 0) {
@@ -382,31 +380,33 @@ public class RewindableInputStream extends InputStream {
 
         bytesLeft = fLength - fOffset;
 
-       // If end of buffer is reached, using `skip()` of the underlying input
-       // stream
+        // If end of buffer is reached, using `skip()` of the underlying input
+        // stream
         if (bytesLeft == 0) {
             if (fOffset == fEndOffset) {
                 return 0;
             }
+
             return fInputStream.skip(n);
         }
 
-       // Quickly "skipping" bytes in the buffer by modifying its pointer.
+        // Quickly "skipping" bytes in the buffer by modifying its pointer.
         if (n <= bytesLeft) {
             fOffset += n;
+
             return n;
         }
 
         fOffset += bytesLeft;
+
         if (fOffset == fEndOffset) {
             return bytesLeft;
         }
+
         n -= bytesLeft;
 
         return fInputStream.skip(n) + bytesLeft;
-
     } // END skip(long)
-
 
     /**
      * Returns the number of bytes that can be read (or skipped over) from this
@@ -435,25 +435,27 @@ public class RewindableInputStream extends InputStream {
      */
     public int available() throws IOException {
         int bytesLeft = fLength - fOffset;
+
         if (bytesLeft == 0) {
-           // Again, the same thing as in `read()`. Do we need to throw
-           // an exception if fOffset > fEndOffset???
+            // Again, the same thing as in `read()`. Do we need to throw
+            // an exception if fOffset > fEndOffset???
             if (fOffset == fEndOffset) {
                 return -1;
             }
-          /*
-           * In a manner of speaking, when this class isn't permitting more
-           * than one byte at a time to be read, it is "blocking".  The
-           * available() method should indicate how much can be read without
-           * blocking, so while we're in this mode, it should only indicate
-           * that bytes in its buffer are available; otherwise, the result of
-           * available() on the underlying InputStream is appropriate.
-           */
+
+            /*
+             * In a manner of speaking, when this class isn't permitting more
+             * than one byte at a time to be read, it is "blocking".  The
+             * available() method should indicate how much can be read without
+             * blocking, so while we're in this mode, it should only indicate
+             * that bytes in its buffer are available; otherwise, the result of
+             * available() on the underlying InputStream is appropriate.
+             */
             return fMayReadChunks ? fInputStream.available() : 0;
         }
+
         return bytesLeft;
     }
-
 
     /**
      * Sets a mark to the current position in the stream.
@@ -464,7 +466,6 @@ public class RewindableInputStream extends InputStream {
         fMark = fOffset;
     }
 
-
     /**
      * Returns stream pointer to the position previously remembered
      * using <code>mark</code> method (or to beginning of the stream,
@@ -473,7 +474,6 @@ public class RewindableInputStream extends InputStream {
     public void reset() {
         fOffset = fMark;
     }
-
 
     /**
      * Tells that this stream supports mark/reset capability.
@@ -485,7 +485,6 @@ public class RewindableInputStream extends InputStream {
     public boolean markSupported() {
         return true;
     }
-
 
     /**
      * Closes underlying byte stream.
@@ -499,5 +498,4 @@ public class RewindableInputStream extends InputStream {
             fData = null;
         }
     }
-
 } // end of RewindableInputStream class

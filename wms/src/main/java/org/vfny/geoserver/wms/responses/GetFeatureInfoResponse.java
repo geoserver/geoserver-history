@@ -4,15 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -24,6 +15,14 @@ import org.vfny.geoserver.wms.responses.featureInfo.GetFeatureInfoDelegate;
 import org.vfny.geoserver.wms.responses.featureInfo.GmlFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.featureInfo.HTMLTableFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.featureInfo.TextFeatureInfoResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -37,8 +36,7 @@ import org.vfny.geoserver.wms.responses.featureInfo.TextFeatureInfoResponse;
  */
 public class GetFeatureInfoResponse implements Response {
     /** package logger   */
-    private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage()
-                                                                              .getName());
+    private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage().getName());
 
     /** list of output format specialists */
     private static final List delegates = new LinkedList();
@@ -68,19 +66,19 @@ public class GetFeatureInfoResponse implements Response {
      * A delegate specialized in producing the required output format.
      */
     private GetFeatureInfoDelegate delegate;
-    
+
     /**
      * Creates a new GetMapResponse object.
      */
     public GetFeatureInfoResponse() {
     }
-    
+
     /**
      * Returns any extra headers that this service might want to set in the HTTP response object.
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-    	return null;
+        return null;
     }
 
     /**
@@ -92,8 +90,7 @@ public class GetFeatureInfoResponse implements Response {
      * @throws ServiceException DOCUMENT ME!
      */
     public void execute(Request request) throws ServiceException {
-        LOGGER.entering(getClass().getName(), "execute",
-            new Object[] { request });
+        LOGGER.entering(getClass().getName(), "execute", new Object[] { request });
 
         GetFeatureInfoRequest getFeatureInfoReq = (GetFeatureInfoRequest) request;
         this.delegate = getDelegate(getFeatureInfoReq);
@@ -143,9 +140,10 @@ public class GetFeatureInfoResponse implements Response {
      */
     public void abort(Service gs) {
         if (delegate != null) {
-        	if (LOGGER.isLoggable(Level.FINE)) {
-        		LOGGER.fine("asking delegate for aborting the process");
-        	}
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("asking delegate for aborting the process");
+            }
+
             delegate.abort(gs);
         }
     }
@@ -171,8 +169,9 @@ public class GetFeatureInfoResponse implements Response {
         }
 
         if (LOGGER.isLoggable(Level.FINER)) {
-        	LOGGER.finer(new StringBuffer("asking delegate for write to ").append(out).toString());
+            LOGGER.finer(new StringBuffer("asking delegate for write to ").append(out).toString());
         }
+
         delegate.writeTo(out);
     }
 
@@ -190,11 +189,12 @@ public class GetFeatureInfoResponse implements Response {
      *         format specified in <code>request</code> or if it can't be
      *         instantiated
      */
-    private static GetFeatureInfoDelegate getDelegate(
-        GetFeatureInfoRequest request) throws WmsException {
+    private static GetFeatureInfoDelegate getDelegate(GetFeatureInfoRequest request)
+        throws WmsException {
         String requestFormat = request.getInfoFormat();
+
         if (LOGGER.isLoggable(Level.FINER)) {
-        	LOGGER.finer(new StringBuffer("request format is ").append(requestFormat).toString());
+            LOGGER.finer(new StringBuffer("request format is ").append(requestFormat).toString());
         }
 
         GetFeatureInfoDelegate curDelegate = null;
@@ -205,8 +205,10 @@ public class GetFeatureInfoResponse implements Response {
 
             if (curDelegate.canProduce(requestFormat)) {
                 delegateClass = curDelegate.getClass();
+
                 if (LOGGER.isLoggable(Level.FINER)) {
-                	LOGGER.finer(new StringBuffer("found GetFeatureInfoDelegate ").append(delegateClass).toString());
+                    LOGGER.finer(new StringBuffer("found GetFeatureInfoDelegate ").append(
+                            delegateClass).toString());
                 }
 
                 break;
@@ -214,17 +216,15 @@ public class GetFeatureInfoResponse implements Response {
         }
 
         if (delegateClass == null) {
-            throw new WmsException(requestFormat +
-                " is not recognized as an output format for this server. " +
-                "Please consult the Capabilities document",
-                "GetMapResponse.getDelegate");
+            throw new WmsException(requestFormat
+                + " is not recognized as an output format for this server. "
+                + "Please consult the Capabilities document", "GetMapResponse.getDelegate");
         }
 
         try {
             curDelegate = (GetFeatureInfoDelegate) delegateClass.newInstance();
         } catch (Exception ex) {
-            throw new WmsException(ex,
-                "Cannot obtain the map generator for the requested format",
+            throw new WmsException(ex, "Cannot obtain the map generator for the requested format",
                 "GetMapResponse::getDelegate()");
         }
 
@@ -241,11 +241,11 @@ public class GetFeatureInfoResponse implements Response {
         return supportedMimeTypes;
     }
 
-	/* (non-Javadoc)
-	 * @see org.vfny.geoserver.Response#getContentDisposition()
-	 */
-	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.vfny.geoserver.Response#getContentDisposition()
+     */
+    public String getContentDisposition() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

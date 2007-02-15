@@ -4,6 +4,18 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
+import org.geotools.feature.FeatureType;
+import org.geotools.gml.producer.FeatureTypeTransformer;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.Response;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.NameSpaceInfo;
+import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WFS;
+import org.vfny.geoserver.wfs.WfsException;
+import org.vfny.geoserver.wfs.requests.DescribeRequest;
+import org.vfny.geoserver.wfs.requests.WFSRequest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,21 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-
 import javax.xml.transform.TransformerException;
-
-import org.geotools.feature.FeatureType;
-import org.geotools.gml.producer.FeatureTypeTransformer;
-import org.vfny.geoserver.Request;
-import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.NameSpaceInfo;
-import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.global.WFS;
-import org.vfny.geoserver.wfs.WfsException;
-import org.vfny.geoserver.wfs.requests.DescribeRequest;
-import org.vfny.geoserver.wfs.requests.WFSRequest;
 
 
 /**
@@ -47,8 +45,7 @@ import org.vfny.geoserver.wfs.requests.WFSRequest;
  */
 public class DescribeResponse implements Response {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
 
     /** Bean that holds global featureType information */
 
@@ -75,9 +72,9 @@ public class DescribeResponse implements Response {
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
-    	return null;
+        return null;
     }
-    
+
     /**
      * Constructor with request.
      *
@@ -87,11 +84,9 @@ public class DescribeResponse implements Response {
      */
     public void execute(Request req) throws WfsException {
         WFSRequest request = (WFSRequest) req;
-    	
-    		if (!(request instanceof DescribeRequest)) {
-            throw new WfsException(
-                "illegal request type, expected DescribeRequest, got "
-                + request);
+
+        if (!(request instanceof DescribeRequest)) {
+            throw new WfsException("illegal request type, expected DescribeRequest, got " + request);
         }
 
         DescribeRequest wfsRequest = (DescribeRequest) request;
@@ -114,7 +109,7 @@ public class DescribeResponse implements Response {
             //characters and whatnot, unless we can get rid of formatting
             //when we read the file, which could be worth looking into if
             //this slows things down.
-        	xmlResponse = xmlResponse.replaceAll(">\n[ \\t\\n]*", ">");
+            xmlResponse = xmlResponse.replaceAll(">\n[ \\t\\n]*", ">");
             xmlResponse = xmlResponse.replaceAll("\n[ \\t\\n]*", " ");
         }
     }
@@ -172,34 +167,30 @@ public class DescribeResponse implements Response {
         //ComplexType table = new ComplexType();
         if (requestedTypes.size() == 0) {
             //if there are no specific requested types then get all.
-            requestedTypes = new ArrayList(wfsRequest.getWFS().getData()
-                                                     .getFeatureTypeInfos()
+            requestedTypes = new ArrayList(wfsRequest.getWFS().getData().getFeatureTypeInfos()
                                                      .keySet());
         }
 
         tempResponse.append("<?xml version=\"1.0\" encoding=\""
-            + wfsRequest.getGeoServer().getCharSet().name() + "\"?>"
-            + "\n<xs:schema ");
+            + wfsRequest.getGeoServer().getCharSet().name() + "\"?>" + "\n<xs:schema ");
 
         //allSameType will throw WfsException if there are types that are not found.
         if (allSameType(requestedTypes, wfsRequest)) {
             //all the requested have the same namespace prefix, so return their
             //schemas.
             FeatureTypeInfo nsInfoType = wfsRequest.getWFS().getData()
-                                                   .getFeatureTypeInfo((String) requestedTypes
-                    .get(0));
+                                                   .getFeatureTypeInfo((String) requestedTypes.get(
+                        0));
 
             //all types have same prefix, so just use the first.
-            NameSpaceInfo namespace = nsInfoType.getDataStoreInfo()
-                                                .getNameSpace();
+            NameSpaceInfo namespace = nsInfoType.getDataStoreInfo().getNameSpace();
             String targetNs = namespace.getUri();
 
             //String targetNs = nsInfoType.getXmlns();
             tempResponse.append(TARGETNS_PREFIX + targetNs + TARGETNS_SUFFIX);
 
             //namespace
-            tempResponse.append("\n  " + "xmlns:" + namespace.getPrefix()
-                + "=\"" + targetNs + "\"");
+            tempResponse.append("\n  " + "xmlns:" + namespace.getPrefix() + "=\"" + targetNs + "\"");
 
             //xmlns:" + nsPrefix + "=\"" + targetNs
             //+ "\"");
@@ -209,11 +200,9 @@ public class DescribeResponse implements Response {
 
             //request.getBaseUrl should actually be GeoServer.getSchemaBaseUrl()
             //but that method is broken right now.  See the note there.
-            tempResponse.append("\n\n<xs:import namespace=" + GML_URL
-                + " schemaLocation=\"" + request.getSchemaBaseUrl()
-                + "gml/2.1.2/feature.xsd\"/>\n\n");
-            tempResponse.append(generateSpecifiedTypes(requestedTypes,
-                    wfsRequest.getWFS()));
+            tempResponse.append("\n\n<xs:import namespace=" + GML_URL + " schemaLocation=\""
+                + request.getSchemaBaseUrl() + "gml/2.1.2/feature.xsd\"/>\n\n");
+            tempResponse.append(generateSpecifiedTypes(requestedTypes, wfsRequest.getWFS()));
         } else {
             //the featureTypes do not have all the same prefixes.
             tempResponse.append(XS_NAMESPACE);
@@ -225,8 +214,7 @@ public class DescribeResponse implements Response {
             //iterate through the types, and make a set of their prefixes.
             while (nameIter.hasNext()) {
                 String typeName = nameIter.next().toString();
-                String typePrefix = wfsRequest.getWFS().getData()
-                                              .getFeatureTypeInfo(typeName)
+                String typePrefix = wfsRequest.getWFS().getData().getFeatureTypeInfo(typeName)
                                               .getPrefix();
                 prefixes.add(typePrefix);
             }
@@ -236,8 +224,7 @@ public class DescribeResponse implements Response {
             while (prefixIter.hasNext()) {
                 //iterate through prefixes, and add the types that have that prefix.
                 String prefix = prefixIter.next().toString();
-                tempResponse.append(getNSImport(prefix, requestedTypes,
-                        wfsRequest));
+                tempResponse.append(getNSImport(prefix, requestedTypes, wfsRequest));
             }
         }
 
@@ -277,8 +264,7 @@ public class DescribeResponse implements Response {
 
             if (typeName.startsWith(prefix)
                     || ((typeName.indexOf(':') == -1)
-                    && prefix.equals(r.getWFS().getData().getDefaultNameSpace()
-                                          .getPrefix()))) {
+                    && prefix.equals(r.getWFS().getData().getDefaultNameSpace().getPrefix()))) {
                 retBuffer.append(typeName + ",");
             }
         }
@@ -338,25 +324,24 @@ public class DescribeResponse implements Response {
             }
 
             if (!validTypes.contains(meta)) {
-
                 File schemaFile = meta.getSchemaFile();
-                   try {
-                       //Hack here, schemaFile should not be null, but it is
-                       //when a fType is first created, since we only add the 
-                       //schemaFile param to dto on a load.  This should be
-                       //fixed, maybe even have the schema file persist, or at
-                       //the very least be present right after creation.
-                       if (schemaFile != null &&
-                            schemaFile.exists() && schemaFile.canRead()) {
-                           generatedType = writeFile(schemaFile);
-                       } else {
-                           FeatureType ft2 = meta.getFeatureType();
-                           String gType2 = generateFromSchema(ft2);
 
-                            if ((gType2 != null) && (gType2 != "")) {
-                                generatedType = gType2;
-                            }
-                       }
+                try {
+                    //Hack here, schemaFile should not be null, but it is
+                    //when a fType is first created, since we only add the 
+                    //schemaFile param to dto on a load.  This should be
+                    //fixed, maybe even have the schema file persist, or at
+                    //the very least be present right after creation.
+                    if ((schemaFile != null) && schemaFile.exists() && schemaFile.canRead()) {
+                        generatedType = writeFile(schemaFile);
+                    } else {
+                        FeatureType ft2 = meta.getFeatureType();
+                        String gType2 = generateFromSchema(ft2);
+
+                        if ((gType2 != null) && (gType2 != "")) {
+                            generatedType = gType2;
+                        }
+                    }
                 } catch (IOException e) {
                     generatedType = "";
                 }
@@ -373,8 +358,7 @@ public class DescribeResponse implements Response {
         //  STORE IN HASH?
         for (Iterator i = validTypes.iterator(); i.hasNext();) {
             // Print element representation of table
-            tempResponse = tempResponse
-                + printElement((FeatureTypeInfo) i.next());
+            tempResponse = tempResponse + printElement((FeatureTypeInfo) i.next());
         }
 
         tempResponse = tempResponse + "\n\n";
@@ -423,8 +407,8 @@ public class DescribeResponse implements Response {
         //if (prefixDelimPos > 0) {
         //String tableName = typeName.substring(prefixDelimPos + 1);
         //  }
-    	return "\n  <xs:element name='" + type.getTypeName() + "' type='"
-        + type.getPrefix()+":"+type.getSchemaName() + "' substitutionGroup='gml:_Feature'/>";
+        return "\n  <xs:element name='" + type.getTypeName() + "' type='" + type.getPrefix() + ":"
+        + type.getSchemaName() + "' substitutionGroup='gml:_Feature'/>";
     }
 
     /**
@@ -442,9 +426,11 @@ public class DescribeResponse implements Response {
         String finalOutput = "";
 
         FileInputStream inputStream = null;
+
         try {
-	    // File inputFile = new File(inputFileName);
+            // File inputFile = new File(inputFileName);
             inputStream = new FileInputStream(inputFile);
+
             byte[] fileBuffer = new byte[inputStream.available()];
             int bytesRead;
 
@@ -456,10 +442,17 @@ public class DescribeResponse implements Response {
             //REVISIT: should things fail if there are featureTypes that
             //don't have schemas in the right place?  Because as it is now
             //a describe all will choke if there is one ft with no schema.xml
-            throw new WfsException("problem writing featureType information "
-                + " from " + inputFile);
+            throw new WfsException("problem writing featureType information " + " from "
+                + inputFile);
         } finally {
-            if(inputStream != null) try {inputStream.close(); } catch(Exception e){}; 
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (Exception e) {
+                }
+            }
+
+            ;
         }
 
         return finalOutput;
@@ -489,12 +482,10 @@ public class DescribeResponse implements Response {
             return false;
         }
 
-        String firstPrefix = getPrefix(nameIter.next().toString(),
-                request.getWFS());
+        String firstPrefix = getPrefix(nameIter.next().toString(), request.getWFS());
 
         while (nameIter.hasNext()) {
-            if (!firstPrefix.equals(getPrefix(nameIter.next().toString(),
-                            request.getWFS()))) {
+            if (!firstPrefix.equals(getPrefix(nameIter.next().toString(), request.getWFS()))) {
                 return false;
             }
         }
@@ -532,8 +523,8 @@ public class DescribeResponse implements Response {
         // nothing to undo
     }
 
-	public String getContentDisposition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public String getContentDisposition() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

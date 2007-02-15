@@ -4,20 +4,7 @@
  */
 package org.vfny.geoserver.form.data;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -45,8 +32,18 @@ import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.util.Requests;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -65,7 +62,7 @@ public class TypesEditorForm extends ActionForm {
         bases.add("--");
         bases.addAll(DataTransferObjectFactory.schemaBaseMap.keySet());
         schemaBases = Collections.unmodifiableList(bases);
-        allMetadataURLTypes = Arrays.asList(new String[] {"FGDC", "TC211"});
+        allMetadataURLTypes = Arrays.asList(new String[] { "FGDC", "TC211" });
     }
 
     /** Identiy DataStore responsible for this FeatureType */
@@ -76,7 +73,7 @@ public class TypesEditorForm extends ActionForm {
 
     /**
      * Name of featureType.
-     * 
+     *
      * <p>
      * An exact match for typeName provided by a DataStore.
      * </p>
@@ -84,26 +81,26 @@ public class TypesEditorForm extends ActionForm {
     private String typeName;
 
     /**
-	 * 
-	 */
-	private String wmsPath;
+         *
+         */
+    private String wmsPath;
 
-	/**
-	 * Representation of the Spatial Reference System.
-	 * 
-	 * <p>
-	 * Empty represents unknown, usually assumed to be Cartisian Coordinates.
-	 * </p>
-     */
+    /**
+     * Representation of the Spatial Reference System.
+     *
+     * <p>
+     * Empty represents unknown, usually assumed to be Cartisian Coordinates.
+     * </p>
+    */
     private String SRS;
-    
+
     /**
      *  WKT representation of the SRS
      *  This is read-only since it gets generated from the SRS id.
      *  Everytime SRS is updates (#setSRS()), this will also be re-set.
      *  If there's a problem with the SRS, this will try to give some info about the error.
      */
-    private String SRSWKT; 
+    private String SRSWKT;
 
     /** Title of this FeatureType */
     private String title;
@@ -122,13 +119,13 @@ public class TypesEditorForm extends ActionForm {
 
     /** List of keywords, often grouped with brackets */
     private String keywords;
-    
+
     /** Metadata URL
      *  This is a quick hack, the user interface and configuration code is really too broken
-     *  to waste time on it... 
+     *  to waste time on it...
      **/
     private MetaDataLink[] metadataLinks;
-    
+
     /** Metadata URL types **/
     private String[] metadataURLTypes;
 
@@ -137,18 +134,19 @@ public class TypesEditorForm extends ActionForm {
 
     /** The amount of time to use for the CacheControl: max-age parameter in maps generated from this featuretype **/
     private String cacheMaxAge;
+
     /** Should we add the CacheControl: max-age header to maps generated from this featureType? **/
     private boolean cachingEnabled;
     private boolean cachingEnabledChecked = false;
-    
+
     /**
      * One of a select list - simplest is AbstractBaseClass.
-     * 
+     *
      * <p>
      * The value "--" will be used to indicate default schema completly
      * generated from FeatureType information at runtime.
      * </p>
-     * 
+     *
      * <p>
      * When generated the schema will make use a schemaBase of
      * "AbstractFeatureType".
@@ -158,7 +156,7 @@ public class TypesEditorForm extends ActionForm {
 
     /**
      * The name of the complex element of type schemaBase.
-     * 
+     *
      * <p>
      * We only need this for non generated schemaBase.
      * </p>
@@ -180,18 +178,18 @@ public class TypesEditorForm extends ActionForm {
     /** Stores the name of the new attribute they wish to create */
     private String newAttribute;
 
-    	/** these store the bounding box of DATASET - in it coordinate system.
-    	 *  normally, you'll have these set to "" or null.
-    	 *  They're only for information purposes (presentation), they are never persisted or used in any calculations.
-    	 */
+    /** these store the bounding box of DATASET - in it coordinate system.
+         *  normally, you'll have these set to "" or null.
+         *  They're only for information purposes (presentation), they are never persisted or used in any calculations.
+         */
     private String dataMinX;
     private String dataMinY;
     private String dataMaxX;
     private String dataMaxY;
-    
+
     /**
      * Set up FeatureTypeEditor from from Web Container.
-     * 
+     *
      * <p>
      * The key DataConfig.SELECTED_FEATURE_TYPE is used to look up the selected
      * from the web container.
@@ -203,11 +201,10 @@ public class TypesEditorForm extends ActionForm {
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
 
-
-		dataMinX="";
-		dataMinY="";
-		dataMaxX="";
-		dataMaxY="";
+        dataMinX = "";
+        dataMinY = "";
+        dataMaxX = "";
+        dataMaxY = "";
 
         action = "";
 
@@ -229,7 +226,7 @@ public class TypesEditorForm extends ActionForm {
         this.styleId = type.getDefaultStyle();
 
         description = type.getAbstract();
-        
+
         this.cacheMaxAge = type.getCacheMaxAge();
         this.cachingEnabled = type.isCachingEnabled();
         cachingEnabledChecked = false;
@@ -251,7 +248,6 @@ public class TypesEditorForm extends ActionForm {
         typeName = type.getName();
         setSRS(Integer.toString(type.getSRS())); // doing it this way also sets SRSWKT
 
-        
         title = type.getTitle();
         wmsPath = type.getWmsPath();
 
@@ -263,15 +259,13 @@ public class TypesEditorForm extends ActionForm {
         FeatureType featureType = null;
 
         try {
-            DataStore dataStore = dataStoreConfig.findDataStore(getServlet()
-                                                                    .getServletContext());
+            DataStore dataStore = dataStoreConfig.findDataStore(getServlet().getServletContext());
             featureType = dataStore.getSchema(typeName);
         } catch (IOException e) {
             // DataStore unavailable!
         }
 
-        if (((type.getSchemaBase() == null)
-                || "--".equals(type.getSchemaBase()))
+        if (((type.getSchemaBase() == null) || "--".equals(type.getSchemaBase()))
                 || (type.getSchemaAttributes() == null)) {
             //We are using the generated attributes
             this.schemaBase = "--";
@@ -292,11 +286,9 @@ public class TypesEditorForm extends ActionForm {
             // Need to add read only AttributeDisplay for each required attribute
             // defined by schemaBase
             //
-            List schemaAttributes = DataTransferObjectFactory
-                .generateRequiredAttributes(schemaBase);
+            List schemaAttributes = DataTransferObjectFactory.generateRequiredAttributes(schemaBase);
             attributes.addAll(attributesDisplayList(schemaAttributes));
-            attributes.addAll(attributesFormList(type.getSchemaAttributes(),
-                    featureType));
+            attributes.addAll(attributesFormList(type.getSchemaAttributes(), featureType));
             addList = new ArrayList(featureType.getAttributeCount());
 
             for (int i = 0; i < featureType.getAttributeCount(); i++) {
@@ -320,19 +312,22 @@ public class TypesEditorForm extends ActionForm {
         }
 
         this.keywords = buf.toString();
-        
+
         metadataLinks = new MetaDataLink[2];
-        metadataLinks[0] = new MetaDataLink(); metadataLinks[0].setType("text/plain");
-        metadataLinks[1] = new MetaDataLink(); metadataLinks[1].setType("text/plain");
-        if(type.getMetadataLinks() != null && type.getMetadataLinks().size() > 0) {
+        metadataLinks[0] = new MetaDataLink();
+        metadataLinks[0].setType("text/plain");
+        metadataLinks[1] = new MetaDataLink();
+        metadataLinks[1].setType("text/plain");
+
+        if ((type.getMetadataLinks() != null) && (type.getMetadataLinks().size() > 0)) {
             List links = new ArrayList(type.getMetadataLinks());
             MetaDataLink link = (MetaDataLink) links.get(0);
             metadataLinks[0] = new MetaDataLink(link);
-           
-            if(links.size() > 1) {
+
+            if (links.size() > 1) {
                 link = (MetaDataLink) links.get(1);
                 metadataLinks[1] = new MetaDataLink(link);
-            } 
+            }
         }
 
         styles = new TreeSet();
@@ -387,8 +382,7 @@ public class TypesEditorForm extends ActionForm {
         for (Iterator i = dtoList.iterator(); i.hasNext(); index++) {
             Object next = i.next();
             //System.out.println(index + " attribute: " + next);
-            list.add(new AttributeDisplay(
-                    new AttributeTypeInfoConfig((AttributeTypeInfoDTO) next)));
+            list.add(new AttributeDisplay(new AttributeTypeInfoConfig((AttributeTypeInfoDTO) next)));
         }
 
         return list;
@@ -407,8 +401,7 @@ public class TypesEditorForm extends ActionForm {
 
         for (Iterator i = dtoList.iterator(); i.hasNext();) {
             AttributeTypeInfoConfig config = (AttributeTypeInfoConfig) i.next();
-            list.add(new AttributeForm(config,
-                    schema.getAttributeType(config.getName())));
+            list.add(new AttributeForm(config, schema.getAttributeType(config.getName())));
         }
 
         return list;
@@ -416,12 +409,12 @@ public class TypesEditorForm extends ActionForm {
 
     /**
      * Generate DTO attributes List for the TypesEditorAction.
-     * 
+     *
      * <p>
      * This list only includes entries defined by the user, not those generated
      * by the schemaBase.
      * </p>
-     * 
+     *
      * <p>
      * If the user has chosen -- then this list will be <code>null</code>.
      * </p>
@@ -448,23 +441,23 @@ public class TypesEditorForm extends ActionForm {
         return list;
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         Locale locale = (Locale) request.getLocale();
+
         //MessageResources messages = servlet.getResources();
         //TODO: not sure about this, changed for struts 1.2.8 upgrade
         MessageResources messages = (MessageResources) request.getAttribute(Globals.MESSAGES_KEY);
         final String BBOX = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
         final String SLDWIZARD = HTMLEncoder.decode(messages.getMessage(locale,
-        			"config.data.sldWizard.label"));
+                    "config.data.sldWizard.label"));
 
         // Pass Attribute Management Actions through without
         // much validation.
-        if (action.startsWith("Up") || action.startsWith("Down")
-                || action.startsWith("Remove") || action.equals(BBOX) || action.equals(SLDWIZARD)) {
+        if (action.startsWith("Up") || action.startsWith("Down") || action.startsWith("Remove")
+                || action.equals(BBOX) || action.equals(SLDWIZARD)) {
             return errors;
         }
 
@@ -472,15 +465,12 @@ public class TypesEditorForm extends ActionForm {
         DataConfig data = ConfigRequests.getDataConfig(request);
 
         if (!(data.getStyles().containsKey(styleId) || "".equals(styleId))) {
-            errors.add("styleId",
-                new ActionError("error.styleId.notFound", styleId));
+            errors.add("styleId", new ActionError("error.styleId.notFound", styleId));
         }
 
         // check name exists in current DataStore?
-        if ("".equals(minX) || "".equals(minY) || "".equals(maxX)
-                || "".equals(maxY)) {
-            errors.add("latlongBoundingBox",
-                new ActionError("error.latLonBoundingBox.required"));
+        if ("".equals(minX) || "".equals(minY) || "".equals(maxX) || "".equals(maxY)) {
+            errors.add("latlongBoundingBox", new ActionError("error.latLonBoundingBox.required"));
         } else {
             try {
                 Double.parseDouble(minX);
@@ -492,15 +482,15 @@ public class TypesEditorForm extends ActionForm {
                     new ActionError("error.latLonBoundingBox.invalid", badNumber));
             }
         }
-        
+
         if (isCachingEnabled()) {
-	        try {
-	        	Integer.parseInt(cacheMaxAge);
-	        } catch (NumberFormatException nfe) {
-	        	errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.malformed", nfe));
-	        } catch (Throwable t) {
-	        	errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.error", t));
-	        }
+            try {
+                Integer.parseInt(cacheMaxAge);
+            } catch (NumberFormatException nfe) {
+                errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.malformed", nfe));
+            } catch (Throwable t) {
+                errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.error", t));
+            }
         }
 
         return errors;
@@ -508,7 +498,7 @@ public class TypesEditorForm extends ActionForm {
 
     /**
      * Are belong to us.
-     * 
+     *
      * <p>
      * What can I say it is near a deadline! Easy access for
      * <code>Editor.jsp</code>.
@@ -519,7 +509,7 @@ public class TypesEditorForm extends ActionForm {
     public List getAllYourBase() {
         return schemaBases;
     }
-    
+
     public List getAllMetadataURLTypes() {
         return allMetadataURLTypes;
     }
@@ -599,7 +589,7 @@ public class TypesEditorForm extends ActionForm {
     public void setKeywords(String keywords) {
         this.keywords = keywords;
     }
-    
+
     public MetaDataLink getMetadataLink(int index) {
         return metadataLinks[index];
     }
@@ -648,7 +638,7 @@ public class TypesEditorForm extends ActionForm {
     public String getSRS() {
         return SRS;
     }
-    
+
     /**
      * Access SRSWKT property.  There is no setSRSWKT() because its derived from the SRS id.
      *
@@ -657,47 +647,45 @@ public class TypesEditorForm extends ActionForm {
     public String getSRSWKT() {
         return SRSWKT;
     }
-    
 
     /**
-     * Set sRS to srs. 
-     * 
-     *  Also sets WKTSRS.  
+     * Set sRS to srs.
+     *
+     *  Also sets WKTSRS.
      *  srs should be an Integer (in string form) - according to FeatureTypeConfig
      *
      * @param srs The sRS to set.
      */
-    public void setSRS(String srs) 
-    {
+    public void setSRS(String srs) {
+        SRS = srs;
 
-		SRS = srs;
-		try {
-			// srs should be an Integer - according to FeatureTypeConfig
-			// TODO: make everything consistent for SRS - either its an int or a
-			//       string.
-			String newSrs = srs;
-			if (newSrs.indexOf(':') == -1) {
-				newSrs = "EPSG:" + srs;
-			}
-			//CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
-			CRSAuthorityFactory crsFactory = FactoryFinder
-				.getCRSAuthorityFactory("EPSG", new Hints(
-					Hints.CRS_AUTHORITY_FACTORY,
-					CRSAuthorityFactory.class));
-			CoordinateReferenceSystem crsTheirData = (CoordinateReferenceSystem) crsFactory
-				.createCoordinateReferenceSystem(newSrs);
+        try {
+            // srs should be an Integer - according to FeatureTypeConfig
+            // TODO: make everything consistent for SRS - either its an int or a
+            //       string.
+            String newSrs = srs;
 
-			SRSWKT = crsTheirData.toWKT();
-		} catch (FactoryException e) // couldnt decode their code
-		{
-			// DJB:
-			// dont know how to internationize this inside a set() method!!!
-			// I think I need the request to get the local, then I can get MessageResources
-			// from the servlet and call an appropriate method.  
-			// Unforutunately, I dont know how to get the local!  
-			SRSWKT = "Could not find a definition for: EPSG:" + srs;
-		}
-	}
+            if (newSrs.indexOf(':') == -1) {
+                newSrs = "EPSG:" + srs;
+            }
+
+            //CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
+            CRSAuthorityFactory crsFactory = FactoryFinder.getCRSAuthorityFactory("EPSG",
+                    new Hints(Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
+            CoordinateReferenceSystem crsTheirData = (CoordinateReferenceSystem) crsFactory
+                .createCoordinateReferenceSystem(newSrs);
+
+            SRSWKT = crsTheirData.toWKT();
+        } catch (FactoryException e) // couldnt decode their code
+         {
+            // DJB:
+            // dont know how to internationize this inside a set() method!!!
+            // I think I need the request to get the local, then I can get MessageResources
+            // from the servlet and call an appropriate method.  
+            // Unforutunately, I dont know how to get the local!  
+            SRSWKT = "Could not find a definition for: EPSG:" + srs;
+        }
+    }
 
     /**
      * Access title property.
@@ -895,66 +883,65 @@ public class TypesEditorForm extends ActionForm {
     public void setSchemaName(String schemaName) {
         this.schemaName = schemaName;
     }
-    
-    public void setDataMinX(String x)
-    {
-    	dataMinX = x;
+
+    public void setDataMinX(String x) {
+        dataMinX = x;
     }
-    public void setDataMinY(String x)
-    {
-    	dataMinY = x;
+
+    public void setDataMinY(String x) {
+        dataMinY = x;
     }
-    public void setDataMaxX(String x)
-    {
-    	dataMaxX = x;
+
+    public void setDataMaxX(String x) {
+        dataMaxX = x;
     }
-    public void setDataMaxY(String x)
-    {
-    	dataMaxY = x;
+
+    public void setDataMaxY(String x) {
+        dataMaxY = x;
     }
-    
-    public String getDataMinX()
-    {
-    	return dataMinX;
+
+    public String getDataMinX() {
+        return dataMinX;
     }
-    public String getDataMinY()
-    {
-    	return dataMinY;
+
+    public String getDataMinY() {
+        return dataMinY;
     }
-    public String getDataMaxX()
-    {
-    	return dataMaxX;
+
+    public String getDataMaxX() {
+        return dataMaxX;
     }
-    public String getDataMaxY()
-    {
-    	return dataMaxY;
+
+    public String getDataMaxY() {
+        return dataMaxY;
     }
-    
-	public String getWmsPath() {
-		return wmsPath;
-	}
-	public void setWmsPath(String wmsPath) {
-		this.wmsPath = wmsPath;
-	}
+
+    public String getWmsPath() {
+        return wmsPath;
+    }
+
+    public void setWmsPath(String wmsPath) {
+        this.wmsPath = wmsPath;
+    }
 
     public String getCacheMaxAge() {
-		return cacheMaxAge;
-	}
+        return cacheMaxAge;
+    }
 
-	public void setCacheMaxAge(String cacheMaxAge) {
-		this.cacheMaxAge = cacheMaxAge;
-	}
+    public void setCacheMaxAge(String cacheMaxAge) {
+        this.cacheMaxAge = cacheMaxAge;
+    }
 
-	public boolean isCachingEnabled() {
-		return cachingEnabled;
-	}
+    public boolean isCachingEnabled() {
+        return cachingEnabled;
+    }
 
-	public void setCachingEnabled(boolean cachingEnabled) {
-		cachingEnabledChecked = true;
-		this.cachingEnabled = cachingEnabled;
-	}
+    public void setCachingEnabled(boolean cachingEnabled) {
+        cachingEnabledChecked = true;
+        this.cachingEnabled = cachingEnabled;
+    }
 
-	public boolean isCachingEnabledChecked() {
-		return cachingEnabledChecked;
-	}
+    public boolean isCachingEnabledChecked() {
+        return cachingEnabledChecked;
+    }
 }

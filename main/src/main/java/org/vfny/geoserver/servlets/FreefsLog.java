@@ -4,15 +4,12 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.geotools.data.jdbc.ConnectionPoolManager;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.geotools.data.jdbc.ConnectionPoolManager;
-
 
 
 /**
@@ -24,8 +21,7 @@ import org.geotools.data.jdbc.ConnectionPoolManager;
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.servlets");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
 
     /** Default name for configuration directory */
     private static final String CONFIG_DIR = "data/";
@@ -36,22 +32,21 @@ public class FreefsLog extends HttpServlet {
      * @throws ServletException DOCUMENT ME!
      */
     public void init() throws ServletException {
-    	//configure log4j, since console logging is configured elsewhere 
-    	// we deny all logging, this is really just to prevent log4j 
-    	// initilization warnings
-    	// TODO: this is a hack, log config should be cleaner 
-    	
-    	//JD: Commenting out
-//    	ConsoleAppender appender = new ConsoleAppender(new PatternLayout());
-//    	appender.addFilter(new DenyAllFilter());
-//    	
-//    	BasicConfigurator.configure(appender);
-    //	
+        //configure log4j, since console logging is configured elsewhere 
+        // we deny all logging, this is really just to prevent log4j 
+        // initilization warnings
+        // TODO: this is a hack, log config should be cleaner 
+
+        //JD: Commenting out
+        //    	ConsoleAppender appender = new ConsoleAppender(new PatternLayout());
+        //    	appender.addFilter(new DenyAllFilter());
+        //    	
+        //    	BasicConfigurator.configure(appender);
+        //	
         //HACK: java.util.prefs are awful.  See
         //http://www.allaboutbalance.com/disableprefs.  When the site comes
         //back up we should implement their better way of fixing the problem.
         System.setProperty("java.util.prefs.syncInterval", "5000000");
-
     }
 
     /**
@@ -81,21 +76,17 @@ public class FreefsLog extends HttpServlet {
            HACK: we must get a standard API way for releasing resources...
          */
         try {
-            Class sdepfClass = Class.forName(
-                    "org.geotools.data.arcsde.ConnectionPoolFactory");
+            Class sdepfClass = Class.forName("org.geotools.data.arcsde.ConnectionPoolFactory");
 
             LOGGER.fine("SDE datasource found, releasing resources");
 
-            java.lang.reflect.Method m = sdepfClass.getMethod("getInstance",
-                    new Class[0]);
+            java.lang.reflect.Method m = sdepfClass.getMethod("getInstance", new Class[0]);
             Object pfInstance = m.invoke(sdepfClass, new Object[0]);
 
-            LOGGER.fine("got sde connection pool factory instance: "
-                + pfInstance);
+            LOGGER.fine("got sde connection pool factory instance: " + pfInstance);
 
             java.lang.reflect.Method closeMethod = pfInstance.getClass()
-                                                             .getMethod("closeAll",
-                    new Class[0]);
+                                                             .getMethod("closeAll", new Class[0]);
 
             closeMethod.invoke(pfInstance, new Object[0]);
             LOGGER.info("just asked SDE datasource to release connections");
@@ -104,6 +95,5 @@ public class FreefsLog extends HttpServlet {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
     }
 }

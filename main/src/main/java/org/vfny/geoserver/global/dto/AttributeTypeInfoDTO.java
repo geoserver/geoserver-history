@@ -4,24 +4,23 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import java.util.logging.Logger;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
+import java.util.logging.Logger;
 
 
 /**
  * Represents most of a xs:element for an XMLSchema.
- * 
+ *
  * <p>
  * we have three types of information to store, Schema defined types,
  * references and extentions on types. If the type represented is either  a
  * reference or a Schema defined type  then isRef should be true.
  * </p>
- * 
+ *
  * <p>
  * Non-complex types are of the form:
  * </p>
- * 
+ *
  * <ul>
  * <li>
  * <code>{element name='test' type='xs:string'/}</code>
@@ -30,7 +29,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
  * <code>{element name='test' type='gml:PointType'/}</code>
  * </li>
  * </ul>
- * 
+ *
  * <p>
  * For complex types such as  <code>{element
  * name='test'}{xs:complexContent}{xs:extension
@@ -39,7 +38,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
  * minOccurs="0"/}{/xs:sequence}{/xs:extension}{/xs:complexContent}{/element}</code>
  * The type contains a similar XML fragment.
  * </p>
- * 
+ *
  * <p>
  * minOccurs, maxOccurs and nillable are all attributes for all cases. There is
  * more stuff in the XMLSchema spec but we don't care.
@@ -50,8 +49,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
  */
 public class AttributeTypeInfoDTO implements DataTransferObject {
     /** For debugging */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.global.dto");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global.dto");
 
     /** attribute name */
     private String name;
@@ -73,13 +71,13 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * This is true when type is complex.
-     * 
+     *
      * <p>
      * This is used to denote that type proerty is an XML fragment, rather than
      * type a type declaration. type declaration must be from
      * GMLUtils.xmlSchemaType or gmlTypes but not baseGMLTypes.
      * </p>
-     * 
+     *
      * <p>
      * baseGMLTypes can only be used in your XML fragment.
      * </p>
@@ -88,7 +86,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * AttributeTypeInfoDTO constructor, see DataTransferObjectFactory.
-     * 
+     *
      * <p>
      * Default constructor, does nothing
      * </p>
@@ -98,7 +96,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * AttributeTypeInfoDTO constructor, see DataTransferObjectFactory.
-     * 
+     *
      * <p>
      * Copies the data from the specified DTO to this one.
      * </p>
@@ -116,7 +114,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * Implement hashCode.
-     * 
+     *
      * <p>
      * The hashcode for this object.
      * </p>
@@ -131,7 +129,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * Implement clone.
-     * 
+     *
      * <p>
      * An instance of AttributeTypeInfoDTO which is the same as this one.
      * </p>
@@ -154,7 +152,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * isRef purpose.
-     * 
+     *
      * <p>
      * Returns is this is a reference element type or a document defined type.
      * </p>
@@ -167,7 +165,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * getMaxOccurs purpose.
-     * 
+     *
      * <p>
      * The max number of occurences for this element.
      * </p>
@@ -180,7 +178,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * getMinOccurs purpose.
-     * 
+     *
      * <p>
      * the min number of occurences for this element
      * </p>
@@ -193,7 +191,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * getName purpose.
-     * 
+     *
      * <p>
      * returns the element name
      * </p>
@@ -206,7 +204,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * isNillable purpose.
-     * 
+     *
      * <p>
      * Description ...
      * </p>
@@ -219,7 +217,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * getType purpose.
-     * 
+     *
      * <p>
      * returns the element type. This is an XML fragment if isRef() returns
      * false.
@@ -234,7 +232,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * setRef purpose.
-     * 
+     *
      * <p>
      * Sets whether this is a reference type element or not
      * </p>
@@ -247,7 +245,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * setMaxOccurs purpose.
-     * 
+     *
      * <p>
      * Stores the max occurs for the element
      * </p>
@@ -260,7 +258,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * setMinOccurs purpose.
-     * 
+     *
      * <p>
      * Stores the min occurs for the element
      * </p>
@@ -273,7 +271,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * setName purpose.
-     * 
+     *
      * <p>
      * Stores the name for the element
      * </p>
@@ -286,7 +284,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * setNillable purpose.
-     * 
+     *
      * <p>
      * Stores if this element is nillable
      * </p>
@@ -299,7 +297,7 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
 
     /**
      * setType purpose.
-     * 
+     *
      * <p>
      * Stores the type for this element. This is an XML fragment when isRef()
      * returns false.
@@ -313,9 +311,8 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
     }
 
     public String toString() {
-        return "[AttributeTypeInfoDTO " + name + " minOccurs=" + minOccurs
-        + " maxOccurs=" + maxOccurs + " nillable=" + nillable + " type=" + type
-        + " isComplex=" + isComplex + "]";
+        return "[AttributeTypeInfoDTO " + name + " minOccurs=" + minOccurs + " maxOccurs="
+        + maxOccurs + " nillable=" + nillable + " type=" + type + " isComplex=" + isComplex + "]";
     }
 
     /**
@@ -325,11 +322,13 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
         if (!(object instanceof AttributeTypeInfoDTO)) {
             return false;
         }
+
         AttributeTypeInfoDTO rhs = (AttributeTypeInfoDTO) object;
-        return new EqualsBuilder().appendSuper(super.equals(object)).append(
-                this.isComplex, rhs.isComplex).append(this.type, rhs.type)
-                .append(this.minOccurs, rhs.minOccurs).append(this.nillable,
-                        rhs.nillable).append(this.name, rhs.name).append(
-                        this.maxOccurs, rhs.maxOccurs).isEquals();
+
+        return new EqualsBuilder().appendSuper(super.equals(object))
+                                  .append(this.isComplex, rhs.isComplex).append(this.type, rhs.type)
+                                  .append(this.minOccurs, rhs.minOccurs)
+                                  .append(this.nillable, rhs.nillable).append(this.name, rhs.name)
+                                  .append(this.maxOccurs, rhs.maxOccurs).isEquals();
     }
 }

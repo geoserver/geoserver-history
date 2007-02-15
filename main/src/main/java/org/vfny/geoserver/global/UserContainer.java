@@ -4,11 +4,6 @@
  */
 package org.vfny.geoserver.global;
 
-import java.util.Locale;
-
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionBindingListener;
-
 import org.geotools.data.DataStore;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
@@ -17,16 +12,19 @@ import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
 import org.vfny.geoserver.config.StyleConfig;
+import java.util.Locale;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
 
 
 /**
  * Represents a User for GeoServer.
- * 
+ *
  * <p>
  * Used as a typesafe Session container. This is an alternative to using calls
  * to request.getAttributes( key ) and casting.
  * </p>
- * 
+ *
  * <p>
  * The User object is saved in session scope by ConfigAction:
  * </p>
@@ -38,7 +36,7 @@ import org.vfny.geoserver.config.StyleConfig;
  *     session.setAttributes( UserContainer.WEB_CONTAINER_KEY, user );
  * }
  * </code></pre>
- * 
+ *
  * <p>
  * This class is based on the UserContainer class outlined in the book
  * "Programming Jakarta Struts" by Chuck Cavaness.
@@ -62,6 +60,7 @@ public class UserContainer implements HttpSessionBindingListener {
 
     /** Selected prefix */
     private String prefix;
+
     /**
      * Selected DataStoreConfig held in session for creation/editing.
      */
@@ -69,13 +68,13 @@ public class UserContainer implements HttpSessionBindingListener {
 
     /**
      * Cached DataStore being worked on.
-     * 
+     *
      * <p>
      * This should agree with the value of dataStoreConfig.
      * </p>
      */
     private DataStore dataStore;
-    
+
     /**
      * Cached NamespaceConfig held in session for creation/editing.
      */
@@ -83,10 +82,10 @@ public class UserContainer implements HttpSessionBindingListener {
 
     /** Selected styleId */
     private StyleConfig style;
-        
+
     /**
      * Selected FeatureType Config held in session for editing/creation.
-     * 
+     *
      * <p>
      * Pending: Make change over to UserContainer.
      * </p>
@@ -95,40 +94,40 @@ public class UserContainer implements HttpSessionBindingListener {
 
     /**
      * Cached FeatureType being worked on.
-     * 
+     *
      * <p>
      * This should agree with the value of featureTypeConfig.
      * </p>
-     * 
+     *
      * <p></p>
      */
     private FeatureType featureType;
 
     /**
      * Selected AttributeType being worked on.
-     * 
+     *
      * <p>
      * Pending: Make change over to User Container.
      * </p>
-     * 
+     *
      * <p></p>
      */
     private AttributeTypeInfoConfig attributeTypeConfig;
 
     /**
      * Cached AttributeType being worked on.
-     * 
+     *
      * <p>
      * This should agree with the value of attributeTypeConfig.
      * </p>
-     * 
+     *
      * <p></p>
      */
     private AttributeType attributeType;
 
     /**
      * New DataStore info before it is added to DataConfig.
-     * 
+     *
      * <p>
      * Unlike the DataStores in DataConfig this one does not yet have to work.
      * </p>
@@ -152,7 +151,7 @@ public class UserContainer implements HttpSessionBindingListener {
 
     /**
      * User's Locale.
-     * 
+     *
      * <p>
      * Used to format messages. Should be used in conjunction with
      * internatalization support.
@@ -235,8 +234,7 @@ public class UserContainer implements HttpSessionBindingListener {
      *
      * @param attributeTypeConfig The attributeTypeConfig to set.
      */
-    public void setAttributeTypeConfig(
-        AttributeTypeInfoConfig attributeTypeConfig) {
+    public void setAttributeTypeConfig(AttributeTypeInfoConfig attributeTypeConfig) {
         this.attributeTypeConfig = attributeTypeConfig;
     }
 
@@ -365,31 +363,34 @@ public class UserContainer implements HttpSessionBindingListener {
     public void setFeatureTypeConfig(FeatureTypeConfig featureTypeConfig) {
         this.featureTypeConfig = featureTypeConfig;
     }
-	/**
-	 * Access namespaceConfig property.
-	 * 
-	 * @return Returns the namespaceConfig.
-	 */
-	public NameSpaceConfig getNamespaceConfig() {
-		return namespaceConfig;
-	}
 
-	/**
-	 * Set namespaceConfig to namespaceConfig.
-	 *
-	 * @param namespaceConfig The namespaceConfig to set.
-	 */
-	public void setNamespaceConfig(NameSpaceConfig namespaceConfig) {
-		this.namespaceConfig = namespaceConfig;
-	}
+    /**
+     * Access namespaceConfig property.
+     *
+     * @return Returns the namespaceConfig.
+     */
+    public NameSpaceConfig getNamespaceConfig() {
+        return namespaceConfig;
+    }
+
+    /**
+     * Set namespaceConfig to namespaceConfig.
+     *
+     * @param namespaceConfig The namespaceConfig to set.
+     */
+    public void setNamespaceConfig(NameSpaceConfig namespaceConfig) {
+        this.namespaceConfig = namespaceConfig;
+    }
+
     /**
      * Access prefix property.
-     * 
+     *
      * @return Returns the prefix.
      */
     public String getPrefix() {
         return prefix;
     }
+
     /**
      * Set prefix to prefix.
      *
@@ -398,14 +399,16 @@ public class UserContainer implements HttpSessionBindingListener {
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
+
     /**
      * Access style property.
-     * 
+     *
      * @return Returns the style.
      */
     public StyleConfig getStyle() {
         return style;
     }
+
     /**
      * Set style to style.
      *

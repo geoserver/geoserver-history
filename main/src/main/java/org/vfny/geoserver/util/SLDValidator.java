@@ -2,12 +2,18 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /*
  * Created on April 20, 2005
  *
  */
 package org.vfny.geoserver.util;
 
+import org.apache.xerces.parsers.SAXParser;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,19 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletContext;
-
-import org.apache.xerces.parsers.SAXParser;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
 
 
 public class SLDValidator {
-	static Logger LOGGER = Logger.getLogger("org.vfny.geoserver");
-	
+    static Logger LOGGER = Logger.getLogger("org.vfny.geoserver");
+
     public SLDValidator() {
     }
 
@@ -44,20 +43,20 @@ public class SLDValidator {
      * @return
      */
     public List validateSLD(InputStream xml, ServletContext servContext) {
-    	// a riminder not to use the data directory for the schemas
-    	//String url = GeoserverDataDirectory.getGeoserverDataDirectory(servContext).toString();
-    	
-    	return validateSLD(new InputSource(xml), servContext);
-    	/*try {
-    		 URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
-    		 LOGGER.info("Validating SLD with " + schemaFile.toString());
-       
+        // a riminder not to use the data directory for the schemas
+        //String url = GeoserverDataDirectory.getGeoserverDataDirectory(servContext).toString();
+        return validateSLD(new InputSource(xml), servContext);
+
+        /*try {
+                     URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
+                     LOGGER.info("Validating SLD with " + schemaFile.toString());
+        
             return validateSLD(xml, schemaFile.toString());
         } catch (Exception e) {
-        	LOGGER.severe(e.getLocalizedMessage());
-        	ArrayList al = new ArrayList();
+                LOGGER.severe(e.getLocalizedMessage());
+                ArrayList al = new ArrayList();
             al.add(new SAXException(e));
-
+        
             return al;
         }*/
     }
@@ -100,8 +99,7 @@ public class SLDValidator {
                 SAXParseException sax = (SAXParseException) errors.get(0);
 
                 if (sax.getLineNumber() < 0) {
-                    result.append("   INVALID XML: "
-                        + sax.getLocalizedMessage() + "\n");
+                    result.append("   INVALID XML: " + sax.getLocalizedMessage() + "\n");
                     result.append(" \n");
                     exceptionNum = 1; // skip ahead (you only ever get one error in this case)
                 }
@@ -121,8 +119,7 @@ public class SLDValidator {
                         SAXParseException sax = (SAXParseException) errors.get(exceptionNum);
 
                         if (sax.getLineNumber() <= linenumber) {
-                            String head = "---------------------".substring(0,
-                                    header.length() - 1);
+                            String head = "---------------------".substring(0, header.length() - 1);
                             String body = "--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
 
                             int colNum = sax.getColumnNumber(); //protect against col 0 problems
@@ -139,11 +136,9 @@ public class SLDValidator {
                                 }
                             }
 
-                            result.append(head + body.substring(0, colNum - 1)
-                                + "^\n");
-                            result.append("       (line " + sax.getLineNumber()
-                                + ", column " + sax.getColumnNumber() + ")"
-                                + sax.getLocalizedMessage() + "\n");
+                            result.append(head + body.substring(0, colNum - 1) + "^\n");
+                            result.append("       (line " + sax.getLineNumber() + ", column "
+                                + sax.getColumnNumber() + ")" + sax.getLocalizedMessage() + "\n");
                             exceptionNum++;
                         } else {
                             keep_going = false; //report later (sax.getLineNumber() > linenumber)
@@ -159,9 +154,8 @@ public class SLDValidator {
 
             for (int t = exceptionNum; t < errors.size(); t++) {
                 SAXParseException sax = (SAXParseException) errors.get(t);
-                result.append("       (line " + sax.getLineNumber()
-                    + ", column " + sax.getColumnNumber() + ")"
-                    + sax.getLocalizedMessage() + "\n");
+                result.append("       (line " + sax.getLineNumber() + ", column "
+                    + sax.getColumnNumber() + ")" + sax.getLocalizedMessage() + "\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -185,13 +179,13 @@ public class SLDValidator {
     /*public List validateSLD(InputSource xml, ServletContext servContext) {
         File schemaFile = new File(servContext.getRealPath("/"),
         "/schemas/sld/StyledLayerDescriptor.xsd");
-
+    
         try {
             return validateSLD(xml, schemaFile.toURL().toString());
         } catch (Exception e) {
             ArrayList al = new ArrayList();
             al.add(new SAXException(e));
-
+    
             return al;
         }
     }*/
@@ -206,28 +200,28 @@ public class SLDValidator {
      * @return list of SAXExceptions (0 if the file's okay)
      */
     public List validateSLD(InputSource xml, ServletContext servContext) {
-    	
         SAXParser parser = new SAXParser();
-        
-        try {
-        	// this takes care of spaces in the path to the file
-	        URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
-	        if (LOGGER.isLoggable(Level.INFO)) {
-	        	LOGGER.info(new StringBuffer("Validating SLD with ").append(schemaFile.toString()).toString());
-	        }
-			String schemaUrl = schemaFile.toString();
-		
-//     1. tell the parser to validate the XML document vs the schema
-//     2. does not validate the schema (the GML schema is *not* valid.  This is
-//        			an OGC blunder)
-//     3. tells the validator that the tags without a namespace are actually
-//        			SLD tags.
-//     4. tells the validator to 'override' the SLD schema that a user may
-//        			include with the one inside geoserver.
 
+        try {
+            // this takes care of spaces in the path to the file
+            URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
+
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.info(new StringBuffer("Validating SLD with ").append(schemaFile.toString())
+                                                                    .toString());
+            }
+
+            String schemaUrl = schemaFile.toString();
+
+            //     1. tell the parser to validate the XML document vs the schema
+            //     2. does not validate the schema (the GML schema is *not* valid.  This is
+            //        			an OGC blunder)
+            //     3. tells the validator that the tags without a namespace are actually
+            //        			SLD tags.
+            //     4. tells the validator to 'override' the SLD schema that a user may
+            //        			include with the one inside geoserver.
             parser.setFeature("http://xml.org/sax/features/validation", true);
-            parser.setFeature("http://apache.org/xml/features/validation/schema",
-                true);
+            parser.setFeature("http://apache.org/xml/features/validation/schema", true);
             parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking",
                 false);
 
@@ -243,7 +237,6 @@ public class SLDValidator {
 
             return handler.errors;
         } catch (java.io.IOException ioe) {
-        	
             ArrayList al = new ArrayList();
             al.add(new SAXParseException(ioe.getLocalizedMessage(), null));
 

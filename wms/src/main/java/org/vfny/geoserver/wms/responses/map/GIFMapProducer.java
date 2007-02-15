@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses.map;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import org.vfny.geoserver.wms.responses.map.gif.Gif89Encoder;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
 
 
 /**
@@ -21,12 +20,10 @@ import org.vfny.geoserver.wms.responses.map.gif.Gif89Encoder;
  * @version $Id
  */
 class GIFMapProducer extends DefaultRasterMapProducer {
-	
-	public GIFMapProducer(String format)
-	{
-		super(format);
-	}
-	
+    public GIFMapProducer(String format) {
+        super(format);
+    }
+
     /**
      * Transforms the rendered image into the appropriate format, streaming to
      * the output stream.
@@ -40,30 +37,25 @@ class GIFMapProducer extends DefaultRasterMapProducer {
      */
     protected void formatImageOutputStream(String format, BufferedImage image,
         OutputStream outStream) throws WmsException, IOException {
+        WMSMapContext mapCtx = getMapContext();
 
-    	WMSMapContext mapCtx = getMapContext();
-
-        if (mapCtx.isTransparent()) 
-        {
-        	Gif89Encoder gifenc = new Gif89Encoder(image,mapCtx.getBgColor(),2 ); // 2= colour reduction pixel sample factor (1=look at all pixels, but its slow) 
+        if (mapCtx.isTransparent()) {
+            Gif89Encoder gifenc = new Gif89Encoder(image, mapCtx.getBgColor(), 2); // 2= colour reduction pixel sample factor (1=look at all pixels, but its slow) 
             gifenc.setComments("produced by Geoserver");
-            
+
             gifenc.getFrameAt(0).setInterlaced(false);
             gifenc.encode(outStream);
-        } 
-        else 
-        {
-        	Gif89Encoder gifenc = new Gif89Encoder(image,null,2);// 2= colour reduction pixel sample factor (1=look at all pixels, but its slow)
+        } else {
+            Gif89Encoder gifenc = new Gif89Encoder(image, null, 2); // 2= colour reduction pixel sample factor (1=look at all pixels, but its slow)
             gifenc.setComments("produced by Geoserver");
-           // gifenc.setTransparentIndex(transparent_index);
+            // gifenc.setTransparentIndex(transparent_index);
             gifenc.getFrameAt(0).setInterlaced(false);
             gifenc.encode(outStream);
-            
         }
     }
 
-	public String getContentDisposition() {
-		// this can be null
-		return null;
-	}
+    public String getContentDisposition() {
+        // this can be null
+        return null;
+    }
 }

@@ -4,17 +4,7 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.factory.FactoryFinder;
 import org.geotools.filter.FunctionExpression;
 import org.geotools.xml.transform.TransformerBase;
@@ -29,8 +19,16 @@ import org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi;
 import org.vfny.geoserver.wfs.requests.WFSRequest;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.logging.Logger;
 
 
 /**
@@ -45,6 +43,7 @@ public class WFSCapsTransformer extends TransformerBase {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(WFSCapsTransformer.class.getPackage()
                                                                                   .getName());
+
     /** DOCUMENT ME! */
     private static final String HTTP_GET = "Get";
 
@@ -65,7 +64,7 @@ public class WFSCapsTransformer extends TransformerBase {
 
     /** DOCUMENT ME! */
     protected WFSRequest request;
-    
+
     /**
      * Creates a new WFSCapsTransformer object.
      */
@@ -116,8 +115,7 @@ public class WFSCapsTransformer extends TransformerBase {
          */
         public void encode(Object o) throws IllegalArgumentException {
             if (!(o instanceof CapabilitiesRequest)) {
-                throw new IllegalArgumentException(
-                    "Not a CapabilitiesRequest: " + o);
+                throw new IllegalArgumentException("Not a CapabilitiesRequest: " + o);
             }
 
             this.request = (CapabilitiesRequest) o;
@@ -136,17 +134,15 @@ public class WFSCapsTransformer extends TransformerBase {
                 attributes.addAttribute("", prefixDef, prefixDef, "", uri);
             }
 
-            attributes.addAttribute("", "xmlns:ogc", "xmlns:ogc", "",
-                "http://www.opengis.net/ogc");
+            attributes.addAttribute("", "xmlns:ogc", "xmlns:ogc", "", "http://www.opengis.net/ogc");
 
             String prefixDef = "xmlns:" + XSI_PREFIX;
             attributes.addAttribute("", prefixDef, prefixDef, "", XSI_URI);
 
             String locationAtt = XSI_PREFIX + ":schemaLocation";
-            String locationDef = WFS_URI + " " + request.getSchemaBaseUrl()
-                + "wfs/1.0.0/" + "WFS-capabilities.xsd"; //djb: this was pointing to the wrong location
-            attributes.addAttribute("", locationAtt, locationAtt, "",
-                locationDef);
+            String locationDef = WFS_URI + " " + request.getSchemaBaseUrl() + "wfs/1.0.0/"
+                + "WFS-capabilities.xsd"; //djb: this was pointing to the wrong location
+            attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
 
             start("WFS_Capabilities", attributes);
 
@@ -209,11 +205,11 @@ public class WFSCapsTransformer extends TransformerBase {
             handleDescribeFT();
             handleGetFeature();
 
-		if (config.getServiceLevel() >= WFSDTO.TRANSACTIONAL) {
+            if (config.getServiceLevel() >= WFSDTO.TRANSACTIONAL) {
                 handleTransaction();
             }
 
-		if (config.getServiceLevel() == WFSDTO.COMPLETE) { 
+            if (config.getServiceLevel() == WFSDTO.COMPLETE) {
                 handleLock();
                 handleFeatureWithLock();
             }
@@ -257,7 +253,7 @@ public class WFSCapsTransformer extends TransformerBase {
 
             String resultFormat = "ResultFormat";
             start(resultFormat);
-            
+
             //DJB: okay, I'm adding all the supported formats
             //     we probably need a "strict cite" conformance option
             //     somewhere in the config files. (default = not scrict)
@@ -265,39 +261,35 @@ public class WFSCapsTransformer extends TransformerBase {
             //     Alternatively, we could have options for "supported output formats"
             //     in the config and people could check off the extras they want
             //     to allow.
-            
-           //  element("GML2", null); // old implementation
-            
-            FeatureResponseDelegateProducerSpi spi;
- 
 
-        	//DJB: (see above comment, this fixes it0
-        	//      WFS config now has a "citeConformanceHacks" boolean in it.
-        	//      true --> only publish GML2 in caps file
-        	//      false -> publish all
+            //  element("GML2", null); // old implementation
+            FeatureResponseDelegateProducerSpi spi;
+
+            //DJB: (see above comment, this fixes it0
+            //      WFS config now has a "citeConformanceHacks" boolean in it.
+            //      true --> only publish GML2 in caps file
+            //      false -> publish all
             WFS config = (WFS) request.getServiceRef().getServiceRef();
             boolean onlyGML2 = config.getCiteConformanceHacks();
-            
-            if (onlyGML2)
-            {
-            	element("GML2",null);
+
+            if (onlyGML2) {
+                element("GML2", null);
+            } else {
+                //FULL MONTY
+                Iterator spi_it = FactoryFinder.factories(FeatureResponseDelegateProducerSpi.class);
+
+                while (spi_it.hasNext()) {
+                    spi = (FeatureResponseDelegateProducerSpi) spi_it.next();
+
+                    Set formats = spi.getSupportedFormats();
+                    Iterator it = formats.iterator();
+
+                    while (it.hasNext()) {
+                        String format = (String) it.next();
+                        element(format, null);
+                    }
+                }
             }
-            else
-	        {
-            	//FULL MONTY
-	            Iterator spi_it = FactoryFinder.factories(FeatureResponseDelegateProducerSpi.class);
-	            while (spi_it.hasNext()) 
-	            {
-	                spi = (FeatureResponseDelegateProducerSpi) spi_it.next();
-	                Set formats = spi.getSupportedFormats();
-	                Iterator it =formats.iterator();
-	                while (it.hasNext())
-	                {
-	                	String format = (String) it.next();
-	                	element( format, null);
-	                }
-	            }
-	        }
 
             //So cite does not even like this.  Which is really lame, since it
             //validates according to our definition for now, and because the cite
@@ -414,8 +406,7 @@ public class WFSCapsTransformer extends TransformerBase {
 
             end("Operations");
 
-            Collection featureTypes = wfs.getData().getFeatureTypeInfos()
-                                         .values();
+            Collection featureTypes = wfs.getData().getFeatureTypeInfos().values();
             FeatureTypeInfo ftype;
 
             for (Iterator it = featureTypes.iterator(); it.hasNext();) {
@@ -448,8 +439,8 @@ public class WFSCapsTransformer extends TransformerBase {
             try {
                 bbox = ftype.getLatLongBoundingBox();
             } catch (IOException ex) {
-                throw new RuntimeException("Can't obtain latLongBBox of "
-                    + ftype.getName() + ": " + ex.getMessage(), ex);
+                throw new RuntimeException("Can't obtain latLongBBox of " + ftype.getName() + ": "
+                    + ex.getMessage(), ex);
             }
 
             element("Name", ftype.getName());
@@ -516,52 +507,52 @@ public class WFSCapsTransformer extends TransformerBase {
             end(ogc + "Comparison_Operators");
             start(ogc + "Arithmetic_Operators");
             element(ogc + "Simple_Arithmetic", null);
-            
-            handleFunctions(ogc);  //djb: list functions
-            
+
+            handleFunctions(ogc); //djb: list functions
+
             end(ogc + "Arithmetic_Operators");
             end(ogc + "Scalar_Capabilities");
             end(ogc + "Filter_Capabilities");
         }
-        
-        public  void handleFunctions(String prefix)
-        {
-        	 start(prefix +"Functions");
-        	 start(prefix +"Function_Names");
-        	 java.util.Iterator it = org.geotools.factory.FactoryFinder.factories(FunctionExpression.class);
-             //Sort them up for easier visual inspection
-        	 SortedSet sortedFunctions = new TreeSet(new Comparator(){
-            	 	public int compare(Object o1, Object o2){
-                        String n1 = ((FunctionExpression) o1).getName();
-                        String n2 = ((FunctionExpression) o2).getName();
-                        return n1.toLowerCase().compareTo(n2.toLowerCase());
-            	 	}
-             });
-             while (  it.hasNext()   )
-             {
-            	sortedFunctions.add(it.next()); 
-             }
-             
-             //write them now that functions are sorted by name
-             FunctionExpression exp = null;
-             it = sortedFunctions.iterator();
-             while (  it.hasNext()   )
-             {
-                 FunctionExpression fe = (FunctionExpression) it.next();
-                 String funName = fe.getName();
-                 int    funNArgs= fe.getArgCount();
-                 
-                 AttributesImpl atts = new AttributesImpl();
-                 atts.addAttribute("", "nArgs", "nArgs", "", funNArgs+"");
-                 
-                 element(prefix +"Function_Name",funName,atts);              
-             }
-             
-             end(prefix +"Function_Names");
-             end(prefix +"Functions");
+
+        public void handleFunctions(String prefix) {
+            start(prefix + "Functions");
+            start(prefix + "Function_Names");
+
+            java.util.Iterator it = org.geotools.factory.FactoryFinder.factories(FunctionExpression.class);
+
+            //Sort them up for easier visual inspection
+            SortedSet sortedFunctions = new TreeSet(new Comparator() {
+                        public int compare(Object o1, Object o2) {
+                            String n1 = ((FunctionExpression) o1)
+                                .getName();
+                            String n2 = ((FunctionExpression) o2).getName();
+
+                            return n1.toLowerCase().compareTo(n2.toLowerCase());
+                        }
+                    });
+
+            while (it.hasNext()) {
+                sortedFunctions.add(it.next());
+            }
+
+            //write them now that functions are sorted by name
+            FunctionExpression exp = null;
+            it = sortedFunctions.iterator();
+
+            while (it.hasNext()) {
+                FunctionExpression fe = (FunctionExpression) it.next();
+                String funName = fe.getName();
+                int funNArgs = fe.getArgCount();
+
+                AttributesImpl atts = new AttributesImpl();
+                atts.addAttribute("", "nArgs", "nArgs", "", funNArgs + "");
+
+                element(prefix + "Function_Name", funName, atts);
+            }
+
+            end(prefix + "Function_Names");
+            end(prefix + "Functions");
         }
-        
     }
-    
- 
 }

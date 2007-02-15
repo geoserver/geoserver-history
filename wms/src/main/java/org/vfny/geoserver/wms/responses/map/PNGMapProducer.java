@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses.map;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import org.vfny.geoserver.wms.responses.map.png.PngEncoder;
 import org.vfny.geoserver.wms.responses.map.png.PngEncoderB;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
 
 
 /**
@@ -21,12 +20,10 @@ import org.vfny.geoserver.wms.responses.map.png.PngEncoderB;
  * @version $Id
  */
 public class PNGMapProducer extends DefaultRasterMapProducer {
-	
-	public PNGMapProducer(String format)
-	{
-		super(format);
-	}
-	
+    public PNGMapProducer(String format) {
+        super(format);
+    }
+
     /**
      * Transforms the rendered image into the appropriate format, streaming to
      * the output stream.
@@ -38,17 +35,16 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
      * @throws WmsException not really.
      * @throws IOException if encoding to <code>outStream</code> fails.
      */
-    public void formatImageOutputStream(String format, BufferedImage image,
-        OutputStream outStream) throws WmsException, IOException 
-	{        
-        PngEncoderB png =  new PngEncoderB( image, PngEncoder.ENCODE_ALPHA,	0, 1 ); // filter (0), and compression (1)
-        byte[] pngbytes = png.pngEncode();	
-        outStream.write( pngbytes );		 
+    public void formatImageOutputStream(String format, BufferedImage image, OutputStream outStream)
+        throws WmsException, IOException {
+        PngEncoderB png = new PngEncoderB(image, PngEncoder.ENCODE_ALPHA, 0, 1); // filter (0), and compression (1)
+        byte[] pngbytes = png.pngEncode();
+        outStream.write(pngbytes);
         outStream.flush();
     }
 
-	public String getContentDisposition() {
-		// this can be null
-		return null;
-	}
+    public String getContentDisposition() {
+        // this can be null
+        return null;
+    }
 }

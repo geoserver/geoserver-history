@@ -2,6 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
+
 /* Copyright (c) 2001 - 2004 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
@@ -17,12 +18,12 @@ import java.util.Map;
 
 /**
  * Utility methods with custom equals implementation against Maps and Lists.
- * 
+ *
  * <p>
  * Static Library class for testing equality of complex structures independant
  * of their contents.
  * </p>
- * 
+ *
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
@@ -31,7 +32,7 @@ import java.util.Map;
 public final class EqualsLibrary {
     /**
      * EqualsLibrary constructor.
-     * 
+     *
      * <p>
      * Should never be called, static class.
      * </p>
@@ -41,7 +42,7 @@ public final class EqualsLibrary {
 
     /**
      * equals purpose.
-     * 
+     *
      * <p>
      * Performs a complex equality check between two Lists
      * </p>
@@ -84,7 +85,7 @@ public final class EqualsLibrary {
 
     /**
      * equals purpose.
-     * 
+     *
      * <p>
      * Performs a complex equality check between two Maps
      * </p>

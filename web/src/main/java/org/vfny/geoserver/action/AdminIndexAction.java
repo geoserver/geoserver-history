@@ -6,20 +6,19 @@
  */
 package org.vfny.geoserver.action;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.sun.media.jai.util.SunTileCache;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import com.sun.media.jai.util.SunTileCache;
 
 /**
- * Admin Index Action. 
+ * Admin Index Action.
  * <p>
  * DOCUMENT ME.
  * </p>
@@ -29,12 +28,13 @@ public class AdminIndexAction extends ConfigAction {
     /* (non-Javadoc)
      * @see org.vfny.geoserver.action.ConfigAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, org.vfny.geoserver.global.UserContainer, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            UserContainer user, HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
-    	ServletContext sc = request.getSession().getServletContext();
-    	// return back to the admin screen
-    	//
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
+        throws Exception {
+        ServletContext sc = request.getSession().getServletContext();
+
+        // return back to the admin screen
+        //
         return mapping.findForward("admin.main");
     }
 }

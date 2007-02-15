@@ -6,6 +6,7 @@ package org.vfny.geoserver.wfs;
 
 import org.vfny.geoserver.ServiceException;
 
+
 /**
  * This defines an exception that can be turned into a valid xml service
  * exception that wfs clients will expect.  All errors should be wrapped in
