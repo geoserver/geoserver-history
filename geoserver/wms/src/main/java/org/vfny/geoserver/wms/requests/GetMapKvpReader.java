@@ -4,29 +4,7 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureType;
 import org.geotools.referencing.CRS;
@@ -53,8 +31,27 @@ import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
 import org.xml.sax.InputSource;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -406,13 +403,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             parseLayersAndStyles(request);
         }
     }
-    
-    
+
     protected Envelope parseBbox(String bboxParam) throws WmsException {
         // overridden to throw the right exception for this context
         try {
             return super.parseBbox(bboxParam);
-        } catch(ServiceException e) {
+        } catch (ServiceException e) {
             throw new WmsException(e);
         }
     }
@@ -817,10 +813,11 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         throws WmsException {
         String rawFilter = getValue("FILTER");
         String rawIdFilter = getValue("FEATUREID");
-        
-        if(rawFilter != null && rawIdFilter != null)
+
+        if ((rawFilter != null) && (rawIdFilter != null)) {
             throw new WmsException("GetMap KVP request contained "
                 + "conflicting filters.  Filter: " + rawFilter + ", fid: " + rawFilter);
+        }
 
         // in case of a mixed request, get with sld in post body, layers
         // are not parsed, so we can't parse filters neither...
@@ -836,14 +833,15 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         }
 
         List filters = null;
+
         // if no filter, no need to proceed
         if ((rawFilter != null) && !rawFilter.equals("")) {
             try {
                 filters = readOGCFilter(rawFilter);
-            } catch(ServiceException e) {
+            } catch (ServiceException e) {
                 throw new WmsException(e);
             }
-        } else if(rawIdFilter != null && !rawIdFilter.equals("")){
+        } else if ((rawIdFilter != null) && !rawIdFilter.equals("")) {
             filters = readFidFilters(rawFilter);
         } else {
             return;
@@ -1308,8 +1306,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         try {
             ftype = catalog.getFeatureTypeInfo(layerName);
         } catch (NoSuchElementException ex) {
-        		throw new WmsException(ex,
-    				new StringBuffer(layerName).append(": no such layer on this server").toString(),
+            throw new WmsException(ex,
+                new StringBuffer(layerName).append(": no such layer on this server").toString(),
                 "LayerNotDefined", "LayerNotDefined");
         }
 

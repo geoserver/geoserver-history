@@ -21,9 +21,6 @@ import javax.servlet.http.HttpServletRequest;
  * @version $Id: CapabilitiesHandler.java,v 1.9 2004/02/13 19:30:39 dmzwiers Exp $
  */
 public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler {
-    /** Service **/
-    private AbstractService service;
-
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
@@ -33,10 +30,19 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
     /**
      * Creates a new CapabilitiesHandler
      * @param service this is the AbstractService Handling the Request
+     * @deprecated use {@link #CapabilitiesHandler(CapabilitiesRequest)}.
      */
     public CapabilitiesHandler(AbstractService service) {
-        this.service = service;
-        request = new CapabilitiesRequest("WFS", service);
+        this(new CapabilitiesRequest("WFS", service));
+    }
+
+    /**
+     * Creates a new CapabilitiesHandler
+     * @param service this is the AbstractService Handling the Request
+     * @param req
+     */
+    public CapabilitiesHandler(CapabilitiesRequest request) {
+        this.request = request;
     }
 
     /**

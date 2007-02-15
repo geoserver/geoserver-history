@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import org.geoserver.ows.util.RequestUtils;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
@@ -131,12 +132,11 @@ public class WCSCapsTransformer extends TransformerBase {
 
             final String locationAtt = new StringBuffer(XSI_PREFIX).append(":schemaLocation")
                                                                    .toString();
-            final String locationDef =  /*new StringBuffer(WCS_URI).append(" ")
-                .append(request.getSchemaBaseUrl()).append("wcs/1.0.0/")
-                .append("wcsCapabilities.xsd").toString();*/new StringBuffer(WCS_URI).append(" ")
-                                                                                     .append("http://schemas.opengis.net/wcs/1.0.0/")
-                                                                                     .append("wcsCapabilities.xsd")
-                                                                                     .toString();
+
+            final String locationDef = WCS_URI + " "
+                + RequestUtils.schemaBaseURL(request.getHttpServletRequest())
+                + "wcs/1.0.0/wcsCapabilities.xsd";
+
             attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
             start("WCS_Capabilities", attributes);
 
@@ -450,8 +450,9 @@ public class WCSCapsTransformer extends TransformerBase {
 
         private void handleEnvelope(GeneralEnvelope envelope) {
             AttributesImpl attributes = new AttributesImpl();
-            attributes.addAttribute("", "srsName", "srsName", "",
-                "urn:ogc:def:crs:OGC:1.3:CRS84" /*"WGS84(DD)"*/);
+
+            attributes.addAttribute("", "srsName", "srsName", "", /*"urn:ogc:def:crs:OGC:1.3:CRS84"*/
+                "WGS84(DD)");
             start("lonLatEnvelope", attributes);
             element("gml:pos",
                 new StringBuffer(Double.toString(envelope.getLowerCorner().getOrdinate(0))).append(

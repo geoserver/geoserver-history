@@ -53,7 +53,13 @@ public class DataTransferObjectFactory {
     public static AttributeTypeInfoDTO create(String schemaBase, AttributeType attributeType) {
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
         dto.setName(attributeType.getName());
-        dto.setMinOccurs(isManditory(schemaBase, attributeType.getName()) ? 1 : 0);
+
+        if (isManditory(schemaBase, attributeType.getName()) || (attributeType.getMinOccurs() > 0)) {
+            dto.setMinOccurs(1);
+        } else {
+            dto.setMinOccurs(0);
+        }
+
         dto.setMaxOccurs(1);
         dto.setNillable(attributeType.isNillable());
 

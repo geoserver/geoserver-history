@@ -7,9 +7,7 @@ package org.geoserver.wfs.xml.v1_0_0;
 import org.geoserver.ows.XmlRequestReader;
 import org.geotools.util.Version;
 import org.geotools.xml.Parser;
-
 import java.io.Reader;
-
 import javax.xml.namespace.QName;
 
 

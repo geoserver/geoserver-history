@@ -1,12 +1,8 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.servlets;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.ows.OutputStrategyFactory;
 import org.geoserver.ows.ServiceStrategy;
@@ -16,50 +12,61 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.util.PartialBufferedOutputStream;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
+
 
 public class ServiceStrategyFactory implements OutputStrategyFactory, ApplicationContextAware {
-	/** Class logger */
+    /** Class logger */
     static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
-    
-	/**
-	 * GeoServer configuratoin
-	 */
-	GeoServer geoServer;
-	/**
-	 * The application context 
-	 */
-	ApplicationContext context;
-	/**
-	 * The default service strategy 
-	 */
-	String serviceStrategy;
-	/**
-	 * The default buffer size when the partial buffer strategy is used
-	 */
-	int partialBufferSize = PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE;
-	
-	public ServiceStrategyFactory( GeoServer geoServer ) {
-		this.geoServer = geoServer;
-	}
-	
-	public void setApplicationContext(ApplicationContext context) throws BeansException {
-		this.context = context;
-	}
-	
-	public void setServiceStrategy(String serviceStrategy) {
-		this.serviceStrategy = serviceStrategy;
-	}
-	
-	public void setPartialBufferSize(int partialBufferSize) {
-		this.partialBufferSize = partialBufferSize;
-	}
-	
-	public ServletContext getServletContext() {
-		return ((WebApplicationContext) context).getServletContext();
-	}
-	
-	public ServiceStrategy createOutputStrategy(HttpServletResponse response) {
-		//If verbose exceptions is on then lets make sure they actually get the
+
+    /**
+     * GeoServer configuratoin
+     */
+    GeoServer geoServer;
+
+    /**
+     * The application context
+     */
+    ApplicationContext context;
+
+    /**
+     * The default service strategy
+     */
+    String serviceStrategy;
+
+    /**
+     * The default buffer size when the partial buffer strategy is used
+     */
+    int partialBufferSize = PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE;
+
+    public ServiceStrategyFactory(GeoServer geoServer) {
+        this.geoServer = geoServer;
+    }
+
+    public void setApplicationContext(ApplicationContext context)
+        throws BeansException {
+        this.context = context;
+    }
+
+    public void setServiceStrategy(String serviceStrategy) {
+        this.serviceStrategy = serviceStrategy;
+    }
+
+    public void setPartialBufferSize(int partialBufferSize) {
+        this.partialBufferSize = partialBufferSize;
+    }
+
+    public ServletContext getServletContext() {
+        return ((WebApplicationContext) context).getServletContext();
+    }
+
+    public ServiceStrategy createOutputStrategy(HttpServletResponse response) {
+        //If verbose exceptions is on then lets make sure they actually get the
         // exception by using the file strategy.
         ServiceStrategy theStrategy = null;
 
@@ -130,6 +137,5 @@ public class ServiceStrategyFactory implements OutputStrategyFactory, Applicatio
         }
 
         return theStrategy;
-	}
-
+    }
 }

@@ -11,6 +11,7 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
+import org.geotools.util.Version;
 import org.geotools.xml.Encoder;
 import org.opengis.filter.identity.FeatureId;
 import org.vfny.geoserver.global.Data;
@@ -44,7 +45,7 @@ public class LockFeatureTypeResponse extends Response {
         throws IOException, ServiceException {
         LockFeatureResponseType lockResponse = (LockFeatureResponseType) value;
 
-        if ("1.1.0".equals(operation.getService().getVersion())) {
+        if (new Version("1.1.0").equals(operation.getService().getVersion())) {
             write1_1(lockResponse, output, operation);
 
             return;

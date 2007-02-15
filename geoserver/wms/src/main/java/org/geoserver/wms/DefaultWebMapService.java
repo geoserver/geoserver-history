@@ -41,9 +41,9 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
 
         return (WMSCapabilitiesResponse) capabilities.getResponse();
     }
-    
+
     public WMSCapabilitiesResponse capabilities(WMSCapabilitiesRequest request) {
-    	return getCapabilities( request );
+        return getCapabilities(request);
     }
 
     public DescribeLayerResponse describeLayer(DescribeLayerRequest request) {
@@ -57,6 +57,10 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
         GetMap getMap = (GetMap) context.getBeansOfType(GetMap.class).values().iterator().next();
 
         return (GetMapResponse) getMap.getResponse();
+    }
+
+    public GetMapResponse map(GetMapRequest request) {
+        return getMap(request);
     }
 
     public GetFeatureInfoResponse getFeatureInfo(GetFeatureInfoRequest request) {

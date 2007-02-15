@@ -1,135 +1,141 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.ows;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * An implementation of {@link ServiceExceptionHandler} which outputs
  * as service exception in a <code>ServiceExceptionReport</code> document.
  * <p>
  * This handler is referred to as "legacy" as newer services move to the ows
- * style exception report. See {@link DefaultServiceExceptionHandler}. 
+ * style exception report. See {@link DefaultServiceExceptionHandler}.
  * </p>
  * <p>
  * <h3>Version</h3>
  * By default this exception handler will output a <code>ServiceExceptionReport</code>
- * which is of version <code>1.2.0</code>. This may be overriden with 
+ * which is of version <code>1.2.0</code>. This may be overriden with
  * {@link #setVersion(String)}.
  * </p>
  * <p>
  * <h3>DTD and Schema</h3>
  * By default, no DTD or XML Schema reference will be included in the document.
- * The methods {@link #setDTDLocation(String)} and {@link #setSchemaLocation(String)} 
- * can be used to override this behaviour. Only one of these methods should be 
- * set per instance of this class. 
- * 
+ * The methods {@link #setDTDLocation(String)} and {@link #setSchemaLocation(String)}
+ * can be used to override this behaviour. Only one of these methods should be
+ * set per instance of this class.
+ *
  * The supplied value should be relative, and will be appended to the result
  * of {@link OWS#getSchemaBaseURL()}.
  * </p>
  * <p>
  * <h3>Content Type</h3>
- * The default content type for the created document is <code>text/xml</code>, 
+ * The default content type for the created document is <code>text/xml</code>,
  * this can be overridden with {@link #setContentType(String)}.
  * </p>
- * 
+ *
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
 public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
+    /**
+     * The configuration of hte service.
+     */
+    OWS ows;
 
-	/**
-	 * The configuration of hte service. 
-	 */
-	OWS ows;
-	/**
-	 * the version of the service exceptoin report.
-	 */
-	String version = "1.2.0";
-	/**
-	 * Location of document type defintion for document
-	 */
-	String dtdLocation = null;
-	/**
-	 * Location of schema for document.
-	 */
-	String schemaLocation = null;
-	/**
-	 * The content type of the produced document
-	 */
-	String contentType = "text/xml";
+    /**
+     * the version of the service exceptoin report.
+     */
+    String version = "1.2.0";
 
-	public LegacyServiceExceptionHandler(List services, OWS ows) {
-		super(services);
-		this.ows = ows;
-	}
+    /**
+     * Location of document type defintion for document
+     */
+    String dtdLocation = null;
 
-	public LegacyServiceExceptionHandler(Service service, OWS ows ) {
-		super(service);
-		this.ows = ows;
-	}
+    /**
+     * Location of schema for document.
+     */
+    String schemaLocation = null;
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
-	
-	public void setDTDLocation(String dtd) {
-		this.dtdLocation = dtd;
-	}
-	
-	public void setSchemaLocation(String schemaLocation) {
-		this.schemaLocation = schemaLocation;
-	}
-	
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-	
-	
-	public void handleServiceException(ServiceException exception,
-			Service service, HttpServletRequest request, HttpServletResponse response) {
-		
-		String tab = "   ";
+    /**
+     * The content type of the produced document
+     */
+    String contentType = "text/xml";
+
+    public LegacyServiceExceptionHandler(List services, OWS ows) {
+        super(services);
+        this.ows = ows;
+    }
+
+    public LegacyServiceExceptionHandler(Service service, OWS ows) {
+        super(service);
+        this.ows = ows;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public void setDTDLocation(String dtd) {
+        this.dtdLocation = dtd;
+    }
+
+    public void setSchemaLocation(String schemaLocation) {
+        this.schemaLocation = schemaLocation;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public void handleServiceException(ServiceException exception, Service service,
+        HttpServletRequest request, HttpServletResponse response) {
+        String tab = "   ";
         StringBuffer sb = new StringBuffer();
-        
+
         //xml header TODO: should the encoding the server default?
-        sb.append( "<?xml version=\"1.0\"" );
-        sb.append(" encoding=\"UTF-8\"" );
-        if ( dtdLocation != null ) {
-        	 sb.append( " standalone=\"no\"" );
-        }
-        sb.append( "?>" );
-        
-        //dtd location
-        if ( dtdLocation != null ) {
-        	String fullDtdLocation = 
-        		ResponseUtils.appendPath( ows.getSchemaBaseURL(), dtdLocation );
-        	sb.append("<!DOCTYPE ServiceExceptionReport SYSTEM \"" + fullDtdLocation + "\"> ");	
-        }
-        
-        //root element
-        sb.append("<ServiceExceptionReport version=\"" + version + "\" " ); 
-        
-        //xml schema location
-        if ( schemaLocation != null && dtdLocation == null ) {
-        	String fullSchemaLocation = 
-        		ResponseUtils.appendPath( ows.getSchemaBaseURL(), schemaLocation );
-        	
-        	sb.append( "xmlns=\"http://www.opengis.net/ogc\" " );
-        	sb.append( "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " );
-        	sb.append( "xsi:schemaLocation=\"http://www.opengis.net/ogc " + fullSchemaLocation + "\"" );
+        sb.append("<?xml version=\"1.0\"");
+        sb.append(" encoding=\"UTF-8\"");
+
+        if (dtdLocation != null) {
+            sb.append(" standalone=\"no\"");
         }
 
-        sb.append( ">" );
-        
+        sb.append("?>");
+
+        //dtd location
+        if (dtdLocation != null) {
+            String fullDtdLocation = ResponseUtils.appendPath(ows.getSchemaBaseURL(), dtdLocation);
+            sb.append("<!DOCTYPE ServiceExceptionReport SYSTEM \"" + fullDtdLocation + "\"> ");
+        }
+
+        //root element
+        sb.append("<ServiceExceptionReport version=\"" + version + "\" ");
+
+        //xml schema location
+        if ((schemaLocation != null) && (dtdLocation == null)) {
+            String fullSchemaLocation = ResponseUtils.appendPath(ows.getSchemaBaseURL(),
+                    schemaLocation);
+
+            sb.append("xmlns=\"http://www.opengis.net/ogc\" ");
+            sb.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
+            sb.append("xsi:schemaLocation=\"http://www.opengis.net/ogc " + fullSchemaLocation
+                + "\"");
+        }
+
+        sb.append(">");
+
         //write out the service exception 
         sb.append(tab + "<ServiceException");
 
@@ -144,7 +150,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
         }
 
         sb.append(">");
-        
+
         //message
         if ((exception.getMessage() != null) && !exception.getMessage().equals("")) {
             sb.append("\n" + tab + tab);
@@ -159,19 +165,16 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
         sb.append("\n</ServiceException>");
         sb.append("</ServiceExceptionReport>");
 
-        response.setContentType( contentType );
-        
+        response.setContentType(contentType);
+
         //TODO: server encoding?
         response.setCharacterEncoding("UTF-8");
-        
+
         try {
-			response.getOutputStream().write(sb.toString().getBytes());
-			response.getOutputStream().flush();
-		} 
-        catch (IOException e) {
-        	throw new RuntimeException( e );
-		}
-
-	}
-
+            response.getOutputStream().write(sb.toString().getBytes());
+            response.getOutputStream().flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

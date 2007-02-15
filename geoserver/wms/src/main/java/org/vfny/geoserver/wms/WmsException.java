@@ -61,7 +61,7 @@ public class WmsException extends ServiceException {
     public WmsException(String message) {
         super(message);
     }
-    
+
     public WmsException(ServiceException e) {
         super(e);
     }
@@ -97,11 +97,11 @@ public class WmsException extends ServiceException {
         super(e, preMessage, locator);
     }
 
-    public WmsException(Throwable e, String preMessage, String locator, String code ) {
-    	this( e, preMessage, locator);
-    	setCode( code );
+    public WmsException(Throwable e, String preMessage, String locator, String code) {
+        this(e, preMessage, locator);
+        setCode(code);
     }
-    
+
     /**
      * Return request type.
      *

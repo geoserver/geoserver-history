@@ -11,7 +11,6 @@ import org.geotools.util.Version;
 import org.geotools.xml.Parser;
 import org.vfny.geoserver.global.Data;
 import org.xml.sax.InputSource;
-
 import java.io.Reader;
 import java.util.Iterator;
 import javax.xml.namespace.QName;

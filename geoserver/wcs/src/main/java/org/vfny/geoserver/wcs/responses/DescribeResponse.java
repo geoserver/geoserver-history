@@ -262,7 +262,7 @@ public class DescribeResponse implements Response {
 
         final GeneralEnvelope envelope = cv.getWGS84LonLatEnvelope();
 
-        tempResponse.append("\n  <lonLatEnvelope" + " srsName=\"urn:ogc:def:crs:OGC:1.3:CRS84\"") /*WGS84(DD)*/
+        tempResponse.append("\n  <lonLatEnvelope" + " srsName=\"WGS84(DD)\"") /*urn:ogc:def:crs:OGC:1.3:CRS84*/
                     .append(">");
         tempResponse.append("\n   <gml:pos>").append(envelope.getLowerCorner().getOrdinate(0))
                     .append(" ").append(envelope.getLowerCorner().getOrdinate(1))
@@ -524,10 +524,10 @@ public class DescribeResponse implements Response {
 
         return tempResponse.toString();
     } /*
-         * (non-Javadoc)
-         *
-         * @see org.vfny.geoserver.responses.Response#abort()
-         */
+    * (non-Javadoc)
+    *
+    * @see org.vfny.geoserver.responses.Response#abort()
+    */
     public void abort(Service gs) {
         // nothing to undo
     }

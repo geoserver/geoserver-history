@@ -283,6 +283,10 @@
 		parent="gml2OutputFormat">
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
+	<bean id="hitsOutputFormat" class="org.geoserver.wfs.response.HitsOutputFormat">
+		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="xmlConfiguration-1.1"/>
+	</bean>
 		
 
 </beans>

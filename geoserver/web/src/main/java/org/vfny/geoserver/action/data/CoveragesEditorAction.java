@@ -4,21 +4,6 @@
  */
 package org.vfny.geoserver.action.data;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -49,6 +34,19 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -179,9 +177,13 @@ public final class CoveragesEditorAction extends ConfigAction {
             GeneralEnvelope envelope = targetEnvelope;
 
             if (!sourceCRS.getIdentifiers().isEmpty()) {
-                String identifier = CRS.lookupIdentifier(sourceCRS, Collections.singleton("EPSG"), false);
-                if(!identifier.startsWith("EPSG:"))
+                String identifier = CRS.lookupIdentifier(sourceCRS, Collections.singleton("EPSG"),
+                        false);
+
+                if (!identifier.startsWith("EPSG:")) {
                     identifier = "EPSG:" + identifier;
+                }
+
                 coverageForm.setSrsName(identifier);
             } else {
                 coverageForm.setSrsName("UNKNOWN");

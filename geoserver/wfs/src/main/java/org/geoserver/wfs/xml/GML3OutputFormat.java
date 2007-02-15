@@ -98,7 +98,8 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             //set the schema location
             encoder.setSchemaLocation(namespaceURI,
                 ResponseUtils.appendQueryString(wfs.getOnlineResource().toString(),
-                    "service=WFS&version=1.1.0&request=DescribeFeatureType&typeName=" + typeNames.toString()));
+                    "service=WFS&version=1.1.0&request=DescribeFeatureType&typeName="
+                    + typeNames.toString()));
         }
 
         try {

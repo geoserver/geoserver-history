@@ -4,6 +4,21 @@
  */
 package org.vfny.geoserver.util.requests.readers;
 
+import com.vividsolutions.jts.geom.Envelope;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.FilterFilter;
+import org.geotools.gml.GMLFilterDocument;
+import org.geotools.gml.GMLFilterGeometry;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
+import org.opengis.filter.Id;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.servlets.AbstractService;
+import org.vfny.geoserver.util.requests.FilterHandlerImpl;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.ParserAdapter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -19,28 +34,10 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.filter.FilterFilter;
-import org.geotools.gml.GMLFilterDocument;
-import org.geotools.gml.GMLFilterGeometry;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
-import org.opengis.filter.Id;
-import org.vfny.geoserver.Request;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.servlets.AbstractService;
-import org.vfny.geoserver.util.requests.FilterHandlerImpl;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.ParserAdapter;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -434,7 +431,7 @@ abstract public class KvpRequestReader {
     public void setServiceRef(AbstractService service) {
         this.service = service;
     }
-    
+
     /**
      * parses the BBOX parameter, wich must be a String of the form
      * <code>minx,miny,maxx,maxy</code> and returns a corresponding
@@ -479,7 +476,7 @@ abstract public class KvpRequestReader {
 
         return bbox;
     }
-    
+
     /**
      * Parses an OGC filter
      * @param filter
@@ -496,10 +493,12 @@ abstract public class KvpRequestReader {
 
         while (i.hasNext()) {
             String next = (String) i.next();
-            if(next.trim().equals(""))
+
+            if (next.trim().equals("")) {
                 filters.add(Filter.INCLUDE);
-            else
+            } else {
                 filters.add(parseXMLFilter(new StringReader(next)));
+            }
         }
 
         return filters;
@@ -511,7 +510,7 @@ abstract public class KvpRequestReader {
      * @return
      */
     protected List readFidFilters(String fid) {
-        List filters = new ArrayList(); 
+        List filters = new ArrayList();
         List unparsed;
         ListIterator i;
         LOGGER.finest("reading fid filter: " + fid);
@@ -523,9 +522,11 @@ abstract public class KvpRequestReader {
             ListIterator innerIterator = ids.listIterator();
 
             Set fids = new HashSet();
+
             while (innerIterator.hasNext()) {
                 fids.add(factory.featureId((String) innerIterator.next()));
             }
+
             Id fidFilter = factory.id(fids);
             LOGGER.finest("added fid filter: " + fidFilter);
             filters.add(fidFilter);
@@ -533,7 +534,7 @@ abstract public class KvpRequestReader {
 
         return filters;
     }
-    
+
     /**
      * Reads the Filter XML request into a geotools Feature object.
      *
@@ -543,39 +544,39 @@ abstract public class KvpRequestReader {
      *
      * @throws WfsException For any problems reading the request.
      */
-     protected Filter parseXMLFilter(Reader rawRequest)
-         throws ServiceException {
-         // translate string into a proper SAX input source
-         InputSource requestSource = new InputSource(rawRequest);
+    protected Filter parseXMLFilter(Reader rawRequest)
+        throws ServiceException {
+        // translate string into a proper SAX input source
+        InputSource requestSource = new InputSource(rawRequest);
 
-         // instantiante parsers and content handlers
-         FilterHandlerImpl contentHandler = new FilterHandlerImpl();
-         FilterFilter filterParser = new FilterFilter(contentHandler, null);
-         GMLFilterGeometry geometryFilter = new GMLFilterGeometry(filterParser);
-         GMLFilterDocument documentFilter = new GMLFilterDocument(geometryFilter);
+        // instantiante parsers and content handlers
+        FilterHandlerImpl contentHandler = new FilterHandlerImpl();
+        FilterFilter filterParser = new FilterFilter(contentHandler, null);
+        GMLFilterGeometry geometryFilter = new GMLFilterGeometry(filterParser);
+        GMLFilterDocument documentFilter = new GMLFilterDocument(geometryFilter);
 
-         // read in XML file and parse to content handler
-         try {
-             SAXParserFactory factory = SAXParserFactory.newInstance();
-             SAXParser parser = factory.newSAXParser();
-             ParserAdapter adapter = new ParserAdapter(parser.getParser());
+        // read in XML file and parse to content handler
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser parser = factory.newSAXParser();
+            ParserAdapter adapter = new ParserAdapter(parser.getParser());
 
-             adapter.setContentHandler(documentFilter);
-             adapter.parse(requestSource);
-             LOGGER.fine("just parsed: " + requestSource);
-         } catch (SAXException e) {
-             throw new ServiceException(e, "XML getFeature request SAX parsing error",
-                 XmlRequestReader.class.getName());
-         } catch (IOException e) {
-             throw new ServiceException(e, "XML get feature request input error",
-                 XmlRequestReader.class.getName());
-         } catch (ParserConfigurationException e) {
-             throw new ServiceException(e, "Some sort of issue creating parser",
-                 XmlRequestReader.class.getName());
-         }
+            adapter.setContentHandler(documentFilter);
+            adapter.parse(requestSource);
+            LOGGER.fine("just parsed: " + requestSource);
+        } catch (SAXException e) {
+            throw new ServiceException(e, "XML getFeature request SAX parsing error",
+                XmlRequestReader.class.getName());
+        } catch (IOException e) {
+            throw new ServiceException(e, "XML get feature request input error",
+                XmlRequestReader.class.getName());
+        } catch (ParserConfigurationException e) {
+            throw new ServiceException(e, "Some sort of issue creating parser",
+                XmlRequestReader.class.getName());
+        }
 
-         LOGGER.fine("passing filter: " + contentHandler.getFilter());
+        LOGGER.fine("passing filter: " + contentHandler.getFilter());
 
-         return contentHandler.getFilter();
-     }
+        return contentHandler.getFilter();
+    }
 }

@@ -466,7 +466,7 @@ public class TypesEditorForm extends ActionForm {
         final String SLDWIZARD = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.sldWizard.label"));
         final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(locale,
-            "config.data.lookupSRS.label"));
+                    "config.data.lookupSRS.label"));
 
         // Pass Attribute Management Actions through without
         // much validation.

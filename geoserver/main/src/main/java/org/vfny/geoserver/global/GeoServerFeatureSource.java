@@ -4,11 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
@@ -17,8 +13,8 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
-import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
@@ -26,8 +22,10 @@ import org.geotools.filter.AbstractFilter;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -79,7 +77,8 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @param definitionQuery Filter used to limit results
      * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
      */
-    GeoServerFeatureSource(FeatureSource source, FeatureType schema, Filter definitionQuery, CoordinateReferenceSystem forcedCRS) {
+    GeoServerFeatureSource(FeatureSource source, FeatureType schema, Filter definitionQuery,
+        CoordinateReferenceSystem forcedCRS) {
         this.source = source;
         this.schema = schema;
         this.definitionQuery = definitionQuery;
@@ -112,7 +111,8 @@ public class GeoServerFeatureSource implements FeatureSource {
             return new GeoServerFeatureLocking((FeatureLocking) featureSource, schema,
                 definitionQuery, forcedCRS);
         } else if (featureSource instanceof FeatureStore) {
-            return new GeoServerFeatureStore((FeatureStore) featureSource, schema, definitionQuery, forcedCRS);
+            return new GeoServerFeatureStore((FeatureStore) featureSource, schema, definitionQuery,
+                forcedCRS);
         }
 
         return new GeoServerFeatureSource(featureSource, schema, definitionQuery, forcedCRS);
@@ -143,7 +143,15 @@ public class GeoServerFeatureSource implements FeatureSource {
             Filter filter = query.getFilter();
             filter = makeDefinitionFilter(filter);
 
-            return new DefaultQuery(typeName, filter, maxFeatures, propNames, handle);
+            DefaultQuery defQuery = new DefaultQuery(typeName, filter, maxFeatures, propNames,
+                    handle);
+
+            //set sort by
+            if (query.getSortBy() != null) {
+                defQuery.setSortBy(query.getSortBy());
+            }
+
+            return defQuery;
         } catch (Exception ex) {
             throw new DataSourceException(
                 "Could not restrict the query to the definition criteria: " + ex.getMessage(), ex);
@@ -309,22 +317,22 @@ public class GeoServerFeatureSource implements FeatureSource {
 
         try {
             FeatureCollection fc = source.getFeatures(newQuery);
-            if(forcedCRS != null)
+
+            if (forcedCRS != null) {
                 return new ForceCoordinateSystemFeatureResults(fc, forcedCRS);
-            else
+            } else {
                 return fc;
-        } catch(SchemaException e) {
+            }
+        } catch (SchemaException e) {
             throw new DataSourceException(e);
         }
     }
 
-    
     public FeatureCollection getFeatures(Filter filter)
         throws IOException {
         return getFeatures(new DefaultQuery(schema.getTypeName(), filter));
     }
 
-    
     public FeatureCollection getFeatures() throws IOException {
         return getFeatures(Query.ALL);
     }

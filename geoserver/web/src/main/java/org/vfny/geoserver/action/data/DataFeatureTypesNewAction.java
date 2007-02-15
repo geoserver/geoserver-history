@@ -96,7 +96,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
             // Only other thing we could do is ask for a geometry and see what it's
             // SRID number is?
             //
-//            ftConfig.setSRS(0);
+            //            ftConfig.setSRS(0);
 
             // attempt to get a better SRS
             try {

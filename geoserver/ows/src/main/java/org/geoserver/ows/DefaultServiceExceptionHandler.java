@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collections;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -85,7 +84,7 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
         report.getException().add(e);
 
         response.setContentType("application/xml");
-        
+
         //response.setCharacterEncoding( "UTF-8" );
         OWSConfiguration configuration = new OWSConfiguration();
 
@@ -98,7 +97,7 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
         encoder.setOutputFormat(format);
 
         encoder.setSchemaLocation(org.geoserver.ows.xml.v1_0.OWS.NAMESPACE,
-           RequestUtils.schemaBaseURL( request ) + "ows/1.0.0/owsExceptionReport.xsd");
+            RequestUtils.schemaBaseURL(request) + "ows/1.0.0/owsExceptionReport.xsd");
 
         try {
             encoder.encode(report, org.geoserver.ows.xml.v1_0.OWS.EXCEPTIONREPORT,

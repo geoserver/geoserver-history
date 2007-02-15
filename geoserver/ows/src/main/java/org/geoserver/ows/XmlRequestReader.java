@@ -5,9 +5,7 @@
 package org.geoserver.ows;
 
 import org.geotools.util.Version;
-
 import java.io.Reader;
-
 import javax.xml.namespace.QName;
 
 
@@ -53,9 +51,9 @@ public abstract class XmlRequestReader {
      * @param local The local name of the element
      */
     public XmlRequestReader(String namespace, String local) {
-    	this( new QName( namespace, local ) );
+        this(new QName(namespace, local));
     }
-    
+
     /**
      *
      * Creates the xml reader for the specified element of a particular version.
@@ -73,19 +71,19 @@ public abstract class XmlRequestReader {
         }
     }
 
-   /**
-    *
-    * Creates the xml reader for the specified element of a particular version.
-    *
-    * @param namespace The namespace of the element
-    * @param local The local name of the element
-    * @param version The version of the element in which the reader supports,
-    * may be <code>null</code>.
-    */
-   public XmlRequestReader(String namespace, String local, Version version) {
-	   this( new QName( namespace, local ), version );
-   }
-   
+    /**
+     *
+     * Creates the xml reader for the specified element of a particular version.
+     *
+     * @param namespace The namespace of the element
+     * @param local The local name of the element
+     * @param version The version of the element in which the reader supports,
+     * may be <code>null</code>.
+     */
+    public XmlRequestReader(String namespace, String local, Version version) {
+        this(new QName(namespace, local), version);
+    }
+
     /**
      * @return The qualified name of the element that this reader reads.
      */

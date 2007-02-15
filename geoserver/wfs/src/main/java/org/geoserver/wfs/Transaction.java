@@ -679,7 +679,7 @@ public class Transaction {
 
                         //report back fids, we need to keep the same order the fids were reported 
                         // in the original feature collection
-                        FeatureType last = null;
+                        InsertedFeatureType insertedFeature = null;
 
                         for (Iterator f = insert.getFeature().iterator(); f.hasNext();) {
                             Feature feature = (Feature) f.next();
@@ -689,24 +689,11 @@ public class Transaction {
                             LinkedList fids = (LinkedList) schema2fids.get(schema.getTypeName());
                             String fid = (String) fids.removeFirst();
 
-                            //is teh schema reported, the same as the last
-                            InsertedFeatureType insertedFeature = null;
-
-                            if ((last != null) && last.getTypeName().equals(schema.getTypeName())) {
-                                insertedFeature = (InsertedFeatureType) result.getInsertResults()
-                                                                              .getFeature()
-                                                                              .get(result.getInsertResults()
-                                                                                         .getFeature()
-                                                                                         .size()
-                                        - 1);
-                            } else {
-                                insertedFeature = WFSFactory.eINSTANCE.createInsertedFeatureType();
-                                insertedFeature.setHandle(insert.getHandle());
-                                result.getInsertResults().getFeature().add(insertedFeature);
-                            }
-
+                            insertedFeature = WFSFactory.eINSTANCE.createInsertedFeatureType();
+                            insertedFeature.setHandle(insert.getHandle());
                             insertedFeature.getFeatureId().add(filterFactory.featureId(fid));
-                            last = schema;
+
+                            result.getInsertResults().getFeature().add(insertedFeature);
                         }
 
                         //update the insert counter

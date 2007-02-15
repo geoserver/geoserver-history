@@ -4,12 +4,11 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.geoserver.ows.ServiceStrategy;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
-
-import org.geoserver.ows.ServiceStrategy;
 
 
 /**
@@ -41,8 +40,8 @@ public class BufferStrategy implements ServiceStrategy {
      */
     public OutputStream getDestination(HttpServletResponse response)
         throws IOException {
-        
-    	buffer = new ByteArrayOutputStream(1024 * 1024);
+        buffer = new ByteArrayOutputStream(1024 * 1024);
+
         return buffer;
     }
 

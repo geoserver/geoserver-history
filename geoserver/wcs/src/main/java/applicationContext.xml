@@ -116,6 +116,20 @@
 	
 	<bean id="wcsGetCapabilitiesXmlReader" parent="wcsXmlReader">
 		<constructor-arg index="1" value="GetCapabilities"/>
+		<constructor-arg index="3" 
+			value="org.vfny.geoserver.wcs.requests.readers.CapabilitiesXmlReader"/>
+	</bean>
+	
+	<bean id="describeCoverageXmlReader" parent="wcsXmlReader">
+		<constructor-arg index="1" value="DescribeCoverage"/>
+		<constructor-arg index="3" 
+			value="org.vfny.geoserver.wcs.requests.readers.DescribeXmlReader"/>
+	</bean>
+	
+	<bean id="getCoverageXmlReader" parent="wcsXmlReader">
+		<constructor-arg index="1" value="GetCoverage"/>
+		<constructor-arg index="3" 
+			value="org.vfny.geoserver.wcs.requests.readers.GetCoverageXmlReader"/>
 	</bean>
 	
 	<!--  responses -->
