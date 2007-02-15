@@ -362,7 +362,7 @@ public class Dispatcher extends AbstractController {
                     requestBean = parseRequestKVP(parameterType, req);
                 } else {
                     //use the xml reader mechanism
-                    requestBean = parseRequestXML(req.input);
+                    requestBean = parseRequestXML(req.input, req);
                 }
 
                 // another couple of thos of those lovley cite things, version+service has to specified for 
@@ -910,7 +910,8 @@ public class Dispatcher extends AbstractController {
         return null;
     }
 
-    Object parseRequestXML(BufferedReader input) throws Exception {
+    Object parseRequestXML(BufferedReader input, Request request)
+        throws Exception {
         //check for an empty input stream
         //if (input.available() == 0) {
         if (!input.ready()) {
@@ -946,6 +947,10 @@ public class Dispatcher extends AbstractController {
         input.reset();
 
         XmlRequestReader xmlReader = findXmlReader(namespace, element, version);
+
+        if (xmlReader instanceof HttpServletRequestAware) {
+            ((HttpServletRequestAware) xmlReader).setHttpRequest(request.httpRequest);
+        }
 
         return xmlReader.read(input);
     }

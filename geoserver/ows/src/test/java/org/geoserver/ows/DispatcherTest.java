@@ -123,7 +123,10 @@ public class DispatcherTest extends TestCase {
 
         input.mark(8192);
 
-        Object object = dispatcher.parseRequestXML(input);
+        Dispatcher.Request req = new Dispatcher.Request();
+        req.input = input;
+
+        Object object = dispatcher.parseRequestXML(input, req);
         assertEquals(new Message("Hello world!"), object);
     }
 
