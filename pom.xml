@@ -181,6 +181,11 @@
     <artifactId>gt2-epsg-hsql</artifactId>
     <version>${gt.version}</version>
    </dependency>
+      <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt2-epsg-extension</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
     <artifactId>gt2-coverage</artifactId>
