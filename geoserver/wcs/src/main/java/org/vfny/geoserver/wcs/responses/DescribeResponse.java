@@ -525,10 +525,10 @@ public class DescribeResponse implements Response {
 
         return tempResponse.toString();
     } /*
-         * (non-Javadoc)
-         *
-         * @see org.vfny.geoserver.responses.Response#abort()
-         */
+    * (non-Javadoc)
+    *
+    * @see org.vfny.geoserver.responses.Response#abort()
+    */
     public void abort(Service gs) {
         // nothing to undo
     }

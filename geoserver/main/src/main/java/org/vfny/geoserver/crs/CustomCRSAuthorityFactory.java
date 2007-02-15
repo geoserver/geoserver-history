@@ -4,15 +4,14 @@
  */
 package org.vfny.geoserver.crs;
 
+import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.geotools.referencing.crs.EPSGCRSAuthorityFactory;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 
 public class CustomCRSAuthorityFactory extends EPSGCRSAuthorityFactory {

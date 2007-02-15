@@ -14,14 +14,11 @@ import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.Filter;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
-import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
 import org.opengis.parameter.ParameterValueGroup;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.context.ApplicationContext;
@@ -87,6 +84,7 @@ public class GetMapResponse implements Response {
 
     /**
      * Creates a new GetMapResponse object.
+     *
      * @param applicationContext
      */
     public GetMapResponse(WMS wms, ApplicationContext applicationContext) {
@@ -96,7 +94,8 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * Returns any extra headers that this service might want to set in the HTTP
+     * response object.
      */
     public HashMap getResponseHeaders() {
         return responseHeaders;
@@ -105,10 +104,13 @@ public class GetMapResponse implements Response {
     /**
      * DOCUMENT ME!
      *
-     * @param req DOCUMENT ME!
+     * @param req
+     *            DOCUMENT ME!
      *
-     * @throws ServiceException DOCUMENT ME!
-     * @throws WmsException DOCUMENT ME!
+     * @throws ServiceException
+     *             DOCUMENT ME!
+     * @throws WmsException
+     *             DOCUMENT ME!
      */
     public void execute(Request req) throws ServiceException {
         GetMapRequest request = (GetMapRequest) req;
@@ -122,12 +124,12 @@ public class GetMapResponse implements Response {
         final Filter[] filters = ((request.getFilters() != null)
             ? (Filter[]) request.getFilters().toArray(new Filter[] {  }) : null);
 
-        //JD:make instance variable in order to release resources later
-        //final WMSMapContext map = new WMSMapContext();
+        // JD:make instance variable in order to release resources later
+        // final WMSMapContext map = new WMSMapContext();
         map = new WMSMapContext(request);
 
-        //DJB: the WMS spec says that the request must not be 0 area
-        //     if it is, throw a service exception!
+        // DJB: the WMS spec says that the request must not be 0 area
+        // if it is, throw a service exception!
         final Envelope env = request.getBbox();
 
         if (env.isNull() || (env.getWidth() <= 0) || (env.getHeight() <= 0)) {
@@ -230,13 +232,19 @@ public class GetMapResponse implements Response {
                     try {
                         source = layers[i].getFeature().getFeatureSource();
 
-                        // NOTE for the future. Here there was some code that sounded like: 
+                        // NOTE for the future. Here there was some code that
+                        // sounded like:
                         // * get the bounding box from feature source
-                        // * eventually reproject it to the actual CRS used for map
-                        // * if no intersection, don't bother adding the feature source to the map
-                        // This is not an optimization, on the contrary, computing the bbox may be
-                        // very expensive depending on the data size. Using sigma.openplans.org data
-                        // and a tiled client like OpenLayers, it dragged the server to his knees
+                        // * eventually reproject it to the actual CRS used for
+                        // map
+                        // * if no intersection, don't bother adding the feature
+                        // source to the map
+                        // This is not an optimization, on the contrary,
+                        // computing the bbox may be
+                        // very expensive depending on the data size. Using
+                        // sigma.openplans.org data
+                        // and a tiled client like OpenLayers, it dragged the
+                        // server to his knees
                         // and the client simply timed out
                     } catch (IOException exp) {
                         if (LOGGER.isLoggable(Level.SEVERE)) {
@@ -354,11 +362,13 @@ public class GetMapResponse implements Response {
      * asks the internal GetMapDelegate for the MIME type of the map that it
      * will generate or is ready to, and returns it
      *
-     * @param gs DOCUMENT ME!
+     * @param gs
+     *            DOCUMENT ME!
      *
      * @return the MIME type of the map generated or ready to generate
      *
-     * @throws IllegalStateException if a GetMapDelegate is not setted yet
+     * @throws IllegalStateException
+     *             if a GetMapDelegate is not setted yet
      */
     public String getContentType(GeoServer gs) throws IllegalStateException {
         if (this.delegate == null) {
@@ -382,10 +392,10 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * if a GetMapDelegate is set, calls it's abort method. Elsewere do
-     * nothing.
+     * if a GetMapDelegate is set, calls it's abort method. Elsewere do nothing.
      *
-     * @param gs DOCUMENT ME!
+     * @param gs
+     *            DOCUMENT ME!
      */
     public void abort(Service gs) {
         if (this.delegate != null) {
@@ -402,17 +412,22 @@ public class GetMapResponse implements Response {
      * <code>GetMapDelegate</code> wich is actually processing it, and has
      * been obtained when <code>execute(Request)</code> was called
      *
-     * @param out the output to where the map must be written
+     * @param out
+     *            the output to where the map must be written
      *
-     * @throws ServiceException if the delegate throws a ServiceException
-     *         inside its <code>writeTo(OuptutStream)</code>, mostly due to
-     * @throws IOException if the delegate throws an IOException inside its
-     *         <code>writeTo(OuptutStream)</code>, mostly due to
-     * @throws IllegalStateException if this method is called before
-     *         <code>execute(Request)</code> has succeed
+     * @throws ServiceException
+     *             if the delegate throws a ServiceException inside its
+     *             <code>writeTo(OuptutStream)</code>, mostly due to
+     * @throws IOException
+     *             if the delegate throws an IOException inside its
+     *             <code>writeTo(OuptutStream)</code>, mostly due to
+     * @throws IllegalStateException
+     *             if this method is called before <code>execute(Request)</code>
+     *             has succeed
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
-        try { // mapcontext can leak memory -- we make sure we done (see finally block)
+        try { // mapcontext can leak memory -- we make sure we done (see
+              // finally block)
 
             if (this.delegate == null) {
                 throw new IllegalStateException(
@@ -442,15 +457,17 @@ public class GetMapResponse implements Response {
      * Creates a GetMapDelegate specialized in generating the requested map
      * format
      *
-     * @param outputFormat a request parameter object wich holds the processed
-     *        request objects, such as layers, bbox, outpu format, etc.
+     * @param outputFormat
+     *            a request parameter object wich holds the processed request
+     *            objects, such as layers, bbox, outpu format, etc.
      *
-     * @return A specialization of <code>GetMapDelegate</code> wich can produce
-     *         the requested output map format
+     * @return A specialization of <code>GetMapDelegate</code> wich can
+     *         produce the requested output map format
      *
-     * @throws WmsException if no specialization is configured for the output
-     *         format specified in <code>request</code> or if it can't be
-     *         instantiated
+     * @throws WmsException
+     *             if no specialization is configured for the output format
+     *             specified in <code>request</code> or if it can't be
+     *             instantiated
      */
     private GetMapProducer getDelegate(String outputFormat, WMS wms)
         throws WmsException {
@@ -486,10 +503,11 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * Convenience method for processing the GetMapProducerFactorySpi
-     * extension point and returning the set of available image formats.
+     * Convenience method for processing the GetMapProducerFactorySpi extension
+     * point and returning the set of available image formats.
      *
-     * @param applicationContext The application context.
+     * @param applicationContext
+     *            The application context.
      *
      */
     public static Set loadImageFormats(ApplicationContext applicationContext) {

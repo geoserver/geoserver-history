@@ -13,12 +13,10 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -102,8 +100,8 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
     private WMSMapContext mapContext;
 
     /**
-    *
-    */
+     *
+     */
     public DefaultRasterMapProducer() {
         this(DEFAULT_MAP_FORMAT, null);
     }

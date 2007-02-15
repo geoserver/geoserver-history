@@ -12,13 +12,9 @@ import org.opengis.parameter.InvalidParameterValueException;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import org.vfny.geoserver.util.CoverageStoreUtils;
-import org.vfny.geoserver.util.CoverageUtils;
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collections;
+import java.lang.ref.SoftReference;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
@@ -51,8 +47,8 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      *
      */
     private String id;
-    private GridCoverageReader reader = null;
-    private GridCoverageReader hintReader = null;
+    private SoftReference reader = null;
+    private SoftReference hintReader = null;
 
     /**
      *
@@ -155,56 +151,56 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
         return id;
     }
 
-    //	/**
-    //	 * Get Connect params.
-    //	 * 
-    //	 * @return DOCUMENT ME!
-    //	 */
+    // /**
+    // * Get Connect params.
+    // *
+    // * @return DOCUMENT ME!
+    // */
     //
-    //	public static Map getParams(Map m, String baseDir) {
-    //		Map params = Collections.synchronizedMap(new HashMap(m));
+    // public static Map getParams(Map m, String baseDir) {
+    // Map params = Collections.synchronizedMap(new HashMap(m));
     //
-    //		for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
-    //			Map.Entry entry = (Map.Entry) i.next();
-    //			String key = (String) entry.getKey();
-    //			Object value = entry.getValue();
+    // for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
+    // Map.Entry entry = (Map.Entry) i.next();
+    // String key = (String) entry.getKey();
+    // Object value = entry.getValue();
     //
-    //			try {
-    //				if ("url".equals(key) && value instanceof String) {
-    //					String path = (String) value;
-    //					if (LOGGER.isLoggable(Level.INFO)) {
-    //						LOGGER.info("in string url");
-    //					}
-    //					if (path.startsWith("file:data/")) {
-    //						path = path.substring(5); // remove 'file:' prefix
+    // try {
+    // if ("url".equals(key) && value instanceof String) {
+    // String path = (String) value;
+    // if (LOGGER.isLoggable(Level.INFO)) {
+    // LOGGER.info("in string url");
+    // }
+    // if (path.startsWith("file:data/")) {
+    // path = path.substring(5); // remove 'file:' prefix
     //
-    //						File file = new File(baseDir, path);
-    //						entry.setValue(file.toURL().toExternalForm());
-    //					}
-    //					// Not sure about this
-    //				} else if (value instanceof URL
-    //						&& ((URL) value).getProtocol().equals("file")) {
-    //					if (LOGGER.isLoggable(Level.INFO)) {
-    //						LOGGER.info("in URL url");
-    //					}
-    //					URL url = (URL) value;
-    //					String path = url.getPath();
-    //					if (LOGGER.isLoggable(Level.INFO)) {
-    //						LOGGER.info(new StringBuffer("path is ").append(path)
-    //								.toString());
-    //					}
-    //					if (path.startsWith("data/")) {
-    //						File file = new File(baseDir, path);
-    //						entry.setValue(file.toURL());
-    //					}
-    //				}
-    //			} catch (MalformedURLException ignore) {
-    //				// ignore attempt to fix relative paths
-    //			}
-    //		}
+    // File file = new File(baseDir, path);
+    // entry.setValue(file.toURL().toExternalForm());
+    // }
+    // // Not sure about this
+    // } else if (value instanceof URL
+    // && ((URL) value).getProtocol().equals("file")) {
+    // if (LOGGER.isLoggable(Level.INFO)) {
+    // LOGGER.info("in URL url");
+    // }
+    // URL url = (URL) value;
+    // String path = url.getPath();
+    // if (LOGGER.isLoggable(Level.INFO)) {
+    // LOGGER.info(new StringBuffer("path is ").append(path)
+    // .toString());
+    // }
+    // if (path.startsWith("data/")) {
+    // File file = new File(baseDir, path);
+    // entry.setValue(file.toURL());
+    // }
+    // }
+    // } catch (MalformedURLException ignore) {
+    // // ignore attempt to fix relative paths
+    // }
+    // }
     //
-    //		return params;
-    //	}
+    // return params;
+    // }
 
     /**
      * DOCUMENT ME !
@@ -354,7 +350,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 
     public synchronized GridCoverageReader getReader() {
         if (reader != null) {
-            return reader;
+            return (GridCoverageReader) reader.get();
         }
 
         try {
@@ -377,9 +373,9 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
             final File obj = GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
 
             // XXX CACHING READERS HERE
-            reader = ((AbstractGridFormat) gcInfo.getFormat()).getReader(obj);
+            reader = new SoftReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(obj));
 
-            return reader;
+            return (GridCoverageReader) reader.get();
         } catch (InvalidParameterValueException e) {
             LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
         } catch (ParameterNotFoundException e) {
@@ -395,9 +391,9 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
 
     public synchronized GridCoverageReader createReader(Hints hints) {
         if (hintReader != null) {
-            return hintReader;
+            return (GridCoverageReader) hintReader.get();
         } else if ((hints == null) && (reader != null)) {
-            return reader;
+            return (GridCoverageReader) reader.get();
         }
 
         try {
@@ -420,9 +416,10 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
             final File obj = GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
 
             // XXX CACHING READERS HERE
-            hintReader = ((AbstractGridFormat) gcInfo.getFormat()).getReader(obj, hints);
+            hintReader = new SoftReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(
+                        obj, hints));
 
-            return hintReader;
+            return (GridCoverageReader) hintReader.get();
         } catch (InvalidParameterValueException e) {
             LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
         } catch (ParameterNotFoundException e) {
