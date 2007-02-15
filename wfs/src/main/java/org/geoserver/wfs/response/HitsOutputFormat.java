@@ -8,12 +8,12 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfs.WFSFactory;
+import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
-import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.xml.Encoder;
 import org.xml.sax.SAXException;
@@ -27,7 +27,7 @@ import java.io.OutputStream;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class HitsOutputFormat extends WFSGetFeatureOutputFormat {
+public class HitsOutputFormat extends Response {
     /**
      * WFS configuration
      */
@@ -39,24 +39,34 @@ public class HitsOutputFormat extends WFSGetFeatureOutputFormat {
     WFSConfiguration configuration;
 
     public HitsOutputFormat(WFS wfs, WFSConfiguration configuration) {
-        super(null); //ignore output format
+        super(FeatureCollectionType.class);
 
         this.wfs = wfs;
         this.configuration = configuration;
     }
 
     /**
+     * @return "text/xml";
+     */
+    public String getMimeType(Object value, Operation operation)
+        throws ServiceException {
+        return "text/xml";
+    }
+
+    /**
      * Checks that the resultType is of type "hits".
      */
-    protected boolean canHandleInternal(Operation operation) {
+    public boolean canHandle(Operation operation) {
         GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation.getParameters(),
                 GetFeatureType.class);
 
         return request.getResultType() == ResultTypeType.HITS_LITERAL;
     }
 
-    protected void write(FeatureCollectionType featureCollection, OutputStream output,
-        Operation getFeature) throws IOException, ServiceException {
+    public void write(Object value, OutputStream output, Operation operation)
+        throws IOException, ServiceException {
+        FeatureCollectionType featureCollection = (FeatureCollectionType) value;
+
         //create a new feautre collcetion type with just the numbers
         FeatureCollectionType hits = WFSFactory.eINSTANCE.createFeatureCollectionType();
         hits.setNumberOfFeatures(featureCollection.getNumberOfFeatures());
@@ -71,7 +81,5 @@ public class HitsOutputFormat extends WFSGetFeatureOutputFormat {
         } catch (SAXException e) {
             throw (IOException) new IOException("Encoding error ").initCause(e);
         }
-
-        return;
     }
 }

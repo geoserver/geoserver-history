@@ -81,10 +81,8 @@ public class TransactionResponse extends Response {
         writer.write(indent + "version=\"1.0.0\"");
         writer.write(indent + "xmlns:wfs=\"http://www.opengis.net/wfs\"");
 
-        //if (insertResults.size() > 0){
         writer.write(indent + "xmlns:ogc=\"http://www.opengis.net/ogc\"");
 
-        //}
         writer.write(indent + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         writer.write(indent);
         writer.write("xsi:schemaLocation=\"http://www.opengis.net/wfs ");
@@ -97,25 +95,43 @@ public class TransactionResponse extends Response {
 
         InsertResultsType insertResults = response.getInsertResults();
 
+        //JD: make sure we group insert results by handle, this is wfs 1.0 cite
+        // thing that conflicts with wfs 1.1 cite, i am pretty sure its just a 
+        // problem with the 1.0 tests
+        String lastHandle = null;
+        boolean first = true;
+
         if (insertResults != null) {
             for (Iterator i = insertResults.getFeature().iterator(); i.hasNext();) {
                 InsertedFeatureType insertedFeature = (InsertedFeatureType) i.next();
+                String handle = insertedFeature.getHandle();
 
-                writer.write("<wfs:InsertResult");
+                if (first || ((lastHandle == null) && (handle != null))
+                        || ((lastHandle != null) && (handle != null) && handle.equals(lastHandle))) {
+                    if (!first) {
+                        //close last one, if not the first time through
+                        writer.write("</wfs:InsertResult>");
+                    }
 
-                if (insertedFeature.getHandle() != null) {
-                    writer.write(" handle=\"" + insertedFeature.getHandle() + "\"");
+                    writer.write("<wfs:InsertResult");
+
+                    if (insertedFeature.getHandle() != null) {
+                        writer.write(" handle=\"" + insertedFeature.getHandle() + "\"");
+                    }
+
+                    writer.write(">");
                 }
-
-                writer.write(">");
 
                 for (Iterator id = insertedFeature.getFeatureId().iterator(); id.hasNext();) {
                     FeatureId featureId = (FeatureId) id.next();
                     writer.write("<ogc:FeatureId fid=\"" + featureId.toString() + "\"/>");
                 }
 
-                writer.write("</wfs:InsertResult>");
+                first = false;
+                lastHandle = handle;
             }
+
+            writer.write("</wfs:InsertResult>");
         }
 
         writer.write(indent + "<wfs:TransactionResult");
@@ -160,7 +176,6 @@ public class TransactionResponse extends Response {
 
         writer.write("</wfs:WFS_TransactionResponse>");
         writer.flush();
-        
     }
 
     public void v_1_1(TransactionResponseType response, OutputStream output)

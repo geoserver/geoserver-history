@@ -916,12 +916,11 @@ public abstract class AbstractService extends HttpServlet implements Application
         ServiceException se) {
         // first log the exception
         LOGGER.log(Level.SEVERE, "Service exception occurred", se);
-        
+
         String mimeType = se.getMimeType(geoServer);
 
         send(response, se.getXmlResponse(geoServer.isVerboseExceptions(), request, geoServer),
             mimeType);
-        
     }
 
     /**

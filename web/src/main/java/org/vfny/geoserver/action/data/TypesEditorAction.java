@@ -4,20 +4,7 @@
  */
 package org.vfny.geoserver.action.data;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -48,8 +35,18 @@ import org.vfny.geoserver.form.data.TypesEditorForm;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -105,7 +102,7 @@ public class TypesEditorAction extends ConfigAction {
         final String BBOX = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
         final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(locale,
-            "config.data.lookupSRS.label"));
+                    "config.data.lookupSRS.label"));
 
         if (LOGGER.isLoggable(Level.FINER)) {
             LOGGER.finer(new StringBuffer("BBOX: ").append(BBOX).toString());
@@ -121,7 +118,7 @@ public class TypesEditorAction extends ConfigAction {
         if (action.equals(BBOX)) {
             return executeBBox(mapping, typeForm, user, request);
         }
-        
+
         if (action.equals(LOOKUP_SRS)) {
             return executeLookupSRS(mapping, typeForm, user, request);
         }
@@ -155,25 +152,30 @@ public class TypesEditorAction extends ConfigAction {
         return mapping.findForward("config.data.type.editor");
     }
 
-    private ActionForward executeLookupSRS(ActionMapping mapping, TypesEditorForm typeForm, UserContainer user, HttpServletRequest request) throws IOException, ServletException {
+    private ActionForward executeLookupSRS(ActionMapping mapping, TypesEditorForm typeForm,
+        UserContainer user, HttpServletRequest request)
+        throws IOException, ServletException {
         DataConfig dataConfig = getDataConfig();
         DataStoreConfig dsConfig = dataConfig.getDataStore(typeForm.getDataStoreId());
         DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
         FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
         FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
-        
+
         try {
             CoordinateReferenceSystem crs = fs.getSchema().getDefaultGeometry().getCoordinateSystem();
             String s = CRS.lookupIdentifier(crs, Collections.singleton("EPSG"), true);
-            if(s == null)
+
+            if (s == null) {
                 typeForm.setSRS("UNKNOWN");
-            else  if(s.indexOf(':') != -1)
+            } else if (s.indexOf(':') != -1) {
                 typeForm.setSRS(s.substring(s.indexOf(':') + 1));
-            else 
+            } else {
                 typeForm.setSRS(s);
-        } catch(Exception e) {
+            }
+        } catch (Exception e) {
             typeForm.setSRS("UNKNOWN");
         }
+
         return mapping.findForward("config.data.type.editor");
     }
 
@@ -234,25 +236,32 @@ public class TypesEditorAction extends ConfigAction {
         try {
             CoordinateReferenceSystem crsDeclared = CRS.decode(srs);
             CoordinateReferenceSystem original = null;
-            if(featureType.getDefaultGeometry() != null)
+
+            if (featureType.getDefaultGeometry() != null) {
                 original = featureType.getDefaultGeometry().getCoordinateSystem();
-            if(original == null)
+            }
+
+            if (original == null) {
                 original = crsDeclared;
-            CoordinateReferenceSystem crsLatLong   = CRS.decode("EPSG:4326");  // latlong
-            
+            }
+
+            CoordinateReferenceSystem crsLatLong = CRS.decode("EPSG:4326"); // latlong
+
             // let's show coordinates in the declared crs, not in the native one, to
             // avoid confusion (since on screen we do have the declared one, the native is
             // not visible)
             Envelope declaredEnvelope = envelope;
-            if(!CRS.equalsIgnoreMetadata(original,crsDeclared)) {
+
+            if (!CRS.equalsIgnoreMetadata(original, crsDeclared)) {
                 MathTransform xform = CRS.findMathTransform(original, crsDeclared, true);
                 declaredEnvelope = JTS.transform(envelope, null, xform, 10); //convert data bbox to lat/long
             }
+
             typeForm.setDataMinX(Double.toString(declaredEnvelope.getMinX()));
             typeForm.setDataMaxX(Double.toString(declaredEnvelope.getMaxX()));
             typeForm.setDataMinY(Double.toString(declaredEnvelope.getMinY()));
             typeForm.setDataMaxY(Double.toString(declaredEnvelope.getMaxY()));
-            
+
             MathTransform xform = CRS.findMathTransform(original, crsLatLong, true);
             Envelope xformed_envelope = JTS.transform(envelope, xform); //convert data bbox to lat/long
 

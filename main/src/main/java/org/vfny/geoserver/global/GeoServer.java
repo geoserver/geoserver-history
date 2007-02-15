@@ -417,12 +417,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
             logLocation = dto.getLogLocation();
 
             //TODO: logging needs to be revisited and done a better way
-            try {
-                initLogging(loggingLevel, loggingToFile, logLocation);
-            } catch (IOException e) {
-                throw new ConfigurationException(e);
-            }
-
+            //            try {
+            //                initLogging(loggingLevel, loggingToFile, logLocation);
+            //            } catch (IOException e) {
+            //                throw new ConfigurationException(e);
+            //            }
             memoryCapacity = dto.getJaiMemoryCapacity();
             memoryThreshold = dto.getJaiMemoryThreshold();
             tileThreads = dto.getJaiTileThreads();
@@ -565,6 +564,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
 
         // Setting up Cache Capacity
         jaiCache = (SunTileCache) jaiDef.getTileCache();
+
         long jaiMemory = (long) (memCapacity * Runtime.getRuntime().maxMemory());
         jaiCache.setMemoryCapacity(jaiMemory);
 

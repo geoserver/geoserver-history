@@ -4,31 +4,8 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletContext;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
 import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -72,9 +49,29 @@ import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletContext;
 
 
 /**
@@ -270,7 +267,7 @@ public class XMLConfigReader {
             } else if ("WMS".equalsIgnoreCase(serviceType)) {
                 loadWMS(elem);
             } else {
-                LOGGER.warning("Ignoring unknown service type: " + serviceType);                
+                LOGGER.warning("Ignoring unknown service type: " + serviceType);
             }
         }
     }
@@ -312,19 +309,18 @@ public class XMLConfigReader {
             data.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(catalogElem,
                         "namespaces", true)));
             setDefaultNS();
-            
+
             try { // try <formats> to be backwards compatible to 1.4
 
-                Element formatElement = ReaderUtils.getChildElement(
-                        catalogElem, "formats", true);
+                Element formatElement = ReaderUtils.getChildElement(catalogElem, "formats", true);
                 data.setFormats(loadFormats(formatElement));
             } catch (Exception e) {
                 // gobble
-                LOGGER
-                        .warning("Your catalog.xml file is not up to date and is probably from an older "
-                                + "version of GeoServer. This problem is now being fixed automatically.");
+                LOGGER.warning(
+                    "Your catalog.xml file is not up to date and is probably from an older "
+                    + "version of GeoServer. This problem is now being fixed automatically.");
             }
-            
+
             data.setDataStores(loadDataStores(ReaderUtils.getChildElement(catalogElem,
                         "datastores", true)));
 
@@ -821,11 +817,14 @@ public class XMLConfigReader {
 
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
         wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(wmsElement, "svgAntiAlias")));
+
         try {
-			wms.setAllowInterpolation(ReaderUtils.getChildText(wmsElement, "allowInterpolation", true));
-		} catch (Exception e) {
-			wms.setAllowInterpolation("Nearest");
-		}
+            wms.setAllowInterpolation(ReaderUtils.getChildText(wmsElement, "allowInterpolation",
+                    true));
+        } catch (Exception e) {
+            wms.setAllowInterpolation("Nearest");
+        }
+
         loadBaseMapLayers(wmsElement);
     }
 
@@ -896,11 +895,12 @@ public class XMLConfigReader {
                     false, 0));
 
             String url = ReaderUtils.getChildText(serviceRoot, "onlineResource", true);
+
             try {
                 s.setOnlineResource(new URL(url));
             } catch (MalformedURLException e) {
-                LOGGER.severe("Invalid online resource URL for service "
-                        + name + ": " + url + ". Defaulting to geoserver home.");
+                LOGGER.severe("Invalid online resource URL for service " + name + ": " + url
+                    + ". Defaulting to geoserver home.");
                 s.setOnlineResource(new URL("http://www.geoserver.org"));
             }
         } catch (Exception e) {
@@ -987,6 +987,7 @@ public class XMLConfigReader {
 
         int styleCount = stylesList.getLength();
         Element styleElem;
+
         for (int i = 0; i < styleCount; i++) {
             try {
                 styleElem = (Element) stylesList.item(i);
@@ -1005,7 +1006,6 @@ public class XMLConfigReader {
                 LOGGER.log(Level.WARNING, "Ignored misconfigured style", e);
             }
         }
-        
 
         return styles;
     }
@@ -1035,18 +1035,19 @@ public class XMLConfigReader {
 
         for (int i = 0; i < fmCnt; i++) {
             fmElem = (Element) fmElements.item(i);
+
             try {
                 fmConfig = loadFormat(fmElem);
-    
+
                 if (formats.containsKey(fmConfig.getId())) {
-                    LOGGER.warning("Ignored duplicated format "  
+                    LOGGER.warning("Ignored duplicated format "
                         + data.getNameSpaces().get(fmConfig.getNameSpaceId()));
                 } else {
                     formats.put(fmConfig.getId(), fmConfig);
                 }
-            } catch(ConfigurationException e) {
+            } catch (ConfigurationException e) {
                 LOGGER.log(Level.WARNING, "Ignored a misconfigured coverage.", e);
-            } 
+            }
         }
 
         return formats;
@@ -1084,7 +1085,8 @@ public class XMLConfigReader {
             if (data.getNameSpaces().containsKey(namespacePrefix)) {
                 fm.setNameSpaceId(namespacePrefix);
             } else {
-                LOGGER.warning("Could not find namespace " + namespacePrefix + " defaulting to " + data.getDefaultNameSpacePrefix());
+                LOGGER.warning("Could not find namespace " + namespacePrefix + " defaulting to "
+                    + data.getDefaultNameSpacePrefix());
                 fm.setNameSpaceId(data.getDefaultNameSpacePrefix());
             }
 
@@ -1128,6 +1130,7 @@ public class XMLConfigReader {
 
         for (int i = 0; i < dsCnt; i++) {
             dsElem = (Element) dsElements.item(i);
+
             try {
                 dsConfig = loadDataStore(dsElem);
 
@@ -1136,7 +1139,7 @@ public class XMLConfigReader {
                 } else {
                     dataStores.put(dsConfig.getId(), dsConfig);
                 }
-            } catch(ConfigurationException e) {
+            } catch (ConfigurationException e) {
                 LOGGER.log(Level.WARNING, "Ignored a misconfigured datastore.", e);
             }
         }
@@ -1174,7 +1177,8 @@ public class XMLConfigReader {
             if (data.getNameSpaces().containsKey(namespacePrefix)) {
                 ds.setNameSpaceId(namespacePrefix);
             } else {
-                LOGGER.warning("Could not find namespace " + namespacePrefix + " defaulting to " + data.getDefaultNameSpacePrefix());
+                LOGGER.warning("Could not find namespace " + namespacePrefix + " defaulting to "
+                    + data.getDefaultNameSpacePrefix());
                 ds.setNameSpaceId(data.getDefaultNameSpacePrefix());
             }
 
@@ -1586,7 +1590,7 @@ public class XMLConfigReader {
                 try {
                     dto = loadCoverage(info);
                     map.put(dto.getKey(), dto);
-                } catch(ConfigurationException e) {
+                } catch (ConfigurationException e) {
                     LOGGER.log(Level.WARNING, "Skipped misconfigured coverage " + info.getPath(), e);
                 }
             }

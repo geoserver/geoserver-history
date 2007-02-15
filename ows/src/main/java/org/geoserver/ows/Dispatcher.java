@@ -100,34 +100,34 @@ import javax.xml.namespace.QName;
  *
  */
 public class Dispatcher extends AbstractController {
+    /**
+     * Logging instance
+     */
+    static Logger logger = Logger.getLogger("org.geoserver.ows");
 
-	/**
-	 * Logging instance
-	 */
-	static Logger logger = Logger.getLogger("org.geoserver.ows");
-	
-	/** flag to control wether the dispatcher is cite compliant */
-	boolean citeCompliant = false;
-	
-	/**
-	 * Sets the flag to control wether the dispatcher is cite compliante.
-	 * <p>
-	 * If set to <code>true</code>, the dispatcher with throw exceptions when 
-	 * it encounters something that is not 100% compliant with CITE standards.
-	 * An example would be a request which specifies the servce in the context
-	 * path: '.../geoserver/wfs?request=...' and not with the kvp '&service=wfs'.
-	 * </p>
-	 * 
-	 * @param citeCompliant <code>true</code> to set compliance, 
-	 * 	<code>false</code> to unset it.
-	 */
-	public void setCiteCompliant(boolean citeCompliant) {
-		this.citeCompliant = citeCompliant;
-	}
-	public boolean isCiteCompliant() {
-		return citeCompliant;
-	}
-	
+    /** flag to control wether the dispatcher is cite compliant */
+    boolean citeCompliant = false;
+
+    /**
+     * Sets the flag to control wether the dispatcher is cite compliante.
+     * <p>
+     * If set to <code>true</code>, the dispatcher with throw exceptions when
+     * it encounters something that is not 100% compliant with CITE standards.
+     * An example would be a request which specifies the servce in the context
+     * path: '.../geoserver/wfs?request=...' and not with the kvp '&service=wfs'.
+     * </p>
+     *
+     * @param citeCompliant <code>true</code> to set compliance,
+     *         <code>false</code> to unset it.
+     */
+    public void setCiteCompliant(boolean citeCompliant) {
+        this.citeCompliant = citeCompliant;
+    }
+
+    public boolean isCiteCompliant() {
+        return citeCompliant;
+    }
+
     protected void preprocessRequest(HttpServletRequest request)
         throws Exception {
         //initialize all OWS instances
@@ -189,17 +189,21 @@ public class Dispatcher extends AbstractController {
                 return null;
             }
 
+            //throw any outstanding errors
+            if (request.error != null) {
+                throw request.error;
+            }
+
             //dispatch the operation
             Operation operation = dispatch(request, service);
-            
+
             //execute it
             Object result = execute(request, operation);
-            
+
             //write the response
-            if ( result != null ) {
-            	response( result, request, operation );
+            if (result != null) {
+                response(result, request, operation);
             }
-            
         } catch (Throwable t) {
             exception(t, service, request);
         }
@@ -216,10 +220,10 @@ public class Dispatcher extends AbstractController {
 
         if (request.get) {
             //create the kvp map
-            request.kvp = parseKVP(httpRequest);
+            parseKVP(request);
         } else {
             //wrap the input stream in a buffer input stream
-            request.input = reader( httpRequest );
+            request.input = reader(httpRequest);
 
             //mark the input stream, support up to 2KB, TODO: make this configuratable
             request.input.mark(2048);
@@ -228,34 +232,32 @@ public class Dispatcher extends AbstractController {
         return request;
     }
 
-    BufferedReader reader( HttpServletRequest httpRequest ) throws IOException {
-    	
-    	//create a buffer so we can reset the input stream
-    	BufferedInputStream input = new BufferedInputStream( httpRequest.getInputStream() );
-    	input.mark( 2048 );
-    	
-    	//create object to hold encoding info
-    	EncodingInfo encoding = new EncodingInfo();
-    	
-    	//call this method to set the encoding info
-    	XmlCharsetDetector.getCharsetAwareReader( input, encoding );
-    	
-    	//call this method to create the reader
-    	Reader reader = 
-    		XmlCharsetDetector.createReader( input, encoding );
+    BufferedReader reader(HttpServletRequest httpRequest)
+        throws IOException {
+        //create a buffer so we can reset the input stream
+        BufferedInputStream input = new BufferedInputStream(httpRequest.getInputStream());
+        input.mark(2048);
 
-    	//rest the input
-    	input.reset();
-    	
-    	//ensure the reader is a buffered reader
-    	if ( reader instanceof BufferedReader ) {
-    		return (BufferedReader) reader;
-    	}
-    	
-    	return new BufferedReader( reader );
-    	
+        //create object to hold encoding info
+        EncodingInfo encoding = new EncodingInfo();
+
+        //call this method to set the encoding info
+        XmlCharsetDetector.getCharsetAwareReader(input, encoding);
+
+        //call this method to create the reader
+        Reader reader = XmlCharsetDetector.createReader(input, encoding);
+
+        //rest the input
+        input.reset();
+
+        //ensure the reader is a buffered reader
+        if (reader instanceof BufferedReader) {
+            return (BufferedReader) reader;
+        }
+
+        return new BufferedReader(reader);
     }
-    
+
     Service service(Request req) throws Exception {
         if (req.get) {
             //check kvp
@@ -279,26 +281,29 @@ public class Dispatcher extends AbstractController {
         // either a kvp, or an xml attribute, however in reality the context 
         // is often a good way to infer the service or request 
         String service = req.service;
-        if ( service == null || req.request == null ) {
+
+        if ((service == null) || (req.request == null)) {
             Map map = readOpContext(req.httpRequest);
-            
-            if ( service == null ) {
-            	service = normalize((String) map.get("service") );	
-            	if ( service != null && !citeCompliant ) {
-            		req.service = service;
-            	}
+
+            if (service == null) {
+                service = normalize((String) map.get("service"));
+
+                if ((service != null) && !citeCompliant) {
+                    req.service = service;
+                }
             }
-            if ( req.request == null ) {
-            	req.request = normalize((String) map.get("request") );
+
+            if (req.request == null) {
+                req.request = normalize((String) map.get("request"));
             }
         }
-        
-        if ( service == null ) {
-        	//give up 
+
+        if (service == null) {
+            //give up 
             throw new ServiceException("Could not determine service", "MissingParameterValue",
                 "service");
         }
-        
+
         //load from teh context
         return findService(service, req.version);
     }
@@ -446,7 +451,8 @@ public class Dispatcher extends AbstractController {
         return null;
     }
 
-    Object execute(Request req, Operation opDescriptor) throws Throwable {
+    Object execute(Request req, Operation opDescriptor)
+        throws Throwable {
         Service serviceDescriptor = opDescriptor.getService();
         Object serviceBean = serviceDescriptor.getService();
         Method operation = opDescriptor.getMethod();
@@ -465,10 +471,9 @@ public class Dispatcher extends AbstractController {
 
         return result;
     }
-    
-    void response( Object result, Request req, Operation opDescriptor )
-    	throws Throwable {
-    	
+
+    void response(Object result, Request req, Operation opDescriptor)
+        throws Throwable {
         //step 6: write response
         if (result != null) {
             //look up respones
@@ -545,22 +550,23 @@ public class Dispatcher extends AbstractController {
             Response response = (Response) responses.get(0);
 
             //load the output strategy to be used
-            ServiceStrategy outputStrategy = findOutputStrategy( req.httpResponse );
-            if ( outputStrategy == null ) {
-            	outputStrategy = new DefaultOutputStrategy();
+            ServiceStrategy outputStrategy = findOutputStrategy(req.httpResponse);
+
+            if (outputStrategy == null) {
+                outputStrategy = new DefaultOutputStrategy();
             }
-            
+
             //set the mime type
             req.httpResponse.setContentType(response.getMimeType(result, opDescriptor));
 
             //TODO: initialize any header params (gzip,deflate,etc...)
-            OutputStream output = outputStrategy.getDestination( req.httpResponse );
+            OutputStream output = outputStrategy.getDestination(req.httpResponse);
             response.write(result, output, opDescriptor);
 
-        	outputStrategy.flush( req.httpResponse );
-            	
-        	//flush the underlying out stream for good meaure
-        	req.httpResponse.getOutputStream().flush();
+            outputStrategy.flush(req.httpResponse);
+
+            //flush the underlying out stream for good meaure
+            req.httpResponse.getOutputStream().flush();
         }
     }
 
@@ -646,20 +652,19 @@ public class Dispatcher extends AbstractController {
     }
 
     Collection loadKvpRequestReaders() {
-    	Collection kvpReaders = GeoServerExtensions.extensions(KvpRequestReader.class);
-         
-		if (!(new HashSet(kvpReaders).size() == kvpReaders.size())) {
-			String msg = "Two identical kvp readers found";
-			throw new IllegalStateException(msg);
-		}
-		
-		return kvpReaders;
+        Collection kvpReaders = GeoServerExtensions.extensions(KvpRequestReader.class);
+
+        if (!(new HashSet(kvpReaders).size() == kvpReaders.size())) {
+            String msg = "Two identical kvp readers found";
+            throw new IllegalStateException(msg);
+        }
+
+        return kvpReaders;
     }
-    
+
     KvpRequestReader findKvpRequestReader(Class type) {
-       
-    	Collection kvpReaders = loadKvpRequestReaders();
-    	
+        Collection kvpReaders = loadKvpRequestReaders();
+
         List matches = new ArrayList();
 
         for (Iterator itr = kvpReaders.iterator(); itr.hasNext();) {
@@ -679,17 +684,17 @@ public class Dispatcher extends AbstractController {
         if (matches.size() > 1) {
             //sort by class hierarchy
             Comparator comparator = new Comparator() {
-                public int compare(Object o1, Object o2) {
-                    KvpRequestReader kvp1 = (KvpRequestReader) o1;
-                    KvpRequestReader kvp2 = (KvpRequestReader) o2;
+                    public int compare(Object o1, Object o2) {
+                        KvpRequestReader kvp1 = (KvpRequestReader) o1;
+                        KvpRequestReader kvp2 = (KvpRequestReader) o2;
 
-                    if (kvp2.getRequestBean().isAssignableFrom(kvp1.getRequestBean())) {
-                        return -1;
+                        if (kvp2.getRequestBean().isAssignableFrom(kvp1.getRequestBean())) {
+                            return -1;
+                        }
+
+                        return 1;
                     }
-
-                    return 1;
-                }
-            };
+                };
 
             Collections.sort(matches, comparator);
         }
@@ -799,36 +804,42 @@ public class Dispatcher extends AbstractController {
     }
 
     Collection loadOutputStrategyFactories() {
-    	return GeoServerExtensions.extensions( OutputStrategyFactory.class );
+        return GeoServerExtensions.extensions(OutputStrategyFactory.class);
     }
-    
-    ServiceStrategy findOutputStrategy( HttpServletResponse response ) {
-    	//load all available factories
-    	Collection strategyFactories = loadOutputStrategyFactories();
-    	for ( Iterator i = strategyFactories.iterator(); i.hasNext(); ) {
-    		OutputStrategyFactory factory = (OutputStrategyFactory) i.next();
-    		
-    		//can this factory create a strategy for the response
-    		ServiceStrategy strategy = factory.createOutputStrategy( response );
-    		if ( strategy != null ) {
-    			//yes it can, return it
-    			return strategy;
-    		}
-    	}
-    	
-    	return null;
+
+    ServiceStrategy findOutputStrategy(HttpServletResponse response) {
+        //load all available factories
+        Collection strategyFactories = loadOutputStrategyFactories();
+
+        for (Iterator i = strategyFactories.iterator(); i.hasNext();) {
+            OutputStrategyFactory factory = (OutputStrategyFactory) i.next();
+
+            //can this factory create a strategy for the response
+            ServiceStrategy strategy = factory.createOutputStrategy(response);
+
+            if (strategy != null) {
+                //yes it can, return it
+                return strategy;
+            }
+        }
+
+        return null;
     }
-    
+
     BufferedInputStream input(File cache) throws IOException {
         return (cache == null) ? null : new BufferedInputStream(new FileInputStream(cache));
     }
 
-    Map parseKVP(HttpServletRequest request) throws ServiceException {
+    void parseKVP(Request req) throws ServiceException {
+        HttpServletRequest request = req.httpRequest;
+
         //unparsed kvp set
         Map kvp = request.getParameterMap();
 
         if (kvp == null) {
-            return Collections.EMPTY_MAP;
+            req.kvp = Collections.EMPTY_MAP;
+
+            return;
         }
 
         //look up parser objects
@@ -857,8 +868,9 @@ public class Dispatcher extends AbstractController {
                     try {
                         parsed = parser.parse(value);
                     } catch (Throwable t) {
-                        String msg = "kvp parsing failed for: " + key;
-                        throw new ServiceException(msg, t);
+                        //dont throw any exceptions yet, befor the service is
+                        // known
+                        req.error = t;
                     }
                 }
             }
@@ -872,7 +884,7 @@ public class Dispatcher extends AbstractController {
             parsedKvp.put(key.toLowerCase(), parsed);
         }
 
-        return parsedKvp;
+        req.kvp = parsedKvp;
     }
 
     Object parseRequestKVP(Class type, Request request)
@@ -900,9 +912,9 @@ public class Dispatcher extends AbstractController {
 
     Object parseRequestXML(BufferedReader input) throws Exception {
         //check for an empty input stream
-    	//if (input.available() == 0) {
-        if ( !input.ready() ) {
-        	return null;
+        //if (input.available() == 0) {
+        if (!input.ready()) {
+            return null;
         }
 
         //create stream parser
@@ -913,7 +925,7 @@ public class Dispatcher extends AbstractController {
         //parse root element
         XmlPullParser parser = factory.newPullParser();
         //parser.setInput(input, "UTF-8");
-        parser.setInput( input );
+        parser.setInput(input);
         parser.nextTag();
 
         String namespace = (parser.getNamespace() != null) ? parser.getNamespace() : "";
@@ -1071,20 +1083,20 @@ public class Dispatcher extends AbstractController {
         private static final long serialVersionUID = 1L;
 
         public boolean containsKey(Object key) {
-            return super.containsKey(lower(key));
+            return super.containsKey(upper(key));
         }
 
         public Object get(Object key) {
-            return super.get(lower(key));
+            return super.get(upper(key));
         }
 
         public Object put(Object key, Object value) {
-            return super.put(lower(key), value);
+            return super.put(upper(key), value);
         }
 
-        Object lower(Object key) {
+        Object upper(Object key) {
             if ((key != null) && key instanceof String) {
-                return ((String) key).toLowerCase();
+                return ((String) key).toUpperCase();
             }
 
             return key;
@@ -1128,5 +1140,10 @@ public class Dispatcher extends AbstractController {
          * The output format of hte request
          */
         String outputFormat;
+
+        /**
+         * Any errors that occur tryinng to determine the service
+         */
+        Throwable error;
     }
 }

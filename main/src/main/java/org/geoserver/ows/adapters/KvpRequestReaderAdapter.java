@@ -59,7 +59,7 @@ public class KvpRequestReaderAdapter extends org.geoserver.ows.KvpRequestReader
         Map kvp = new HashMap();
         String qString = request.getQueryString();
 
-        if (qString != null) {
+        if ((qString != null) && !qString.trim().equals("")) {
             kvp = KvpRequestReader.parseKvpSet(qString);
         } else {
             String paramName;

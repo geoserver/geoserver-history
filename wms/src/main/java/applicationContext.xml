@@ -142,6 +142,12 @@
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetLegendGraphicKvpReader" />
       	<constructor-arg index="2" ref="wmsGetLegendGraphic" />
 	</bean>
+	<bean id="putStylesKvpReader"
+		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+		<constructor-arg index="0" value="org.vfny.geoserver.sld.requests.PutStylesRequest" />
+      	<constructor-arg index="1" value="org.vfny.geoserver.sld.requests.PutStylesKvpReader" />
+      	<constructor-arg index="2" ref="wmsPutStyles" />
+	</bean>
 		
 	<!--  responses -->
 	<bean id="wmwGetCapabilitiesResponse"
@@ -177,6 +183,7 @@
 			<props>
 				<prop key="/wms">dispatcher</prop>
 				<prop key="/wms/*">dispatcher</prop>
+
 			</props>
 		</property>
 	</bean>

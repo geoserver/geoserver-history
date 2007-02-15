@@ -286,8 +286,7 @@ public class StylesEditorForm extends ActionForm {
         BufferedReader br = null;
 
         try {
-            File styleDir = new File(GeoserverDataDirectory.getGeoserverDataDirectory(),
-                    "styles");
+            File styleDir = new File(GeoserverDataDirectory.getGeoserverDataDirectory(), "styles");
             File styleFile = new File(styleDir, filename);
             br = new BufferedReader(new FileReader(styleFile));
 

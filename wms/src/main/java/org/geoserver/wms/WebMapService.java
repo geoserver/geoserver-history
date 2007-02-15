@@ -31,12 +31,15 @@ public interface WebMapService {
      * GetCapabilities operation.
      */
     WMSCapabilitiesResponse getCapabilities(WMSCapabilitiesRequest request);
+
     WMSCapabilitiesResponse capabilities(WMSCapabilitiesRequest request);
 
     /**
      * GetMap operation.
      */
     GetMapResponse getMap(GetMapRequest request);
+
+    GetMapResponse map(GetMapRequest request);
 
     /**
      * DescribeLayer operation.

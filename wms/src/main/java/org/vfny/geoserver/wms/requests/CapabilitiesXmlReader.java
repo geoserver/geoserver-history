@@ -52,7 +52,8 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        CapabilitiesHandler currentRequest = new CapabilitiesHandler(getServiceRef());
+        CapabilitiesHandler currentRequest = new CapabilitiesHandler(new WMSCapabilitiesRequest(
+                    getServiceRef()));
 
         // read in XML file and parse to content handler
         try {

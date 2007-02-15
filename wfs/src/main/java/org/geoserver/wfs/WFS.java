@@ -4,9 +4,6 @@
  */
 package org.geoserver.wfs;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.platform.GeoServerExtensions;
 import org.springframework.context.ApplicationContext;
@@ -18,6 +15,8 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoValidator;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
+import java.util.Collection;
+import java.util.Iterator;
 
 
 /**
@@ -43,7 +42,6 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  * @version $Id: WFS.java,v 1.8 2004/09/09 16:54:19 cholmesny Exp $
  */
 public class WFS extends org.vfny.geoserver.global.Service {
-	
     /** web container key */
     public static final String WEB_CONTAINER_KEY = "WFS";
 
@@ -70,7 +68,7 @@ public class WFS extends org.vfny.geoserver.global.Service {
 
     /** ServiceLevel mask equivilent to complete WFS conformance */
     public static final int COMPLETE = WFSDTO.COMPLETE;
-    
+
     /**
      * Properties
      */
@@ -93,10 +91,10 @@ public class WFS extends org.vfny.geoserver.global.Service {
     public WFS(WFSDTO config) {
         super(config.getService());
         setId("wfs");
-        setSrsXmlStyle( config.isSrsXmlStyle() );
-        setServiceLevel( config.getServiceLevel() );
-        setCiteConformanceHacks(config.getCiteConformanceHacks() );
-        setFeatureBounding( config.isFeatureBounding() );
+        setSrsXmlStyle(config.isSrsXmlStyle());
+        setServiceLevel(config.getServiceLevel());
+        setCiteConformanceHacks(config.getCiteConformanceHacks());
+        setFeatureBounding(config.isFeatureBounding());
     }
 
     /**
@@ -138,10 +136,10 @@ public class WFS extends org.vfny.geoserver.global.Service {
      */
     public void load(WFSDTO config) {
         super.load(config.getService());
-        setSrsXmlStyle( config.isSrsXmlStyle() );
-        setServiceLevel( config.getServiceLevel() );
-        setCiteConformanceHacks( config.getCiteConformanceHacks() );
-        setFeatureBounding( config.isFeatureBounding() );
+        setSrsXmlStyle(config.isSrsXmlStyle());
+        setServiceLevel(config.getServiceLevel());
+        setCiteConformanceHacks(config.getCiteConformanceHacks());
+        setFeatureBounding(config.isFeatureBounding());
     }
 
     /**
@@ -226,12 +224,13 @@ public class WFS extends org.vfny.geoserver.global.Service {
 
     /**
      * Sets serviceLevel property.
-     * 
+     *
      * @param serviceLevel The new service level.
      */
     public void setServiceLevel(int serviceLevel) {
-		this.serviceLevel = serviceLevel;
-	}
+        this.serviceLevel = serviceLevel;
+    }
+
     /**
      * Access serviceLevel property.
      *

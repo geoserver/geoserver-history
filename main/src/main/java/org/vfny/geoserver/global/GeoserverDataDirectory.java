@@ -151,9 +151,9 @@ public class GeoserverDataDirectory {
      * @param servContext
      */
     public static void init(WebApplicationContext context) {
-    	ServletContext servContext = context.getServletContext();
-    	
-	    // This was once in the GetGeoserverDataDirectory method, I've moved
+        ServletContext servContext = context.getServletContext();
+
+        // This was once in the GetGeoserverDataDirectory method, I've moved
         // here so that servlet
         // context is not needed as a parameter anymore.
         // caching this, so we're not looking up everytime, and more
@@ -164,11 +164,10 @@ public class GeoserverDataDirectory {
         // If this assumption can't be made, then we can't allow data_dir
         // _and_ webapp options with relative data/ links -ch
         if (loader == null) {
-        	
-        	//get the loader from the context
-        	loader = (GeoServerResourceLoader) context.getBean( "resourceLoader" );
-        	
-        	File dataDir = null;
+            //get the loader from the context
+            loader = (GeoServerResourceLoader) context.getBean("resourceLoader");
+
+            File dataDir = null;
 
             // see if there's a system property
             try {
@@ -217,7 +216,7 @@ public class GeoserverDataDirectory {
             dataDir = new File(rootDir);
 
             //set the base directory of hte loader
-            loader.setBaseDirectory( dataDir );
+            loader.setBaseDirectory(dataDir);
             loader.addSearchLocation(new File(dataDir, "data"));
             loader.addSearchLocation(new File(dataDir, "WEB-INF"));
             System.out.println("----------------------------------");

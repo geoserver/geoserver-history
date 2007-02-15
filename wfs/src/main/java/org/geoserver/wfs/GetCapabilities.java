@@ -46,16 +46,14 @@ public class GetCapabilities {
 
     public CapabilitiesTransformer run(GetCapabilitiesType request)
         throws WFSException {
-    	
-    	//cite requires that we fail when we see an "invalid" update sequence,
-    	// since we dont support update sequences, all are invalid, but we take
-    	// our more lax approach and just ignore it when not doint the cite thing
-    	if ( wfs.getCiteConformanceHacks() ) {
-    		if (request.getUpdateSequence() != null) {
+        //cite requires that we fail when we see an "invalid" update sequence,
+        // since we dont support update sequences, all are invalid, but we take
+        // our more lax approach and just ignore it when not doint the cite thing
+        if (wfs.getCiteConformanceHacks()) {
+            if (request.getUpdateSequence() != null) {
                 throw new WFSException("Invalid update sequence", "InvalidUpdateSequence");
-            }	
-    	}
-        
+            }
+        }
 
         //TODO: the rest of this routine should be done by the dispatcher
         //make sure service is set, cite conformance thing
@@ -63,14 +61,13 @@ public class GetCapabilities {
         // tests that every request includes the 'service=WFS' key value pair.
         // However often the the context of the request is good enough to 
         // determine what the service is, like in 'geoserver/wfs?request=GetCapabilities'
-        if ( wfs.getCiteConformanceHacks() ) {
-        	if (!request.isSetService()) {
+        if (wfs.getCiteConformanceHacks()) {
+            if (!request.isSetService()) {
                 //give up 
                 throw new WFSException("Service not set", "MissingParameterValue", "service");
             }
-	
         }
-        
+
         //do the version negotiation dance
 
         //any accepted versions

@@ -4,13 +4,21 @@
  */
 package org.vfny.geoserver.config;
 
-
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import org.geotools.feature.AttributeType;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.GeometryAttributeType;
+import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,17 +29,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
-import org.geotools.referencing.CRS;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.GeometryFactory;
-
 
 /**
  * User interface FeatureType staging area.
@@ -41,7 +38,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  */
 public class FeatureTypeConfig {
     protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.config");
-    
+
     /** The Id of the datastore which should be used to get this featuretype. */
     private String dataStoreId;
 
@@ -234,33 +231,36 @@ public class FeatureTypeConfig {
      */
     private int lookupSRS(GeometryAttributeType defaultGeometry) {
         // NPE avoidance
-        if(defaultGeometry == null)
+        if (defaultGeometry == null) {
             return -1;
-        
+        }
+
         // try the (deprecated) geometry factory, we don't want to break data stores that
         // do correctly set it
         GeometryFactory geometryFactory = defaultGeometry.getGeometryFactory();
-        if (geometryFactory != null && geometryFactory.getSRID() != 0) {
+
+        if ((geometryFactory != null) && (geometryFactory.getSRID() != 0)) {
             return geometryFactory.getSRID();
         }
+
         return 0;
-        
-//        // try to reverse engineer the SRID from the coordinate system
-//        CoordinateReferenceSystem ref = defaultGeometry.getCoordinateSystem();
-//        String code = CRS.lookupIdentifier(ref, Collections.singleton("EPSG"), true);
-//        if(code == null)
-//            return 0;
-//        if(code.startsWith("EPSG:")) {
-//            code = code.substring(5);
-//        }
-//        try {
-//            return Integer.parseInt(code);
-//        } catch(NumberFormatException e) {
-//            LOGGER.severe("Could not parse EPSG code: " + code);
-//            return 0;
-//        }
+
+        //        // try to reverse engineer the SRID from the coordinate system
+        //        CoordinateReferenceSystem ref = defaultGeometry.getCoordinateSystem();
+        //        String code = CRS.lookupIdentifier(ref, Collections.singleton("EPSG"), true);
+        //        if(code == null)
+        //            return 0;
+        //        if(code.startsWith("EPSG:")) {
+        //            code = code.substring(5);
+        //        }
+        //        try {
+        //            return Integer.parseInt(code);
+        //        } catch(NumberFormatException e) {
+        //            LOGGER.severe("Could not parse EPSG code: " + code);
+        //            return 0;
+        //        }
     }
-   
+
     /**
      * FeatureTypeInfo constructor.
      *

@@ -239,15 +239,15 @@ public class GetFeature {
                 //                	//DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
                 //                	maxFeatures -= features.getCount();
                 //                }
-                
+
                 // handle difference between declared and original CRS
-                if(meta.getNativeCRS() != null && 
-                        !CRS.equalsIgnoreMetadata(meta.getNativeCRS(), meta.getDeclaredCRS())) {
+                if ((meta.getNativeCRS() != null)
+                        && !CRS.equalsIgnoreMetadata(meta.getNativeCRS(), meta.getDeclaredCRS())) {
                     try {
-                            features = new ReprojectFeatureResults(features, meta.getDeclaredCRS());
-                    } catch(Exception e) {
-                        LOGGER.severe("Could not map original CRS to external CRS, " +
-                                "serving data in original CRS: " + e.getMessage());
+                        features = new ReprojectFeatureResults(features, meta.getDeclaredCRS());
+                    } catch (Exception e) {
+                        LOGGER.severe("Could not map original CRS to external CRS, "
+                            + "serving data in original CRS: " + e.getMessage());
                         LOGGER.log(Level.FINE, "Detailed mapping error: ", e);
                     }
                 }

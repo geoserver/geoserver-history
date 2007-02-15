@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+
 /**
  * Strategy interface for writing output to an output stream.
  * <p>
@@ -30,7 +31,7 @@ public interface ServiceStrategy extends Cloneable {
      * This output stream may be a wrapper around <code>response.getOutpuStream()</code>
      * or may not be.
      * </p>
-     * 
+     *
      * @param response The servlet response.
      *
      * @return An output stream to write to.
@@ -44,7 +45,7 @@ public interface ServiceStrategy extends Cloneable {
      * Flushes the output, causing the response to be written to the actual
      * resposne output stream: <code>response.getOutputStrema()</code>
      * <p>
-     * Any resources that the strategy holds on to should also be released at 
+     * Any resources that the strategy holds on to should also be released at
      * this point.
      * </p>
      * @param response TODO

@@ -4,16 +4,8 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.FactoryConfigurationError;
@@ -38,9 +30,15 @@ import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.vfny.geoserver.util.DataStoreUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -220,7 +218,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
      */
     private boolean cachingEnabled;
-
     private boolean forcedCRS;
 
     /**
@@ -516,22 +513,26 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
         FeatureSource realSource = dataStore.getFeatureSource(typeName);
         Envelope bbox = DataStoreUtils.getBoundingBoxEnvelope(realSource);
-        
+
         // check if the original CRS is not the declared one
         GeometryAttributeType defaultGeometry = realSource.getSchema().getDefaultGeometry();
         CoordinateReferenceSystem declaredCRS = getSRS(SRS);
         CoordinateReferenceSystem originalCRS = defaultGeometry.getCoordinateSystem();
+
         try {
-            if(!forcedCRS && defaultGeometry != null && 
-                    !CRS.equalsIgnoreMetadata(originalCRS, declaredCRS)) {
+            if (!forcedCRS && (defaultGeometry != null)
+                    && !CRS.equalsIgnoreMetadata(originalCRS, declaredCRS)) {
                 MathTransform xform = CRS.findMathTransform(originalCRS, declaredCRS, true);
-                bbox = JTS.transform(bbox, null, xform, 10); 
+                bbox = JTS.transform(bbox, null, xform, 10);
             }
-        } catch(Exception e) {
-            LOGGER.severe("Could not turn the original envelope in one into the declared CRS for type " + typeName);
+        } catch (Exception e) {
+            LOGGER.severe(
+                "Could not turn the original envelope in one into the declared CRS for type "
+                + typeName);
             LOGGER.severe("Original CRS is " + originalCRS);
             LOGGER.severe("Declared CRS is " + declaredCRS);
         }
+
         return bbox;
     }
 
@@ -579,7 +580,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     public String getSRS() {
         return SRS + "";
     }
-    
+
     /**
      * Returns the declared CRS, that is, the CRS specified in the feature type
      * editor form
@@ -587,18 +588,22 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     public CoordinateReferenceSystem getDeclaredCRS() {
         return getSRS(SRS);
     }
-    
+
     public CoordinateReferenceSystem getNativeCRS() throws IOException {
         if (getDataStoreInfo().getDataStore() == null) {
             throw new IOException("featureType: " + getName()
                 + " does not have a properly configured " + "datastore");
         }
-        
+
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
         FeatureSource realSource = dataStore.getFeatureSource(typeName);
         GeometryAttributeType dg = realSource.getSchema().getDefaultGeometry();
-        if(dg == null)
-            throw new IOException("Feature type: " + getName() + " does not have a default geometry");
+
+        if (dg == null) {
+            throw new IOException("Feature type: " + getName()
+                + " does not have a default geometry");
+        }
+
         return dg.getCoordinateSystem();
     }
 
@@ -949,7 +954,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                         GeometricAttributeType old = (GeometricAttributeType) attributes[count];
 
                         try {
-                            if(old.getCoordinateSystem() == null) {
+                            if (old.getCoordinateSystem() == null) {
                                 attributes[count] = new GeometricAttributeType(old, getSRS(SRS));
                                 forcedCRS = true;
                             }
