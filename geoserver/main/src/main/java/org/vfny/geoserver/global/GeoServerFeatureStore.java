@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geoserver.feature.RetypingFeatureCollection;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
@@ -64,6 +65,13 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      * @throws IOException
      */
     public Set addFeatures(FeatureCollection fc) throws IOException {
+        FeatureStore store = store();
+
+        //check if the feature collection needs to be retyped
+        if (!store.getSchema().equals(fc.getSchema())) {
+            fc = new RetypingFeatureCollection(fc, store.getSchema());
+        }
+
         return store().addFeatures(fc);
     }
 
@@ -123,6 +131,13 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      * @throws IOException DOCUMENT ME!
      */
     public void setFeatures(FeatureReader reader) throws IOException {
+        FeatureStore store = store();
+
+        //check if the feature reader needs to be retyped
+        if (!store.getSchema().equals(reader.getFeatureType())) {
+            reader = new RetypingFeatureCollection.RetypingFeatureReader(reader, store.getSchema());
+        }
+
         store().setFeatures(reader);
     }
 
