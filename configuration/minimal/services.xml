@@ -94,10 +94,10 @@ This is a description of your Web Coverage Server.
         <keyword>WMS</keyword>
         <keyword>GEOSERVER</keyword>
       </keywords>
-      <metadataLink about="http://geoserver.sourceforge.net/html/index.php" type="undef" metadataType="other">
+      <metadataLink about="http://geoserver.org" type="undef" metadataType="other">
 	NONE
       </metadataLink>
-      <onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
+      <onlineResource>http://geoserver.org</onlineResource>
       <fees>NONE</fees>
       <accessConstraints>NONE</accessConstraints>
       <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
@@ -121,7 +121,7 @@ data.
 <keyword>WMS</keyword>
 <keyword>GEOSERVER</keyword>
 </keywords>
-<onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
+<onlineResource>http://geoserver.org</onlineResource>
 <fees>NONE</fees>
 <accessConstraints>NONE</accessConstraints>
 <srsXmlStyle value = "true" />
@@ -144,7 +144,7 @@ This is a description of your Web Map Server.
 <keyword>WMS</keyword>
 <keyword>GEOSERVER</keyword>
 </keywords>
-<onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
+<onlineResource>http://geoserver.org</onlineResource>
 <fees>NONE</fees>
 <accessConstraints>NONE</accessConstraints>
 <srsXmlStyle value = "false" />
