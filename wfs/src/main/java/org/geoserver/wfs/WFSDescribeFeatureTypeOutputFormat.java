@@ -44,7 +44,7 @@ public abstract class WFSDescribeFeatureTypeOutputFormat extends Response {
      * </p>
      */
     public boolean canHandle(Operation operation) {
-        if ("DescribeFeatureType".equals(operation.getId())) {
+        if ("DescribeFeatureType".equalsIgnoreCase(operation.getId())) {
             return true;
         }
 
