@@ -344,6 +344,8 @@ abstract public class KvpRequestReader {
             // delimeters, which may appear in XML (such as '=' for
             // attributes. unavoidable and illustrates the problems with
             // mixing nasty KVP Get syntax and pure XML syntax!
+            // JD-adding SLD_BODY, when wms moves to new architecture this 
+            // can be fixed
             if (kvpPair.toUpperCase().startsWith("FILTER")) {
                 String filterVal = kvpPair.substring(7);
 
@@ -354,6 +356,9 @@ abstract public class KvpRequestReader {
                 }
 
                 kvps.put("FILTER", filterVal);
+            } else if (kvpPair.toUpperCase().startsWith("SLD_BODY")) {
+                String sldBodyVal = kvpPair.substring(9);
+                kvps.put("SLD_BODY", sldBodyVal);
             } else {
                 // handles all other standard cases by looking for the correct
                 // delimeter and then sticking the KVPs into the hash table
