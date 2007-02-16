@@ -52,12 +52,8 @@ import java.util.NoSuchElementException;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class ReprojectingFeatureCollection implements FeatureCollection {
-    /**
-     * The decorated collection
-     */
-    FeatureCollection delegate;
-
+public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
+   
     /**
      * The schema of reprojected features
      */
@@ -88,7 +84,8 @@ public class ReprojectingFeatureCollection implements FeatureCollection {
         CoordinateReferenceSystem target)
         throws SchemaException, OperationNotFoundException, FactoryRegistryException,
             FactoryException {
-        this.delegate = delegate;
+    	super( delegate );
+        
         this.target = target;
         this.schema = FeatureTypes.transform(delegate.getFeatureType(), target);
 
@@ -124,10 +121,6 @@ public class ReprojectingFeatureCollection implements FeatureCollection {
         return new ReprojectingIterator(delegate.iterator());
     }
 
-    public void purge() {
-        delegate.purge();
-    }
-
     public void close(FeatureIterator iterator) {
         if (iterator instanceof ReprojectingFeatureIterator) {
             delegate.close(((ReprojectingFeatureIterator) iterator).getDelegate());
@@ -142,27 +135,12 @@ public class ReprojectingFeatureCollection implements FeatureCollection {
         }
     }
 
-    public void addListener(CollectionListener listenter)
-        throws NullPointerException {
-        delegate.addListener(listenter);
-    }
-
-    public void removeListener(CollectionListener listener)
-        throws NullPointerException {
-        delegate.removeListener(listener);
-    }
-
     public FeatureType getFeatureType() {
         return schema;
     }
 
     public FeatureType getSchema() {
         return schema;
-    }
-
-    public void accepts(FeatureVisitor visitor, ProgressListener listener)
-        throws IOException {
-        delegate.accepts(visitor, listener);
     }
 
     public FeatureCollection subCollection(Filter filter) {
@@ -183,22 +161,6 @@ public class ReprojectingFeatureCollection implements FeatureCollection {
         return null;
     }
 
-    public FeatureList sort(SortBy sortBy) {
-        throw new UnsupportedOperationException();
-    }
-
-    public int size() {
-        return delegate.size();
-    }
-
-    public void clear() {
-        delegate.clear();
-    }
-
-    public boolean isEmpty() {
-        return delegate.isEmpty();
-    }
-
     public Object[] toArray() {
         Object[] array = delegate.toArray();
 
@@ -211,34 +173,6 @@ public class ReprojectingFeatureCollection implements FeatureCollection {
         }
 
         return array;
-    }
-
-    public boolean add(Object o) {
-        return delegate.add(o);
-    }
-
-    public boolean contains(Object o) {
-        return delegate.contains(o);
-    }
-
-    public boolean remove(Object o) {
-        return delegate.remove(o);
-    }
-
-    public boolean addAll(Collection c) {
-        return delegate.addAll(c);
-    }
-
-    public boolean containsAll(Collection c) {
-        return delegate.containsAll(c);
-    }
-
-    public boolean removeAll(Collection c) {
-        return delegate.removeAll(c);
-    }
-
-    public boolean retainAll(Collection c) {
-        return delegate.retainAll(c);
     }
 
     public Object[] toArray(Object[] a) {
@@ -255,11 +189,7 @@ public class ReprojectingFeatureCollection implements FeatureCollection {
         return array;
     }
 
-    public FeatureReader reader() throws IOException {
-        throw new UnsupportedOperationException("Use iterator instead");
-    }
-
-    public Envelope getBounds() {
+  public Envelope getBounds() {
         Envelope bounds = new Envelope();
         Iterator i = iterator();
 
@@ -286,44 +216,6 @@ public class ReprojectingFeatureCollection implements FeatureCollection {
 
     public FeatureCollection collection() throws IOException {
         return this;
-    }
-
-    public String getID() {
-        return delegate.getID();
-    }
-
-    public Object[] getAttributes(Object[] array) {
-        return delegate.getAttributes(array);
-    }
-
-    public Object getAttribute(String name) {
-        return delegate.getAttribute(name);
-    }
-
-    public Object getAttribute(int index) {
-        return delegate.getAttribute(index);
-    }
-
-    public void setAttribute(int index, Object value)
-        throws IllegalAttributeException, ArrayIndexOutOfBoundsException {
-        delegate.setAttribute(index, value);
-    }
-
-    public int getNumberOfAttributes() {
-        return delegate.getNumberOfAttributes();
-    }
-
-    public void setAttribute(String name, Object value)
-        throws IllegalAttributeException {
-        delegate.setAttribute(name, value);
-    }
-
-    public Geometry getDefaultGeometry() {
-        return delegate.getDefaultGeometry();
-    }
-
-    public void setDefaultGeometry(Geometry geometry) throws IllegalAttributeException {
-        delegate.setDefaultGeometry(geometry);
     }
 
     Feature reproject(Feature feature) throws IOException {
