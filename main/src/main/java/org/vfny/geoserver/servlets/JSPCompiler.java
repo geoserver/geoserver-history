@@ -93,11 +93,11 @@ public class JSPCompiler extends HttpServlet {
         os.print("<table width=\"60%\" height=\"60%\"><tr><td>\n");
         os.print("<center>\n");
         os.print("  <span class=\"project\">\n");
-        os.print("    <a href=\"http://geoserver.sourceforge.net/\">GeoServer</a>\n");
+        os.print("    <a href=\"http://geoserver.org/\">GeoServer</a>\n");
         os.print("  </span>\n");
         os.print("  <span class=\"license\">\n");
         os.print(
-            "    <a href=\"http://geoserver.sourceforge.net/documentation/developer/license.htm\">&copy;</a>\n");
+            "    <a href=\"http://docs.codehaus.org/display/GEOSDOC/License\">&copy;</a>\n");
         os.print("  </span>\n");
         os.print("  <h1>LOADING ...</h1>\n");
         os.print("<center><br>\n");
@@ -144,11 +144,11 @@ public class JSPCompiler extends HttpServlet {
         os.print("<table width=\"60%\" height=\"60%\"><tr><td>\n");
         os.print("<center>\n");
         os.print("  <span class=\"project\">\n");
-        os.print("    <a href=\"http://geoserver.sourceforge.net/\">GeoServer</a>\n");
+        os.print("    <a href=\"http://geoserver.org/\">GeoServer</a>\n");
         os.print("  </span>\n");
         os.print("  <span class=\"license\">\n");
         os.print(
-            "    <a href=\"http://geoserver.sourceforge.net/documentation/developer/license.htm\">&copy;</a>\n");
+            "    <a href=\"http://docs.codehaus.org/display/GEOSDOC/License\">&copy;</a>\n");
         os.print("  </span>\n");
         os.print("  <h1>LOADING ...</h1>\n");
         os.print("<center><br>\n");
