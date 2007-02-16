@@ -5,6 +5,8 @@
 package org.vfny.geoserver.wms.servlets;
 
 import org.geotools.styling.Style;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.config.WMSConfig;
@@ -22,6 +24,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,15 +66,22 @@ public class KMLReflector extends WMService {
     final String SRS = "EPSG:4326";
     final String DEFAULT_BBOX = "-180,-90,180,90";
 
-    public KMLReflector(WMS wms) {
-        super("kml_reflect", wms);
+    public KMLReflector() {
+        super("kml_reflect", null);
     }
 
+    public void init( ServletConfig config ) throws ServletException {
+    	super.init ( config );
+    	setWMS( (WMS) config.getServletContext().getAttribute(WMS.WEB_CONTAINER_KEY) );
+    }
+    
     protected Response getResponseHandler() {
-        WMSConfig config = (WMSConfig) getServletContext().getAttribute(WMSConfig.CONFIG_KEY);
-
+        
+        ApplicationContext context = 
+        	WebApplicationContextUtils.getWebApplicationContext( getServletContext() );
+        
         //return new GetMapResponse(config);
-        return new GetMapResponse((WMS) getServiceRef(), getApplicationContext());
+        return new GetMapResponse(getWMS(), context);
     }
 
     protected KvpRequestReader getKvpReader(Map params) {

@@ -89,10 +89,16 @@
 		parent="wmsService">
 	</bean>
 	
-	<bean id="kmlReflector" class="org.vfny.geoserver.wms.servlets.KMLReflector"
+	<!-- bean id="kmlReflectorService" class="org.vfny.geoserver.wms.servlets.KMLReflector
 		parent="wmsService">
 	</bean>	
-
+	<bean id="kmlReflector"
+		class="org.springframework.web.servlet.mvc.ServletWrappingController">
+		<property name="servletClass"
+			value="org.vfny.geoserver.wms.servlets.KMLReflector"/>
+		<property name="servletName" value="kmlReflector"/>
+	</bean-->
+	
 	<!-- wms service + descriptor -->
  	<bean id="wmsService2" class="org.geoserver.wms.DefaultWebMapService"/>
  	<bean id="wmsServiceDescriptor" class="org.geoserver.platform.Service">
@@ -183,7 +189,6 @@
 			<props>
 				<prop key="/wms">dispatcher</prop>
 				<prop key="/wms/*">dispatcher</prop>
-
 			</props>
 		</property>
 	</bean>
