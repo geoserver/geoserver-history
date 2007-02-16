@@ -11,10 +11,10 @@
 <table width="60%" height="60%"><tr><td>
 <center>
   <span class="project">
-    <a href="http://geoserver.sourceforge.net/">GeoServer</a>
+    <a href="http://geoserver.org/">GeoServer</a>
   </span>
   <span class="license">
-    <a href="http://geoserver.sourceforge.net/documentation/developer/license.htm">&copy;</a>
+    <a href="http://docs.codehaus.org/display/GEOSDOC/License">&copy;</a>
   </span>
   <h1>LOADING ...</h1>
 <center><br>
