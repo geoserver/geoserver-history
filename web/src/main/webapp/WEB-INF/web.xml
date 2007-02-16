@@ -85,6 +85,11 @@
     <servlet-name>hider</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.FileHiderServlet</servlet-class>  
   </servlet>
+  
+  <servlet>
+  	<servlet-name>kmlreflector</servlet-name>
+  	<servlet-class>org.vfny.geoserver.wms.servlets.KMLReflector</servlet-class>
+  </servlet>
 	
    <!-- Struts config needs to load before all the other servlets. -->
    <servlet>
@@ -112,6 +117,10 @@
   <servlet-mapping>
     <servlet-name>action</servlet-name>
     <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>kmlreflector</servlet-name>
+	<url-pattern>/wms/kml_reflect</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>dispatcher</servlet-name>
