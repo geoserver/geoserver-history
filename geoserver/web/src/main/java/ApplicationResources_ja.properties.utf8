@@ -685,7 +685,7 @@ error.file.nonexistent=ãƒ•ã‚¡ã‚¤ãƒ« {0} ã?Œã?‚ã‚Šã?¾ã?›ã‚“ã€‚
 error.file.maxLengthExceeded=SLDæ–‡æ›¸ã?®æœ€å¤§ã‚¢ãƒƒãƒ—ãƒ­ãƒ¼ãƒ‰é•·ã‚’è¶Šã?ˆã?¾ã?—ã?Ÿã€‚ ({0} ãƒ?ã‚¤ãƒˆã?¾ã?§è¨±å®¹ï¼‰
 error.action.invalid=ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ '{0}' ã?¯ç?†è§£ã?•ã‚Œã?¾ã?›ã‚“ã?§ã?—ã?Ÿã€‚
 error.styleID.required=StyleID ã?Œå¿…è¦?ã?§ã?™ã€‚
-error.styleID.invalid=StyleIDã?¯è‹±æ•°å­—ã?§å§‹ã?¾ã‚‰ã?ªã?‘ã‚Œã?°ã?ªã‚Šã?¾ã?›ã‚“ã€‚
+error.styleID.invalid=StyleID must begin with an alpha-numeric character and cannot contain spaces.
 error.style.sldFileExists=æ—¢ã?«{0}ã?Œã?‚ã‚Šã?¾ã?™ã€€ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒªãƒ?ãƒ¼ãƒ ã?—ã?¦å®Ÿè¡Œã?—ã?¦ã??ã? ã?•ã?„ã€‚
 
 
