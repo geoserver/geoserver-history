@@ -16,7 +16,7 @@
     <wfs:Property>
       <wfs:Name>the_geom</wfs:Name>
       <wfs:Value>
-        <gml:MultiLineString srsName="http://www.opengis.net/gml/srs/epsg.xml#27345">
+        <gml:MultiLineString srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
           <gml:lineStringMember>
           	<gml:LineString>
             	<gml:coordinates>500000,5450000,0 540000,5450000,0</gml:coordinates>

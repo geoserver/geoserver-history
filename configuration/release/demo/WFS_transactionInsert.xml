@@ -14,7 +14,7 @@
   <wfs:Insert>
     <topp:tasmania_roads>
       <topp:the_geom>
-        <gml:MultiLineString srsName="http://www.opengis.net/gml/srs/epsg.xml#27354">
+        <gml:MultiLineString srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
           <gml:lineStringMember>
             <gml:LineString>
               <gml:coordinates decimal="." cs="," ts=" ">
