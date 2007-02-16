@@ -15,20 +15,22 @@ public class GML2Profile extends TypeMappingProfile {
     static Set profile = new HashSet();
 
     static {
-        profile.add(new Name(GML.NAMESPACE, GML.POINTTYPE.getLocalPart()));
-        profile.add(new Name(GML.NAMESPACE, GML.POINTPROPERTYTYPE.getLocalPart()));
-        profile.add(new Name(GML.NAMESPACE, GML.MULTIPOINTTYPE.getLocalPart()));
-        profile.add(new Name(GML.NAMESPACE, GML.MULTIPOINTPROPERTYTYPE.getLocalPart()));
+        //profile.add(new Name(GML.NAMESPACE, GML.POINTTYPE.getLocalPart()));
+        profile.add(new Name(GML.NAMESPACE, GML.PointPropertyType.getLocalPart()));
+        //profile.add(new Name(GML.NAMESPACE, GML.MULTIPOINTTYPE.getLocalPart()));
+        profile.add(new Name(GML.NAMESPACE, GML.MultiPointPropertyType.getLocalPart()));
 
-        profile.add(new Name(GML.NAMESPACE, GML.LINESTRINGTYPE.getLocalPart()));
-        profile.add(new Name(GML.NAMESPACE, GML.LINESTRINGPROPERTYTYPE.getLocalPart()));
-        profile.add(new Name(GML.NAMESPACE, GML.MULTILINESTRINGTYPE.getLocalPart()));
-        profile.add(new Name(GML.NAMESPACE, GML.MULTILINESTRINGPROPERTYTYPE.getLocalPart()));
+        //profile.add(new Name(GML.NAMESPACE, GML.LINESTRINGTYPE.getLocalPart()));
+        profile.add(new Name(GML.NAMESPACE, GML.LineStringPropertyType.getLocalPart()));
+        //profile.add(new Name(GML.NAMESPACE, GML.MULTILINESTRINGTYPE.getLocalPart()));
+        profile.add(new Name(GML.NAMESPACE, GML.MultiLineStringPropertyType.getLocalPart()));
 
-        profile.add(new Name(GML.NAMESPACE, GML.POLYGONTYPE.getLocalPart()));
-        profile.add(new Name(GML.NAMESPACE, GML.POLYGONPROPERTYTYPE.getLocalPart()));
-        profile.add(new Name(GML.NAMESPACE, GML.MULTIPOLYGONTYPE.getLocalPart()));
-        profile.add(new Name(GML.NAMESPACE, GML.MULTIPOLYGONPROPERTYTYPE.getLocalPart()));
+        //profile.add(new Name(GML.NAMESPACE, GML.POLYGONTYPE.getLocalPart()));
+        profile.add(new Name(GML.NAMESPACE, GML.PolygonPropertyType.getLocalPart()));
+        //profile.add(new Name(GML.NAMESPACE, GML.MULTIPOLYGONTYPE.getLocalPart()));
+        profile.add(new Name(GML.NAMESPACE, GML.MultiPolygonPropertyType.getLocalPart()));
+
+        profile.add(new Name(GML.NAMESPACE, GML.GeometryPropertyType.getLocalPart()));
     }
 
     public GML2Profile() {
